@@ -19,7 +19,6 @@
 
 #include "utils/orxLinkList.h"
 
-#include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 
 
@@ -215,6 +214,148 @@ orxSTATUS orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell)
     /* !!! MSG !!! */
 
     /* Not linked */
+    eResult = orxSTATUS_FAILED;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/***************************************************************************
+ orxLinkList_AddBefore
+ Adds a new cell before another one.
+
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ ***************************************************************************/
+orxSTATUS orxLinkList_AddBefore(orxLINKLIST_CELL *_pstRefCell, orxLINKLIST_CELL *_pstCell)
+{
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxREGISTER orxLINKLIST *pstList;
+
+  /* Checks */
+  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
+  orxASSERT(_pstRefCell != orxNULL);
+  orxASSERT(_pstCell != orxNULL);
+
+  /* Isn't already linked? */
+  if(_pstCell->pstList == orxNULL)
+  {
+    /* Gets list */
+    pstList = _pstRefCell->pstList;
+  
+    /* Valid? */
+    if(pstList != orxNULL)
+    {
+      /* Adds it in the list */
+      _pstCell->pstNext         = _pstRefCell;
+      _pstCell->pstPrevious     = _pstRefCell->pstPrevious;
+      _pstCell->pstList         = pstList;
+
+      /* Updates previous? */
+      if(_pstRefCell->pstPrevious != orxNULL)
+      {
+        /* Updates it */
+        _pstRefCell->pstPrevious->pstNext = _pstCell;
+      }
+      else
+      {
+        /* Checks cell was the first one */
+        orxASSERT(pstList->pstFirst == _pstRefCell);
+
+        /* Updates new first cell */
+        pstList->pstFirst = _pstCell;
+      }
+
+      /* Updates ref cell */
+      _pstRefCell->pstPrevious  = _pstCell;
+    
+      /* Updates counter */
+      pstList->u32Counter++;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+  
+      /* No list found */
+      eResult = orxSTATUS_FAILED;
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Already linked */
+    eResult = orxSTATUS_FAILED;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/***************************************************************************
+ orxLinkList_AddAfter
+ Adds a new cell after another one.
+
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ ***************************************************************************/
+orxSTATUS orxLinkList_AddAfter(orxLINKLIST_CELL *_pstRefCell, orxLINKLIST_CELL *_pstCell)
+{
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxREGISTER orxLINKLIST *pstList;
+
+  /* Checks */
+  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
+  orxASSERT(_pstRefCell != orxNULL);
+  orxASSERT(_pstCell != orxNULL);
+
+  /* Isn't already linked? */
+  if(_pstCell->pstList == orxNULL)
+  {
+    /* Gets list */
+    pstList = _pstRefCell->pstList;
+  
+    /* Valid? */
+    if(pstList != orxNULL)
+    {
+      /* Adds it in the list */
+      _pstCell->pstNext         = _pstRefCell->pstNext;
+      _pstCell->pstPrevious     = _pstRefCell;
+      _pstCell->pstList         = pstList;
+
+      /* Updates next? */
+      if(_pstRefCell->pstNext != orxNULL)
+      {
+        /* Updates it */
+        _pstRefCell->pstNext->pstPrevious = _pstCell;
+      }
+      else
+      {
+        /* Checks cell was the last one */
+        orxASSERT(pstList->pstLast == _pstRefCell);
+
+        /* Updates new last cell */
+        pstList->pstLast        = _pstCell;
+      }
+
+      /* Updates ref cell */
+      _pstRefCell->pstNext      = _pstCell;
+    
+      /* Updates counter */
+      pstList->u32Counter++;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+  
+      /* No list found */
+      eResult = orxSTATUS_FAILED;
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Already linked */
     eResult = orxSTATUS_FAILED;
   }
 
