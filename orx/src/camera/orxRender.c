@@ -198,20 +198,20 @@ orxVOID orxRender_SortViewportList(orxRENDER_VIEWPORT_LIST *_pstViewportList, or
     if(u32Min != u32Low)
     {
       /* Swap Z sort values */
-      orxSWAP(_pstViewportList[u32Low].fZSort, _pstViewportList[u32Min].fZSort);
+      orxSWAP32(_pstViewportList[u32Low].fZSort, _pstViewportList[u32Min].fZSort);
 
       /* Swap viewport pointers */
-      orxSWAP(_pstViewportList[u32Low].pstViewport, _pstViewportList[u32Min].pstViewport);
+      orxSWAP32(_pstViewportList[u32Low].pstViewport, _pstViewportList[u32Min].pstViewport);
     }
 
     /* Max swap? */
     if(u32Max != u32High)
     {
       /* Swap Z sort values */
-      orxSWAP(_pstViewportList[u32High].fZSort, _pstViewportList[u32Max].fZSort);
+      orxSWAP32(_pstViewportList[u32High].fZSort, _pstViewportList[u32Max].fZSort);
 
       /* Swap viewport pointers */
-      orxSWAP(_pstViewportList[u32High].pstViewport, _pstViewportList[u32Max].pstViewport);
+      orxSWAP32(_pstViewportList[u32High].pstViewport, _pstViewportList[u32Max].pstViewport);
     }
   }
 

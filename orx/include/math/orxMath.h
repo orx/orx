@@ -50,7 +50,7 @@
 #define orxABS(V)                 (((V) < 0) ? -(V) : (V))
 #define orxFABS(V)                (((V) < 0.0f) ? -(V) : (V))
 
-#define orxSWAP(A, B)                                         \
+#define orxSWAP32(A, B)                                       \
 do                                                            \
 {                                                             \
   *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \

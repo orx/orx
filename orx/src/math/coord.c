@@ -162,21 +162,21 @@ orxVOID coord_aabox_reorder(orxVEC *_pst_box_ul, orxVEC *_pst_box_br)
     if(_pst_box_ul->fZ > _pst_box_br->fZ)
     {
       /* Swap */
-      orxSWAP(_pst_box_ul->fZ, _pst_box_br->fZ);
+      orxSWAP32(_pst_box_ul->fZ, _pst_box_br->fZ);
     }
 
     /* Y coord */
     if(_pst_box_ul->fY > _pst_box_br->fY)
     {
       /* Swap */
-      orxSWAP(_pst_box_ul->fY, _pst_box_br->fY);
+      orxSWAP32(_pst_box_ul->fY, _pst_box_br->fY);
     }
 
     /* X coord */
     if(_pst_box_ul->fX > _pst_box_br->fX)
     {
       /* Swap */
-      orxSWAP(_pst_box_ul->fX, _pst_box_br->fX);
+      orxSWAP32(_pst_box_ul->fX, _pst_box_br->fX);
     }
   }
 
