@@ -33,9 +33,9 @@ extern orxVOID             (*graph_switch)();
 
 extern orxVOID             (*graph_printf)(graph_st_bitmap *_pst_bmp, orxS32 _i_x, orxS32 _i_y, orxU32 _u32_color, orxCONST orxU8 *_zFormat, ...);
 
-extern graph_st_bitmap *(*graph_bitmap_create)(orxS32 _i_w, orxS32 _i_h);
+extern graph_st_bitmap *(*graph_create)(orxS32 _i_w, orxS32 _i_h);
 extern graph_st_bitmap *(*graph_video_bitmap_create)(orxS32 _i_w, orxS32 _i_h);
-extern orxVOID             (*graph_bitmap_delete)(graph_st_bitmap *_pst_bmp);
+extern orxVOID             (*graph_delete)(graph_st_bitmap *_pst_bmp);
 extern graph_st_bitmap *(*graph_screen_bitmap_get)();
 extern orxVOID             (*graph_clear)(graph_st_bitmap *_pst_bmp);
 extern orxVOID             (*graph_bitmap_transform)(graph_st_bitmap *_pst_src, graph_st_bitmap *_pst_dst, orxFLOAT _fRotation, orxFLOAT _fScale_x, orxFLOAT _fScale_y, orxS32 _i_src_x, orxS32 _i_src_y, orxS32 _i_dst_x, orxS32 _i_dst_y, orxBOOL _bAntialiased);

@@ -280,7 +280,7 @@ orxVOID texture_bitmap_unlink(orxTEXTURE *_pstTexture)
       _pstTexture->u32IDFlags &= ~(TEXTURE_KU32_ID_FLAG_BITMAP | TEXTURE_KU32_ID_FLAG_SIZE);
 
       /* Deletes bitmap */
-      graph_bitmap_delete((graph_st_bitmap *) (_pstTexture->pstData));
+      graph_delete((graph_st_bitmap *) (_pstTexture->pstData));
     }
   }
 

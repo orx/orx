@@ -22,6 +22,8 @@
 #ifndef _PLUGIN_TYPE_H_
 #define _PLUGIN_TYPE_H_
 
+#include "orxInclude.h"
+
 
 /*********************************************
  Constants

@@ -20,6 +20,7 @@
 #ifndef _TIMER_TYPE_H_
 #define _TIMER_TYPE_H_
 
+#include "orxInclude.h"
 
 /** Clock update callback prototype, used when registering a clock. */
 typedef orxVOID  (*timer_fn_clock_update)(orxVOID *);

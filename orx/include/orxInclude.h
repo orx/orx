@@ -58,15 +58,15 @@ typedef orxS8               orxCHAR;
 typedef orxCHAR            *orxSTRING;
 
 /* *** Boolean Defines *** */
-extern orxCONST  orxBOOL    orxFALSE;
-extern orxCONST  orxBOOL    orxTRUE;
+static orxCONST   orxBOOL   orxFALSE            = (orxBOOL)(1 != 1);
+static orxCONST   orxBOOL   orxTRUE             = (orxBOOL)(1 == 1);
 
 /* *** Undefined defines *** */
-extern orxCONST  orxU64     orxU64_Undefined;
-extern orxCONST  orxU32     orxU32_Undefined;
-extern orxCONST  orxU16     orxU16_Undefined;
-extern orxCONST  orxU8      orxU8_Undefined;
-extern orxCONST  orxHANDLE  orxHANDLE_Undefined;
+static orxCONST   orxU64    orxU64_Undefined    = (orxU64)(-1);
+static orxCONST   orxU32    orxU32_Undefined    = (orxU32)(-1);
+static orxCONST   orxU16    orxU16_Undefined    = (orxU16)(-1);
+static orxCONST   orxU8     orxU8_Undefined     = (orxU8)(-1);
+static orxCONST   orxHANDLE orxHANDLE_Undefined = (orxHANDLE)(-1);
 
 
 /* *** Status defines *** */
