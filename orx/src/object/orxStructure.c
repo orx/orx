@@ -51,6 +51,22 @@
 #define STRUCTURE_KS32_NUMBER_LIST        8
 #define STRUCTURE_KS32_NUMBER_TREE        1
 
+/*
+ * Internal List structure
+ */
+typedef struct structure_st_list_cell_t
+{
+  /* Corresponding structure : 4 */
+  orxSTRUCTURE *pstStructure;
+
+  /* List handling pointers : 12 */
+  struct structure_st_list_cell_t *pstNext;
+  struct structure_st_list_cell_t *pstPrevious;
+  
+  /* 4 extra bytes of padding : 16 */
+  orxU8 au8Unused[4];
+} structure_st_list_cell;
+
 
 /*
  * Internal Tree structure
