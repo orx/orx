@@ -266,7 +266,7 @@ inline orxVOID orxAnim_DeleteAll()
 orxSTATUS orxAnim_Init()
 {
   /* Already Initialized? */
-  if((sstAnim.u32Flags & orxANIM_KU32_FLAG_READY) != orxANIM_KU32_FLAG_NONE)
+  if(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY)
   {
     /* !!! MSG !!! */
 

@@ -217,7 +217,7 @@ orxSTATUS orxBank_Init()
   orxBOOL bFound;  /* set to orxTRUE when the bit has been found */
   
   /* Module not already initialized ? */
-  orxASSERT(!((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY));
+  orxASSERT(!(sstBank.u32Flags & orxBANK_KU32_FLAG_READY));
 
   /* Cleans static controller */
   orxMemory_Set(&sstBank, 0, sizeof(orxBANK_STATIC));

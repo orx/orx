@@ -235,7 +235,7 @@ orxVOID orxRender_SortViewportList(orxRENDER_VIEWPORT_LIST *_pstViewportList, or
 orxSTATUS orxRender_Init()
 {
   /* Already Initialized? */
-  if((sstRender.u32Flags & orxRENDER_KU32_FLAG_READY) != orxRENDER_KU32_FLAG_NONE)
+  if(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY)
   {
     /* !!! MSG !!! */
 

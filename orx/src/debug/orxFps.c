@@ -93,7 +93,7 @@ static inline orxVOID orxFps_Update()
 orxSTATUS orxFps_Init()
 {
   /* Already Initialized? */
-  if((sstFPS.u32Flags & orxFPS_KU32_FLAG_READY) != orxFPS_KU32_FLAG_NONE)
+  if(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY)
   {
     /* !!! MSG !!! */
 

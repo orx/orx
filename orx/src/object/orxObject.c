@@ -148,7 +148,7 @@ orxVOID orxObject_DeleteAll()
 orxSTATUS orxObject_Init()
 {
   /* Already Initialized? */
-  if((sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY) != orxOBJECT_KU32_FLAG_NONE)
+  if(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY)
   {
     /* !!! MSG !!! */
 

@@ -556,7 +556,7 @@ inline orxVOID orxFrame_DeleteAll()
 orxSTATUS orxFrame_Init()
 {
   /* Already Initialized? */
-  if((sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY) != orxFRAME_KU32_FLAG_NONE)
+  if(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY)
   {
     /* !!! MSG !!! */
 

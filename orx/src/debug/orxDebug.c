@@ -125,7 +125,7 @@ inline orxCONST orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 orxSTATUS _orxDebug_Init()
 {
   /* Already Initialized? */
-  if((sstDebug.u32DebugFlags & orxDEBUG_KU32_CONTROL_FLAG_READY) != orxDEBUG_KU32_CONTROL_FLAG_NONE)
+  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_CONTROL_FLAG_READY)
   {
     /* !!! MSG !!! */
 

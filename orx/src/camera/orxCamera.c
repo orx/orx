@@ -857,7 +857,7 @@ inline orxVOID orxCamera_SortViewList(orxCAMERA *_pstCamera)
 orxSTATUS orxCamera_Init()
 {
   /* Already Initialized? */
-  if((sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY) != orxCAMERA_KU32_FLAG_NONE)
+  if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY)
   {
     /* !!! MSG !!! */
 

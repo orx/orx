@@ -279,7 +279,7 @@ orxVOID orxViewport_DeleteAll()
 orxSTATUS orxViewport_Init()
 {
   /* Already Initialized? */
-  if((sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY) != orxVIEWPORT_KU32_FLAG_NONE)
+  if(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY)
   {
     /* !!! MSG !!! */
 
