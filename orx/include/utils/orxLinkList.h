@@ -139,7 +139,7 @@ extern orxINLINE  orxLINKLIST_CELL   *orxLinkList_GetLast(orxLINKLIST *_pstList)
 }
 
 /** Gets a list counter. */
-extern orxINLINE  orxLINKLIST_CELL   *orxLinkList_GetCounter(orxLINKLIST *_pstList)
+extern orxINLINE  orxU32              orxLinkList_GetCounter(orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
