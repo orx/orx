@@ -297,7 +297,7 @@ orxVOID texture_bitmap_unlink(orxTEXTURE *_pstTexture)
 
  returns: bitmap
  ***************************************************************************/
-inline graph_st_bitmap *texture_bitmap_get(orxTEXTURE *_pstTexture)
+graph_st_bitmap *texture_bitmap_get(orxTEXTURE *_pstTexture)
 {
   /* Has bitmap? */
   if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_BITMAP)
@@ -314,7 +314,7 @@ inline graph_st_bitmap *texture_bitmap_get(orxTEXTURE *_pstTexture)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID texture_ref_coord_set(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
+orxVOID texture_ref_coord_set(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Updates */
   _pstTexture->u32IDFlags |= TEXTURE_KU32_ID_FLAG_REF_COORD;
@@ -329,7 +329,7 @@ inline orxVOID texture_ref_coord_set(orxTEXTURE *_pstTexture, orxVEC *_pst_coord
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID texture_ref_coord_get(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
+orxVOID texture_ref_coord_get(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Has reference coordinates? */
   if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_REF_COORD)
@@ -352,7 +352,7 @@ inline orxVOID texture_ref_coord_get(orxTEXTURE *_pstTexture, orxVEC *_pst_coord
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID texture_size_get(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
+orxVOID texture_size_get(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Has size? */
   if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_SIZE)

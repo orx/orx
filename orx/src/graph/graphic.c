@@ -79,7 +79,7 @@ static orxU32 graphic_su32Flags = GRAPHIC_KU32_FLAG_DEFAULT;
 
  returns: requested structure offset
  ***************************************************************************/
-inline orxS32 graphic_struct_offset_get(orxSTRUCTURE_ID _eStructureID)
+orxINLINE orxS32 graphic_struct_offset_get(orxSTRUCTURE_ID _eStructureID)
 {
   /* Gets structure offset according to id */
   switch(_eStructureID)
@@ -103,7 +103,7 @@ inline orxS32 graphic_struct_offset_get(orxSTRUCTURE_ID _eStructureID)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID graphic_list_delete()
+orxINLINE orxVOID graphic_list_delete()
 {
   graphic_st_graphic *pstGraphic = (graphic_st_graphic *)orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC);
 
@@ -353,7 +353,7 @@ orxVOID graphic_struct_unlink(graphic_st_graphic *_pstGraphic, orxSTRUCTURE_ID _
 
  returns: orxTRUE (clean) / orxFALSE (dirty)
  ***************************************************************************/
-inline orxBOOL graphic_render_status_ok(graphic_st_graphic *_pstGraphic)
+orxBOOL graphic_render_status_ok(graphic_st_graphic *_pstGraphic)
 {
   /* Non null? */
   if(_pstGraphic != orxNULL)
@@ -405,7 +405,7 @@ orxVOID graphic_render_status_clean()
 
  returns: pointer to the requested structure (must be cast correctly)
  ***************************************************************************/
-inline orxSTRUCTURE *graphic_struct_get(graphic_st_graphic *_pstGraphic, orxSTRUCTURE_ID _eStructureID)
+orxSTRUCTURE *graphic_struct_get(graphic_st_graphic *_pstGraphic, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure = orxNULL;
   orxS32 i_struct_offset;
@@ -429,7 +429,7 @@ inline orxSTRUCTURE *graphic_struct_get(graphic_st_graphic *_pstGraphic, orxSTRU
 
  returns: pointer to the current data
  ***************************************************************************/
-inline orxTEXTURE *graphic_2d_data_get(graphic_st_graphic *_pstGraphic)
+orxTEXTURE *graphic_2d_data_get(graphic_st_graphic *_pstGraphic)
 {
   /* Use an animation? */
   if(_pstGraphic->u32LinkedStructures & orxSTRUCTURE_ID_ANIMPOINTER)
@@ -479,7 +479,7 @@ inline orxTEXTURE *graphic_2d_data_get(graphic_st_graphic *_pstGraphic)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID graphic_2d_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
+orxVOID graphic_2d_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
 {
   orxTEXTURE *pstTexture;
 
@@ -507,7 +507,7 @@ inline orxVOID graphic_2d_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID graphic_2d_ref_coord_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
+orxVOID graphic_2d_ref_coord_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
 {
   orxTEXTURE *pstTexture;
 
@@ -536,7 +536,7 @@ inline orxVOID graphic_2d_ref_coord_get(graphic_st_graphic *_pstGraphic, orxVEC 
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID graphic_2d_max_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
+orxVOID graphic_2d_max_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
 {
   orxTEXTURE *pstTexture;
 

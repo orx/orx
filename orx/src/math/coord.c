@@ -8,7 +8,7 @@
 #define COORD_KS32_orxNULL        (int)0xFFFFFFFF
 
 /*** Functions Definitions ***/
-inline orxBOOL coord_is_null(orxVEC *_pst_coord)
+orxBOOL coord_is_null(orxVEC *_pst_coord)
 {
   return(((_pst_coord->fX == COORD_KS32_orxNULL)
        && (_pst_coord->fY == COORD_KS32_orxNULL)
@@ -17,7 +17,7 @@ inline orxBOOL coord_is_null(orxVEC *_pst_coord)
        : orxFALSE);
 }
 
-inline orxVOID coord_set(orxVEC *_pst_coord, orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
+orxVOID coord_set(orxVEC *_pst_coord, orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
 {
   /* Non null?*/
   if(_pst_coord != orxNULL)
@@ -30,14 +30,14 @@ inline orxVOID coord_set(orxVEC *_pst_coord, orxS32 _l_x, orxS32 _l_y, orxS32 _l
   return;
 }
 
-inline orxVOID coord_reset(orxVEC *_pst_coord)
+orxVOID coord_reset(orxVEC *_pst_coord)
 {
   coord_set(_pst_coord, COORD_KS32_orxNULL, COORD_KS32_orxNULL, COORD_KS32_orxNULL);
 
   return;
 }
 
-inline orxVEC *coord_create(orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
+orxVEC *coord_create(orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
 {
   orxVEC *pst_coord;
 
@@ -48,7 +48,7 @@ inline orxVEC *coord_create(orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
   return pst_coord;
 }
 
-inline orxVOID coord_delete(orxVEC *_pst_coord)
+orxVOID coord_delete(orxVEC *_pst_coord)
 {
   if(_pst_coord != orxNULL)
   {
@@ -58,7 +58,7 @@ inline orxVOID coord_delete(orxVEC *_pst_coord)
   return;
 }
 
-inline orxVOID coord_copy(orxVEC *_pst_dest, orxVEC *_pst_src)
+orxVOID coord_copy(orxVEC *_pst_dest, orxVEC *_pst_src)
 {
   if(_pst_src != orxNULL)
   {
@@ -68,7 +68,7 @@ inline orxVOID coord_copy(orxVEC *_pst_dest, orxVEC *_pst_src)
   return;
 }
 
-inline orxVOID coord_add(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2)
+orxVOID coord_add(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2)
 {
   if((_pst_op1 != orxNULL) && (_pst_op2 != orxNULL))
   {
@@ -81,7 +81,7 @@ inline orxVOID coord_add(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2
   return;
 }
 
-inline orxVOID coord_sub(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2)
+orxVOID coord_sub(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2)
 {
   if((_pst_op1 != orxNULL) && (_pst_op2 != orxNULL))
   {
@@ -94,7 +94,7 @@ inline orxVOID coord_sub(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2
   return;
 }
 
-inline orxVOID coord_neg(orxVEC *_pst_result, orxVEC *_pst_op)
+orxVOID coord_neg(orxVEC *_pst_result, orxVEC *_pst_op)
 {
   if(_pst_op != orxNULL)
   {
@@ -104,7 +104,7 @@ inline orxVOID coord_neg(orxVEC *_pst_result, orxVEC *_pst_op)
   return;
 }
 
-inline orxVOID coord_mul(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
+orxVOID coord_mul(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
 {
   if(_pst_op1 != orxNULL)
   {
@@ -117,7 +117,7 @@ inline orxVOID coord_mul(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
   return;
 }
 
-inline orxVOID coord_div(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
+orxVOID coord_div(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
 {
   if(_pst_op1 != orxNULL)
   {
@@ -130,7 +130,7 @@ inline orxVOID coord_div(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
   return;
 }
 
-inline orxVOID coord_rotate(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
+orxVOID coord_rotate(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
 {
   orxFLOAT fCos, fSin;
   orxFLOAT fX, fY;
@@ -151,7 +151,7 @@ inline orxVOID coord_rotate(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_o
   return;
 }
 
-inline orxVOID coord_aabox_reorder(orxVEC *_pst_box_ul, orxVEC *_pst_box_br)
+orxVOID coord_aabox_reorder(orxVEC *_pst_box_ul, orxVEC *_pst_box_br)
 {
   /* Non null? */
   if((_pst_box_ul != orxNULL) && (_pst_box_br != orxNULL))
@@ -183,7 +183,7 @@ inline orxVOID coord_aabox_reorder(orxVEC *_pst_box_ul, orxVEC *_pst_box_br)
   return;
 }
 
-inline orxBOOL coord_aabox_intersection_test(orxVEC *_pst_box1_ul, orxVEC *_pst_box1_br, orxVEC *_pst_box2_ul, orxVEC *_pst_box2_br)
+orxBOOL coord_aabox_intersection_test(orxVEC *_pst_box1_ul, orxVEC *_pst_box1_br, orxVEC *_pst_box2_ul, orxVEC *_pst_box2_br)
 {
   /* Non null? */
   if((_pst_box1_ul != orxNULL)

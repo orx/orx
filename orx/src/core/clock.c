@@ -85,7 +85,7 @@ static orxU32 clock_su32_map = 0x00000000;
 
  returns: clock pointer
  ***************************************************************************/
-inline clock_st_clock *clock_get(orxU32 _u32_clock_id)
+orxINLINE clock_st_clock *clock_get(orxU32 _u32_clock_id)
 {
   /* Returns the clock structure pointer */
   return(&(clock_sast_clocks[_u32_clock_id]));
@@ -97,7 +97,7 @@ inline clock_st_clock *clock_get(orxU32 _u32_clock_id)
 
  returns: Clock id on success / orxU32_Undefined on failure
  ***************************************************************************/
-inline orxU32 clock_find_from(orxU32 _u32_period, orxU32 _u32_match_flags, orxU32 _u32_start_index)
+orxINLINE orxU32 clock_find_from(orxU32 _u32_period, orxU32 _u32_match_flags, orxU32 _u32_start_index)
 {
   clock_st_clock *pst_clock;
   orxU32 u32Index, u32_map;
@@ -138,7 +138,7 @@ inline orxU32 clock_find_from(orxU32 _u32_period, orxU32 _u32_match_flags, orxU3
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID clock_update(orxU32 _u32_clock_id)
+orxINLINE orxVOID clock_update(orxU32 _u32_clock_id)
 {
   /* Is there no update in progress (thread-safe)? */
   if(!(clock_su32Flags & CLOCK_KU32_FLAG_UPDATE_LOCK))
@@ -182,7 +182,7 @@ inline orxVOID clock_update(orxU32 _u32_clock_id)
 
  returns: Clock map if used / 0x00000000 if not
  ***************************************************************************/
-inline orxU32 clock_map_get(orxU32 _u32_clock_id)
+orxINLINE orxU32 clock_map_get(orxU32 _u32_clock_id)
 {
   orxU32 u32_map;
 
@@ -199,7 +199,7 @@ inline orxU32 clock_map_get(orxU32 _u32_clock_id)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID clock_info_init(clock_st_clock_info *_pst_clock_info, orxU32 _u32_id, orxU32 _u32_period)
+orxINLINE orxVOID clock_info_init(clock_st_clock_info *_pst_clock_info, orxU32 _u32_id, orxU32 _u32_period)
 {
   /* Stores info */
   _pst_clock_info->u32_clock_id        = _u32_id;
@@ -216,7 +216,7 @@ inline orxVOID clock_info_init(clock_st_clock_info *_pst_clock_info, orxU32 _u32
 
  returns: Function index if found / orxU32_Undefined else
  ***************************************************************************/
-inline orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
+orxINLINE orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
 {
   orxU32 u32_map, u32Index;
 
@@ -249,7 +249,7 @@ inline orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callback 
 
  returns: orxTRUE on success / orxFALSE on failure
  ***************************************************************************/
-inline orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
+orxINLINE orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
 {
   orxU32 u32Index = 0x00000000, ul;
 
@@ -293,7 +293,7 @@ inline orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callback 
 
  returns: orxTRUE on success / orxFALSE on failure
  ***************************************************************************/
-inline orxBOOL clock_function_remove(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
+orxINLINE orxBOOL clock_function_remove(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
 {
   orxU32 u32Index;
 
@@ -529,7 +529,7 @@ clock_st_clock_info *clock_info_get(orxU32 _u32_clock_id)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID clock_id_flags_set(orxU32 _u32_clock_id, orxU32 _u32Flags_add, orxU32 _u32Flags_remove)
+orxVOID clock_id_flags_set(orxU32 _u32_clock_id, orxU32 _u32Flags_add, orxU32 _u32Flags_remove)
 {
   clock_st_clock *pst_clock;
 
@@ -549,7 +549,7 @@ inline orxVOID clock_id_flags_set(orxU32 _u32_clock_id, orxU32 _u32Flags_add, or
 
  returns: orxTRUE / orxFALSE
  ***************************************************************************/
-inline orxBOOL clock_id_flag_test(orxU32 _u32_clock_id, orxU32 _u32Flag)
+orxBOOL clock_id_flag_test(orxU32 _u32_clock_id, orxU32 _u32Flag)
 {
   clock_st_clock *pst_clock;
 
