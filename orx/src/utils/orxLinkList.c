@@ -136,7 +136,7 @@ orxSTATUS orxLinkList_Setup(orxLINKLIST *_pstList)
  ***************************************************************************/
 orxSTATUS orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
@@ -183,7 +183,7 @@ orxSTATUS orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell
  ***************************************************************************/
 orxSTATUS orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
@@ -230,9 +230,9 @@ orxSTATUS orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell)
  ***************************************************************************/
 orxSTATUS orxLinkList_Remove(orxLINKLIST_CELL *_pstCell)
 {
-  register orxLINKLIST *pstList;
-  register orxLINKLIST_CELL *pstPrevious, *pstNext;
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxREGISTER orxLINKLIST *pstList;
+  orxREGISTER orxLINKLIST_CELL *pstPrevious, *pstNext;
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);

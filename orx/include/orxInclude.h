@@ -33,6 +33,7 @@
 #define orxCONST            const
 #define orxSTATIC           static
 #define orxINLINE           inline
+#define orxREGISTER         register
 
 #define orxNULL             NULL
 
