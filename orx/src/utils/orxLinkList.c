@@ -109,18 +109,40 @@ orxVOID orxLinkList_Exit()
 }
 
 /***************************************************************************
- orxLinkList_Setup
- Setups a link list for use.
+ orxLinkList_Clean
+ Cleans a link list.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_Setup(orxLINKLIST *_pstList)
+orxSTATUS orxLinkList_Clean(orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
   orxASSERT(_pstList != orxNULL);
 
-  /* Inits list */
+  /* Non empty? */
+  if(_pstList->u32Counter != 0)
+  {
+    orxREGISTER orxLINKLIST_NODE *pstNode, *pstNext;
+
+    /* Gets first node */
+    pstNode = _pstList->pstFirst;
+    
+    /* Clean all nodes */
+    while(pstNode != orxNULL)
+    {
+      /* Backups next node */
+      pstNext = pstNode->pstNext;
+
+      /* Cleans current node */
+      orxMemory_Set(pstNode, 0, sizeof(orxLINKLIST_NODE));
+
+      /* Go to next node */
+      pstNode = pstNext;
+    }
+  }
+
+  /* Cleans list */
   orxMemory_Set(_pstList, 0, sizeof(orxLINKLIST));
 
   /* Done! */
@@ -129,35 +151,35 @@ orxSTATUS orxLinkList_Setup(orxLINKLIST *_pstList)
 
 /***************************************************************************
  orxLinkList_AddStart
- Adds a new cell at the start of the corresponding list.
+ Adds a new node at the start of the corresponding list.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell)
+orxSTATUS orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
   orxASSERT(_pstList != orxNULL);
-  orxASSERT(_pstCell != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
 
   /* Not already used in a list? */
-  if(_pstCell->pstList == orxNULL)
+  if(_pstNode->pstList == orxNULL)
   {
     /* Adds it at the start of the list */
-    _pstCell->pstNext     = _pstList->pstFirst;
-    _pstCell->pstPrevious = orxNULL;
-    _pstCell->pstList     = _pstList;
+    _pstNode->pstNext     = _pstList->pstFirst;
+    _pstNode->pstPrevious = orxNULL;
+    _pstNode->pstList     = _pstList;
   
-    /* Updates old cell if needed */
+    /* Updates old node if needed */
     if(_pstList->pstFirst != orxNULL)
     {
-      _pstList->pstFirst->pstPrevious = _pstCell;
+      _pstList->pstFirst->pstPrevious = _pstNode;
     }
   
-    /* Stores cell at the start of the list */
-    _pstList->pstFirst    = _pstCell;
+    /* Stores node at the start of the list */
+    _pstList->pstFirst    = _pstNode;
 
     /* Updates counter */
     _pstList->u32Counter++;
@@ -176,35 +198,35 @@ orxSTATUS orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell
 
 /***************************************************************************
  orxLinkList_AddEnd
- Adds a new cell at the end of the corresponding list.
+ Adds a new node at the end of the corresponding list.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell)
+orxSTATUS orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
   orxASSERT(_pstList != orxNULL);
-  orxASSERT(_pstCell != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
 
   /* Not already used in a list? */
-  if(_pstCell->pstList == orxNULL)
+  if(_pstNode->pstList == orxNULL)
   {
     /* Adds it at the end of the list */
-    _pstCell->pstPrevious = _pstList->pstLast;
-    _pstCell->pstNext     = orxNULL;
-    _pstCell->pstList     = _pstList;
+    _pstNode->pstPrevious = _pstList->pstLast;
+    _pstNode->pstNext     = orxNULL;
+    _pstNode->pstList     = _pstList;
   
-    /* Updates old cell if needed */
+    /* Updates old node if needed */
     if(_pstList->pstLast != orxNULL)
     {
-      _pstList->pstLast->pstNext = _pstCell;
+      _pstList->pstLast->pstNext = _pstNode;
     }
   
-    /* Stores cell at the end of the list */
-    _pstList->pstLast     = _pstCell;
+    /* Stores node at the end of the list */
+    _pstList->pstLast     = _pstNode;
 
     /* Updates counter */
     _pstList->u32Counter++;
@@ -223,51 +245,51 @@ orxSTATUS orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell)
 
 /***************************************************************************
  orxLinkList_AddBefore
- Adds a new cell before another one.
+ Adds a new node before another one.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_AddBefore(orxLINKLIST_CELL *_pstRefCell, orxLINKLIST_CELL *_pstCell)
+orxSTATUS orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxREGISTER orxLINKLIST *pstList;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
-  orxASSERT(_pstRefCell != orxNULL);
-  orxASSERT(_pstCell != orxNULL);
+  orxASSERT(_pstRefNode != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
 
   /* Isn't already linked? */
-  if(_pstCell->pstList == orxNULL)
+  if(_pstNode->pstList == orxNULL)
   {
     /* Gets list */
-    pstList = _pstRefCell->pstList;
+    pstList = _pstRefNode->pstList;
   
     /* Valid? */
     if(pstList != orxNULL)
     {
       /* Adds it in the list */
-      _pstCell->pstNext         = _pstRefCell;
-      _pstCell->pstPrevious     = _pstRefCell->pstPrevious;
-      _pstCell->pstList         = pstList;
+      _pstNode->pstNext         = _pstRefNode;
+      _pstNode->pstPrevious     = _pstRefNode->pstPrevious;
+      _pstNode->pstList         = pstList;
 
       /* Updates previous? */
-      if(_pstRefCell->pstPrevious != orxNULL)
+      if(_pstRefNode->pstPrevious != orxNULL)
       {
         /* Updates it */
-        _pstRefCell->pstPrevious->pstNext = _pstCell;
+        _pstRefNode->pstPrevious->pstNext = _pstNode;
       }
       else
       {
-        /* Checks cell was the first one */
-        orxASSERT(pstList->pstFirst == _pstRefCell);
+        /* Checks node was the first one */
+        orxASSERT(pstList->pstFirst == _pstRefNode);
 
-        /* Updates new first cell */
-        pstList->pstFirst = _pstCell;
+        /* Updates new first node */
+        pstList->pstFirst = _pstNode;
       }
 
-      /* Updates ref cell */
-      _pstRefCell->pstPrevious  = _pstCell;
+      /* Updates ref node */
+      _pstRefNode->pstPrevious  = _pstNode;
     
       /* Updates counter */
       pstList->u32Counter++;
@@ -294,51 +316,51 @@ orxSTATUS orxLinkList_AddBefore(orxLINKLIST_CELL *_pstRefCell, orxLINKLIST_CELL 
 
 /***************************************************************************
  orxLinkList_AddAfter
- Adds a new cell after another one.
+ Adds a new node after another one.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_AddAfter(orxLINKLIST_CELL *_pstRefCell, orxLINKLIST_CELL *_pstCell)
+orxSTATUS orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxREGISTER orxLINKLIST *pstList;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
-  orxASSERT(_pstRefCell != orxNULL);
-  orxASSERT(_pstCell != orxNULL);
+  orxASSERT(_pstRefNode != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
 
   /* Isn't already linked? */
-  if(_pstCell->pstList == orxNULL)
+  if(_pstNode->pstList == orxNULL)
   {
     /* Gets list */
-    pstList = _pstRefCell->pstList;
+    pstList = _pstRefNode->pstList;
   
     /* Valid? */
     if(pstList != orxNULL)
     {
       /* Adds it in the list */
-      _pstCell->pstNext         = _pstRefCell->pstNext;
-      _pstCell->pstPrevious     = _pstRefCell;
-      _pstCell->pstList         = pstList;
+      _pstNode->pstNext         = _pstRefNode->pstNext;
+      _pstNode->pstPrevious     = _pstRefNode;
+      _pstNode->pstList         = pstList;
 
       /* Updates next? */
-      if(_pstRefCell->pstNext != orxNULL)
+      if(_pstRefNode->pstNext != orxNULL)
       {
         /* Updates it */
-        _pstRefCell->pstNext->pstPrevious = _pstCell;
+        _pstRefNode->pstNext->pstPrevious = _pstNode;
       }
       else
       {
-        /* Checks cell was the last one */
-        orxASSERT(pstList->pstLast == _pstRefCell);
+        /* Checks node was the last one */
+        orxASSERT(pstList->pstLast == _pstRefNode);
 
-        /* Updates new last cell */
-        pstList->pstLast        = _pstCell;
+        /* Updates new last node */
+        pstList->pstLast        = _pstNode;
       }
 
-      /* Updates ref cell */
-      _pstRefCell->pstNext      = _pstCell;
+      /* Updates ref node */
+      _pstRefNode->pstNext      = _pstNode;
     
       /* Updates counter */
       pstList->u32Counter++;
@@ -365,22 +387,22 @@ orxSTATUS orxLinkList_AddAfter(orxLINKLIST_CELL *_pstRefCell, orxLINKLIST_CELL *
 
 /***************************************************************************
  orxLinkList_Remove
- Removes a cell from its list.
+ Removes a node from its list.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_Remove(orxLINKLIST_CELL *_pstCell)
+orxSTATUS orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxLINKLIST *pstList;
-  orxREGISTER orxLINKLIST_CELL *pstPrevious, *pstNext;
+  orxREGISTER orxLINKLIST_NODE *pstPrevious, *pstNext;
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
-  orxASSERT(_pstCell != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
 
   /* Gets list */
-  pstList = _pstCell->pstList;
+  pstList = _pstNode->pstList;
 
   /* Valid? */
   if(pstList != orxNULL)
@@ -389,19 +411,19 @@ orxSTATUS orxLinkList_Remove(orxLINKLIST_CELL *_pstCell)
     orxASSERT(pstList->u32Counter != 0);
 
     /* Gets neighbours pointers */
-    pstPrevious = _pstCell->pstPrevious;
-    pstNext     = _pstCell->pstNext;
+    pstPrevious = _pstNode->pstPrevious;
+    pstNext     = _pstNode->pstNext;
 
     /* Not at the start of the list? */
     if(pstPrevious != orxNULL)
     {
-      /* Updates previous cell */
+      /* Updates previous node */
       pstPrevious->pstNext  = pstNext;
     }
     else
     {
-      /* Checks cell was at the start of the list */
-      orxASSERT(pstList->pstFirst == _pstCell);
+      /* Checks node was at the start of the list */
+      orxASSERT(pstList->pstFirst == _pstNode);
 
       /* Updates list first pointer */
       pstList->pstFirst     = pstNext;
@@ -410,13 +432,13 @@ orxSTATUS orxLinkList_Remove(orxLINKLIST_CELL *_pstCell)
     /* Not at the end of the list? */
     if(pstNext != orxNULL)
     {
-      /* Updates previous cell */
+      /* Updates previous node */
       pstNext->pstPrevious  = pstPrevious;
     }
     else
     {
-      /* Checks cell was at the end of the list */
-      orxASSERT(pstList->pstLast == _pstCell);
+      /* Checks node was at the end of the list */
+      orxASSERT(pstList->pstLast == _pstNode);
 
       /* Updates list last pointer */
       pstList->pstLast      = pstPrevious;

@@ -38,26 +38,26 @@
 
 
 /*
- * Internal List Cell structure
+ * List Node structure
  */
-struct __orxLINKLIST_CELL_t
+struct __orxLINKLIST_NODE_t
 {
   /* List handling pointers : 8 */
-  struct __orxLINKLIST_CELL_t *pstNext;
-  struct __orxLINKLIST_CELL_t *pstPrevious;
+  struct __orxLINKLIST_NODE_t *pstNext;
+  struct __orxLINKLIST_NODE_t *pstPrevious;
 
   /* Associated list : 12 */
   struct __orxLINKLIST_t *pstList;
 };
 
 /*
- * Internal List structure
+ * List structure
  */
 struct __orxLINKLIST_t
 {
-  /* List cell pointers : 8 */
-  struct __orxLINKLIST_CELL_t *pstFirst;
-  struct __orxLINKLIST_CELL_t *pstLast;
+  /* List node pointers : 8 */
+  struct __orxLINKLIST_NODE_t *pstFirst;
+  struct __orxLINKLIST_NODE_t *pstLast;
 
   /* Counter : 12 */
   orxU32 u32Counter;
@@ -65,7 +65,7 @@ struct __orxLINKLIST_t
 
 /* Link list types */
 typedef struct __orxLINKLIST_t        orxLINKLIST;
-typedef struct __orxLINKLIST_CELL_t   orxLINKLIST_CELL;
+typedef struct __orxLINKLIST_NODE_t   orxLINKLIST_NODE;
 
 
 /** Inits the object system. */
@@ -73,55 +73,55 @@ extern orxSTATUS                      orxLinkList_Init();
 /** Ends the object system. */
 extern orxVOID                        orxLinkList_Exit();
 
-/** Setups a link list. */
-extern orxSTATUS                      orxLinkList_Setup(orxLINKLIST *_pstList);
+/** Cleans a link list. */
+extern orxSTATUS                      orxLinkList_Clean(orxLINKLIST *_pstList);
 
-/** Adds a cell at the start of the list. */
-extern orxSTATUS                      orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell);
-/** Adds a cell at the end of the list. */
-extern orxSTATUS                      orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_CELL *_pstCell);
-/** Adds a cell before another one. */
-extern orxSTATUS                      orxLinkList_AddBefore(orxLINKLIST_CELL *_pstRefCell, orxLINKLIST_CELL *_pstCell);
-/** Adds a cell after another one. */
-extern orxSTATUS                      orxLinkList_AddAfter(orxLINKLIST_CELL *_pstRefCell, orxLINKLIST_CELL *_pstCell);
+/** Adds a node at the start of the list. */
+extern orxSTATUS                      orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode);
+/** Adds a node at the end of the list. */
+extern orxSTATUS                      orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode);
+/** Adds a node before another one. */
+extern orxSTATUS                      orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode);
+/** Adds a node after another one. */
+extern orxSTATUS                      orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode);
 
-/** Removes a cell from its list. */
-extern orxSTATUS                      orxLinkList_Remove(orxLINKLIST_CELL *_pstCell);
+/** Removes a node from its list. */
+extern orxSTATUS                      orxLinkList_Remove(orxLINKLIST_NODE *_pstNode);
 
 
 /* *** LinkList inlined accessors *** */
 
 
-/** Gets a cell list. */
-extern orxINLINE  orxLINKLIST        *orxLinkList_GetList(orxLINKLIST_CELL *_pstCell)
+/** Gets a node list. */
+extern orxINLINE  orxLINKLIST        *orxLinkList_GetList(orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
-  orxASSERT(_pstCell != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
 
-  return(_pstCell->pstList);
+  return(_pstNode->pstList);
 }
 
-/** Gets a cell previous. */
-extern orxINLINE  orxLINKLIST_CELL   *orxLinkList_GetPrevious(orxLINKLIST_CELL *_pstCell)
+/** Gets a node previous. */
+extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetPrevious(orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
-  orxASSERT(_pstCell != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
 
-  return(_pstCell->pstPrevious);
+  return(_pstNode->pstPrevious);
 }
 
-/** Gets a cell next. */
-extern orxINLINE  orxLINKLIST_CELL   *orxLinkList_GetNext(orxLINKLIST_CELL *_pstCell)
+/** Gets a node next. */
+extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetNext(orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
-  orxASSERT(_pstCell != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
 
-  return(_pstCell->pstNext);
+  return(_pstNode->pstNext);
 }
 
 
-/** Gets a list first cell. */
-extern orxINLINE  orxLINKLIST_CELL   *orxLinkList_GetFirst(orxLINKLIST *_pstList)
+/** Gets a list first node. */
+extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetFirst(orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -129,8 +129,8 @@ extern orxINLINE  orxLINKLIST_CELL   *orxLinkList_GetFirst(orxLINKLIST *_pstList
   return(_pstList->pstFirst);
 }
 
-/** Gets a list last cell. */
-extern orxINLINE  orxLINKLIST_CELL   *orxLinkList_GetLast(orxLINKLIST *_pstList)
+/** Gets a list last node. */
+extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetLast(orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
