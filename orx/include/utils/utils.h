@@ -19,7 +19,7 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
-#include "include.h"
+#include "orxInclude.h"
 
 
 /* define pos */
@@ -34,18 +34,18 @@
 #define DEPTH_SEARCH 0
 #define WIDTH_SEARCH 1
 
-typedef void *map;
-typedef void *vector;
-typedef void *stack;
-typedef void *tree;
-typedef uchar *tree_cell_data;
-typedef void *tree_cell;
+typedef orxVOID *map;
+typedef orxVOID *vector;
+typedef orxVOID *stack;
+typedef orxVOID *tree;
+typedef orxU8   *tree_cell_data;
+typedef orxVOID *tree_cell;
 
 
-typedef bool(*pfn_cmp_fct)(uchar *key1, uchar *key2);
+typedef orxBOOL(*pfn_cmp_fct)(orxU8 *key1, orxU8 *key2);
 
 /* the type can be an indication for the function to know what to compare */
-typedef bool(*pfn_tree_cmp_fct)(void *key, tree_cell mycell, void *type);
+typedef orxBOOL(*pfn_tree_cmp_fct)(orxVOID *key, tree_cell mycell, orxVOID *type);
 
 /*************************************************/ 
 /* map definitions */
@@ -53,10 +53,10 @@ typedef bool(*pfn_tree_cmp_fct)(void *key, tree_cell mycell, void *type);
 
 /*
  * create a map
- *  if pfn_cmp is NULL, the == is used to compare 2 int
+ *  if pfn_cmp is orxNULL, the == is used to compare 2 int
  */
 
-map map_create(uint32 key_size, uint32 value_size, pfn_cmp_fct pfn_cmp);
+map map_create(orxU32 key_size, orxU32 value_size, pfn_cmp_fct pfn_cmp);
 
 /*
  * Add an entry to the given map.
@@ -64,33 +64,33 @@ map map_create(uint32 key_size, uint32 value_size, pfn_cmp_fct pfn_cmp);
  *  if an entry with the same key already exists it s freed
  */
 
-bool map_add(map mymap, uchar *p_key, uchar *p_value);
+orxBOOL map_add(map mymap, orxU8 *p_key, orxU8 *p_value);
 
 /*
  * return the corresponding data
  * the map still remain the owner of the data, DO NOT DELETE IT
  */
 
-uchar *map_find(map mymap, uchar *p_key);
+orxU8 *map_find(map mymap, orxU8 *p_key);
 
 /*
  * delete the corresponding map entry
  *  the data is freed
  */
 
-bool map_delete(map mymap, uchar *p_key);
+orxBOOL map_delete(map mymap, orxU8 *p_key);
 
 /*
  * destroy the given map, everyting is freed
  */
 
-bool map_destroy(map mymap);
+orxBOOL map_destroy(map mymap);
 
 /*
  * return the number of element in the map
  */
 
-uint32 map_count(map mymap);
+orxU32 map_count(map mymap);
 
 /*************************************************/ 
 /* vector definitions */
@@ -100,7 +100,7 @@ uint32 map_count(map mymap);
  * create a vector
  */
 
-vector vector_create(uint32 value_size);
+vector vector_create(orxU32 value_size);
 
 /*
  * set the value of the given pos
@@ -108,44 +108,44 @@ vector vector_create(uint32 value_size);
  *  the pos must be 0 <= pos < vector_count
  */
 
-bool vector_set(vector myvector, uint32 pos, uchar *p_value);
+orxBOOL vector_set(vector myvector, orxU32 pos, orxU8 *p_value);
 
 /*
  * add at the vector end the given data
  */
 
-bool vector_pushback(vector myvector, uchar *p_value);
+orxBOOL vector_pushback(vector myvector, orxU8 *p_value);
 
 /*
  * insert at pos = 0 the given data, everything is shifted one value up
  */
 
-bool vector_insert(vector myvector, uchar *p_value);
+orxBOOL vector_insert(vector myvector, orxU8 *p_value);
 
 /*
  * return the data at the given pos
  *  vector still remain owner of the data
  */
 
-uchar *vector_get(vector myvector, uint32 pos);
+orxU8 *vector_get(vector myvector, orxU32 pos);
 
 /*
  * delete and free data at the given pos
  */
 
-bool vector_delete(vector myvector, uint32 pos);
+orxBOOL vector_delete(vector myvector, orxU32 pos);
 
 /*
  * destroy and free the given vector
  */
 
-bool vector_destroy(vector myvector);
+orxBOOL vector_destroy(vector myvector);
 
 /*
  * return the number of element of the given vector
  */
 
-uint32 vector_count(vector myvector);
+orxU32 vector_count(vector myvector);
 
 /*************************************************/ 
 /* stack definitions */
@@ -155,39 +155,39 @@ uint32 vector_count(vector myvector);
  * create a stack
  */
 
-stack stack_create(uint32 value_size);
+stack stack_create(orxU32 value_size);
 
 /*
  * push on top of the stack the given value
  */
 
-bool stack_push(stack mystack, uchar *p_value);
+orxBOOL stack_push(stack mystack, orxU8 *p_value);
 
 /*
  * return the top of the stack and delete it from the stack
  *  the caller becomes the owner of the data
  */
 
-uchar *stack_pop(stack mystack);
+orxU8 *stack_pop(stack mystack);
 
 /*
  * look at the top of the stack
  *  the stack still remain owner of the data
  */
 
-uchar *stack_peek(stack mystack);
+orxU8 *stack_peek(stack mystack);
 
 /*
  * delete and free the given stack
  */
 
-bool stack_destroy(stack mystack);
+orxBOOL stack_destroy(stack mystack);
 
 /*
  * return the number of element of the given stack
  */
 
-uint32 stack_count(stack mystack);
+orxU32 stack_count(stack mystack);
 
 /*************************************************/ 
 /* tree definitions */
@@ -199,14 +199,14 @@ uint32 stack_count(stack mystack);
  * @return the created tree
  */
 
-tree tree_create(uint32 tree_cell_size, pfn_tree_cmp_fct pfn_tree_cmp);
+tree tree_create(orxU32 tree_cell_size, pfn_tree_cmp_fct pfn_tree_cmp);
 
 /**
  * Return the data of the cell
  *
  */
 
-uchar *tree_cell_get_data(tree_cell mycell);
+orxU8 *tree_cell_get_data(tree_cell mycell);
 
 /**
  * Return the given cell's parent
@@ -236,13 +236,13 @@ tree_cell tree_get_sibling(tree_cell mycell);
  * Return the found cell
  * 
  * @param tree the tree
- * @param cell the starting cell, if NULL starting from root
+ * @param cell the starting cell, if orxNULL starting from root
  * @param key  the key to find, the key can be of SNMP OID form
  * @param type indication for the cmp fct to know what to check
  * @param method_type either depth or width
  */
 
-tree_cell tree_find(tree mytree, tree_cell mycell, void *key, void *type, short method_type);
+tree_cell tree_find(tree mytree, tree_cell mycell, orxVOID *key, orxVOID *type, short method_type);
 
 /* IMPORTANT : this function is very important should be redefined */
 
@@ -252,14 +252,14 @@ tree_cell tree_find(tree mytree, tree_cell mycell, void *key, void *type, short 
  * @param position_type either CHILD or SIBLING
  */
 
-bool tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_type);
+orxBOOL tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_type);
 
 /**
  * Is the given cell a leaf ?
  * 
  */
 
-bool tree_is_leaf(tree_cell mycell);
+orxBOOL tree_is_leaf(tree_cell mycell);
 
 
 /**
@@ -267,7 +267,7 @@ bool tree_is_leaf(tree_cell mycell);
  * 
  */
 
-bool tree_add_sibling(tree mytree, tree_cell mycell_pos, tree_cell_data mydata);
+orxBOOL tree_add_sibling(tree mytree, tree_cell mycell_pos, tree_cell_data mydata);
 
 
 /**
@@ -275,7 +275,7 @@ bool tree_add_sibling(tree mytree, tree_cell mycell_pos, tree_cell_data mydata);
  * 
  */
 
-bool tree_add_child(tree mytree, tree_cell mycell_pos, tree_cell_data mydata);
+orxBOOL tree_add_child(tree mytree, tree_cell mycell_pos, tree_cell_data mydata);
 
 
 /**
@@ -283,7 +283,7 @@ bool tree_add_child(tree mytree, tree_cell mycell_pos, tree_cell_data mydata);
  * 
  */
 
-bool tree_remove(tree_cell mycell);
+orxBOOL tree_remove(tree_cell mycell);
 
 /* maybe we should use a key here instead of the cell */
 
@@ -292,7 +292,7 @@ bool tree_remove(tree_cell mycell);
  * 
  */
 
-void tree_destroy(tree mytree);
+orxVOID tree_destroy(tree mytree);
 
 
 /**
@@ -300,7 +300,7 @@ void tree_destroy(tree mytree);
  * 
  */
 
-uint32 tree_child_number(tree_cell mycell);
+orxU32 tree_child_number(tree_cell mycell);
 
 
 /**
@@ -308,6 +308,6 @@ uint32 tree_child_number(tree_cell mycell);
  * 
  */
 
-uint32 tree_sibling_number(tree_cell mycell);
+orxU32 tree_sibling_number(tree_cell mycell);
 
 #endif /* _UTILS_H_ */

@@ -22,10 +22,10 @@
 
 
 /** Clock update callback prototype, used when registering a clock. */
-typedef void  (*timer_fn_clock_update)(void *);
+typedef orxVOID  (*timer_fn_clock_update)(orxVOID *);
 
 /** Timer coefficient types */
-#define TIMER_KUL_COEF_TYPE_FIXED       0x000000001 /**< Fixed time coefficient. */
-#define TIMER_KUL_COEF_TYPE_MULTIPLY    0x000000002 /**< Multiply time coefficient. */
+#define TIMER_KU32_COEF_TYPE_FIXED       0x000000001 /**< Fixed time coefficient. */
+#define TIMER_KU32_COEF_TYPE_MULTIPLY    0x000000002 /**< Multiply time coefficient. */
 
 #endif /* _TIMER_TYPE_H_ */

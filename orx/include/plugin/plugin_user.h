@@ -29,7 +29,7 @@
 
 #include <string.h>
 
-#include "include.h"
+#include "orxInclude.h"
 
 #include "plugin/plugin_type.h"
 
@@ -45,11 +45,11 @@
 #include "plugin/define/plugin_joystick.h"          /* ID : 0x10000500 */
 
 
-/* Defines plugin registration info constants */
+/* Defines plugin registration info orxCONSTants */
 #define PLUGIN_USER_KZ_FUNCTION_INIT        "plugin_init" /**< Plugin init function name */
 
-#define PLUGIN_KI_NAME_SIZE                 32
-#define PLUGIN_KI_FUNCTION_ARG_SIZE         128
+#define PLUGIN_KS32_NAME_SIZE                 32
+#define PLUGIN_KS32_FUNCTION_ARG_SIZE         128
 
 
 /*********************************************
@@ -59,17 +59,17 @@
 /* Macro for Structure Handling */
 #define PLUGIN_USER_FUNCTION_START(STRUCTURE) \
   { \
-    int32 i_plugin_user_function_count = 0; \
+    orxS32 i_plugin_user_function_count = 0; \
     plugin_user_st_function_info *pst_plugin_user_function_info = STRUCTURE;
 
 #define PLUGIN_USER_CORE_FUNCTION_ADD(FUNCTION, TYPE, NAME) \
-  PLUGIN_USER_FUNCTION_ADD(FUNCTION, PLUGIN_##TYPE##_KUL_ID_##NAME, TYPE##NAME, "")
+  PLUGIN_USER_FUNCTION_ADD(FUNCTION, PLUGIN_##TYPE##_KU32_ID_##NAME, TYPE##NAME, "")
 
 #define PLUGIN_USER_FUNCTION_ADD(FUNCTION, ID, NAME, ARGS) \
   pst_plugin_user_function_info[i_plugin_user_function_count].pfn_function = (plugin_function) FUNCTION; \
   pst_plugin_user_function_info[i_plugin_user_function_count].u32_function_id = ID; \
-  strcpy(pst_plugin_user_function_info[i_plugin_user_function_count].z_function_name, #NAME); \
-  strcpy(pst_plugin_user_function_info[i_plugin_user_function_count].z_function_args, ARGS); \
+  strcpy(pst_plugin_user_function_info[i_plugin_user_function_count].zFunction_name, #NAME); \
+  strcpy(pst_plugin_user_function_info[i_plugin_user_function_count].zFunction_args, ARGS); \
   i_plugin_user_function_count++;
 
 #define PLUGIN_USER_FUNCTION_END(NUMBER_ADDRESS, STRUCTURE_ADDRESS) \
@@ -80,9 +80,9 @@
 typedef struct
 {
   plugin_function pfn_function;                         /**< Function Address */
-  char z_function_args[PLUGIN_KI_FUNCTION_ARG_SIZE];    /**< Function Argument Types */
-  char z_function_name[PLUGIN_KI_NAME_SIZE];            /**< Function Name */
-  unsigned long u32_function_id;                        /**< Function ID */
+  orxU8 zFunction_args[PLUGIN_KS32_FUNCTION_ARG_SIZE];    /**< Function Argument Types */
+  orxU8 zFunction_name[PLUGIN_KS32_NAME_SIZE];            /**< Function Name */
+  orxU32 u32_function_id;                        /**< Function ID */
 } plugin_user_st_function_info;
 
 

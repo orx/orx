@@ -1,5 +1,8 @@
 #include "io/package.h"
 
+#include "memory/orxMemory.h"
+
+
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -19,73 +22,73 @@
 
 typedef struct st_pack_open_node_t
 {
-  int32 i_id;                            /* the file identifier */
-  char *z_file;                          /* the file name */
-  char *z_dir;                           /* the name of the ressource directory */
-  int32 i_access;                        /* the access mode of the file. see package.h */
-  int32 i_overwrite;                     /* the overwrite mode of the file. see package.h */
-  int32 i_mode;                          /* the intern/extern mode. see package.h */
-  struct st_pack_open_node_t *pst_next;  /* a pointer on the next node */
+  orxS32 i_id;                            /* the file identifier */
+  orxU8 *zFile;                          /* the file name */
+  orxU8 *z_dir;                           /* the name of the ressource directory */
+  orxS32 i_access;                        /* the access mode of the file. see package.h */
+  orxS32 i_overwrite;                     /* the overwrite mode of the file. see package.h */
+  orxS32 i_mode;                          /* the intern/extern mode. see package.h */
+  struct st_pack_open_node_t *pstNext;  /* a pointer on the next node */
 
   /* 4 extra bytes of padding : 32 */
-  uint8 auc_unused[4];
+  orxU8 au8Unused[4];
 } st_pack_open_node;
 
 
 
-static st_pack_open_node *spst_open_linked_list = NULL;
+static st_pack_open_node *spst_open_linked_list = orxNULL;
 /* the head of the linked which contain all the opened package */
 
 
 
-int32 make_backup_extern(st_pack_open_node *_pst_pack_infos, char *_z_file);
+orxS32 make_backup_extern(st_pack_open_node *_pst_pack_infos, orxU8 *_zFile);
 
 
 
 /* This function insert a new node in the linked list of all opened package file
  * _i_id = file identifier
- * _z_file = name of the package file
+ * _zFile = name of the package file
  * _z_dir = name of the directory which contain the exploded version of the package
  * _i_access = access mode of the file ( PACK_O_READ - PACK_O_WRITE - PACK_O_READ | PACK_O_WRITE)
  */
-void insert_open_linked_list(int32 _i_id, char *_z_file, char *_z_dir, int32 _i_access)
+orxVOID insert_open_linked_list(orxS32 _i_id, orxU8 *_zFile, orxU8 *_z_dir, orxS32 _i_access)
 {
   st_pack_open_node *st_new_node;
   
-  st_new_node = (st_pack_open_node *)malloc(sizeof(st_pack_open_node));
+  st_new_node = (st_pack_open_node *)orxMemory_Allocate(sizeof(st_pack_open_node), orxMEMORY_TYPE_MAIN);
   st_new_node->i_id = _i_id;
-  st_new_node->z_file = _z_file;
+  st_new_node->zFile = _zFile;
   st_new_node->z_dir = _z_dir;
   st_new_node->i_access = _i_access;
   st_new_node->i_overwrite = PACK_OVR_BACKUP;
   st_new_node->i_mode = PACK_M_INTERN;
-  st_new_node->pst_next = spst_open_linked_list;
+  st_new_node->pstNext = spst_open_linked_list;
   spst_open_linked_list = st_new_node;
 }
 
 
 
 /* comments in package.h */
-int32 package_open(const char *_z_file, const int32 _i_access_mode)
+orxS32 package_open(orxCONST orxU8 *_zFile, orxCONST orxS32 _i_access_mode)
 {
-  int32 i_id, len;
-  char *z_file;
-  char *z_dir_name;
-  char ac_dir[256];
-  char *z_pointer;
+  orxS32 i_id, len;
+  orxU8 *zFile;
+  orxU8 *z_dir_name;
+  orxU8 ac_dir[256];
+  orxU8 *z_pointer;
 
-  len = (strlen(KZ_PACKAGE_RESSOURCE_DIR) + strlen(_z_file) + 1)*sizeof(char);
-  z_file = (char *)malloc(len);
-  sprintf(z_file, "%s%s", KZ_PACKAGE_RESSOURCE_DIR, _z_file);
+  len = (strlen(KZ_PACKAGE_RESSOURCE_DIR) + strlen(_zFile) + 1)*sizeof(char);
+  zFile = (orxU8 *)orxMemory_Allocate(len, orxMEMORY_TYPE_MAIN);
+  sprintf(zFile, "%s%s", KZ_PACKAGE_RESSOURCE_DIR, _zFile);
 
-  z_pointer = strrchr(_z_file, '.');
-  if (z_pointer==NULL)
-    len = strlen(_z_file);
+  z_pointer = strrchr(_zFile, '.');
+  if (z_pointer==orxNULL)
+    len = strlen(_zFile);
   else
-    len = (z_pointer - _z_file);
-  strncpy(ac_dir, _z_file, len);
+    len = (z_pointer - _zFile);
+  strncpy(ac_dir, _zFile, len);
   ac_dir[len*sizeof(char)] = '\0';
-  z_dir_name = (char *)malloc((len + strlen(KZ_PACKAGE_RESSOURCE_DIR) + 6)*sizeof(char));
+  z_dir_name = (orxU8 *)orxMemory_Allocate((len + strlen(KZ_PACKAGE_RESSOURCE_DIR) + 6)*sizeof(char), orxMEMORY_TYPE_MAIN);
 
 #ifdef __linux__
   sprintf(z_dir_name, "%s%s_dir/", KZ_PACKAGE_RESSOURCE_DIR, ac_dir);
@@ -98,52 +101,52 @@ int32 package_open(const char *_z_file, const int32 _i_access_mode)
   switch (_i_access_mode)
   {
     case PACK_O_READ:
-      i_id = open(z_file, O_RDONLY, S_IREAD | S_IWRITE);
+      i_id = open(zFile, O_RDONLY, S_IREAD | S_IWRITE);
       break;
     case PACK_O_WRITE:
-      i_id = open(z_file, O_WRONLY | O_CREAT | O_TRUNC, S_IREAD | S_IWRITE);
+      i_id = open(zFile, O_WRONLY | O_CREAT | O_TRUNC, S_IREAD | S_IWRITE);
       break;
     case PACK_O_READ | PACK_O_WRITE:
-      i_id = open(z_file, O_RDWR | O_CREAT | O_TRUNC, S_IREAD | S_IWRITE);
+      i_id = open(zFile, O_RDWR | O_CREAT | O_TRUNC, S_IREAD | S_IWRITE);
       break;
      default:
       return -1;
       break;
   }
   if (i_id!=-1)
-    insert_open_linked_list(i_id, z_file, z_dir_name, _i_access_mode);
+    insert_open_linked_list(i_id, zFile, z_dir_name, _i_access_mode);
   return i_id;
 }
 
 
 
 /* comments in package.h */
-bool package_close(int32 _i_pack_id)
+orxBOOL package_close(orxS32 _i_pack_id)
 {
   st_pack_open_node *spst_open_linked_list_head;
   st_pack_open_node *st_pack_open_previous_node;
-  bool found;
-  int32 i_i;
+  orxBOOL found;
+  orxS32 i_i;
   
   spst_open_linked_list_head = spst_open_linked_list;
   st_pack_open_previous_node = spst_open_linked_list;
-  found = FALSE;
+  found = orxFALSE;
   i_i = 0;
   
-  while (spst_open_linked_list!=NULL && !found)
+  while (spst_open_linked_list!=orxNULL && !found)
   {
     if (spst_open_linked_list->i_id==_i_pack_id)
     {
-      found = TRUE;
+      found = orxTRUE;
       close(spst_open_linked_list->i_id);
       if (i_i==0)
-        spst_open_linked_list_head = spst_open_linked_list->pst_next;
+        spst_open_linked_list_head = spst_open_linked_list->pstNext;
       else
-        st_pack_open_previous_node->pst_next = spst_open_linked_list->pst_next;
-      free(spst_open_linked_list);
+        st_pack_open_previous_node->pstNext = spst_open_linked_list->pstNext;
+      orxMemory_Free(spst_open_linked_list);
     }
     i_i++;
-    spst_open_linked_list = spst_open_linked_list->pst_next;
+    spst_open_linked_list = spst_open_linked_list->pstNext;
   }
   spst_open_linked_list = spst_open_linked_list_head;
   if (!found)
@@ -153,41 +156,41 @@ bool package_close(int32 _i_pack_id)
 
 
 
-/* JUSTE POUR LE DEBUGAGE !*/
-void package_DEBUG_list()
+/* JUSTE POUR LE orxDEBUGAGE !*/
+orxVOID package_orxDEBUG_list()
 {
   st_pack_open_node *spst_open_linked_list_head;
   spst_open_linked_list_head = spst_open_linked_list;
   printf("ID                       FILE                       DIR  ACCESS  OVERWRITE  MODE\n");
   printf("--  -------------------------  ------------------------  ------  ---------  ----\n");
-  while (spst_open_linked_list!=NULL)
+  while (spst_open_linked_list!=orxNULL)
   {
-    printf("%2ld  %25s %25s %7lx %10ld %5lx\n", spst_open_linked_list->i_id, spst_open_linked_list->z_file, spst_open_linked_list->z_dir, spst_open_linked_list->i_access, spst_open_linked_list->i_overwrite, spst_open_linked_list->i_mode);
-    spst_open_linked_list = spst_open_linked_list->pst_next;
+    printf("%2ld  %25s %25s %7lx %10ld %5lx\n", spst_open_linked_list->i_id, spst_open_linked_list->zFile, spst_open_linked_list->z_dir, spst_open_linked_list->i_access, spst_open_linked_list->i_overwrite, spst_open_linked_list->i_mode);
+    spst_open_linked_list = spst_open_linked_list->pstNext;
   }
-  printf("NULL\n");
+  printf("orxNULL\n");
   spst_open_linked_list = spst_open_linked_list_head;
 }
-/* FIN DEBUG */
+/* FIN orxDEBUG */
 
 
 
-bool package_set_intern(int32 _i_pack_id)
+orxBOOL package_set_intern(orxS32 _i_pack_id)
 {
   st_pack_open_node *spst_open_linked_list_head;
-  bool found;
+  orxBOOL found;
   
   spst_open_linked_list_head = spst_open_linked_list;
-  found = FALSE;
+  found = orxFALSE;
   
-  while (spst_open_linked_list!=NULL && !found)
+  while (spst_open_linked_list!=orxNULL && !found)
   {
     if (spst_open_linked_list->i_id==_i_pack_id)
     {
-      found = TRUE;
+      found = orxTRUE;
       spst_open_linked_list->i_mode = PACK_M_INTERN;
     }
-    spst_open_linked_list = spst_open_linked_list->pst_next;
+    spst_open_linked_list = spst_open_linked_list->pstNext;
   }
   spst_open_linked_list = spst_open_linked_list_head;
   if (!found)
@@ -197,22 +200,22 @@ bool package_set_intern(int32 _i_pack_id)
 
 
 
-bool package_set_extern(int32 _i_pack_id)
+orxBOOL package_set_extern(orxS32 _i_pack_id)
 {
   st_pack_open_node *spst_open_linked_list_head;
-  bool found;
+  orxBOOL found;
   
   spst_open_linked_list_head = spst_open_linked_list;
-  found = FALSE;
+  found = orxFALSE;
   
-  while (spst_open_linked_list!=NULL && !found)
+  while (spst_open_linked_list!=orxNULL && !found)
   {
     if (spst_open_linked_list->i_id==_i_pack_id)
     {
-      found = TRUE;
+      found = orxTRUE;
       spst_open_linked_list->i_mode = PACK_M_EXTERN;
     }
-    spst_open_linked_list = spst_open_linked_list->pst_next;
+    spst_open_linked_list = spst_open_linked_list->pstNext;
   }
   spst_open_linked_list = spst_open_linked_list_head;
   if (!found)
@@ -225,25 +228,25 @@ bool package_set_extern(int32 _i_pack_id)
 
 
 
-bool package_set_overwrite(int32 _i_pack_id, int32 _i_mode)
+orxBOOL package_set_overwrite(orxS32 _i_pack_id, orxS32 _i_mode)
 {
   st_pack_open_node *spst_open_linked_list_head;
-  bool found;
+  orxBOOL found;
   
   spst_open_linked_list_head = spst_open_linked_list;
-  found = FALSE;
+  found = orxFALSE;
   
   if ((_i_mode!=PACK_OVR_BACKUP && _i_mode!=PACK_OVR_DELETE) && _i_mode!=PACK_OVR_ERROR)
     return 0;
   
-  while (spst_open_linked_list!=NULL && !found)
+  while (spst_open_linked_list!=orxNULL && !found)
   {
     if (spst_open_linked_list->i_id==_i_pack_id)
     {
-      found = TRUE;
+      found = orxTRUE;
       spst_open_linked_list->i_overwrite = _i_mode;
     }
-    spst_open_linked_list = spst_open_linked_list->pst_next;
+    spst_open_linked_list = spst_open_linked_list->pstNext;
   }
   spst_open_linked_list = spst_open_linked_list_head;
   if (!found)
@@ -256,26 +259,26 @@ bool package_set_overwrite(int32 _i_pack_id, int32 _i_mode)
 
 
 
-int32 package_get_infos(int32 _i_pack_id, st_pack_open_node *pst_infos)
+orxS32 package_get_infos(orxS32 _i_pack_id, st_pack_open_node *pstInfo)
 {
   st_pack_open_node *spst_open_linked_list_head;
-  bool found;
+  orxBOOL found;
   
   spst_open_linked_list_head = spst_open_linked_list;
-  found = FALSE;
+  found = orxFALSE;
   
-  while (spst_open_linked_list!=NULL && !found)
+  while (spst_open_linked_list!=orxNULL && !found)
   {
     if (spst_open_linked_list->i_id==_i_pack_id)
     {
-      found = TRUE;
-      pst_infos->i_access = spst_open_linked_list->i_access;
-      pst_infos->i_overwrite = spst_open_linked_list->i_overwrite;
-      pst_infos->i_mode = spst_open_linked_list->i_mode;
-      pst_infos->z_file = spst_open_linked_list->z_file;
-      pst_infos->z_dir = spst_open_linked_list->z_dir;
+      found = orxTRUE;
+      pstInfo->i_access = spst_open_linked_list->i_access;
+      pstInfo->i_overwrite = spst_open_linked_list->i_overwrite;
+      pstInfo->i_mode = spst_open_linked_list->i_mode;
+      pstInfo->zFile = spst_open_linked_list->zFile;
+      pstInfo->z_dir = spst_open_linked_list->z_dir;
     }
-    spst_open_linked_list = spst_open_linked_list->pst_next;
+    spst_open_linked_list = spst_open_linked_list->pstNext;
   }
   spst_open_linked_list = spst_open_linked_list_head;
   
@@ -289,28 +292,28 @@ int32 package_get_infos(int32 _i_pack_id, st_pack_open_node *pst_infos)
 
 
 
-int32 file_exists_intern(st_pack_open_node *_pst_pack_infos, char *_z_file)
+orxS32 file_exists_intern(st_pack_open_node *_pst_pack_infos, orxU8 *_zFile)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _z_file = NULL;
+  _pst_pack_infos = orxNULL;
+  _zFile = orxNULL;
   return -1;
 }
 
 
 
-int32 file_exists_extern(st_pack_open_node *_pst_pack_infos, char *_z_file)
+orxS32 file_exists_extern(st_pack_open_node *_pst_pack_infos, orxU8 *_zFile)
 {
-  char *z_file_path;
-  int32 i_id;
+  orxU8 *zFile_path;
+  orxS32 i_id;
   
-  z_file_path = (char *)malloc((strlen(_pst_pack_infos->z_dir) + strlen(_z_file) + 1)*sizeof(char));
-  sprintf(z_file_path, "%s%s", _pst_pack_infos->z_dir, _z_file);
+  zFile_path = (orxU8 *)orxMemory_Allocate((strlen(_pst_pack_infos->z_dir) + strlen(_zFile) + 1)*sizeof(char), orxMEMORY_TYPE_MAIN);
+  sprintf(zFile_path, "%s%s", _pst_pack_infos->z_dir, _zFile);
 
-  i_id = open(z_file_path, O_RDONLY);
+  i_id = open(zFile_path, O_RDONLY);
   close(i_id);
-  free(z_file_path);
+  orxMemory_Free(zFile_path);
   if (i_id == -1)
     return 0;
   else
@@ -319,25 +322,25 @@ int32 file_exists_extern(st_pack_open_node *_pst_pack_infos, char *_z_file)
 
 
 
-int32 package_remove_intern(st_pack_open_node *_pst_pack_infos, const char *_z_file)
+orxS32 package_remove_intern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_zFile)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _z_file = NULL;
+  _pst_pack_infos = orxNULL;
+  _zFile = orxNULL;
   return 0;
 }
 
 
 
-int32 package_remove_extern(st_pack_open_node *_pst_pack_infos, const char *_z_file)
+orxS32 package_remove_extern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_zFile)
 {  
-  char *z_file_path;
+  orxU8 *zFile_path;
   
-  z_file_path = (char *)malloc((strlen(_pst_pack_infos->z_dir) + strlen(_z_file) + 1)*sizeof(char));
-  sprintf(z_file_path, "%s%s", _pst_pack_infos->z_dir, _z_file);
+  zFile_path = (orxU8 *)orxMemory_Allocate((strlen(_pst_pack_infos->z_dir) + strlen(_zFile) + 1)*sizeof(char), orxMEMORY_TYPE_MAIN);
+  sprintf(zFile_path, "%s%s", _pst_pack_infos->z_dir, _zFile);
 
-  if (remove(z_file_path)==-1)
+  if (remove(zFile_path)==-1)
     return 0;
   else
     return 1;
@@ -345,29 +348,29 @@ int32 package_remove_extern(st_pack_open_node *_pst_pack_infos, const char *_z_f
 
 
 
-int32 package_copy_intern(st_pack_open_node *_pst_pack_infos, const char *_z_src_file, char *_z_dest_file)
+orxS32 package_copy_intern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_z_src_file, orxU8 *_z_dest_file)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _z_src_file = NULL;
-  _z_dest_file = NULL;
+  _pst_pack_infos = orxNULL;
+  _z_src_file = orxNULL;
+  _z_dest_file = orxNULL;
   return 0;
 }
 
 
 
-int32 package_copy_extern(st_pack_open_node *_pst_pack_infos, const char *_z_src_file, char *_z_dest_file)
+orxS32 package_copy_extern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_z_src_file, orxU8 *_z_dest_file)
 {
-  int32 i_id_src;
-  int32 i_id_dest;
-  bool b_eof;
-  bool b_error;
-  int32 i_nb;
-  void *p_buffer;
+  orxS32 i_id_src;
+  orxS32 i_id_dest;
+  orxBOOL b_eof;
+  orxBOOL b_error;
+  orxS32 i_nb;
+  orxVOID *p_buffer;
 
-  char *z_file_src_path;
-  char *z_file_dest_path;
+  orxU8 *zFile_src_path;
+  orxU8 *zFile_dest_path;
 
   switch (_pst_pack_infos->i_overwrite)
   {
@@ -376,22 +379,22 @@ int32 package_copy_extern(st_pack_open_node *_pst_pack_infos, const char *_z_src
         if (!make_backup_extern(_pst_pack_infos, _z_dest_file))
           return 0;
     case PACK_OVR_DELETE:
-      z_file_src_path = (char *)malloc((strlen(_pst_pack_infos->z_dir) + strlen(_z_src_file) + 1)*sizeof(char));
-      sprintf(z_file_src_path, "%s%s", _pst_pack_infos->z_dir, _z_src_file);
+      zFile_src_path = (orxU8 *)orxMemory_Allocate((strlen(_pst_pack_infos->z_dir) + strlen(_z_src_file) + 1)*sizeof(char), orxMEMORY_TYPE_MAIN);
+      sprintf(zFile_src_path, "%s%s", _pst_pack_infos->z_dir, _z_src_file);
       
-      i_id_src = open(z_file_src_path, O_RDONLY);
-      free(z_file_src_path);
+      i_id_src = open(zFile_src_path, O_RDONLY);
+      orxMemory_Free(zFile_src_path);
       if (i_id_src==-1)
       {
         close(i_id_src);
         return 0;
       }
 
-      z_file_dest_path = (char *)malloc((strlen(_pst_pack_infos->z_dir) + strlen(_z_dest_file) + 1)*sizeof(char));
-      sprintf(z_file_dest_path, "%s%s", _pst_pack_infos->z_dir, _z_dest_file);
+      zFile_dest_path = (orxU8 *)orxMemory_Allocate((strlen(_pst_pack_infos->z_dir) + strlen(_z_dest_file) + 1)*sizeof(char), orxMEMORY_TYPE_MAIN);
+      sprintf(zFile_dest_path, "%s%s", _pst_pack_infos->z_dir, _z_dest_file);
 
-      i_id_dest = open(z_file_dest_path, O_WRONLY | O_CREAT | O_TRUNC, S_IREAD | S_IWRITE);
-      free(z_file_dest_path);
+      i_id_dest = open(zFile_dest_path, O_WRONLY | O_CREAT | O_TRUNC, S_IREAD | S_IWRITE);
+      orxMemory_Free(zFile_dest_path);
       if (i_id_dest==-1)
       {
         close(i_id_src);
@@ -399,25 +402,25 @@ int32 package_copy_extern(st_pack_open_node *_pst_pack_infos, const char *_z_src
         return 0;
       }
        
-      p_buffer = (void *)malloc(256 * sizeof(char));
-      b_eof = FALSE;
-      b_error = FALSE;
+      p_buffer = (orxVOID *)orxMemory_Allocate(256 * sizeof(char), orxMEMORY_TYPE_MAIN);
+      b_eof = orxFALSE;
+      b_error = orxFALSE;
 
       while (!b_eof && !b_error)
       {
         i_nb = read(i_id_src, p_buffer, 256);
         if (i_nb==-1)
-          b_error = TRUE;
+          b_error = orxTRUE;
         else if (i_nb==0)
-          b_eof = TRUE;
+          b_eof = orxTRUE;
         else
         {
           i_nb = write(i_id_dest, p_buffer, i_nb);
           if (i_nb==-1)
-            b_error = TRUE;
+            b_error = orxTRUE;
         }
       }
-      free(p_buffer);
+      orxMemory_Free(p_buffer);
       close(i_id_src);
       close(i_id_dest);
       if (b_error)
@@ -440,31 +443,31 @@ int32 package_copy_extern(st_pack_open_node *_pst_pack_infos, const char *_z_src
 
 
 
-int32 make_backup_intern(st_pack_open_node *_pst_pack_infos, char *_z_file)
+orxS32 make_backup_intern(st_pack_open_node *_pst_pack_infos, orxU8 *_zFile)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _z_file = NULL;
+  _pst_pack_infos = orxNULL;
+  _zFile = orxNULL;
   return 0;
 }
 
 
 
-int32 make_backup_extern(st_pack_open_node *_pst_pack_infos, char *_z_file)
+orxS32 make_backup_extern(st_pack_open_node *_pst_pack_infos, orxU8 *_zFile)
 {
-  int32 i_i;
-  char ac_backup_file[512];
+  orxS32 i_i;
+  orxU8 ac_backup_file[512];
 
   i_i = 0;
-  sprintf(ac_backup_file, "%s.bak%ld", _z_file, i_i);
+  sprintf(ac_backup_file, "%s.bak%ld", _zFile, i_i);
   while(file_exists_extern(_pst_pack_infos, ac_backup_file) && i_i<KI_MAX_BACKUP)
   {
-    sprintf(ac_backup_file, "%s.bak%ld", _z_file, i_i);
+    sprintf(ac_backup_file, "%s.bak%ld", _zFile, i_i);
     i_i++;
   }
   if (i_i<KI_MAX_BACKUP)
-    return package_copy_extern(_pst_pack_infos, _z_file, ac_backup_file);
+    return package_copy_extern(_pst_pack_infos, _zFile, ac_backup_file);
   else
   {
     errno = EMFILE;
@@ -474,98 +477,98 @@ int32 make_backup_extern(st_pack_open_node *_pst_pack_infos, char *_z_file)
 
 
 
-bool package_add_intern(st_pack_open_node *_pst_pack_infos, void *_p_data, char *_z_file, size_t _i_data_size)
+orxBOOL package_add_intern(st_pack_open_node *_pst_pack_infos, orxVOID *_p_data, orxU8 *_zFile, size_t _i_data_size)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _p_data = NULL;
-  _z_file = NULL;
+  _pst_pack_infos = orxNULL;
+  _p_data = orxNULL;
+  _zFile = orxNULL;
   _i_data_size = 0;
-  return FALSE;
+  return orxFALSE;
 }
 
 
 
-bool package_add_extern(st_pack_open_node *_pst_pack_infos, void *_p_data, char *_z_file, size_t _i_data_size)
+orxBOOL package_add_extern(st_pack_open_node *_pst_pack_infos, orxVOID *_p_data, orxU8 *_zFile, size_t _i_data_size)
 {
-  int32 i_id;
-  char *z_file_path;
+  orxS32 i_id;
+  orxU8 *zFile_path;
   
-  z_file_path = (char *)malloc((strlen(_pst_pack_infos->z_dir) + strlen(_z_file) + 1)*sizeof(char));
-  sprintf(z_file_path, "%s%s", _pst_pack_infos->z_dir, _z_file);
+  zFile_path = (orxU8 *)orxMemory_Allocate((strlen(_pst_pack_infos->z_dir) + strlen(_zFile) + 1)*sizeof(char), orxMEMORY_TYPE_MAIN);
+  sprintf(zFile_path, "%s%s", _pst_pack_infos->z_dir, _zFile);
    
   switch (_pst_pack_infos->i_overwrite)
   {
     case PACK_OVR_BACKUP:
-      if (file_exists_extern(_pst_pack_infos, _z_file))
-        if(!make_backup_extern(_pst_pack_infos, _z_file))
-          return FALSE;
+      if (file_exists_extern(_pst_pack_infos, _zFile))
+        if(!make_backup_extern(_pst_pack_infos, _zFile))
+          return orxFALSE;
     case PACK_OVR_DELETE:
-      i_id = open(z_file_path, O_WRONLY | O_CREAT | O_TRUNC, S_IREAD | S_IWRITE);
-      free(z_file_path);
+      i_id = open(zFile_path, O_WRONLY | O_CREAT | O_TRUNC, S_IREAD | S_IWRITE);
+      orxMemory_Free(zFile_path);
       if (i_id==-1)
       {
         close(i_id);
-        return FALSE;
+        return orxFALSE;
       }
       if (write(i_id, _p_data, _i_data_size)==-1)
       {
         close(i_id);
-        return FALSE;
+        return orxFALSE;
       }
       close(i_id);
       break;
     case PACK_OVR_ERROR:
       errno = EEXIST; /* Fichier existant */
-      return FALSE;
+      return orxFALSE;
       break;
     default:
       errno = EINVAL; /* Argument invalide */
-      return FALSE;
+      return orxFALSE;
       break;
   }
-  return TRUE;
+  return orxTRUE;
 }
 
 
 
-bool package_add(int32 _i_pack_id, void *_p_data, char *_z_file, size_t _i_data_size)
+orxBOOL package_add(orxS32 _i_pack_id, orxVOID *_p_data, orxU8 *_zFile, size_t _i_data_size)
 {
   st_pack_open_node st_pack_infos;
 
   if (!package_get_infos(_i_pack_id, &st_pack_infos))
-    return FALSE;
+    return orxFALSE;
   
   if (st_pack_infos.i_access==PACK_O_READ)
   {
     errno = EROFS; /* Read only file system */
-    return FALSE;
+    return orxFALSE;
   }
 
   if (st_pack_infos.i_mode==PACK_M_INTERN)
-    return package_add_intern(&st_pack_infos, _p_data, _z_file, _i_data_size);
+    return package_add_intern(&st_pack_infos, _p_data, _zFile, _i_data_size);
   else
-    return package_add_extern(&st_pack_infos, _p_data, _z_file, _i_data_size);
+    return package_add_extern(&st_pack_infos, _p_data, _zFile, _i_data_size);
 }
 
 
 
-bool package_copy(int32 _i_pack_id, const char *_z_src_file, char *_z_dest_file)
+orxBOOL package_copy(orxS32 _i_pack_id, orxCONST orxU8 *_z_src_file, orxU8 *_z_dest_file)
 {
   st_pack_open_node st_pack_infos;
 
   if (!package_get_infos(_i_pack_id, &st_pack_infos))
-    return FALSE;
+    return orxFALSE;
  
   if (st_pack_infos.i_access==PACK_O_READ)
   {
     errno = EROFS; /* Read only file system */
-    return FALSE;
+    return orxFALSE;
   }
 
   if (strcmp(_z_src_file, _z_dest_file)==0)
-    return TRUE;
+    return orxTRUE;
 
   if (st_pack_infos.i_mode==PACK_M_INTERN)
     return package_copy_intern(&st_pack_infos, _z_src_file, _z_dest_file);
@@ -575,98 +578,98 @@ bool package_copy(int32 _i_pack_id, const char *_z_src_file, char *_z_dest_file)
 
 
 
-bool package_remove(int32 _i_pack_id, const char *_z_file)
+orxBOOL package_remove(orxS32 _i_pack_id, orxCONST orxU8 *_zFile)
 {
   st_pack_open_node st_pack_infos;
 
   if (!package_get_infos(_i_pack_id, &st_pack_infos))
-    return FALSE;
+    return orxFALSE;
  
   if (st_pack_infos.i_access==PACK_O_READ)
   {
     errno = EROFS; /* Read only file system */
-    return FALSE;
+    return orxFALSE;
   }
 
   if (st_pack_infos.i_mode==PACK_M_INTERN)
-    return package_remove_intern(&st_pack_infos, _z_file);
+    return package_remove_intern(&st_pack_infos, _zFile);
   else
-    return package_remove_extern(&st_pack_infos, _z_file);
+    return package_remove_extern(&st_pack_infos, _zFile);
 }
 
 
 
-bool package_move_intern(st_pack_open_node *_pst_pack_infos, const char *_z_src_file, char *_z_dest_file)
+orxBOOL package_move_intern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_z_src_file, orxU8 *_z_dest_file)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _z_src_file = NULL;
-  _z_dest_file = NULL;
-  return FALSE;
+  _pst_pack_infos = orxNULL;
+  _z_src_file = orxNULL;
+  _z_dest_file = orxNULL;
+  return orxFALSE;
 }
 
 
 
-bool package_move_extern(st_pack_open_node *_pst_pack_infos, const char *_z_src_file, char *_z_dest_file)
+orxBOOL package_move_extern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_z_src_file, orxU8 *_z_dest_file)
 {
-  char *z_file_src_path;
-  char *z_file_dest_path;
+  orxU8 *zFile_src_path;
+  orxU8 *zFile_dest_path;
 
   switch (_pst_pack_infos->i_overwrite)
   {
     case PACK_OVR_BACKUP:
       if (file_exists_extern(_pst_pack_infos, _z_dest_file))
         if (!make_backup_extern(_pst_pack_infos, _z_dest_file))
-          return FALSE;
+          return orxFALSE;
     case PACK_OVR_DELETE:
       if (!package_remove_extern(_pst_pack_infos, _z_dest_file))
-        return FALSE;
+        return orxFALSE;
 
-      z_file_src_path = (char *)malloc((strlen(_pst_pack_infos->z_dir) + strlen(_z_src_file) + 1)*sizeof(char));
-      sprintf(z_file_src_path, "%s%s", _pst_pack_infos->z_dir, _z_src_file);
+      zFile_src_path = (orxU8 *)orxMemory_Allocate((strlen(_pst_pack_infos->z_dir) + strlen(_z_src_file) + 1)*sizeof(char), orxMEMORY_TYPE_MAIN);
+      sprintf(zFile_src_path, "%s%s", _pst_pack_infos->z_dir, _z_src_file);
 
-      z_file_dest_path = (char *)malloc((strlen(_pst_pack_infos->z_dir) + strlen(_z_dest_file) + 1)*sizeof(char));
-      sprintf(z_file_dest_path, "%s%s", _pst_pack_infos->z_dir, _z_dest_file);
+      zFile_dest_path = (orxU8 *)orxMemory_Allocate((strlen(_pst_pack_infos->z_dir) + strlen(_z_dest_file) + 1)*sizeof(char), orxMEMORY_TYPE_MAIN);
+      sprintf(zFile_dest_path, "%s%s", _pst_pack_infos->z_dir, _z_dest_file);
 
-      if (rename(z_file_src_path, z_file_dest_path)!=0)
+      if (rename(zFile_src_path, zFile_dest_path)!=0)
       {
-        free(z_file_src_path);
-        free(z_file_dest_path);
-        return FALSE;
+        orxMemory_Free(zFile_src_path);
+        orxMemory_Free(zFile_dest_path);
+        return orxFALSE;
       }
       else
       {
-        free(z_file_src_path);
-        free(z_file_dest_path);
-        return TRUE;
+        orxMemory_Free(zFile_src_path);
+        orxMemory_Free(zFile_dest_path);
+        return orxTRUE;
       }
       break;
     case PACK_OVR_ERROR:
       errno = EEXIST; /* Fichier existant */
-      return FALSE;
+      return orxFALSE;
       break;
     default:
       errno = EINVAL; /* Argument invalide */
-      return FALSE;
+      return orxFALSE;
       break;
   }
-  return TRUE;
+  return orxTRUE;
 }
 
 
 
-bool package_move(int32 _i_pack_id, const char *_z_src_file, char *_z_dest_file)
+orxBOOL package_move(orxS32 _i_pack_id, orxCONST orxU8 *_z_src_file, orxU8 *_z_dest_file)
 {
   st_pack_open_node st_pack_infos;
 
   if (!package_get_infos(_i_pack_id, &st_pack_infos))
-    return FALSE;
+    return orxFALSE;
  
   if (st_pack_infos.i_access==PACK_O_READ)
   {
     errno = EROFS; /* Read only file system */
-    return FALSE;
+    return orxFALSE;
   }
 
   if (st_pack_infos.i_mode==PACK_M_INTERN)
@@ -675,42 +678,42 @@ bool package_move(int32 _i_pack_id, const char *_z_src_file, char *_z_dest_file)
     return package_move_extern(&st_pack_infos, _z_src_file, _z_dest_file);
 }
 
-bool package_find_first_intern(st_pack_open_node *_pst_pack_infos, const char *_z_pattern, package_st_file_infos *_st_fileinfos)
+orxBOOL package_find_first_intern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_z_pattern, package_st_file_infos *_st_fileinfos)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _z_pattern = NULL;
-  _st_fileinfos = NULL;
-  return FALSE;
+  _pst_pack_infos = orxNULL;
+  _z_pattern = orxNULL;
+  _st_fileinfos = orxNULL;
+  return orxFALSE;
 }
 
-bool package_find_first_extern(st_pack_open_node *_pst_pack_infos, const char *_z_pattern, package_st_file_infos *_st_fileinfos)
+orxBOOL package_find_first_extern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_z_pattern, package_st_file_infos *_st_fileinfos)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _z_pattern = NULL;
-  _st_fileinfos = NULL;
-  return FALSE;
+  _pst_pack_infos = orxNULL;
+  _z_pattern = orxNULL;
+  _st_fileinfos = orxNULL;
+  return orxFALSE;
 }
 
-bool package_find_first_intern_extern(st_pack_open_node *_pst_pack_infos, const char *_z_pattern, package_st_file_infos *_st_fileinfos)
+orxBOOL package_find_first_intern_extern(st_pack_open_node *_pst_pack_infos, orxCONST orxU8 *_z_pattern, package_st_file_infos *_st_fileinfos)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _pst_pack_infos = NULL;
-  _z_pattern = NULL;
-  _st_fileinfos = NULL;
-  return FALSE;
+  _pst_pack_infos = orxNULL;
+  _z_pattern = orxNULL;
+  _st_fileinfos = orxNULL;
+  return orxFALSE;
 }
 
-bool package_find_first(int32 _i_pack_id, const char *_z_pattern, package_st_file_infos *_st_fileinfos)
+orxBOOL package_find_first(orxS32 _i_pack_id, orxCONST orxU8 *_z_pattern, package_st_file_infos *_st_fileinfos)
 {
   st_pack_open_node st_pack_infos;
 
   if (!package_get_infos(_i_pack_id, &st_pack_infos))
-    return FALSE;
+    return orxFALSE;
  
   switch (st_pack_infos.i_mode)
   {
@@ -724,41 +727,41 @@ bool package_find_first(int32 _i_pack_id, const char *_z_pattern, package_st_fil
       return package_find_first_intern_extern(&st_pack_infos, _z_pattern, _st_fileinfos);
       break;
     default:
-      return FALSE;
+      return orxFALSE;
       break;
   }
 }
 
 
 
-bool package_find_next_intern(package_st_file_infos *_st_fileinfos)
+orxBOOL package_find_next_intern(package_st_file_infos *_st_fileinfos)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _st_fileinfos = NULL;
-  return FALSE;
+  _st_fileinfos = orxNULL;
+  return orxFALSE;
 }
 
-bool package_find_next_extern(package_st_file_infos *_st_fileinfos)
+orxBOOL package_find_next_extern(package_st_file_infos *_st_fileinfos)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _st_fileinfos = NULL;
-  return FALSE;
+  _st_fileinfos = orxNULL;
+  return orxFALSE;
 }
 
-bool package_find_next_intern_extern(package_st_file_infos *_st_fileinfos)
+orxBOOL package_find_next_intern_extern(package_st_file_infos *_st_fileinfos)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _st_fileinfos = NULL;
-  return FALSE;
+  _st_fileinfos = orxNULL;
+  return orxFALSE;
 }
 
-bool package_find_next(package_st_file_infos *_st_fileinfos)
+orxBOOL package_find_next(package_st_file_infos *_st_fileinfos)
 {
   /* TODO */
   errno = ENOSYS; /* Fonction non implémentée */
-  _st_fileinfos = NULL;
-  return FALSE;
+  _st_fileinfos = orxNULL;
+  return orxFALSE;
 }

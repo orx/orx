@@ -3,22 +3,22 @@
 #include "core/clock.h"
 
 
-#define INTERACTION_KI_GET_TIMER    50
+#define INTERACTION_KS32_GET_TIMER    50
 
-static void interaction_get()
+static orxVOID interaction_get()
 {
 
   return;
 }
 
-uint32 interaction_init()
+orxU32 interaction_init()
 {
-  return ((clock_cb_function_add(interaction_get, INTERACTION_KI_GET_TIMER) == FALSE) ? EXIT_SUCCESS : EXIT_FAILURE);
+  return ((clock_cb_function_add(interaction_get, INTERACTION_KS32_GET_TIMER) == orxFALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILED);
 }
 
-void interaction_exit()
+orxVOID interaction_exit()
 {
-  clock_cb_function_remove(interaction_get, INTERACTION_KI_GET_TIMER);
+  clock_cb_function_remove(interaction_get, INTERACTION_KS32_GET_TIMER);
 
   return;
 }

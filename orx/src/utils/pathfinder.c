@@ -19,50 +19,52 @@
 
 #include "utils/pathfinder.h"
 
-#include "debug/debug.h"
+#include "debug/orxDebug.h"
+#include "math/orxMath.h"
+#include "memory/orxMemory.h"
 
 
-int32 pathfinder_gi_map_h_size = 0;
-int32 pathfinder_gi_map_v_size = 0;
-float pathfinder_gf_goal_distance = 0.0;
+orxS32 pathfinder_gi_map_h_size = 0;
+orxS32 pathfinder_gi_map_v_size = 0;
+orxFLOAT pathfinder_gf_goal_distance = 0.0;
 
-static pathfinder_st_tile **sppst_matrix = NULL;
-static pathfinder_st_mask *spst_mask = NULL;
-static int32 si_mask_size = 0;
-static coord_st_coord sst_source;
-static coord_st_coord sst_destination;
-static coord_st_coord sst_null;
-static bool *spb_touched = NULL;
-static int32 si_touched_size = 0;
+static pathfinder_st_tile **sppst_matrix = orxNULL;
+static pathfinder_st_mask *spst_mask = orxNULL;
+static orxS32 si_mask_size = 0;
+static orxVEC sst_source;
+static orxVEC sst_destination;
+static orxVEC sst_null;
+static orxBOOL *spb_touched = orxNULL;
+static orxS32 si_touched_size = 0;
 
 struct st_tile_t
 {
-  float f_gcost, f_fcost;
-  int32 i_num;
+  orxFLOAT f_gcost, f_fcost;
+  orxS32 i_num;
   
-  coord_st_coord st_parent, st_previous, st_next;
+  orxVEC st_parent, st_previous, st_next;
 
-  bool b_open;
-  bool b_blocked;
+  orxBOOL b_open;
+  orxBOOL b_blocked;
 
   /* 12 extra bytes of padding : 80 */
-  uint8 auc_unused[12];
+  orxU8 au8Unused[12];
 };
 
 struct st_mask_t
 {
-  int32 s32_x, s32_y;
-  float f_cost;
+  orxS32 fX, fY;
+  orxFLOAT fCost;
 
   /* 4 extra bytes of padding : 16 */
-  uint8 auc_unused[4];
+  orxU8 au8Unused[4];
 };
 
-inline void pathfinder_tile_copy(pathfinder_st_tile *_pst_dest, pathfinder_st_tile *_pst_src)
+inline orxVOID pathfinder_tile_copy(pathfinder_st_tile *_pst_dest, pathfinder_st_tile *_pst_src)
 {
-  if(_pst_dest != NULL)
+  if(_pst_dest != orxNULL)
   {
-    if(_pst_src != NULL)
+    if(_pst_src != orxNULL)
     {
       _pst_dest->f_gcost = _pst_src->f_gcost;
       _pst_dest->f_fcost = _pst_src->f_fcost;
@@ -78,169 +80,169 @@ inline void pathfinder_tile_copy(pathfinder_st_tile *_pst_dest, pathfinder_st_ti
   return;
 }
 
-inline void pathfinder_mask_delete()
+inline orxVOID pathfinder_mask_delete()
 {
-  if(spst_mask != NULL)
+  if(spst_mask != orxNULL)
   {
-    free(spst_mask);
-    spst_mask = NULL;
+    orxMemory_Free(spst_mask);
+    spst_mask = orxNULL;
   }
 
   return;
 }
 
-void pathfinder_mask_create_4()
+orxVOID pathfinder_mask_create_4()
 {
   pathfinder_mask_delete();
 
   si_mask_size = 4;
 
-  spst_mask = (pathfinder_st_mask *) malloc(sizeof(pathfinder_st_mask));
+  spst_mask = (pathfinder_st_mask *) orxMemory_Allocate(sizeof(pathfinder_st_mask), orxMEMORY_TYPE_MAIN);
 
-  spst_mask[0].s32_x = 0;
-  spst_mask[0].s32_y = -1;
-  spst_mask[0].f_cost = 1.0;
+  spst_mask[0].fX = 0;
+  spst_mask[0].fY = -1;
+  spst_mask[0].fCost = 1.0;
 
-  spst_mask[1].s32_x = 1;
-  spst_mask[1].s32_y = 0;
-  spst_mask[1].f_cost = 1.0;
+  spst_mask[1].fX = 1;
+  spst_mask[1].fY = 0;
+  spst_mask[1].fCost = 1.0;
                 
-  spst_mask[2].s32_x = 0;
-  spst_mask[2].s32_y = 1;
-  spst_mask[2].f_cost = 1.0;
+  spst_mask[2].fX = 0;
+  spst_mask[2].fY = 1;
+  spst_mask[2].fCost = 1.0;
 
-  spst_mask[3].s32_x = -1;
-  spst_mask[3].s32_y = 0;
-  spst_mask[3].f_cost = 1.0;
+  spst_mask[3].fX = -1;
+  spst_mask[3].fY = 0;
+  spst_mask[3].fCost = 1.0;
 
   return;
 }
 
-void pathfinder_mask_create_knight()
+orxVOID pathfinder_mask_create_knight()
 {
   pathfinder_mask_delete();
 
   si_mask_size = 8;
 
-  spst_mask = (pathfinder_st_mask *) malloc(sizeof(pathfinder_st_mask));
+  spst_mask = (pathfinder_st_mask *) orxMemory_Allocate(sizeof(pathfinder_st_mask), orxMEMORY_TYPE_MAIN);
 
-  spst_mask[0].s32_x = 1;
-  spst_mask[0].s32_y = -2;
-  spst_mask[0].f_cost = 1.0;
+  spst_mask[0].fX = 1;
+  spst_mask[0].fY = -2;
+  spst_mask[0].fCost = 1.0;
 
-  spst_mask[1].s32_x = 2;
-  spst_mask[1].s32_y = -1;
-  spst_mask[1].f_cost = 1.0;
+  spst_mask[1].fX = 2;
+  spst_mask[1].fY = -1;
+  spst_mask[1].fCost = 1.0;
 
-  spst_mask[2].s32_x = 2;
-  spst_mask[2].s32_y = 1;
-  spst_mask[2].f_cost = 1.0;
+  spst_mask[2].fX = 2;
+  spst_mask[2].fY = 1;
+  spst_mask[2].fCost = 1.0;
 
-  spst_mask[3].s32_x = 1;
-  spst_mask[3].s32_y = 2;
-  spst_mask[3].f_cost = 1.0;
+  spst_mask[3].fX = 1;
+  spst_mask[3].fY = 2;
+  spst_mask[3].fCost = 1.0;
 
-  spst_mask[4].s32_x = -1;
-  spst_mask[4].s32_y = 2;
-  spst_mask[4].f_cost = 1.0;
+  spst_mask[4].fX = -1;
+  spst_mask[4].fY = 2;
+  spst_mask[4].fCost = 1.0;
 
-  spst_mask[5].s32_x = -2;
-  spst_mask[5].s32_y = 1;
-  spst_mask[5].f_cost = 1.0;
+  spst_mask[5].fX = -2;
+  spst_mask[5].fY = 1;
+  spst_mask[5].fCost = 1.0;
 
-  spst_mask[6].s32_x = -2;
-  spst_mask[6].s32_y = -1;
-  spst_mask[6].f_cost = 1.0;
+  spst_mask[6].fX = -2;
+  spst_mask[6].fY = -1;
+  spst_mask[6].fCost = 1.0;
 
-  spst_mask[7].s32_x = -1;
-  spst_mask[7].s32_y = -2;
-  spst_mask[7].f_cost = 1.0;
+  spst_mask[7].fX = -1;
+  spst_mask[7].fY = -2;
+  spst_mask[7].fCost = 1.0;
 
   return;
 }
 
-void pathfinder_mask_create_8()
+orxVOID pathfinder_mask_create_8()
 {
   pathfinder_mask_delete();
 
   si_mask_size = 8;
 
-  spst_mask = (pathfinder_st_mask *) malloc(sizeof(pathfinder_st_mask));
+  spst_mask = (pathfinder_st_mask *) orxMemory_Allocate(sizeof(pathfinder_st_mask), orxMEMORY_TYPE_MAIN);
 
-  spst_mask[0].s32_x = 0;
-  spst_mask[0].s32_y = -1;
-  spst_mask[0].f_cost = 1.0;
+  spst_mask[0].fX = 0;
+  spst_mask[0].fY = -1;
+  spst_mask[0].fCost = 1.0;
 
-  spst_mask[1].s32_x = 1;
-  spst_mask[1].s32_y = 0;
-  spst_mask[1].f_cost = 1.0;
+  spst_mask[1].fX = 1;
+  spst_mask[1].fY = 0;
+  spst_mask[1].fCost = 1.0;
 
-  spst_mask[2].s32_x = 0;
-  spst_mask[2].s32_y = 1;
-  spst_mask[2].f_cost = 1.0;
+  spst_mask[2].fX = 0;
+  spst_mask[2].fY = 1;
+  spst_mask[2].fCost = 1.0;
 
-  spst_mask[3].s32_x = -1;
-  spst_mask[3].s32_y = 0;
-  spst_mask[3].f_cost = 1.0;
+  spst_mask[3].fX = -1;
+  spst_mask[3].fY = 0;
+  spst_mask[3].fCost = 1.0;
 
-  spst_mask[4].s32_x = -1;
-  spst_mask[4].s32_y = -1;
-  spst_mask[4].f_cost = KF_MATH_SQRT2;
+  spst_mask[4].fX = -1;
+  spst_mask[4].fY = -1;
+  spst_mask[4].fCost = KF_MATH_SQRT2;
 
-  spst_mask[5].s32_x = 1;
-  spst_mask[5].s32_y = -1;
-  spst_mask[5].f_cost = KF_MATH_SQRT2;
+  spst_mask[5].fX = 1;
+  spst_mask[5].fY = -1;
+  spst_mask[5].fCost = KF_MATH_SQRT2;
 
-  spst_mask[6].s32_x = 1;
-  spst_mask[6].s32_y = 1;
-  spst_mask[6].f_cost = KF_MATH_SQRT2;
+  spst_mask[6].fX = 1;
+  spst_mask[6].fY = 1;
+  spst_mask[6].fCost = KF_MATH_SQRT2;
 
-  spst_mask[7].s32_x = -1;
-  spst_mask[7].s32_y = 1;
-  spst_mask[7].f_cost = KF_MATH_SQRT2;
+  spst_mask[7].fX = -1;
+  spst_mask[7].fY = 1;
+  spst_mask[7].fCost = KF_MATH_SQRT2;
 
   return;
 }
 
-inline void pathfinder_touched_delete()
+inline orxVOID pathfinder_touched_delete()
 {
-  if(spb_touched != NULL)
+  if(spb_touched != orxNULL)
   {
-    free(spb_touched);
+    orxMemory_Free(spb_touched);
     si_touched_size = 0;
-    spb_touched = NULL;
+    spb_touched = orxNULL;
   }
 
   return;
 }
 
-inline void pathfinder_touched_create()
+inline orxVOID pathfinder_touched_create()
 {
   pathfinder_touched_delete();
 
   si_touched_size = pathfinder_gi_map_v_size * pathfinder_gi_map_h_size;
-  spb_touched = (bool *) malloc(si_touched_size * sizeof(bool));
+  spb_touched = (orxBOOL *) orxMemory_Allocate(si_touched_size * sizeof(orxBOOL), orxMEMORY_TYPE_MAIN);
 
   return;
 }
 
-void pathfinder_touched_clean()
+orxVOID pathfinder_touched_clean()
 {
-  int32 i;
+  orxS32 i;
   for(i = 0; i < pathfinder_gi_map_h_size * pathfinder_gi_map_v_size; i++)
   {
-    spb_touched[i] = FALSE;
+    spb_touched[i] = orxFALSE;
   }
 
   return;
 }
 
-inline void pathfinder_matrix_clean()
+inline orxVOID pathfinder_matrix_clean()
 {
-  int32 i, j;
+  orxS32 i, j;
   pathfinder_st_tile *pst_tile;
 
-  if(sppst_matrix != NULL)
+  if(sppst_matrix != orxNULL)
   { 
     for(i = 0; i < pathfinder_gi_map_h_size; i++)
     {
@@ -249,7 +251,7 @@ inline void pathfinder_matrix_clean()
         pst_tile = &sppst_matrix[i][j];
 
         pst_tile->f_gcost = pst_tile->f_fcost = 0.0;
-        pst_tile->b_open = pst_tile->b_blocked = FALSE;
+        pst_tile->b_open = pst_tile->b_blocked = orxFALSE;
       }
     }
   }
@@ -257,45 +259,45 @@ inline void pathfinder_matrix_clean()
   return;
 }
 
-inline void pathfinder_matrix_delete()
+inline orxVOID pathfinder_matrix_delete()
 {
-  int32 i;
+  orxS32 i;
   pathfinder_st_tile *pst_tile;
 
-  if(sppst_matrix != NULL)
+  if(sppst_matrix != orxNULL)
   {
     for(i = 0; i < pathfinder_gi_map_h_size; i++)
     {
       pst_tile = sppst_matrix[i];
-      if(pst_tile != NULL)
+      if(pst_tile != orxNULL)
         {
-          free(pst_tile);
+          orxMemory_Free(pst_tile);
         }
     }
 
-    free(sppst_matrix);
-    sppst_matrix = NULL;
+    orxMemory_Free(sppst_matrix);
+    sppst_matrix = orxNULL;
   }
 
   return;
 }
 
-inline void pathfinder_matrix_create()
+inline orxVOID pathfinder_matrix_create()
 {
-  int32 i;
+  orxS32 i;
 
   pathfinder_matrix_delete();
 
-  sppst_matrix = (pathfinder_st_tile **) malloc(pathfinder_gi_map_h_size * sizeof(pathfinder_st_tile *));
+  sppst_matrix = (pathfinder_st_tile **) orxMemory_Allocate(pathfinder_gi_map_h_size * sizeof(pathfinder_st_tile *), orxMEMORY_TYPE_MAIN);
   for(i = 0; i < pathfinder_gi_map_h_size; i++)
   {
-    sppst_matrix[i] = (pathfinder_st_tile *) malloc(pathfinder_gi_map_v_size * sizeof(pathfinder_st_tile));
+    sppst_matrix[i] = (pathfinder_st_tile *) orxMemory_Allocate(pathfinder_gi_map_v_size * sizeof(pathfinder_st_tile), orxMEMORY_TYPE_MAIN);
   }
 
   return;
 }
 
-inline void pathfinder_map_init(int32 _i_horizontal_size, int32 _i_vertical_size)
+inline orxVOID pathfinder_map_init(orxS32 _i_horizontal_size, orxS32 _i_vertical_size)
 {
   coord_reset(&sst_null);
 
@@ -312,7 +314,7 @@ inline void pathfinder_map_init(int32 _i_horizontal_size, int32 _i_vertical_size
 }
 
 
-void pathfinder_delete()
+orxVOID pathfinder_delete()
 {
   pathfinder_touched_delete();
   pathfinder_matrix_delete();
@@ -321,87 +323,87 @@ void pathfinder_delete()
   return;
 }
 
-inline void pathfinder_source_set(coord_st_coord *_pst_coord)
+inline orxVOID pathfinder_source_set(orxVEC *_pst_coord)
 {
   coord_copy(&sst_source, _pst_coord);
 
   return;
 }
 
-inline void pathfinder_destination_set(coord_st_coord *_pst_coord)
+inline orxVOID pathfinder_destination_set(orxVEC *_pst_coord)
 {
   coord_copy(&sst_destination, _pst_coord);
 
   return;
 }
 
-inline float pathfinder_cost(coord_st_coord *_pst_coord1, coord_st_coord *_pst_coord2)
+inline orxFLOAT pathfinder_cost(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
 {
-  int32 dx, dy;
+  orxS32 dx, dy;
 
-  dx = abs(_pst_coord1->s32_x - _pst_coord2->s32_x);
-  dy = abs(_pst_coord1->s32_y - _pst_coord2->s32_y);
+  dx = orxFABS(_pst_coord1->fX - _pst_coord2->fX);
+  dy = orxFABS(_pst_coord1->fY - _pst_coord2->fY);
   
-  return(sqrtf((float)(dx*dx + dy*dy)));
+  return(sqrtf((orxFLOAT)(dx*dx + dy*dy)));
 }
 
-inline float pathfinder_goal_distance_estimate(coord_st_coord *_pst_coord)
+inline orxFLOAT pathfinder_goal_distance_estimate(orxVEC *_pst_coord)
 {
   return(pathfinder_cost(_pst_coord, &sst_destination));
 }
 
-inline void pathfinder_tile_set(coord_st_coord *_pst_coord, float _f_gcost, float _f_fcost, int32 _i_num, coord_st_coord *_pst_parent, coord_st_coord *_pst_previous, coord_st_coord *_pst_next, bool _b_status)
+inline orxVOID pathfinder_tile_set(orxVEC *_pst_coord, orxFLOAT _f_gcost, orxFLOAT _f_fcost, orxS32 _i_num, orxVEC *_pstParent, orxVEC *_pstPrevious, orxVEC *_pstNext, orxBOOL _b_status)
 {
-  pathfinder_st_tile *tile = &sppst_matrix[_pst_coord->s32_x][_pst_coord->s32_y];
+  pathfinder_st_tile *tile = &sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY];
 
   tile->f_gcost = _f_gcost;
   tile->f_fcost = _f_fcost;
   
   tile->i_num = _i_num;
 
-  coord_copy(&tile->st_parent, _pst_parent);
-  coord_copy(&tile->st_previous, _pst_previous);
-  coord_copy(&tile->st_next, _pst_next);
+  coord_copy(&tile->st_parent, _pstParent);
+  coord_copy(&tile->st_previous, _pstPrevious);
+  coord_copy(&tile->st_next, _pstNext);
 
   tile->b_open = _b_status;
 
-  spb_touched[_pst_coord->s32_x + (_pst_coord->s32_y * pathfinder_gi_map_h_size)] = TRUE;
+  spb_touched[(orxU32)(_pst_coord->fX + (_pst_coord->fY * pathfinder_gi_map_h_size))] = orxTRUE;
 
   return;
 }
 
-inline pathfinder_st_tile *pathfinder_tile_get(coord_st_coord *_pst_coord)
+inline pathfinder_st_tile *pathfinder_tile_get(orxVEC *_pst_coord)
 {
-  if((_pst_coord->s32_x < 0)
-     || (_pst_coord->s32_x >= pathfinder_gi_map_h_size)
-     || (_pst_coord->s32_y < 0)
-     || (_pst_coord->s32_y >= pathfinder_gi_map_v_size))
+  if((_pst_coord->fX < 0)
+     || (_pst_coord->fX >= pathfinder_gi_map_h_size)
+     || (_pst_coord->fY < 0)
+     || (_pst_coord->fY >= pathfinder_gi_map_v_size))
   {
-    return NULL;
+    return orxNULL;
   }
   else
   {
-    return(&(sppst_matrix[_pst_coord->s32_x][_pst_coord->s32_y]));
+    return(&(sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY]));
   }
 }
 
-inline bool pathfinder_is_walkable(coord_st_coord *_pst_coord1, coord_st_coord *_pst_coord2)
+inline orxBOOL pathfinder_is_walkable(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
 {
-  coord_st_coord st_start, st_end;
-  float f_a, f_sampling, f_dx, f_dy, f_x, f_y;
-  bool b_res;
+  orxVEC st_start, st_end;
+  orxFLOAT f_a, f_sampling, f_dx, f_dy, fX, fY;
+  orxBOOL b_res;
 
-  if(_pst_coord2->s32_x > _pst_coord1->s32_x)
+  if(_pst_coord2->fX > _pst_coord1->fX)
   {
     coord_copy(&st_start, _pst_coord1);
     coord_copy(&st_end, _pst_coord2);
   }
-  else if(_pst_coord2->s32_x < _pst_coord1->s32_x)
+  else if(_pst_coord2->fX < _pst_coord1->fX)
   {
     coord_copy(&st_start, _pst_coord2);
     coord_copy(&st_end, _pst_coord1);
   }
-  else if(_pst_coord2->s32_y > _pst_coord1->s32_y)
+  else if(_pst_coord2->fY > _pst_coord1->fY)
   {
     coord_copy(&st_start, _pst_coord1);
     coord_copy(&st_end, _pst_coord2);
@@ -412,20 +414,20 @@ inline bool pathfinder_is_walkable(coord_st_coord *_pst_coord1, coord_st_coord *
     coord_copy(&st_end, _pst_coord1);
   }
 
-  b_res = TRUE;
+  b_res = orxTRUE;
 
-  if(st_end.s32_x != st_start.s32_x)
+  if(st_end.fX != st_start.fX)
   {
-    f_a = ((float)(st_end.s32_y - st_start.s32_y) / (float)(st_end.s32_x - st_start.s32_x));
-    f_sampling = ((st_end.s32_x - st_start.s32_x) > 0) ? PATHFINDER_KF_SAMPLING : -PATHFINDER_KF_SAMPLING;
+    f_a = ((orxFLOAT)(st_end.fY - st_start.fY) / (orxFLOAT)(st_end.fX - st_start.fX));
+    f_sampling = ((st_end.fX - st_start.fX) > 0) ? PATHFINDER_KF_SAMPLING : -PATHFINDER_KF_SAMPLING;
     f_dx = sqrtf((f_sampling * f_sampling) / (1.0 + (f_a * f_a)));
     f_dy = f_a * f_dx;
 
-    for(f_x = (float)st_start.s32_x + PATHFINDER_KF_POSX, f_y = (float)st_start.s32_y + PATHFINDER_KF_POSY; f_x < (float)st_end.s32_x + PATHFINDER_KF_POSX; f_x += f_dx, f_y += f_dy)
+    for(fX = (orxFLOAT)st_start.fX + PATHFINDER_KF_POSX, fY = (orxFLOAT)st_start.fY + PATHFINDER_KF_POSY; fX < (orxFLOAT)st_end.fX + PATHFINDER_KF_POSX; fX += f_dx, fY += f_dy)
     {
-      if(sppst_matrix[(int)f_x][(int)f_y].b_blocked != FALSE)
+      if(sppst_matrix[(int)fX][(int)fY].b_blocked != orxFALSE)
       {
-        b_res = FALSE;
+        b_res = orxFALSE;
         break;
       }
     }
@@ -434,11 +436,11 @@ inline bool pathfinder_is_walkable(coord_st_coord *_pst_coord1, coord_st_coord *
   {
     f_dy = PATHFINDER_KF_SAMPLING;
 
-    for(f_x = (float)st_start.s32_x + PATHFINDER_KF_POSX, f_y = (float)st_start.s32_y + PATHFINDER_KF_POSY; f_y < (float)st_end.s32_y + PATHFINDER_KF_POSY; f_y += f_dy)
+    for(fX = (orxFLOAT)st_start.fX + PATHFINDER_KF_POSX, fY = (orxFLOAT)st_start.fY + PATHFINDER_KF_POSY; fY < (orxFLOAT)st_end.fY + PATHFINDER_KF_POSY; fY += f_dy)
     {
-      if(sppst_matrix[(int)f_x][(int)f_y].b_blocked != FALSE)
+      if(sppst_matrix[(int)fX][(int)fY].b_blocked != orxFALSE)
       {
-        b_res = FALSE;
+        b_res = orxFALSE;
         break;
       }
     }
@@ -447,44 +449,44 @@ inline bool pathfinder_is_walkable(coord_st_coord *_pst_coord1, coord_st_coord *
   return b_res;
 }
 
-inline bool pathfinder_is_goal(coord_st_coord *_pst_coord)
+inline orxBOOL pathfinder_is_goal(orxVEC *_pst_coord)
 {
-  return((_pst_coord->s32_x == sst_destination.s32_x) && (_pst_coord->s32_y == sst_destination.s32_y));
+  return((_pst_coord->fX == sst_destination.fX) && (_pst_coord->fY == sst_destination.fY));
 }
 
-inline coord_st_coord* pathfinder_coord_previous(coord_st_coord *_pst_coord)
+inline orxVEC* pathfinder_coord_previous(orxVEC *_pst_coord)
 {
-  return(&sppst_matrix[_pst_coord->s32_x][_pst_coord->s32_y].st_previous);
+  return(&sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].st_previous);
 }
 
-inline coord_st_coord* pathfinder_coord_next(coord_st_coord *_pst_coord)
+inline orxVEC* pathfinder_coord_next(orxVEC *_pst_coord)
 {
-  return(&sppst_matrix[_pst_coord->s32_x][_pst_coord->s32_y].st_next);
+  return(&sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].st_next);
 }
 
-inline coord_st_coord* pathfinder_coord_parent(coord_st_coord *_pst_coord)
+inline orxVEC* pathfinder_coord_parent(orxVEC *_pst_coord)
 {
-  return(&sppst_matrix[_pst_coord->s32_x][_pst_coord->s32_y].st_parent);
+  return(&sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].st_parent);
 }
 
-inline bool pathfinder_is_touched(coord_st_coord *_pst_coord)
+inline orxBOOL pathfinder_is_touched(orxVEC *_pst_coord)
 {
-  return(spb_touched[_pst_coord->s32_x+(_pst_coord->s32_y * pathfinder_gi_map_h_size)]);
+  return(spb_touched[(orxU32)(_pst_coord->fX+(_pst_coord->fY * pathfinder_gi_map_h_size))]);
 }
 
-inline float pathfinder_gcost(coord_st_coord *_pst_coord)
+inline orxFLOAT pathfinder_gcost(orxVEC *_pst_coord)
 {
-  return(sppst_matrix[_pst_coord->s32_x][_pst_coord->s32_y].f_gcost);
+  return(sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].f_gcost);
 }
 
-inline float pathfinder_fcost(coord_st_coord *_pst_coord)
+inline orxFLOAT pathfinder_fcost(orxVEC *_pst_coord)
 {
-  return(sppst_matrix[_pst_coord->s32_x][_pst_coord->s32_y].f_fcost);
+  return(sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].f_fcost);
 }
 
-void pathfinder_map_load(int32 _i_horizontal_size, int32 _i_vertical_size, int32 *_pi_map)
+orxVOID pathfinder_map_load(orxS32 _i_horizontal_size, orxS32 _i_vertical_size, orxS32 *_pi_map)
 {
-  int32 i, j;
+  orxS32 i, j;
 
   pathfinder_map_init(_i_horizontal_size, _i_vertical_size);
 
@@ -494,29 +496,29 @@ void pathfinder_map_load(int32 _i_horizontal_size, int32 _i_vertical_size, int32
     {
       switch(_pi_map[i + (j * pathfinder_gi_map_h_size)])
       {
-        case PATHFINDER_KI_EMPTY:
-          sppst_matrix[i][j].b_blocked = FALSE;
+        case PATHFINDER_KS32_EMPTY:
+          sppst_matrix[i][j].b_blocked = orxFALSE;
           break;
 
         default:
-          sppst_matrix[i][j].b_blocked = TRUE;
+          sppst_matrix[i][j].b_blocked = orxTRUE;
           break;
       }
     }
   }
 
-  DEBUG(D_PATHFINDER, "Largeur : %d. Hauteur : %d.\n", _i_horizontal_size, _i_vertical_size);
+  orxDEBUG_LOG(orxDEBUG_LEVEL_PATHFINDER, "Largeur : %d. Hauteur : %d.\n", _i_horizontal_size, _i_vertical_size);
 
   return;
 }
 
-int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, coord_st_coord **_ppst_result, bool _b_smooth)
+orxS32 pathfinder_path_get(orxVEC *_pst_src, orxVEC *_pst_dest, orxVEC **_ppst_result, orxBOOL _b_smooth)
 {
-  int32 i_current_point, i_check_point, i_newnum;
-  int32 i, j;
-  float f_newg, f_newf;
-  coord_st_coord st_act, st_parent, st_prev, st_next, st_temp;
-  coord_st_coord *pst_result, *pst_temp, *pst_parent;
+  orxS32 i_current_point, i_check_point, i_newnum;
+  orxS32 i, j;
+  orxFLOAT f_newg, f_newf;
+  orxVEC st_act, st_parent, st_prev, st_next, st_temp;
+  orxVEC *pst_result, *pst_temp, *pstParent;
   pathfinder_st_tile *pst_tile;
 
   pathfinder_touched_clean();
@@ -524,7 +526,7 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
   pathfinder_source_set(_pst_src);
   pathfinder_destination_set(_pst_dest);
 
-  pathfinder_tile_set(_pst_src, 0.0, pathfinder_goal_distance_estimate(_pst_src), 1, NULL, NULL, NULL, TRUE);
+  pathfinder_tile_set(_pst_src, 0.0, pathfinder_goal_distance_estimate(_pst_src), 1, orxNULL, orxNULL, orxNULL, orxTRUE);
 
 
   coord_copy(&st_parent, _pst_src);
@@ -533,17 +535,17 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
 
   pst_tile = pathfinder_tile_get(&st_parent);
 
-  while(pst_tile->b_open != FALSE)
+  while(pst_tile->b_open != orxFALSE)
   {
-    if(pathfinder_is_goal(&st_parent) != FALSE)
+    if(pathfinder_is_goal(&st_parent) != orxFALSE)
     {
-      pst_result = (coord_st_coord *) malloc(pst_tile->i_num * sizeof(coord_st_coord));
+      pst_result = (orxVEC *) orxMemory_Allocate(pst_tile->i_num * sizeof(orxVEC), orxMEMORY_TYPE_MAIN);
 
       for(i = pst_tile->i_num - 1, coord_copy(&st_temp, &st_parent); i >= 0; i--)
       {
         coord_copy(&pst_result[i], &st_temp);
-        pst_parent = pathfinder_coord_parent(&st_temp);
-        coord_copy(&st_temp, pst_parent);
+        pstParent = pathfinder_coord_parent(&st_temp);
+        coord_copy(&st_temp, pstParent);
       }
 
       pathfinder_gf_goal_distance = pst_tile->f_gcost;
@@ -552,7 +554,7 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
        * Return the raw path?
        */
 
-      if(_b_smooth == FALSE)
+      if(_b_smooth == orxFALSE)
       {
         *_ppst_result = pst_result;
         return(pst_tile->i_num - 1);
@@ -562,23 +564,23 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
        * Or smooth it before returning it
        */
 
-      pst_temp = (coord_st_coord *) malloc(pst_tile->i_num * sizeof(coord_st_coord));
+      pst_temp = (orxVEC *) orxMemory_Allocate(pst_tile->i_num * sizeof(orxVEC), orxMEMORY_TYPE_MAIN);
 
       for(i = 0, i_check_point = 0, i_current_point = 1; i_current_point + 1 < pst_tile->i_num; i_current_point++)
       {
-        if(pathfinder_is_walkable(&pst_result[i_check_point], &pst_result[i_current_point + 1]) == FALSE)
+        if(pathfinder_is_walkable(&pst_result[i_check_point], &pst_result[i_current_point + 1]) == orxFALSE)
         {
           coord_copy(&pst_temp[i++], &pst_result[i_current_point]);
           i_check_point = i_current_point;
         }
       }
 
-      if((pst_temp[i-1].s32_x != pst_result[i_current_point].s32_x) || (pst_temp[i-1].s32_y != pst_result[i_current_point].s32_y))
+      if((pst_temp[i-1].fX != pst_result[i_current_point].fX) || (pst_temp[i-1].fY != pst_result[i_current_point].fY))
       {
         coord_copy(&pst_temp[i++], &pst_result[i_current_point]);
       }
 
-      free(pst_result);
+      orxMemory_Free(pst_result);
 
       /*
        * Return Smoothed Path
@@ -591,13 +593,13 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
     {
       for(j = 0; j < si_mask_size; j++)
       {
-        st_act.s32_x = st_parent.s32_x + spst_mask[j].s32_x;
-        st_act.s32_y = st_parent.s32_y + spst_mask[j].s32_y;
-        f_newg = pst_tile->f_gcost + spst_mask[j].f_cost;
+        st_act.fX = st_parent.fX + spst_mask[j].fX;
+        st_act.fY = st_parent.fY + spst_mask[j].fY;
+        f_newg = pst_tile->f_gcost + spst_mask[j].fCost;
 
-        if((st_act.s32_x >= 0) && (st_act.s32_x < pathfinder_gi_map_h_size) && (st_act.s32_y >= 0) && (st_act.s32_y < pathfinder_gi_map_v_size) && (pathfinder_tile_get(&st_act)->b_blocked == FALSE))
+        if((st_act.fX >= 0) && (st_act.fX < pathfinder_gi_map_h_size) && (st_act.fY >= 0) && (st_act.fY < pathfinder_gi_map_v_size) && (pathfinder_tile_get(&st_act)->b_blocked == orxFALSE))
         {
-          if((pathfinder_is_touched(&st_act) != FALSE))
+          if((pathfinder_is_touched(&st_act) != orxFALSE))
           {
             if((pathfinder_gcost(&st_act) <= f_newg))
             {
@@ -613,14 +615,14 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
               coord_copy(&st_next, pathfinder_coord_next(&st_act));
               coord_copy(&st_prev, pathfinder_coord_previous(&st_act));
 
-              if(coord_is_null(&st_next) == FALSE)
+              if(coord_is_null(&st_next) == orxFALSE)
               {
-                coord_copy(&sppst_matrix[st_next.s32_x][st_next.s32_y].st_previous, &st_prev);
+                coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
               }
 
-              if(coord_is_null(&st_prev) == FALSE)
+              if(coord_is_null(&st_prev) == orxFALSE)
               {
-                coord_copy(&sppst_matrix[st_prev.s32_x][st_prev.s32_y].st_next, &st_next);
+                coord_copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
               }
             }
           }
@@ -635,24 +637,24 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
           pst_temp = pathfinder_coord_next(&st_parent);
           coord_copy(&st_next, pst_temp);
           coord_copy(&st_prev, &st_parent);
-          while((coord_is_null(&st_next) == FALSE) && (f_newf >= pathfinder_fcost(&st_next)))
+          while((coord_is_null(&st_next) == orxFALSE) && (f_newf >= pathfinder_fcost(&st_next)))
           {
             coord_copy(&st_prev, &st_next);
             pst_temp = pathfinder_coord_next(&st_next);
             coord_copy(&st_next, pst_temp);
           }
-          pathfinder_tile_set(&st_act, f_newg, f_newf, i_newnum, &st_parent, &st_prev, &st_next, TRUE);
+          pathfinder_tile_set(&st_act, f_newg, f_newf, i_newnum, &st_parent, &st_prev, &st_next, orxTRUE);
 
-          coord_copy(&sppst_matrix[st_prev.s32_x][st_prev.s32_y].st_next, &st_act);
-          if(coord_is_null(&st_next) == FALSE)
+          coord_copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_act);
+          if(coord_is_null(&st_next) == orxFALSE)
           {
-            coord_copy(&sppst_matrix[st_next.s32_x][st_next.s32_y].st_previous, &st_act);
+            coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_act);
           }
         }
       }
     }
 
-    pst_tile->b_open = FALSE;
+    pst_tile->b_open = orxFALSE;
 
     pst_temp = pathfinder_coord_previous(&st_parent);
     coord_copy(&st_prev, pst_temp);
@@ -660,18 +662,18 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
     pst_temp = pathfinder_coord_next(&st_parent);
     coord_copy(&st_next, pst_temp);
 
-    if(coord_is_null(&st_next) == FALSE)
+    if(coord_is_null(&st_next) == orxFALSE)
     {
-      coord_copy(&sppst_matrix[st_next.s32_x][st_next.s32_y].st_previous, &st_prev);
+      coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
     }
 
-    if(coord_is_null(&st_prev) == FALSE)
+    if(coord_is_null(&st_prev) == orxFALSE)
     {
-      coord_copy(&sppst_matrix[st_prev.s32_x][st_prev.s32_y].st_next, &st_next);
+      coord_copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
     }
 
     coord_copy(&st_parent, &pst_tile->st_next);
-    if(coord_is_null(&st_parent) != FALSE)
+    if(coord_is_null(&st_parent) != orxFALSE)
     {
       break;
     }
@@ -684,12 +686,12 @@ int32 pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, c
   return 0;
 }
 
-uint32 pathfinder_init()
+orxU32 pathfinder_init()
 {
-  return EXIT_SUCCESS;
+  return orxSTATUS_SUCCESS;
 }
 
-void pathfinder_exit()
+orxVOID pathfinder_exit()
 {
   return;
 }

@@ -26,11 +26,11 @@
  Constants
  *********************************************/
 
-#define PLUGIN_JOYSTICK_KUL_PLUGIN_ID              0x10000500
+#define PLUGIN_JOYSTICK_KU32_PLUGIN_ID              0x10000500
 
-#define PLUGIN_JOYSTICK_KUL_FUNCTION_NUMBER        0x00000002
+#define PLUGIN_JOYSTICK_KU32_FUNCTION_NUMBER        0x00000002
 
-#define PLUGIN_JOYSTICK_KUL_ID_INIT                0x10000300
-#define PLUGIN_JOYSTICK_KUL_ID_EXIT                0x10000301
+#define PLUGIN_JOYSTICK_KU32_ID_INIT                0x10000300
+#define PLUGIN_JOYSTICK_KU32_ID_EXIT                0x10000301
 
 #endif /* _PLUGIN_JOYSTICK_H_ */

@@ -26,12 +26,12 @@
  Constants
  *********************************************/
 
-#define PLUGIN_MOUSE_KUL_PLUGIN_ID              0x10000400
+#define PLUGIN_MOUSE_KU32_PLUGIN_ID              0x10000400
 
-#define PLUGIN_MOUSE_KUL_FUNCTION_NUMBER        0x00000003
+#define PLUGIN_MOUSE_KU32_FUNCTION_NUMBER        0x00000003
 
-#define PLUGIN_MOUSE_KUL_ID_INIT                0x10000400
-#define PLUGIN_MOUSE_KUL_ID_EXIT                0x10000401
-#define PLUGIN_MOUSE_KUL_ID_MOVE_GET            0x10000402
+#define PLUGIN_MOUSE_KU32_ID_INIT                0x10000400
+#define PLUGIN_MOUSE_KU32_ID_EXIT                0x10000401
+#define PLUGIN_MOUSE_KU32_ID_MOVE_GET            0x10000402
 
 #endif /* _PLUGIN_MOUSE_H_ */

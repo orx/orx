@@ -20,15 +20,15 @@
 #ifndef _SOUND_H_
 #define _SOUND_H_
 
-#include "include.h"
+#include "orxInclude.h"
 
 /*********************************************
  type declarations
  *********************************************/
 
-typedef int32 sound_st_sample;
-typedef int32 sound_st_channel;
-typedef int32 sound_st_stream;
+typedef orxS32 sound_st_sample;
+typedef orxS32 sound_st_channel;
+typedef orxS32 sound_st_stream;
 
 
 /*********************************************
@@ -36,43 +36,43 @@ typedef int32 sound_st_stream;
  *********************************************/
 
 /* Gets sound module ready for plugin */
-extern void               sound_plugin_init();
+extern orxVOID               sound_plugin_init();
 
 /* init the sound library */
-/* return TRUE or FALSE depending on success */
-extern uint32           (*sound_init)();
+/* return orxTRUE or orxFALSE depending on success */
+extern orxU32           (*sound_init)();
 
 /* load a song given a filename */
-extern sound_st_sample *(*sound_load_music_from_file)(char *name);
+extern sound_st_sample *(*sound_load_music_from_file)(orxU8 *name);
 
 /* stop playing a song */
-/* return TRUE or FALSE depending on success */
-extern bool             (*sound_stop)(sound_st_channel channel);
+/* return orxTRUE or orxFALSE depending on success */
+extern orxBOOL             (*sound_stop)(sound_st_channel channel);
 
 /* pause the given channel */
-extern bool             (*sound_pause)(sound_st_channel channel);
+extern orxBOOL             (*sound_pause)(sound_st_channel channel);
 
 /* unpause the given channel */
-extern bool             (*sound_unpause)(sound_st_channel channel);
+extern orxBOOL             (*sound_unpause)(sound_st_channel channel);
 
 /* is the given song playing ? */
-extern bool             (*sound_is_playing)(sound_st_channel channel);
+extern orxBOOL             (*sound_is_playing)(sound_st_channel channel);
 
 /* play the given sample */
-extern sound_st_channel (*sound_play_sample)(sound_st_channel channel, sound_st_sample *sample);
+extern sound_st_channel    (*sound_play_sample)(sound_st_channel channel, sound_st_sample *sample);
 
 /* release the given sample */
-extern bool             (*sound_release_sample)(sound_st_sample *sample);
+extern orxBOOL             (*sound_release_sample)(sound_st_sample *sample);
 
 /* set the master volume 0 <= vol <= 255*/
-extern bool             (*sound_set_volume)(sound_st_channel channel, int32 vol);
+extern orxBOOL             (*sound_set_volume)(sound_st_channel channel, orxS32 vol);
 
 /* Exits from the sound library */
-/* return TRUE or FALSE depending on success */
-extern bool             (*sound_exit)();
+/* return orxTRUE or orxFALSE depending on success */
+extern orxBOOL             (*sound_exit)();
 
 /* play background music with the given volume, in streaming */
-extern bool             (*sound_play_bgmusic_from_file)(char *filename, int32 volume);
+extern orxBOOL             (*sound_play_bgmusic_from_file)(orxU8 *filename, orxS32 volume);
 
 /* les wrappers a rajouter peut etre
 FSOUND_SetCurrentPosition

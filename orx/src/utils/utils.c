@@ -18,6 +18,8 @@
 
 #include "utils/utils.h"
 
+#include "memory/orxMemory.h"
+
 #include <string.h>
 
 /* definitions */
@@ -28,29 +30,29 @@ typedef struct struct_tree_cell priv_tree_cell;
 
 struct struct_map_cell
 {
-    uchar *p_uc_hash_key;
-    uchar *p_uc_hash_value;
+    orxU8 *p_uc_hash_key;
+    orxU8 *p_uc_hash_value;
     struct struct_map_cell *p_next_cell;
 
   /* 4 extra bytes of padding : 16 */
-  uint8 auc_unused[4];
+  orxU8 au8Unused[4];
 };
 
 struct struct_map
 {
     pfn_cmp_fct cellcmp;
-    uint32 value_size;
-    uint32 key_size;
-    uint32 count;
+    orxU32 value_size;
+    orxU32 key_size;
+    orxU32 count;
     map_cell *p_cell;
 
   /* 5 extra bytes of padding : 16 */
-  uint8 auc_unused[5];
+  orxU8 au8Unused[5];
 };
 
 struct struct_tree_cell
 {
-    uchar *p_data;
+    orxU8 *p_data;
 
     struct struct_tree_cell *p_parent;
     struct struct_tree_cell *p_first_child;
@@ -58,36 +60,36 @@ struct struct_tree_cell
     struct struct_tree_cell *p_left_sibling;
 
   /* 12 extra bytes of padding : 32 */
-  uint8 auc_unused[12];
+  orxU8 au8Unused[12];
 };
 
 struct struct_tree
 {
     pfn_tree_cmp_fct cell_cmp_fct;
-    uint32 cell_size;
+    orxU32 cell_size;
 
     priv_tree_cell *p_tree_root;
 
   /* 7 extra bytes of padding : 16 */
-  uint8 auc_unused[7];
+  orxU8 au8Unused[7];
 };
 
 /* forward declarations */
-static map_cell *map_goto(privmap *p_map, int32 pos);
-static uint32 map_get_value_size(privmap *p_map);
-static map_cell *map_find_cell(privmap *p_map, uchar *p_key);
-static void tree_delete_from(priv_tree_cell *p_cell);
+static map_cell *map_goto(privmap *p_map, orxS32 pos);
+static orxU32 map_get_value_size(privmap *p_map);
+static map_cell *map_find_cell(privmap *p_map, orxU8 *p_key);
+static orxVOID tree_delete_from(priv_tree_cell *p_cell);
 
 /* NOT STABLE, do not use */
-static bool map_insert(privmap *p_map, uint32 pos, uchar *p_key, uchar *p_value);
+//static orxBOOL map_insert(privmap *p_map, orxU32 pos, orxU8 *p_key, orxU8 *p_value);
 /* NOT STABLE */
 
 /******************************************************
  * map functions
  ******************************************************/
-map map_create(uint32 key_size, uint32 value_size, pfn_cmp_fct pfn_cmp)
+map map_create(orxU32 key_size, orxU32 value_size, pfn_cmp_fct pfn_cmp)
 {
-    privmap *p_map = (privmap *)malloc(sizeof(privmap));
+    privmap *p_map = (privmap *)orxMemory_Allocate(sizeof(privmap), orxMEMORY_TYPE_MAIN);
 
     if (p_map)
     {
@@ -95,45 +97,45 @@ map map_create(uint32 key_size, uint32 value_size, pfn_cmp_fct pfn_cmp)
         p_map->value_size = value_size;
         p_map->key_size   = key_size;
         p_map->count      = 0;
-        p_map->p_cell     = NULL;
+        p_map->p_cell     = orxNULL;
     }
 
     return (map) p_map;
 }
 
-bool map_add(map mymap, uchar *p_key, uchar *p_value)
+orxBOOL map_add(map mymap, orxU8 *p_key, orxU8 *p_value)
 {
     privmap  *p_map          = (privmap *)mymap;
-    map_cell *p_currmap_cell = NULL;
-    map_cell *p_cell         = NULL;
-    map_cell *p_old_cell     = NULL;
+    map_cell *p_currmap_cell = orxNULL;
+    map_cell *p_cell         = orxNULL;
+    map_cell *p_old_cell     = orxNULL;
 
-    if (p_map == NULL)
-        return FALSE;
+    if (p_map == orxNULL)
+        return orxFALSE;
 
     /* try to find if an entry with this key already exists */
     p_old_cell = map_find_cell(mymap, p_key);
 
-    if (p_old_cell != NULL)
+    if (p_old_cell != orxNULL)
     {
         /* yes, so free it and reassign new data */
-        free(p_old_cell->p_uc_hash_value);
+        orxMemory_Free(p_old_cell->p_uc_hash_value);
 
-        p_old_cell->p_uc_hash_value = (uchar*)malloc(p_map->value_size * sizeof(uchar));
-        memcpy(p_old_cell->p_uc_hash_value, p_value, p_map->value_size);
+        p_old_cell->p_uc_hash_value = (orxU8*)orxMemory_Allocate(p_map->value_size * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+        orxMemory_Copy(p_old_cell->p_uc_hash_value, p_value, p_map->value_size);
         
-        return TRUE;
+        return orxTRUE;
     }
 
-    p_cell = (map_cell *)malloc(sizeof(map_cell));
+    p_cell = (map_cell *)orxMemory_Allocate(sizeof(map_cell), orxMEMORY_TYPE_MAIN);
     
-    p_cell->p_uc_hash_value = (uchar *)malloc(p_map->value_size * sizeof(uchar));
-    memcpy(p_cell->p_uc_hash_value, p_value, p_map->value_size);
+    p_cell->p_uc_hash_value = (orxU8 *)orxMemory_Allocate(p_map->value_size * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+    orxMemory_Copy(p_cell->p_uc_hash_value, p_value, p_map->value_size);
     
-    p_cell->p_uc_hash_key = (uchar *)malloc(p_map->key_size * sizeof(uchar));
-    memcpy(p_cell->p_uc_hash_key, p_key, p_map->key_size);
+    p_cell->p_uc_hash_key = (orxU8 *)orxMemory_Allocate(p_map->key_size * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+    orxMemory_Copy(p_cell->p_uc_hash_key, p_key, p_map->key_size);
     
-    p_cell->p_next_cell = NULL;
+    p_cell->p_next_cell = orxNULL;
     
     if (map_count(p_map) == 0)
     {
@@ -147,24 +149,24 @@ bool map_add(map mymap, uchar *p_key, uchar *p_value)
     }
     
     p_map->count++;
-    return TRUE;
+    return orxTRUE;
 }
 
-uchar *map_find(map mymap, uchar *p_key)
+orxU8 *map_find(map mymap, orxU8 *p_key)
 {
     map_cell *p_currmap_cell;
     privmap *p_map = (privmap *)mymap;
 
-    if (p_map == NULL)
-        return NULL;
+    if (p_map == orxNULL)
+        return orxNULL;
     
     p_currmap_cell = p_map->p_cell;
 
     while(p_currmap_cell)
     {
-        /* if comparaison function == NULL, by default use == operator for int32 key*/
-        if ((p_map->cellcmp == NULL && (*(int32 *)p_currmap_cell->p_uc_hash_key == *(int32 *)p_key))
-            || (p_map->cellcmp != NULL && p_map->cellcmp(p_currmap_cell->p_uc_hash_key, p_key)))
+        /* if comparaison function == orxNULL, by default use == operator for orxS32 key*/
+        if ((p_map->cellcmp == orxNULL && (*(orxS32 *)p_currmap_cell->p_uc_hash_key == *(orxS32 *)p_key))
+            || (p_map->cellcmp != orxNULL && p_map->cellcmp(p_currmap_cell->p_uc_hash_key, p_key)))
         {
             /* found the corresponding cell ? */
             return p_currmap_cell->p_uc_hash_value;
@@ -173,24 +175,24 @@ uchar *map_find(map mymap, uchar *p_key)
         p_currmap_cell = p_currmap_cell->p_next_cell;
     }
 
-    return NULL;
+    return orxNULL;
 }
 
-bool map_delete(map mymap, uchar *p_key)
+orxBOOL map_delete(map mymap, orxU8 *p_key)
 {
     map_cell *p_currmap_cell;
     map_cell *p_lastmap_cell;
     privmap *p_map = (privmap *)mymap;
 
-    if (p_map == NULL)
-        return TRUE;
+    if (p_map == orxNULL)
+        return orxTRUE;
     
     p_currmap_cell = p_lastmap_cell = p_map->p_cell;
 
     while(p_currmap_cell)
     {
-        if ((p_map->cellcmp == NULL && (*(int32 *)p_currmap_cell->p_uc_hash_key == *(int32 *)p_key))
-            || (p_map->cellcmp != NULL && p_map->cellcmp(p_currmap_cell->p_uc_hash_key, p_key)))
+        if ((p_map->cellcmp == orxNULL && (*(orxS32 *)p_currmap_cell->p_uc_hash_key == *(orxS32 *)p_key))
+            || (p_map->cellcmp != orxNULL && p_map->cellcmp(p_currmap_cell->p_uc_hash_key, p_key)))
         {
             /* found the corresponding cell ? */
            
@@ -204,52 +206,52 @@ bool map_delete(map mymap, uchar *p_key)
                 p_lastmap_cell->p_next_cell = p_currmap_cell->p_next_cell;
             }
 
-            free(p_currmap_cell->p_uc_hash_value);
-            free(p_currmap_cell->p_uc_hash_key);
-            free(p_currmap_cell);
+            orxMemory_Free(p_currmap_cell->p_uc_hash_value);
+            orxMemory_Free(p_currmap_cell->p_uc_hash_key);
+            orxMemory_Free(p_currmap_cell);
             
             p_map->count--;
-            return TRUE;
+            return orxTRUE;
         }
 
         p_lastmap_cell = p_currmap_cell;
         p_currmap_cell = p_currmap_cell->p_next_cell;
     }
 
-    return FALSE;
+    return orxFALSE;
 }
 
-bool map_destroy(map mymap)
+orxBOOL map_destroy(map mymap)
 {
     map_cell *p_currmap_cell;
     map_cell *p_nextmap_cell;
     privmap *p_map = (privmap *)mymap;
 
-    if (p_map == NULL)
-        return TRUE;
+    if (p_map == orxNULL)
+        return orxTRUE;
 
     p_currmap_cell = p_map->p_cell;
     while(p_currmap_cell)
     {
         p_nextmap_cell = p_currmap_cell;
         
-        free(p_currmap_cell->p_uc_hash_value);
-        free(p_currmap_cell->p_uc_hash_key);
-        free(p_currmap_cell);
+        orxMemory_Free(p_currmap_cell->p_uc_hash_value);
+        orxMemory_Free(p_currmap_cell->p_uc_hash_key);
+        orxMemory_Free(p_currmap_cell);
 
         p_currmap_cell = p_nextmap_cell;
     }
 
-    free(p_map);
-    return TRUE;
+    orxMemory_Free(p_map);
+    return orxTRUE;
 }
 
 
-uint32 map_count(map mymap)
+orxU32 map_count(map mymap)
 {
     privmap *p_map = (privmap *)mymap;
 
-    if (p_map == NULL)
+    if (p_map == orxNULL)
         return 0;
 
     return p_map->count;
@@ -260,40 +262,40 @@ uint32 map_count(map mymap)
  * vector functions
  ******************************************************/
 
-vector vector_create(uint32 value_size)
+vector vector_create(orxU32 value_size)
 {
-    return map_create(sizeof(int), value_size, NULL);
+    return map_create(sizeof(int), value_size, orxNULL);
 }
 
-bool vector_set(vector myvector, uint32 pos, uchar *p_value)
+orxBOOL vector_set(vector myvector, orxU32 pos, orxU8 *p_value)
 {
     if (pos >= vector_count(myvector))
-        return FALSE;
+        return orxFALSE;
 
-    return map_add(myvector, (uchar *)&pos, p_value);
+    return map_add(myvector, (orxU8 *)&pos, p_value);
 }
 
-bool vector_pushback(vector myvector, uchar *p_value)
+orxBOOL vector_pushback(vector myvector, orxU8 *p_value)
 {
-    uint32 ikey = vector_count(myvector);
-    return map_add(myvector, (uchar *)&ikey, p_value);
+    orxU32 ikey = vector_count(myvector);
+    return map_add(myvector, (orxU8 *)&ikey, p_value);
 }
 
-bool vector_insert(vector myvector, uchar *p_value)
+orxBOOL vector_insert(vector myvector, orxU8 *p_value)
 {
     privmap *p_map           = (privmap *)myvector;
-    map_cell *p_currmap_cell = NULL;
-    uint32 ikey                = MAP_BEGIN;
+    map_cell *p_currmap_cell = orxNULL;
+    orxU32 ikey                = MAP_BEGIN;
 
-    if (p_map == NULL)
-        return FALSE;
+    if (p_map == orxNULL)
+        return orxFALSE;
 
     p_currmap_cell = p_map->p_cell;
     while(p_currmap_cell)
     {
-        /* since it s a vector the key is an int32 */
+        /* since it s a vector the key is an orxS32 */
         /* just add 1 to each key to shift everything up */
-        *((int32 *)p_currmap_cell->p_uc_hash_key) = *((int32 *)p_currmap_cell->p_uc_hash_key) + 1;
+        *((orxS32 *)p_currmap_cell->p_uc_hash_key) = *((orxS32 *)p_currmap_cell->p_uc_hash_key) + 1;
         
         p_currmap_cell = p_currmap_cell->p_next_cell;
     }
@@ -301,25 +303,25 @@ bool vector_insert(vector myvector, uchar *p_value)
     /* add key = 0 */
     /* SN: this can be optimized by inserting this cell at the list beginning and */
     /* not at the end */
-    return map_add(myvector, (uchar *)&ikey, p_value);
+    return map_add(myvector, (orxU8 *)&ikey, p_value);
 }
 
-uchar *vector_get(vector myvector, uint32 pos)
+orxU8 *vector_get(vector myvector, orxU32 pos)
 {
-    return map_find(myvector, (uchar *)&pos);
+    return map_find(myvector, (orxU8 *)&pos);
 }
 
-bool vector_delete(vector myvector, uint32 pos)
+orxBOOL vector_delete(vector myvector, orxU32 pos)
 {
-    return map_delete(myvector, (uchar *)&pos);
+    return map_delete(myvector, (orxU8 *)&pos);
 }
 
-bool vector_destroy(vector myvector)
+orxBOOL vector_destroy(vector myvector)
 {
     return map_destroy(myvector);
 }
 
-uint32 vector_count(vector myvector)
+orxU32 vector_count(vector myvector)
 {
     return map_count(myvector);
 }
@@ -329,21 +331,21 @@ uint32 vector_count(vector myvector)
  * stack functions
  ******************************************************/
 
-stack stack_create(uint32 value_size)
+stack stack_create(orxU32 value_size)
 {
     return vector_create(value_size);
 }
 
-bool stack_push(stack mystack, uchar *p_value)
+orxBOOL stack_push(stack mystack, orxU8 *p_value)
 {
     return vector_pushback(mystack, p_value);
 }
 
-uchar *stack_pop(stack mystack)
+orxU8 *stack_pop(stack mystack)
 {
-    uchar *p_value = stack_peek(mystack);
+    orxU8 *p_value = stack_peek(mystack);
 
-    if (p_value != NULL)
+    if (p_value != orxNULL)
     {
         vector_delete(mystack, stack_count(mystack) - 1);
     }
@@ -351,28 +353,28 @@ uchar *stack_pop(stack mystack)
     return p_value;
 }
 
-uchar *stack_peek(stack mystack)
+orxU8 *stack_peek(stack mystack)
 {
-    uint32 pos = stack_count(mystack) - 1;
-    uchar *p_value = vector_get(mystack, pos);
-    uint32  size = map_get_value_size(mystack);
-    uchar *tmpvalue = NULL;
+    orxU32 pos = stack_count(mystack) - 1;
+    orxU8 *p_value = vector_get(mystack, pos);
+    orxU32  size = map_get_value_size(mystack);
+    orxU8 *tmpvalue = orxNULL;
     
-    if (p_value != NULL)
+    if (p_value != orxNULL)
     {
-        tmpvalue = (uchar *)sizeof(size * sizeof(uchar));
-        memcpy(tmpvalue, p_value, size);
+        tmpvalue = (orxU8 *)sizeof(size * sizeof(orxU8));
+        orxMemory_Copy(tmpvalue, p_value, size);
     }
 
     return tmpvalue;
 }
 
-bool stack_destroy(stack mystack)
+orxBOOL stack_destroy(stack mystack)
 {
     return vector_destroy(mystack);
 }
 
-uint32 stack_count(stack mystack)
+orxU32 stack_count(stack mystack)
 {
     return vector_count(mystack);
 }
@@ -382,18 +384,18 @@ uint32 stack_count(stack mystack)
  * tree functions
  ******************************************************/
 /* TO BE DONE, use find with OID */
-tree_cell tree_find(tree mytree, tree_cell mycell, void *key, void *type, short method_type)
+tree_cell tree_find(tree mytree, tree_cell mycell, orxVOID *key, orxVOID *type, short method_type)
 {
     privtree *p_tree = (privtree *) mytree;
     priv_tree_cell *p_cell_start = (priv_tree_cell *) mycell;
-    priv_tree_cell *p_current_cell = NULL;
-    bool bDone = FALSE;
+    priv_tree_cell *p_current_cell = orxNULL;
+    orxBOOL bDone = orxFALSE;
 
-    if (p_tree == NULL)
-        return (tree_cell) NULL;
+    if (p_tree == orxNULL)
+        return (tree_cell) orxNULL;
 
     /* if start cell is not null start find from this position */
-    if (p_cell_start != NULL)
+    if (p_cell_start != orxNULL)
         p_current_cell = p_cell_start;
     else
         p_current_cell = p_tree->p_tree_root->p_first_child; /* start directly here to save one test */
@@ -413,19 +415,19 @@ tree_cell tree_find(tree mytree, tree_cell mycell, void *key, void *type, short 
             if (!bDone && p_current_cell->p_first_child)
             {
                 p_current_cell = p_current_cell->p_first_child;
-                bDone = FALSE;
+                bDone = orxFALSE;
             }
             else if (p_current_cell->p_right_sibling)
             {
                 p_current_cell = p_current_cell->p_right_sibling;
-                bDone = FALSE;
+                bDone = orxFALSE;
             }
             else
             {
                 /* no child, no sibling, go up one level */
                 p_current_cell = p_current_cell->p_parent;
 
-                bDone = TRUE;
+                bDone = orxTRUE;
             }
         }
         else if (method_type == WIDTH_SEARCH)
@@ -435,12 +437,12 @@ tree_cell tree_find(tree mytree, tree_cell mycell, void *key, void *type, short 
             /* if (!bDone && p_current_cell->p_right_sibling) */
 /*             { */
 /*                 p_current_cell = p_current_cell->p_right_sibling; */
-/*                 bDone = FALSE; */
+/*                 bDone = orxFALSE; */
 /*             } */
 /*             else if (p_current_cell->p_first_child) */
 /*             { */
 /*                 p_current_cell = p_current_cell->p_first_child; */
-/*                 bDone = FALSE; */
+/*                 bDone = orxFALSE; */
 /*             } */
 /*             else */
 /*             { */
@@ -450,36 +452,36 @@ tree_cell tree_find(tree mytree, tree_cell mycell, void *key, void *type, short 
 /*                 else */
 /*                     p_current_cell = p_current_cell->p_parent; */
 
-/*                 bDone = TRUE; */
+/*                 bDone = orxTRUE; */
 /*             } */
         }
     }
 
-    return (tree_cell) NULL;
+    return (tree_cell) orxNULL;
 }
 
-tree tree_create(uint32 tree_cell_size, pfn_tree_cmp_fct pfn_tree_cmp)
+tree tree_create(orxU32 tree_cell_size, pfn_tree_cmp_fct pfn_tree_cmp)
 {
-    privtree *p_tree = (privtree *)malloc(sizeof(privtree));
+    privtree *p_tree = (privtree *)orxMemory_Allocate(sizeof(privtree), orxMEMORY_TYPE_MAIN);
 
     if (p_tree)
     {
         p_tree->cell_cmp_fct = pfn_tree_cmp;
         p_tree->cell_size    = tree_cell_size;
-        p_tree->p_tree_root  = NULL;
+        p_tree->p_tree_root  = orxNULL;
     }
 
     return (tree) p_tree;
 }
 
-uchar *tree_cell_get_data(tree_cell mycell)
+orxU8 *tree_cell_get_data(tree_cell mycell)
 {
     priv_tree_cell *p_cell = (priv_tree_cell *) mycell;
 
     if (p_cell)
         return p_cell->p_data;
 
-    return NULL;
+    return orxNULL;
 }
 
 tree_cell tree_get_parent(tree_cell mycell)
@@ -489,7 +491,7 @@ tree_cell tree_get_parent(tree_cell mycell)
     if (p_cell)
         return (tree_cell *)p_cell->p_parent;
 
-    return NULL;
+    return orxNULL;
 }
 
 tree_cell tree_get_child(tree_cell mycell)
@@ -499,7 +501,7 @@ tree_cell tree_get_child(tree_cell mycell)
     if (p_cell)
         return (tree_cell *)p_cell->p_first_child;
 
-    return NULL;
+    return orxNULL;
 }
 
 tree_cell tree_get_sibling(tree_cell mycell)
@@ -509,26 +511,26 @@ tree_cell tree_get_sibling(tree_cell mycell)
     if (p_cell)
         return (tree_cell *)p_cell->p_right_sibling;
 
-    return NULL;
+    return orxNULL;
 }
 
-bool tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_type)
+orxBOOL tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_type)
 {
     priv_tree_cell *p_cell_pos = (priv_tree_cell *) mycell_pos;
     priv_tree_cell *p_cell_data = (priv_tree_cell *) mycell_data;
-    priv_tree_cell *p_temp_cell = NULL;
+    priv_tree_cell *p_temp_cell = orxNULL;
 
-    if (p_cell_pos == NULL ||
-        p_cell_data == NULL)
-        return FALSE;
+    if (p_cell_pos == orxNULL ||
+        p_cell_data == orxNULL)
+        return orxFALSE;
 
     /* change all reference to mycell_data */
     /* check if cell data is a first child */
     if (p_cell_data->p_parent->p_first_child == p_cell_data)
     {
-        if (p_cell_data->p_right_sibling != NULL)
+        if (p_cell_data->p_right_sibling != orxNULL)
         {
-            p_cell_data->p_right_sibling->p_left_sibling = NULL;
+            p_cell_data->p_right_sibling->p_left_sibling = orxNULL;
         }
 
         p_cell_data->p_parent->p_first_child = p_cell_data->p_right_sibling;
@@ -538,7 +540,7 @@ bool tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_
         /* no, so it s just a sibling */
         p_cell_data->p_left_sibling->p_right_sibling = p_cell_data->p_right_sibling;
 
-        if (p_cell_data->p_right_sibling != NULL)
+        if (p_cell_data->p_right_sibling != orxNULL)
         {
             p_cell_data->p_right_sibling->p_left_sibling = p_cell_data->p_left_sibling;
         }
@@ -548,7 +550,7 @@ bool tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_
     if (position_type == TREE_CHILD)
     {
         /* test if first child exists */
-        if (p_cell_pos->p_first_child != NULL)
+        if (p_cell_pos->p_first_child != orxNULL)
         {
             p_temp_cell = p_cell_pos->p_first_child;
         }
@@ -556,8 +558,8 @@ bool tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_
         {
             p_cell_pos->p_first_child = p_cell_data;
             p_cell_data->p_parent = p_cell_pos;
-            p_cell_data->p_right_sibling = NULL;
-            p_cell_data->p_left_sibling = NULL;
+            p_cell_data->p_right_sibling = orxNULL;
+            p_cell_data->p_left_sibling = orxNULL;
         }
     }
     else if (position_type == TREE_SIBLING)
@@ -566,11 +568,11 @@ bool tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_
     }
 
     /* common case */
-    if (p_temp_cell != NULL)
+    if (p_temp_cell != orxNULL)
     {
         p_cell_data->p_right_sibling = p_temp_cell->p_right_sibling;
         
-        if (p_cell_data->p_right_sibling != NULL)
+        if (p_cell_data->p_right_sibling != orxNULL)
         {
             p_cell_data->p_right_sibling->p_left_sibling = p_cell_data;
         }
@@ -580,34 +582,34 @@ bool tree_move_cell(tree_cell mycell_pos, tree_cell mycell_data, short position_
         p_cell_data->p_left_sibling = p_temp_cell;
     }
 
-    return TRUE;
+    return orxTRUE;
 }
 
-bool tree_is_leaf(tree_cell mycell)
+orxBOOL tree_is_leaf(tree_cell mycell)
 {
     priv_tree_cell *p_cell = (priv_tree_cell *) mycell;
 
     if (p_cell)
-        return (p_cell->p_first_child == NULL);
+        return (p_cell->p_first_child == orxNULL);
 
-    return FALSE;
+    return orxFALSE;
 }
 
-bool tree_add_sibling(tree mytree, tree_cell mycell_pos, tree_cell_data mydata)
+orxBOOL tree_add_sibling(tree mytree, tree_cell mycell_pos, tree_cell_data mydata)
 {
     privtree *p_tree = (privtree *) mytree;
     priv_tree_cell *p_cell_pos = (priv_tree_cell *) mycell_pos;
-    priv_tree_cell *p_cell_new = (priv_tree_cell *)malloc(sizeof(priv_tree_cell));
+    priv_tree_cell *p_cell_new = (priv_tree_cell *)orxMemory_Allocate(sizeof(priv_tree_cell), orxMEMORY_TYPE_MAIN);
     
-    if (p_tree == NULL ||
-        p_cell_pos == NULL ||
-        p_cell_new == NULL)
-        return FALSE;
+    if (p_tree == orxNULL ||
+        p_cell_pos == orxNULL ||
+        p_cell_new == orxNULL)
+        return orxFALSE;
 
     /* assign data */
-    p_cell_new->p_data = (uchar *)malloc(p_tree->cell_size * sizeof(uchar));
-    memcpy(p_cell_new->p_data, (uchar *) mydata, p_tree->cell_size);
-    p_cell_new->p_first_child = NULL;
+    p_cell_new->p_data = (orxU8 *)orxMemory_Allocate(p_tree->cell_size * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+    orxMemory_Copy(p_cell_new->p_data, (orxU8 *) mydata, p_tree->cell_size);
+    p_cell_new->p_first_child = orxNULL;
     p_cell_new->p_parent = p_cell_pos->p_parent;
 
     /* insert new cell */
@@ -616,32 +618,32 @@ bool tree_add_sibling(tree mytree, tree_cell mycell_pos, tree_cell_data mydata)
 
     p_cell_pos->p_right_sibling = p_cell_new;
     
-    return TRUE;
+    return orxTRUE;
 }
 
-bool tree_add_child(tree mytree, tree_cell mycell_pos, tree_cell_data mydata)
+orxBOOL tree_add_child(tree mytree, tree_cell mycell_pos, tree_cell_data mydata)
 {
     privtree *p_tree = (privtree *) mytree;
     priv_tree_cell *p_cell_pos = (priv_tree_cell *) mycell_pos;
-    priv_tree_cell *p_cell_new = (priv_tree_cell *)malloc(sizeof(priv_tree_cell));
+    priv_tree_cell *p_cell_new = (priv_tree_cell *)orxMemory_Allocate(sizeof(priv_tree_cell), orxMEMORY_TYPE_MAIN);
     
-    if (p_tree == NULL ||
-        p_cell_pos == NULL ||
-        p_cell_new == NULL)
-        return FALSE;
+    if (p_tree == orxNULL ||
+        p_cell_pos == orxNULL ||
+        p_cell_new == orxNULL)
+        return orxFALSE;
 
     /* assign data */
-    p_cell_new->p_data = (uchar *)malloc(p_tree->cell_size * sizeof(uchar));
-    memcpy(p_cell_new->p_data, (uchar *) mydata, p_tree->cell_size);
+    p_cell_new->p_data = (orxU8 *)orxMemory_Allocate(p_tree->cell_size * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+    orxMemory_Copy(p_cell_new->p_data, (orxU8 *) mydata, p_tree->cell_size);
 
     p_cell_new->p_parent = p_cell_pos;
-    p_cell_new->p_first_child = NULL;
-    p_cell_new->p_left_sibling = NULL;
+    p_cell_new->p_first_child = orxNULL;
+    p_cell_new->p_left_sibling = orxNULL;
 
     /* if current cell has no child just add it as a child */
-    if (p_cell_pos->p_first_child == NULL)
+    if (p_cell_pos->p_first_child == orxNULL)
     {
-        p_cell_new->p_right_sibling = NULL;
+        p_cell_new->p_right_sibling = orxNULL;
 
         p_cell_pos->p_first_child = p_cell_new;
     }
@@ -654,16 +656,16 @@ bool tree_add_child(tree mytree, tree_cell mycell_pos, tree_cell_data mydata)
         p_cell_pos->p_first_child = p_cell_new;
     }
     
-    return TRUE;
+    return orxTRUE;
 }
 
-bool tree_remove(tree_cell mycell)
+orxBOOL tree_remove(tree_cell mycell)
 {
     priv_tree_cell *p_cell = (priv_tree_cell *) mycell;
     priv_tree_cell *p_parent, *p_right, *p_left;
 
     if (!p_cell)
-        return FALSE;
+        return orxFALSE;
 
     p_right  = p_cell->p_right_sibling;
     p_left   = p_cell->p_left_sibling;
@@ -675,7 +677,7 @@ bool tree_remove(tree_cell mycell)
         {
             /* first child */
             p_parent->p_first_child = p_right;
-            p_right->p_left_sibling = NULL;
+            p_right->p_left_sibling = orxNULL;
         }
         else
         {
@@ -687,28 +689,28 @@ bool tree_remove(tree_cell mycell)
     else
     {
         /* only child */
-        p_parent->p_first_child = NULL;
+        p_parent->p_first_child = orxNULL;
     }
     
     tree_delete_from(p_cell);
     
-    return TRUE;
+    return orxTRUE;
 }
 
-void tree_destroy(tree mytree)
+orxVOID tree_destroy(tree mytree)
 {
     privtree *p_tree = (privtree*) mytree;
 
     tree_delete_from(p_tree->p_tree_root);
 
-    free(p_tree);
+    orxMemory_Free(p_tree);
 }
 
-uint32 tree_child_number(tree_cell mycell)
+orxU32 tree_child_number(tree_cell mycell)
 {
     priv_tree_cell *p_cell = (priv_tree_cell *) mycell;
-    priv_tree_cell *p_current_cell = (p_cell) ? p_cell->p_first_child : NULL;
-    uint32 nb_child = 0;
+    priv_tree_cell *p_current_cell = (p_cell) ? p_cell->p_first_child : orxNULL;
+    orxU32 nb_child = 0;
     
     while (p_current_cell)
     {
@@ -720,11 +722,11 @@ uint32 tree_child_number(tree_cell mycell)
     return nb_child;
 }
 
-uint32 tree_sibling_number(tree_cell mycell)
+orxU32 tree_sibling_number(tree_cell mycell)
 {
     priv_tree_cell *p_cell = (priv_tree_cell *) mycell;
-    priv_tree_cell *p_current_cell = (p_cell) ? p_cell->p_right_sibling : NULL;
-    uint32 nb_sibling = 0;
+    priv_tree_cell *p_current_cell = (p_cell) ? p_cell->p_right_sibling : orxNULL;
+    orxU32 nb_sibling = 0;
     
     while (p_current_cell)
     {
@@ -740,51 +742,51 @@ uint32 tree_sibling_number(tree_cell mycell)
  * Private functions
  ******************************************************/
 
-static uint32 map_get_value_size(privmap *p_map)
+static orxU32 map_get_value_size(privmap *p_map)
 {
     return p_map->value_size;
 }
 
-static bool map_insert(privmap *p_map, uint32 pos, uchar *p_key, uchar *p_value)
+//static orxBOOL map_insert(privmap *p_map, orxU32 pos, orxU8 *p_key, orxU8 *p_value)
+//{
+//    map_cell *p_currmap_cell = orxNULL;
+//    map_cell *p_cell = orxNULL;
+//
+//    if (p_map == orxNULL)
+//        return orxFALSE;
+//
+//    p_cell = (map_cell *)orxMemory_Allocate(sizeof(map_cell), orxMEMORY_TYPE_MAIN);
+//        
+//    p_cell->p_uc_hash_value = (orxU8 *)orxMemory_Allocate(p_map->value_size * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+//    orxMemory_Copy(p_cell->p_uc_hash_value, p_value, p_map->value_size);
+//    
+//    p_cell->p_uc_hash_key = (orxU8 *)orxMemory_Allocate(p_map->key_size * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+//    orxMemory_Copy(p_cell->p_uc_hash_key, p_key, p_map->key_size);
+//
+//    if (pos == MAP_BEGIN)
+//    {
+//        p_cell->p_next_cell = p_map->p_cell;
+//        p_map->p_cell = p_cell;
+//    }
+//    else
+//    {
+//        p_currmap_cell = map_goto(p_map, pos - 1);
+//
+//        p_cell->p_next_cell = p_currmap_cell->p_next_cell;
+//        p_currmap_cell->p_next_cell = p_cell;
+//    }
+//    
+//    p_map->count++;
+//    return orxTRUE;
+//}
+
+static map_cell *map_goto(privmap *p_map, orxS32 pos)
 {
-    map_cell *p_currmap_cell = NULL;
-    map_cell *p_cell = NULL;
-
-    if (p_map == NULL)
-        return FALSE;
-
-    p_cell = (map_cell *)malloc(sizeof(map_cell));
-        
-    p_cell->p_uc_hash_value = (uchar *)malloc(p_map->value_size * sizeof(uchar));
-    memcpy(p_cell->p_uc_hash_value, p_value, p_map->value_size);
-    
-    p_cell->p_uc_hash_key = (uchar *)malloc(p_map->key_size * sizeof(uchar));
-    memcpy(p_cell->p_uc_hash_key, p_key, p_map->key_size);
-
-    if (pos == MAP_BEGIN)
-    {
-        p_cell->p_next_cell = p_map->p_cell;
-        p_map->p_cell = p_cell;
-    }
-    else
-    {
-        p_currmap_cell = map_goto(p_map, pos - 1);
-
-        p_cell->p_next_cell = p_currmap_cell->p_next_cell;
-        p_currmap_cell->p_next_cell = p_cell;
-    }
-    
-    p_map->count++;
-    return TRUE;
-}
-
-static map_cell *map_goto(privmap *p_map, int32 pos)
-{
-    int32 i = 0;
+    orxS32 i = 0;
     map_cell *p_currmap_cell;
 
-    if (p_map == NULL)
-        return NULL;
+    if (p_map == orxNULL)
+        return orxNULL;
 
     p_currmap_cell = p_map->p_cell;
 
@@ -792,7 +794,7 @@ static map_cell *map_goto(privmap *p_map, int32 pos)
     {
         if (pos == MAP_END)
         {
-            if (p_currmap_cell->p_next_cell == NULL)
+            if (p_currmap_cell->p_next_cell == orxNULL)
                 return p_currmap_cell;
         }
 
@@ -804,24 +806,24 @@ static map_cell *map_goto(privmap *p_map, int32 pos)
         ++pos;
     }
 
-    return NULL;
+    return orxNULL;
 }
 
 
-static map_cell *map_find_cell(privmap *p_map, uchar *p_key)
+static map_cell *map_find_cell(privmap *p_map, orxU8 *p_key)
 {
     map_cell *p_currmap_cell;
 
-    if (p_map == NULL)
-        return NULL;
+    if (p_map == orxNULL)
+        return orxNULL;
     
     p_currmap_cell = p_map->p_cell;
 
     while(p_currmap_cell)
     {
-        /* if comparaison function == NULL, by default use == operator for int32 key*/
-        if ((p_map->cellcmp == NULL && (*(int32 *)p_currmap_cell->p_uc_hash_key == *(int32 *)p_key))
-            || (p_map->cellcmp != NULL && p_map->cellcmp(p_currmap_cell->p_uc_hash_key, p_key)))
+        /* if comparaison function == orxNULL, by default use == operator for orxS32 key*/
+        if ((p_map->cellcmp == orxNULL && (*(orxS32 *)p_currmap_cell->p_uc_hash_key == *(orxS32 *)p_key))
+            || (p_map->cellcmp != orxNULL && p_map->cellcmp(p_currmap_cell->p_uc_hash_key, p_key)))
         {
             /* found the corresponding cell ? */
             return p_currmap_cell;
@@ -830,11 +832,11 @@ static map_cell *map_find_cell(privmap *p_map, uchar *p_key)
         p_currmap_cell = p_currmap_cell->p_next_cell;
     }
 
-    return NULL;
+    return orxNULL;
 }
 
 
-static void tree_delete_from(priv_tree_cell *p_cell)
+static orxVOID tree_delete_from(priv_tree_cell *p_cell)
 {
     priv_tree_cell *p_current_cell, *p_old_cell;
     
@@ -852,15 +854,15 @@ static void tree_delete_from(priv_tree_cell *p_cell)
             else
             {
                 p_current_cell = p_current_cell->p_parent;
-                p_current_cell->p_first_child = NULL;
+                p_current_cell->p_first_child = orxNULL;
             }
 
-            free(p_old_cell->p_data);
-            free(p_old_cell);
+            orxMemory_Free(p_old_cell->p_data);
+            orxMemory_Free(p_old_cell);
         }
     }
 
     /* delete the last cell */
-    free(p_cell->p_data);
-    free(p_cell);
+    orxMemory_Free(p_cell->p_data);
+    orxMemory_Free(p_cell);
 }

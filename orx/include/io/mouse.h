@@ -20,14 +20,14 @@
 #ifndef _MOUSE_H_
 #define _MOUSE_H_
 
-#include "include.h"
+#include "orxInclude.h"
 
 
-extern void     mouse_plugin_init();
+extern orxVOID     mouse_plugin_init();
 
-extern uint32 (*mouse_init)();
-extern void   (*mouse_exit)();
+extern orxU32 (*mouse_init)();
+extern orxVOID   (*mouse_exit)();
 
-extern void   (*mouse_move_get)(int32 *_i_dx, int32 *_i_dy);
+extern orxVOID   (*mouse_move_get)(orxS32 *_i_dx, orxS32 *_i_dy);
 
 #endif /* _MOUSE_H_ */

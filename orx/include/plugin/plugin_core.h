@@ -27,7 +27,7 @@
  Constants
  *********************************************/
 
-#include "include.h"
+#include "orxInclude.h"
 
 #include "plugin/plugin_type.h"
 
@@ -43,7 +43,7 @@
 
 
 /*** Plugin Definitions ***/
-#define PLUGIN_CORE_KI_NUMBER           6
+#define PLUGIN_CORE_KS32_NUMBER           6
 
 
 /*********************************************
@@ -53,7 +53,7 @@
 typedef struct
 {
   plugin_function *pfn_function;        /**< Function Address */
-  unsigned long u32_function_id;        /**< Function ID */
+  orxU32 u32_function_id;        /**< Function ID */
 } plugin_core_st_function;
 
 
@@ -67,16 +67,16 @@ typedef struct
  * \param _pst_core_function the pointer on the core functions info array
  * \return nothing.
  */
-extern void   plugin_core_info_add(unsigned long _u32_core_id, plugin_core_st_function *_pst_core_function, int32 _i_core_function_number);
+extern orxVOID   plugin_core_info_add(orxU32 _u32_core_id, plugin_core_st_function *_pst_core_function, orxS32 _i_core_function_number);
 
 /** Default core plugin function.
  * Needs to be referenced by all core functions at module init.
  */
-extern void  *plugin_core_function_default(char *_zFunctionName, char *_zFileName, uint32 _u32Line);
+extern orxVOID  *plugin_core_function_default(orxU8 *_zFunctionName, orxU8 *_zFileName, orxU32 _u32Line);
 
 /*** Plugin Core Function Macro Definition *** */
 #define PLUGIN_CORE_FUNCTION_DEFINE(FUNCTION_NAME, RETURN, ...)                     \
-    void *_DEFAULT_CORE_FUNCTION_##FUNCTION_NAME()                                  \
+    static orxVOID *_DEFAULT_CORE_FUNCTION_##FUNCTION_NAME()                        \
     {                                                                               \
         return(plugin_core_function_default(#FUNCTION_NAME, __FILE__, __LINE__));   \
     }                                                                               \

@@ -33,7 +33,7 @@
 
 #include <time.h>
 
-#include "include.h"
+#include "orxInclude.h"
 
 #include "msg/msg_file.h"
 
@@ -47,80 +47,80 @@
 /** structure d'informations sur le fichier. */
 typedef struct st_file_infos
 {
-  int32 i_id;        /**< id de la recherche */
-  int32 i_attrib;    /**< attributs du fichier. voir dessus */
+  orxS32 i_id;        /**< id de la recherche */
+  orxS32 i_attrib;    /**< attributs du fichier. voir dessus */
   time_t st_time;    /**< heure de modification du fichier */
   long s32_size;     /**< taille du fichier */
-  char ac_name[512]; /**< nom du fichier */
-  char ac_path[512]; /**< directory path of the file */
+  orxU8 ac_name[512]; /**< nom du fichier */
+  orxU8 ac_path[512]; /**< directory path of the file */
 } file_st_file_infos;
 
 /** Teste si un fichier existe.
- * \param _z_file_name nom du fichier a tester
- * \return retourne FALSE si _z_file_name n'existe pas, sinon TRUE
+ * \param _zFile_name nom du fichier a tester
+ * \return retourne orxFALSE si _zFile_name n'existe pas, sinon orxTRUE
  */
-bool file_exist(char *_z_file_name);
+orxBOOL file_exist(orxU8 *_zFile_name);
 
 /** se positionne sur le premier fichier correspondant au pattern donné.
  * \param _z_pattern definition du pattern
- * \param _pst_infos structure qui sera initialise avec les informations sur le fichier
- * \return retourn TRUE si le fichier est trouve, FALSE  dans le cas contraire
+ * \param _pstInfo structure qui sera initialise avec les informations sur le fichier
+ * \return retourn orxTRUE si le fichier est trouve, orxFALSE  dans le cas contraire
  */
-bool file_find_first(char *_z_pattern, file_st_file_infos *_pst_infos);
+orxBOOL file_find_first(orxU8 *_z_pattern, file_st_file_infos *_pstInfo);
 
 /** se positionne sur le fichier suivant, la recherche doit avoir commencé par un file_find_first.
- * \param _pst_infos structure qui contient les informations sur le fichier precedent,
+ * \param _pstInfo structure qui contient les informations sur le fichier precedent,
  * et qui sera rendu avec les informations du fichier suivant
- * \return retourne TRUE si un fichier suivant est trouve, FALSE sinon (en cas de FALSE, la recherche est termine
+ * \return retourne orxTRUE si un fichier suivant est trouve, orxFALSE sinon (en cas de orxFALSE, la recherche est termine
  * automatiquement, pas besoin d'appel a la fonction file_find_close)
  */
-bool file_find_next(file_st_file_infos *_pst_infos);/** Termine une recherche commencé par un file_find_first.
- * \param _pst_infos dernieres informations qui ont ete rendu par la recherche qui permet de savoir de 
+orxBOOL file_find_next(file_st_file_infos *_pstInfo);/** Termine une recherche commencé par un file_find_first.
+ * \param _pstInfo dernieres informations qui ont ete rendu par la recherche qui permet de savoir de 
  * quelle recherche il s'agit.
  */
-void file_find_close(file_st_file_infos *_pst_infos);
+orxVOID file_find_close(file_st_file_infos *_pstInfo);
 
 /** Copy a file.
- * \param _z_file_src source file
- * \param _z_file_dest destination file
- * \return Returns TRUE if the operation succeed, else FALSE and errno contains the error code
+ * \param _zFile_src source file
+ * \param _zFile_dest destination file
+ * \return Returns orxTRUE if the operation succeed, else orxFALSE and errno contains the error code
  */
-bool file_copy(char *_z_file_src, char *_z_file_dest);
+orxBOOL file_copy(orxU8 *_zFile_src, orxU8 *_zFile_dest);
 
 /** Delete a file.
- * \param _z_file file to delete
- * \return Returns TRUE if the operation succeed, else FALSE and errno contains the error code
+ * \param _zFile file to delete
+ * \return Returns orxTRUE if the operation succeed, else orxFALSE and errno contains the error code
  */
-bool file_delete(char *_z_file);
+orxBOOL file_delete(orxU8 *_zFile);
 
 /** Rename a file.
- * \param _z_file_src file to rename
- * \param _z_file_dest new file
- * \return Returns TRUE if the operation succeed, else FALSE and errno contains the error code
+ * \param _zFile_src file to rename
+ * \param _zFile_dest new file
+ * \return Returns orxTRUE if the operation succeed, else orxFALSE and errno contains the error code
  */
-bool file_rename(char *_z_file_src, char *_z_file_dest);
+orxBOOL file_rename(orxU8 *_zFile_src, orxU8 *_zFile_dest);
  
 /** Create a new directory.
  * \param _z_directory_name name of the new directory
- * \return Returns TRUE if the operation succeed, else FALSE and errno contains the error code
+ * \return Returns orxTRUE if the operation succeed, else orxFALSE and errno contains the error code
  */
-bool file_mkdir(char *_z_directory_name);
+orxBOOL file_mkdir(orxU8 *_z_directory_name);
  
 /** Remove a directory.
  * \param _z_directory_name name of the directory to remove
- * \return Returns TRUE if the operation succeed, else FALSE and errno contains the error code
+ * \return Returns orxTRUE if the operation succeed, else orxFALSE and errno contains the error code
  */
-bool file_rmdir(char *_z_directory_name);
+orxBOOL file_rmdir(orxU8 *_z_directory_name);
 
 /** Delete recursively a direcory and all its subfolders.
  * \param _z_directory_name name of the directory directory to remove
- * \return Returns TRUE if the operation succeed, else FALSE and errno contains the error code
+ * \return Returns orxTRUE if the operation succeed, else orxFALSE and errno contains the error code
  */
-bool file_deltree(char *_z_directory_name);
+orxBOOL file_deltree(orxU8 *_z_directory_name);
 
 /** Temporary function... only for developement...
  * will be removed
  */
-int32 file_list_DEBUG();
+orxS32 file_list_orxDEBUG_LOG();
 
 #endif /* _FILE_H_ */

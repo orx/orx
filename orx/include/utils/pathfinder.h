@@ -4,7 +4,7 @@
  * Pathfinder Module.
  * Allows to find the shortest way between two points if exists,
  * given a 2D collision map.
- * It can strip the resulting way and return only the pivots so as to avoid
+ * It can strip the resulting way and return only the pivots so as to aorxVOID
  * walls and obstacles. This resulting way is computed given a sampling rate
  * and a path width.
  * It uses a mask structure that describes moving capabilities and costs.
@@ -40,12 +40,12 @@
 #ifndef _PATHFINDER_H_
 #define _PATHFINDER_H_
 
-#include "include.h"
+#include "orxInclude.h"
 
-#include "math/coord.h"
+#include "math/orxMath.h"
 
-#define PATHFINDER_KI_EMPTY     0x00000000    /**< Empty box type */
-#define PATHFINDER_KI_WALL      0x00000001    /**< Wall box type */
+#define PATHFINDER_KS32_EMPTY     0x00000000    /**< Empty box type */
+#define PATHFINDER_KS32_WALL      0x00000001    /**< Wall box type */
 
 #define PATHFINDER_KF_POSX      0.5           /**< Default X coord in a map box */
 #define PATHFINDER_KF_POSY      0.5           /**< Default Y coord in a map box */
@@ -59,32 +59,32 @@ typedef struct st_mask_t pathfinder_st_mask;
 
 
 /** Inits pathfinder module. */
-extern uint32 pathfinder_init();
+extern orxU32 pathfinder_init();
 /** Exits from pathfinder module. */
-extern void   pathfinder_exit();
+extern orxVOID   pathfinder_exit();
 
 /** Current map width */
-extern int32  pathfinder_gi_map_h_size;
+extern orxS32  pathfinder_gi_map_h_size;
 /** Current map height */
-extern int32  pathfinder_gi_map_v_size;
+extern orxS32  pathfinder_gi_map_v_size;
 /** Last found path distance */
-extern float  pathfinder_gf_goal_distance;
+extern orxFLOAT  pathfinder_gf_goal_distance;
 
 
 /** Creates a 4-connex moving mask. */
-extern void   pathfinder_mask_create_4();
+extern orxVOID   pathfinder_mask_create_4();
 /** Creates a 8-connex moving mask. */
-extern void   pathfinder_mask_create_8();
+extern orxVOID   pathfinder_mask_create_8();
 /** Creates a "chess knight"-style moving mask. */
-extern void   pathfinder_mask_create_knight();
+extern orxVOID   pathfinder_mask_create_knight();
 /** Clears last pathfinder structures. */
-extern void   pathfinder_delete();
+extern orxVOID   pathfinder_delete();
 /** Loads a map and initializes pathfinder structures.
  * \param _i_horizontal_size Map width.
  * \param _i_vertical_size Map height.
  * \param _pi_map Environment map : Int Array of (_i_horizontal_size * _i_vertical_size) size.
  */
-extern void   pathfinder_map_load(int32 _i_horizontal_size, int32 _i_vertical_size, int32 *_pi_map);
+extern orxVOID   pathfinder_map_load(orxS32 _i_horizontal_size, orxS32 _i_vertical_size, orxS32 *_pi_map);
 /** Gets a path between 2 given locations.
  * \param _pst_src Source coordinates (pointer on coord structure).
  * \param _pst_dest Destination coordinates (pointer on coord structure).
@@ -92,7 +92,7 @@ extern void   pathfinder_map_load(int32 _i_horizontal_size, int32 _i_vertical_si
  * \param _b_smooth Tells if found path must be smoothed/stripped.
  * \return Returns the size of the found path (number of locations). 0 is no path found.
  */
-extern int32  pathfinder_path_get(coord_st_coord *_pst_src, coord_st_coord *_pst_dest, coord_st_coord **_ppst_result, bool _b_smooth);
+extern orxS32  pathfinder_path_get(orxVEC *_pst_src, orxVEC *_pst_dest, orxVEC **_ppst_result, orxBOOL _b_smooth);
 
 
 #endif /* _PATHFINDER_H_ */

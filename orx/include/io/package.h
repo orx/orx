@@ -22,7 +22,7 @@
 #ifndef _PACKAGE_H_
 #define _PACKAGE_H_
 
-#include "include.h"
+#include "orxInclude.h"
 
 
 #define PACK_O_READ     0x01    /**< package can be read */
@@ -55,55 +55,55 @@
  */
 typedef struct
 {
-  uint32 ui_id;    /**< Identifier of the current research */
-  char ac_filename[260];   /**< filename of the current file */
-  int32 i_attrib;          /**< attibutes of the file */
+  orxU32 ui_id;    /**< Identifier of the current research */
+  orxU8 ac_filename[260];   /**< filename of the current file */
+  orxS32 i_attrib;          /**< attibutes of the file */
 } package_st_file_infos;
 
 /** Open a package file.
- * \param _z_file_path A string on the file to open.
+ * \param _zFile_path A string on the file to open.
  * \param _i_access_mode A combination of access_mode. they can be mixed with a
  * binary operator OR |
  * \return this function return an identifier on the opened file or -1 if the file
  * can't be opened.
  */
-int32 package_open(const char *_z_file_path, const int32 _i_access_mode);
+orxS32 package_open(orxCONST orxU8 *_zFile_path, orxCONST orxS32 _i_access_mode);
 
 /** Close a package file.
  * \param _i_pack_id : package's identifier
- * \return this function return TRUE if there are no errors or FALSE if the file cannot be
+ * \return this function return orxTRUE if there are no errors or orxFALSE if the file cannot be
  * closed.
  */
-bool package_close(int32 _i_pack_id);
+orxBOOL package_close(orxS32 _i_pack_id);
 
 /** Set the package operation in intern mode.
  * This means that some operation will only take effect in the compiled
  * ressource's file.
  * \param _i_pack_id id of the package
- * \return If the package id is incorrect, it returns FALSE, else it returns TRUE.
+ * \return If the package id is incorrect, it returns orxFALSE, else it returns orxTRUE.
  */
-bool package_set_intern(int32 _i_pack_id);
+orxBOOL package_set_intern(orxS32 _i_pack_id);
 
 /** Set the package operation in extern mode.
  * This means that some operation will only take effect in the uncompiled
  * ressource's file.
  * \param _i_pack_id id of the package
- * \return If the package id is incorrect, it returns FALSE, else it returns TRUE.
+ * \return If the package id is incorrect, it returns orxFALSE, else it returns orxTRUE.
  */
-bool package_set_extern(int32 _i_pack_id);
+orxBOOL package_set_extern(orxS32 _i_pack_id);
 
 /** Add a portion of memory to the package. If the package is in intern mode,
  * the new data will be added to the compiled file, else the file will be created on
  * the disk, in the ressource directory.
  * \param _i_pack_id package's identifier
  * \param _p_data a pointer on the portion of data to add
- * \param _z_file the filename of the future file which contain the data
+ * \param _zFile the filename of the future file which contain the data
  * \param _i_data_size the size of the data
- * \return If the function succed, it returns TRUE, else it returns FALSE and errno is positioned with
+ * \return If the function succed, it returns orxTRUE, else it returns orxFALSE and errno is positioned with
  * the right value.
  * \todo Add the code for the intern mode (still working in extern mode only)
  */
-bool package_add(int32 _i_pack_id, void *_p_data, char *_z_file, size_t _i_data_size);
+//orxBOOL package_add(orxS32 _i_pack_id, orxVOID *_p_data, orxU8 *_zFile, orxS32 _i_data_size);
 
 /** Set the mode for overwriting. For example, if we are in rename mode, we rename
  * and save an old file before to overwrite it.
@@ -111,9 +111,9 @@ bool package_add(int32 _i_pack_id, void *_p_data, char *_z_file, size_t _i_data_
  * \param _i_mode : PACK_OVR_BACKUP (make a backup of a file)
  * PACK_OVR_DELETE (replace the file without backup)
  * PACK_OVR_ERROR  (return an error and don't replace file)
- * \return return FALSE if the file can't be replaced in PACK_OVR_ERROR, else it returns TRUE
+ * \return return orxFALSE if the file can't be replaced in PACK_OVR_ERROR, else it returns orxTRUE
  */
-bool package_set_overwrite(int32 _i_pack_id, int32 _i_mode);
+orxBOOL package_set_overwrite(orxS32 _i_pack_id, orxS32 _i_mode);
 
 /** Copy a file. If the mode is intern, files
  * are copied in the compiled package. Else the operation is done in the exploded
@@ -124,10 +124,10 @@ bool package_set_overwrite(int32 _i_pack_id, int32 _i_mode);
  * \return if the overwrite mode is PACK_OVR_BACKUP, and the _z_dest_file already exist, a 
  * backup of the old file is done before the copy. if the overwrite mode is
  * PACK_OVR_DELETE, the old file is replaced, and if the overwrite mode is set on
- * PACK_OVR_ERROR, the file isn't copied and the function returns FALSE. Else it returns TRUE
+ * PACK_OVR_ERROR, the file isn't copied and the function returns orxFALSE. Else it returns orxTRUE
  * \todo Add the code for the intern mode (still working in extern mode only)
  */
-bool package_copy(int32 _i_pack_id, const char *_z_src_file, char *_z_dest_file);
+orxBOOL package_copy(orxS32 _i_pack_id, orxCONST orxU8 *_z_src_file, orxU8 *_z_dest_file);
 
 /** Move a file. If the mode is intern, files
  * are copied in the compiled package. Else the operation is done in the exploded
@@ -140,37 +140,37 @@ bool package_copy(int32 _i_pack_id, const char *_z_src_file, char *_z_dest_file)
  * for more informations and return value)
  * \todo Add the code for the intern mode (still working in extern mode only)
  */
-bool package_move(int32 _i_pack_id, const char *_z_src_file, char *_z_dest_file);
+orxBOOL package_move(orxS32 _i_pack_id, orxCONST orxU8 *_z_src_file, orxU8 *_z_dest_file);
 
 /** Remove a file. If the mode is intern, file is removed in the
  * compiled package. Else the operation is done in the exploded files.
  * \param _i_pack_id package's identifier
- * \param _z_file file.
- * \return TRUE if the operation succeed, else FALSE
+ * \param _zFile file.
+ * \return orxTRUE if the operation succeed, else orxFALSE
  * \todo Add the code for the intern mode (still working in extern mode only)
  */
-bool package_remove(int32 _i_pack_id, const char *_z_file);
+orxBOOL package_remove(orxS32 _i_pack_id, orxCONST orxU8 *_zFile);
 
 /** Insert a file from the directory ressource into the package file
  * \param _i_pack_id package's identifier
- * \param _z_file the file to insert into the compiled file
+ * \param _zFile the file to insert into the compiled file
  * \return If a file exists in the compiled file with the same name
- * as _z_file, operation are done with the overwite_mode's rule. (see package_copy for
+ * as _zFile, operation are done with the overwite_mode's rule. (see package_copy for
  * more informations and return value)
  * \todo Implement the function body... (no current implementation)
  */
-bool package_commit(int32 _i_pack_id, char *_z_file);
+orxBOOL package_commit(orxS32 _i_pack_id, orxU8 *_zFile);
 
 /** Extract a file from the package file identified to
  * the exploded directories. 
  * \param _i_pack_id package's identifier
- * \param _z_file the file to extract from the compiled file
- * \return If a file exists with the same name as _z_file
+ * \param _zFile the file to extract from the compiled file
+ * \return If a file exists with the same name as _zFile
  * operation are done with the overwite_mode's rule. (see package_copy for
  * more informations and return value)
  * \todo Implement the function body... (no current implementation)
  */
-bool package_checkout(int32 _i_pack_id, char *_z_file);
+orxBOOL package_checkout(orxS32 _i_pack_id, orxU8 *_zFile);
 
 /** Copy a file into the memory the and returns a pointer on the allocated area.
  * If the last parameters is not set,
@@ -181,57 +181,57 @@ bool package_checkout(int32 _i_pack_id, char *_z_file);
  * the compiled file.
  * \param _pi_data_size contains the size of the data. 
  * \param _i_pack_id : package's identifier
- * \param _z_file : the file to load into memory
+ * \param _zFile : the file to load into memory
  * \param _pi_data_size : the size of the data loaded
- * \return If the file can't be loaded, the function returns NULL, else it return a
+ * \return If the file can't be loaded, the function returns orxNULL, else it return a
  * \todo Implement the function body... (no current implementation)
  * pointer on the memory data.
  */
-void *package_get_file(int32 _i_pack_id, const char *_z_file, int32 *_pi_data_size, ...);
+orxVOID *package_get_file(orxS32 _i_pack_id, orxCONST orxU8 *_zFile, orxS32 *_pi_data_size, ...);
 
 /** Insert all files which are in the ressource directory (in extern mode) into
  * the compiled file.
  * \param _i_pack_id package's identifier
- * \return If the package id is incorrect, it returns FALSE, else it returns TRUE.
+ * \return If the package id is incorrect, it returns orxFALSE, else it returns orxTRUE.
  * \todo Implement the function body... (no current implementation)
  */
-bool package_compile(int32 _i_pack_id);
+orxBOOL package_compile(orxS32 _i_pack_id);
 
 /** Explode all files which are in the compiled package to the ressource directory.
  * \param _i_pack_id package's identifier
- * \return If the package id is incorrect, it returns FALSE, else it returns TRUE.
+ * \return If the package id is incorrect, it returns orxFALSE, else it returns orxTRUE.
  * \todo Implement the function body... (no current implementation)
  */
-bool package_explode(int32 _i_pack_id);
+orxBOOL package_explode(orxS32 _i_pack_id);
 
 /** Zip all files which are in the ressource directory (in extern mode) and delete
  * them
  * \param _i_pack_id package's identifier
- * \return If the package id is incorrect, it returns FALSE, else it returns TRUE.
+ * \return If the package id is incorrect, it returns orxFALSE, else it returns orxTRUE.
  * \todo Implement the function body... (no current implementation)
  */
-bool package_archive(int32 _i_pack_id);
+orxBOOL package_archive(orxS32 _i_pack_id);
 
 /** Look for the first file which correspond to a pattern
  * \param _i_pack_id package's identifier
  * \param _z_pattern pattern to recognize (e.g /ressource/img*.jpg)
  * \param _st_fileinfos informations about the file found
  * \todo Implement the function body... (no current implementation)
- * \return The function returns FALSE if the file isn't found, TRUE else.
+ * \return The function returns orxFALSE if the file isn't found, orxTRUE else.
  */
-bool package_find_first(int32 _i_pack_id, const char *_z_pattern, package_st_file_infos *_st_fileinfos);
+orxBOOL package_find_first(orxS32 _i_pack_id, orxCONST orxU8 *_z_pattern, package_st_file_infos *_st_fileinfos);
  
 /** Look for the next file of a resarch. Need a call to package_find_first before.
  * \param _st_fileinfos : in = previous value of file informations, out = informations about the next file.
- * \return The function returns FALSE when the complete research is done... TRUE else.
+ * \return The function returns orxFALSE when the complete research is done... orxTRUE else.
  * \todo Implement the function body... (no current implementation)
  */
-bool package_find_next(package_st_file_infos *_st_fileinfos);
+orxBOOL package_find_next(package_st_file_infos *_st_fileinfos);
 
 /** Debug function.
  * Print a list on stdout of all opened package
  * \todo remove this function in release mode
  */
- void package_DEBUG_list();
+ orxVOID package_orxDEBUG_list();
 
 #endif /* _PACKAGE_H_ */

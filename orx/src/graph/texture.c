@@ -17,23 +17,24 @@
  ***************************************************************************/
 
 
-#include "graph/texture.h"
+#include "graph/orxTexture.h"
 
 #include "graph/graph.h"
-#include "object/structure.h"
+#include "memory/orxMemory.h"
+#include "object/orxStructure.h"
 
 
 /*
  * Platform independant defines
  */
 
-#define TEXTURE_KUL_FLAG_NONE         0x00000000
-#define TEXTURE_KUL_FLAG_READY        0x00000001
+#define TEXTURE_KU32_FLAG_NONE         0x00000000
+#define TEXTURE_KU32_FLAG_READY        0x00000001
 
-#define TEXTURE_KUL_ID_FLAG_NONE      0x00000000
-#define TEXTURE_KUL_ID_FLAG_BITMAP    0x00000010
-#define TEXTURE_KUL_ID_FLAG_REF_COORD 0x00000100
-#define TEXTURE_KUL_ID_FLAG_SIZE      0x00000200
+#define TEXTURE_KU32_ID_FLAG_NONE      0x00000000
+#define TEXTURE_KU32_ID_FLAG_BITMAP    0x00000010
+#define TEXTURE_KU32_ID_FLAG_REF_COORD 0x00000100
+#define TEXTURE_KU32_ID_FLAG_SIZE      0x00000200
 
 /*
  * Texture structure
@@ -41,29 +42,29 @@
 struct st_texture_t
 {
   /* Public structure, first structure member : 16 */
-  structure_st_struct st_struct;
+  orxSTRUCTURE stStructure;
 
-  /* Internal id flags : 20 */
-  uint32 u32_id_flags;
+  /* Reference coord : 32 */
+  orxVEC st_ref_coord;
 
-  /* Reference coord : 36 */
-  coord_st_coord st_ref_coord;
+  /* Size coord : 48 */
+  orxVEC vSize;
 
-  /* Size coord : 52 */
-  coord_st_coord st_size;
+  /* Internal id flags : 52 */
+  orxU32 u32IDFlags;
 
   /* Data : 56 */
-  void *pst_data;
+  orxVOID *pstData;
 
   /* 8 extra bytes of padding : 64 */
-  uint8 auc_unused[8];
+  orxU8 au8Unused[8];
 };
 
 
 /*
  * Static members
  */
-static uint32 texture_su32_flags = TEXTURE_KUL_FLAG_NONE;
+static orxU32 texture_su32Flags = TEXTURE_KU32_FLAG_NONE;
 
 
 /***************************************************************************
@@ -76,20 +77,20 @@ static uint32 texture_su32_flags = TEXTURE_KUL_FLAG_NONE;
  texture_list_delete
  Deletes all textures.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void texture_list_delete()
+orxVOID texture_list_delete()
 {
-  texture_st_texture *pst_texture = (texture_st_texture *)structure_struct_first_get(STRUCTURE_KUL_STRUCT_ID_TEXTURE);
+  orxTEXTURE *pstTexture = (orxTEXTURE *)orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE);
 
   /* Non empty? */
-  while(pst_texture != NULL)
+  while(pstTexture != orxNULL)
   {
     /* Deletes object */
-    texture_delete(pst_texture);
+    texture_delete(pstTexture);
 
     /* Gets first object */
-    pst_texture = (texture_st_texture *)structure_struct_first_get(STRUCTURE_KUL_STRUCT_ID_TEXTURE);
+    pstTexture = (orxTEXTURE *)orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE);
   }
 
   return;
@@ -107,34 +108,34 @@ void texture_list_delete()
  texture_init
  Inits texture system.
 
- returns: EXIT_SUCCESS/EXIT_FAILURE
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-uint32 texture_init()
+orxU32 texture_init()
 {
   /* Not already Initialized? */
-  if(!(texture_su32_flags & TEXTURE_KUL_FLAG_READY))
+  if(!(texture_su32Flags & TEXTURE_KU32_FLAG_READY))
   {
     /* Inits Flags */
-    texture_su32_flags = TEXTURE_KUL_FLAG_READY;
+    texture_su32Flags = TEXTURE_KU32_FLAG_READY;
 
-    return EXIT_SUCCESS;
+    return orxSTATUS_SUCCESS;
   }
 
-  return EXIT_FAILURE;
+  return orxSTATUS_FAILED;
 }
 
 /***************************************************************************
  texture_exit
  Exits from the texture system.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void texture_exit()
+orxVOID texture_exit()
 {
   /* Initialized? */
-  if(texture_su32_flags & TEXTURE_KUL_FLAG_READY)
+  if(texture_su32Flags & TEXTURE_KU32_FLAG_READY)
   {
-    texture_su32_flags &= ~TEXTURE_KUL_FLAG_READY;
+    texture_su32Flags &= ~TEXTURE_KU32_FLAG_READY;
 
     /* Deletes texture list */
     texture_list_delete();
@@ -149,36 +150,36 @@ void texture_exit()
 
  returns: Created texture.
  ***************************************************************************/
-texture_st_texture *texture_create()
+orxTEXTURE *texture_create()
 {
-  texture_st_texture *pst_texture;
+  orxTEXTURE *pstTexture;
 
   /* Creates texture */
-  pst_texture = (texture_st_texture *) malloc(sizeof(texture_st_texture));
+  pstTexture = (orxTEXTURE *) orxMemory_Allocate(sizeof(orxTEXTURE), orxMEMORY_TYPE_MAIN);
 
   /* Non null? */
-  if(pst_texture != NULL)
+  if(pstTexture != orxNULL)
   {
     /* Inits structure */
-    if(structure_struct_init((structure_st_struct *)pst_texture, STRUCTURE_KUL_STRUCT_ID_TEXTURE) != EXIT_SUCCESS)
+    if(orxStructure_Setup((orxSTRUCTURE *)pstTexture, orxSTRUCTURE_ID_TEXTURE) != orxSTATUS_SUCCESS)
     {
       /* !!! MSG !!! */
 
       /* Fress partially allocated texture */
-      free(pst_texture);
+      orxMemory_Free(pstTexture);
 
       /* Returns nothing */
-      return NULL;
+      return orxNULL;
     }
 
     /* Inits texture members */
-    pst_texture->u32_id_flags = TEXTURE_KUL_ID_FLAG_NONE;
-    coord_set(&(pst_texture->st_ref_coord), 0, 0, 0);
-    coord_set(&(pst_texture->st_size), 0, 0, 0);
-    pst_texture->pst_data = NULL;
+    pstTexture->u32IDFlags = TEXTURE_KU32_ID_FLAG_NONE;
+    coord_set(&(pstTexture->st_ref_coord), 0, 0, 0);
+    coord_set(&(pstTexture->vSize), 0, 0, 0);
+    pstTexture->pstData = orxNULL;
   }
 
-  return(pst_texture);
+  return(pstTexture);
 }
 
 /***************************************************************************
@@ -188,38 +189,38 @@ texture_st_texture *texture_create()
 
  returns: Created texture.
  ***************************************************************************/
-texture_st_texture *texture_create_from_bitmap(graph_st_bitmap *_pst_bitmap)
+orxTEXTURE *texture_create_from_bitmap(graph_st_bitmap *_pstBitmap)
 {
-  texture_st_texture *pst_texture;
+  orxTEXTURE *pstTexture;
 
   /* Creates an empty texture */
-  pst_texture = texture_create();
+  pstTexture = texture_create();
 
   /* Assigns given bitmap to it */
-  texture_bitmap_link(pst_texture, _pst_bitmap);
+  texture_bitmap_link(pstTexture, _pstBitmap);
 
-  return pst_texture;
+  return pstTexture;
 }
 
 /***************************************************************************
  texture_delete
  Deletes an texture.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void texture_delete(texture_st_texture *_pst_texture)
+orxVOID texture_delete(orxTEXTURE *_pstTexture)
 {
   /* Non null? */
-  if(_pst_texture != NULL)
+  if(_pstTexture != orxNULL)
   {
     /* Cleans structure */
-    structure_struct_clean((structure_st_struct *)_pst_texture);
+    orxStructure_Clean((orxSTRUCTURE *)_pstTexture);
 
     /* Cleans bitmap reference */
-    texture_bitmap_unlink(_pst_texture);
+    texture_bitmap_unlink(_pstTexture);
 
     /* Frees texture memory */
-    free(_pst_texture);
+    orxMemory_Free(_pstTexture);
   }
 
   return;
@@ -229,26 +230,26 @@ void texture_delete(texture_st_texture *_pst_texture)
  texture_bitmap_link
  Links a bitmap to a texture.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void texture_bitmap_link(texture_st_texture *_pst_texture, graph_st_bitmap *_pst_bitmap)
+orxVOID texture_bitmap_link(orxTEXTURE *_pstTexture, graph_st_bitmap *_pstBitmap)
 {
-  int32 i_x, i_y;
+  orxS32 i_x, i_y;
 
   /* Non null? */
-  if((_pst_texture != NULL) && (_pst_bitmap != NULL))
+  if((_pstTexture != orxNULL) && (_pstBitmap != orxNULL))
   {
     /* Updates flags */
-    _pst_texture->u32_id_flags |= TEXTURE_KUL_ID_FLAG_BITMAP | TEXTURE_KUL_ID_FLAG_SIZE;
+    _pstTexture->u32IDFlags |= TEXTURE_KU32_ID_FLAG_BITMAP | TEXTURE_KU32_ID_FLAG_SIZE;
 
     /* References bitmap */
-    _pst_texture->pst_data = (void *)_pst_bitmap;
+    _pstTexture->pstData = (orxVOID *)_pstBitmap;
 
     /* Gets bitmap size */
-    graph_bitmap_size_get(_pst_bitmap, &i_x, &i_y);
+    graph_bitmap_size_get(_pstBitmap, &i_x, &i_y);
 
     /* Copy bitmap size (Z size is null) */
-    coord_set(&(_pst_texture->st_size), i_x, i_y, 0);
+    coord_set(&(_pstTexture->vSize), i_x, i_y, 0);
   }
   else
   {
@@ -265,21 +266,21 @@ void texture_bitmap_link(texture_st_texture *_pst_texture, graph_st_bitmap *_pst
  Unlinks a bitmap from a texture.
  !!! Warning : it deletes it. !!!
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void texture_bitmap_unlink(texture_st_texture *_pst_texture)
+orxVOID texture_bitmap_unlink(orxTEXTURE *_pstTexture)
 {
   /* Non null? */
-  if(_pst_texture != NULL)
+  if(_pstTexture != orxNULL)
   {
     /* Has bitmap */
-    if(_pst_texture->u32_id_flags & TEXTURE_KUL_ID_FLAG_BITMAP)
+    if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_BITMAP)
     {
       /* Updates flags */
-      _pst_texture->u32_id_flags &= ~(TEXTURE_KUL_ID_FLAG_BITMAP | TEXTURE_KUL_ID_FLAG_SIZE);
+      _pstTexture->u32IDFlags &= ~(TEXTURE_KU32_ID_FLAG_BITMAP | TEXTURE_KU32_ID_FLAG_SIZE);
 
       /* Deletes bitmap */
-      graph_bitmap_delete((graph_st_bitmap *) (_pst_texture->pst_data));
+      graph_bitmap_delete((graph_st_bitmap *) (_pstTexture->pstData));
     }
   }
 
@@ -296,28 +297,28 @@ void texture_bitmap_unlink(texture_st_texture *_pst_texture)
 
  returns: bitmap
  ***************************************************************************/
-inline graph_st_bitmap *texture_bitmap_get(texture_st_texture *_pst_texture)
+inline graph_st_bitmap *texture_bitmap_get(orxTEXTURE *_pstTexture)
 {
   /* Has bitmap? */
-  if(_pst_texture->u32_id_flags & TEXTURE_KUL_ID_FLAG_BITMAP)
+  if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_BITMAP)
   {
-    return((graph_st_bitmap *)_pst_texture->pst_data);
+    return((graph_st_bitmap *)_pstTexture->pstData);
   }
 
-  return NULL;
+  return orxNULL;
 }
 
 /***************************************************************************
  texture_ref_coord_set
  Sets reference coordinates (used for rendering purpose).
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-inline void texture_ref_coord_set(texture_st_texture *_pst_texture, coord_st_coord *_pst_coord)
+inline orxVOID texture_ref_coord_set(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Updates */
-  _pst_texture->u32_id_flags |= TEXTURE_KUL_ID_FLAG_REF_COORD;
-  coord_copy(&(_pst_texture->st_ref_coord), _pst_coord);
+  _pstTexture->u32IDFlags |= TEXTURE_KU32_ID_FLAG_REF_COORD;
+  coord_copy(&(_pstTexture->st_ref_coord), _pst_coord);
 
   return;
 }
@@ -326,15 +327,15 @@ inline void texture_ref_coord_set(texture_st_texture *_pst_texture, coord_st_coo
  texture_ref_coord_get
  Gets reference coordinates (used for rendering purpose).
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-inline void texture_ref_coord_get(texture_st_texture *_pst_texture, coord_st_coord *_pst_coord)
+inline orxVOID texture_ref_coord_get(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Has reference coordinates? */
-  if(_pst_texture->u32_id_flags & TEXTURE_KUL_ID_FLAG_REF_COORD)
+  if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_REF_COORD)
   {
     /* Copy coord */
-    coord_copy(_pst_coord, &(_pst_texture->st_ref_coord));
+    coord_copy(_pst_coord, &(_pstTexture->st_ref_coord));
   }
   else
   {
@@ -349,14 +350,14 @@ inline void texture_ref_coord_get(texture_st_texture *_pst_texture, coord_st_coo
  texture_size_get
  Gets size.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-inline void texture_size_get(texture_st_texture *_pst_texture, coord_st_coord *_pst_coord)
+inline orxVOID texture_size_get(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Has size? */
-  if(_pst_texture->u32_id_flags & TEXTURE_KUL_ID_FLAG_SIZE)
+  if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_SIZE)
   {
-    coord_copy(_pst_coord, &(_pst_texture->st_size));
+    coord_copy(_pst_coord, &(_pstTexture->vSize));
   }
   else
   {

@@ -1,229 +1,227 @@
-#include "math/coord.h"
+#include "math/orxVector.h"
+
+#include "math/orxMath.h"
+#include "memory/orxMemory.h"
+
 
 /*** Constants Definitions ***/
-#define COORD_KI_NULL        (int)0xFFFFFFFF
+#define COORD_KS32_orxNULL        (int)0xFFFFFFFF
 
 /*** Functions Definitions ***/
-inline bool coord_is_null(coord_st_coord *_pst_coord)
+inline orxBOOL coord_is_null(orxVEC *_pst_coord)
 {
-  return(((_pst_coord->s32_x == COORD_KI_NULL)
-       && (_pst_coord->s32_y == COORD_KI_NULL)
-       && (_pst_coord->s32_z == COORD_KI_NULL))
-       ? TRUE
-       : FALSE);
+  return(((_pst_coord->fX == COORD_KS32_orxNULL)
+       && (_pst_coord->fY == COORD_KS32_orxNULL)
+       && (_pst_coord->fZ == COORD_KS32_orxNULL))
+       ? orxTRUE
+       : orxFALSE);
 }
 
-inline void coord_set(coord_st_coord *_pst_coord, int32 _l_x, int32 _l_y, int32 _l_z)
+inline orxVOID coord_set(orxVEC *_pst_coord, orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
 {
   /* Non null?*/
-  if(_pst_coord != NULL)
+  if(_pst_coord != orxNULL)
   {
-    _pst_coord->s32_x = _l_x;
-    _pst_coord->s32_y = _l_y;
-    _pst_coord->s32_z = _l_z;
+    _pst_coord->fX = _l_x;
+    _pst_coord->fY = _l_y;
+    _pst_coord->fZ = _l_z;
   }
 
   return;
 }
 
-inline void coord_reset(coord_st_coord *_pst_coord)
+inline orxVOID coord_reset(orxVEC *_pst_coord)
 {
-  coord_set(_pst_coord, COORD_KI_NULL, COORD_KI_NULL, COORD_KI_NULL);
+  coord_set(_pst_coord, COORD_KS32_orxNULL, COORD_KS32_orxNULL, COORD_KS32_orxNULL);
 
   return;
 }
 
-inline coord_st_coord *coord_create(int32 _l_x, int32 _l_y, int32 _l_z)
+inline orxVEC *coord_create(orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
 {
-  coord_st_coord *pst_coord;
+  orxVEC *pst_coord;
 
-  pst_coord = (coord_st_coord *)malloc(sizeof(coord_st_coord));
+  pst_coord = (orxVEC *)orxMemory_Allocate(sizeof(orxVEC), orxMEMORY_TYPE_MAIN);
 
   coord_set(pst_coord, _l_x, _l_y, _l_z);
 
   return pst_coord;
 }
 
-inline void coord_delete(coord_st_coord *_pst_coord)
+inline orxVOID coord_delete(orxVEC *_pst_coord)
 {
-  if(_pst_coord != NULL)
+  if(_pst_coord != orxNULL)
   {
-    free(_pst_coord);
+    orxMemory_Free(_pst_coord);
   }
 
   return;
 }
 
-inline void coord_copy(coord_st_coord *_pst_dest, coord_st_coord *_pst_src)
+inline orxVOID coord_copy(orxVEC *_pst_dest, orxVEC *_pst_src)
 {
-  if(_pst_src != NULL)
+  if(_pst_src != orxNULL)
   {
-    coord_set(_pst_dest, _pst_src->s32_x, _pst_src->s32_y, _pst_src->s32_z);
+    coord_set(_pst_dest, _pst_src->fX, _pst_src->fY, _pst_src->fZ);
   }
 
   return;
 }
 
-inline void coord_add(coord_st_coord *_pst_result, coord_st_coord *_pst_op1, coord_st_coord *_pst_op2)
+inline orxVOID coord_add(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2)
 {
-  if((_pst_op1 != NULL) && (_pst_op2 != NULL))
-  {
-    coord_set(_pst_result,
-              _pst_op1->s32_x + _pst_op2->s32_x,
-              _pst_op1->s32_y + _pst_op2->s32_y,
-              _pst_op1->s32_z + _pst_op2->s32_z);
-  }
-
-  return;
-}
-
-inline void coord_sub(coord_st_coord *_pst_result, coord_st_coord *_pst_op1, coord_st_coord *_pst_op2)
-{
-  if((_pst_op1 != NULL) && (_pst_op2 != NULL))
+  if((_pst_op1 != orxNULL) && (_pst_op2 != orxNULL))
   {
     coord_set(_pst_result,
-              _pst_op1->s32_x - _pst_op2->s32_x,
-              _pst_op1->s32_y - _pst_op2->s32_y,
-              _pst_op1->s32_z - _pst_op2->s32_z);
+              _pst_op1->fX + _pst_op2->fX,
+              _pst_op1->fY + _pst_op2->fY,
+              _pst_op1->fZ + _pst_op2->fZ);
   }
 
   return;
 }
 
-inline void coord_neg(coord_st_coord *_pst_result, coord_st_coord *_pst_op)
+inline orxVOID coord_sub(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2)
 {
-  if(_pst_op != NULL)
-  {
-    coord_set(_pst_result, -(_pst_op->s32_x), -(_pst_op->s32_y), -(_pst_op->s32_z));
-  }
-
-  return;
-}
-
-inline void coord_mul(coord_st_coord *_pst_result, coord_st_coord *_pst_op1, float _f_op2)
-{
-  if(_pst_op1 != NULL)
+  if((_pst_op1 != orxNULL) && (_pst_op2 != orxNULL))
   {
     coord_set(_pst_result,
-              (int)rintf((float)(_pst_op1->s32_x) * _f_op2),
-              (int)rintf((float)(_pst_op1->s32_y) * _f_op2),
-              (int)rintf((float)(_pst_op1->s32_z) * _f_op2));
+              _pst_op1->fX - _pst_op2->fX,
+              _pst_op1->fY - _pst_op2->fY,
+              _pst_op1->fZ - _pst_op2->fZ);
   }
 
   return;
 }
 
-inline void coord_div(coord_st_coord *_pst_result, coord_st_coord *_pst_op1, float _f_op2)
+inline orxVOID coord_neg(orxVEC *_pst_result, orxVEC *_pst_op)
 {
-  if(_pst_op1 != NULL)
+  if(_pst_op != orxNULL)
+  {
+    coord_set(_pst_result, -(_pst_op->fX), -(_pst_op->fY), -(_pst_op->fZ));
+  }
+
+  return;
+}
+
+inline orxVOID coord_mul(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
+{
+  if(_pst_op1 != orxNULL)
   {
     coord_set(_pst_result,
-              (int)rintf((float)(_pst_op1->s32_x) / _f_op2),
-              (int)rintf((float)(_pst_op1->s32_y) / _f_op2),
-              (int)rintf((float)(_pst_op1->s32_z) / _f_op2));
+              (int)rintf((orxFLOAT)(_pst_op1->fX) * _f_op2),
+              (int)rintf((orxFLOAT)(_pst_op1->fY) * _f_op2),
+              (int)rintf((orxFLOAT)(_pst_op1->fZ) * _f_op2));
   }
 
   return;
 }
 
-inline void coord_rotate(coord_st_coord *_pst_result, coord_st_coord *_pst_op1, float _f_op2)
+inline orxVOID coord_div(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
 {
-  float f_cos, f_sin;
-  float f_x, f_y;
-
-  if(_pst_op1 != NULL)
+  if(_pst_op1 != orxNULL)
   {
-    f_cos = cosf(_f_op2);
-    f_sin = sinf(_f_op2);
-    f_x = (float)_pst_op1->s32_x;
-    f_y = (float)_pst_op1->s32_y;
+    coord_set(_pst_result,
+              (int)rintf((orxFLOAT)(_pst_op1->fX) / _f_op2),
+              (int)rintf((orxFLOAT)(_pst_op1->fY) / _f_op2),
+              (int)rintf((orxFLOAT)(_pst_op1->fZ) / _f_op2));
+  }
+
+  return;
+}
+
+inline orxVOID coord_rotate(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
+{
+  orxFLOAT fCos, fSin;
+  orxFLOAT fX, fY;
+
+  if(_pst_op1 != orxNULL)
+  {
+    fCos = cosf(_f_op2);
+    fSin = sinf(_f_op2);
+    fX = (orxFLOAT)_pst_op1->fX;
+    fY = (orxFLOAT)_pst_op1->fY;
 
     coord_set(_pst_result,
-              (int)rintf((f_x * f_cos) - (f_y * f_sin)),
-              (int)rintf((f_x * f_sin) + (f_y * f_cos)),
-              (_pst_op1->s32_z));
+              (int)rintf((fX * fCos) - (fY * fSin)),
+              (int)rintf((fX * fSin) + (fY * fCos)),
+              (_pst_op1->fZ));
   }
 
   return;
 }
 
-inline void coord_aabox_reorder(coord_st_coord *_pst_box_ul, coord_st_coord *_pst_box_br)
+inline orxVOID coord_aabox_reorder(orxVEC *_pst_box_ul, orxVEC *_pst_box_br)
 {
   /* Non null? */
-  if((_pst_box_ul != NULL) && (_pst_box_br != NULL))
+  if((_pst_box_ul != orxNULL) && (_pst_box_br != orxNULL))
   {
     /* Reorders coordinates so as to have upper left & bottom right box corners */
 
     /* Z coord */
-    if(_pst_box_ul->s32_z > _pst_box_br->s32_z)
+    if(_pst_box_ul->fZ > _pst_box_br->fZ)
     {
       /* Swap */
-      _pst_box_ul->s32_z = _pst_box_ul->s32_z ^ _pst_box_br->s32_z;
-      _pst_box_br->s32_z = _pst_box_ul->s32_z ^ _pst_box_br->s32_z;
-      _pst_box_ul->s32_z = _pst_box_ul->s32_z ^ _pst_box_br->s32_z;
+      orxSWAP(_pst_box_ul->fZ, _pst_box_br->fZ);
     }
 
     /* Y coord */
-    if(_pst_box_ul->s32_y > _pst_box_br->s32_y)
+    if(_pst_box_ul->fY > _pst_box_br->fY)
     {
       /* Swap */
-      _pst_box_ul->s32_y = _pst_box_ul->s32_y ^ _pst_box_br->s32_y;
-      _pst_box_br->s32_y = _pst_box_ul->s32_y ^ _pst_box_br->s32_y;
-      _pst_box_ul->s32_y = _pst_box_ul->s32_y ^ _pst_box_br->s32_y;
+      orxSWAP(_pst_box_ul->fY, _pst_box_br->fY);
     }
 
     /* X coord */
-    if(_pst_box_ul->s32_x > _pst_box_br->s32_x)
+    if(_pst_box_ul->fX > _pst_box_br->fX)
     {
       /* Swap */
-      _pst_box_ul->s32_x = _pst_box_ul->s32_x ^ _pst_box_br->s32_x;
-      _pst_box_br->s32_x = _pst_box_ul->s32_x ^ _pst_box_br->s32_x;
-      _pst_box_ul->s32_x = _pst_box_ul->s32_x ^ _pst_box_br->s32_x;
+      orxSWAP(_pst_box_ul->fX, _pst_box_br->fX);
     }
   }
 
   return;
 }
 
-inline bool coord_aabox_intersection_test(coord_st_coord *_pst_box1_ul, coord_st_coord *_pst_box1_br, coord_st_coord *_pst_box2_ul, coord_st_coord *_pst_box2_br)
+inline orxBOOL coord_aabox_intersection_test(orxVEC *_pst_box1_ul, orxVEC *_pst_box1_br, orxVEC *_pst_box2_ul, orxVEC *_pst_box2_br)
 {
   /* Non null? */
-  if((_pst_box1_ul != NULL)
-  && (_pst_box1_br != NULL)
-  && (_pst_box2_ul != NULL)
-  && (_pst_box2_br != NULL))
+  if((_pst_box1_ul != orxNULL)
+  && (_pst_box1_br != orxNULL)
+  && (_pst_box2_ul != orxNULL)
+  && (_pst_box2_br != orxNULL))
   {
     /* Warning : Corners should be sorted otherwise test won't work! */
 
     /* Z intersection test */
-    if((_pst_box2_br->s32_z < _pst_box1_ul->s32_z)
-    || (_pst_box2_ul->s32_z > _pst_box1_br->s32_z))
+    if((_pst_box2_br->fZ < _pst_box1_ul->fZ)
+    || (_pst_box2_ul->fZ > _pst_box1_br->fZ))
     {
       /* Disjoint */
-      return FALSE;
+      return orxFALSE;
     }
 
     /* X intersection test */
-    if((_pst_box2_br->s32_x < _pst_box1_ul->s32_x)
-    || (_pst_box2_ul->s32_x > _pst_box1_br->s32_x))
+    if((_pst_box2_br->fX < _pst_box1_ul->fX)
+    || (_pst_box2_ul->fX > _pst_box1_br->fX))
     {
       /* Disjoint */
-      return FALSE;
+      return orxFALSE;
     }
 
     /* Y intersection test */
-    if((_pst_box2_br->s32_y < _pst_box1_ul->s32_y)
-    || (_pst_box2_ul->s32_y > _pst_box1_br->s32_y))
+    if((_pst_box2_br->fY < _pst_box1_ul->fY)
+    || (_pst_box2_ul->fY > _pst_box1_br->fY))
     {
       /* Disjoint */
-      return FALSE;
+      return orxFALSE;
     }
   }
   else
   {
-    return FALSE;
+    return orxFALSE;
   }
 
   /* Not disjoint */
-  return TRUE;
+  return orxTRUE;
 }

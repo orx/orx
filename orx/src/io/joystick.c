@@ -26,16 +26,16 @@
  *  Plugin Related  *
  ********************/
 
-static plugin_core_st_function plugin_joystick_spst_function[PLUGIN_JOYSTICK_KUL_FUNCTION_NUMBER] =
+static plugin_core_st_function plugin_joystick_spst_function[PLUGIN_JOYSTICK_KU32_FUNCTION_NUMBER] =
 {
-  {(plugin_function *) &joystick_init,                PLUGIN_JOYSTICK_KUL_ID_INIT},
-  {(plugin_function *) &joystick_exit,                PLUGIN_JOYSTICK_KUL_ID_EXIT}
+  {(plugin_function *) &joystick_init,                PLUGIN_JOYSTICK_KU32_ID_INIT},
+  {(plugin_function *) &joystick_exit,                PLUGIN_JOYSTICK_KU32_ID_EXIT}
 };
 
-void joystick_plugin_init()
+orxVOID joystick_plugin_init()
 {
   /* Plugin init */
-  plugin_core_info_add(PLUGIN_JOYSTICK_KUL_PLUGIN_ID, plugin_joystick_spst_function, PLUGIN_JOYSTICK_KUL_FUNCTION_NUMBER);
+  plugin_core_info_add(PLUGIN_JOYSTICK_KU32_PLUGIN_ID, plugin_joystick_spst_function, PLUGIN_JOYSTICK_KU32_FUNCTION_NUMBER);
 
   return;
 }
@@ -46,5 +46,5 @@ void joystick_plugin_init()
  *   Core Related   *
  ********************/
 
-PLUGIN_CORE_FUNCTION_DEFINE(joystick_init, uint32);
-PLUGIN_CORE_FUNCTION_DEFINE(joystick_exit, void);
+PLUGIN_CORE_FUNCTION_DEFINE(joystick_init, orxU32);
+PLUGIN_CORE_FUNCTION_DEFINE(joystick_exit, orxVOID);

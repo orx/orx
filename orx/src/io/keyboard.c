@@ -26,20 +26,20 @@
  *  Plugin Related  *
  ********************/
 
-static plugin_core_st_function plugin_keyboard_spst_function[PLUGIN_KEYBOARD_KUL_FUNCTION_NUMBER] =
+static plugin_core_st_function plugin_keyboard_spst_function[PLUGIN_KEYBOARD_KU32_FUNCTION_NUMBER] =
 {
-  {(plugin_function *) &keyboard_init,                PLUGIN_KEYBOARD_KUL_ID_INIT},
-  {(plugin_function *) &keyboard_exit,                PLUGIN_KEYBOARD_KUL_ID_EXIT},
-  {(plugin_function *) &keyboard_hit,                 PLUGIN_KEYBOARD_KUL_ID_HIT},
-  {(plugin_function *) &keyboard_read,                PLUGIN_KEYBOARD_KUL_ID_READ},
-  {(plugin_function *) &keyboard_keystate_get,        PLUGIN_KEYBOARD_KUL_ID_KEYSTATE_GET},
-  {(plugin_function *) &keyboard_buffer_clear,        PLUGIN_KEYBOARD_KUL_ID_BUFFER_CLEAR}
+  {(plugin_function *) &keyboard_init,                PLUGIN_KEYBOARD_KU32_ID_INIT},
+  {(plugin_function *) &keyboard_exit,                PLUGIN_KEYBOARD_KU32_ID_EXIT},
+  {(plugin_function *) &keyboard_hit,                 PLUGIN_KEYBOARD_KU32_ID_HIT},
+  {(plugin_function *) &keyboard_read,                PLUGIN_KEYBOARD_KU32_ID_READ},
+  {(plugin_function *) &keyboard_keystate_get,        PLUGIN_KEYBOARD_KU32_ID_KEYSTATE_GET},
+  {(plugin_function *) &keyboard_buffer_clear,        PLUGIN_KEYBOARD_KU32_ID_BUFFER_CLEAR}
 };
 
-void keyboard_plugin_init()
+orxVOID keyboard_plugin_init()
 {
   /* Plugin init */
-  plugin_core_info_add(PLUGIN_KEYBOARD_KUL_PLUGIN_ID, plugin_keyboard_spst_function, PLUGIN_KEYBOARD_KUL_FUNCTION_NUMBER);
+  plugin_core_info_add(PLUGIN_KEYBOARD_KU32_PLUGIN_ID, plugin_keyboard_spst_function, PLUGIN_KEYBOARD_KU32_FUNCTION_NUMBER);
 
   return;
 }
@@ -50,10 +50,10 @@ void keyboard_plugin_init()
  *   Core Related   *
  ********************/
 
-PLUGIN_CORE_FUNCTION_DEFINE(keyboard_init, uint32);
-PLUGIN_CORE_FUNCTION_DEFINE(keyboard_exit, void);
+PLUGIN_CORE_FUNCTION_DEFINE(keyboard_init, orxU32);
+PLUGIN_CORE_FUNCTION_DEFINE(keyboard_exit, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(keyboard_hit, int32);
-PLUGIN_CORE_FUNCTION_DEFINE(keyboard_read, int32);
-PLUGIN_CORE_FUNCTION_DEFINE(keyboard_keystate_get, int32, uint8);
-PLUGIN_CORE_FUNCTION_DEFINE(keyboard_buffer_clear, void);
+PLUGIN_CORE_FUNCTION_DEFINE(keyboard_hit, orxS32);
+PLUGIN_CORE_FUNCTION_DEFINE(keyboard_read, orxS32);
+PLUGIN_CORE_FUNCTION_DEFINE(keyboard_keystate_get, orxS32, orxU8);
+PLUGIN_CORE_FUNCTION_DEFINE(keyboard_buffer_clear, orxVOID);

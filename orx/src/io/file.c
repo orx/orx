@@ -15,24 +15,25 @@
 #endif
 
 
-#include "debug/debug.h"
+#include "debug/orxDebug.h"
+#include "memory/orxMemory.h"
 
 
 typedef struct st_search_node_t
 {
-  int32 i_id;      /* Pointer on file informations */
+  orxS32 i_id;      /* Pointer on file informations */
   
 #ifdef __linux__
   DIR *pst_directory;                /* DIR* structure for (for opendir/readdir) */
-  char ac_pattern[512];              /* Pattern of the search */
+  orxU8 ac_pattern[512];              /* Pattern of the search */
 #else
-  int32 i_find_handler;                /* Handler for search (_findfirst/_findnext) */
+  orxS32 i_find_handler;                /* Handler for search (_findfirst/_findnext) */
 #endif
 
-  struct st_search_node_t *pst_next; /* pointer on the next node */
+  struct st_search_node_t *pstNext; /* pointer on the next node */
   
   /* 4 extra bytes of padding : 16 (+512) */
-  uint8 auc_unused[4];
+  orxU8 au8Unused[4];
 } file_st_search_node;
 
 
@@ -40,21 +41,21 @@ typedef struct st_search_node_t
  * linked list of all current search
  * this list is sorted on id
  */
-static file_st_search_node *spst_search_list = NULL;
+static file_st_search_node *spst_search_list = orxNULL;
 
 
 /* génère un numéro d'identifiant valide */
-int32 file_generate_id()
+orxS32 file_generate_id()
 {
-  int32 i_id_free;
+  orxS32 i_id_free;
   file_st_search_node *pst_tmp_list = spst_search_list; /* on sauvegarde le pointeur de début de liste */
 
   i_id_free = 0;
-  while(spst_search_list != NULL)
+  while(spst_search_list != orxNULL)
   {
     if(i_id_free == spst_search_list->i_id)
       i_id_free++;
-    spst_search_list = spst_search_list->pst_next;
+    spst_search_list = spst_search_list->pstNext;
   }
   spst_search_list = pst_tmp_list;            /* on repositionne le pointeur en début de liste */
 
@@ -62,27 +63,27 @@ int32 file_generate_id()
 }
 
 /* rend le pointeur */
-file_st_search_node *file_get_ptr(int32 _i_id)
+file_st_search_node *file_get_ptr(orxS32 _i_id)
 {
   file_st_search_node *pst_tmp_list = spst_search_list; /* on sauvegarde le pointeur de début de liste */
   file_st_search_node *pst_out_file;
 
-  if(spst_search_list == NULL)
+  if(spst_search_list == orxNULL)
   {
-    DEBUG(D_FILE, KZ_FILE_NO_SEARCH_FOUND);
-    return NULL;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_NO_SEARCH_FOUND);
+    return orxNULL;
   }
 
-  while((spst_search_list->pst_next != NULL) && (spst_search_list->i_id != _i_id))
+  while((spst_search_list->pstNext != orxNULL) && (spst_search_list->i_id != _i_id))
   {
-    spst_search_list = spst_search_list->pst_next;
+    spst_search_list = spst_search_list->pstNext;
   }
   
-  if((spst_search_list->pst_next != NULL) && (spst_search_list->i_id != _i_id))
+  if((spst_search_list->pstNext != orxNULL) && (spst_search_list->i_id != _i_id))
   {
-    DEBUG(D_FILE, KZ_FILE_READ_SEARCH_ERROR);
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_READ_SEARCH_ERROR);
     spst_search_list = pst_tmp_list;
-    return NULL;
+    return orxNULL;
   }
   else
   {
@@ -98,15 +99,15 @@ file_st_search_node *file_get_ptr(int32 _i_id)
  * référence sur les infos rendus et permettre de libérer la mémoire qd l'utilisation est fini
  */
 #ifdef __linux__
-  file_st_search_node *file_insert_search(int32 _i_id, DIR *_pst_dir, char *_z_pattern)
+  file_st_search_node *file_insert_search(orxS32 _i_id, DIR *_pst_dir, orxU8 *_z_pattern)
 #else
-  file_st_search_node *file_insert_search(int32 _i_id, int32 _i_find_handler)
+  file_st_search_node *file_insert_search(orxS32 _i_id, orxS32 _i_find_handler)
 #endif
 {
   file_st_search_node *pst_new_node;
   file_st_search_node *pst_tmp_list = spst_search_list; /* on sauvegarde le pointeur de début de liste */
 
-  pst_new_node = (file_st_search_node *) malloc(sizeof(file_st_search_node));
+  pst_new_node = (file_st_search_node *) orxMemory_Allocate(sizeof(file_st_search_node), orxMEMORY_TYPE_MAIN);
   
     pst_new_node->i_id=_i_id;
     #ifdef __linux__
@@ -115,128 +116,128 @@ file_st_search_node *file_get_ptr(int32 _i_id)
     #else
       pst_new_node->i_find_handler = _i_find_handler;
     #endif
-    pst_new_node->pst_next = NULL;
+    pst_new_node->pstNext = orxNULL;
     
-  if(spst_search_list == NULL)
+  if(spst_search_list == orxNULL)
     return pst_new_node;
   
   /* on se positionne au bon endroit de la liste pour insérer le nouveau noeud */
 
   if(spst_search_list->i_id > _i_id)
   {
-    pst_new_node->pst_next = spst_search_list;
+    pst_new_node->pstNext = spst_search_list;
     return pst_new_node;
   }
   else
   {
-    while((spst_search_list->pst_next != NULL) && (spst_search_list->pst_next->i_id < _i_id))
-      spst_search_list = spst_search_list->pst_next;
+    while((spst_search_list->pstNext != orxNULL) && (spst_search_list->pstNext->i_id < _i_id))
+      spst_search_list = spst_search_list->pstNext;
     
-    pst_new_node->pst_next = spst_search_list->pst_next;
-    spst_search_list->pst_next = pst_new_node;
+    pst_new_node->pstNext = spst_search_list->pstNext;
+    spst_search_list->pstNext = pst_new_node;
     return pst_tmp_list;
   }
 }
 
 /* supprime un noeud de recherche dans la liste triée */
-file_st_search_node *file_delete_search(int32 _i_id)
+file_st_search_node *file_delete_search(orxS32 _i_id)
 {
-  file_st_search_node *pst_previous_node = NULL;
+  file_st_search_node *pstPrevious_node = orxNULL;
   file_st_search_node *pst_tmp_list = spst_search_list; /* on sauvegarde le pointeur de début de liste */
-  if(spst_search_list == NULL)
+  if(spst_search_list == orxNULL)
   {
-    DEBUG(D_FILE, KZ_FILE_CANT_REMOVE_SEARCH);
-    return NULL;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_CANT_REMOVE_SEARCH);
+    return orxNULL;
   }
-  else if(spst_search_list->pst_next == NULL)
+  else if(spst_search_list->pstNext == orxNULL)
   {
-    DEBUG(D_FILE, KZ_FILE_ONE_SEARCH_FOUND);
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_ONE_SEARCH_FOUND);
     if(spst_search_list->i_id == _i_id)
     {
-      DEBUG(D_FILE, "%s : %i", KZ_FILE_REMOVING_SEARCH, _i_id);
+      orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s : %i", KZ_FILE_REMOVING_SEARCH, _i_id);
 #ifdef __linux__
   closedir((file_get_ptr(_i_id))->pst_directory);
 #else
   _findclose(file_get_ptr(_i_id)->i_find_handler);
 #endif
-      free(spst_search_list);
-      return NULL;
+      orxMemory_Free(spst_search_list);
+      return orxNULL;
     }
     else
     {
-      DEBUG(D_FILE, KZ_FILE_NO_MATCHING_ID);
+      orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_NO_MATCHING_ID);
       return pst_tmp_list;
     }
   }
   else
   {
-    DEBUG(D_FILE, KZ_FILE_MULTIPLE_SEARCH_FOUND);
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_MULTIPLE_SEARCH_FOUND);
     if(spst_search_list->i_id == _i_id)
     {
-      DEBUG(D_FILE, "%s : %i", KZ_FILE_REMOVING_SEARCH, _i_id);
-      pst_tmp_list = spst_search_list->pst_next;
-      free(spst_search_list);
+      orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s : %i", KZ_FILE_REMOVING_SEARCH, _i_id);
+      pst_tmp_list = spst_search_list->pstNext;
+      orxMemory_Free(spst_search_list);
       return pst_tmp_list;
     }
     else
     {
-      while((pst_tmp_list->pst_next != NULL) && (pst_tmp_list->i_id != _i_id))
+      while((pst_tmp_list->pstNext != orxNULL) && (pst_tmp_list->i_id != _i_id))
       {
-        pst_previous_node = pst_tmp_list;
-        pst_tmp_list = pst_tmp_list->pst_next;
+        pstPrevious_node = pst_tmp_list;
+        pst_tmp_list = pst_tmp_list->pstNext;
       }
       
-      if((pst_tmp_list->pst_next == NULL) && (pst_tmp_list->i_id != _i_id))
+      if((pst_tmp_list->pstNext == orxNULL) && (pst_tmp_list->i_id != _i_id))
       {
-        DEBUG(D_FILE, KZ_FILE_NO_MATCHING_ID);
+        orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_NO_MATCHING_ID);
         return spst_search_list;
       }
       else
       {
-        DEBUG(D_FILE, "%s : %i ***\n",KZ_FILE_REMOVING_SEARCH, _i_id);
+        orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s : %i ***\n",KZ_FILE_REMOVING_SEARCH, _i_id);
        #ifdef __linux__
          closedir((file_get_ptr(_i_id))->pst_directory);
        #else
          _findclose(file_get_ptr(_i_id)->i_find_handler);
        #endif
-        pst_previous_node->pst_next = pst_tmp_list->pst_next;
-        free(pst_tmp_list);
+        pstPrevious_node->pstNext = pst_tmp_list->pstNext;
+        orxMemory_Free(pst_tmp_list);
         return spst_search_list;
       }
     }
   }
 }
 
-bool file_exist(char *_z_file_name)
+orxBOOL file_exist(orxU8 *_zFile_name)
 {
 #ifdef _MSC_VER
   struct _stat st_stat;
-  stat(_z_file_name, &st_stat);
+  stat(_zFile_name, &st_stat);
   return ((st_stat.st_mode & _S_IFREG) || (st_stat.st_mode & _S_IFDIR));
 #else
   struct stat st_stat;
-  stat(_z_file_name, &st_stat);
+  stat(_zFile_name, &st_stat);
   return ((st_stat.st_mode & S_IFREG) || (st_stat.st_mode & S_IFDIR));
 #endif
 }
 
 #ifdef __linux__
-/* returns TRUE if the pattern _z_pattern is correct for _z_name
+/* returns orxTRUE if the pattern _z_pattern is correct for _z_name
  * example : a?bc*.j?g is correct for aubcaze.jpg
- * returns FALSE if the pattern is not correct
+ * returns orxFALSE if the pattern is not correct
  */
-bool file_pattern_match(char *_z_pattern, char *_z_name)
+orxBOOL file_pattern_match(orxU8 *_z_pattern, orxU8 *_z_name)
 {
-  int32 i_pos_patt;
-  int32 i_pos_name;
-  int32 i_pos;
-  int32 i_length_patt;
-  int32 i_length_name;
-  bool b_ok;
-  bool b_exit;
+  orxS32 i_pos_patt;
+  orxS32 i_pos_name;
+  orxS32 i_pos;
+  orxS32 i_length_patt;
+  orxS32 i_length_name;
+  orxBOOL b_ok;
+  orxBOOL b_exit;
   
-  if(_z_pattern==NULL || _z_name==NULL)
-    return FALSE;
+  if(_z_pattern==orxNULL || _z_name==orxNULL)
+    return orxFALSE;
   
   /* The first thing to do is to correct the pattern if there are errors (two '*' followings) */
   i_pos_patt = 0;
@@ -260,8 +261,8 @@ bool file_pattern_match(char *_z_pattern, char *_z_name)
   i_length_patt = strlen(_z_pattern);
   i_length_name = strlen(_z_name);
   
-  b_ok = TRUE;
-  b_exit = FALSE;
+  b_ok = orxTRUE;
+  b_exit = orxFALSE;
   
   while ((b_ok && !b_exit) && (i_pos_patt<=i_length_patt && i_pos_name<=i_length_name))
   {
@@ -274,8 +275,8 @@ bool file_pattern_match(char *_z_pattern, char *_z_name)
       /* first case : '*' is the last pattern to find.. all is ok */
       if (i_pos_patt+1==i_length_patt)
       {
-        b_ok = TRUE; 
-        b_exit = TRUE;
+        b_ok = orxTRUE; 
+        b_exit = orxTRUE;
       }
       /* second case : there are other characters after '*' */
       else
@@ -286,52 +287,52 @@ bool file_pattern_match(char *_z_pattern, char *_z_name)
           ++i_pos_name;
         }
         if (_z_name[i_pos_name]!=_z_pattern[i_pos_patt])
-          b_ok = FALSE;
+          b_ok = orxFALSE;
       }
     }
     else
     {
       if (_z_name[i_pos_name]!=_z_pattern[i_pos_patt])
-        b_ok = FALSE;
+        b_ok = orxFALSE;
     }
     ++i_pos_patt;
     ++i_pos_name;      
   }
   
   if (b_ok)
-    return TRUE;
+    return orxTRUE;
   else
-    return FALSE;
+    return orxFALSE;
 }
 
 #endif /* __linux__ */
 
-bool file_find_first(char *_z_pattern, file_st_file_infos *_pst_infos)
+orxBOOL file_find_first(orxU8 *_z_pattern, file_st_file_infos *_pstInfo)
 {
-  bool b_return;
-  char ac_directory[512];
-  char ac_full_path[512];
-  char ac_cwd[256];
-  char *z_cwd;
-  char *z_pattern;
-  char *pc_pos;
-  int32 i_length;
+  orxBOOL b_return;
+  orxU8 ac_directory[512];
+  orxU8 ac_full_path[512];
+  orxU8 ac_cwd[256];
+  orxU8 *z_cwd;
+  orxU8 *z_pattern;
+  orxU8 *pc_pos;
+  orxS32 i_length;
       
 #ifdef __linux__
   DIR *pst_dir;
   struct dirent *pst_dirent;
-  bool b_continue;
+  orxBOOL b_continue;
   struct stat st_stat;
 #else
-  int32 i_id;
+  orxS32 i_id;
   struct _finddata_t pst_finddata;
 #endif
  
-  if (_z_pattern==NULL)
-    return FALSE;
+  if (_z_pattern==orxNULL)
+    return orxFALSE;
     
   /* The first thing to do is to recreate the absolute path
-   * and construct a full path with a correct format
+   * and orxCONSTruct a full path with a correct format
    * 1 - If the user doesn't give the absolute path, we get
    *     the current working directory, and we join it with
    *     the given pattern
@@ -344,10 +345,10 @@ bool file_find_first(char *_z_pattern, file_st_file_infos *_pst_infos)
   {
     /* This is a relative path, we have to transform it to a full absolute path */
     z_cwd = getcwd(ac_cwd, 256*sizeof(char));
-    if (z_cwd==NULL)
+    if (z_cwd==orxNULL)
     {
-      DEBUG(D_FILE, KZ_FILE_CANT_GET_CWD);
-      return FALSE;
+      orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_CANT_GET_CWD);
+      return orxFALSE;
     }
   
     if (z_cwd[strlen(z_cwd)-1]=='/')
@@ -366,10 +367,10 @@ bool file_find_first(char *_z_pattern, file_st_file_infos *_pst_infos)
   if(_z_pattern[1]!=':' || _z_pattern[2]!='\\')
   {
     z_cwd = _getcwd(ac_cwd, 256*sizeof(char));
-    if (z_cwd==NULL)
+    if (z_cwd==orxNULL)
     {
-      DEBUG(D_FILE, KZ_FILE_CANT_GET_CWD);
-      return FALSE;
+      orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_CANT_GET_CWD);
+      return orxFALSE;
     }
   
     printf("CWD = %s\n", z_cwd);
@@ -405,41 +406,41 @@ bool file_find_first(char *_z_pattern, file_st_file_infos *_pst_infos)
 #ifdef __linux__
 
   pst_dir = opendir(ac_directory);
-  if (pst_dir == NULL)
+  if (pst_dir == orxNULL)
   {
-    DEBUG(D_FILE, "file_find_first : directory  %s not found\n", ac_directory);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "file_find_first : directory  %s not found\n", ac_directory);
+    return orxFALSE;
   }
 
-  b_continue = TRUE;
-  b_return = FALSE;
+  b_continue = orxTRUE;
+  b_return = orxFALSE;
   
   do
   {
     pst_dirent = readdir(pst_dir);
-    if (pst_dirent!=NULL)
+    if (pst_dirent!=orxNULL)
     {
       if (file_pattern_match(z_pattern, pst_dirent->d_name))
       {
         stat(_z_pattern, &st_stat);
-        _pst_infos->i_id = file_generate_id();
-        _pst_infos->i_attrib = 0x00;
-        if (st_stat.st_mode & S_IFREG) _pst_infos->i_attrib |= F_NORMAL;
-        if (st_stat.st_mode & S_IFDIR) _pst_infos->i_attrib |= F_SUBDIR;
-        if ((st_stat.st_mode & S_IRUSR) && !(st_stat.st_mode & S_IWUSR)) _pst_infos->i_attrib |= F_RDONLY;
-        if (pst_dirent->d_name[0]=='.') _pst_infos->i_attrib |= F_HIDDEN;
-        _pst_infos->s32_size = st_stat.st_size;
-        _pst_infos->st_time = st_stat.st_ctime;
-        strcpy(_pst_infos->ac_name, pst_dirent->d_name);
-        strcpy(_pst_infos->ac_path, ac_directory);
-        spst_search_list = file_insert_search(_pst_infos->i_id, pst_dir, z_pattern);
-        b_continue = FALSE;
-        b_return = TRUE;
+        _pstInfo->i_id = file_generate_id();
+        _pstInfo->i_attrib = 0x00;
+        if (st_stat.st_mode & S_IFREG) _pstInfo->i_attrib |= F_NORMAL;
+        if (st_stat.st_mode & S_IFDIR) _pstInfo->i_attrib |= F_SUBDIR;
+        if ((st_stat.st_mode & S_IRUSR) && !(st_stat.st_mode & S_IWUSR)) _pstInfo->i_attrib |= F_RDONLY;
+        if (pst_dirent->d_name[0]=='.') _pstInfo->i_attrib |= F_HIDDEN;
+        _pstInfo->s32_size = st_stat.vSize;
+        _pstInfo->st_time = st_stat.st_ctime;
+        strcpy(_pstInfo->ac_name, pst_dirent->d_name);
+        strcpy(_pstInfo->ac_path, ac_directory);
+        spst_search_list = file_insert_search(_pstInfo->i_id, pst_dir, z_pattern);
+        b_continue = orxFALSE;
+        b_return = orxTRUE;
       }
     }
     else
     {
-      b_continue = FALSE;
+      b_continue = orxFALSE;
       closedir(pst_dir);  
     }
   } while (b_continue);
@@ -448,135 +449,135 @@ bool file_find_first(char *_z_pattern, file_st_file_infos *_pst_infos)
   i_id = _findfirst(_z_pattern, &pst_finddata);
   if (i_id==-1)
   {
-    DEBUG(D_FILE, "file_find_first : file  %s not found\n", _z_pattern);
-    b_return = FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "file_find_first : file  %s not found\n", _z_pattern);
+    b_return = orxFALSE;
   }
   else
   {
-    _pst_infos->i_id = file_generate_id();
-    _pst_infos->i_attrib = 0x00;
-    if (pst_finddata.attrib & _A_NORMAL) _pst_infos->i_attrib |= F_NORMAL;
-    if (pst_finddata.attrib & _A_SUBDIR) _pst_infos->i_attrib |= F_SUBDIR;
-    if (pst_finddata.attrib & _A_RDONLY) _pst_infos->i_attrib |= F_RDONLY;
-    if (pst_finddata.attrib & _A_HIDDEN) _pst_infos->i_attrib |= F_HIDDEN;
-    _pst_infos->s32_size = pst_finddata.size;
-    _pst_infos->st_time = pst_finddata.time_write;
-    strcpy(_pst_infos->ac_path, ac_directory);
-    strcpy(_pst_infos->ac_name, pst_finddata.name);
-    spst_search_list = file_insert_search(_pst_infos->i_id, i_id);
-    b_return = TRUE;
+    _pstInfo->i_id = file_generate_id();
+    _pstInfo->i_attrib = 0x00;
+    if (pst_finddata.attrib & _A_NORMAL) _pstInfo->i_attrib |= F_NORMAL;
+    if (pst_finddata.attrib & _A_SUBDIR) _pstInfo->i_attrib |= F_SUBDIR;
+    if (pst_finddata.attrib & _A_RDONLY) _pstInfo->i_attrib |= F_RDONLY;
+    if (pst_finddata.attrib & _A_HIDDEN) _pstInfo->i_attrib |= F_HIDDEN;
+    _pstInfo->s32_size = pst_finddata.size;
+    _pstInfo->st_time = pst_finddata.time_write;
+    strcpy(_pstInfo->ac_path, ac_directory);
+    strcpy(_pstInfo->ac_name, pst_finddata.name);
+    spst_search_list = file_insert_search(_pstInfo->i_id, i_id);
+    b_return = orxTRUE;
   }
 #endif
-  free(z_pattern);
+  orxMemory_Free(z_pattern);
   return b_return;
 }
 
-bool file_find_next(file_st_file_infos *_pst_infos)
+orxBOOL file_find_next(file_st_file_infos *_pstInfo)
 {
   /* Variable declarations */
   
-  bool b_return;
+  orxBOOL b_return;
   
 #ifdef __linux__
   struct dirent *pst_dirent;
-  char ac_path_name[1024];
-  bool b_continue;
+  orxU8 ac_path_name[1024];
+  orxBOOL b_continue;
   struct stat st_stat;
 #else
   struct _finddata_t pst_finddata;
 #endif
 
 
-  file_st_search_node *pst_search_node = file_get_ptr(_pst_infos->i_id);
+  file_st_search_node *pst_search_node = file_get_ptr(_pstInfo->i_id);
   
   /* Code */
 #ifdef __linux__
   
-  b_return = FALSE;
-  b_continue = TRUE;
+  b_return = orxFALSE;
+  b_continue = orxTRUE;
   
   do
   {
     pst_dirent = readdir(pst_search_node->pst_directory);
-    if (pst_dirent!=NULL)
+    if (pst_dirent!=orxNULL)
     {
       if (file_pattern_match(pst_search_node->ac_pattern, pst_dirent->d_name))
       {
-        sprintf(ac_path_name, "%s/%s", _pst_infos->ac_path, pst_dirent->d_name);
+        sprintf(ac_path_name, "%s/%s", _pstInfo->ac_path, pst_dirent->d_name);
         stat(ac_path_name, &st_stat);
-        _pst_infos->i_attrib = 0x00;
-        if (st_stat.st_mode & S_IFREG) _pst_infos->i_attrib |= F_NORMAL;
-        if (st_stat.st_mode & S_IFDIR) _pst_infos->i_attrib |= F_SUBDIR;
-        if ((st_stat.st_mode & S_IRUSR) && !(st_stat.st_mode & S_IWUSR)) _pst_infos->i_attrib |= F_RDONLY;
-        if (pst_dirent->d_name[0]=='.') _pst_infos->i_attrib |= F_HIDDEN;
-        _pst_infos->s32_size = st_stat.st_size;
-        _pst_infos->st_time = st_stat.st_ctime;
-        strcpy(_pst_infos->ac_name, pst_dirent->d_name);
-        b_continue = FALSE;
-        b_return = TRUE;
+        _pstInfo->i_attrib = 0x00;
+        if (st_stat.st_mode & S_IFREG) _pstInfo->i_attrib |= F_NORMAL;
+        if (st_stat.st_mode & S_IFDIR) _pstInfo->i_attrib |= F_SUBDIR;
+        if ((st_stat.st_mode & S_IRUSR) && !(st_stat.st_mode & S_IWUSR)) _pstInfo->i_attrib |= F_RDONLY;
+        if (pst_dirent->d_name[0]=='.') _pstInfo->i_attrib |= F_HIDDEN;
+        _pstInfo->s32_size = st_stat.vSize;
+        _pstInfo->st_time = st_stat.st_ctime;
+        strcpy(_pstInfo->ac_name, pst_dirent->d_name);
+        b_continue = orxFALSE;
+        b_return = orxTRUE;
       }
     }
     else
     {
-      b_continue = FALSE;
-       file_find_close(_pst_infos);
-      DEBUG(D_FILE, KZ_FILE_SEARCH_FINISHED);
+      b_continue = orxFALSE;
+       file_find_close(_pstInfo);
+      orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_SEARCH_FINISHED);
     }
   } while (b_continue);
 
 #else
   if(_findnext(pst_search_node->i_find_handler, &pst_finddata)==-1)
   {
-    DEBUG(D_FILE, KZ_FILE_SEARCH_FINISHED);
-    b_return = FALSE;
-    file_find_close(_pst_infos);
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_SEARCH_FINISHED);
+    b_return = orxFALSE;
+    file_find_close(_pstInfo);
   }
   else
   {
-    _pst_infos->i_attrib = 0x00;
-    if (pst_finddata.attrib & _A_NORMAL) _pst_infos->i_attrib |= F_NORMAL;
-    if (pst_finddata.attrib & _A_SUBDIR) _pst_infos->i_attrib |= F_SUBDIR;
-    if (pst_finddata.attrib & _A_RDONLY) _pst_infos->i_attrib |= F_RDONLY;
-    if (pst_finddata.attrib & _A_HIDDEN) _pst_infos->i_attrib |= F_HIDDEN;
-    _pst_infos->s32_size = pst_finddata.size;
-    _pst_infos->st_time = pst_finddata.time_write;
-    strcpy(_pst_infos->ac_name, pst_finddata.name);
-    b_return = TRUE;
+    _pstInfo->i_attrib = 0x00;
+    if (pst_finddata.attrib & _A_NORMAL) _pstInfo->i_attrib |= F_NORMAL;
+    if (pst_finddata.attrib & _A_SUBDIR) _pstInfo->i_attrib |= F_SUBDIR;
+    if (pst_finddata.attrib & _A_RDONLY) _pstInfo->i_attrib |= F_RDONLY;
+    if (pst_finddata.attrib & _A_HIDDEN) _pstInfo->i_attrib |= F_HIDDEN;
+    _pstInfo->s32_size = pst_finddata.size;
+    _pstInfo->st_time = pst_finddata.time_write;
+    strcpy(_pstInfo->ac_name, pst_finddata.name);
+    b_return = orxTRUE;
   }
 
 #endif
   return b_return;
 }
 
-void file_find_close(file_st_file_infos *_pst_infos)
+orxVOID file_find_close(file_st_file_infos *_pstInfo)
 {
-  spst_search_list = file_delete_search(_pst_infos->i_id);
+  spst_search_list = file_delete_search(_pstInfo->i_id);
 }
 
-bool file_copy(char *_z_file_src, char *_z_file_dest)
+orxBOOL file_copy(orxU8 *_zFile_src, orxU8 *_zFile_dest)
 {
   FILE *pst_src_file;   /* A pointer on the source file */
   FILE *pst_des_file;   /* A pointer on the destination */
-  int32 i_nb_read;        /* The number of values read by fread */
-  char ac_buffer[1024]; /* A buffer where are stored read characters */
+  orxS32 i_nb_read;        /* The number of values read by fread */
+  orxU8 ac_buffer[1024]; /* A buffer where are stored read characters */
   
-  printf("pst_src_file = fopen(%s, \"r\");\n", _z_file_src);
-  pst_src_file = fopen(_z_file_src, "r");
-  if (pst_src_file==NULL)
+  printf("pst_src_file = fopen(%s, \"r\");\n", _zFile_src);
+  pst_src_file = fopen(_zFile_src, "r");
+  if (pst_src_file==orxNULL)
   {
     /* Can't open the source file */
-    DEBUG(D_FILE, "file_copy : can't open file %s in read mode.\n", _z_file_src);
-//    printf("ERROR : file_copy : can't open file %s in read mode.\n", _z_file_src);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "file_copy : can't open file %s in read mode.\n", _zFile_src);
+//    printf("ERROR : file_copy : can't open file %s in read mode.\n", _zFile_src);
+    return orxFALSE;
   }
   
-  pst_des_file = fopen(_z_file_dest, "w");
-  if (pst_des_file==NULL)
+  pst_des_file = fopen(_zFile_dest, "w");
+  if (pst_des_file==orxNULL)
   {
     /* Can't open the destination file */
-    DEBUG(D_FILE, "file_copy : can't open file %s in write mode.\n", _z_file_dest);
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "file_copy : can't open file %s in write mode.\n", _zFile_dest);
 //    fclose(pst_src_file);
-    return FALSE;
+    return orxFALSE;
   }
   
   while ((i_nb_read = fread(ac_buffer, sizeof(char), 1024, pst_src_file)))
@@ -584,57 +585,57 @@ bool file_copy(char *_z_file_src, char *_z_file_dest)
   
   fclose(pst_des_file);
   fclose(pst_src_file);
-  return TRUE;
+  return orxTRUE;
 }
 
-bool file_delete(char *_z_file)
+orxBOOL file_delete(orxU8 *_zFile)
 {
-  if (_z_file==NULL)
+  if (_zFile==orxNULL)
   {
-    DEBUG(D_FILE, "file_delete : the file name is NULL\n");
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "file_delete : the file name is orxNULL\n");
+    return orxFALSE;
   }
     
-  if (remove(_z_file)==0)
-    return TRUE;
+  if (remove(_zFile)==0)
+    return orxTRUE;
   else
   {
-    DEBUG(D_FILE, "%s %s", KZ_FILE_CANT_REMOVE_FILE, _z_file);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s %s", KZ_FILE_CANT_REMOVE_FILE, _zFile);
+    return orxFALSE;
   }
 }
 
-bool file_rename(char *_z_file_src, char *_z_file_dest)
+orxBOOL file_rename(orxU8 *_zFile_src, orxU8 *_zFile_dest)
 {
-  if (_z_file_src==NULL)
+  if (_zFile_src==orxNULL)
   {
-    DEBUG(D_FILE, KZ_FILE_SOURCE_NULL);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_SOURCE_orxNULL);
+    return orxFALSE;
   }
   
-  if (_z_file_dest==NULL)
+  if (_zFile_dest==orxNULL)
   {
-    DEBUG(D_FILE, KZ_FILE_DESTINATION_NULL);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_DESTINATION_orxNULL);
+    return orxFALSE;
   }
     
-  if (rename(_z_file_src, _z_file_dest)==0)
-    return TRUE;
+  if (rename(_zFile_src, _zFile_dest)==0)
+    return orxTRUE;
   else
   {
-    DEBUG(D_FILE, "%s %s.\n", KZ_FILE_CANT_RENAME_FILE, _z_file_src);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s %s.\n", KZ_FILE_CANT_RENAME_FILE, _zFile_src);
+    return orxFALSE;
   }
 }
  
-bool file_mkdir(char *_z_directory_name)
+orxBOOL file_mkdir(orxU8 *_z_directory_name)
 {
-  int32 i_res;
+  orxS32 i_res;
 
-  if (_z_directory_name==NULL)
+  if (_z_directory_name==orxNULL)
   {
-    DEBUG(D_FILE, KZ_FILE_DIRECTORY_NULL);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_DIRECTORY_orxNULL);
+    return orxFALSE;
   }
   
   #ifdef __linux__
@@ -644,45 +645,45 @@ bool file_mkdir(char *_z_directory_name)
   #endif
   
   if(i_res==0)
-    return TRUE;
+    return orxTRUE;
   else
   {
-    DEBUG(D_FILE, "%s %s.\n", KZ_FILE_CANT_CREATE_DIR, _z_directory_name);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s %s.\n", KZ_FILE_CANT_CREATE_DIR, _z_directory_name);
+    return orxFALSE;
   }
 }
  
-bool file_rmdir(char *_z_directory_name)
+orxBOOL file_rmdir(orxU8 *_z_directory_name)
 {
-  if (_z_directory_name==NULL)
+  if (_z_directory_name==orxNULL)
   {
-    DEBUG(D_FILE, KZ_FILE_DIRECTORY_NULL);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_DIRECTORY_orxNULL);
+    return orxFALSE;
   }
 #ifdef __linux__
   if (rmdir(_z_directory_name)==0)
 #else
   if (_rmdir(_z_directory_name)==0)
 #endif
-    return TRUE;
+    return orxTRUE;
   else
   {
-    DEBUG(D_FILE, "%s %s.\n", KZ_FILE_CANT_REMOVE_DIR, _z_directory_name);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s %s.\n", KZ_FILE_CANT_REMOVE_DIR, _z_directory_name);
+    return orxFALSE;
   }
 }
 
-bool file_deltree(char *_z_directory_name)
+orxBOOL file_deltree(orxU8 *_z_directory_name)
 {
-  char ac_delete_path[1024];
-  char ac_path[1024];
+  orxU8 ac_delete_path[1024];
+  orxU8 ac_path[1024];
   file_st_file_infos st_infos;
-  bool b_ok;
+  orxBOOL b_ok;
   
-  if (_z_directory_name==NULL)
+  if (_z_directory_name==orxNULL)
   {
-    DEBUG(D_FILE, KZ_FILE_DIRECTORY_NULL);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, KZ_FILE_DIRECTORY_orxNULL);
+    return orxFALSE;
   }
 
   if (_z_directory_name[strlen(_z_directory_name)-1]=='/' || _z_directory_name[strlen(_z_directory_name)-1]=='\\')
@@ -696,11 +697,11 @@ bool file_deltree(char *_z_directory_name)
   
   if (!file_find_first(ac_delete_path, &st_infos))
   {
-    DEBUG(D_FILE, "file_deltree : %s not found.\n", ac_delete_path);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "file_deltree : %s not found.\n", ac_delete_path);
+    return orxFALSE;
   }
   
-  b_ok = TRUE;
+  b_ok = orxTRUE;
   
   do
   {
@@ -728,29 +729,29 @@ bool file_deltree(char *_z_directory_name)
   while (file_find_next(&st_infos) && b_ok);
   
 //  if (b_ok && file_rmdir(_z_directory_name))
-//    return TRUE;
+//    return orxTRUE;
   if (!b_ok)
   {
-    DEBUG(D_FILE, "%s %s\n",KZ_FILE_REMOVE_RECURSIVELY, _z_directory_name);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s %s\n",KZ_FILE_REMOVE_RECURSIVELY, _z_directory_name);
+    return orxFALSE;
   }
   
   if (!file_rmdir(_z_directory_name))
   {
-    DEBUG(D_FILE, "%s %s\n",KZ_FILE_REMOVE_RECURSIVELY, _z_directory_name);
-    return FALSE;
+    orxDEBUG_LOG(orxDEBUG_LEVEL_FILE, "%s %s\n",KZ_FILE_REMOVE_RECURSIVELY, _z_directory_name);
+    return orxFALSE;
   }
-  return TRUE;
+  return orxTRUE;
 }
 
 
-int32 file_list_DEBUG()
+orxS32 file_list_orxDEBUG_LOG()
 {
-  int32 i_id_free;
+  orxS32 i_id_free;
   file_st_search_node *pst_tmp_list = spst_search_list; /* on sauvegarde le pointeur de début de liste */
 
   i_id_free = 0;
-  while(spst_search_list != NULL)
+  while(spst_search_list != orxNULL)
   {
     printf("------------------------------\n");
     printf("ADRESS : %d\n", (int)spst_search_list);
@@ -760,8 +761,8 @@ int32 file_list_DEBUG()
 #else
     printf("HANDLER : %ld\n", spst_search_list->i_find_handler);
 #endif
-    printf("NEXT : %d\n", (int)spst_search_list->pst_next);
-    spst_search_list = spst_search_list->pst_next;
+    printf("NEXT : %d\n", (int)spst_search_list->pstNext);
+    spst_search_list = spst_search_list->pstNext;
   }
   spst_search_list = pst_tmp_list;            /* on repositionne le pointeur en début de liste */
 

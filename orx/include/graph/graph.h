@@ -20,36 +20,36 @@
 #ifndef _GRAPH_H_
 #define _GRAPH_H_
 
-#include "include.h"
+#include "orxInclude.h"
 
 #include "msg/msg_graph.h"
 
 
-extern void               graph_plugin_init();
+extern orxVOID               graph_plugin_init();
 
-extern uint32           (*graph_init)();
-extern void             (*graph_exit)();
-extern void             (*graph_switch)();
+extern orxU32               (*graph_init)();
+extern orxVOID             (*graph_exit)();
+extern orxVOID             (*graph_switch)();
 
-extern void             (*graph_printf)(graph_st_bitmap *_pst_bmp, int32 _i_x, int32 _i_y, uint32 _u32_color, const char *_z_format, ...);
+extern orxVOID             (*graph_printf)(graph_st_bitmap *_pst_bmp, orxS32 _i_x, orxS32 _i_y, orxU32 _u32_color, orxCONST orxU8 *_zFormat, ...);
 
-extern graph_st_bitmap *(*graph_bitmap_create)(int32 _i_w, int32 _i_h);
-extern graph_st_bitmap *(*graph_video_bitmap_create)(int32 _i_w, int32 _i_h);
-extern void             (*graph_bitmap_delete)(graph_st_bitmap *_pst_bmp);
+extern graph_st_bitmap *(*graph_bitmap_create)(orxS32 _i_w, orxS32 _i_h);
+extern graph_st_bitmap *(*graph_video_bitmap_create)(orxS32 _i_w, orxS32 _i_h);
+extern orxVOID             (*graph_bitmap_delete)(graph_st_bitmap *_pst_bmp);
 extern graph_st_bitmap *(*graph_screen_bitmap_get)();
-extern void             (*graph_clear)(graph_st_bitmap *_pst_bmp);
-extern void             (*graph_bitmap_transform)(graph_st_bitmap *_pst_src, graph_st_bitmap *_pst_dst, float _f_rotation, float _f_scale_x, float _f_scale_y, int32 _i_src_x, int32 _i_src_y, int32 _i_dst_x, int32 _i_dst_y, bool _b_antialiased);
-extern void             (*graph_bitmap_color_key_set)(graph_st_bitmap *_pst_src, uint32 _u32_red, uint32 _u32_green, uint32 _u32_blue, bool _b_enable);
+extern orxVOID             (*graph_clear)(graph_st_bitmap *_pst_bmp);
+extern orxVOID             (*graph_bitmap_transform)(graph_st_bitmap *_pst_src, graph_st_bitmap *_pst_dst, orxFLOAT _fRotation, orxFLOAT _fScale_x, orxFLOAT _fScale_y, orxS32 _i_src_x, orxS32 _i_src_y, orxS32 _i_dst_x, orxS32 _i_dst_y, orxBOOL _bAntialiased);
+extern orxVOID             (*graph_bitmap_color_key_set)(graph_st_bitmap *_pst_src, orxU32 _u32_red, orxU32 _u32_green, orxU32 _u32_blue, orxBOOL _b_enable);
 
-extern void             (*graph_clip_set)(graph_st_bitmap *_pst_bmp, int32 _i_x, int32 _i_y, int32 _i_w, int32 _i_h);
+extern orxVOID             (*graph_clip_set)(graph_st_bitmap *_pst_bmp, orxS32 _i_x, orxS32 _i_y, orxS32 _i_w, orxS32 _i_h);
 
-extern void             (*graph_blit)(graph_st_bitmap *_pst_src, graph_st_bitmap *_pst_dst, int32 _i_src_x, int32 _i_src_y, int32 _i_dst_x, int32 _i_dst_y, int32 _i_w, int32 _i_h);
+extern orxVOID             (*graph_blit)(graph_st_bitmap *_pst_src, graph_st_bitmap *_pst_dst, orxS32 _i_src_x, orxS32 _i_src_y, orxS32 _i_dst_x, orxS32 _i_dst_y, orxS32 _i_w, orxS32 _i_h);
 
-extern void             (*graph_sprite_draw)(graph_st_sprite *_pst_src, graph_st_bitmap *_pst_dst, int32 _i_x, int32 _i_y);
+extern orxVOID             (*graph_sprite_draw)(graph_st_sprite *_pst_src, graph_st_bitmap *_pst_dst, orxS32 _i_x, orxS32 _i_y);
 
-extern void             (*graph_bitmap_save)(const char *_z_filename, graph_st_bitmap *_pst_bmp);
-extern graph_st_bitmap *(*graph_bitmap_load)(const char *_z_filename);
+extern orxVOID             (*graph_bitmap_save)(orxCONST orxU8 *_zFilename, graph_st_bitmap *_pst_bmp);
+extern graph_st_bitmap *(*graph_bitmap_load)(orxCONST orxU8 *_zFilename);
 
-extern void             (*graph_bitmap_size_get)(graph_st_bitmap *_pst_bitmap, int32 *_pi_width, int32 *_pi_height);
+extern orxVOID             (*graph_bitmap_size_get)(graph_st_bitmap *_pstBitmap, orxS32 *_pi_width, orxS32 *_pi_height);
 
 #endif /* _GRAPH_H_ */

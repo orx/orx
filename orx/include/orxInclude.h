@@ -1,0 +1,95 @@
+#ifndef _orxINCLUDE_H_
+#define _orxINCLUDE_H_
+
+#include <stddef.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <stdarg.h>
+//#include <stddef.h>
+
+
+/* *** TODO LIST
+ * - Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, hash table)
+ * - Add fixed point floats + ops + converts (replace (orxFLOAT) casts by a convert function)
+ * - Change coord in orxVEC with all new functions
+ * - Add Matrix type + functions
+ * - Update camera to use matrix + vector
+ * - Update camera to use 3D-like computation
+ * - Adds rendering context to camera
+ * - Modify timer plugin to make plugin side simpler
+ * - Add timer IDs, make game/real (=>IDs) time accessors generic
+ * - Animation shouldn't use directly textures but wrapping anim_atom
+ * - Simplify plugin declaration with macros/enums instead of flag IDs
+ * - Adds interactors
+ * - Adds event
+ * - Adds LUA integration
+ */
+
+
+/* *** Types Defines *** */
+
+/* Base */
+
+#define orxCONST            const
+#define orxSTATIC           static
+#define orxINLINE           inline
+
+#define orxNULL             NULL
+
+typedef void                orxVOID;
+
+typedef orxVOID            *orxHANDLE;
+
+typedef unsigned  long long orxU64;
+typedef unsigned  long      orxU32;
+typedef unsigned  short     orxU16;
+typedef unsigned  char      orxU8;
+
+typedef signed    long long orxS64;
+typedef signed    long      orxS32;
+typedef signed    short     orxS16;
+typedef signed    char      orxS8;
+
+typedef unsigned  long      orxBOOL;
+
+typedef float               orxFLOAT;
+
+typedef orxS8               orxCHAR;
+typedef orxCHAR            *orxSTRING;
+
+/* *** Boolean Defines *** */
+extern orxCONST  orxBOOL    orxFALSE;
+extern orxCONST  orxBOOL    orxTRUE;
+
+/* *** Undefined defines *** */
+extern orxCONST  orxU64     orxU64_Undefined;
+extern orxCONST  orxU32     orxU32_Undefined;
+extern orxCONST  orxU16     orxU16_Undefined;
+extern orxCONST  orxU8      orxU8_Undefined;
+extern orxCONST  orxHANDLE  orxHANDLE_Undefined;
+
+
+/* *** Status defines *** */
+typedef enum __orxSTATUS_t
+{
+  orxSTATUS_SUCCESS = 0,
+  orxSTATUS_FAILED,
+
+  orxSTATUS_NUMBER,
+
+  orxSTATUS_NONE = 0xFFFFFFFF
+
+} orxSTATUS;
+
+
+/* Graph */
+typedef orxS32 graph_st_bitmap;
+typedef orxS32 graph_st_sprite;
+
+
+/*** Memory definitions ***/
+
+/*** Return Code definitions ***/
+
+
+#endif /* _orxINCLUDE_H_ */

@@ -1,9 +1,9 @@
 #ifndef _INTERACTION_H_
 #define _INTERACTION_H_
 
-#include "include.h"
+#include "orxInclude.h"
 
-extern uint32 interaction_init();
-extern void interaction_exit();
+extern orxU32 interaction_init();
+extern orxVOID interaction_exit();
 
 #endif /* _INTERACTION_H_ */

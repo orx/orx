@@ -20,12 +20,12 @@
 #ifndef _JOYSTICK_H_
 #define _JOYSTICK_H_
 
-#include "include.h"
+#include "orxInclude.h"
 
 
-extern void     joystick_plugin_init();
+extern orxVOID     joystick_plugin_init();
 
-extern uint32 (*joystick_init)();
-extern void   (*joystick_exit)();
+extern orxU32 (*joystick_init)();
+extern orxVOID   (*joystick_exit)();
 
 #endif /* _JOYSTICK_H_ */

@@ -19,24 +19,26 @@
 
 #include "graph/graphic.h"
 
-#include "anim/animpointer.h"
+#include "anim/orxAnimPointer.h"
+#include "debug/orxDebug.h"
+#include "memory/orxMemory.h"
 
 
 /*
  * Platform independant defines
  */
 
-#define GRAPHIC_KUL_FLAG_NONE                 0x00000000
-#define GRAPHIC_KUL_FLAG_READY                0x00000001
-#define GRAPHIC_KUL_FLAG_DEFAULT              0x00000000
+#define GRAPHIC_KU32_FLAG_NONE                 0x00000000
+#define GRAPHIC_KU32_FLAG_READY                0x00000001
+#define GRAPHIC_KU32_FLAG_DEFAULT              0x00000000
 
-#define GRAPHIC_KUL_ID_FLAG_RENDER_DIRTY      0x20000000
+#define GRAPHIC_KU32_ID_FLAG_RENDER_DIRTY      0x20000000
 
-#define GRAPHIC_KI_STRUCT_NUMBER              2
+#define GRAPHIC_KS32_STRUCT_NUMBER              2
 
-#define GRAPHIC_KI_STRUCT_OFFSET_INVALID     -1
-#define GRAPHIC_KI_STRUCT_OFFSET_TEXTURE      0
-#define GRAPHIC_KI_STRUCT_OFFSET_ANIMPOINTER  1
+#define GRAPHIC_KS32_STRUCT_OFFSET_INVALID     -1
+#define GRAPHIC_KS32_STRUCT_OFFSET_TEXTURE      0
+#define GRAPHIC_KS32_STRUCT_OFFSET_ANIMPOINTER  1
 
 
 /*
@@ -45,16 +47,16 @@
 struct st_graphic_t
 {
   /* Public structure, first structure member : 16 */
-  structure_st_struct st_struct;
+  orxSTRUCTURE stStructure;
 
   /* Used structures ids : 20 */
-  uint32 u32_struct_ids;
+  orxU32 u32LinkedStructures;
 
   /* Id flags : 24 */
-  uint32 u32_id_flags;
+  orxU32 u32IDFlags;
 
   /* Used structures : 32 */
-  structure_st_struct *past_struct[GRAPHIC_KI_STRUCT_NUMBER];
+  orxSTRUCTURE *pastStructure[GRAPHIC_KS32_STRUCT_NUMBER];
 };
 
 
@@ -62,7 +64,7 @@ struct st_graphic_t
 /*
  * Static members
  */
-static uint32 graphic_su32_flags = GRAPHIC_KUL_FLAG_DEFAULT;
+static orxU32 graphic_su32Flags = GRAPHIC_KU32_FLAG_DEFAULT;
 
 
 /***************************************************************************
@@ -77,21 +79,21 @@ static uint32 graphic_su32_flags = GRAPHIC_KUL_FLAG_DEFAULT;
 
  returns: requested structure offset
  ***************************************************************************/
-inline int32 graphic_struct_offset_get(uint32 _u32_struct_id)
+inline orxS32 graphic_struct_offset_get(orxSTRUCTURE_ID _eStructureID)
 {
   /* Gets structure offset according to id */
-  switch(_u32_struct_id)
+  switch(_eStructureID)
   {
     /* Texture structure */
-    case STRUCTURE_KUL_STRUCT_ID_TEXTURE:
-      return GRAPHIC_KI_STRUCT_OFFSET_TEXTURE;
+    case orxSTRUCTURE_ID_TEXTURE:
+      return GRAPHIC_KS32_STRUCT_OFFSET_TEXTURE;
 
     /* AnimationPointer structure*/
-    case STRUCTURE_KUL_STRUCT_ID_ANIMPOINTER:
-      return GRAPHIC_KI_STRUCT_OFFSET_ANIMPOINTER;
+    case orxSTRUCTURE_ID_ANIMPOINTER:
+      return GRAPHIC_KS32_STRUCT_OFFSET_ANIMPOINTER;
 
     default:
-      return GRAPHIC_KI_STRUCT_OFFSET_INVALID;
+      return GRAPHIC_KS32_STRUCT_OFFSET_INVALID;
   }
 }
 
@@ -99,20 +101,20 @@ inline int32 graphic_struct_offset_get(uint32 _u32_struct_id)
  graphic_list_delete
  Deletes all graphics.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-inline void graphic_list_delete()
+inline orxVOID graphic_list_delete()
 {
-  graphic_st_graphic *pst_graphic = (graphic_st_graphic *)structure_struct_first_get(STRUCTURE_KUL_STRUCT_ID_GRAPHIC);
+  graphic_st_graphic *pstGraphic = (graphic_st_graphic *)orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC);
 
   /* Non empty? */
-  while(pst_graphic != NULL)
+  while(pstGraphic != orxNULL)
   {
     /* Deletes graphic */
-    graphic_delete(pst_graphic);
+    graphic_delete(pstGraphic);
 
     /* Gets first graphic */
-    pst_graphic = (graphic_st_graphic *)structure_struct_first_get(STRUCTURE_KUL_STRUCT_ID_GRAPHIC);
+    pstGraphic = (graphic_st_graphic *)orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC);
   }
 
   return;
@@ -130,34 +132,34 @@ inline void graphic_list_delete()
  graphic_init
  Inits graphic system.
 
- returns: EXIT_SUCCESS/EXIT_FAILURE
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-uint32 graphic_init()
+orxU32 graphic_init()
 {
   /* Not already Initialized? */
-  if(!(graphic_su32_flags & GRAPHIC_KUL_FLAG_READY))
+  if(!(graphic_su32Flags & GRAPHIC_KU32_FLAG_READY))
   {
     /* Inits Flags */
-    graphic_su32_flags = GRAPHIC_KUL_FLAG_READY;
+    graphic_su32Flags = GRAPHIC_KU32_FLAG_READY;
 
-    return EXIT_SUCCESS;
+    return orxSTATUS_SUCCESS;
   }
 
-  return EXIT_FAILURE;
+  return orxSTATUS_FAILED;
 }
 
 /***************************************************************************
  graphic_exit
  Exits from the graphic system.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void graphic_exit()
+orxVOID graphic_exit()
 {
   /* Initialized? */
-  if(graphic_su32_flags & GRAPHIC_KUL_FLAG_READY)
+  if(graphic_su32Flags & GRAPHIC_KU32_FLAG_READY)
   {
-    graphic_su32_flags &= ~GRAPHIC_KUL_FLAG_READY;
+    graphic_su32Flags &= ~GRAPHIC_KU32_FLAG_READY;
 
     /* Deletes graphic list */
     graphic_list_delete();
@@ -174,60 +176,66 @@ void graphic_exit()
  ***************************************************************************/
 graphic_st_graphic *graphic_create()
 {
-  graphic_st_graphic *pst_graphic;
-  int32 i;
+  graphic_st_graphic *pstGraphic;
+  orxS32 i;
 
   /* Creates graphic */
-  pst_graphic = (graphic_st_graphic *) malloc(sizeof(graphic_st_graphic));
+  pstGraphic = (graphic_st_graphic *) orxMemory_Allocate(sizeof(graphic_st_graphic), orxMEMORY_TYPE_MAIN);
 
   /* Non null? */
-  if(pst_graphic != NULL)
+  if(pstGraphic != orxNULL)
   {
     /* Inits structure */
-    if(structure_struct_init((structure_st_struct *)pst_graphic, STRUCTURE_KUL_STRUCT_ID_GRAPHIC) != EXIT_SUCCESS)
+    if(orxStructure_Setup((orxSTRUCTURE *)pstGraphic, orxSTRUCTURE_ID_GRAPHIC) != orxSTATUS_SUCCESS)
     {
       /* !!! MSG !!! */
 
       /* Frees partially allocated texture */
-      free(pst_graphic);
+      orxMemory_Free(pstGraphic);
 
       /* Returns nothing */
-      return NULL;
+      return orxNULL;
     }
 
     /* Inits flags */
-    pst_graphic->u32_struct_ids = STRUCTURE_KUL_STRUCT_ID_NONE;
-    pst_graphic->u32_id_flags = GRAPHIC_KUL_ID_FLAG_NONE;
+    pstGraphic->u32LinkedStructures = orxSTRUCTURE_ID_NONE;
+    pstGraphic->u32IDFlags = GRAPHIC_KU32_ID_FLAG_NONE;
 
     /* Cleans structure pointers */
-    for(i = 0; i < GRAPHIC_KI_STRUCT_NUMBER; i++)
+    for(i = 0; i < GRAPHIC_KS32_STRUCT_NUMBER; i++)
     {
-      pst_graphic->past_struct[i] = NULL;
+      pstGraphic->pastStructure[i] = orxNULL;
     }
   }
 
-  return pst_graphic;
+  return pstGraphic;
 }
 
 /***************************************************************************
  graphic_delete
  Deletes a graphic.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void graphic_delete(graphic_st_graphic *_pst_graphic)
+orxVOID graphic_delete(graphic_st_graphic *_pstGraphic)
 {
   /* Non null? */
-  if(_pst_graphic != NULL)
+  if(_pstGraphic != orxNULL)
   {
-    /* Cleans members */
-    graphic_struct_unlink(_pst_graphic, STRUCTURE_KUL_STRUCT_ID_ALL);
+    orxU32 i;
+
+    /* Unlink all structures */
+    for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+    {
+      /* Cleans members */
+      graphic_struct_unlink(_pstGraphic, (orxSTRUCTURE_ID)i);
+    }
 
     /* Cleans structure */
-    structure_struct_clean((structure_st_struct *)_pst_graphic);
+    orxStructure_Clean((orxSTRUCTURE *)_pstGraphic);
 
     /* Frees graphic memory */
-    free(_pst_graphic);
+    orxMemory_Free(_pstGraphic);
   }
 
   return;
@@ -237,58 +245,58 @@ void graphic_delete(graphic_st_graphic *_pst_graphic)
  graphic_struct_link
  Links a structure to a graphic given.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void graphic_struct_link(graphic_st_graphic *_pst_graphic, structure_st_struct *_pst_struct)
+orxVOID graphic_struct_link(graphic_st_graphic *_pstGraphic, orxSTRUCTURE *_pstStructure)
 {
-  uint32 u32_struct_id;
-  int32 i_struct_offset;
+  orxU32 u32StructureIndex;
+  orxSTRUCTURE_ID eStructureID;
 
-  /* Non null? */
-  if((_pst_graphic != NULL) && (_pst_struct != NULL))
+   /* Checks */
+  orxASSERT(_pstGraphic != orxNULL);
+  orxASSERT(_pstStructure != orxNULL);
+
+  /* Gets structure id & offset */
+  eStructureID      = orxStructure_GetID(_pstStructure);
+  u32StructureIndex = graphic_struct_offset_get(eStructureID);
+
+  /* Valid? */
+  if(u32StructureIndex != orxU32_Undefined)
   {
-    /* Gets structure id & offset */
-    u32_struct_id = structure_struct_id_get(_pst_struct);
-    i_struct_offset = graphic_struct_offset_get(u32_struct_id);
+    /* Unlink previous structure if needed */
+    graphic_struct_unlink(_pstGraphic, eStructureID);
 
-    /* Valid? */
-    if(i_struct_offset != GRAPHIC_KI_STRUCT_OFFSET_INVALID)
+    /* Updates structure reference counter */
+    orxStructure_IncreaseCounter(_pstStructure);
+
+    /* Links new structure to graphic */
+    _pstGraphic->pastStructure[u32StructureIndex] = _pstStructure;
+    _pstGraphic->u32LinkedStructures |= eStructureID;
+
+    /* Depends on structure type */
+    switch(eStructureID)
     {
-      /* Unlink previous structure if needed */
-      graphic_struct_unlink(_pst_graphic, u32_struct_id);
+      /* Texture */
+      case orxSTRUCTURE_ID_TEXTURE:
+        /* Updates flag */
+        graphic_flag_set(_pstGraphic, GRAPHIC_KU32_ID_FLAG_2D, 0);
+        break;
 
-      /* Updates structure reference counter */
-      structure_struct_counter_increase(_pst_struct);
-
-      /* Links new structure to graphic */
-      _pst_graphic->past_struct[i_struct_offset] = _pst_struct;
-      _pst_graphic->u32_struct_ids |= u32_struct_id;
-
-      /* Depends on structure type */
-      switch(u32_struct_id)
-      {
-        /* Texture */
-        case STRUCTURE_KUL_STRUCT_ID_TEXTURE:
+      /* Animpointer */
+      case orxSTRUCTURE_ID_ANIMPOINTER:
+        /* Checks current anim */
+        if(orxAnim_TestFlag(orxAnimPointer_GetAnim((orxANIM_POINTER *)_pstStructure), orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
+        {
           /* Updates flag */
-          graphic_flag_set(_pst_graphic, GRAPHIC_KUL_ID_FLAG_2D, 0);
-          break;
-
-        /* Animpointer */
-        case STRUCTURE_KUL_STRUCT_ID_ANIMPOINTER:
-          /* Checks current anim */
-          if(anim_flag_test(animpointer_anim_get((animpointer_st_animpointer *)_pst_struct), ANIM_KUL_ID_FLAG_2D) != FALSE)
-          {
-            /* Updates flag */
-            graphic_flag_set(_pst_graphic, GRAPHIC_KUL_ID_FLAG_2D | GRAPHIC_KUL_ID_FLAG_ANIM, GRAPHIC_KUL_ID_FLAG_NONE);
-
-            break;
-          }
-
-        default:
-          /* !!! MSG !!! */
+          graphic_flag_set(_pstGraphic, GRAPHIC_KU32_ID_FLAG_2D | GRAPHIC_KU32_ID_FLAG_ANIM, GRAPHIC_KU32_ID_FLAG_NONE);
 
           break;
-      }
+        }
+
+      default:
+        /* !!! MSG !!! */
+
+        break;
     }
   }
 
@@ -300,48 +308,39 @@ void graphic_struct_link(graphic_st_graphic *_pst_graphic, structure_st_struct *
  Unlinks structures from a graphic given their IDs.
  Ids can be OR'ed.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void graphic_struct_unlink(graphic_st_graphic *_pst_graphic, uint32 _u32_struct_id)
+orxVOID graphic_struct_unlink(graphic_st_graphic *_pstGraphic, orxSTRUCTURE_ID _eStructureID)
 {
-  structure_st_struct *pst_struct;
-  uint32 u32_used_id, ul;
-  int32 i_struct_offset;
- 
-  /* Non null? */
-  if(_pst_graphic != NULL)
+  orxSTRUCTURE *pstStructure;
+  orxU32 u32ID, u32StructureIndex;
+
+   /* Checks */
+  orxASSERT(_pstGraphic != orxNULL);
+
+  /* Gets used struct ids */
+  u32ID = (1 << _eStructureID);
+
+  /* Needs to be processed? */
+  if(u32ID & _pstGraphic->u32LinkedStructures)
   {
-    /* Gets used struct ids */
-    u32_used_id = _u32_struct_id & _pst_graphic->u32_struct_ids;
+    /* Gets structure index */
+    u32StructureIndex = graphic_struct_offset_get(_eStructureID);
 
-    /* For each requested structure, do the unlink */
-    for(ul = 0x00000001; u32_used_id != 0x0000000; ul <<= 1)
-    {
-      /* Needs to be processed? */
-      if(ul & u32_used_id)
-      {
-        /* Updates remaining structure ids */
-        u32_used_id &= ~ul;
+    /* Decreases structure reference counter */
+    pstStructure = _pstGraphic->pastStructure[u32StructureIndex];
+    orxStructure_DecreaseCounter(pstStructure);
 
-        /* Gets structure offset */
-        i_struct_offset = graphic_struct_offset_get(ul);
-
-        /* Decreases structure reference counter */
-        pst_struct = _pst_graphic->past_struct[i_struct_offset];
-        structure_struct_counter_decrease(pst_struct);
-
-        /* Unlinks structure */
-        _pst_graphic->past_struct[i_struct_offset] = NULL;
-      }
-    }
+    /* Unlinks structure */
+    _pstGraphic->pastStructure[u32StructureIndex] = orxNULL;
 
     /* Updates structures ids */
-      _pst_graphic->u32_struct_ids &= ~_u32_struct_id;
+    _pstGraphic->u32LinkedStructures &= ~u32ID;
 
     /* Updates flags */
-    if(_u32_struct_id & STRUCTURE_KUL_STRUCT_ID_ANIMPOINTER)
+    if(_eStructureID == orxSTRUCTURE_ID_ANIMPOINTER)
     {
-      graphic_flag_set(_pst_graphic, GRAPHIC_KUL_ID_FLAG_NONE, GRAPHIC_KUL_ID_FLAG_ANIM);
+      graphic_flag_set(_pstGraphic, GRAPHIC_KU32_ID_FLAG_NONE, GRAPHIC_KU32_ID_FLAG_ANIM);
     }
   }
 
@@ -350,47 +349,47 @@ void graphic_struct_unlink(graphic_st_graphic *_pst_graphic, uint32 _u32_struct_
 
 /***************************************************************************
  graphic_render_status_ok
- Test graphic render status (TRUE : clean / FALSE : dirty)
+ Test graphic render status (TRUE : clean / orxFALSE : dirty)
 
- returns: TRUE (clean) / FALSE (dirty)
+ returns: orxTRUE (clean) / orxFALSE (dirty)
  ***************************************************************************/
-inline bool graphic_render_status_ok(graphic_st_graphic *_pst_graphic)
+inline orxBOOL graphic_render_status_ok(graphic_st_graphic *_pstGraphic)
 {
   /* Non null? */
-  if(_pst_graphic != NULL)
+  if(_pstGraphic != orxNULL)
   {
     /* Test render dirty flag */
-    if(_pst_graphic->u32_id_flags & GRAPHIC_KUL_ID_FLAG_RENDER_DIRTY)
+    if(_pstGraphic->u32IDFlags & GRAPHIC_KU32_ID_FLAG_RENDER_DIRTY)
     {
-      return FALSE;
+      return orxFALSE;
     }
     else
     {
-      return TRUE;
+      return orxTRUE;
     }
   }
 
-  return TRUE;
+  return orxTRUE;
 }
 
 /***************************************************************************
  graphic_render_status_clean
  Cleans all graphics render status
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void graphic_render_status_clean()
+orxVOID graphic_render_status_clean()
 {
-  graphic_st_graphic *pst_graphic = (graphic_st_graphic *)structure_struct_first_get(STRUCTURE_KUL_STRUCT_ID_GRAPHIC);
+  graphic_st_graphic *pstGraphic = (graphic_st_graphic *)orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC);
 
   /* Non empty? */
-  while(pst_graphic != NULL)
+  while(pstGraphic != orxNULL)
   {
     /* Removes render dirty flag from all graphic */
-    pst_graphic->u32_id_flags &= ~GRAPHIC_KUL_ID_FLAG_RENDER_DIRTY;
+    pstGraphic->u32IDFlags &= ~GRAPHIC_KU32_ID_FLAG_RENDER_DIRTY;
 
     /* Gets next graphic */
-    pst_graphic = (graphic_st_graphic *)structure_struct_next_get((structure_st_struct *)pst_graphic);
+    pstGraphic = (graphic_st_graphic *)orxStructure_GetNext((orxSTRUCTURE *)pstGraphic);
   }
 
   return;
@@ -406,22 +405,22 @@ void graphic_render_status_clean()
 
  returns: pointer to the requested structure (must be cast correctly)
  ***************************************************************************/
-inline structure_st_struct *graphic_struct_get(graphic_st_graphic *_pst_graphic, uint32 _u32_struct_id)
+inline orxSTRUCTURE *graphic_struct_get(graphic_st_graphic *_pstGraphic, orxSTRUCTURE_ID _eStructureID)
 {
-  structure_st_struct *pst_struct = NULL;
-  int32 i_struct_offset;
+  orxSTRUCTURE *pstStructure = orxNULL;
+  orxS32 i_struct_offset;
 
   /* Gets offset */
-  i_struct_offset = graphic_struct_offset_get(_u32_struct_id);
+  i_struct_offset = graphic_struct_offset_get(_eStructureID);
 
   /* Offset is valid? */
-  if(i_struct_offset != GRAPHIC_KI_STRUCT_OFFSET_INVALID)
+  if(i_struct_offset != GRAPHIC_KS32_STRUCT_OFFSET_INVALID)
   {
     /* Gets requested structure */
-    pst_struct = _pst_graphic->past_struct[i_struct_offset];
+    pstStructure = _pstGraphic->pastStructure[i_struct_offset];
   }
 
-  return pst_struct;
+  return pstStructure;
 }    
 
 /***************************************************************************
@@ -430,67 +429,67 @@ inline structure_st_struct *graphic_struct_get(graphic_st_graphic *_pst_graphic,
 
  returns: pointer to the current data
  ***************************************************************************/
-inline texture_st_texture *graphic_2d_data_get(graphic_st_graphic *_pst_graphic)
+inline orxTEXTURE *graphic_2d_data_get(graphic_st_graphic *_pstGraphic)
 {
   /* Use an animation? */
-  if(_pst_graphic->u32_struct_ids & STRUCTURE_KUL_STRUCT_ID_ANIMPOINTER)
+  if(_pstGraphic->u32LinkedStructures & orxSTRUCTURE_ID_ANIMPOINTER)
   {
-    animpointer_st_animpointer *pst_animpointer;
-    anim_st_anim *pst_anim;
+    orxANIM_POINTER *pstAnimpointer;
+    orxANIM *pstAnim;
 
     /* Gets animpointer */
-    pst_animpointer = (animpointer_st_animpointer *)graphic_struct_get(_pst_graphic, STRUCTURE_KUL_STRUCT_ID_ANIMPOINTER);
+    pstAnimpointer = (orxANIM_POINTER *)graphic_struct_get(_pstGraphic, orxSTRUCTURE_ID_ANIMPOINTER);
 
     /* Gets current animation */
-    pst_anim = animpointer_anim_get(pst_animpointer);
+    pstAnim = orxAnimPointer_GetAnim(pstAnimpointer);
 
     /* Is animation 2D? */
-    if(anim_flag_test(pst_anim, ANIM_KUL_ID_FLAG_2D) != FALSE)
+    if(orxAnim_TestFlag(pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
     {
-      uint32 u32_timestamp;
+      orxU32 u32Time;
 
       /* Gets timestamp */
-      u32_timestamp = animpointer_time_get(pst_animpointer);
+      u32Time = orxAnimPointer_GetTime(pstAnimpointer);
 
       /* returns texture */
-      return(anim_2d_texture_compute(pst_anim, u32_timestamp));
+      return(orxAnim_ComputeTexture(pstAnim, u32Time));
     }
     else
     {
       /* !!! MSG !!! */
  
-      return NULL;
+      return orxNULL;
     }
   }
   /* Use single texture? */
-  else if(_pst_graphic->u32_struct_ids & STRUCTURE_KUL_STRUCT_ID_TEXTURE)
+  else if(_pstGraphic->u32LinkedStructures & orxSTRUCTURE_ID_TEXTURE)
   {
-    return((texture_st_texture *)graphic_struct_get(_pst_graphic, STRUCTURE_KUL_STRUCT_ID_TEXTURE));
+    return((orxTEXTURE *)graphic_struct_get(_pstGraphic, orxSTRUCTURE_ID_TEXTURE));
   }
 
   /* No data */
   /* !!! MSG !!! */
 
-  return NULL;
+  return orxNULL;
 }
 
 /***************************************************************************
  graphic_2d_size_get
  Gets current 2d data size.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-inline void graphic_2d_size_get(graphic_st_graphic *_pst_graphic, coord_st_coord *_pst_coord)
+inline orxVOID graphic_2d_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
 {
-  texture_st_texture *pst_texture;
+  orxTEXTURE *pstTexture;
 
   /* Gets texture */
-  pst_texture = graphic_2d_data_get(_pst_graphic);
+  pstTexture = graphic_2d_data_get(_pstGraphic);
 
   /* Data found? */
-  if(pst_texture != NULL)
+  if(pstTexture != orxNULL)
   {
-    texture_size_get(pst_texture, _pst_coord);
+    texture_size_get(pstTexture, _pst_coord);
   }
   else
   {
@@ -506,19 +505,19 @@ inline void graphic_2d_size_get(graphic_st_graphic *_pst_graphic, coord_st_coord
  graphic_2d_ref_coord_get
  Gets graphic current 2d data ref coord.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-inline void graphic_2d_ref_coord_get(graphic_st_graphic *_pst_graphic, coord_st_coord *_pst_coord)
+inline orxVOID graphic_2d_ref_coord_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
 {
-  texture_st_texture *pst_texture;
+  orxTEXTURE *pstTexture;
 
   /* Gets texture */
-  pst_texture = graphic_2d_data_get(_pst_graphic);
+  pstTexture = graphic_2d_data_get(_pstGraphic);
 
   /* Data found? */
-  if(pst_texture != NULL)
+  if(pstTexture != orxNULL)
   {
-      texture_ref_coord_get(pst_texture, _pst_coord);
+      texture_ref_coord_get(pstTexture, _pst_coord);
   }
   else
   {
@@ -535,19 +534,19 @@ inline void graphic_2d_ref_coord_get(graphic_st_graphic *_pst_graphic, coord_st_
  graphic_2d_max_size_get
  Gets maximum size (used for object bounding box).
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-inline void graphic_2d_max_size_get(graphic_st_graphic *_pst_graphic, coord_st_coord *_pst_coord)
+inline orxVOID graphic_2d_max_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
 {
-  texture_st_texture *pst_texture;
+  orxTEXTURE *pstTexture;
 
   /* Gets texture */
-  pst_texture = graphic_2d_data_get(_pst_graphic);
+  pstTexture = graphic_2d_data_get(_pstGraphic);
 
   /* Data found? */
-  if(pst_texture != NULL)
+  if(pstTexture != orxNULL)
   {
-    texture_size_get(pst_texture, _pst_coord);
+    texture_size_get(pstTexture, _pst_coord);
   }
   else
   {
@@ -562,28 +561,28 @@ inline void graphic_2d_max_size_get(graphic_st_graphic *_pst_graphic, coord_st_c
  graphic_flag_test
  Graphic flag test accessor.
 
- returns: bool
+ returns: orxBOOL
  ***************************************************************************/
-bool graphic_flag_test(graphic_st_graphic *_pst_graphic, uint32 _u32_flag)
+orxBOOL graphic_flag_test(graphic_st_graphic *_pstGraphic, orxU32 _u32Flag)
 {
-  if(_pst_graphic->u32_id_flags & _u32_flag)
+  if(_pstGraphic->u32IDFlags & _u32Flag)
   {
-    return TRUE;
+    return orxTRUE;
   }
 
-  return FALSE;
+  return orxFALSE;
 }
 
 /***************************************************************************
  graphic_flag_set
  Graphic flag get/set accessor.
 
- returns: void
+ returns: orxVOID
  ***************************************************************************/
-void graphic_flag_set(graphic_st_graphic *_pst_graphic, uint32 _u32_add_flags, uint32 _u32_remove_flags)
+orxVOID graphic_flag_set(graphic_st_graphic *_pstGraphic, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
 {
-  _pst_graphic->u32_id_flags &= ~_u32_remove_flags;
-  _pst_graphic->u32_id_flags |= _u32_add_flags;
+  _pstGraphic->u32IDFlags &= ~_u32RemoveFlags;
+  _pstGraphic->u32IDFlags |= _u32AddFlags;
 
   return;
 }
