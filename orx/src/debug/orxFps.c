@@ -107,7 +107,7 @@ orxSTATUS orxFps_Init()
   }
 
   /* Cleans static controller */
-  orxMemory_Set((orxVOID *)&sstFPS, 0, sizeof(orxFPS_STATIC));
+  orxMemory_Set((orxFPS_STATIC *)&sstFPS, 0, sizeof(orxFPS_STATIC));
 
   /* Inits Flags */
   sstFPS.u32Flags = orxFPS_KU32_FLAG_READY;
