@@ -86,6 +86,19 @@ orxVOID orxMemory_Exit()
   return;
 }
 
+/** Get the an aligned data size
+ * @param _u32OriginalValue (ex: 70)
+ * @param _u32AlignValue (ex : 32) (The value has to be a power of 2 and > 0) (ex : 32)
+ * @return the aligned _u32OriginalValue on _u32AlignValue (ex : will return 96 for previous values)
+ */
+orxU32 orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue)
+{
+  /* The align value has to be a power of 2 and > 0 */
+  orxASSERT(_u32AlignValue > 0);
+  
+  return ((_u32OriginalValue - _u32AlignValue - 1) & (~(_u32AlignValue - 1)));
+}
+
 /** Allocate a portion of memory in the system and returns a pointer on it
  * @param _u32Size  (IN)  size of the memory to allocate
  * @param _eMemType (IN)  Memory zone where datas will be allocated

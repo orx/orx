@@ -65,6 +65,13 @@ extern orxVOID *orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
  */
 extern orxVOID orxMemory_Free(orxVOID *_pMem);
 
+/** Get the an aligned data size
+ * @param _u32OriginalValue (ex: 70)
+ * @param _u32AlignValue (The value has to be a power of 2 and > 0) (ex : 32)
+ * @return the aligned _u32OriginalValue on _u32AlignValue (ex : will return 96 for previous values)
+ */
+extern orxU32 orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue);
+
 /** Copy a portion of memory into another one
  * @param _pDest    (OUT) Destination pointer
  * @param _pSrc     (IN)  Pointer of memory from where data are read
