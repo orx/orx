@@ -23,6 +23,8 @@
  * - Adds interactors
  * - Adds event
  * - Adds LUA integration
+ * - Complete orxBANK implementation
+ * - Rewrite File and Package module to use plugins system
  */
 
 
