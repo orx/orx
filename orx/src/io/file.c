@@ -429,7 +429,7 @@ orxBOOL file_find_first(orxU8 *_z_pattern, file_st_file_infos *_pstInfo)
         if (st_stat.st_mode & S_IFDIR) _pstInfo->i_attrib |= F_SUBDIR;
         if ((st_stat.st_mode & S_IRUSR) && !(st_stat.st_mode & S_IWUSR)) _pstInfo->i_attrib |= F_RDONLY;
         if (pst_dirent->d_name[0]=='.') _pstInfo->i_attrib |= F_HIDDEN;
-        _pstInfo->s32_size = st_stat.vSize;
+        _pstInfo->s32_size = st_stat.st_size;
         _pstInfo->st_time = st_stat.st_ctime;
         strcpy(_pstInfo->ac_name, pst_dirent->d_name);
         strcpy(_pstInfo->ac_path, ac_directory);
@@ -510,7 +510,7 @@ orxBOOL file_find_next(file_st_file_infos *_pstInfo)
         if (st_stat.st_mode & S_IFDIR) _pstInfo->i_attrib |= F_SUBDIR;
         if ((st_stat.st_mode & S_IRUSR) && !(st_stat.st_mode & S_IWUSR)) _pstInfo->i_attrib |= F_RDONLY;
         if (pst_dirent->d_name[0]=='.') _pstInfo->i_attrib |= F_HIDDEN;
-        _pstInfo->s32_size = st_stat.vSize;
+        _pstInfo->s32_size = st_stat.st_size;
         _pstInfo->st_time = st_stat.st_ctime;
         strcpy(_pstInfo->ac_name, pst_dirent->d_name);
         b_continue = orxFALSE;
