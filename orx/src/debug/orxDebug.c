@@ -65,7 +65,7 @@ typedef struct __orxDEBUG_STATIC_t
 /*
  * Static data
  */
-static orxDEBUG_STATIC sstDebug;
+orxSTATIC orxDEBUG_STATIC sstDebug;
 
 
 /***************************************************************************
@@ -80,7 +80,7 @@ static orxDEBUG_STATIC sstDebug;
 
  returns: orxCONST orxSTRING level string
  ***************************************************************************/
-inline orxCONST orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
+orxINLINE orxCONST orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
   /* Depending on level */
   switch(_eLevel)

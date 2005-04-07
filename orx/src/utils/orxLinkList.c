@@ -43,7 +43,7 @@ typedef struct __orxLINKLIST_STATIC_t
 /*
  * Static data
  */
-static orxLINKLIST_STATIC sstLinkList;
+orxSTATIC orxLINKLIST_STATIC sstLinkList;
 
 
 /***************************************************************************

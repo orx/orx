@@ -26,7 +26,7 @@
  *  Plugin Related  *
  ********************/
 
-static plugin_core_st_function plugin_sound_spst_function[PLUGIN_SOUND_KU32_FUNCTION_NUMBER] =
+orxSTATIC plugin_core_st_function plugin_sound_spst_function[PLUGIN_SOUND_KU32_FUNCTION_NUMBER] =
 {
   {(plugin_function *) &sound_init,                   PLUGIN_SOUND_KU32_ID_INIT},
   {(plugin_function *) &sound_exit,                   PLUGIN_SOUND_KU32_ID_EXIT},

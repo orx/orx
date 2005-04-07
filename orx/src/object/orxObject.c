@@ -69,7 +69,7 @@ typedef struct __orxOBJECT_STATIC_t
 /*
  * Static data
  */
-static orxOBJECT_STATIC sstObject;
+orxSTATIC orxOBJECT_STATIC sstObject;
 
 
 /***************************************************************************
@@ -84,7 +84,7 @@ static orxOBJECT_STATIC sstObject;
 
  returns: requested structure offset
  ***************************************************************************/
-inline orxU32 orxObject_GetStructureIndex(orxSTRUCTURE_ID _eStructureID)
+orxINLINE orxU32 orxObject_GetStructureIndex(orxSTRUCTURE_ID _eStructureID)
 {
   /* Gets structure offset according to id */
   switch(_eStructureID)

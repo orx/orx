@@ -18,8 +18,8 @@
  * Static information structures
  */
 
-static orxS32 si_screenshot_number = 0;
-static orxU32 screenshot_su32Flags = SCREENSHOT_KU32_FLAG_NONE;
+orxSTATIC orxS32 si_screenshot_number = 0;
+orxSTATIC orxU32 screenshot_su32Flags = SCREENSHOT_KU32_FLAG_NONE;
 
 
 orxU32 screenshot_init()

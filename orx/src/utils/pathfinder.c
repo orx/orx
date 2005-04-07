@@ -28,14 +28,14 @@ orxS32 pathfinder_gi_map_h_size = 0;
 orxS32 pathfinder_gi_map_v_size = 0;
 orxFLOAT pathfinder_gf_goal_distance = 0.0;
 
-static pathfinder_st_tile **sppst_matrix = orxNULL;
-static pathfinder_st_mask *spst_mask = orxNULL;
-static orxS32 si_mask_size = 0;
-static orxVEC sst_source;
-static orxVEC sst_destination;
-static orxVEC sst_null;
-static orxBOOL *spb_touched = orxNULL;
-static orxS32 si_touched_size = 0;
+orxSTATIC pathfinder_st_tile **sppst_matrix = orxNULL;
+orxSTATIC pathfinder_st_mask *spst_mask = orxNULL;
+orxSTATIC orxS32 si_mask_size = 0;
+orxSTATIC orxVEC sst_source;
+orxSTATIC orxVEC sst_destination;
+orxSTATIC orxVEC sst_null;
+orxSTATIC orxBOOL *spb_touched = orxNULL;
+orxSTATIC orxS32 si_touched_size = 0;
 
 struct st_tile_t
 {

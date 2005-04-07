@@ -36,7 +36,7 @@ typedef struct st_pack_open_node_t
 
 
 
-static st_pack_open_node *spst_open_linked_list = orxNULL;
+orxSTATIC st_pack_open_node *spst_open_linked_list = orxNULL;
 /* the head of the linked which contain all the opened package */
 
 

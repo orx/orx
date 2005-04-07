@@ -75,13 +75,13 @@ struct struct_tree
 };
 
 /* forward declarations */
-static map_cell *map_goto(privmap *p_map, orxS32 pos);
-static orxU32 map_get_value_size(privmap *p_map);
-static map_cell *map_find_cell(privmap *p_map, orxU8 *p_key);
-static orxVOID tree_delete_from(priv_tree_cell *p_cell);
+orxSTATIC map_cell *map_goto(privmap *p_map, orxS32 pos);
+orxSTATIC orxU32 map_get_value_size(privmap *p_map);
+orxSTATIC map_cell *map_find_cell(privmap *p_map, orxU8 *p_key);
+orxSTATIC orxVOID tree_delete_from(priv_tree_cell *p_cell);
 
 /* NOT STABLE, do not use */
-//static orxBOOL map_insert(privmap *p_map, orxU32 pos, orxU8 *p_key, orxU8 *p_value);
+//orxSTATIC orxBOOL map_insert(privmap *p_map, orxU32 pos, orxU8 *p_key, orxU8 *p_value);
 /* NOT STABLE */
 
 /******************************************************
@@ -742,12 +742,12 @@ orxU32 tree_sibling_number(tree_cell mycell)
  * Private functions
  ******************************************************/
 
-static orxU32 map_get_value_size(privmap *p_map)
+orxSTATIC orxU32 map_get_value_size(privmap *p_map)
 {
     return p_map->value_size;
 }
 
-//static orxBOOL map_insert(privmap *p_map, orxU32 pos, orxU8 *p_key, orxU8 *p_value)
+//orxSTATIC orxBOOL map_insert(privmap *p_map, orxU32 pos, orxU8 *p_key, orxU8 *p_value)
 //{
 //    map_cell *p_currmap_cell = orxNULL;
 //    map_cell *p_cell = orxNULL;
@@ -780,7 +780,7 @@ static orxU32 map_get_value_size(privmap *p_map)
 //    return orxTRUE;
 //}
 
-static map_cell *map_goto(privmap *p_map, orxS32 pos)
+orxSTATIC map_cell *map_goto(privmap *p_map, orxS32 pos)
 {
     orxS32 i = 0;
     map_cell *p_currmap_cell;
@@ -810,7 +810,7 @@ static map_cell *map_goto(privmap *p_map, orxS32 pos)
 }
 
 
-static map_cell *map_find_cell(privmap *p_map, orxU8 *p_key)
+orxSTATIC map_cell *map_find_cell(privmap *p_map, orxU8 *p_key)
 {
     map_cell *p_currmap_cell;
 
@@ -836,7 +836,7 @@ static map_cell *map_find_cell(privmap *p_map, orxU8 *p_key)
 }
 
 
-static orxVOID tree_delete_from(priv_tree_cell *p_cell)
+orxSTATIC orxVOID tree_delete_from(priv_tree_cell *p_cell)
 {
     priv_tree_cell *p_current_cell, *p_old_cell;
     

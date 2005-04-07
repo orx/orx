@@ -64,7 +64,7 @@ struct st_texture_t
 /*
  * Static members
  */
-static orxU32 texture_su32Flags = TEXTURE_KU32_FLAG_NONE;
+orxSTATIC orxU32 texture_su32Flags = TEXTURE_KU32_FLAG_NONE;
 
 
 /***************************************************************************

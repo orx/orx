@@ -41,7 +41,7 @@ typedef struct st_search_node_t
  * linked list of all current search
  * this list is sorted on id
  */
-static file_st_search_node *spst_search_list = orxNULL;
+orxSTATIC file_st_search_node *spst_search_list = orxNULL;
 
 
 /* génère un numéro d'identifiant valide */

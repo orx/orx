@@ -117,11 +117,11 @@ typedef struct st_plugin_info_t
 /*
  * Static information structures
  */
-static plugin_core_st_function *sapst_function[PLUGIN_CORE_KS32_NUMBER];
-static orxS32 si_function_number[PLUGIN_CORE_KS32_NUMBER];
+orxSTATIC plugin_core_st_function *sapst_function[PLUGIN_CORE_KS32_NUMBER];
+orxSTATIC orxS32 si_function_number[PLUGIN_CORE_KS32_NUMBER];
 
-static map sp_plugin_map = orxNULL;
-static orxU32 plugin_su32Flags = PLUGIN_KU32_FLAG_NONE;
+orxSTATIC map sp_plugin_map = orxNULL;
+orxSTATIC orxU32 plugin_su32Flags = PLUGIN_KU32_FLAG_NONE;
 
 /***************************************************************************
  ***************************************************************************

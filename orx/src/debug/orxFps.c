@@ -50,7 +50,7 @@ typedef struct __orxFPS_STATIC_t
 /*
  * Static data
  */
-static volatile orxFPS_STATIC sstFPS;
+orxSTATIC volatile orxFPS_STATIC sstFPS;
 
 
 /***************************************************************************
@@ -65,7 +65,7 @@ static volatile orxFPS_STATIC sstFPS;
 
  returns: orxVOID
  ***************************************************************************/
-static inline orxVOID orxFps_Update()
+orxSTATIC orxINLINE orxVOID orxFps_Update()
 {
   /* Gets FPS value */
   sstFPS.u32FPS = sstFPS.u32FrameCounter;
@@ -147,7 +147,7 @@ orxVOID orxFps_Exit()
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxFps_IncreaseFrameCounter()
+orxVOID orxFps_IncreaseFrameCounter()
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
@@ -164,7 +164,7 @@ inline orxVOID orxFps_IncreaseFrameCounter()
 
  returns: orxU32 FPS value
  ***************************************************************************/
-inline orxU32 orxFps_GetFPS()
+orxU32 orxFps_GetFPS()
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);

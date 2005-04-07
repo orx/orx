@@ -145,7 +145,7 @@ typedef struct __orxCAMERA_STATIC_t
 /*
  * Static data
  */
-static orxCAMERA_STATIC sstCamera;
+orxSTATIC orxCAMERA_STATIC sstCamera;
 
 
 /***************************************************************************
@@ -160,7 +160,7 @@ static orxCAMERA_STATIC sstCamera;
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_DeleteAll()
+orxSTATIC orxVOID orxCamera_DeleteAll()
 {
   orxCAMERA *pstCamera;
   
@@ -186,7 +186,7 @@ inline orxVOID orxCamera_DeleteAll()
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_CleanViewListCell(orxCAMERA_VIEW_LIST *_pstViewList)
+orxINLINE orxVOID orxCamera_CleanViewListCell(orxCAMERA_VIEW_LIST *_pstViewList)
 {
   /* Checks */
   orxASSERT(_pstViewList != orxNULL);
@@ -203,7 +203,7 @@ inline orxVOID orxCamera_CleanViewListCell(orxCAMERA_VIEW_LIST *_pstViewList)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_CleanViewList(orxCAMERA *_pstCamera)
+orxINLINE orxVOID orxCamera_CleanViewList(orxCAMERA *_pstCamera)
 {
   orxU32 i;
 
@@ -230,7 +230,7 @@ inline orxVOID orxCamera_CleanViewList(orxCAMERA *_pstCamera)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-inline orxSTATUS orxCamera_CreateViewList(orxCAMERA *_pstCamera)
+orxSTATIC orxSTATUS orxCamera_CreateViewList(orxCAMERA *_pstCamera)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxU32 i;
@@ -279,7 +279,7 @@ inline orxSTATUS orxCamera_CreateViewList(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_DeleteViewList(orxCAMERA *_pstCamera)
+orxSTATIC orxVOID orxCamera_DeleteViewList(orxCAMERA *_pstCamera)
 {
   orxU32 i;
 
@@ -305,7 +305,7 @@ inline orxVOID orxCamera_DeleteViewList(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_UpdatePosition(orxCAMERA *_pstCamera, orxBOOL _bForce)
+orxSTATIC orxVOID orxCamera_UpdatePosition(orxCAMERA *_pstCamera, orxBOOL _bForce)
 {
   orxVEC vPos;
   orxVEC *pvUL, *pvBR;
@@ -388,7 +388,7 @@ inline orxVOID orxCamera_UpdatePosition(orxCAMERA *_pstCamera, orxBOOL _bForce)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
+orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
 {
   orxVEC vPos;
   orxVEC *pvUL, *pvBR, *pvSize;
@@ -472,7 +472,7 @@ inline orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_RemoveViewListCell(orxCAMERA *_pstCamera, orxCAMERA_VIEW_LIST *_pstCell)
+orxSTATIC orxVOID orxCamera_RemoveViewListCell(orxCAMERA *_pstCamera, orxCAMERA_VIEW_LIST *_pstCell)
 {
   /* Checks */
   orxASSERT(_pstCamera != orxNULL);
@@ -511,7 +511,7 @@ inline orxVOID orxCamera_RemoveViewListCell(orxCAMERA *_pstCamera, orxCAMERA_VIE
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_InsertViewListCell(orxCAMERA *_pstCamera, orxCAMERA_VIEW_LIST* _pstCell)
+orxSTATIC orxVOID orxCamera_InsertViewListCell(orxCAMERA *_pstCamera, orxCAMERA_VIEW_LIST* _pstCell)
 {
   orxCAMERA_VIEW_LIST *pst_current, *pstPrevious = orxNULL;
 
@@ -574,9 +574,9 @@ inline orxVOID orxCamera_InsertViewListCell(orxCAMERA *_pstCamera, orxCAMERA_VIE
 
  returns: object cell/orxNULL
  ***************************************************************************/
-inline orxCAMERA_VIEW_LIST *orxCamera_SearchViewList(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
+orxINLINE orxCAMERA_VIEW_LIST *orxCamera_SearchViewList(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 {
-  orxCAMERA_VIEW_LIST *pstCell = orxNULL;
+  orxREGISTER orxCAMERA_VIEW_LIST *pstCell = orxNULL;
 
   /* Checks */
   orxASSERT(_pstCamera != orxNULL);
@@ -597,9 +597,9 @@ inline orxCAMERA_VIEW_LIST *orxCamera_SearchViewList(orxCAMERA *_pstCamera, orxO
 
  returns: object cell/orxNULL
  ***************************************************************************/
-inline orxCAMERA_VIEW_LIST *orxCamera_FindFreeViewListCell(orxCAMERA *_pstCamera)
+orxINLINE orxCAMERA_VIEW_LIST *orxCamera_FindFreeViewListCell(orxCAMERA *_pstCamera)
 {
-  orxCAMERA_VIEW_LIST *pstCell = orxNULL;
+  orxREGISTER orxCAMERA_VIEW_LIST *pstCell = orxNULL;
   orxU32 i;
 
   /* Checks */
@@ -633,7 +633,7 @@ inline orxCAMERA_VIEW_LIST *orxCamera_FindFreeViewListCell(orxCAMERA *_pstCamera
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED (list full)
  ***************************************************************************/
-inline orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_pstObject, orxU32 _u32Time)
+orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_pstObject, orxU32 _u32Time)
 {
   orxFRAME *pstFrame;
   graphic_st_graphic *pstGraphic;
@@ -815,7 +815,7 @@ inline orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_pstO
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_SortViewList(orxCAMERA *_pstCamera)
+orxINLINE orxVOID orxCamera_SortViewList(orxCAMERA *_pstCamera)
 {
   orxU32 i;
 
@@ -1174,7 +1174,7 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
 
  returns: Requested orxCAMERA_VIEW_LIST
  ***************************************************************************/
-inline orxCAMERA_VIEW_LIST *orxCamera_GetViewListFirstCell(orxCAMERA *_pstCamera)
+orxCAMERA_VIEW_LIST *orxCamera_GetViewListFirstCell(orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1193,7 +1193,7 @@ inline orxCAMERA_VIEW_LIST *orxCamera_GetViewListFirstCell(orxCAMERA *_pstCamera
 
  returns: Requested orxCAMERA_VIEW_LIST
  ***************************************************************************/
-inline orxCAMERA_VIEW_LIST *orxCamera_GetViewListNextCell(orxCAMERA *_pstCamera)
+orxCAMERA_VIEW_LIST *orxCamera_GetViewListNextCell(orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1222,7 +1222,7 @@ inline orxCAMERA_VIEW_LIST *orxCamera_GetViewListNextCell(orxCAMERA *_pstCamera)
 
  returns: Requested frame pointer
  ***************************************************************************/
-inline orxFRAME *orxCamera_GetViewListFrame(orxCAMERA_VIEW_LIST *_pstViewList)
+orxFRAME *orxCamera_GetViewListFrame(orxCAMERA_VIEW_LIST *_pstViewList)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1237,7 +1237,7 @@ inline orxFRAME *orxCamera_GetViewListFrame(orxCAMERA_VIEW_LIST *_pstViewList)
 
  returns: Requested texture pointer
  ***************************************************************************/
-inline orxOBJECT *orxCamera_GetViewListObject(orxCAMERA_VIEW_LIST *_pstViewList)
+orxOBJECT *orxCamera_GetViewListObject(orxCAMERA_VIEW_LIST *_pstViewList)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1252,7 +1252,7 @@ inline orxOBJECT *orxCamera_GetViewListObject(orxCAMERA_VIEW_LIST *_pstViewList)
 
  returns: Requested orxCAMERA_VIEW_LIST
  ***************************************************************************/
-inline orxS32 orxCamera_GetViewListSize(orxCAMERA *_pstCamera)
+orxS32 orxCamera_GetViewListSize(orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1267,7 +1267,7 @@ inline orxS32 orxCamera_GetViewListSize(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
+orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1297,7 +1297,7 @@ inline orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
+orxVOID orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1319,7 +1319,7 @@ inline orxVOID orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation)
+orxVOID orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1340,7 +1340,7 @@ inline orxVOID orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
+orxVOID orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1361,7 +1361,7 @@ inline orxVOID orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
+orxVOID orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1404,7 +1404,7 @@ inline orxVOID orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
+orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1424,7 +1424,7 @@ inline orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvP
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
+orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1443,7 +1443,7 @@ inline orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
+orxVOID orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1462,7 +1462,7 @@ inline orxVOID orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxFLOAT orxCamera_GetRotation(orxCAMERA *_pstCamera)
+orxFLOAT orxCamera_GetRotation(orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1478,7 +1478,7 @@ inline orxFLOAT orxCamera_GetRotation(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxFLOAT orxCamera_GetZoom(orxCAMERA *_pstCamera)
+orxFLOAT orxCamera_GetZoom(orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1494,7 +1494,7 @@ inline orxFLOAT orxCamera_GetZoom(orxCAMERA *_pstCamera)
 
  returns: link object pointer
  ***************************************************************************/
-inline orxOBJECT *orxCamera_GetTarget(orxCAMERA *_pstCamera)
+orxOBJECT *orxCamera_GetTarget(orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1510,7 +1510,7 @@ inline orxOBJECT *orxCamera_GetTarget(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
+orxVOID orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1542,7 +1542,7 @@ inline orxVOID orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC 
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_RemoveLimits(orxCAMERA *_pstCamera)
+orxVOID orxCamera_RemoveLimits(orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1560,7 +1560,7 @@ inline orxVOID orxCamera_RemoveLimits(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
+orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1585,7 +1585,7 @@ inline orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC 
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
+orxVOID orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);

@@ -25,7 +25,7 @@
  *  Plugin Related  *
  ********************/
 
-static plugin_core_st_function plugin_timer_spst_function[PLUGIN_TIMER_KU32_FUNCTION_NUMBER] =
+orxSTATIC plugin_core_st_function plugin_timer_spst_function[PLUGIN_TIMER_KU32_FUNCTION_NUMBER] =
 {
   {(plugin_function *) &timer_init,                       PLUGIN_TIMER_KU32_ID_INIT},
   {(plugin_function *) &timer_exit,                       PLUGIN_TIMER_KU32_ID_EXIT},

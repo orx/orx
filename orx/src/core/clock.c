@@ -69,9 +69,9 @@ struct clock_st_clock_t
 /*
  * Static members
  */
-static orxU32 clock_su32Flags = CLOCK_KU32_FLAG_DEFAULT;
-static clock_st_clock clock_sast_clocks[CLOCK_KS32_CLOCK_MAX_NUMBER];
-static orxU32 clock_su32_map = 0x00000000;
+orxSTATIC orxU32 clock_su32Flags = CLOCK_KU32_FLAG_DEFAULT;
+orxSTATIC clock_st_clock clock_sast_clocks[CLOCK_KS32_CLOCK_MAX_NUMBER];
+orxSTATIC orxU32 clock_su32_map = 0x00000000;
 
 /***************************************************************************
  ***************************************************************************
@@ -97,7 +97,7 @@ orxINLINE clock_st_clock *clock_get(orxU32 _u32_clock_id)
 
  returns: Clock id on success / orxU32_Undefined on failure
  ***************************************************************************/
-orxINLINE orxU32 clock_find_from(orxU32 _u32_period, orxU32 _u32_match_flags, orxU32 _u32_start_index)
+orxSTATIC orxU32 clock_find_from(orxU32 _u32_period, orxU32 _u32_match_flags, orxU32 _u32_start_index)
 {
   clock_st_clock *pst_clock;
   orxU32 u32Index, u32_map;
@@ -138,7 +138,7 @@ orxINLINE orxU32 clock_find_from(orxU32 _u32_period, orxU32 _u32_match_flags, or
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID clock_update(orxU32 _u32_clock_id)
+orxSTATIC orxVOID clock_update(orxU32 _u32_clock_id)
 {
   /* Is there no update in progress (thread-safe)? */
   if(!(clock_su32Flags & CLOCK_KU32_FLAG_UPDATE_LOCK))
@@ -184,7 +184,7 @@ orxINLINE orxVOID clock_update(orxU32 _u32_clock_id)
  ***************************************************************************/
 orxINLINE orxU32 clock_map_get(orxU32 _u32_clock_id)
 {
-  orxU32 u32_map;
+  orxREGISTER orxU32 u32_map;
 
   /* Computes map for the given index */
   u32_map = 0x00000001 << _u32_clock_id;
@@ -218,7 +218,7 @@ orxINLINE orxVOID clock_info_init(clock_st_clock_info *_pst_clock_info, orxU32 _
  ***************************************************************************/
 orxINLINE orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
 {
-  orxU32 u32_map, u32Index;
+  orxREGISTER orxU32 u32_map, u32Index;
 
   /* Find first */
   for(u32_map = _pst_clock->u32_function_map, u32Index = 0;
@@ -249,7 +249,7 @@ orxINLINE orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callba
 
  returns: orxTRUE on success / orxFALSE on failure
  ***************************************************************************/
-orxINLINE orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
+orxSTATIC orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
 {
   orxU32 u32Index = 0x00000000, ul;
 
@@ -295,7 +295,7 @@ orxINLINE orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callba
  ***************************************************************************/
 orxINLINE orxBOOL clock_function_remove(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
 {
-  orxU32 u32Index;
+  orxREGISTER orxU32 u32Index;
 
   /* Finds function in the given clock */
   u32Index = clock_function_find(_pst_clock, _pfn_function);

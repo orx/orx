@@ -94,7 +94,7 @@ typedef struct __orxANIM_POINTER_STATIC_t
 /*
  * Static data
  */
-static orxANIM_POINTER_STATIC sstAnimPointer;
+orxSTATIC orxANIM_POINTER_STATIC sstAnimPointer;
 
 
 /***************************************************************************
@@ -109,9 +109,9 @@ static orxANIM_POINTER_STATIC sstAnimPointer;
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxAnimPointer_DeleteAll()
+orxSTATIC orxVOID orxAnimPointer_DeleteAll()
 {
-  orxANIM_POINTER *pstAnimpointer;
+  orxREGISTER orxANIM_POINTER *pstAnimpointer;
   
   /* Gets first anim pointer */
   pstAnimpointer = (orxANIM_POINTER *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMPOINTER);

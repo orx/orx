@@ -26,7 +26,7 @@
  *  Plugin Related  *
  ********************/
 
-static plugin_core_st_function plugin_keyboard_spst_function[PLUGIN_KEYBOARD_KU32_FUNCTION_NUMBER] =
+orxSTATIC plugin_core_st_function plugin_keyboard_spst_function[PLUGIN_KEYBOARD_KU32_FUNCTION_NUMBER] =
 {
   {(plugin_function *) &keyboard_init,                PLUGIN_KEYBOARD_KU32_ID_INIT},
   {(plugin_function *) &keyboard_exit,                PLUGIN_KEYBOARD_KU32_ID_EXIT},

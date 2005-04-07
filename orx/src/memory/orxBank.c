@@ -70,7 +70,7 @@ typedef struct __orxBANK_STATIC_t
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
-static orxBANK_STATIC sstBank;
+orxSTATIC orxBANK_STATIC sstBank;
 
 /***************************************************************************
  * Private functions                                                       *

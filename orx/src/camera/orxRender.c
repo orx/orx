@@ -68,7 +68,7 @@ typedef struct __orxRENDER_STATIC_t
 /*
  * Static data
  */
-static orxRENDER_STATIC sstRender;
+orxSTATIC orxRENDER_STATIC sstRender;
 
 
 /***************************************************************************
@@ -83,7 +83,7 @@ static orxRENDER_STATIC sstRender;
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-inline orxVOID orxRender_RenderObject(graph_st_bitmap *_pstSurface, orxOBJECT *_pstObject, orxFRAME *_pstFrame)
+orxSTATIC orxVOID orxRender_RenderObject(graph_st_bitmap *_pstSurface, orxOBJECT *_pstObject, orxFRAME *_pstFrame)
 {
   graphic_st_graphic *pstGraphic;
   orxTEXTURE *pstTexture;
@@ -279,7 +279,7 @@ orxVOID orxRender_Exit()
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
+orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY);
@@ -372,7 +372,7 @@ inline orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxRender_RenderAllViewports()
+orxVOID orxRender_RenderAllViewports()
 {
   orxRENDER_VIEWPORT_LIST *pstViewportList;
   orxVIEWPORT *pstViewport;

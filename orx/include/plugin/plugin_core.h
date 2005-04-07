@@ -76,7 +76,7 @@ extern orxVOID  *plugin_core_function_default(orxU8 *_zFunctionName, orxU8 *_zFi
 
 /*** Plugin Core Function Macro Definition *** */
 #define PLUGIN_CORE_FUNCTION_DEFINE(FUNCTION_NAME, RETURN, ...)                     \
-    static orxVOID *_DEFAULT_CORE_FUNCTION_##FUNCTION_NAME()                        \
+    orxSTATIC orxVOID *_DEFAULT_CORE_FUNCTION_##FUNCTION_NAME()                     \
     {                                                                               \
         return(plugin_core_function_default(#FUNCTION_NAME, __FILE__, __LINE__));   \
     }                                                                               \

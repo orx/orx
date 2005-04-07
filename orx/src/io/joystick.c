@@ -26,7 +26,7 @@
  *  Plugin Related  *
  ********************/
 
-static plugin_core_st_function plugin_joystick_spst_function[PLUGIN_JOYSTICK_KU32_FUNCTION_NUMBER] =
+orxSTATIC plugin_core_st_function plugin_joystick_spst_function[PLUGIN_JOYSTICK_KU32_FUNCTION_NUMBER] =
 {
   {(plugin_function *) &joystick_init,                PLUGIN_JOYSTICK_KU32_ID_INIT},
   {(plugin_function *) &joystick_exit,                PLUGIN_JOYSTICK_KU32_ID_EXIT}

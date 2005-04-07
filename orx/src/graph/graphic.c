@@ -64,7 +64,7 @@ struct st_graphic_t
 /*
  * Static members
  */
-static orxU32 graphic_su32Flags = GRAPHIC_KU32_FLAG_DEFAULT;
+orxSTATIC orxU32 graphic_su32Flags = GRAPHIC_KU32_FLAG_DEFAULT;
 
 
 /***************************************************************************
@@ -103,7 +103,7 @@ orxINLINE orxS32 graphic_struct_offset_get(orxSTRUCTURE_ID _eStructureID)
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID graphic_list_delete()
+orxSTATIC orxVOID graphic_list_delete()
 {
   graphic_st_graphic *pstGraphic = (graphic_st_graphic *)orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC);
 

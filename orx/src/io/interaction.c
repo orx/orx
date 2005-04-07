@@ -5,7 +5,7 @@
 
 #define INTERACTION_KS32_GET_TIMER    50
 
-static orxVOID interaction_get()
+orxSTATIC orxVOID interaction_get()
 {
 
   return;

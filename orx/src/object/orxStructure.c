@@ -90,11 +90,11 @@ typedef struct structure_st_tree_cell_t
 /*
  * Static members
  */
-static orxU32 structure_su32Flags = orxSTRUCTURE_KU32_FLAG_NONE;
-static structure_st_list_cell *spast_list[STRUCTURE_KS32_NUMBER_LIST];
-static structure_st_tree_cell *spast_tree[STRUCTURE_KS32_NUMBER_TREE];
-static orxS32 sal_list_counter[STRUCTURE_KS32_NUMBER_LIST];
-static orxS32 sal_tree_counter[STRUCTURE_KS32_NUMBER_TREE];
+orxSTATIC orxU32 structure_su32Flags = orxSTRUCTURE_KU32_FLAG_NONE;
+orxSTATIC structure_st_list_cell *spast_list[STRUCTURE_KS32_NUMBER_LIST];
+orxSTATIC structure_st_tree_cell *spast_tree[STRUCTURE_KS32_NUMBER_TREE];
+orxSTATIC orxS32 sal_list_counter[STRUCTURE_KS32_NUMBER_LIST];
+orxSTATIC orxS32 sal_tree_counter[STRUCTURE_KS32_NUMBER_TREE];
 
 
 /***************************************************************************
@@ -109,7 +109,7 @@ static orxS32 sal_tree_counter[STRUCTURE_KS32_NUMBER_TREE];
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_storage_info_get(orxU32 _u32_type, orxS32 *_pi_type, orxS32 *_pi_offset)
+orxINLINE orxVOID structure_storage_info_get(orxU32 _u32_type, orxS32 *_pi_type, orxS32 *_pi_offset)
 {
   /* According to structure type */
   switch(_u32_type)
@@ -187,7 +187,7 @@ inline orxVOID structure_storage_info_get(orxU32 _u32_type, orxS32 *_pi_type, or
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_list_cell_delete(structure_st_list_cell *_pstCell)
+orxINLINE orxVOID structure_list_cell_delete(structure_st_list_cell *_pstCell)
 {
   /* Frees cell memory */
   orxMemory_Free(_pstCell);
@@ -201,9 +201,9 @@ inline orxVOID structure_list_cell_delete(structure_st_list_cell *_pstCell)
 
  returns: list cell
  ***************************************************************************/
-inline structure_st_list_cell *structure_list_cell_create(orxSTRUCTURE *_pstStructure)
+orxINLINE structure_st_list_cell *structure_list_cell_create(orxSTRUCTURE *_pstStructure)
 {
-  structure_st_list_cell *pst_list_cell;
+  orxREGISTER structure_st_list_cell *pst_list_cell;
 
   /* Allocates it */
   pst_list_cell = (structure_st_list_cell *) orxMemory_Allocate(sizeof(structure_st_list_cell), orxMEMORY_TYPE_MAIN);
@@ -234,9 +234,9 @@ inline structure_st_list_cell *structure_list_cell_create(orxSTRUCTURE *_pstStru
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_list_cell_add(structure_st_list_cell *_pstCell, orxS32 _i_offset)
+orxINLINE orxVOID structure_list_cell_add(structure_st_list_cell *_pstCell, orxS32 _i_offset)
 {
-  structure_st_list_cell *pst_list;
+  orxREGISTER structure_st_list_cell *pst_list;
 
   /* Gets list */
   pst_list = spast_list[_i_offset];
@@ -265,9 +265,9 @@ inline orxVOID structure_list_cell_add(structure_st_list_cell *_pstCell, orxS32 
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_list_cell_remove(structure_st_list_cell *_pstCell, orxS32 _i_offset)
+orxINLINE orxVOID structure_list_cell_remove(structure_st_list_cell *_pstCell, orxS32 _i_offset)
 {
-  structure_st_list_cell *pstPrevious, *pstNext;
+  orxREGISTER structure_st_list_cell *pstPrevious, *pstNext;
 
   /* Gets neighbours pointers */
   pstPrevious = _pstCell->pstPrevious;
@@ -306,7 +306,7 @@ inline orxVOID structure_list_cell_remove(structure_st_list_cell *_pstCell, orxS
 
  returns: tree cell
  ***************************************************************************/
-inline structure_st_tree_cell *structure_tree_cell_create(orxSTRUCTURE *_pstStructure)
+orxINLINE structure_st_tree_cell *structure_tree_cell_create(orxSTRUCTURE *_pstStructure)
 {
   structure_st_tree_cell *pst_tree_cell;
 
@@ -341,7 +341,7 @@ inline structure_st_tree_cell *structure_tree_cell_create(orxSTRUCTURE *_pstStru
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_tree_cell_delete(structure_st_tree_cell *_pstCell)
+orxINLINE orxVOID structure_tree_cell_delete(structure_st_tree_cell *_pstCell)
 {
   /* Frees cell memory */
   orxMemory_Free(_pstCell);
@@ -356,7 +356,7 @@ inline orxVOID structure_tree_cell_delete(structure_st_tree_cell *_pstCell)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_tree_cell_move(structure_st_tree_cell *_pstCell, structure_st_tree_cell *_pstParent, orxS32 _i_offset)
+orxINLINE orxVOID structure_tree_cell_move(structure_st_tree_cell *_pstCell, structure_st_tree_cell *_pstParent, orxS32 _i_offset)
 {
   structure_st_tree_cell *pstParent, *pst_left_sibling, *pst_right_sibling, *pst_child, *pst_root, *pst_it;
 
@@ -443,7 +443,7 @@ inline orxVOID structure_tree_cell_move(structure_st_tree_cell *_pstCell, struct
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_tree_cell_add(structure_st_tree_cell *_pstCell, orxS32 _i_offset)
+orxINLINE orxVOID structure_tree_cell_add(structure_st_tree_cell *_pstCell, orxS32 _i_offset)
 {
   structure_st_tree_cell *pst_tree;
 
@@ -474,7 +474,7 @@ inline orxVOID structure_tree_cell_add(structure_st_tree_cell *_pstCell, orxS32 
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_tree_cell_remove(structure_st_tree_cell *_pstCell, orxS32 _i_offset)
+orxINLINE orxVOID structure_tree_cell_remove(structure_st_tree_cell *_pstCell, orxS32 _i_offset)
 {
   structure_st_tree_cell *pstParent;
   structure_st_tree_cell *pst_tree;
@@ -519,7 +519,7 @@ inline orxVOID structure_tree_cell_remove(structure_st_tree_cell *_pstCell, orxS
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_struct_add(orxSTRUCTURE *_pstStructure)
+orxINLINE orxVOID structure_struct_add(orxSTRUCTURE *_pstStructure)
 {
   orxS32 i_type, i_offset;
 
@@ -549,7 +549,7 @@ inline orxVOID structure_struct_add(orxSTRUCTURE *_pstStructure)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID structure_struct_remove(orxSTRUCTURE *_pstStructure)
+orxINLINE orxVOID structure_struct_remove(orxSTRUCTURE *_pstStructure)
 {
   orxS32 i_type, i_offset;
 
@@ -639,7 +639,7 @@ orxVOID orxStructure_Exit()
 
  returns: counter/-1
  ***************************************************************************/
-inline orxU32 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
+orxU32 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 {
   orxS32 i_counter = -1;
   orxS32 i_type, i_offset;
@@ -674,7 +674,7 @@ inline orxU32 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-inline orxSTATUS orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID)
+orxSTATUS orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID)
 {
   orxS32 i_type, i_offset;
   structure_st_list_cell *pst_list_cell = orxNULL;
@@ -748,7 +748,7 @@ inline orxSTATUS orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxStructure_Clean(orxSTRUCTURE *_pstStructure)
+orxVOID orxStructure_Clean(orxSTRUCTURE *_pstStructure)
 {
   orxS32 i_type, i_offset;
 
@@ -799,7 +799,7 @@ inline orxVOID orxStructure_Clean(orxSTRUCTURE *_pstStructure)
 
  returns: first structure
  ***************************************************************************/
-inline orxSTRUCTURE *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
+orxSTRUCTURE *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure = orxNULL;
   orxS32 i_type, i_offset;
@@ -840,7 +840,7 @@ inline orxSTRUCTURE *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
+orxVOID orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Non null? */
   if(_pstStructure != orxNULL)
@@ -858,7 +858,7 @@ inline orxVOID orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
+orxVOID orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Non null? */
   if(_pstStructure != orxNULL)
@@ -876,7 +876,7 @@ inline orxVOID orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
 
  returns: counter
  ***************************************************************************/
-inline orxU32 orxStructure_GetCounter(orxSTRUCTURE *_pstStructure)
+orxU32 orxStructure_GetCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Non null? */
   if(_pstStructure != orxNULL)
@@ -895,7 +895,7 @@ inline orxU32 orxStructure_GetCounter(orxSTRUCTURE *_pstStructure)
 
  returns: ID
  ***************************************************************************/
-inline orxSTRUCTURE_ID orxStructure_GetID(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE_ID orxStructure_GetID(orxSTRUCTURE *_pstStructure)
 {
   /* Non null? */
   if(_pstStructure != orxNULL)
@@ -918,7 +918,7 @@ inline orxSTRUCTURE_ID orxStructure_GetID(orxSTRUCTURE *_pstStructure)
 
  returns: parent
  ***************************************************************************/
-inline orxSTRUCTURE *orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
 {
   structure_st_tree_cell *pstCell;
 
@@ -942,7 +942,7 @@ inline orxSTRUCTURE *orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
 
  returns: child
  ***************************************************************************/
-inline orxSTRUCTURE *orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
 {
   structure_st_tree_cell *pstCell;
 
@@ -966,7 +966,7 @@ inline orxSTRUCTURE *orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
 
  returns: left sibling
  ***************************************************************************/
-inline orxSTRUCTURE *orxStructure_GetLeftSibling(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxStructure_GetLeftSibling(orxSTRUCTURE *_pstStructure)
 {
   structure_st_tree_cell *pstCell;
 
@@ -990,7 +990,7 @@ inline orxSTRUCTURE *orxStructure_GetLeftSibling(orxSTRUCTURE *_pstStructure)
 
  returns: right sibling
  ***************************************************************************/
-inline orxSTRUCTURE *orxStructure_GetRightSibling(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxStructure_GetRightSibling(orxSTRUCTURE *_pstStructure)
 {
   structure_st_tree_cell *pstCell;
 
@@ -1015,7 +1015,7 @@ inline orxSTRUCTURE *orxStructure_GetRightSibling(orxSTRUCTURE *_pstStructure)
 
  returns: previous
  ***************************************************************************/
-inline orxSTRUCTURE *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
 {
   structure_st_list_cell *pstCell;
 
@@ -1039,7 +1039,7 @@ inline orxSTRUCTURE *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
 
  returns: next
  ***************************************************************************/
-inline orxSTRUCTURE *orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
 {
   structure_st_list_cell *pstCell;
 
@@ -1063,7 +1063,7 @@ inline orxSTRUCTURE *orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
 
  returns: orxVOID
  ***************************************************************************/
-inline orxVOID orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent)
+orxVOID orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent)
 {
   orxS32 i_type, i_offset;
 
