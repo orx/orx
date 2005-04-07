@@ -444,6 +444,9 @@ orxSTATUS orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
       pstList->pstLast      = pstPrevious;
     }
 
+    /* Cleans node */
+    orxMemory_Set(_pstNode, 0, sizeof(orxLINKLIST_NODE));
+
     /* Udpates counter */
     pstList->u32Counter--;
   }
