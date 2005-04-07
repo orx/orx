@@ -457,7 +457,7 @@ orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell)
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
 
   /* Correct parameters ? */
-  orxASSERT(orxASSERT != orxNULL);
+  orxASSERT(_pstBank != orxNULL);
 
   /* Look for the segment associated to this cell */
   pstSegment = orxBank_GetSegment(_pstBank, _pCell);
@@ -487,7 +487,7 @@ orxVOID *orxBank_GetPrevious(orxBANK *_pstBank, orxVOID *_pCell)
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
 
   /* Correct parameters ? */
-  orxASSERT(orxASSERT != orxNULL);
+  orxASSERT(_pstBank != orxNULL);
 
   /* Look for the segment associated to this cell */
   pstSegment = orxBank_GetSegment(_pstBank, _pCell);

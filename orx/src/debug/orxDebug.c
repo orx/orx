@@ -18,6 +18,8 @@
 
 
 #include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
 #include <time.h>
 
 #include "debug/orxDebug.h"
@@ -38,25 +40,25 @@
  */
 typedef struct __orxDEBUG_STATIC_t
 {
-  /* Debug file */
+  /* Debug file : 4 */
   orxSTRING zDebugFile;
   
-  /* Log file */
+  /* Log file : 8 */
   orxSTRING zLogFile;
 
-  /* Debug flags */
+  /* Debug flags : 12 */
   orxU32 u32DebugFlags;
   
-  /* Backup debug flags */
+  /* Backup debug flags : 16 */
   orxU32 u32BackupDebugFlags;
 
-  /* Current buffer */
-  orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE]
+  /* Current buffer : 528 */
+  orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE];
 
-  /* Current log */
+  /* Current log : 1040 */
   orxCHAR zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE];
 
-  /* Control flags */
+  /* Control flags : 1044 */
   orxU32 u32Flags;
 
 } orxDEBUG_STATIC;
@@ -99,8 +101,8 @@ orxINLINE orxCONST orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
     case orxDEBUG_LEVEL_PLUGIN:             return "PLUGIN";
     case orxDEBUG_LEVEL_LOG:                return "LOG";
     case orxDEBUG_LEVEL_ALL:                return "ALL";
-    case orxDEBUG_LEVEL_orxASSERT:          return "ASSERT";
-    case orxDEBUG_LEVEL_CRITICAL_orxASSERT: return "CRITICAL ASSERT";
+    case orxDEBUG_LEVEL_ASSERT:             return "ASSERT";
+    case orxDEBUG_LEVEL_CRITICAL_ASSERT:    return "CRITICAL ASSERT";
     
     default:
       return "INVALID DEBUG!";
@@ -124,6 +126,9 @@ orxINLINE orxCONST orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
  ***************************************************************************/
 orxSTATUS _orxDebug_Init()
 {
+  orxU32 i;
+  orxU8 *pu8;
+  
   /* Already Initialized? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_CONTROL_FLAG_READY)
   {
@@ -133,7 +138,10 @@ orxSTATUS _orxDebug_Init()
   }
 
   /* Cleans static controller */
-  orxMemory_Set(&sstDebug, 0, sizeof(orxDEBUG_STATIC));
+  for(i = 0, pu8 = (orxU8 *)&sstDebug; i < sizeof(orxDEBUG_STATIC); i++)
+  {
+    *(pu8 + i) = 0;
+  }
 
   /* Inits default files */
   sstDebug.zDebugFile     = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
@@ -215,7 +223,7 @@ orxVOID _orxDebug_RestoreFlags()
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY);
 
   /* Restores flags */
-  sstDebug.u32DebugFlags = sstDebug.sstDebug.u32BackupDebugFlags;
+  sstDebug.u32DebugFlags = sstDebug.u32BackupDebugFlags;
 
   return;
 }
@@ -255,7 +263,7 @@ orxVOID _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orx
   /* TODO : Checks log mask if display is enable for this level */
 
   /* Empties current buffer */
-  sstDebug.zBuffer = '\0';
+  sstDebug.zBuffer[0] = '\0';
 
   /* Time Stamp? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_FLAG_TIMESTAMP)

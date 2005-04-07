@@ -1850,7 +1850,7 @@ orxSTATUS orxAnimSet_SetLinkProperty(orxANIM_SET *_pstAnimset, orxHANDLE _hLinkH
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
   orxASSERT(_pstAnimset != orxNULL);
-  orxASSERT(_hLinkHandle < orxAnimSet_GetAnimStorageSize(_pstAnimset) * orxAnimSet_GetAnimStorageSize(_pstAnimset));
+  orxASSERT((orxU32)_hLinkHandle < orxAnimSet_GetAnimStorageSize(_pstAnimset) * orxAnimSet_GetAnimStorageSize(_pstAnimset));
 
   /* Not locked? */
   if(orxAnimSet_TestFlag(_pstAnimset, orxANIMSET_KU32_ID_FLAG_REFERENCE_LOCK) != orxFALSE)
@@ -1914,7 +1914,7 @@ orxHANDLE orxAnimSet_ComputeAnim(orxANIM_SET *_pstAnimset, orxHANDLE _hSrcAnim, 
   orxASSERT(_pstAnimset != orxNULL);
   orxASSERT(_pu32Time != orxNULL);
   orxASSERT((orxU32)_hSrcAnim < orxAnimSet_GetAnimCounter(_pstAnimset));
-  orxASSERT(((orxU32)_hDstAnim < orxAnimSet_GetAnimCounter(_pstAnimset)) || ((orxU32)_hDstAnim == orxHANDLE_Undefined));
+  orxASSERT(((orxU32)_hDstAnim < orxAnimSet_GetAnimCounter(_pstAnimset)) || (_hDstAnim == orxHANDLE_Undefined));
 
   /* Gets Link Table */
   if(orxAnimSet_TestFlag(_pstAnimset, orxANIMSET_KU32_ID_FLAG_LINK_STATIC) == orxFALSE)
