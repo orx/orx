@@ -25,6 +25,8 @@
  * - Adds LUA integration
  * - Complete orxBANK implementation
  * - Rewrite File and Package module to use plugins system
+ * - Complete test module and add a generic makefile to compile each test file as an automatically loaded dynamic library
+ * - Write a module to manage string (overload string.h functionalities) + add other functionalities
  */
 
 
