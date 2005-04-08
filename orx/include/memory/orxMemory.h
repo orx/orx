@@ -86,15 +86,6 @@ extern orxVOID *orxMemory_Copy(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size)
  * @param _pSrc     (IN)  Pointer of memory from where data are read
  * @param _u32Size  (IN)  Size of data
  * @return returns a pointer on _pDest
- * @note if _pSrc and _pDest overlap, use orxMemory_Move instead
- */
-extern orxVOID *orxMemory_Copy(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size);
-
-/** Copy a portion of memory into another one
- * @param _pDest    (OUT) Destination pointer
- * @param _pSrc     (IN)  Pointer of memory from where data are read
- * @param _u32Size  (IN)  Size of data
- * @return returns a pointer on _pDest
  */
 extern orxVOID *orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size);
 
