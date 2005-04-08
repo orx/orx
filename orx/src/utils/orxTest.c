@@ -83,7 +83,7 @@ orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleName)
     if (!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, strlen(_zModuleName) * sizeof(orxCHAR)) == 0))
     {
       sstTest.astTestFunctions[u32Index].bDisplayed = orxTRUE;
-      printf(" %u - %s\n", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
+      printf(" %lu - %s\n", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
     }
   }
 }
@@ -151,9 +151,9 @@ orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _
   
   /* Correct parameters ? */
   orxASSERT(_zModuleName != orxNULL);
-  orxASSERT(_zFunctionName != orxNULL);
+  orxASSERT(_zMenuEntry != orxNULL);
   orxASSERT(_cbFunction != orxNULL);
-  
+
   /* Module full ? */
   if (sstTest.u32NbRegisteredFunc == 50)
   {
