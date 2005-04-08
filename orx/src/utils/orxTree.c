@@ -158,6 +158,29 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
   /* Not already used in a list? */
   if(_pstNode->pstTree == orxNULL)
   {
+    /* Has a root? */
+    if(_pstTree->pstRoot != orxNULL)
+    {
+      /* Adds as parent of the current root */
+      eResult = orxTree_AddParent(_pstTree->pstRoot, _pstNode);
+    }
+    else
+    {
+        /* Checks there are no node right now */
+        orxASSERT(_pstTree->u32Counter == 0);
+
+        /* Stores it as root */
+        _pstTree->pstRoot = _pstNode;
+
+        /* Cleans it */
+        orxMemory_Set(_pstNode, 0, sizeof(orxTREE_NODE));
+        
+        /* Stores tree pointer */
+        _pstNode->pstTree = _pstTree;
+
+        /* Updates counter */
+        _pstTree->u32Counter++;
+    }
   }
   else
   {
@@ -196,7 +219,49 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     /* Valid? */
     if(pstTree != orxNULL)
     {
-        /* !!! TODO !!! */
+      /* Adds it in the tree */
+      _pstNode->pstChild    = _pstRefNode;
+      _pstNode->pstParent   = _pstRefNode->pstParent;
+      _pstNode->pstTree     = pstTree;
+      _pstNode->pstSibling  = _pstRefNode->pstSibling;
+
+      /* Updates parent? */
+      if(_pstRefNode->pstParent != orxNULL)
+      {
+        /* Was first child? */
+        if(_pstRefNode->pstParent->pstChild == _pstRefNode)
+        {
+            /* Updates parent */
+            _pstRefNode->pstParent->pstChild = _pstNode;
+        }
+        else
+        {
+          orxREGISTER orxTREE_NODE *pstSibling;
+
+          /* Finds left sibling */
+          for(pstSibling = _pstRefNode->pstParent->pstChild;
+              pstSibling->pstSibling != _pstRefNode;
+              pstSibling = pstSibling->pstSibling);
+
+          /* Updates sibling */
+          pstSibling->pstSibling = _pstNode;
+        }
+      }
+      else
+      {
+        /* Checks node was the root */
+        orxASSERT(pstTree->pstRoot == _pstRefNode);
+
+        /* Updates new root */
+        pstTree->pstRoot = _pstNode;
+      }
+
+      /* Updates ref node */
+      _pstRefNode->pstParent  = _pstNode;
+      _pstRefNode->pstSibling = orxNULL;
+
+      /* Updates counter */
+      pstTree->u32Counter++;
     }
     else
     {

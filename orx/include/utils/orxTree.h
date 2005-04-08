@@ -80,6 +80,16 @@ extern orxSTATUS                      orxTree_Clean(orxTREE *_pstTree);
 /** Removes a node from its tree. */
 extern orxSTATUS                      orxTree_Remove(orxTREE_NODE *_pstNode);
 
+/** Adds a node at the root of the tree. */
+extern orxSTATUS                      orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode);
+/** Adds a node as a parent of another one. */
+extern orxSTATUS                      orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+/** Adds a node as a child of another one. */
+extern orxSTATUS                      orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+
+/** Removes a node from its tree. */
+extern orxSTATUS                      orxTree_Remove(orxTREE_NODE *_pstNode);
+
 
 /* *** LinkList inlined accessors *** */
 
