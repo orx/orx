@@ -106,9 +106,25 @@ orxINLINE orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeep
       _pstNode->pstSibling  = orxNULL;
     }
   }
+  /* Cleans all related */
   else
   {
-    /* !!! TODO !!! */
+    /* Is root? */
+    if(pstTree->pstRoot == _pstNode)
+    {
+      /* Is the last node in tree? */
+      if(pstTree->u32Counter == 1)
+      {
+        /* !!! TODO !!! */
+      }
+      else
+      {
+        /* !!! MSG !!! */
+
+        /* Can't process */
+        eResult = orxSTATUS_FAILED;
+      }
+    }
   }
 
   /* Done! */
