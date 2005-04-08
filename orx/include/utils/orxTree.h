@@ -5,7 +5,7 @@
  * Allows to handle trees.
  * 
  * \todo
- * -= WIP =-
+ * -= WIP =- (Need to finish remove function)
  * Add new features at need.
  */
 
@@ -90,6 +90,8 @@ extern orxSTATUS                      orxTree_AddChild(orxTREE_NODE *_pstRefNode
 /** Removes a node from its tree. */
 extern orxSTATUS                      orxTree_Remove(orxTREE_NODE *_pstNode);
 
+/** Moves as a child of another node of the same tree. */
+extern orxSTATUS                      orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
 
 /* *** LinkList inlined accessors *** */
 

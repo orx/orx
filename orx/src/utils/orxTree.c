@@ -52,6 +52,68 @@ orxSTATIC orxTREE_STATIC sstTree;
  ***************************************************************************
  ***************************************************************************/
 
+/***************************************************************************
+ orxTree_PrivateRemove
+ Removes a node from its tree.
+
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ ***************************************************************************/
+orxINLINE orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeepRef)
+{
+  orxREGISTER orxTREE *pstTree;
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstNode != orxNULL);
+
+  /* Gets tree */
+  pstTree = _pstNode->pstTree;
+
+  /* Keep refs? */
+  if(_bKeepRef != orxFALSE)
+  {
+    /* Is root? */
+    if(pstTree->pstRoot == _pstNode)
+    {
+      /* !!! MSG !!! */
+        
+      /* Can't process */
+      eResult = orxSTATUS_FAILED;
+    }
+    else
+    {
+      /* Was firt child? */
+      if(_pstNode->pstParent->pstChild == _pstNode)
+      {
+        /* Udpates parent */
+        _pstNode->pstParent->pstChild = _pstNode->pstSibling;
+      }
+      else
+      {
+        orxREGISTER orxTREE_NODE *pstChild;
+
+        /* Finds left sibling */
+        for(pstChild = _pstNode->pstParent->pstChild;
+            pstChild->pstSibling != _pstNode;
+            pstChild = pstChild->pstSibling);
+    
+        /* Updates it */
+        pstChild->pstSibling = _pstNode->pstSibling;
+      }
+
+      /* Updates node */
+      _pstNode->pstParent   = orxNULL;
+      _pstNode->pstSibling  = orxNULL;
+    }
+  }
+  else
+  {
+    /* !!! TODO !!! */
+  }
+
+  /* Done! */
+  return eResult;
+}  
 
 
 /***************************************************************************
@@ -308,7 +370,17 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     /* Valid? */
     if(pstTree != orxNULL)
     {
-        /* !!! TODO !!! */
+      /* Adds it in the tree */
+      _pstNode->pstParent   = _pstRefNode;
+      _pstNode->pstSibling  = _pstRefNode->pstChild;
+      _pstNode->pstTree     = pstTree;
+      _pstNode->pstChild    = orxNULL;
+
+      /* Updates ref node */
+      _pstRefNode->pstChild = _pstNode;
+
+      /* Updates counter */
+      pstTree->u32Counter++;
     }
     else
     {
@@ -323,6 +395,81 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     /* !!! MSG !!! */
     
     /* Already linked */
+    eResult = orxSTATUS_FAILED;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/***************************************************************************
+ orxTree_MoveAsChild
+ Moves as a child of another node of the same tree.
+
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ ***************************************************************************/
+orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
+{
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxREGISTER orxTREE *pstTree;
+
+  /* Checks */
+  orxASSERT(sstTree.u32Flags & orxTREE_KU32_FLAG_READY);
+  orxASSERT(_pstRefNode != orxNULL);
+  orxASSERT(_pstNode != orxNULL);
+
+  /* Gets tree */
+  pstTree = _pstRefNode->pstTree;
+
+  /* Is already in the tree? */
+  if(_pstNode->pstTree == pstTree)
+  {
+    orxREGISTER orxTREE_NODE *pstTest;
+
+    /* Checks for preventing from turning into graph */
+    for(pstTest = _pstRefNode; pstTest != orxNULL; pstTest = pstTest->pstParent)
+    {
+      /* Bad request? */
+      if(pstTest == _pstNode)
+      {
+        break;
+      }
+    }
+
+    /* No graph cycle found? */
+    if(pstTest == orxNULL)
+    {
+      /* Removes it from its place */
+      eResult = orxTree_PrivateRemove(_pstNode, orxTRUE);
+    
+      /* Success? */
+      if(eResult == orxSTATUS_SUCCESS)
+      {
+        /* Adds it at new place */
+        _pstNode->pstParent   = _pstRefNode;
+        _pstNode->pstSibling  = _pstRefNode->pstChild;
+
+        /* Updates ref node */
+        _pstRefNode->pstChild = _pstNode;
+      }
+      else
+      {
+        /* !!! MSG !!! */
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Can't process */
+      eResult = orxSTATUS_FAILED;
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Not already in the tree */
     eResult = orxSTATUS_FAILED;
   }
 
@@ -354,12 +501,13 @@ orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
     /* Checks tree is non empty */
     orxASSERT(pstTree->u32Counter != 0);
 
-    /* !!! TODO !!! */
+    /* Removes it */
+    eResult = orxTree_PrivateRemove(_pstNode, orxFALSE);
   }
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Failed */
     eResult = orxSTATUS_FAILED;
   }
