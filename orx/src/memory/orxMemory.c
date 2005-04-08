@@ -156,6 +156,17 @@ orxVOID *orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size)
   return (orxVOID *)memmove(_pDest, _pSrc, _u32Size);
 }
 
+/** Compare two portion of memory
+ * @param _pMem1    (IN)  First potion to test
+ * @param _pMem2    (IN)  Second portion to test
+ * @param _u32Size  (IN)  Size of data to test
+ * @return returns a velue less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
+ */
+orxU32 orxMemory_Compare(orxVOID *_pMem1, orxVOID *_pMem2, orxU32 _u32Size)
+{
+  return (orxU32)memcmp(_pMem1, _pMem2, _u32Size);
+}
+
 /** Fill a portion of memory with _u32Data
  * @param _pDest    (OUT) Destination pointer
  * @param _u8Data   (IN)  Values of the data that will fill the memory
