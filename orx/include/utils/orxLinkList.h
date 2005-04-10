@@ -98,6 +98,7 @@ extern orxINLINE  orxLINKLIST        *orxLinkList_GetList(orxLINKLIST_NODE *_pst
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
 
+  /* Returns it */
   return(_pstNode->pstList);
 }
 
@@ -107,7 +108,8 @@ extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetPrevious(orxLINKLIST_NODE *
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
 
-  return(_pstNode->pstPrevious);
+  /* Returns it */
+  return((_pstNode->pstList != orxNULL) ? _pstNode->pstPrevious : orxNULL);
 }
 
 /** Gets a node next. */
@@ -116,7 +118,8 @@ extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetNext(orxLINKLIST_NODE *_pst
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
 
-  return(_pstNode->pstNext);
+  /* Returns it */
+  return((_pstNode->pstList != orxNULL) ? _pstNode->pstNext : orxNULL);
 }
 
 
@@ -126,6 +129,7 @@ extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetFirst(orxLINKLIST *_pstList
   /* Checks */
   orxASSERT(_pstList != orxNULL);
 
+  /* Returns it */
   return(_pstList->pstFirst);
 }
 
@@ -135,6 +139,7 @@ extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetLast(orxLINKLIST *_pstList)
   /* Checks */
   orxASSERT(_pstList != orxNULL);
 
+  /* Returns it */
   return(_pstList->pstLast);
 }
 
@@ -144,6 +149,7 @@ extern orxINLINE  orxU32              orxLinkList_GetCounter(orxLINKLIST *_pstLi
   /* Checks */
   orxASSERT(_pstList != orxNULL);
 
+  /* Returns it */
   return(_pstList->u32Counter);
 }
 

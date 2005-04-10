@@ -58,7 +58,7 @@ orxSTATIC orxTREE_STATIC sstTree;
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxINLINE orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeepRef)
+orxFASTCALL orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeepRef)
 {
   orxREGISTER orxTREE *pstTree;
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -69,18 +69,11 @@ orxINLINE orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeep
   /* Gets tree */
   pstTree = _pstNode->pstTree;
 
-  /* Keep refs? */
+  /* Keep heirs refs? */
   if(_bKeepRef != orxFALSE)
   {
-    /* Is root? */
-    if(pstTree->pstRoot == _pstNode)
-    {
-      /* !!! MSG !!! */
-        
-      /* Can't process */
-      eResult = orxSTATUS_FAILED;
-    }
-    else
+    /* Isn't root? */
+    if(pstTree->pstRoot != _pstNode)
     {
       /* Was firt child? */
       if(_pstNode->pstParent->pstChild == _pstNode)
@@ -105,8 +98,15 @@ orxINLINE orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeep
       _pstNode->pstParent   = orxNULL;
       _pstNode->pstSibling  = orxNULL;
     }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Can't process */
+      eResult = orxSTATUS_FAILED;
+    }
   }
-  /* Cleans all related */
+  /* Remove completely from tree */
   else
   {
     /* Is root? */
@@ -115,7 +115,14 @@ orxINLINE orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeep
       /* Is the last node in tree? */
       if(pstTree->u32Counter == 1)
       {
-        /* !!! TODO !!! */
+        /* Removes it */
+        pstTree->pstRoot = orxNULL;
+        
+        /* Updates node */
+        orxMemory_Set(_pstNode, 0, sizeof(orxTREE_NODE));
+
+        /* Updates counter */
+        pstTree->u32Counter = 0;
       }
       else
       {
@@ -124,6 +131,64 @@ orxINLINE orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeep
         /* Can't process */
         eResult = orxSTATUS_FAILED;
       }
+    }
+    else
+    {
+      orxREGISTER orxTREE_NODE *pstNewChild;
+
+      /* Had child? */
+      if(_pstNode->pstChild != orxNULL)
+      {
+        orxREGISTER orxTREE_NODE *pstChild;
+
+        /* Updates all children but last */
+        for(pstChild = _pstNode->pstChild;
+            pstChild->pstSibling != orxNULL;
+            pstChild = pstChild->pstSibling)
+        {
+          /* Updates it */
+          pstChild->pstParent = _pstNode->pstParent;
+        }
+
+        /* Updates last child */
+        pstChild->pstParent   = _pstNode->pstParent;
+        pstChild->pstSibling  = _pstNode->pstSibling;
+
+        /* New parent's child is previous first child */
+        pstNewChild = _pstNode->pstChild;
+      }
+      /* No child */
+      else
+      {
+        /* New parent's child is previous sibling */
+        pstNewChild = _pstNode->pstSibling;
+      }
+
+      /* Was first child? */
+      if(_pstNode->pstParent->pstChild == _pstNode)
+      {
+        /* Updates parent */
+        _pstNode->pstParent->pstChild = pstNewChild;
+      }
+      /* Not first child */
+      else
+      {
+        orxREGISTER orxTREE_NODE *pstChild;
+
+        /* Find left sibling */
+        for(pstChild = _pstNode->pstParent->pstChild;
+            pstChild->pstSibling != _pstNode;
+            pstChild = pstChild->pstSibling);
+
+        /* Updates it */
+        pstChild->pstSibling = pstNewChild;
+      }
+
+      /* Updates node */
+      orxMemory_Set(_pstNode, 0, sizeof(orxTREE_NODE));
+
+      /* Updates counter */
+      pstTree->u32Counter--;      
     }
   }
 
@@ -140,7 +205,7 @@ orxINLINE orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeep
 
 /***************************************************************************
  orxTree_Init
- Inits the link list system.
+ Inits the tree system.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
@@ -166,7 +231,7 @@ orxSTATUS orxTree_Init()
 
 /***************************************************************************
  orxTree_Exit
- Exits from the link list system.
+ Exits from the tree system.
 
  returns: orxVOID
  ***************************************************************************/
@@ -188,7 +253,7 @@ orxVOID orxTree_Exit()
 
 /***************************************************************************
  orxTree_Clean
- Cleans a link list.
+ Cleans a tree.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
@@ -233,7 +298,7 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
   orxASSERT(_pstTree != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
-  /* Not already used in a list? */
+  /* Isn't already in a tree? */
   if(_pstNode->pstTree == orxNULL)
   {
     /* Has a root? */
@@ -244,27 +309,27 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
     }
     else
     {
-        /* Checks there are no node right now */
-        orxASSERT(_pstTree->u32Counter == 0);
+      /* Checks there are no node right now */
+      orxASSERT(_pstTree->u32Counter == 0);
 
-        /* Stores it as root */
-        _pstTree->pstRoot = _pstNode;
+      /* Stores it as root */
+      _pstTree->pstRoot = _pstNode;
 
-        /* Cleans it */
-        orxMemory_Set(_pstNode, 0, sizeof(orxTREE_NODE));
-        
-        /* Stores tree pointer */
-        _pstNode->pstTree = _pstTree;
+      /* Cleans it */
+      orxMemory_Set(_pstNode, 0, sizeof(orxTREE_NODE));
 
-        /* Updates counter */
-        _pstTree->u32Counter++;
+      /* Stores tree pointer */
+      _pstNode->pstTree = _pstTree;
+
+      /* Updates counter */
+      _pstTree->u32Counter++;
     }
   }
   else
   {
     /* !!! MSG !!! */
 
-    /* Not linked */
+    /* Already in a tree */
     eResult = orxSTATUS_FAILED;
   }
 
@@ -288,7 +353,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
-  /* Isn't already linked? */
+  /* Isn't already in a tree? */
   if(_pstNode->pstTree == orxNULL)
   {
     /* Gets tree */
@@ -314,15 +379,15 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
         }
         else
         {
-          orxREGISTER orxTREE_NODE *pstSibling;
+          orxREGISTER orxTREE_NODE *pstChild;
 
           /* Finds left sibling */
-          for(pstSibling = _pstRefNode->pstParent->pstChild;
-              pstSibling->pstSibling != _pstRefNode;
-              pstSibling = pstSibling->pstSibling);
+          for(pstChild = _pstRefNode->pstParent->pstChild;
+              pstChild->pstSibling != _pstRefNode;
+              pstChild = pstChild->pstSibling);
 
           /* Updates sibling */
-          pstSibling->pstSibling = _pstNode;
+          pstChild->pstSibling = _pstNode;
         }
       }
       else
@@ -345,7 +410,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     {
       /* !!! MSG !!! */
   
-      /* No list found */
+      /* No tree found */
       eResult = orxSTATUS_FAILED;
     }
   }
@@ -353,7 +418,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   {
     /* !!! MSG !!! */
     
-    /* Already linked */
+    /* Already in a tree */
     eResult = orxSTATUS_FAILED;
   }
 
@@ -377,12 +442,12 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
-  /* Isn't already linked? */
+  /* Isn't already in a tree? */
   if(_pstNode->pstTree == orxNULL)
   {
     /* Gets tree */
     pstTree = _pstRefNode->pstTree;
-  
+
     /* Valid? */
     if(pstTree != orxNULL)
     {
@@ -402,7 +467,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     {
       /* !!! MSG !!! */
   
-      /* No list found */
+      /* No tree found */
       eResult = orxSTATUS_FAILED;
     }
   }
@@ -410,7 +475,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   {
     /* !!! MSG !!! */
     
-    /* Already linked */
+    /* Already in a tree */
     eResult = orxSTATUS_FAILED;
   }
 
@@ -442,22 +507,17 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   {
     orxREGISTER orxTREE_NODE *pstTest;
 
-    /* Checks for preventing from turning into graph */
-    for(pstTest = _pstRefNode; pstTest != orxNULL; pstTest = pstTest->pstParent)
-    {
-      /* Bad request? */
-      if(pstTest == _pstNode)
-      {
-        break;
-      }
-    }
+    /* Checks for preventing tree from turning into graph */
+    for(pstTest = _pstRefNode;
+        (pstTest != orxNULL) && (pstTest != _pstNode);
+        pstTest = pstTest->pstParent);
 
     /* No graph cycle found? */
     if(pstTest == orxNULL)
     {
       /* Removes it from its place */
       eResult = orxTree_PrivateRemove(_pstNode, orxTRUE);
-    
+
       /* Success? */
       if(eResult == orxSTATUS_SUCCESS)
       {
@@ -511,7 +571,7 @@ orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
   /* Gets tree */
   pstTree = _pstNode->pstTree;
 
-  /* Valid? */
+  /* Is in a tree? */
   if(pstTree != orxNULL)
   {
     /* Checks tree is non empty */
@@ -524,7 +584,7 @@ orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
   {
     /* !!! MSG !!! */
 
-    /* Failed */
+    /* Not in a tree */
     eResult = orxSTATUS_FAILED;
   }
 

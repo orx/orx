@@ -5,14 +5,13 @@
  * Allows to handle trees.
  * 
  * \todo
- * -= WIP =- (Need to finish remove function)
- * Add new features at need.
+ * Add new features/optims at need.
  */
 
 
 /***************************************************************************
  orxTree.h
- Link List module
+ Tree module
  
  begin                : 06/04/2005
  author               : (C) Arcallians
@@ -93,7 +92,7 @@ extern orxSTATUS                      orxTree_Remove(orxTREE_NODE *_pstNode);
 /** Moves as a child of another node of the same tree. */
 extern orxSTATUS                      orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
 
-/* *** LinkList inlined accessors *** */
+/* *** Tree inlined accessors *** */
 
 
 /** Gets a node tree. */
@@ -102,8 +101,30 @@ extern orxINLINE  orxTREE            *orxTree_GetTree(orxTREE_NODE *_pstNode)
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
 
+  /* Returns it */
   return(_pstNode->pstTree);
 }
+
+/** Gets a node first child. */
+extern orxINLINE  orxTREE_NODE       *orxTree_GetChild(orxTREE_NODE *_pstNode)
+{
+  /* Checks */
+  orxASSERT(_pstNode != orxNULL);
+
+  /* Returns it */
+  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstChild : orxNULL);
+}
+
+/** Gets a node sibling. */
+extern orxINLINE  orxTREE_NODE       *orxTree_GetSibling(orxTREE_NODE *_pstNode)
+{
+  /* Checks */
+  orxASSERT(_pstNode != orxNULL);
+
+  /* Returns it */
+  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstSibling : orxNULL);
+}
+
 
 /** Gets a tree root. */
 extern orxINLINE  orxTREE_NODE       *orxTree_GetRoot(orxTREE *_pstTree)
@@ -111,6 +132,7 @@ extern orxINLINE  orxTREE_NODE       *orxTree_GetRoot(orxTREE *_pstTree)
   /* Checks */
   orxASSERT(_pstTree != orxNULL);
 
+  /* Returns it */
   return(_pstTree->pstRoot);
 }
 
@@ -120,6 +142,7 @@ extern orxINLINE  orxU32              orxTree_GetCounter(orxTREE *_pstTree)
   /* Checks */
   orxASSERT(_pstTree != orxNULL);
 
+  /* Returns it */
   return(_pstTree->u32Counter);
 }
 

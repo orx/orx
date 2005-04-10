@@ -37,6 +37,7 @@
 #define orxCONST            const
 #define orxSTATIC           static
 #define orxINLINE           inline
+#define orxFASTCALL         __fastcall
 #define orxREGISTER         register
 
 #define orxNULL             NULL
