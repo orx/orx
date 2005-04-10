@@ -257,9 +257,6 @@ orxVOID _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orx
   va_list stArgs;
   FILE *pstFile = orxNULL;
 
-  /* Checks */
-  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY);
-
   /* TODO : Checks log mask if display is enable for this level */
 
   /* Empties current buffer */

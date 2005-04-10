@@ -62,7 +62,7 @@
 
 #ifdef DEBUG
 
-  #define orxDEBUG_LOG(LEVEL, STRING, ...)    _orxDebug_Log(LEVEL, __FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
+  #define orxDEBUG_LOG(LEVEL, STRING, ...)    _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
 
   #define orxDEBUG_INIT()                     _orxDebug_Init()
   #define orxDEBUG_EXIT()                     _orxDebug_Exit()
