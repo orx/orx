@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<bakefile>
+
+  <!-- Creates two types of build : Release and Debug -->
+  <option name="BUILD">
+    <values>debug release</values>
+    <default-value>release</default-value>
+  </option>
+
+  <!-- Platform is detected by Bakefile... according to it's value, set Compilation FLAGS variable -->
+  <set var="orxPLATFORM">
+    <if cond="PLATFORM_UNIX=='1'">-DLINUX</if>    <!-- set -DLINUX if a Unix/Linux platform is detected -->
+    <if cond="PLATFORM_WIN32=='1'">-DWINDOWS</if> <!-- set -DWINDOWS if a Win32 platform is detected -->
+  </set>
+
+  <!-- If the selected build is debug, add -DDEBUG to Compilation FLAGS -->
+  <set var="orxDEBUG">
+    <if cond="BUILD=='debug'">-DDEBUG</if>
+    <if cond="BUILD=='release'"></if>
+  </set>
+
+  <set var="orxLIBNAME">
+    <if cond="BUILD=='debug'">orxd</if>
+    <if cond="BUILD=='release'">orx</if>
+  </set>
+
+</bakefile>

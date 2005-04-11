@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<bakefile>
+
+  <include file="orx_libcommon.bkl"/>
+
+  <!--- Create orx static library -->
+  <lib id="orx">
+    
+    <!-- Set the name of the library (will be different in debug and release mode -->
+    <libname>$(orxLIBNAME)</libname>
+    
+    <!-- Specify a list of include directories -->
+    <include>include</include>
+
+    <!-- Set cflags (have been sotred in orxCFLAGS variable -->
+    <cflags>$(orxPLATFORM) $(orxDEBUG)</cflags>
+
+    <!-- Set source files -->
+    <sources>src/anim/orxAnim.c src/anim/orxAnimPointer.c src/anim/orxAnimSet.c</sources>
+    <sources>src/camera/orxCamera.c src/camera/orxRender.c src/camera/orxViewport.c</sources>
+    <sources>src/core/clock.c src/core/timer.c</sources>
+    <sources>src/debug/orxDebug.c src/debug/orxFps.c</sources>
+    <sources>src/graph/graph.c src/graph/graphic.c src/graph/texture.c</sources>
+    <sources>src/io/file.c src/io/interaction.c src/io/joystick.c src/io/keyboard.c src/io/mouse.c src/io/package.c</sources>
+    <sources>src/math/coord.c</sources>
+    <sources>src/memory/orxBank.c src/memory/orxMemory.c</sources>
+    <sources>src/object/orxFrame.c src/object/orxObject.c src/object/orxStructure.c</sources>
+    <sources>src/plugin/plugin.c</sources>
+    <sources>src/sound/sound.c</sources>
+    <sources>src/utils/orxLinkList.c src/utils/orxTest.c src/utils/orxTree.c src/utils/pathfinder.c src/utils/screenshot.c src/utils/utils.c </sources>
+
+    <!-- Set the directory where will be stored the library -->
+    <dirname>lib</dirname>
+    
+  </lib>
+
+</bakefile>
