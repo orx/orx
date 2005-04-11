@@ -83,7 +83,7 @@ orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleName)
     if (!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, strlen(_zModuleName) * sizeof(orxCHAR)) == 0))
     {
       sstTest.astTestFunctions[u32Index].bDisplayed = orxTRUE;
-      printf(" %lu - %s\n", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
+      printf("* %lu - %s\n", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
     }
   }
 }
@@ -155,7 +155,7 @@ orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _
   orxASSERT(_cbFunction != orxNULL);
 
   /* Module full ? */
-  if (sstTest.u32NbRegisteredFunc == 50)
+  if (sstTest.u32NbRegisteredFunc < 50)
   {
     /* Copy datas in the registered function array */
     pstTest = &(sstTest.astTestFunctions[sstTest.u32NbRegisteredFunc]);
@@ -202,12 +202,17 @@ orxSTATUS orxTest_Execute(orxHANDLE _hRegisteredFunc)
 
 /** Display a Menu with registered function list
  */
-orxVOID orxTestDisplayMenu()
+orxVOID orxTest_DisplayMenu()
 {
   orxU32 u32Index;  /* Index used to traverse the function array */
   
   /* Module initialized ? */
   orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  
+  /* Display menu header */
+  printf("\n\n*************************************\n");
+  printf("********** orx TEST MENU ************\n");
+  printf("*************************************\n");
   
   /* Display menu for each module */
   for(u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
