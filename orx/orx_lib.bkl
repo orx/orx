@@ -9,10 +9,8 @@
     <!-- Set the name of the library (will be different in debug and release mode -->
     <libname>orx$(orxSUFFIX)</libname>
     
-    <!-- Specify a list of include directories -->
-    <include>include</include>
     <!-- Set the directory where will be stored the library -->
-    <dirname>lib</dirname>
+    <dirname>./lib</dirname>
 
     <!-- Set source files -->
     <sources>
@@ -72,7 +70,12 @@
         src/utils/screenshot.c
         src/utils/utils.c
     </sources>
-   
   </lib>
+
+
+
+  <!-- Include test bakefile. -->
+  <include file="test/orx_test.bkl"/>
+
 
 </bakefile>

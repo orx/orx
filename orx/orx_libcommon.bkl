@@ -8,9 +8,9 @@
     </option>
 
     <!-- Set the preprocessor definition for plateform. -->
-    <set var="orxPLATFORM">
-        <if cond="PLATFORM_UNIX=='1'">LINUX</if>           <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+    <set var="orxPLATFORM" make_var="1">
         <if cond="PLATFORM_WIN32=='1'">WINDOWS</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
+        <if cond="PLATFORM_UNIX=='1'">LINUX</if>           <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
     </set>
 
     <!-- Set the preprocessor definition for debug mode. -->
@@ -37,14 +37,19 @@
     </set>
 
 
+  <set var="BUILDDIR">./lib</set>
+
     <!-- Set a template (common properties) to use with all orx target. -->
     <template id="orxBASE">
         <!-- Optimization and debug infos. -->
         <optimize>$(orxOPTIMIZEFLAG)</optimize>
         <debug-info>$(orxDEBUGFLAG)</debug-info>
         <!-- Preprocessor definitions. -->
-        <define>orxDEBUG</define>
-        <define>orxPLATFORM</define>
+        <define>$(orxDEBUG)</define>
+        <define>$(orxPLATFORM)</define>
+        
+        <!-- Global include directory. -->
+            <include>include</include>
     </template>
 
 

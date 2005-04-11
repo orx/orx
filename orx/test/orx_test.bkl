@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <bakefile>
 
-  <include file="../orx_libcommon.bkl"/>
-
   <!-- Platform is detected by Bakefile... according to it's value, set Link FLAGS variable -->
   <set var="orxLINKFLAG">
     <if cond="PLATFORM_UNIX=='1'">-rdynamic</if>
@@ -12,24 +10,29 @@
   <!--- Create orx test dynamic library -->
   
   <dll id="memory" template="orxBASE">
-    <include>../include</include>
-    <sources>orxTest_Memory.c</sources>
+<dirname>./bin/modules</dirname>
+    <depends>orx</depends>
+    <library>orx</library>
+    <sources>test/orxTest_Memory.c</sources>
   </dll>
 
   <dll id="bank" template="orxBASE">
-    <include>../include</include>
-    <sources>orxTest_Bank.c</sources>
+    <depends>orx</depends>
+    <library>orx</library>
+    <dirname>./bin/modules</dirname>
+    <sources>test/orxTest_Bank.c</sources>
   </dll>
 
   <!--- Create main program -->
   <exe id="main" template="orxBASE">
-    <include>../include</include>
+    <depends>orx</depends>
+    <library>orx</library>
+    <dirname>./bin</dirname>
     <app-type>console</app-type> <!-- Windows specific : gui/console change the link behaviour -->
-    <lib-path>../lib</lib-path>
-    <sys-lib>orx$(orxSUFFIX)</sys-lib>
+
     <sys-lib>dl</sys-lib>
     <ldflags>$(orxLINKFLAG)</ldflags>
-    <sources>orxTest_Main.c</sources>
+    <sources>test/orxTest_Main.c</sources>
   </exe>
   
 </bakefile>
