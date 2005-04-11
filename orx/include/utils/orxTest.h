@@ -64,6 +64,6 @@ extern orxSTATUS orxTest_Execute(orxHANDLE _hRegisteredFunc);
 
 /** Display a Menu with registered function list
  */
-extern orxVOID orxTestDisplayMenu();
+extern orxVOID orxTest_DisplayMenu();
 
 #endif /* _orxTEST_H_ */
