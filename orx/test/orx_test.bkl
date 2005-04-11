@@ -10,7 +10,7 @@
   <!--- Create orx test dynamic library -->
   
   <dll id="memory" template="orxBASE">
-<dirname>./bin/modules</dirname>
+<dirname>bin/modules</dirname>
     <depends>orx</depends>
     <library>orx</library>
     <sources>test/orxTest_Memory.c</sources>
@@ -19,7 +19,7 @@
   <dll id="bank" template="orxBASE">
     <depends>orx</depends>
     <library>orx</library>
-    <dirname>./bin/modules</dirname>
+    <dirname>bin/modules</dirname>
     <sources>test/orxTest_Bank.c</sources>
   </dll>
 
@@ -27,7 +27,7 @@
   <exe id="main" template="orxBASE">
     <depends>orx</depends>
     <library>orx</library>
-    <dirname>./bin</dirname>
+    <dirname>bin</dirname>
     <app-type>console</app-type> <!-- Windows specific : gui/console change the link behaviour -->
 
     <sys-lib>dl</sys-lib>

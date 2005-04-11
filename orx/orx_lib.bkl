@@ -10,7 +10,7 @@
     <libname>orx$(orxSUFFIX)</libname>
     
     <!-- Set the directory where will be stored the library -->
-    <dirname>./lib</dirname>
+    <dirname>lib</dirname>
 
     <!-- Set source files -->
     <sources>
