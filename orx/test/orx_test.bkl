@@ -11,26 +11,23 @@
 
   <!--- Create orx test dynamic library -->
   
-  <dll id="memory">
+  <dll id="memory" template="orxBASE">
     <include>../include</include>
-    <cflags>$(orxPLATFORM) $(orxDEBUG)</cflags>
     <sources>orxTest_Memory.c</sources>
   </dll>
 
-  <dll id="bank">
+  <dll id="bank" template="orxBASE">
     <include>../include</include>
-    <cflags>$(orxPLATFORM) $(orxDEBUG)</cflags>
     <sources>orxTest_Bank.c</sources>
   </dll>
 
   <!--- Create main program -->
-  <exe id="main">
+  <exe id="main" template="orxBASE">
     <include>../include</include>
     <app-type>console</app-type> <!-- Windows specific : gui/console change the link behaviour -->
     <lib-path>../lib</lib-path>
-    <sys-lib>$(orxLIBNAME)</sys-lib>
+    <sys-lib>orx$(orxSUFFIX)</sys-lib>
     <sys-lib>dl</sys-lib>
-    <cflags>$(orxPLATFORM) $(orxDEBUG)</cflags>
     <ldflags>$(orxLINKFLAG)</ldflags>
     <sources>orxTest_Main.c</sources>
   </exe>

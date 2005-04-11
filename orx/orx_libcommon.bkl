@@ -1,39 +1,51 @@
 <?xml version="1.0"?>
 <bakefile>
 
-  <!-- Creates two types of build : Release and Debug -->
-  <option name="BUILD">
-    <values>debug,release</values>
-    <default-value>release</default-value>
-  </option>
+    <!-- Creates two types of build : Release and Debug -->
+    <option name="BUILD">
+        <values>debug,release</values>
+        <default-value>release</default-value>
+    </option>
 
-  <!-- Set the preprocessor definition for plateform. -->
-  <set var="orxPLATFORM">
-    <if cond="PLATFORM_UNIX=='1'">LINUX</if>           <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
-    <if cond="PLATFORM_WIN32=='1'">WINDOWS</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
-  </set>
+    <!-- Set the preprocessor definition for plateform. -->
+    <set var="orxPLATFORM">
+        <if cond="PLATFORM_UNIX=='1'">LINUX</if>           <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+        <if cond="PLATFORM_WIN32=='1'">WINDOWS</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
+    </set>
 
-  <!-- Set the preprocessor definition for debug mode. -->
-  <set var="orxDEBUG">
-    <if cond="BUILD=='debug'">DEBUG</if>
-    <if cond="BUILD=='release'"></if>
-  </set>
+    <!-- Set the preprocessor definition for debug mode. -->
+    <set var="orxDEBUG">
+        <if cond="BUILD=='debug'">DEBUG</if>
+        <if cond="BUILD=='release'"></if>
+    </set>
 
-  <!-- Set the debug flag content. -->
-  <set var="orxDEBUGFLAG">
-    <if cond="BUILD=='debug'">on</if>
-    <if cond="BUILD=='release'">off</if>
-  </set>
-  <!-- Set the optimization flag content. -->
-  <set var="orxOPTIMIZEFLAG">
-    <if cond="BUILD=='debug'">off</if>
-    <if cond="BUILD=='release'">speed</if>
-  </set>
-  
-  <!-- Set the suffix for target name. -->
-  <set var="orxSUFFIX">
-    <if cond="BUILD=='debug'">d</if>
-    <if cond="BUILD=='release'"></if>
-  </set>
+    <!-- Set the debug flag content. -->
+    <set var="orxDEBUGFLAG">
+        <if cond="BUILD=='debug'">on</if>
+        <if cond="BUILD=='release'">off</if>
+    </set>
+    <!-- Set the optimization flag content. -->
+    <set var="orxOPTIMIZEFLAG">
+        <if cond="BUILD=='debug'">off</if>
+        <if cond="BUILD=='release'">speed</if>
+    </set>
+    
+    <!-- Set the suffix for target name. -->
+    <set var="orxSUFFIX">
+        <if cond="BUILD=='debug'">d</if>
+        <if cond="BUILD=='release'"></if>
+    </set>
+
+
+    <!-- Set a template (common properties) to use with all orx target. -->
+    <template id="orxBASE">
+        <!-- Optimization and debug infos. -->
+        <optimize>$(orxOPTIMIZEFLAG)</optimize>
+        <debug-info>$(orxDEBUGFLAG)</debug-info>
+        <!-- Preprocessor definitions. -->
+        <define>orxDEBUG</define>
+        <define>orxPLATFORM</define>
+    </template>
+
 
 </bakefile>

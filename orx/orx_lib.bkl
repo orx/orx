@@ -4,22 +4,15 @@
   <include file="orx_libcommon.bkl"/>
 
   <!--- Create orx static library -->
-  <lib id="orx">
+  <lib id="orx" template="orxBASE">
     
     <!-- Set the name of the library (will be different in debug and release mode -->
     <libname>orx$(orxSUFFIX)</libname>
     
     <!-- Specify a list of include directories -->
     <include>include</include>
-
-    <!-- Optimization and debug infos. -->
-    <optimize>$(orxOPTIMIZEFLAG)</optimize>
-    <debug-info>$(orxDEBUGFLAG)</debug-info>
-
-    <!-- Preprocessor definitions. -->
-    <define>orxDEBUG</define>
-    <define>orxPLATFORM</define>
-
+    <!-- Set the directory where will be stored the library -->
+    <dirname>lib</dirname>
 
     <!-- Set source files -->
     <sources>
@@ -79,10 +72,7 @@
         src/utils/screenshot.c
         src/utils/utils.c
     </sources>
-
-    <!-- Set the directory where will be stored the library -->
-    <dirname>lib</dirname>
-    
+   
   </lib>
 
 </bakefile>
