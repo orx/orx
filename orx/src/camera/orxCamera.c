@@ -709,7 +709,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
           if(graphic_flag_test(pstGraphic, GRAPHIC_KU32_ID_FLAG_ANIM) != orxFALSE)
           {
             /* Updates animation */
-            orxAnimPointer_Compute((orxANIM_POINTER *)graphic_struct_get(pstGraphic, orxSTRUCTURE_ID_ANIMPOINTER), _u32Time);
+            orxAnimPointer_Compute((orxANIM_POINTER *)graphic_struct_get(pstGraphic, orxSTRUCTURE_ID_ANIM_POINTER), _u32Time);
           }
 
           /* Stores the object */
@@ -856,22 +856,38 @@ orxINLINE orxVOID orxCamera_SortViewList(orxCAMERA *_pstCamera)
  ***************************************************************************/
 orxSTATUS orxCamera_Init()
 {
-  /* Already Initialized? */
-  if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY)
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not already Initialized? */
+  if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
+  {
+    /* Cleans control structure */
+    orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
+
+    /* Registers structure type */
+    eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_CAMERA, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  }
+  else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    /* Already initialized */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
-
-  /* Inits Flags */
-  sstCamera.u32Flags = orxCAMERA_KU32_FLAG_DEFAULT|orxCAMERA_KU32_FLAG_READY;
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstCamera.u32Flags = orxCAMERA_KU32_FLAG_READY|orxCAMERA_KU32_FLAG_DEFAULT;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /***************************************************************************

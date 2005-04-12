@@ -147,22 +147,38 @@ orxVOID orxObject_DeleteAll()
  ***************************************************************************/
 orxSTATUS orxObject_Init()
 {
-  /* Already Initialized? */
-  if(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY)
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not already Initialized? */
+  if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
+  {
+    /* Cleans control structure */
+    orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
+
+    /* Registers structure type */
+    eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_OBJECT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  }
+  else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    /* Already initialized */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
-
-  /* Inits ID Flags */
-  sstObject.u32Flags = orxOBJECT_KU32_FLAG_READY;
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstObject.u32Flags = orxOBJECT_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /***************************************************************************

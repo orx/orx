@@ -265,21 +265,38 @@ orxSTATIC orxVOID orxAnim_DeleteAll()
  ***************************************************************************/
 orxSTATUS orxAnim_Init()
 {
-  /* Already Initialized? */
-  if(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY)
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not already Initialized? */
+  if(!(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY))
+  {
+    /* Cleans static controller */
+    orxMemory_Set(&sstAnim, 0, sizeof(orxANIM_STATIC));
+
+    /* Registers structure type */
+    eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_ANIM, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  }
+  else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    /* Already initialized */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstAnim, 0, sizeof(orxANIM_STATIC));
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstAnim.u32Flags = orxANIM_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
-  /* Inits Flags */
-  sstAnim.u32Flags = orxANIM_KU32_FLAG_READY;
-
-  return orxSTATUS_SUCCESS;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************

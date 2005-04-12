@@ -278,21 +278,38 @@ orxVOID orxViewport_DeleteAll()
  ***************************************************************************/
 orxSTATUS orxViewport_Init()
 {
-  /* Already Initialized? */
-  if(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY)
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not already Initialized? */
+  if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
+  {
+    /* Cleans control structure */
+    orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
+
+    /* Registers structure type */
+    eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  }
+  else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    /* Already initialized */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstViewport.u32Flags = orxVIEWPORT_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
-  /* Inits Flags */
-  sstViewport.u32Flags = orxVIEWPORT_KU32_FLAG_READY;
-
-  return orxSTATUS_SUCCESS;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************

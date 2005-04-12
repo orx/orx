@@ -968,7 +968,7 @@ orxSTATIC orxVOID orxAnimSet_DeleteAll()
   orxANIM_SET *pstAnimset;
   
   /* Gets first anim set */
-  pstAnimset = (orxANIM_SET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET);
+  pstAnimset = (orxANIM_SET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM_SET);
 
   /* Non empty? */
   while(pstAnimset != orxNULL)
@@ -977,7 +977,7 @@ orxSTATIC orxVOID orxAnimSet_DeleteAll()
     orxAnimSet_Delete(pstAnimset);
 
     /* Gets first Animation Set */
-    pstAnimset = (orxANIM_SET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET);
+    pstAnimset = (orxANIM_SET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM_SET);
   }
 
   return;
@@ -1226,24 +1226,49 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIM_SET_LINK_TABLE *_pstLinkTable)
  ***************************************************************************/
 orxSTATUS orxAnimSet_Init()
 {
-  /* Already Initialized? */
-  if(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY)
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not already Initialized? */
+  if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY))
+  {
+    /* Cleans control structure */
+    orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIM_SET_STATIC));
+
+    /* Inits Anim before */
+    eResult = orxAnim_Init();
+
+    /* Initialized? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      /* Registers structure type */
+      eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_ANIM_SET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
+  }
+  else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    /* Already initialized */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Cleans control structure */
-  orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIM_SET_STATIC));
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstAnimSet.u32Flags = orxANIMSET_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
-  /* Inits Anim before */
-  orxAnim_Init();
-
-  /* Inits Flags */
-  sstAnimSet.u32Flags = orxANIMSET_KU32_FLAG_READY;
-
-  return orxSTATUS_SUCCESS;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************
@@ -1294,7 +1319,7 @@ orxANIM_SET *orxAnimSet_Create(orxU32 _u32Size)
     orxMemory_Set(pstAnimset, 0, sizeof(orxANIM_SET));
 
     /* Inits structure */
-    if(orxStructure_Setup((orxSTRUCTURE *)pstAnimset, orxSTRUCTURE_ID_ANIMSET) == orxSTATUS_SUCCESS)
+    if(orxStructure_Setup((orxSTRUCTURE *)pstAnimset, orxSTRUCTURE_ID_ANIM_SET) == orxSTATUS_SUCCESS)
     {
       /* Allocates anim pointer array */
       pstAnimset->pastAnim = (orxANIM **)orxMemory_Allocate(_u32Size * sizeof(orxANIM *), orxMEMORY_TYPE_MAIN);

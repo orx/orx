@@ -112,30 +112,6 @@ orxSTATIC orxSTRUCTURE_STATIC sstStructure;
  ***************************************************************************
  ***************************************************************************/
 
-/***************************************************************************
- orxStructure_InitStorageType
- Inits storage type for all structure IDs.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID orxStructure_InitStorageType()
-{
-#define orxSTRUCTURE_INIT_STORAGE_TYPE(ID, TYPE)      sstStructure.astStorage[ID].eType = TYPE;
-
-  /* Inits all storage types */
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_OBJECT,      orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_FRAME,       orxSTRUCTURE_STORAGE_TYPE_TREE);
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_TEXTURE,     orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_GRAPHIC,     orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_CAMERA,      orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_VIEWPORT,    orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_ANIM,        orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_ANIMSET,     orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_ANIMPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-
-  return;
-}
-
 
 /***************************************************************************
  ***************************************************************************
@@ -158,48 +134,48 @@ orxSTATUS orxStructure_Init()
   /* Makes sure the structure IDs are coherent */
   orxASSERT(orxSTRUCTURE_ID_NUMBER <= orxSTRUCTURE_ID_MAX_NUMBER);
 
-  /* Already Initialized? */
-  if(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY)
+  /* Not already Initialized? */
+  if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY))
   {
-    /* !!! MSG !!! */
+    /* Cleans static controller */
+    orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
 
-    return orxSTATUS_FAILED;
-  }
+    /* For all IDs */
+    for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+    {
+      /* Creates a bank */
+      sstStructure.astStorage[i].pstBank  = orxBank_Create(orxSTRUCTURE_KU32_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
+      /* Cleans storage type */
+      sstStructure.astStorage[i].eType    = orxSTRUCTURE_STORAGE_TYPE_NONE;
+    }
 
-  /* For all IDs */
-  for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
-  {
-    /* Creates a bank */
-    sstStructure.astStorage[i].pstBank = orxBank_Create(orxSTRUCTURE_KU32_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-  }
+    /* All banks created? */
+    if(i == orxSTRUCTURE_ID_NUMBER)
+    {
+      /* Inits Flags */
+      sstStructure.u32Flags = orxSTRUCTURE_KU32_FLAG_READY;
 
-  /* All banks created? */
-  if(i == orxSTRUCTURE_ID_NUMBER)
-  {
-    /* Inits all storage types */
-    orxStructure_InitStorageType();
-    
-    /* Inits Flags */
-    sstStructure.u32Flags = orxSTRUCTURE_KU32_FLAG_READY;
+      /* Everything's ok */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      orxU32 j;
 
-    /* Everything's ok */
-    eResult = orxSTATUS_SUCCESS;
+      /* !!! MSG !!! */
+
+      /* For all created banks */
+      for(j = 0; j < i; j++)
+      {
+        /* Deletes it */
+        orxBank_Delete(sstStructure.astStorage[j].pstBank);
+      }
+    }
   }
   else
   {
-    orxU32 j;
-
     /* !!! MSG !!! */
-
-    /* For all created banks */
-    for(j = 0; j < i; j++)
-    {
-      /* Deletes it */
-      orxBank_Delete(sstStructure.astStorage[j].pstBank);
-    }
   }
 
   /* Done! */
@@ -257,6 +233,39 @@ orxVOID orxStructure_Exit()
   sstStructure.u32Flags &= ~orxSTRUCTURE_KU32_FLAG_READY;
 
   return;
+}
+
+/***************************************************************************
+ orxStructure_RegisterStorageType
+ Registers a storage type for a given ID.
+
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ ***************************************************************************/
+orxSTATUS orxStructure_RegisterStorageType(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eType)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT(_eType < orxSTRUCTURE_STORAGE_TYPE_NUMBER);
+
+  /* Not already registered? */
+  if(sstStructure.astStorage[_eStructureID].eType == orxSTRUCTURE_STORAGE_TYPE_NONE)
+  {
+    /* Register it */
+    sstStructure.astStorage[_eStructureID].eType = _eType;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already registered */
+    eResult = orxSTATUS_FAILED;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************
@@ -497,6 +506,8 @@ orxFASTCALL orxSTRUCTURE *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 
     /* No node found */
     pstNode = orxNULL;
+
+    break;
   }
 
   /* Node found? */

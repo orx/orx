@@ -48,8 +48,8 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_CAMERA,
   orxSTRUCTURE_ID_VIEWPORT,
   orxSTRUCTURE_ID_ANIM,
-  orxSTRUCTURE_ID_ANIMSET,
-  orxSTRUCTURE_ID_ANIMPOINTER,
+  orxSTRUCTURE_ID_ANIM_SET,
+  orxSTRUCTURE_ID_ANIM_POINTER,
 
   orxSTRUCTURE_ID_NUMBER,
   
@@ -91,6 +91,9 @@ typedef struct __orxSTRUCTURE_t
 extern orxSTATUS                      orxStructure_Init();
 /** Exits from the structure system. */
 extern orxVOID                        orxStructure_Exit();
+
+/** Registers a storage type for a given ID. */
+extern orxSTATUS                      orxStructure_RegisterStorageType(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eType);
 
 /** Inits a structure with given type. */
 extern orxFASTCALL  orxSTATUS         orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID);

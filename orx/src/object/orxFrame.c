@@ -555,34 +555,51 @@ orxSTATIC orxVOID orxFrame_DeleteAll()
  ***************************************************************************/
 orxSTATUS orxFrame_Init()
 {
-  /* Already Initialized? */
-  if(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY)
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not already Initialized? */
+  if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
+  {
+    /* Cleans control structure */
+    orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
+
+    /* Inits ID Flags */
+    sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
+
+    /* Inits frame tree */
+    sstFrame.pstRoot = orxFrame_Create();
+
+    /* Not created? */
+    if(sstFrame.pstRoot == orxNULL)
+    {
+      /* Cleans flags */
+      sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
+
+      /* Can't process */
+      eResult = orxSTATUS_FAILED;
+    }
+
+    /* Initialized? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      /* Registers structure type */
+      eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE);
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
+  }
+  else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
-  }
-
-  /* Cleans static controller */
-  orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
-
-  /* Inits ID Flags */
-  sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
-
-  /* Inits frame tree */
-  sstFrame.pstRoot = orxFrame_Create();
-
-  /* Not created? */
-  if(sstFrame.pstRoot == orxNULL)
-  {
-    /* Cleans flags */
-    sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
-
-    return orxSTATUS_FAILED;
+    /* Already initialized */
+    eResult = orxSTATUS_FAILED;
   }
 
   /* Done! */
-  return orxSTATUS_FAILED;
+  return eResult;
 }
 
 /***************************************************************************
