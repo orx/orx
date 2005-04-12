@@ -102,8 +102,6 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
   DIR *pstDir;                                /* Pointer on directory structure */
   struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
   void *pHandle;                              /* Dynamic Library handle */
-  orxVOID (*orxTest_StartRegister)(orxVOID);  /* Loaded function to call */
-  char *zError;                               /* Error string */
 
   /* Open the current directory */
   pstDir = opendir(_zDirName);
