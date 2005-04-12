@@ -11,7 +11,6 @@
  * @note library loading, platform specific function are used
  * 
  * @todo Test on windows.
- * @todo Cleans the code, try to reduce platform specific code impact.
  */
  
  /***************************************************************************
@@ -35,33 +34,71 @@
 #include "orxInclude.h"
 #include "utils/orxTest.h"
 #include "debug/orxDebug.h"
+
+/* Include commons libc header */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#define orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE 32
-
+/* Incude specific header files according to used platform */
 #ifdef LINUX
   #include <sys/types.h>
   #include <dirent.h>
   #include <dlfcn.h>
 
+  /* Define the seperator character for directories */
+  #define DIRSEP "/"
 
 #else
-  #error PLATFORM NOT IMPLEMENTED
-#endif
+  #ifdef WINDOWS
+    #include <io.h>
+    #include <windows.h>
 
-int main(int argc, char **argv)
+    /* Define the seperator character for directories */
+    #define DIRSEP "\\"
+
+  #endif /* WINDOWS */
+#endif /* LINUX */
+
+#define orxTEST_MAIN_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
+#define orxTEST_MAIN_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+
+#define orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE 32 /**< Maximum size (number of characters) for a user entry */
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+typedef struct __orxTEST_MAIN_STATIC_t
 {
-  char zChoice[orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE];
-  int iVal;                                   /* Entry val */
-  
-  orxDEBUG_INIT();
-  orxTest_Init();
-  
+  orxU32 u32Flags;      /**< App flags */
+  orxU32 u32NbLibrary;  /**< Number of loaded library */
+  orxHANDLE *phLibrary; /**< Pointer on library handle array */
+} orxTEST_MAIN_STATIC;
 
-/* Linux Specific content */
-#ifdef LINUX
+/***************************************************************************
+ * Module global variable                                                  *
+ ***************************************************************************/
+orxSTATIC orxTEST_MAIN_STATIC sstTestMain;
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+/** Read dynamic library of a directory and load them
+ * @param _zDirName (IN)  Name of the directory
+ */
+orxVOID orxTestMain_Load(orxSTRING _zDirName)
+{
+  /* Module initialized ? */
+  orxASSERT((sstTestMain.u32Flags & orxTEST_MAIN_KU32_FLAG_READY) == orxTEST_MAIN_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_zDirName != orxNULL);
+
+  printf("Loading Test modules : \n");
+
+  #ifdef LINUX
+  
   DIR *pstDir;                                /* Pointer on directory structure */
   struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
   void *pHandle;                              /* Dynamic Library handle */
@@ -69,12 +106,11 @@ int main(int argc, char **argv)
   char *zError;                               /* Error string */
 
   /* Open the current directory */
-  pstDir = opendir("./");
+  pstDir = opendir(_zDirName);
   
   /* Is it a valid directory ? */
   if (pstDir != NULL)
   {
-    printf("Loading Test modules : \n");
     /* Traverse the directory */
     while ((pstFile = readdir(pstDir)))
     {
@@ -92,20 +128,10 @@ int main(int argc, char **argv)
         }
         else
         {
-          /* Get the function */
-          orxTest_StartRegister = dlsym(pHandle, "orxTest_StartRegister");
-          if ((zError = dlerror()) != NULL)
-          {
-            fprintf(stderr, "%s\n", zError);
-          }
-          else
-          {
-            /* Start module registration */
-            (*orxTest_StartRegister)();
-            
-            /* Close the loaded library */
-            /* dlclose(pHandle); -- dyn lib have to be unloaded when program exit */
-          }
+          /* Store lib handle in a new portion of memory (and increase counter)*/
+          sstTestMain.phLibrary = (orxHANDLE *)realloc(sstTestMain.phLibrary, (sstTestMain.u32NbLibrary + 1) * sizeof(orxHANDLE);
+          sstTestMain.phLibrary[sstTestMain.u32NbLibrary] = (orxHANDLE)pHandle;
+          sstTestMain.u32NbLibrary++;
         }
       }
     }
@@ -113,43 +139,190 @@ int main(int argc, char **argv)
   }
   else
   {
-    fprintf(stderr, "Can't open directory");
+    fprintf(stderr, "Can't open directory %s\n", _zDirName);
   }
   
-#else
-  #error PLATFORM NOT IMPLEMENTED
-#endif
+  #else /* !LINUX */
+    #ifdef WINDOWS
+  
+  
+  struct _finddata_t stFile;  /* File datas infos */
+  long lFile;                 /* File handle */
+  orxCHAR zPattern[512];      /* Create the lookup pattern (_zDirName/*.dll) */
+  HINSTANCE hLibrary;         /* Handle on the loaded library */
+  
+  /* Initialize Pattern*/
+  memset(zPattern, 0, 512 * sizeof(orxCHAR));
+ 
+  /* Check _directory name (overflow) */
+  if (strlen(_zDirName) < 500)
+  {
+    /* Create pattern */
+    sprintf(zPattern, "%s\\*.dll", _zDirName);
+      
+    /* Find first .dll file in directory */
+    if ((lFile = _findfirst(zPattern, &stFile)) != -1L)
+    {
+      /* Get a handle to the DLL module. */
+      fprintf(stderr, " --> %s\n", stFile.name);
+      hLibrary = LoadLibrary(stFile.name);
+      
+      /* Store lib handle in a new portion of memory (and increase counter)*/
+      sstTestMain.phLibrary = (orxHANDLE *)malloc(sizeof(orxHANDLE));
+      sstTestMain.phLibrary[0] = (orxHANDLE)hLibrary;
+      sstTestMain.u32NbLibrary = 1;
 
+      /* Find the rest of the .c files */
+      while (_findnext(lFile, &stFile) == 0)
+      {
+        /* Get a handle to the DLL module. */
+        fprintf(stderr, " --> %s\n", stFile.name);
+        hLibrary = LoadLibrary(stFile.name);
+
+        /* Store lib handle in a new portion of memory (and increase counter)*/
+        sstTestMain.phLibrary = (orxHANDLE *)realloc(sstTestMain.phLibrary, (sstTestMain.u32NbLibrary + 1) * sizeof(orxHANDLE));
+        sstTestMain.phLibrary[sstTestMain.u32NbLibrary] = (orxHANDLE)hLibrary;
+        sstTestMain.u32NbLibrary++;
+      }
+
+      _findclose(lFile);
+    }
+  }
+  else
+  {
+      fprintf(stderr, "Directory name too long\n");
+  }        
+
+  
+    #endif /* WINDOWS */
+  #endif /* LINUX */
+}
+
+/** Release all loaded libraries
+ */
+orxVOID orxTestMain_Release()
+{
+  orxU32 u32Index;  /* Index used to traverse lib array */
+  
+  /* Module initialized ? */
+  orxASSERT((sstTestMain.u32Flags & orxTEST_MAIN_KU32_FLAG_READY) == orxTEST_MAIN_KU32_FLAG_READY);
+
+  /* Traverse and free loaded library for each platform */
+  for (u32Index = 0; u32Index < sstTestMain.u32NbLibrary; u32Index++)
+  {
+    /* Release loaded library */
+#ifdef LINUX
+
+    dlclose((void*)sstTestMain.phLibrary[u32Index]);
+
+#else
+  #ifdef WINDOWS
+
+    FreeLibrary((HINSTANCE)sstTestMain.phLibrary[u32Index]);
+
+  #endif
+#endif /* LINUX */
+  }
+  
+  /* Free the allocated array */
+  free(sstTestMain.phLibrary);
+}  
+
+
+/** Initialize TestMain static variables
+ */
+orxVOID orxTestMain_Init()
+{
+  /* App not already initialized ? */
+  orxASSERT(!(sstTestMain.u32Flags & orxTEST_MAIN_KU32_FLAG_READY));
+
+  /* Cleans static controller */
+  memset(&sstTestMain, 0, sizeof(orxTEST_MAIN_STATIC));
+  
+  /* Set App has ready */
+  sstTestMain.u32Flags = orxTEST_MAIN_KU32_FLAG_READY;
+
+  /* Load dynamic library */
+  orxTestMain_Load("."DIRSEP"modules");
+}
+
+/** Unitialize TestMain
+ */
+orxVOID orxTestMain_Exit()
+{
+  /* App initialized ? */
+  orxASSERT((sstTestMain.u32Flags & orxTEST_MAIN_KU32_FLAG_READY) == orxTEST_MAIN_KU32_FLAG_READY);
+  
+  /* Release library */
+  orxTestMain_Release();
+  
+  /* App not ready now */
+  sstTestMain.u32Flags = orxTEST_MAIN_KU32_FLAG_READY;
+}
+/***************************************************************************
+ * Public functions                                                        *
+ ***************************************************************************/
+
+/***************************************************************************
+ **************************** MAIN FUNCTION ********************************
+ ***************************************************************************/
+
+int main(int argc, char **argv)
+{
+  char zChoice[orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE]; /* Entry read from user */
+  int iVal;                                           /* value of entry */
+  
+  /* Minimum initialisation */
+  orxDEBUG_INIT();      /* Debug module is necessary to display debug from each module */
+  orxTest_Init();       /* Test Module is necessary to register test function */
+  orxTestMain_Init();   /* Initialise application (load dynamic library */
+  
+  /* Display menu and get user entry */
   do
   {
+    /* Show list of registered function */
     orxTest_DisplayMenu();
+    
+    /* Get user choice */
     printf("quit : Quit the test program\n\n");
     printf("Choice : ");
     fgets(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, stdin);
+    
+    /* Check overflow */
     if ((strlen(zChoice) > 0) && zChoice[strlen(zChoice)-1] == '\n')
     {
       zChoice[strlen(zChoice)-1] = '\0';
     }
-
+    
+    /* The user wants to quir ? */
     if (strcmp(zChoice, "quit") != 0)
     {
+      /* No, so parse its choice */
       iVal = atoi(zChoice);
+      
+      /* Execute the function associated to the user choice */
       if (orxTest_Execute((orxHANDLE)iVal) == orxSTATUS_FAILED)
       {
+        /* Invalid choice was used */
         printf("Unknown command\n");
       }
+      
+      /* Function has been executed. Wait for a pressed key before displaying the menu (clear screen would be fine) */
       printf("Press Enter to continue\n");
       getchar();
+      
+      /* Reinitialize user choice */
       memset(zChoice, 0, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE * sizeof(char));
       iVal = -1;
     }
-    
   }
   while (strcmp(zChoice, "quit") != 0);
   
-  
+  /* Uninitialize modules */
+  orxTestMain_Exit();
   orxTest_Exit();
   orxDEBUG_EXIT();
   
+  /* That's all folks ! */
   return 0;
 }
