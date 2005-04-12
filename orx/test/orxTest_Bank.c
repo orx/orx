@@ -23,6 +23,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdio.h>
+
 #include "orxInclude.h"
 #include "utils/orxTest.h"
 

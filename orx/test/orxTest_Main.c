@@ -148,7 +148,7 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
   
   struct _finddata_t stFile;  /* File datas infos */
   long lFile;                 /* File handle */
-  orxCHAR zPattern[512];      /* Create the lookup pattern (_zDirName/*.dll) */
+  orxCHAR zPattern[512];      /* Create the lookup pattern (_zDirName/ *.dll) */
   HINSTANCE hLibrary;         /* Handle on the loaded library */
   
   /* Initialize Pattern*/
