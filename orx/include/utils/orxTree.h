@@ -105,6 +105,16 @@ extern orxINLINE  orxTREE            *orxTree_GetTree(orxTREE_NODE *_pstNode)
   return(_pstNode->pstTree);
 }
 
+/** Gets a node parent. */
+extern orxINLINE  orxTREE_NODE       *orxTree_GetParent(orxTREE_NODE *_pstNode)
+{
+  /* Checks */
+  orxASSERT(_pstNode != orxNULL);
+
+  /* Returns it */
+  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstParent : orxNULL);
+}
+
 /** Gets a node first child. */
 extern orxINLINE  orxTREE_NODE       *orxTree_GetChild(orxTREE_NODE *_pstNode)
 {

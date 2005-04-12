@@ -65,7 +65,7 @@ extern orxBANK *orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Fl
 /** Free a portion of memory allocated with orxMemory_Allocate
  * @param _pstBank    (IN)  Pointer on the memory bank allocated by orx
  */
-extern orxVOID orxBank_Destroy(orxBANK *_pstBank);
+extern orxVOID orxBank_Delete(orxBANK *_pstBank);
 
 /** Allocate a new cell from the bank
  * @param _pstBank    (IN) Pointer on the memory bank to use

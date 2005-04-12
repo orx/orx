@@ -1428,7 +1428,7 @@ orxVOID orxAnimSet_RemoveReference(orxANIM_SET *_pstAnimset)
   orxStructure_DecreaseCounter((orxSTRUCTURE *)_pstAnimset);
 
   /* No reference left? */
-  if(orxStructure_GetCounter((orxSTRUCTURE *)_pstAnimset) == 0)
+  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstAnimset) == 0)
   {
     /* Unlocks animset */
     orxAnimSet_SetFlag(_pstAnimset, orxANIMSET_KU32_ID_FLAG_NONE, orxANIMSET_KU32_ID_FLAG_REFERENCE_LOCK);

@@ -19,7 +19,9 @@
 
 #include "object/orxStructure.h"
 
-#include "memory/orxMemory.h"
+#include "memory/orxBank.h"
+#include "utils/orxLinkList.h"
+#include "utils/orxTree.h"
 
 
 /*
@@ -29,72 +31,79 @@
 #define orxSTRUCTURE_KU32_FLAG_NONE         0x00000000
 #define orxSTRUCTURE_KU32_FLAG_READY        0x00000001
 
-/* Tree offsets */
-#define STRUCTURE_KS32_OFFSET_FRAME       0
-
-/* List offsets */
-#define STRUCTURE_KS32_OFFSET_OBJECT      0
-#define STRUCTURE_KS32_OFFSET_TEXTURE     1
-#define STRUCTURE_KS32_OFFSET_GRAPHIC     2
-#define STRUCTURE_KS32_OFFSET_CAMERA      3
-#define STRUCTURE_KS32_OFFSET_VIEWPORT    4
-#define STRUCTURE_KS32_OFFSET_ANIM        5
-#define STRUCTURE_KS32_OFFSET_ANIMSET     6
-#define STRUCTURE_KS32_OFFSET_ANIMPOINTER 7
+/* *** Misc *** */
+#define orxSTRUCTURE_KU32_BANK_SIZE         256
 
 /* Storage types */
 #define STRUCTURE_KS32_TYPE_NONE          0
 #define STRUCTURE_KS32_TYPE_LIST          1
 #define STRUCTURE_KS32_TYPE_TREE          2
 
-/* Numbers of differents structures stored in each storage type */
-#define STRUCTURE_KS32_NUMBER_LIST        8
-#define STRUCTURE_KS32_NUMBER_TREE        1
+
 
 /*
- * Internal List structure
+ * Internal storage structure
  */
-typedef struct structure_st_list_cell_t
+typedef struct __orxSTORAGE_t
 {
-  /* Corresponding structure : 4 */
+  /* Associated bank */
+  orxBANK *pstBank;
+
+  /* Storage type */
+  orxSTRUCTURE_STORAGE_TYPE eType;
+
+  /* Storage union */
+  union
+  {
+    /* Link List */
+    orxLINKLIST stLinkList;
+
+    /* Tree */
+    orxTREE stTree;
+  };
+
+} orxSTORAGE;
+
+/*
+ * Internal storage node
+ */
+typedef struct __orxSTORAGE_NODE_t
+{
+  /* Storage node union */
+  union
+  {    
+    /* Link list node */
+    orxLINKLIST_NODE stLinkListNode;
+
+    /* Tree node */
+    orxTREE_NODE stTreeNode;
+  };
+
+  /* Pointer to structure */
   orxSTRUCTURE *pstStructure;
 
-  /* List handling pointers : 12 */
-  struct structure_st_list_cell_t *pstNext;
-  struct structure_st_list_cell_t *pstPrevious;
-  
-  /* 4 extra bytes of padding : 16 */
-  orxU8 au8Unused[4];
-} structure_st_list_cell;
+  /* Storage type */
+  orxSTRUCTURE_STORAGE_TYPE eType;
 
+} orxSTORAGE_NODE;
 
 /*
- * Internal Tree structure
+ * Static structure
  */
-typedef struct structure_st_tree_cell_t
+typedef struct __orxSTRUCTURE_STATIC_t
 {
-  /* Corresponding structure : 4 */
-  orxSTRUCTURE *pstStructure;
+  /* Structure banks */
+  orxSTORAGE astStorage[orxSTRUCTURE_ID_NUMBER];
 
-  /* Tree handling pointers : 20 */
-  struct structure_st_tree_cell_t *pstParent;
-  struct structure_st_tree_cell_t *pst_child;
-  struct structure_st_tree_cell_t *pst_left_sibling;
-  struct structure_st_tree_cell_t *pst_right_sibling;
+  /* Control flags */
+  orxU32 u32Flags;
 
-  /* 12 extra bytes of padding : 32 */
-  orxU8 au8Unused[12];
-} structure_st_tree_cell;
-
+} orxSTRUCTURE_STATIC;
 
 /*
- * Static members
+ * Static data
  */
-orxSTATIC orxU32 structure_su32Flags = orxSTRUCTURE_KU32_FLAG_NONE;
-orxSTATIC structure_st_list_cell *spast_list[STRUCTURE_KS32_NUMBER_LIST];
-orxSTATIC structure_st_tree_cell *spast_tree[STRUCTURE_KS32_NUMBER_TREE];
-orxSTATIC orxS32 sal_list_counter[STRUCTURE_KS32_NUMBER_LIST];
-orxSTATIC orxS32 sal_tree_counter[STRUCTURE_KS32_NUMBER_TREE];
+orxSTATIC orxSTRUCTURE_STATIC sstStructure;
 
 
 /***************************************************************************
@@ -104,473 +113,27 @@ orxSTATIC orxS32 sal_tree_counter[STRUCTURE_KS32_NUMBER_TREE];
  ***************************************************************************/
 
 /***************************************************************************
- structure_storage_info_get
- Gets storage type & offset according to structure ID.
+ orxStructure_InitStorageType
+ Inits storage type for all structure IDs.
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID structure_storage_info_get(orxU32 _u32_type, orxS32 *_pi_type, orxS32 *_pi_offset)
+orxINLINE orxVOID orxStructure_InitStorageType()
 {
-  /* According to structure type */
-  switch(_u32_type)
-  {
-    /* Object structure */
-    case orxSTRUCTURE_ID_OBJECT:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_OBJECT;
-      *_pi_type = STRUCTURE_KS32_TYPE_LIST;
-      break;
+#define orxSTRUCTURE_INIT_STORAGE_TYPE(ID, TYPE)      sstStructure.astStorage[ID].eType = TYPE;
 
-    /* Frame structure */
-    case orxSTRUCTURE_ID_FRAME:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_FRAME;
-      *_pi_type = STRUCTURE_KS32_TYPE_TREE;
-      break;
-
-    /* Texture structure */
-    case orxSTRUCTURE_ID_TEXTURE:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_TEXTURE;
-      *_pi_type = STRUCTURE_KS32_TYPE_LIST;
-      break;
-
-    /* Graphic2d structure */
-    case orxSTRUCTURE_ID_GRAPHIC:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_GRAPHIC;
-      *_pi_type = STRUCTURE_KS32_TYPE_LIST;
-      break;
-
-    /* Camera2d structure */
-    case orxSTRUCTURE_ID_CAMERA:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_CAMERA;
-      *_pi_type = STRUCTURE_KS32_TYPE_LIST;
-      break;
-
-    /* Viewport structure */
-    case orxSTRUCTURE_ID_VIEWPORT:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_VIEWPORT;
-      *_pi_type = STRUCTURE_KS32_TYPE_LIST;
-      break;
-
-    /* Animation structure */
-    case orxSTRUCTURE_ID_ANIM:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_ANIM;
-      *_pi_type = STRUCTURE_KS32_TYPE_LIST;
-      break;
-
-    /* Animation Set structure */
-    case orxSTRUCTURE_ID_ANIMSET:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_ANIMSET;
-      *_pi_type = STRUCTURE_KS32_TYPE_LIST;
-      break;
-
-    /* Animation Pointer structure */
-    case orxSTRUCTURE_ID_ANIMPOINTER:
-      *_pi_offset = STRUCTURE_KS32_OFFSET_ANIMPOINTER;
-      *_pi_type = STRUCTURE_KS32_TYPE_LIST;
-      break;
-
-    default:
-      /* Bad type */
-      *_pi_offset = orxU32_Undefined;
-      *_pi_type = STRUCTURE_KS32_TYPE_NONE;
-  }
+  /* Inits all storage types */
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_OBJECT,      orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_FRAME,       orxSTRUCTURE_STORAGE_TYPE_TREE);
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_TEXTURE,     orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_GRAPHIC,     orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_CAMERA,      orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_VIEWPORT,    orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_ANIM,        orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_ANIMSET,     orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  orxSTRUCTURE_INIT_STORAGE_TYPE(orxSTRUCTURE_ID_ANIMPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
 
   return;
-}
-
-
-/* *** List Handling *** */
-
-
-/***************************************************************************
- structure_list_cell_delete
- Deletes a list cell.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_list_cell_delete(structure_st_list_cell *_pstCell)
-{
-  /* Frees cell memory */
-  orxMemory_Free(_pstCell);
-
-  return;
-}
-
-/***************************************************************************
- structure_list_cell_create
- Creates an empty list cell linked to a structure.
-
- returns: list cell
- ***************************************************************************/
-orxINLINE structure_st_list_cell *structure_list_cell_create(orxSTRUCTURE *_pstStructure)
-{
-  orxREGISTER structure_st_list_cell *pst_list_cell;
-
-  /* Allocates it */
-  pst_list_cell = (structure_st_list_cell *) orxMemory_Allocate(sizeof(structure_st_list_cell), orxMEMORY_TYPE_MAIN);
-
-  /* Non null? */
-  if(pst_list_cell != orxNULL)
-  {
-    /* Assigns cell members */
-    pst_list_cell->pstStructure = _pstStructure;
-    pst_list_cell->pstNext = orxNULL;
-    pst_list_cell->pstPrevious = orxNULL;
-
-    /* Assigns cell to structure */
-    _pstStructure->pstCell = (orxSTRUCTURE_CELL *)pst_list_cell;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-    return orxNULL;
-  }
-
-  return pst_list_cell;
-}
-
-/***************************************************************************
- structure_list_cell_add
- Adds a new cell in the corresponding list.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_list_cell_add(structure_st_list_cell *_pstCell, orxS32 _i_offset)
-{
-  orxREGISTER structure_st_list_cell *pst_list;
-
-  /* Gets list */
-  pst_list = spast_list[_i_offset];
-
-  /* Adds it at the start of the list */
-  _pstCell->pstNext = pst_list;
-
-  /* Updates old cell if needed */
-  if(pst_list != orxNULL)
-  {
-    pst_list->pstPrevious = _pstCell;
-  }
-
-  /* Stores cell at beginning of the list */
-  spast_list[_i_offset] = _pstCell;
-
-  /* Updates list counter */
-  sal_list_counter[_i_offset]++;
-
-  return;
-}
-
-/***************************************************************************
- structure_list_cell_remove
- Removes a cell from the corresponding list.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_list_cell_remove(structure_st_list_cell *_pstCell, orxS32 _i_offset)
-{
-  orxREGISTER structure_st_list_cell *pstPrevious, *pstNext;
-
-  /* Gets neighbours pointers */
-  pstPrevious = _pstCell->pstPrevious;
-  pstNext = _pstCell->pstNext;
-
-  /* Not at beginning of list? */
-  if(pstPrevious != orxNULL)
-  {
-    pstPrevious->pstNext = pstNext;
-  }
-  else
-  {
-    /* Updates global list pointer */
-    spast_list[_i_offset] = pstNext;
-  }
-
-  /* Updates next cell pointers */
-  if(pstNext != orxNULL)
-  {
-    pstNext->pstPrevious = pstPrevious;
-  }
-
-  /* Updates list counter */
-  sal_list_counter[_i_offset]--;
-
-  return;
-}
-
-
-/* *** Tree Handling *** */
-
-
-/***************************************************************************
- structure_tree_cell_create
- Creates an empty tree cell linked to a structure.
-
- returns: tree cell
- ***************************************************************************/
-orxINLINE structure_st_tree_cell *structure_tree_cell_create(orxSTRUCTURE *_pstStructure)
-{
-  structure_st_tree_cell *pst_tree_cell;
-
-  /* Allocates it */
-  pst_tree_cell = (structure_st_tree_cell *) orxMemory_Allocate(sizeof(structure_st_tree_cell), orxMEMORY_TYPE_MAIN);
-
-  /* Non null? */
-  if(pst_tree_cell != orxNULL)
-  {
-    /* Assigns cell members */
-    pst_tree_cell->pstStructure = _pstStructure;
-    pst_tree_cell->pstParent = orxNULL;
-    pst_tree_cell->pst_child = orxNULL;
-    pst_tree_cell->pst_left_sibling = orxNULL;
-    pst_tree_cell->pst_right_sibling = orxNULL;
-
-    /* Assigns cell to structure */
-    _pstStructure->pstCell = (orxSTRUCTURE_CELL *)pst_tree_cell;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-    return orxNULL;
-  }
-
-  return pst_tree_cell;
-}
-
-/***************************************************************************
- structure_tree_cell_delete
- Deletes a list cell.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_tree_cell_delete(structure_st_tree_cell *_pstCell)
-{
-  /* Frees cell memory */
-  orxMemory_Free(_pstCell);
-
-  return;
-}
-
-/***************************************************************************
- structure_tree_cell_move
- Moves a cell under another cell.
- If new parent cell is null, it removes it from the tree (used for delete/remove)
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_tree_cell_move(structure_st_tree_cell *_pstCell, structure_st_tree_cell *_pstParent, orxS32 _i_offset)
-{
-  structure_st_tree_cell *pstParent, *pst_left_sibling, *pst_right_sibling, *pst_child, *pst_root, *pst_it;
-
-  /* Gets root */
-  pst_root = spast_tree[_i_offset];
-
-  /* Make sure request is valid (prevent tree from turning into graph) */
-  for(pst_it = _pstParent; (pst_it != orxNULL) && (pst_it != pst_root); pst_it = pst_it->pstParent)
-  {
-    /* Bad request? */
-    /* !!! MSG !!! */
-    if(pst_it == _pstCell)
-    {
-      return;
-    }
-  }
-
-  /* Updates old position links (removes it from the tree) */
-
-  /* Gets current parent */
-  pstParent = _pstCell->pstParent;
-
-  /* Was the cell in the tree? */
-  if(pstParent != orxNULL)
-  {
-    /* Gets siblings */
-    pst_left_sibling = _pstCell->pst_left_sibling;
-    pst_right_sibling = _pstCell->pst_right_sibling;
-
-    /* Is current child ? */
-    if(pstParent->pst_child == _pstCell)
-    {
-      /* Updates parent's child */
-      pstParent->pst_child = pst_right_sibling;
-    }
-    else
-    {
-      /* Should have a left sibling */
-      pst_left_sibling->pst_right_sibling = pst_right_sibling;
-    }
-
-    /* Has a right sibling? */
-    if(pst_right_sibling != orxNULL)
-    {
-      pst_right_sibling->pst_left_sibling = pst_left_sibling;
-    }
-  }
-
-  /* Updates new position links (adds it at new position in the tree) */
-
-  /* Is new parent non null? */
-  if(_pstParent != orxNULL)
-  {
-    /* Gets child */
-    pst_child = _pstParent->pst_child;
-
-    /* Updates new parent */
-    _pstParent->pst_child = _pstCell;
-
-    /* Updates old child */
-    if(pst_child != orxNULL)
-    {
-      pst_child->pst_left_sibling = _pstCell;
-    }
-
-  }
-  /* Will become single (outside tree) */
-  else
-  {
-    pst_child = orxNULL;
-  }
-
-  /* Becomes new child (or single) */
-  _pstCell->pst_left_sibling = orxNULL;
-  _pstCell->pst_right_sibling = pst_child;
-  _pstCell->pstParent = _pstParent;
-
-  return;
-}
-
-/***************************************************************************
- structure_tree_cell_add
- Adds a new cell in the corresponding tree.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_tree_cell_add(structure_st_tree_cell *_pstCell, orxS32 _i_offset)
-{
-  structure_st_tree_cell *pst_tree;
-
-  /* Gets tree */
-  pst_tree = spast_tree[_i_offset];
-
-  /* Is tree empty? */
-  if(pst_tree == orxNULL)
-  {
-    /* Becomes tree root */
-    spast_tree[_i_offset] = _pstCell;
-  }
-  else
-  {
-    /* Moves it under the tree root */
-    structure_tree_cell_move(_pstCell, pst_tree, _i_offset);
-  }
-
-  /* Updates tree counter */
-  sal_tree_counter[_i_offset]++;
-
-  return;
-}
-
-/***************************************************************************
- structure_tree_cell_remove
- Removes a cell from the corresponding tree.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_tree_cell_remove(structure_st_tree_cell *_pstCell, orxS32 _i_offset)
-{
-  structure_st_tree_cell *pstParent;
-  structure_st_tree_cell *pst_tree;
-
-  /* Gets tree */
-  pst_tree = spast_tree[_i_offset];
-
-  /* Gets parent */
-  pstParent = _pstCell->pstParent;
-
-  /* Has parent? */
-  if(pstParent != orxNULL)
-  {
-    /* Moves all childs to the next higher level */
-    while(_pstCell->pst_child != orxNULL)
-    {
-      structure_tree_cell_move(_pstCell->pst_child, pstParent, _i_offset);
-    }
-
-    /* Moves it outside the tree */
-    structure_tree_cell_move(_pstCell, orxNULL, _i_offset);
-  }
-  else
-  {
-    /* Is root? */
-    if(_pstCell == pst_tree)
-    {
-      spast_tree[_i_offset] = orxNULL;
-    }
-  }
-
-  /* Updates tree counter */
-  sal_tree_counter[_i_offset]--;
-
-  return;
-}
-
-
-/***************************************************************************
- structure_struct_add
- Adds a new cell in the corresponding storage.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_struct_add(orxSTRUCTURE *_pstStructure)
-{
-  orxS32 i_type, i_offset;
-
-  /* Gets storage type & offset */
-  structure_storage_info_get(_pstStructure->eID, &i_type, &i_offset);
-
-  /* According to storage type */
-  switch(i_type)
-  {
-    case STRUCTURE_KS32_TYPE_LIST:
-      structure_list_cell_add((structure_st_list_cell *)(_pstStructure->pstCell), i_offset);
-      break;
-
-    case STRUCTURE_KS32_TYPE_TREE:
-      structure_tree_cell_add((structure_st_tree_cell *)(_pstStructure->pstCell), i_offset);
-      break;
-
-    default:
-      /* !!! MSG !!! */
-      break;
-  }
-}
-
-/***************************************************************************
- structure_struct_remove
- Removes a cell from the corresponding storage.
-
- returns: orxVOID
- ***************************************************************************/
-orxINLINE orxVOID structure_struct_remove(orxSTRUCTURE *_pstStructure)
-{
-  orxS32 i_type, i_offset;
-
-  /* Gets storage type & offset */
-  structure_storage_info_get(_pstStructure->eID, &i_type, &i_offset);
-
-  /* According to storage type */
-  switch(i_type)
-  {
-    case STRUCTURE_KS32_TYPE_LIST:
-      structure_list_cell_remove((structure_st_list_cell *)(_pstStructure->pstCell), i_offset);
-      break;
-
-    case STRUCTURE_KS32_TYPE_TREE:
-      structure_tree_cell_remove((structure_st_tree_cell *)(_pstStructure->pstCell), i_offset);
-      break;
-
-    default:
-      /* !!! MSG !!! */
-      break;
-  }
 }
 
 
@@ -589,30 +152,58 @@ orxINLINE orxVOID structure_struct_remove(orxSTRUCTURE *_pstStructure)
  ***************************************************************************/
 orxSTATUS orxStructure_Init()
 {
-  orxS32 i;
+  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxU32 i;
 
-  /* Not already Initialized? */
-  if(!(structure_su32Flags & orxSTRUCTURE_KU32_FLAG_READY))
+  /* Makes sure the structure IDs are coherent */
+  orxASSERT(orxSTRUCTURE_ID_NUMBER <= orxSTRUCTURE_ID_MAX_NUMBER);
+
+  /* Already Initialized? */
+  if(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY)
   {
-    /* Inits Flags */
-    structure_su32Flags = orxSTRUCTURE_KU32_FLAG_READY;
+    /* !!! MSG !!! */
 
-    /* Cleans all storage pointers & counters */
-    for(i = 0; i < STRUCTURE_KS32_NUMBER_LIST; i++)
-    {
-      spast_list[i] = orxNULL;
-      sal_list_counter[i] = 0;
-    }
-    for(i = 0; i < STRUCTURE_KS32_NUMBER_TREE; i++)
-    {
-      spast_tree[i] = orxNULL;
-      sal_tree_counter[i] = 0;
-    }
-
-    return orxSTATUS_SUCCESS;
+    return orxSTATUS_FAILED;
   }
 
-  return orxSTATUS_FAILED;
+  /* Cleans static controller */
+  orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
+
+  /* For all IDs */
+  for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+  {
+    /* Creates a bank */
+    sstStructure.astStorage[i].pstBank = orxBank_Create(orxSTRUCTURE_KU32_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+  }
+
+  /* All banks created? */
+  if(i == orxSTRUCTURE_ID_NUMBER)
+  {
+    /* Inits all storage types */
+    orxStructure_InitStorageType();
+    
+    /* Inits Flags */
+    sstStructure.u32Flags = orxSTRUCTURE_KU32_FLAG_READY;
+
+    /* Everything's ok */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    orxU32 j;
+
+    /* !!! MSG !!! */
+
+    /* For all created banks */
+    for(j = 0; j < i; j++)
+    {
+      /* Deletes it */
+      orxBank_Delete(sstStructure.astStorage[j].pstBank);
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************
@@ -623,49 +214,107 @@ orxSTATUS orxStructure_Init()
  ***************************************************************************/
 orxVOID orxStructure_Exit()
 {
-  /* Initialized? */
-  if(structure_su32Flags & orxSTRUCTURE_KU32_FLAG_READY)
+  orxU32 i;
+
+  /* Not initialized? */
+  if((sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY) == orxSTRUCTURE_KU32_FLAG_NONE)
   {
-    /* Updates flags */
-    structure_su32Flags &= ~orxSTRUCTURE_KU32_FLAG_READY;
+    /* !!! MSG !!! */
+
+    return;
   }
 
+  /* For all banks */
+  for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+  {
+    /* Depending on storage type */
+    switch(sstStructure.astStorage[i].eType)
+    {
+    case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+
+      /* Empties list */
+      orxLinkList_Clean(&(sstStructure.astStorage[i].stLinkList));
+
+      break;
+      
+    case orxSTRUCTURE_STORAGE_TYPE_TREE:
+
+      /* Empties tree */
+      orxTree_Clean(&(sstStructure.astStorage[i].stTree));
+
+      break;
+
+    default:
+
+      break;
+    }
+
+    /* Deletes it */
+    orxBank_Delete(sstStructure.astStorage[i].pstBank);
+  }
+
+  /* Updates flags */
+  sstStructure.u32Flags &= ~orxSTRUCTURE_KU32_FLAG_READY;
+
   return;
+}
+
+/***************************************************************************
+ orxStructure_GetStorageType
+ Gets structure storage type.
+
+ returns: Structure storage ID
+ ***************************************************************************/
+orxFASTCALL orxSTRUCTURE_STORAGE_TYPE orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID)
+{
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
+
+  /* Returns it */
+  return(sstStructure.astStorage[_eStructureID].eType);
 }
 
 /***************************************************************************
  orxStructure_GetNumber
  Gets given type structure number.
 
- returns: counter/-1
+ returns: number / orxU32_Undefined
  ***************************************************************************/
-orxU32 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
+orxFASTCALL orxU32 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 {
-  orxS32 i_counter = -1;
-  orxS32 i_type, i_offset;
+  orxREGISTER orxU32 u32Result = orxU32_Undefined;
 
-  /* Gets type & offset */
-  structure_storage_info_get(_eStructureID, &i_type, &i_offset);
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
-  /* Depending on type */
-  switch(i_type)
+  /* Dependig on type */
+  switch(sstStructure.astStorage[_eStructureID].eType)
   {
-    case STRUCTURE_KS32_TYPE_LIST:
-      /* Gets corresponding counter */
-      i_counter =  sal_list_counter[i_offset];
-      break;
+  case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
 
-    case STRUCTURE_KS32_TYPE_TREE:
-      /* Gets corresponding counter */
-      i_counter =  sal_tree_counter[i_offset];
-      break;
+    /* Gets counter */
+    u32Result = orxLinkList_GetCounter(&(sstStructure.astStorage[_eStructureID].stLinkList));
 
-    default:
-      /* !!! MSG !!! */
-      break;
+    break;
+
+  case orxSTRUCTURE_STORAGE_TYPE_TREE:
+
+    /* Gets counter */
+    u32Result = orxTree_GetCounter(&(sstStructure.astStorage[_eStructureID].stTree));
+
+    break;
+
+  default:
+
+    /* !!! MSG !!! */
+
+    break;
   }
 
-  return i_counter;
+  /* Done ! */
+  return u32Result;
 }
 
 /***************************************************************************
@@ -674,72 +323,80 @@ orxU32 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID)
+orxFASTCALL orxSTATUS orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID)
 {
-  orxS32 i_type, i_offset;
-  structure_st_list_cell *pst_list_cell = orxNULL;
-  structure_st_tree_cell *pst_tree_cell = orxNULL;
- 
-  /* Non null? */
-  if(_pstStructure != orxNULL)
+  orxREGISTER orxSTORAGE_NODE *pstNode;
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
+
+  /* Creates node */
+  pstNode = (orxSTORAGE_NODE *)orxBank_Allocate(sstStructure.astStorage[_eStructureID].pstBank);
+
+  /* Valid? */
+  if(pstNode != orxNULL)
   {
-    /* Gets type & offset */
-    structure_storage_info_get(_eStructureID, &i_type, &i_offset);
-
-    /* Depending on type */
-    switch(i_type)
+    /* Dependig on type */
+    switch(sstStructure.astStorage[_eStructureID].eType)
     {
-      case STRUCTURE_KS32_TYPE_LIST:
+    case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
 
-        /* Creates it */
-        pst_list_cell = structure_list_cell_create(_pstStructure);
+      /* Adds node to list */
+      eResult = orxLinkList_AddStart(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
 
-        /* Non null? */
-        if(pst_list_cell != orxNULL)
-        {
-          /* Adds cell to list */
-          structure_list_cell_add(pst_list_cell, i_offset);
-        }
-        else
-        {
-          /* !!! MSG !!! */
-          return orxSTATUS_FAILED;
-        }
+      break;
 
-        break;
+    case orxSTRUCTURE_STORAGE_TYPE_TREE:
 
-      case STRUCTURE_KS32_TYPE_TREE:
+      /* Adds node to tree */
+      eResult = orxTree_AddChild(orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree)), &(pstNode->stTreeNode));
 
-        /* Creates it */
-        pst_tree_cell = structure_tree_cell_create(_pstStructure);
+      break;
 
-        /* Non null? */
-        if(pst_tree_cell != orxNULL)
-        {
-          /* Adds cell to tree */
-          structure_tree_cell_add(pst_tree_cell, i_offset);
-        }
-        else
-        {
-          /* !!! MSG !!! */
-          return orxSTATUS_FAILED;
-        }
+    default:
 
-        break;
+      /* !!! MSG !!! */
 
-      default:
-        /* !!! MSG !!! */
-	      return orxSTATUS_FAILED;
+      /* Wrong type */
+      eResult = orxSTATUS_FAILED;
     }
+    
+    /* Succesful? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      /* Cleans reference counter */
+      _pstStructure->u32RefCounter = 0;
 
-    /* Cleans reference counter */
-    _pstStructure->u32RefCounter = 0;
+      /* Stores ID */
+      _pstStructure->eID = _eStructureID;
+      
+      /* Stores storage handle */
+      _pstStructure->hStorageNode = (orxHANDLE)pstNode;
+      
+      /* Stores structure pointer */
+      pstNode->pstStructure = _pstStructure;
+    }
+    else
+    {
+      /* !!! MSG !!! */
 
-    /* Stores ID */
-    _pstStructure->eID = _eStructureID;
+      /* Frees allocated node */
+      orxBank_Free(sstStructure.astStorage[_eStructureID].pstBank, pstNode);
+    }        
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Not allocated */
+    eResult = orxSTATUS_FAILED;
   }
 
-  return orxSTATUS_SUCCESS;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************
@@ -748,164 +405,54 @@ orxSTATUS orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStru
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxStructure_Clean(orxSTRUCTURE *_pstStructure)
+orxFASTCALL orxVOID orxStructure_Clean(orxSTRUCTURE *_pstStructure)
 {
-  orxS32 i_type, i_offset;
+  orxREGISTER orxSTORAGE_NODE *pstNode;
 
-  /* Non null? */
-  if(_pstStructure != orxNULL)
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
+
+  /* Gets storage node */
+  pstNode = (orxSTORAGE_NODE *)_pstStructure->hStorageNode;
+
+  /* Valid? */
+  if(pstNode != orxNULL)
   {
-    /* Gets type & offset */
-    structure_storage_info_get(_pstStructure->eID, &i_type, &i_offset);
-
-    /* Depending on type */
-    switch(i_type)
+    /* Dependig on type */
+    switch(sstStructure.astStorage[_pstStructure->eID].eType)
     {
-      case STRUCTURE_KS32_TYPE_LIST:
+    case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
 
-        /* Removes cell from list */
-        structure_list_cell_remove((structure_st_list_cell *)(_pstStructure->pstCell), i_offset);
+      /* Removes node from list */
+      orxLinkList_Remove(&(pstNode->stLinkListNode));
 
-        /* Deletes it */
-        structure_list_cell_delete((structure_st_list_cell *)(_pstStructure->pstCell));
+    break;
 
-        break;
+    case orxSTRUCTURE_STORAGE_TYPE_TREE:
 
-      case STRUCTURE_KS32_TYPE_TREE:
-  
-        /* Removes cell from tree */
-        structure_tree_cell_remove((structure_st_tree_cell *)(_pstStructure->pstCell), i_offset);
+      /* Removes node from list */
+      orxTree_Remove(&(pstNode->stTreeNode));
 
-        /* Deletes it */
-        structure_tree_cell_delete((structure_st_tree_cell *)(_pstStructure->pstCell));
-
-        break;
+    break;
 
       default:
         /* !!! MSG !!! */
         break;
     }
 
-    /* Cleans ID */
+    /* Deletes it */
+    orxBank_Free(sstStructure.astStorage[_pstStructure->eID].pstBank, pstNode);
+
+    /* Cleans structure ID */
     _pstStructure->eID = orxSTRUCTURE_ID_NONE;
   }
-
-  return;
-}
-
-/***************************************************************************
- orxStructure_GetFirst
- Gets first stored structure (first list cell or tree root depending on storage type).
-
- returns: first structure
- ***************************************************************************/
-orxSTRUCTURE *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
-{
-  orxSTRUCTURE *pstStructure = orxNULL;
-  orxS32 i_type, i_offset;
-
-  /* Gets type & offset */
-  structure_storage_info_get(_eStructureID, &i_type, &i_offset);
-
-  /* Depending on type */
-  switch(i_type)
-  {
-    case STRUCTURE_KS32_TYPE_LIST:
-      /* Non null? */
-      if(spast_list[i_offset] != orxNULL)
-      {
-        pstStructure = (spast_list[i_offset])->pstStructure;
-      }
-      break;
-
-    case STRUCTURE_KS32_TYPE_TREE:
-      /* Non null? */
-      if(spast_tree[i_offset] != orxNULL)
-      {
-        pstStructure = (spast_tree[i_offset])->pstStructure;
-      }
-      break;
-
-    default:
-      /* !!! MSG !!! */
-      return orxNULL;
-  }
-
-  return pstStructure;
-}
-
-/***************************************************************************
- orxStructure_IncreaseCounter
- Increases a structure reference counter.
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
-{
-  /* Non null? */
-  if(_pstStructure != orxNULL)
-  {
-    /* Updates reference counter */
-    _pstStructure->u32RefCounter++;
-  }
-
-  return;
-}
-
-/***************************************************************************
- orxStructure_DecreaseCounter
- Decreases a structure reference counter.
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
-{
-  /* Non null? */
-  if(_pstStructure != orxNULL)
-  {
-    /* Updates reference counter */
-    _pstStructure->u32RefCounter--;
-  }
-
-  return;
-}
-
-/***************************************************************************
- orxStructure_GetCounter
- Gets a structure reference counter.
-
- returns: counter
- ***************************************************************************/
-orxU32 orxStructure_GetCounter(orxSTRUCTURE *_pstStructure)
-{
-  /* Non null? */
-  if(_pstStructure != orxNULL)
-  {
-    return(_pstStructure->u32RefCounter);
-  }
   else
   {
-    return 0;
+    /* !!! MSG !!! */
   }
-}
 
-/***************************************************************************
- orxStructure_GetID
- Gets structure ID.
-
- returns: ID
- ***************************************************************************/
-orxSTRUCTURE_ID orxStructure_GetID(orxSTRUCTURE *_pstStructure)
-{
-  /* Non null? */
-  if(_pstStructure != orxNULL)
-  {
-    return(_pstStructure->eID);
-  }
-  else
-  {
-    return orxSTRUCTURE_ID_NONE;
-  }
+  return;
 }
 
 
@@ -913,27 +460,102 @@ orxSTRUCTURE_ID orxStructure_GetID(orxSTRUCTURE *_pstStructure)
 
 
 /***************************************************************************
+ orxStructure_GetFirst
+ Gets first stored structure (first list cell or tree root depending on storage type).
+
+ returns: first structure
+ ***************************************************************************/
+orxFASTCALL orxSTRUCTURE *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
+{
+  orxREGISTER orxSTORAGE_NODE *pstNode;
+  orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
+
+  /* Depending on type */
+  switch(sstStructure.astStorage[_eStructureID].eType)
+  {
+  case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+
+    /* Gets node from list */
+    pstNode = (orxSTORAGE_NODE *)orxLinkList_GetFirst(&(sstStructure.astStorage[_eStructureID].stLinkList));
+
+    break;
+
+  case orxSTRUCTURE_STORAGE_TYPE_TREE:
+
+    /* Gets node from tree */
+    pstNode = (orxSTORAGE_NODE *)orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree));
+
+    break;
+
+  default:
+
+    /* !!! MSG !!! */
+
+    /* No node found */
+    pstNode = orxNULL;
+  }
+
+  /* Node found? */
+  if(pstNode != orxNULL)
+  {
+    /* Gets associated structure */
+    pstStructure = pstNode->pstStructure;
+  }
+
+  /* Done! */
+  return pstStructure;
+}
+
+/***************************************************************************
  orxStructure_GetParent
  Structure tree parent get accessor.
 
  returns: parent
  ***************************************************************************/
-orxSTRUCTURE *orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
+orxFASTCALL orxSTRUCTURE *orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
 {
-  structure_st_tree_cell *pstCell;
+  orxREGISTER orxSTORAGE_NODE *pstNode;
+  orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
-  /* Gets parent cell */
-  pstCell = ((structure_st_tree_cell *)(_pstStructure->pstCell))->pstParent;
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
 
-  /* Non null? */
-  if(pstCell != orxNULL)
+  /* Gets node */
+  pstNode = (orxSTORAGE_NODE *)_pstStructure->hStorageNode;
+
+  /* Valid? */
+  if(pstNode != orxNULL)
   {
-    return pstCell->pstStructure;
+    /* Is storate type correct? */
+    if(pstNode->eType == orxSTRUCTURE_STORAGE_TYPE_TREE)
+    {
+      /* Gets parent node */
+      pstNode = (orxSTORAGE_NODE *)orxTree_GetParent(&(pstNode->stTreeNode));
+
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        /* Gets structure */
+        pstStructure = pstNode->pstStructure;
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
   else
   {
-    return orxNULL;
+    /* !!! MSG !!! */
   }
+
+  /* Done! */
+  return pstStructure;
 }
 
 /***************************************************************************
@@ -942,22 +564,46 @@ orxSTRUCTURE *orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
 
  returns: child
  ***************************************************************************/
-orxSTRUCTURE *orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
+orxFASTCALL orxSTRUCTURE *orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
 {
-  structure_st_tree_cell *pstCell;
+  orxREGISTER orxSTORAGE_NODE *pstNode;
+  orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
-  /* Gets child cell */
-  pstCell = ((structure_st_tree_cell *)(_pstStructure->pstCell))->pst_child;
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
 
-  /* Non null? */
-  if(pstCell != orxNULL)
+  /* Gets node */
+  pstNode = (orxSTORAGE_NODE *)_pstStructure->hStorageNode;
+
+  /* Valid? */
+  if(pstNode != orxNULL)
   {
-    return pstCell->pstStructure;
+    /* Is storate type correct? */
+    if(pstNode->eType == orxSTRUCTURE_STORAGE_TYPE_TREE)
+    {
+      /* Gets child node */
+      pstNode = (orxSTORAGE_NODE *)orxTree_GetChild(&(pstNode->stTreeNode));
+
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        /* Gets structure */
+        pstStructure = pstNode->pstStructure;
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
   else
   {
-    return orxNULL;
+    /* !!! MSG !!! */
   }
+
+  /* Done! */
+  return pstStructure;
 }
 
 /***************************************************************************
@@ -966,48 +612,47 @@ orxSTRUCTURE *orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
 
  returns: left sibling
  ***************************************************************************/
-orxSTRUCTURE *orxStructure_GetLeftSibling(orxSTRUCTURE *_pstStructure)
+orxFASTCALL orxSTRUCTURE *orxStructure_GetSibling(orxSTRUCTURE *_pstStructure)
 {
-  structure_st_tree_cell *pstCell;
+  orxREGISTER orxSTORAGE_NODE *pstNode;
+  orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
-  /* Gets left sibling cell */
-  pstCell = ((structure_st_tree_cell *)(_pstStructure->pstCell))->pst_left_sibling;
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
 
-  /* Non null? */
-  if(pstCell != orxNULL)
+  /* Gets node */
+  pstNode = (orxSTORAGE_NODE *)_pstStructure->hStorageNode;
+
+  /* Valid? */
+  if(pstNode != orxNULL)
   {
-    return pstCell->pstStructure;
+    /* Is storate type correct? */
+    if(pstNode->eType == orxSTRUCTURE_STORAGE_TYPE_TREE)
+    {
+      /* Gets sibling node */
+      pstNode = (orxSTORAGE_NODE *)orxTree_GetSibling(&(pstNode->stTreeNode));
+
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        /* Gets structure */
+        pstStructure = pstNode->pstStructure;
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
   else
   {
-    return orxNULL;
+    /* !!! MSG !!! */
   }
+
+  /* Done! */
+  return pstStructure;
 }
-
-/***************************************************************************
- orxStructure_GetRightSibling
- Structure tree right sibling get accessor.
-
- returns: right sibling
- ***************************************************************************/
-orxSTRUCTURE *orxStructure_GetRightSibling(orxSTRUCTURE *_pstStructure)
-{
-  structure_st_tree_cell *pstCell;
-
-  /* Gets right sibling cell */
-  pstCell = ((structure_st_tree_cell *)(_pstStructure->pstCell))->pst_right_sibling;
-
-  /* Non null? */
-  if(pstCell != orxNULL)
-  {
-    return pstCell->pstStructure;
-  }
-  else
-  {
-    return orxNULL;
-  }
-}
-
 
 /***************************************************************************
  orxStructure_GetPrevious
@@ -1015,22 +660,46 @@ orxSTRUCTURE *orxStructure_GetRightSibling(orxSTRUCTURE *_pstStructure)
 
  returns: previous
  ***************************************************************************/
-orxSTRUCTURE *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
+orxFASTCALL orxSTRUCTURE *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
 {
-  structure_st_list_cell *pstCell;
+  orxREGISTER orxSTORAGE_NODE *pstNode;
+  orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
-  /* Gets previous cell */
-  pstCell = ((structure_st_list_cell *)(_pstStructure->pstCell))->pstPrevious;
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
 
-  /* Non null? */
-  if(pstCell != orxNULL)
+  /* Gets node */
+  pstNode = (orxSTORAGE_NODE *)_pstStructure->hStorageNode;
+
+  /* Valid? */
+  if(pstNode != orxNULL)
   {
-    return pstCell->pstStructure;
+    /* Is storate type correct? */
+    if(pstNode->eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST)
+    {
+      /* Gets previous node */
+      pstNode = (orxSTORAGE_NODE *)orxLinkList_GetPrevious(&(pstNode->stLinkListNode));
+
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        /* Gets structure */
+        pstStructure = pstNode->pstStructure;
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
   else
   {
-    return orxNULL;
+    /* !!! MSG !!! */
   }
+
+  /* Done! */
+  return pstStructure;
 }
 
 /***************************************************************************
@@ -1039,22 +708,46 @@ orxSTRUCTURE *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
 
  returns: next
  ***************************************************************************/
-orxSTRUCTURE *orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
+orxFASTCALL orxSTRUCTURE *orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
 {
-  structure_st_list_cell *pstCell;
+  orxREGISTER orxSTORAGE_NODE *pstNode;
+  orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
-  /* Gets next cell */
-  pstCell = ((structure_st_list_cell *)(_pstStructure->pstCell))->pstNext;
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
 
-  /* Non null? */
-  if(pstCell != orxNULL)
+  /* Gets node */
+  pstNode = (orxSTORAGE_NODE *)_pstStructure->hStorageNode;
+
+  /* Valid? */
+  if(pstNode != orxNULL)
   {
-    return pstCell->pstStructure;
+    /* Is storate type correct? */
+    if(pstNode->eType == orxSTRUCTURE_STORAGE_TYPE_LINKLIST)
+    {
+      /* Gets next node */
+      pstNode = (orxSTORAGE_NODE *)orxLinkList_GetNext(&(pstNode->stLinkListNode));
+
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        /* Gets structure */
+        pstStructure = pstNode->pstStructure;
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
   else
   {
-    return orxNULL;
+    /* !!! MSG !!! */
   }
+
+  /* Done! */
+  return pstStructure;
 }
 
 /***************************************************************************
@@ -1063,15 +756,45 @@ orxSTRUCTURE *orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent)
+orxFASTCALL orxSTATUS orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent)
 {
-  orxS32 i_type, i_offset;
+  orxREGISTER orxSTORAGE_NODE *pstNode, *pstParentNode;
+  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Gets storage type & offset */
-  structure_storage_info_get(_pstStructure->eID, &i_type, &i_offset);
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
+  orxASSERT(_pstParent != orxNULL);
 
-  /* Moves cell */
-  structure_tree_cell_move((structure_st_tree_cell *)(_pstStructure->pstCell), (structure_st_tree_cell *)(_pstParent->pstCell), i_offset);
+  /* Gets nodes */
+  pstNode       = (orxSTORAGE_NODE *)_pstStructure->hStorageNode;
+  pstParentNode = (orxSTORAGE_NODE *)_pstParent->hStorageNode;
 
-  return;
+  /* Valid? */
+  if((pstNode != orxNULL) && (pstParentNode != orxNULL))
+  {
+    /* Is storate type correct? */
+    if(pstNode->eType == orxSTRUCTURE_STORAGE_TYPE_TREE)
+    {
+      /* Moves it */
+      eResult = orxTree_MoveAsChild(&(pstParentNode->stTreeNode), &(pstNode->stTreeNode));
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Not done */
+      eResult = orxSTATUS_FAILED;
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Not done */
+    eResult = orxSTATUS_FAILED;
+  }
+
+  /* Done! */
+  return eResult;
 }

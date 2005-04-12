@@ -480,7 +480,7 @@ orxVOID orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, or
     if(_bRecursed)
     {
       /* Updates siblings status */
-      orxFrame_SetFlagRecursively((orxFRAME *)orxStructure_GetRightSibling((orxSTRUCTURE *)_pstFrame), _u32AddFlags, _u32RemoveFlags, orxTRUE);
+      orxFrame_SetFlagRecursively((orxFRAME *)orxStructure_GetSibling((orxSTRUCTURE *)_pstFrame), _u32AddFlags, _u32RemoveFlags, orxTRUE);
     }
 
     /* Updates cell flags */

@@ -138,7 +138,7 @@ orxBANK_SEGMENT *orxBank_SegmentCreate(orxBANK *_pstBank)
 /** Free a segment of memory (and recursivly all next segments)
  * @param _pstSegment   (IN)  Allocated segment of memory
  */
-orxVOID orxBank_SegmentDestroy(orxBANK_SEGMENT *_pstSegment)
+orxVOID orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
 {
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
@@ -150,7 +150,7 @@ orxVOID orxBank_SegmentDestroy(orxBANK_SEGMENT *_pstSegment)
   if (_pstSegment->pstNext != orxNULL)
   {
     /* Yes, free it */
-    orxBank_SegmentDestroy(_pstSegment->pstNext);
+    orxBank_SegmentDelete(_pstSegment->pstNext);
   }
 
   /* Free the current segment */
@@ -319,7 +319,7 @@ orxBANK *orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, or
 /** Free a portion of memory allocated with orxMemory_Allocate
  * @param _pstBank    (IN)  Pointer on the memory bank allocated by orx
  */
-orxVOID orxBank_Destroy(orxBANK *_pstBank)
+orxVOID orxBank_Delete(orxBANK *_pstBank)
 {
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
@@ -327,8 +327,8 @@ orxVOID orxBank_Destroy(orxBANK *_pstBank)
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
   
-  /* Destroy segment(s) (This segment is the first one, it can't be orxNULL) */
-  orxBank_SegmentDestroy(_pstBank->pstFirstSegment);
+  /* Delete segment(s) (This segment is the first one, it can't be orxNULL) */
+  orxBank_SegmentDelete(_pstBank->pstFirstSegment);
   
   /* Completly Free Bank */
   orxMemory_Free(_pstBank);

@@ -35,9 +35,10 @@
 
 #include "orxInclude.h"
 
+#include "debug/orxDebug.h"
 
-/* *** Structure IDs. *** */
 
+/** Structure IDs. */
 typedef enum __orxSTRUCTURE_ID_t
 {
   orxSTRUCTURE_ID_OBJECT = 0,
@@ -57,11 +58,19 @@ typedef enum __orxSTRUCTURE_ID_t
 
 } orxSTRUCTURE_ID;
 
+/** Structure storage types. */
+typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
+{
+  orxSTRUCTURE_STORAGE_TYPE_LINKLIST = 0,
+  orxSTRUCTURE_STORAGE_TYPE_TREE,
 
-/** Internal storage cell structure. */
-typedef orxVOID                      *orxSTRUCTURE_CELL;
+  orxSTRUCTURE_STORAGE_TYPE_NUMBER,
 
-/** Public struct structure (Must be first structure member!).*/
+  orxSTRUCTURE_STORAGE_TYPE_NONE = 0xFFFFFFFF,
+
+} orxSTRUCTURE_STORAGE_TYPE;
+
+/** Public struct structure (Must be first structure member!). */
 typedef struct __orxSTRUCTURE_t
 {
   /* Structure ID. : 4 */
@@ -70,8 +79,8 @@ typedef struct __orxSTRUCTURE_t
   /* Reference counter. : 8 */
   orxU32 u32RefCounter;
 
-  /* Pointer to storage cell. : 12 */
-  orxSTRUCTURE_CELL *pstCell;
+  /* Handle of internal storage node. : 12 */
+  orxHANDLE hStorageNode;
 
   /* 4 extra bytes of padding : 16 */
   orxU8 au8Unused[4];
@@ -84,42 +93,86 @@ extern orxSTATUS                      orxStructure_Init();
 extern orxVOID                        orxStructure_Exit();
 
 /** Inits a structure with given type. */
-extern orxSTATUS                      orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID);
+extern orxFASTCALL  orxSTATUS         orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID);
 /** Cleans a structure. */
-extern orxVOID                        orxStructure_Clean(orxSTRUCTURE *_pstStructure);
-
-/** Increase structure reference counter. */
-extern orxVOID                        orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure);
-/** Decrease structure reference counter. */
-extern orxVOID                        orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure);
-/** Gets structure reference counter. */
-extern orxU32                         orxStructure_GetCounter(orxSTRUCTURE *_pstStructure);
-/** Gets structure ID. */
-extern orxSTRUCTURE_ID                orxStructure_GetID(orxSTRUCTURE *_pstStructure);
+extern orxFASTCALL  orxVOID           orxStructure_Clean(orxSTRUCTURE *_pstStructure);
 
 /** Gets given type structure number. */
-extern orxU32                         orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID);
+extern orxFASTCALL  orxU32            orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID);
+
+/** Gets structure storage type. */
+extern orxFASTCALL orxSTRUCTURE_STORAGE_TYPE orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID);
+
+
+/** *** Structure storage accessors *** */
+
+
 /** Gets first stored structure (first list cell or tree root depending on storage type). */
-extern orxSTRUCTURE                  *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID);
-
-
-/** *** Structure accessors *** */
+extern orxFASTCALL  orxSTRUCTURE     *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID);
 
 /** Structure tree parent get accessor. */
-extern orxSTRUCTURE                  *orxStructure_GetParent(orxSTRUCTURE *_pstStructure);
+extern orxFASTCALL  orxSTRUCTURE     *orxStructure_GetParent(orxSTRUCTURE *_pstStructure);
 /** Structure tree child get accessor. */
-extern orxSTRUCTURE                  *orxStructure_GetChild(orxSTRUCTURE *_pstStructure);
-/** Structure tree left sibling get accessor. */
-extern orxSTRUCTURE                  *orxStructure_GetLeftSibling(orxSTRUCTURE *_pstStructure);
-/** Structure tree right sibling get accessor. */
-extern orxSTRUCTURE                  *orxStructure_GetRightSibling(orxSTRUCTURE *_pstStructure);
+extern orxFASTCALL  orxSTRUCTURE     *orxStructure_GetChild(orxSTRUCTURE *_pstStructure);
+/** Structure tree sibling get accessor. */
+extern orxFASTCALL  orxSTRUCTURE     *orxStructure_GetSibling(orxSTRUCTURE *_pstStructure);
 /** Structure list previous get accessor. */
-extern orxSTRUCTURE                  *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure);
+
+extern orxFASTCALL  orxSTRUCTURE     *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure);
 /** Structure list next get accessor. */
-extern orxSTRUCTURE                  *orxStructure_GetNext(orxSTRUCTURE *_pstStructure);
+extern orxFASTCALL  orxSTRUCTURE     *orxStructure_GetNext(orxSTRUCTURE *_pstStructure);
 
 /** Structure tree parent set accessor. */
-extern orxVOID                        orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent);
+extern orxFASTCALL  orxSTATUS         orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent);
+
+
+/** *** Inlined structure accessors *** */
+
+
+/** Increases structure reference counter. */
+extern orxINLINE    orxVOID           orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
+{
+  /* Checks */
+  orxASSERT(_pstStructure != orxNULL);
+
+  /* Increases it */
+  _pstStructure->u32RefCounter++;
+
+  return;
+}
+
+/** Decreases structure reference counter. */
+extern orxINLINE    orxVOID           orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
+{
+  /* Checks */
+  orxASSERT(_pstStructure != orxNULL);
+  orxASSERT(_pstStructure->u32RefCounter > 0);
+
+  /* Decreases it */
+  _pstStructure->u32RefCounter--;
+
+  return;
+}
+
+/** Gets structure reference counter. */
+extern orxINLINE    orxU32            orxStructure_GetRefCounter(orxSTRUCTURE *_pstStructure)
+{
+  /* Checks */
+  orxASSERT(_pstStructure != orxNULL);
+
+  /* Returns it */
+  return(_pstStructure->u32RefCounter);
+}
+
+/** Gets structure ID. */
+extern orxINLINE    orxSTRUCTURE_ID   orxStructure_GetID(orxSTRUCTURE *_pstStructure)
+{
+  /* Checks */
+  orxASSERT(_pstStructure != orxNULL);
+
+  /* Returns it */
+  return(_pstStructure->eID);
+}
 
 
 #endif /* _orxSTRUCTURE_H_ */
