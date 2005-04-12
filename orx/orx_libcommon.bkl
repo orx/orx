@@ -36,8 +36,11 @@
         <if cond="BUILD=='release'"></if>
     </set>
 
+    <!-- Set the build directory for each BUILD type. (Will be the same name as the build type) -->
+    <set var="orxBUILDDIR">build$(DIRSEP)$(BUILD)</set>
 
-  <set var="BUILDDIR">./lib</set>
+
+  <set var="BUILDDIR">.$(DIRSEP)$(orxBUILDDIR)</set>
 
     <!-- Set a template (common properties) to use with all orx target. -->
     <template id="orxBASE">
@@ -49,7 +52,7 @@
         <define>$(orxPLATFORM)</define>
         
         <!-- Global include directory. -->
-            <include>include</include>
+        <include>include</include>
     </template>
 
 
