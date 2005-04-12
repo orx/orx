@@ -66,4 +66,56 @@ extern orxSTATUS orxTest_Execute(orxHANDLE _hRegisteredFunc);
  */
 extern orxVOID orxTest_DisplayMenu();
 
+/* Define test module registration MACRO (entry point of dynamic library) */
+#ifdef LINUX
+
+#define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)    \
+void __attribute__ ((constructor)) module_init()  \
+{                                                 \
+  INIT();                                         \
+}                                                 \
+void __attribute__ ((constructor)) module_exit()  \
+{                                                 \
+  EXIT();                                         \
+}
+
+#else
+  #ifdef WINDOWS
+  
+  #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)            \
+  BOOL WINAPI DllMain(                                      \
+    HINSTANCE hinstDLL,  /* handle to DLL module */         \
+    DWORD dwReason,      /* reason for calling function */  \
+    LPVOID lpReserved )  /* reserved */                     \
+  {                                                         \
+    /* Perform actions based on the reason for calling. */  \
+    switch(dwReason)                                        \
+    {                                                       \
+      case DLL_PROCESS_ATTACH:                              \
+        /* Initialize once for each new process. */         \
+        INIT();                                             \
+        break;                                              \
+                                                            \
+      case DLL_THREAD_ATTACH:                               \
+        /* Do thread-specific initialization. */            \
+        break;                                              \
+                                                            \
+      case DLL_THREAD_DETACH:                               \
+        /* Do thread-specific cleanup. */                   \
+        break;                                              \
+                                                            \
+      case DLL_PROCESS_DETACH:                              \
+        /* Perform any necessary cleanup. */                \
+        EXIT();                                             \
+        break;                                              \
+    }                                                       \
+    return TRUE;  /* Successful DLL_PROCESS_ATTACH. */      \
+}
+  #else
+    #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)
+    #warning orxTEST Module can't be compiled on this platform, Entry points not defined
+  #endif
+#endif
+
+
 #endif /* _orxTEST_H_ */

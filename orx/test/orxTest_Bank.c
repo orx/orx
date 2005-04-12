@@ -28,6 +28,9 @@
 #include "orxInclude.h"
 #include "utils/orxTest.h"
 
+/******************************************************
+ * TEST FUNCTIONS
+ ******************************************************/
 orxVOID orxTest_Bank_Create()
 {
   printf("plop1\n");
@@ -38,8 +41,23 @@ orxVOID orxTest_Bank_Destroy()
   printf("plop2\n");
 }
 
-orxVOID orxTest_StartRegister()
+/******************************************************
+ * DYNAMIC LIBRARY ENTRY POINTS
+ ******************************************************/
+orxVOID orxTest_Bank_Init()
 {
+  /* Initialize bank module */
+  orxBank_Init();
+  
+  /* Register test functions */
   orxTest_Register("Bank", "Create a bank of memory", orxTest_Bank_Create);
   orxTest_Register("Bank", "Destroy a bank of memory", orxTest_Bank_Destroy);
 }
+
+orxVOID orxTest_Bank_Exit()
+{
+  /* Uninitialize module */
+  orxBank_Exit();
+}
+
+orxTEST_DEFINE_ENTRY_POINT(orxTest_Bank_Init, orxTest_Bank_Exit)
