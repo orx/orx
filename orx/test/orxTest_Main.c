@@ -129,7 +129,7 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
         else
         {
           /* Store lib handle in a new portion of memory (and increase counter)*/
-          sstTestMain.phLibrary = (orxHANDLE *)realloc(sstTestMain.phLibrary, (sstTestMain.u32NbLibrary + 1) * sizeof(orxHANDLE);
+          sstTestMain.phLibrary = (orxHANDLE *)realloc(sstTestMain.phLibrary, (sstTestMain.u32NbLibrary + 1) * sizeof(orxHANDLE));
           sstTestMain.phLibrary[sstTestMain.u32NbLibrary] = (orxHANDLE)pHandle;
           sstTestMain.u32NbLibrary++;
         }
