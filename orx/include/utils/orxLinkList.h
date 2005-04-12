@@ -93,7 +93,7 @@ extern orxSTATUS                      orxLinkList_Remove(orxLINKLIST_NODE *_pstN
 
 
 /** Gets a node list. */
-extern orxINLINE  orxLINKLIST        *orxLinkList_GetList(orxLINKLIST_NODE *_pstNode)
+orxSTATIC orxINLINE orxLINKLIST      *orxLinkList_GetList(orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -103,7 +103,7 @@ extern orxINLINE  orxLINKLIST        *orxLinkList_GetList(orxLINKLIST_NODE *_pst
 }
 
 /** Gets a node previous. */
-extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetPrevious(orxLINKLIST_NODE *_pstNode)
+orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetPrevious(orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -113,7 +113,7 @@ extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetPrevious(orxLINKLIST_NODE *
 }
 
 /** Gets a node next. */
-extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetNext(orxLINKLIST_NODE *_pstNode)
+orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetNext(orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -124,7 +124,7 @@ extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetNext(orxLINKLIST_NODE *_pst
 
 
 /** Gets a list first node. */
-extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetFirst(orxLINKLIST *_pstList)
+orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetFirst(orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -134,7 +134,7 @@ extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetFirst(orxLINKLIST *_pstList
 }
 
 /** Gets a list last node. */
-extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetLast(orxLINKLIST *_pstList)
+orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetLast(orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -144,7 +144,7 @@ extern orxINLINE  orxLINKLIST_NODE   *orxLinkList_GetLast(orxLINKLIST *_pstList)
 }
 
 /** Gets a list counter. */
-extern orxINLINE  orxU32              orxLinkList_GetCounter(orxLINKLIST *_pstList)
+orxSTATIC orxINLINE orxU32            orxLinkList_GetCounter(orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);

@@ -133,7 +133,7 @@ extern orxFASTCALL  orxSTATUS         orxStructure_SetParent(orxSTRUCTURE *_pstS
 
 
 /** Increases structure reference counter. */
-extern orxINLINE    orxVOID           orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxVOID           orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -145,7 +145,7 @@ extern orxINLINE    orxVOID           orxStructure_IncreaseCounter(orxSTRUCTURE 
 }
 
 /** Decreases structure reference counter. */
-extern orxINLINE    orxVOID           orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxVOID           orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -158,7 +158,7 @@ extern orxINLINE    orxVOID           orxStructure_DecreaseCounter(orxSTRUCTURE 
 }
 
 /** Gets structure reference counter. */
-extern orxINLINE    orxU32            orxStructure_GetRefCounter(orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxU32            orxStructure_GetRefCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -168,7 +168,7 @@ extern orxINLINE    orxU32            orxStructure_GetRefCounter(orxSTRUCTURE *_
 }
 
 /** Gets structure ID. */
-extern orxINLINE    orxSTRUCTURE_ID   orxStructure_GetID(orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxSTRUCTURE_ID   orxStructure_GetID(orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);

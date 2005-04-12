@@ -96,7 +96,7 @@ extern orxSTATUS                      orxTree_MoveAsChild(orxTREE_NODE *_pstRefN
 
 
 /** Gets a node tree. */
-extern orxINLINE  orxTREE            *orxTree_GetTree(orxTREE_NODE *_pstNode)
+orxSTATIC orxINLINE orxTREE          *orxTree_GetTree(orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -106,7 +106,7 @@ extern orxINLINE  orxTREE            *orxTree_GetTree(orxTREE_NODE *_pstNode)
 }
 
 /** Gets a node parent. */
-extern orxINLINE  orxTREE_NODE       *orxTree_GetParent(orxTREE_NODE *_pstNode)
+orxSTATIC orxINLINE orxTREE_NODE     *orxTree_GetParent(orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -116,7 +116,7 @@ extern orxINLINE  orxTREE_NODE       *orxTree_GetParent(orxTREE_NODE *_pstNode)
 }
 
 /** Gets a node first child. */
-extern orxINLINE  orxTREE_NODE       *orxTree_GetChild(orxTREE_NODE *_pstNode)
+orxSTATIC orxINLINE orxTREE_NODE     *orxTree_GetChild(orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -126,7 +126,7 @@ extern orxINLINE  orxTREE_NODE       *orxTree_GetChild(orxTREE_NODE *_pstNode)
 }
 
 /** Gets a node sibling. */
-extern orxINLINE  orxTREE_NODE       *orxTree_GetSibling(orxTREE_NODE *_pstNode)
+orxSTATIC orxINLINE orxTREE_NODE     *orxTree_GetSibling(orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -137,7 +137,7 @@ extern orxINLINE  orxTREE_NODE       *orxTree_GetSibling(orxTREE_NODE *_pstNode)
 
 
 /** Gets a tree root. */
-extern orxINLINE  orxTREE_NODE       *orxTree_GetRoot(orxTREE *_pstTree)
+orxSTATIC orxINLINE orxTREE_NODE     *orxTree_GetRoot(orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);
@@ -147,7 +147,7 @@ extern orxINLINE  orxTREE_NODE       *orxTree_GetRoot(orxTREE *_pstTree)
 }
 
 /** Gets a tree counter. */
-extern orxINLINE  orxU32              orxTree_GetCounter(orxTREE *_pstTree)
+orxSTATIC orxINLINE orxU32            orxTree_GetCounter(orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);
