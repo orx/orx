@@ -8,7 +8,7 @@
   </set>
 
   <set var="orxLINKLIB">
-    <if cond="PLATFORM_UNIX=='1'">-ldl</if>
+    <if cond="PLATFORM_UNIX=='1'">dl</if>
     <if cond="PLATFORM_WIN32=='1'"></if>
   </set>
 
