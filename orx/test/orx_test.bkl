@@ -7,10 +7,15 @@
     <if cond="PLATFORM_WIN32=='1'"></if>
   </set>
 
+  <set var="orxLINKLIB">
+    <if cond="PLATFORM_UNIX=='1'">-ldl</if>
+    <if cond="PLATFORM_WIN32=='1'"></if>
+  </set>
+
   <!--- Create orx test dynamic library -->
   
   <dll id="memory" template="orxBASE">
-<dirname>bin/modules</dirname>
+    <dirname>bin/modules</dirname>
     <depends>orx</depends>
     <library>orx</library>
     <sources>test/orxTest_Memory.c</sources>
@@ -24,15 +29,15 @@
   </dll>
 
   <!--- Create main program -->
-  <exe id="main" template="orxBASE">
+  <exe id="testbed" template="orxBASE">
     <depends>orx</depends>
     <library>orx</library>
     <dirname>bin</dirname>
     <app-type>console</app-type> <!-- Windows specific : gui/console change the link behaviour -->
 
-    <sys-lib>dl</sys-lib>
+    <sys-lib>$(orxLINKLIB)</sys-lib>
     <ldflags>$(orxLINKFLAG)</ldflags>
     <sources>test/orxTest_Main.c</sources>
   </exe>
-  
+
 </bakefile>
