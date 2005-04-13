@@ -29,6 +29,12 @@
         <if cond="BUILD=='debug'">off</if>
         <if cond="BUILD=='release'">speed</if>
     </set>
+    <!-- Set the warning level. Max if debug and normal if release. -->
+    <set var="orxWARNINGFLAG">
+        <if cond="BUILD=='debug'">max</if>
+        <if cond="BUILD=='release'">default</if>
+    </set>
+    
     
     <!-- Set the suffix for target name. -->
     <set var="orxSUFFIX">
@@ -50,6 +56,8 @@
         <!-- Preprocessor definitions. -->
         <define>$(orxDEBUG)</define>
         <define>$(orxPLATFORM)</define>
+        <!-- Warning level. -->
+        <warnings>$(orxWARNINGFLAG)</warnings>
         
         <!-- Global include directory. -->
         <include>include</include>
