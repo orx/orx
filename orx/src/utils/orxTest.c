@@ -120,7 +120,7 @@ orxSTATUS orxTest_Init()
 
   /* Module ready */
   sstTest.u32Flags |= orxTEST_KU32_FLAG_READY;
-  
+    
   return orxSTATUS_SUCCESS;
 }
 
@@ -148,7 +148,7 @@ orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _
   
   /* Module initialized ? */
   orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
-  
+    
   /* Correct parameters ? */
   orxASSERT(_zModuleName != orxNULL);
   orxASSERT(_zMenuEntry != orxNULL);

@@ -10,7 +10,9 @@
  * @note This is why there is a test on the platform : For file enumeration and dynamic
  * @note library loading, platform specific function are used
  * 
- * @todo Test on windows.
+ * @todo WINDOWS : Find how to share static memory between exe and dll (link with -rdynamic on linux)
+ * @todo WINDOWS : dll directory hard coded (.\modules). Allow the user to give a
+ * @todo a list of dll directory (or file)
  */
  
  /***************************************************************************
@@ -52,7 +54,6 @@
 #else
   #ifdef WINDOWS
     #include <io.h>
-    #include <windows.h>
 
     /* Define the seperator character for directories */
     #define DIRSEP "\\"
@@ -146,7 +147,8 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
   
   struct _finddata_t stFile;  /* File datas infos */
   long lFile;                 /* File handle */
-  orxCHAR zPattern[512];      /* Create the lookup pattern (_zDirName/ *.dll) */
+  orxCHAR zPattern[512];      /* Create the lookup pattern (_zDirName\*.dll) */
+  orxCHAR zLibName[512];      /* Create the library name (dll*/
   HINSTANCE hLibrary;         /* Handle on the loaded library */
   
   /* Initialize Pattern*/
@@ -161,9 +163,12 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
     /* Find first .dll file in directory */
     if ((lFile = _findfirst(zPattern, &stFile)) != -1L)
     {
+      /* Create full lib name */
+      sprintf(zLibName, "%s\\%s", _zDirName, stFile.name);
+
       /* Get a handle to the DLL module. */
-      fprintf(stderr, " --> %s\n", stFile.name);
-      hLibrary = LoadLibrary(stFile.name);
+      fprintf(stderr, " --> %s\n", zLibName);
+      hLibrary = LoadLibrary(zLibName);
       
       /* Store lib handle in a new portion of memory (and increase counter)*/
       sstTestMain.phLibrary = (orxHANDLE *)malloc(sizeof(orxHANDLE));
@@ -173,9 +178,12 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
       /* Find the rest of the .c files */
       while (_findnext(lFile, &stFile) == 0)
       {
+        /* Create full lib name */
+        sprintf(zLibName, "%s\\%s", _zDirName, stFile.name);
+
         /* Get a handle to the DLL module. */
-        fprintf(stderr, " --> %s\n", stFile.name);
-        hLibrary = LoadLibrary(stFile.name);
+        fprintf(stderr, " --> %s\n", zLibName);
+        hLibrary = LoadLibrary(zLibName);
 
         /* Store lib handle in a new portion of memory (and increase counter)*/
         sstTestMain.phLibrary = (orxHANDLE *)realloc(sstTestMain.phLibrary, (sstTestMain.u32NbLibrary + 1) * sizeof(orxHANDLE));

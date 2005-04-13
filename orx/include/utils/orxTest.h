@@ -81,8 +81,9 @@ void __attribute__ ((constructor)) module_exit()  \
 
 #else
   #ifdef WINDOWS
-  
+
   #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)            \
+                                                            \
   BOOL WINAPI DllMain(                                      \
     HINSTANCE hinstDLL,  /* handle to DLL module */         \
     DWORD dwReason,      /* reason for calling function */  \
@@ -113,7 +114,7 @@ void __attribute__ ((constructor)) module_exit()  \
 }
   #else
     #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)
-    #warning orxTEST Module can't be compiled on this platform, Entry points not defined
+    #warning orxTEST Module can not be compiled on this platform, Entry points not defined
   #endif
 #endif
 
