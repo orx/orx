@@ -3,7 +3,7 @@
 
   <!-- Platform is detected by Bakefile... according to it's value, set Link FLAGS variable -->
   <set var="orxLINKFLAG">
-    <if cond="PLATFORM_UNIX=='1'">-rdynamic</if>
+    <if cond="PLATFORM_UNIX=='1'"><!---rdynamic-->-Wl,--export-dynamic</if> <!-- -rdynamic is linux specific... it can be replaced with linker command export-dynamic-->
     <if cond="PLATFORM_WIN32=='1'"></if>
   </set>
 
