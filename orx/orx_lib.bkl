@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <bakefile>
 
-  <include file="orx_libcommon.bkl"/>
-
   <!--- Create orx static library -->
   <lib id="orx" template="orxBASE">
     
@@ -71,11 +69,6 @@
         src/utils/utils.c
     </sources>
   </lib>
-
-
-
-  <!-- Include test bakefile. -->
-  <include file="test/orx_test.bkl"/>
 
 
 </bakefile>

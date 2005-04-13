@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- This bakefile is the root bakefile. 
+    It is usefull to easily modularize Orx creation. -->
+
+<bakefile>
+
+    <!-- Include common definitions. -->
+    <include file="orx_libcommon.bkl"/>
+    
+    <!-- Include Orx lib target definition. -->
+    <include file="orx_lib.bkl"/>
+    
+    <!-- Include test target definbitions. -->
+    <include file="orx_test.bkl"/>
+    
+</bakefile>
