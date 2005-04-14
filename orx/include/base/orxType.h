@@ -39,15 +39,6 @@
 /* Windows */
 #ifdef WINDOWS
 
-  #define orxFASTCALL         __fastcall
-
-  #define orxCONST            const
-  #define orxSTATIC           static
-  #define orxINLINE           inline
-  #define orxREGISTER         register
-
-  #define orxNULL             NULL
-    
   typedef void                orxVOID;
   
   typedef orxVOID            *orxHANDLE;
@@ -74,15 +65,6 @@
   /* Linux */
   #ifdef LINUX
       
-    #define orxFASTCALL
-    
-    #define orxCONST            const
-    #define orxSTATIC           static
-    #define orxINLINE           inline
-    #define orxREGISTER         register
-
-    #define orxNULL             NULL
-    
     typedef void                orxVOID;
   
     typedef orxVOID            *orxHANDLE;
