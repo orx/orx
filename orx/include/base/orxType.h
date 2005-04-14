@@ -34,6 +34,9 @@
 /* *** Uses standard defines *** */
 #include <stddef.h>
 
+/* *** Uses orx declarations *** */
+#include "base/orxDecl.h"
+
 /* *** Platform depedant base types */
 
 /* Windows */
