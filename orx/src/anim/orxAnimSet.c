@@ -1395,25 +1395,38 @@ orxANIM_SET *orxAnimSet_Create(orxU32 _u32Size)
  orxAnimSet_Delete
  Deletes an Animation Set.
 
- returns: orxVOID
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxVOID orxAnimSet_Delete(orxANIM_SET *_pstAnimset)
+orxSTATUS orxAnimSet_Delete(orxANIM_SET *_pstAnimset)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
   orxASSERT(_pstAnimset != orxNULL);
 
-  /* Cleans members */
-  orxAnimSet_RemoveAllAnims(_pstAnimset);
-  orxAnimSet_DeleteLinkTable(_pstAnimset->pstLinkTable);
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstAnimset) == 0)
+  {
+    /* Cleans members */
+    orxAnimSet_RemoveAllAnims(_pstAnimset);
+    orxAnimSet_DeleteLinkTable(_pstAnimset->pstLinkTable);
 
-  /* Cleans structure */
-  orxStructure_Clean((orxSTRUCTURE *)_pstAnimset);
+    /* Cleans structure */
+    orxStructure_Clean((orxSTRUCTURE *)_pstAnimset);
 
-  /* Frees animset memory */
-  orxMemory_Free(_pstAnimset);
+    /* Frees animset memory */
+    orxMemory_Free(_pstAnimset);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILED;
+  }
 
-  return;
+  return eResult;
 }
 
 /***************************************************************************

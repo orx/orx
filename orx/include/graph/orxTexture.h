@@ -1,9 +1,9 @@
 /** 
- * \file texture.h
+ * \file orxTexture.h
  * 
  * Texture Module.
  * Allows to creates and handle textures.
- * Textures are 2D structures used by objects.
+ * Textures are 2D structures.
  * They thus can be referenced by other structures.
  * 
  * \todo

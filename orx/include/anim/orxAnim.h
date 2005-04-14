@@ -60,7 +60,7 @@ extern orxVOID              orxAnim_Exit();
 /** Creates an empty Animation, given its id type and storage size (<= orxANIM_KS32_TEXTURE_MAX_NUMBER). */
 extern orxANIM             *orxAnim_Create(orxU32 _u32IDFlag, orxU32 _u32Size);
 /** Deletes an Animation. */
-extern orxVOID              orxAnim_Delete(orxANIM *_pstAnim);
+extern orxSTATUS            orxAnim_Delete(orxANIM *_pstAnim);
 
 /** Adds a texture to a 2D Animation. */
 extern orxSTATUS            orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstTexture, orxU32 _u32Time);

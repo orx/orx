@@ -65,7 +65,7 @@ extern orxVOID                                      orxAnimPointer_Exit();
 /** Creates an empty AnimationPointer, given its AnimationSet reference. */
 extern orxANIM_POINTER                             *orxAnimPointer_Create(orxANIM_SET *_pstAnimset);
 /** Deletes an AnimationPointer. */
-extern orxVOID                                      orxAnimPointer_Delete(orxANIM_POINTER *_pstAnimpointer);
+extern orxSTATUS                                    orxAnimPointer_Delete(orxANIM_POINTER *_pstAnimpointer);
 
 /** Gets the referenced Animation Set. */
 extern orxANIM_SET                                 *orxAnimPointer_GetAnimSet(orxANIM_POINTER *_pstAnimpointer);

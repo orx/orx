@@ -71,7 +71,7 @@ extern orxVOID                                  orxAnimSet_Exit();
 /** Creates an empty AnimationSet, given a storage size (<= orxANIMSET_KU32_MAX_ANIM_NUMBER). */
 extern orxANIM_SET                             *orxAnimSet_Create(orxU32 _u32Size);
 /** Deletes an AnimationSet. */
-extern orxVOID                                  orxAnimSet_Delete(orxANIM_SET *_pstAnimset);
+extern orxSTATUS                                orxAnimSet_Delete(orxANIM_SET *_pstAnimset);
 
 /** Adds a reference on an AnimationSet. */
 extern orxVOID                                  orxAnimSet_AddReference(orxANIM_SET *_pstAnimset);

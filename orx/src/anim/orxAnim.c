@@ -427,33 +427,47 @@ orxANIM *orxAnim_Create(orxU32 _u32IDFlag, orxU32 _u32Size)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxAnim_Delete(orxANIM *_pstAnim)
+orxSTATUS orxAnim_Delete(orxANIM *_pstAnim)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
 
-  /* Cleans members */
-
-  /* 2D Animation? */
-  if(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D))
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstAnim) == 0)
   {
-    /* Removes all textures */
-    orxAnim_RemoveAllTextures(_pstAnim);
+    /* Cleans members */
+
+    /* 2D Animation? */
+    if(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D))
+    {
+      /* Removes all textures */
+      orxAnim_RemoveAllTextures(_pstAnim);
+    }
+    /* Other Animation Type? */
+    else
+    {
+      /* !!! MSG !!! */
+    }
+
+    /* Cleans structure */
+    orxStructure_Clean((orxSTRUCTURE *)_pstAnim);
+
+    /* Frees anim memory */
+    orxMemory_Free(_pstAnim);
   }
-  /* Other Animation Type? */
   else
   {
     /* !!! MSG !!! */
+    
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Cleans structure */
-  orxStructure_Clean((orxSTRUCTURE *)_pstAnim);
-
-  /* Frees anim memory */
-  orxMemory_Free(_pstAnim);
-
-  return;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************

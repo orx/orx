@@ -292,35 +292,49 @@ orxANIM_POINTER *orxAnimPointer_Create(orxANIM_SET *_pstAnimset)
  orxAnimPointer_Delete
  Deletes an Animation Pointer.
 
- returns: orxVOID
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxVOID orxAnimPointer_Delete(orxANIM_POINTER *_pstAnimpointer)
+orxSTATUS orxAnimPointer_Delete(orxANIM_POINTER *_pstAnimpointer)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
   orxASSERT(_pstAnimpointer != orxNULL);
 
-  /* Has an animset? */
-  if(orxAnimPointer_TestFlag(_pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET) != orxFALSE)
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstAnimpointer) == 0)
   {
-    /* Removes the reference from the animset */
-    orxAnimSet_RemoveReference(_pstAnimpointer->pstAnimset);
+    /* Has an animset? */
+    if(orxAnimPointer_TestFlag(_pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET) != orxFALSE)
+    {
+      /* Removes the reference from the animset */
+      orxAnimSet_RemoveReference(_pstAnimpointer->pstAnimset);
+    }
+
+    /* Has a link table? */
+    if(orxAnimPointer_TestFlag(_pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_LINK_TABLE) != orxFALSE)
+    {
+      /* Deletes it */
+      orxAnimSet_DeleteLinkTable(_pstAnimpointer->pstLinkTable);
+    }
+
+    /* Cleans structure */
+    orxStructure_Clean((orxSTRUCTURE *)_pstAnimpointer);
+
+    /* Frees animpointer memory */
+    orxMemory_Free(_pstAnimpointer);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Has a link table? */
-  if(orxAnimPointer_TestFlag(_pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_LINK_TABLE) != orxFALSE)
-  {
-    /* Deletes it */
-    orxAnimSet_DeleteLinkTable(_pstAnimpointer->pstLinkTable);
-  }
-
-  /* Cleans structure */
-  orxStructure_Clean((orxSTRUCTURE *)_pstAnimpointer);
-
-  /* Frees animpointer memory */
-  orxMemory_Free(_pstAnimpointer);
-
-  return;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************
