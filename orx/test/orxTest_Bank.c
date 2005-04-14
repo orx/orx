@@ -27,6 +27,7 @@
 
 #include "orxInclude.h"
 #include "utils/orxTest.h"
+#include "memory/orxBank.h"
 
 /******************************************************
  * TEST FUNCTIONS
