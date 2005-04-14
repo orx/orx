@@ -82,6 +82,8 @@ void __attribute__ ((constructor)) module_exit()  \
 #else
   #ifdef WINDOWS
 
+  #include <windows.h>
+
   #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)            \
                                                             \
   BOOL WINAPI DllMain(                                      \

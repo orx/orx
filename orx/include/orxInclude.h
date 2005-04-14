@@ -29,6 +29,9 @@
  */
 
 
+/* *** Declarations include *** */
+#include "base/orxDecl.h"
+
 /* *** Types include *** */
 #include "base/orxType.h"
 

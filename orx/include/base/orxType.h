@@ -39,8 +39,6 @@
 /* Windows */
 #ifdef WINDOWS
 
-  #include <windows.h>
-
   #define orxFASTCALL         __fastcall
 
   #define orxCONST            const
