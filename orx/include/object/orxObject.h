@@ -64,6 +64,7 @@ extern orxVOID                        orxObject_UnlinkStructure(orxOBJECT *_pstO
 
 /* *** Object accessors *** */
 
+
 /** Structure used by an object get accessor, given its structure ID. Structure must be cast correctly. */
 extern orxSTRUCTURE                  *orxObject_GetStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 

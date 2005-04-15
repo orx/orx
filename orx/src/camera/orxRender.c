@@ -83,11 +83,11 @@ orxSTATIC orxRENDER_STATIC sstRender;
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATIC orxVOID orxRender_RenderObject(graph_st_bitmap *_pstSurface, orxOBJECT *_pstObject, orxFRAME *_pstFrame)
+orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pstObject, orxFRAME *_pstFrame)
 {
   graphic_st_graphic *pstGraphic;
   orxTEXTURE *pstTexture;
-  graph_st_bitmap *pstBitmap;
+  orxBITMAP *pstBitmap;
   orxVEC vPos;
   orxFLOAT fRotation, fScale;
   orxBOOL bAntialias = orxFALSE;
@@ -108,7 +108,7 @@ orxSTATIC orxVOID orxRender_RenderObject(graph_st_bitmap *_pstSurface, orxOBJECT
     pstTexture  = graphic_2d_data_get(pstGraphic);
 
     /* Gets texture's bitmap */
-    pstBitmap   = texture_bitmap_get(pstTexture);
+    pstBitmap   = orxTexture_GetBitmap(pstTexture);
 
     /* Gets antialiasing info */
     bAntialias  = graphic_flag_test(pstGraphic, GRAPHIC_KU32_ID_FLAG_ANTIALIAS);
@@ -293,7 +293,7 @@ orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
     {
       orxCAMERA *pstCamera;
       orxTEXTURE *pstSurface;
-      graph_st_bitmap *pstSurfaceBitmap;
+      orxBITMAP *pstSurfaceBitmap;
       orxVEC vPos, vSize;
 
       /* Gets viewport surface */
@@ -302,7 +302,7 @@ orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
       /* Has surface? */
       if(pstSurface != orxNULL)
       {
-        pstSurfaceBitmap = texture_bitmap_get(pstSurface);
+        pstSurfaceBitmap = orxTexture_GetBitmap(pstSurface);
       }
       /* Gets screen surface */
       else

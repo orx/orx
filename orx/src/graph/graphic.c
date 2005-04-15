@@ -489,7 +489,7 @@ orxVOID graphic_2d_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
   /* Data found? */
   if(pstTexture != orxNULL)
   {
-    texture_size_get(pstTexture, _pst_coord);
+    orxTexture_GetSize(pstTexture, _pst_coord);
   }
   else
   {
@@ -517,7 +517,7 @@ orxVOID graphic_2d_ref_coord_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_c
   /* Data found? */
   if(pstTexture != orxNULL)
   {
-      texture_ref_coord_get(pstTexture, _pst_coord);
+      orxTexture_GetRefPoint(pstTexture, _pst_coord);
   }
   else
   {
@@ -546,7 +546,7 @@ orxVOID graphic_2d_max_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_co
   /* Data found? */
   if(pstTexture != orxNULL)
   {
-    texture_size_get(pstTexture, _pst_coord);
+    orxTexture_GetSize(pstTexture, _pst_coord);
   }
   else
   {

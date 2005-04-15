@@ -64,25 +64,25 @@ orxVOID graph_plugin_init()
 PLUGIN_CORE_FUNCTION_DEFINE(graph_init, orxU32);
 PLUGIN_CORE_FUNCTION_DEFINE(graph_exit, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(graph_printf, orxVOID, graph_st_bitmap *, orxS32, orxS32, orxU32, orxCONST orxU8 *, ...);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_printf, orxVOID, orxBITMAP *, orxS32, orxS32, orxU32, orxCONST orxU8 *, ...);
 
-PLUGIN_CORE_FUNCTION_DEFINE(graph_delete, orxVOID, graph_st_bitmap *);
-PLUGIN_CORE_FUNCTION_DEFINE(graph_create, graph_st_bitmap *, orxS32, orxS32);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_delete, orxVOID, orxBITMAP *);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_create, orxBITMAP *, orxS32, orxS32);
 
-PLUGIN_CORE_FUNCTION_DEFINE(graph_video_bitmap_create, graph_st_bitmap *, orxS32, orxS32);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_video_bitmap_create, orxBITMAP *, orxS32, orxS32);
 
-PLUGIN_CORE_FUNCTION_DEFINE(graph_screen_bitmap_get, graph_st_bitmap *);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_screen_bitmap_get, orxBITMAP *);
 
-PLUGIN_CORE_FUNCTION_DEFINE(graph_clear, orxVOID, graph_st_bitmap *);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_clear, orxVOID, orxBITMAP *);
 PLUGIN_CORE_FUNCTION_DEFINE(graph_switch, orxVOID);
-PLUGIN_CORE_FUNCTION_DEFINE(graph_blit, orxVOID, graph_st_bitmap *, graph_st_bitmap *, orxS32, orxS32, orxS32, orxS32, orxS32, orxS32);
-PLUGIN_CORE_FUNCTION_DEFINE(graph_clip_set, orxVOID, graph_st_bitmap *, orxS32, orxS32, orxS32, orxS32);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_blit, orxVOID, orxBITMAP *, orxBITMAP *, orxS32, orxS32, orxS32, orxS32, orxS32, orxS32);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_clip_set, orxVOID, orxBITMAP *, orxS32, orxS32, orxS32, orxS32);
 
 
-PLUGIN_CORE_FUNCTION_DEFINE(graph_sprite_draw, orxVOID, graph_st_sprite *, graph_st_bitmap *, orxS32, orxS32);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_sprite_draw, orxVOID, graph_st_sprite *, orxBITMAP *, orxS32, orxS32);
 
-PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_transform, orxVOID, graph_st_bitmap *, graph_st_bitmap *, orxFLOAT, orxFLOAT, orxFLOAT, orxS32, orxS32, orxS32, orxS32, orxBOOL);
-PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_color_key_set, orxVOID, graph_st_bitmap *, orxU32, orxU32, orxU32, orxBOOL);
-PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_save, orxVOID, orxCONST orxU8 *, graph_st_bitmap *);
-PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_load, graph_st_bitmap *, orxCONST orxU8 *);
-PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_size_get, orxVOID, graph_st_bitmap *, orxS32*, orxS32 *);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_transform, orxVOID, orxBITMAP *, orxBITMAP *, orxFLOAT, orxFLOAT, orxFLOAT, orxS32, orxS32, orxS32, orxS32, orxBOOL);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_color_key_set, orxVOID, orxBITMAP *, orxU32, orxU32, orxU32, orxBOOL);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_save, orxVOID, orxCONST orxU8 *, orxBITMAP *);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_load, orxBITMAP *, orxCONST orxU8 *);
+PLUGIN_CORE_FUNCTION_DEFINE(graph_bitmap_size_get, orxVOID, orxBITMAP *, orxS32*, orxS32 *);

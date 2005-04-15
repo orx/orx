@@ -58,7 +58,14 @@ do                                                            \
   *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
 } while(orxFALSE);
 
+#define orxF2U(V)                 ((orxU32)  (V))
+#define orxF2S(V)                 ((orxS32)  (V))
+#define orxU2F(V)                 ((orxFLOAT)(V))
+#define orxS2F(V)                 ((orxFLOAT)(V))
+
+
 /*** Math Definitions ***/
-#define KF_MATH_SQRT2       1.414213562f
+#define KF_MATH_SQRT2             1.414213562f
+
 
 #endif /* _orxMATH_H_ */

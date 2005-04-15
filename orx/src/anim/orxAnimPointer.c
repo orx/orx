@@ -389,8 +389,8 @@ orxSTATUS orxAnimPointer_Compute(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32Ti
     if(orxAnimPointer_TestFlag(_pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
       /* Computes TimeDT */
-      u32DT = (orxU32)((orxFLOAT)(_u32Time - _pstAnimpointer->u32Time) * _pstAnimpointer->fFrequency);
-    
+      u32DT = (orxU32)(orxU2F((_u32Time - _pstAnimpointer->u32Time)) * _pstAnimpointer->fFrequency);
+
       /* Updates Times */
       _pstAnimpointer->u32Time = _u32Time;
       _pstAnimpointer->u32CurrentAnimTime += u32DT;

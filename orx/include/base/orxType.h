@@ -120,7 +120,6 @@ typedef enum __orxSTATUS_t
 
 
 /* Graph */
-typedef orxS32 graph_st_bitmap;
 typedef orxS32 graph_st_sprite;
 
 

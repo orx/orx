@@ -215,7 +215,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
       else
       {
         /* Center aligned */
-        fY = pvPos->fY + rintf(0.5 * (orxFLOAT)(pvSize->fY - vCamSize.fY));
+        fY = pvPos->fY + rintf(0.5f * (pvSize->fY - vCamSize.fY));
       }
 
       /* Stores it in a coord structure */

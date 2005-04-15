@@ -339,12 +339,12 @@ orxVOID pathfinder_destination_set(orxVEC *_pst_coord)
 
 orxFLOAT pathfinder_cost(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
 {
-  orxS32 dx, dy;
+  orxFLOAT fX, fY;
 
-  dx = orxFABS(_pst_coord1->fX - _pst_coord2->fX);
-  dy = orxFABS(_pst_coord1->fY - _pst_coord2->fY);
-  
-  return(sqrtf((orxFLOAT)(dx*dx + dy*dy)));
+  fX = orxFABS(_pst_coord1->fX - _pst_coord2->fX);
+  fY = orxFABS(_pst_coord1->fY - _pst_coord2->fY);
+
+  return(sqrtf((fX * fX) + (fY * fY)));
 }
 
 orxFLOAT pathfinder_goal_distance_estimate(orxVEC *_pst_coord)
