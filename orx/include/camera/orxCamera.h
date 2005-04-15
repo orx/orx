@@ -63,7 +63,7 @@ extern orxVOID                          orxCamera_Exit();
 /** Creates an empty camera. */
 extern orxCAMERA                       *orxCamera_Create();
 /** Deletes a camera. */
-extern orxVOID                          orxCamera_Delete(orxCAMERA *_pstCamera);
+extern orxSTATUS                        orxCamera_Delete(orxCAMERA *_pstCamera);
 
 /** Updates camera view list. */
 extern orxVOID                          orxCamera_UpdateViewList(orxCAMERA *_pstCamera);

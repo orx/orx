@@ -713,28 +713,42 @@ orxFRAME *orxFrame_Create()
  orxFrame_Delete
  Deletes a frame.
 
- returns: orxVOID
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxVOID orxFrame_Delete(orxFRAME *_pstFrame)
+orxSTATUS orxFrame_Delete(orxFRAME *_pstFrame)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
 
-  /* Cleans data */
-  if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstFrame) == 0)
   {
-    /* Frees frame data memory */
-    orxMemory_Free(_pstFrame->pstData);
+    /* Cleans data */
+    if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
+    {
+      /* Frees frame data memory */
+      orxMemory_Free(_pstFrame->pstData);
+    }
+
+    /* Cleans structure */
+    orxStructure_Clean((orxSTRUCTURE *)_pstFrame);
+
+    /* Frees frame memory */
+    orxMemory_Free(_pstFrame);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Cleans structure */
-  orxStructure_Clean((orxSTRUCTURE *)_pstFrame);
-
-  /* Frees frame memory */
-  orxMemory_Free(_pstFrame);
-
-  return;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************

@@ -50,7 +50,7 @@ extern orxVOID              orxFrame_Exit();
 /** Creates a frame. */
 extern orxFRAME            *orxFrame_Create();
 /** Deletes a frame. */
-extern orxVOID              orxFrame_Delete(orxFRAME *_pstFrame);
+extern orxSTATUS            orxFrame_Delete(orxFRAME *_pstFrame);
 
 /** Cleans all frames render status */
 extern orxVOID              orxFrame_CleanAllRenderStatus();

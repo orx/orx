@@ -422,18 +422,19 @@ orxVIEWPORT *orxViewport_Create()
  orxViewport_Delete
  Deletes a viewport.
 
- returns: orxVOID
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxVOID orxViewport_Delete(orxVIEWPORT *_pstViewport)
+orxSTATUS orxViewport_Delete(orxVIEWPORT *_pstViewport)
 {
-  orxU32 u32Viewport;
+  orxU32    u32Viewport;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
-  /* Non null? */
-  if(_pstViewport != orxNULL)
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstViewport) == 0)
   {
     /* Gets viewport id number */
     u32Viewport = _pstViewport->u32IDFlags & orxVIEWPORT_KU32_ID_MASK_NUMBER;
@@ -459,8 +460,16 @@ orxVOID orxViewport_Delete(orxVIEWPORT *_pstViewport)
     /* Frees viewport memory */
     orxMemory_Free(_pstViewport);
   }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILED;
+  }
 
-  return;
+  /* Done! */
+  return eResult;
 }
 
 

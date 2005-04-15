@@ -56,7 +56,7 @@ extern orxVOID                                orxViewport_Exit();
 /** Creates an empty viewport. */
 extern orxVIEWPORT                           *orxViewport_Create();
 /** Deletes a viewport. */
-extern orxVOID                                orxViewport_Delete(orxVIEWPORT *_pstViewport);
+extern orxSTATUS                              orxViewport_Delete(orxVIEWPORT *_pstViewport);
 
 
 /** *** Viewport accessors *** */

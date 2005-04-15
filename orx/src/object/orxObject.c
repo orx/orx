@@ -257,29 +257,42 @@ orxOBJECT *orxObject_Create()
  orxObject_Delete
  Deletes an object.
 
- returns: orxVOID
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxVOID orxObject_Delete(orxOBJECT *_pstObject)
+orxSTATUS orxObject_Delete(orxOBJECT *_pstObject)
 {
-  orxU32 i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxU32    i;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
   orxASSERT(_pstObject != orxNULL);
 
-  /* Unlink all structures */
-  for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstObject) == 0)
   {
-    orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
+    /* Unlink all structures */
+    for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+    {
+      orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
+    }
+
+    /* Cleans structure */
+    orxStructure_Clean((orxSTRUCTURE *)_pstObject);
+
+    /* Frees object memory */
+    orxMemory_Free(_pstObject);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Cleans structure */
-  orxStructure_Clean((orxSTRUCTURE *)_pstObject);
-
-  /* Frees object memory */
-  orxMemory_Free(_pstObject);
-
-  return;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************

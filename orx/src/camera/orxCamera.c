@@ -1068,44 +1068,54 @@ orxCAMERA *orxCamera_Create()
  orxCamera_Delete
  Deletes a camera.
 
- returns: orxVOID
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxVOID orxCamera_Delete(orxCAMERA *_pstCamera)
+orxSTATUS orxCamera_Delete(orxCAMERA *_pstCamera)
 {
-  orxU32 u32Camera = orxU32_Undefined;
+  orxU32    u32Camera = orxU32_Undefined;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
-  /* Gets camera id number */
-  u32Camera = _pstCamera->u32IDFlags & orxCAMERA_KU32_ID_MASK_NUMBER;
-
-  /* Frees camera slot */
-  sstCamera.abCameraUsed[u32Camera] = orxFALSE;
-
-  /* Frees camera view list */
-  orxCamera_DeleteViewList(_pstCamera);
-
-  /* Remove linked object reference */
-  if(_pstCamera->pstLink != orxNULL)
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstCamera) == 0)
   {
-    orxStructure_DecreaseCounter((orxSTRUCTURE *)(_pstCamera->pstLink));
+    /* Gets camera id number */
+    u32Camera = _pstCamera->u32IDFlags & orxCAMERA_KU32_ID_MASK_NUMBER;
+
+    /* Frees camera slot */
+    sstCamera.abCameraUsed[u32Camera] = orxFALSE;
+
+    /* Frees camera view list */
+    orxCamera_DeleteViewList(_pstCamera);
+
+    /* Remove linked object reference */
+    if(_pstCamera->pstLink != orxNULL)
+    {
+      orxStructure_DecreaseCounter((orxSTRUCTURE *)(_pstCamera->pstLink));
+    }
+
+    /* Deletes frame*/
+    orxFrame_Delete(_pstCamera->pstFrame);
+
+    /* Cleans structure */
+    orxStructure_Clean((orxSTRUCTURE *)_pstCamera);
+
+    /* Frees data */
+    orxMemory_Free(_pstCamera->pstData);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILED;
   }
 
-  /* Deletes frame*/
-  orxFrame_Delete(_pstCamera->pstFrame);
-
-  /* Frees data */
-  orxMemory_Free(_pstCamera->pstData);
-
-  /* Cleans structure */
-  orxStructure_Clean((orxSTRUCTURE *)_pstCamera);
-
-  /* Frees camera memory */
-  orxMemory_Free(_pstCamera);
-
-  return;
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************

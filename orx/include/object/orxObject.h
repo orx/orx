@@ -51,7 +51,7 @@ extern orxVOID                        orxObject_Exit();
 /** Creates an empty object. */
 extern orxOBJECT                     *orxObject_Create();
 /** Deletes an object. */
-extern orxVOID                        orxObject_Delete(orxOBJECT *_pstObject);
+extern orxSTATUS                      orxObject_Delete(orxOBJECT *_pstObject);
 
 /** Test object render status (TRUE : clean / orxFALSE : dirty)*/
 extern orxBOOL                        orxObject_IsRenderStatusClean(orxOBJECT *_pstObject);
