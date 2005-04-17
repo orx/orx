@@ -57,11 +57,19 @@
         <!-- Preprocessor definitions. -->
         <define>$(orxDEBUG)</define>
         <define>$(orxPLATFORM)</define>
+        <define>orxDLL</define>
         <!-- Warning level. -->
         <warnings>$(orxWARNINGFLAG)</warnings>
         
         <!-- Global include directory. -->
         <include>include</include>
+    </template>
+    
+    <!-- Set a template to define lib link -->
+    <template id="orxLINK">
+        <lib-path>$(orxLIBDIR)</lib-path>
+        <sys-lib>orx$(orxSUFFIX)</sys-lib>
+        <depends>orx</depends>
     </template>
 
 

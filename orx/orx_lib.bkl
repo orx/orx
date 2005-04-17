@@ -8,6 +8,7 @@
     <dllname>orx$(orxSUFFIX)</dllname>    
     <libname>orx$(orxSUFFIX)</libname>
     <sys-lib>m</sys-lib>
+    <define>orxDLLEXPORT</define>
     
     <!-- Set the directory where will be stored the library -->
     <dirname>$(orxLIBDIR)</dirname>
