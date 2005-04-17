@@ -2,13 +2,15 @@
 <bakefile>
 
   <!--- Create orx static library -->
-  <lib id="orx" template="orxBASE">
+  <dll id="orx" template="orxBASE">
     
     <!-- Set the name of the library (will be different in debug and release mode -->
+    <dllname>orx$(orxSUFFIX)</dllname>    
     <libname>orx$(orxSUFFIX)</libname>
+    <sys-lib>m</sys-lib>
     
     <!-- Set the directory where will be stored the library -->
-    <dirname>lib</dirname>
+    <dirname>$(orxLIBDIR)</dirname>
 
     <!-- Set source files -->
     <sources>
@@ -32,7 +34,7 @@
     <sources>
         src/graph/graph.c
         src/graph/graphic.c
-        src/graph/texture.c
+        src/graph/orxTexture.c
     </sources>
     <sources>
         src/io/file.c
@@ -68,7 +70,7 @@
         src/utils/screenshot.c
         src/utils/utils.c
     </sources>
-  </lib>
+  </dll>
 
 
 </bakefile>
