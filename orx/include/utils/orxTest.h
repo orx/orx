@@ -74,7 +74,7 @@ void __attribute__ ((constructor)) module_init()  \
 {                                                 \
   INIT();                                         \
 }                                                 \
-void __attribute__ ((constructor)) module_exit()  \
+void __attribute__ ((destructor)) module_exit()   \
 {                                                 \
   EXIT();                                         \
 }
