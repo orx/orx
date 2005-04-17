@@ -10,7 +10,7 @@
  * 
  * @todo
  * Optimizations
- */
+ */ 
  
  /***************************************************************************
  orxMemory.h
@@ -46,11 +46,11 @@ typedef struct __orxBANK_t orxBANK;
  
 /** Initialize Bank Module
  */
-extern orxSTATUS orxBank_Init();
+extern orxDLLAPI orxSTATUS orxBank_Init();
 
 /** Exit bank module
  */
-extern orxVOID orxBank_Exit();
+extern orxDLLAPI orxVOID orxBank_Exit();
 
  
 /** Create a new bank in memory and returns a pointer on it
@@ -60,25 +60,25 @@ extern orxVOID orxBank_Exit();
  * @param _eMemType   (IN)  Memory type where the datas will be allocated
  * @return  returns a pointer on the memory bank
  */
-extern orxBANK *orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
+extern orxDLLAPI orxBANK *orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
 
 /** Free a portion of memory allocated with orxMemory_Allocate
  * @param _pstBank    (IN)  Pointer on the memory bank allocated by orx
  */
-extern orxVOID orxBank_Delete(orxBANK *_pstBank);
+extern orxDLLAPI orxVOID orxBank_Delete(orxBANK *_pstBank);
 
 /** Allocate a new cell from the bank
  * @param _pstBank    (IN) Pointer on the memory bank to use
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
-extern orxVOID *orxBank_Allocate(orxBANK *_pstBank);
+extern orxDLLAPI orxVOID *orxBank_Allocate(orxBANK *_pstBank);
 
 /** Free an allocated cell
  * @param _pstBank  (IN)  Bank of memory from where _pCell has been allocated
  * @param _pCell    (IN)  Pointer on the cell to free
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
-extern orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell);
+extern orxDLLAPI orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell);
 
 /** Get the next cell
  * @param _pstBank  (IN)  Bank of memory from where _pCell has been allocated
@@ -86,7 +86,7 @@ extern orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell);
  * @return The next cell. If _pCell is orxNULL, the first cell will be returned.
  * @return Returns orxNULL when no more cell can be returned.
  */
-extern orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell);
+extern orxDLLAPI orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell);
 
 /** Get the previous cell
  * @param _pstBank  (IN)  Bank of memory from where _pCell has been allocated
@@ -94,7 +94,7 @@ extern orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell);
  * @return The previous cell. If _pCell is orxNULL, the last cell will be returned.
  * @return Returns orxNULL when no more cell can be returned.
  */
-extern orxVOID *orxBank_GetPrevious(orxBANK *_pstBank, orxVOID *_pMem);
+extern orxDLLAPI orxVOID *orxBank_GetPrevious(orxBANK *_pstBank, orxVOID *_pMem);
 
 /*******************************************************************************
  * DEBUG FUNCTION
@@ -103,7 +103,7 @@ extern orxVOID *orxBank_GetPrevious(orxBANK *_pstBank, orxVOID *_pMem);
 /** Print the content of a chunk bank
  * @param _pstBank  (IN)  Bank's pointer
  */
-extern orxVOID orxBank_DebugPrint(orxBANK *_pstBank);
+extern orxDLLAPI orxVOID orxBank_DebugPrint(orxBANK *_pstBank);
  
 
 #endif /* _orxBANK_H_ */
