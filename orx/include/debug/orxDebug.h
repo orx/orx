@@ -142,25 +142,25 @@ typedef enum __orxDEBUG_LEVEL_t
 /* *** Functions *** */
 
 /** Debug init function. */
-extern orxSTATUS                              _orxDebug_Init();
+extern orxDLLAPI orxSTATUS                    _orxDebug_Init();
 
 /** Debug exit function. */
-extern orxVOID                                _orxDebug_Exit();
+extern orxDLLAPI orxVOID                      _orxDebug_Exit();
 
 /** Debug output function. */
-extern orxVOID                                _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...);
+extern orxDLLAPI orxVOID                      _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...);
 
 /** Debug flag backup function. */
-extern orxVOID                                _orxDebug_BackupFlags();
+extern orxDLLAPI orxVOID                      _orxDebug_BackupFlags();
 
 /** Debug flag restore function. */
-extern orxVOID                                _orxDebug_RestoreFlags();
+extern orxDLLAPI orxVOID                      _orxDebug_RestoreFlags();
 
 /** Debug flag get/set accessor. */
-extern orxVOID                                _orxDebug_SetFlag(orxU32 _u32Add, orxU32 _u32Remove);
+extern orxDLLAPI orxVOID                      _orxDebug_SetFlag(orxU32 _u32Add, orxU32 _u32Remove);
 
 /** Software break function. */
-extern orxVOID                                _orxDebug_Break();
+extern orxDLLAPI orxVOID                      _orxDebug_Break();
 
 
 #endif /* _orxDEBUG_H_ */
