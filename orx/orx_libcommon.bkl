@@ -44,6 +44,7 @@
 
     <!-- Set the build directory for each BUILD type. (Will be the same name as the build type) -->
     <set var="orxBUILDDIR">build$(DIRSEP)$(BUILD)</set>
+    <set var="orxLIBDIR">lib</set>
 
 
   <set var="BUILDDIR">.$(DIRSEP)$(orxBUILDDIR)</set>
