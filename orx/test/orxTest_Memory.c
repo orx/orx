@@ -60,7 +60,7 @@ orxVOID orxTest_Memory_Allocate()
 {
   orxU32 u32ElemIndex;  /* Array's cursor */
   
-  printf("Allocate %ul elements of %lu * 32 bits in the main memory...\n", orxTEST_MEMORY_KU32_ARRAY_NB_ELEM, orxTEST_MEMORY_KU32_ELEM_SIZE);
+  printf("Allocate %u elements of %u * 32 bits in the main memory...\n", orxTEST_MEMORY_KU32_ARRAY_NB_ELEM, orxTEST_MEMORY_KU32_ELEM_SIZE);
 
   /* Traverse the array and allocate memory for each elements */  
   for (u32ElemIndex = 0; u32ElemIndex < orxTEST_MEMORY_KU32_ARRAY_NB_ELEM; u32ElemIndex++)
@@ -68,7 +68,7 @@ orxVOID orxTest_Memory_Allocate()
     /* Memory already allocated ? */
     if (sapMemory[u32ElemIndex] != orxNULL)
     {
-      printf("Elem %ul Has already been allocated, free it before\n", u32ElemIndex);
+      printf("Elem %lu Has already been allocated, free it before\n", u32ElemIndex);
     }
     else
     {
@@ -78,11 +78,11 @@ orxVOID orxTest_Memory_Allocate()
       /* Display success status */
       if (sapMemory[u32ElemIndex] != orxNULL)
       {
-        printf("Elem %ul allocation : Ok\n", u32ElemIndex);
+        printf("Elem %lu allocation : Ok\n", u32ElemIndex);
       }
       else
       {
-        printf("Elem %ul allocation : Failed\n", u32ElemIndex);
+        printf("Elem %lu allocation : Failed\n", u32ElemIndex);
       }
     }
   }
@@ -106,12 +106,12 @@ orxVOID orxTest_Memory_Free()
     {
       orxMemory_Free(sapMemory[u32ElemIndex]);
       sapMemory[u32ElemIndex] = orxNULL;
-      printf("Elem %ul Freed\n", u32ElemIndex);
+      printf("Elem %lu Freed\n", u32ElemIndex);
     }
     else
     {
       /* Element wasn't allocated */
-      printf("Elem %ul has not been allocated\n", u32ElemIndex);
+      printf("Elem %lu has not been allocated\n", u32ElemIndex);
     }
   }
 
