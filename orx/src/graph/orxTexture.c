@@ -185,19 +185,31 @@ orxTEXTURE *orxTexture_Create()
 /***************************************************************************
  orxTexture_CreateFromBitmap
  Creates a texture from a bitmap.
- !!! Warning : use a different bitmap for each texture. !!!
 
  returns: Created texture.
  ***************************************************************************/
-orxTEXTURE *orxTexture_CreateFromBitmap(orxBITMAP *_pstBitmap)
+orxTEXTURE *orxTexture_CreateFromBitmap(orxCONST orxSTRING _zBitmapFileName)
 {
   orxTEXTURE *pstTexture;
 
   /* Creates an empty texture */
   pstTexture = orxTexture_Create();
 
-  /* Assigns given bitmap to it */
-  orxTexture_LinkBitmap(pstTexture, _pstBitmap);
+  /* Valid? */
+  if(pstTexture != orxNULL)
+  {
+    orxBITMAP *pstBitmap;
+    
+    /* Loads bitmap */
+    pstBitmap = graph_bitmap_load(_zBitmapFileName);
+
+    /* Assigns given bitmap to it */
+    orxTexture_LinkBitmap(pstTexture, pstBitmap);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
   return pstTexture;
 }

@@ -45,7 +45,7 @@
 #include "plugin/define/plugin_joystick.h"          /* ID : 0x10000500 */
 
 
-/* Defines plugin registration info orxCONSTants */
+/* Defines plugin registration info constants */
 #define PLUGIN_USER_KZ_FUNCTION_INIT        "plugin_init" /**< Plugin init function name */
 
 #define PLUGIN_KS32_NAME_SIZE                 32

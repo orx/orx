@@ -49,8 +49,8 @@ extern orxVOID                          orxTexture_Exit();
 
 /** Creates an empty texture. */
 extern orxTEXTURE                      *orxTexture_Create();
-/** Creates a texture from a bitmap (Warning : use a different bitmap for each texture). */
-extern orxTEXTURE                      *orxTexture_CreateFromBitmap(orxBITMAP *_pstBitmap);
+/** Creates a texture from a bitmap. */
+extern orxTEXTURE                      *orxTexture_CreateFromBitmap(orxCONST orxSTRING _zBitmapFileName);
 /** Deletes a texture (Warning : it deletes referenced bitmap too!). */
 extern orxSTATUS                        orxTexture_Delete(orxTEXTURE *_pstTexture);
 
