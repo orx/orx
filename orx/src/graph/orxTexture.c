@@ -28,13 +28,13 @@
  * Platform independant defines
  */
 
-#define TEXTURE_KU32_FLAG_NONE         0x00000000
-#define TEXTURE_KU32_FLAG_READY        0x00000001
+#define orxTEXTURE_KU32_FLAG_NONE               0x00000000
+#define orxTEXTURE_KU32_FLAG_READY              0x00000001
 
-#define TEXTURE_KU32_ID_FLAG_NONE      0x00000000
-#define TEXTURE_KU32_ID_FLAG_BITMAP    0x00000010
-#define TEXTURE_KU32_ID_FLAG_REF_COORD 0x00000100
-#define TEXTURE_KU32_ID_FLAG_SIZE      0x00000200
+#define orxTEXTURE_KU32_ID_FLAG_NONE            0x00000000
+#define orxTEXTURE_KU32_ID_FLAG_BITMAP          0x00000010
+#define orxTEXTURE_KU32_ID_FLAG_REF_COORD       0x00000100
+#define orxTEXTURE_KU32_ID_FLAG_SIZE            0x00000200
 
 /*
  * Texture structure
@@ -44,8 +44,8 @@ struct __orxTEXTURE_t
   /* Public structure, first structure member : 16 */
   orxSTRUCTURE stStructure;
 
-  /* Reference coord : 32 */
-  orxVEC st_ref_coord;
+  /* Reference point : 32 */
+  orxVEC vRefPoint;
 
   /* Size coord : 48 */
   orxVEC vSize;
@@ -60,11 +60,21 @@ struct __orxTEXTURE_t
   orxU8 au8Unused[8];
 };
 
+/*
+ * Static structure
+ */
+typedef struct __orxTEXTURE_STATIC_t
+{
+  /* Control flags */
+  orxU32 u32Flags;
+
+} orxTEXTURE_STATIC;
 
 /*
- * Static members
+ * Static data
  */
-orxSTATIC orxU32 texture_su32Flags = TEXTURE_KU32_FLAG_NONE;
+orxSTATIC orxTEXTURE_STATIC sstTexture;
+
 
 
 /***************************************************************************
@@ -74,22 +84,25 @@ orxSTATIC orxU32 texture_su32Flags = TEXTURE_KU32_FLAG_NONE;
  ***************************************************************************/
 
 /***************************************************************************
- texture_list_delete
+ orxTexture_DeleteAll
  Deletes all textures.
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID texture_list_delete()
+orxVOID orxTexture_DeleteAll()
 {
-  orxTEXTURE *pstTexture = (orxTEXTURE *)orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE);
+  orxTEXTURE *pstTexture;
+  
+  /* Gets first texture */
+  pstTexture = (orxTEXTURE *)orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE);
 
   /* Non empty? */
   while(pstTexture != orxNULL)
   {
-    /* Deletes object */
+    /* Deletes texture */
     orxTexture_Delete(pstTexture);
 
-    /* Gets first object */
+    /* Gets first texture */
     pstTexture = (orxTEXTURE *)orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE);
   }
 
@@ -113,10 +126,10 @@ orxVOID texture_list_delete()
 orxSTATUS orxTexture_Init()
 {
   /* Not already Initialized? */
-  if(!(texture_su32Flags & TEXTURE_KU32_FLAG_READY))
+  if(!(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY))
   {
     /* Inits Flags */
-    texture_su32Flags = TEXTURE_KU32_FLAG_READY;
+    sstTexture.u32Flags = orxTEXTURE_KU32_FLAG_READY;
 
     return orxSTATUS_SUCCESS;
   }
@@ -133,12 +146,12 @@ orxSTATUS orxTexture_Init()
 orxVOID orxTexture_Exit()
 {
   /* Initialized? */
-  if(texture_su32Flags & TEXTURE_KU32_FLAG_READY)
+  if(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY)
   {
-    texture_su32Flags &= ~TEXTURE_KU32_FLAG_READY;
+    sstTexture.u32Flags &= ~orxTEXTURE_KU32_FLAG_READY;
 
     /* Deletes texture list */
-    texture_list_delete();
+    orxTexture_DeleteAll();
   }
 
   return;
@@ -173,8 +186,8 @@ orxTEXTURE *orxTexture_Create()
     }
 
     /* Inits texture members */
-    pstTexture->u32IDFlags = TEXTURE_KU32_ID_FLAG_NONE;
-    coord_set(&(pstTexture->st_ref_coord), 0, 0, 0);
+    pstTexture->u32IDFlags = orxTEXTURE_KU32_ID_FLAG_NONE;
+    coord_set(&(pstTexture->vRefPoint), 0, 0, 0);
     coord_set(&(pstTexture->vSize), 0, 0, 0);
     pstTexture->pstData = orxNULL;
   }
@@ -256,7 +269,7 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
   if((_pstTexture != orxNULL) && (_pstBitmap != orxNULL))
   {
     /* Updates flags */
-    _pstTexture->u32IDFlags |= TEXTURE_KU32_ID_FLAG_BITMAP | TEXTURE_KU32_ID_FLAG_SIZE;
+    _pstTexture->u32IDFlags |= orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_SIZE;
 
     /* References bitmap */
     _pstTexture->pstData = (orxVOID *)_pstBitmap;
@@ -293,10 +306,10 @@ orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
   if(_pstTexture != orxNULL)
   {
     /* Has bitmap */
-    if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_BITMAP)
+    if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_BITMAP)
     {
       /* Updates flags */
-      _pstTexture->u32IDFlags &= ~(TEXTURE_KU32_ID_FLAG_BITMAP | TEXTURE_KU32_ID_FLAG_SIZE);
+      _pstTexture->u32IDFlags &= ~(orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_SIZE);
 
       /* Deletes bitmap */
       graph_delete((orxBITMAP *) (_pstTexture->pstData));
@@ -320,7 +333,7 @@ orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
 orxBITMAP *orxTexture_GetBitmap(orxTEXTURE *_pstTexture)
 {
   /* Has bitmap? */
-  if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_BITMAP)
+  if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_BITMAP)
   {
     return((orxBITMAP *)_pstTexture->pstData);
   }
@@ -337,8 +350,8 @@ orxBITMAP *orxTexture_GetBitmap(orxTEXTURE *_pstTexture)
 orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Updates */
-  _pstTexture->u32IDFlags |= TEXTURE_KU32_ID_FLAG_REF_COORD;
-  coord_copy(&(_pstTexture->st_ref_coord), _pst_coord);
+  _pstTexture->u32IDFlags |= orxTEXTURE_KU32_ID_FLAG_REF_COORD;
+  coord_copy(&(_pstTexture->vRefPoint), _pst_coord);
 
   return;
 }
@@ -352,10 +365,10 @@ orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 orxVOID orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Has reference coordinates? */
-  if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_REF_COORD)
+  if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_REF_COORD)
   {
     /* Copy coord */
-    coord_copy(_pst_coord, &(_pstTexture->st_ref_coord));
+    coord_copy(_pst_coord, &(_pstTexture->vRefPoint));
   }
   else
   {
@@ -375,7 +388,7 @@ orxVOID orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 orxVOID orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pst_coord)
 {
   /* Has size? */
-  if(_pstTexture->u32IDFlags & TEXTURE_KU32_ID_FLAG_SIZE)
+  if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_SIZE)
   {
     coord_copy(_pst_coord, &(_pstTexture->vSize));
   }
