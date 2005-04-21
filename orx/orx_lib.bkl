@@ -70,6 +70,7 @@
         src/utils/pathfinder.c
         src/utils/screenshot.c
         src/utils/utils.c
+		src/utils/orxString.c
     </sources>
   </dll>
 
