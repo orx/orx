@@ -24,10 +24,12 @@
  ***************************************************************************/
 
 #include "utils/orxString.h"
-#include "debug/orxDebug.h"
 
 #include <stdio.h>
 #include <string.h>
+
+#include "memory/orxMemory.h"
+
 
 #define orxSTRING_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxSTRING_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */

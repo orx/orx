@@ -60,7 +60,7 @@
 
 /* *** Debug Macros *** */
 
-#ifdef DEBUG
+#ifdef __orxDEBUG__
 
   #define orxDEBUG_LOG(LEVEL, STRING, ...)    _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
 
@@ -81,7 +81,7 @@
     orxBREAK();                               \
   }
 
-#else /* DEBUG */
+#else /* __orxDEBUG__ */
 
   #define orxDEBUG_LOG(LEVEL, STRING, ...)
 
@@ -95,7 +95,7 @@
   #define orxDEBUG_FLAG_BACKUP()
   #define orxDEBUG_FLAG_RESTORE()
 
-#endif /* DEBUG */
+#endif /* __orxDEBUG__ */
 
 
 /*****************************************************************************/
@@ -125,15 +125,20 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_FILE,                        /**< File Debug */
   orxDEBUG_LEVEL_PATHFINDER,                  /**< Pathfinder Debug */
   orxDEBUG_LEVEL_PLUGIN,                      /**< Plug-in Debug */
+
   orxDEBUG_LEVEL_LOG,                         /**< Log Debug */
-  orxDEBUG_LEVEL_ALL,                         /**< All Debugs */
+
   orxDEBUG_LEVEL_ASSERT,                      /**< Assert Debug */
   orxDEBUG_LEVEL_CRITICAL_ASSERT,             /**< Critical Assert Debug */
-  
+
   orxDEBUG_LEVEL_NUMBER,
-  
+
+  orxDEBUG_LEVEL_MAX_NUMBER = 32,
+
+  orxDEBUG_LEVEL_ALL = 0xFFFFFFFE,            /**< All Debugs */
+
   orxDEBUG_LEVEL_NONE = 0xFFFFFFFF
-  
+
 } orxDEBUG_LEVEL;
 
 

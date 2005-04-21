@@ -67,7 +67,7 @@ extern orxDLLAPI orxSTATUS orxTest_Execute(orxHANDLE _hRegisteredFunc);
 extern orxDLLAPI orxVOID orxTest_DisplayMenu();
 
 /* Define test module registration MACRO (entry point of dynamic library) */
-#ifdef LINUX
+#ifdef __orxLINUX__
 
 #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)    \
 void __attribute__ ((constructor)) module_init()  \
@@ -80,7 +80,7 @@ void __attribute__ ((destructor)) module_exit()   \
 }
 
 #else
-  #ifdef WINDOWS
+  #ifdef __orxWINDOWS__
 
   #include <windows.h>
 

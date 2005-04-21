@@ -29,20 +29,20 @@
 
 #include <stdio.h>
 
-#ifdef LINUX
+#ifdef __orxLINUX__
 
   #include <dlfcn.h>
 
-#else /* LINUX */
+#else /* __orxLINUX__ */
 
-  #ifdef WINDOWS
+  #ifdef __orxWINDOWS__
 
     #define WIN32_LEAN_AND_MEAN
     #include <windows.h>
 
-  #endif /* WINDOWS */
+  #endif /* __orxWINDOWS__ */
 
-#endif /* LINUX */
+#endif /* __orxLINUX__ */
 
 
 /*
@@ -57,7 +57,7 @@
  */
 
 /* WINDOWS */
-#ifdef WINDOWS
+#ifdef __orxWINDOWS__
 
 #define PLUGIN_HANDLE       HMODULE
 

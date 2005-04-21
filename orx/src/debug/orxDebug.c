@@ -25,7 +25,7 @@
 #include "debug/orxDebug.h"
 
 
-#ifdef DEBUG
+#ifdef __orxDEBUG__
 
 /*
  * Platform independant defines
@@ -128,9 +128,17 @@ orxSTATUS _orxDebug_Init()
 {
   orxU32 i;
   orxU8 *pu8;
-  
+
   /* Already Initialized? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_CONTROL_FLAG_READY)
+  {
+    /* !!! MSG !!! */
+
+    return orxSTATUS_FAILED;
+  }
+
+  /* Are debug level correct? */
+  if(orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
   {
     /* !!! MSG !!! */
 
@@ -140,7 +148,7 @@ orxSTATUS _orxDebug_Init()
   /* Cleans static controller */
   for(i = 0, pu8 = (orxU8 *)&sstDebug; i < sizeof(orxDEBUG_STATIC); i++)
   {
-    *(pu8 + i) = 0;
+    *pu8++ = 0;
   }
 
   /* Inits default files */
@@ -185,11 +193,11 @@ orxVOID _orxDebug_Exit()
 orxVOID _orxDebug_Break()
 {
   /* Windows / Linux */
-#if defined(WINDOWS) || defined(LINUX)
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__)
 
   asm("int $3");
 
-#endif /* WINDOWS || LINUX */
+#endif /* __orxWINDOWS__ || __orxLINUX__ */
 
   return;
 }
@@ -334,4 +342,4 @@ orxVOID _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orx
 }
 
 
-#endif /* DEBUG */
+#endif /* __orxDEBUG__ */

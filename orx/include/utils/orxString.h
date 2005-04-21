@@ -29,10 +29,12 @@
 #define _orxSTRING_H_
 
 #include "orxInclude.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 
+#include "debug/orxDebug.h"
 
 /** Initialize the string module
  */

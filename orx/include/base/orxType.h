@@ -40,7 +40,7 @@
 /* *** Platform depedant base types */
 
 /* Windows */
-#ifdef WINDOWS
+#ifdef __orxWINDOWS__
 
   typedef void                  orxVOID;
   
@@ -63,10 +63,10 @@
   typedef orxS8                 orxCHAR;
   typedef orxCHAR              *orxSTRING;
 
-#else /* WINDOWS */
+#else /* __orxWINDOWS__ */
 
   /* Linux */
-  #ifdef LINUX
+  #ifdef __orxLINUX__
 
     typedef void                orxVOID;
   
@@ -89,9 +89,9 @@
     typedef orxS8               orxCHAR;
     typedef orxCHAR            *orxSTRING;
 
-  #endif /* LINUX */
+  #endif /* __orxLINUX__ */
   
-#endif /* WINDOWS */  
+#endif /* __orxWINDOWS__ */  
 
 
 /* *** Boolean Defines *** */

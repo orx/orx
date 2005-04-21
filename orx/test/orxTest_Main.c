@@ -43,7 +43,7 @@
 #include <string.h>
 
 /* Incude specific header files according to used platform */
-#ifdef LINUX
+#ifdef __orxLINUX__
   #include <sys/types.h>
   #include <dirent.h>
   #include <dlfcn.h>
@@ -52,14 +52,14 @@
   #define DIRSEP "/"
 
 #else
-  #ifdef WINDOWS
+  #ifdef __orxWINDOWS__
     #include <io.h>
 
     /* Define the seperator character for directories */
     #define DIRSEP "\\"
 
-  #endif /* WINDOWS */
-#endif /* LINUX */
+  #endif /* __orxWINDOWS__ */
+#endif /* __orxLINUX__ */
 
 #define orxTEST_MAIN_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxTEST_MAIN_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
@@ -98,7 +98,7 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
 
   printf("Loading Test modules : \n");
 
-  #ifdef LINUX
+  #ifdef __orxLINUX__
   
   DIR *pstDir;                                /* Pointer on directory structure */
   struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
@@ -142,7 +142,7 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
   }
   
   #else /* !LINUX */
-    #ifdef WINDOWS
+    #ifdef __orxWINDOWS__
   
   
   struct _finddata_t stFile;  /* File datas infos */
@@ -200,8 +200,8 @@ orxVOID orxTestMain_Load(orxSTRING _zDirName)
   }        
 
   
-    #endif /* WINDOWS */
-  #endif /* LINUX */
+    #endif /* __orxWINDOWS__ */
+  #endif /* __orxLINUX__ */
 }
 
 /** Release all loaded libraries
@@ -217,17 +217,17 @@ orxVOID orxTestMain_Release()
   for (u32Index = 0; u32Index < sstTestMain.u32NbLibrary; u32Index++)
   {
     /* Release loaded library */
-#ifdef LINUX
+#ifdef __orxLINUX__
 
     dlclose((void*)sstTestMain.phLibrary[u32Index]);
 
 #else
-  #ifdef WINDOWS
+  #ifdef __orxWINDOWS__
 
     FreeLibrary((HINSTANCE)sstTestMain.phLibrary[u32Index]);
 
   #endif
-#endif /* LINUX */
+#endif /* __orxLINUX__ */
   }
   
   /* Free the allocated array */

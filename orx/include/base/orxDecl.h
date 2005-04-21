@@ -34,7 +34,7 @@
 /* *** Platform depedant base declarations */
 
 /* Windows */
-#ifdef WINDOWS
+#ifdef __orxWINDOWS__
 
   #define orxFASTCALL           __fastcall
   
@@ -55,10 +55,10 @@
 
   #define orxNULL               NULL
 
-#else /* WINDOWS */
+#else /* __orxWINDOWS__ */
 
   /* Linux */
-  #ifdef LINUX
+  #ifdef __orxLINUX__
 
     #define orxFASTCALL         __attribute__ ((fastcall))
     
@@ -79,9 +79,9 @@
 
     #define orxNULL             NULL
 
-  #endif /* LINUX */
+  #endif /* __orxLINUX__ */
   
-#endif /* WINDOWS */  
+#endif /* __orxWINDOWS__ */  
 
 /* DLL? */
 #ifdef orxDLL          /* orx compiled as a dynamic library */
