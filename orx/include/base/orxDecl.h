@@ -60,7 +60,7 @@
   /* Linux */
   #ifdef LINUX
 
-    #define orxFASTCALL         fastcall
+    #define orxFASTCALL         __attribute__ ((fastcall))
     
     /* The function will be exported (dll compilation) */
     #define orxEXPORT           __attribute__ ((visibility("default")))
