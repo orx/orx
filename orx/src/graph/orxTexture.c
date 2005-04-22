@@ -125,16 +125,38 @@ orxVOID orxTexture_DeleteAll()
  ***************************************************************************/
 orxSTATUS orxTexture_Init()
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Not already Initialized? */
   if(!(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY))
   {
-    /* Inits Flags */
-    sstTexture.u32Flags = orxTEXTURE_KU32_FLAG_READY;
+    /* Cleans control structure */
+    orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE_STATIC));
 
-    return orxSTATUS_SUCCESS;
+    /* Registers structure type */
+    eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_FAILED;
   }
 
-  return orxSTATUS_FAILED;
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstTexture.u32Flags = orxTEXTURE_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************
