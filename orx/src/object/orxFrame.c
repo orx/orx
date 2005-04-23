@@ -610,19 +610,19 @@ orxSTATUS orxFrame_Init()
  ***************************************************************************/
 orxVOID orxFrame_Exit()
 {
-  /* Not initialized? */
-  if((sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY) == orxFRAME_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY)
+  {
+    /* Deletes frame tree */
+    orxFrame_DeleteAll();
+
+    /* Updates flags */
+    sstFrame.u32Flags &= ~orxFRAME_KU32_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-
-    return;
   }
-
-  /* Deletes frame tree */
-  orxFrame_DeleteAll();
-
-  /* Updates flags */
-  sstFrame.u32Flags &= ~orxFRAME_KU32_FLAG_READY;
 
   return;
 }

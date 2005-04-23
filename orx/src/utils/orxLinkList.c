@@ -94,16 +94,16 @@ orxSTATUS orxLinkList_Init()
  ***************************************************************************/
 orxVOID orxLinkList_Exit()
 {
-  /* Not initialized? */
-  if((sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY) == orxLINKLIST_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY)
+  {
+    /* Updates flags */
+    sstLinkList.u32Flags &= ~orxLINKLIST_KU32_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-
-    return;
   }
-
-  /* Updates flags */
-  sstLinkList.u32Flags &= ~orxLINKLIST_KU32_FLAG_READY;
 
   return;
 }

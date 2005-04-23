@@ -237,16 +237,16 @@ orxSTATUS orxTree_Init()
  ***************************************************************************/
 orxVOID orxTree_Exit()
 {
-  /* Not initialized? */
-  if((sstTree.u32Flags & orxTREE_KU32_FLAG_READY) == orxTREE_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstTree.u32Flags & orxTREE_KU32_FLAG_READY)
+  {
+    /* Updates flags */
+    sstTree.u32Flags &= ~orxTREE_KU32_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-
-    return;
   }
-
-  /* Updates flags */
-  sstTree.u32Flags &= ~orxTREE_KU32_FLAG_READY;
 
   return;
 }

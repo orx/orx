@@ -259,16 +259,16 @@ orxSTATUS orxRender_Init()
  ***************************************************************************/
 orxVOID orxRender_Exit()
 {
-  /* Not initialized? */
+  /* Initialized? */
   if((sstRender.u32Flags & orxRENDER_KU32_FLAG_READY) == orxRENDER_KU32_FLAG_NONE)
   {
-    /* !!! MSG !!! */
-
-    return;
+    /* Updates flags */
+    sstRender.u32Flags &= ~orxRENDER_KU32_FLAG_READY;
   }
-  
-  /* Updates flags */
-  sstRender.u32Flags &= ~orxRENDER_KU32_FLAG_READY;
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
   return;
 }

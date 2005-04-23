@@ -898,19 +898,19 @@ orxSTATUS orxCamera_Init()
  ***************************************************************************/
 orxVOID orxCamera_Exit()
 {
-  /* Not initialized? */
-  if((sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY) == orxCAMERA_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY)
+  {
+    /* Deletes camera list */
+    orxCamera_DeleteAll();
+
+    /* Updates flags */
+    sstCamera.u32Flags &= ~orxCAMERA_KU32_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-    
-    return;
   }
-
-  /* Deletes camera list */
-  orxCamera_DeleteAll();
-
-  /* Updates flags */
-  sstCamera.u32Flags &= ~orxCAMERA_KU32_FLAG_READY;
 
   return;
 }

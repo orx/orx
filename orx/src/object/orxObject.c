@@ -189,19 +189,19 @@ orxSTATUS orxObject_Init()
  ***************************************************************************/
 orxVOID orxObject_Exit()
 {
-  /* Not initialized? */
-  if((sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY) == orxOBJECT_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY)
+  {
+    /* Deletes object list */
+    orxObject_DeleteAll();
+
+    /* Updates flags */
+    sstObject.u32Flags &= ~orxOBJECT_KU32_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-
-    return;
   }
-
-  /* Deletes object list */
-  orxObject_DeleteAll();
-
-  /* Updates flags */
-  sstObject.u32Flags &= ~orxOBJECT_KU32_FLAG_READY;
 
   return;
 }

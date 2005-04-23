@@ -125,19 +125,19 @@ orxSTATUS orxFps_Init()
  ***************************************************************************/
 orxVOID orxFps_Exit()
 {
-  /* Not initialized? */
-  if((sstFPS.u32Flags & orxFPS_KU32_FLAG_READY) == orxFPS_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY)
+  {
+    /* Removes fps callback */
+    clock_cb_function_remove(orxFps_Update, 1000);
+
+    /* Updates flags */
+    sstFPS.u32Flags &= ~orxFPS_KU32_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-
-    return;
   }
-
-  /* Removes fps callback */
-  clock_cb_function_remove(orxFps_Update, 1000);
-
-  /* Updates flags */
-  sstFPS.u32Flags &= ~orxFPS_KU32_FLAG_READY;
 
   return;
 }

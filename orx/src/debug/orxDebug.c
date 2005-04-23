@@ -170,16 +170,16 @@ orxSTATUS _orxDebug_Init()
  ***************************************************************************/
 orxVOID _orxDebug_Exit()
 {
-  /* Not initialized? */
-  if((sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY) == orxDEBUG_KU32_CONTROL_FLAG_NONE)
+  /* Initialized? */
+  if(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY)
+  {
+    /* Updates flags */
+    sstDebug.u32Flags &= ~orxDEBUG_KU32_CONTROL_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-
-    return;
   }
-
-  /* Updates flags */
-  sstDebug.u32Flags &= ~orxDEBUG_KU32_CONTROL_FLAG_READY;
 
   return;
 }

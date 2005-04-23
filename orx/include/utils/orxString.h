@@ -120,7 +120,7 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxS32 *_ps32OutValue, orxSTRING _
   orxASSERT(_ps32OutValue != orxNULL);
   
   /* Convert */
-  *_ps32OutValue = strtol(_zString, ppcEndPtr, 10);
+//  *_ps32OutValue = strtol(_zString, ppcEndPtr, 10);
   
   /* Valid conversion ? */
   if (ppcEndPtr != orxNULL)

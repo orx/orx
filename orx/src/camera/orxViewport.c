@@ -320,19 +320,19 @@ orxSTATUS orxViewport_Init()
  ***************************************************************************/
 orxVOID orxViewport_Exit()
 {
-  /* Not initialized? */
-  if((sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY) == orxVIEWPORT_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY)
+  {
+    /* Deletes viewport list */
+    orxViewport_DeleteAll();
+
+    /* Updates flags */
+    sstViewport.u32Flags &= ~orxVIEWPORT_KU32_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-    
-    return;
   }
-
-  /* Deletes viewport list */
-  orxViewport_DeleteAll();
-
-  /* Updates flags */
-  sstViewport.u32Flags &= ~orxVIEWPORT_KU32_FLAG_READY;
 
   return;
 }

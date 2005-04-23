@@ -307,19 +307,19 @@ orxSTATUS orxAnim_Init()
  ***************************************************************************/
 orxVOID orxAnim_Exit()
 {
-  /* Not initialized? */
-  if((sstAnim.u32Flags & orxANIM_KU32_FLAG_READY) == orxANIM_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY)
+  {
+    /* Deletes anim list */
+    orxAnim_DeleteAll();
+
+    /* Updates flags */
+    sstAnim.u32Flags &= ~orxANIM_KU32_FLAG_READY;
+  }
+  else
   {
     /* !!! MSG !!! */
-    
-    return;
   }
-
-  /* Deletes anim list */
-  orxAnim_DeleteAll();
-
-  /* Updates flags */
-  sstAnim.u32Flags &= ~orxANIM_KU32_FLAG_READY;
 
   return;
 }

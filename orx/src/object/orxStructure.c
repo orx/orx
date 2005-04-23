@@ -192,45 +192,45 @@ orxVOID orxStructure_Exit()
 {
   orxU32 i;
 
-  /* Not initialized? */
-  if((sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY) == orxSTRUCTURE_KU32_FLAG_NONE)
+  /* Initialized? */
+  if(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY)
   {
-    /* !!! MSG !!! */
-
-    return;
-  }
-
-  /* For all banks */
-  for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
-  {
-    /* Depending on storage type */
-    switch(sstStructure.astStorage[i].eType)
+    /* For all banks */
+    for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
     {
-    case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+      /* Depending on storage type */
+      switch(sstStructure.astStorage[i].eType)
+      {
+        case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
 
-      /* Empties list */
-      orxLinkList_Clean(&(sstStructure.astStorage[i].stLinkList));
+        /* Empties list */
+        orxLinkList_Clean(&(sstStructure.astStorage[i].stLinkList));
 
-      break;
+        break;
       
-    case orxSTRUCTURE_STORAGE_TYPE_TREE:
+      case orxSTRUCTURE_STORAGE_TYPE_TREE:
 
-      /* Empties tree */
-      orxTree_Clean(&(sstStructure.astStorage[i].stTree));
+        /* Empties tree */
+        orxTree_Clean(&(sstStructure.astStorage[i].stTree));
 
-      break;
+        break;
 
-    default:
+      default:
 
-      break;
+        break;
+      }
+
+      /* Deletes it */
+      orxBank_Delete(sstStructure.astStorage[i].pstBank);
     }
 
-    /* Deletes it */
-    orxBank_Delete(sstStructure.astStorage[i].pstBank);
+    /* Updates flags */
+    sstStructure.u32Flags &= ~orxSTRUCTURE_KU32_FLAG_READY;
   }
-
-  /* Updates flags */
-  sstStructure.u32Flags &= ~orxSTRUCTURE_KU32_FLAG_READY;
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
   return;
 }

@@ -170,10 +170,15 @@ orxVOID orxTexture_Exit()
   /* Initialized? */
   if(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY)
   {
-    sstTexture.u32Flags &= ~orxTEXTURE_KU32_FLAG_READY;
-
     /* Deletes texture list */
     orxTexture_DeleteAll();
+
+    /* Updates flags */
+    sstTexture.u32Flags &= ~orxTEXTURE_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
   }
 
   return;
