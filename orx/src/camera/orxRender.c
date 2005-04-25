@@ -108,7 +108,7 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
     pstTexture  = graphic_2d_data_get(pstGraphic);
 
     /* Gets texture's bitmap */
-    pstBitmap   = orxTexture_GetBitmap(pstTexture);
+    pstBitmap   = (orxBITMAP *)orxTexture_GetBitmap(pstTexture);
 
     /* Gets antialiasing info */
     bAntialias  = graphic_flag_test(pstGraphic, GRAPHIC_KU32_ID_FLAG_ANTIALIAS);
@@ -302,7 +302,7 @@ orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
       /* Has surface? */
       if(pstSurface != orxNULL)
       {
-        pstSurfaceBitmap = orxTexture_GetBitmap(pstSurface);
+        pstSurfaceBitmap = (orxBITMAP *)orxTexture_GetBitmap(pstSurface);
       }
       /* Gets screen surface */
       else

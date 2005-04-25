@@ -7,6 +7,8 @@
  * Textures are 2D structures.
  * 
  * \todo
+ * Add external texture linking
+ * Add bitmap name (ID) storing for later retrieving
  */
 
 
@@ -16,7 +18,7 @@
  
  begin                : 07/12/2003
  author               : (C) Gdp
- email                : iarwain@ifrance.com
+ email                : iarwain@arcallians.org
  ***************************************************************************/
 
 /***************************************************************************
@@ -64,15 +66,15 @@ extern orxSTATUS                        orxTexture_UnlinkBitmap(orxTEXTURE *_pst
 
 
 /** Corresponding bitmap get accessor. */
-extern orxBITMAP                       *orxTexture_GetBitmap(orxTEXTURE *_pstTexture);
+extern orxCONST orxBITMAP              *orxTexture_GetBitmap(orxTEXTURE *_pstTexture);
 
 /** Texture size get accessor. */
-extern orxVOID                          orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize);
+extern orxSTATUS                        orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize);
 
 /** Reference coordinates set accessor (used for rendering purpose). */
 extern orxVOID                          orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
 /** Reference coordinates get accessor (used for rendering purpose). */
-extern orxVOID                          orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
+extern orxSTATUS                        orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
 
 
 #endif /* _orxTEXTURE_H_ */

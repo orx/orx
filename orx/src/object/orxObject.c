@@ -220,7 +220,7 @@ orxOBJECT *orxObject_Create()
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
 
   /* Creates object */
-  pstObject = (orxOBJECT *) orxMemory_Allocate(sizeof(orxOBJECT), orxMEMORY_TYPE_MAIN);
+  pstObject = (orxOBJECT *)orxMemory_Allocate(sizeof(orxOBJECT), orxMEMORY_TYPE_MAIN);
 
   /* Created? */
   if(pstObject != orxNULL)
@@ -238,7 +238,7 @@ orxOBJECT *orxObject_Create()
     {
       /* !!! MSG !!! */
 
-      /* Fress partially allocated texture */
+      /* Fress partially allocated object */
       orxMemory_Free(pstObject);
 
       /* Not created */
@@ -299,10 +299,11 @@ orxSTATUS orxObject_Delete(orxOBJECT *_pstObject)
  orxObject_LinkStructure
  Links a structure to an object given.
 
- returns: orxVOID
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxVOID orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure)
+orxSTATUS orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxSTRUCTURE_ID eStructureID;
   orxU32 u32StructureIndex;
 
@@ -328,8 +329,16 @@ orxVOID orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructu
     _pstObject->pastStructure[u32StructureIndex] = _pstStructure;
     _pstObject->u32LinkedStructures |= (1 << eStructureID);
   }
+  else
+  {
+    /* !!! MSG !!! */
 
-  return;
+    /* Wrong structure ID */
+    eResult = orxSTATUS_FAILED;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************

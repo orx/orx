@@ -11,8 +11,10 @@
  * - Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, hash table)
  * - Add CRC
  * - Add string handling (using CRC + hash)
- * - Add bitmap referencing in texture with duplication check -> reference increase
+ * - Add texture referencing with duplication check -> reference increase
  * - Remove ref point from texture to a higher graph object (no created yet)
+ * - Add animation format, expendable for 3D (with anim_key/anim_channel structures)
+ * - Add multi animation interpreter (for blends, transitions, etc...)
  * - Add fixed point floats + ops + converts (replace (orxFLOAT) casts by a convert function)
  * - Change coord in orxVEC with all new functions
  * - Add Matrix type + functions

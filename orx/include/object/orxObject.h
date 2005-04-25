@@ -57,7 +57,7 @@ extern orxSTATUS                      orxObject_Delete(orxOBJECT *_pstObject);
 extern orxBOOL                        orxObject_IsRenderStatusClean(orxOBJECT *_pstObject);
 
 /** Links a structure to an object. */
-extern orxVOID                        orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure);
+extern orxSTATUS                      orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure);
 /** Unlinks structure from an object, given its structure ID. */
 extern orxVOID                        orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
