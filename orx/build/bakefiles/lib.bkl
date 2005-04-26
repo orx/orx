@@ -72,7 +72,78 @@
         src/utils/utils.c
 		src/utils/orxString.c
     </sources>
+    
+    <!-- Make library install to /usr(/local)/lib .-->
+    <install-to>$(LIBDIR)</install-to>
   </dll>
 
+
+
+
+    <!-- Use datafiles module to allow to easily install files. -->
+    <using module="datafiles" />
+
+    <!-- Install headers. -->
+    <headers>
+        <srcdir>include</srcdir>
+        <install-to>$(INCLUDEDIR)/orx</install-to>
+        <files>
+            anim/orxAnim.h
+            anim/AnimPointer.h
+            anim/orxAnimSet.h
+            base/orxDecl.h
+            base/orxType.h
+            camera/orxCamera.h
+            camera/orxrender.h
+            camera/Viewport.h
+            core/clock.h
+            core/timer.h
+            core/timer_type.h
+            debug/orxDebug.h
+            debug/orxFps.h
+            graph/graph.h
+            graph/graphic.h
+            graph/orxTexture.h
+            io/file.h
+            io/interaction.h
+            io/joystick.h
+            io/keyboard.h
+            io/mouse.h
+            io/package.h
+            math/orxMath.h
+            math/orxVector.h
+            memory/orxBank.h
+            memory/orxMemory.h
+            msg/msg_file.h
+            msg/msg_fps.h
+            msg/msg_game.h
+            msg/msg_graph.h
+            msg/msg_plugin.h
+            msg/msg_screenshot.h
+            msg/msg_timer.h
+            object/orxFrame.h
+            object/orxObject.h
+            object/orxStructure.h
+            plugin/plugin.h
+            plugin/plugin_core.h
+            plugin/plugin_type.h
+            plugin/plugin_user.h
+            plugin/define/plugin_graph.h
+            plugin/define/plugin_joystick.h
+            plugin/define/plugin_keyboard.h
+            plugin/define/plugin_mouse.h
+            plugin/define/plugin_sound.h
+            plugin/define/plugin_timer.h
+            sound/sound.h
+            utils/orxLinkList.h
+            utils/orxString.h
+            utils/orxTest.h
+            utils/orxTree.h
+            utils/pathfinder.h
+            utils/screenshot.h
+            utils/utils.h
+            orxInclude.h
+        </files>
+    </data-files-tree>
 
 </bakefile>
