@@ -9,13 +9,13 @@
 
     <!-- Set the preprocessor definition for plateform. -->
     <set var="orxPLATFORM" make_var="1">
-        <if cond="PLATFORM_WIN32=='1'">WINDOWS</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
-        <if cond="PLATFORM_UNIX=='1'">LINUX</if>           <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+        <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
+        <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>           <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
     </set>
 
     <!-- Set the preprocessor definition for debug mode. -->
     <set var="orxDEBUG">
-        <if cond="BUILD=='debug'">DEBUG</if>
+        <if cond="BUILD=='debug'">__orxDEBUG__</if>
         <if cond="BUILD=='release'"></if>
     </set>
 
