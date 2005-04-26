@@ -144,6 +144,6 @@
             utils/utils.h
             orxInclude.h
         </files>
-    </data-files-tree>
+    </headers>
 
 </bakefile>
