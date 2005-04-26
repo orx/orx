@@ -5,12 +5,12 @@
 <bakefile>
 
     <!-- Include common definitions. -->
-    <include file="orx_libcommon.bkl"/>
+    <include file="build/bakefiles/common.bkl"/>
     
     <!-- Include Orx lib target definition. -->
-    <include file="orx_lib.bkl"/>
+    <include file="build/bakefiles/lib.bkl"/>
     
     <!-- Include test target definbitions. -->
-    <include file="orx_test.bkl"/>
+    <include file="build/bakefiles/test.bkl"/>
     
 </bakefile>
