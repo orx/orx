@@ -33,6 +33,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 #include "debug/orxDebug.h"
 
@@ -99,6 +101,15 @@ orxSTATIC orxINLINE orxVOID orxString_PrintLn(orxSTRING _zMessage, ...)
   printf("\n");
 }
 
+/** Returns the number of character in the string
+ * @param _zString (IN) String used for length computation
+ * @return Length of the string (doesn't count final '\0')
+ */
+orxSTATIC orxINLINE orxU32 orxString_Length(orxSTRING _zString)
+{
+  return strlen(_zString);
+}
+
 /** Read a String from STDIN and store it in the given buffer
  * @param _zOutputBuffer  (OUT) Buffer where the read value will be stored
  * @param _u32NbChar      (IN)  Number of character maximum to read (to avoid overflow)
@@ -114,17 +125,17 @@ extern orxDLLAPI orxSTATUS orxString_ReadString(orxSTRING _zOutputBuffer, orxU32
  */
 orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxS32 *_ps32OutValue, orxSTRING _zString)
 {
-  orxCHAR **ppcEndPtr; /* Address of the first invalid character */
+  /* char instead of orxCHAR to avoid compilation warnings */
+  char *pcEndPtr; /* Address of the first invalid character */
   
   /* Correct parameters ? */
   orxASSERT(_ps32OutValue != orxNULL);
   
   /* Convert */
-  /* TODO : Doens't compile on mingw! */
-//  *_ps32OutValue = strtol(_zString, ppcEndPtr, 10);
+  *_ps32OutValue = strtol(_zString, &pcEndPtr, 10);
   
   /* Valid conversion ? */
-  if (ppcEndPtr != orxNULL)
+  if ((orxString_Length(_zString) > 0) && (isdigit((pcEndPtr - 1)[0])))
   {
     return orxSTATUS_SUCCESS;
   }
