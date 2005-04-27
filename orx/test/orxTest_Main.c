@@ -34,8 +34,10 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
-#include "utils/orxTest.h"
 #include "debug/orxDebug.h"
+#include "utils/orxTest.h"
+#include "utils/orxString.h"
+
 
 /* Include commons libc header */
 #include <stdlib.h>
@@ -275,12 +277,13 @@ orxVOID orxTestMain_Exit()
 
 int main(int argc, char **argv)
 {
-  char zChoice[orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE]; /* Entry read from user */
-  int iVal;                                           /* value of entry */
+  orxCHAR zChoice[orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE];  /* Entry read from user */
+  orxS32 s32Val;                                          /* value of entry */
   
   /* Minimum initialisation */
   orxDEBUG_INIT();      /* Debug module is necessary to display debug from each module */
   orxTest_Init();       /* Test Module is necessary to register test function */
+  orxString_Init();     /* String mdule to manage string (and read value from user) */
   orxTestMain_Init();   /* Initialise application (load dynamic library */
   
   /* Display menu and get user entry */
@@ -290,42 +293,47 @@ int main(int argc, char **argv)
     orxTest_DisplayMenu();
     
     /* Get user choice */
-    printf("quit : Quit the test program\n\n");
-    printf("Choice : ");
-    fgets(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, stdin);
+    orxString_PrintLn("quit : Quit the test program");
+    orxString_ReadString(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, "Choice : ");
     
     /* Check overflow */
-    if ((strlen(zChoice) > 0) && zChoice[strlen(zChoice)-1] == '\n')
+    if ((orxString_Length(zChoice) > 0) && zChoice[orxString_Length(zChoice)-1] == '\n')
     {
       zChoice[strlen(zChoice)-1] = '\0';
     }
     
-    /* The user wants to quir ? */
-    if (strcmp(zChoice, "quit") != 0)
+    /* The user wants to quit ? */
+    if (orxString_Compare(zChoice, "quit") != 0)
     {
       /* No, so parse its choice */
-      iVal = atoi(zChoice);
-      
-      /* Execute the function associated to the user choice */
-      if (orxTest_Execute((orxHANDLE)iVal) == orxSTATUS_FAILED)
+      if ((orxString_ToS32(&s32Val, zChoice) == orxSTATUS_FAILED))
       {
-        /* Invalid choice was used */
-        printf("Unknown command\n");
+        /* The value is not a digit */
+        orxString_PrintLn("The Value is not a digit");
+      }
+      else
+      {
+        if (orxTest_Execute((orxHANDLE)s32Val) == orxSTATUS_FAILED)
+        {
+          /* Invalid choice was used */
+          printf("Unknown command\n");
+        }
       }
       
       /* Function has been executed. Wait for a pressed key before displaying the menu (clear screen would be fine) */
-      printf("Press Enter to continue\n");
+      orxString_PrintLn("Press Enter to continue");
       getchar();
       
       /* Reinitialize user choice */
       memset(zChoice, 0, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE * sizeof(char));
-      iVal = -1;
+      s32Val = -1;
     }
   }
-  while (strcmp(zChoice, "quit") != 0);
+  while (orxString_Compare(zChoice, "quit") != 0);
   
   /* Uninitialize modules */
   orxTestMain_Exit();
+  orxString_Exit();
   orxTest_Exit();
   orxDEBUG_EXIT();
   
