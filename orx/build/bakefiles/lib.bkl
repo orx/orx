@@ -46,7 +46,7 @@
         src/io/package.c
     </sources>
     <sources>
-        src/math/coord.c
+        src/math/orxVector.c
     </sources>
     <sources>
         src/memory/orxBank.c
@@ -68,9 +68,9 @@
         src/utils/orxTest.c
         src/utils/orxTree.c
         src/utils/pathfinder.c
-        src/utils/screenshot.c
+        src/utils/orxScreenshot.c
         src/utils/utils.c
-		src/utils/orxString.c
+        src/utils/orxString.c
     </sources>
     
     <!-- Make library install to /usr(/local)/lib .-->
@@ -140,7 +140,7 @@
             utils/orxTest.h
             utils/orxTree.h
             utils/pathfinder.h
-            utils/screenshot.h
+            utils/orxScreenshot.h
             utils/utils.h
             orxInclude.h
         </files>
