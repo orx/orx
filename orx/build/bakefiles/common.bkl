@@ -7,6 +7,20 @@
         <default-value>release</default-value>
     </option>
 
+    <!-- Choose the type of building : static or dynamic. -->
+    <option name="LINK">
+        <values>static,dynamic</values>
+        <default-value>static</default-value>
+    </option>
+    
+    <!-- Set a flag to specify if build is static. -->
+    <set var="orxLINKSTATIC">
+        <if cond="LINK=='static'">1</if>
+        <if cond="LINK=='dynamic'">0</if>
+    </set>
+    
+    
+
     <!-- Set the preprocessor definition for plateform. -->
     <set var="orxPLATFORM" make_var="1">
         <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
@@ -49,6 +63,11 @@
 
   <set var="BUILDDIR">.$(DIRSEP)$(orxBUILDDIR)</set>
 
+    <set var="orxLINKDEPEND">
+        <if cond="LINK=='static'">orxLIB</if>
+        <if cond="LINK=='dynamic'">orxDLL</if>
+    </set>
+
     <!-- Set a template (common properties) to use with all orx target. -->
     <template id="orxBASE">
         <!-- Optimization and debug infos. -->
@@ -69,7 +88,9 @@
     <template id="orxLINK">
         <lib-path>$(orxLIBDIR)</lib-path>
         <sys-lib>orx$(orxSUFFIX)</sys-lib>
-        <depends>orx</depends>
+        
+        <depends>$(orxLINKDEPEND)</depends>
+        
     </template>
 
 
