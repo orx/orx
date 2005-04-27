@@ -96,7 +96,7 @@ orxU32 orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue)
   /* The align value has to be a power of 2 and > 0 */
   orxASSERT(_u32AlignValue > 0);
   
-  return ((_u32OriginalValue - _u32AlignValue - 1) & (~(_u32AlignValue - 1)));
+  return ((_u32OriginalValue + _u32AlignValue - 1) & (~(_u32AlignValue - 1)));
 }
 
 /** Allocate a portion of memory in the system and returns a pointer on it
