@@ -1,6 +1,6 @@
 /***************************************************************************
  orxTexture.c
- texture module
+ Texture module
  
  begin                : 07/12/2003
  author               : (C) Arcallians

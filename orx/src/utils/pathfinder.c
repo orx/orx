@@ -425,7 +425,7 @@ orxBOOL pathfinder_is_walkable(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
 
     for(fX = (orxFLOAT)st_start.fX + PATHFINDER_KF_POSX, fY = (orxFLOAT)st_start.fY + PATHFINDER_KF_POSY; fX < (orxFLOAT)st_end.fX + PATHFINDER_KF_POSX; fX += f_dx, fY += f_dy)
     {
-      if(sppst_matrix[(int)fX][(int)fY].b_blocked != orxFALSE)
+      if(sppst_matrix[(orxU32)fX][(orxU32)fY].b_blocked != orxFALSE)
       {
         b_res = orxFALSE;
         break;
@@ -438,7 +438,7 @@ orxBOOL pathfinder_is_walkable(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
 
     for(fX = (orxFLOAT)st_start.fX + PATHFINDER_KF_POSX, fY = (orxFLOAT)st_start.fY + PATHFINDER_KF_POSY; fY < (orxFLOAT)st_end.fY + PATHFINDER_KF_POSY; fY += f_dy)
     {
-      if(sppst_matrix[(int)fX][(int)fY].b_blocked != orxFALSE)
+      if(sppst_matrix[(orxU32)fX][(orxU32)fY].b_blocked != orxFALSE)
       {
         b_res = orxFALSE;
         break;

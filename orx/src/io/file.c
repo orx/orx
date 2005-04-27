@@ -754,14 +754,14 @@ orxS32 file_list_orxDEBUG_LOG()
   while(spst_search_list != orxNULL)
   {
     printf("------------------------------\n");
-    printf("ADRESS : %d\n", (int)spst_search_list);
+    printf("ADRESS : %ld\n", (orxU32)spst_search_list);
 #ifdef __linux__
-    printf("DIRECTORY : %d\n", (int)spst_search_list->pst_directory);
+    printf("DIRECTORY : %ld\n", (orxU32)spst_search_list->pst_directory);
     printf("PATTERN : %s\n", spst_search_list->ac_pattern);
 #else
     printf("HANDLER : %ld\n", spst_search_list->i_find_handler);
 #endif
-    printf("NEXT : %d\n", (int)spst_search_list->pstNext);
+    printf("NEXT : %ld\n", (orxU32)spst_search_list->pstNext);
     spst_search_list = spst_search_list->pstNext;
   }
   spst_search_list = pst_tmp_list;            /* on repositionne le pointeur en début de liste */

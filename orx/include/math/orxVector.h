@@ -1,11 +1,11 @@
 /** 
  * \file orxVector.h
  * 
- * Vector Module.
- * Handles vectors type.
+ * Vector module.
+ * Handles vectors.
  * 
  * \todo
- * Gets it intrinsic.
+ * Gets it intrinsic depending on platform.
  * All handling functions.
  */
 
