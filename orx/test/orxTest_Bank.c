@@ -86,7 +86,6 @@ orxVOID orxTest_Bank_Infos()
  */
 orxVOID orxTest_Bank_Create()
 {
-  orxU32 u32Index;
   orxCHAR zUserValue[64];     /* String where user inputs are stored */
   orxS32 s32ID;
   orxS32 s32NbElem;

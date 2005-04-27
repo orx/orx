@@ -95,7 +95,8 @@ orxU32 orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue)
 {
   /* The align value has to be a power of 2 and > 0 */
   orxASSERT(_u32AlignValue > 0);
-  
+  orxASSERT((_u32AlignValue & (_u32AlignValue - 1)) == 0);
+
   return ((_u32OriginalValue + _u32AlignValue - 1) & (~(_u32AlignValue - 1)));
 }
 
