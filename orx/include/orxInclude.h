@@ -8,10 +8,10 @@
 
 
 /* *** TODO LIST
- * - Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, hash table)
- * - Add CRC
+ * C Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, hash table)
+ * V Add CRC
  * - Add string handling (using CRC + hash)
- * - Add texture referencing with duplication check -> reference increase
+ * V Add texture referencing with duplication check -> reference increase
  * - Remove ref point from texture to a higher graph object (no created yet)
  * - Add animation format, expendable for 3D (with anim_key/anim_channel structures)
  * - Add multi animation interpreter (for blends, transitions, etc...)
@@ -23,15 +23,15 @@
  * - Adds rendering context to camera
  * - Modify timer plugin to make plugin side simpler
  * - Add timer IDs, make game/real (=>IDs) time accessors generic
- * - Animation shouldn't use directly textures but wrapping anim_atom
+ * - Animation shouldn't use directly textures but wrapping anim_atomic
  * - Simplify plugin declaration with macros/enums instead of flag IDs
  * - Adds interactors
  * - Adds event
  * - Adds LUA integration
- * - Complete orxBANK implementation
+ * C Complete orxBANK implementation
  * - Rewrite File and Package module to use plugins system
  * - Complete test module and add a generic makefile to compile each test file as an automatically loaded dynamic library
- * - Write a module to manage string (overload string.h functionalities) + add other functionalities
+ * C Write a module to manage string (overload string.h functionalities) + add other functionalities
  */
 
 
