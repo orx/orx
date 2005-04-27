@@ -60,11 +60,26 @@ extern orxDLLAPI orxFASTCALL orxSTATUS  orxString_ReadString(orxSTRING _zOutputB
  * @param _u32CRC         (IN)  Base CRC.
  * @return The resulting CRC.
  */
-extern orxFASTCALL orxU32               orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC);
+extern orxDLLAPI orxFASTCALL orxU32     orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC);
 
 
 /* *** String inlined functions *** */
 
+
+/** Copies a string.
+ * @param _zDstString     (IN) Destination string
+ * @param _zSrcString     (IN) Source string
+ * @return Copied string.
+ */
+orxSTATIC orxINLINE orxSTRING           orxString_Copy(orxSTRING _zDstString, orxSTRING _zSrcString)
+{
+  /* Checks */
+  orxASSERT(_zDstString != orxNULL);
+  orxASSERT(_zSrcString != orxNULL);
+
+  /* Done! */
+  return(strcpy(_zDstString, _zSrcString));
+}
 
 /** Compare two strings. If the first one is smaller than the second, it returns -1,
  * If the second one is bigger than the first, and 0 if they are equals
@@ -72,9 +87,14 @@ extern orxFASTCALL orxU32               orxString_ContinueCRC(orxSTRING _zString
  * @param _zString2   (IN) Second string to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
-orxSTATIC orxINLINE orxU32              orxString_Compare(orxSTRING _zString1, orxSTRING _zString2)
+orxSTATIC orxINLINE orxS32              orxString_Compare(orxSTRING _zString1, orxSTRING _zString2)
 {
-  return strcmp(_zString1, _zString2);
+  /* Checks */
+  orxASSERT(_zString1 != orxNULL);
+  orxASSERT(_zString2 != orxNULL);
+
+  /* Done! */  
+  return(strcmp(_zString1, _zString2));
 }
 
 /** Compare N first character from two strings. If the first one is smaller 
@@ -85,9 +105,36 @@ orxSTATIC orxINLINE orxU32              orxString_Compare(orxSTRING _zString1, o
  * @param _u32NbChar  (IN) Number of character to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
-orxSTATIC orxINLINE orxU32              orxString_NCompare(orxSTRING _zString1, orxSTRING _zString2, orxU32 _u32NbChar)
+orxSTATIC orxINLINE orxS32              orxString_NCompare(orxSTRING _zString1, orxSTRING _zString2, orxU32 _u32NbChar)
 {
+  /* Checks */
+  orxASSERT(_zString1 != orxNULL);
+  orxASSERT(_zString2 != orxNULL);
+
+  /* Done! */
   return strncmp(_zString1, _zString2, _u32NbChar);
+}
+
+/** Prints a formated string
+ * @param _zDstString    (IN) Destination string
+ * @param _zSrcString    (IN) Source formated string
+ * @retrun The written string.
+ */
+orxSTATIC orxINLINE orxS32              orxString_Printf(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
+{
+  va_list stArgs;
+  orxS32 s32Result;
+
+  /* Checks */
+  orxASSERT(_zDstString != orxNULL);
+  orxASSERT(_zSrcString != orxNULL);
+
+  /* Parse arguments, print and end it */
+  va_start(stArgs, _zSrcString);
+  s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
+  va_end(stArgs);
+
+  return s32Result;
 }
 
 /** Print a message on STDIN
@@ -97,7 +144,7 @@ orxSTATIC orxINLINE orxVOID             orxString_Print(orxSTRING _zMessage, ...
 {
   /* Declare argument lists */
   va_list args;
-  
+
   /* Parse arguments, print and end it */
   va_start(args, _zMessage);
   vprintf(_zMessage, args);
@@ -127,7 +174,11 @@ orxSTATIC orxINLINE orxVOID             orxString_PrintLn(orxSTRING _zMessage, .
  */
 orxSTATIC orxINLINE orxU32              orxString_Length(orxSTRING _zString)
 {
-  return strlen(_zString);
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+
+  /* Done! */
+  return(strlen(_zString));
 }
 
 /** Convert a String to a value

@@ -17,7 +17,7 @@
  Texture module
  
  begin                : 07/12/2003
- author               : (C) Gdp
+ author               : (C) Arcallians
  email                : iarwain@arcallians.org
  ***************************************************************************/
 

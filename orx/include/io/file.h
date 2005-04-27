@@ -74,7 +74,9 @@ orxBOOL file_find_first(orxU8 *_z_pattern, file_st_file_infos *_pstInfo);
  * \return retourne orxTRUE si un fichier suivant est trouve, orxFALSE sinon (en cas de orxFALSE, la recherche est termine
  * automatiquement, pas besoin d'appel a la fonction file_find_close)
  */
-orxBOOL file_find_next(file_st_file_infos *_pstInfo);/** Termine une recherche commencé par un file_find_first.
+orxBOOL file_find_next(file_st_file_infos *_pstInfo);
+
+/** Termine une recherche commencé par un file_find_first.
  * \param _pstInfo dernieres informations qui ont ete rendu par la recherche qui permet de savoir de 
  * quelle recherche il s'agit.
  */

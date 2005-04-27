@@ -36,7 +36,7 @@
 #include "orxInclude.h"
 
 
-/* *** orxDEBUG FLAGS *** */
+/* *** orxDEBUG flags *** */
 
 #define orxDEBUG_KU32_FLAG_NONE               0x00000000
 #define orxDEBUG_KU32_FLAG_ALL                0x0FFFFFFF
