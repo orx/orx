@@ -191,5 +191,5 @@ orxFASTCALL orxU32 orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC)
   }
 
   /* Done! */
-  return u32CRC;
+  return(u32CRC ^ 0xFFFFFFFFL);
 }
