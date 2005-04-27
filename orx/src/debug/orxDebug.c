@@ -298,7 +298,7 @@ orxVOID _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orx
   vsprintf(sstDebug.zLog, _zFormat, stArgs);
   va_end(stArgs);
 
-  sprintf(sstDebug.zBuffer, "%s %s", sstDebug.zBuffer, sstDebug.zLog);
+  sprintf(sstDebug.zBuffer, "%s %s\n", sstDebug.zBuffer, sstDebug.zLog);
 
   /* Use file? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_FLAG_FILE)
