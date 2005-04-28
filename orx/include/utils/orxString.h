@@ -118,7 +118,7 @@ orxSTATIC orxINLINE orxS32              orxString_NCompare(orxSTRING _zString1, 
 /** Prints a formated string
  * @param _zDstString    (IN) Destination string
  * @param _zSrcString    (IN) Source formated string
- * @retrun The written string.
+ * @retrun The number of written characters
  */
 orxSTATIC orxINLINE orxS32              orxString_Printf(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
 {
@@ -184,9 +184,10 @@ orxSTATIC orxINLINE orxU32              orxString_Length(orxSTRING _zString)
 /** Convert a String to a value
  * @param _ps32OutValue   (OUT) Converted value
  * @param _zString        (IN)  String To convert
+ * @param _u32Base        (IN)  BAse of the read value (generally 10, but can be 16 to read hexa)
  * @return  return the status of the conversion
  */
-orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxS32 *_ps32OutValue, orxSTRING _zString)
+orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxS32 *_ps32OutValue, orxSTRING _zString, orxU32 _u32Base)
 {
   /* char instead of orxCHAR to avoid compilation warnings */
   orxCHAR *pcEndPtr; /* Address of the first invalid character */
@@ -196,7 +197,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxS32 *_ps32OutValue, o
   orxASSERT(_zString != orxNULL);
   
   /* Convert */
-  *_ps32OutValue = strtol(_zString, &pcEndPtr, 10);
+  *_ps32OutValue = strtol(_zString, &pcEndPtr, _u32Base);
   
   /* Valid conversion ? */
   if ((orxString_Length(_zString) > 0) && (isdigit((pcEndPtr - 1)[0])))

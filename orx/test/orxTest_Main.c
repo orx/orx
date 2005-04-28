@@ -306,7 +306,7 @@ int main(int argc, char **argv)
     if (orxString_Compare(zChoice, "quit") != 0)
     {
       /* No, so parse its choice */
-      if ((orxString_ToS32(&s32Val, zChoice) == orxSTATUS_FAILED))
+      if ((orxString_ToS32(&s32Val, zChoice, 10) == orxSTATUS_FAILED))
       {
         /* The value is not a digit */
         orxString_PrintLn("The Value is not a digit");
