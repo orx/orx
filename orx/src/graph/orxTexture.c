@@ -467,7 +467,7 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
     graph_bitmap_size_get(_pstBitmap, &u32Width, &u32Height);
 
     /* Copy bitmap size (Z size is null) */
-    coord_set(&(_pstTexture->vSize), orxU2F(u32Width), orxU2F(u32Height), 0.0f);
+    coord_set(&(_pstTexture->vSize), orxU2F(u32Width), orxU2F(u32Height), orx2F(0.0f));
   }
   else
   {
@@ -620,7 +620,7 @@ orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
     /* !!! MSG !!! */
 
     /* No refpoint */
-    coord_set(_pvRefPoint, 0.0f, 0.0f, 0.0f);
+    coord_set(_pvRefPoint, orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
     eResult = orxSTATUS_FAILED;
   }
 
@@ -654,7 +654,7 @@ orxSTATUS orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize)
     /* !!! MSG !!! */
 
     /* No size */
-    coord_set(_pvSize, 0.0f, 0.0f, 0.0f);
+    coord_set(_pvSize, orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
     eResult = orxSTATUS_FAILED;
   }
 

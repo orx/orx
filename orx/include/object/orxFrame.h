@@ -59,9 +59,9 @@ extern orxBOOL              orxFrame_IsRenderStatusClean(orxFRAME *_pstFrame);
 
 /** Does frame has differential scrolling? */
 extern orxBOOL              orxFrame_HasDifferentialScrolling(orxFRAME *_pstFrame);
-/** Sets frame differential scrolling values (X & Y axis / 0.0f : none) */
+/** Sets frame differential scrolling values (X & Y axis / orx2F(0.0f) : none) */
 extern orxVOID              orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScroll);
-/** Gets frame differential scrolling values (X & Y axis / 0.0f : none) */
+/** Gets frame differential scrolling values (X & Y axis / orx2F(0.0f) : none) */
 extern orxVOID              orxFrame_GetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScroll);
 
 /** Sets a frame parent. */

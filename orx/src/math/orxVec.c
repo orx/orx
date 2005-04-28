@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 
-#include "math/orxVector.h"
+#include "math/orxVec.h"
 
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
@@ -49,7 +49,7 @@ orxVOID coord_set(orxVEC *_pst_coord, orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
   return;
 }
 
-orxVOID coord_reset(orxVEC *_pst_coord)
+orxVOID orxVec_Load(orxVEC *_pst_coord)
 {
   coord_set(_pst_coord, COORD_KS32_orxNULL, COORD_KS32_orxNULL, COORD_KS32_orxNULL);
 

@@ -8,11 +8,13 @@
 
 
 /* *** TODO LIST
- * C Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, hash table)
+ * C Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, graph, hash table)
  * V Add CRC
  * - Add string handling (using CRC + hash)
  * V Add texture referencing with duplication check -> reference increase
  * - Remove ref point from texture to a higher graph object (no created yet)
+ * - Rewrite graph system using modulable architecture (2D data => sprite / 3D => mesh/skel...)
+ * - Rewrite anim system using packed format (indexing + key) + data type separation at a lower level
  * - Add animation format, expendable for 3D (with anim_key/anim_channel structures)
  * - Add multi animation interpreter (for blends, transitions, etc...)
  * - Add fixed point floats + ops + converts (replace (orxFLOAT) casts by a convert function)
@@ -32,6 +34,9 @@
  * - Rewrite File and Package module to use plugins system
  * - Complete test module and add a generic makefile to compile each test file as an automatically loaded dynamic library
  * C Write a module to manage string (overload string.h functionalities) + add other functionalities
+ * - Add network :)
+ * - Add FSM
+ * - Add waypoint/way system
  */
 
 

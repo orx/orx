@@ -287,7 +287,7 @@ orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_S
  ***************************************************************************/
 orxINLINE orxFLOAT _orxFrame_GetAngle(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
-  orxFLOAT fAngle = 0.0f;
+  orxFLOAT fAngle = orx2F(0.0f);
 
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -327,7 +327,7 @@ orxINLINE orxFLOAT _orxFrame_GetAngle(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace
  ***************************************************************************/
 orxINLINE orxFLOAT _orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
-  orxFLOAT fScale = 1.0f;
+  orxFLOAT fScale = orx2F(1.0f);
  
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -670,8 +670,8 @@ orxFRAME *orxFrame_Create()
         if(orxStructure_Setup((orxSTRUCTURE *)pstFrame, orxSTRUCTURE_ID_FRAME) == orxSTATUS_SUCCESS)
         {
           /* Inits values */
-          pstData->fGlobalScale = 1.0f;
-          pstData->fLocalScale = 1.0f;
+          pstData->fGlobalScale = orx2F(1.0f);
+          pstData->fLocalScale = orx2F(1.0f);
 
           /* Links data to frame */
           pstFrame->pstData = pstData;
@@ -824,7 +824,7 @@ orxVOID orxFrame_GetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScrol
     else
     {
       /* Stores value */
-      _pvScroll->fX = 0.0f;
+      _pvScroll->fX = orx2F(0.0f);
     }
 
     /* Uses Y scroll? */
@@ -836,7 +836,7 @@ orxVOID orxFrame_GetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScrol
     else
     {
       /* Stores value */
-      _pvScroll->fY = 0.0f;
+      _pvScroll->fY = orx2F(0.0f);
     }
   }
   else
@@ -866,7 +866,7 @@ orxVOID orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScrol
   if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
   {
     /* Enables X axis differential scrolling? */
-    if(_pvScroll->fX != 0.0f)
+    if(_pvScroll->fX != orx2F(0.0f))
     {
       u32AddFlags     |= orxFRAME_KU32_ID_FLAG_SCROLL_X;
     }
@@ -1027,7 +1027,7 @@ orxVOID orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLoca
   else
   {
     /* Resets coord structure */
-    coord_reset(_pvPos);
+    orxVec_SetAll(_pvPos, orx2F(orx2F(0.0f)));
   }
 
   return;
@@ -1041,7 +1041,7 @@ orxVOID orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLoca
  ***************************************************************************/
 orxFLOAT orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal)
 {
-  orxFLOAT fAngle = 0.0f;
+  orxFLOAT fAngle = orx2F(0.0f);
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -1076,7 +1076,7 @@ orxFLOAT orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal)
  ***************************************************************************/
 orxFLOAT orxFrame_GetScale(orxFRAME *_pstFrame, orxBOOL _bLocal)
 {
-  orxFLOAT fScale = 1.0f;
+  orxFLOAT fScale = orx2F(1.0f);
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);

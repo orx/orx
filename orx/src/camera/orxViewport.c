@@ -161,7 +161,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
   orxVEC *pvPos, *pvSize;
   orxVEC vResult;
   orxU32 u32Flags;
-  orxFLOAT fX = 0.0f, fY = 0.0f;
+  orxFLOAT fX = orx2F(0.0f), fY = orx2F(0.0f);
 
   /* Checks */
   orxASSERT(_pstViewport != orxNULL);
@@ -219,7 +219,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
       }
 
       /* Stores it in a coord structure */
-      coord_set(&vResult, fX, fY, 0.0f);
+      coord_set(&vResult, fX, fY, orx2F(0.0f));
 
       /* Updates camera screen position */
       orxCamera_SetOnScreenPosition(_pstViewport->pstCamera, &vResult);

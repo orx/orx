@@ -63,6 +63,8 @@
   typedef char                  orxCHAR;
   typedef orxCHAR              *orxSTRING;
 
+#define orx2F(V)             (orxFLOAT)(V)
+
 #else /* __orxWINDOWS__ */
 
   /* Linux */
@@ -86,8 +88,10 @@
 
     typedef float               orxFLOAT;
 
-    typedef char               orxCHAR;
+    typedef char                orxCHAR;
     typedef orxCHAR            *orxSTRING;
+
+#define orx2F(V)             (orxFLOAT)(V)
 
   #endif /* __orxLINUX__ */
   
@@ -95,15 +99,19 @@
 
 
 /* *** Boolean Defines *** */
-orxSTATIC orxCONST   orxBOOL   orxFALSE            = (orxBOOL)(1 != 1);
-orxSTATIC orxCONST   orxBOOL   orxTRUE             = (orxBOOL)(1 == 1);
+orxSTATIC orxCONST  orxBOOL     orxFALSE            = (orxBOOL)(1 != 1);
+orxSTATIC orxCONST  orxBOOL     orxTRUE             = (orxBOOL)(1 == 1);
 
 /* *** Undefined defines *** */
-orxSTATIC orxCONST   orxU64    orxU64_Undefined    = (orxU64)(-1);
-orxSTATIC orxCONST   orxU32    orxU32_Undefined    = (orxU32)(-1);
-orxSTATIC orxCONST   orxU16    orxU16_Undefined    = (orxU16)(-1);
-orxSTATIC orxCONST   orxU8     orxU8_Undefined     = (orxU8)(-1);
-orxSTATIC orxCONST   orxHANDLE orxHANDLE_Undefined = (orxHANDLE)(-1);
+orxSTATIC orxCONST  orxU64      orxU64_Undefined    = (orxU64)(-1);
+orxSTATIC orxCONST  orxU32      orxU32_Undefined    = (orxU32)(-1);
+orxSTATIC orxCONST  orxU16      orxU16_Undefined    = (orxU16)(-1);
+orxSTATIC orxCONST  orxU8       orxU8_Undefined     = (orxU8)(-1);
+orxSTATIC orxCONST  orxHANDLE   orxHANDLE_Undefined = (orxHANDLE)(-1);
+
+/* *** Float defines *** */
+orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(orx2F(0.0f));
+orxSTATIC orxCONST  orxFLOAT    orxFLOAT_1          = orx2F(orx2F(1.0f));
 
 
 /* *** Status defines *** */

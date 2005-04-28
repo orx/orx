@@ -1,5 +1,5 @@
 /** 
- * \file orxVector.h
+ * \file orxVec.h
  * 
  * Vector module.
  * Handles vectors.
@@ -11,7 +11,7 @@
 
 
 /***************************************************************************
- orxVector.h
+ orxVec.h
  Vector module
  
  begin                : 30/03/2005
@@ -29,25 +29,53 @@
  ***************************************************************************/
 
 
-#ifndef _orxVECTOR_H_
-#define _orxVECTOR_H_
+#ifndef _orxVEC_H_
+#define _orxVEC_H_
 
 #include "orxInclude.h"
+
+#include "debug/orxDebug.h"
 
 
 /** Public structure definition. */
 typedef struct __orxVEC_t
 {
-  /** Integer coordinates : 16 */
+  /** Coordinates : 16 */
   orxFLOAT fX, fY, fZ, fW;
 
 } orxVEC;
 
 
-/** Tells if coord is null (Warning : null != (0, 0, 0)) */
-extern orxBOOL coord_is_null(orxVEC *_pst_coord);
-/** Nullify a coord. */
-extern orxVOID coord_reset(orxVEC *_pst_coord);
+/** Sets vector x / y / z / w values. */
+orxSTATIC orxINLINE orxVEC *orxCONST    orxVec_Set4(orxVEC *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ, orxFLOAT _fW)
+{
+  /* Checks */
+  orxASSERT(_pvVec != orxNULL);
+
+  /* Stores values */
+  _pvVec->fX = _fX;
+  _pvVec->fY = _fY;
+  _pvVec->fZ = _fZ;
+  _pvVec->fW = _fW;
+
+  /* Done ! */
+  return _pvVec;
+}
+
+/** Sets vector x / y / z values. */
+orxSTATIC orxINLINE orxVEC *orxCONST    orxVec_Set3(orxVEC *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
+{
+  /* Done ! */
+  return(orxVec_Set4(_pvVec, _fX, _fY, _fZ, orx2F(0.0f)));
+}
+
+/** Sets value in all vector fields. */
+orxSTATIC orxINLINE orxVEC *orxCONST    orxVec_SetAll(orxVEC *_pvVec, orxFLOAT _fValue)
+{
+  /* Done ! */
+  return(orxVec_Set4(_pvVec, _fValue, _fValue, _fValue, _fValue));
+}
+
 /** Sets coord values. */
 extern orxVOID coord_set(orxVEC *_pst_coord, orxS32 _i_x, orxS32 _i_y, orxS32 _i_z);
 
@@ -78,4 +106,4 @@ extern orxVOID coord_aabox_reorder(orxVEC *_pst_box_ul, orxVEC *_pst_box_br);
 extern orxBOOL coord_aabox_intersection_test(orxVEC *_pst_box1_ul, orxVEC *_pst_box1_br, orxVEC *_pst_box2_ul, orxVEC *_pst_box2_br);
 
 
-#endif /* _orxVECTOR_H_ */
+#endif /* _orxVEC_H_ */

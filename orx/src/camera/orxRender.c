@@ -119,7 +119,7 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
     orxFrame_GetPosition(_pstFrame, &vPos, orxFALSE);
 
     /* Blit bitmap onto surface */
-    if((fRotation == 0.0f) && (fScale == 1.0f))
+    if((fRotation == orx2F(0.0f)) && (fScale == orx2F(1.0f)))
     {
       /* Gets bitmap's size */
       graph_bitmap_size_get(pstBitmap, &s32Width, &s32Height);

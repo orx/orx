@@ -37,7 +37,7 @@
 /* *** Maths related includes *** */
 #include <math.h>                   /* Common maths / should be removed later */
 
-#include "math/orxVector.h"         /* Vectors */
+#include "math/orxVec.h"            /* Vectors */
 
 
 /* *** Public macro definition. *** */
@@ -48,7 +48,7 @@
 #define orxCLAMP(V, MIN, MAX)     orxMAX(orxMIN(V, MAX), MIN)
 
 #define orxABS(V)                 (((V) < 0) ? -(V) : (V))
-#define orxFABS(V)                (((V) < 0.0f) ? -(V) : (V))
+#define orxFABS(V)                (((V) < orx2F(0.0f)) ? -(V) : (V))
 
 #define orxSWAP32(A, B)                                       \
 do                                                            \
@@ -65,6 +65,7 @@ do                                                            \
 
 
 /*** Math Definitions ***/
+
 #define KF_MATH_SQRT2             1.414213562f
 
 

@@ -299,7 +299,7 @@ orxVOID pathfinder_matrix_create()
 
 orxVOID pathfinder_map_init(orxS32 _i_horizontal_size, orxS32 _i_vertical_size)
 {
-  coord_reset(&sst_null);
+//  orxVec_Load(&sst_null);
 
   pathfinder_gi_map_h_size = _i_horizontal_size;
   pathfinder_gi_map_v_size = _i_vertical_size;
@@ -615,15 +615,15 @@ orxS32 pathfinder_path_get(orxVEC *_pst_src, orxVEC *_pst_dest, orxVEC **_ppst_r
               coord_copy(&st_next, pathfinder_coord_next(&st_act));
               coord_copy(&st_prev, pathfinder_coord_previous(&st_act));
 
-              if(coord_is_null(&st_next) == orxFALSE)
-              {
-                coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
-              }
-
-              if(coord_is_null(&st_prev) == orxFALSE)
-              {
-                coord_copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
-              }
+//              if(coord_is_null(&st_next) == orxFALSE)
+//              {
+//                coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
+//              }
+//
+//              if(coord_is_null(&st_prev) == orxFALSE)
+//              {
+//                coord_copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
+//              }
             }
           }
 
@@ -637,19 +637,19 @@ orxS32 pathfinder_path_get(orxVEC *_pst_src, orxVEC *_pst_dest, orxVEC **_ppst_r
           pst_temp = pathfinder_coord_next(&st_parent);
           coord_copy(&st_next, pst_temp);
           coord_copy(&st_prev, &st_parent);
-          while((coord_is_null(&st_next) == orxFALSE) && (f_newf >= pathfinder_fcost(&st_next)))
-          {
-            coord_copy(&st_prev, &st_next);
-            pst_temp = pathfinder_coord_next(&st_next);
-            coord_copy(&st_next, pst_temp);
-          }
+//          while((coord_is_null(&st_next) == orxFALSE) && (f_newf >= pathfinder_fcost(&st_next)))
+//          {
+//            coord_copy(&st_prev, &st_next);
+//            pst_temp = pathfinder_coord_next(&st_next);
+//            coord_copy(&st_next, pst_temp);
+//          }
           pathfinder_tile_set(&st_act, f_newg, f_newf, i_newnum, &st_parent, &st_prev, &st_next, orxTRUE);
 
           coord_copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_act);
-          if(coord_is_null(&st_next) == orxFALSE)
-          {
-            coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_act);
-          }
+//          if(coord_is_null(&st_next) == orxFALSE)
+//          {
+//            coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_act);
+//          }
         }
       }
     }
@@ -662,25 +662,25 @@ orxS32 pathfinder_path_get(orxVEC *_pst_src, orxVEC *_pst_dest, orxVEC **_ppst_r
     pst_temp = pathfinder_coord_next(&st_parent);
     coord_copy(&st_next, pst_temp);
 
-    if(coord_is_null(&st_next) == orxFALSE)
-    {
-      coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
-    }
-
-    if(coord_is_null(&st_prev) == orxFALSE)
-    {
-      coord_copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
-    }
+//    if(coord_is_null(&st_next) == orxFALSE)
+//    {
+//      coord_copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
+//    }
+//
+//    if(coord_is_null(&st_prev) == orxFALSE)
+//    {
+//      coord_copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
+//    }
 
     coord_copy(&st_parent, &pst_tile->st_next);
-    if(coord_is_null(&st_parent) != orxFALSE)
-    {
-      break;
-    }
-    else
-    {
-      pst_tile = pathfinder_tile_get(&st_parent);
-    }
+//    if(coord_is_null(&st_parent) != orxFALSE)
+//    {
+//      break;
+//    }
+//    else
+//    {
+//      pst_tile = pathfinder_tile_get(&st_parent);
+//    }
   }
 
   return 0;

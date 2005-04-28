@@ -421,7 +421,7 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
       coord_sub(pvUL, pvBR, pvSize);
 
       /* Applies scale & rotation if needed */
-      if(fRot != 0.0f)
+      if(fRot != orx2F(0.0f))
       {
         orxFLOAT fMax;
 
@@ -434,11 +434,11 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
         /* Gets corner maximum absolute value between X & Y values */
         if(orxFABS(pvUL->fX) > orxFABS(pvUL->fY))
         {
-          fMax = orxFABS(pvUL->fX) + 1.0f;
+          fMax = orxFABS(pvUL->fX) + orx2F(1.0f);
         }
         else
         {
-          fMax = orxFABS(pvUL->fY) + 1.0f;
+          fMax = orxFABS(pvUL->fY) + orx2F(1.0f);
         }
 
         /* Applies it to both corners */
@@ -449,7 +449,7 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
       }
       
       /* Non neutral scale? */
-      if(fScale != 1.0f)
+      if(fScale != orx2F(1.0f))
       {
         /* Applies it */
         coord_mul(pvUL, pvUL, fScale);
@@ -727,11 +727,11 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
           coord_sub(&vTextureUL, &vTextureUL, &vCamPos);
 
           /* Applies rotation & scale if needed */
-          if(fCamRot != 0.0f)
+          if(fCamRot != orx2F(0.0f))
           {
             coord_rotate(&vTextureUL, &vTextureUL, -fCamRot);
           }
-          if(fCamScale != 1.0f)
+          if(fCamScale != orx2F(1.0f))
           {
             coord_div(&vTextureUL, &vTextureUL, fCamScale);
           }
@@ -743,13 +743,13 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
             orxFrame_GetDifferentialScrolling(pstFrame, &vScroll);
 
             /* X axis scrolling? */
-            if(vScroll.fX != 0.0f)
+            if(vScroll.fX != orx2F(0.0f))
             {
               vScroll.fX *= vTextureUL.fX;
             }
 
             /* Y axis scrolling? */
-            if(vScroll.fY != 0.0f)
+            if(vScroll.fY != orx2F(0.0f))
             {
               vScroll.fY *= vTextureUL.fY;
             }
@@ -970,7 +970,7 @@ orxCAMERA *orxCamera_Create()
             pstCamera->u32IDFlags = orxCAMERA_KU32_ID_FLAG_MOVED | (orxU32)u32Camera;
             pstCamera->pstFrame   = pstFrame;
             pstCamera->pstLink    = orxNULL;
-            coord_set(&(pstCamera->vOnScreenPosition), 0.0f, 0.0f, 0.0f);
+            coord_set(&(pstCamera->vOnScreenPosition), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
 
             /* 2D? */
             if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_DATA_2D)
@@ -1373,7 +1373,7 @@ orxVOID orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
   orxASSERT(_pstCamera != orxNULL);
 
    /* Sets camera zoom */
-  orxFrame_SetScale(_pstCamera->pstFrame, 1.0f / _fZoom);
+  orxFrame_SetScale(_pstCamera->pstFrame, orx2F(1.0f) / _fZoom);
 
   /* Updates camera flags */
   _pstCamera->u32IDFlags |= orxCAMERA_KU32_ID_FLAG_MOVED;
@@ -1511,7 +1511,7 @@ orxFLOAT orxCamera_GetZoom(orxCAMERA *_pstCamera)
   orxASSERT(_pstCamera != orxNULL);
 
   /* Gets camera position */
-  return(1.0f / orxFrame_GetScale(_pstCamera->pstFrame, orxTRUE));
+  return(orx2F(1.0f) / orxFrame_GetScale(_pstCamera->pstFrame, orxTRUE));
 }
 
 /***************************************************************************
