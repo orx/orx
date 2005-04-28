@@ -39,7 +39,7 @@
             src/io/package.c
         </sources>
         <sources>
-            src/math/orxVector.c
+            src/math/orxVec.c
         </sources>
         <sources>
             src/memory/orxBank.c
@@ -128,7 +128,7 @@
             io/mouse.h
             io/package.h
             math/orxMath.h
-            math/orxVector.h
+            math/orxVec.h
             memory/orxBank.h
             memory/orxMemory.h
             msg/msg_file.h

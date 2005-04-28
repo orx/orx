@@ -18,8 +18,6 @@
         <if cond="LINK=='static'">1</if>
         <if cond="LINK=='dynamic'">0</if>
     </set>
-    
-    
 
     <!-- Set the preprocessor definition for plateform. -->
     <set var="orxPLATFORM" make_var="1">
@@ -87,11 +85,20 @@
     <!-- Set a template to define lib link -->
     <template id="orxLINK">
         <lib-path>$(orxLIBDIR)</lib-path>
-        <sys-lib>orx$(orxSUFFIX)</sys-lib>
-        
         <depends>$(orxLINKDEPEND)</depends>
-        
     </template>
 
+     <!-- Set module ilink lib -->
+     <set var="orxEXTRALINK">
+         <if cond="LINK=='static' and COMPILER=='mingw'">testbed</if>
+	 <if cond="LINK=='dynamic'">orx$(orxSUFFIX)</if>
+     </set>
+     
+
+     <!-- Define the module template -->
+     <template id="orxMODULELINK">
+	 <sys-lib>$(orxEXTRALINK)</sys-lib>
+     </template>
+     
 
 </bakefile>

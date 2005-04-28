@@ -1,30 +1,44 @@
 <?xml version="1.0"?>
 <bakefile>
 
+  <!-- Set extra linker informations -->
+  <!-- AT THE MOMENT THIS MODIFICATION WILL ONLY SUPPORT GCC (windows and linux)... Make better changes for Visual Studio -->
   <set var="orxLINKLIB">
-    <if cond="PLATFORM_UNIX=='1'">dl</if>
-    <if cond="PLATFORM_WIN32=='1'"></if>
+    <if cond="COMPILER=='gcc'">dl</if>
   </set>
 
-  <!--- Create orx test module -->
-  
-  <module id="memory" template="orxBASE,orxLINK">
-    <dirname>bin/modules</dirname>
-    <sources>test/orxTest_Memory.c</sources>
-  </module>
+  <set var="orxLDFLAGS">
+    <if cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm -Wl,--no-whole-archive</if>
+    <if cond="LINK=='dynamic' and COMPILER=='gcc'">-lorx$(orxSUFFIX)</if>
+  </set>
 
-  <module id="bank" template="orxBASE,orxLINK">
-    <dirname>bin/modules</dirname>
-    <sources>test/orxTest_Bank.c</sources>
-  </module>
+  <set var="orxLDFLAGS_IMPLIB">
+    <if cond="LINK=='static' and FORMAT=='mingw'">-Wl,--output-implib,$(orxLIBDIR)$(DIRSEP)testbed</if>
+  </set>
+  
+  <set var="orxDYNLINK">
+    <if cond="LINK=='dynamic' and FORMAT=='mingw'">-Wl,--output-implib,$(orxLIBDIR)$(DIRSEP)testbed</if>
+  </set>
 
   <!--- Create main program -->
   <exe id="testbed" template="orxBASE,orxLINK">
     <dirname>bin</dirname>
     <app-type>console</app-type> <!-- Windows specific : gui/console change the link behaviour -->
-
+  
+    <ldflags>$(orxLDFLAGS) $(orxLDFLAGS_IMPLIB)</ldflags>
     <sys-lib>$(orxLINKLIB)</sys-lib>
     <sources>test/orxTest_Main.c</sources>
   </exe>
+
+  <!--- Create orx test module -->
+  <module id="memory" template="orxBASE,orxLINK,orxMODULELINK">
+    <dirname>bin/modules</dirname>
+    <sources>test/orxTest_Memory.c</sources>
+  </module>
+
+  <module id="bank" template="orxBASE,orxLINK,orxMODULELINK">
+    <dirname>bin/modules</dirname>
+    <sources>test/orxTest_Bank.c</sources>
+  </module>
 
 </bakefile>

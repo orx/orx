@@ -61,7 +61,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_keyboard.o \
 	.\build\$(BUILD)\orxDLL_mouse.o \
 	.\build\$(BUILD)\orxDLL_package.o \
-	.\build\$(BUILD)\orxDLL_orxVector.o \
+	.\build\$(BUILD)\orxDLL_orxVec.o \
 	.\build\$(BUILD)\orxDLL_orxBank.o \
 	.\build\$(BUILD)\orxDLL_orxMemory.o \
 	.\build\$(BUILD)\orxDLL_orxFrame.o \
@@ -99,7 +99,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_keyboard.o \
 	.\build\$(BUILD)\orxLIB_mouse.o \
 	.\build\$(BUILD)\orxLIB_package.o \
-	.\build\$(BUILD)\orxLIB_orxVector.o \
+	.\build\$(BUILD)\orxLIB_orxVec.o \
 	.\build\$(BUILD)\orxLIB_orxBank.o \
 	.\build\$(BUILD)\orxLIB_orxMemory.o \
 	.\build\$(BUILD)\orxLIB_orxFrame.o \
@@ -114,6 +114,10 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxScreenshot.o \
 	.\build\$(BUILD)\orxLIB_utils.o \
 	.\build\$(BUILD)\orxLIB_orxString.o
+TESTBED_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) -DorxDLL $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
+TESTBED_OBJECTS =  \
+	.\build\$(BUILD)\testbed_orxTest_Main.o
 MEMORY_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) -DorxDLL $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 MEMORY_OBJECTS =  \
@@ -122,10 +126,6 @@ BANK_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) -DorxDLL $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 BANK_OBJECTS =  \
 	.\build\$(BUILD)\bank_orxTest_Bank.o
-TESTBED_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) -DorxDLL $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
-TESTBED_OBJECTS =  \
-	.\build\$(BUILD)\testbed_orxTest_Main.o
 
 ### Conditionally set variables: ###
 
@@ -140,6 +140,16 @@ __orxDLL___depname = lib\orx$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),static)
 __orxLIB___depname = lib\liborx$(orxSUFFIX).a
+endif
+ifeq ($(LINK),dynamic)
+orxLDFLAGS = -lorx$(orxSUFFIX)
+endif
+ifeq ($(LINK),static)
+orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm \
+	-Wl,--no-whole-archive
+endif
+ifeq ($(LINK),static)
+orxLDFLAGS_IMPLIB = -Wl,--output-implib,lib\testbed
 endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
@@ -165,6 +175,9 @@ endif
 ifeq ($(LINK),static)
 __orxLINKDEPEND_DEP = $(__orxLIB___depname)
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p = -lorx$(orxSUFFIX)
+endif
 ifeq ($(BUILD),debug)
 __orxDEBUGFLAG = -g
 endif
@@ -179,16 +192,16 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin\modules\memory.dll bin\modules\bank.dll bin\testbed.exe
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\memory.dll bin\modules\bank.dll
 
 clean: 
 	-if exist .\build\$(BUILD)\*.d del .\build\$(BUILD)\*.d
 	-if exist lib\orx$(orxSUFFIX).dll del lib\orx$(orxSUFFIX).dll
 	-if exist lib\liborx$(orxSUFFIX).a del lib\liborx$(orxSUFFIX).a
 	-if exist lib\liborx$(orxSUFFIX).a del lib\liborx$(orxSUFFIX).a
+	-if exist bin\testbed.exe del bin\testbed.exe
 	-if exist bin\modules\memory.dll del bin\modules\memory.dll
 	-if exist bin\modules\bank.dll del bin\modules\bank.dll
-	-if exist bin\testbed.exe del bin\testbed.exe
 
 ifeq ($(LINK),dynamic)
 lib\orx$(orxSUFFIX).dll: $(ORXDLL_OBJECTS)
@@ -202,14 +215,14 @@ lib\liborx$(orxSUFFIX).a: $(ORXLIB_OBJECTS)
 	ranlib $@
 endif
 
+bin\testbed.exe: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -o $@ $(TESTBED_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(orxLDFLAGS) $(orxLDFLAGS_IMPLIB)  -ldl
+
 bin\modules\memory.dll: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  -lorx$(orxSUFFIX)
+	$(CC) -shared -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(__orxEXTRALINK_p)
 
 bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  -lorx$(orxSUFFIX)
-
-bin\testbed.exe: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -o $@ $(TESTBED_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   -lorx$(orxSUFFIX)
+	$(CC) -shared -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(__orxEXTRALINK_p)
 
 .\build\$(BUILD)\orxDLL_orxAnim.o: ./src/anim/orxAnim.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
@@ -268,7 +281,7 @@ bin\testbed.exe: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxDLL_package.o: ./src/io/package.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_orxVector.o: ./src/math/orxVector.c
+.\build\$(BUILD)\orxDLL_orxVec.o: ./src/math/orxVec.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxBank.o: ./src/memory/orxBank.c
@@ -370,7 +383,7 @@ bin\testbed.exe: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxLIB_package.o: ./src/io/package.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_orxVector.o: ./src/math/orxVector.c
+.\build\$(BUILD)\orxLIB_orxVec.o: ./src/math/orxVec.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxBank.o: ./src/memory/orxBank.c
@@ -415,14 +428,14 @@ bin\testbed.exe: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxLIB_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+.\build\$(BUILD)\testbed_orxTest_Main.o: ./test/orxTest_Main.c
+	$(CC) -c -o $@ $(TESTBED_CFLAGS) $(CPPDEPS) $<
+
 .\build\$(BUILD)\memory_orxTest_Memory.o: ./test/orxTest_Memory.c
 	$(CC) -c -o $@ $(MEMORY_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\bank_orxTest_Bank.o: ./test/orxTest_Bank.c
 	$(CC) -c -o $@ $(BANK_CFLAGS) $(CPPDEPS) $<
-
-.\build\$(BUILD)\testbed_orxTest_Main.o: ./test/orxTest_Main.c
-	$(CC) -c -o $@ $(TESTBED_CFLAGS) $(CPPDEPS) $<
 
 .PHONY: all clean
 
