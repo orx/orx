@@ -118,7 +118,7 @@ orxVOID orxTest_Bank_Create()
     orxString_ReadString(zUserValue, 63, "Choose an ID for the new Bank : ");
   
     /* Convert it to a number */
-    if (orxString_ToS32(&s32ID, zUserValue) != orxSTATUS_FAILED)
+    if (orxString_ToS32(&s32ID, zUserValue, 10) != orxSTATUS_FAILED)
     {
       if (s32ID >= 0 && s32ID < orxTEST_BANK_KU32_ARRAY_NB_ELEM)
       {
@@ -151,7 +151,7 @@ orxVOID orxTest_Bank_Create()
     orxString_ReadString(zUserValue, 63, "Number of elements to store per segments : ");
     
     /* Convert it to a number */
-    if (orxString_ToS32(&s32NbElem, zUserValue) != orxSTATUS_FAILED)
+    if (orxString_ToS32(&s32NbElem, zUserValue, 10) != orxSTATUS_FAILED)
     {
       if (s32NbElem > 0)
       {
@@ -170,7 +170,7 @@ orxVOID orxTest_Bank_Create()
     
   /* Now, allocate s32NbElem elements in a new bank at the index position s32ID */
   /* We will use an arbitrary size of 1024 bytes for each elements */
-  sstTest_Bank.apstBank[s32ID] = orxBank_Create(s32NbElem, 1024, 0, orxMEMORY_TYPE_MAIN);
+  sstTest_Bank.apstBank[s32ID] = orxBank_Create(s32NbElem, 1024 * sizeof(orxU8), 0, orxMEMORY_TYPE_MAIN);
   if (sstTest_Bank.apstBank[s32ID] == orxNULL)
   {
     orxString_PrintLn("Can't create the new bank. Not enough memory ?");
@@ -188,28 +188,242 @@ orxVOID orxTest_Bank_Create()
  */
 orxVOID orxTest_Bank_Destroy()
 {
+  orxCHAR zUserValue[64];     /* String where user inputs are stored */
+  orxS32 s32ID;
+  orxBOOL bValidValue;
+  
+  /* Are there allocated bank ? */
+  if (sstTest_Bank.u32NbUsedBank == 0)
+  {
+    orxString_PrintLn("No bank have been created. Create a bank before trying to delete it");
+    return;
+  }
+  
+  /* Display the list of allocated bank */
+  orxTest_Bank_PrintUsedID();
+  
+  /* Now, get the bank ID to delete */
+  bValidValue = orxFALSE;
+  do
+  {
+    /* Read string value */
+    orxString_ReadString(zUserValue, 63, "Bank ID to delete : ");
+    
+    /* Convert it to a number */
+    if (orxString_ToS32(&s32ID, zUserValue, 10) != orxSTATUS_FAILED)
+    {
+      if (((s32ID >= 0) &&
+          (s32ID < orxTEST_BANK_KU32_ARRAY_NB_ELEM)) &&
+          (sstTest_Bank.apstBank[s32ID] != orxNULL))
+      {
+        bValidValue = orxTRUE;
+      }
+      else
+      {
+        orxString_PrintLn("Incorrect number (not in a valid ID range)");
+      }
+    }
+    else
+    {
+      orxString_PrintLn("This is not a valid number");
+    }
+    
+  } while (!bValidValue);
   orxString_PrintLn("Destroy a memory bank");
+  
+  /* Delete the bank */
+  orxString_PrintLn("Delete bank %d", s32ID);
+  orxBank_Delete(sstTest_Bank.apstBank[s32ID]);
+  sstTest_Bank.apstBank[s32ID] = orxNULL;
+  
+  /* Done !*/
+  orxString_PrintLn("Bank deleted !");
 }
 
 /** Allocate a cell in a bank
  */
 orxVOID orxTest_Bank_AllocateCell()
 {
-  orxString_PrintLn("Allocate a new cell in a memory bank");
+  orxCHAR zUserValue[64];     /* String where user inputs are stored */
+  orxS32 s32ID;
+  orxBOOL bValidValue;
+  orxVOID *pstCell;
+  
+  
+  /* Are there allocated bank ? */
+  if (sstTest_Bank.u32NbUsedBank == 0)
+  {
+    orxString_PrintLn("No bank have been created. Create a bank before trying to allocate cells");
+    return;
+  }
+  
+  /* Display the list of allocated bank */
+  orxTest_Bank_PrintUsedID();
+  
+  /* Now, get the bank ID to use */
+  bValidValue = orxFALSE;
+  do
+  {
+    /* Read string value */
+    orxString_ReadString(zUserValue, 63, "Bank ID to use (where cell will be allocated) : ");
+    
+    /* Convert it to a number */
+    if (orxString_ToS32(&s32ID, zUserValue, 10) != orxSTATUS_FAILED)
+    {
+      if (((s32ID >= 0) &&
+          (s32ID < orxTEST_BANK_KU32_ARRAY_NB_ELEM)) &&
+          (sstTest_Bank.apstBank[s32ID] != orxNULL))
+      {
+        bValidValue = orxTRUE;
+      }
+      else
+      {
+        orxString_PrintLn("Incorrect number (not in a valid ID range)");
+      }
+    }
+    else
+    {
+      orxString_PrintLn("This is not a valid number");
+    }
+  } while (!bValidValue);
+  
+  orxString_PrintLn("Trying to allocate a new cell from the bank...");
+
+  /* Allocate the cell */
+  pstCell = orxBank_Allocate(sstTest_Bank.apstBank[s32ID]);
+  
+  /* Correct allocation ? */
+  if (pstCell != orxNULL)
+  {
+    /* Allocation success */
+    orxString_PrintLn("Allocation success (Adress : %x). Filling up datas with 0xFF (1024 bytes to set)", pstCell);
+    orxMemory_Set(pstCell, 0xFF, 1024 * sizeof(orxU8));
+  }
+  else
+  {
+    orxString_PrintLn("Allocation failed...");
+  }
 }
 
 /** Free a cell from a bank
  */
 orxVOID orxTest_Bank_FreeCell()
 {
-  orxString_PrintLn("Free a cell from a memory bank");
+  orxCHAR zUserValue[64];     /* String where user inputs are stored */
+  orxS32 s32ID;
+  orxS32 s32Address;
+  orxBOOL bValidValue;
+  
+  
+  /* Are there allocated bank ? */
+  if (sstTest_Bank.u32NbUsedBank == 0)
+  {
+    orxString_PrintLn("No bank have been created. you cant unallocate cells");
+    return;
+  }
+  
+  /* Display the list of allocated bank */
+  orxTest_Bank_PrintUsedID();
+  
+  /* Now, get the bank ID to use */
+  bValidValue = orxFALSE;
+  do
+  {
+    /* Read string value */
+    orxString_ReadString(zUserValue, 63, "Bank ID where is stored the cell : ");
+    
+    /* Convert it to a number */
+    if (orxString_ToS32(&s32ID, zUserValue, 10) != orxSTATUS_FAILED)
+    {
+      if (((s32ID >= 0) &&
+          (s32ID < orxTEST_BANK_KU32_ARRAY_NB_ELEM)) &&
+          (sstTest_Bank.apstBank[s32ID] != orxNULL))
+      {
+        bValidValue = orxTRUE;
+      }
+      else
+      {
+        orxString_PrintLn("Incorrect number (not in a valid ID range)");
+      }
+    }
+    else
+    {
+      orxString_PrintLn("This is not a valid number");
+    }
+  } while (!bValidValue);
+  
+  /* Now, get the cell address */
+  bValidValue = orxFALSE;
+  do
+  {
+    /* Read string value */
+    orxString_ReadString(zUserValue, 63, "cell adress : ");
+    
+    /* Convert it to a number */
+    if (orxString_ToS32(&s32Address, zUserValue, 16) != orxSTATUS_FAILED)
+    {
+      bValidValue = orxTRUE;
+    }
+    else
+    {
+      orxString_PrintLn("This is not a valid adress");
+    }
+  } while (!bValidValue);
+
+  /* Got the adress and bank... Now, try to free the cell */
+  orxString_PrintLn("Trying to free the cell (%x)...", s32Address);
+  orxBank_Free(sstTest_Bank.apstBank[s32ID], (orxVOID *)s32Address);
+  orxString_PrintLn("Done !");
 }
 
 /** Print content of a memory bank
  */
 orxVOID orxTest_Bank_PrintAll()
 {
-  orxString_PrintLn("Display the internal content of a memory bank");
+  orxCHAR zUserValue[64];     /* String where user inputs are stored */
+  orxS32 s32ID;
+  orxBOOL bValidValue;
+  
+  
+  /* Are there allocated bank ? */
+  if (sstTest_Bank.u32NbUsedBank == 0)
+  {
+    orxString_PrintLn("No bank have been created. you can't print it");
+    return;
+  }
+  
+  /* Display the list of allocated bank */
+  orxTest_Bank_PrintUsedID();
+  
+  /* Now, get the bank ID to use */
+  bValidValue = orxFALSE;
+  do
+  {
+    /* Read string value */
+    orxString_ReadString(zUserValue, 63, "Bank ID to display : ");
+    
+    /* Convert it to a number */
+    if (orxString_ToS32(&s32ID, zUserValue, 10) != orxSTATUS_FAILED)
+    {
+      if (((s32ID >= 0) &&
+          (s32ID < orxTEST_BANK_KU32_ARRAY_NB_ELEM)) &&
+          (sstTest_Bank.apstBank[s32ID] != orxNULL))
+      {
+        bValidValue = orxTRUE;
+      }
+      else
+      {
+        orxString_PrintLn("Incorrect number (not in a valid ID range)");
+      }
+    }
+    else
+    {
+      orxString_PrintLn("This is not a valid number");
+    }
+  } while (!bValidValue);
+  
+  /* Display content */
+  orxBank_DebugPrint(sstTest_Bank.apstBank[s32ID]);
 }
 
 
