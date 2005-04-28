@@ -25,6 +25,9 @@ LDFLAGS =
 #  [debug,release]
 BUILD = release
 
+#  [static,dynamic]
+LINK = static
+
 
 
 # -------------------------------------------------------------------------
@@ -33,45 +36,83 @@ BUILD = release
 
 ### Variables: ###
 
-orxPLATFORM = WINDOWS
-ORX_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+orxPLATFORM = __orxWINDOWS__
+ORXDLL_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	$(____orxDEBUGFLAG) /Fdlib\orx$(orx).pdb $(__orxDEBUG_p) /D$(orxPLATFORM) \
 	/DorxDLL $(__orxWARNINGFLAG) /Iinclude /DorxDLLEXPORT $(CPPFLAGS) $(CFLAGS)
-ORX_OBJECTS =  \
-	.\build\$(BUILD)\orx_orxAnim.obj \
-	.\build\$(BUILD)\orx_orxAnimPointer.obj \
-	.\build\$(BUILD)\orx_orxAnimSet.obj \
-	.\build\$(BUILD)\orx_orxCamera.obj \
-	.\build\$(BUILD)\orx_orxRender.obj \
-	.\build\$(BUILD)\orx_orxViewport.obj \
-	.\build\$(BUILD)\orx_clock.obj \
-	.\build\$(BUILD)\orx_timer.obj \
-	.\build\$(BUILD)\orx_orxDebug.obj \
-	.\build\$(BUILD)\orx_orxFps.obj \
-	.\build\$(BUILD)\orx_graph.obj \
-	.\build\$(BUILD)\orx_graphic.obj \
-	.\build\$(BUILD)\orx_orxTexture.obj \
-	.\build\$(BUILD)\orx_file.obj \
-	.\build\$(BUILD)\orx_interaction.obj \
-	.\build\$(BUILD)\orx_joystick.obj \
-	.\build\$(BUILD)\orx_keyboard.obj \
-	.\build\$(BUILD)\orx_mouse.obj \
-	.\build\$(BUILD)\orx_package.obj \
-	.\build\$(BUILD)\orx_coord.obj \
-	.\build\$(BUILD)\orx_orxBank.obj \
-	.\build\$(BUILD)\orx_orxMemory.obj \
-	.\build\$(BUILD)\orx_orxFrame.obj \
-	.\build\$(BUILD)\orx_orxObject.obj \
-	.\build\$(BUILD)\orx_orxStructure.obj \
-	.\build\$(BUILD)\orx_plugin.obj \
-	.\build\$(BUILD)\orx_sound.obj \
-	.\build\$(BUILD)\orx_orxLinkList.obj \
-	.\build\$(BUILD)\orx_orxTest.obj \
-	.\build\$(BUILD)\orx_orxTree.obj \
-	.\build\$(BUILD)\orx_pathfinder.obj \
-	.\build\$(BUILD)\orx_screenshot.obj \
-	.\build\$(BUILD)\orx_utils.obj \
-	.\build\$(BUILD)\orx_orxString.obj
+ORXDLL_OBJECTS =  \
+	.\build\$(BUILD)\orxDLL_orxAnim.obj \
+	.\build\$(BUILD)\orxDLL_orxAnimPointer.obj \
+	.\build\$(BUILD)\orxDLL_orxAnimSet.obj \
+	.\build\$(BUILD)\orxDLL_orxCamera.obj \
+	.\build\$(BUILD)\orxDLL_orxRender.obj \
+	.\build\$(BUILD)\orxDLL_orxViewport.obj \
+	.\build\$(BUILD)\orxDLL_clock.obj \
+	.\build\$(BUILD)\orxDLL_timer.obj \
+	.\build\$(BUILD)\orxDLL_orxDebug.obj \
+	.\build\$(BUILD)\orxDLL_orxFps.obj \
+	.\build\$(BUILD)\orxDLL_graph.obj \
+	.\build\$(BUILD)\orxDLL_graphic.obj \
+	.\build\$(BUILD)\orxDLL_orxTexture.obj \
+	.\build\$(BUILD)\orxDLL_file.obj \
+	.\build\$(BUILD)\orxDLL_interaction.obj \
+	.\build\$(BUILD)\orxDLL_joystick.obj \
+	.\build\$(BUILD)\orxDLL_keyboard.obj \
+	.\build\$(BUILD)\orxDLL_mouse.obj \
+	.\build\$(BUILD)\orxDLL_package.obj \
+	.\build\$(BUILD)\orxDLL_orxVector.obj \
+	.\build\$(BUILD)\orxDLL_orxBank.obj \
+	.\build\$(BUILD)\orxDLL_orxMemory.obj \
+	.\build\$(BUILD)\orxDLL_orxFrame.obj \
+	.\build\$(BUILD)\orxDLL_orxObject.obj \
+	.\build\$(BUILD)\orxDLL_orxStructure.obj \
+	.\build\$(BUILD)\orxDLL_plugin.obj \
+	.\build\$(BUILD)\orxDLL_sound.obj \
+	.\build\$(BUILD)\orxDLL_orxLinkList.obj \
+	.\build\$(BUILD)\orxDLL_orxTest.obj \
+	.\build\$(BUILD)\orxDLL_orxTree.obj \
+	.\build\$(BUILD)\orxDLL_pathfinder.obj \
+	.\build\$(BUILD)\orxDLL_orxScreenshot.obj \
+	.\build\$(BUILD)\orxDLL_utils.obj \
+	.\build\$(BUILD)\orxDLL_orxString.obj
+ORXLIB_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fdlib\orx$(orx).pdb $(__orxDEBUG_p) /D$(orxPLATFORM) \
+	/DorxDLL $(__orxWARNINGFLAG) /Iinclude /DorxDLLEXPORT $(CPPFLAGS) $(CFLAGS)
+ORXLIB_OBJECTS =  \
+	.\build\$(BUILD)\orxLIB_orxAnim.obj \
+	.\build\$(BUILD)\orxLIB_orxAnimPointer.obj \
+	.\build\$(BUILD)\orxLIB_orxAnimSet.obj \
+	.\build\$(BUILD)\orxLIB_orxCamera.obj \
+	.\build\$(BUILD)\orxLIB_orxRender.obj \
+	.\build\$(BUILD)\orxLIB_orxViewport.obj \
+	.\build\$(BUILD)\orxLIB_clock.obj \
+	.\build\$(BUILD)\orxLIB_timer.obj \
+	.\build\$(BUILD)\orxLIB_orxDebug.obj \
+	.\build\$(BUILD)\orxLIB_orxFps.obj \
+	.\build\$(BUILD)\orxLIB_graph.obj \
+	.\build\$(BUILD)\orxLIB_graphic.obj \
+	.\build\$(BUILD)\orxLIB_orxTexture.obj \
+	.\build\$(BUILD)\orxLIB_file.obj \
+	.\build\$(BUILD)\orxLIB_interaction.obj \
+	.\build\$(BUILD)\orxLIB_joystick.obj \
+	.\build\$(BUILD)\orxLIB_keyboard.obj \
+	.\build\$(BUILD)\orxLIB_mouse.obj \
+	.\build\$(BUILD)\orxLIB_package.obj \
+	.\build\$(BUILD)\orxLIB_orxVector.obj \
+	.\build\$(BUILD)\orxLIB_orxBank.obj \
+	.\build\$(BUILD)\orxLIB_orxMemory.obj \
+	.\build\$(BUILD)\orxLIB_orxFrame.obj \
+	.\build\$(BUILD)\orxLIB_orxObject.obj \
+	.\build\$(BUILD)\orxLIB_orxStructure.obj \
+	.\build\$(BUILD)\orxLIB_plugin.obj \
+	.\build\$(BUILD)\orxLIB_sound.obj \
+	.\build\$(BUILD)\orxLIB_orxLinkList.obj \
+	.\build\$(BUILD)\orxLIB_orxTest.obj \
+	.\build\$(BUILD)\orxLIB_orxTree.obj \
+	.\build\$(BUILD)\orxLIB_pathfinder.obj \
+	.\build\$(BUILD)\orxLIB_orxScreenshot.obj \
+	.\build\$(BUILD)\orxLIB_utils.obj \
+	.\build\$(BUILD)\orxLIB_orxString.obj
 MEMORY_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	$(____orxDEBUGFLAG) /Fdbin\modules\memory.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /DorxDLL $(__orxWARNINGFLAG) /Iinclude $(CPPFLAGS) $(CFLAGS)
@@ -90,6 +131,12 @@ TESTBED_OBJECTS =  \
 
 ### Conditionally set variables: ###
 
+!if "$(LINK)" == "dynamic"
+__orxDLL___depname = lib\orx$(orx).dll
+!endif
+!if "$(LINK)" == "static"
+__orxLIB___depname = lib\orx$(orx).lib
+!endif
 !if "$(BUILD)" == "debug"
 __orxOPTIMIZEFLAG = /Od
 !endif
@@ -121,7 +168,7 @@ orx = d
 orx = 
 !endif
 !if "$(BUILD)" == "debug"
-__orxDEBUG_p = /DDEBUG
+__orxDEBUG_p = /D__orxDEBUG__
 !endif
 !if "$(BUILD)" == "release"
 __orxDEBUG_p = 
@@ -132,6 +179,12 @@ __orxWARNINGFLAG = /W4
 !if "$(BUILD)" == "release"
 __orxWARNINGFLAG = 
 !endif
+!if "$(LINK)" == "dynamic"
+__orxLINKDEPEND_DEP = $(__orxDLL___depname)
+!endif
+!if "$(LINK)" == "static"
+__orxLINKDEPEND_DEP = $(__orxLIB___depname)
+!endif
 
 
 all: .\build\$(BUILD)
@@ -140,7 +193,7 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: lib\orx$(orx).dll bin\modules\memory.dll bin\modules\bank.dll bin\testbed.exe
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin\modules\memory.dll bin\modules\bank.dll bin\testbed.exe
 
 clean: 
 	-if exist .\build\$(BUILD)\*.obj del .\build\$(BUILD)\*.obj
@@ -149,6 +202,7 @@ clean:
 	-if exist lib\orx$(orx).dll del lib\orx$(orx).dll
 	-if exist lib\orx$(orx).ilk del lib\orx$(orx).ilk
 	-if exist lib\orx$(orx).pdb del lib\orx$(orx).pdb
+	-if exist lib\orx$(orx).lib del lib\orx$(orx).lib
 	-if exist lib\orx$(orx).lib del lib\orx$(orx).lib
 	-if exist bin\modules\memory.dll del bin\modules\memory.dll
 	-if exist bin\modules\memory.ilk del bin\modules\memory.ilk
@@ -160,127 +214,239 @@ clean:
 	-if exist bin\testbed.ilk del bin\testbed.ilk
 	-if exist bin\testbed.pdb del bin\testbed.pdb
 
-lib\orx$(orx).dll: $(ORX_OBJECTS)
+!if "$(LINK)" == "dynamic"
+lib\orx$(orx).dll: $(ORXDLL_OBJECTS)
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_2) @<<
-	$(ORX_OBJECTS)  m.lib /IMPLIB:lib\orx$(orx).lib
+	$(ORXDLL_OBJECTS)  m.lib /IMPLIB:lib\orx$(orx).lib
 <<
+!endif
 
-bin\modules\memory.dll: $(MEMORY_OBJECTS) lib\orx$(orx).dll
+!if "$(LINK)" == "static"
+lib\orx$(orx).lib: $(ORXLIB_OBJECTS)
+	if exist $@ del $@
+	lib /NOLOGO /OUT:$@ @<<
+	$(ORXLIB_OBJECTS)
+<<
+!endif
+
+bin\modules\memory.dll: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP)
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_2) /LIBPATH:lib @<<
 	$(MEMORY_OBJECTS)  orx$(orx).lib
 <<
 
-bin\modules\bank.dll: $(BANK_OBJECTS) lib\orx$(orx).dll
+bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_2) /LIBPATH:lib @<<
 	$(BANK_OBJECTS)  orx$(orx).lib
 <<
 
-bin\testbed.exe: $(TESTBED_OBJECTS) lib\orx$(orx).dll
+bin\testbed.exe: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
 	link /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_2) /LIBPATH:lib /SUBSYSTEM:CONSOLE @<<
 	$(TESTBED_OBJECTS)  orx$(orx).lib
 <<
 
-.\build\$(BUILD)\orx_orxAnim.obj: .\src\anim\orxAnim.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxAnim.obj: .\src\anim\orxAnim.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxAnimPointer.obj: .\src\anim\orxAnimPointer.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxAnimPointer.obj: .\src\anim\orxAnimPointer.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxAnimSet.obj: .\src\anim\orxAnimSet.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxAnimSet.obj: .\src\anim\orxAnimSet.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxCamera.obj: .\src\camera\orxCamera.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxCamera.obj: .\src\camera\orxCamera.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxRender.obj: .\src\camera\orxRender.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxRender.obj: .\src\camera\orxRender.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxViewport.obj: .\src\camera\orxViewport.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxViewport.obj: .\src\camera\orxViewport.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_clock.obj: .\src\core\clock.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_clock.obj: .\src\core\clock.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_timer.obj: .\src\core\timer.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_timer.obj: .\src\core\timer.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxDebug.obj: .\src\debug\orxDebug.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxDebug.obj: .\src\debug\orxDebug.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxFps.obj: .\src\debug\orxFps.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxFps.obj: .\src\debug\orxFps.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_graph.obj: .\src\graph\graph.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_graph.obj: .\src\graph\graph.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_graphic.obj: .\src\graph\graphic.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_graphic.obj: .\src\graph\graphic.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxTexture.obj: .\src\graph\orxTexture.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxTexture.obj: .\src\graph\orxTexture.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_file.obj: .\src\io\file.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_file.obj: .\src\io\file.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_interaction.obj: .\src\io\interaction.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_interaction.obj: .\src\io\interaction.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_joystick.obj: .\src\io\joystick.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_joystick.obj: .\src\io\joystick.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_keyboard.obj: .\src\io\keyboard.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_keyboard.obj: .\src\io\keyboard.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_mouse.obj: .\src\io\mouse.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_mouse.obj: .\src\io\mouse.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_package.obj: .\src\io\package.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_package.obj: .\src\io\package.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_coord.obj: .\src\math\coord.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxVector.obj: .\src\math\orxVector.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxBank.obj: .\src\memory\orxBank.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxBank.obj: .\src\memory\orxBank.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxMemory.obj: .\src\memory\orxMemory.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxMemory.obj: .\src\memory\orxMemory.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxFrame.obj: .\src\object\orxFrame.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxFrame.obj: .\src\object\orxFrame.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxObject.obj: .\src\object\orxObject.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxObject.obj: .\src\object\orxObject.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxStructure.obj: .\src\object\orxStructure.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxStructure.obj: .\src\object\orxStructure.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_plugin.obj: .\src\plugin\plugin.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_plugin.obj: .\src\plugin\plugin.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_sound.obj: .\src\sound\sound.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_sound.obj: .\src\sound\sound.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxLinkList.obj: .\src\utils\orxLinkList.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxLinkList.obj: .\src\utils\orxLinkList.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxTest.obj: .\src\utils\orxTest.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxTest.obj: .\src\utils\orxTest.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxTree.obj: .\src\utils\orxTree.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxTree.obj: .\src\utils\orxTree.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_pathfinder.obj: .\src\utils\pathfinder.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_pathfinder.obj: .\src\utils\pathfinder.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_screenshot.obj: .\src\utils\screenshot.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxScreenshot.obj: .\src\utils\orxScreenshot.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_utils.obj: .\src\utils\utils.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_utils.obj: .\src\utils\utils.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orx_orxString.obj: .\src\utils\orxString.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) $**
+.\build\$(BUILD)\orxDLL_orxString.obj: .\src\utils\orxString.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxAnim.obj: .\src\anim\orxAnim.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxAnimPointer.obj: .\src\anim\orxAnimPointer.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxAnimSet.obj: .\src\anim\orxAnimSet.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxCamera.obj: .\src\camera\orxCamera.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxRender.obj: .\src\camera\orxRender.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxViewport.obj: .\src\camera\orxViewport.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_clock.obj: .\src\core\clock.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_timer.obj: .\src\core\timer.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxDebug.obj: .\src\debug\orxDebug.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxFps.obj: .\src\debug\orxFps.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_graph.obj: .\src\graph\graph.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_graphic.obj: .\src\graph\graphic.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxTexture.obj: .\src\graph\orxTexture.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_file.obj: .\src\io\file.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_interaction.obj: .\src\io\interaction.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_joystick.obj: .\src\io\joystick.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_keyboard.obj: .\src\io\keyboard.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_mouse.obj: .\src\io\mouse.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_package.obj: .\src\io\package.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxVector.obj: .\src\math\orxVector.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxBank.obj: .\src\memory\orxBank.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxMemory.obj: .\src\memory\orxMemory.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxFrame.obj: .\src\object\orxFrame.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxObject.obj: .\src\object\orxObject.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxStructure.obj: .\src\object\orxStructure.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_plugin.obj: .\src\plugin\plugin.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_sound.obj: .\src\sound\sound.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxLinkList.obj: .\src\utils\orxLinkList.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxTest.obj: .\src\utils\orxTest.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxTree.obj: .\src\utils\orxTree.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_pathfinder.obj: .\src\utils\pathfinder.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxScreenshot.obj: .\src\utils\orxScreenshot.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_utils.obj: .\src\utils\utils.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
+
+.\build\$(BUILD)\orxLIB_orxString.obj: .\src\utils\orxString.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
 
 .\build\$(BUILD)\memory_orxTest_Memory.obj: .\test\orxTest_Memory.c
 	$(CC) /c /nologo /TC /Fo$@ $(MEMORY_CFLAGS) $**
