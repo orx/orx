@@ -86,7 +86,7 @@
 
     typedef float               orxFLOAT;
 
-    typedef orxS8               orxCHAR;
+    typedef char               orxCHAR;
     typedef orxCHAR            *orxSTRING;
 
   #endif /* __orxLINUX__ */
