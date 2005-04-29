@@ -247,7 +247,7 @@ orxVOID orxTest_Bank_AllocateCell()
   orxCHAR zUserValue[64];     /* String where user inputs are stored */
   orxS32 s32ID;
   orxBOOL bValidValue;
-  orxVOID *pstCell;
+  orxCHAR *pstCell;
   
   
   /* Are there allocated bank ? */
@@ -290,14 +290,15 @@ orxVOID orxTest_Bank_AllocateCell()
   orxString_PrintLn("Trying to allocate a new cell from the bank...");
 
   /* Allocate the cell */
-  pstCell = orxBank_Allocate(sstTest_Bank.apstBank[s32ID]);
+  pstCell = (orxCHAR *)orxBank_Allocate(sstTest_Bank.apstBank[s32ID]);
   
   /* Correct allocation ? */
   if (pstCell != orxNULL)
   {
     /* Allocation success */
     orxString_PrintLn("Allocation success (Adress : %x). Filling up datas with 0xFF (1024 bytes to set)", pstCell);
-    orxMemory_Set(pstCell, 0xFF, 1024 * sizeof(orxU8));
+//    orxMemory_Set(pstCell, 0xFF, 1024 * sizeof(orxU8));
+    orxString_Printf(pstCell, "Hello :)");
   }
   else
   {
