@@ -495,7 +495,7 @@ orxVOID graphic_2d_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_coord)
   {
     /* !!! MSG !!! */
 
-    coord_set(_pst_coord, 0, 0, 0);
+    orxVec_Set3(_pst_coord, 0, 0, 0);
   }
 
   return;
@@ -524,7 +524,7 @@ orxVOID graphic_2d_ref_coord_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_c
     /* No data */
     /* !!! MSG !!! */
 
-    coord_set(_pst_coord, 0, 0, 0);
+    orxVec_Set3(_pst_coord, 0, 0, 0);
   }
 
   return;

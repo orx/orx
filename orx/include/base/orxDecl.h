@@ -95,4 +95,13 @@
 #endif                 /* end orxDLL */
 
 
+#define orxSWAP32(A, B)                                       \
+do                                                            \
+{                                                             \
+  *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
+  *((orxU32 *)&(B)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
+  *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
+} while(orxFALSE);
+
+
 #endif /*_orxDECL_H_*/

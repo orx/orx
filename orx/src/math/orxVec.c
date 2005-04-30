@@ -1,5 +1,5 @@
 /***************************************************************************
- orxVector.c
+ orxVec.c
  Vector module
  
  begin                : 27/04/2005
@@ -19,228 +19,112 @@
 
 #include "math/orxVec.h"
 
-#include "math/orxMath.h"
-#include "memory/orxMemory.h"
+
+/***************************************************************************
+ ***************************************************************************
+ ******                       LOCAL FUNCTIONS                         ******
+ ***************************************************************************
+ ***************************************************************************/
 
 
-/*** Constants Definitions ***/
-#define COORD_KS32_orxNULL        (int)0xFFFFFFFF
+/***************************************************************************
+ ***************************************************************************
+ ******                       PUBLIC FUNCTIONS                        ******
+ ***************************************************************************
+ ***************************************************************************/
 
-/*** Functions Definitions ***/
-orxBOOL coord_is_null(orxVEC *_pst_coord)
+/***************************************************************************
+ orxVec_Rot
+ Rotates a coord using a orxFLOAT angle (RAD), an axis and stores result in another one.
+
+ returns: Rotated vector
+ ***************************************************************************/
+orxFASTCALL orxVEC *orxVec_Rot(orxVEC *_pvRes, orxCONST orxVEC *_pvOp, orxCONST orxVEC *_pvAxis, orxFLOAT _fAngle)
 {
-  return(((_pst_coord->fX == COORD_KS32_orxNULL)
-       && (_pst_coord->fY == COORD_KS32_orxNULL)
-       && (_pst_coord->fZ == COORD_KS32_orxNULL))
-       ? orxTRUE
-       : orxFALSE);
+  /* Checks */
+  orxASSERT(_pvRes  != orxNULL);
+  orxASSERT(_pvAxis != orxNULL);
+
+  /* !!! TODO !!! */
+
+  return _pvRes;
 }
 
-orxVOID coord_set(orxVEC *_pst_coord, orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
+/***************************************************************************
+ orxVec_ReorderAABox
+ Reorders axis aligned box corners (result is real upper left & bottom right corners).
+
+ returns: Nothing
+ ***************************************************************************/
+orxFASTCALL orxVOID orxVec_ReorderAABox(orxVEC *_pvULBox, orxVEC *_pvBRBox)
 {
-  /* Non null?*/
-  if(_pst_coord != orxNULL)
+  /* Checks */
+  orxASSERT(_pvULBox != orxNULL);
+  orxASSERT(_pvBRBox != orxNULL);
+
+/* Reorders coordinates so as to have upper left & bottom right box corners */
+
+  /* Z coord */
+  if(_pvULBox->fZ > _pvBRBox->fZ)
   {
-    _pst_coord->fX = _l_x;
-    _pst_coord->fY = _l_y;
-    _pst_coord->fZ = _l_z;
+    /* Swaps */
+    orxSWAP32(_pvULBox->fZ, _pvBRBox->fZ);
   }
 
-  return;
-}
-
-orxVOID orxVec_Load(orxVEC *_pst_coord)
-{
-  coord_set(_pst_coord, COORD_KS32_orxNULL, COORD_KS32_orxNULL, COORD_KS32_orxNULL);
-
-  return;
-}
-
-orxVEC *coord_create(orxS32 _l_x, orxS32 _l_y, orxS32 _l_z)
-{
-  orxVEC *pst_coord;
-
-  pst_coord = (orxVEC *)orxMemory_Allocate(sizeof(orxVEC), orxMEMORY_TYPE_MAIN);
-
-  coord_set(pst_coord, _l_x, _l_y, _l_z);
-
-  return pst_coord;
-}
-
-orxVOID coord_delete(orxVEC *_pst_coord)
-{
-  if(_pst_coord != orxNULL)
+  /* Y coord */
+  if(_pvULBox->fY > _pvBRBox->fY)
   {
-    orxMemory_Free(_pst_coord);
+    /* Swaps */
+    orxSWAP32(_pvULBox->fY, _pvBRBox->fY);
   }
 
-  return;
-}
-
-orxVOID coord_copy(orxVEC *_pst_dest, orxVEC *_pst_src)
-{
-  if(_pst_src != orxNULL)
+  /* X coord */
+  if(_pvULBox->fX > _pvBRBox->fX)
   {
-    coord_set(_pst_dest, _pst_src->fX, _pst_src->fY, _pst_src->fZ);
+    /* Swaps */
+    orxSWAP32(_pvULBox->fX, _pvBRBox->fX);
   }
 
+  /* Done! */
   return;
 }
 
-orxVOID coord_add(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2)
+/***************************************************************************
+ orxVec_TestAABoxIntersection
+ Tests axis aligned box intersection given corners (if corners are not sorted, test won't work).
+
+ returns: Nothing
+ ***************************************************************************/
+orxFASTCALL orxBOOL orxVec_TestAABoxIntersection(orxCONST orxVEC *_pvULBox1, orxCONST orxVEC *_pvBRBox1, orxCONST orxVEC *_pvULBox2, orxCONST orxVEC *_pvBRBox2)
 {
-  if((_pst_op1 != orxNULL) && (_pst_op2 != orxNULL))
+  orxREGISTER orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(_pvULBox1 != orxNULL);
+  orxASSERT(_pvBRBox1 != orxNULL);
+  orxASSERT(_pvULBox2 != orxNULL);
+  orxASSERT(_pvBRBox2 != orxNULL);
+
+  /* Warning : Corners should be sorted otherwise test won't work! */
+
+  /* Z intersected? */
+  if((_pvBRBox2->fZ >= _pvULBox1->fZ)
+  && (_pvULBox2->fZ <= _pvBRBox1->fZ))
   {
-    coord_set(_pst_result,
-              _pst_op1->fX + _pst_op2->fX,
-              _pst_op1->fY + _pst_op2->fY,
-              _pst_op1->fZ + _pst_op2->fZ);
-  }
-
-  return;
-}
-
-orxVOID coord_sub(orxVEC *_pst_result, orxVEC *_pst_op1, orxVEC *_pst_op2)
-{
-  if((_pst_op1 != orxNULL) && (_pst_op2 != orxNULL))
-  {
-    coord_set(_pst_result,
-              _pst_op1->fX - _pst_op2->fX,
-              _pst_op1->fY - _pst_op2->fY,
-              _pst_op1->fZ - _pst_op2->fZ);
-  }
-
-  return;
-}
-
-orxVOID coord_neg(orxVEC *_pst_result, orxVEC *_pst_op)
-{
-  if(_pst_op != orxNULL)
-  {
-    coord_set(_pst_result, -(_pst_op->fX), -(_pst_op->fY), -(_pst_op->fZ));
-  }
-
-  return;
-}
-
-orxVOID coord_mul(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
-{
-  if(_pst_op1 != orxNULL)
-  {
-    coord_set(_pst_result,
-              (int)rintf((orxFLOAT)(_pst_op1->fX) * _f_op2),
-              (int)rintf((orxFLOAT)(_pst_op1->fY) * _f_op2),
-              (int)rintf((orxFLOAT)(_pst_op1->fZ) * _f_op2));
-  }
-
-  return;
-}
-
-orxVOID coord_div(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
-{
-  if(_pst_op1 != orxNULL)
-  {
-    coord_set(_pst_result,
-              (int)rintf((orxFLOAT)(_pst_op1->fX) / _f_op2),
-              (int)rintf((orxFLOAT)(_pst_op1->fY) / _f_op2),
-              (int)rintf((orxFLOAT)(_pst_op1->fZ) / _f_op2));
-  }
-
-  return;
-}
-
-orxVOID coord_rotate(orxVEC *_pst_result, orxVEC *_pst_op1, orxFLOAT _f_op2)
-{
-  orxFLOAT fCos, fSin;
-  orxFLOAT fX, fY;
-
-  if(_pst_op1 != orxNULL)
-  {
-    fCos = cosf(_f_op2);
-    fSin = sinf(_f_op2);
-    fX = (orxFLOAT)_pst_op1->fX;
-    fY = (orxFLOAT)_pst_op1->fY;
-
-    coord_set(_pst_result,
-              (int)rintf((fX * fCos) - (fY * fSin)),
-              (int)rintf((fX * fSin) + (fY * fCos)),
-              (_pst_op1->fZ));
-  }
-
-  return;
-}
-
-orxVOID coord_aabox_reorder(orxVEC *_pst_box_ul, orxVEC *_pst_box_br)
-{
-  /* Non null? */
-  if((_pst_box_ul != orxNULL) && (_pst_box_br != orxNULL))
-  {
-    /* Reorders coordinates so as to have upper left & bottom right box corners */
-
-    /* Z coord */
-    if(_pst_box_ul->fZ > _pst_box_br->fZ)
+    /* X intersected? */
+    if((_pvBRBox2->fX >= _pvULBox1->fX)
+    && (_pvULBox2->fX <= _pvBRBox1->fX))
     {
-      /* Swap */
-      orxSWAP32(_pst_box_ul->fZ, _pst_box_br->fZ);
-    }
-
-    /* Y coord */
-    if(_pst_box_ul->fY > _pst_box_br->fY)
-    {
-      /* Swap */
-      orxSWAP32(_pst_box_ul->fY, _pst_box_br->fY);
-    }
-
-    /* X coord */
-    if(_pst_box_ul->fX > _pst_box_br->fX)
-    {
-      /* Swap */
-      orxSWAP32(_pst_box_ul->fX, _pst_box_br->fX);
+      /* Y intersected? */
+      if((_pvBRBox2->fY >= _pvULBox1->fY)
+      && (_pvULBox2->fY <= _pvBRBox1->fY))
+      {
+        /* Intersects */
+        bResult = orxTRUE;
+      }
     }
   }
 
-  return;
-}
-
-orxBOOL coord_aabox_intersection_test(orxVEC *_pst_box1_ul, orxVEC *_pst_box1_br, orxVEC *_pst_box2_ul, orxVEC *_pst_box2_br)
-{
-  /* Non null? */
-  if((_pst_box1_ul != orxNULL)
-  && (_pst_box1_br != orxNULL)
-  && (_pst_box2_ul != orxNULL)
-  && (_pst_box2_br != orxNULL))
-  {
-    /* Warning : Corners should be sorted otherwise test won't work! */
-
-    /* Z intersection test */
-    if((_pst_box2_br->fZ < _pst_box1_ul->fZ)
-    || (_pst_box2_ul->fZ > _pst_box1_br->fZ))
-    {
-      /* Disjoint */
-      return orxFALSE;
-    }
-
-    /* X intersection test */
-    if((_pst_box2_br->fX < _pst_box1_ul->fX)
-    || (_pst_box2_ul->fX > _pst_box1_br->fX))
-    {
-      /* Disjoint */
-      return orxFALSE;
-    }
-
-    /* Y intersection test */
-    if((_pst_box2_br->fY < _pst_box1_ul->fY)
-    || (_pst_box2_ul->fY > _pst_box1_br->fY))
-    {
-      /* Disjoint */
-      return orxFALSE;
-    }
-  }
-  else
-  {
-    return orxFALSE;
-  }
-
-  /* Not disjoint */
-  return orxTRUE;
+  /* Done! */
+  return bResult;
 }

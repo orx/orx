@@ -79,7 +79,7 @@ extern orxDLLAPI orxU32 orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32
  * @return returns a pointer on _pDest
  * @note if _pSrc and _pDest overlap, use orxMemory_Move instead
  */
-extern orxDLLAPI orxVOID *orxMemory_Copy(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size);
+extern orxDLLAPI orxVOID *orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size);
 
 /** Copy a portion of memory into another one
  * @param _pDest    (OUT) Destination pointer
@@ -95,7 +95,7 @@ extern orxDLLAPI orxVOID *orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32
  * @param _u32Size  (IN)  Size of data to test
  * @return returns a velue less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
  */
-extern orxDLLAPI orxU32 orxMemory_Compare(orxVOID *_pMem1, orxVOID *_pMem2, orxU32 _u32Size);
+extern orxDLLAPI orxU32 orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size);
 
 /** Fill a portion of memory with _u32Data
  * @param _pDest    (OUT) Destination pointer

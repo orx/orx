@@ -144,13 +144,13 @@ orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orx
   {
     case orxFRAME_SPACE_GLOBAL:
 
-      coord_copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos), _pvPos);
+      orxVec_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos), _pvPos);
 
       break;
 
     case orxFRAME_SPACE_LOCAL:
 
-      coord_copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalCoord), _pvPos);
+      orxVec_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalCoord), _pvPos);
 
       break;
 
@@ -886,7 +886,7 @@ orxVOID orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScrol
     }
 
     /* Updates scroll values */
-    coord_copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vScroll), _pvScroll);
+    orxVec_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vScroll), _pvScroll);
 
     /* Updates flags on frame and its heirs */
     orxFrame_SetFlagRecursively(_pstFrame, u32AddFlags, u32RemoveFlags, orxFALSE);
@@ -1022,7 +1022,7 @@ orxVOID orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLoca
     }
 
     /* Makes a copy */
-    coord_copy(_pvPos, (orxVEC *)pvIntern);
+    orxVec_Copy(_pvPos, (orxVEC *)pvIntern);
   }
   else
   {

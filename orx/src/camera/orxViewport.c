@@ -219,7 +219,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
       }
 
       /* Stores it in a coord structure */
-      coord_set(&vResult, fX, fY, orx2F(0.0f));
+      orxVec_Set3(&vResult, fX, fY, orx2F(0.0f));
 
       /* Updates camera screen position */
       orxCamera_SetOnScreenPosition(_pstViewport->pstCamera, &vResult);
@@ -531,7 +531,7 @@ orxVOID orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition)
   orxASSERT(_pvPosition != orxNULL);
 
   /* Updates position */
-  coord_copy(&(_pstViewport->vPosition), _pvPosition);
+  orxVec_Copy(&(_pstViewport->vPosition), _pvPosition);
 
   /* Updates camera on screen position */
   orxViewport_UpdateCameraOnScreenPosition(_pstViewport);
@@ -553,7 +553,7 @@ orxVOID orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize)
   orxASSERT(_pvSize != orxNULL);
 
   /* Updates position */
-  coord_copy(&(_pstViewport->vSize), _pvSize);
+  orxVec_Copy(&(_pstViewport->vSize), _pvSize);
 
   /* Updates camera on screen position */
   orxViewport_UpdateCameraOnScreenPosition(_pstViewport);
@@ -598,7 +598,7 @@ orxVOID orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition)
   orxASSERT(_pvPosition != orxNULL);
 
   /* Gets position */
-  coord_copy(_pvPosition, &(_pstViewport->vPosition));
+  orxVec_Copy(_pvPosition, &(_pstViewport->vPosition));
 
   return;
 }
@@ -617,7 +617,7 @@ orxVOID orxViewport_GetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize)
   orxASSERT(_pvSize != orxNULL);
 
   /* Gets size */
-  coord_copy(_pvSize, &(_pstViewport->vSize));
+  orxVec_Copy(_pvSize, &(_pstViewport->vSize));
 
   return;
 }
@@ -766,8 +766,8 @@ orxVOID orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVEC *_pvPosition, orx
   orxASSERT(_pvSize != orxNULL);
 
   /* Gets clip infos */
-  coord_copy(_pvPosition, &(_pstViewport->vClipPosition));
-  coord_copy(_pvSize, &(_pstViewport->vClipSize));
+  orxVec_Copy(_pvPosition, &(_pstViewport->vClipPosition));
+  orxVec_Copy(_pvSize, &(_pstViewport->vClipSize));
 
   return;
 }

@@ -464,7 +464,7 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
     graph_bitmap_size_get(_pstBitmap, &u32Width, &u32Height);
 
     /* Copy bitmap size (Z size is null) */
-    coord_set(&(_pstTexture->vSize), orxU2F(u32Width), orxU2F(u32Height), orx2F(0.0f));
+    orxVec_Set3(&(_pstTexture->vSize), orxU2F(u32Width), orxU2F(u32Height), orx2F(0.0f));
   }
   else
   {
@@ -586,7 +586,7 @@ orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
 
   /* Updates */
   _pstTexture->u32IDFlags |= orxTEXTURE_KU32_ID_FLAG_REF_COORD;
-  coord_copy(&(_pstTexture->vRefPoint), _pvRefPoint);
+  orxVec_Copy(&(_pstTexture->vRefPoint), _pvRefPoint);
 
   return;
 }
@@ -610,14 +610,14 @@ orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
   if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_REF_COORD)
   {
     /* Copy coord */
-    coord_copy(_pvRefPoint, &(_pstTexture->vRefPoint));
+    orxVec_Copy(_pvRefPoint, &(_pstTexture->vRefPoint));
   }
   else
   {
     /* !!! MSG !!! */
 
     /* No refpoint */
-    coord_set(_pvRefPoint, orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
+    orxVec_Set3(_pvRefPoint, orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
     eResult = orxSTATUS_FAILED;
   }
 
@@ -644,14 +644,14 @@ orxSTATUS orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize)
   if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_SIZE)
   {
     /* Gets it */
-    coord_copy(_pvSize, &(_pstTexture->vSize));
+    orxVec_Copy(_pvSize, &(_pstTexture->vSize));
   }
   else
   {
     /* !!! MSG !!! */
 
     /* No size */
-    coord_set(_pvSize, orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
+    orxVec_Set3(_pvSize, orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
     eResult = orxSTATUS_FAILED;
   }
 

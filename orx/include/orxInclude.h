@@ -9,6 +9,7 @@
 
 /* *** TODO LIST
  * C Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, graph, hash table)
+ * - Add BV/box module + extract AABox code from vector module
  * V Add CRC
  * - Add string handling (using CRC + hash)
  * V Add texture referencing with duplication check -> reference increase

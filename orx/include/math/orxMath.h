@@ -50,13 +50,6 @@
 #define orxABS(V)                 (((V) < 0) ? -(V) : (V))
 #define orxFABS(V)                (((V) < orx2F(0.0f)) ? -(V) : (V))
 
-#define orxSWAP32(A, B)                                       \
-do                                                            \
-{                                                             \
-  *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
-  *((orxU32 *)&(B)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
-  *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
-} while(orxFALSE);
 
 #define orxF2U(V)                 ((orxU32)  (V))
 #define orxF2S(V)                 ((orxS32)  (V))
