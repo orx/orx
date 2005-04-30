@@ -49,23 +49,20 @@ struct __orxTEXTURE_t
   /* Self reference counter : 20 */
   orxU32 u32Counter;
 
-  /* Associated bitmap name */
+  /* Associated bitmap name : 24 */
   orxSTRING zDataName;
 
-  /* Reference point : 36 */
+  /* Reference point : 40 */
   orxVEC vRefPoint;
 
-  /* Size coord : 52 */
+  /* Size coord : 56 */
   orxVEC vSize;
 
-  /* Internal id flags : 56 */
+  /* Internal id flags : 60 */
   orxU32 u32IDFlags;
 
-  /* Data : 60 */
+  /* Data : 64 */
   orxVOID *pstData;
-
-  /* 4 extra bytes of padding : 64 */
-  orxU8 au8Unused[4];
 };
 
 /*
