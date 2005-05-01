@@ -1,7 +1,7 @@
 /**
  * @file orxMemory.c
  * 
- * Memoray allocation / Unallocation module
+ * Memory allocation / Deallocation module
  * 
  * @todo
  * Optimizations
@@ -9,7 +9,7 @@
  
  /***************************************************************************
  orxMemory.h
- Memory allocation / unallocation module
+ Memory allocation / deallocation module
  
  begin                : 02/04/2005
  author               : (C) Arcallians

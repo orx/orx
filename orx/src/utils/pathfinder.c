@@ -418,12 +418,12 @@ orxBOOL pathfinder_is_walkable(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
 
   if(st_end.fX != st_start.fX)
   {
-    f_a = ((orxFLOAT)(st_end.fY - st_start.fY) / (orxFLOAT)(st_end.fX - st_start.fX));
+    f_a = ((st_end.fY - st_start.fY) / (st_end.fX - st_start.fX));
     f_sampling = ((st_end.fX - st_start.fX) > 0) ? PATHFINDER_KF_SAMPLING : -PATHFINDER_KF_SAMPLING;
     f_dx = sqrtf((f_sampling * f_sampling) / (1.0 + (f_a * f_a)));
     f_dy = f_a * f_dx;
 
-    for(fX = (orxFLOAT)st_start.fX + PATHFINDER_KF_POSX, fY = (orxFLOAT)st_start.fY + PATHFINDER_KF_POSY; fX < (orxFLOAT)st_end.fX + PATHFINDER_KF_POSX; fX += f_dx, fY += f_dy)
+    for(fX = st_start.fX + PATHFINDER_KF_POSX, fY = st_start.fY + PATHFINDER_KF_POSY; fX < (orxFLOAT)st_end.fX + PATHFINDER_KF_POSX; fX += f_dx, fY += f_dy)
     {
       if(sppst_matrix[(orxU32)fX][(orxU32)fY].b_blocked != orxFALSE)
       {
@@ -436,7 +436,7 @@ orxBOOL pathfinder_is_walkable(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
   {
     f_dy = PATHFINDER_KF_SAMPLING;
 
-    for(fX = (orxFLOAT)st_start.fX + PATHFINDER_KF_POSX, fY = (orxFLOAT)st_start.fY + PATHFINDER_KF_POSY; fY < (orxFLOAT)st_end.fY + PATHFINDER_KF_POSY; fY += f_dy)
+    for(fX = st_start.fX + PATHFINDER_KF_POSX, fY = st_start.fY + PATHFINDER_KF_POSY; fY < (orxFLOAT)st_end.fY + PATHFINDER_KF_POSY; fY += f_dy)
     {
       if(sppst_matrix[(orxU32)fX][(orxU32)fY].b_blocked != orxFALSE)
       {
