@@ -10,9 +10,6 @@
  * @note This is why there is a test on the platform : For file enumeration and dynamic
  * @note library loading, platform specific function are used
  * 
- * @todo WINDOWS : Find how to share static memory between exe and dll (link with -rdynamic on linux)
- * @todo WINDOWS : dll directory hard coded (.\modules). Allow the user to give a
- * @todo a list of dll directory (or file)
  */
  
  /***************************************************************************

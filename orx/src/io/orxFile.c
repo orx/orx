@@ -28,6 +28,8 @@
 #include "debug/orxDebug.h"
 #include "plugin/plugin_core.h"
 
+#include <stdio.h>
+
 /********************
  *  Plugin Related  *
  ********************/
@@ -61,6 +63,19 @@ PLUGIN_CORE_FUNCTION_DEFINE(orxFile_DirCreate, orxSTATUS, orxSTRING);
 PLUGIN_CORE_FUNCTION_DEFINE(orxFile_DirDelete, orxSTATUS, orxSTRING);
 
 /***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+struct __orxFILE_t
+{
+  FILE *_pstFileStream; /**< Platform dependant file stream pointer (from libc) */
+};
+
+/***************************************************************************
+ * Module global variable                                                  *
+ ***************************************************************************/
+
+/***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
 
@@ -77,8 +92,8 @@ orxVOID orxFile_Plugin_Init()
  */
 orxSTATUS orxFile_Deltree(orxSTRING _zDirectory)
 {
-    /* TODO */
-    return orxSTATUS_FAILED;
+  /* TODO */
+  return orxSTATUS_FAILED;
 }
 
 /** Returns orxTRUE if a file exists, else orxFALSE.
@@ -87,8 +102,55 @@ orxSTATUS orxFile_Deltree(orxSTRING _zDirectory)
  */
 orxBOOL orxFile_Exists(orxSTRING _zFile_name)
 {
-    /* TODO */
-    return orxFALSE;
+  /* TODO */
+  return orxFALSE;
+}
+
+/** Open a file for later read or write operation.
+ * @param _zPath         (IN)      Full file's path to open
+ * @param _u32OpenFlags  (IN)      List of used flags when opened
+ * @return a File pointer (or orxNULL if an error has occured)
+ */
+orxFILE *orxFile_Open(orxSTRING _zPath, orxU32 _u32OpenFlags)
+{
+  /* TODO */
+  return orxNULL;   
+}
+
+/** Read datas from a file
+ * @param _pReadData     (OUT)     Pointer where will be stored datas
+ * @param _u32ElemSize   (IN)      Size of 1 element
+ * @param _u32NbElem     (IN)      Number of elements
+ * @param _pstFile       (IN)      Pointer on the file descriptor
+ * @return Returns the number of read elements (not bytes)
+ */
+orxU32 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+{
+  /* TODO */
+  return 0;
+}
+
+/** write datas to a file
+ * @param _pDataToWrite  (IN)      Pointer where will be stored datas
+ * @param _u32ElemSize   (IN)      Size of 1 element
+ * @param _u32NbElem     (IN)      Number of elements
+ * @param _pstFile       (IN)      Pointer on the file descriptor
+ * @return Returns the number of written elements (not bytes)
+ */
+orxU32 orxFile_Write(orxCONST orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+{
+  /* TODO */
+  return 0;
+}
+
+/** Close an oppened file
+ * @param _pstFile       (IN)      File's pointer to close
+ * @return Returns the status of the operation
+ */
+orxSTATUS orxFile_Close(orxFILE *_pstFile)
+{
+  /* TODO */
+  return orxSTATUS_FAILED;
 }
 
 /*******************************************************************************
