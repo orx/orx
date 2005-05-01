@@ -40,6 +40,7 @@ orxSTATIC plugin_core_st_function plugin_file_spst_function[orxPLUGIN_FILE_KU32_
   {(plugin_function *) &orxFile_FindFirst,   orxPLUGIN_FILE_KU32_ID_FIND_FIRST},
   {(plugin_function *) &orxFile_FindNext,    orxPLUGIN_FILE_KU32_ID_FIND_NEXT},
   {(plugin_function *) &orxFile_FindClose,   orxPLUGIN_FILE_KU32_ID_FIND_CLOSE},
+  {(plugin_function *) &orxFile_Infos,       orxPLUGIN_FILE_KU32_ID_INFOS},
   {(plugin_function *) &orxFile_Copy,        orxPLUGIN_FILE_KU32_ID_COPY},
   {(plugin_function *) &orxFile_Rename,      orxPLUGIN_FILE_KU32_ID_RENAME},
   {(plugin_function *) &orxFile_Delete,      orxPLUGIN_FILE_KU32_ID_DELETE},
@@ -53,9 +54,10 @@ orxSTATIC plugin_core_st_function plugin_file_spst_function[orxPLUGIN_FILE_KU32_
 PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Init, orxSTATUS);
 PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Exit, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindFirst, orxBOOL, orxSTRING, orxFILE_SEARCH_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindNext, orxBOOL, orxFILE_SEARCH_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindClose, orxVOID, orxFILE_SEARCH_INFOS*);
+PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindFirst, orxBOOL, orxSTRING, orxFILE_INFOS*);
+PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindNext, orxBOOL, orxFILE_INFOS*);
+PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindClose, orxVOID, orxFILE_INFOS*);
+PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Infos, orxSTATUS, orxSTRING, orxFILE_INFOS*);
 PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Copy, orxSTATUS, orxSTRING, orxSTRING);
 PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Rename, orxSTATUS, orxSTRING, orxSTRING);
 PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Delete, orxSTATUS, orxSTRING);

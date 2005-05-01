@@ -36,7 +36,7 @@
             src/io/joystick.c
             src/io/keyboard.c
             src/io/mouse.c
-            src/io/package.c
+            src/io/orxPackage.c
         </sources>
         <sources>
             src/math/orxVec.c
@@ -126,7 +126,7 @@
             io/joystick.h
             io/keyboard.h
             io/mouse.h
-            io/package.h
+            io/orxPackage.h
             math/orxMath.h
             math/orxVec.h
             memory/orxBank.h
@@ -152,6 +152,7 @@
             plugin/define/plugin_sound.h
             plugin/define/plugin_timer.h
             plugin/define/orxPlugin_File.h
+            plugin/define/orxPlugin_Package.h
             sound/sound.h
             utils/orxLinkList.h
             utils/orxString.h

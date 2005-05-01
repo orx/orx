@@ -80,7 +80,7 @@ orxSTATUS orxScreenshot_Init()
 {
   orxCHAR zFileName[256];
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxFILE_SEARCH_INFOS stFileInfos;
+  orxFILE_INFOS stFileInfos;
 
   /* Not already Initialized? */
   if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))

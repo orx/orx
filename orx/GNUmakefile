@@ -72,7 +72,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_joystick.o \
 	./build/$(BUILD)/orxDLL_keyboard.o \
 	./build/$(BUILD)/orxDLL_mouse.o \
-	./build/$(BUILD)/orxDLL_package.o \
+	./build/$(BUILD)/orxDLL_orxPackage.o \
 	./build/$(BUILD)/orxDLL_orxVec.o \
 	./build/$(BUILD)/orxDLL_orxBank.o \
 	./build/$(BUILD)/orxDLL_orxMemory.o \
@@ -110,7 +110,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_joystick.o \
 	./build/$(BUILD)/orxLIB_keyboard.o \
 	./build/$(BUILD)/orxLIB_mouse.o \
-	./build/$(BUILD)/orxLIB_package.o \
+	./build/$(BUILD)/orxLIB_orxPackage.o \
 	./build/$(BUILD)/orxLIB_orxVec.o \
 	./build/$(BUILD)/orxLIB_orxBank.o \
 	./build/$(BUILD)/orxLIB_orxMemory.o \
@@ -213,7 +213,7 @@ all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/memory.
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
-	for f in anim/orxAnim.h anim/AnimPointer.h anim/orxAnimSet.h base/orxDecl.h base/orxType.h camera/orxCamera.h camera/orxrender.h camera/Viewport.h core/clock.h core/timer.h core/timer_type.h debug/orxDebug.h debug/orxFps.h graph/graph.h graph/graphic.h graph/orxTexture.h io/orxFile.h io/interaction.h io/joystick.h io/keyboard.h io/mouse.h io/package.h math/orxMath.h math/orxVec.h memory/orxBank.h memory/orxMemory.h msg/msg_file.h msg/msg_fps.h msg/msg_game.h msg/msg_graph.h msg/msg_plugin.h msg/msg_screenshot.h msg/msg_timer.h object/orxFrame.h object/orxObject.h object/orxStructure.h plugin/plugin.h plugin/plugin_core.h plugin/plugin_type.h plugin/plugin_user.h plugin/define/plugin_graph.h plugin/define/plugin_joystick.h plugin/define/plugin_keyboard.h plugin/define/plugin_mouse.h plugin/define/plugin_sound.h plugin/define/plugin_timer.h plugin/define/orxPlugin_File.h sound/sound.h utils/orxLinkList.h utils/orxString.h utils/orxTest.h utils/orxTree.h utils/pathfinder.h utils/orxScreenshot.h utils/utils.h orxInclude.h; do \
+	for f in anim/orxAnim.h anim/AnimPointer.h anim/orxAnimSet.h base/orxDecl.h base/orxType.h camera/orxCamera.h camera/orxrender.h camera/Viewport.h core/clock.h core/timer.h core/timer_type.h debug/orxDebug.h debug/orxFps.h graph/graph.h graph/graphic.h graph/orxTexture.h io/orxFile.h io/interaction.h io/joystick.h io/keyboard.h io/mouse.h io/orxPackage.h math/orxMath.h math/orxVec.h memory/orxBank.h memory/orxMemory.h msg/msg_file.h msg/msg_fps.h msg/msg_game.h msg/msg_graph.h msg/msg_plugin.h msg/msg_screenshot.h msg/msg_timer.h object/orxFrame.h object/orxObject.h object/orxStructure.h plugin/plugin.h plugin/plugin_core.h plugin/plugin_type.h plugin/plugin_user.h plugin/define/plugin_graph.h plugin/define/plugin_joystick.h plugin/define/plugin_keyboard.h plugin/define/plugin_mouse.h plugin/define/plugin_sound.h plugin/define/plugin_timer.h plugin/define/orxPlugin_File.h plugin/define/orxPlugin_Package.h sound/sound.h utils/orxLinkList.h utils/orxString.h utils/orxTest.h utils/orxTree.h utils/pathfinder.h utils/orxScreenshot.h utils/utils.h orxInclude.h; do \
 	if test ! -d $(prefix)/include/orx/`dirname $$f` ; then \
 	$(INSTALL) -d $(prefix)/include/orx/`dirname $$f`; \
 	fi; \
@@ -320,7 +320,7 @@ bin/modules/bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 ./build/$(BUILD)/orxDLL_mouse.o: ./src/io/mouse.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_package.o: ./src/io/package.c
+./build/$(BUILD)/orxDLL_orxPackage.o: ./src/io/orxPackage.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxVec.o: ./src/math/orxVec.c
@@ -422,7 +422,7 @@ bin/modules/bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 ./build/$(BUILD)/orxLIB_mouse.o: ./src/io/mouse.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_package.o: ./src/io/package.c
+./build/$(BUILD)/orxLIB_orxPackage.o: ./src/io/orxPackage.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxVec.o: ./src/math/orxVec.c

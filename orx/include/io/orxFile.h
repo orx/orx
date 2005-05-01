@@ -40,15 +40,15 @@
 
 
 /** Store datas about the current file. */
-typedef struct __orxFILE_SEARCH_INFOS_t
+typedef struct __orxFILE_INFOS_t
 {
   orxU32 u32Flags;     /**< File attributes (see list of availables flags) */
   orxU32 u32TimeStamp; /**< Timestamp of the last modification */
   orxU32 u32Size;      /**< File's size (in bytes) */
   orxCHAR zName[256];  /**< File's name */
   orxCHAR zPath[1024]; /**< Directory's name where is stored the file */
-  orxHANDLE hSearch;   /**< Search Handle (internal use) */
-} orxFILE_SEARCH_INFOS;
+  orxHANDLE hInternal; /**< Internal use handle */
+} orxFILE_INFOS;
 
 typedef struct __orxFILE_t orxFILE;
 
@@ -120,18 +120,25 @@ extern orxDLLAPI orxVOID (*orxFile_Exit)();
  * @param _pstFileInfos   (OUT)    Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
-extern orxDLLAPI orxBOOL (*orxFile_FindFirst)(orxSTRING _zSearchPattern, orxFILE_SEARCH_INFOS *_pstFileInfos);
+extern orxDLLAPI orxBOOL (*orxFile_FindFirst)(orxSTRING _zSearchPattern, orxFILE_INFOS *_pstFileInfos);
 
 /** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst
  * @param _pstFileInfos   (IN/OUT) Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
-extern orxDLLAPI orxBOOL (*orxFile_FindNext)(orxFILE_SEARCH_INFOS *_pstFileInfos);
+extern orxDLLAPI orxBOOL (*orxFile_FindNext)(orxFILE_INFOS *_pstFileInfos);
 
 /** Close a search (free the memory allocated for this search).
  * @param _pstFileInfos   (IN)     Informations returned during search
  */
-extern orxDLLAPI orxVOID (*orxFile_FindClose)(orxFILE_SEARCH_INFOS *_pstFileInfos);
+extern orxDLLAPI orxVOID (*orxFile_FindClose)(orxFILE_INFOS *_pstFileInfos);
+
+/** Retrieves informations about a file
+ * @param _zFileName      (IN)      Files used to get informations
+ * @param _pstFileInfos   (OUT)     Returned file's informations
+ * @return Returns the status of the operation
+ */
+extern orxDLLAPI orxSTATUS (*orxFile_Infos)(orxSTRING _zFileName, orxFILE_INFOS *_pstFileInfos);
 
 /** Copy a file.
  * @param _zSource        (IN)     Source file's name
@@ -164,7 +171,6 @@ extern orxDLLAPI orxSTATUS (*orxFile_DirCreate)(orxSTRING _zDirName);
  * @return The status of the operation
  */
 extern orxDLLAPI orxSTATUS (*orxFile_DirDelete)(orxSTRING _zDirName);
-
 
 
 /*******************************************************************************

@@ -60,7 +60,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_joystick.o \
 	.\build\$(BUILD)\orxDLL_keyboard.o \
 	.\build\$(BUILD)\orxDLL_mouse.o \
-	.\build\$(BUILD)\orxDLL_package.o \
+	.\build\$(BUILD)\orxDLL_orxPackage.o \
 	.\build\$(BUILD)\orxDLL_orxVec.o \
 	.\build\$(BUILD)\orxDLL_orxBank.o \
 	.\build\$(BUILD)\orxDLL_orxMemory.o \
@@ -98,7 +98,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_joystick.o \
 	.\build\$(BUILD)\orxLIB_keyboard.o \
 	.\build\$(BUILD)\orxLIB_mouse.o \
-	.\build\$(BUILD)\orxLIB_package.o \
+	.\build\$(BUILD)\orxLIB_orxPackage.o \
 	.\build\$(BUILD)\orxLIB_orxVec.o \
 	.\build\$(BUILD)\orxLIB_orxBank.o \
 	.\build\$(BUILD)\orxLIB_orxMemory.o \
@@ -278,7 +278,7 @@ bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxDLL_mouse.o: ./src/io/mouse.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_package.o: ./src/io/package.c
+.\build\$(BUILD)\orxDLL_orxPackage.o: ./src/io/orxPackage.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxVec.o: ./src/math/orxVec.c
@@ -380,7 +380,7 @@ bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxLIB_mouse.o: ./src/io/mouse.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_package.o: ./src/io/package.c
+.\build\$(BUILD)\orxLIB_orxPackage.o: ./src/io/orxPackage.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxVec.o: ./src/math/orxVec.c
