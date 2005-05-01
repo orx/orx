@@ -88,14 +88,6 @@ extern orxDLLAPI orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell);
  */
 extern orxDLLAPI orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell);
 
-/** Get the previous cell
- * @param _pstBank  (IN)  Bank of memory from where _pCell has been allocated
- * @param _pCell    (IN)  Pointer on the current cell of memory
- * @return The previous cell. If _pCell is orxNULL, the last cell will be returned.
- * @return Returns orxNULL when no more cell can be returned.
- */
-extern orxDLLAPI orxVOID *orxBank_GetPrevious(orxBANK *_pstBank, orxVOID *_pMem);
-
 /*******************************************************************************
  * DEBUG FUNCTION
  ******************************************************************************/
