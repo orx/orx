@@ -33,6 +33,7 @@
  ******************************************************/
 
 #define orxTEST_BANK_KU32_ARRAY_NB_ELEM  3
+#define orxTEST_BANK_KU32_CELLS_SIZE     32
 
 /******************************************************
  * TYPES AND STRUCTURES
@@ -169,8 +170,8 @@ orxVOID orxTest_Bank_Create()
   } while (!bValidValue);
     
   /* Now, allocate s32NbElem elements in a new bank at the index position s32ID */
-  /* We will use an arbitrary size of 1024 bytes for each elements */
-  sstTest_Bank.apstBank[s32ID] = orxBank_Create(s32NbElem, 1024 * sizeof(orxU8), 0, orxMEMORY_TYPE_MAIN);
+  /* We will use an arbitrary size of 1 bytes for each elements */
+  sstTest_Bank.apstBank[s32ID] = orxBank_Create(s32NbElem, orxTEST_BANK_KU32_CELLS_SIZE * sizeof(orxU8), 0, orxMEMORY_TYPE_MAIN);
   if (sstTest_Bank.apstBank[s32ID] == orxNULL)
   {
     orxString_PrintLn("Can't create the new bank. Not enough memory ?");
@@ -297,8 +298,6 @@ orxVOID orxTest_Bank_AllocateCell()
   {
     /* Allocation success */
     orxString_PrintLn("Allocation success (Adress : %x). Filling up datas with 0xFF (1024 bytes to set)", pstCell);
-//    orxMemory_Set(pstCell, 0xFF, 1024 * sizeof(orxU8));
-    orxString_Printf(pstCell, "Hello :)");
   }
   else
   {
@@ -427,6 +426,64 @@ orxVOID orxTest_Bank_PrintAll()
   orxBank_DebugPrint(sstTest_Bank.apstBank[s32ID]);
 }
 
+/** Print the adress of all allocated cell from a bank
+ */
+orxVOID orxTest_Bank_DisplayCells()
+{
+  orxCHAR zUserValue[64];     /* String where user inputs are stored */
+  orxS32 s32ID;
+  orxBOOL bValidValue;
+  orxVOID *pCell;
+  
+  /* Are there allocated bank ? */
+  if (sstTest_Bank.u32NbUsedBank == 0)
+  {
+    orxString_PrintLn("No bank have been created. you can't print it");
+    return;
+  }
+  
+  /* Display the list of allocated bank */
+  orxTest_Bank_PrintUsedID();
+  
+  /* Now, get the bank ID to use */
+  bValidValue = orxFALSE;
+  do
+  {
+    /* Read string value */
+    orxString_ReadString(zUserValue, 63, "Bank ID to display : ");
+    
+    /* Convert it to a number */
+    if (orxString_ToS32(&s32ID, zUserValue, 10) != orxSTATUS_FAILED)
+    {
+      if (((s32ID >= 0) &&
+          (s32ID < orxTEST_BANK_KU32_ARRAY_NB_ELEM)) &&
+          (sstTest_Bank.apstBank[s32ID] != orxNULL))
+      {
+        bValidValue = orxTRUE;
+      }
+      else
+      {
+        orxString_PrintLn("Incorrect number (not in a valid ID range)");
+      }
+    }
+    else
+    {
+      orxString_PrintLn("This is not a valid number");
+    }
+  } while (!bValidValue);
+
+  orxString_PrintLn("List of allocated cells : ");
+  
+  /* Traverse bank datas and print address */
+  pCell = orxNULL;
+  while ((pCell = orxBank_GetNext(sstTest_Bank.apstBank[s32ID], pCell)))
+  {
+    orxString_PrintLn("Cell : %x", pCell);
+  }
+  
+  /* Done ! */
+  return;
+}
 
 /******************************************************
  * DYNAMIC LIBRARY ENTRY POINTS
@@ -443,6 +500,7 @@ orxVOID orxTest_Bank_Init()
   orxTest_Register("Bank", "Allocate a new cell in a bank", orxTest_Bank_AllocateCell);
   orxTest_Register("Bank", "Free a cell from a bank", orxTest_Bank_FreeCell);
   orxTest_Register("Bank", "Print the internal content of a memory bank", orxTest_Bank_PrintAll);
+  orxTest_Register("Bank", "Display adress of all allocated cell", orxTest_Bank_DisplayCells);
   
   /* Initialize static datas */
   orxMemory_Set(&sstTest_Bank, 0, sizeof(orxTEST_BANK));
