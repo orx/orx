@@ -40,10 +40,11 @@
 #include "plugin/define/plugin_keyboard.h"          /* ID : 0x10000300 */
 #include "plugin/define/plugin_mouse.h"             /* ID : 0x10000400 */
 #include "plugin/define/plugin_joystick.h"          /* ID : 0x10000500 */
+#include "plugin/define/orxPlugin_File.h"           /* ID : 0x10000600 */
 
 
 /*** Plugin Definitions ***/
-#define PLUGIN_CORE_KS32_NUMBER           6
+#define PLUGIN_CORE_KS32_NUMBER           7
 
 
 /*********************************************

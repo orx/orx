@@ -24,7 +24,7 @@
 
 #include "debug/orxDebug.h"
 #include "graph/graph.h"
-#include "io/file.h"
+#include "io/orxFile.h"
 #include "memory/orxMemory.h"
 #include "msg/msg_screenshot.h"
 #include "utils/orxString.h"
@@ -80,7 +80,7 @@ orxSTATUS orxScreenshot_Init()
 {
   orxCHAR zFileName[256];
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  file_st_file_infos stFile;
+  orxFILE_SEARCH_INFOS stFileInfos;
 
   /* Not already Initialized? */
   if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))
@@ -89,13 +89,13 @@ orxSTATUS orxScreenshot_Init()
     orxMemory_Set(&sstScreenshot, 0, sizeof(orxSCREENSHOT_STATIC));
 
     /* Valid? */
-    if(file_exist(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
+    if(orxFile_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
     {
       /* Gets file to find name */
       orxString_Printf(zFileName, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
 
       /* Finds first screenshot file */
-      if(file_find_first(zFileName, &stFile) != orxFALSE)
+      if(orxFile_FindFirst(zFileName, &stFileInfos) != orxFALSE)
       {
         do
         {
@@ -103,10 +103,10 @@ orxSTATUS orxScreenshot_Init()
           sstScreenshot.u32Counter++;
         }
         /* Till all screenshots have been found */
-        while(file_find_next(&stFile) != orxFALSE);
+        while(orxFile_FindNext(&stFileInfos) != orxFALSE);
         
         /* Ends the search */
-        file_find_close(&stFile);
+        orxFile_FindClose(&stFileInfos);
       }
 
       /* Inits Flags */

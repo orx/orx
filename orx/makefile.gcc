@@ -55,7 +55,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_graph.o \
 	.\build\$(BUILD)\orxDLL_graphic.o \
 	.\build\$(BUILD)\orxDLL_orxTexture.o \
-	.\build\$(BUILD)\orxDLL_file.o \
+	.\build\$(BUILD)\orxDLL_orxFile.o \
 	.\build\$(BUILD)\orxDLL_interaction.o \
 	.\build\$(BUILD)\orxDLL_joystick.o \
 	.\build\$(BUILD)\orxDLL_keyboard.o \
@@ -93,7 +93,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_graph.o \
 	.\build\$(BUILD)\orxLIB_graphic.o \
 	.\build\$(BUILD)\orxLIB_orxTexture.o \
-	.\build\$(BUILD)\orxLIB_file.o \
+	.\build\$(BUILD)\orxLIB_orxFile.o \
 	.\build\$(BUILD)\orxLIB_interaction.o \
 	.\build\$(BUILD)\orxLIB_joystick.o \
 	.\build\$(BUILD)\orxLIB_keyboard.o \
@@ -263,7 +263,7 @@ bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxDLL_orxTexture.o: ./src/graph/orxTexture.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_file.o: ./src/io/file.c
+.\build\$(BUILD)\orxDLL_orxFile.o: ./src/io/orxFile.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_interaction.o: ./src/io/interaction.c
@@ -365,7 +365,7 @@ bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxLIB_orxTexture.o: ./src/graph/orxTexture.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_file.o: ./src/io/file.c
+.\build\$(BUILD)\orxLIB_orxFile.o: ./src/io/orxFile.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_interaction.o: ./src/io/interaction.c

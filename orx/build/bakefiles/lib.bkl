@@ -31,7 +31,7 @@
             src/graph/orxTexture.c
         </sources>
         <sources>
-            src/io/file.c
+            src/io/orxFile.c
             src/io/interaction.c
             src/io/joystick.c
             src/io/keyboard.c
@@ -121,7 +121,7 @@
             graph/graph.h
             graph/graphic.h
             graph/orxTexture.h
-            io/file.h
+            io/orxFile.h
             io/interaction.h
             io/joystick.h
             io/keyboard.h
@@ -151,6 +151,7 @@
             plugin/define/plugin_mouse.h
             plugin/define/plugin_sound.h
             plugin/define/plugin_timer.h
+            plugin/define/orxPlugin_File.h
             sound/sound.h
             utils/orxLinkList.h
             utils/orxString.h
