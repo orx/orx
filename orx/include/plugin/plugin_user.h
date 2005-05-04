@@ -45,6 +45,7 @@
 #include "plugin/define/plugin_joystick.h"          /* ID : 0x10000500 */
 #include "plugin/define/orxPlugin_File.h"           /* ID : 0x10000600 */
 #include "plugin/define/orxPlugin_Package.h"        /* ID : 0x10000700 */
+#include "plugin/define/orxPlugin_Script.h"         /* ID : 0x10000800 */
 
 
 

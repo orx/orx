@@ -54,6 +54,9 @@
             src/plugin/plugin.c
         </sources>
         <sources>
+            src/script/orxScript.c
+        </sources>
+        <sources>
             src/sound/sound.c
         </sources>
         <sources>
@@ -153,6 +156,8 @@
             plugin/define/plugin_timer.h
             plugin/define/orxPlugin_File.h
             plugin/define/orxPlugin_Package.h
+            plugin/define/orxPlugin_Script.h
+            script/orxScript.h
             sound/sound.h
             utils/orxLinkList.h
             utils/orxString.h

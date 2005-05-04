@@ -28,8 +28,6 @@
 #include "debug/orxDebug.h"
 #include "plugin/plugin_core.h"
 
-#include <stdio.h>
-
 /********************
  *  Plugin Related  *
  ********************/
@@ -70,7 +68,6 @@ PLUGIN_CORE_FUNCTION_DEFINE(orxFile_DirDelete, orxSTATUS, orxSTRING);
 
 struct __orxFILE_t
 {
-  FILE *_pstFileStream; /**< Platform dependant file stream pointer (from libc) */
 };
 
 /***************************************************************************
