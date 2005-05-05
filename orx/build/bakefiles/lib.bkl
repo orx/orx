@@ -60,6 +60,7 @@
             src/sound/sound.c
         </sources>
         <sources>
+            src/utils/orxHashMap.c
             src/utils/orxLinkList.c
             src/utils/orxTest.c
             src/utils/orxTree.c
