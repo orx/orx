@@ -80,6 +80,11 @@ extern orxDLLAPI orxVOID *orxBank_Allocate(orxBANK *_pstBank);
  */
 extern orxDLLAPI orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell);
 
+/** Free all allocated cell from a bank
+ * @param _pstBank  (IN)  Bank of memory to clear
+ */
+extern orxDLLAPI orxVOID orxBank_Clear(orxBANK *_pstBank);
+
 /** Get the next cell
  * @param _pstBank  (IN)  Bank of memory from where _pCell has been allocated
  * @param _pCell    (IN)  Pointer on the current cell of memory

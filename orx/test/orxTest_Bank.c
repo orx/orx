@@ -376,6 +376,56 @@ orxVOID orxTest_Bank_FreeCell()
   orxString_PrintLn("Done !");
 }
 
+/** Clear all cells from a bank
+ */
+orxVOID orxTest_Bank_Clear()
+{
+  orxCHAR zUserValue[64];     /* String where user inputs are stored */
+  orxS32 s32ID;
+  orxBOOL bValidValue;
+  
+  
+  /* Are there allocated bank ? */
+  if (sstTest_Bank.u32NbUsedBank == 0)
+  {
+    orxString_PrintLn("No bank have been created. you can't clear it");
+    return;
+  }
+  
+  /* Display the list of allocated bank */
+  orxTest_Bank_PrintUsedID();
+  
+  /* Now, get the bank ID to use */
+  bValidValue = orxFALSE;
+  do
+  {
+    /* Read string value */
+    orxString_ReadString(zUserValue, 63, "Bank ID to clear : ");
+    
+    /* Convert it to a number */
+    if (orxString_ToS32(&s32ID, zUserValue, 10) != orxSTATUS_FAILED)
+    {
+      if (((s32ID >= 0) &&
+          (s32ID < orxTEST_BANK_KU32_ARRAY_NB_ELEM)) &&
+          (sstTest_Bank.apstBank[s32ID] != orxNULL))
+      {
+        bValidValue = orxTRUE;
+      }
+      else
+      {
+        orxString_PrintLn("Incorrect number (not in a valid ID range)");
+      }
+    }
+    else
+    {
+      orxString_PrintLn("This is not a valid number");
+    }
+  } while (!bValidValue);
+  
+  /* Display content */
+  orxBank_Clear(sstTest_Bank.apstBank[s32ID]);
+}
+
 /** Print content of a memory bank
  */
 orxVOID orxTest_Bank_PrintAll()
@@ -499,6 +549,7 @@ orxVOID orxTest_Bank_Init()
   orxTest_Register("Bank", "Destroy a bank of memory", orxTest_Bank_Destroy);
   orxTest_Register("Bank", "Allocate a new cell in a bank", orxTest_Bank_AllocateCell);
   orxTest_Register("Bank", "Free a cell from a bank", orxTest_Bank_FreeCell);
+  orxTest_Register("Bank", "Clear all cells from a bank", orxTest_Bank_Clear);
   orxTest_Register("Bank", "Print the internal content of a memory bank", orxTest_Bank_PrintAll);
   orxTest_Register("Bank", "Display adress of all allocated cell", orxTest_Bank_DisplayCells);
   

@@ -3,8 +3,8 @@
  * 
  * Memory Bank allocation / Unallocation module
  * 
- * @todo
- * @todo create a private function for segment allocation / unallocation
+ * @todo Add a clever method to unallocate segments.
+ * @todo Optimisation for traverse
  */
  
  /***************************************************************************
@@ -444,6 +444,26 @@ orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
   
   /* Increase the number of free elements */
   pstSegment->u32NbFree++;
+}
+
+/** Free all allocated cell from a bank
+ * @param _pstBank  (IN)  Bank of memory to clear
+ */
+orxVOID orxBank_Clear(orxBANK *_pstBank)
+{
+  orxVOID *pstCell = orxNULL;
+  
+  /* Module initialized ? */
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstBank != orxNULL);
+  
+  /* Free all elements */
+  while ((pstCell = orxBank_GetNext(_pstBank, NULL)))
+  {
+    orxBank_Free(_pstBank, pstCell);
+  }
 }
 
 /** Get the next cell
