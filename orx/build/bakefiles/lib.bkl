@@ -167,6 +167,7 @@
             utils/pathfinder.h
             utils/orxScreenshot.h
             utils/utils.h
+            utils/orxHashMap.h
             orxInclude.h
         </files>
     </headers>

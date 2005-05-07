@@ -28,26 +28,22 @@
 #define _orxHASHMAP_H_
  
 #include "orxInclude.h"
+#include "memory/orxMemory.h"
 
-
-/** Hash map cell definition.*/
-typedef struct __orxHASHMAP_CELL_t
-{
-    orxU32   u32Key;    /**< Key element of a hash map. */
-    orxVOID  *pData;    /**< Address of data. */
-} orxHASHMAP_CELL;
-
- 
 /* Internal hash map structure */
-typedef struct __orxHASHMAP_t *orxHASHMAP;
+typedef struct __orxHASHMAP_t orxHASHMAP;
 
-
+/* Define flags */
+#define orxHASHMAP_KU32_FLAGS_NONE            0x00000000  /**< No flags (default behaviour) */
+#define orxHASHMAP_KU32_FLAGS_NOT_EXPANDABLE  0x00000001  /**< The Hash map will not be expandable */
 
 /** @name Module management.
  * @{ */
 /** Initialize HashMap Module
+ * @return Returns the initialization status.
  */
 extern orxDLLAPI orxSTATUS orxHashMap_Init();
+
 /** Exit HashMap module
  */
 extern orxDLLAPI orxVOID orxHashMap_Exit();
@@ -56,41 +52,49 @@ extern orxDLLAPI orxVOID orxHashMap_Exit();
 /** @name HashMap creation/destruction.
  * @{ */
 /** Create a new hash map and return it.
- * @param _u32InitNbElem Number of rows initially allocated.
- * @return Returns the hashmap or 0 if failed.
+ * @param _u32NbKey   (IN) Number of keys that will be inserted.
+ * @param _u32Flags   (IN) Flags used by the hash map
+ * @param _eMemType   (IN) Memory type to use
+ * @return Returns the hashmap pointer or orxNULL if failed.
  */
-extern orxDLLAPI orxHASHMAP orxHashMap_Create(orxU32 _u32InitNbRows);
+extern orxDLLAPI orxHASHMAP *orxHashMap_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
+
 /** Delete a hash map.
- * @param _pstHashMap Hash map to delete.
+ * @param _pstHashMap (IN) Hash map to delete.
  */
-extern orxDLLAPI orxVOID orxHashMap_Delete(orxHASHMAP _pstHashMap);
+extern orxDLLAPI orxVOID orxHashMap_Delete(orxHASHMAP *_pstHashMap);
+
 /** Clear a hash map.
- * @param _pstHashMap Hash map to clear.
+ * @param _pstHashMap (IN) Hash map to clear.
+ * @return Returns the status of the operation.
  */
-extern orxDLLAPI orxVOID orxHashMap_Clear(orxHASHMAP _pstHashMap);
+extern orxDLLAPI orxSTATUS orxHashMap_Clear(orxHASHMAP *_pstHashMap);
 /** @} */
 
 
 /** @name HashMap key manipulation.
  * @{ */
 /** Find an item in a hash map.
- * @param _pstHashMap The hash map where search.
- * @param _u32Key Key to find.
- * @return The cell or 0 if not found.
+ * @param _pstHashMap (IN) The hash map where search.
+ * @param _u32Key     (IN) Key to find.
+ * @return The Element associated to the key or orxNULL if not found.
  */
-extern orxDLLAPI orxHASHMAP_CELL* orxHashMap_FindKey(orxHASHMAP _pstHashMap, orxU32 _u32Key);
-/** Set an item value.
- * @param _pstHashMap The hash map where set.
- * @param _u32Key Key to assign.
- * @param _pValue Value to assign.
- */
-extern orxDLLAPI orxVOID orxHashMap_SetKey(orxHASHMAP _pstHashMap, orxU32 _u32Key, orxVOID *_pValue);
-/** Remove an item.
- * @param _pstHashMap The hash map where remove.
- * @param _u32Key Key to remove.
- */
-extern orxDLLAPI orxVOID orxHashMap_RemoveKey(orxHASHMAP _pstHashMap, orxU32 _u32Key);
-/** @} */
+extern orxDLLAPI orxVOID *orxHashMap_Get(orxHASHMAP *_pstHashMap, orxU32 _u32Key);
 
+/** Add an item value.
+ * @param _pstHashMap The hash map where set.
+ * @param _u32Key     (IN) Key to assign.
+ * @param _pData      (IN) Data to assign.
+ * @return Returns the status of the operation. (fails if key already used)
+ */
+extern orxDLLAPI orxSTATUS orxHashMap_Add(orxHASHMAP *_pstHashMap, orxU32 _u32Key, orxVOID *_pData);
+
+/** Remove an item.
+ * @param _pstHashMap (IN) The hash map where remove.
+ * @param _u32Key     (IN) Key to remove.
+ * @return Returns the status of the operation.
+ */
+extern orxDLLAPI orxSTATUS orxHashMap_Remove(orxHASHMAP *_pstHashMap, orxU32 _u32Key);
+/** @} */
 
 #endif /* _orxHASHMAP_H_ */

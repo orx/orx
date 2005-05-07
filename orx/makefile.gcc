@@ -70,6 +70,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_plugin.o \
 	.\build\$(BUILD)\orxDLL_orxScript.o \
 	.\build\$(BUILD)\orxDLL_sound.o \
+	.\build\$(BUILD)\orxDLL_orxHashMap.o \
 	.\build\$(BUILD)\orxDLL_orxLinkList.o \
 	.\build\$(BUILD)\orxDLL_orxTest.o \
 	.\build\$(BUILD)\orxDLL_orxTree.o \
@@ -109,6 +110,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_plugin.o \
 	.\build\$(BUILD)\orxLIB_orxScript.o \
 	.\build\$(BUILD)\orxLIB_sound.o \
+	.\build\$(BUILD)\orxLIB_orxHashMap.o \
 	.\build\$(BUILD)\orxLIB_orxLinkList.o \
 	.\build\$(BUILD)\orxLIB_orxTest.o \
 	.\build\$(BUILD)\orxLIB_orxTree.o \
@@ -310,6 +312,9 @@ bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxDLL_sound.o: ./src/sound/sound.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+.\build\$(BUILD)\orxDLL_orxHashMap.o: ./src/utils/orxHashMap.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 .\build\$(BUILD)\orxDLL_orxLinkList.o: ./src/utils/orxLinkList.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -413,6 +418,9 @@ bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_sound.o: ./src/sound/sound.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\orxLIB_orxHashMap.o: ./src/utils/orxHashMap.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxLinkList.o: ./src/utils/orxLinkList.c

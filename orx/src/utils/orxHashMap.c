@@ -27,176 +27,332 @@
 #include "utils/orxHashMap.h"
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
-#include "utils/orxString.h"
 
-#define orxHASHMAP_INIT_BANK_HASHMAP_ELEM       32     /**< Initial bank hashmap element number. */
-#define orxHASHMAP_INIT_BANK_HASHMAP_ROWELEM    256    /**< Initial bank hashmap row element number. */
+#define orxHASHMAP_KU32_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxHASHMAP_KU32_FLAG_READY  0x00000001  /**< The module has been initialized */
 
-#define orxHASHMAP_INDEX_NUMBER                 256    /**< Indexing size.*/
+#define orxHASHMAP_KU32_INDEX_SIZE  256
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
-typedef struct __orxHASHMAP_ROW_t
+/** Hash map cell definition.*/
+typedef struct __orxHASHMAP_CELL_t
 {
-    orxHASHMAP_CELL stCell;         /**< Cell of data. */
-    __orxHASHMAP_ROW_t *pstNext;    /**< Next row of data . */
-} orxHASHMAP_ROW, *orxHASHMAP_PROW;
+  orxU32   u32Key;                      /**< Key element of a hash map. */
+  orxVOID  *pData;                      /**< Address of data. */
+  struct __orxHASHMAP_CELL_t *pstNext;  /**< Next cell with the same index. */
+} orxHASHMAP_CELL;
 
-
-
-typedef struct __orxHASHMAP_t
+/** Hash Map */
+struct __orxHASHMAP_t
 {
-    orxHASHMAP_PROW astRows[orxHASHMAP_INDEX_NUMBER];     /**< Rows of data. */
-} *orxHASHMAP;
+  orxHASHMAP_CELL *apstCell[orxHASHMAP_KU32_INDEX_SIZE]; /**< Hash table */
+  orxBANK *pstBank;                                      /**< Bank where are stored cells */
+};
 
+/** Module static structure */
+typedef struct __orxHASHMAP_STATIC_t
+{
+  orxU32 u32Flags;      /**< Module flags */
+} orxHASHMAP_STATIC;
 
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
-orxSTATIC orxBANK* spstHashMapBank = 0;
-orxSTATIC orxBANK* spstHashMapRowBank = 0;
+orxSTATIC orxHASHMAP_STATIC sstHashMap;
 
 /***************************************************************************
- * Private functions                                                        *
+ * Private functions                                                       *
  ***************************************************************************/
 
 /** Find a row in a hash map.
  * @param _pstHashMap The hash map where search.
  * @param _u32Key Key to find.
- * @return address of the row.
+ * @return index associated to the given key.
  */
-orxSTATIC orxHASHMAP_ROW* orxHashMap_FindRow(orxHASHMAP _pstHashMap, orxU32 _u32Key)
+orxINLINE orxU32 orxHashMap_FindIndex(orxHASHMAP *_pstHashMap, orxU32 _u32Key)
 {
-    orxHASHMAP_ROW* pstRow = _pstHashMap->astRows[_u32Key%orxHASHMAP_INDEX_NUMBER];
+  /* Module initialized ? */
+  orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
 
-    while (pstRow!=0)
-    {
-        if (pstRow->stCell.u32Key==_u32Key)
-            break;
-        pstRow = pstRow->pstNext;
-    }
-
-    return pstRow;
+  /* Correct parameters ? */
+  orxASSERT(_pstHashMap != orxNULL);
+  
+  /* Compute the hash index */
+  return (_u32Key %  orxHASHMAP_KU32_INDEX_SIZE);
 }
-
 
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
 
 
-/* Initialize HashMap Module */
+/** @name Module management.
+ * @{ */
+/** Initialize HashMap Module
+ * @return Returns the initialization status.
+ */
 orxSTATUS orxHashMap_Init()
 {
-    /** @todo Set the correct flags.*/
-    spstHashMapBank = orxBank_Create(orxHASHMAP_INIT_BANK_HASHMAP_ELEM, sizeof(__orxHASHMAP_t), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-    spstHashMapRowBank = orxBank_Create(orxHASHMAP_INIT_BANK_HASHMAP_ROWELEM, sizeof(__orxHASHMAP_ROW_t), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-    /* Module successfully initialized */
-    return orxSTATUS_SUCCESS;
+  /* Module not already initialized ? */
+  orxASSERT(!(sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY));
+
+  /* Cleans static controller */
+  orxMemory_Set(&sstHashMap, 0, sizeof(orxHASHMAP_STATIC));
+
+  /* Set module as ready */
+  sstHashMap.u32Flags = orxHASHMAP_KU32_FLAG_READY;
+  
+  /* Successfull initialization */
+  return orxSTATUS_SUCCESS;
 }
 
-/* Exit HashMap module */
+/** Exit HashMap module
+ */
 orxVOID orxHashMap_Exit()
 {
-    orxBank_Delete(spstHashMapBank);
-    orxBank_Delete(spstHashMapRowBank);
+  /* Module initialized ? */
+  orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
+  
+  /* Module not ready now */
+  sstHashMap.u32Flags = orxHASHMAP_KU32_FLAG_NONE;
 }
 
-
-
-/* Create a new hash map and return it. */
-orxHASHMAP orxHashMap_Create(orxU32 _u32InitNbRows)
+/** @name HashMap creation/destruction.
+ * @{ */
+/** Create a new hash map and return it.
+ * @param _u32NbKey   (IN) Number of keys that will be inserted.
+ * @param _u32Flags   (IN) Flags used by the hash map
+ * @param _eMemType   (IN) Memory type to use
+ * @return Returns the hashmap pointer or orxNULL if failed.
+ */
+orxHASHMAP *orxHashMap_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
-    /* Allocate hash map. */
-    orxHASHMAP pstMap = orxBank_Allocate(spstHashMapBank);
+  orxHASHMAP *pstHashMap = orxNULL; /* New created hash map */
+    
+  /* Module initialized ? */
+  orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
 
-    /* Nulling all pointers.*/
-    orxU32 u32Index;
-    for (u32Index=0; u32Index<orxHASHMAP_INDEX_NUMBER; u32Index++)
-        pstMap->astRows[u32Index] = 0;
+  /* Correct parameters ? */
+  orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
+  
+  /* (hash can hold at least one key) */
+  orxASSERT(_u32NbKey > 0);
 
-    return pstMap;
-}
-
-/* Delete a hash map. */
-orxVOID orxHashMap_Delete(orxHASHMAP _pstHashMap)
-{
-    orxHashMap_Clear(_pstHashMap);
-    orxBank_Free(spstHashMapBank, _pstHashMap);
-}
-
-/* Clear a hash map. */
-orxVOID orxHashMap_Clear(orxHASHMAP _pstHashMap)
-{
-    /* Nulling all pointers.*/
-    orxU32 u32Index;
-    for (u32Index=0; u32Index<orxHASHMAP_INDEX_NUMBER; u32Index++)
+  /* Allocate memory for a hash table */
+  pstHashMap = (orxHASHMAP *)orxMemory_Allocate(sizeof(orxHASHMAP), _eMemType);
+  
+  /* Enough memory ? */
+  if (pstHashMap != orxNULL)
+  {
+    /* Clean values */
+    orxMemory_Set(pstHashMap, 0, sizeof(orxHASHMAP));
+  
+    /* Allocate bank for cells */
+    pstHashMap->pstBank = orxBank_Create(_u32NbKey, sizeof(orxHASHMAP_CELL), orxBANK_KU32_FLAGS_NONE, _eMemType);
+    
+    /* Correct bank allocation ? */
+    if (pstHashMap->pstBank == orxNULL)
     {
-        orxHASHMAP_ROW *pstNext, *pstRow = pstMap->astRows[u32Index];
-        if (pstRow!=0)
-        {
-            pstMap->astRows[u32Index] = 0;
-            do
-            {
-                pstNext = pstRow->pstNext;
-                orxBank_Free(spstHashMapRowBank, pstNext);
-            }
-            while (pstNext!=0)
-        }
+      /* Allocation problem, returns orxNULL */
+      orxMemory_Free(pstHashMap);
+      pstHashMap = orxNULL;
     }
+  }
+  
+  return pstHashMap;
 }
 
-
-/* Find an item in a hash map. */
-orxHASHMAP_CELL* orxHashMap_FindKey(orxHASHMAP _pstHashMap, orxU32 _u32Key)
+/** Delete a hash map.
+ * @param _pstHashMap (IN) Hash map to delete.
+ */
+orxVOID orxHashMap_Delete(orxHASHMAP *_pstHashMap)
 {
-    orxHASHMAP_ROW* pstRow = orxHashMap_FindRow(_pstHashMap, _u32Key);
-    return pstRow!=0?&pstRow->stCell:0;
+  /* Module initialized ? */
+  orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstHashMap != orxNULL);
+  
+  /* Clear hash table (unallocate cells) */
+  orxHashMap_Clear(_pstHashMap);
+  
+  /* Free bank */
+  orxBank_Delete(_pstHashMap->pstBank);
+  
+  /* Unallocate memory */
+  orxMemory_Free(_pstHashMap);
+  
+  /* Done ! */
 }
 
-/* Set an item value. */
-orxVOID orxHashMap_SetKey(orxHASHMAP _pstHashMap, orxU32 _u32Key, orxVOID *_pValue)
+/** Clear a hash map.
+ * @param _pstHashMap (IN) Hash map to clear.
+ * @return Returns the status of the operation.
+ */
+orxSTATUS orxHashMap_Clear(orxHASHMAP *_pstHashMap)
 {
-    orxHASHMAP_ROW* pstRow = orxHashMap_FindRow(_pstHashMap, _u32Key);
-    if (pstRow!=0)
-        pstRow->stCell.pData = _pValue);
+  /* Module initialized ? */
+  orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstHashMap != orxNULL);
+
+  /* Clear the memory bank */
+  orxBank_Clear(_pstHashMap->pstBank);
+  
+  /* Clear the hash */
+  orxMemory_Set(_pstHashMap, 0, sizeof(orxHASHMAP));
+}
+
+/** @name HashMap key manipulation.
+ * @{ */
+/** Find an item in a hash map.
+ * @param _pstHashMap (IN) The hash map where search.
+ * @param _u32Key     (IN) Key to find.
+ * @return The Element associated to the key or orxNULL if not found.
+ */
+orxVOID *orxHashMap_Get(orxHASHMAP *_pstHashMap, orxU32 _u32Key)
+{
+  orxU32 u32Index;                    /* Hash map index */
+  orxVOID *pData = orxNULL;           /* Returned data */
+  orxHASHMAP_CELL *pstCell = orxNULL; /* Cell used to traverse */
+  
+  /* Module initialized ? */
+  orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstHashMap != orxNULL);
+
+  /* Get the index from the key */
+  u32Index = orxHashMap_FindIndex(_pstHashMap, _u32Key);
+  
+  /* Traverse to find the key */
+  pstCell = _pstHashMap->apstCell[u32Index];
+  while (pstCell != orxNULL && pstCell->u32Key != _u32Key)
+  {
+    /* Try with next cell */
+    pstCell = pstCell->pstNext;
+  }
+  
+  /* Cell found ? */
+  if (pstCell != orxNULL)
+  {
+    /* Returns associated datas */
+    return pstCell->pData;
+  }
+  else
+  {
+    /* Key not found, returns orxNULL */
+    return orxNULL;
+  }
+}
+
+/** Add an item value.
+ * @param _pstHashMap The hash map where set.
+ * @param _u32Key     (IN) Key to assign.
+ * @param _pData      (IN) Data to assign.
+ * @return Returns the status of the operation. (fails if key already used)
+ */
+orxSTATUS orxHashMap_Add(orxHASHMAP *_pstHashMap, orxU32 _u32Key, orxVOID *_pData)
+{
+  orxU32 u32Index;                      /* Hash index */
+  orxHASHMAP_CELL *pstCell;             /* New cell to add */
+  orxSTATUS eStatus = orxSTATUS_FAILED; /* Status to return */
+  
+  /* Module initialized ? */
+  orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstHashMap != orxNULL);
+  
+  /* Can't add a NULL pointer, else Get will returns orxNULL and it won't be possible to detect errors
+   * Maybe that this behaviour should be different ?
+   */
+  orxASSERT(_pData != orxNULL);
+  
+  /* The key must not exist */
+  if (orxHashMap_Get(_pstHashMap, _u32Key) == orxNULL)
+  {
+    /* Get the hash map index */
+    u32Index = orxHashMap_FindIndex(_pstHashMap, _u32Key);
+    
+    /* Allocate a new cell if possible */
+    pstCell = orxBank_Allocate(_pstHashMap->pstBank);
+    
+    /* If allocation succeed, insert the new cell */
+    if (pstCell != orxNULL)
+    {
+      pstCell->pstNext = _pstHashMap->apstCell[u32Index];
+      _pstHashMap->apstCell[u32Index] = pstCell;
+      eStatus = orxSTATUS_SUCCESS;
+    }
+  }
+
+  return eStatus;
+}
+
+/** Remove an item.
+ * @param _pstHashMap (IN) The hash map where remove.
+ * @param _u32Key     (IN) Key to remove.
+ * @return Returns the status of the operation.
+ */
+orxSTATUS orxHashMap_Remove(orxHASHMAP *_pstHashMap, orxU32 _u32Key)
+{
+  orxU32 u32Index;                          /* Hash map index */
+  orxHASHMAP_CELL *pstCell = orxNULL;       /* Cell used to traverse */
+  orxHASHMAP_CELL *pstRemoveCell = orxNULL; /* Cell to remove */
+  orxSTATUS eStatus = orxSTATUS_FAILED; /* Status to return */
+  
+  /* Module initialized ? */
+  orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstHashMap != orxNULL);
+
+  /* Get the index from the key */
+  u32Index = orxHashMap_FindIndex(_pstHashMap, _u32Key);
+  
+  pstCell = _pstHashMap->apstCell[u32Index];
+
+  /* Is the first key is the key to remove ? */
+  if (pstCell != orxNULL)
+  {
+    if (pstCell->u32Key == _u32Key)
+    {
+      /* The first cell has to be removed */
+      _pstHashMap->apstCell[u32Index] = pstCell->pstNext;
+      orxBank_Free(_pstHashMap->pstBank, pstCell);
+      
+      /* Operation succeed */
+      eStatus = orxSTATUS_SUCCESS;
+    }
     else
     {
-        pstRow = orxBank_Allocate(spstHashMapRowBank);
-        pstRow->stCell.u32Key = _u32Key;
-        pstRow->stCell.pData  = _pValue;
-        pstRow->pstNext       = _pstHashMap->astRows[_u32Key%orxHASHMAP_INDEX_NUMBER];
-        _pstHashMap->astRows[_u32Key%orxHASHMAP_INDEX_NUMBER] = pstRow;
+      /* Traverse to find the key */
+      while (pstCell->pstNext != orxNULL && pstCell->pstNext->u32Key != _u32Key)
+      {
+        /* Try with next cell */
+        pstCell = pstCell->pstNext;
+      }
+      
+      /* Cell found ? (key should be on the next cell) */
+      if (pstCell->pstNext != orxNULL)
+      {
+        /* We found it, remove this cell */
+        pstRemoveCell = pstCell->pstNext;
+        pstCell->pstNext = pstRemoveCell->pstNext;
+        
+        /* Free cell from bank */
+        orxBank_Free(_pstHashMap->pstBank, pstRemoveCell);
+        
+        /* Operation succeed */
+        eStatus = orxSTATUS_SUCCESS;
+      }
     }
+  }
+  
+  return eStatus;
 }
-
-/* Remove an item. */
-orxVOID orxHashMap_RemoveKey(orxHASHMAP _pstHashMap, orxU32 _u32Key)
-{
-    orxHASHMAP_ROW* pstRow = _pstHashMap->astRows[_u32Key%orxHASHMAP_INDEX_NUMBER];
-
-    if (pstRow!=0)
-    {
-        if (pstRow->stCell.u32Key==_u32Key)
-        {
-            _pstHashMap->astRows[_u32Key%orxHASHMAP_INDEX_NUMBER] = pstRow->pstNext;
-        }
-        else
-        {
-            while (pstRow->pstNext!=0 && pstRow->pstNext->stCell.u32Key!=_u32Key)
-                pstRow = pstRow->pstNext;
-            if (pstRow->pstNext!=0 && pstRow->pstNext->stCell.u32Key==_u32Key)
-            {
-                orxHASHMAP_ROW* pstCurrent = pstRow;
-                pstRow = pstRow->pstNext;
-                pstCurrent->pstNext = pstRow->pstNext;
-            }
-        }
-        if (pstRow!=0)
-            orxBank_Free(spstHashMapRowBank, pstRow);
-    }
-}
-
-
