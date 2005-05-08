@@ -97,4 +97,13 @@ extern orxDLLAPI orxSTATUS orxHashMap_Add(orxHASHMAP *_pstHashMap, orxU32 _u32Ke
 extern orxDLLAPI orxSTATUS orxHashMap_Remove(orxHASHMAP *_pstHashMap, orxU32 _u32Key);
 /** @} */
 
+/*******************************************************************************
+ * DEBUG FUNCTION
+ ******************************************************************************/
+
+/** Print the content of a Hash map
+ * @param _pstHashMap (IN) Hash map to display
+ */
+extern orxDLLAPI orxVOID orxHashMap_DebugPrint(orxHASHMAP *_pstHashMap);
+
 #endif /* _orxHASHMAP_H_ */
