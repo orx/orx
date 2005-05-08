@@ -132,6 +132,7 @@ orxVOID orxHashMap_Exit()
 orxHASHMAP *orxHashMap_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
   orxHASHMAP *pstHashMap = orxNULL; /* New created hash map */
+  orxU32 u32Flags;                  /* Flags used for bank creation */
     
   /* Module initialized ? */
   orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
@@ -148,11 +149,21 @@ orxHASHMAP *orxHashMap_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE
   /* Enough memory ? */
   if (pstHashMap != orxNULL)
   {
+    /* Set flags */
+    if (_u32Flags == orxHASHMAP_KU32_FLAGS_NOT_EXPANDABLE)
+    {
+      u32Flags = orxBANK_KU32_FLAGS_NOT_EXPANDABLE;
+    }
+    else
+    {
+      u32Flags = orxBANK_KU32_FLAGS_NONE;
+    }
+    
     /* Clean values */
     orxMemory_Set(pstHashMap, 0, sizeof(orxHASHMAP));
   
     /* Allocate bank for cells */
-    pstHashMap->pstBank = orxBank_Create(_u32NbKey, sizeof(orxHASHMAP_CELL), orxBANK_KU32_FLAGS_NONE, _eMemType);
+    pstHashMap->pstBank = orxBank_Create(_u32NbKey, sizeof(orxHASHMAP_CELL), u32Flags, _eMemType);
     
     /* Correct bank allocation ? */
     if (pstHashMap->pstBank == orxNULL)
@@ -195,6 +206,8 @@ orxVOID orxHashMap_Delete(orxHASHMAP *_pstHashMap)
  */
 orxSTATUS orxHashMap_Clear(orxHASHMAP *_pstHashMap)
 {
+  orxSTATUS eStatus = orxSTATUS_SUCCESS; /* Returned status */
+  
   /* Module initialized ? */
   orxASSERT((sstHashMap.u32Flags & orxHASHMAP_KU32_FLAG_READY) == orxHASHMAP_KU32_FLAG_READY);
 
@@ -205,7 +218,10 @@ orxSTATUS orxHashMap_Clear(orxHASHMAP *_pstHashMap)
   orxBank_Clear(_pstHashMap->pstBank);
   
   /* Clear the hash */
-  orxMemory_Set(_pstHashMap, 0, sizeof(orxHASHMAP));
+  orxMemory_Set(_pstHashMap->apstCell, 0, sizeof(_pstHashMap->apstCell));
+  
+  /* Done ! */
+  return eStatus;
 }
 
 /** @name HashMap key manipulation.
@@ -218,7 +234,6 @@ orxSTATUS orxHashMap_Clear(orxHASHMAP *_pstHashMap)
 orxVOID *orxHashMap_Get(orxHASHMAP *_pstHashMap, orxU32 _u32Key)
 {
   orxU32 u32Index;                    /* Hash map index */
-  orxVOID *pData = orxNULL;           /* Returned data */
   orxHASHMAP_CELL *pstCell = orxNULL; /* Cell used to traverse */
   
   /* Module initialized ? */
@@ -281,12 +296,17 @@ orxSTATUS orxHashMap_Add(orxHASHMAP *_pstHashMap, orxU32 _u32Key, orxVOID *_pDat
     u32Index = orxHashMap_FindIndex(_pstHashMap, _u32Key);
     
     /* Allocate a new cell if possible */
-    pstCell = orxBank_Allocate(_pstHashMap->pstBank);
+    pstCell = (orxHASHMAP_CELL *)orxBank_Allocate(_pstHashMap->pstBank);
     
     /* If allocation succeed, insert the new cell */
     if (pstCell != orxNULL)
     {
+      /* Set datas */
+      pstCell->u32Key = _u32Key;
+      pstCell->pData  = _pData;
       pstCell->pstNext = _pstHashMap->apstCell[u32Index];
+      
+      /* Insert it */
       _pstHashMap->apstCell[u32Index] = pstCell;
       eStatus = orxSTATUS_SUCCESS;
     }

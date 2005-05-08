@@ -292,7 +292,7 @@ orxVOID orxTest_HashMap_Add()
     orxString_ReadString(zUserValue, 63, "key to use : ");
     
     /* Convert it to a number */
-    if (orxString_ToS32(&s32Key, zUserValue, 16) != orxSTATUS_FAILED)
+    if (orxString_ToS32(&s32Key, zUserValue, 10) != orxSTATUS_FAILED)
     {
       bValidValue = orxTRUE;
     }
@@ -310,7 +310,7 @@ orxVOID orxTest_HashMap_Add()
     orxString_ReadString(zUserValue, 63, "associated value data : ");
     
     /* Convert it to a number */
-    if (orxString_ToS32(&s32Data, zUserValue, 16) != orxSTATUS_FAILED)
+    if (orxString_ToS32(&s32Data, zUserValue, 10) != orxSTATUS_FAILED)
     {
       bValidValue = orxTRUE;
     }
@@ -321,7 +321,7 @@ orxVOID orxTest_HashMap_Add()
   } while (!bValidValue);
   
   /* Got the key/value... Now, try to add it in the hash map */
-  orxString_PrintLn("Trying to add the pair kay/value (%d/%d)...", s32Key, s32Data);
+  orxString_PrintLn("Trying to add the pair key/value (%u/%d)...", (orxU32)s32Key, s32Data);
   if (orxHashMap_Add(sstTest_HashMap.apstHashMap[s32ID], (orxU32)s32Key, (orxVOID *)s32Data) == orxSTATUS_FAILED)
   {
     /* Insetion failed */
@@ -384,7 +384,7 @@ orxVOID orxTest_HashMap_Remove()
     orxString_ReadString(zUserValue, 63, "key value : ");
     
     /* Convert it to a number */
-    if (orxString_ToS32(&s32Key, zUserValue, 16) != orxSTATUS_FAILED)
+    if (orxString_ToS32(&s32Key, zUserValue, 10) != orxSTATUS_FAILED)
     {
       bValidValue = orxTRUE;
     }
@@ -459,7 +459,7 @@ orxVOID orxTest_HashMap_Get()
     orxString_ReadString(zUserValue, 63, "key value : ");
     
     /* Convert it to a number */
-    if (orxString_ToS32(&s32Key, zUserValue, 16) != orxSTATUS_FAILED)
+    if (orxString_ToS32(&s32Key, zUserValue, 10) != orxSTATUS_FAILED)
     {
       bValidValue = orxTRUE;
     }
