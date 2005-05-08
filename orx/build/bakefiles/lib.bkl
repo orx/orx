@@ -60,7 +60,7 @@
             src/sound/sound.c
         </sources>
         <sources>
-            src/utils/orxHashMap.c
+            src/utils/orxHashTable.c
             src/utils/orxLinkList.c
             src/utils/orxTest.c
             src/utils/orxTree.c
@@ -167,7 +167,7 @@
             utils/pathfinder.h
             utils/orxScreenshot.h
             utils/utils.h
-            utils/orxHashMap.h
+            utils/orxHashTable.h
             orxInclude.h
         </files>
     </headers>

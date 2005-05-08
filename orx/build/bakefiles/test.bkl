@@ -41,9 +41,9 @@
     <sources>test/orxTest_Bank.c</sources>
   </module>
 
-  <module id="hash" template="orxBASE,orxLINK,orxMODULELINK">
+  <module id="HashTable" template="orxBASE,orxLINK,orxMODULELINK">
     <dirname>bin/modules</dirname>
-    <sources>test/orxTest_Hash.c</sources>
+    <sources>test/orxTest_HashTable.c</sources>
   </module>
 
 </bakefile>
