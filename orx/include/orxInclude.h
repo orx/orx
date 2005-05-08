@@ -30,14 +30,18 @@
  * - Simplify plugin declaration with macros/enums instead of flag IDs
  * - Adds interactors
  * - Adds events
- * - Adds LUA integration
- * C Complete orxBANK implementation
- * C Rewrite File and Package module to use plugins system
- * C Complete test module and add a generic makefile to compile each test file as an automatically loaded dynamic library
+ * C Adds LUA integration
+ * V Complete orxBANK implementation
+ * C Complete orxHashMap module (refactor to orxHash and complete test module)
+ * V Rewrite File and Package module to use plugins system
+ * - Write plugins implementation for file and package management
+ * V Complete test module and add a generic makefile to compile each test file as an automatically loaded dynamic library
  * C Write a module to manage string (overload string.h functionalities) + add other functionalities
  * - Add network :)
  * - Add FSM
  * - Add waypoint/way system
+ * - Add physics
+ * - Use a real task manager :)
  */
 
 
