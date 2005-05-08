@@ -144,6 +144,11 @@ BANK_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CPPFLAGS) $(CFLAGS)
 BANK_OBJECTS =  \
 	./build/$(BUILD)/bank_orxTest_Bank.o
+HASH_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) -DorxDLL $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
+	$(CPPFLAGS) $(CFLAGS)
+HASH_OBJECTS =  \
+	./build/$(BUILD)/hash_orxTest_Hash.o
 
 ### Conditionally set variables: ###
 
@@ -213,7 +218,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/memory.so bin/modules/bank.so
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/memory.so bin/modules/bank.so bin/modules/hash.so
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
@@ -235,6 +240,7 @@ clean:
 	rm -f bin/testbed
 	rm -f bin/modules/memory.so
 	rm -f bin/modules/bank.so
+	rm -f bin/modules/hash.so
 
 ifeq ($(LINK),dynamic)
 lib/liborx$(orxSUFFIX).so: $(ORXDLL_OBJECTS)
@@ -269,6 +275,9 @@ bin/modules/memory.so: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 bin/modules/bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(__orxEXTRALINK_p)
+
+bin/modules/hash.so: $(HASH_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(HASH_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(__orxEXTRALINK_p)
 
 ./build/$(BUILD)/orxDLL_orxAnim.o: ./src/anim/orxAnim.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
@@ -494,6 +503,9 @@ bin/modules/bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 ./build/$(BUILD)/bank_orxTest_Bank.o: ./test/orxTest_Bank.c
 	$(CC) -c -o $@ $(BANK_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/hash_orxTest_Hash.o: ./test/orxTest_Hash.c
+	$(CC) -c -o $@ $(HASH_CFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean install_orxDLL install_orxLIB
 
