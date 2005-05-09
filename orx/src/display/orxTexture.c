@@ -17,9 +17,9 @@
  ***************************************************************************/
 
 
-#include "graph/orxTexture.h"
+#include "display/orxTexture.h"
 
-#include "graph/graph.h"
+#include "display/orxDisplay.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
 

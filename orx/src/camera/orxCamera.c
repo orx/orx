@@ -22,7 +22,7 @@
 #include "anim/orxAnimPointer.h"
 #include "core/timer.h"
 #include "debug/orxDebug.h"
-#include "graph/graphic.h"
+#include "display/graphic.h"
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
 
@@ -250,7 +250,7 @@ orxSTATIC orxSTATUS orxCamera_CreateViewList(orxCAMERA *_pstCamera)
       orxU32 j;
 
       /* Frees all previously created frames */
-      for(j = i - 1; j >= 0; j--)
+      for(j = 0; j < i; j++)
       {
         orxFrame_Delete((_pstCamera->astViewList[j]).pstScreenFrame);
       }

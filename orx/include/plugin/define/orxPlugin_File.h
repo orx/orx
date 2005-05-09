@@ -14,7 +14,7 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
+ *   This program is free software; you can redistribute it and/or modIDy  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
@@ -25,24 +25,32 @@
 #ifndef _orxPLUGIN_FILE_H_
 #define _orxPLUGIN_FILE_H_
 
+#include "orxPlugin_CoreID.h"
+
+
 /*********************************************
  Constants
  *********************************************/
 
-#define orxPLUGIN_FILE_KU32_PLUGIN_ID              0x10000600
+typedef enum __orxPLUGIN_FUNCTION_BASE_ID_FILE_t
+{
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_INIT = 0,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_EXIT,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_FIRST,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_NEXT,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_CLOSE,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_INFO,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_COPY,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_RENAME,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_DELETE,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_CREATE_DIR,
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_DELETE_DIR,
 
-#define orxPLUGIN_FILE_KU32_FUNCTION_NUMBER        0x0000000B
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_NUMBER,
 
-#define orxPLUGIN_FILE_KU32_ID_INIT                0x10000600
-#define orxPLUGIN_FILE_KU32_ID_EXIT                0x10000601
-#define orxPLUGIN_FILE_KU32_ID_FIND_FIRST          0x10000602
-#define orxPLUGIN_FILE_KU32_ID_FIND_NEXT           0x10000603
-#define orxPLUGIN_FILE_KU32_ID_FIND_CLOSE          0x10000604
-#define orxPLUGIN_FILE_KU32_ID_INFOS               0x10000605
-#define orxPLUGIN_FILE_KU32_ID_COPY                0x10000606
-#define orxPLUGIN_FILE_KU32_ID_RENAME              0x10000607
-#define orxPLUGIN_FILE_KU32_ID_DELETE              0x10000608
-#define orxPLUGIN_FILE_KU32_ID_DIR_CREATE          0x10000609
-#define orxPLUGIN_FILE_KU32_ID_DIR_DELETE          0x1000060A
+  orxPLUGIN_FUNCTION_BASE_ID_FILE_NONE = 0xFFFFFFFF
+    
+} orxPLUGIN_FUNCTION_BASE_ID_FILE;
+
 
 #endif /* _orxPLUGIN_FILE_H_ */

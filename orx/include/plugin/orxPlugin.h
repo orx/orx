@@ -1,5 +1,5 @@
 /**
- * \file plugin.h
+ * \file orxPlugin.h
  * This module provides functions for loading dynamic code into the core
  * engine and finding symbols within the dynamic modules.
  *
@@ -10,9 +10,9 @@
 
 /*
  begin                : 06/09/2002
- author               : (C) Gdp
+ author               : (C) Arcallians
  email                : david.anderson@calixo.net
-                      : iarwain@ifrance.com       (v1.10->)
+                      : iarwain@arcallians.org (2003->)
  */
 
 /***************************************************************************
@@ -25,20 +25,10 @@
  ***************************************************************************/
 
 
-#ifndef _PLUGIN_H_
-#define _PLUGIN_H_
+#ifndef _orxPLUGIN_H_
+#define _orxPLUGIN_H_
 
 #include "orxInclude.h"
-
-
-#define PLUGIN_KU32_INVALID_ID       0xFFFFFFFF  /**< Invalid plugin ID */
-
-#define PLUGIN_KU32_ID_INDEX_MASK    0x0000FF00  /**< Plugin ID index mask */
-#define PLUGIN_KS32_ID_INDEX_BITS     8           /**< Plugin ID index bits shift */
-
-#define PLUGIN_KU32_FUNCTION_MASK    0x000000FF  /**< Plugin function mask */
-
-#define PLUGIN_KU32_ID_FLAG_CORE     0x10000000  /**< Plugin core ID flag */
 
 
 /*********************************************
@@ -96,23 +86,23 @@ extern orxBOOL           plugin_unload_by_name(orxU8 *_z_plugin_name);
  * This function allows the core to retrieve a pointer to a function located
  * in a specified plugin module.
  * \param _u32_plugin_id the numeric id of the plugin
- * \param _zFunction_name the name of the function to find
+ * \param _zFunctionName the name of the function to find
  * \return a orxVOID pointer to the function (cast back to correct type in core),
  *  or orxNULL on error (see plugin_error() )
  */
 extern orxVOID          *plugin_get_func_addr_by_id(orxU32 _u32_plugin_id,
-                                  orxU8 *_zFunction_name);
+                                  orxU8 *_zFunctionName);
 
 /** Gets a function address from a plugin.
  * This function allows the core to retrieve a pointer to a function located
  * in a specified plugin module.
  * \param _z_plugin_name the symbolic name of the plugin
- * \param _zFunction_name the name of the function to find
+ * \param _zFunctionName the name of the function to find
  * \return a orxVOID pointer to the function (cast back to correct type in core),
  *  or orxNULL on error (see plugin_error() )
  */
 extern orxVOID          *plugin_get_func_addr_by_name(orxU8 *_z_plugin_name,
-                                        orxU8 *_zFunction_name);
+                                        orxU8 *_zFunctionName);
 
 /** Gets the numeric id of a plugin knowing its symbolic name.
  * This function allows the core to use the numeric identifier if it is going
@@ -134,4 +124,4 @@ extern orxU32  plugin_get_id_by_name(orxU8 *_z_plugin_name);
  */
 extern orxU8          *plugin_get_name_by_id(orxU32 _u32_plugin_id);
 
-#endif /* _PLUGIN_H_ */
+#endif /* _orxPLUGIN_H_ */

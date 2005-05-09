@@ -22,8 +22,8 @@
 
 #include "camera/orxCamera.h"
 #include "debug/orxDebug.h"
-#include "graph/graph.h"
-#include "graph/graphic.h"
+#include "display/orxDisplay.h"
+#include "display/graphic.h"
 #include "memory/orxMemory.h"
 
 

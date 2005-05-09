@@ -1,12 +1,12 @@
 /**
- * \file plugin_keyboard.h
+ * \file orxPlugin_Keyboard.h
  * This header is used to define ID for keyboard plugin registration.
  */
 
 /*
  begin                : 21/11/2003
- author               : (C) Gdp
- email                : iarwain@ifrance.com
+ author               : (C) Arcallians
+ email                : iarwain@arcallians.org
  */
 
 /***************************************************************************
@@ -19,22 +19,30 @@
  ***************************************************************************/
 
 
-#ifndef _PLUGIN_KEYBOARD_H_
-#define _PLUGIN_KEYBOARD_H_
+#ifndef _orxPLUGIN_KEYBOARD_H_
+#define _orxPLUGIN_KEYBOARD_H_
+
+#include "orxPlugin_CoreID.h"
+
 
 /*********************************************
  Constants
  *********************************************/
 
-#define PLUGIN_KEYBOARD_KU32_PLUGIN_ID              0x10000300
+typedef enum __orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_t
+{
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_INIT = 0,
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT,
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_HIT,
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ,
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_GET_KEYSTATE,
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_CLEAR_BUFFER,
 
-#define PLUGIN_KEYBOARD_KU32_FUNCTION_NUMBER        0x00000006
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER,
 
-#define PLUGIN_KEYBOARD_KU32_ID_INIT                0x10000300
-#define PLUGIN_KEYBOARD_KU32_ID_EXIT                0x10000301
-#define PLUGIN_KEYBOARD_KU32_ID_HIT                 0x10000302
-#define PLUGIN_KEYBOARD_KU32_ID_READ                0x10000303
-#define PLUGIN_KEYBOARD_KU32_ID_KEYSTATE_GET        0x10000304
-#define PLUGIN_KEYBOARD_KU32_ID_BUFFER_CLEAR        0x10000305
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NONE = 0xFFFFFFFF
+    
+} orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD;
 
-#endif /* _PLUGIN_KEYBOARD_H_ */
+
+#endif /* _orxPLUGIN_KEYBOARD_H_ */

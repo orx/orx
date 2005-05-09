@@ -9,7 +9,10 @@
 
 /* *** TODO LIST
  * C Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, graph, hash table)
+ * - Replace simple mallocs in written modules with banks
+ * - Simplify structure module (everything controlled from there / no cross references?)
  * - Add BV/box module + extract AABox code from vector module
+ * - Rewrite sound module/plugin + timer module/plugin
  * V Add CRC
  * - Add string handling (using CRC + hash)
  * V Add texture referencing with duplication check -> reference increase

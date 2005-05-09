@@ -50,7 +50,7 @@ struct clock_st_clock_t
   clock_st_clock_info st_clock_info;
 
   /* Callback functions : 144 */
-  clock_fn_callback apfn_function[CLOCK_KS32_FUNCTION_MAX_NUMBER];
+  clock_fn_callback apfnFunction[CLOCK_KS32_FUNCTION_MAX_NUMBER];
 
   /* Callback function map : 148 */
   orxU32 u32_function_map;
@@ -161,7 +161,7 @@ orxSTATIC orxVOID clock_update(orxU32 _u32_clock_id)
       if(u32_map & 0x00000001)
       {
         /* Calls function */
-        (pst_clock->apfn_function[u32Index])(&(pst_clock->st_clock_info));
+        (pst_clock->apfnFunction[u32Index])(&(pst_clock->st_clock_info));
       }
     }
 
@@ -216,7 +216,7 @@ orxINLINE orxVOID clock_info_init(clock_st_clock_info *_pst_clock_info, orxU32 _
 
  returns: Function index if found / orxU32_Undefined else
  ***************************************************************************/
-orxINLINE orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
+orxINLINE orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callback _pfnFunction)
 {
   orxREGISTER orxU32 u32_map, u32Index;
 
@@ -229,7 +229,7 @@ orxINLINE orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callba
     if(u32_map & 0x00000001)
     {
       /* Is this the good function? */
-      if(_pst_clock->apfn_function[u32Index] == _pfn_function)
+      if(_pst_clock->apfnFunction[u32Index] == _pfnFunction)
       {
         /* Returns the function index */
         return u32Index;
@@ -249,7 +249,7 @@ orxINLINE orxU32 clock_function_find(clock_st_clock *_pst_clock, clock_fn_callba
 
  returns: orxTRUE on success / orxFALSE on failure
  ***************************************************************************/
-orxSTATIC orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
+orxSTATIC orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callback _pfnFunction)
 {
   orxU32 u32Index = 0x00000000, ul;
 
@@ -263,7 +263,7 @@ orxSTATIC orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callba
     }
 
     /* Stores function */
-    (_pst_clock->apfn_function)[u32Index] = _pfn_function;
+    (_pst_clock->apfnFunction)[u32Index] = _pfnFunction;
 
     /* Updates function map */
     _pst_clock->u32_function_map |= (0x00000001 << u32Index);
@@ -293,18 +293,18 @@ orxSTATIC orxBOOL clock_function_add(clock_st_clock *_pst_clock, clock_fn_callba
 
  returns: orxTRUE on success / orxFALSE on failure
  ***************************************************************************/
-orxINLINE orxBOOL clock_function_remove(clock_st_clock *_pst_clock, clock_fn_callback _pfn_function)
+orxINLINE orxBOOL clock_function_remove(clock_st_clock *_pst_clock, clock_fn_callback _pfnFunction)
 {
   orxREGISTER orxU32 u32Index;
 
   /* Finds function in the given clock */
-  u32Index = clock_function_find(_pst_clock, _pfn_function);
+  u32Index = clock_function_find(_pst_clock, _pfnFunction);
 
   /* Found ? */
   if(u32Index != orxU32_Undefined)
   {
     /* Cleans function pointer */
-    _pst_clock->apfn_function[u32Index] = orxNULL;
+    _pst_clock->apfnFunction[u32Index] = orxNULL;
 
     /* Updates function map */
     _pst_clock->u32_function_map &= ~(0x00000001 << u32Index);

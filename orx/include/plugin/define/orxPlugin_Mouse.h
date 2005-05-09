@@ -1,12 +1,12 @@
 /**
- * \file plugin_mouse.h
+ * \file orxPlugin_Mouse.h
  * This header is used to define ID for mouse plugin registration.
  */
 
 /*
  begin                : 22/11/2003
- author               : (C) Gdp
- email                : iarwain@ifrance.com
+ author               : (C) Arcallians
+ email                : iarwain@arcallians.org
  */
 
 /***************************************************************************
@@ -19,19 +19,27 @@
  ***************************************************************************/
 
 
-#ifndef _PLUGIN_MOUSE_H_
-#define _PLUGIN_MOUSE_H_
+#ifndef _orxPLUGIN_MOUSE_H_
+#define _orxPLUGIN_MOUSE_H_
+
+#include "orxPlugin_CoreID.h"
+
 
 /*********************************************
  Constants
  *********************************************/
 
-#define PLUGIN_MOUSE_KU32_PLUGIN_ID              0x10000400
+typedef enum __orxPLUGIN_FUNCTION_BASE_ID_MOUSE_t
+{
+  orxPLUGIN_FUNCTION_BASE_ID_MOUSE_INIT = 0,
+  orxPLUGIN_FUNCTION_BASE_ID_MOUSE_EXIT,
+  orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_MOVE,
 
-#define PLUGIN_MOUSE_KU32_FUNCTION_NUMBER        0x00000003
+  orxPLUGIN_FUNCTION_BASE_ID_MOUSE_NUMBER,
 
-#define PLUGIN_MOUSE_KU32_ID_INIT                0x10000400
-#define PLUGIN_MOUSE_KU32_ID_EXIT                0x10000401
-#define PLUGIN_MOUSE_KU32_ID_MOVE_GET            0x10000402
+  orxPLUGIN_FUNCTION_BASE_ID_MOUSE_NONE = 0xFFFFFFFF
+    
+} orxPLUGIN_FUNCTION_BASE_ID_MOUSE;
 
-#endif /* _PLUGIN_MOUSE_H_ */
+
+#endif /* _orxPLUGIN_MOUSE_H_ */

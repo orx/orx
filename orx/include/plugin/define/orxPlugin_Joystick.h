@@ -1,12 +1,12 @@
 /**
- * \file plugin_joystick.h
+ * \file orxPlugin_Joystick.h
  * This header is used to define ID for joystick plugin registration.
  */
 
 /*
  begin                : 22/11/2003
- author               : (C) Gdp
- email                : iarwain@ifrance.com
+ author               : (C) Arcallians
+ email                : iarwain@arcallians.org
  */
 
 /***************************************************************************
@@ -19,18 +19,26 @@
  ***************************************************************************/
 
 
-#ifndef _PLUGIN_JOYSTICK_H_
-#define _PLUGIN_JOYSTICK_H_
+#ifndef _orxPLUGIN_JOYSTICK_H_
+#define _orxPLUGIN_JOYSTICK_H_
+
+#include "orxPlugin_CoreID.h"
+
 
 /*********************************************
  Constants
  *********************************************/
 
-#define PLUGIN_JOYSTICK_KU32_PLUGIN_ID              0x10000500
+typedef enum __orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_t
+{
+  orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_INIT = 0,
+  orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_EXIT,
 
-#define PLUGIN_JOYSTICK_KU32_FUNCTION_NUMBER        0x00000002
+  orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER,
 
-#define PLUGIN_JOYSTICK_KU32_ID_INIT                0x10000300
-#define PLUGIN_JOYSTICK_KU32_ID_EXIT                0x10000301
+  orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NONE = 0xFFFFFFFF
+    
+} orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK;
 
-#endif /* _PLUGIN_JOYSTICK_H_ */
+
+#endif /* _orxPLUGIN_JOYSTICK_H_ */

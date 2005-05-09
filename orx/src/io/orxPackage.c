@@ -1,5 +1,5 @@
 /**
- * @file orxFile.c
+ * @file orxPackage.c
  * 
  * Module for file / directory management.
  * 
@@ -7,8 +7,8 @@
  */ 
  
  /***************************************************************************
- orxFile.c
- File / Directory management
+ orxPackage.c
+ Package management
  
  begin                : 01/05/2005
  author               : (C) Arcallians
@@ -26,43 +26,43 @@
 
 #include "io/orxPackage.h"
 #include "debug/orxDebug.h"
-#include "plugin/plugin_core.h"
+#include "plugin/orxPluginCore.h"
 
 /********************
  *  Plugin Related  *
  ********************/
-orxSTATIC plugin_core_st_function plugin_package_spst_function[orxPLUGIN_PACKAGE_KU32_FUNCTION_NUMBER] =
+orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastPackagePluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_NUMBER] =
 {
-  {(plugin_function *) &orxPackage_Init,        orxPLUGIN_PACKAGE_KU32_ID_INIT},
-  {(plugin_function *) &orxPackage_Exit,        orxPLUGIN_PACKAGE_KU32_ID_EXIT},
-  {(plugin_function *) &orxPackage_Open,        orxPLUGIN_PACKAGE_KU32_ID_OPEN},
-  {(plugin_function *) &orxPackage_Close,       orxPLUGIN_PACKAGE_KU32_ID_CLOSE},
-  {(plugin_function *) &orxPackage_SetFlags,    orxPLUGIN_PACKAGE_KU32_ID_SET_FLAGS},
-  {(plugin_function *) &orxPackage_TestFlags,   orxPLUGIN_PACKAGE_KU32_ID_TEST_FLAGS},
-  {(plugin_function *) &orxPackage_Commit,      orxPLUGIN_PACKAGE_KU32_ID_COMMIT},
-  {(plugin_function *) &orxPackage_Extract,     orxPLUGIN_PACKAGE_KU32_ID_EXTRACT},
-  {(plugin_function *) &orxPackage_FindFirst,   orxPLUGIN_PACKAGE_KU32_ID_FIND_FIRST},
-  {(plugin_function *) &orxPackage_FindNext,    orxPLUGIN_PACKAGE_KU32_ID_FIND_NEXT},
-  {(plugin_function *) &orxPackage_FindClose,   orxPLUGIN_PACKAGE_KU32_ID_FIND_CLOSE},
-  {(plugin_function *) &orxPackage_Read,        orxPLUGIN_PACKAGE_KU32_ID_READ}
+  {(orxPLUGIN_FUNCTION *) &orxPackage_Init,        orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_INIT},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_Exit,        orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_EXIT},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_Open,        orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_OPEN},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_Close,       orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_CLOSE},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_SetFlags,    orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_SET_FLAGS},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_TestFlags,   orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_TEST_FLAGS},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_Commit,      orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_COMMIT},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_Extract,     orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_EXTRACT},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_FindFirst,   orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_FIND_FIRST},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_FindNext,    orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_FIND_NEXT},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_FindClose,   orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_FIND_CLOSE},
+  {(orxPLUGIN_FUNCTION *) &orxPackage_Read,        orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_READ}
 };
 
 /********************
  *   Core Related   *
  ********************/
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_Init, orxSTATUS);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Exit, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_Open, orxPACKAGE*, orxSTRING, orxSTRING, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_Close, orxVOID, orxPACKAGE*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_SetFlags, orxVOID, orxPACKAGE*, orxU32, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_TestFlags, orxBOOL, orxPACKAGE*, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_Commit, orxSTATUS, orxPACKAGE*, orxSTRING);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_Extract, orxSTATUS, orxPACKAGE*, orxSTRING);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_FindFirst, orxBOOL, orxPACKAGE*, orxSTRING, orxPACKAGE_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_FindNext, orxBOOL, orxPACKAGE_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_FindClose, orxVOID, orxPACKAGE_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxPackage_Read, orxU32, orxVOID*, orxU32, orxPACKAGE*, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Open, orxPACKAGE*, orxSTRING, orxSTRING, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Close, orxVOID, orxPACKAGE*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_SetFlags, orxVOID, orxPACKAGE*, orxU32, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_TestFlags, orxBOOL, orxPACKAGE*, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Commit, orxSTATUS, orxPACKAGE*, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Extract, orxSTATUS, orxPACKAGE*, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindFirst, orxBOOL, orxPACKAGE*, orxSTRING, orxPACKAGE_INFOS*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindNext, orxBOOL, orxPACKAGE_INFOS*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindClose, orxVOID, orxPACKAGE_INFOS*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Read, orxU32, orxVOID*, orxU32, orxPACKAGE*, orxSTRING);
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -84,7 +84,7 @@ struct __orxPACKAGE_t
  */
 orxVOID orxPackage_Plugin_Init()
 {
-  plugin_core_info_add(orxPLUGIN_PACKAGE_KU32_PLUGIN_ID, plugin_package_spst_function, orxPLUGIN_PACKAGE_KU32_FUNCTION_NUMBER);  
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_PACKAGE, sastPackagePluginFunctionInfo, sizeof(sastPackagePluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));  
 }
 
 

@@ -23,7 +23,7 @@
 #include <stdio.h>
 
 #include "debug/orxDebug.h"
-#include "graph/graph.h"
+#include "display/orxDisplay.h"
 #include "io/orxFile.h"
 #include "memory/orxMemory.h"
 #include "msg/msg_screenshot.h"

@@ -20,7 +20,7 @@
 #include "object/orxObject.h"
 
 #include "debug/orxDebug.h"
-#include "graph/graphic.h"
+#include "display/graphic.h"
 #include "object/orxFrame.h"
 #include "memory/orxMemory.h"
 

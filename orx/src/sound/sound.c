@@ -19,32 +19,32 @@
 
 #include "sound/sound.h"
 
-#include "plugin/plugin_core.h"
+#include "plugin/orxPluginCore.h"
 
 
 /********************
  *  Plugin Related  *
  ********************/
 
-orxSTATIC plugin_core_st_function plugin_sound_spst_function[PLUGIN_SOUND_KU32_FUNCTION_NUMBER] =
+orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastSoundPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_SOUND_NUMBER] =
 {
-  {(plugin_function *) &sound_init,                   PLUGIN_SOUND_KU32_ID_INIT},
-  {(plugin_function *) &sound_exit,                   PLUGIN_SOUND_KU32_ID_EXIT},
-  {(plugin_function *) &sound_load_music_from_file,   PLUGIN_SOUND_KU32_ID_LOAD_MUSIC_FROM_FILE},
-  {(plugin_function *) &sound_stop,                   PLUGIN_SOUND_KU32_ID_STOP},
-  {(plugin_function *) &sound_pause,                  PLUGIN_SOUND_KU32_ID_PAUSE},
-  {(plugin_function *) &sound_unpause,                PLUGIN_SOUND_KU32_ID_UNPAUSE},
-  {(plugin_function *) &sound_is_playing,             PLUGIN_SOUND_KU32_ID_IS_PLAYING},
-  {(plugin_function *) &sound_play_sample,            PLUGIN_SOUND_KU32_ID_PLAY_SAMPLE},
-  {(plugin_function *) &sound_release_sample,         PLUGIN_SOUND_KU32_ID_RELEASE_SAMPLE},
-  {(plugin_function *) &sound_set_volume,             PLUGIN_SOUND_KU32_ID_SET_VOLUME},
-  {(plugin_function *) &sound_play_bgmusic_from_file, PLUGIN_SOUND_KU32_ID_PLAY_BGMUSIC_FROM_FILE}
+  {(orxPLUGIN_FUNCTION *) &sound_init,                   orxPLUGIN_FUNCTION_BASE_ID_SOUND_INIT},
+  {(orxPLUGIN_FUNCTION *) &sound_exit,                   orxPLUGIN_FUNCTION_BASE_ID_SOUND_EXIT},
+  {(orxPLUGIN_FUNCTION *) &sound_load_music_from_file,   orxPLUGIN_FUNCTION_BASE_ID_SOUND_LOAD_MUSIC_FROM_FILE},
+  {(orxPLUGIN_FUNCTION *) &sound_stop,                   orxPLUGIN_FUNCTION_BASE_ID_SOUND_STOP},
+  {(orxPLUGIN_FUNCTION *) &sound_pause,                  orxPLUGIN_FUNCTION_BASE_ID_SOUND_PAUSE},
+  {(orxPLUGIN_FUNCTION *) &sound_unpause,                orxPLUGIN_FUNCTION_BASE_ID_SOUND_UNPAUSE},
+  {(orxPLUGIN_FUNCTION *) &sound_is_playing,             orxPLUGIN_FUNCTION_BASE_ID_SOUND_IS_PLAYING},
+  {(orxPLUGIN_FUNCTION *) &sound_play_sample,            orxPLUGIN_FUNCTION_BASE_ID_SOUND_PLAY_SAMPLE},
+  {(orxPLUGIN_FUNCTION *) &sound_release_sample,         orxPLUGIN_FUNCTION_BASE_ID_SOUND_RELEASE_SAMPLE},
+  {(orxPLUGIN_FUNCTION *) &sound_set_volume,             orxPLUGIN_FUNCTION_BASE_ID_SOUND_SET_VOLUME},
+  {(orxPLUGIN_FUNCTION *) &sound_play_bgmusic_from_file, orxPLUGIN_FUNCTION_BASE_ID_SOUND_PLAY_BKGD_MUSIC_FROM_FILE}
 };
 
 orxVOID sound_plugin_init()
 {
   /* Plugin init */
-  plugin_core_info_add(PLUGIN_SOUND_KU32_PLUGIN_ID, plugin_sound_spst_function, PLUGIN_SOUND_KU32_FUNCTION_NUMBER);
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_SOUND, sastSoundPluginFunctionInfo, sizeof(sastSoundPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
   return;
 }
@@ -55,14 +55,14 @@ orxVOID sound_plugin_init()
  *   Core Related   *
  ********************/
 
-PLUGIN_CORE_FUNCTION_DEFINE(sound_init, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_load_music_from_file, sound_st_sample *, orxU8 *);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_stop, orxBOOL, sound_st_channel);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_pause, orxBOOL, sound_st_channel);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_unpause, orxBOOL, sound_st_channel);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_is_playing, orxBOOL, sound_st_channel);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_play_sample, sound_st_channel, sound_st_channel, sound_st_sample *);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_release_sample, orxBOOL, sound_st_sample *);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_set_volume, orxBOOL, sound_st_channel, orxS32);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_play_bgmusic_from_file, orxBOOL, orxU8 *, orxS32);
-PLUGIN_CORE_FUNCTION_DEFINE(sound_exit, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_init, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_load_music_from_file, sound_st_sample *, orxU8 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_stop, orxBOOL, sound_st_channel);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_pause, orxBOOL, sound_st_channel);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_unpause, orxBOOL, sound_st_channel);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_is_playing, orxBOOL, sound_st_channel);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_play_sample, sound_st_channel, sound_st_channel, sound_st_sample *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_release_sample, orxBOOL, sound_st_sample *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_set_volume, orxBOOL, sound_st_channel, orxS32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_play_bgmusic_from_file, orxBOOL, orxU8 *, orxS32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(sound_exit, orxBOOL);

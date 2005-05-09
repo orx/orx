@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 
-#include "graph/graphic.h"
+#include "display/graphic.h"
 
 #include "anim/orxAnimPointer.h"
 #include "debug/orxDebug.h"

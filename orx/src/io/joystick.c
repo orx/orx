@@ -19,23 +19,23 @@
 
 #include "io/joystick.h"
 
-#include "plugin/plugin_core.h"
+#include "plugin/orxPluginCore.h"
 
 
 /********************
  *  Plugin Related  *
  ********************/
 
-orxSTATIC plugin_core_st_function plugin_joystick_spst_function[PLUGIN_JOYSTICK_KU32_FUNCTION_NUMBER] =
+orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastJoystickPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER] =
 {
-  {(plugin_function *) &joystick_init,                PLUGIN_JOYSTICK_KU32_ID_INIT},
-  {(plugin_function *) &joystick_exit,                PLUGIN_JOYSTICK_KU32_ID_EXIT}
+  {(orxPLUGIN_FUNCTION *) &joystick_init,                orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_INIT},
+  {(orxPLUGIN_FUNCTION *) &joystick_exit,                orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_EXIT}
 };
 
 orxVOID joystick_plugin_init()
 {
   /* Plugin init */
-  plugin_core_info_add(PLUGIN_JOYSTICK_KU32_PLUGIN_ID, plugin_joystick_spst_function, PLUGIN_JOYSTICK_KU32_FUNCTION_NUMBER);
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_JOYSTICK, sastJoystickPluginFunctionInfo, sizeof(sastJoystickPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
   return;
 }
@@ -46,5 +46,5 @@ orxVOID joystick_plugin_init()
  *   Core Related   *
  ********************/
 
-PLUGIN_CORE_FUNCTION_DEFINE(joystick_init, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(joystick_exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(joystick_init, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(joystick_exit, orxVOID);

@@ -19,24 +19,24 @@
 
 #include "io/mouse.h"
 
-#include "plugin/plugin_core.h"
+#include "plugin/orxPluginCore.h"
 
 
 /********************
  *  Plugin Related  *
  ********************/
 
-orxSTATIC plugin_core_st_function plugin_mouse_spst_function[PLUGIN_MOUSE_KU32_FUNCTION_NUMBER] =
+orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastMousePluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_MOUSE_NUMBER] =
 {
-  {(plugin_function *) &mouse_init,                PLUGIN_MOUSE_KU32_ID_INIT},
-  {(plugin_function *) &mouse_exit,                PLUGIN_MOUSE_KU32_ID_EXIT},
-  {(plugin_function *) &mouse_move_get,            PLUGIN_MOUSE_KU32_ID_MOVE_GET},
+  {(orxPLUGIN_FUNCTION *) &mouse_init,                orxPLUGIN_FUNCTION_BASE_ID_MOUSE_INIT},
+  {(orxPLUGIN_FUNCTION *) &mouse_exit,                orxPLUGIN_FUNCTION_BASE_ID_MOUSE_EXIT},
+  {(orxPLUGIN_FUNCTION *) &mouse_move_get,            orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_MOVE},
 };
 
 orxVOID mouse_plugin_init()
 {
   /* Plugin init */
-  plugin_core_info_add(PLUGIN_MOUSE_KU32_PLUGIN_ID, plugin_mouse_spst_function, PLUGIN_MOUSE_KU32_FUNCTION_NUMBER);
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_MOUSE, sastMousePluginFunctionInfo, sizeof(sastMousePluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
   return;
 }
@@ -47,7 +47,7 @@ orxVOID mouse_plugin_init()
  *   Core Related   *
  ********************/
 
-PLUGIN_CORE_FUNCTION_DEFINE(mouse_init, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(mouse_exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(mouse_init, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(mouse_exit, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(mouse_move_get, orxVOID, orxS32 *, orxS32 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(mouse_move_get, orxVOID, orxS32 *, orxS32 *);

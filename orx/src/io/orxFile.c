@@ -26,41 +26,41 @@
 
 #include "io/orxFile.h"
 #include "debug/orxDebug.h"
-#include "plugin/plugin_core.h"
+#include "plugin/orxPluginCore.h"
 
 /********************
  *  Plugin Related  *
  ********************/
-orxSTATIC plugin_core_st_function plugin_file_spst_function[orxPLUGIN_FILE_KU32_FUNCTION_NUMBER] =
+orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastFilePluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_FILE_NUMBER] =
 {
-  {(plugin_function *) &orxFile_Init,        orxPLUGIN_FILE_KU32_ID_INIT},
-  {(plugin_function *) &orxFile_Exit,        orxPLUGIN_FILE_KU32_ID_EXIT},
-  {(plugin_function *) &orxFile_FindFirst,   orxPLUGIN_FILE_KU32_ID_FIND_FIRST},
-  {(plugin_function *) &orxFile_FindNext,    orxPLUGIN_FILE_KU32_ID_FIND_NEXT},
-  {(plugin_function *) &orxFile_FindClose,   orxPLUGIN_FILE_KU32_ID_FIND_CLOSE},
-  {(plugin_function *) &orxFile_Infos,       orxPLUGIN_FILE_KU32_ID_INFOS},
-  {(plugin_function *) &orxFile_Copy,        orxPLUGIN_FILE_KU32_ID_COPY},
-  {(plugin_function *) &orxFile_Rename,      orxPLUGIN_FILE_KU32_ID_RENAME},
-  {(plugin_function *) &orxFile_Delete,      orxPLUGIN_FILE_KU32_ID_DELETE},
-  {(plugin_function *) &orxFile_DirCreate,   orxPLUGIN_FILE_KU32_ID_DIR_CREATE},
-  {(plugin_function *) &orxFile_DirDelete,   orxPLUGIN_FILE_KU32_ID_DIR_DELETE}
+  {(orxPLUGIN_FUNCTION *) &orxFile_Init,        orxPLUGIN_FUNCTION_BASE_ID_FILE_INIT},
+  {(orxPLUGIN_FUNCTION *) &orxFile_Exit,        orxPLUGIN_FUNCTION_BASE_ID_FILE_EXIT},
+  {(orxPLUGIN_FUNCTION *) &orxFile_FindFirst,   orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_FIRST},
+  {(orxPLUGIN_FUNCTION *) &orxFile_FindNext,    orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_NEXT},
+  {(orxPLUGIN_FUNCTION *) &orxFile_FindClose,   orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_CLOSE},
+  {(orxPLUGIN_FUNCTION *) &orxFile_Infos,       orxPLUGIN_FUNCTION_BASE_ID_FILE_INFO},
+  {(orxPLUGIN_FUNCTION *) &orxFile_Copy,        orxPLUGIN_FUNCTION_BASE_ID_FILE_COPY},
+  {(orxPLUGIN_FUNCTION *) &orxFile_Rename,      orxPLUGIN_FUNCTION_BASE_ID_FILE_RENAME},
+  {(orxPLUGIN_FUNCTION *) &orxFile_Delete,      orxPLUGIN_FUNCTION_BASE_ID_FILE_DELETE},
+  {(orxPLUGIN_FUNCTION *) &orxFile_DirCreate,   orxPLUGIN_FUNCTION_BASE_ID_FILE_CREATE_DIR},
+  {(orxPLUGIN_FUNCTION *) &orxFile_DirDelete,   orxPLUGIN_FUNCTION_BASE_ID_FILE_DELETE_DIR}
 };
 
 /********************
  *   Core Related   *
  ********************/
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Init, orxSTATUS);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Exit, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindFirst, orxBOOL, orxSTRING, orxFILE_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindNext, orxBOOL, orxFILE_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_FindClose, orxVOID, orxFILE_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Infos, orxSTATUS, orxSTRING, orxFILE_INFOS*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Copy, orxSTATUS, orxSTRING, orxSTRING);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Rename, orxSTATUS, orxSTRING, orxSTRING);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_Delete, orxSTATUS, orxSTRING);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_DirCreate, orxSTATUS, orxSTRING);
-PLUGIN_CORE_FUNCTION_DEFINE(orxFile_DirDelete, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_FindFirst, orxBOOL, orxSTRING, orxFILE_INFOS*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_FindNext, orxBOOL, orxFILE_INFOS*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_FindClose, orxVOID, orxFILE_INFOS*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Infos, orxSTATUS, orxSTRING, orxFILE_INFOS*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Copy, orxSTATUS, orxSTRING, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Rename, orxSTATUS, orxSTRING, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Delete, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_DirCreate, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_DirDelete, orxSTATUS, orxSTRING);
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -82,7 +82,7 @@ struct __orxFILE_t
  */
 orxVOID orxFile_Plugin_Init()
 {
-  plugin_core_info_add(orxPLUGIN_FILE_KU32_PLUGIN_ID, plugin_file_spst_function, orxPLUGIN_FILE_KU32_FUNCTION_NUMBER);  
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_FILE, sastFilePluginFunctionInfo, sizeof(sastFilePluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));  
 }
 
 /** Delete recursively a direcory and all its subfolders.

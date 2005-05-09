@@ -1,11 +1,11 @@
 /**
- * \file graph.h
+ * \file orxDisplay.h
  */
 
 /***************************************************************************
  begin                : 23/04/2003
- author               : (C) Gdp
- email                : iarwain@ifrance.com
+ author               : (C) Arcallians
+ email                : iarwain@arcallians.org
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _GRAPH_H_
-#define _GRAPH_H_
+#ifndef _orxDISPLAY_H_
+#define _orxDISPLAY_H_
 
 #include "orxInclude.h"
 
@@ -35,7 +35,7 @@ extern orxVOID             (*graph_switch)();
 
 extern orxVOID             (*graph_printf)(orxBITMAP *_pst_bmp, orxS32 _i_x, orxS32 _i_y, orxU32 _u32_color, orxCONST orxU8 *_zFormat, ...);
 
-extern orxBITMAP *(*graph_create)(orxS32 _i_w, orxS32 _i_h);
+extern orxBITMAP *(*orxDisplay_CreateBitmap)(orxS32 _i_w, orxS32 _i_h);
 extern orxBITMAP *(*graph_video_bitmap_create)(orxS32 _i_w, orxS32 _i_h);
 extern orxVOID             (*graph_delete)(orxBITMAP *_pst_bmp);
 extern orxBITMAP *(*graph_screen_bitmap_get)();
@@ -54,4 +54,4 @@ extern orxBITMAP *(*graph_bitmap_load)(orxCONST orxU8 *_zFilename);
 
 extern orxVOID             (*graph_bitmap_size_get)(orxBITMAP *_pstBitmap, orxS32 *_pi_width, orxS32 *_pi_height);
 
-#endif /* _GRAPH_H_ */
+#endif /* _orxDISPLAY_H_ */

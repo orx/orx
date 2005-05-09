@@ -23,34 +23,35 @@
  ***************************************************************************/
 
 #include "script/orxScript.h"
-#include "debug/orxDebug.h"
-#include "plugin/plugin_core.h"
+
+#include "plugin/orxPluginCore.h"
+
 
 /********************
  *  Plugin Related  *
  ********************/
-orxSTATIC plugin_core_st_function plugin_script_spst_function[orxPLUGIN_SCRIPT_KU32_FUNCTION_NUMBER] =
+orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastScriptPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_NUMBER] =
 {
-  {(plugin_function *) &orxScript_Init,        orxPLUGIN_SCRIPT_KU32_ID_INIT},
-  {(plugin_function *) &orxScript_Exit,        orxPLUGIN_SCRIPT_KU32_ID_EXIT},
-  {(plugin_function *) &orxScript_Create,      orxPLUGIN_SCRIPT_KU32_ID_CREATE},
-  {(plugin_function *) &orxScript_Delete,      orxPLUGIN_SCRIPT_KU32_ID_DELETE},
-  {(plugin_function *) &orxScript_LoadFile,    orxPLUGIN_SCRIPT_KU32_ID_LOAD_FILE},
-  {(plugin_function *) &orxScript_CallFunc,    orxPLUGIN_SCRIPT_KU32_ID_CALL_FUNC},
-  {(plugin_function *) &orxScript_Execute,     orxPLUGIN_SCRIPT_KU32_ID_EXECUTE}
+  {(orxPLUGIN_FUNCTION *) &orxScript_Init,              orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_INIT},
+  {(orxPLUGIN_FUNCTION *) &orxScript_Exit,              orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_EXIT},
+  {(orxPLUGIN_FUNCTION *) &orxScript_Create,            orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_CREATE},
+  {(orxPLUGIN_FUNCTION *) &orxScript_Delete,            orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_DELETE},
+  {(orxPLUGIN_FUNCTION *) &orxScript_LoadFile,          orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_LOAD_FILE},
+  {(orxPLUGIN_FUNCTION *) &orxScript_CallFunc,          orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_CALL_FUNCTION},
+  {(orxPLUGIN_FUNCTION *) &orxScript_Execute,           orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_EXECUTE}
 };
 
 /********************
  *   Core Related   *
  ********************/
-PLUGIN_CORE_FUNCTION_DEFINE(orxScript_Init, orxSTATUS);
-PLUGIN_CORE_FUNCTION_DEFINE(orxScript_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Exit, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(orxScript_Create, orxSCRIPT*, orxVOID);
-PLUGIN_CORE_FUNCTION_DEFINE(orxScript_Delete, orxVOID, orxSCRIPT*);
-PLUGIN_CORE_FUNCTION_DEFINE(orxScript_LoadFile, orxSTATUS, orxSCRIPT*, orxSTRING);
-PLUGIN_CORE_FUNCTION_DEFINE(orxScript_CallFunc, orxSTATUS, orxSCRIPT*, orxSTRING, orxSTRING, ...);
-PLUGIN_CORE_FUNCTION_DEFINE(orxScript_Execute, orxSTATUS, orxSCRIPT*, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Create, orxSCRIPT*, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Delete, orxVOID, orxSCRIPT*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_LoadFile, orxSTATUS, orxSCRIPT*, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_CallFunc, orxSTATUS, orxSCRIPT*, orxSTRING, orxSTRING, ...);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Execute, orxSTATUS, orxSCRIPT*, orxSTRING);
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -68,5 +69,5 @@ PLUGIN_CORE_FUNCTION_DEFINE(orxScript_Execute, orxSTATUS, orxSCRIPT*, orxSTRING)
  */
 orxVOID orxScript_Plugin_Init()
 {
-  plugin_core_info_add(orxPLUGIN_SCRIPT_KU32_PLUGIN_ID, plugin_script_spst_function, orxPLUGIN_SCRIPT_KU32_FUNCTION_NUMBER);  
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_SCRIPT, sastScriptPluginFunctionInfo, sizeof(sastScriptPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));  
 }

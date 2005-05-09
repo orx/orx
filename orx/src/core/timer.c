@@ -18,34 +18,34 @@
  ***************************************************************************/
 
 #include "core/timer.h"
-#include "plugin/plugin_core.h"
+#include "plugin/orxPluginCore.h"
 
 
 /********************
  *  Plugin Related  *
  ********************/
 
-orxSTATIC plugin_core_st_function plugin_timer_spst_function[PLUGIN_TIMER_KU32_FUNCTION_NUMBER] =
+orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastTimerPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_TIMER_NUMBER] =
 {
-  {(plugin_function *) &timer_init,                       PLUGIN_TIMER_KU32_ID_INIT},
-  {(plugin_function *) &timer_exit,                       PLUGIN_TIMER_KU32_ID_EXIT},
-  {(plugin_function *) &timer_clock_update_function_set,  PLUGIN_TIMER_KU32_ID_CLOCK_UPDATE_SET},
-  {(plugin_function *) &timer_clock_register,             PLUGIN_TIMER_KU32_ID_CLOCK_REGISTER},
-  {(plugin_function *) &timer_clock_unregister,           PLUGIN_TIMER_KU32_ID_CLOCK_UNREGISTER},
-  {(plugin_function *) &timer_game_time_get,              PLUGIN_TIMER_KU32_ID_GAME_TIME_GET},
-  {(plugin_function *) &timer_game_dt_get,                PLUGIN_TIMER_KU32_ID_GAME_DT_GET},
-  {(plugin_function *) &timer_real_time_get,              PLUGIN_TIMER_KU32_ID_REAL_TIME_GET},
-  {(plugin_function *) &timer_real_dt_get,                PLUGIN_TIMER_KU32_ID_REAL_DT_GET},
-  {(plugin_function *) &timer_time_coef_set,              PLUGIN_TIMER_KU32_ID_TIME_COEF_SET},
-  {(plugin_function *) &timer_time_coef_get,              PLUGIN_TIMER_KU32_ID_TIME_COEF_GET},
-  {(plugin_function *) &timer_update,                     PLUGIN_TIMER_KU32_ID_UPDATE},
-  {(plugin_function *) &timer_date_write,                 PLUGIN_TIMER_KU32_ID_DATE_WRITE}
+  {(orxPLUGIN_FUNCTION *) &timer_init,                       orxPLUGIN_FUNCTION_BASE_ID_TIMER_INIT},
+  {(orxPLUGIN_FUNCTION *) &timer_exit,                       orxPLUGIN_FUNCTION_BASE_ID_TIMER_EXIT},
+  {(orxPLUGIN_FUNCTION *) &timer_clock_update_function_set,  orxPLUGIN_FUNCTION_BASE_ID_TIMER_SET_CLOCK_UPDATE},
+  {(orxPLUGIN_FUNCTION *) &timer_clock_register,             orxPLUGIN_FUNCTION_BASE_ID_TIMER_REGISTER_CLOCK},
+  {(orxPLUGIN_FUNCTION *) &timer_clock_unregister,           orxPLUGIN_FUNCTION_BASE_ID_TIMER_UNREGISTER_CLOCK},
+  {(orxPLUGIN_FUNCTION *) &timer_game_time_get,              orxPLUGIN_FUNCTION_BASE_ID_TIMER_GET_GAME_TIME},
+  {(orxPLUGIN_FUNCTION *) &timer_game_dt_get,                orxPLUGIN_FUNCTION_BASE_ID_TIMER_GET_GAME_DT},
+  {(orxPLUGIN_FUNCTION *) &timer_real_time_get,              orxPLUGIN_FUNCTION_BASE_ID_TIMER_GET_REAL_TIME},
+  {(orxPLUGIN_FUNCTION *) &timer_real_dt_get,                orxPLUGIN_FUNCTION_BASE_ID_TIMER_GET_REAL_DT},
+  {(orxPLUGIN_FUNCTION *) &timer_time_coef_set,              orxPLUGIN_FUNCTION_BASE_ID_TIMER_SET_TIME_COEF},
+  {(orxPLUGIN_FUNCTION *) &timer_time_coef_get,              orxPLUGIN_FUNCTION_BASE_ID_TIMER_SET_TIME_COEF},
+  {(orxPLUGIN_FUNCTION *) &timer_update,                     orxPLUGIN_FUNCTION_BASE_ID_TIMER_UPDATE},
+  {(orxPLUGIN_FUNCTION *) &timer_date_write,                 orxPLUGIN_FUNCTION_BASE_ID_TIMER_WRITE_DATE}
 };
 
 orxVOID timer_plugin_init()
 {
   /* Plugin init */
-  plugin_core_info_add(PLUGIN_TIMER_KU32_PLUGIN_ID, plugin_timer_spst_function, PLUGIN_TIMER_KU32_FUNCTION_NUMBER);
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_TIMER, sastTimerPluginFunctionInfo, sizeof(sastTimerPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
   return;
 }
@@ -56,23 +56,23 @@ orxVOID timer_plugin_init()
  *   Core Related   *
  ********************/
 
-PLUGIN_CORE_FUNCTION_DEFINE(timer_init, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(timer_exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_init, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_exit, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(timer_clock_update_function_set, orxU32, timer_fn_clock_update);
-PLUGIN_CORE_FUNCTION_DEFINE(timer_clock_register, orxU32, orxU32, orxVOID *);
-PLUGIN_CORE_FUNCTION_DEFINE(timer_clock_unregister, orxVOID, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_clock_update_function_set, orxU32, timer_fn_clock_update);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_clock_register, orxU32, orxU32, orxVOID *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_clock_unregister, orxVOID, orxU32);
 
 
-PLUGIN_CORE_FUNCTION_DEFINE(timer_game_time_get, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(timer_game_dt_get, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_game_time_get, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_game_dt_get, orxU32);
 
-PLUGIN_CORE_FUNCTION_DEFINE(timer_real_time_get, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(timer_real_dt_get, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_real_time_get, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_real_dt_get, orxU32);
 
-PLUGIN_CORE_FUNCTION_DEFINE(timer_update, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_update, orxVOID);
 
-PLUGIN_CORE_FUNCTION_DEFINE(timer_time_coef_set, orxVOID, orxFLOAT, orxU32);
-PLUGIN_CORE_FUNCTION_DEFINE(timer_time_coef_get, orxFLOAT, orxU32 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_time_coef_set, orxVOID, orxFLOAT, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_time_coef_get, orxFLOAT, orxU32 *);
 
-PLUGIN_CORE_FUNCTION_DEFINE(timer_date_write, orxS32, orxU8 *, orxS32, orxCONST orxU8 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(timer_date_write, orxS32, orxU8 *, orxS32, orxCONST orxU8 *);

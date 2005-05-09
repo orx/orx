@@ -34,7 +34,7 @@
 #include "orxInclude.h"
 
 #include "camera/orxCamera.h"
-#include "graph/orxTexture.h"
+#include "display/orxTexture.h"
 
 
 /** Viewport alingment defines */

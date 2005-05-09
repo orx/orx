@@ -36,7 +36,7 @@
 
 #include "orxInclude.h"
 
-#include "graph/graph.h"
+#include "display/orxDisplay.h"
 #include "math/orxMath.h"
 
 

@@ -37,7 +37,7 @@
 
 #include "orxInclude.h"
 
-#include "graph/orxTexture.h"
+#include "display/orxTexture.h"
 #include "object/orxStructure.h"
 
 
