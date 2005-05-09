@@ -26,9 +26,9 @@
             src/debug/orxFps.c
         </sources>
         <sources>
-            src/graph/graph.c
-            src/graph/graphic.c
-            src/graph/orxTexture.c
+            src/display/graphic.c
+            src/display/orxDisplay.c
+            src/display/orxTexture.c
         </sources>
         <sources>
             src/io/orxFile.c
@@ -51,7 +51,7 @@
             src/object/orxStructure.c
         </sources>
         <sources>
-            src/plugin/plugin.c
+            src/plugin/orxPlugin.c
         </sources>
         <sources>
             src/script/orxScript.c
@@ -122,9 +122,9 @@
             core/timer_type.h
             debug/orxDebug.h
             debug/orxFps.h
-            graph/graph.h
-            graph/graphic.h
-            graph/orxTexture.h
+            display/graphic.h
+            display/orxDisplay.h
+            display/orxTexture.h
             io/orxFile.h
             io/interaction.h
             io/joystick.h
@@ -145,7 +145,7 @@
             object/orxFrame.h
             object/orxObject.h
             object/orxStructure.h
-            plugin/plugin.h
+            plugin/orxPlugin.h
             plugin/plugin_core.h
             plugin/plugin_type.h
             plugin/plugin_user.h

@@ -64,8 +64,8 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_timer.o \
 	./build/$(BUILD)/orxDLL_orxDebug.o \
 	./build/$(BUILD)/orxDLL_orxFps.o \
-	./build/$(BUILD)/orxDLL_graph.o \
 	./build/$(BUILD)/orxDLL_graphic.o \
+	./build/$(BUILD)/orxDLL_orxDisplay.o \
 	./build/$(BUILD)/orxDLL_orxTexture.o \
 	./build/$(BUILD)/orxDLL_orxFile.o \
 	./build/$(BUILD)/orxDLL_interaction.o \
@@ -79,7 +79,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxFrame.o \
 	./build/$(BUILD)/orxDLL_orxObject.o \
 	./build/$(BUILD)/orxDLL_orxStructure.o \
-	./build/$(BUILD)/orxDLL_plugin.o \
+	./build/$(BUILD)/orxDLL_orxPlugin.o \
 	./build/$(BUILD)/orxDLL_orxScript.o \
 	./build/$(BUILD)/orxDLL_sound.o \
 	./build/$(BUILD)/orxDLL_orxHashTable.o \
@@ -104,8 +104,8 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_timer.o \
 	./build/$(BUILD)/orxLIB_orxDebug.o \
 	./build/$(BUILD)/orxLIB_orxFps.o \
-	./build/$(BUILD)/orxLIB_graph.o \
 	./build/$(BUILD)/orxLIB_graphic.o \
+	./build/$(BUILD)/orxLIB_orxDisplay.o \
 	./build/$(BUILD)/orxLIB_orxTexture.o \
 	./build/$(BUILD)/orxLIB_orxFile.o \
 	./build/$(BUILD)/orxLIB_interaction.o \
@@ -119,7 +119,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxFrame.o \
 	./build/$(BUILD)/orxLIB_orxObject.o \
 	./build/$(BUILD)/orxLIB_orxStructure.o \
-	./build/$(BUILD)/orxLIB_plugin.o \
+	./build/$(BUILD)/orxLIB_orxPlugin.o \
 	./build/$(BUILD)/orxLIB_orxScript.o \
 	./build/$(BUILD)/orxLIB_sound.o \
 	./build/$(BUILD)/orxLIB_orxHashTable.o \
@@ -222,7 +222,7 @@ all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/memory.
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
-	for f in anim/orxAnim.h anim/AnimPointer.h anim/orxAnimSet.h base/orxDecl.h base/orxType.h camera/orxCamera.h camera/orxrender.h camera/Viewport.h core/clock.h core/timer.h core/timer_type.h debug/orxDebug.h debug/orxFps.h graph/graph.h graph/graphic.h graph/orxTexture.h io/orxFile.h io/interaction.h io/joystick.h io/keyboard.h io/mouse.h io/orxPackage.h math/orxMath.h math/orxVec.h memory/orxBank.h memory/orxMemory.h msg/msg_file.h msg/msg_fps.h msg/msg_game.h msg/msg_graph.h msg/msg_plugin.h msg/msg_screenshot.h msg/msg_timer.h object/orxFrame.h object/orxObject.h object/orxStructure.h plugin/plugin.h plugin/plugin_core.h plugin/plugin_type.h plugin/plugin_user.h plugin/define/plugin_graph.h plugin/define/plugin_joystick.h plugin/define/plugin_keyboard.h plugin/define/plugin_mouse.h plugin/define/plugin_sound.h plugin/define/plugin_timer.h plugin/define/orxPlugin_File.h plugin/define/orxPlugin_Package.h plugin/define/orxPlugin_Script.h script/orxScript.h sound/sound.h utils/orxLinkList.h utils/orxString.h utils/orxTest.h utils/orxTree.h utils/pathfinder.h utils/orxScreenshot.h utils/utils.h utils/orxHashTable.h orxInclude.h; do \
+	for f in anim/orxAnim.h anim/AnimPointer.h anim/orxAnimSet.h base/orxDecl.h base/orxType.h camera/orxCamera.h camera/orxrender.h camera/Viewport.h core/clock.h core/timer.h core/timer_type.h debug/orxDebug.h debug/orxFps.h display/graphic.h display/orxDisplay.h display/orxTexture.h io/orxFile.h io/interaction.h io/joystick.h io/keyboard.h io/mouse.h io/orxPackage.h math/orxMath.h math/orxVec.h memory/orxBank.h memory/orxMemory.h msg/msg_file.h msg/msg_fps.h msg/msg_game.h msg/msg_graph.h msg/msg_plugin.h msg/msg_screenshot.h msg/msg_timer.h object/orxFrame.h object/orxObject.h object/orxStructure.h plugin/orxPlugin.h plugin/plugin_core.h plugin/plugin_type.h plugin/plugin_user.h plugin/define/plugin_graph.h plugin/define/plugin_joystick.h plugin/define/plugin_keyboard.h plugin/define/plugin_mouse.h plugin/define/plugin_sound.h plugin/define/plugin_timer.h plugin/define/orxPlugin_File.h plugin/define/orxPlugin_Package.h plugin/define/orxPlugin_Script.h script/orxScript.h sound/sound.h utils/orxLinkList.h utils/orxString.h utils/orxTest.h utils/orxTree.h utils/pathfinder.h utils/orxScreenshot.h utils/utils.h utils/orxHashTable.h orxInclude.h; do \
 	if test ! -d $(prefix)/include/orx/`dirname $$f` ; then \
 	$(INSTALL) -d $(prefix)/include/orx/`dirname $$f`; \
 	fi; \
@@ -309,13 +309,13 @@ bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 ./build/$(BUILD)/orxDLL_orxFps.o: ./src/debug/orxFps.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_graph.o: ./src/graph/graph.c
+./build/$(BUILD)/orxDLL_graphic.o: ./src/display/graphic.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_graphic.o: ./src/graph/graphic.c
+./build/$(BUILD)/orxDLL_orxDisplay.o: ./src/display/orxDisplay.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_orxTexture.o: ./src/graph/orxTexture.c
+./build/$(BUILD)/orxDLL_orxTexture.o: ./src/display/orxTexture.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxFile.o: ./src/io/orxFile.c
@@ -354,7 +354,7 @@ bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 ./build/$(BUILD)/orxDLL_orxStructure.o: ./src/object/orxStructure.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_plugin.o: ./src/plugin/plugin.c
+./build/$(BUILD)/orxDLL_orxPlugin.o: ./src/plugin/orxPlugin.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxScript.o: ./src/script/orxScript.c
@@ -417,13 +417,13 @@ bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 ./build/$(BUILD)/orxLIB_orxFps.o: ./src/debug/orxFps.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_graph.o: ./src/graph/graph.c
+./build/$(BUILD)/orxLIB_graphic.o: ./src/display/graphic.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_graphic.o: ./src/graph/graphic.c
+./build/$(BUILD)/orxLIB_orxDisplay.o: ./src/display/orxDisplay.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_orxTexture.o: ./src/graph/orxTexture.c
+./build/$(BUILD)/orxLIB_orxTexture.o: ./src/display/orxTexture.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxFile.o: ./src/io/orxFile.c
@@ -462,7 +462,7 @@ bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 ./build/$(BUILD)/orxLIB_orxStructure.o: ./src/object/orxStructure.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_plugin.o: ./src/plugin/plugin.c
+./build/$(BUILD)/orxLIB_orxPlugin.o: ./src/plugin/orxPlugin.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxScript.o: ./src/script/orxScript.c

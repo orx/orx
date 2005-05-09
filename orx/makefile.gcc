@@ -52,8 +52,8 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_timer.o \
 	.\build\$(BUILD)\orxDLL_orxDebug.o \
 	.\build\$(BUILD)\orxDLL_orxFps.o \
-	.\build\$(BUILD)\orxDLL_graph.o \
 	.\build\$(BUILD)\orxDLL_graphic.o \
+	.\build\$(BUILD)\orxDLL_orxDisplay.o \
 	.\build\$(BUILD)\orxDLL_orxTexture.o \
 	.\build\$(BUILD)\orxDLL_orxFile.o \
 	.\build\$(BUILD)\orxDLL_interaction.o \
@@ -67,7 +67,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxFrame.o \
 	.\build\$(BUILD)\orxDLL_orxObject.o \
 	.\build\$(BUILD)\orxDLL_orxStructure.o \
-	.\build\$(BUILD)\orxDLL_plugin.o \
+	.\build\$(BUILD)\orxDLL_orxPlugin.o \
 	.\build\$(BUILD)\orxDLL_orxScript.o \
 	.\build\$(BUILD)\orxDLL_sound.o \
 	.\build\$(BUILD)\orxDLL_orxHashTable.o \
@@ -92,8 +92,8 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_timer.o \
 	.\build\$(BUILD)\orxLIB_orxDebug.o \
 	.\build\$(BUILD)\orxLIB_orxFps.o \
-	.\build\$(BUILD)\orxLIB_graph.o \
 	.\build\$(BUILD)\orxLIB_graphic.o \
+	.\build\$(BUILD)\orxLIB_orxDisplay.o \
 	.\build\$(BUILD)\orxLIB_orxTexture.o \
 	.\build\$(BUILD)\orxLIB_orxFile.o \
 	.\build\$(BUILD)\orxLIB_interaction.o \
@@ -107,7 +107,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxFrame.o \
 	.\build\$(BUILD)\orxLIB_orxObject.o \
 	.\build\$(BUILD)\orxLIB_orxStructure.o \
-	.\build\$(BUILD)\orxLIB_plugin.o \
+	.\build\$(BUILD)\orxLIB_orxPlugin.o \
 	.\build\$(BUILD)\orxLIB_orxScript.o \
 	.\build\$(BUILD)\orxLIB_sound.o \
 	.\build\$(BUILD)\orxLIB_orxHashTable.o \
@@ -266,13 +266,13 @@ bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxDLL_orxFps.o: ./src/debug/orxFps.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_graph.o: ./src/graph/graph.c
+.\build\$(BUILD)\orxDLL_graphic.o: ./src/display/graphic.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_graphic.o: ./src/graph/graphic.c
+.\build\$(BUILD)\orxDLL_orxDisplay.o: ./src/display/orxDisplay.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_orxTexture.o: ./src/graph/orxTexture.c
+.\build\$(BUILD)\orxDLL_orxTexture.o: ./src/display/orxTexture.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxFile.o: ./src/io/orxFile.c
@@ -311,7 +311,7 @@ bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxDLL_orxStructure.o: ./src/object/orxStructure.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_plugin.o: ./src/plugin/plugin.c
+.\build\$(BUILD)\orxDLL_orxPlugin.o: ./src/plugin/orxPlugin.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxScript.o: ./src/script/orxScript.c
@@ -374,13 +374,13 @@ bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxLIB_orxFps.o: ./src/debug/orxFps.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_graph.o: ./src/graph/graph.c
+.\build\$(BUILD)\orxLIB_graphic.o: ./src/display/graphic.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_graphic.o: ./src/graph/graphic.c
+.\build\$(BUILD)\orxLIB_orxDisplay.o: ./src/display/orxDisplay.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_orxTexture.o: ./src/graph/orxTexture.c
+.\build\$(BUILD)\orxLIB_orxTexture.o: ./src/display/orxTexture.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxFile.o: ./src/io/orxFile.c
@@ -419,7 +419,7 @@ bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxLIB_orxStructure.o: ./src/object/orxStructure.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_plugin.o: ./src/plugin/plugin.c
+.\build\$(BUILD)\orxLIB_orxPlugin.o: ./src/plugin/orxPlugin.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxScript.o: ./src/script/orxScript.c
