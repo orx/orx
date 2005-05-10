@@ -32,10 +32,18 @@
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000
 #define orxOBJECT_KU32_FLAG_READY               0x00000001
 
-#define orxOBJECT_KU32_STRUCT_NUMBER            2
 
-#define orxOBJECT_KU32_STRUCT_OFFSET_FRAME      0
-#define orxOBJECT_KU32_STRUCT_OFFSET_GRAPHIC    1
+/* Offset enum */
+typedef enum __orxOBJECT_STRUCTURE_INDEX_t
+{
+  orxOBJECT_STRUCTURE_INDEX_FRAME = 0,
+  orxOBJECT_STRUCTURE_INDEX_GRAPHIC,
+
+  orxOBJECT_STRUCTURE_INDEX_NUMBER,
+
+  orxOBJECT_STRUCTURE_INDEX_NONE = 0xFFFFFFFF
+
+} orxOBJECT_STRUCTURE_INDEX;
 
 
 /*
@@ -50,7 +58,7 @@ struct __orxOBJECT_t
   orxU32 u32LinkedStructures;
 
   /* Used structures : 28 */
-  orxSTRUCTURE *pastStructure[orxOBJECT_KU32_STRUCT_NUMBER];
+  orxSTRUCTURE *pastStructure[orxOBJECT_STRUCTURE_INDEX_NUMBER];
   
   /* 4 extra bytes of padding : 32 */
   orxU8 au8Unused[4];
@@ -84,25 +92,32 @@ orxSTATIC orxOBJECT_STATIC sstObject;
 
  returns: requested structure offset
  ***************************************************************************/
-orxINLINE orxU32 orxObject_GetStructureIndex(orxSTRUCTURE_ID _eStructureID)
+orxINLINE orxOBJECT_STRUCTURE_INDEX orxObject_GetStructureIndex(orxSTRUCTURE_ID _eStructureID)
 {
+  orxREGISTER orxOBJECT_STRUCTURE_INDEX eIndex = orxOBJECT_STRUCTURE_INDEX_NONE;
+
   /* Gets structure offset according to id */
   switch(_eStructureID)
   {
     /* Frame structure */
     case orxSTRUCTURE_ID_FRAME:
     
-      return orxOBJECT_KU32_STRUCT_OFFSET_FRAME;
+      eIndex = orxOBJECT_STRUCTURE_INDEX_FRAME;
+      break;
 
     /* Graphic structure */
     case orxSTRUCTURE_ID_GRAPHIC:
     
-      return orxOBJECT_KU32_STRUCT_OFFSET_GRAPHIC;
+      eIndex = orxOBJECT_STRUCTURE_INDEX_GRAPHIC;
+      break;
 
     default:
-    
-      return orxU32_Undefined;
+
+      break;
   }
+
+  /* Done! */
+  return eIndex;
 }
 
 /***************************************************************************
@@ -305,7 +320,7 @@ orxSTATUS orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStruc
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxSTRUCTURE_ID eStructureID;
-  orxU32 u32StructureIndex;
+  orxOBJECT_STRUCTURE_INDEX eStructureIndex;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
@@ -314,10 +329,10 @@ orxSTATUS orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStruc
 
   /* Gets structure id & offset */
   eStructureID      = orxStructure_GetID(_pstStructure);
-  u32StructureIndex = orxObject_GetStructureIndex(eStructureID);
+  eStructureIndex = orxObject_GetStructureIndex(eStructureID);
 
   /* Valid? */
-  if(u32StructureIndex != orxU32_Undefined)
+  if(eStructureIndex != orxOBJECT_STRUCTURE_INDEX_NONE)
   {
     /* Unlink previous structure if needed */
     orxObject_UnlinkStructure(_pstObject, eStructureID);
@@ -326,7 +341,7 @@ orxSTATUS orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStruc
     orxStructure_IncreaseCounter(_pstStructure);
 
     /* Links new structure to object */
-    _pstObject->pastStructure[u32StructureIndex] = _pstStructure;
+    _pstObject->pastStructure[eStructureIndex] = _pstStructure;
     _pstObject->u32LinkedStructures |= (1 << eStructureID);
   }
   else
@@ -350,7 +365,8 @@ orxSTATUS orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStruc
 orxVOID orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure;
-  orxU32 u32ID, u32StructureIndex;
+  orxU32 u32ID;
+  orxOBJECT_STRUCTURE_INDEX eStructureIndex;
 
    /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
@@ -363,14 +379,14 @@ orxVOID orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStruc
   if(u32ID & _pstObject->u32LinkedStructures)
   {
     /* Gets structure index */
-    u32StructureIndex = orxObject_GetStructureIndex(_eStructureID);
+    eStructureIndex = orxObject_GetStructureIndex(_eStructureID);
 
     /* Decreases structure reference counter */
-    pstStructure      = _pstObject->pastStructure[u32StructureIndex];
+    pstStructure      = _pstObject->pastStructure[eStructureIndex];
     orxStructure_DecreaseCounter(pstStructure);
 
     /* Unlinks structure */
-    _pstObject->pastStructure[u32StructureIndex] = orxNULL;
+    _pstObject->pastStructure[eStructureIndex] = orxNULL;
 
     /* Updates structures ids */
     _pstObject->u32LinkedStructures &= ~u32ID;
@@ -392,20 +408,20 @@ orxVOID orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStruc
 orxSTRUCTURE *orxObject_GetStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure = orxNULL;
-  orxU32 u32StructureIndex;
+  orxOBJECT_STRUCTURE_INDEX eStructureIndex;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
   orxASSERT(_pstObject != orxNULL);
 
   /* Gets offset */
-  u32StructureIndex = orxObject_GetStructureIndex(_eStructureID);
+  eStructureIndex = orxObject_GetStructureIndex(_eStructureID);
 
   /* Offset is valid? */
-  if(u32StructureIndex != orxU32_Undefined)
+  if(eStructureIndex != orxOBJECT_STRUCTURE_INDEX_NONE)
   {
     /* Gets requested structure */
-    pstStructure = _pstObject->pastStructure[u32StructureIndex];
+    pstStructure = _pstObject->pastStructure[eStructureIndex];
   }
 
   /* Done ! */
