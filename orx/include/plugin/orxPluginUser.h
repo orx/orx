@@ -73,7 +73,7 @@
   _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(FUNCTION, \
                                          orxPLUGIN_MAKE_FUNCTION_ID(PLUGIN_ID, FUNCTION_BASE_ID), \
                                          NAME, \
-                                         "")
+                                         orxSTRING_Empty)
 
 #define orxPLUGIN_USER_FUNCTION_END(NUMBER_ADDRESS, STRUCTURE_ADDRESS) \
   *NUMBER_ADDRESS = u32UserPluginFunctionCounter; \
@@ -84,7 +84,7 @@
   _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(FUNCTION, \
                                          orxPLUGIN_MAKE_CORE_FUNCTION_ID(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##NAME_SUFFIX), \
                                          PLUGIN_SUFFIX##NAME_SUFFIX, \
-                                         "")
+                                         orxSTRING_Empty)
 
 
 /* Structure */

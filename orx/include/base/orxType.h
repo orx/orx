@@ -109,6 +109,8 @@ orxSTATIC orxCONST  orxU16      orxU16_Undefined    = (orxU16)(-1);
 orxSTATIC orxCONST  orxU8       orxU8_Undefined     = (orxU8)(-1);
 orxSTATIC orxCONST  orxHANDLE   orxHANDLE_Undefined = (orxHANDLE)(-1);
 
+orxSTATIC orxCONST  orxSTRING   orxSTRING_Empty     = "";
+
 /* *** Float defines *** */
 orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(orx2F(0.0f));
 orxSTATIC orxCONST  orxFLOAT    orxFLOAT_1          = orx2F(orx2F(1.0f));

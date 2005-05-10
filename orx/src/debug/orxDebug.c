@@ -108,7 +108,7 @@ orxINLINE orxCONST orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
       return "INVALID DEBUG!";
   }
 
-  return "";
+  return orxSTRING_Empty;
 }
 
 
