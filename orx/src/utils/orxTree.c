@@ -58,7 +58,7 @@ orxSTATIC orxTREE_STATIC sstTree;
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxFASTCALL orxSTATUS orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeepRef)
+orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeepRef)
 {
   orxREGISTER orxTREE *pstTree;
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;

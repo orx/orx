@@ -39,7 +39,7 @@
 
  returns: Rotated vector
  ***************************************************************************/
-orxFASTCALL orxVEC *orxVec_Rot(orxVEC *_pvRes, orxCONST orxVEC *_pvOp, orxCONST orxVEC *_pvAxis, orxFLOAT _fAngle)
+orxVEC *orxFASTCALL orxVec_Rot(orxVEC *_pvRes, orxCONST orxVEC *_pvOp, orxCONST orxVEC *_pvAxis, orxFLOAT _fAngle)
 {
   /* Checks */
   orxASSERT(_pvRes  != orxNULL);
@@ -56,7 +56,7 @@ orxFASTCALL orxVEC *orxVec_Rot(orxVEC *_pvRes, orxCONST orxVEC *_pvOp, orxCONST 
 
  returns: Nothing
  ***************************************************************************/
-orxFASTCALL orxVOID orxVec_ReorderAABox(orxVEC *_pvULBox, orxVEC *_pvBRBox)
+orxVOID orxFASTCALL orxVec_ReorderAABox(orxVEC *_pvULBox, orxVEC *_pvBRBox)
 {
   /* Checks */
   orxASSERT(_pvULBox != orxNULL);
@@ -95,7 +95,7 @@ orxFASTCALL orxVOID orxVec_ReorderAABox(orxVEC *_pvULBox, orxVEC *_pvBRBox)
 
  returns: Nothing
  ***************************************************************************/
-orxFASTCALL orxBOOL orxVec_TestAABoxIntersection(orxCONST orxVEC *_pvULBox1, orxCONST orxVEC *_pvBRBox1, orxCONST orxVEC *_pvULBox2, orxCONST orxVEC *_pvBRBox2)
+orxBOOL orxFASTCALL orxVec_TestAABoxIntersection(orxCONST orxVEC *_pvULBox1, orxCONST orxVEC *_pvBRBox1, orxCONST orxVEC *_pvULBox2, orxCONST orxVEC *_pvBRBox2)
 {
   orxREGISTER orxBOOL bResult = orxFALSE;
 

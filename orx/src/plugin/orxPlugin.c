@@ -481,7 +481,7 @@ orxVOID plugin_register(PLUGIN_HANDLE _p_handle, plugin_st_plugin_info *_pst_plu
  This function adds a core plugin info structure to the global info array.
  Returns orxVOID.
  ***************************************************************************/
-orxFASTCALL orxVOID orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
+orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
 {
   /* Checks */
   orxASSERT(_ePluginCoreID < orxPLUGIN_CORE_ID_NUMBER);
@@ -508,7 +508,7 @@ orxFASTCALL orxVOID orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxC
 
  returns: orxNULL
  ***************************************************************************/
-orxFASTCALL orxVOID *orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line)
+orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line)
 {
   orxDEBUG_FLAG_BACKUP();
   orxDEBUG_FLAG_SET(orxDEBUG_KU32_FLAG_CONSOLE

@@ -5,7 +5,8 @@
  *
  * \todo
  * Has to :
- *  * make a Complete Function Info Archiving (Global Info Structure (hash table?))
+ * - Add execute function for user register function + arg parser/checker
+ * - make a Complete Function Info Archiving (Global Info Structure (hash table?))
  */
 
 /*
@@ -38,7 +39,7 @@
 /** Initializes the plugin management engine.
  * \return orxSTATUS_SUCCESS/orxSTATUS_FAILED
  */
-extern orxU32         plugin_init();
+extern orxU32         orxPlugin_Init();
 
 /** Shuts down the plugin management engine.
  * Calling this function will shutdown all the plugins, free all managment

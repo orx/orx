@@ -128,7 +128,7 @@ orxVOID orxString_Exit()
  * @param _zMessage       (IN)  Message that will be displayed before read
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status
  */
-orxFASTCALL orxSTATUS orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage)
+orxSTATUS orxFASTCALL orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage)
 {
   orxSTRING _zReturnString; /* String read (orxNULL if a problem has occured) */
   orxU32 u32StringLength;   /* Read string length */
@@ -171,7 +171,7 @@ orxFASTCALL orxSTATUS orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32
  * @param _u32CRC         (IN)  Base CRC.
  * @return The resulting CRC.
  */
-orxFASTCALL orxU32 orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC)
+orxU32 orxFASTCALL orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC)
 {
   orxREGISTER orxU32 u32CRC;
   orxREGISTER orxCHAR *pc;

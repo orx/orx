@@ -51,13 +51,13 @@ typedef struct __orxVEC_t
 
 
 /** Rotates a coord using a orxFLOAT angle (RAD), an axis and stores result in another one. */
-extern orxFASTCALL orxVEC              *orxVec_Rot(orxVEC *_pvRes, orxCONST orxVEC *_pvOp, orxCONST orxVEC *_pvAxis, orxFLOAT _fAngle);
+extern orxVEC *orxFASTCALL              orxVec_Rot(orxVEC *_pvRes, orxCONST orxVEC *_pvOp, orxCONST orxVEC *_pvAxis, orxFLOAT _fAngle);
 
 /** Reorders axis aligned box corners (result is real upper left & bottom right corners). */
-extern orxFASTCALL orxVOID              orxVec_ReorderAABox(orxVEC *_pvULBox, orxVEC *_pvBRBox);
+extern orxVOID orxFASTCALL              orxVec_ReorderAABox(orxVEC *_pvULBox, orxVEC *_pvBRBox);
 
 /** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
-extern orxFASTCALL orxBOOL              orxVec_TestAABoxIntersection(orxCONST orxVEC *_pvULBox1, orxCONST orxVEC *_pvBRBox1, orxCONST orxVEC *_pvULBox2, orxCONST orxVEC *_pvBRBox2);
+extern orxBOOL orxFASTCALL              orxVec_TestAABoxIntersection(orxCONST orxVEC *_pvULBox1, orxCONST orxVEC *_pvBRBox1, orxCONST orxVEC *_pvULBox2, orxCONST orxVEC *_pvBRBox2);
 
 
 /* *** Vector inlined functions *** */

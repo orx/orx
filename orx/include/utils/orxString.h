@@ -53,14 +53,14 @@ extern orxDLLAPI orxVOID                orxString_Exit();
  * @param _zMessage       (IN)  Message that will be displayed before read
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status
  */
-extern orxDLLAPI orxFASTCALL orxSTATUS  orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage);
 
 /** Continues a CRC with a string one
  * @param _zString        (IN)  String used to continue the given CRC
  * @param _u32CRC         (IN)  Base CRC.
  * @return The resulting CRC.
  */
-extern orxDLLAPI orxFASTCALL orxU32     orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC);
+extern orxDLLAPI orxU32 orxFASTCALL     orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC);
 
 
 /* *** String inlined functions *** */

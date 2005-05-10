@@ -274,7 +274,7 @@ orxSTATUS orxStructure_RegisterStorageType(orxSTRUCTURE_ID _eStructureID, orxSTR
 
  returns: Structure storage ID
  ***************************************************************************/
-orxFASTCALL orxSTRUCTURE_STORAGE_TYPE orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID)
+orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
@@ -290,7 +290,7 @@ orxFASTCALL orxSTRUCTURE_STORAGE_TYPE orxStructure_GetStorageType(orxSTRUCTURE_I
 
  returns: number / orxU32_Undefined
  ***************************************************************************/
-orxFASTCALL orxU32 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
+orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 {
   orxREGISTER orxU32 u32Result = orxU32_Undefined;
 
@@ -332,7 +332,7 @@ orxFASTCALL orxU32 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxFASTCALL orxSTATUS orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID)
+orxSTATUS orxFASTCALL orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -414,7 +414,7 @@ orxFASTCALL orxSTATUS orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTU
 
  returns: orxVOID
  ***************************************************************************/
-orxFASTCALL orxVOID orxStructure_Clean(orxSTRUCTURE *_pstStructure)
+orxVOID orxFASTCALL orxStructure_Clean(orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
 
@@ -474,7 +474,7 @@ orxFASTCALL orxVOID orxStructure_Clean(orxSTRUCTURE *_pstStructure)
 
  returns: first structure
  ***************************************************************************/
-orxFASTCALL orxSTRUCTURE *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -527,7 +527,7 @@ orxFASTCALL orxSTRUCTURE *orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 
  returns: parent
  ***************************************************************************/
-orxFASTCALL orxSTRUCTURE *orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -575,7 +575,7 @@ orxFASTCALL orxSTRUCTURE *orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
 
  returns: child
  ***************************************************************************/
-orxFASTCALL orxSTRUCTURE *orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -623,7 +623,7 @@ orxFASTCALL orxSTRUCTURE *orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
 
  returns: left sibling
  ***************************************************************************/
-orxFASTCALL orxSTRUCTURE *orxStructure_GetSibling(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -671,7 +671,7 @@ orxFASTCALL orxSTRUCTURE *orxStructure_GetSibling(orxSTRUCTURE *_pstStructure)
 
  returns: previous
  ***************************************************************************/
-orxFASTCALL orxSTRUCTURE *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -719,7 +719,7 @@ orxFASTCALL orxSTRUCTURE *orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
 
  returns: next
  ***************************************************************************/
-orxFASTCALL orxSTRUCTURE *orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -767,7 +767,7 @@ orxFASTCALL orxSTRUCTURE *orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
 
  returns: orxVOID
  ***************************************************************************/
-orxFASTCALL orxSTATUS orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent)
+orxSTATUS orxFASTCALL orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode, *pstParentNode;
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
