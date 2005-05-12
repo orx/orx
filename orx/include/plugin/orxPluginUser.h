@@ -69,21 +69,21 @@
   orxPLUGIN_USER_FUNCTION_INFO *pstUserPluginFunctionInfo = STRUCTURE; \
   orxMemory_Set(pstUserPluginFunctionInfo, 0, u32UserPluginFunctionMaxNumber * sizeof(orxPLUGIN_USER_FUNCTION_INFO));
 
-#define orxPLUGIN_USER_FUNCTION_ADD(PLUGIN_ID, FUNCTION_BASE_ID, NAME) \
-  _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(FUNCTION, \
+#define orxPLUGIN_USER_FUNCTION_ADD(FUNCTION, ARGS, PLUGIN_ID, FUNCTION_BASE_ID, NAME) \
+  _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(&FUNCTION, \
                                          orxPLUGIN_MAKE_FUNCTION_ID(PLUGIN_ID, FUNCTION_BASE_ID), \
                                          NAME, \
-                                         orxSTRING_Empty)
+                                         ARGS)
 
 #define orxPLUGIN_USER_FUNCTION_END(NUMBER_ADDRESS, STRUCTURE_ADDRESS) \
   *NUMBER_ADDRESS = u32UserPluginFunctionCounter; \
   *STRUCTURE_ADDRESS = pstUserPluginFunctionInfo; \
 }
 
-#define orxPLUGIN_USER_CORE_FUNCTION_ADD(PLUGIN_SUFFIX, FUNCTION, NAME_SUFFIX) \
-  _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(FUNCTION, \
+#define orxPLUGIN_USER_CORE_FUNCTION_ADD(FUNCTION, PLUGIN_SUFFIX, NAME_SUFFIX) \
+  _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(&FUNCTION, \
                                          orxPLUGIN_MAKE_CORE_FUNCTION_ID(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##NAME_SUFFIX), \
-                                         PLUGIN_SUFFIX##NAME_SUFFIX, \
+                                         PLUGIN_SUFFIX##_##NAME_SUFFIX, \
                                          orxSTRING_Empty)
 
 
