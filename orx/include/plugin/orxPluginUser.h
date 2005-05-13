@@ -52,7 +52,7 @@
   if(u32UserPluginFunctionCounter < u32UserPluginFunctionMaxNumber) \
   { \
     pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].pfnFunction = (orxPLUGIN_FUNCTION) FUNCTION; \
-    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].eFunctionID = ID; \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].eFunctionID = FUNCTION_ID; \
     orxString_Copy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionName, #NAME); \
     orxString_Copy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS); \
     u32UserPluginFunctionCounter++; \
