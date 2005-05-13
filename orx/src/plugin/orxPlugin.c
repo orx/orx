@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "plugin/orxPlugin.h"
 
 #include "debug/orxDebug.h"
@@ -25,6 +26,7 @@
 #include "utils/utils.h"
 
 #include "msg/msg_plugin.h"
+
 
 #ifdef __orxLINUX__
 
@@ -49,24 +51,24 @@
 /* WINDOWS */
 #ifdef __orxWINDOWS__
 
-#define PLUGIN_HANDLE       HMODULE
+typedef HMODULE                                         orxSYSPLUGIN_HANDLE;
 
-#define PLUGIN_OPEN(X)      LoadLibrary(X)
-#define PLUGIN_SYM(X, Y)    GetProcAddress(X, Y)
-#define PLUGIN_CLOSE(X)     FreeLibrary(X)
+#define orxPLUGIN_OPEN(PLUGIN)                          LoadLibrary(PLUGIN)
+#define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    GetProcAddress(PLUGIN, SYMBOL)
+#define orxPLUGIN_CLOSE(PLUGIN)                         FreeLibrary(PLUGIN)
 
-#define PLUGIN_LIBRARY_EXT  "dll"
+orxSTATIC orxCONST orxSTRING                            szPluginLibraryExt = "dll";
 
 /* OTHERS */
 #else
 
-#define PLUGIN_HANDLE       orxVOID *
+typedef orxVOID *                                       orxSYSPLUGIN_HANDLE;
 
-#define PLUGIN_OPEN(X)      dlopen(X, RTLD_LAZY)
-#define PLUGIN_SYM(X, Y)    dlsym(X, Y)
-#define PLUGIN_CLOSE(X)     dlclose(X)
+#define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
+#define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
+#define orxPLUGIN_CLOSE(PLUGIN)                         dlclose(PLUGIN)
 
-#define PLUGIN_LIBRARY_EXT  "so"
+orxSTATIC orxCONST orxSTRING                            szPluginLibraryExt = "so";
 
 #endif
 
@@ -82,34 +84,52 @@
 /*
  * Information structure on a plugin function
  */
-typedef struct st_function_info_t
+typedef struct __orxPLUGIN_FUNCTION_INFO_t
 {
   orxPLUGIN_FUNCTION pfnFunction;                       /**< Function Address : 4 */
   orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];/**< Function Argument Types : 132 */
 
-  orxCHAR zFunctionName[orxPLUGIN_KU32_NAME_SIZE];        /**< Function Name : 164 */
-  orxPLUGIN_FUNCTION_ID eFunctionID;                                   /**< Function ID : 168 */
+  orxCHAR zFunctionName[orxPLUGIN_KU32_NAME_SIZE];      /**< Function Name : 164 */
+  orxPLUGIN_FUNCTION_ID eFunctionID;                    /**< Function ID : 168 */
 
   /* 8 extra bytes of padding : 176 */
   orxU8 au8Unused[8];
-} plugin_st_function_info;
+
+} orxPLUGIN_FUNCTION_INFO;
+
 
 /*
  * Information structure on a plugin
  */
-typedef struct st_plugin_info_t
+typedef struct __orxPLUGIN_INFO_t
 {
-  PLUGIN_HANDLE p_plugin_handle;            /**< Plugin handle : 4 */
+  orxSYSPLUGIN_HANDLE hSysPlugin;                             /**< Plugin handle : 4 */
 
-  orxCHAR zPluginName[orxPLUGIN_KU32_NAME_SIZE];  /**< Plugin name : 36 */
-  orxHANDLE hPluginHandle;                      /**< Plugin ID : 40 */
+  orxCHAR zPluginName[orxPLUGIN_KU32_NAME_SIZE];        /**< Plugin name : 36 */
+  orxHANDLE hPluginHandle;                              /**< Plugin handle : 40 */
 
-  map p_function_map;                       /**< Plugin Function List : 44 */
+  map p_function_map;                                   /**< Plugin Function List : 44 */
 
   /* 4 extra bytes of padding : 48 */
   orxU8 au8Unused[4];
-} plugin_st_plugin_info;
 
+} orxPLUGIN_INFO;
+
+
+/*
+ * Static structure
+ */
+typedef struct __orxPLUGIN_STATIC_t
+{
+  /* Control flags */
+  orxU32 u32Flags;
+
+} orxPLUGIN_STATIC;
+
+/*
+ * Static data
+ */
+orxSTATIC orxPLUGIN_STATIC sstPlugin;
 
 
 /*
@@ -119,7 +139,7 @@ orxSTATIC orxPLUGIN_CORE_FUNCTION orxCONST *sapst_function[orxPLUGIN_CORE_ID_NUM
 orxSTATIC orxS32 si_function_number[orxPLUGIN_CORE_ID_NUMBER];
 
 orxSTATIC map sp_plugin_map = orxNULL;
-orxSTATIC orxU32 plugin_su32Flags = orxPLUGIN_KU32_FLAG_NONE;
+
 
 /***************************************************************************
  ***************************************************************************
@@ -198,12 +218,12 @@ orxBOOL key_compare(orxU8 *_puc_key1, orxU8 *_puc_key2)
  This function creates & initiates a function_info cell. 
  Returns created cell.
  ***************************************************************************/
-plugin_st_function_info *function_cell_create()
+orxPLUGIN_FUNCTION_INFO *function_cell_create()
 {
-  plugin_st_function_info *pstCell;
+  orxPLUGIN_FUNCTION_INFO *pstCell;
 
   /* Creates a function info cell */
-  pstCell = (plugin_st_function_info *) orxMemory_Allocate(sizeof(plugin_st_function_info), orxMEMORY_TYPE_MAIN);
+  pstCell = (orxPLUGIN_FUNCTION_INFO *) orxMemory_Allocate(sizeof(orxPLUGIN_FUNCTION_INFO), orxMEMORY_TYPE_MAIN);
 
   /* Initiates it */
   pstCell->pfnFunction    = orxNULL;
@@ -218,19 +238,19 @@ plugin_st_function_info *function_cell_create()
  This function creates & initiates a plugin_info cell. 
  Returns created cell.
  ***************************************************************************/
-plugin_st_plugin_info *plugin_cell_create()
+orxPLUGIN_INFO *plugin_cell_create()
 {
-  plugin_st_plugin_info *pstCell;
+  orxPLUGIN_INFO *pstCell;
 
   /* Creates a plugin info cell */
-  pstCell = (plugin_st_plugin_info *) orxMemory_Allocate(sizeof(plugin_st_plugin_info), orxMEMORY_TYPE_MAIN);
+  pstCell = (orxPLUGIN_INFO *) orxMemory_Allocate(sizeof(orxPLUGIN_INFO), orxMEMORY_TYPE_MAIN);
 
   /* Initiates it */
-  pstCell->p_plugin_handle   = orxNULL;
+  pstCell->hPluginHandle   = orxNULL;
   pstCell->hPluginHandle     = orxHANDLE_Undefined;
   pstCell->p_function_map    = 
-    (plugin_st_function_info *)map_create(orxPLUGIN_KU32_NAME_SIZE,
-                                          sizeof(plugin_st_function_info),
+    (orxPLUGIN_FUNCTION_INFO *)map_create(orxPLUGIN_KU32_NAME_SIZE,
+                                          sizeof(orxPLUGIN_FUNCTION_INFO),
                                           &key_compare);
 
   return pstCell;
@@ -243,7 +263,7 @@ plugin_st_plugin_info *plugin_cell_create()
 
  Returns nothing.
  ***************************************************************************/
-orxVOID function_cell_delete(plugin_st_function_info *_pstCell)
+orxVOID function_cell_delete(orxPLUGIN_FUNCTION_INFO *_pstCell)
 {
   /* Is cell valid? */
   if(_pstCell != orxNULL)
@@ -264,7 +284,7 @@ orxVOID function_cell_delete(plugin_st_function_info *_pstCell)
  
  Returns nothing.
  ***************************************************************************/
-orxVOID plugin_cell_delete(plugin_st_plugin_info *_pstCell)
+orxVOID plugin_cell_delete(orxPLUGIN_INFO *_pstCell)
 {
   orxU8 *puc_key;
 
@@ -272,9 +292,9 @@ orxVOID plugin_cell_delete(plugin_st_plugin_info *_pstCell)
   if(_pstCell != orxNULL)
   {
     /* Unload plugin */
-    if(_pstCell->p_plugin_handle != orxNULL)
+    if(_pstCell->hPluginHandle != orxNULL)
     {
-      PLUGIN_CLOSE(_pstCell->p_plugin_handle);
+      orxPLUGIN_CLOSE(_pstCell->hPluginHandle);
     }
 
     /* Free function map */
@@ -304,16 +324,16 @@ orxVOID plugin_cell_delete(plugin_st_plugin_info *_pstCell)
  if it exists, otherwise orxNULL.
 
  ***************************************************************************/
-plugin_st_plugin_info *plugin_locate_by_id(orxHANDLE _hPluginHandle)
+orxPLUGIN_INFO *plugin_locate_by_id(orxHANDLE _hPluginHandle)
 {
-  plugin_st_plugin_info *pst_plugin_cell;
+  orxPLUGIN_INFO *pst_plugin_cell;
   orxU8 *puc_key;
 
   /* Compute key with id */
   puc_key = key_create(_hPluginHandle, orxNULL);
 
   /* Search for the requested plugin */
-  pst_plugin_cell = (plugin_st_plugin_info *)map_find(sp_plugin_map, puc_key);
+  pst_plugin_cell = (orxPLUGIN_INFO *)map_find(sp_plugin_map, puc_key);
 
   /* Delete the key */
   key_delete(puc_key);
@@ -328,16 +348,16 @@ plugin_st_plugin_info *plugin_locate_by_id(orxHANDLE _hPluginHandle)
  if it exists, otherwise orxNULL.
 
  ***************************************************************************/
-plugin_st_plugin_info *plugin_locate_by_name(orxU8 *_zPluginName)
+orxPLUGIN_INFO *plugin_locate_by_name(orxU8 *_zPluginName)
 {
-  plugin_st_plugin_info *pst_plugin_cell;
+  orxPLUGIN_INFO *pst_plugin_cell;
   orxU8 *puc_key;
 
   /* Compute key with id */
   puc_key = key_create(0, _zPluginName);
 
   /* Search for the requested plugin */
-  pst_plugin_cell = (plugin_st_plugin_info *)map_find(sp_plugin_map, puc_key);
+  pst_plugin_cell = (orxPLUGIN_INFO *)map_find(sp_plugin_map, puc_key);
 
   /* Delete the key */
   key_delete(puc_key);
@@ -352,7 +372,7 @@ plugin_st_plugin_info *plugin_locate_by_name(orxU8 *_zPluginName)
  
  returns: pointer if success, orxNULL if error (do plugin_error to find out)
  ***************************************************************************/
-orxVOID *get_func_addr(PLUGIN_HANDLE _p_plugin_handle, orxU8 *_zFunctionName)
+orxVOID *get_func_addr(orxSYSPLUGIN_HANDLE _hPluginHandle, orxU8 *_zFunctionName)
 {
   orxVOID *p_function_handle = orxNULL;
 
@@ -365,7 +385,7 @@ orxVOID *get_func_addr(PLUGIN_HANDLE _p_plugin_handle, orxU8 *_zFunctionName)
     return orxNULL;
   }
   
-  if(_p_plugin_handle == orxNULL)
+  if(_hPluginHandle == orxNULL)
   {
     /* Log an error */
     orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_FOUND);
@@ -374,7 +394,7 @@ orxVOID *get_func_addr(PLUGIN_HANDLE _p_plugin_handle, orxU8 *_zFunctionName)
   }
   
   /* Attempt to obtain the pointer to the func */
-  p_function_handle = PLUGIN_SYM(_p_plugin_handle, _zFunctionName);
+  p_function_handle = orxPLUGIN_GET_SYMBOL_ADDRESS(_hPluginHandle, _zFunctionName);
 
   if(p_function_handle == orxNULL)
   {
@@ -423,10 +443,10 @@ orxVOID function_core_register(orxPLUGIN_FUNCTION _pfnFunction, orxU32 _eFunctio
  This function registers a plugin.
  Returns orxVOID.
  ***************************************************************************/
-orxVOID plugin_register(PLUGIN_HANDLE _p_handle, plugin_st_plugin_info *_pst_plugin)
+orxVOID plugin_register(orxSYSPLUGIN_HANDLE _p_handle, orxPLUGIN_INFO *_pst_plugin)
 {
   orxVOID (*pfn_init)(orxS32 *, orxPLUGIN_USER_FUNCTION_INFO **) = get_func_addr(_p_handle, orxPLUGIN_USER_KZ_FUNCTION_INIT);
-  plugin_st_function_info *pst_function_cell;
+  orxPLUGIN_FUNCTION_INFO *pst_function_cell;
   orxS32 i_function_number = 0, i;
   orxPLUGIN_USER_FUNCTION_INFO *pst_function;
   orxU8* puc_key;
@@ -530,13 +550,13 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
  ***************************************************************************/
 orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName)
 {
-  PLUGIN_HANDLE p_handle;
+  orxSYSPLUGIN_HANDLE p_handle;
 
-  plugin_st_plugin_info *pstCell;
+  orxPLUGIN_INFO *pstCell;
   orxU8 *puc_key;
 
   /* Ready to Work? */
-  if(!(plugin_su32Flags & orxPLUGIN_KU32_FLAG_READY))
+  if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
   {
     orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_READY);
     return orxHANDLE_Undefined;
@@ -555,7 +575,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
   }
   
   /* Attempt to link in the shared object */
-  if((p_handle = PLUGIN_OPEN(_zPluginFileName)) == orxNULL)
+  if((p_handle = orxPLUGIN_OPEN(_zPluginFileName)) == orxNULL)
   {
     /* Log an error message here, but I forgot the prototype ^^ */
     orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_LOAD_FAILED);
@@ -568,7 +588,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
    */
   if((pstCell = plugin_cell_create()) == orxNULL)
   {
-    PLUGIN_CLOSE(p_handle);
+    orxPLUGIN_CLOSE(p_handle);
     orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_MALLOC_FAILED);
     return orxHANDLE_Undefined;
   }
@@ -578,7 +598,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
    */
 
   /* First, plug in the reference to the dynamic code */
-  pstCell->p_plugin_handle = p_handle;
+  pstCell->hPluginHandle = p_handle;
 
   /* Then, assign an ID */
   pstCell->hPluginHandle = (orxHANDLE)map_count(sp_plugin_map) + 1;
@@ -614,7 +634,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName
 {
   orxCHAR zFilename[128];
 
-  sprintf(zFilename, "%s.%s", _zPluginFileName, PLUGIN_LIBRARY_EXT);
+  sprintf(zFilename, "%s.%s", _zPluginFileName, szPluginLibraryExt);
 
   return(orxPlugin_Load(zFilename, _zPluginName));
 }
@@ -628,7 +648,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
 {
-  plugin_st_plugin_info *pst_node;
+  orxPLUGIN_INFO *pst_node;
 
   if((pst_node = plugin_locate_by_id(_hPluginHandle)) != orxNULL)
   {
@@ -655,14 +675,14 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
  ***************************************************************************/
 orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, orxCONST orxSTRING _zFunctionName)
 {
-  plugin_st_plugin_info *pstCell;
+  orxPLUGIN_INFO *pstCell;
   orxVOID *p_function_handle = orxNULL;
 
   /* Gets the plugin cell */
-  pstCell = (plugin_st_plugin_info *)plugin_locate_by_id(_hPluginHandle);
+  pstCell = (orxPLUGIN_INFO *)plugin_locate_by_id(_hPluginHandle);
 
   /* Try to get the function handle */
-  p_function_handle = get_func_addr(pstCell->p_plugin_handle,
+  p_function_handle = get_func_addr(pstCell->hPluginHandle,
                                     _zFunctionName);
 
   /* No function found ? */
@@ -685,7 +705,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
  ***************************************************************************/
 orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
 {
-  plugin_st_plugin_info *pstCell;
+  orxPLUGIN_INFO *pstCell;
 
   /* Check parameter validity */
   if(_zPluginName == orxNULL)
@@ -716,7 +736,7 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
  ***************************************************************************/
 orxCONST orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
 {
-  plugin_st_plugin_info *pstCell;
+  orxPLUGIN_INFO *pstCell;
 
   if((pstCell = plugin_locate_by_id(_hPluginHandle)) == orxNULL)
   {
@@ -733,11 +753,11 @@ orxSTATUS orxPlugin_Init()
 {
   orxS32 i;
 
-  if(!(plugin_su32Flags & orxPLUGIN_KU32_FLAG_READY))
+  if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
   {
     /* Creates an empty spst_plugin_list */
-    sp_plugin_map = (plugin_st_plugin_info *)map_create(orxPLUGIN_KU32_NAME_SIZE,
-                                                        sizeof(plugin_st_plugin_info),
+    sp_plugin_map = (orxPLUGIN_INFO *)map_create(orxPLUGIN_KU32_NAME_SIZE,
+                                                        sizeof(orxPLUGIN_INFO),
                                                         &key_compare);
 
     /* Inits static core info structures */
@@ -748,7 +768,7 @@ orxSTATUS orxPlugin_Init()
     }
 
     /* Updates status flags */
-    plugin_su32Flags |= orxPLUGIN_KU32_FLAG_READY;
+    sstPlugin.u32Flags |= orxPLUGIN_KU32_FLAG_READY;
 
     return orxSTATUS_SUCCESS;
   }
@@ -759,7 +779,7 @@ orxSTATUS orxPlugin_Init()
 orxVOID orxPlugin_Exit()
 {
   orxU32 i;
-  plugin_st_plugin_info *pstCell;
+  orxPLUGIN_INFO *pstCell;
 
   /* Delete all plugin cells */
   for(i = 1; i <= map_count(sp_plugin_map); i++)
@@ -775,7 +795,7 @@ orxVOID orxPlugin_Exit()
   map_destroy(sp_plugin_map);
 
   /* Updates status flags */
-  plugin_su32Flags = orxPLUGIN_KU32_FLAG_NONE;
+  sstPlugin.u32Flags = orxPLUGIN_KU32_FLAG_NONE;
 
   return;
 }
