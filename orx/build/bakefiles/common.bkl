@@ -74,7 +74,7 @@
         <!-- Preprocessor definitions. -->
         <define>$(orxDEBUG)</define>
         <define>$(orxPLATFORM)</define>
-        <define>orxDLL</define>
+<!--        <define>orxDLL</define> -->
         <!-- Warning level. -->
         <warnings>$(orxWARNINGFLAG)</warnings>
         
@@ -88,17 +88,19 @@
         <depends>$(orxLINKDEPEND)</depends>
     </template>
 
-     <!-- Set module ilink lib -->
-     <set var="orxEXTRALINK">
-         <if cond="LINK=='static' and COMPILER=='mingw'">testbed</if>
-	 <if cond="LINK=='dynamic'">orx$(orxSUFFIX)</if>
-     </set>
+    <!-- Set module ilink lib -->
+    <set var="orxEXTRALINK">
+     <if cond="LINK=='dynamic'">orx$(orxSUFFIX)</if>
+    </set>
      
+    <set var="orxEXTRAFLAGS">
+      <if cond="LINK=='static' and FORMAT=='mingw'">lib\testbed.a</if>
+    </set>
 
-     <!-- Define the module template -->
-     <template id="orxMODULELINK">
-	 <sys-lib>$(orxEXTRALINK)</sys-lib>
-     </template>
-     
+    <!-- Define the module template -->
+    <template id="orxMODULELINK">
+	  <sys-lib>$(orxEXTRALINK)</sys-lib>
+      <ldflags>$(orxEXTRAFLAGS)</ldflags>
+    </template>
 
 </bakefile>
