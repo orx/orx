@@ -157,7 +157,7 @@ orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm \
 	-Wl,--no-whole-archive
 endif
 ifeq ($(LINK),static)
-orxLDFLAGS_IMPLIB = -Wl,--output-implib,lib\testbed
+orxLDFLAGS_IMPLIB = -Wl,--out-implib,lib\testbed.a
 endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
@@ -225,7 +225,7 @@ lib\liborx$(orxSUFFIX).a: $(ORXLIB_OBJECTS)
 endif
 
 bin\testbed.exe: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -o $@ $(TESTBED_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(orxLDFLAGS) $(orxLDFLAGS_IMPLIB)  -ldl
+	$(CC) -o $@ $(TESTBED_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(orxLDFLAGS) $(orxLDFLAGS_IMPLIB)
 
 bin\modules\memory.dll: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(__orxEXTRALINK_p)
