@@ -1,0 +1,9 @@
+################################################################################
+# DO NOT REMOVE THIS FILE                                                      #
+# IT IS USED TO PROTECT THE DIRECTORY AGAIN CVS PRUNE DIRECTORY OPTION         #
+################################################################################
+
+bin/modules : directory where are stored tests modules.
+
+the main test program browse this directory and try to load all tests modules
+available.
