@@ -8,12 +8,12 @@
   </set>
 
   <set var="orxLDFLAGS">
-    <if cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--export-all-symbols -Wl,--whole-archive -lorx$(orxSUFFIX) -lm -Wl,--no-whole-archive</if>
+    <if cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm -Wl,--no-whole-archive</if>
     <if cond="LINK=='dynamic' and COMPILER=='gcc'">-lorx$(orxSUFFIX)</if>
   </set>
 
   <set var="orxLDFLAGS_IMPLIB">
-    <if cond="LINK=='static' and FORMAT=='mingw'">-Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)testbed.a</if>
+    <if cond="LINK=='static' and FORMAT=='mingw'">-Wl,--export-all-symbols -Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)testbed.a</if>
   </set>
   
   <set var="orxDYNLINK">

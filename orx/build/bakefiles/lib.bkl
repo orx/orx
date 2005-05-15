@@ -33,9 +33,9 @@
         <sources>
             src/io/orxFile.c
             src/io/interaction.c
-            src/io/joystick.c
-            src/io/keyboard.c
-            src/io/mouse.c
+            src/io/orxJoystick.c
+            src/io/orxKeyboard.c
+            src/io/orxMouse.c
             src/io/orxPackage.c
         </sources>
         <sources>
@@ -127,9 +127,9 @@
             display/orxTexture.h
             io/orxFile.h
             io/interaction.h
-            io/joystick.h
-            io/keyboard.h
-            io/mouse.h
+            io/orxJoystick.h
+            io/orxKeyboard.h
+            io/orxMouse.h
             io/orxPackage.h
             math/orxMath.h
             math/orxVec.h

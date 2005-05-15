@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<bakefile>
+
+  <!-- Define plugins options -->
+  <option name="USE_ALLEGRO">
+    <values>0,1</values>
+    <default-value>0</default-value>
+  </option>
+
+  <!--- Create orx core plugins -->
+  <!-- DISPLAY -->
+
+  <!-- SOUND -->
+
+  <!-- MOUSE -->
+
+	  <!-- Depends on allegro -->
+	  <module id="Mouse_Allegro" cond="USE_ALLEGRO=='1'" template="orxBASE,orxLINK,orxMODULELINK">
+	    <dirname>bin/plugins_core</dirname>
+	    <sources>plugins/Mouse/Allegro/orxMouse.c</sources>
+	  </module>
+
+  <!-- KEYBOARD -->
+
+	  <!-- Depends on allegro -->
+	  <module id="Keyboard_Allegro" cond="USE_ALLEGRO=='1'" template="orxBASE,orxLINK,orxMODULELINK">
+	    <dirname>bin/plugins_core</dirname>
+	    <sources>plugins/Keyboard/Allegro/orxKeyboard.c</sources>
+	  </module>
+
+  <!-- JOYSTICK -->
+
+	  <!-- Depends on nothing -->
+	  <module id="Joystick_NONE" template="orxBASE,orxLINK,orxMODULELINK">
+	    <dirname>bin/plugins_core</dirname>
+	    <sources>plugins/Joystick/NONE/orxJoystick.c</sources>
+	  </module>
+  
+  <!-- FILE -->
+  
+  <!-- FILE_SYSTEM -->
+
+  <!-- PACKAGE -->
+
+</bakefile>

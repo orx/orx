@@ -12,5 +12,8 @@
     
     <!-- Include test target definbitions. -->
     <include file="build/bakefiles/test.bkl"/>
+
+    <!-- Include plugins target definbitions. -->
+    <include file="build/bakefiles/plugins_core.bkl"/>
     
 </bakefile>

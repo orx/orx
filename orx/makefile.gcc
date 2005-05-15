@@ -28,6 +28,9 @@ BUILD = release
 #  [static,dynamic]
 LINK = static
 
+#  [0,1]
+USE_ALLEGRO = 0
+
 
 
 # -------------------------------------------------------------------------
@@ -57,9 +60,9 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxTexture.o \
 	.\build\$(BUILD)\orxDLL_orxFile.o \
 	.\build\$(BUILD)\orxDLL_interaction.o \
-	.\build\$(BUILD)\orxDLL_joystick.o \
-	.\build\$(BUILD)\orxDLL_keyboard.o \
-	.\build\$(BUILD)\orxDLL_mouse.o \
+	.\build\$(BUILD)\orxDLL_orxJoystick.o \
+	.\build\$(BUILD)\orxDLL_orxKeyboard.o \
+	.\build\$(BUILD)\orxDLL_orxMouse.o \
 	.\build\$(BUILD)\orxDLL_orxPackage.o \
 	.\build\$(BUILD)\orxDLL_orxVec.o \
 	.\build\$(BUILD)\orxDLL_orxBank.o \
@@ -97,9 +100,9 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxTexture.o \
 	.\build\$(BUILD)\orxLIB_orxFile.o \
 	.\build\$(BUILD)\orxLIB_interaction.o \
-	.\build\$(BUILD)\orxLIB_joystick.o \
-	.\build\$(BUILD)\orxLIB_keyboard.o \
-	.\build\$(BUILD)\orxLIB_mouse.o \
+	.\build\$(BUILD)\orxLIB_orxJoystick.o \
+	.\build\$(BUILD)\orxLIB_orxKeyboard.o \
+	.\build\$(BUILD)\orxLIB_orxMouse.o \
 	.\build\$(BUILD)\orxLIB_orxPackage.o \
 	.\build\$(BUILD)\orxLIB_orxVec.o \
 	.\build\$(BUILD)\orxLIB_orxBank.o \
@@ -134,6 +137,19 @@ HASHTABLE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 HASHTABLE_OBJECTS =  \
 	.\build\$(BUILD)\HashTable_orxTest_HashTable.o
+MOUSE_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
+MOUSE_ALLEGRO_OBJECTS =  \
+	.\build\$(BUILD)\Mouse_Allegro_orxMouse.o
+KEYBOARD_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(__orxDEBUG_p) -D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) \
+	$(CFLAGS)
+KEYBOARD_ALLEGRO_OBJECTS =  \
+	.\build\$(BUILD)\Keyboard_Allegro_orxKeyboard.o
+JOYSTICK_NONE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
+JOYSTICK_NONE_OBJECTS =  \
+	.\build\$(BUILD)\Joystick_NONE_orxJoystick.o
 
 ### Conditionally set variables: ###
 
@@ -156,11 +172,17 @@ ifeq ($(LINK),dynamic)
 orxLDFLAGS = -lorx$(orxSUFFIX)
 endif
 ifeq ($(LINK),static)
-orxLDFLAGS = -Wl,--export-dynamic -Wl,--export-all-symbols -Wl,--whole-archive \
-	-lorx$(orxSUFFIX) -lm -Wl,--no-whole-archive
+orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm \
+	-Wl,--no-whole-archive
 endif
 ifeq ($(LINK),static)
-orxLDFLAGS_IMPLIB = -Wl,--out-implib,lib\testbed.a
+orxLDFLAGS_IMPLIB = -Wl,--export-all-symbols -Wl,--out-implib,lib\testbed.a
+endif
+ifeq ($(USE_ALLEGRO),1)
+__Mouse_Allegro___depname = bin\plugins_core\Mouse_Allegro.dll
+endif
+ifeq ($(USE_ALLEGRO),1)
+__Keyboard_Allegro___depname = bin\plugins_core\Keyboard_Allegro.dll
 endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
@@ -203,10 +225,9 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\memory.dll bin\modules\bank.dll bin\modules\HashTable.dll
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\memory.dll bin\modules\bank.dll bin\modules\HashTable.dll $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin\plugins_core\Joystick_NONE.dll
 
 clean: 
-	-if exist .\build\$(BUILD)\*.o del .\build\$(BUILD)\*.o
 	-if exist .\build\$(BUILD)\*.d del .\build\$(BUILD)\*.d
 	-if exist lib\orx$(orxSUFFIX).dll del lib\orx$(orxSUFFIX).dll
 	-if exist lib\liborx$(orxSUFFIX).a del lib\liborx$(orxSUFFIX).a
@@ -215,6 +236,9 @@ clean:
 	-if exist bin\modules\memory.dll del bin\modules\memory.dll
 	-if exist bin\modules\bank.dll del bin\modules\bank.dll
 	-if exist bin\modules\HashTable.dll del bin\modules\HashTable.dll
+	-if exist bin\plugins_core\Mouse_Allegro.dll del bin\plugins_core\Mouse_Allegro.dll
+	-if exist bin\plugins_core\Keyboard_Allegro.dll del bin\plugins_core\Keyboard_Allegro.dll
+	-if exist bin\plugins_core\Joystick_NONE.dll del bin\plugins_core\Joystick_NONE.dll
 
 ifeq ($(LINK),dynamic)
 lib\orx$(orxSUFFIX).dll: $(ORXDLL_OBJECTS)
@@ -239,6 +263,19 @@ bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(HASHTABLE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+
+ifeq ($(USE_ALLEGRO),1)
+bin\plugins_core\Mouse_Allegro.dll: $(MOUSE_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(MOUSE_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+endif
+
+ifeq ($(USE_ALLEGRO),1)
+bin\plugins_core\Keyboard_Allegro.dll: $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(KEYBOARD_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+endif
+
+bin\plugins_core\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(JOYSTICK_NONE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
 
 .\build\$(BUILD)\orxDLL_orxAnim.o: ./src/anim/orxAnim.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
@@ -285,13 +322,13 @@ bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxDLL_interaction.o: ./src/io/interaction.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_joystick.o: ./src/io/joystick.c
+.\build\$(BUILD)\orxDLL_orxJoystick.o: ./src/io/orxJoystick.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_keyboard.o: ./src/io/keyboard.c
+.\build\$(BUILD)\orxDLL_orxKeyboard.o: ./src/io/orxKeyboard.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_mouse.o: ./src/io/mouse.c
+.\build\$(BUILD)\orxDLL_orxMouse.o: ./src/io/orxMouse.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxPackage.o: ./src/io/orxPackage.c
@@ -393,13 +430,13 @@ bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 .\build\$(BUILD)\orxLIB_interaction.o: ./src/io/interaction.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_joystick.o: ./src/io/joystick.c
+.\build\$(BUILD)\orxLIB_orxJoystick.o: ./src/io/orxJoystick.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_keyboard.o: ./src/io/keyboard.c
+.\build\$(BUILD)\orxLIB_orxKeyboard.o: ./src/io/orxKeyboard.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_mouse.o: ./src/io/mouse.c
+.\build\$(BUILD)\orxLIB_orxMouse.o: ./src/io/orxMouse.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxPackage.o: ./src/io/orxPackage.c
@@ -467,6 +504,15 @@ bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 .\build\$(BUILD)\HashTable_orxTest_HashTable.o: ./test/orxTest_HashTable.c
 	$(CC) -c -o $@ $(HASHTABLE_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\Mouse_Allegro_orxMouse.o: ./plugins/Mouse/Allegro/orxMouse.c
+	$(CC) -c -o $@ $(MOUSE_ALLEGRO_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\Keyboard_Allegro_orxKeyboard.o: ./plugins/Keyboard/Allegro/orxKeyboard.c
+	$(CC) -c -o $@ $(KEYBOARD_ALLEGRO_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\Joystick_NONE_orxJoystick.o: ./plugins/Joystick/NONE/orxJoystick.c
+	$(CC) -c -o $@ $(JOYSTICK_NONE_CFLAGS) $(CPPDEPS) $<
 
 .PHONY: all clean
 
