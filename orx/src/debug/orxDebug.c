@@ -82,7 +82,7 @@ orxSTATIC orxDEBUG_STATIC sstDebug;
 
  returns: orxCONST orxSTRING level string
  ***************************************************************************/
-orxINLINE orxCONST orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
+orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
   /* Depending on level */
   switch(_eLevel)
