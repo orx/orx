@@ -17,10 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "io/keyboard.h"
-
+#include "io/orxKeyboard.h"
 #include "plugin/orxPluginCore.h"
-
 
 /********************
  *  Plugin Related  *
@@ -28,14 +26,15 @@
 
 orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastKeyboardPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER] =
 {
-  {(orxPLUGIN_FUNCTION *) &keyboard_init,                orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_INIT},
-  {(orxPLUGIN_FUNCTION *) &keyboard_exit,                orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT},
-  {(orxPLUGIN_FUNCTION *) &keyboard_hit,                 orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_HIT},
-  {(orxPLUGIN_FUNCTION *) &keyboard_read,                orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ},
-  {(orxPLUGIN_FUNCTION *) &keyboard_keystate_get,        orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_GET_KEYSTATE},
-  {(orxPLUGIN_FUNCTION *) &keyboard_buffer_clear,        orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_CLEAR_BUFFER}
+  {(orxPLUGIN_FUNCTION *) &orxKeyboard_Init,        orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_INIT},
+  {(orxPLUGIN_FUNCTION *) &orxKeyboard_Exit,        orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT},
+  {(orxPLUGIN_FUNCTION *) &orxKeyboard_Hit,         orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_HIT},
+  {(orxPLUGIN_FUNCTION *) &orxKeyboard_Read,        orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ},
+  {(orxPLUGIN_FUNCTION *) &orxKeyboard_ClearBuffer, orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_CLEAR_BUFFER}
 };
 
+/** Init the keyboard core plugin
+ */
 orxVOID keyboard_plugin_init()
 {
   /* Plugin init */
@@ -44,16 +43,13 @@ orxVOID keyboard_plugin_init()
   return;
 }
 
-
-
 /********************
  *   Core Related   *
  ********************/
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(keyboard_init, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(keyboard_exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, orxVOID);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(keyboard_hit, orxS32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(keyboard_read, orxS32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(keyboard_keystate_get, orxS32, orxU8);
-orxPLUGIN_DEFINE_CORE_FUNCTION(keyboard_buffer_clear, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Read, orxS32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, orxVOID);

@@ -1,5 +1,5 @@
 /**
- * \file mouse.h
+ * \file orxMouse.h
  */
 
 /***************************************************************************
@@ -17,17 +17,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _MOUSE_H_
-#define _MOUSE_H_
+#ifndef _orxMOUSE_H_
+#define _orxMOUSE_H_
 
 #include "orxInclude.h"
 
+/** Init the mouse core plugin
+ */
+extern orxVOID   orxDLLAPI orxMouse_Plugin_Init();
 
-extern orxVOID     mouse_plugin_init();
+/** Init the mouse module
+ * @return Returns the status of the operation
+ */
+extern orxSTATUS orxDLLAPI (*orxMouse_Init)();
 
-extern orxU32 (*mouse_init)();
-extern orxVOID   (*mouse_exit)();
+/** Exit the mouse module
+ */
+extern orxVOID   orxDLLAPI (*orxMouse_Exit)();
 
-extern orxVOID   (*mouse_move_get)(orxS32 *_i_dx, orxS32 *_i_dy);
+/** Measures how far the mouse has moved since the last call to this function
+ * @param _ps32x (OUT)   X coordinates
+ * @param _ps32y (OUT)   Y coordinates
+ */
+extern orxVOID   orxDLLAPI (*orxMouse_GetMove)(orxS32 *_ps32x, orxS32 *_ps32y);
 
-#endif /* _MOUSE_H_ */
+#endif /* _orxMOUSE_H_ */

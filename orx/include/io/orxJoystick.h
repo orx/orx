@@ -1,5 +1,5 @@
 /**
- * \file joystick.h
+ * \file orxJoystick.h
  */
 
 /***************************************************************************
@@ -17,15 +17,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _JOYSTICK_H_
-#define _JOYSTICK_H_
+#ifndef _orxJOYSTICK_H_
+#define _orxJOYSTICK_H_
 
 #include "orxInclude.h"
 
+/** Init the joystick core plugin
+ */
+extern orxVOID   orxJoystick_Plugin_Init();
 
-extern orxVOID     joystick_plugin_init();
+/** Init joystick module
+ * @return Returns the status of the operation
+ */
+extern orxSTATUS orxDLLAPI (*orxJoystick_Init)();
 
-extern orxU32 (*joystick_init)();
-extern orxVOID   (*joystick_exit)();
+/** Exit joystick module
+ */
+extern orxVOID   orxDLLAPI (*orxJoystick_Exit)();
 
-#endif /* _JOYSTICK_H_ */
+#endif /* _orxJOYSTICK_H_ */

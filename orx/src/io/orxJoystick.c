@@ -1,5 +1,5 @@
 /**
- * \file keyboard.h
+ * \file orxJoystick.c
  */
 
 /***************************************************************************
@@ -17,19 +17,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _KEYBOARD_H_
-#define _KEYBOARD_H_
+#include "io/orxJoystick.h"
+#include "plugin/orxPluginCore.h"
 
-#include "orxInclude.h"
+/********************
+ *  Plugin Related  *
+ ********************/
 
+orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastJoystickPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER] =
+{
+  {(orxPLUGIN_FUNCTION *) &orxJoystick_Init, orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_INIT},
+  {(orxPLUGIN_FUNCTION *) &orxJoystick_Exit, orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_EXIT}
+};
 
-extern orxVOID     keyboard_plugin_init();
+orxVOID orxJoystick_Plugin_Init()
+{
+  /* Plugin init */
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_JOYSTICK, sastJoystickPluginFunctionInfo, sizeof(sastJoystickPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
-extern orxU32 (*keyboard_init)();
-extern orxVOID   (*keyboard_exit)();
-extern orxS32  (*keyboard_hit)();
-extern orxS32  (*keyboard_read)();
-extern orxS32  (*keyboard_keystate_get)(orxU8 _uc_key);
-extern orxVOID   (*keyboard_buffer_clear)();
+  return;
+}
 
-#endif /* _KEYBOARD_H_ */
+/********************
+ *   Core Related   *
+ ********************/
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);
