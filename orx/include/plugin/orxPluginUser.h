@@ -37,10 +37,10 @@
 
 
 /* Defines plugin registration info constants */
-#define orxPLUGIN_USER_KZ_FUNCTION_INIT       "orxPlugin_Init" /**< Plugin init function name */
+#define orxPLUGIN_KZ_INIT_FUNCTION_NAME         "orxPlugin_Init" /**< Plugin init function name */
 
-#define orxPLUGIN_KU32_NAME_SIZE              32
-#define orxPLUGIN_KU32_FUNCTION_ARG_SIZE      128
+#define orxPLUGIN_KU32_NAME_SIZE                32
+#define orxPLUGIN_KU32_FUNCTION_ARG_SIZE        128
 
 
 /*********************************************

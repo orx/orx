@@ -6,6 +6,7 @@
  * \todo
  * Has to :
  * - Add execute function for user register function + arg parser/checker
+ * - Add new string use for all string related operations, when systeme is done
  * - make a Complete Function Info Archiving (Global Info Structure (hash table?))
  */
 
@@ -85,7 +86,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_GetHandle(orxCONST orx
  * \param _hPluginHandle The plugin handle.
  * \return The plugin name / empty string if not found.
  */
-extern orxDLLAPI orxCONST orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle);
+extern orxDLLAPI orxSTRING orxFASTCALL          orxPlugin_GetName(orxHANDLE _hPluginHandle);
 
 
 #endif /* _orxPLUGIN_H_ */
