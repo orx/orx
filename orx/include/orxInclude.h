@@ -16,7 +16,7 @@
  * V Add CRC
  * - Add string handling (using CRC + hash)
  * V Add texture referencing with duplication check -> reference increase
- * - Remove ref point from texture to a higher graph object (no created yet)
+ * - Remove ref point from texture to a higher graph object (not created yet)
  * - Rewrite graph system using modulable architecture (2D data => sprite / 3D => mesh/skel...)
  * - Rewrite anim system using packed format (indexing + key) + data type separation at a lower level
  * - Add animation format, expendable for 3D (with anim_key/anim_channel structures)
@@ -30,14 +30,14 @@
  * - Modify timer plugin to make plugin side simpler
  * - Add timer IDs, make game/real (=>IDs) time accessors generic
  * - Animation shouldn't use directly textures but wrapping anim_atomic
- * - Simplify plugin declaration with macros/enums instead of flag IDs
+ * C Simplify plugin declaration with macros/enums instead of flag IDs
  * - Adds interactors
  * - Adds events
  * C Adds LUA integration
  * V Complete orxBANK implementation
  * C Complete orxHashMap module (refactor to orxHash and complete test module)
  * V Rewrite File and Package module to use plugins system
- * - Write plugins implementation for file and package management
+ * C Write plugins implementation for file and package management
  * V Complete test module and add a generic makefile to compile each test file as an automatically loaded dynamic library
  * C Write a module to manage string (overload string.h functionalities) + add other functionalities
  * - Add network :)
