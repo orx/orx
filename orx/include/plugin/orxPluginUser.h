@@ -91,7 +91,7 @@
 typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
 {
   orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address */
-  orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];     /**< Function Argument Types */
+  orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];  /**< Function Argument Types */
   orxCHAR zFunctionName[orxPLUGIN_KU32_NAME_SIZE];          /**< Function Name */
   orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID */
 
