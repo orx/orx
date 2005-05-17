@@ -24,6 +24,7 @@
  ***************************************************************************/
 
 #include "io/orxTextIO.h"
+#include "memory/orxMemory.h"
 #include "utils/orxString.h"
 
 #define orxTEXTIO_KU32_FLAG_NONE            0x00000000  /**< No flags have been set */
