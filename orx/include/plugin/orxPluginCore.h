@@ -60,10 +60,22 @@ extern orxVOID orxFASTCALL  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCore
 /** Default core plugin function.
  * Needs to be referenced by all core functions at module init.
  */
-extern orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line);
+extern orxVOID *orxDLLAPI orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line);
 
 
 /*** Plugin Core Function Macro Definition *** */
+#define orxPLUGIN_DECLARE_CORE_FUNCTION_0(FUNCTION_NAME, RETURN)                \
+  orxSTATIC orxVOID *_DefaultCoreFunction_##FUNCTION_NAME()                     \
+  {                                                                             \
+    return(orxPlugin_DefaultCoreFunction(#FUNCTION_NAME, __FILE__, __LINE__));  \
+  }                                                                             \
+                                                                                \
+  orxSTATIC RETURN (*_CoreFunctionPointer_##FUNCTION_NAME) () = (RETURN (*) ()) (&_DefaultCoreFunction_##FUNCTION_NAME);
+
+#define orxPLUGIN_RETURN_CORE_FUNCTION(FUNCTION_NAME)                           \
+  return(_CoreFunctionPointer_##FUNCTION_NAME());
+
+
 #define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)                  \
     orxSTATIC orxVOID *_DEFAULT_CORE_FUNCTION_##FUNCTION_NAME()                     \
     {                                                                               \
