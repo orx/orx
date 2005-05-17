@@ -31,7 +31,6 @@
 #include "orxInclude.h"
 
 #include <stdio.h>
-#include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -53,7 +52,7 @@ extern orxDLLAPI orxVOID                orxString_Exit();
  * @param _zMessage       (IN)  Message that will be displayed before read
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage);
+//extern orxDLLAPI orxSTATUS orxFASTCALL  orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage);
 
 /** Continues a CRC with a string one
  * @param _zString        (IN)  String used to continue the given CRC
@@ -113,59 +112,6 @@ orxSTATIC orxINLINE orxS32              orxString_NCompare(orxSTRING _zString1, 
 
   /* Done! */
   return strncmp(_zString1, _zString2, _u32NbChar);
-}
-
-/** Prints a formated string
- * @param _zDstString    (IN) Destination string
- * @param _zSrcString    (IN) Source formated string
- * @retrun The number of written characters
- */
-orxSTATIC orxINLINE orxS32              orxString_Printf(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
-{
-  va_list stArgs;
-  orxS32 s32Result;
-
-  /* Checks */
-  orxASSERT(_zDstString != orxNULL);
-  orxASSERT(_zSrcString != orxNULL);
-
-  /* Parse arguments, print and end it */
-  va_start(stArgs, _zSrcString);
-  s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
-  va_end(stArgs);
-
-  return s32Result;
-}
-
-/** Print a message on STDIN
- * @param _zMessage (IN) Message to print (with optional parameters. Same syntax as printf
- */
-orxSTATIC orxINLINE orxVOID             orxString_Print(orxSTRING _zMessage, ...)
-{
-  /* Declare argument lists */
-  va_list args;
-
-  /* Parse arguments, print and end it */
-  va_start(args, _zMessage);
-  vprintf(_zMessage, args);
-  va_end(args);
-}
-
-/** Print a message on STDIN and returns to line
- * @param _zMessage (IN) Message to print (with optional parameters. Same syntax as printf
- */
-orxSTATIC orxINLINE orxVOID             orxString_PrintLn(orxSTRING _zMessage, ...)
-{
-  /* Declare argument lists */
-  va_list args;
-  
-  /* Print message */
-  va_start(args, _zMessage);
-  vprintf(_zMessage, args);
-  va_end(args);
-
-  /* return to line */
-  printf("\n");
 }
 
 /** Returns the number of character in the string
