@@ -27,7 +27,7 @@
 
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
-#include "utils/orxString.h"
+#include "io/orxTextIO.h"
 
 #define orxBANK_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxBANK_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
@@ -569,51 +569,51 @@ orxVOID orxBank_DebugPrint(orxBANK *_pstBank)
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
 
-  orxString_PrintLn("\n\n\n********* Bank (%x) *********", _pstBank);
-  orxString_PrintLn("* u32NbCellPerSegments = %u", _pstBank->u32NbCellPerSegments);
-  orxString_PrintLn("* u32ElemSize = %u", _pstBank->u32ElemSize);
-  orxString_PrintLn("* u32Flags = %x", _pstBank->u32Flags);
-  orxString_PrintLn("* eMemType = %u", _pstBank->eMemType);
-  orxString_PrintLn("* u32SizeSegmentBitField = %u", _pstBank->u32SizeSegmentBitField);
+  orxTextIO_PrintLn("\n\n\n********* Bank (%x) *********", _pstBank);
+  orxTextIO_PrintLn("* u32NbCellPerSegments = %u", _pstBank->u32NbCellPerSegments);
+  orxTextIO_PrintLn("* u32ElemSize = %u", _pstBank->u32ElemSize);
+  orxTextIO_PrintLn("* u32Flags = %x", _pstBank->u32Flags);
+  orxTextIO_PrintLn("* eMemType = %u", _pstBank->eMemType);
+  orxTextIO_PrintLn("* u32SizeSegmentBitField = %u", _pstBank->u32SizeSegmentBitField);
 
-  orxString_PrintLn("\n* **** SEGMENTS ******");
+  orxTextIO_PrintLn("\n* **** SEGMENTS ******");
 
   pstSegment = _pstBank->pstFirstSegment;
 
   while (pstSegment != orxNULL)
   {
-    orxString_PrintLn("\n* ** Segment (%x) ***", pstSegment);
-    orxString_PrintLn("* u32NbFree = %u", pstSegment->u32NbFree);
-    orxString_PrintLn("* pstNext = %x", pstSegment->pstNext);
-    orxString_PrintLn("* pSegmentDatas = %x", pstSegment->pSegmentDatas);
+    orxTextIO_PrintLn("\n* ** Segment (%x) ***", pstSegment);
+    orxTextIO_PrintLn("* u32NbFree = %u", pstSegment->u32NbFree);
+    orxTextIO_PrintLn("* pstNext = %x", pstSegment->pstNext);
+    orxTextIO_PrintLn("* pSegmentDatas = %x", pstSegment->pSegmentDatas);
 
     for (u32Index1 = 0; u32Index1 < _pstBank->u32SizeSegmentBitField; u32Index1++)
     {
-      orxString_Print("Bits : %02d (%x) = ", u32Index1, pstSegment->pu32FreeElemBits[u32Index1]);
+      orxTextIO_Print("Bits : %02d (%x) = ", u32Index1, pstSegment->pu32FreeElemBits[u32Index1]);
       
       for (u32Index2 = 0; u32Index2 < 4; u32Index2++)
       {
-        orxString_Print("[");
+        orxTextIO_Print("[");
         for (u32Index3 = 0; u32Index3 < 8; u32Index3++)
         {
           if ((pstSegment->pu32FreeElemBits[u32Index1] & (orxU32)(1 << ((8 * u32Index2) + u32Index3)) ) == (orxU32)(1 << ((8 * u32Index2) + u32Index3)) )
           {
-            orxString_Print("1");
+            orxTextIO_Print("1");
           }
           else
           {
-            orxString_Print("0");
+            orxTextIO_Print("0");
           }
 
           if (u32Index3 == 3)
           {
-            orxString_Print(" ");
+            orxTextIO_Print(" ");
           }
         }
-        orxString_Print("]");
+        orxTextIO_Print("]");
       }
       
-      orxString_PrintLn("");
+      orxTextIO_PrintLn("");
     }
     
     /* Go to next segment */

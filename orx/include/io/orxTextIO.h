@@ -98,7 +98,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadFloatInRange(orxS32 *_pfOut
  * @param _zSrcString     (IN)  Source formated string
  * @retrun The number of written characters
  */
-orxSTATIC orxS32 orxINLINE orxTextIO_Printf(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
+orxSTATIC orxINLINE orxS32 orxTextIO_Printf(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
 {
   va_list stArgs;
   orxS32 s32Result;
@@ -118,7 +118,7 @@ orxSTATIC orxS32 orxINLINE orxTextIO_Printf(orxSTRING _zDstString, orxSTRING _zS
 /** Print a message on STDIN
  * @param _zMessage       (IN)  Message to print (with optional parameters. Same syntax as printf
  */
-orxSTATIC orxVOID orxINLINE orxTextIO_Print(orxSTRING _zMessage, ...)
+orxSTATIC orxINLINE orxVOID orxTextIO_Print(orxSTRING _zMessage, ...)
 {
   /* Declare argument lists */
   va_list args;
@@ -132,7 +132,7 @@ orxSTATIC orxVOID orxINLINE orxTextIO_Print(orxSTRING _zMessage, ...)
 /** Print a message on STDIN and returns to line
  * @param _zMessage       (IN)  Message to print (with optional parameters. Same syntax as printf
  */
-orxSTATIC orxVOID orxINLINE orxTextIO_PrintLn(orxSTRING _zMessage, ...)
+orxSTATIC orxINLINE orxVOID orxTextIO_PrintLn(orxSTRING _zMessage, ...)
 {
   /* Declare argument lists */
   va_list args;

@@ -71,7 +71,7 @@ orxSTATUS orxTextIO_Init()
 orxVOID orxTextIO_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstTextInput.u32Flags & orxTEXTIO_KU32_FLAG_READY) == orxTEXTIO_KU32_FLAG_READY);
+  orxASSERT((sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY) == orxTEXTIO_KU32_FLAG_READY);
   
   /* Module becomes not ready */
   sstTextIO.u32Flags &= ~orxTEXTIO_KU32_FLAG_READY;

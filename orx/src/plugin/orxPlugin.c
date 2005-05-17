@@ -20,6 +20,7 @@
 #include "plugin/orxPlugin.h"
 
 #include "debug/orxDebug.h"
+#include "io/orxTextIO.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
 #include "plugin/orxPluginUser.h"
@@ -725,7 +726,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName
   orxASSERT(_zPluginName != orxSTRING_Empty);
 
   /* Gets complete name */
-  orxString_Printf(zFileName, "%s.%s", _zPluginFileName, szPluginLibraryExt);
+  orxTextIO_Printf(zFileName, "%s.%s", _zPluginFileName, szPluginLibraryExt);
 
   /* Does it */
   return(orxPlugin_Load(zFileName, _zPluginName));

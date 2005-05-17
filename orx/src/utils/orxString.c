@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "io/orxTextIO.h"
 #include "memory/orxMemory.h"
 
 
@@ -143,7 +144,7 @@ orxSTATUS orxFASTCALL orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32
   orxMemory_Set(_zOutputBuffer, 0, _u32NbChar * sizeof(orxCHAR));
 
   /* Print message (if not NULL)*/
-  orxString_Print(_zMessage);
+  orxTextIO_Print(_zMessage);
   
   /* Read message */
   _zReturnString = fgets(_zOutputBuffer, _u32NbChar, stdin);
