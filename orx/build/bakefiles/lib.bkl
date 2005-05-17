@@ -37,7 +37,7 @@
             src/io/orxKeyboard.c
             src/io/orxMouse.c
             src/io/orxPackage.c
-            src/io/orxTextInput.c
+            src/io/orxTextIO.c
         </sources>
         <sources>
             src/math/orxVec.c
@@ -132,7 +132,7 @@
             io/orxKeyboard.h
             io/orxMouse.h
             io/orxPackage.h
-            io/orxTextInput.h
+            io/orxTextIO.h
             math/orxMath.h
             math/orxVec.h
             memory/orxBank.h
