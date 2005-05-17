@@ -64,6 +64,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxKeyboard.o \
 	.\build\$(BUILD)\orxDLL_orxMouse.o \
 	.\build\$(BUILD)\orxDLL_orxPackage.o \
+	.\build\$(BUILD)\orxDLL_orxTextInput.o \
 	.\build\$(BUILD)\orxDLL_orxVec.o \
 	.\build\$(BUILD)\orxDLL_orxBank.o \
 	.\build\$(BUILD)\orxDLL_orxMemory.o \
@@ -104,6 +105,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxKeyboard.o \
 	.\build\$(BUILD)\orxLIB_orxMouse.o \
 	.\build\$(BUILD)\orxLIB_orxPackage.o \
+	.\build\$(BUILD)\orxLIB_orxTextInput.o \
 	.\build\$(BUILD)\orxLIB_orxVec.o \
 	.\build\$(BUILD)\orxLIB_orxBank.o \
 	.\build\$(BUILD)\orxLIB_orxMemory.o \
@@ -334,6 +336,9 @@ bin\plugins_core\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_D
 .\build\$(BUILD)\orxDLL_orxPackage.o: ./src/io/orxPackage.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+.\build\$(BUILD)\orxDLL_orxTextInput.o: ./src/io/orxTextInput.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 .\build\$(BUILD)\orxDLL_orxVec.o: ./src/math/orxVec.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -440,6 +445,9 @@ bin\plugins_core\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_D
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxPackage.o: ./src/io/orxPackage.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\orxLIB_orxTextInput.o: ./src/io/orxTextInput.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxVec.o: ./src/math/orxVec.c
