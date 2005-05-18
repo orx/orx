@@ -21,18 +21,30 @@
 #define _orxJOYSTICK_H_
 
 #include "orxInclude.h"
+#include "plugin/orxPluginCore.h"
 
 /** Init the joystick core plugin
  */
 extern orxVOID   orxJoystick_Plugin_Init();
 
-/** Init joystick module
- * @return Returns the status of the operation
+/** Inits the joystick module.
+ * @return The status of the operation.
  */
-extern orxSTATUS orxDLLAPI (*orxJoystick_Init)();
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Init, orxSTATUS);
 
-/** Exit joystick module
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxJoystick_Init()
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxJoystick_Init)();
+}
+
+/** Exits from the joystick module.
+ * @return The status of the operation.
  */
-extern orxVOID   orxDLLAPI (*orxJoystick_Exit)();
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);
+
+orxSTATIC orxINLINE orxVOID orxDLLAPI orxJoystick_Exit()
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxJoystick_Exit)();
+}
 
 #endif /* _orxJOYSTICK_H_ */

@@ -24,32 +24,24 @@
  *  Plugin Related  *
  ********************/
 
-orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastKeyboardPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER] =
-{
-  {(orxPLUGIN_FUNCTION *) &orxKeyboard_Init,        orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_INIT},
-  {(orxPLUGIN_FUNCTION *) &orxKeyboard_Exit,        orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT},
-  {(orxPLUGIN_FUNCTION *) &orxKeyboard_Hit,         orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_HIT},
-  {(orxPLUGIN_FUNCTION *) &orxKeyboard_Read,        orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ},
-  {(orxPLUGIN_FUNCTION *) &orxKeyboard_ClearBuffer, orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_CLEAR_BUFFER}
-};
+/* *** Core function info array *** */
+orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(KEYBOARD)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, INIT, orxKeyboard_Init)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, EXIT, orxKeyboard_Exit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, HIT, orxKeyboard_Hit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ, orxKeyboard_Read)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, CLEAR_BUFFER, orxKeyboard_ClearBuffer)
+
+orxPLUGIN_END_CORE_FUNCTION_ARRAY()
+
 
 /** Init the keyboard core plugin
  */
 orxVOID keyboard_plugin_init()
 {
   /* Plugin init */
-  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_KEYBOARD, sastKeyboardPluginFunctionInfo, sizeof(sastKeyboardPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
+  orxPLUGIN_REGISTER_CORE_INFO(KEYBOARD);
 
   return;
 }
-
-/********************
- *   Core Related   *
- ********************/
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, orxVOID);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Read, orxS32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, orxVOID);

@@ -64,16 +64,76 @@ extern orxVOID *orxDLLAPI orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 
 
 /*** Plugin Core Function Macro Definition *** */
-#define orxPLUGIN_DECLARE_CORE_FUNCTION_0(FUNCTION_NAME, RETURN)                \
+
+/* *** Core function default body *** */
+#define orxPLUGIN_BODY_CORE_FUNCTION(FUNCTION_NAME) _CoreFunctionPointer_##FUNCTION_NAME
+
+/* *** Default core function declaration *** */
+#define orxPLUGIN_DEFAULT_CORE_FUNCTION(FUNCTION_NAME)                          \
   orxSTATIC orxVOID *_DefaultCoreFunction_##FUNCTION_NAME()                     \
   {                                                                             \
     return(orxPlugin_DefaultCoreFunction(#FUNCTION_NAME, __FILE__, __LINE__));  \
   }                                                                             \
-                                                                                \
-  orxSTATIC RETURN (*_CoreFunctionPointer_##FUNCTION_NAME) () = (RETURN (*) ()) (&_DefaultCoreFunction_##FUNCTION_NAME);
 
-#define orxPLUGIN_RETURN_CORE_FUNCTION(FUNCTION_NAME)                           \
-  return(_CoreFunctionPointer_##FUNCTION_NAME());
+/* *** 0 Arg declaration macro *** */
+#define orxPLUGIN_DECLARE_CORE_FUNCTION_0(FUNCTION_NAME, RETURN)                \
+  orxPLUGIN_DEFAULT_CORE_FUNCTION(FUNCTION_NAME)                                \
+                                                                                \
+  orxSTATIC RETURN (*orxPLUGIN_BODY_CORE_FUNCTION(FUNCTION_NAME))() = (RETURN (*)()) (&_DefaultCoreFunction_##FUNCTION_NAME);
+
+/* *** 1 Arg declaration macro *** */
+#define orxPLUGIN_DECLARE_CORE_FUNCTION_1(FUNCTION_NAME, RETURN, ARG1)          \
+  orxPLUGIN_DEFAULT_CORE_FUNCTION(FUNCTION_NAME)                                \
+                                                                                \
+  orxSTATIC RETURN (*orxPLUGIN_BODY_CORE_FUNCTION(FUNCTION_NAME))(ARG1 _A1) = (RETURN (*)(ARG1)) (&_DefaultCoreFunction_##FUNCTION_NAME);
+
+/* *** 2 Args declaration macro *** */
+#define orxPLUGIN_DECLARE_CORE_FUNCTION_2(FUNCTION_NAME, RETURN, ARG1, ARG2)    \
+  orxPLUGIN_DEFAULT_CORE_FUNCTION(FUNCTION_NAME)                                \
+                                                                                \
+  orxSTATIC RETURN (*orxPLUGIN_BODY_CORE_FUNCTION(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2) = (RETURN (*)(ARG1, ARG2)) (&_DefaultCoreFunction_##FUNCTION_NAME);
+
+/* *** 3 Args declaration macro *** */
+#define orxPLUGIN_DECLARE_CORE_FUNCTION_3(FUNCTION_NAME, RETURN, ARG1, ARG2, ARG3) \
+  orxPLUGIN_DEFAULT_CORE_FUNCTION(FUNCTION_NAME)                                \
+                                                                                \
+  orxSTATIC RETURN (*orxPLUGIN_BODY_CORE_FUNCTION(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3) = (RETURN (*)(ARG1, ARG2, ARG3)) (&_DefaultCoreFunction_##FUNCTION_NAME);
+
+/* *** 4 Args declaration macro *** */
+#define orxPLUGIN_DECLARE_CORE_FUNCTION_4(FUNCTION_NAME, RETURN, ARG1, ARG2, ARG3, ARG4) \
+  orxPLUGIN_DEFAULT_CORE_FUNCTION(FUNCTION_NAME)                                \
+                                                                                \
+  orxSTATIC RETURN (*orxPLUGIN_BODY_CORE_FUNCTION(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3, ARG4 _A4) = (RETURN (*)(ARG1, ARG2, ARG3, ARG4)) (&_DefaultCoreFunction_##FUNCTION_NAME);
+
+/* *** 5 Args declaration macro *** */
+#define orxPLUGIN_DECLARE_CORE_FUNCTION_5(FUNCTION_NAME, RETURN, ARG1, ARG2, ARG3, ARG4, ARG5) \
+  orxPLUGIN_DEFAULT_CORE_FUNCTION(FUNCTION_NAME)                                \
+                                                                                \
+  orxSTATIC RETURN (*orxPLUGIN_BODY_CORE_FUNCTION(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3, ARG4 _A4, ARG5 _A5) = (RETURN (*)(ARG1, ARG2, ARG3, ARG4, ARG5)) (&_DefaultCoreFunction_##FUNCTION_NAME);
+
+
+/* *** Core info array begin macro *** */
+#define orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX)                      \
+  orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastPluginFunctionInfo_##PLUGIN_SUFFIX[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER] = \
+  {
+
+
+/* *** Core info array add macro *** */
+#define orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX, FUNCTION_SUFFIX, FUNCTION_NAME) \
+  {(orxPLUGIN_FUNCTION *) &_CoreFunctionPointer_##FUNCTION_NAME, orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##FUNCTION_SUFFIX},
+
+
+/* *** Core info array end macro *** */
+#define orxPLUGIN_END_CORE_FUNCTION_ARRAY()                                     \
+  };
+
+
+/* *** Core info register macro *** */
+#define orxPLUGIN_REGISTER_CORE_INFO(PLUGIN_SUFFIX)                             \
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(orxPLUGIN_CORE_FUNCTION));
+
+
+
 
 
 #define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)                  \

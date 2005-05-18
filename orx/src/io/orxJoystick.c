@@ -20,27 +20,24 @@
 #include "io/orxJoystick.h"
 #include "plugin/orxPluginCore.h"
 
+
 /********************
  *  Plugin Related  *
  ********************/
 
-orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastJoystickPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER] =
-{
-  {(orxPLUGIN_FUNCTION *) &orxJoystick_Init, orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_INIT},
-  {(orxPLUGIN_FUNCTION *) &orxJoystick_Exit, orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_EXIT}
-};
+/* *** Core function info array *** */
+orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(JOYSTICK)
 
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, INIT, orxJoystick_Init)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, EXIT, orxJoystick_Exit)
+
+orxPLUGIN_END_CORE_FUNCTION_ARRAY()
+
+/* *** Plugin init function *** */
 orxVOID orxJoystick_Plugin_Init()
 {
   /* Plugin init */
-  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_JOYSTICK, sastJoystickPluginFunctionInfo, sizeof(sastJoystickPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
+  orxPLUGIN_REGISTER_CORE_INFO(JOYSTICK);
 
   return;
 }
-
-/********************
- *   Core Related   *
- ********************/
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);
