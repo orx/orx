@@ -24,6 +24,11 @@
 #include "plugin/orxPluginCore.h"
 
 
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 *);
+
+
 /** Init the mouse core plugin
  */
 extern orxVOID   orxDLLAPI orxMouse_Plugin_Init();
@@ -32,8 +37,6 @@ extern orxVOID   orxDLLAPI orxMouse_Plugin_Init();
 /** Init the mouse module
  * @return Returns the status of the operation
  */
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Init, orxSTATUS);
-
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxMouse_Init()
 {
   return orxPLUGIN_BODY_CORE_FUNCTION(orxMouse_Init)();
@@ -41,8 +44,6 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxMouse_Init()
 
 /** Exit the mouse module
  */
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Exit, orxVOID);
-
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxMouse_Exit()
 {
   orxPLUGIN_BODY_CORE_FUNCTION(orxMouse_Exit)();
@@ -52,8 +53,6 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxMouse_Exit()
  * @param _ps32x (OUT)   X coordinates
  * @param _ps32y (OUT)   Y coordinates
  */
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 *);
-
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxMouse_GetMove(orxS32 *_s32X, orxS32 *_s32Y)
 {
   return orxPLUGIN_BODY_CORE_FUNCTION(orxMouse_GetMove)(_s32X, _s32Y);

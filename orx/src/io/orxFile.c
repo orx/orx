@@ -26,6 +26,7 @@
 
 #include "io/orxFile.h"
 #include "debug/orxDebug.h"
+#include "plugin/orxPluginCore.h"
 
 /********************
  *  Plugin Related  *
@@ -36,19 +37,18 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(FILE)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, INIT, orxFile_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, EXIT, orxFile_Exit)
-
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_FIRST, orxFile_FindFirst)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_NEXT, orxFile_FindNext)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_CLOSE, orxFile_FindClose)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, INFO, orxFile_Infos)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, INFO, orxFile_Info)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, COPY, orxFile_Copy)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, RENAME, orxFile_Rename)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE, orxFile_Delete)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, CREATE_DIR, orxFile_DirCreate)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE_DIR, orxFile_DirDelete)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, CREATE_DIR, orxFile_CreateDir)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE_DIR, orxFile_DeleteDir)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY()
-
+ 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -69,7 +69,6 @@ struct __orxFILE_t
  */
 orxVOID orxFile_Plugin_Init()
 {
-  /* Plugin init */
   orxPLUGIN_REGISTER_CORE_INFO(FILE);
 }
 

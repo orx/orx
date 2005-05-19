@@ -38,7 +38,7 @@
 /** Store datas about the current file. */
 typedef struct __orxPACKAGE_INFOS_t
 {
-  orxFILE_INFOS stFileInfos;    /**< File's information */
+  orxFILE_INFO stFileInfos;    /**< File's information */
   orxU32 u32ExtraPackageFlags;  /**< Extra informations specific to package (location) */
   orxHANDLE hInternal;          /**< Internal use, do not modify */
 } orxPACKAGE_INFOS;

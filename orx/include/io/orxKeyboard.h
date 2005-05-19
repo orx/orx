@@ -24,6 +24,13 @@
 #include "plugin/orxPluginCore.h"
 
 
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Hit, orxBOOL);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Read, orxS32);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_ClearBuffer, orxVOID);
+
+
 /** Init the keyboard core plugin
  */
 extern orxVOID orxDLLAPI orxKeyboard_Plugin_Init();
@@ -31,8 +38,6 @@ extern orxVOID orxDLLAPI orxKeyboard_Plugin_Init();
 
 /** Init the keyboard module
  */
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Init, orxSTATUS);
-
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxKeyboard_Init()
 {
   return orxPLUGIN_BODY_CORE_FUNCTION(orxKeyboard_Init)();
@@ -40,8 +45,6 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxKeyboard_Init()
 
 /** Exit the keyboard module
  */
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Exit, orxVOID);
-
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxKeyboard_Exit()
 {
   orxPLUGIN_BODY_CORE_FUNCTION(orxKeyboard_Exit)();
@@ -50,8 +53,6 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxKeyboard_Exit()
 /** Returns orxTRUE if there are keypresses waiting in the input buffer.
  * @return orxTRUE if keys have been pressed, else orxFALSE
  */
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Hit, orxBOOL);
-
 orxSTATIC orxINLINE orxBOOL orxDLLAPI orxKeyboard_Hit()
 {
   return orxPLUGIN_BODY_CORE_FUNCTION(orxKeyboard_Hit)();
@@ -63,8 +64,6 @@ orxSTATIC orxINLINE orxBOOL orxDLLAPI orxKeyboard_Hit()
  * and the high byte the scancode.
  * @return Ascii and scancode value
  */
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Read, orxS32);
-
 orxSTATIC orxINLINE orxS32 orxDLLAPI orxKeyboard_Read()
 {
   return orxPLUGIN_BODY_CORE_FUNCTION(orxKeyboard_Read)();
@@ -72,8 +71,6 @@ orxSTATIC orxINLINE orxS32 orxDLLAPI orxKeyboard_Read()
 
 /**  Empties the keyboard buffer.
  */
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_ClearBuffer, orxVOID);
-
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxKeyboard_ClearBuffer()
 {
   orxPLUGIN_BODY_CORE_FUNCTION(orxKeyboard_ClearBuffer)();
