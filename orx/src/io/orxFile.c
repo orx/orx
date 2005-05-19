@@ -26,41 +26,28 @@
 
 #include "io/orxFile.h"
 #include "debug/orxDebug.h"
-#include "plugin/orxPluginCore.h"
 
 /********************
  *  Plugin Related  *
  ********************/
-orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastFilePluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_FILE_NUMBER] =
-{
-  {(orxPLUGIN_FUNCTION *) &orxFile_Init,        orxPLUGIN_FUNCTION_BASE_ID_FILE_INIT},
-  {(orxPLUGIN_FUNCTION *) &orxFile_Exit,        orxPLUGIN_FUNCTION_BASE_ID_FILE_EXIT},
-  {(orxPLUGIN_FUNCTION *) &orxFile_FindFirst,   orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_FIRST},
-  {(orxPLUGIN_FUNCTION *) &orxFile_FindNext,    orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_NEXT},
-  {(orxPLUGIN_FUNCTION *) &orxFile_FindClose,   orxPLUGIN_FUNCTION_BASE_ID_FILE_FIND_CLOSE},
-  {(orxPLUGIN_FUNCTION *) &orxFile_Infos,       orxPLUGIN_FUNCTION_BASE_ID_FILE_INFO},
-  {(orxPLUGIN_FUNCTION *) &orxFile_Copy,        orxPLUGIN_FUNCTION_BASE_ID_FILE_COPY},
-  {(orxPLUGIN_FUNCTION *) &orxFile_Rename,      orxPLUGIN_FUNCTION_BASE_ID_FILE_RENAME},
-  {(orxPLUGIN_FUNCTION *) &orxFile_Delete,      orxPLUGIN_FUNCTION_BASE_ID_FILE_DELETE},
-  {(orxPLUGIN_FUNCTION *) &orxFile_DirCreate,   orxPLUGIN_FUNCTION_BASE_ID_FILE_CREATE_DIR},
-  {(orxPLUGIN_FUNCTION *) &orxFile_DirDelete,   orxPLUGIN_FUNCTION_BASE_ID_FILE_DELETE_DIR}
-};
+ 
+/* *** Core function info array *** */
+orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(FILE)
 
-/********************
- *   Core Related   *
- ********************/
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Exit, orxVOID);
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, INIT, orxFile_Init)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, EXIT, orxFile_Exit)
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_FindFirst, orxBOOL, orxSTRING, orxFILE_INFOS*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_FindNext, orxBOOL, orxFILE_INFOS*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_FindClose, orxVOID, orxFILE_INFOS*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Infos, orxSTATUS, orxSTRING, orxFILE_INFOS*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Copy, orxSTATUS, orxSTRING, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Rename, orxSTATUS, orxSTRING, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Delete, orxSTATUS, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_DirCreate, orxSTATUS, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_DirDelete, orxSTATUS, orxSTRING);
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_FIRST, orxFile_FindFirst)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_NEXT, orxFile_FindNext)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_CLOSE, orxFile_FindClose)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, INFO, orxFile_Infos)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, COPY, orxFile_Copy)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, RENAME, orxFile_Rename)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE, orxFile_Delete)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, CREATE_DIR, orxFile_DirCreate)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE_DIR, orxFile_DirDelete)
+
+orxPLUGIN_END_CORE_FUNCTION_ARRAY()
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -82,7 +69,8 @@ struct __orxFILE_t
  */
 orxVOID orxFile_Plugin_Init()
 {
-  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_FILE, sastFilePluginFunctionInfo, sizeof(sastFilePluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));  
+  /* Plugin init */
+  orxPLUGIN_REGISTER_CORE_INFO(FILE);
 }
 
 /** Delete recursively a direcory and all its subfolders.

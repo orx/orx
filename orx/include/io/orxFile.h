@@ -28,6 +28,7 @@
 #define _orxFILE_H_
  
 #include "orxInclude.h"
+#include "plugin/orxPluginCore.h"
 
 #define orxFILE_KU32_FLAGS_INFOS_NORMAL 0x00000001 /**< normal file */
 #define orxFILE_KU32_FLAGS_INFOS_RDONLY 0x00000002 /**< read-only file */
@@ -106,79 +107,114 @@ extern orxDLLAPI orxSTATUS orxFile_Close(orxFILE *_pstFile);
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxFile_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxFile_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxFile_FindFirst, orxBOOL, orxCONST orxSTRING, orxFILE_INFOS *);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxFile_FindNext, orxBOOL, orxFILE_INFOS *);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxFile_FindClose, orxVOID, orxFILE_INFOS *);
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxFile_Infos, orxSTATUS, orxCONST orxSTRING, orxFILE_INFOS *);
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxFile_Copy, orxSTATUS, orxCONST orxSTRING, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxFile_Rename, orxSTATUS, orxCONST orxSTRING, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxFile_Delete, orxSTATUS, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxFile_DirCreate, orxSTATUS, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxFile_DirDelete, orxSTATUS, orxCONST orxSTRING);
 
 /** Initialize the File Module
  */
-extern orxDLLAPI orxSTATUS (*orxFile_Init)();
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxFile_Init()
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_Init)();
+}
 
 /** Uninitialize the File Module
  */
-extern orxDLLAPI orxVOID (*orxFile_Exit)();
+orxSTATIC orxINLINE orxVOID orxDLLAPI orxFile_Exit()
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxFile_Exit)();
+}
 
 /** Start a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
  * @param _zSearchPattern (IN)     Pattern to find
  * @param _pstFileInfos   (OUT)    Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
-extern orxDLLAPI orxBOOL (*orxFile_FindFirst)(orxSTRING _zSearchPattern, orxFILE_INFOS *_pstFileInfos);
+orxSTATIC orxINLINE orxBOOL orxDLLAPI orxFile_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE_INFOS *_pstFileInfos)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_FindFirst)(_zSearchPattern, _pstFileInfos);
+}
 
 /** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst
  * @param _pstFileInfos   (IN/OUT) Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
-extern orxDLLAPI orxBOOL (*orxFile_FindNext)(orxFILE_INFOS *_pstFileInfos);
+orxSTATIC orxINLINE orxBOOL orxDLLAPI orxFile_FindNext(orxFILE_INFOS *_pstFileInfos)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_FindNext)(_pstFileInfos);
+}
 
 /** Close a search (free the memory allocated for this search).
  * @param _pstFileInfos   (IN)     Informations returned during search
  */
-extern orxDLLAPI orxVOID (*orxFile_FindClose)(orxFILE_INFOS *_pstFileInfos);
+orxSTATIC orxINLINE orxVOID orxDLLAPI orxFile_FindClose(orxFILE_INFOS *_pstFileInfos)
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxFile_FindClose)(_pstFileInfos);
+}
 
 /** Retrieves informations about a file
  * @param _zFileName      (IN)      Files used to get informations
  * @param _pstFileInfos   (OUT)     Returned file's informations
  * @return Returns the status of the operation
  */
-extern orxDLLAPI orxSTATUS (*orxFile_Infos)(orxSTRING _zFileName, orxFILE_INFOS *_pstFileInfos);
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxFile_Infos(orxCONST orxSTRING _zFileName, orxFILE_INFOS *_pstFileInfos)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_Infos)(_zFileName, _pstFileInfos);
+}
 
 /** Copy a file.
  * @param _zSource        (IN)     Source file's name
  * @param _zDest          (IN)     Destination file's name
  * @return The status of the operation
  */
-extern orxDLLAPI orxSTATUS (*orxFile_Copy)(orxSTRING _zSource, orxSTRING _zDest);
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxFile_Copy(orxCONST orxSTRING _zSource, orxCONST orxSTRING _zDest)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_Copy)(_zSource, _zDest);
+}
 
 /** Renames a file.
  * @param _zSource        (IN)     Source file's name
  * @param _zDest          (IN)     Destination file's name
  * @return The status of the operation
  */
-extern orxDLLAPI orxSTATUS (*orxFile_Rename)(orxSTRING _zSource, orxSTRING _zDest);
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxFile_Rename(orxCONST orxSTRING _zSource, orxCONST orxSTRING _zDest)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_Rename)(_zSource, _zDest);
+}
 
 /** Deletes a file.
  * @param _zFileName      (IN)     File's name to delete
  * @return The status of the operation
  */
-extern orxDLLAPI orxSTATUS (*orxFile_Delete)(orxSTRING _zFileName);
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxFile_Delete(orxCONST orxSTRING _zFileName)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_Delete)(_zFileName);
+}
 
 /** Creates a directory
  * @param _zDirName       (IN)     New directory's name
  * @return The status of the operation
  */
-extern orxDLLAPI orxSTATUS (*orxFile_DirCreate)(orxSTRING _zDirName);
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxFile_DirCreate(orxCONST orxSTRING _zDirName)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_DirCreate)(_zDirName);
+}
 
 /** Remove an empty directory
  * @param _zDirName       (IN)     Directory's name to delete
  * @return The status of the operation
  */
-extern orxDLLAPI orxSTATUS (*orxFile_DirDelete)(orxSTRING _zDirName);
-
-
-/*******************************************************************************
- * DEBUG FUNCTION
- ******************************************************************************/
-
-/** Debug function that print the list of all started search with extra informations.
- */
-extern orxDLLAPI orxVOID orxFile_DebugPrint();
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxFile_DirDelete(orxCONST orxSTRING _zDirName)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxFile_DirDelete)(_zDirName);
+}
 
 #endif /* _orxFILE_H_ */
