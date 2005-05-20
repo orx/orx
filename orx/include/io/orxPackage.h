@@ -56,14 +56,33 @@ extern orxDLLAPI orxVOID orxPackage_Plugin_Init();
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxPackage_Init,      orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxPackage_Exit,      orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxPackage_Close,     orxSTATUS,    orxPACKAGE *);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxPackage_FindNext,  orxBOOL,      orxPACKAGE_INFOS *);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxPackage_FindClose, orxVOID,      orxPACKAGE_INFOS *);
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxPackage_TestFlags, orxBOOL,      orxPACKAGE *,       orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxPackage_Commit,    orxSTATUS,    orxPACKAGE *,       orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxPackage_Extract,   orxSTATUS,    orxPACKAGE *,       orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxPackage_Open,      orxPACKAGE *, orxCONST orxSTRING, orxCONST orxSTRING,   orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxPackage_SetFlags,  orxVOID,      orxPACKAGE *,       orxU32,               orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxPackage_FindFirst, orxBOOL,      orxPACKAGE *,       orxCONST orxSTRING,   orxPACKAGE_INFOS *);
+orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxPackage_Read,      orxU32,       orxVOID *,          orxU32,               orxPACKAGE *,      orxCONST orxSTRING);
 
 /** Initialize the Package Module
+ * @return Returns the status of the initialization
  */
-extern orxDLLAPI orxSTATUS (*orxPackage_Init)();
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxPackage_Init()
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Init)();
+}
 
 /** Uninitialize the Package Module
  */
-extern orxDLLAPI orxVOID (*orxPackage_Exit)();
+orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_Exit()
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Exit)();
+}
 
 /** Open a Package
  * @param _zDirPath         (IN)     Directory path where is stored the package to open
@@ -71,12 +90,18 @@ extern orxDLLAPI orxVOID (*orxPackage_Exit)();
  * @param _u32OpenFlags     (IN)     Open flags (read/write, intern/extern, ...). The package will be created if it doesn't exists and is in write mode
  * @return a Pointer on a package, or orxNULL if an error has occured.
  */
-extern orxDLLAPI orxPACKAGE* (*orxPackage_Open)(orxSTRING _zDirPath, orxSTRING _zPackageName, orxU32 _u32OpenFlags);
+orxSTATIC orxINLINE orxPACKAGE* orxDLLAPI orxPackage_Open(orxCONST orxSTRING _zDirPath, orxCONST orxSTRING _zPackageName, orxU32 _u32OpenFlags)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Open)(_zDirPath, _zPackageName, _u32OpenFlags);
+}
 
 /** Close a package
  * @param _zPackage         (IN)     Package to close
  */
-extern orxDLLAPI orxVOID (*orxPackage_Close)(orxPACKAGE *_pstPackage);
+orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_Close(orxPACKAGE *_pstPackage)
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Close)(_pstPackage);
+}
 
 
 /** Set package flags
@@ -84,28 +109,40 @@ extern orxDLLAPI orxVOID (*orxPackage_Close)(orxPACKAGE *_pstPackage);
  * @param _u32FlagsToRemove (IN)     List of flags to remove
  * @param _u32FlagsToAdd    (IN)     List of flags to add
  */
-extern orxDLLAPI orxVOID (*orxPackage_SetFlags)(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd);
+orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_SetFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_SetFlags)(_pstPackage, _u32FlagsToRemove, _u32FlagsToAdd);
+}
 
 /** Test package flags
  * @param _pstPackage       (IN)     Package to use
  * @param _u32FlagsToTest   (IN)     List of flags to test
  * @return orxTRUE if flags are presents, else orxFALSE
  */
-extern orxDLLAPI orxBOOL (*orxPackage_TestFlags)(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToTest);
+orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_TestFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToTest)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_TestFlags)(_pstPackage, _u32FlagsToTest);
+}
 
 /** Commit a file in the package
  * @param _pstPackage       (IN)     Package to use
  * @param _zFileName        (IN)     File to commit (a pattern can be used (e.g : *.txt))
  * @return the status of the operation
  */
-extern orxDLLAPI orxSTATUS (*orxPackage_Commit)(orxPACKAGE *_pstPackage, orxSTRING _zFileName);
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxPackage_Commit(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Commit)(_pstPackage, _zFileName);
+}
 
 /** Extract a file from a package
  * @param _pstPackage       (IN)     Package to use
  * @param _zFileName        (IN)     File to extract (a pattern can be used (e.g : *.png))
  * @return the status of the operation
  */
-extern orxDLLAPI orxSTATUS (*orxPackage_Extract)(orxPACKAGE *_pstPackage, orxSTRING _zFileName);
+orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxPackage_Extract(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Extract)(_pstPackage, _zFileName);
+}
 
 /** Start a new search. Find the first file that will match to the given pattern in the package
  * @param _pstPackage       (IN)     Package to use. Can be orxNULL (will search in all opened package)
@@ -113,18 +150,27 @@ extern orxDLLAPI orxSTATUS (*orxPackage_Extract)(orxPACKAGE *_pstPackage, orxSTR
  * @param _pstFileInfos     (OUT)    Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
-extern orxDLLAPI orxBOOL (*orxPackage_FindFirst)(orxPACKAGE *_pstPackage, orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos);
+orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_FindFirst(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_FindFirst)(_pstPackage, _zSearchPattern, _pstFileInfos);
+}
 
 /** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst
  * @param _pstFileInfos     (IN/OUT) Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
-extern orxDLLAPI orxBOOL (*orxPackage_FindNext)(orxPACKAGE_INFOS *_pstFileInfos);
+orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_FindNext(orxPACKAGE_INFOS *_pstFileInfos)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_FindNext)(_pstFileInfos);
+}
 
 /** Close a search (free the memory allocated for this search).
  * @param _pstFileInfos     (IN)     Informations returned during search
  */
-extern orxDLLAPI orxVOID (*orxPackage_FindClose)(orxPACKAGE_INFOS *_pstFileInfos);
+orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos)
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_FindClose)(_pstFileInfos);
+}
 
 /** Read data from a package and store it in memory
  * @param _pDataToWrite     (OUT)    Pointer where will be stored datas
@@ -133,15 +179,10 @@ extern orxDLLAPI orxVOID (*orxPackage_FindClose)(orxPACKAGE_INFOS *_pstFileInfos
  * @param _zFileName        (IN)     File to read
  * @return Returns the number of written bytes
  */
-extern orxDLLAPI orxU32 (*orxPackage_Read)(orxVOID *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, orxSTRING _zFileName);
+orxSTATIC orxINLINE orxU32 orxDLLAPI orxPackage_Read(orxVOID *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Read)(_pDataToWrite, _u32FileSize, _pstPackage, _zFileName);
+}
 
-
-/*******************************************************************************
- * DEBUG FUNCTION
- ******************************************************************************/
-
-/** Debug function that print informations about all opened packages.
- */
-extern orxDLLAPI orxVOID orxPackage_DebugPrint();
 
 #endif /* _orxPACKAGE_H_ */

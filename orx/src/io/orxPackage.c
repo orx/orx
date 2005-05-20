@@ -26,43 +26,26 @@
 
 #include "io/orxPackage.h"
 #include "debug/orxDebug.h"
-#include "plugin/orxPluginCore.h"
 
 /********************
  *  Plugin Related  *
  ********************/
-orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastPackagePluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_NUMBER] =
-{
-  {(orxPLUGIN_FUNCTION *) &orxPackage_Init,        orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_INIT},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_Exit,        orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_EXIT},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_Open,        orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_OPEN},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_Close,       orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_CLOSE},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_SetFlags,    orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_SET_FLAGS},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_TestFlags,   orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_TEST_FLAGS},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_Commit,      orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_COMMIT},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_Extract,     orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_EXTRACT},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_FindFirst,   orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_FIND_FIRST},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_FindNext,    orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_FIND_NEXT},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_FindClose,   orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_FIND_CLOSE},
-  {(orxPLUGIN_FUNCTION *) &orxPackage_Read,        orxPLUGIN_FUNCTION_BASE_ID_PACKAGE_READ}
-};
+orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(PACKAGE)
+ 
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, INIT, orxPackage_Init)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, EXIT, orxPackage_Exit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, OPEN, orxPackage_Open)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, CLOSE, orxPackage_Close)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, SET_FLAGS, orxPackage_SetFlags)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, TEST_FLAGS, orxPackage_TestFlags)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, COMMIT, orxPackage_Commit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, EXTRACT, orxPackage_Extract)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, FIND_FIRST, orxPackage_FindFirst)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, FIND_NEXT, orxPackage_FindNext)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, FIND_CLOSE, orxPackage_FindClose)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, READ, orxPackage_Read)
 
-/********************
- *   Core Related   *
- ********************/
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Exit, orxVOID);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Open, orxPACKAGE*, orxSTRING, orxSTRING, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Close, orxVOID, orxPACKAGE*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_SetFlags, orxVOID, orxPACKAGE*, orxU32, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_TestFlags, orxBOOL, orxPACKAGE*, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Commit, orxSTATUS, orxPACKAGE*, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Extract, orxSTATUS, orxPACKAGE*, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindFirst, orxBOOL, orxPACKAGE*, orxSTRING, orxPACKAGE_INFOS*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindNext, orxBOOL, orxPACKAGE_INFOS*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindClose, orxVOID, orxPACKAGE_INFOS*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Read, orxU32, orxVOID*, orxU32, orxPACKAGE*, orxSTRING);
+orxPLUGIN_END_CORE_FUNCTION_ARRAY()
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -84,17 +67,6 @@ struct __orxPACKAGE_t
  */
 orxVOID orxPackage_Plugin_Init()
 {
-  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_PACKAGE, sastPackagePluginFunctionInfo, sizeof(sastPackagePluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));  
-}
-
-
-/*******************************************************************************
- * DEBUG FUNCTION
- ******************************************************************************/
-
-/** Debug function that print the list of all started search with extra informations.
- */
-orxVOID orxPackage_DebugPrint()
-{
-    /* TODO */
+  /* Plugin init */
+  orxPLUGIN_REGISTER_CORE_INFO(PACKAGE);
 }
