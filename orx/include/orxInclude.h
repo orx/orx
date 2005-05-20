@@ -12,7 +12,7 @@
  * - Replace simple mallocs in written modules with banks
  * - Simplify structure module (everything controlled from there / no cross references?)
  * - Add BV/box module + extract AABox code from vector module
- * - Rewrite sound module/plugin + timer module/plugin
+ * C Rewrite sound module/plugin + timer module/plugin
  * V Add CRC
  * - Add string handling (using CRC + hash)
  * V Add texture referencing with duplication check -> reference increase
@@ -35,7 +35,7 @@
  * - Adds events
  * C Adds LUA integration
  * V Complete orxBANK implementation
- * C Complete orxHashMap module (refactor to orxHash and complete test module)
+ * V Complete orxHashMap module (refactor to orxHash and complete test module)
  * V Rewrite File and Package module to use plugins system
  * C Write plugins implementation for file and package management
  * V Complete test module and add a generic makefile to compile each test file as an automatically loaded dynamic library
