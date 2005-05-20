@@ -138,14 +138,3 @@ orxSTATUS orxFile_Close(orxFILE *_pstFile)
   /* TODO */
   return orxSTATUS_FAILED;
 }
-
-/*******************************************************************************
- * DEBUG FUNCTION
- ******************************************************************************/
-
-/** Debug function that print the list of all started search with extra informations.
- */
-orxVOID orxFile_DebugPrint()
-{
-    /* TODO */
-}
