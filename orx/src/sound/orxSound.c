@@ -26,49 +26,29 @@
  ***************************************************************************/
 
 #include "sound/orxSound.h"
-#include "plugin/orxPluginCore.h"
 
 /********************
  *  Plugin Related  *
  ********************/
 
-orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastSoundPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_SOUND_NUMBER] =
-{
-  {(orxPLUGIN_FUNCTION *) &orxSound_Init,                 orxPLUGIN_FUNCTION_BASE_ID_SOUND_INIT},
-  {(orxPLUGIN_FUNCTION *) &orxSound_Exit,                 orxPLUGIN_FUNCTION_BASE_ID_SOUND_EXIT},
-  {(orxPLUGIN_FUNCTION *) &orxSound_SampleLoadFromFile,   orxPLUGIN_FUNCTION_BASE_ID_SOUND_LOAD_SAMPLE_FROM_FILE},
-  {(orxPLUGIN_FUNCTION *) &orxSound_SampleLoadFromMemory, orxPLUGIN_FUNCTION_BASE_ID_SOUND_LOAD_SAMPLE_FROM_MEMORY},
-  {(orxPLUGIN_FUNCTION *) &orxSound_SampleUnload,         orxPLUGIN_FUNCTION_BASE_ID_SOUND_UNLOAD_SAMPLE},
-  {(orxPLUGIN_FUNCTION *) &orxSound_PlaySample,           orxPLUGIN_FUNCTION_BASE_ID_SOUND_PLAY_SAMPLE},
-  {(orxPLUGIN_FUNCTION *) &orxSound_Stop,                 orxPLUGIN_FUNCTION_BASE_ID_SOUND_STOP},
-  {(orxPLUGIN_FUNCTION *) &orxSound_Pause,                orxPLUGIN_FUNCTION_BASE_ID_SOUND_PAUSE},
-  {(orxPLUGIN_FUNCTION *) &orxSound_TestFlags,            orxPLUGIN_FUNCTION_BASE_ID_SOUND_TEST_FLAGS},
-  {(orxPLUGIN_FUNCTION *) &orxSound_SetFlags,             orxPLUGIN_FUNCTION_BASE_ID_SOUND_SET_FLAGS},
-  {(orxPLUGIN_FUNCTION *) &orxSound_SetVolume,            orxPLUGIN_FUNCTION_BASE_ID_SOUND_SET_VOLUME}
-};
+/* *** Core function info array *** */
+orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SOUND)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, INIT, orxSound_Init)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, EXIT, orxSound_Exit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, LOAD_SAMPLE_FROM_FILE, orxSound_SampleLoadFromFile)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, LOAD_SAMPLE_FROM_MEMORY, orxSound_SampleLoadFromMemory)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, UNLOAD_SAMPLE, orxSound_SampleUnload)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, PLAY_SAMPLE, orxSound_PlaySample)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, STOP, orxSound_Stop)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, PAUSE, orxSound_Pause)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, TEST_FLAGS, orxSound_TestFlags)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, SET_FLAGS, orxSound_SetFlags)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, SET_VOLUME, orxSound_SetVolume)
+
+orxPLUGIN_END_CORE_FUNCTION_ARRAY()
 
 orxVOID orxFASTCALL orxSound_Plugin_Init()
 {
-  /* Plugin init */
-  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_SOUND, sastSoundPluginFunctionInfo, sizeof(sastSoundPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
-
-  return;
+  orxPLUGIN_REGISTER_CORE_INFO(SOUND);
 }
-
-
-
-/********************
- *   Core Related   *
- ********************/
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SampleLoadFromFile, orxSOUND_SAMPLE *, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SampleLoadFromMemory, orxSOUND_SAMPLE *, orxCONST orxVOID *, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SampleUnload, orxVOID, orxSOUND_SAMPLE *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_PlaySample, orxU32, orxU32, orxSOUND_SAMPLE *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_Stop, orxSTATUS, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_Pause, orxSTATUS, orxU32, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_TestFlags, orxBOOL, orxU32, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SetFlags, orxVOID, orxU32, orxU32, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SetVolume, orxVOID, orxU32, orxU8);
