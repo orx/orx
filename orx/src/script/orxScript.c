@@ -24,34 +24,22 @@
 
 #include "script/orxScript.h"
 
-#include "plugin/orxPluginCore.h"
-
-
 /********************
  *  Plugin Related  *
  ********************/
-orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastScriptPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_NUMBER] =
-{
-  {(orxPLUGIN_FUNCTION *) &orxScript_Init,              orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_INIT},
-  {(orxPLUGIN_FUNCTION *) &orxScript_Exit,              orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_EXIT},
-  {(orxPLUGIN_FUNCTION *) &orxScript_Create,            orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_CREATE},
-  {(orxPLUGIN_FUNCTION *) &orxScript_Delete,            orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_DELETE},
-  {(orxPLUGIN_FUNCTION *) &orxScript_LoadFile,          orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_LOAD_FILE},
-  {(orxPLUGIN_FUNCTION *) &orxScript_CallFunc,          orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_CALL_FUNCTION},
-  {(orxPLUGIN_FUNCTION *) &orxScript_Execute,           orxPLUGIN_FUNCTION_BASE_ID_SCRIPT_EXECUTE}
-};
 
-/********************
- *   Core Related   *
- ********************/
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Exit, orxVOID);
+/* *** Core function info array *** */
+orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SCRIPT)
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Create, orxSCRIPT*, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Delete, orxVOID, orxSCRIPT*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_LoadFile, orxSTATUS, orxSCRIPT*, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_CallFunc, orxSTATUS, orxSCRIPT*, orxSTRING, orxSTRING, ...);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Execute, orxSTATUS, orxSCRIPT*, orxSTRING);
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, INIT, orxScript_Init)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, EXIT, orxScript_Exit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, CREATE, orxScript_Create)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, DELETE, orxScript_Delete)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, LOAD_FILE, orxScript_LoadFile)
+//orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, CALL_FUNCTION, orxScript_CallFunc)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, EXECUTE, orxScript_Execute)
+
+orxPLUGIN_END_CORE_FUNCTION_ARRAY()
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -69,5 +57,5 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Execute, orxSTATUS, orxSCRIPT*, orxSTRI
  */
 orxVOID orxScript_Plugin_Init()
 {
-  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_SCRIPT, sastScriptPluginFunctionInfo, sizeof(sastScriptPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));  
+  orxPLUGIN_REGISTER_CORE_INFO(SCRIPT);
 }
