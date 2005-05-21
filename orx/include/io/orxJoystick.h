@@ -24,14 +24,22 @@
 #include "plugin/orxPluginCore.h"
 
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);
-
-
+/***************************************************************************
+ * Functions directly implemented by orx core
+ ***************************************************************************/
 
 /** Inits the joystick core plugin.
  */
-extern orxVOID   orxJoystick_Plugin_Init();
+extern ofxDLLAPI orxVOID            orxJoystick_Plugin_Init();
+
+
+/***************************************************************************
+ * Functions extended by plugins
+ ***************************************************************************/
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);
+
 
 /** Inits the joystick module.
  * @return The status of the operation.
