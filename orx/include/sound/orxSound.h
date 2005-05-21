@@ -81,9 +81,9 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_Init()
 
 /** Uninitialize the Sound Module
  */
-orxSTATIC orxINLINE orxVOID orxDLLAPIorxSound_Exit()
+orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxDLLAPIorxSound_Exit)();
+  orxPLUGIN_BODY_CORE_FUNCTION(orxSound_Exit)();
 }
 
 /** Load a sample From a file
