@@ -30,7 +30,7 @@
 
 /** Inits the joystick core plugin.
  */
-extern ofxDLLAPI orxVOID            orxJoystick_Plugin_Init();
+extern orxDLLAPI orxVOID            orxJoystick_Plugin_Init();
 
 
 /***************************************************************************
