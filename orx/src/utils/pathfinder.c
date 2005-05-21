@@ -3,8 +3,8 @@
  pathfinder module
  
  begin                : 04/09/2002
- author               : (C) Gdp
- email                : iarwain@ifrance.com
+ author               : (C) Arcallians
+ email                : iarwain@arcallians.org
  ***************************************************************************/
 
 /***************************************************************************

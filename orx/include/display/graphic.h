@@ -19,8 +19,8 @@
  Graphic module
  
  begin                : 08/12/2003
- author               : (C) Gdp
- email                : iarwain@ifrance.com
+ author               : (C) Arcallians
+ email                : iarwain@arcallians.org
  ***************************************************************************/
 
 /***************************************************************************

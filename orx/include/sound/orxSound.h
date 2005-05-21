@@ -13,7 +13,7 @@
  API updated            14/11/2003
  API updated            17/05/2005
 
- author               : (C) Gdp
+ author               : (C) Arcallians
  email                : snegri@free.fr
                         iarwain@arcallians.org
                         bestel@arcallians.org

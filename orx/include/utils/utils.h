@@ -3,7 +3,7 @@
  package utils
 
  begin                : 16/09/2002
- author               : (C) Gdp
+ author               : (C) Arcallians
  email                : snegri@free.fr
  ***************************************************************************/
 
