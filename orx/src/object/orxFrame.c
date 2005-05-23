@@ -54,7 +54,7 @@ typedef enum __orxFRAME_SPACE_t
   
   orxFRAME_SPACE_NUMBER,
   
-  orxFRAME_SPACE_NONE = 0xFFFFFFFF
+  orxFRAME_SPACE_NONE = orxENUM_NONE
   
 } orxFRAME_SPACE;
 

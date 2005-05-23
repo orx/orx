@@ -63,7 +63,9 @@
   typedef char                  orxCHAR;
   typedef orxCHAR              *orxSTRING;
 
-#define orx2F(V)             (orxFLOAT)(V)
+  #define orx2F(V)              (orxFLOAT)(V)
+
+  #define orxENUM_NONE          0xFFFFFFFFL
 
 #else /* __orxWINDOWS__ */
 
@@ -91,7 +93,9 @@
     typedef char                orxCHAR;
     typedef orxCHAR            *orxSTRING;
 
-#define orx2F(V)             (orxFLOAT)(V)
+    #define orx2F(V)            (orxFLOAT)(V)
+
+    #define orxENUM_NONE        0xFFFFFFFFL
 
   #endif /* __orxLINUX__ */
   
@@ -115,7 +119,6 @@ orxSTATIC orxCONST  orxSTRING   orxSTRING_Empty     = "";
 orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(orx2F(0.0f));
 orxSTATIC orxCONST  orxFLOAT    orxFLOAT_1          = orx2F(orx2F(1.0f));
 
-
 /* *** Status defines *** */
 typedef enum __orxSTATUS_t
 {
@@ -124,7 +127,7 @@ typedef enum __orxSTATUS_t
 
   orxSTATUS_NUMBER,
 
-  orxSTATUS_NONE = 0xFFFFFFFF
+  orxSTATUS_NONE = orxENUM_NONE
 
 } orxSTATUS;
 

@@ -41,7 +41,7 @@ typedef enum __orxPLUGIN_CORE_ID_t
 
   orxPLUGIN_CORE_ID_NUMBER,
 
-  orxPLUGIN_CORE_ID_NONE = 0xFFFFFFFF
+  orxPLUGIN_CORE_ID_NONE = orxENUM_NONE
     
 } orxPLUGIN_CORE_ID;
 

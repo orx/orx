@@ -37,7 +37,7 @@ typedef enum __orxMEMORY_TYPE_t
   
   orxMEMORY_TYPE_NUMBER,
   
-  orxMEMORY_TYPE_NONE = 0xFFFFFFFF
+  orxMEMORY_TYPE_NONE = orxENUM_NONE
 
 } orxMEMORY_TYPE;
 

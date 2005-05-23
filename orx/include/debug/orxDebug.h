@@ -137,7 +137,7 @@ typedef enum __orxDEBUG_LEVEL_t
 
   orxDEBUG_LEVEL_ALL = 0xFFFFFFFE,            /**< All Debugs */
 
-  orxDEBUG_LEVEL_NONE = 0xFFFFFFFF
+  orxDEBUG_LEVEL_NONE = orxENUM_NONE
 
 } orxDEBUG_LEVEL;
 
