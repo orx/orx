@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 #include "display/orxDisplay.h"
-
 #include "plugin/orxPluginCore.h"
 
 
@@ -26,63 +25,41 @@
  *  Plugin Related  *
  ********************/
 
-orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastDisplayPluginFunctionInfo[orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_NUMBER] =
-{
-  {(orxPLUGIN_FUNCTION *) &graph_init,                     orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_INIT},
-  {(orxPLUGIN_FUNCTION *) &graph_exit,                     orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_EXIT},
-  {(orxPLUGIN_FUNCTION *) &graph_switch,                   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SWITCH},
-  {(orxPLUGIN_FUNCTION *) &orxDisplay_CreateBitmap,        orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_BITMAP},
-  {(orxPLUGIN_FUNCTION *) &graph_video_bitmap_create,      orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_VIDEO_BITMAP},
-  {(orxPLUGIN_FUNCTION *) &graph_delete,                   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_BITMAP},
-  {(orxPLUGIN_FUNCTION *) &graph_bitmap_save,              orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SAVE_BITMAP},
-  {(orxPLUGIN_FUNCTION *) &graph_bitmap_load,              orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_LOAD_BITMAP},
-  {(orxPLUGIN_FUNCTION *) &graph_bitmap_transform,         orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_TRANSFORM_BITMAP},
-  {(orxPLUGIN_FUNCTION *) &graph_bitmap_color_key_set,     orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_BITMAP_COLOR_KEY},
-  {(orxPLUGIN_FUNCTION *) &graph_bitmap_size_get,          orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_BITMAP_SIZE},
-  {(orxPLUGIN_FUNCTION *) &graph_screen_bitmap_get,        orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SCREEN_BITMAP},
-  {(orxPLUGIN_FUNCTION *) &graph_clip_set,                 orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_CLIPPING},
-  {(orxPLUGIN_FUNCTION *) &graph_clear,                    orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CLEAR},
-  {(orxPLUGIN_FUNCTION *) &graph_blit,                     orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_BLIT},
-  {(orxPLUGIN_FUNCTION *) &graph_sprite_draw,              orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DRAW_SPRITE},
-  {(orxPLUGIN_FUNCTION *) &graph_printf,                   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_PRINTF}
-};
+/* *** Core function info array *** */
+orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(DISPLAY)
 
-orxVOID graph_plugin_init()
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, INIT, orxDisplay_Init)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, EXIT, orxDisplay_Exit)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SWAP, orxDisplay_Swap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CREATE_BITMAP, orxDisplay_CreateBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DELETE_BITMAP, orxDisplay_DeleteBitmap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SAVE_BITMAP, orxDisplay_SaveBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, LOAD_BITMAP, orxDisplay_LoadBitmap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, TRANSFORM_BITMAP, orxDisplay_TransformBitmap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, CLEAR_BITMAP, orxDisplay_ClearBitmap)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, BLIT_BITMAP, orxDisplay_BlitBitmap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_COLOR_KEY, orxDisplay_SetBitmapColorKey)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, SET_BITMAP_CLIPPING, orxDisplay_SetBitmapClipping)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_BITMAP_SIZE, orxDisplay_GetBitmapSize)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_BITMAP, orxDisplay_GetScreenBitmap)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_TEXT, orxDisplay_DrawText)
+
+orxPLUGIN_END_CORE_FUNCTION_ARRAY()
+
+
+/* *** Plugin init function *** */
+orxVOID orxDisplay_Plugin_Init()
 {
   /* Plugin init */
-  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_DISPLAY, sastDisplayPluginFunctionInfo, sizeof(sastDisplayPluginFunctionInfo) / sizeof(orxPLUGIN_CORE_FUNCTION));
+  orxPLUGIN_REGISTER_CORE_INFO(DISPLAY);
 
   return;
 }
-
-
-
-/********************
- *   Core Related   *
- ********************/
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_init, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_exit, orxVOID);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_printf, orxVOID, orxBITMAP *, orxS32, orxS32, orxU32, orxCONST orxU8 *, ...);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_delete, orxVOID, orxBITMAP *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateBitmap, orxBITMAP *, orxS32, orxS32);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_video_bitmap_create, orxBITMAP *, orxS32, orxS32);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_screen_bitmap_get, orxBITMAP *);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_clear, orxVOID, orxBITMAP *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_switch, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_blit, orxVOID, orxBITMAP *, orxBITMAP *, orxS32, orxS32, orxS32, orxS32, orxS32, orxS32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_clip_set, orxVOID, orxBITMAP *, orxS32, orxS32, orxS32, orxS32);
-
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_sprite_draw, orxVOID, graph_st_sprite *, orxBITMAP *, orxS32, orxS32);
-
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_bitmap_transform, orxVOID, orxBITMAP *, orxBITMAP *, orxFLOAT, orxFLOAT, orxFLOAT, orxS32, orxS32, orxS32, orxS32, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_bitmap_color_key_set, orxVOID, orxBITMAP *, orxU32, orxU32, orxU32, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_bitmap_save, orxVOID, orxCONST orxU8 *, orxBITMAP *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_bitmap_load, orxBITMAP *, orxCONST orxU8 *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(graph_bitmap_size_get, orxVOID, orxBITMAP *, orxS32*, orxS32 *);

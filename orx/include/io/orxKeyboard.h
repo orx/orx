@@ -38,14 +38,14 @@ extern orxVOID orxDLLAPI orxKeyboard_Plugin_Init();
 
 /** Init the keyboard module
  */
-orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxKeyboard_Init()
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxKeyboard_Init()
 {
   return orxPLUGIN_BODY_CORE_FUNCTION(orxKeyboard_Init)();
 }
 
 /** Exit the keyboard module
  */
-orxSTATIC orxINLINE orxVOID orxDLLAPI orxKeyboard_Exit()
+orxSTATIC orxINLINE orxDLLAPI orxVOID orxKeyboard_Exit()
 {
   orxPLUGIN_BODY_CORE_FUNCTION(orxKeyboard_Exit)();
 }
@@ -53,7 +53,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxKeyboard_Exit()
 /** Returns orxTRUE if there are keypresses waiting in the input buffer.
  * @return orxTRUE if keys have been pressed, else orxFALSE
  */
-orxSTATIC orxINLINE orxBOOL orxDLLAPI orxKeyboard_Hit()
+orxSTATIC orxINLINE orxDLLAPI orxBOOL orxKeyboard_Hit()
 {
   return orxPLUGIN_BODY_CORE_FUNCTION(orxKeyboard_Hit)();
 }

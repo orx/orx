@@ -51,7 +51,7 @@ BITMAP *graph_screen_get()
   return gpst_current;
 }
 
-void graph_printf(BITMAP *_pst_bmp, int32 _i_x, int32 _i_y, uint32 _u32_color, const char *_z_format, ...)
+void orxDisplay_DrawText(BITMAP *_pst_bmp, int32 _i_x, int32 _i_y, uint32 _u32_color, const char *_z_format, ...)
 {
   char ac_buf[1024];
   va_list st_args;
@@ -76,19 +76,19 @@ BITMAP *graph_bitmap_create(int32 _i_w, int32 _i_h)
   return create_bitmap(_i_w, _i_h);
 }
 
-BITMAP *graph_video_bitmap_create(int32 _i_w, int32 _i_h)
+BITMAP *orxDisplay_CreateVideoBitmap(int32 _i_w, int32 _i_h)
 {
   return create_video_bitmap(_i_w, _i_h);
 }
 
-void graph_clear(BITMAP *_pst_bmp)
+void orxDisplay_ClearBitmap(BITMAP *_pst_bmp)
 {
   clear(_pst_bmp);
 
   return;
 }
 
-void graph_switch(void)
+void orxDisplay_Swap(void)
 {
   switch(gi_graph_animation_mode)
   {
@@ -126,7 +126,7 @@ void graph_masked_blit(BITMAP *_pst_src, BITMAP *_pst_dst, int32 _i_src_x, int32
   return;
 }
 
-void graph_blit(BITMAP *_pst_src, BITMAP *_pst_dst, int32 _i_src_x, int32 _i_src_y, int32 _i_dst_x, int32 _i_dst_y, int32 _i_w, int32 _i_h)
+void orxDisplay_BlitBitmap(BITMAP *_pst_src, BITMAP *_pst_dst, int32 _i_src_x, int32 _i_src_y, int32 _i_dst_x, int32 _i_dst_y, int32 _i_w, int32 _i_h)
 {
   blit(_pst_src, _pst_dst, _i_src_x, _i_src_y, _i_dst_x, _i_dst_y, _i_w, _i_h);
 
@@ -140,14 +140,14 @@ void graph_draw_sprite(RLE_SPRITE *_pst_src, BITMAP *_pst_dst, int32 x, int32 y)
   return;
 }
 
-void graph_bitmap_save(const char *filename, BITMAP *_pst_bmp)
+void orxDisplay_SaveBitmap(const char *filename, BITMAP *_pst_bmp)
 {
   save_bitmap(filename, _pst_bmp, NULL);
 
   return;
 }
 
-void graph_clip_set(BITMAP *_pst_bmp, int32 _i_x, int32 _i_y, int32 _i_w, int32 _i_h)
+void orxDisplay_SetBitmapClipping(BITMAP *_pst_bmp, int32 _i_x, int32 _i_y, int32 _i_w, int32 _i_h)
 {
   /* !!! TODO !!! */
   return;
@@ -177,7 +177,7 @@ int32 graph_init(void)
     }
   }
   
-  if(!(spst_page1 = graph_video_bitmap_create(KI_WIDTH, KI_HEIGHT)) || !(spst_page2 = graph_video_bitmap_create(KI_WIDTH, KI_HEIGHT)))
+  if(!(spst_page1 = orxDisplay_CreateVideoBitmap(KI_WIDTH, KI_HEIGHT)) || !(spst_page2 = orxDisplay_CreateVideoBitmap(KI_WIDTH, KI_HEIGHT)))
   {
     if(spst_page1)
     {
@@ -203,7 +203,7 @@ int32 graph_init(void)
 #ifdef WINDOWS
   acquire_bitmap(spst_page1);
 #endif
-  graph_clear(spst_page1);
+  orxDisplay_ClearBitmap(spst_page1);
 #ifdef WINDOWS
   release_bitmap(spst_page1);
 #endif
@@ -213,7 +213,7 @@ int32 graph_init(void)
 #ifdef WINDOWS
     acquire_bitmap(spst_page2);
 #endif
-    graph_clear(spst_page2);
+    orxDisplay_ClearBitmap(spst_page2);
 #ifdef WINDOWS
     release_bitmap(spst_page2);
 #endif
@@ -254,12 +254,12 @@ void graph_exit(void)
 
 /* !!! TODO : Write next functions !!! */
 
-graph_st_bitmap *(*graph_bitmap_load)(const char *_z_filename)
+graph_st_bitmap *(*orxDisplay_LoadBitmap)(const char *_z_filename)
 {
   return NULL;
 }
 
-extern void graph_bitmap_size_get(graph_st_bitmap *_pst_bitmap, int32 *_pi_height, int32 *_pi_width)
+extern void orxDisplay_GetBitmapSize(graph_st_bitmap *_pst_bitmap, int32 *_pi_height, int32 *_pi_width)
 {
   return;
 }
@@ -278,35 +278,35 @@ void plugin_init(int32 *_pi_fn_number, plugin_user_st_function_info **_ppst_fn_i
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_exit, GRAPH, EXIT);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_switch, GRAPH, SWITCH);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Swap, GRAPH, SWITCH);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_create, GRAPH, BITMAP_CREATE);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_video_bitmap_create, GRAPH, VIDEO_BITMAP_CREATE);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_CreateVideoBitmap, GRAPH, VIDEO_BITMAP_CREATE);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_delete, GRAPH, BITMAP_DELETE);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_save, GRAPH, BITMAP_SAVE);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SaveBitmap, GRAPH, BITMAP_SAVE);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_transform, GRAPH, BITMAP_TRANSFORM);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_TransformBitmap, GRAPH, BITMAP_TRANSFORM);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_load, GRAPH, BITMAP_LOAD);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_LoadBitmap, GRAPH, BITMAP_LOAD);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_size_get, GRAPH, BITMAP_SIZE_GET);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GetBitmapSize, GRAPH, BITMAP_SIZE_GET);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_screen_get, GRAPH, SCREEN_BITMAP_GET);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_clear, GRAPH, CLEAR);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_ClearBitmap, GRAPH, CLEAR);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_clip_set, GRAPH, CLIP_SET);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SetBitmapClipping, GRAPH, CLIP_SET);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_blit, GRAPH, BLIT);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_BlitBitmap, GRAPH, BLIT);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_color_key_set, GRAPH, BITMAP_COLOR_KEY_SET);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_draw_sprite, GRAPH, SPRITE_DRAW);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_printf, GRAPH, PRINTF);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_DrawText, GRAPH, PRINTF);
 
 
   PLUGIN_USER_FUNCTION_END(_pi_fn_number, _ppst_fn_info);

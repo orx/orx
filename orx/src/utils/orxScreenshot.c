@@ -171,7 +171,7 @@ orxVOID orxScreenshot_Take()
   orxTextIO_Printf(zName, "%s/%s-%04ld.%s", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX, sstScreenshot.u32Counter, orxSCREENSHOT_KZ_EXT);
 
   /* Saves it */
-  graph_bitmap_save(zName, graph_screen_bitmap_get());
+  orxDisplay_SaveBitmap(orxDisplay_GetScreenBitmap(), zName);
 
   /* Logs */
   orxDEBUG_LOG(orxDEBUG_LEVEL_SCREENSHOT, KZ_MSG_SHOT_TAKEN_S, zName);

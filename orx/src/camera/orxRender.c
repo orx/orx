@@ -91,7 +91,6 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
   orxVEC vPos;
   orxFLOAT fRotation, fScale;
   orxBOOL bAntialias = orxFALSE;
-  orxS32 s32Width, s32Height;
 
   /* Checks */
   orxASSERT(_pstSurface != orxNULL);
@@ -121,21 +120,25 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
     /* Blit bitmap onto surface */
     if((fRotation == orx2F(0.0f)) && (fScale == orx2F(1.0f)))
     {
+      orxVEC vSize;
+
       /* Gets bitmap's size */
-      graph_bitmap_size_get(pstBitmap, &s32Width, &s32Height);
+      orxDisplay_GetBitmapSize(pstBitmap, &vSize);
 
       /* Blit it */
-      graph_blit(pstBitmap, _pstSurface, 0, 0, vPos.fX, vPos.fY, s32Width, s32Height);
+      orxDisplay_BlitBitmap(_pstSurface, pstBitmap, &vPos, &orxVEC_NULL, &vSize);
     }
     /* Blit transformed bitmap onto surface */
     else
     {
+      orxVEC vSize;
+
       /* Gets bitmap's size */
-      graph_bitmap_size_get(pstBitmap, &s32Width, &s32Height);
+      orxDisplay_GetBitmapSize(pstBitmap, &vSize);
 
       /* Blit it */
-      graph_bitmap_transform(pstBitmap, _pstSurface, fRotation, fScale, fScale, 0, 0, vPos.fX, vPos.fY, bAntialias);
-    }
+/*      orxDisplay_TransformBitmap(_pstSurface, pstBitmap, fRotation, fScale, fScale, 0, 0, vPos.fX, vPos.fY, bAntialias);
+*/    }
   }
   else
   {
@@ -294,7 +297,7 @@ orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
       orxCAMERA *pstCamera;
       orxTEXTURE *pstSurface;
       orxBITMAP *pstSurfaceBitmap;
-      orxVEC vPos, vSize;
+      orxVEC vTL, vBR;
 
       /* Gets viewport surface */
       pstSurface = orxViewport_GetSurface(_pstViewport);
@@ -307,17 +310,17 @@ orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
       /* Gets screen surface */
       else
       {
-        pstSurfaceBitmap = graph_screen_bitmap_get();
+        pstSurfaceBitmap = orxDisplay_GetScreenBitmap();
       }
 
       /* Gets viewport info */
-      orxViewport_GetClip(_pstViewport, &vPos, &vSize);
+      orxViewport_GetClip(_pstViewport, &vTL, &vBR);
 
       /* Sets surface clipping */
-      graph_clip_set(pstSurfaceBitmap, vPos.fX, vPos.fY, vSize.fX, vSize.fY);
+      orxDisplay_SetBitmapClipping(pstSurfaceBitmap, &vTL, &vBR);
 
       /* Clears surface bitmap */
-      graph_clear(pstSurfaceBitmap);
+      orxDisplay_ClearBitmap(pstSurfaceBitmap, orx2ARGB(0, 0, 0, 0));
 
       /* Gets camera */
       pstCamera = orxViewport_GetCamera(_pstViewport);

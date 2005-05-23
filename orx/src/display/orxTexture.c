@@ -337,7 +337,7 @@ orxTEXTURE *orxTexture_CreateFromBitmap(orxCONST orxSTRING _zBitmapFileName)
       orxBITMAP *pstBitmap;
     
       /* Loads bitmap */
-      pstBitmap = graph_bitmap_load(_zBitmapFileName);
+      pstBitmap = orxDisplay_LoadBitmap(_zBitmapFileName);
 
       /* Assigns given bitmap to it */
       if((pstBitmap != orxNULL)
@@ -434,7 +434,7 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
   if(!(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_BITMAP))
   {
     orxTEXTURE *pstTexture;
-    orxU32 u32Width, u32Height;
+    orxVEC vSize;
 
     /* Search for a texture using this bitmap */
     pstTexture = orxTexture_FindByData(_pstBitmap);
@@ -461,10 +461,10 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
     }
 
     /* Gets bitmap size */
-    graph_bitmap_size_get(_pstBitmap, &u32Width, &u32Height);
+    orxDisplay_GetBitmapSize(_pstBitmap, &vSize);
 
     /* Copy bitmap size (Z size is null) */
-    orxVec_Set3(&(_pstTexture->vSize), orxU2F(u32Width), orxU2F(u32Height), orx2F(0.0f));
+    orxVec_Set3(&(_pstTexture->vSize), vSize.fX, vSize.fY, orx2F(0.0f));
   }
   else
   {
@@ -516,7 +516,7 @@ orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
       _pstTexture->u32IDFlags &= ~(orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_SIZE);
 
       /* Deletes bitmap */
-      graph_delete((orxBITMAP *)(_pstTexture->pstData));
+      orxDisplay_DeleteBitmap((orxBITMAP *)(_pstTexture->pstData));
 
       /* Cleans data */
       _pstTexture->pstData = orxNULL;

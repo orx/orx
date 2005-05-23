@@ -44,7 +44,7 @@ SDL_Surface *graph_screen_get()
   return SDL_GetVideoSurface();
 }
 
-void graph_printf(SDL_Surface *_pst_bmp, int32 _i_x, int32 _i_y, uint32 _u32_color, const char *_z_format, ...)
+void orxDisplay_DrawText(SDL_Surface *_pst_bmp, int32 _i_x, int32 _i_y, uint32 _u32_color, const char *_z_format, ...)
 {
   char ac_buf[1024];
   va_list st_args;
@@ -87,7 +87,7 @@ SDL_Surface *graph_bitmap_create(int32 _i_w, int32 _i_h)
                               u32_rmask, u32_gmask, u32_bmask, u32_amask);
 }
 
-SDL_Surface *graph_video_bitmap_create(int32 _i_w, int32 _i_h)
+SDL_Surface *orxDisplay_CreateVideoBitmap(int32 _i_w, int32 _i_h)
 {
   uint32 u32_rmask, u32_gmask, u32_bmask, u32_amask;
 
@@ -109,21 +109,21 @@ SDL_Surface *graph_video_bitmap_create(int32 _i_w, int32 _i_h)
                               u32_rmask, u32_gmask, u32_bmask, u32_amask);
 }
 
-void graph_clear(SDL_Surface *_pst_bmp)
+void orxDisplay_ClearBitmap(SDL_Surface *_pst_bmp)
 {
   SDL_FillRect(_pst_bmp, NULL, 0x00000000);
 
   return;
 }
 
-void graph_switch()
+void orxDisplay_Swap()
 {
   SDL_Flip(graph_spst_screen);
 
   return;
 }
 
-void graph_bitmap_color_key_set(SDL_Surface *_pst_src, uint32 _u32_red, uint32 _u32_green, uint32 _u32_blue, bool _b_enable)
+void orxDisplay_SetBitmapColorKey(SDL_Surface *_pst_src, uint32 _u32_red, uint32 _u32_green, uint32 _u32_blue, bool _b_enable)
 {
   if(_b_enable != FALSE)
   {
@@ -137,7 +137,7 @@ void graph_bitmap_color_key_set(SDL_Surface *_pst_src, uint32 _u32_red, uint32 _
   return;
 }
 
-void graph_blit(SDL_Surface *_pst_src, SDL_Surface *_pst_dst, int32 _i_src_x, int32 _i_src_y, int32 _i_dst_x, int32 _i_dst_y, int32 _i_w, int32 _i_h)
+void orxDisplay_BlitBitmap(SDL_Surface *_pst_src, SDL_Surface *_pst_dst, int32 _i_src_x, int32 _i_src_y, int32 _i_dst_x, int32 _i_dst_y, int32 _i_w, int32 _i_h)
 {
   SDL_Rect st_src_rect, st_dst_rect;
 
@@ -158,7 +158,7 @@ void graph_draw_sprite(SDL_Surface *_pst_src, SDL_Surface *_pst_dst, int32 x, in
   return;
 }
 
-void graph_bitmap_transform(SDL_Surface *_pst_src, SDL_Surface *_pst_dst, float _f_rotation, float _f_scale_x, float _f_scale_y, int32 _i_src_x, int32 _i_src_y, int32 _i_dst_x, int32 _i_dst_y, bool _b_antialiased)
+void orxDisplay_TransformBitmap(SDL_Surface *_pst_src, SDL_Surface *_pst_dst, float _f_rotation, float _f_scale_x, float _f_scale_y, int32 _i_src_x, int32 _i_src_y, int32 _i_dst_x, int32 _i_dst_y, bool _b_antialiased)
 {
   if(_b_antialiased == FALSE)
   {
@@ -172,14 +172,14 @@ void graph_bitmap_transform(SDL_Surface *_pst_src, SDL_Surface *_pst_dst, float 
   return;
 }
 
-void graph_bitmap_save(const char *_z_filename, SDL_Surface *_pst_bmp)
+void orxDisplay_SaveBitmap(const char *_z_filename, SDL_Surface *_pst_bmp)
 {
   SDL_SaveBMP(_pst_bmp, _z_filename);
 
   return;
 }
 
-void graph_clip_set(SDL_Surface *_pst_bmp, int32 _i_x, int32 _i_y, int32 _i_w, int32 _i_h)
+void orxDisplay_SetBitmapClipping(SDL_Surface *_pst_bmp, int32 _i_x, int32 _i_y, int32 _i_w, int32 _i_h)
 {
   SDL_Rect st_clip_rect;
 
@@ -238,7 +238,7 @@ void graph_exit()
   return;
 }
 
-SDL_Surface *graph_bitmap_load(const char *_z_filename)
+SDL_Surface *orxDisplay_LoadBitmap(const char *_z_filename)
 {
   /* !!! TODO !!!
    * Needs to add a test on requested format.
@@ -247,7 +247,7 @@ SDL_Surface *graph_bitmap_load(const char *_z_filename)
   return(SDL_LoadBMP(_z_filename));
 }
 
-void graph_bitmap_size_get(SDL_Surface *_pst_bitmap, int32 *_pi_width, int32 *_pi_height)
+void orxDisplay_GetBitmapSize(SDL_Surface *_pst_bitmap, int32 *_pi_width, int32 *_pi_height)
 {
   /* Non null? */
   if(_pst_bitmap != NULL)
@@ -285,35 +285,35 @@ void plugin_init(int32 *_pi_fn_number, plugin_user_st_function_info **_ppst_fn_i
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_exit, GRAPH, EXIT);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_switch, GRAPH, SWITCH);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Swap, GRAPH, SWITCH);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_create, GRAPH, BITMAP_CREATE);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_video_bitmap_create, GRAPH, VIDEO_BITMAP_CREATE);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_CreateVideoBitmap, GRAPH, VIDEO_BITMAP_CREATE);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_delete, GRAPH, BITMAP_DELETE);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_save, GRAPH, BITMAP_SAVE);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SaveBitmap, GRAPH, BITMAP_SAVE);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_transform, GRAPH, BITMAP_TRANSFORM);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_TransformBitmap, GRAPH, BITMAP_TRANSFORM);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_load, GRAPH, BITMAP_LOAD);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_LoadBitmap, GRAPH, BITMAP_LOAD);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_size_get, GRAPH, BITMAP_SIZE_GET);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GetBitmapSize, GRAPH, BITMAP_SIZE_GET);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_screen_get, GRAPH, SCREEN_BITMAP_GET);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_clear, GRAPH, CLEAR);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_ClearBitmap, GRAPH, CLEAR);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_clip_set, GRAPH, CLIP_SET);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SetBitmapClipping, GRAPH, CLIP_SET);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_blit, GRAPH, BLIT);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_BlitBitmap, GRAPH, BLIT);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_bitmap_color_key_set, GRAPH, BITMAP_COLOR_KEY_SET);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SetBitmapColorKey, GRAPH, BITMAP_COLOR_KEY_SET);
 
   PLUGIN_USER_CORE_FUNCTION_ADD(graph_draw_sprite, GRAPH, SPRITE_DRAW);
 
-  PLUGIN_USER_CORE_FUNCTION_ADD(graph_printf, GRAPH, PRINTF);
+  PLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_DrawText, GRAPH, PRINTF);
 
 
   PLUGIN_USER_FUNCTION_END(_pi_fn_number, _ppst_fn_info);

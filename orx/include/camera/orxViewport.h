@@ -78,7 +78,7 @@ extern orxVOID                                orxViewport_Enable(orxVIEWPORT *_p
 extern orxBOOL                                orxViewport_IsEnabled(orxVIEWPORT *_pstViewport);
 
 /** Viewport clip get accessor. */
-extern orxVOID                                orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVEC *_pvPosition, orxVEC *_pvSize);
+extern orxVOID                                orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVEC *_pvTL, orxVEC *_pvBR);
 
 /** Viewport camera set accessor. */
 extern orxVOID                                orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera);

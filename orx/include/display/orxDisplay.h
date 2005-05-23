@@ -21,37 +21,152 @@
 #define _orxDISPLAY_H_
 
 #include "orxInclude.h"
+#include "plugin/orxPluginCore.h"
 
-#include "msg/msg_graph.h"
+#include "math/orxVec.h"
+#include "utils/orxString.h"
 
 
-typedef struct __orxBITMAP_t    orxBITMAP;
+#define orx2ARGB(A, R, G, B)             ((((A) & 0xFF) << 24) | (((R) & 0xFF) << 16) | (((G) & 0xFF) << 8) | ((B) & 0xFF))
 
-extern orxVOID               graph_plugin_init();
 
-extern orxU32               (*graph_init)();
-extern orxVOID             (*graph_exit)();
-extern orxVOID             (*graph_switch)();
+typedef struct __orxBITMAP_t            orxBITMAP;
 
-extern orxVOID             (*graph_printf)(orxBITMAP *_pst_bmp, orxS32 _i_x, orxS32 _i_y, orxU32 _u32_color, orxCONST orxU8 *_zFormat, ...);
+typedef orxU32                          orxARGB;
 
-extern orxBITMAP *(*orxDisplay_CreateBitmap)(orxS32 _i_w, orxS32 _i_h);
-extern orxBITMAP *(*graph_video_bitmap_create)(orxS32 _i_w, orxS32 _i_h);
-extern orxVOID             (*graph_delete)(orxBITMAP *_pst_bmp);
-extern orxBITMAP *(*graph_screen_bitmap_get)();
-extern orxVOID             (*graph_clear)(orxBITMAP *_pst_bmp);
-extern orxVOID             (*graph_bitmap_transform)(orxBITMAP *_pst_src, orxBITMAP *_pst_dst, orxFLOAT _fRotation, orxFLOAT _fScale_x, orxFLOAT _fScale_y, orxS32 _i_src_x, orxS32 _i_src_y, orxS32 _i_dst_x, orxS32 _i_dst_y, orxBOOL _bAntialiased);
-extern orxVOID             (*graph_bitmap_color_key_set)(orxBITMAP *_pst_src, orxU32 _u32_red, orxU32 _u32_green, orxU32 _u32_blue, orxBOOL _b_enable);
+typedef struct __orxRGB_t
+{
+  orxU8 u8Red;
+  orxU8 u8Green;
+  orxU8 u8Blue;
+  
+} orxRGB;
 
-extern orxVOID             (*graph_clip_set)(orxBITMAP *_pst_bmp, orxS32 _i_x, orxS32 _i_y, orxS32 _i_w, orxS32 _i_h);
+typedef struct __orxBITMAP_TRANSFORM_t
+{
+  orxVEC    vSrcCoord;
+  orxVEC    vDstCoorf;
 
-extern orxVOID             (*graph_blit)(orxBITMAP *_pst_src, orxBITMAP *_pst_dst, orxS32 _i_src_x, orxS32 _i_src_y, orxS32 _i_dst_x, orxS32 _i_dst_y, orxS32 _i_w, orxS32 _i_h);
+  orxVEC    vScale;
+  orxFLOAT  fRotation;
 
-extern orxVOID             (*graph_sprite_draw)(graph_st_sprite *_pst_src, orxBITMAP *_pst_dst, orxS32 _i_x, orxS32 _i_y);
+} orxBITMAP_TRANSFORM;
 
-extern orxVOID             (*graph_bitmap_save)(orxCONST orxU8 *_zFilename, orxBITMAP *_pst_bmp);
-extern orxBITMAP *(*graph_bitmap_load)(orxCONST orxU8 *_zFilename);
 
-extern orxVOID             (*graph_bitmap_size_get)(orxBITMAP *_pstBitmap, orxS32 *_pi_width, orxS32 *_pi_height);
+/***************************************************************************
+ * Functions directly implemented by orx core
+ ***************************************************************************/
+
+/** Function that initializes the display plugin module
+ */
+extern orxDLLAPI orxVOID          orxFASTCALL orxDisplay_Plugin_Init();
+
+
+/***************************************************************************
+ * Functions extended by plugins
+ ***************************************************************************/
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_Exit, orxVOID);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_Swap, orxSTATUS);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxDisplay_DrawText, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxVEC *, orxARGB, orxCONST orxSTRING);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_CreateBitmap, orxBITMAP *, orxCONST orxVEC *, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxDisplay_DeleteBitmap, orxVOID, orxBITMAP *);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_GetScreenBitmap, orxBITMAP *);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxARGB);
+orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxDisplay_TransformBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxBITMAP_TRANSFORM *, orxU32);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGB, orxBOOL);
+orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxCONST orxVEC *, orxCONST orxVEC *);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_5(orxDisplay_BlitBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxVEC *, orxCONST orxVEC *, orxCONST orxVEC *);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_SaveBitmap, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxDisplay_LoadBitmap, orxBITMAP *, orxCONST orxSTRING);
+
+orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxVEC *);
+
+
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_Init()
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_Init)();
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxVOID orxDisplay_Exit()
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_Exit)();
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_Swap()
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_Swap)();
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVEC *_pvPos, orxARGB _stColor, orxCONST orxSTRING _zText)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_DrawText)(_pstBitmap, _pvPos, _stColor, _zText);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxBITMAP *orxDisplay_CreateBitmap(orxCONST orxVEC *_pvSize, orxU32 _u32Flags)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_CreateBitmap)(_pvSize, _u32Flags);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxVOID orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap)
+{
+  orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_DeleteBitmap)(_pstBitmap);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxBITMAP *orxDisplay_GetScreenBitmap()
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_GetScreenBitmap)();
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxARGB _stColor)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_ClearBitmap)(_pstBitmap, _stColor);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_TransformBitmap)(_pstDst, _pstSrc, _pstTransform, _u32Flags);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGB _stColor, orxBOOL _bEnable)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_SetBitmapColorKey)(_pstBitmap, _stColor, _bEnable);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxCONST orxVEC *_pvTL, orxCONST orxVEC *_pvBR)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_SetBitmapClipping)(_pstBitmap, _pvTL, _pvBR);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVEC *_pvDstCoord, orxCONST orxVEC *_pvSrcCoord, orxCONST orxVEC *_pvSize)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_BlitBitmap)(_pstDst, _pstSrc, _pvDstCoord, _pvSrcCoord, _pvSize);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFileName)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_SaveBitmap)(_pstBitmap, _zFileName);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileName)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_LoadBitmap)(_zFileName);
+}
+
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxVEC *_pvSize)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_GetBitmapSize)(_pstBitmap, _pvSize);
+}
+
 
 #endif /* _orxDISPLAY_H_ */
