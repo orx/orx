@@ -9,6 +9,8 @@
 
 /* *** TODO LIST
  * C Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, graph, hash table)
+ * - Rewrite include hierarchy / group includes/init/exit by module
+ * - Add unicode support
  * - Replace simple mallocs in written modules with banks
  * - Simplify structure module (everything controlled from there / no cross references?)
  * - Add BV/box module + extract AABox code from vector module
@@ -44,6 +46,7 @@
  * - Add FSM
  * - Add waypoint/way system
  * - Add physics
+ * - Add menu/ui plugin/support (???)
  * - Use a real task manager :)
  */
 
