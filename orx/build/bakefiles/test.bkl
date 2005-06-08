@@ -46,4 +46,9 @@
     <sources>test/orxTest_HashTable.c</sources>
   </module>
 
+  <module id="Sound" template="orxBASE,orxLINK,orxMODULELINK">
+    <dirname>bin/modules</dirname>
+    <sources>test/orxTest_Sound.c</sources>
+  </module>
+
 </bakefile>

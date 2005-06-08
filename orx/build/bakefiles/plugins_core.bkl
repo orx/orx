@@ -7,10 +7,22 @@
     <default-value>0</default-value>
   </option>
 
+  <option name="USE_FMOD">
+    <values>0,1</values>
+    <default-value>0</default-value>
+  </option>
+
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->
 
   <!-- SOUND -->
+
+	  <!-- Depends on fmod -->
+	  <module id="Sound_Fmod" cond="USE_FMOD=='1'" template="orxBASE,orxLINK,orxMODULELINK">
+	    <dirname>bin/plugins_core</dirname>
+	    <sources>plugins/Sound/Fmod/orxSound.c</sources>
+	  </module>
+
 
   <!-- MOUSE -->
 

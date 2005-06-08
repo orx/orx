@@ -31,6 +31,9 @@ LINK = static
 #  [0,1]
 USE_ALLEGRO = 0
 
+#  [0,1]
+USE_FMOD = 0
+
 
 
 # -------------------------------------------------------------------------
@@ -139,6 +142,14 @@ HASHTABLE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 HASHTABLE_OBJECTS =  \
 	.\build\$(BUILD)\HashTable_orxTest_HashTable.o
+SOUND_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
+SOUND_OBJECTS =  \
+	.\build\$(BUILD)\Sound_orxTest_Sound.o
+SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
+SOUND_FMOD_OBJECTS =  \
+	.\build\$(BUILD)\Sound_Fmod_orxSound.o
 MOUSE_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 MOUSE_ALLEGRO_OBJECTS =  \
@@ -179,6 +190,9 @@ orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm \
 endif
 ifeq ($(LINK),static)
 orxLDFLAGS_IMPLIB = -Wl,--export-all-symbols -Wl,--out-implib,lib\testbed.a
+endif
+ifeq ($(USE_FMOD),1)
+__Sound_Fmod___depname = bin\plugins_core\Sound_Fmod.dll
 endif
 ifeq ($(USE_ALLEGRO),1)
 __Mouse_Allegro___depname = bin\plugins_core\Mouse_Allegro.dll
@@ -227,7 +241,7 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\memory.dll bin\modules\bank.dll bin\modules\HashTable.dll $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin\plugins_core\Joystick_NONE.dll
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\memory.dll bin\modules\bank.dll bin\modules\HashTable.dll bin\modules\Sound.dll $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin\plugins_core\Joystick_NONE.dll
 
 clean: 
 	-if exist .\build\$(BUILD)\*.d del .\build\$(BUILD)\*.d
@@ -238,6 +252,8 @@ clean:
 	-if exist bin\modules\memory.dll del bin\modules\memory.dll
 	-if exist bin\modules\bank.dll del bin\modules\bank.dll
 	-if exist bin\modules\HashTable.dll del bin\modules\HashTable.dll
+	-if exist bin\modules\Sound.dll del bin\modules\Sound.dll
+	-if exist bin\plugins_core\Sound_Fmod.dll del bin\plugins_core\Sound_Fmod.dll
 	-if exist bin\plugins_core\Mouse_Allegro.dll del bin\plugins_core\Mouse_Allegro.dll
 	-if exist bin\plugins_core\Keyboard_Allegro.dll del bin\plugins_core\Keyboard_Allegro.dll
 	-if exist bin\plugins_core\Joystick_NONE.dll del bin\plugins_core\Joystick_NONE.dll
@@ -265,6 +281,14 @@ bin\modules\bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(HASHTABLE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+
+bin\modules\Sound.dll: $(SOUND_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(SOUND_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+
+ifeq ($(USE_FMOD),1)
+bin\plugins_core\Sound_Fmod.dll: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+endif
 
 ifeq ($(USE_ALLEGRO),1)
 bin\plugins_core\Mouse_Allegro.dll: $(MOUSE_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP)
@@ -512,6 +536,12 @@ bin\plugins_core\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_D
 
 .\build\$(BUILD)\HashTable_orxTest_HashTable.o: ./test/orxTest_HashTable.c
 	$(CC) -c -o $@ $(HASHTABLE_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\Sound_orxTest_Sound.o: ./test/orxTest_Sound.c
+	$(CC) -c -o $@ $(SOUND_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\Sound_Fmod_orxSound.o: ./plugins/Sound/Fmod/orxSound.c
+	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Mouse_Allegro_orxMouse.o: ./plugins/Mouse/Allegro/orxMouse.c
 	$(CC) -c -o $@ $(MOUSE_ALLEGRO_CFLAGS) $(CPPDEPS) $<
