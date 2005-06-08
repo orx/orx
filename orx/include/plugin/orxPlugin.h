@@ -43,51 +43,51 @@
 /** Initializes the plugin management engine.
  * \return orxSTATUS_SUCCESS/orxSTATUS_FAILED
  */
-extern orxDLLAPI orxSTATUS                      orxPlugin_Init();
+extern orxSTATUS orxDLLAPI                      orxPlugin_Init();
 
 /** Shuts down the plugin management engine.
  * \return nothing.
  */
-extern orxDLLAPI orxVOID                        orxPlugin_Exit();
+extern orxVOID orxDLLAPI                        orxPlugin_Exit();
 
 /** Loads a plugin.
  * \param _zPluginFileName  The complete path of the plugin file, including its extension.
  * \param _zPluginName      The name that the plugin will be given in the plugin list.
  * \return The plugin handle on success, orxHANDLE_Undefined on failure.
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName);
+extern orxHANDLE orxDLLAPI orxFASTCALL          orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName);
 
 /** Loads a plugin using OS common library extension.
  * \param _zPluginFileName  The complete path of the plugin file, without its library extension.
  * \param _zPluginName      The name that the plugin will be given in the plugin list.
  * \return The plugin handle on success, orxHANDLE_Undefined on failure.
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName);
+extern orxHANDLE orxDLLAPI orxFASTCALL          orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName);
 
 /** Unloads a plugin.
  * \param _hPluginHandle The handle of the plugin to unload.
  * \return orxSTATUS_SUCCESS/orxSTATUS_FAILED
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxPlugin_Unload(orxHANDLE _hPluginHandle);
+extern orxSTATUS orxDLLAPI orxFASTCALL          orxPlugin_Unload(orxHANDLE _hPluginHandle);
 
 /** Gets a function from a plugin.
  * \param _hPluginHandle The plugin handle.
  * \param _zFunctionName The name of the function to find.
  * \return orxPLUGIN_FUNCTION / orxNULL.
  */
-extern orxDLLAPI orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, orxCONST orxSTRING _zFunctionName);
+extern orxPLUGIN_FUNCTION orxDLLAPI orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, orxCONST orxSTRING _zFunctionName);
 
 /** Gets the handle of a plugin given its name.
  * \param _zPluginName The plugin name.
  * \return Its orxHANDLE / orxHANDLE_Undefined
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName);
+extern orxHANDLE orxDLLAPI orxFASTCALL          orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName);
 
 /** Gets the name of a plugin given its handle.
  * \param _hPluginHandle The plugin handle.
  * \return The plugin name / empty string if not found.
  */
-extern orxDLLAPI orxSTRING orxFASTCALL          orxPlugin_GetName(orxHANDLE _hPluginHandle);
+extern orxSTRING orxDLLAPI orxFASTCALL          orxPlugin_GetName(orxHANDLE _hPluginHandle);
 
 
 #endif /* _orxPLUGIN_H_ */

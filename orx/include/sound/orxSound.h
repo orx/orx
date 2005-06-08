@@ -53,7 +53,7 @@ typedef struct __orxSOUND_SAMPLE_t orxSOUND_SAMPLE;
 
 /** Function that initialize the Sound plugin module
  */
-extern orxDLLAPI orxVOID          orxFASTCALL orxSound_Plugin_Init();
+extern orxVOID orxDLLAPI orxFASTCALL orxSound_Plugin_Init();
 
 /***************************************************************************
  * Functions extended by plugins
