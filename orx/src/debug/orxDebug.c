@@ -130,7 +130,7 @@ orxSTATUS _orxDebug_Init()
   orxU8 *pu8;
 
   /* Already Initialized? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_CONTROL_FLAG_READY)
+  if(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY)
   {
     /* !!! MSG !!! */
 
@@ -157,6 +157,9 @@ orxSTATUS _orxDebug_Init()
 
   /* Inits default debug flags */
   sstDebug.u32DebugFlags  = orxDEBUG_KU32_FLAG_DEFAULT;
+  
+  /* Set module as initialized */
+  sstDebug.u32Flags       = orxDEBUG_KU32_CONTROL_FLAG_READY;
 
   /* Done! */
   return orxSTATUS_SUCCESS;
