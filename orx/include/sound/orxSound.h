@@ -1,24 +1,3 @@
-/**
- * @file orxSound.h
- * 
- * Module for sound management.
- * 
- * @todo Add Stream management and 3D sounds in the API
- */ 
-
-/***************************************************************************
- orxSound.h
-
- begin                : 23/07/2002
- API updated            14/11/2003
- API updated            17/05/2005
-
- author               : (C) Arcallians
- email                : snegri@free.fr
-                        iarwain@arcallians.org
-                        bestel@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,6 +6,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file
+ * @date begin       : 23/07/2002
+ * @date API updated : 14/11/2003
+ * @date API updated : 17/05/2005
+ * @author (C) Arcallians
+ * 
+ * @todo Add Stream management and 3D sounds in the API
+ */ 
+ 
+/**
+ * @addtogroup Sound
+ * Module for sound management.
+ * @{
+ */
 
 #ifndef _orxSOUND_H_
 #define _orxSOUND_H_
@@ -37,15 +32,15 @@
 typedef struct __orxSOUND_SAMPLE_t orxSOUND_SAMPLE;
 
 /* Define Channels Values */
-#define orxSOUND_CHANNEL_KU32_NUMBER      4096 /* Max number of channel */
-#define orxSOUND_CHANNEL_KU32_SELECT_FREE 4097 /* Automatically select a free channel */
-#define orxSOUND_CHANNEL_KU32_SELECT_ALL  4098 /* Select all channels at the same time */
-#define orxSOUND_CHANNEL_KU32_ERROR       4099 /* Error returned by play if channel can not be used */
+#define orxSOUND_CHANNEL_KU32_NUMBER      4096 /**< Max number of channel */
+#define orxSOUND_CHANNEL_KU32_SELECT_FREE 4097 /**< Automatically select a free channel */
+#define orxSOUND_CHANNEL_KU32_SELECT_ALL  4098 /**< Select all channels at the same time */
+#define orxSOUND_CHANNEL_KU32_ERROR       4099 /**< Error returned by play if channel can not be used */
 
 /* Define sample flags */
-#define orxSOUND_SAMPLE_KU32_STARTED      0x00000001 /* Sample started by play */
-#define orxSOUND_SAMPLE_KU32_PAUSED       0x00000002 /* Sample paused */
-#define orxSOUND_SAMPLE_KU32_LOOP         0x00000004 /* Sample loop */
+#define orxSOUND_SAMPLE_KU32_STARTED      0x00000001 /**< Sample started by play */
+#define orxSOUND_SAMPLE_KU32_PAUSED       0x00000002 /**< Sample paused */
+#define orxSOUND_SAMPLE_KU32_LOOP         0x00000004 /**< Sample loop */
 
 /***************************************************************************
  * Functions directly implemented by orx core
@@ -87,7 +82,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_Exit()
 }
 
 /** Load a sample From a file
- * @param _zFileName        (IN)  File name to load
+ * @param[in] _zFileName        File name to load
  * @return Returns a sample
  */
 orxSTATIC orxINLINE orxSOUND_SAMPLE* orxDLLAPI orxSound_SampleLoadFromFile(orxCONST orxSTRING _zFileName)
@@ -96,8 +91,8 @@ orxSTATIC orxINLINE orxSOUND_SAMPLE* orxDLLAPI orxSound_SampleLoadFromFile(orxCO
 }
 
 /** Load a sample From memory
- * @param _pMem             (IN)  Memory address where is stored the sample
- * @param _u32Size          (IN)  Size of the data block to load
+ * @param[in] _pMem             Memory address where is stored the sample
+ * @param[in] _u32Size          Size of the data block to load
  * @return Returns a pointer on the loaded sample
  */
 orxSTATIC orxINLINE orxSOUND_SAMPLE* orxDLLAPI orxSound_SampleLoadFromMemory(orxCONST orxVOID *_pMem, orxU32 _u32Size)
@@ -106,7 +101,7 @@ orxSTATIC orxINLINE orxSOUND_SAMPLE* orxDLLAPI orxSound_SampleLoadFromMemory(orx
 }
 
 /** Unload a sample
- * @param _pstSample        (IN)  Pointer on the sample to unload
+ * @param[in] _pstSample        Pointer on the sample to unload
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_SampleUnload(orxSOUND_SAMPLE *_pstSample)
 {
@@ -114,8 +109,8 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_SampleUnload(orxSOUND_SAMPLE *_ps
 }
 
 /** Play a sample
- * @param _u32Channel       (IN)  Channel to use (from 0 to 4096). flags can be used to automatically select a free chanel or all the channel
- * @param _pstSample        (IN)  Sample to play
+ * @param[in] _u32Channel       Channel to use (from 0 to 4096). flags can be used to automatically select a free chanel or all the channel
+ * @param[in] _pstSample        Sample to play
  * @return Returns the channel used by the sample or orxSOUND_CHANNEL_KU32_ERROR if no channel available
  */
 orxSTATIC orxINLINE orxU32 orxDLLAPI orxSound_PlaySample(orxU32 _u32Channel, orxSOUND_SAMPLE *_pstSample)
@@ -124,7 +119,7 @@ orxSTATIC orxINLINE orxU32 orxDLLAPI orxSound_PlaySample(orxU32 _u32Channel, orx
 }
 
 /** Stop a sample
- * @param _u32Channel       (IN)  Channel to stop (orxSOUND_CHANNEL_KU32_SELECT_ALL can be used to stop all channels)
+ * @param[in] _u32Channel       Channel to stop (orxSOUND_CHANNEL_KU32_SELECT_ALL can be used to stop all channels)
  * @return Returns the status of the operation
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_Stop(orxU32 _u32Channel)
@@ -133,8 +128,8 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_Stop(orxU32 _u32Channel)
 }
 
 /** Pause/UnPause a sample
- * @param _u32Channel       (IN)  Channel to pause
- * @param _bPause           (IN)  Pause the channel
+ * @param[in] _u32Channel       Channel to pause
+ * @param[in] _bPause           Pause the channel
  * @return Returns the status of the operation
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_Pause(orxU32 _u32Channel, orxBOOL _bPause)
@@ -143,8 +138,8 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_Pause(orxU32 _u32Channel, orxBO
 }
 
 /** Test Sample flags
- * @param _u32Channel       (IN)  Channel to test
- * @param _u32FlagsToTest   (IN)  Flags to tests
+ * @param[in] _u32Channel       Channel to test
+ * @param[in] _u32FlagsToTest   Flags to tests
  * @return orxTRUE if tested flags are present
  */
 orxSTATIC orxINLINE orxBOOL orxDLLAPI orxSound_TestFlags(orxU32 _u32Channel, orxU32 _u32FlagsToTest)
@@ -153,9 +148,9 @@ orxSTATIC orxINLINE orxBOOL orxDLLAPI orxSound_TestFlags(orxU32 _u32Channel, orx
 }
 
 /** Set Sample flags
- * @param _u32Channel       (IN)  Channel to set
- * @param _u32FlagsToRemove (IN)  Flags to remove
- * @param _u32FlagsToRemove (IN)  Flags to add
+ * @param[in] _u32Channel       Channel to set
+ * @param[in] _u32FlagsToRemove Flags to remove
+ * @param[in] _u32FlagsToRemove Flags to add
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_SetFlags(orxU32 _u32Channel, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
 {
@@ -163,8 +158,8 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_SetFlags(orxU32 _u32Channel, orxU
 }
 
 /** Set Channel volume
- * @param _u32Channel       (IN)  Channel to use
- * @param _u8Volume         (IN)  New volume
+ * @param[in] _u32Channel       Channel to use
+ * @param[in] _u8Volume         New volume
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_SetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
 {
@@ -172,3 +167,5 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_SetVolume(orxU32 _u32Channel, orx
 }
 
 #endif /* _orxSOUND_H_ */
+
+/** @} */

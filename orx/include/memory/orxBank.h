@@ -14,6 +14,7 @@
  * 
  * @todo Optimizations.
  */
+
 /**
  * @addtogroup Bank
  * 
