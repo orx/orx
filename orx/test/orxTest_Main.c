@@ -35,7 +35,7 @@
 #include "utils/orxTest.h"
 #include "utils/orxString.h"
 #include "io/orxTextIO.h"
-
+#include "plugin/orxPlugin.h"
 
 /* Include commons libc header */
 #include <stdlib.h>
@@ -283,6 +283,7 @@ int main(int argc, char **argv)
   orxTest_Init();       /* Test Module is necessary to register test function */
   orxString_Init();     /* String mdule to manage string (and read value from user) */
   orxTextIO_Init();     /* Text IO module to manage user input/output */
+  orxPlugin_Init();
   orxTestMain_Init();   /* Initialise application (load dynamic library */
   
   /* Display menu and get user entry */
@@ -332,6 +333,7 @@ int main(int argc, char **argv)
   
   /* Uninitialize modules */
   orxTestMain_Exit();
+  orxPlugin_Exit();
   orxTextIO_Exit();
   orxString_Exit();
   orxTest_Exit();
