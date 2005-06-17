@@ -72,7 +72,7 @@ orxVOID orxTest_Sound_Infos()
 
 /** Load a sample in memory from a file
  */
-orxVOID orxTest_Sound_LoadSampleFromFile()
+orxVOID orxTest_Sound_SampleLoadFromFile()
 {
   orxTEST_SOUND_SAMPLE_INFOS stSampleInfos;   /* Local sample infos */
   orxTEST_SOUND_SAMPLE_INFOS *pstSampleInfos; /* Stored sample infos */
@@ -109,7 +109,7 @@ orxVOID orxTest_Sound_LoadSampleFromFile()
 
 /** Unload a sample
  */
-orxVOID orxTest_Sound_UnloadSample()
+orxVOID orxTest_Sound_SampleUnload()
 {
   orxS32 s32SampleID;                           /* Sample ID to read from user */
   orxTEST_SOUND_SAMPLE_INFOS *pstSampleInfos;   /* Sample infos */
@@ -144,7 +144,7 @@ orxVOID orxTest_Sound_UnloadSample()
 
 /** Send a sample on a chanel
  */
-orxVOID orxTest_Sound_PlaySample()
+orxVOID orxTest_Sound_SamplePlay()
 {
   orxS32 s32Channel;                            /* Channel to use */
   orxS32 s32SampleID;                           /* Sample ID to read from user */
@@ -172,7 +172,7 @@ orxVOID orxTest_Sound_PlaySample()
     
     /* Try to play the sample */
     orxTextIO_PrintLn("Trying to play %s...", pstSampleInfos->zFileName);
-    s32Channel = orxSound_PlaySample(s32Channel, pstSampleInfos->pstSample);
+    s32Channel = orxSound_SamplePlay(s32Channel, pstSampleInfos->pstSample);
     
     if (s32Channel != orxSOUND_CHANNEL_KU32_ERROR)
     {
@@ -191,7 +191,7 @@ orxVOID orxTest_Sound_PlaySample()
 
 /** Stop a chanel
  */
-orxVOID orxTest_Sound_Stop()
+orxVOID orxTest_Sound_ChannelStop()
 {
   orxS32 s32Channel;  /* Channel to use */
 
@@ -203,7 +203,7 @@ orxVOID orxTest_Sound_Stop()
   orxTextIO_PrintLn("%d is a special number that will stop all the channels", orxSOUND_CHANNEL_KU32_SELECT_ALL);
   orxTextIO_ReadS32InRange(&s32Channel, 10, 0, orxSOUND_CHANNEL_KU32_SELECT_ALL, "Channel : ", orxTRUE);
   
-  if (orxSound_Stop(s32Channel) != orxSTATUS_FAILED)
+  if (orxSound_ChannelStop(s32Channel) != orxSTATUS_FAILED)
   {
     /* Operation succeded */
     orxTextIO_PrintLn("Channel(s) stopped");
@@ -217,7 +217,7 @@ orxVOID orxTest_Sound_Stop()
 
 /** Pause a chanel
  */
-orxVOID orxTest_Sound_Pause()
+orxVOID orxTest_Sound_ChannelPause()
 {
   orxS32 s32Channel;  /* Channel to use */
 
@@ -231,21 +231,21 @@ orxVOID orxTest_Sound_Pause()
   orxTextIO_ReadS32InRange(&s32Channel, 10, 0, orxSOUND_CHANNEL_KU32_SELECT_ALL, "Channel : ", orxTRUE);
 
   /* Is it already paused ? */
-  if (orxSound_TestFlags(s32Channel, orxSOUND_SAMPLE_KU32_PAUSED) == orxSOUND_SAMPLE_KU32_PAUSED)
+  if (orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
   {
     /* Yes, unpause it */
-    orxSound_Pause(s32Channel, orxFALSE);
+    orxSound_ChannelPause(s32Channel, orxFALSE);
   }
   else
   {
     /* Not paused, pause it */
-    orxSound_Pause(s32Channel, orxTRUE);
+    orxSound_ChannelPause(s32Channel, orxTRUE);
   }
 }
 
 /** Show chanel flags
  */
-orxVOID orxTest_Sound_ShowFlags()
+orxVOID orxTest_Sound_ChannelShowFlags()
 {
   orxS32 s32Channel;  /* Channel to use */
 
@@ -260,7 +260,7 @@ orxVOID orxTest_Sound_ShowFlags()
   
   /* Channel started ? */
   orxTextIO_Print("SAMPLE STARTED : ");
-  if (orxSound_TestFlags(s32Channel, orxSOUND_SAMPLE_KU32_STARTED) == orxSOUND_SAMPLE_KU32_STARTED)
+  if (orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_STARTED) == orxSOUND_STATE_KU32_STARTED)
   {
     orxTextIO_PrintLn("YES");
   }
@@ -271,7 +271,7 @@ orxVOID orxTest_Sound_ShowFlags()
   
   /* Channel paused ? */
   orxTextIO_Print("SAMPLE PAUSED : ");
-  if (orxSound_TestFlags(s32Channel, orxSOUND_SAMPLE_KU32_PAUSED) == orxSOUND_SAMPLE_KU32_PAUSED)
+  if (orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
   {
     orxTextIO_PrintLn("YES");
   }
@@ -282,7 +282,7 @@ orxVOID orxTest_Sound_ShowFlags()
   
   /* Channel loop ? */
   orxTextIO_Print("SAMPLE LOOP : ");
-  if (orxSound_TestFlags(s32Channel, orxSOUND_SAMPLE_KU32_LOOP) == orxSOUND_SAMPLE_KU32_LOOP)
+  if (orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_LOOP) == orxSOUND_STATE_KU32_LOOP)
   {
     orxTextIO_PrintLn("YES");
   }
@@ -294,7 +294,7 @@ orxVOID orxTest_Sound_ShowFlags()
 
 /** Set new chanel flags
  */
-orxVOID orxTest_Sound_SetFlags()
+orxVOID orxTest_Sound_ChannelSetFlags()
 {
   orxS32 s32Channel;  /* Channel to use */
   orxS32 s32Flags;    /* Flags to set */
@@ -308,18 +308,18 @@ orxVOID orxTest_Sound_SetFlags()
   
   /* Read the flags to set */
   orxTextIO_PrintLn("Available flags list :");
-  orxTextIO_PrintLn("orxSOUND_SAMPLE_KU32_STARTED = %08x", orxSOUND_SAMPLE_KU32_STARTED);
-  orxTextIO_PrintLn("orxSOUND_SAMPLE_KU32_PAUSED = %08x", orxSOUND_SAMPLE_KU32_PAUSED);
-  orxTextIO_PrintLn("orxSOUND_SAMPLE_KU32_LOOP = %08x", orxSOUND_SAMPLE_KU32_LOOP);
+  orxTextIO_PrintLn("orxSOUND_STATE_KU32_STARTED = %08x", orxSOUND_STATE_KU32_STARTED);
+  orxTextIO_PrintLn("orxSOUND_STATE_KU32_PAUSED = %08x", orxSOUND_STATE_KU32_PAUSED);
+  orxTextIO_PrintLn("orxSOUND_STATE_KU32_LOOP = %08x", orxSOUND_STATE_KU32_LOOP);
   orxTextIO_ReadS32(&s32Flags, 10, "Flags to set on the channel : ", orxTRUE);
 
   /* Remove all flags and set new ones */
-  orxSound_SetFlags(s32Channel, 0xFFFFFFFF, s32Flags);
-}
+  orxSound_ChannelSetFlags(s32Channel, 0xFFFFFFFF, s32Flags);
+} 
 
 /** Set sound volume (on a chanel)
  */
-orxVOID orxTest_Sound_SetVolume()
+orxVOID orxTest_Sound_ChannelSetVolume()
 {
   orxS32 s32Channel;  /* Channel to use */
   orxS32 s32Volume;   /* new channel volume */
@@ -335,7 +335,7 @@ orxVOID orxTest_Sound_SetVolume()
   orxTextIO_ReadS32InRange(&s32Volume, 10, 0, 255, "Enter the volume to set : ", orxTRUE);
   
   /* Set the new volume */
-  orxSound_SetVolume(s32Channel, (orxU8)s32Volume);
+  orxSound_ChannelSetVolume(s32Channel, (orxU8)s32Volume);
 }
 
 /******************************************************
@@ -349,14 +349,14 @@ orxVOID orxTest_Sound_Init()
   
   /* Register test functions */
   orxTest_Register("Sound", "Display module informations", orxTest_Sound_Infos);
-  orxTest_Register("Sound", "Load a sample from a file", orxTest_Sound_LoadSampleFromFile);
-  orxTest_Register("Sound", "Unload a sample", orxTest_Sound_UnloadSample);
-  orxTest_Register("Sound", "Play a sample to a chanel", orxTest_Sound_PlaySample);
-  orxTest_Register("Sound", "Stop a chanel", orxTest_Sound_Stop);
-  orxTest_Register("Sound", "Pause a chanel", orxTest_Sound_Pause);
-  orxTest_Register("Sound", "Show chanel flags", orxTest_Sound_ShowFlags);
-  orxTest_Register("Sound", "Set chanel flags", orxTest_Sound_SetFlags);
-  orxTest_Register("Sound", "Set chanel volume", orxTest_Sound_SetVolume);
+  orxTest_Register("Sound", "Load a sample from a file", orxTest_Sound_SampleLoadFromFile);
+  orxTest_Register("Sound", "Unload a sample", orxTest_Sound_SampleUnload);
+  orxTest_Register("Sound", "Play a sample to a chanel", orxTest_Sound_SamplePlay);
+  orxTest_Register("Sound", "Stop a chanel", orxTest_Sound_ChannelStop);
+  orxTest_Register("Sound", "Pause a chanel", orxTest_Sound_ChannelPause);
+  orxTest_Register("Sound", "Show chanel flags", orxTest_Sound_ChannelShowFlags);
+  orxTest_Register("Sound", "Set chanel flags", orxTest_Sound_ChannelSetFlags);
+  orxTest_Register("Sound", "Set chanel volume", orxTest_Sound_ChannelSetVolume);
   
   /* Initialize static datas */
   orxMemory_Set(&sstTest_Sound, 0, sizeof(orxTEST_SOUND));
