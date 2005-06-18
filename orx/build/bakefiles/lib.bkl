@@ -40,6 +40,7 @@
             src/io/orxTextIO.c
         </sources>
         <sources>
+            src/math/orxSets.c
             src/math/orxVec.c
         </sources>
         <sources>
@@ -61,6 +62,7 @@
             src/sound/orxSound.c
         </sources>
         <sources>
+            src/utils/orxBayes.c
             src/utils/orxHashTable.c
             src/utils/orxLinkList.c
             src/utils/orxTest.c
