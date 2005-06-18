@@ -80,6 +80,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxMouse.o \
 	./build/$(BUILD)/orxDLL_orxPackage.o \
 	./build/$(BUILD)/orxDLL_orxTextIO.o \
+	./build/$(BUILD)/orxDLL_orxSets.o \
 	./build/$(BUILD)/orxDLL_orxVec.o \
 	./build/$(BUILD)/orxDLL_orxBank.o \
 	./build/$(BUILD)/orxDLL_orxMemory.o \
@@ -89,6 +90,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxPlugin.o \
 	./build/$(BUILD)/orxDLL_orxScript.o \
 	./build/$(BUILD)/orxDLL_orxSound.o \
+	./build/$(BUILD)/orxDLL_orxBayes.o \
 	./build/$(BUILD)/orxDLL_orxHashTable.o \
 	./build/$(BUILD)/orxDLL_orxLinkList.o \
 	./build/$(BUILD)/orxDLL_orxTest.o \
@@ -121,6 +123,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxMouse.o \
 	./build/$(BUILD)/orxLIB_orxPackage.o \
 	./build/$(BUILD)/orxLIB_orxTextIO.o \
+	./build/$(BUILD)/orxLIB_orxSets.o \
 	./build/$(BUILD)/orxLIB_orxVec.o \
 	./build/$(BUILD)/orxLIB_orxBank.o \
 	./build/$(BUILD)/orxLIB_orxMemory.o \
@@ -130,6 +133,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxPlugin.o \
 	./build/$(BUILD)/orxLIB_orxScript.o \
 	./build/$(BUILD)/orxLIB_orxSound.o \
+	./build/$(BUILD)/orxLIB_orxBayes.o \
 	./build/$(BUILD)/orxLIB_orxHashTable.o \
 	./build/$(BUILD)/orxLIB_orxLinkList.o \
 	./build/$(BUILD)/orxLIB_orxTest.o \
@@ -407,6 +411,9 @@ bin/plugins_core/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DE
 ./build/$(BUILD)/orxDLL_orxTextIO.o: ./src/io/orxTextIO.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxDLL_orxSets.o: ./src/math/orxSets.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxDLL_orxVec.o: ./src/math/orxVec.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -432,6 +439,9 @@ bin/plugins_core/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DE
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxSound.o: ./src/sound/orxSound.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/orxDLL_orxBayes.o: ./src/utils/orxBayes.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxHashTable.o: ./src/utils/orxHashTable.c
@@ -518,6 +528,9 @@ bin/plugins_core/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DE
 ./build/$(BUILD)/orxLIB_orxTextIO.o: ./src/io/orxTextIO.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxLIB_orxSets.o: ./src/math/orxSets.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxLIB_orxVec.o: ./src/math/orxVec.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -543,6 +556,9 @@ bin/plugins_core/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DE
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxSound.o: ./src/sound/orxSound.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/orxLIB_orxBayes.o: ./src/utils/orxBayes.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxHashTable.o: ./src/utils/orxHashTable.c
