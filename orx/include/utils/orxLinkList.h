@@ -31,6 +31,51 @@
 #ifndef _orxLINKLIST_H_
 #define _orxLINKLIST_H_
 
+/**
+ * @addtogroup LinkList
+ * 
+ * @{
+ *
+ * @section linklist Link List - How to.
+ * This module provide an easy and powerfull interface to manipulate link lists.
+ *
+ * @subsection linklist_datadefine Data definition.
+ * You can define a data to store :
+ * @code
+ * typedef struct __orxFOO_t
+ * {
+ *   orxU32 u32Data;        Data to store.
+ * } orxFOO;
+ * @endcode
+ *
+ * @subsection linklist_dataalloc Data without link.
+ * You can define an allocation place to store data:
+ * @code
+ * orxBANK *pstBank = orxBank_Create(10, sizeof(orxFOO), 0, orxMEMORY_TYPE_MAIN);
+ * @endcode
+ * And you can allocate a memory cel :
+ * @code
+ * orxTRUC *pstNode = (orxFOO *)orxBank_Allocate(pstBank);
+ * pstNode->u32Data = 205;
+ * @endcode
+ * So you can allocate an manipulate data. But no link list manipulation is define.
+ * @subsection linklist_realalloc Real link list item definition.
+ * In order to use link list functions, you can (must) define your structure with an orxLINKLIST_NODE member at its begining :
+ * @code
+ * typedef struct __orxFOO_t
+ * {
+ *  orxLINKLIST_NODE stNode;
+ *  orxU32 u32Data;
+ * } orxFOO;
+ * @endcode
+ * @subsection linklist_realuse Use of link list.
+ * Now you can use a list with your own list items :
+ * @code
+ * orxLINKLIST stList;
+ * orxLinkList_AddEnd(&stList, (orxLINKLIST_NODE *)pstNode);
+ * @endcode
+ * @note As the first member of your item structure, you can cast your structure to orxLINKLIST_NODE and reciprocally.
+ */
 
 #include "orxInclude.h"
 
@@ -153,5 +198,7 @@ orxSTATIC orxINLINE orxU32            orxLinkList_GetCounter(orxLINKLIST *_pstLi
   return(_pstList->u32Counter);
 }
 
+
+/** @} */
 
 #endif /* _orxLINKLIST_H_ */
