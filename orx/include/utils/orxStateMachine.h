@@ -22,10 +22,10 @@
  * Allows to create state machines, for various purposes.
  * @{
  */
- 
+
 #ifndef _orxSTATEMACHINE_H_
 #define _orxSTATEMACHINE_H_
- 
+
 #include "orxInclude.h"
 #include "memory/orxMemory.h"
 
@@ -73,10 +73,10 @@ typedef enum __orxSTATEMACHINE_STATE_TYPE_t
  ***************************************************************************/
 
 /** Action pointer for state machines. */
-typedef orxVOID (*orxSTATEMACHINE_ACTION_PTR)(void);
+typedef orxVOID (*orxSTATEMACHINE_ACTION_PTR)(orxVOID);
 
 /** condition pointer for state machines. */
-typedef orxBOOL (*orxSTATEMACHINE_CONDITION_PTR)(void);
+typedef orxBOOL (*orxSTATEMACHINE_CONDITION_PTR)(orxVOID);
 
 
 /***************************************************************************
@@ -107,10 +107,10 @@ extern orxDLLAPI orxVOID                    orxStateMachine_Clear(orxSTATEMACHIN
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _u16Id                Identifier for the state.
  * @param[in] _eStateType           Type of state.
- * @param[in] _pAction              Action callback.
+ * @param[in] _cbAction             Action callback.
  * @return Returns the new state.
  */
-extern orxDLLAPI orxSTATEMACHINE_STATE *    orxStateMachine_State_Add(orxSTATEMACHINE * _pstStateMachine, orxU16 _u16Id, orxSTATEMACHINE_STATE_TYPE _eStateType, orxSTATEMACHINE_ACTION_PTR _pAction);
+extern orxDLLAPI orxSTATEMACHINE_STATE *    orxStateMachine_State_Add(orxSTATEMACHINE * _pstStateMachine, orxU16 _u16Id, orxSTATEMACHINE_STATE_TYPE _eStateType, orxSTATEMACHINE_ACTION_PTR _cbAction);
 
 /** Find a state.
  * @param[in] _pstStateMachine      The state machine.
@@ -130,11 +130,11 @@ extern orxDLLAPI orxSTATUS                  orxStateMachine_State_Remove(orxSTAT
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _pstBeginningState    The state marking the beginning of the link.
  * @param[in] _pstEndingState       The state marking the ending of the link.
- * @param[in] _pCondition           Condition callback.
- * @param[in] _pAction              Action callback.
+ * @param[in] _cbCondition          Condition callback.
+ * @param[in] _cbAction             Action callback.
  * @return Returns the new link.
  */
-extern orxDLLAPI orxSTATEMACHINE_LINK *     orxStateMachine_Link_Add(orxSTATEMACHINE * _pstStateMachine, orxSTATEMACHINE_STATE * _pstBeginningState, orxSTATEMACHINE_STATE * _pstEndingState, orxSTATEMACHINE_CONDITION_PTR _pCondition, orxSTATEMACHINE_ACTION_PTR _pAction);
+extern orxDLLAPI orxSTATEMACHINE_LINK *     orxStateMachine_Link_Add(orxSTATEMACHINE * _pstStateMachine, orxSTATEMACHINE_STATE * _pstBeginningState, orxSTATEMACHINE_STATE * _pstEndingState, orxSTATEMACHINE_CONDITION_PTR _cbCondition, orxSTATEMACHINE_ACTION_PTR _cbAction);
 
 /** Find a link.
  * @param[in] _pstStateMachine      The state machine.

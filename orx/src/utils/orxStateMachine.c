@@ -252,7 +252,7 @@ orxVOID orxStateMachine_Clear(orxSTATEMACHINE * _pstStateMachine)
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _u16Id                Identifier for the state.
  * @param[in] _eStateType           Type of state.
- * @param[in] _cbAction              Action callback.
+ * @param[in] _cbAction             Action callback.
  * @return Returns the new state.
  */
 orxSTATEMACHINE_STATE * orxStateMachine_State_Add(orxSTATEMACHINE * _pstStateMachine, orxU16 _u16Id, orxSTATEMACHINE_STATE_TYPE _eStateType, orxSTATEMACHINE_ACTION_PTR _cbAction)
@@ -379,8 +379,8 @@ orxSTATUS orxStateMachine_State_Remove(orxSTATEMACHINE * _pstStateMachine, orxST
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _pstBeginningState    The state marking the beginning of the link.
  * @param[in] _pstEndingState       The state marking the ending of the link.
- * @param[in] _cbCondition           Condition callback.
- * @param[in] _cbAction              Action callback.
+ * @param[in] _cbCondition          Condition callback.
+ * @param[in] _cbAction             Action callback.
  * @return Returns the new link.
  */
 orxSTATEMACHINE_LINK * orxStateMachine_Link_Add(orxSTATEMACHINE * _pstStateMachine, orxSTATEMACHINE_STATE * _pstBeginningState, orxSTATEMACHINE_STATE * _pstEndingState, orxSTATEMACHINE_CONDITION_PTR _cbCondition, orxSTATEMACHINE_ACTION_PTR _cbAction)
