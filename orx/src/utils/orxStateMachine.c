@@ -519,7 +519,7 @@ orxVOID orxStateMachine_Link_Clear(orxSTATEMACHINE * _pstStateMachine)
  * @param[in] _pstState             The current state.
  * @return Returns the next state by following a link (and executes respective callbacks). If _pstState is orxNULL, the initial state will be returned (and its callback executed). Returns orxNULL when no more state can be returned.
  */
-orxSTATEMACHINE_STATE * orxStateMachine_Link_GetNext(orxSTATEMACHINE * _pstStateMachine, orxSTATEMACHINE_STATE * _pstState)
+orxSTATEMACHINE_STATE * orxStateMachine_State_GetNext(orxSTATEMACHINE * _pstStateMachine, orxSTATEMACHINE_STATE * _pstState)
 {
   orxSTATEMACHINE_STATE * pstTestedState;             /* Tested state. */
   orxSTATEMACHINE_LINK * pstLink;                     /* Explored link. */

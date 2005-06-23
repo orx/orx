@@ -161,7 +161,7 @@ extern orxDLLAPI orxVOID                  orxStateMachine_Link_Clear(orxSTATEMAC
  * @param[in] _pstState             The current state.
  * @return Returns the next state by following a link (and executes respective callbacks). If _pstState is orxNULL, the initial state will be returned (and its callback executed). Returns orxNULL when no more state can be returned.
  */
-extern orxDLLAPI orxSTATEMACHINE_STATE *    orxStateMachine_Link_GetNext(orxSTATEMACHINE * _pstStateMachine, orxSTATEMACHINE_STATE * _pstState);
+extern orxDLLAPI orxSTATEMACHINE_STATE *    orxStateMachine_State_GetNext(orxSTATEMACHINE * _pstStateMachine, orxSTATEMACHINE_STATE * _pstState);
 
 
 #endif /** _orxSTATEMACHINE_H_ */
