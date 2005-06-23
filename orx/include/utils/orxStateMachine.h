@@ -96,7 +96,7 @@ extern orxDLLAPI orxSTATEMACHINE *          orxStateMachine_Create(orxU16 _u16Nb
  * @param[in] _pstStateMachine      The state machine to remove.
  * @return Returns the status of the operation.
  */
-extern orxDLLAPI orxVOID                    orxStateMachine_Delete(orxSTATEMACHINE * _pstStateMachine);
+extern orxDLLAPI orxSTATUS                  orxStateMachine_Delete(orxSTATEMACHINE * _pstStateMachine);
 
 /** Clear a state machine
  * @param[in] _pstStateMachine      The state machine to clear.

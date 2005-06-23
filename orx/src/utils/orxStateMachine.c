@@ -209,8 +209,10 @@ orxSTATEMACHINE * orxStateMachine_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks
  * @param[in] _pstStateMachine      The state machine to remove.
  * @return Returns the status of the operation.
  */
-orxVOID orxStateMachine_Delete(orxSTATEMACHINE * _pstStateMachine)
+orxSTATUS orxStateMachine_Delete(orxSTATEMACHINE * _pstStateMachine)
 {
+  orxSTATUS eStatus = orxSTATUS_SUCCESS;  /* Status to return. */
+  
   /* Module initialized? */
   orxASSERT((sstStateMachine.u32Flags & orxSTATEMACHINE_KU32_FLAG_READY) == orxSTATEMACHINE_KU32_FLAG_READY);
   
@@ -221,13 +223,42 @@ orxVOID orxStateMachine_Delete(orxSTATEMACHINE * _pstStateMachine)
   orxStateMachine_Clear(_pstStateMachine);
   
   /* Free banks and hash tables. */
-  orxBank_Delete(_pstStateMachine->pstStatesBank);
-  orxHashTable_Delete(_pstStateMachine->pstStatesHashTable);
-  orxBank_Delete(_pstStateMachine->pstLinksBank);
-  orxHashTable_Delete(_pstStateMachine->pstLinksHashTable);
+  if (_pstStateMachine->pstStatesBank != orxNULL)
+  {
+    orxBank_Delete(_pstStateMachine->pstStatesBank);
+    _pstStateMachine->pstStatesBank = orxNULL;
+  }
+  else
+    eStatus = orxSTATUS_FAILED;
+  
+  if (_pstStateMachine->pstStatesHashTable != orxNULL)
+  {
+    orxHashTable_Delete(_pstStateMachine->pstStatesHashTable);
+    _pstStateMachine->pstStatesHashTable = orxNULL;
+  }
+  else
+    eStatus = orxSTATUS_FAILED;
+  
+  if (_pstStateMachine->pstLinksBank != orxNULL)
+  {
+    orxBank_Delete(_pstStateMachine->pstLinksBank);
+    _pstStateMachine->pstLinksBank = orxNULL;
+  }
+  else
+    eStatus = orxSTATUS_FAILED;
+  
+  if (_pstStateMachine->pstLinksHashTable != orxNULL)
+  {
+    orxHashTable_Delete(_pstStateMachine->pstLinksHashTable);
+    _pstStateMachine->pstLinksHashTable = orxNULL;
+  }
+  else
+    eStatus = orxSTATUS_FAILED;
   
   /* Unallocate memory. */
   orxMemory_Free(_pstStateMachine);
+  
+  return eStatus;
 }
 
 /** Clear a state machine
