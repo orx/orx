@@ -201,12 +201,9 @@ orxVOID orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 
 /** Clear a hash table.
  * @param _pstHashTable (IN) Hash table to clear.
- * @return Returns the status of the operation.
  */
-orxSTATUS orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
+orxVOID orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
 {
-  orxSTATUS eStatus = orxSTATUS_SUCCESS; /* Returned status */
-  
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY) == orxHASHTABLE_KU32_FLAG_READY);
 
@@ -218,9 +215,6 @@ orxSTATUS orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
   
   /* Clear the hash */
   orxMemory_Set(_pstHashTable->apstCell, 0, sizeof(_pstHashTable->apstCell));
-  
-  /* Done ! */
-  return eStatus;
 }
 
 /** @name HashTable key manipulation.

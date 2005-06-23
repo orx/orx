@@ -65,9 +65,8 @@ extern orxDLLAPI orxVOID orxHashTable_Delete(orxHASHTABLE *_pstHashTable);
 
 /** Clear a hash table.
  * @param _pstHashTable (IN) Hash table to clear.
- * @return Returns the status of the operation.
  */
-extern orxDLLAPI orxSTATUS orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxVOID orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
 /** @} */
 
 

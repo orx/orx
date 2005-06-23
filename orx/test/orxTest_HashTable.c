@@ -329,12 +329,8 @@ orxVOID orxTest_HashTable_Clear()
   else
   {
     /* Clear the hash table */
-    orxTextIO_PrintLn("Trying to clear hash table...");
-    if (orxHashTable_Clear(sstTest_HashTable.apstHashTable[s32ID]) == orxSTATUS_FAILED)
-    {
-      /* Failed to clear hash */
-      orxTextIO_PrintLn("Clear failed...");
-    }
+    orxTextIO_PrintLn("Clear hash table...");
+    orxHashTable_Clear(sstTest_HashTable.apstHashTable[s32ID]);
   }
 }
 
