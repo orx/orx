@@ -26,7 +26,7 @@
 
 #include "orxInclude.h"
 #include "utils/orxLinkList.h"
-
+#include "memory/orxBank.h"
 
 /**
  * @name Module state.
@@ -109,6 +109,76 @@ orxINLINE orxVOID orxIntervalFloat_Swap(orxINTERVAL_FLOAT *_pstInter1, orxINTERV
      orxSWAP32(_pstInter1->u32Flags, _pstInter2->u32Flags);
 }
 
+/** Test if two intervals are identicals.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if they are identical.
+ */
+ orxINLINE orxBOOL orxIntervalFloat_AreEgual(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
+ {
+     return (_pstInter1->fMin==_pstInter2->fMin)&&(_pstInter1->fMax==_pstInter2->fMax)&&(_pstInter1->u32Flags==_pstInter2->u32Flags);
+ }
+ 
+/** Test if two intervals are different.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if they are different.
+ */
+ orxINLINE orxBOOL orxIntervalFloat_AreDifferent(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
+ {
+     return (_pstInter1->fMin!=_pstInter2->fMin)||(_pstInter1->fMax!=_pstInter2->fMax)||(_pstInter1->u32Flags!=_pstInter2->u32Flags);
+ }
+ 
+ /** Test if an interval is less than another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is less than the second.
+ */
+ orxINLINE orxBOOL orxIntervalFloat_IsLess(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
+ {
+     return (_pstInter1->fMax<_pstInter2->fMin)||((_pstInter1->fMax==_pstInter2->fMin)&&((_pstInter1->u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)!=(_pstInter2->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)));
+ }
+
+ /** Test if an interval is less or bottom-throw than another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is less or bottom-throw than the second.
+ */
+ orxINLINE orxBOOL orxIntervalFloat_IsLessOrBottomThrow(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
+ {
+     return (_pstInter1->fMin<_pstInter2->fMin)&&(_pstInter1->fMax<_pstInter2->fMax);
+ }
+
+ /** Test if an interval is greater tha another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is greater than the second.
+ */
+ orxINLINE orxBOOL orxIntervalFloat_IsGreater(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
+ {
+     return (_pstInter1->fMin>_pstInter2->fMax)||((_pstInter1->fMin==_pstInter2->fMax)&&((_pstInter1->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)!=(_pstInter2->u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)));
+ }
+ 
+ /** Test if an interval is greater or top-throw than another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is greater or top-throw than the second.
+ */
+ orxINLINE orxBOOL orxIntervalFloat_IsGreaterOrTopThrow(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
+ {
+     return (_pstInter1->fMin>_pstInter2->fMin)&&(_pstInter1->fMax>_pstInter2->fMax);
+ }
+ 
+ /** Test if an interval is strictly in another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is in the second.
+ */
+ orxINLINE orxBOOL orxIntervalFloat_IsIn(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
+ {
+     return ( (_pstInter1->fMin>_pstInter2->fMin) || (_pstInter1->fMin==_pstInter2->fMin)&&(_pstInter1->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED==_pstInter2->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)) &&
+             ((_pstInter1->fMax<_pstInter2->fMax) || (_pstInter1->fMin==_pstInter2->fMin)&&(_pstInter1->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED==_pstInter2->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)) ;
+ }
 
 /** Extand an interval to a value.
  * @param _pstInterval Interval to extand.
@@ -192,16 +262,35 @@ extern orxVOID orxFASTCALL orxIntervalInt32_Extand(orxINTERVAL_INT32 *_pstInterv
  */
 
 /** Float-based extended interval structure. */
-typedef struct __orxINTERVAL_FLOAT_EXT_t
+typedef struct __orxINTERVAL_FLOAT_NODE_t
 {
+    /** Link list direct dependancy. */
+    orxLINKLIST_NODE stNode;
     /** Float-based interval.*/
-    orxINTERVAL_FLOAT sInterval;
+    orxINTERVAL_FLOAT stInterval;
     /** Extended data type. */
     orxU32 u32ExtDataType;
     /** Extended data address. */
     orxHANDLE hExtData;
 }
-orxINTERVAL_FLOAT_EXT;
+orxINTERVAL_FLOAT_NODE;
+
+/** Return the interval part of a set node.
+ * @return Address of the interval.
+ */
+orxINLINE orxINTERVAL_FLOAT* orxSetNodeFloat_GetInterval(orxINTERVAL_FLOAT_EXT* _pstNode)
+{
+    return &stInterval;
+}
+
+/** Allocate a new node based on an interval.
+ * @note Extended data is linked and not copied.
+ * @param _stInterval Interval
+ * @param _u32ExtDataType Type of extended data.
+ * @param _hExtData Address of extanded data.
+ * @return address of the allocated node.
+ */
+extern orxINTERVAL_FLOAT* orxSetNodeFloat_AllocateNode(orxINTERVAL_FLOAT _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData);
 
 /** Float-based set structure. */
 typedef struct __orxSET_FLOAT_t
@@ -219,35 +308,38 @@ extern orxVOID orxFASTCALL orxSetFloat_Clear(orxSET_FLOAT *_pstSet);
 
 /** Add an interval to a float-based set.
  * @param _pstSet Target set.
- * @param _pstInterv Interval to add.
+ * @param _ptInterv Interval to add.
  */
-extern orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT *_pstInterval);
+extern orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _stInterval);
  
 /** Substract an interval from a float-based set.
  * @param _pstSet Target set.
- * @param _pstInterv Interval to substract.
+ * @param _stInterv Interval to substract.
  */
-extern orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstet, orxINTERVAL_FLOAT *_pstInterval);
+extern orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstet, orxINTERVAL_FLOAT _stInterval);
 
 /** Test if a float value is in the set.
  * @param _pstSet Set to test.
  * @param _fValue Value to test.
  * @return True if _fValue is in _psSet.
  */
-extern orxBOOL orxFASTCALL orxSetFloat_TestValue(orxSET_FLOAT *_pstSet, orxFLOAT *_fValue);
+extern orxBOOL orxFASTCALL orxSetFloat_TestValue(orxSET_FLOAT *_pstSet, orxFLOAT _fValue);
 
 /** Return the interval corresponding to a value if any.
  * @param _pstSet Set where to search.
  * @param _fValue Value to search.
  * @return Address of the interval corresponding to the value param or NULL if not found.
  */
-extern orxINTERVAL_FLOAT *orxFASTCALL orxSetFloat_FindValueInterval(orxSET_FLOAT *_pstSet, orxFLOAT *_fValue);
+extern orxINTERVAL_FLOAT *orxFASTCALL orxSetFloat_FindValueInterval(orxSET_FLOAT *_pstSet, orxFLOAT _fValue);
 
 /** Return the address of the attached list of interval.
  * @param _pstSet Set from witch extract the list.
  * @return Address of the attached list.
  */
-extern orxLINKLIST *orxFASTCALL orxSetFloat_GetIntervalList(orxSET_FLOAT *_pstSet);
+orxINLINE orxLINKLIST *orxFASTCALL orxSetFloat_GetIntervalList(orxSET_FLOAT *_pstSet)
+{
+    return &(_pstSet->sIntervalList);
+}
 
 
 /** @} */

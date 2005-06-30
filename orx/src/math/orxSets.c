@@ -26,6 +26,13 @@
 
 
 /***************************************************************************
+ * Module global variable                                                  *
+ ***************************************************************************/
+orxSTATIC orxBANK *spstFloatIntervalBank;
+orxSTATIC orxBANK *spstInt32IntervalBank;
+
+
+/***************************************************************************
  orxMathSets_Init
  Inits the mathematical set system.
 
@@ -34,8 +41,10 @@
  ***************************************************************************/
 orxSTATUS orxLinkList_Init()
 {
-  /* Done! */
-  return orxSTATUS_SUCCESS;
+    spstFloatIntervalBank = orxBank_Create(10, sizeof(orxINTERVAL_FLOAT_EXT), 0, orxMEMORY_TYPE_MAIN);
+    /** @todo add the bank allocation for int32-based intervals.*/
+    /* Done! */
+    return orxSTATUS_SUCCESS;
 }
 
 /***************************************************************************
@@ -46,7 +55,9 @@ orxSTATUS orxLinkList_Init()
  ***************************************************************************/
 orxVOID orxLinkList_Exit()
 {
-  return;
+    orxBank_Delete(spstFloatIntervalBank);
+    /** @todo add the bank deletion for int32-based intervals.*/
+    return;
 }
 
 
@@ -89,9 +100,26 @@ orxVOID orxLinkList_Exit()
 }
 
 
+
+/** Allocate a new node based on an interval. */
+orxINTERVAL_FLOAT* orxSetNodeFloat_AllocateNode(orxINTERVAL_FLOAT _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData)
+{
+    orxINTERVAL_FLOAT_NODE *pstNode = (orxINTERVAL_FLOAT_NODE*)orxBank_Allocate(spstFloatIntervalBank);
+    pstNode->stInterval->fMin = _stInterval.fMin;
+    pstNode->stInterval->fMax = _stInterval.fMax;
+    pstNode->stInterval->u32Flags = _stInterval.u32Flags;
+    pstNode->u32ExtDataType = _u32ExtDataType;
+    pstNode->hExtData = hExtData;
+    return pstNode;
+}
+
+
+
 /** Clear a float-based set. */
 orxVOID orxFASTCALL orxSetFloat_Clear(orxSET_FLOAT *_pstSet)
 {
+    
+
     /** Only clear the internal list. */
     orxLinkList_Clean(&(_pstSet->sIntervalList));
 }
@@ -100,17 +128,60 @@ orxVOID orxFASTCALL orxSetFloat_Clear(orxSET_FLOAT *_pstSet)
  * @param _pstSet Target set.
  * @param _pstInterv Interval to add.
  */
-orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT *_pstInterval)
+orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _stInterval)
 {
-    /** @todo .*/
+    orxINTERVAL_FLOAT_EXT *pstNodeFirst = orxNULL,
+                          *pstNodeLast  = orxNULL,
+                          *pstNodeTemp  = orxNULL;
+
+    orxLINKLIST *pstList = orxSetFloat_GetIntervalList(_pstSet);
+    pstNodeLast  = orxLinkList_GetLast(pstList);
+    pstNodeFirst = orxLinkList_GetFirst(pstList);
+    
+    /** Search greatest interval before _strInterval.*/
+    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsLess(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_EXT*)pstNodeTemp), &_stInterval))
+    {
+        pstNodeFirst = pstNodeTemp;
+        pstNodeTemp = orxLinkList_GetNext(pstNodeTemp);
+    }
+    
+    /** Search littlest interval after _strInterval.*/
+    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsGreater(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_EXT*)pstNodeTemp), &_stInterval))
+    {
+        pstNodeLast = pstNodeTemp;
+        pstNodeTemp = orxLinkList_GetPrevious(pstNodeTemp);
+    }
+    
+    /** Enlarge the _stInterval if across other intervals. */
+    pstNodeTemp = orxLinkList_GetNext(pstNodeFirst);
+    if (pstNodeTemp!=NULL && pstNodeTemp!=pstNodeLast)
+        orxIntervalFloat_Extand(_stInterval, pstNodeTemp->fMin);
+        
+    pstNodeTemp = orxLinkList_GetPrev(pstNodeLast);
+    if (pstNodeTemp!=NULL && pstNodeTemp!=pstNodeFirst)
+        orxIntervalFloat_Extand(_stInterval, pstNodeTemp->fMax);
+        
+    /** Insert the current interval. */
+    pstNodeTemp = orxSetNodeFloat_AllocateNode(_stInterval, 0, orxNULL);
+    orxLinkList_AddAfter(pstNodeFirst, pstNodeTemp);
+    
+    /** Remove all undeeded nodes. */
+    pstNodeFirst = pstNodeTemp;
+    pstNodeTemp = orxLinkList_GetNext(pstNodeFirst);
+    while (pstNodeTemp!=orxNULL && pstNodeTemp!=pstNodeLast)
+    {
+        orxLinkList_Remove(pstNodeTemp);
+        pstNodeTemp = orxLinkList_GetNext(pstNodeFirst);
+    }
 }
+
 
  
 /** Substract an interval from a float-based set.
  * @param _pstSet Target set.
- * @param _pstInterv Interval to substract.
+ * @param _stInterv Interval to substract.
  */
-orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT *_pstInterval)
+orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _stInterval)
 {
     /** @todo .*/
 }
@@ -120,7 +191,7 @@ orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT *_p
  * @param _fValue Value to test.
  * @return True if _fValue is in _psSet.
  */
-orxBOOL orxFASTCALL orxSetFloat_TestValue(orxSET_FLOAT *_pstSet, orxFLOAT *_fValue)
+orxBOOL orxFASTCALL orxSetFloat_TestValue(orxSET_FLOAT *_pstSet, orxFLOAT _fValue)
 {
     orxFLOAT fCookie;
     orxLINKLIST_NODE * 	pNode = orxLinkList_GetFirst(&(_pstSet->sIntervalList));
@@ -137,12 +208,6 @@ orxBOOL orxFASTCALL orxSetFloat_TestValue(orxSET_FLOAT *_pstSet, orxFLOAT *_fVal
  * @param _fValue Value to search.
  * @return Address of the interval corresponding to the value param or NULL if not found.
  */
-extern orxINTERVAL_FLOAT *orxFASTCALL orxSetFloat_FindValueInterval(orxSET_FLOAT *_pstSet, orxFLOAT *_fValue);
-
-/** Return the address of the attached list of interval.
- * @param _pstSet Set from witch extract the list.
- * @return Address of the attached list.
- */
-extern orxLINKLIST *orxFASTCALL orxSetFloat_GetIntervalList(orxSET_FLOAT *_pstSet);
+extern orxINTERVAL_FLOAT *orxFASTCALL orxSetFloat_FindValueInterval(orxSET_FLOAT *_pstSet, orxFLOAT _fValue);
 
 
