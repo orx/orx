@@ -58,8 +58,7 @@ typedef struct __orxINTERVAL_FLOAT_t
     orxFLOAT fMin, fMax;
     /** Flags to say if min and max are included or exluded.*/
     orxU32 u32Flags;
-}
-orxINTERVAL_FLOAT;
+} orxINTERVAL_FLOAT;
 
 
 /** Set an interval.
@@ -200,8 +199,7 @@ typedef struct __orxINTERVAL_INT32_t
     /** Coordinates : the min and the max. */
     orxS32 i32Min, i32Max;
 
-}
-orxINTERVAL_INT32;
+} orxINTERVAL_INT32;
 
 
 /** Set an interval.
@@ -272,15 +270,14 @@ typedef struct __orxINTERVAL_FLOAT_NODE_t
     orxU32 u32ExtDataType;
     /** Extended data address. */
     orxHANDLE hExtData;
-}
-orxINTERVAL_FLOAT_NODE;
+} orxINTERVAL_FLOAT_NODE;
 
 /** Return the interval part of a set node.
  * @return Address of the interval.
  */
-orxINLINE orxINTERVAL_FLOAT* orxSetNodeFloat_GetInterval(orxINTERVAL_FLOAT_EXT* _pstNode)
+orxINLINE orxINTERVAL_FLOAT* orxSetNodeFloat_GetInterval(orxINTERVAL_FLOAT_NODE* _pstNode)
 {
-    return &stInterval;
+    return &(_pstNode->stInterval);
 }
 
 /** Allocate a new node based on an interval.
@@ -290,15 +287,14 @@ orxINLINE orxINTERVAL_FLOAT* orxSetNodeFloat_GetInterval(orxINTERVAL_FLOAT_EXT* 
  * @param _hExtData Address of extanded data.
  * @return address of the allocated node.
  */
-extern orxINTERVAL_FLOAT* orxSetNodeFloat_AllocateNode(orxINTERVAL_FLOAT _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData);
+extern orxINTERVAL_FLOAT_NODE* orxSetNodeFloat_AllocateNode(orxINTERVAL_FLOAT _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData);
 
 /** Float-based set structure. */
 typedef struct __orxSET_FLOAT_t
 {
     /** Link list of intervals.*/
     orxLINKLIST sIntervalList;
-}
-orxSET_FLOAT;
+} orxSET_FLOAT;
 
 
 /** Clear a float-based set.  

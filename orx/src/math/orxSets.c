@@ -41,7 +41,7 @@ orxSTATIC orxBANK *spstInt32IntervalBank;
  ***************************************************************************/
 orxSTATUS orxLinkList_Init()
 {
-    spstFloatIntervalBank = orxBank_Create(10, sizeof(orxINTERVAL_FLOAT_EXT), 0, orxMEMORY_TYPE_MAIN);
+    spstFloatIntervalBank = orxBank_Create(10, sizeof(orxINTERVAL_FLOAT_NODE), 0, orxMEMORY_TYPE_MAIN);
     /** @todo add the bank allocation for int32-based intervals.*/
     /* Done! */
     return orxSTATUS_SUCCESS;
@@ -102,14 +102,14 @@ orxVOID orxLinkList_Exit()
 
 
 /** Allocate a new node based on an interval. */
-orxINTERVAL_FLOAT* orxSetNodeFloat_AllocateNode(orxINTERVAL_FLOAT _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData)
+orxINTERVAL_FLOAT_NODE* orxSetNodeFloat_AllocateNode(orxINTERVAL_FLOAT _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData)
 {
     orxINTERVAL_FLOAT_NODE *pstNode = (orxINTERVAL_FLOAT_NODE*)orxBank_Allocate(spstFloatIntervalBank);
-    pstNode->stInterval->fMin = _stInterval.fMin;
-    pstNode->stInterval->fMax = _stInterval.fMax;
-    pstNode->stInterval->u32Flags = _stInterval.u32Flags;
+    pstNode->stInterval.fMin = _stInterval.fMin;
+    pstNode->stInterval.fMax = _stInterval.fMax;
+    pstNode->stInterval.u32Flags = _stInterval.u32Flags;
     pstNode->u32ExtDataType = _u32ExtDataType;
-    pstNode->hExtData = hExtData;
+    pstNode->hExtData = _hExtData;
     return pstNode;
 }
 
@@ -130,48 +130,52 @@ orxVOID orxFASTCALL orxSetFloat_Clear(orxSET_FLOAT *_pstSet)
  */
 orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _stInterval)
 {
-    orxINTERVAL_FLOAT_EXT *pstNodeFirst = orxNULL,
-                          *pstNodeLast  = orxNULL,
-                          *pstNodeTemp  = orxNULL;
+    orxINTERVAL_FLOAT_NODE *pstNodeFirst = orxNULL,
+                           *pstNodeLast  = orxNULL,
+                           *pstNodeTemp  = orxNULL;
 
     orxLINKLIST *pstList = orxSetFloat_GetIntervalList(_pstSet);
-    pstNodeLast  = orxLinkList_GetLast(pstList);
-    pstNodeFirst = orxLinkList_GetFirst(pstList);
+    pstNodeLast  = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetLast(pstList);
+    pstNodeFirst = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetFirst(pstList);
     
     /** Search greatest interval before _strInterval.*/
-    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsLess(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_EXT*)pstNodeTemp), &_stInterval))
+    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsLess(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeTemp), &_stInterval))
     {
         pstNodeFirst = pstNodeTemp;
-        pstNodeTemp = orxLinkList_GetNext(pstNodeTemp);
+        pstNodeTemp = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstNodeTemp);
     }
     
     /** Search littlest interval after _strInterval.*/
-    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsGreater(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_EXT*)pstNodeTemp), &_stInterval))
+    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsGreater(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeTemp), &_stInterval))
     {
         pstNodeLast = pstNodeTemp;
-        pstNodeTemp = orxLinkList_GetPrevious(pstNodeTemp);
+        pstNodeTemp = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetPrevious((orxLINKLIST_NODE *)pstNodeTemp);
     }
     
     /** Enlarge the _stInterval if across other intervals. */
-    pstNodeTemp = orxLinkList_GetNext(pstNodeFirst);
+    pstNodeTemp = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstNodeFirst);
     if (pstNodeTemp!=NULL && pstNodeTemp!=pstNodeLast)
-        orxIntervalFloat_Extand(_stInterval, pstNodeTemp->fMin);
+    {
+        orxIntervalFloat_Extand(&_stInterval, pstNodeTemp->stInterval.fMin);
+    }
         
-    pstNodeTemp = orxLinkList_GetPrev(pstNodeLast);
+    pstNodeTemp = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetPrev((orxLINKLIST_NODE *)pstNodeLast);
     if (pstNodeTemp!=NULL && pstNodeTemp!=pstNodeFirst)
-        orxIntervalFloat_Extand(_stInterval, pstNodeTemp->fMax);
+    {
+        orxIntervalFloat_Extand(&_stInterval, pstNodeTemp->stInterval.fMax);
+    }
         
     /** Insert the current interval. */
     pstNodeTemp = orxSetNodeFloat_AllocateNode(_stInterval, 0, orxNULL);
-    orxLinkList_AddAfter(pstNodeFirst, pstNodeTemp);
+    orxLinkList_AddAfter((orxLINKLIST_NODE *)pstNodeFirst, (orxLINKLIST_NODE *)pstNodeTemp);
     
     /** Remove all undeeded nodes. */
     pstNodeFirst = pstNodeTemp;
-    pstNodeTemp = orxLinkList_GetNext(pstNodeFirst);
+    pstNodeTemp = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstNodeFirst);
     while (pstNodeTemp!=orxNULL && pstNodeTemp!=pstNodeLast)
     {
-        orxLinkList_Remove(pstNodeTemp);
-        pstNodeTemp = orxLinkList_GetNext(pstNodeFirst);
+        orxLinkList_Remove((orxLINKLIST_NODE *)pstNodeTemp);
+        pstNodeTemp = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstNodeFirst);
     }
 }
 
