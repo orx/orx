@@ -39,7 +39,7 @@ orxSTATIC orxBANK *spstInt32IntervalBank;
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
           (Always success car can not failed.)
  ***************************************************************************/
-orxSTATUS orxLinkList_Init()
+orxSTATUS orxMathSets_Init()
 {
     spstFloatIntervalBank = orxBank_Create(10, sizeof(orxINTERVAL_FLOAT_NODE), 0, orxMEMORY_TYPE_MAIN);
     /** @todo add the bank allocation for int32-based intervals.*/
@@ -48,12 +48,12 @@ orxSTATUS orxLinkList_Init()
 }
 
 /***************************************************************************
- orxLinkList_Exit
+ orxMathSets_Exit
  Exits from the link list system.
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxLinkList_Exit()
+orxVOID orxMathSets_Exit()
 {
     orxBank_Delete(spstFloatIntervalBank);
     /** @todo add the bank deletion for int32-based intervals.*/
@@ -159,7 +159,7 @@ orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
         orxIntervalFloat_Extand(&_stInterval, pstNodeTemp->stInterval.fMin);
     }
         
-    pstNodeTemp = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetPrev((orxLINKLIST_NODE *)pstNodeLast);
+    pstNodeTemp = (orxINTERVAL_FLOAT_NODE *)orxLinkList_GetPrevious((orxLINKLIST_NODE *)pstNodeLast);
     if (pstNodeTemp!=NULL && pstNodeTemp!=pstNodeFirst)
     {
         orxIntervalFloat_Extand(&_stInterval, pstNodeTemp->stInterval.fMax);
