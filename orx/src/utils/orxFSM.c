@@ -1,5 +1,5 @@
 /**
- * @file orxStateMachine.c
+ * @file orxFSM.c
  * 
  * State Machine
  * 
