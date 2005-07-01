@@ -69,7 +69,7 @@
             src/utils/orxTree.c
             src/utils/pathfinder.c
             src/utils/orxScreenshot.c
-            src/utils/orxStateMachine.c
+            src/utils/orxFSM.c
             src/utils/utils.c
             src/utils/orxString.c
         </sources>
@@ -171,7 +171,7 @@
             utils/orxTree.h
             utils/pathfinder.h
             utils/orxScreenshot.h
-            utils/orxStateMachine.h
+            utils/orxFSM.h
             utils/utils.h
             utils/orxHashTable.h
             orxInclude.h
