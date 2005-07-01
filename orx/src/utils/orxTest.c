@@ -75,7 +75,7 @@ orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleName)
   orxASSERT(_zModuleName != orxNULL);
   
   /* Display Module Name */
-  printf("**** MODULE : %s ****\n", _zModuleName);
+  orxTextIO_PrintLn("\n**** MODULE : %s ****", _zModuleName);
   
   /* Display all functions not already displayed and that have the same module name */
   for (u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
@@ -83,7 +83,7 @@ orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleName)
     if (!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, strlen(_zModuleName) * sizeof(orxCHAR)) == 0))
     {
       sstTest.astTestFunctions[u32Index].bDisplayed = orxTRUE;
-      printf("* %lu - %s\n", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
+      orxTextIO_PrintLn("* %lu - %s", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
     }
   }
 }
@@ -213,7 +213,7 @@ orxVOID orxTest_DisplayMenu()
   printf("\n\n*************************************\n");
   printf("********** orx TEST MENU ************\n");
   printf("*************************************\n");
-  
+
   /* Display menu for each module */
   for(u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
   {
