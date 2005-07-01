@@ -26,8 +26,7 @@
 #include "utils/orxTest.h"
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
-#include <stdio.h>
-#include <string.h>
+#include "io/orxTextIO.h"
 
 #define orxTEST_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxTEST_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
