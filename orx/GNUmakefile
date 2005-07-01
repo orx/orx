@@ -152,12 +152,12 @@ MEMORY_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
 MEMORY_OBJECTS =  \
-	./build/$(BUILD)/memory_orxTest_Memory.o
+	./build/$(BUILD)/Memory_orxTest_Memory.o
 BANK_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
 BANK_OBJECTS =  \
-	./build/$(BUILD)/bank_orxTest_Bank.o
+	./build/$(BUILD)/Bank_orxTest_Bank.o
 HASHTABLE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
@@ -168,6 +168,11 @@ SOUND_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 SOUND_OBJECTS =  \
 	./build/$(BUILD)/Sound_orxTest_Sound.o
+PLUGIN_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
+	$(CFLAGS)
+PLUGIN_OBJECTS =  \
+	./build/$(BUILD)/Plugin_orxTest_Plugin.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
@@ -217,13 +222,13 @@ orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm \
 	-Wl,--no-whole-archive
 endif
 ifeq ($(USE_FMOD),1)
-__Sound_Fmod___depname = bin/plugins_core/Sound_Fmod.so
+__Sound_Fmod___depname = bin/plugins/core/sound/Sound_Fmod.so
 endif
 ifeq ($(USE_ALLEGRO),1)
-__Mouse_Allegro___depname = bin/plugins_core/Mouse_Allegro.so
+__Mouse_Allegro___depname = bin/plugins/core/mouse/Mouse_Allegro.so
 endif
 ifeq ($(USE_ALLEGRO),1)
-__Keyboard_Allegro___depname = bin/plugins_core/Keyboard_Allegro.so
+__Keyboard_Allegro___depname = bin/plugins/core/keyboard/Keyboard_Allegro.so
 endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
@@ -266,7 +271,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/memory.so bin/modules/bank.so bin/modules/HashTable.so bin/modules/Sound.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins_core/Joystick_NONE.so
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
@@ -286,14 +291,15 @@ clean:
 	rm -f lib/liborx$(orxSUFFIX).so
 	rm -f lib/liborx$(orxSUFFIX).a
 	rm -f bin/testbed
-	rm -f bin/modules/memory.so
-	rm -f bin/modules/bank.so
+	rm -f bin/modules/Memory.so
+	rm -f bin/modules/Bank.so
 	rm -f bin/modules/HashTable.so
 	rm -f bin/modules/Sound.so
-	rm -f bin/plugins_core/Sound_Fmod.so
-	rm -f bin/plugins_core/Mouse_Allegro.so
-	rm -f bin/plugins_core/Keyboard_Allegro.so
-	rm -f bin/plugins_core/Joystick_NONE.so
+	rm -f bin/modules/Plugin.so
+	rm -f bin/plugins/core/sound/Sound_Fmod.so
+	rm -f bin/plugins/core/mouse/Mouse_Allegro.so
+	rm -f bin/plugins/core/keyboard/Keyboard_Allegro.so
+	rm -f bin/plugins/core/joystick/Joystick_NONE.so
 
 ifeq ($(LINK),dynamic)
 lib/liborx$(orxSUFFIX).so: $(ORXDLL_OBJECTS)
@@ -323,10 +329,10 @@ endif
 bin/testbed: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -o $@ $(TESTBED_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(orxLDFLAGS)   -ldl
 
-bin/modules/memory.so: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP)
+bin/modules/Memory.so: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 
-bin/modules/bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
+bin/modules/Bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 
 bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
@@ -335,22 +341,25 @@ bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP)
 bin/modules/Sound.so: $(SOUND_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(SOUND_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 
+bin/modules/Plugin.so: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
+
 ifeq ($(USE_FMOD),1)
-bin/plugins_core/Sound_Fmod.so: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP)
+bin/plugins/core/sound/Sound_Fmod.so: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_ALLEGRO),1)
-bin/plugins_core/Mouse_Allegro.so: $(MOUSE_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP)
+bin/plugins/core/mouse/Mouse_Allegro.so: $(MOUSE_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(MOUSE_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_ALLEGRO),1)
-bin/plugins_core/Keyboard_Allegro.so: $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP)
+bin/plugins/core/keyboard/Keyboard_Allegro.so: $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(KEYBOARD_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 endif
 
-bin/plugins_core/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DEP)
+bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(JOYSTICK_NONE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 
 ./build/$(BUILD)/orxDLL_orxAnim.o: ./src/anim/orxAnim.c
@@ -596,10 +605,10 @@ bin/plugins_core/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DE
 ./build/$(BUILD)/testbed_orxTest_Main.o: ./test/orxTest_Main.c
 	$(CC) -c -o $@ $(TESTBED_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/memory_orxTest_Memory.o: ./test/orxTest_Memory.c
+./build/$(BUILD)/Memory_orxTest_Memory.o: ./test/orxTest_Memory.c
 	$(CC) -c -o $@ $(MEMORY_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/bank_orxTest_Bank.o: ./test/orxTest_Bank.c
+./build/$(BUILD)/Bank_orxTest_Bank.o: ./test/orxTest_Bank.c
 	$(CC) -c -o $@ $(BANK_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/HashTable_orxTest_HashTable.o: ./test/orxTest_HashTable.c
@@ -607,6 +616,9 @@ bin/plugins_core/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DE
 
 ./build/$(BUILD)/Sound_orxTest_Sound.o: ./test/orxTest_Sound.c
 	$(CC) -c -o $@ $(SOUND_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/Plugin_orxTest_Plugin.o: ./test/orxTest_Plugin.c
+	$(CC) -c -o $@ $(PLUGIN_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Sound_Fmod_orxSound.o: ./plugins/Sound/Fmod/orxSound.c
 	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<

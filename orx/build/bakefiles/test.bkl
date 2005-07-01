@@ -31,12 +31,12 @@
   </exe>
 
   <!--- Create orx test module -->
-  <module id="memory" template="orxBASE,orxLINK,orxMODULELINK">
+  <module id="Memory" template="orxBASE,orxLINK,orxMODULELINK">
     <dirname>bin/modules</dirname>
     <sources>test/orxTest_Memory.c</sources>
   </module>
 
-  <module id="bank" template="orxBASE,orxLINK,orxMODULELINK">
+  <module id="Bank" template="orxBASE,orxLINK,orxMODULELINK">
     <dirname>bin/modules</dirname>
     <sources>test/orxTest_Bank.c</sources>
   </module>
@@ -49,6 +49,11 @@
   <module id="Sound" template="orxBASE,orxLINK,orxMODULELINK">
     <dirname>bin/modules</dirname>
     <sources>test/orxTest_Sound.c</sources>
+  </module>
+
+  <module id="Plugin" template="orxBASE,orxLINK,orxMODULELINK">
+    <dirname>bin/modules</dirname>
+    <sources>test/orxTest_Plugin.c</sources>
   </module>
 
 </bakefile>

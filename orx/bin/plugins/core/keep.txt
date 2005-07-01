@@ -1,0 +1,6 @@
+################################################################################
+# DO NOT REMOVE THIS FILE                                                      #
+# IT IS USED TO PROTECT THE DIRECTORY AGAIN CVS PRUNE DIRECTORY OPTION         #
+################################################################################
+
+bin/plugins/core : Stores directories for core extended functions

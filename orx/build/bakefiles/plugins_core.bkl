@@ -19,7 +19,7 @@
 
 	  <!-- Depends on fmod -->
 	  <module id="Sound_Fmod" cond="USE_FMOD=='1'" template="orxBASE,orxLINK,orxMODULELINK">
-	    <dirname>bin/plugins_core</dirname>
+	    <dirname>bin/plugins/core/sound</dirname>
 	    <sources>plugins/Sound/Fmod/orxSound.c</sources>
 	  </module>
 
@@ -28,7 +28,7 @@
 
 	  <!-- Depends on allegro -->
 	  <module id="Mouse_Allegro" cond="USE_ALLEGRO=='1'" template="orxBASE,orxLINK,orxMODULELINK">
-	    <dirname>bin/plugins_core</dirname>
+	    <dirname>bin/plugins/core/mouse</dirname>
 	    <sources>plugins/Mouse/Allegro/orxMouse.c</sources>
 	  </module>
 
@@ -36,7 +36,7 @@
 
 	  <!-- Depends on allegro -->
 	  <module id="Keyboard_Allegro" cond="USE_ALLEGRO=='1'" template="orxBASE,orxLINK,orxMODULELINK">
-	    <dirname>bin/plugins_core</dirname>
+	    <dirname>bin/plugins/core/keyboard</dirname>
 	    <sources>plugins/Keyboard/Allegro/orxKeyboard.c</sources>
 	  </module>
 
@@ -44,7 +44,7 @@
 
 	  <!-- Depends on nothing -->
 	  <module id="Joystick_NONE" template="orxBASE,orxLINK,orxMODULELINK">
-	    <dirname>bin/plugins_core</dirname>
+	    <dirname>bin/plugins/core/joystick</dirname>
 	    <sources>plugins/Joystick/NONE/orxJoystick.c</sources>
 	  </module>
   

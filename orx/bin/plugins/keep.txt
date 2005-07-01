@@ -3,7 +3,4 @@
 # IT IS USED TO PROTECT THE DIRECTORY AGAIN CVS PRUNE DIRECTORY OPTION         #
 ################################################################################
 
-bin/plugins_core : directory where are stored core plugins
-
-core plugins are implementation of core main modules. (ex : implementation of
-the display layer, sound, ...)
+bin/plugins : directory where are stored directories for core and user plugins
