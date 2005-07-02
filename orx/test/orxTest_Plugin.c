@@ -24,17 +24,44 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
+#include "memory/orxMemory.h"
 #include "utils/orxTest.h"
 #include "utils/orxString.h"
 #include "io/orxTextIO.h"
 #include "plugin/orxPlugin.h"
 #include "plugin/orxPluginCore.h"
 
+/* Include commons libc header */
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+/* Incude specific header files according to used platform */
+#ifdef __orxLINUX__
+  #include <sys/types.h>
+  #include <dirent.h>
+  #include <dlfcn.h>
+
+  /* Define the seperator character for directories */
+  #define DIRSEP "/"
+
+#else
+  #ifdef __orxWINDOWS__
+    #include <io.h>
+
+    /* Define the seperator character for directories */
+    #define DIRSEP "\\"
+
+  #endif /* __orxWINDOWS__ */
+#endif /* __orxLINUX__ */
+
 /******************************************************
  * DEFINES
  ******************************************************/
-#define orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE  16  /**< Maximum size (number of characters) for a plugin */
+#define orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE  64  /**< Maximum size (number of characters) for a plugin */
 #define orxTEST_PLUGINS_KU32_NB_COLS 80
+
+#define orxTEST_PLUGINS_KU32_MAX_PLUGINS_PER_TYPE 10
 
 #define orxTEST_PLUGINS_KZ_UNLOADED_NAME "Not loaded"
 #define orxTEST_PLUGINS_KZ_UNKNOWN_NAME  "Unknown"
@@ -54,6 +81,7 @@ typedef struct __orxTEST_PLUGINS_t
 typedef struct __orxTEST_PLUGINS_STATIC_t
 {
   orxTEST_PLUGINS astPlugins[orxPLUGIN_CORE_ID_NUMBER];
+  orxCHAR azFileName[orxTEST_PLUGINS_KU32_MAX_PLUGINS_PER_TYPE][orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE];
 } orxTEST_PLUGINS_STATIC;
 
 orxSTATIC orxTEST_PLUGINS_STATIC sstTest_Plugin;
@@ -61,6 +89,117 @@ orxSTATIC orxTEST_PLUGINS_STATIC sstTest_Plugin;
  * TEST FUNCTIONS
  ******************************************************/
 
+/** Display list of plugin from selected directory
+ * @return Returns the number of available plugins of the selected Type
+ */
+orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
+{
+  orxU32 u32Index;
+  orxCHAR zDirName[32];
+  
+  u32Index = 0;
+
+  /* Create the selected directory name */  
+  orxTextIO_Printf(zDirName, "plugins"DIRSEP"core"DIRSEP"%s", sstTest_Plugin.astPlugins[u32Type].zType);
+  orxTextIO_PrintLn(zDirName);
+  /* Traverse the selected directory and store the dynamic library in the array */
+  #ifdef __orxLINUX__
+  
+  DIR *pstDir;                                /* Pointer on directory structure */
+  struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
+
+  /* Open the current directory */
+  pstDir = opendir(zDirName);
+  
+  /* Is it a valid directory ? */
+  if (pstDir != NULL)
+  {
+    u32Index = 0;
+    
+    /* Traverse the directory */
+    while ((pstFile = readdir(pstDir)))
+    {
+      /* Check if the file name ends with .so */
+      if ((strlen(pstFile->d_name) > 3) &&
+          (strcmp(pstFile->d_name + (strlen(pstFile->d_name) - 3), ".so") == 0)
+         )
+      {
+        /* Store the library name */
+        orxTextIO_Printf(sstTest_Plugin.azFileName[u32Index], "%s", pstFile->d_name);
+
+        /* Print the library name */
+        orxTextIO_PrintLn("%02d - %s", u32Index, pstFile->d_name);
+
+        u32Index++;
+      }
+    }
+    closedir(pstDir);
+  }
+  else
+  {
+    fprintf(stderr, "Can't open directory %s\n", zDirName);
+  }
+  
+  #else /* !LINUX */
+    #ifdef __orxWINDOWS__
+  
+  
+  struct _finddata_t stFile;  /* File datas infos */
+  long lFile;                 /* File handle */
+  orxCHAR zPattern[512];      /* Create the lookup pattern (_zDirName\*.dll) */
+  orxCHAR zLibName[512];      /* Create the library name (dll*/
+  
+  /* Initialize Pattern*/
+  orxMemorySet(zPattern, 0, sizeof(zPattern));
+ 
+  /* Check _directory name (overflow) */
+  if (strlen(zDirName) < 500)
+  {
+    /* Create pattern */
+    orxTextIO_Printf(zPattern, "%s\\*.dll", zDirName);
+      
+    /* Find first .dll file in directory */
+    if ((lFile = _findfirst(zPattern, &stFile)) != -1L)
+    {
+      /* Create full lib name */
+      orxTextIO_Printf(zLibName, "%s\\%s", _zDirName, stFile.name);
+      
+      /* Store the library name */
+      orxTextIO_Printf(sstTest_Plugin.astPlugins[0].zFile, "%s", zLibName);
+      
+      u32Index = 1;
+
+      /* Find the rest of the .c files */
+      while (_findnext(lFile, &stFile) == 0)
+      {
+        /* Create full lib name */
+        orxTextIO_Printf(zLibName, "%s\\%s", _zDirName, stFile.name);
+
+        /* Store the library name */
+        orxTextIO_Printf(sstTest_Plugin.azFileName[u32Index], "%s", zLibName);
+        
+        /* Print the library name */
+        orxTextIO_PrintLn("%02d - %s", u32Index, zLibName);
+
+        u32Index++;
+      }
+
+      _findclose(lFile);
+    }
+  }
+  else
+  {
+      fprintf(stderr, "Directory name too long\n");
+  }        
+
+  
+    #endif /* __orxWINDOWS__ */
+  #endif /* __orxLINUX__ */
+  
+  return u32Index;
+  
+}
+ 
 /** Display informations about this test module
  */
 orxVOID orxTest_Plugin_Infos()
@@ -76,7 +215,6 @@ orxVOID orxTest_Plugin_ShowList()
 {
   orxU32 u32Cols;
   orxU32 u32Index;
-  orxU32 u32Index2;
   orxCHAR zPluginInfos[64];
   
   /* Print a line of stars */
@@ -144,6 +282,57 @@ orxVOID orxTest_Plugin_ShowList()
  */
 orxVOID orxTest_Plugin_Load()
 {
+  orxU32 u32Index;
+  orxS32 s32TypeResult;
+  orxS32 s32FileResult;
+    
+  /* First, Display the list of available plugin type */
+  orxTextIO_PrintLn("Select a plugin type to load from the list above");
+  
+  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
+  {
+    orxTextIO_PrintLn("%02d - %s", u32Index, sstTest_Plugin.astPlugins[u32Index].zType);
+  }
+  
+  /* Then, get the type of plugins that the user wants to load */
+  orxTextIO_ReadS32InRange(&s32TypeResult, 10, 0, orxPLUGIN_CORE_ID_NUMBER - 1, "Choice : ", orxTRUE);
+  
+  /* Now, show the list of available plugins of this type */
+  u32Index = orxTest_Plugin_BrowseDirectory(s32TypeResult);
+  if (u32Index > 0)
+  {
+    /* Get the user selection */
+    orxTextIO_ReadS32InRange(&s32FileResult, 10, 0, u32Index - 1, "Choice : ", orxTRUE);
+  
+    /* Is there a plugin already loaded ? */
+    if (sstTest_Plugin.astPlugins[s32TypeResult].hPlugin != orxHANDLE_Undefined)
+    {
+      /* Unload the plugin */
+      orxTextIO_PrintLn("Unloading %s...", sstTest_Plugin.astPlugins[s32TypeResult].zFile);
+    }
+  
+    /* Try to load the plugin */
+    orxTextIO_PrintLn("Loading %s...", sstTest_Plugin.azFileName[s32FileResult]);
+    
+    sstTest_Plugin.astPlugins[s32TypeResult].hPlugin = orxPlugin_Load(sstTest_Plugin.azFileName[s32FileResult], sstTest_Plugin.astPlugins[s32TypeResult].zType);
+    if (sstTest_Plugin.astPlugins[s32TypeResult].hPlugin == orxHANDLE_Undefined)
+    {
+      orxTextIO_PrintLn("Can't load plugin...");
+      
+      /* Store plugin name */
+      orxTextIO_Printf(sstTest_Plugin.astPlugins[s32TypeResult].zFile, "%s", sstTest_Plugin.azFileName[s32FileResult]);
+    }
+    else
+    {
+      orxTextIO_PrintLn("Plugin loaded");
+    }
+  }
+  else
+  {
+    /* No plugins are available for this type */
+    orxTextIO_PrintLn("No plugins are available for this type");
+  }
+  
   /* Everythings done */
   orxTextIO_PrintLn("Done !");
 }
@@ -189,6 +378,8 @@ orxVOID orxTest_Plugin_Init()
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].zType,   "script");
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].zType,    "sound");
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIMER].zType,    "timer");
+  
+  orxMemory_Set(&sstTest_Plugin.azFileName, 0, sizeof(sstTest_Plugin.azFileName));
 }
 
 orxVOID orxTest_Plugin_Exit()
