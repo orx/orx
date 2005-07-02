@@ -80,7 +80,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxMouse.o \
 	./build/$(BUILD)/orxDLL_orxPackage.o \
 	./build/$(BUILD)/orxDLL_orxTextIO.o \
-	./build/$(BUILD)/orxDLL_orxSets.o \
+	./build/$(BUILD)/orxDLL_orxMathSet.o \
 	./build/$(BUILD)/orxDLL_orxVec.o \
 	./build/$(BUILD)/orxDLL_orxBank.o \
 	./build/$(BUILD)/orxDLL_orxMemory.o \
@@ -124,7 +124,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxMouse.o \
 	./build/$(BUILD)/orxLIB_orxPackage.o \
 	./build/$(BUILD)/orxLIB_orxTextIO.o \
-	./build/$(BUILD)/orxLIB_orxSets.o \
+	./build/$(BUILD)/orxLIB_orxMathSet.o \
 	./build/$(BUILD)/orxLIB_orxVec.o \
 	./build/$(BUILD)/orxLIB_orxBank.o \
 	./build/$(BUILD)/orxLIB_orxMemory.o \
@@ -422,7 +422,7 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/orxDLL_orxTextIO.o: ./src/io/orxTextIO.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_orxSets.o: ./src/math/orxSets.c
+./build/$(BUILD)/orxDLL_orxMathSet.o: ./src/math/orxMathSet.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxVec.o: ./src/math/orxVec.c
@@ -542,7 +542,7 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/orxLIB_orxTextIO.o: ./src/io/orxTextIO.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_orxSets.o: ./src/math/orxSets.c
+./build/$(BUILD)/orxLIB_orxMathSet.o: ./src/math/orxMathSet.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxVec.o: ./src/math/orxVec.c
