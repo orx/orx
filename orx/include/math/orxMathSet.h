@@ -66,6 +66,8 @@ orxINTERVAL_FLOAT;
  * @param _pstInterval Interval to set.
  * @param _fMin Minimum value to set.
  * @param _fMax Maximum value to set.
+ * @param _bMinIncluded Flag indicating if minimum is included or excluded.
+ * @param _bMaxIncluded Flag indicating if maximum is included or excluded.
  */
 orxINLINE orxVOID orxIntervalFloat_Set(orxINTERVAL_FLOAT *_pstInterval, orxFLOAT _fMin, orxFLOAT _fMax, orxBOOL _bMinIncluded, orxBOOL _bMaxIncluded)
 {
@@ -73,6 +75,7 @@ orxINLINE orxVOID orxIntervalFloat_Set(orxINTERVAL_FLOAT *_pstInterval, orxFLOAT
     _pstInterval->fMax = _fMax;
     _pstInterval->u32Flags = (_bMinIncluded&orxINTERVALFLOAT_MIN_INCLUDED)|(_bMaxIncluded&orxINTERVALFLOAT_MAX_INCLUDED);
 }
+
 
 /** Copy an interval to an other.
  * @param _pstInterTgt Interval to set.
@@ -94,7 +97,7 @@ orxINLINE orxVOID orxIntervalFloat_Validate(orxINTERVAL_FLOAT *_pstInterval)
     if (_pstInterval->fMin >_pstInterval->fMax)
     {
         orxSWAP32(_pstInterval->fMin, _pstInterval->fMax);
-        _pstInterval->u32Flags = _pstInterval->u32Flags&orxINTERVALFLOAT_ALL_INCLUDED|((_pstInterval->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)<<8)|((_pstInterval->u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)>>8);
+        _pstInterval->u32Flags = (_pstInterval->u32Flags&orxINTERVALFLOAT_ALL_INCLUDED)|((_pstInterval->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)<<8)|((_pstInterval->u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)>>8);
     }
 }
 
@@ -176,8 +179,21 @@ orxINLINE orxVOID orxIntervalFloat_Swap(orxINTERVAL_FLOAT *_pstInter1, orxINTERV
  */
  orxINLINE orxBOOL orxIntervalFloat_IsIn(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
  {
-     return ( (_pstInter1->fMin>_pstInter2->fMin) || (_pstInter1->fMin==_pstInter2->fMin)&&(_pstInter1->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED==_pstInter2->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)) &&
-             ((_pstInter1->fMax<_pstInter2->fMax) || (_pstInter1->fMin==_pstInter2->fMin)&&(_pstInter1->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED==_pstInter2->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)) ;
+     return ( (_pstInter1->fMin>_pstInter2->fMin) || ((_pstInter1->fMin==_pstInter2->fMin)&&((_pstInter1->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)==(_pstInter2->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)))) &&
+             ((_pstInter1->fMax<_pstInter2->fMax) || ((_pstInter1->fMin==_pstInter2->fMin)&&((_pstInter1->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)==(_pstInter2->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)))) ;
+ }
+
+/** Test if a float value is in an interval.
+ * @param _pstInter Interval to test.
+ * @param _fValue Value to search.
+ * @return true if the value is present in the interval.
+ */
+ orxINLINE orxBOOL orxIntervalFloat_HasValue(const orxINTERVAL_FLOAT *_pstInter, orxFLOAT _fValue)
+ {
+     return ( (_fValue>_pstInter->fMin) || (_fValue<_pstInter->fMax) ||
+              ((_fValue==_pstInter->fMin) && (_pstInter->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)) ||
+              ((_fValue==_pstInter->fMax) && (_pstInter->u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)) );
+              
  }
 
 /** Extand an interval to a value.
@@ -198,7 +214,7 @@ extern orxVOID orxFASTCALL orxIntervalFloat_Extand(orxINTERVAL_FLOAT *_pstInterv
 typedef struct __orxINTERVAL_INT32_t
 {
     /** Coordinates : the min and the max. */
-    orxS32 i32Min, i32Max;
+    orxS32 s32Min, s32Max;
 
 }
 orxINTERVAL_INT32;
@@ -206,13 +222,13 @@ orxINTERVAL_INT32;
 
 /** Set an interval.
  * @param _pstInterval Interval to set.
- * @param _i32Min Minimum value to set.
- * @param _i32Max Maximum value to set.
+ * @param _s32Min Minimum value to set.
+ * @param _s32Max Maximum value to set.
  */
-orxINLINE orxVOID orxIntervalInt32_Set(orxINTERVAL_INT32 *_pstInterval, orxS32 _i32Min, orxS32 _i32Max)
+orxINLINE orxVOID orxIntervalInt32_Set(orxINTERVAL_INT32 *_pstInterval, orxS32 _s32Min, orxS32 _s32Max)
 {
-    _pstInterval->i32Min = _i32Min;
-    _pstInterval->i32Max = _i32Max;
+    _pstInterval->s32Min = _s32Min;
+    _pstInterval->s32Max = _s32Max;
 }
 
 /** Copy an interval to an other.
@@ -221,8 +237,8 @@ orxINLINE orxVOID orxIntervalInt32_Set(orxINTERVAL_INT32 *_pstInterval, orxS32 _
  */
 orxINLINE orxVOID orxIntervalInt32_Copy(orxINTERVAL_INT32 *_pstInterSrc, orxINTERVAL_INT32 *_pstInterTgt)
 {
-    _pstInterTgt->i32Min = _pstInterSrc->i32Min;
-    _pstInterTgt->i32Max = _pstInterSrc->i32Max;
+    _pstInterTgt->s32Min = _pstInterSrc->s32Min;
+    _pstInterTgt->s32Max = _pstInterSrc->s32Max;
 }
 
 /** Validate an interval.
@@ -231,9 +247,9 @@ orxINLINE orxVOID orxIntervalInt32_Copy(orxINTERVAL_INT32 *_pstInterSrc, orxINTE
  */
 orxINLINE orxVOID orxIntervalInt32_Validate(orxINTERVAL_INT32 *_pstInterval)
 {
-    if (_pstInterval->i32Min >_pstInterval->i32Max)
+    if (_pstInterval->s32Min >_pstInterval->s32Max)
     {
-        orxSWAP32(_pstInterval->i32Min, _pstInterval->i32Max);
+        orxSWAP32(_pstInterval->s32Min, _pstInterval->s32Max);
     }
 }
 
@@ -243,8 +259,90 @@ orxINLINE orxVOID orxIntervalInt32_Validate(orxINTERVAL_INT32 *_pstInterval)
  */
 orxINLINE orxVOID orxIntervalInt32_Swap(orxINTERVAL_INT32 *_pstInter1, orxINTERVAL_INT32 *_pstInter2)
 {
-    orxSWAP32(_pstInter2->i32Min, _pstInter1->i32Min);
+    orxSWAP32(_pstInter2->s32Min, _pstInter1->s32Min);
+    orxSWAP32(_pstInter2->s32Max, _pstInter1->s32Max);
 }
+
+
+/** Test if two intervals are identicals.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if they are identical.
+ */
+ orxINLINE orxBOOL orxIntervalInt32_AreEgual(orxINTERVAL_INT32 *_pstInter1, orxINTERVAL_INT32 *_pstInter2)
+ {
+     return (_pstInter1->s32Min==_pstInter2->s32Min)&&(_pstInter1->s32Max==_pstInter2->s32Max);
+ }
+ 
+/** Test if two intervals are different.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if they are different.
+ */
+ orxINLINE orxBOOL orxIntervalInt32_AreDifferent(orxINTERVAL_INT32 *_pstInter1, orxINTERVAL_INT32 *_pstInter2)
+ {
+     return (_pstInter1->s32Min!=_pstInter2->s32Min)||(_pstInter1->s32Min!=_pstInter2->s32Min);
+ }
+ 
+ /** Test if an interval is less than another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is less than the second.
+ */
+ orxINLINE orxBOOL orxIntervalInt32_IsLess(orxINTERVAL_INT32 *_pstInter1, orxINTERVAL_INT32 *_pstInter2)
+ {
+     return _pstInter1->s32Max<_pstInter2->s32Min;
+ }
+
+ /** Test if an interval is less or bottom-throw than another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is less or bottom-throw than the second.
+ */
+ orxINLINE orxBOOL orxIntervalInt32_IsLessOrBottomThrow(orxINTERVAL_INT32 *_pstInter1, orxINTERVAL_INT32 *_pstInter2)
+ {
+     return (_pstInter1->s32Min<_pstInter2->s32Min)&&(_pstInter1->s32Min<=_pstInter2->s32Max);
+ }
+
+ /** Test if an interval is greater than another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is greater than the second.
+ */
+ orxINLINE orxBOOL orxIntervalInt32_IsGreater(orxINTERVAL_INT32 *_pstInter1, orxINTERVAL_INT32 *_pstInter2)
+ {
+     return (_pstInter1->s32Min>_pstInter2->s32Max);
+ }
+ 
+ /** Test if an interval is greater or top-throw than another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is greater or top-throw than the second.
+ */
+ orxINLINE orxBOOL orxIntervalInt32_IsGreaterOrTopThrow(orxINTERVAL_INT32 *_pstInter1, orxINTERVAL_INT32 *_pstInter2)
+ {
+     return (_pstInter1->s32Max>_pstInter2->s32Max)&&(_pstInter1->s32Min>=_pstInter2->s32Min);
+ }
+ 
+ /** Test if an interval is strictly in another.
+ * @param _pstInter1 First interval.
+ * @param _pstInter2 Second interval.
+ * @return true if the first is in the second.
+ */
+ orxINLINE orxBOOL orxIntervalInt32_IsIn(orxINTERVAL_INT32 *_pstInter1, orxINTERVAL_INT32 *_pstInter2)
+ {
+     return (_pstInter1->s32Min>=_pstInter2->s32Min) && (_pstInter1->s32Max<=_pstInter2->s32Max);
+ }
+
+/** Test if an integer value is in an interval.
+ * @param _pstInter Interval to test.
+ * @param _s32Value Value to search.
+ * @return true if the value is present in the interval.
+ */
+ orxINLINE orxBOOL orxIntervalInt32_HasValue(const orxINTERVAL_INT32 *_pstInter, orxS32 _s32Value)
+ {
+     return (_s32Value>=_pstInter->s32Min) || (_s32Value<=_pstInter->s32Max);
+ }
 
 /** Extand an interval to a value.
  * @param _pstInterval Interval to extand.
@@ -317,13 +415,6 @@ extern orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FL
  * @param _stInterv Interval to substract.
  */
 extern orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstet, orxINTERVAL_FLOAT _stInterval);
-
-/** Test if a float value is in the set.
- * @param _pstSet Set to test.
- * @param _fValue Value to test.
- * @return True if _fValue is in _psSet.
- */
-extern orxBOOL orxFASTCALL orxSetFloat_TestValue(orxSET_FLOAT *_pstSet, orxFLOAT _fValue);
 
 /** Return the interval corresponding to a value if any.
  * @param _pstSet Set where to search.
