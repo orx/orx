@@ -437,5 +437,86 @@ orxINLINE orxLINKLIST *orxFASTCALL orxSetFloat_GetIntervalList(orxSET_FLOAT *_ps
 
 
 
+
+/** @name Integer Set.
+ * Manipulation of integer-element sets.
+ * @{
+ */
+
+/** Integer-based extended interval structure. */
+typedef struct __orxINTERVAL_INT32_NODE_t
+{
+    /** Link list direct dependancy. */
+    orxLINKLIST_NODE stNode;
+    /** Float-based interval.*/
+    orxINTERVAL_INT32 stInterval;
+    /** Extended data type. */
+    orxU32 u32ExtDataType;
+    /** Extended data address. */
+    orxHANDLE hExtData;
+}
+orxINTERVAL_INT32_NODE;
+
+/** Return the interval part of a set node.
+ * @return Address of the interval.
+ */
+orxINLINE orxINTERVAL_INT32* orxSetNodeInt32_GetInterval(orxINTERVAL_INT32_NODE* _pstNode)
+{
+    return &(_pstNode->stInterval);
+}
+
+/** Allocate a new node based on an interval.
+ * @note Extended data is linked and not copied.
+ * @param _stInterval Interval
+ * @param _u32ExtDataType Type of extended data.
+ * @param _hExtData Address of extanded data.
+ * @return address of the allocated node.
+ */
+extern orxINTERVAL_INT32_NODE* orxSetNodeInt32_AllocateNode(orxINTERVAL_INT32 _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData);
+
+/** Float-based set structure. */
+typedef struct __orxSET_INT32_t
+{
+    /** Link list of intervals.*/
+    orxLINKLIST sIntervalList;
+}
+orxSET_INT32;
+
+/** Clear an integer-based set.  
+ * @param _pstSet Set to clear.
+ */
+extern orxVOID orxFASTCALL orxSetInt32_Clear(orxSET_INT32 *_pstSet);
+
+/** Add an interval to an integer-based set.
+ * @param _pstSet Target set.
+ * @param _ptInterv Interval to add.
+ */
+extern orxVOID orxFASTCALL orxSetInt32_Add(orxSET_INT32 *_pstSet, orxINTERVAL_INT32 _stInterval);
+ 
+/** Substract an interval from an integer-based set.
+ * @param _pstSet Target set.
+ * @param _stInterv Interval to substract.
+ */
+extern orxVOID orxFASTCALL orxSetInt32_Sub(orxSET_INT32 *_pstet, orxINTERVAL_INT32 _stInterval);
+
+/** Return the interval corresponding to a value if any.
+ * @param _pstSet Set where to search.
+ * @param _s32Value Value to search.
+ * @return Address of the interval corresponding to the value param or NULL if not found.
+ */
+extern orxINTERVAL_INT32 *orxFASTCALL orxSetInt32_FindValueInterval(orxSET_INT32 *_pstSet, orxS32 _s32Value);
+
+/** Return the address of the attached list of interval.
+ * @param _pstSet Set from witch extract the list.
+ * @return Address of the attached list.
+ */
+orxINLINE orxLINKLIST *orxFASTCALL orxSetInt32_GetIntervalList(orxSET_INT32 *_pstSet)
+{
+    return &(_pstSet->sIntervalList);
+}
+
+/** @} */
+
+
 #endif
 /** @} */
