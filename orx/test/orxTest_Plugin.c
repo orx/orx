@@ -150,7 +150,7 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
   orxCHAR zLibName[512];      /* Create the library name (dll*/
   
   /* Initialize Pattern*/
-  orxMemorySet(zPattern, 0, sizeof(zPattern));
+  orxMemory_Set(zPattern, 0, sizeof(zPattern));
  
   /* Check _directory name (overflow) */
   if (strlen(zDirName) < 500)
