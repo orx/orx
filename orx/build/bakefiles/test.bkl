@@ -56,4 +56,9 @@
     <sources>test/orxTest_Plugin.c</sources>
   </module>
 
+  <module id="MathSet" template="orxBASE,orxLINK,orxMODULELINK">
+    <dirname>bin/modules</dirname>
+    <sources>test/orxTest_MathTest.c</sources>
+  </module>
+
 </bakefile>
