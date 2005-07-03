@@ -162,7 +162,7 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
     if ((lFile = _findfirst(zPattern, &stFile)) != -1L)
     {
       /* Create full lib name */
-      orxTextIO_Printf(zLibName, "%s\\%s", _zDirName, stFile.name);
+      orxTextIO_Printf(zLibName, "%s\\%s", zDirName, stFile.name);
       
       /* Store the library name */
       orxTextIO_Printf(sstTest_Plugin.astPlugins[0].zFile, "%s", zLibName);
@@ -173,7 +173,7 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
       while (_findnext(lFile, &stFile) == 0)
       {
         /* Create full lib name */
-        orxTextIO_Printf(zLibName, "%s\\%s", _zDirName, stFile.name);
+        orxTextIO_Printf(zLibName, "%s\\%s", zDirName, stFile.name);
 
         /* Store the library name */
         orxTextIO_Printf(sstTest_Plugin.azFileName[u32Index], "%s", zLibName);
