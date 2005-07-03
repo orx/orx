@@ -177,7 +177,7 @@ MATHSET_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
 MATHSET_OBJECTS =  \
-	./build/$(BUILD)/MathSet_orxTest_MathTest.o
+	./build/$(BUILD)/MathSet_orxTest_MathSet.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
@@ -629,7 +629,7 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/Plugin_orxTest_Plugin.o: ./test/orxTest_Plugin.c
 	$(CC) -c -o $@ $(PLUGIN_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/MathSet_orxTest_MathTest.o: ./test/orxTest_MathTest.c
+./build/$(BUILD)/MathSet_orxTest_MathSet.o: ./test/orxTest_MathSet.c
 	$(CC) -c -o $@ $(MATHSET_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Sound_Fmod_orxSound.o: ./plugins/Sound/Fmod/orxSound.c
