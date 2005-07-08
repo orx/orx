@@ -158,14 +158,14 @@ orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
     pstNodeFirst = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
 
     /** Search greatest interval before _strInterval.*/
-    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsLess(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeTemp), &_stInterval))
+    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsLess(*orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeTemp), _stInterval))
     {
         pstNodeFirst = pstNodeTemp;
         pstNodeTemp = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeTemp);
     }
 
     /** Search littlest interval after _strInterval.*/
-    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsGreater(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeTemp), &_stInterval))
+    while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsGreater(*orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeTemp), _stInterval))
     {
         pstNodeLast = pstNodeTemp;
         pstNodeTemp = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetPrevious((orxLINKLIST_NODE*) pstNodeTemp);
@@ -212,11 +212,11 @@ orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
     pstNodeFirst = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
     
     /** Search greatest interval before or bottom-throw _strInterval.*/
-    while ( (pstNodeFirst!=NULL) && orxIntervalFloat_IsLessOrBottomThrow(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeFirst), &_stInterval))
+    while ( (pstNodeFirst!=NULL) && orxIntervalFloat_IsLessOrBottomThrow(*orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeFirst), _stInterval))
         pstNodeFirst = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeFirst);
 
     /** Search littlest interval after or top-throw _strInterval.*/
-    while ( (pstNodeLast!=NULL) && orxIntervalFloat_IsGreaterOrTopThrow(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeLast), &_stInterval))
+    while ( (pstNodeLast!=NULL) && orxIntervalFloat_IsGreaterOrTopThrow(*orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeLast), _stInterval))
         pstNodeLast = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetPrevious((orxLINKLIST_NODE*) pstNodeLast);
 
     /** Shrink intervals witch are across the _stInterval. */
@@ -231,10 +231,10 @@ orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
     else
     {
         /** If the interval before is across _stInterval, shrink it.*/
-        if (pstNodeFirst!=NULL && !orxIntervalFloat_IsLess(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeFirst), &_stInterval))
+        if (pstNodeFirst!=NULL && !orxIntervalFloat_IsLess(*orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeFirst), _stInterval))
             orxIntervalFloat_Set(&pstNodeFirst->stInterval, pstNodeFirst->stInterval.fMin, _stInterval.fMin, pstNodeFirst->stInterval.u32Flags, !_stInterval.u32Flags);
         /** If the interval before is across _stInterval, shrink it.*/    
-        if (pstNodeLast!=NULL && !orxIntervalFloat_IsGreaterOrTopThrow(orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeLast), &_stInterval))
+        if (pstNodeLast!=NULL && !orxIntervalFloat_IsGreaterOrTopThrow(*orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeLast), _stInterval))
             orxIntervalFloat_Set(&pstNodeLast->stInterval, _stInterval.fMax, pstNodeLast->stInterval.fMax, !_stInterval.u32Flags, pstNodeLast->stInterval.u32Flags);
     }
     
@@ -255,15 +255,15 @@ orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
  * @param _fValue Value to search.
  * @return Address of the interval corresponding to the value param or NULL if not found.
  */
-orxINTERVAL_FLOAT *orxFASTCALL orxSetFloat_FindValueInterval(orxSET_FLOAT *_pstSet, orxFLOAT _fValue)
+orxINTERVAL_FLOAT_NODE *orxFASTCALL orxSetFloat_FindValueIntervalNode(orxSET_FLOAT *_pstSet, orxFLOAT _fValue)
 {
     orxINTERVAL_FLOAT_NODE *pstNode = orxNULL;
     orxLINKLIST *pstList = orxSetFloat_GetIntervalList(_pstSet);
     pstNode = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
 
-    while (pstNode!=orxNULL && !orxIntervalFloat_HasValue(&pstNode->stInterval, _fValue))
+    while (pstNode!=orxNULL && !orxIntervalFloat_HasValue(pstNode->stInterval, _fValue))
         pstNode = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetNext((orxLINKLIST_NODE*) pstNode);
-    return &pstNode->stInterval;
+    return pstNode;
 }
 
 
@@ -315,14 +315,14 @@ orxVOID orxFASTCALL orxSetInt32_Add(orxSET_INT32 *_pstSet, orxINTERVAL_INT32 _st
     pstNodeFirst = (orxINTERVAL_INT32_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
 
     /** Search greatest interval before _strInterval.*/
-    while ( (pstNodeTemp!=NULL) && orxIntervalInt32_IsLess(orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeTemp), &_stInterval))
+    while ( (pstNodeTemp!=NULL) && orxIntervalInt32_IsLess(*orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeTemp), _stInterval))
     {
         pstNodeFirst = pstNodeTemp;
         pstNodeTemp = (orxINTERVAL_INT32_NODE*) orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeTemp);
     }
 
     /** Search littlest interval after _strInterval.*/
-    while ( (pstNodeTemp!=NULL) && orxIntervalInt32_IsGreater(orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeTemp), &_stInterval))
+    while ( (pstNodeTemp!=NULL) && orxIntervalInt32_IsGreater(*orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeTemp), _stInterval))
     {
         pstNodeLast = pstNodeTemp;
         pstNodeTemp = (orxINTERVAL_INT32_NODE*) orxLinkList_GetPrevious((orxLINKLIST_NODE*) pstNodeTemp);
@@ -369,11 +369,11 @@ orxVOID orxFASTCALL orxSetInt32_Sub(orxSET_INT32 *_pstSet, orxINTERVAL_INT32 _st
     pstNodeFirst = (orxINTERVAL_INT32_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
     
     /** Search greatest interval before or bottom-throw _strInterval.*/
-    while ( (pstNodeFirst!=NULL) && orxIntervalInt32_IsLessOrBottomThrow(orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeFirst), &_stInterval))
+    while ( (pstNodeFirst!=NULL) && orxIntervalInt32_IsLessOrBottomThrow(*orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeFirst), _stInterval))
         pstNodeFirst = (orxINTERVAL_INT32_NODE*) orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeFirst);
 
     /** Search littlest interval after or top-throw _strInterval.*/
-    while ( (pstNodeLast!=NULL) && orxIntervalInt32_IsGreaterOrTopThrow(orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeLast), &_stInterval))
+    while ( (pstNodeLast!=NULL) && orxIntervalInt32_IsGreaterOrTopThrow(*orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeLast), _stInterval))
         pstNodeLast = (orxINTERVAL_INT32_NODE*) orxLinkList_GetPrevious((orxLINKLIST_NODE*) pstNodeLast);
 
     /** Shrink intervals witch are across the _stInterval. */
@@ -388,10 +388,10 @@ orxVOID orxFASTCALL orxSetInt32_Sub(orxSET_INT32 *_pstSet, orxINTERVAL_INT32 _st
     else
     {
         /** If the interval before is across _stInterval, shrink it.*/
-        if (pstNodeFirst!=NULL && !orxIntervalInt32_IsLess(orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeFirst), &_stInterval))
+        if (pstNodeFirst!=NULL && !orxIntervalInt32_IsLess(*orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeFirst), _stInterval))
             orxIntervalInt32_Set(&pstNodeFirst->stInterval, pstNodeFirst->stInterval.s32Min, _stInterval.s32Min);
         /** If the interval before is across _stInterval, shrink it.*/    
-        if (pstNodeLast!=NULL && !orxIntervalInt32_IsGreaterOrTopThrow(orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeLast), &_stInterval))
+        if (pstNodeLast!=NULL && !orxIntervalInt32_IsGreaterOrTopThrow(*orxSetNodeInt32_GetInterval((orxINTERVAL_INT32_NODE*)pstNodeLast), _stInterval))
             orxIntervalInt32_Set(&pstNodeLast->stInterval, _stInterval.s32Max, pstNodeLast->stInterval.s32Max);
     }
     
@@ -412,14 +412,14 @@ orxVOID orxFASTCALL orxSetInt32_Sub(orxSET_INT32 *_pstSet, orxINTERVAL_INT32 _st
  * @param _s32Value Value to search.
  * @return Address of the interval corresponding to the value param or NULL if not found.
  */
-orxINTERVAL_INT32 *orxFASTCALL orxSetInt32_FindValueInterval(orxSET_INT32 *_pstSet, orxS32 _s32Value)
+orxINTERVAL_INT32_NODE *orxFASTCALL orxSetInt32_FindValueIntervalNode(orxSET_INT32 *_pstSet, orxS32 _s32Value)
 {
     orxINTERVAL_INT32_NODE *pstNode = orxNULL;
     orxLINKLIST *pstList = orxSetInt32_GetIntervalList(_pstSet);
     pstNode = (orxINTERVAL_INT32_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
 
-    while (pstNode!=orxNULL && !orxIntervalInt32_HasValue(&pstNode->stInterval, _s32Value))
+    while (pstNode!=orxNULL && !orxIntervalInt32_HasValue(pstNode->stInterval, _s32Value))
         pstNode = (orxINTERVAL_INT32_NODE*) orxLinkList_GetNext((orxLINKLIST_NODE*) pstNode);
-    return &pstNode->stInterval;
+    return pstNode;
 }
 
