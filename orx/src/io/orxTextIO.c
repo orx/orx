@@ -215,7 +215,7 @@ orxSTATUS orxFASTCALL orxTextIO_ReadS32InRange(orxS32 *_ps32OutValue, orxU32 _u3
  * @param _bLoop          (IN)  Must be frTRUE if the function has to loop until the user send a valid entry
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status (if no loop asked)
  */
-orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxS32 *_pfOutValue, orxCONST orxSTRING _zMessage, orxBOOL _bLoop)
+orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxFLOAT *_pfOutValue, orxCONST orxSTRING _zMessage, orxBOOL _bLoop)
 {
   orxSTATUS eStatus;        /* status of the conversion */
   orxCHAR zUserValue[64];   /* String where user inputs are stored */
@@ -235,7 +235,7 @@ orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxS32 *_pfOutValue, orxCONST orxSTRIN
     if (eStatus != orxSTATUS_FAILED)
     {
       /* Try to convert */
-//      eStatus = orxString_ToFloat(_pfOutValue, zUserValue);
+      eStatus = orxString_ToFloat(_pfOutValue, zUserValue);
       
       /* Valid conversion ? */
       if (eStatus == orxSTATUS_FAILED)

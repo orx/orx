@@ -156,6 +156,28 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxS32 *_ps32OutValue, o
   }
 }
 
+/** Convert a string to a value
+ * @param _pfOutValue     (OUT) Converted value
+ * @param _zString        (IN)  String To convert
+ * @return  return the status of the conversion
+ */
+orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxFLOAT *_pfOutValue, orxSTRING _zString)
+{
+  /* char instead of orxCHAR to avoid compilation warnings */
+  orxCHAR *pcEndPtr; /* Address of the first invalid character */
+  
+  /* Correct parameters ? */
+  orxASSERT(_pfOutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+  
+  /* Convert */
+  *_pfOutValue = atof(_zString);
+  
+  return orxSTATUS_SUCCESS;
+}
+
+
+
 /** Lowercase a string
  * @param _zString        (IN)  String To convert
  * @return The converted string.

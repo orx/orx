@@ -77,7 +77,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadS32InRange(orxS32 *_ps32Out
  * @param _bLoop          (IN)  Must be frTRUE if the function has to loop until the user send a valid entry
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status (if no loop asked)
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxS32 *_pfOutValue, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
+extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxFLOAT *_pfOutValue, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
 
 /** Read a FLOAT Value that must be in a valid range from STDIN
  * @param _pfOutValue     (OUT) place where the read value will be stored
