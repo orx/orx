@@ -148,21 +148,21 @@ orxVOID orxTest_MathSet_AutoTestIntervals()
     orxTextIO_PrintLn("Integer-based tests :");
     orxTextIO_PrintLn("---------------------");
     
-    orxTextIO_Print(" - Assignation (orxIntervalInt32_Set)             ");
+    orxTextIO_Print(" - Assignation (orxIntervalInt32_Set)                      ");
     orxIntervalInt32_Set(&sstIntervInt32, 25, 32);
     if ((sstIntervInt32.s32Min==25) && (sstIntervInt32.s32Max==32))
         orxTextIO_PrintLn(" OK  ");
     else
         orxTextIO_PrintLn("ERROR");
 
-    orxTextIO_Print(" - Copy (orxIntervalInt32_Copy)                   ");
-    orxIntervalInt32_Copy(&sstIntervInt32, &sstIntervInt32Test);
+    orxTextIO_Print(" - Copy (orxIntervalInt32_Copy)                            ");
+    orxIntervalInt32_Copy(sstIntervInt32, &sstIntervInt32Test);
     if ((sstIntervInt32Test.s32Min==25) && (sstIntervInt32Test.s32Max==32))
         orxTextIO_PrintLn(" OK  ");
     else
         orxTextIO_PrintLn("ERROR");
 
-    orxTextIO_Print(" - Validation (orxIntervalInt32_Validate)         ");
+    orxTextIO_Print(" - Validation (orxIntervalInt32_Validate)                  ");
     orxIntervalInt32_Set(&sstIntervInt32Test, 55, 28);
     orxIntervalInt32_Validate(&sstIntervInt32Test);
     if ((sstIntervInt32Test.s32Min==28) && (sstIntervInt32Test.s32Max==55))
@@ -170,28 +170,113 @@ orxVOID orxTest_MathSet_AutoTestIntervals()
     else
         orxTextIO_PrintLn("ERROR");
 
-    orxTextIO_Print(" - Sawp (orxIntervalInt32_Swap)                   ");
+    orxTextIO_Print(" - Sawp (orxIntervalInt32_Swap)                            ");
     orxIntervalInt32_Swap(&sstIntervInt32, &sstIntervInt32Test);
     if ((sstIntervInt32.s32Min==28) && (sstIntervInt32.s32Max==55) && (sstIntervInt32Test.s32Min==25) && (sstIntervInt32Test.s32Max==32))
         orxTextIO_PrintLn(" OK  ");
     else
         orxTextIO_PrintLn("ERROR");
     
-    orxTextIO_Print(" - Eguality (orxIntervalInt32_AreEgual)           ");
-    if ((orxIntervalInt32_AreEgual(&sstIntervInt32, &sstIntervInt32)==orxTRUE) && (orxIntervalInt32_AreEgual(&sstIntervInt32, &sstIntervInt32Test)==orxFALSE))
+    orxTextIO_Print(" - Eguality (orxIntervalInt32_AreEgual)                    ");
+    if ((orxIntervalInt32_AreEgual(sstIntervInt32, sstIntervInt32)==orxTRUE) && (orxIntervalInt32_AreEgual(sstIntervInt32, sstIntervInt32Test)==orxFALSE))
         orxTextIO_PrintLn(" OK  ");
     else
         orxTextIO_PrintLn("ERROR");
     
-    orxTextIO_Print(" - Difference (orxIntervalInt32_AreDifferent)     ");
-    if ((orxIntervalInt32_AreDifferent(&sstIntervInt32, &sstIntervInt32)==orxFALSE) && (orxIntervalInt32_AreDifferent(&sstIntervInt32, &sstIntervInt32Test)==orxTRUE))
+    orxTextIO_Print(" - Difference (orxIntervalInt32_AreDifferent)              ");
+    if ((orxIntervalInt32_AreDifferent(sstIntervInt32, sstIntervInt32)==orxFALSE) && (orxIntervalInt32_AreDifferent(sstIntervInt32, sstIntervInt32Test)==orxTRUE))
         orxTextIO_PrintLn(" OK  ");
     else
         orxTextIO_PrintLn("ERROR");
 
-    orxTextIO_Print(" - Comparison (orxIntervalInt32_IsLess)           ");
+    orxTextIO_Print(" - Comparison (orxIntervalInt32_IsLess)                    ");
+    if ((orxIntervalInt32_IsLess(orxIntervalInt32(10, 20), orxIntervalInt32(30, 50))==orxTRUE) &&
+        (orxIntervalInt32_IsLess(orxIntervalInt32(10, 40), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsLess(orxIntervalInt32(35, 45), orxIntervalInt32(30, 50))==orxFALSE) && 
+        (orxIntervalInt32_IsLess(orxIntervalInt32(40, 60), orxIntervalInt32(30, 50))==orxFALSE) && 
+        (orxIntervalInt32_IsLess(orxIntervalInt32(60, 80), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsLess(orxIntervalInt32(30, 50), orxIntervalInt32(35, 45))==orxFALSE) )
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
 
-    (
+    orxTextIO_Print(" - Comparison (orxIntervalInt32_IsLessOrBottomThrow)       ");
+    if ((orxIntervalInt32_IsLessOrBottomThrow(orxIntervalInt32(10, 20), orxIntervalInt32(30, 50))==orxTRUE) &&
+        (orxIntervalInt32_IsLessOrBottomThrow(orxIntervalInt32(10, 40), orxIntervalInt32(30, 50))==orxTRUE) &&
+        (orxIntervalInt32_IsLessOrBottomThrow(orxIntervalInt32(35, 45), orxIntervalInt32(30, 50))==orxFALSE) && 
+        (orxIntervalInt32_IsLessOrBottomThrow(orxIntervalInt32(40, 60), orxIntervalInt32(30, 50))==orxFALSE) && 
+        (orxIntervalInt32_IsLessOrBottomThrow(orxIntervalInt32(60, 80), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsLessOrBottomThrow(orxIntervalInt32(30, 50), orxIntervalInt32(35, 45))==orxFALSE) )
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
+
+    orxTextIO_Print(" - Comparison (orxIntervalInt32_IsGreater)                 ");
+    if ((orxIntervalInt32_IsGreater(orxIntervalInt32(10, 20), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsGreater(orxIntervalInt32(10, 40), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsGreater(orxIntervalInt32(35, 45), orxIntervalInt32(30, 50))==orxFALSE) && 
+        (orxIntervalInt32_IsGreater(orxIntervalInt32(40, 60), orxIntervalInt32(30, 50))==orxFALSE) && 
+        (orxIntervalInt32_IsGreater(orxIntervalInt32(60, 80), orxIntervalInt32(30, 50))==orxTRUE) &&
+        (orxIntervalInt32_IsGreater(orxIntervalInt32(30, 50), orxIntervalInt32(35, 45))==orxFALSE) )
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
+
+    orxTextIO_Print(" - Comparison (orxIntervalInt32_IsGreaterOrTopThrow)       ");
+    if ((orxIntervalInt32_IsGreaterOrTopThrow(orxIntervalInt32(10, 20), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsGreaterOrTopThrow(orxIntervalInt32(10, 40), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsGreaterOrTopThrow(orxIntervalInt32(35, 45), orxIntervalInt32(30, 50))==orxFALSE) && 
+        (orxIntervalInt32_IsGreaterOrTopThrow(orxIntervalInt32(40, 60), orxIntervalInt32(30, 50))==orxTRUE) && 
+        (orxIntervalInt32_IsGreaterOrTopThrow(orxIntervalInt32(60, 80), orxIntervalInt32(30, 50))==orxTRUE) &&
+        (orxIntervalInt32_IsGreaterOrTopThrow(orxIntervalInt32(30, 50), orxIntervalInt32(35, 45))==orxFALSE) )
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
+
+    orxTextIO_Print(" - Comparison (orxIntervalInt32_IsIn)                      ");
+    if ((orxIntervalInt32_IsIn(orxIntervalInt32(10, 20), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsIn(orxIntervalInt32(10, 40), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsIn(orxIntervalInt32(35, 45), orxIntervalInt32(30, 50))==orxTRUE) && 
+        (orxIntervalInt32_IsIn(orxIntervalInt32(40, 60), orxIntervalInt32(30, 50))==orxFALSE) && 
+        (orxIntervalInt32_IsIn(orxIntervalInt32(60, 80), orxIntervalInt32(30, 50))==orxFALSE) &&
+        (orxIntervalInt32_IsIn(orxIntervalInt32(30, 50), orxIntervalInt32(35, 45))==orxFALSE) )
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
+
+    orxTextIO_Print(" - Search (orxIntervalInt32_HasValue)                      ");
+    if ((orxIntervalInt32_HasValue(orxIntervalInt32(10, 20), 5)  == orxFALSE) && 
+        (orxIntervalInt32_HasValue(orxIntervalInt32(10, 20), 10) == orxTRUE) && 
+        (orxIntervalInt32_HasValue(orxIntervalInt32(10, 20), 15) == orxTRUE) && 
+        (orxIntervalInt32_HasValue(orxIntervalInt32(10, 20), 20) == orxTRUE) && 
+        (orxIntervalInt32_HasValue(orxIntervalInt32(10, 20), 25) == orxFALSE))
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
+
+    orxTextIO_Print(" - Extand (orxIntervalInt32_Extand) - test 01              ");
+    orxIntervalInt32_Set(&sstIntervInt32, 25, 32);
+    orxIntervalInt32_Extand(&sstIntervInt32, 48);
+    if ((sstIntervInt32.s32Min==25)&&(sstIntervInt32.s32Max==48))
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
+
+    orxTextIO_Print(" - Extand (orxIntervalInt32_Extand) - test 02              ");
+    orxIntervalInt32_Set(&sstIntervInt32, 25, 32);
+    orxIntervalInt32_Extand(&sstIntervInt32, 15);
+    if ((sstIntervInt32.s32Min==15)&&(sstIntervInt32.s32Max==32))
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
+
+    orxTextIO_Print(" - Extand (orxIntervalInt32_Extand) - test 03              ");
+    orxIntervalInt32_Set(&sstIntervInt32, 25, 32);
+    orxIntervalInt32_Extand(&sstIntervInt32, 28);
+    if ((sstIntervInt32.s32Min==25)&&(sstIntervInt32.s32Max==32))
+        orxTextIO_PrintLn(" OK  ");
+    else
+        orxTextIO_PrintLn("ERROR");
 }
 
 
@@ -205,11 +290,11 @@ orxVOID orxTest_MathSet_Init()
   
   /* Register test functions */
   orxTest_Register("MathSet", "Display module informations", orxTest_MathSet_Infos);
+  orxTest_Register("MathSet", "Auto-test intervals", orxTest_MathSet_AutoTestIntervals);
   orxTest_Register("MathSet", "Clear all objects", orxTest_MathSet_Reset);
   orxTest_Register("MathSet", "Display content of tested intervals and sets", orxTest_MathSet_DisplayContent);
   orxTest_Register("MathSet", "Set float-based interval", orxTest_MathSet_InputFloatInterval);
   orxTest_Register("MathSet", "Set integer-based interval", orxTest_MathSet_InputInt32Interval);
-  orxTest_Register("MathSet", "Auto-test intervals", orxTest_MathSet_AutoTestIntervals);
 }
 
 orxVOID orxTest_MathSet_Exit()
