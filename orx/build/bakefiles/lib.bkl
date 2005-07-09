@@ -18,8 +18,8 @@
             src/camera/orxViewport.c
         </sources>
         <sources>
-            src/core/clock.c
-            src/core/timer.c
+            src/core/orxClock.c
+            src/core/orxTime.c
         </sources>
         <sources>
             src/debug/orxDebug.c
@@ -63,15 +63,14 @@
         </sources>
         <sources>
             src/utils/orxBayes.c
+            src/utils/orxFSM.c
             src/utils/orxHashTable.c
             src/utils/orxLinkList.c
+            src/utils/orxScreenshot.c
+            src/utils/orxString.c
             src/utils/orxTest.c
             src/utils/orxTree.c
             src/utils/pathfinder.c
-            src/utils/orxScreenshot.c
-            src/utils/orxFSM.c
-            src/utils/utils.c
-            src/utils/orxString.c
         </sources>
     </template>
 
@@ -114,16 +113,15 @@
         <install-to>$(INCLUDEDIR)/orx</install-to>
         <files>
             anim/orxAnim.h
-            anim/AnimPointer.h
+            anim/orxAnimPointer.h
             anim/orxAnimSet.h
             base/orxDecl.h
             base/orxType.h
             camera/orxCamera.h
             camera/orxrender.h
-            camera/Viewport.h
-            core/clock.h
-            core/timer.h
-            core/timer_type.h
+            camera/orxViewport.h
+            core/orxClock.h
+            core/orxTime.h
             debug/orxDebug.h
             debug/orxFps.h
             display/graphic.h
@@ -152,29 +150,30 @@
             object/orxObject.h
             object/orxStructure.h
             plugin/orxPlugin.h
-            plugin/plugin_core.h
-            plugin/plugin_type.h
-            plugin/plugin_user.h
-            plugin/define/plugin_graph.h
-            plugin/define/plugin_joystick.h
-            plugin/define/plugin_keyboard.h
-            plugin/define/plugin_mouse.h
-            plugin/define/plugin_sound.h
-            plugin/define/plugin_timer.h
+            plugin/orxPluginCore.h
+            plugin/orxPluginType.h
+            plugin/orxPluginUser.h
+            plugin/define/orxPlugin_CoreDefine.h
+            plugin/define/orxPlugin_CoreID.h
+            plugin/define/orxPlugin_Display.h
             plugin/define/orxPlugin_File.h
+            plugin/define/orxPlugin_Joystick.h
+            plugin/define/orxPlugin_Keyboard.h
+            plugin/define/orxPlugin_Mouse.h
             plugin/define/orxPlugin_Package.h
             plugin/define/orxPlugin_Script.h
+            plugin/define/orxPlugin_Sound.h
+            plugin/define/orxPlugin_Time.h
             script/orxScript.h
             sound/orxSound.h
+            utils/orxFSM.h
+            utils/orxHashTable.h
             utils/orxLinkList.h
+            utils/orxScreenshot.h
             utils/orxString.h
             utils/orxTest.h
             utils/orxTree.h
             utils/pathfinder.h
-            utils/orxScreenshot.h
-            utils/orxFSM.h
-            utils/utils.h
-            utils/orxHashTable.h
             orxInclude.h
         </files>
     </headers>

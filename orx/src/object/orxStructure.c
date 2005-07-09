@@ -190,11 +190,11 @@ orxSTATUS orxStructure_Init()
  ***************************************************************************/
 orxVOID orxStructure_Exit()
 {
-  orxU32 i;
-
   /* Initialized? */
   if(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY)
   {
+    orxU32 i;
+
     /* For all banks */
     for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
     {
@@ -348,6 +348,9 @@ orxSTATUS orxFASTCALL orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTU
   /* Valid? */
   if(pstNode != orxNULL)
   {
+    /* Cleans it */
+    orxMemory_Set(pstNode, 0, sizeof(orxSTORAGE_NODE));
+
     /* Dependig on type */
     switch(sstStructure.astStorage[_eStructureID].eType)
     {

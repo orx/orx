@@ -10,12 +10,13 @@
 /* *** TODO LIST
  * C Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, graph, hash table)
  * - Rewrite include hierarchy / group includes/init/exit by module
- * - Add unicode support
+ * - Add new type of memory / replace them at need / add init for each memory type with heap size
  * - Replace simple mallocs in written modules with banks
  * - Simplify structure module (everything controlled from there / no cross references?)
  * - Add BV/box module + extract AABox code from vector module
  * C Rewrite sound module/plugin + timer module/plugin
  * V Add CRC
+ * - Add unicode support (all to unicode)
  * - Add string handling (using CRC + hash)
  * V Add texture referencing with duplication check -> reference increase
  * - Remove ref point from texture to a higher graph object (not created yet)

@@ -53,8 +53,8 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxCamera.o \
 	.\build\$(BUILD)\orxDLL_orxRender.o \
 	.\build\$(BUILD)\orxDLL_orxViewport.o \
-	.\build\$(BUILD)\orxDLL_clock.o \
-	.\build\$(BUILD)\orxDLL_timer.o \
+	.\build\$(BUILD)\orxDLL_orxClock.o \
+	.\build\$(BUILD)\orxDLL_orxTime.o \
 	.\build\$(BUILD)\orxDLL_orxDebug.o \
 	.\build\$(BUILD)\orxDLL_orxFps.o \
 	.\build\$(BUILD)\orxDLL_graphic.o \
@@ -78,15 +78,14 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxScript.o \
 	.\build\$(BUILD)\orxDLL_orxSound.o \
 	.\build\$(BUILD)\orxDLL_orxBayes.o \
+	.\build\$(BUILD)\orxDLL_orxFSM.o \
 	.\build\$(BUILD)\orxDLL_orxHashTable.o \
 	.\build\$(BUILD)\orxDLL_orxLinkList.o \
+	.\build\$(BUILD)\orxDLL_orxScreenshot.o \
+	.\build\$(BUILD)\orxDLL_orxString.o \
 	.\build\$(BUILD)\orxDLL_orxTest.o \
 	.\build\$(BUILD)\orxDLL_orxTree.o \
-	.\build\$(BUILD)\orxDLL_pathfinder.o \
-	.\build\$(BUILD)\orxDLL_orxScreenshot.o \
-	.\build\$(BUILD)\orxDLL_orxFSM.o \
-	.\build\$(BUILD)\orxDLL_utils.o \
-	.\build\$(BUILD)\orxDLL_orxString.o
+	.\build\$(BUILD)\orxDLL_pathfinder.o
 ORXLIB_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -DorxDLLEXPORT $(CPPFLAGS) \
 	$(CFLAGS)
@@ -97,8 +96,8 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxCamera.o \
 	.\build\$(BUILD)\orxLIB_orxRender.o \
 	.\build\$(BUILD)\orxLIB_orxViewport.o \
-	.\build\$(BUILD)\orxLIB_clock.o \
-	.\build\$(BUILD)\orxLIB_timer.o \
+	.\build\$(BUILD)\orxLIB_orxClock.o \
+	.\build\$(BUILD)\orxLIB_orxTime.o \
 	.\build\$(BUILD)\orxLIB_orxDebug.o \
 	.\build\$(BUILD)\orxLIB_orxFps.o \
 	.\build\$(BUILD)\orxLIB_graphic.o \
@@ -122,15 +121,14 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxScript.o \
 	.\build\$(BUILD)\orxLIB_orxSound.o \
 	.\build\$(BUILD)\orxLIB_orxBayes.o \
+	.\build\$(BUILD)\orxLIB_orxFSM.o \
 	.\build\$(BUILD)\orxLIB_orxHashTable.o \
 	.\build\$(BUILD)\orxLIB_orxLinkList.o \
+	.\build\$(BUILD)\orxLIB_orxScreenshot.o \
+	.\build\$(BUILD)\orxLIB_orxString.o \
 	.\build\$(BUILD)\orxLIB_orxTest.o \
 	.\build\$(BUILD)\orxLIB_orxTree.o \
-	.\build\$(BUILD)\orxLIB_pathfinder.o \
-	.\build\$(BUILD)\orxLIB_orxScreenshot.o \
-	.\build\$(BUILD)\orxLIB_orxFSM.o \
-	.\build\$(BUILD)\orxLIB_utils.o \
-	.\build\$(BUILD)\orxLIB_orxString.o
+	.\build\$(BUILD)\orxLIB_pathfinder.o
 TESTBED_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 TESTBED_OBJECTS =  \
@@ -343,10 +341,10 @@ bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIN
 .\build\$(BUILD)\orxDLL_orxViewport.o: ./src/camera/orxViewport.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
 
-.\build\$(BUILD)\orxDLL_clock.o: ./src/core/clock.c
+.\build\$(BUILD)\orxDLL_orxClock.o: ./src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
 
-.\build\$(BUILD)\orxDLL_timer.o: ./src/core/timer.c
+.\build\$(BUILD)\orxDLL_orxTime.o: ./src/core/orxTime.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
 
 .\build\$(BUILD)\orxDLL_orxDebug.o: ./src/debug/orxDebug.c
@@ -418,10 +416,19 @@ bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIN
 .\build\$(BUILD)\orxDLL_orxBayes.o: ./src/utils/orxBayes.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
 
+.\build\$(BUILD)\orxDLL_orxFSM.o: ./src/utils/orxFSM.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+
 .\build\$(BUILD)\orxDLL_orxHashTable.o: ./src/utils/orxHashTable.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
 
 .\build\$(BUILD)\orxDLL_orxLinkList.o: ./src/utils/orxLinkList.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+
+.\build\$(BUILD)\orxDLL_orxScreenshot.o: ./src/utils/orxScreenshot.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+
+.\build\$(BUILD)\orxDLL_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
 
 .\build\$(BUILD)\orxDLL_orxTest.o: ./src/utils/orxTest.c
@@ -431,18 +438,6 @@ bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIN
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
 
 .\build\$(BUILD)\orxDLL_pathfinder.o: ./src/utils/pathfinder.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
-
-.\build\$(BUILD)\orxDLL_orxScreenshot.o: ./src/utils/orxScreenshot.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
-
-.\build\$(BUILD)\orxDLL_orxFSM.o: ./src/utils/orxFSM.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
-
-.\build\$(BUILD)\orxDLL_utils.o: ./src/utils/utils.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
-
-.\build\$(BUILD)\orxDLL_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
 
 .\build\$(BUILD)\orxLIB_orxAnim.o: ./src/anim/orxAnim.c
@@ -463,10 +458,10 @@ bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIN
 .\build\$(BUILD)\orxLIB_orxViewport.o: ./src/camera/orxViewport.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
 
-.\build\$(BUILD)\orxLIB_clock.o: ./src/core/clock.c
+.\build\$(BUILD)\orxLIB_orxClock.o: ./src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
 
-.\build\$(BUILD)\orxLIB_timer.o: ./src/core/timer.c
+.\build\$(BUILD)\orxLIB_orxTime.o: ./src/core/orxTime.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
 
 .\build\$(BUILD)\orxLIB_orxDebug.o: ./src/debug/orxDebug.c
@@ -538,10 +533,19 @@ bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIN
 .\build\$(BUILD)\orxLIB_orxBayes.o: ./src/utils/orxBayes.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
 
+.\build\$(BUILD)\orxLIB_orxFSM.o: ./src/utils/orxFSM.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+
 .\build\$(BUILD)\orxLIB_orxHashTable.o: ./src/utils/orxHashTable.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
 
 .\build\$(BUILD)\orxLIB_orxLinkList.o: ./src/utils/orxLinkList.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+
+.\build\$(BUILD)\orxLIB_orxScreenshot.o: ./src/utils/orxScreenshot.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+
+.\build\$(BUILD)\orxLIB_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
 
 .\build\$(BUILD)\orxLIB_orxTest.o: ./src/utils/orxTest.c
@@ -551,18 +555,6 @@ bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIN
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
 
 .\build\$(BUILD)\orxLIB_pathfinder.o: ./src/utils/pathfinder.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
-
-.\build\$(BUILD)\orxLIB_orxScreenshot.o: ./src/utils/orxScreenshot.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
-
-.\build\$(BUILD)\orxLIB_orxFSM.o: ./src/utils/orxFSM.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
-
-.\build\$(BUILD)\orxLIB_utils.o: ./src/utils/utils.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
-
-.\build\$(BUILD)\orxLIB_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
 
 .\build\$(BUILD)\testbed_orxTest_Main.o: ./test/orxTest_Main.c

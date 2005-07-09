@@ -1,9 +1,9 @@
 /**
- * \file timer.h
+ * \file orxTime.c
  */
 
 /***************************************************************************
- begin                : 04/02/2004
+ begin                : 26/05/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
  ***************************************************************************/
@@ -17,16 +17,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TIMER_TYPE_H_
-#define _TIMER_TYPE_H_
+#include "core/orxTime.h"
+#include "plugin/orxPluginCore.h"
 
-#include "orxInclude.h"
 
-/** Clock update callback prototype, used when registering a clock. */
-typedef orxVOID  (*timer_fn_clock_update)(orxVOID *);
+/********************
+ *  Plugin Related  *
+ ********************/
 
-/** Timer coefficient types */
-#define TIMER_KU32_COEF_TYPE_FIXED       0x000000001 /**< Fixed time coefficient. */
-#define TIMER_KU32_COEF_TYPE_MULTIPLY    0x000000002 /**< Multiply time coefficient. */
+/* *** Core function info array *** */
+orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(TIME)
 
-#endif /* _TIMER_TYPE_H_ */
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, INIT, orxTime_Init)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, EXIT, orxTime_Exit)
+
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, GET_TIME, orxTime_GetTime)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, GET_DATE, orxTime_GetDate)
+
+orxPLUGIN_END_CORE_FUNCTION_ARRAY()
+
+
+/* *** Plugin init function *** */
+orxVOID orxTime_Plugin_Init()
+{
+  /* Plugin init */
+  orxPLUGIN_REGISTER_CORE_INFO(TIME);
+
+  return;
+}

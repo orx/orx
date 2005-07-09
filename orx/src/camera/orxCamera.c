@@ -20,7 +20,7 @@
 #include "camera/orxCamera.h"
 
 #include "anim/orxAnimPointer.h"
-#include "core/timer.h"
+#include "core/orxTime.h"
 #include "debug/orxDebug.h"
 #include "display/graphic.h"
 #include "math/orxMath.h"
@@ -633,7 +633,7 @@ orxINLINE orxCAMERA_VIEW_LIST *orxCamera_FindFreeViewListCell(orxCAMERA *_pstCam
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED (list full)
  ***************************************************************************/
-orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_pstObject, orxU32 _u32Time)
+orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 {
   orxFRAME *pstFrame;
   graphic_st_graphic *pstGraphic;
@@ -703,13 +703,6 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
             {
               return orxSTATUS_FAILED;
             }
-          }
-
-          /* Has animation? */
-          if(graphic_flag_test(pstGraphic, GRAPHIC_KU32_ID_FLAG_ANIM) != orxFALSE)
-          {
-            /* Updates animation */
-            orxAnimPointer_Compute((orxANIM_POINTER *)graphic_struct_get(pstGraphic, orxSTRUCTURE_ID_ANIM_POINTER), _u32Time);
           }
 
           /* Stores the object */
@@ -1128,7 +1121,6 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
 {
   orxOBJECT *pstObject;
   orxFRAME *pstFrame;
-  orxU32 u32Time;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1136,9 +1128,6 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
 
   /* Computes camera corners */
   orxCamera_ComputeClipCorners(_pstCamera);
-
-  /* Gets timestamp */
-  u32Time = timer_game_time_get();
 
   /* If camera moved, process all objects */
   if(_pstCamera->u32IDFlags & orxCAMERA_KU32_ID_FLAG_MOVED)
@@ -1149,7 +1138,7 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
         pstObject = (orxOBJECT *)orxStructure_GetNext((orxSTRUCTURE *)pstObject))
     {
       /* Computes object */
-      if(orxCamera_ComputeObject(_pstCamera, pstObject, u32Time) == orxSTATUS_FAILED)
+      if(orxCamera_ComputeObject(_pstCamera, pstObject) == orxSTATUS_FAILED)
       {
         /* No room left in camera view list */
         /* !!! MSG !!! */
@@ -1173,7 +1162,7 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
       if(orxObject_IsRenderStatusClean(pstObject) == orxFALSE)
       {
         /* Computes object */
-        if(orxCamera_ComputeObject(_pstCamera, pstObject, u32Time) == orxSTATUS_FAILED)
+        if(orxCamera_ComputeObject(_pstCamera, pstObject) == orxSTATUS_FAILED)
         {
           /* No room left in camera view list */
           /* !!! MSG !!! */

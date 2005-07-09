@@ -36,7 +36,7 @@
 #include "plugin/define/orxPlugin_Package.h"
 #include "plugin/define/orxPlugin_Script.h"
 #include "plugin/define/orxPlugin_Sound.h"
-#include "plugin/define/orxPlugin_Timer.h"
+#include "plugin/define/orxPlugin_Time.h"
 
 
 #endif /*_orxPLUGIN_COREDEFINE_H_*/

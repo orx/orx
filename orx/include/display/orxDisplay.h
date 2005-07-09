@@ -27,20 +27,12 @@
 #include "utils/orxString.h"
 
 
-#define orx2ARGB(A, R, G, B)             ((((A) & 0xFF) << 24) | (((R) & 0xFF) << 16) | (((G) & 0xFF) << 8) | ((B) & 0xFF))
+#define orx2ARGB(A, R, G, B)            ((((A) & 0xFF) << 24) | (((R) & 0xFF) << 16) | (((G) & 0xFF) << 8) | ((B) & 0xFF))
 
 
 typedef struct __orxBITMAP_t            orxBITMAP;
 
 typedef orxU32                          orxARGB;
-
-typedef struct __orxRGB_t
-{
-  orxU8 u8Red;
-  orxU8 u8Green;
-  orxU8 u8Blue;
-  
-} orxRGB;
 
 typedef struct __orxBITMAP_TRANSFORM_t
 {
@@ -81,7 +73,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_GetScreenBitmap, orxBITMAP *);
 orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxARGB);
 orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxDisplay_TransformBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxBITMAP_TRANSFORM *, orxU32);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGB, orxBOOL);
+orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxARGB, orxBOOL);
 orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxCONST orxVEC *, orxCONST orxVEC *);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION_5(orxDisplay_BlitBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxVEC *, orxCONST orxVEC *, orxCONST orxVEC *);
@@ -138,7 +130,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_TransformBitmap(orxBITMAP *_p
   return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_TransformBitmap)(_pstDst, _pstSrc, _pstTransform, _u32Flags);
 }
 
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGB _stColor, orxBOOL _bEnable)
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxARGB _stColor, orxBOOL _bEnable)
 {
   return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_SetBitmapColorKey)(_pstBitmap, _stColor, _bEnable);
 }

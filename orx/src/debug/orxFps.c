@@ -20,7 +20,7 @@
 #include "debug/orxFps.h"
 
 #include "debug/orxDebug.h"
-#include "core/clock.h"
+#include "core/orxClock.h"
 #include "memory/orxMemory.h"
 #include "msg/msg_fps.h"
 
@@ -28,16 +28,18 @@
  * Platform independant defines
  */
 
-#define orxFPS_KU32_FLAG_NONE             0x00000000
-#define orxFPS_KU32_FLAG_READY            0x00000001
+#define orxFPS_KU32_FLAG_NONE               0x00000000
+#define orxFPS_KU32_FLAG_READY              0x00000001
+
+#define orxFPS_KU32_CLOCK_TICKSIZE          1000
 
 /*
  * Static structure
  */
 typedef struct __orxFPS_STATIC_t
 {
-  /* Control flags */
-  orxU32 u32Flags;
+  /* Associated clock */
+  orxCLOCK *pstClock;
 
   /* Frame counter */
   orxU32 u32FrameCounter;
@@ -45,13 +47,16 @@ typedef struct __orxFPS_STATIC_t
   /* FPS */
   orxU32 u32FPS;
 
+  /* Control flags */
+  orxU32 u32Flags;
+
 } orxFPS_STATIC;
 
 
 /*
  * Static data
  */
-orxSTATIC volatile orxFPS_STATIC sstFPS;
+orxSTATIC volatile orxFPS_STATIC sstFps;
 
 
 /***************************************************************************
@@ -66,13 +71,20 @@ orxSTATIC volatile orxFPS_STATIC sstFPS;
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxINLINE orxVOID orxFps_Update()
+orxSTATIC orxVOID orxFASTCALL orxFps_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
+  /* Checks */
+  orxASSERT(sstFps.u32Flags & orxFPS_KU32_FLAG_READY);
+  
+  /* !!! Only to avoid warnings !!! */
+  orxASSERT(_pstClockInfo != orxNULL);
+  orxASSERT(_pstContext == NULL);
+
   /* Gets FPS value */
-  sstFPS.u32FPS = sstFPS.u32FrameCounter;
+  sstFps.u32FPS = sstFps.u32FrameCounter;
 
   /* Resets frame counter */
-  sstFPS.u32FrameCounter = 0;
+  sstFps.u32FrameCounter = 0;
 
   return;
 }
@@ -84,7 +96,6 @@ orxSTATIC orxINLINE orxVOID orxFps_Update()
  ***************************************************************************
  ***************************************************************************/
 
-
 /***************************************************************************
  orxFps_Init
  Inits fps system.
@@ -93,28 +104,55 @@ orxSTATIC orxINLINE orxVOID orxFps_Update()
  ***************************************************************************/
 orxSTATUS orxFps_Init()
 {
-  /* Already Initialized? */
-  if(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY)
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Not already Initialized? */
+  if(!(sstFps.u32Flags & orxFPS_KU32_FLAG_READY))
+  {
+    /* Cleans control structure */
+    orxMemory_Set((orxFPS_STATIC *)&sstFps, 0, sizeof(orxFPS_STATIC));
+
+    /* Creates clock */
+    sstFps.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_FPS);
+
+    /* Valid? */
+    if(sstFps.pstClock != orxNULL)
+    {
+      /* Registers callback */
+      eResult = orxClock_Register(sstFps.pstClock, orxFps_Update, orxNULL);
+
+      /* Registered? */
+      if(eResult == orxSTATUS_SUCCESS)
+      {
+        /* Inits Flags */
+        sstFps.u32Flags = orxFPS_KU32_FLAG_READY;
+      }
+      else
+      {
+        /* !!! MSG !!! */
+
+        /* Deletes clock */
+        orxClock_Delete(sstFps.pstClock);
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Not initialized */
+      eResult = orxSTATUS_FAILED;
+    }
+  }
+  else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    /* Already initialized */
+    eResult = orxSTATUS_FAILED;
   }
-
-  /* Registers fps callback */
-  if(clock_cb_function_add(orxFps_Update, 1000) == orxFALSE)
-  {
-    orxDEBUG_LOG(orxDEBUG_LEVEL_TIMER, MSG_FPS_KZ_INIT_FAILED);
-  }
-
-  /* Cleans static controller */
-  orxMemory_Set((orxFPS_STATIC *)&sstFPS, 0, sizeof(orxFPS_STATIC));
-
-  /* Inits Flags */
-  sstFPS.u32Flags = orxFPS_KU32_FLAG_READY;
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /***************************************************************************
@@ -126,13 +164,16 @@ orxSTATUS orxFps_Init()
 orxVOID orxFps_Exit()
 {
   /* Initialized? */
-  if(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY)
+  if(sstFps.u32Flags & orxFPS_KU32_FLAG_READY)
   {
-    /* Removes fps callback */
-    clock_cb_function_remove(orxFps_Update, 1000);
+    /* Removes callback */
+    orxClock_Unregister(sstFps.pstClock, orxFps_Update);
+
+    /* Deletes clock */
+    orxClock_Delete(sstFps.pstClock);
 
     /* Updates flags */
-    sstFPS.u32Flags &= ~orxFPS_KU32_FLAG_READY;
+    sstFps.u32Flags &= ~orxFPS_KU32_FLAG_READY;
   }
   else
   {
@@ -151,10 +192,10 @@ orxVOID orxFps_Exit()
 orxVOID orxFps_IncreaseFrameCounter()
 {
   /* Checks */
-  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
+  orxASSERT(sstFps.u32Flags & orxFPS_KU32_FLAG_READY);
 
   /* Updates frame counter */
-  sstFPS.u32FrameCounter++;
+  sstFps.u32FrameCounter++;
 
   return;
 }
@@ -168,8 +209,8 @@ orxVOID orxFps_IncreaseFrameCounter()
 orxU32 orxFps_GetFPS()
 {
   /* Checks */
-  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
+  orxASSERT(sstFps.u32Flags & orxFPS_KU32_FLAG_READY);
 
   /* Returns it */  
-  return sstFPS.u32FPS;
+  return sstFps.u32FPS;
 }

@@ -45,6 +45,7 @@
 #include "orxInclude.h"
 
 #include "anim/orxAnimSet.h"
+#include "core/orxTime.h"
 
 
 /** AnimationPointer Link Flags. */
@@ -83,12 +84,12 @@ extern orxSTATUS                                    orxAnimPointer_UpdateAll(orx
 /** AnimationPointer current Animation get accessor. */
 extern orxANIM                                     *orxAnimPointer_GetAnim(orxANIM_POINTER *_pstAnimpointer);
 /** AnimationPointer current Animation Time get accessor. */
-extern orxU32                                       orxAnimPointer_GetTime(orxANIM_POINTER *_pstAnimpointer);
+extern orxTIME                                      orxAnimPointer_GetTime(orxANIM_POINTER *_pstAnimpointer);
 
 /** AnimationPointer current Animation set accessor. */
 extern orxSTATUS                                    orxAnimPointer_SetAnim(orxANIM_POINTER *_pstAnimpointer, orxHANDLE _hAnimHandle);
 /** AnimationPointer current Animation Time set accessor. */
-extern orxSTATUS                                    orxAnimPointer_SetTime(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32Time);
+extern orxSTATUS                                    orxAnimPointer_SetTime(orxANIM_POINTER *_pstAnimpointer, orxTIME _stTime);
 
 /** AnimationPointer Frequency get accessor. */
 extern orxFLOAT                                     orxAnimPointer_GetFrequency(orxANIM_POINTER *_pstAnimpointer);

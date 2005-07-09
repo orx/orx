@@ -17,10 +17,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "include.h"
+#include "orxInclude.h"
 
-#include "plugin/plugin_user.h"
-#include "core/timer_type.h"
+#include "plugin/orxPluginUser.h"
+#include "core/orxTimerType.h"
 
 #include <time.h>
 #include <SDL/sdl.h>
@@ -33,7 +33,7 @@
  *   Core Related   *
  ********************/
 
-static timer_fn_clock_update spfn_clock_update = NULL;
+static orxTIMER_CLOCK_UPDATE spfn_clock_update = NULL;
 static uint32 su32_real_time = 0;
 static uint32 su32_game_time = 0;
 static uint32 su32_game_dt   = 0;
@@ -135,7 +135,7 @@ void timer_exit()
 }
 
 /** Sets clock update function that will be called according to corresponding timer period. */
-void timer_clock_update_function_set(timer_fn_clock_update _pfn_clock_update)
+void timer_clock_update_function_set(orxTIMER_CLOCK_UPDATE _pfn_clock_update)
 {
   /* Stores clock update function */
   spfn_clock_update = _pfn_clock_update;

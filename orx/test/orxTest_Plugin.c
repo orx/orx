@@ -377,7 +377,7 @@ orxVOID orxTest_Plugin_Init()
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].zType,  "package");
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].zType,   "script");
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].zType,    "sound");
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIMER].zType,    "timer");
+  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].zType,    "timer");
   
   orxMemory_Set(&sstTest_Plugin.azFileName, 0, sizeof(sstTest_Plugin.azFileName));
 }
