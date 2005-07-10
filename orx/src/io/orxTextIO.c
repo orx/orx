@@ -251,14 +251,14 @@ orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxFLOAT *_pfOutValue, orxCONST orxSTR
 }
 
 /** Read a FLOAT Value that must be in a valid range from STDIN
- * @param _pgOutValue     (OUT) place where the read value will be stored
+ * @param _pfOutValue     (OUT) place where the read value will be stored
  * @param _fMin           (IN)  Min value that the output value must have
  * @param _fMax           (IN)  Max value that the output value must have
  * @param _zMessage       (IN)  Message that will be displayed before read
  * @param _bLoop          (IN)  Must be frTRUE if the function has to loop until the user send a valid entry
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status (if no loop asked)
  */
-orxSTATUS orxFASTCALL orxTextIO_ReadFloatInRange(orxS32 *_pfOutValue, orxFLOAT _fMin, orxFLOAT _fMax, orxCONST orxSTRING _zMessage, orxBOOL _bLoop)
+orxSTATUS orxFASTCALL orxTextIO_ReadFloatInRange(orxFLOAT *_pfOutValue, orxFLOAT _fMin, orxFLOAT _fMax, orxCONST orxSTRING _zMessage, orxBOOL _bLoop)
 {
   orxSTATUS eStatus;        /* status of the conversion */
 

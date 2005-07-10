@@ -67,7 +67,7 @@ orxVOID orxTest_MathSet_ReadIntervalInt32(orxINTERVAL_INT32* pstIntervInt32)
 {
     orxTextIO_ReadS32(&(pstIntervInt32->s32Min), 10, "Integer MIN range : ", orxTRUE);
     orxTextIO_ReadS32(&(pstIntervInt32->s32Max), 10, "Integer MAX range : ", orxTRUE);
-    orxIntervalInt32_Validate(&pstIntervInt32);
+    orxIntervalInt32_Validate(pstIntervInt32);
 }
 
 /** Output a float-based interval to std output.*/
