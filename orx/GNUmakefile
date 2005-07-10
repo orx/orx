@@ -66,8 +66,8 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxCamera.o \
 	./build/$(BUILD)/orxDLL_orxRender.o \
 	./build/$(BUILD)/orxDLL_orxViewport.o \
-	./build/$(BUILD)/orxDLL_clock.o \
-	./build/$(BUILD)/orxDLL_timer.o \
+	./build/$(BUILD)/orxDLL_orxClock.o \
+	./build/$(BUILD)/orxDLL_orxTime.o \
 	./build/$(BUILD)/orxDLL_orxDebug.o \
 	./build/$(BUILD)/orxDLL_orxFps.o \
 	./build/$(BUILD)/orxDLL_graphic.o \
@@ -80,6 +80,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxMouse.o \
 	./build/$(BUILD)/orxDLL_orxPackage.o \
 	./build/$(BUILD)/orxDLL_orxTextIO.o \
+	./build/$(BUILD)/orxDLL_orxMain.o \
 	./build/$(BUILD)/orxDLL_orxMathSet.o \
 	./build/$(BUILD)/orxDLL_orxVec.o \
 	./build/$(BUILD)/orxDLL_orxBank.o \
@@ -91,15 +92,14 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxScript.o \
 	./build/$(BUILD)/orxDLL_orxSound.o \
 	./build/$(BUILD)/orxDLL_orxBayes.o \
+	./build/$(BUILD)/orxDLL_orxFSM.o \
 	./build/$(BUILD)/orxDLL_orxHashTable.o \
 	./build/$(BUILD)/orxDLL_orxLinkList.o \
+	./build/$(BUILD)/orxDLL_orxScreenshot.o \
+	./build/$(BUILD)/orxDLL_orxString.o \
 	./build/$(BUILD)/orxDLL_orxTest.o \
 	./build/$(BUILD)/orxDLL_orxTree.o \
-	./build/$(BUILD)/orxDLL_pathfinder.o \
-	./build/$(BUILD)/orxDLL_orxScreenshot.o \
-	./build/$(BUILD)/orxDLL_orxFSM.o \
-	./build/$(BUILD)/orxDLL_utils.o \
-	./build/$(BUILD)/orxDLL_orxString.o
+	./build/$(BUILD)/orxDLL_pathfinder.o
 ORXLIB_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -DorxDLLEXPORT $(CPPFLAGS) \
 	$(CFLAGS)
@@ -110,8 +110,8 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxCamera.o \
 	./build/$(BUILD)/orxLIB_orxRender.o \
 	./build/$(BUILD)/orxLIB_orxViewport.o \
-	./build/$(BUILD)/orxLIB_clock.o \
-	./build/$(BUILD)/orxLIB_timer.o \
+	./build/$(BUILD)/orxLIB_orxClock.o \
+	./build/$(BUILD)/orxLIB_orxTime.o \
 	./build/$(BUILD)/orxLIB_orxDebug.o \
 	./build/$(BUILD)/orxLIB_orxFps.o \
 	./build/$(BUILD)/orxLIB_graphic.o \
@@ -124,6 +124,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxMouse.o \
 	./build/$(BUILD)/orxLIB_orxPackage.o \
 	./build/$(BUILD)/orxLIB_orxTextIO.o \
+	./build/$(BUILD)/orxLIB_orxMain.o \
 	./build/$(BUILD)/orxLIB_orxMathSet.o \
 	./build/$(BUILD)/orxLIB_orxVec.o \
 	./build/$(BUILD)/orxLIB_orxBank.o \
@@ -135,15 +136,14 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxScript.o \
 	./build/$(BUILD)/orxLIB_orxSound.o \
 	./build/$(BUILD)/orxLIB_orxBayes.o \
+	./build/$(BUILD)/orxLIB_orxFSM.o \
 	./build/$(BUILD)/orxLIB_orxHashTable.o \
 	./build/$(BUILD)/orxLIB_orxLinkList.o \
+	./build/$(BUILD)/orxLIB_orxScreenshot.o \
+	./build/$(BUILD)/orxLIB_orxString.o \
 	./build/$(BUILD)/orxLIB_orxTest.o \
 	./build/$(BUILD)/orxLIB_orxTree.o \
-	./build/$(BUILD)/orxLIB_pathfinder.o \
-	./build/$(BUILD)/orxLIB_orxScreenshot.o \
-	./build/$(BUILD)/orxLIB_orxFSM.o \
-	./build/$(BUILD)/orxLIB_utils.o \
-	./build/$(BUILD)/orxLIB_orxString.o
+	./build/$(BUILD)/orxLIB_pathfinder.o
 TESTBED_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 TESTBED_OBJECTS =  \
@@ -280,7 +280,7 @@ all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
-	for f in anim/orxAnim.h anim/AnimPointer.h anim/orxAnimSet.h base/orxDecl.h base/orxType.h camera/orxCamera.h camera/orxrender.h camera/Viewport.h core/clock.h core/timer.h core/timer_type.h debug/orxDebug.h debug/orxFps.h display/graphic.h display/orxDisplay.h display/orxTexture.h io/orxFile.h io/interaction.h io/orxJoystick.h io/orxKeyboard.h io/orxMouse.h io/orxPackage.h io/orxTextIO.h math/orxMath.h math/orxMathSet.h math/orxVec.h memory/orxBank.h memory/orxMemory.h msg/msg_file.h msg/msg_fps.h msg/msg_game.h msg/msg_graph.h msg/msg_plugin.h msg/msg_screenshot.h msg/msg_timer.h object/orxFrame.h object/orxObject.h object/orxStructure.h plugin/orxPlugin.h plugin/plugin_core.h plugin/plugin_type.h plugin/plugin_user.h plugin/define/plugin_graph.h plugin/define/plugin_joystick.h plugin/define/plugin_keyboard.h plugin/define/plugin_mouse.h plugin/define/plugin_sound.h plugin/define/plugin_timer.h plugin/define/orxPlugin_File.h plugin/define/orxPlugin_Package.h plugin/define/orxPlugin_Script.h script/orxScript.h sound/orxSound.h utils/orxLinkList.h utils/orxString.h utils/orxTest.h utils/orxTree.h utils/pathfinder.h utils/orxScreenshot.h utils/orxFSM.h utils/utils.h utils/orxHashTable.h orxInclude.h; do \
+	for f in anim/orxAnim.h anim/orxAnimPointer.h anim/orxAnimSet.h base/orxDecl.h base/orxType.h camera/orxCamera.h camera/orxrender.h camera/orxViewport.h core/orxClock.h core/orxTime.h debug/orxDebug.h debug/orxFps.h display/graphic.h display/orxDisplay.h display/orxTexture.h io/orxFile.h io/interaction.h io/orxJoystick.h io/orxKeyboard.h io/orxMouse.h io/orxPackage.h io/orxTextIO.h main/orxMain.h math/orxMath.h math/orxMathSet.h math/orxVec.h memory/orxBank.h memory/orxMemory.h msg/msg_file.h msg/msg_fps.h msg/msg_game.h msg/msg_graph.h msg/msg_plugin.h msg/msg_screenshot.h msg/msg_timer.h object/orxFrame.h object/orxObject.h object/orxStructure.h plugin/orxPlugin.h plugin/orxPluginCore.h plugin/orxPluginType.h plugin/orxPluginUser.h plugin/define/orxPlugin_CoreDefine.h plugin/define/orxPlugin_CoreID.h plugin/define/orxPlugin_Display.h plugin/define/orxPlugin_File.h plugin/define/orxPlugin_Joystick.h plugin/define/orxPlugin_Keyboard.h plugin/define/orxPlugin_Mouse.h plugin/define/orxPlugin_Package.h plugin/define/orxPlugin_Script.h plugin/define/orxPlugin_Sound.h plugin/define/orxPlugin_Time.h script/orxScript.h sound/orxSound.h utils/orxFSM.h utils/orxHashTable.h utils/orxLinkList.h utils/orxScreenshot.h utils/orxString.h utils/orxTest.h utils/orxTree.h utils/pathfinder.h orxInclude.h; do \
 	if test ! -d $(prefix)/include/orx/`dirname $$f` ; then \
 	$(INSTALL) -d $(prefix)/include/orx/`dirname $$f`; \
 	fi; \
@@ -389,10 +389,10 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/orxDLL_orxViewport.o: ./src/camera/orxViewport.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_clock.o: ./src/core/clock.c
+./build/$(BUILD)/orxDLL_orxClock.o: ./src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_timer.o: ./src/core/timer.c
+./build/$(BUILD)/orxDLL_orxTime.o: ./src/core/orxTime.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxDebug.o: ./src/debug/orxDebug.c
@@ -431,6 +431,9 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/orxDLL_orxTextIO.o: ./src/io/orxTextIO.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxDLL_orxMain.o: ./src/main/orxMain.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxDLL_orxMathSet.o: ./src/math/orxMathSet.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -464,10 +467,19 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/orxDLL_orxBayes.o: ./src/utils/orxBayes.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxDLL_orxFSM.o: ./src/utils/orxFSM.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxDLL_orxHashTable.o: ./src/utils/orxHashTable.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxLinkList.o: ./src/utils/orxLinkList.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/orxDLL_orxScreenshot.o: ./src/utils/orxScreenshot.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/orxDLL_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxTest.o: ./src/utils/orxTest.c
@@ -477,18 +489,6 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_pathfinder.o: ./src/utils/pathfinder.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxDLL_orxScreenshot.o: ./src/utils/orxScreenshot.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxDLL_orxFSM.o: ./src/utils/orxFSM.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxDLL_utils.o: ./src/utils/utils.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxDLL_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxAnim.o: ./src/anim/orxAnim.c
@@ -509,10 +509,10 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/orxLIB_orxViewport.o: ./src/camera/orxViewport.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_clock.o: ./src/core/clock.c
+./build/$(BUILD)/orxLIB_orxClock.o: ./src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_timer.o: ./src/core/timer.c
+./build/$(BUILD)/orxLIB_orxTime.o: ./src/core/orxTime.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxDebug.o: ./src/debug/orxDebug.c
@@ -551,6 +551,9 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/orxLIB_orxTextIO.o: ./src/io/orxTextIO.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxLIB_orxMain.o: ./src/main/orxMain.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxLIB_orxMathSet.o: ./src/math/orxMathSet.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -584,10 +587,19 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 ./build/$(BUILD)/orxLIB_orxBayes.o: ./src/utils/orxBayes.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxLIB_orxFSM.o: ./src/utils/orxFSM.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxLIB_orxHashTable.o: ./src/utils/orxHashTable.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxLinkList.o: ./src/utils/orxLinkList.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/orxLIB_orxScreenshot.o: ./src/utils/orxScreenshot.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/orxLIB_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxTest.o: ./src/utils/orxTest.c
@@ -597,18 +609,6 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_pathfinder.o: ./src/utils/pathfinder.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxLIB_orxScreenshot.o: ./src/utils/orxScreenshot.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxLIB_orxFSM.o: ./src/utils/orxFSM.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxLIB_utils.o: ./src/utils/utils.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxLIB_orxString.o: ./src/utils/orxString.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/testbed_orxTest_Main.o: ./test/orxTest_Main.c

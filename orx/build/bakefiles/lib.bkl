@@ -40,6 +40,9 @@
             src/io/orxTextIO.c
         </sources>
         <sources>
+            src/main/orxMain.c
+        </sources>
+        <sources>
             src/math/orxMathSet.c
             src/math/orxVec.c
         </sources>
@@ -134,6 +137,7 @@
             io/orxMouse.h
             io/orxPackage.h
             io/orxTextIO.h
+            main/orxMain.h
             math/orxMath.h
             math/orxMathSet.h
             math/orxVec.h
