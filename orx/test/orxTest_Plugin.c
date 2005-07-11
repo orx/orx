@@ -165,8 +165,11 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
       orxTextIO_Printf(zLibName, "%s\\%s", zDirName, stFile.name);
       
       /* Store the library name */
-      orxTextIO_Printf(sstTest_Plugin.astPlugins[0].zFile, "%s", zLibName);
+      orxTextIO_Printf(sstTest_Plugin.astPlugins[u32Index].zFile, "%s", zLibName);
       
+      /* Print the library name */
+      orxTextIO_PrintLn("%02d - %s", u32Index, zLibName);
+
       u32Index = 1;
 
       /* Find the rest of the .c files */
