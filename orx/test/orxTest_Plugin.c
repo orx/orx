@@ -165,7 +165,7 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
       orxTextIO_Printf(zLibName, "%s\\%s", zDirName, stFile.name);
       
       /* Store the library name */
-      orxTextIO_Printf(sstTest_Plugin.astPlugins[u32Index].zFile, "%s", zLibName);
+      orxTextIO_Printf(sstTest_Plugin.azFileName[u32Index], "%s", zLibName);
       
       /* Print the library name */
       orxTextIO_PrintLn("%02d - %s", u32Index, zLibName);
@@ -284,7 +284,7 @@ orxVOID orxTest_Plugin_ShowList()
 /** Load a plugin
  */
 orxVOID orxTest_Plugin_Load()
-{
+{ 
   orxU32 u32Index;
   orxS32 s32TypeResult;
   orxS32 s32FileResult;
@@ -295,8 +295,8 @@ orxVOID orxTest_Plugin_Load()
   for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
   {
     orxTextIO_PrintLn("%02d - %s", u32Index, sstTest_Plugin.astPlugins[u32Index].zType);
-  }
-  
+  } 
+   
   /* Then, get the type of plugins that the user wants to load */
   orxTextIO_ReadS32InRange(&s32TypeResult, 10, 0, orxPLUGIN_CORE_ID_NUMBER - 1, "Choice : ", orxTRUE);
   
