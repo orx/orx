@@ -398,15 +398,23 @@ orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION _pfnFunction
   /* Gets core function table */
   pstCoreFunction = sstPlugin.pastCoreFunctionTable[u32PluginIndex];
 
-  /* Gets function index */
-  u32FunctionIndex = _eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
+  /* Core plugin defined? */
+  if(pstCoreFunction != orxNULL)
+  {
+    /* Gets function index */
+    u32FunctionIndex = _eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
-  /* Checks */
-  orxASSERT(u32FunctionIndex < sstPlugin.au32CoreFunctionCounter[u32PluginIndex]);
-  orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
+    /* Checks */
+    orxASSERT(u32FunctionIndex < sstPlugin.au32CoreFunctionCounter[u32PluginIndex]);
+    orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
 
-  /* Registers core function */
-  *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunction;
+    /* Registers core function */
+    *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunction;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
 
   /* Done! */
   return;
@@ -491,11 +499,12 @@ orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxC
 {
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
+  orxASSERT(sstPlugin.pastCoreFunctionTable[_ePluginCoreID] == orxNULL);
   orxASSERT(_ePluginCoreID < orxPLUGIN_CORE_ID_NUMBER);
   orxASSERT(_astCoreFunction != orxNULL);
 
   /* Stores info */
-  sstPlugin.pastCoreFunctionTable[_ePluginCoreID]        = _astCoreFunction;
+  sstPlugin.pastCoreFunctionTable[_ePluginCoreID]   = _astCoreFunction;
   sstPlugin.au32CoreFunctionCounter[_ePluginCoreID] = _u32CoreFunctionNumber;
 
   return;
