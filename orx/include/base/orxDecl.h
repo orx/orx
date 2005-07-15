@@ -115,4 +115,22 @@ do                                                            \
 } while(orxFALSE);
 
 
+/** Test a flag. 
+ * Tool macro for testing a bit-set in a 32-bits object.
+ * @param I Integer to test.
+ * @param F Flag to test.
+ * @return true if flag is completely found.
+ */
+#define orxFLAG32_TEST(I, F) (((I)&(F))==(F))
+
+
+/** Set a flag
+ * Tool macro for set bit-set in a 32-bits object.
+ * Add S into T juste where F bits are 1.
+ * @param T Target
+ * @param F Filter
+ * @param S Source
+ */
+#define orxFLAG32_SET(T, F, S) ((T)=((T)&!(F))|((F)&(S)))
+
 #endif /*_orxDECL_H_*/
