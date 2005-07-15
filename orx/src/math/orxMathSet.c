@@ -73,22 +73,52 @@ orxVOID orxMathSet_Exit()
 
 
 
-/***************************************************************************
- orxIntervalFloat_Extand
- Extand an interval to a value.
- 
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxFASTCALL orxIntervalFloat_Extand(orxINTERVAL_FLOAT *_pstInterval, orxFLOAT _fValue)
+
+
+/* Validate an interval. */
+orxVOID orxIntervalFloat_Validate(orxINTERVAL_FLOAT *_pstInterval)
+{
+    if (_pstInterval->fMin >_pstInterval->fMax)
+    {
+        orxSWAP32(_pstInterval->fMin, _pstInterval->fMax);
+        if (_pstInterval->u32Flags==orxINTERVALFLOAT_MIN_INCLUDED)
+            _pstInterval->u32Flags = orxINTERVALFLOAT_MAX_INCLUDED;
+        else if (_pstInterval->u32Flags==orxINTERVALFLOAT_MAX_INCLUDED)
+            _pstInterval->u32Flags = orxINTERVALFLOAT_MIN_INCLUDED;
+    }
+}
+
+/* Swap two interval content. */
+orxVOID orxIntervalFloat_Swap(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
+{
+     orxSWAP32(_pstInter1->fMin, _pstInter2->fMin);
+     orxSWAP32(_pstInter1->fMax, _pstInter2->fMax);
+     orxSWAP32(_pstInter1->u32Flags, _pstInter2->u32Flags);
+}
+
+/* Extand an interval to a value.*/
+orxVOID orxFASTCALL orxIntervalFloat_Extand(orxINTERVAL_FLOAT *_pstInterval, orxFLOAT _fValue, orxBOOL _bIncluded)
 {
     if (_pstInterval->fMin > _fValue)
     {
         _pstInterval->fMin = _fValue;
+        if (_bIncluded)
+            orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MIN_INCLUDED, orxINTERVALFLOAT_MIN_INCLUDED);
     }
     else if (_pstInterval->fMax < _fValue)
     {
         _pstInterval->fMax = _fValue;
+        if (_bIncluded)
+            orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MAX_INCLUDED, orxINTERVALFLOAT_MAX_INCLUDED);
     }
+    else if ((_pstInterval->fMin==_fValue)&&_bIncluded&&!orxFLAG32_TEST(_pstInterval->u32Flags,orxINTERVALFLOAT_MIN_INCLUDED))
+    {
+        orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MIN_INCLUDED, orxINTERVALFLOAT_MIN_INCLUDED);
+    }
+    else if ((_pstInterval->fMax==_fValue)&&_bIncluded&&!orxFLAG32_TEST(_pstInterval->u32Flags,orxINTERVALFLOAT_MAX_INCLUDED))
+    {
+        orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MAX_INCLUDED, orxINTERVALFLOAT_MAX_INCLUDED);
+    }    
 }
 
 
@@ -174,11 +204,11 @@ orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
     /** Grow the _stInterval if across other intervals. */
     pstNodeTemp = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeFirst);
     if (pstNodeTemp!=NULL && pstNodeTemp!=pstNodeLast)
-        orxIntervalFloat_Extand(&_stInterval, pstNodeTemp->stInterval.fMin);
+        orxIntervalFloat_Extand(&_stInterval, pstNodeTemp->stInterval.fMin, orxFLAG32_TEST(pstNodeTemp->stInterval.u32Flags, orxINTERVALFLOAT_MIN_INCLUDED));
 
     pstNodeTemp = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetPrevious((orxLINKLIST_NODE*) pstNodeLast);
     if (pstNodeTemp!=NULL && pstNodeTemp!=pstNodeFirst)
-        orxIntervalFloat_Extand(&_stInterval, pstNodeTemp->stInterval.fMax);
+        orxIntervalFloat_Extand(&_stInterval, pstNodeTemp->stInterval.fMax, orxFLAG32_TEST(pstNodeTemp->stInterval.u32Flags, orxINTERVALFLOAT_MAX_INCLUDED));
 
     /** Insert the current interval. */
     pstNodeTemp = orxSetNodeFloat_AllocateNode(_stInterval, 0, orxNULL);

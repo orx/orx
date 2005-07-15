@@ -60,6 +60,8 @@ extern orxVOID                        orxMathSet_Exit();
 /** @} */
 
 
+
+
 /** @name Float interval.
  * @{ 
  */
@@ -84,6 +86,103 @@ typedef struct __orxINTERVAL_FLOAT_t
 orxINTERVAL_FLOAT;
 
 
+/** Test if the min point of a float-based interval is less than another min point.
+ * @param _stInterv1 First interval.
+ * @param _stInterv2 Second interval.
+ * @return True if the min point of the first float-based interval is less than the second min point.
+ */
+orxINLINE orxBOOL orxIntervalFloat_IsPointMinLessMin(orxINTERVAL_FLOAT _stInterv1, orxINTERVAL_FLOAT _stInterv2)
+{
+    return (_stInterv1.fMin<_stInterv2.fMin) ||
+           ( (_stInterv1.fMin==_stInterv2.fMin) && 
+             orxFLAG32_TEST(_stInterv1.u32Flags, orxINTERVALFLOAT_MIN_INCLUDED) &&
+             !orxFLAG32_TEST(_stInterv2.u32Flags, orxINTERVALFLOAT_MIN_INCLUDED) );
+}
+
+/** Test if the min point of a float-based interval is less than another max point.
+ * @param _stInterv1 First interval.
+ * @param _stInterv2 Second interval.
+ * @return True if the min point of the first float-based interval is less than the second max point.
+ */
+orxINLINE orxBOOL orxIntervalFloat_IsPointMinLessMax(orxINTERVAL_FLOAT _stInterv1, orxINTERVAL_FLOAT _stInterv2)
+{
+    return _stInterv1.fMin<_stInterv2.fMax;
+}
+
+/** Test if the max point of a float-based interval is less than another min point.
+ * @param _stInterv1 First interval.
+ * @param _stInterv2 Second interval.
+ * @return True if the max point of the first float-based interval is less than the second min point.
+ */
+orxINLINE orxBOOL orxIntervalFloat_IsPointMaxLessMin(orxINTERVAL_FLOAT _stInterv1, orxINTERVAL_FLOAT _stInterv2)
+{
+    return (_stInterv1.fMax<_stInterv2.fMin) ||
+           ( (_stInterv1.fMax==_stInterv2.fMin) && !(orxFLAG32_TEST(_stInterv1.u32Flags, orxINTERVALFLOAT_MAX_INCLUDED)&&orxFLAG32_TEST(_stInterv2.u32Flags, orxINTERVALFLOAT_MIN_INCLUDED)) );
+}
+
+/** Test if the max point of a float-based interval is less than another max point.
+ * @param _stInterv1 First interval.
+ * @param _stInterv2 Second interval.
+ * @return True if the max point of the first float-based interval is less than the second max point.
+ */
+orxINLINE orxBOOL orxIntervalFloat_IsPointMaxLessMax(orxINTERVAL_FLOAT _stInterv1, orxINTERVAL_FLOAT _stInterv2)
+{
+    return (_stInterv1.fMax<_stInterv2.fMax) ||
+           ( (_stInterv1.fMax==_stInterv2.fMax) && 
+             !orxFLAG32_TEST(_stInterv1.u32Flags, orxINTERVALFLOAT_MAX_INCLUDED) &&
+             orxFLAG32_TEST(_stInterv2.u32Flags, orxINTERVALFLOAT_MAX_INCLUDED) );
+}
+
+
+/** Test if the min point of a float-based interval is greater than another min point.
+ * @param _stInterv1 First interval.
+ * @param _stInterv2 Second interval.
+ * @return True if the min point of the first float-based interval is greater than the second min point.
+ */
+orxINLINE orxBOOL orxIntervalFloat_IsPointMinGreaterMin(orxINTERVAL_FLOAT _stInterv1, orxINTERVAL_FLOAT _stInterv2)
+{
+    return (_stInterv1.fMin>_stInterv2.fMin) ||
+           ( (_stInterv1.fMin==_stInterv2.fMin) && 
+             !orxFLAG32_TEST(_stInterv1.u32Flags, orxINTERVALFLOAT_MIN_INCLUDED) &&
+             orxFLAG32_TEST(_stInterv2.u32Flags, orxINTERVALFLOAT_MIN_INCLUDED));
+}
+
+/** Test if the min point of a float-based interval is greater than another max point.
+ * @param _stInterv1 First interval.
+ * @param _stInterv2 Second interval.
+ * @return True if the min point of the first float-based interval is greater than the second max point.
+ */
+orxINLINE orxBOOL orxIntervalFloat_IsPointMinGreaterMax(orxINTERVAL_FLOAT _stInterv1, orxINTERVAL_FLOAT _stInterv2)
+{
+    return (_stInterv1.fMin>_stInterv2.fMax) ||
+           ( (_stInterv1.fMin==_stInterv2.fMax) && 
+             !(orxFLAG32_TEST(_stInterv1.u32Flags, orxINTERVALFLOAT_MIN_INCLUDED) && orxFLAG32_TEST(_stInterv2.u32Flags, orxINTERVALFLOAT_MAX_INCLUDED)));
+}
+
+/** Test if the max point of a float-based interval is greater than another min point.
+ * @param _stInterv1 First interval.
+ * @param _stInterv2 Second interval.
+ * @return True if the max point of the first float-based interval is greater than the second min point.
+ */
+orxINLINE orxBOOL orxIntervalFloat_IsPointMaxGreaterMin(orxINTERVAL_FLOAT _stInterv1, orxINTERVAL_FLOAT _stInterv2)
+{
+    return (_stInterv1.fMax>_stInterv2.fMin);
+}
+
+/** Test if the max point of a float-based interval is greater than another max point.
+ * @param _stInterv1 First interval.
+ * @param _stInterv2 Second interval.
+ * @return True if the max point of the first float-based interval is greater than the second max point.
+ */
+orxINLINE orxBOOL orxIntervalFloat_IsPointMaxGreaterMax(orxINTERVAL_FLOAT _stInterv1, orxINTERVAL_FLOAT _stInterv2)
+{
+    return (_stInterv1.fMax>_stInterv2.fMax) ||
+           ( (_stInterv1.fMax==_stInterv2.fMax) && 
+             orxFLAG32_TEST(_stInterv1.u32Flags, orxINTERVALFLOAT_MAX_INCLUDED) && 
+             !orxFLAG32_TEST(_stInterv2.u32Flags, orxINTERVALFLOAT_MAX_INCLUDED));
+}
+ 
+
 /** Direct object creation.
  * @param _fMin Minimum value to set.
  * @param _fMax Maximum value to set.
@@ -96,7 +195,8 @@ orxINLINE orxINTERVAL_FLOAT orxIntervalFloat(orxFLOAT _fMin, orxFLOAT _fMax, orx
     orxINTERVAL_FLOAT stInterval;
     stInterval.fMin = _fMin;
     stInterval.fMax = _fMax;
-    stInterval.u32Flags = (_bMinIncluded&orxINTERVALFLOAT_MIN_INCLUDED)|(_bMaxIncluded&orxINTERVALFLOAT_MAX_INCLUDED);
+    stInterval.u32Flags = (_bMinIncluded?orxINTERVALFLOAT_MIN_INCLUDED:orxINTERVALFLOAT_ALL_EXCLUDED)|
+                          (_bMaxIncluded?orxINTERVALFLOAT_MAX_INCLUDED:orxINTERVALFLOAT_ALL_EXCLUDED);
     return stInterval;
 }
 
@@ -111,7 +211,8 @@ orxINLINE orxVOID orxIntervalFloat_Set(orxINTERVAL_FLOAT *_pstInterval, orxFLOAT
 {
     _pstInterval->fMin = _fMin;
     _pstInterval->fMax = _fMax;
-    _pstInterval->u32Flags = (_bMinIncluded&orxINTERVALFLOAT_MIN_INCLUDED)|(_bMaxIncluded&orxINTERVALFLOAT_MAX_INCLUDED);
+    _pstInterval->u32Flags = (_bMinIncluded?orxINTERVALFLOAT_MIN_INCLUDED:orxINTERVALFLOAT_ALL_EXCLUDED)|
+                             (_bMaxIncluded?orxINTERVALFLOAT_MAX_INCLUDED:orxINTERVALFLOAT_ALL_EXCLUDED);
 }
 
 
@@ -130,96 +231,86 @@ orxINLINE orxVOID orxIntervalFloat_Copy(orxINTERVAL_FLOAT _stInterSrc, orxINTERV
  * Verify if the Min value is lower than the max and swap them if needed.
  * @param _pstInterval Interval to verify.
  */
-orxINLINE orxVOID orxIntervalFloat_Validate(orxINTERVAL_FLOAT *_pstInterval)
-{
-    if (_pstInterval->fMin >_pstInterval->fMax)
-    {
-        orxSWAP32(_pstInterval->fMin, _pstInterval->fMax);
-        _pstInterval->u32Flags = (_pstInterval->u32Flags&orxINTERVALFLOAT_ALL_INCLUDED)|((_pstInterval->u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)<<8)|((_pstInterval->u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)>>8);
-    }
-}
+extern orxVOID orxIntervalFloat_Validate(orxINTERVAL_FLOAT *_pstInterval);
 
 /** Swap two interval content.
  * @param _pstInter1 First interval.
  * @param _pstInter2 Second interval.
  */
-orxINLINE orxVOID orxIntervalFloat_Swap(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
-{
-     orxSWAP32(_pstInter1->fMin, _pstInter2->fMin);
-     orxSWAP32(_pstInter1->fMax, _pstInter2->fMax);
-     orxSWAP32(_pstInter1->u32Flags, _pstInter2->u32Flags);
-}
+extern orxVOID orxIntervalFloat_Swap(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2);
 
 /** Test if two intervals are identicals.
  * @param _stInter1 First interval.
  * @param _stInter2 Second interval.
  * @return true if they are identical.
  */
- orxINLINE orxBOOL orxIntervalFloat_AreEgual(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
- {
-     return (_stInter1.fMin==_stInter2.fMin)&&(_stInter1.fMax==_stInter2.fMax)&&(_stInter1.u32Flags==_stInter2.u32Flags);
- }
+orxINLINE orxBOOL orxIntervalFloat_AreEgual(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
+{
+    return (_stInter1.fMin==_stInter2.fMin)&&(_stInter1.fMax==_stInter2.fMax)&&(_stInter1.u32Flags==_stInter2.u32Flags);
+}
  
 /** Test if two intervals are different.
  * @param _stInter1 First interval.
  * @param _stInter2 Second interval.
  * @return true if they are different.
  */
- orxINLINE orxBOOL orxIntervalFloat_AreDifferent(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
- {
-     return (_stInter1.fMin!=_stInter2.fMin)||(_stInter1.fMax!=_stInter2.fMax)||(_stInter1.u32Flags!=_stInter2.u32Flags);
- }
+orxINLINE orxBOOL orxIntervalFloat_AreDifferent(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
+{
+    return (_stInter1.fMin!=_stInter2.fMin)||(_stInter1.fMax!=_stInter2.fMax)||(_stInter1.u32Flags!=_stInter2.u32Flags);
+}
  
- /** Test if an interval is less than another.
+/** Test if an interval is less than another.
  * @param _stInter1 First interval.
  * @param _stInter2 Second interval.
  * @return true if the first is less than the second.
  */
- orxINLINE orxBOOL orxIntervalFloat_IsLess(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
- {
-     return (_stInter1.fMax<_stInter2.fMin)||((_stInter1.fMax==_stInter2.fMin)&&((_stInter1.u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)!=(_stInter2.u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)));
- }
+orxINLINE orxBOOL orxIntervalFloat_IsLess(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
+{
+    return orxIntervalFloat_IsPointMaxLessMin(_stInter1, _stInter2);
+}
 
- /** Test if an interval is less or bottom-throw than another.
+/** Test if an interval is less or bottom-throw than another.
  * @param _stInter1 First interval.
  * @param _stInter2 Second interval.
  * @return true if the first is less or bottom-throw than the second.
  */
- orxINLINE orxBOOL orxIntervalFloat_IsLessOrBottomThrow(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
- {
-     return (_stInter1.fMin<_stInter2.fMin)&&(_stInter1.fMax<_stInter2.fMax);
- }
+orxBOOL orxIntervalFloat_IsLessOrBottomThrow(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
+{
+    return orxIntervalFloat_IsPointMinLessMin(_stInter1, _stInter2) &&
+            orxIntervalFloat_IsPointMaxLessMax(_stInter1, _stInter2);
+}
 
- /** Test if an interval is greater tha another.
+/** Test if an interval is greater tha another.
  * @param _stInter1 First interval.
  * @param _stInter2 Second interval.
  * @return true if the first is greater than the second.
  */
- orxINLINE orxBOOL orxIntervalFloat_IsGreater(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
- {
-     return (_stInter1.fMin>_stInter2.fMax)||((_stInter1.fMin==_stInter2.fMax)&&((_stInter1.u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)!=(_stInter2.u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)));
- }
+orxINLINE orxBOOL orxIntervalFloat_IsGreater(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
+{
+    return orxIntervalFloat_IsPointMinGreaterMax(_stInter1, _stInter2);
+}
  
  /** Test if an interval is greater or top-throw than another.
  * @param _stInter1 First interval.
  * @param _stInter2 Second interval.
  * @return true if the first is greater or top-throw than the second.
  */
- orxINLINE orxBOOL orxIntervalFloat_IsGreaterOrTopThrow(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
- {
-     return (_stInter1.fMin>_stInter2.fMin)&&(_stInter1.fMax>_stInter2.fMax);
- }
- 
+orxINLINE orxBOOL orxIntervalFloat_IsGreaterOrTopThrow(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
+{
+    return orxIntervalFloat_IsPointMinGreaterMin(_stInter1, _stInter2) &&
+           orxIntervalFloat_IsPointMaxGreaterMax(_stInter1, _stInter2);
+}
+
  /** Test if an interval is strictly in another.
  * @param _stInter1 First interval.
  * @param _stInter2 Second interval.
  * @return true if the first is in the second.
  */
- orxINLINE orxBOOL orxIntervalFloat_IsIn(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
- {
-     return ( (_stInter1.fMin>_stInter2.fMin) || ((_stInter1.fMin==_stInter2.fMin)&&((_stInter1.u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)==(_stInter2.u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)))) &&
-             ((_stInter1.fMax<_stInter2.fMax) || ((_stInter1.fMin==_stInter2.fMin)&&((_stInter1.u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)==(_stInter2.u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)))) ;
- }
+orxINLINE orxBOOL orxIntervalFloat_IsIn(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
+{
+    return !orxIntervalFloat_IsPointMinLessMin(_stInter1, _stInter2) &&
+           !orxIntervalFloat_IsPointMaxGreaterMax(_stInter1, _stInter2);
+}
 
 /** Test if a float value is in an interval.
  * @param _stInter Interval to test.
@@ -228,17 +319,18 @@ orxINLINE orxVOID orxIntervalFloat_Swap(orxINTERVAL_FLOAT *_pstInter1, orxINTERV
  */
  orxINLINE orxBOOL orxIntervalFloat_HasValue(const orxINTERVAL_FLOAT _stInter, orxFLOAT _fValue)
  {
-     return ( (_fValue>_stInter.fMin) || (_fValue<_stInter.fMax) ||
+     return ((_fValue>_stInter.fMin) && (_fValue<_stInter.fMax)) ||
               ((_fValue==_stInter.fMin) && (_stInter.u32Flags&orxINTERVALFLOAT_MIN_INCLUDED)) ||
-              ((_fValue==_stInter.fMax) && (_stInter.u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)) );
+              ((_fValue==_stInter.fMax) && (_stInter.u32Flags&orxINTERVALFLOAT_MAX_INCLUDED)) ;
               
  }
 
 /** Extand an interval to a value.
  * @param _pstInterval Interval to extand.
  * @param _fValue Value to used to extand the interval.
+ * @param _bIncluded Set if value is included or not.
  */
-extern orxVOID orxFASTCALL orxIntervalFloat_Extand(orxINTERVAL_FLOAT *_pstInterval, orxFLOAT _fValue);
+extern orxVOID orxFASTCALL orxIntervalFloat_Extand(orxINTERVAL_FLOAT *_pstInterval, orxFLOAT _fValue, orxBOOL _bIncluded);
 /** @} */
 
 
