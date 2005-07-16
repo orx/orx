@@ -116,7 +116,7 @@ void __attribute__ ((destructor)) module_exit()   \
 }
   #else
     #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)
-    #warning orxTEST Module can not be compiled on this platform, Entry points not defined
+    #warning orxTEST Module can not be compiled on this platform, Entry points (#INIT, #EXIT) not defined
   #endif
 #endif
 
