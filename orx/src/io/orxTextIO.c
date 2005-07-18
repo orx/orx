@@ -56,13 +56,14 @@ static orxTEXTIO_STATIC sstTextIO;
 orxSTATUS orxTextIO_Init()
 {
   /* Module not already registered ? */
-  orxASSERT((sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY) != orxTEXTIO_KU32_FLAG_READY);
-  
-  /* Initialize values */
-  orxMemory_Set(&sstTextIO, 0, sizeof(orxTEXTIO_STATIC));
+  if(!(sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY))
+  {
+    /* Initialize values */
+    orxMemory_Set(&sstTextIO, 0, sizeof(orxTEXTIO_STATIC));
 
-  /* Module ready */
-  sstTextIO.u32Flags |= orxTEXTIO_KU32_FLAG_READY;
+    /* Module ready */
+    sstTextIO.u32Flags |= orxTEXTIO_KU32_FLAG_READY;
+  }
     
   return orxSTATUS_SUCCESS;
 }
@@ -90,8 +91,8 @@ orxSTATUS orxFASTCALL orxTextIO_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32
   orxU32 u32StringLength;   /* Read string length */
   
   /* Module initialized ? */
-  orxASSERT((sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY) == orxTEXTIO_KU32_FLAG_READY);
-  
+  orxASSERT(sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY);
+ 
   /* Correct parameters ? */
   orxASSERT(_zOutputBuffer != orxNULL);
 
