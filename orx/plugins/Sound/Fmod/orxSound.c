@@ -75,7 +75,7 @@ orxSTATUS orxSound_Fmod_Init()
   }
 
   /* Module successfully initialized ? */
-  if (sstSound.u32Flags & orxSOUND_KU32_FLAG_READY == orxSOUND_KU32_FLAG_READY)
+  if (sstSound.u32Flags & orxSOUND_KU32_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }
@@ -192,7 +192,7 @@ orxSTATUS orxSound_Fmod_ChannelStop(orxU32 _u32Channel)
   orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
 
   /* Select channel */
-  u32Channel = (_u32Channel == orxSOUND_CHANNEL_KU32_SELECT_ALL) ? FSOUND_ALL : _u32Channel;
+  u32Channel = (_u32Channel == orxSOUND_CHANNEL_KU32_SELECT_ALL) ? (orxU32)FSOUND_ALL : _u32Channel;
   
   /* Stop channel */
   if (FSOUND_StopSound(u32Channel))
@@ -218,7 +218,7 @@ orxSTATUS orxSound_Fmod_ChannelPause(orxU32 _u32Channel, orxBOOL _bPause)
   orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
   
   /* Select channel */
-  u32Channel = (_u32Channel == orxSOUND_CHANNEL_KU32_SELECT_ALL) ? FSOUND_ALL : _u32Channel;
+  u32Channel = (_u32Channel == orxSOUND_CHANNEL_KU32_SELECT_ALL) ? (orxU32)FSOUND_ALL : _u32Channel;
   
   /* Pause channel */
   if (FSOUND_SetPaused(u32Channel, _bPause))
