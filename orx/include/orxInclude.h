@@ -54,6 +54,7 @@
 
 /* *** Types include *** */
 #include "base/orxType.h"
+#include "main/orxMain.h"
 
 
 /*** Memory definitions ***/
