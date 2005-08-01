@@ -133,7 +133,7 @@ orxSTATIC orxFRAME_STATIC sstFrame;
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxFRAME_SPACE eSpace)
 {
   /* Checks */
   orxASSERT(_pstFrame != orxNULL);
@@ -171,7 +171,7 @@ orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orx
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID _orxFrame_SetAngle(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxVOID _orxFrame_SetAngle(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxFRAME_SPACE eSpace)
 {
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -208,7 +208,7 @@ orxINLINE orxVOID _orxFrame_SetAngle(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxF
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale, orxFRAME_SPACE eSpace)
 {
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -245,7 +245,7 @@ orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale, orxF
 
  returns: Internal coord data pointer
  ***************************************************************************/
-orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
   orxVEC *pvPos = orxNULL;
 
@@ -285,7 +285,7 @@ orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_S
 
  returns: Requested angle value
  ***************************************************************************/
-orxINLINE orxFLOAT _orxFrame_GetAngle(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxFLOAT _orxFrame_GetAngle(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
   orxFLOAT fAngle = orx2F(0.0f);
 
@@ -325,7 +325,7 @@ orxINLINE orxFLOAT _orxFrame_GetAngle(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace
 
  returns: Requested scale value
  ***************************************************************************/
-orxINLINE orxFLOAT _orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
   orxFLOAT fScale = orx2F(1.0f);
  
