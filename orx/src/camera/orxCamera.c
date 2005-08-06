@@ -41,8 +41,6 @@
 #define orxCAMERA_KU32_ID_FLAG_LINKED     0x00100000
 #define orxCAMERA_KU32_ID_FLAG_LIMITED    0x00200000
 
-#define orxCAMERA_KU32_ID_MASK_NUMBER     0x00000007
-
 #define orxCAMERA_KU32_VIEW_LIST_NUMBER   512
 #define orxCAMERA_KU32_CAMERA_NUMBER      8
 
@@ -135,9 +133,6 @@ typedef struct __orxCAMERA_STATIC_t
 {
   /* Control flags */
   orxU32 u32Flags;
-
-  /* Camera status array */
-  orxBOOL abCameraUsed[orxCAMERA_KU32_CAMERA_NUMBER];
 
 } orxCAMERA_STATIC;
 
@@ -918,109 +913,78 @@ orxCAMERA *orxCamera_Create()
 {
   orxCAMERA *pstCamera = orxNULL;
   orxFRAME *pstFrame;
-  orxU32 u32Camera = orxU32_Undefined, i;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
 
-  /* Gets free camera slot */
-  for(i = 0; i < orxCAMERA_KU32_CAMERA_NUMBER; i++)
+  /* Creates camera */
+  pstCamera = (orxCAMERA *) orxMemory_Allocate(sizeof(orxCAMERA), orxMEMORY_TYPE_MAIN);
+
+  /* Created? */
+  if(pstCamera != orxNULL)
   {
-    /* Camera slot free? */
-    if(sstCamera.abCameraUsed[i] == orxFALSE)
+    /* Cleans it */
+    orxMemory_Set(pstCamera, 0, sizeof(orxCAMERA));
+
+    /* Creates frame */
+    pstFrame = orxFrame_Create();
+
+    /* Created? */  
+    if(pstFrame != orxNULL)
     {
-      /* Stores it */
-      u32Camera = i;
-      break;
-    }
-  }
-
-  /* Free slot found? */
-  if(u32Camera != orxU32_Undefined)
-  {
-    /* Creates camera */
-    pstCamera = (orxCAMERA *) orxMemory_Allocate(sizeof(orxCAMERA), orxMEMORY_TYPE_MAIN);
-  
-    /* Created? */
-    if(pstCamera != orxNULL)
-    {
-      /* Cleans it */
-      orxMemory_Set(pstCamera, 0, sizeof(orxCAMERA));
-
-      /* Creates frame */
-      pstFrame = orxFrame_Create();
-
-      /* Created? */  
-      if(pstFrame != orxNULL)
+      /* Inits structure */
+      if(orxStructure_Setup((orxSTRUCTURE *)pstCamera, orxSTRUCTURE_ID_CAMERA) == orxSTATUS_SUCCESS)
       {
-        /* Inits structure */
-        if(orxStructure_Setup((orxSTRUCTURE *)pstCamera, orxSTRUCTURE_ID_CAMERA) == orxSTATUS_SUCCESS)
+        /* Creates camera view list */
+        if(orxCamera_CreateViewList(pstCamera) == orxSTATUS_SUCCESS)
         {
-          /* Creates camera view list */
-          if(orxCamera_CreateViewList(pstCamera) == orxSTATUS_SUCCESS)
-          {
-            /* Inits camera members */
-            pstCamera->u32IDFlags = orxCAMERA_KU32_ID_FLAG_MOVED | (orxU32)u32Camera;
-            pstCamera->pstFrame   = pstFrame;
-            pstCamera->pstLink    = orxNULL;
-            orxVec_Set3(&(pstCamera->vOnScreenPosition), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
+          /* Inits camera members */
+          pstCamera->u32IDFlags = orxCAMERA_KU32_ID_FLAG_MOVED;
+          pstCamera->pstFrame   = pstFrame;
+          pstCamera->pstLink    = orxNULL;
+          orxVec_Set3(&(pstCamera->vOnScreenPosition), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
 
-            /* 2D? */
-            if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_DATA_2D)
+          /* 2D? */
+          if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_DATA_2D)
+          {
+            orxCAMERA_DATA_2D *pstData;
+
+            /* Updates ID flags */
+            pstCamera->u32IDFlags |= orxCAMERA_KU32_ID_FLAG_2D;
+
+            /* Allocates data memory */
+            pstData = (orxCAMERA_DATA_2D *) orxMemory_Allocate(sizeof(orxCAMERA_DATA_2D), orxMEMORY_TYPE_MAIN);
+    
+            /* Created? */
+            if(pstData != orxNULL)
             {
-              orxCAMERA_DATA_2D *pstData;
+              /* Cleans it */
+              orxMemory_Set(pstData, 0, sizeof(orxCAMERA_DATA_2D));
+              
+              /* Links data to frame */
+              pstCamera->pstData = pstData;
 
-              /* Updates ID flags */
-              pstCamera->u32IDFlags |= orxCAMERA_KU32_ID_FLAG_2D;
-
-              /* Allocates data memory */
-              pstData = (orxCAMERA_DATA_2D *) orxMemory_Allocate(sizeof(orxCAMERA_DATA_2D), orxMEMORY_TYPE_MAIN);
-      
-              /* Created? */
-              if(pstData != orxNULL)
-              {
-                /* Cleans it */
-                orxMemory_Set(pstData, 0, sizeof(orxCAMERA_DATA_2D));
-                
-                /* Links data to frame */
-                pstCamera->pstData = pstData;
-
-                /* Computes clip infos */
-                orxCamera_ComputeClipCorners(pstCamera);
-
-                /* Updates camera slot */
-                sstCamera.abCameraUsed[u32Camera] = orxTRUE;
-              }
-              else
-              {
-                /* !!! MSG !!! */
-      
-                /* Fress partially allocated camera */
-                orxCamera_DeleteViewList(pstCamera);
-                orxFrame_Delete(pstFrame);
-                orxMemory_Free(pstCamera);
-      
-                /* Not created */
-                pstCamera = orxNULL;
-              }
+              /* Computes clip infos */
+              orxCamera_ComputeClipCorners(pstCamera);
             }
-          }
-          else
-          {
-            /* !!! MSG !!! */
+            else
+            {
+              /* !!! MSG !!! */
     
-            /* Fress partially allocated camera */
-            orxFrame_Delete(pstFrame);
-            orxMemory_Free(pstCamera);
+              /* Fress partially allocated camera */
+              orxCamera_DeleteViewList(pstCamera);
+              orxFrame_Delete(pstFrame);
+              orxMemory_Free(pstCamera);
     
-            /* Not created */
-            pstCamera = orxNULL;
+              /* Not created */
+              pstCamera = orxNULL;
+            }
           }
         }
         else
         {
           /* !!! MSG !!! */
-    
+  
           /* Fress partially allocated camera */
           orxFrame_Delete(pstFrame);
           orxMemory_Free(pstCamera);
@@ -1034,6 +998,7 @@ orxCAMERA *orxCamera_Create()
         /* !!! MSG !!! */
   
         /* Fress partially allocated camera */
+        orxFrame_Delete(pstFrame);
         orxMemory_Free(pstCamera);
 
         /* Not created */
@@ -1043,14 +1008,17 @@ orxCAMERA *orxCamera_Create()
     else
     {
       /* !!! MSG !!! */
+
+      /* Fress partially allocated camera */
+      orxMemory_Free(pstCamera);
+
+      /* Not created */
+      pstCamera = orxNULL;
     }
   }
   else
   {
     /* !!! MSG !!! */
-
-    /* Not created */
-    pstCamera = orxNULL;
   }
 
   /* Done! */
@@ -1065,7 +1033,6 @@ orxCAMERA *orxCamera_Create()
  ***************************************************************************/
 orxSTATUS orxCamera_Delete(orxCAMERA *_pstCamera)
 {
-  orxU32    u32Camera = orxU32_Undefined;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1075,12 +1042,6 @@ orxSTATUS orxCamera_Delete(orxCAMERA *_pstCamera)
   /* Not referenced? */
   if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstCamera) == 0)
   {
-    /* Gets camera id number */
-    u32Camera = _pstCamera->u32IDFlags & orxCAMERA_KU32_ID_MASK_NUMBER;
-
-    /* Frees camera slot */
-    sstCamera.abCameraUsed[u32Camera] = orxFALSE;
-
     /* Frees camera view list */
     orxCamera_DeleteViewList(_pstCamera);
 
