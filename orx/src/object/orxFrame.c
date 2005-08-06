@@ -582,8 +582,18 @@ orxSTATUS orxFrame_Init()
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
     {
+      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+  
+      /* Cleans static controller */
+      orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
+  
       /* Registers structure type */
-      eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE);
+      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_TREE;
+      stRegisterInfo.u32Size      = sizeof(orxFRAME);
+      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+      stRegisterInfo.pfnUpdate    = orxNULL;
+  
+      eResult = orxStructure_Register(orxSTRUCTURE_ID_FRAME, &stRegisterInfo);
     }
     else
     {

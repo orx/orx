@@ -92,7 +92,7 @@ orxSTATIC orxOBJECT_STATIC sstObject;
 
  returns: requested structure offset
  ***************************************************************************/
-orxINLINE orxOBJECT_STRUCTURE_INDEX orxObject_GetStructureIndex(orxSTRUCTURE_ID _eStructureID)
+orxSTATIC orxINLINE orxOBJECT_STRUCTURE_INDEX orxObject_GetStructureIndex(orxSTRUCTURE_ID _eStructureID)
 {
   orxREGISTER orxOBJECT_STRUCTURE_INDEX eIndex = orxOBJECT_STRUCTURE_INDEX_NONE;
 
@@ -126,7 +126,7 @@ orxINLINE orxOBJECT_STRUCTURE_INDEX orxObject_GetStructureIndex(orxSTRUCTURE_ID 
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxObject_DeleteAll()
+orxSTATIC orxINLINE orxVOID orxObject_DeleteAll()
 {
   orxOBJECT *pstObject;
   
@@ -167,11 +167,18 @@ orxSTATUS orxObject_Init()
   /* Not already Initialized? */
   if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
   {
-    /* Cleans control structure */
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+
+    /* Cleans static controller */
     orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
 
     /* Registers structure type */
-    eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_OBJECT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxOBJECT);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
+
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_OBJECT, &stRegisterInfo);
   }
   else
   {
@@ -274,7 +281,7 @@ orxOBJECT *orxObject_Create()
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxObject_Delete(orxOBJECT *_pstObject)
+orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxU32    i;
@@ -316,7 +323,7 @@ orxSTATUS orxObject_Delete(orxOBJECT *_pstObject)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure)
+orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxSTRUCTURE_ID eStructureID;
@@ -362,7 +369,7 @@ orxSTATUS orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStruc
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
+orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure;
   orxU32 u32ID;
@@ -405,7 +412,7 @@ orxVOID orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStruc
 
  returns: pointer to the requested structure (must be cast correctly)
  ***************************************************************************/
-orxSTRUCTURE *orxObject_GetStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
+orxSTRUCTURE *orxFASTCALL orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure = orxNULL;
   orxOBJECT_STRUCTURE_INDEX eStructureIndex;
@@ -438,7 +445,7 @@ orxSTRUCTURE *orxObject_GetStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eSt
 
  returns: orxTRUE (clean) / orxFALSE (dirty)
  ***************************************************************************/
-orxBOOL orxObject_IsRenderStatusClean(orxOBJECT *_pstObject)
+orxBOOL orxFASTCALL orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject)
 {
   orxFRAME *pstFrame;
   graphic_st_graphic *pstGraphic;

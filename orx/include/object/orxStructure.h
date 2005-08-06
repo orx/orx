@@ -35,7 +35,14 @@
 
 #include "orxInclude.h"
 
+#include "core/orxClock.h"
 #include "debug/orxDebug.h"
+#include "memory/orxMemory.h"
+
+
+/** Structure pointer get macro. */
+#define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE)               \
+  (((orxSTRUCTURE *)STRUCTURE)->eID == orxSTRUCTURE_ID_##TYPE) ? (orx##TYPE *)STRUCTURE : orxNULL;
 
 
 /** Structure IDs. */
@@ -52,8 +59,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_ANIM_POINTER,
 
   orxSTRUCTURE_ID_NUMBER,
-  
-  orxSTRUCTURE_ID_MAX_NUMBER = 32,
+
   orxSTRUCTURE_ID_NONE = orxENUM_NONE
 
 } orxSTRUCTURE_ID;
@@ -87,13 +93,35 @@ typedef struct __orxSTRUCTURE_t
   
 } orxSTRUCTURE;
 
+
+/** Structure update callback function type. */
+typedef orxSTATUS orxFASTCALL (*orxSTRUCTURE_FUNCTION_UPDATE)(orxSTRUCTURE *_pstStructure, orxCONST orxCLOCK_INFO *_pstClockInfo);
+
+/** Structure registration info. */
+typedef struct __orxSTRUCTURE_REGISTER_INFO_t
+{
+  /* Structure storage type : 4 */
+  orxSTRUCTURE_STORAGE_TYPE eStorageType;
+
+  /* Structure storage size : 8 */
+  orxU32 u32Size;
+
+  /* Structure storage memory type : 12 */
+  orxMEMORY_TYPE eMemoryType;
+
+  /* Structure update callbacks : 16 */
+  orxSTRUCTURE_FUNCTION_UPDATE pfnUpdate;
+
+} orxSTRUCTURE_REGISTER_INFO;
+
+
 /** Inits the structure system. */
 extern orxSTATUS                      orxStructure_Init();
 /** Exits from the structure system. */
 extern orxVOID                        orxStructure_Exit();
 
 /** Registers a storage type for a given ID. */
-extern orxSTATUS                      orxStructure_RegisterStorageType(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eType);
+extern orxSTATUS  orxFASTCALL         orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCONST orxSTRUCTURE_REGISTER_INFO *_pstRegisterInfo);
 
 /** Inits a structure with given type. */
 extern orxSTATUS  orxFASTCALL         orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID);

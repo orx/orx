@@ -71,12 +71,6 @@ extern orxSTATUS                                    orxAnimPointer_Delete(orxANI
 /** Gets the referenced Animation Set. */
 extern orxANIM_SET                                 *orxAnimPointer_GetAnimSet(orxANIM_POINTER *_pstAnimpointer);
 
-/** Computes animation for the given AnimationPointer using the given DeltaTime. */
-extern orxSTATUS                                    orxAnimPointer_Compute(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32DT);
-
-/** Updates all AnimationPointer according to the given DeltaTime. */
-extern orxSTATUS                                    orxAnimPointer_UpdateAll(orxU32 _u32DT);
-
 
 /** !!! Warning : AnimationPointer accessors don't test parameter validity !!! */
 

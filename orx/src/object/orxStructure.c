@@ -95,6 +95,9 @@ typedef struct __orxSTRUCTURE_STATIC_t
   /* Structure banks */
   orxSTORAGE astStorage[orxSTRUCTURE_ID_NUMBER];
 
+  /* Structure info */
+  orxSTRUCTURE_REGISTER_INFO astInfo[orxSTRUCTURE_ID_NUMBER];
+
   /* Control flags */
   orxU32 u32Flags;
 
@@ -130,9 +133,6 @@ orxSTATUS orxStructure_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   orxU32 i;
-
-  /* Makes sure the structure IDs are coherent */
-  orxASSERT(orxSTRUCTURE_ID_NUMBER <= orxSTRUCTURE_ID_MAX_NUMBER);
 
   /* Not already Initialized? */
   if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY))
@@ -236,25 +236,28 @@ orxVOID orxStructure_Exit()
 }
 
 /***************************************************************************
- orxStructure_RegisterStorageType
- Registers a storage type for a given ID.
+ orxStructure_Register
+ Registers a structure type.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxStructure_RegisterStorageType(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eType)
+orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCONST orxSTRUCTURE_REGISTER_INFO *_pstRegisterInfo)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
-  orxASSERT(_eType < orxSTRUCTURE_STORAGE_TYPE_NUMBER);
+  orxASSERT(_pstRegisterInfo->u32Size != 0);
+  orxASSERT(_pstRegisterInfo->eStorageType < orxSTRUCTURE_STORAGE_TYPE_NUMBER);
+  orxASSERT(_pstRegisterInfo->eMemoryType < orxMEMORY_TYPE_NUMBER);
 
   /* Not already registered? */
-  if(sstStructure.astStorage[_eStructureID].eType == orxSTRUCTURE_STORAGE_TYPE_NONE)
+  if(sstStructure.astInfo[_eStructureID].u32Size == 0)
   {
-    /* Register it */
-    sstStructure.astStorage[_eStructureID].eType = _eType;
+    /* Registers it */
+    orxMemory_Copy(&(sstStructure.astInfo[_eStructureID]), _pstRegisterInfo, sizeof(orxSTRUCTURE_REGISTER_INFO));
+    sstStructure.astStorage[_eStructureID].eType = _pstRegisterInfo->eStorageType;
   }
   else
   {

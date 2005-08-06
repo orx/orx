@@ -283,11 +283,18 @@ orxSTATUS orxViewport_Init()
   /* Not already Initialized? */
   if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
   {
-    /* Cleans control structure */
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+
+    /* Cleans static controller */
     orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
 
     /* Registers structure type */
-    eResult = orxStructure_RegisterStorageType(orxSTRUCTURE_ID_VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxVIEWPORT);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
+
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_VIEWPORT, &stRegisterInfo);
   }
   else
   {

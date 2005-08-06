@@ -51,22 +51,22 @@ extern orxVOID                        orxObject_Exit();
 /** Creates an empty object. */
 extern orxOBJECT                     *orxObject_Create();
 /** Deletes an object. */
-extern orxSTATUS                      orxObject_Delete(orxOBJECT *_pstObject);
+extern orxSTATUS orxFASTCALL          orxObject_Delete(orxOBJECT *_pstObject);
 
 /** Test object render status (TRUE : clean / orxFALSE : dirty)*/
-extern orxBOOL                        orxObject_IsRenderStatusClean(orxOBJECT *_pstObject);
+extern orxBOOL orxFASTCALL            orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject);
 
 /** Links a structure to an object. */
-extern orxSTATUS                      orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure);
+extern orxSTATUS orxFASTCALL          orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure);
 /** Unlinks structure from an object, given its structure ID. */
-extern orxVOID                        orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
+extern orxVOID orxFASTCALL            orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
 /* *** Object accessors *** */
 
 
 /** Structure used by an object get accessor, given its structure ID. Structure must be cast correctly. */
-extern orxSTRUCTURE                  *orxObject_GetStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
+extern orxSTRUCTURE *orxFASTCALL      orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
 #endif /* _orxOBJECT_H_ */
