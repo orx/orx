@@ -20,7 +20,6 @@
 
 #include "core/orxClock.h"
 
-#include "core/orxTime.h"
 #include "debug/orxDebug.h"
 #include "math/orxMath.h"
 #include "memory/orxBank.h"
@@ -378,6 +377,9 @@ orxSTATUS orxClock_Update()
         pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
       }
     }
+
+    /* Computes global time */
+    pstClock->stClockInfo.stTime = orxF2U((orxU2F(pstClock->stClockInfo.u32TickCounter) + pstClock->stClockInfo.fTickValue) * pstClock->stClockInfo.fTickSize);
   }
 
   /* Updates time */

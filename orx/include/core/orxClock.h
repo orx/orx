@@ -21,6 +21,7 @@
 #define _orxCLOCK_H_
 
 #include "orxInclude.h"
+#include "core/orxTime.h"
 
 
 #define orxCLOCK_KU32_CLOCK_BANK_SIZE       16          /**< Clock bank size */
@@ -59,13 +60,13 @@ typedef struct __orxCLOCK_INFO_t
 {
   orxCLOCK_TYPE     eType;                            /**< Clock type : 4 */
   orxU32            u32TickCounter;                   /**< Clock tick counter : 8 */
-  orxFLOAT          fTickSize;                        /**< Clock tick size (in seconds) : 12 */
+  orxFLOAT          fTickSize;                        /**< Clock tick size (in milliseconds) : 12 */
   orxFLOAT          fTickValue;                       /**< Clock current tick value ellapsed after last tick 0.0 - 1.0 : 16 */
   orxCLOCK_MOD_TYPE eModType;                         /**> Clock mod type : 20 */
   orxFLOAT          fModValue;                        /**> Clock mod value : 24 */
   orxFLOAT          fDT;                              /**> Clock DT (time ellapsed between 2 tick calls) : 28 */
 
-  orxU8 au8Unused[4];                                 /**> 4 extra bytes of padding : 32 */
+  orxTIME           stTime;                           /**> Clock time (= (tick counter + tick value) * tick size) : 32 */ 
 
 } orxCLOCK_INFO;
 
