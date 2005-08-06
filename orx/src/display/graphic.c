@@ -177,37 +177,23 @@ orxVOID graphic_exit()
 graphic_st_graphic *graphic_create()
 {
   graphic_st_graphic *pstGraphic;
-  orxS32 i;
 
   /* Creates graphic */
-  pstGraphic = (graphic_st_graphic *) orxMemory_Allocate(sizeof(graphic_st_graphic), orxMEMORY_TYPE_MAIN);
+  pstGraphic = (graphic_st_graphic *)orxStructure_Create(orxSTRUCTURE_ID_GRAPHIC);
 
   /* Non null? */
   if(pstGraphic != orxNULL)
   {
-    /* Inits structure */
-    if(orxStructure_Setup((orxSTRUCTURE *)pstGraphic, orxSTRUCTURE_ID_GRAPHIC) != orxSTATUS_SUCCESS)
-    {
-      /* !!! MSG !!! */
-
-      /* Frees partially allocated texture */
-      orxMemory_Free(pstGraphic);
-
-      /* Returns nothing */
-      return orxNULL;
-    }
-
     /* Inits flags */
     pstGraphic->u32LinkedStructures = orxSTRUCTURE_ID_NONE;
     pstGraphic->u32IDFlags = GRAPHIC_KU32_ID_FLAG_NONE;
-
-    /* Cleans structure pointers */
-    for(i = 0; i < GRAPHIC_KS32_STRUCT_NUMBER; i++)
-    {
-      pstGraphic->pastStructure[i] = orxNULL;
-    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
   }
 
+  /* Done! */
   return pstGraphic;
 }
 
@@ -231,11 +217,8 @@ orxVOID graphic_delete(graphic_st_graphic *_pstGraphic)
       graphic_struct_unlink(_pstGraphic, (orxSTRUCTURE_ID)i);
     }
 
-    /* Cleans structure */
-    orxStructure_Clean((orxSTRUCTURE *)_pstGraphic);
-
-    /* Frees graphic memory */
-    orxMemory_Free(_pstGraphic);
+    /* Deletes structure */
+    orxStructure_Delete((orxSTRUCTURE *)_pstGraphic);
   }
 
   return;

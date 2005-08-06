@@ -242,30 +242,13 @@ orxOBJECT *orxObject_Create()
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
 
   /* Creates object */
-  pstObject = (orxOBJECT *)orxMemory_Allocate(sizeof(orxOBJECT), orxMEMORY_TYPE_MAIN);
+  pstObject = (orxOBJECT *)orxStructure_Create(orxSTRUCTURE_ID_OBJECT);
 
   /* Created? */
   if(pstObject != orxNULL)
   {
-    /* Cleans it */
-    orxMemory_Set(pstObject, 0, sizeof(orxOBJECT));
-
-    /* Inits structure */
-    if(orxStructure_Setup((orxSTRUCTURE *)pstObject, orxSTRUCTURE_ID_OBJECT) == orxSTATUS_SUCCESS)
-    {
-      /* Inits structure flags */
-      pstObject->u32LinkedStructures = 0;
-    }
-    else
-    {
-      /* !!! MSG !!! */
-
-      /* Fress partially allocated object */
-      orxMemory_Free(pstObject);
-
-      /* Not created */
-      pstObject = orxNULL;
-    }
+    /* Inits structure flags */
+    pstObject->u32LinkedStructures = 0;
   }
   else
   {
@@ -299,8 +282,8 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
       orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
     }
 
-    /* Cleans structure */
-    orxStructure_Clean((orxSTRUCTURE *)_pstObject);
+    /* Deletes structure */
+    orxStructure_Delete((orxSTRUCTURE *)_pstObject);
 
     /* Frees object memory */
     orxMemory_Free(_pstObject);

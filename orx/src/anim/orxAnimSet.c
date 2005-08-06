@@ -1317,61 +1317,44 @@ orxANIM_SET *orxAnimSet_Create(orxU32 _u32Size)
   orxASSERT(_u32Size <= orxANIMSET_KU32_MAX_ANIM_NUMBER);
 
   /* Creates animset */
-  pstAnimset = (orxANIM_SET *)orxMemory_Allocate(sizeof(orxANIM_SET), orxMEMORY_TYPE_MAIN);
+  pstAnimset = (orxANIM_SET *)orxStructure_Create(orxSTRUCTURE_ID_ANIM_SET);
 
   /* Non null? */
   if(pstAnimset != orxNULL)
   {
-    /* Cleans it */
-    orxMemory_Set(pstAnimset, 0, sizeof(orxANIM_SET));
+    /* Allocates anim pointer array */
+    pstAnimset->pastAnim = (orxANIM **)orxMemory_Allocate(_u32Size * sizeof(orxANIM *), orxMEMORY_TYPE_MAIN);
 
-    /* Inits structure */
-    if(orxStructure_Setup((orxSTRUCTURE *)pstAnimset, orxSTRUCTURE_ID_ANIM_SET) == orxSTATUS_SUCCESS)
+    /* Was allocated? */  
+    if(pstAnimset->pastAnim != orxNULL)
     {
-      /* Allocates anim pointer array */
-      pstAnimset->pastAnim = (orxANIM **)orxMemory_Allocate(_u32Size * sizeof(orxANIM *), orxMEMORY_TYPE_MAIN);
+      /* Cleans it */
+      orxMemory_Set(pstAnimset->pastAnim, 0, _u32Size * sizeof(orxANIM *));
 
-      /* Was allocated? */  
-      if(pstAnimset->pastAnim != orxNULL)
+      /* Set storage size & counter */
+      orxAnimSet_SetAnimStorageSize(pstAnimset, _u32Size);
+      orxAnimSet_SetAnimCounter(pstAnimset, 0);
+
+      /* Creates link table */
+      pstAnimset->pstLinkTable = orxAnimSet_CreateLinkTable(_u32Size);
+
+      /* Was allocated? */
+      if(pstAnimset->pstLinkTable != orxNULL)
       {
-        /* Cleans it */
-        orxMemory_Set(pstAnimset->pastAnim, 0, _u32Size * sizeof(orxANIM *));
-
-        /* Set storage size & counter */
-        orxAnimSet_SetAnimStorageSize(pstAnimset, _u32Size);
-        orxAnimSet_SetAnimCounter(pstAnimset, 0);
-
-        /* Creates link table */
-        pstAnimset->pstLinkTable = orxAnimSet_CreateLinkTable(_u32Size);
-
-        /* Was allocated? */
-        if(pstAnimset->pstLinkTable != orxNULL)
-        {
-          /* Updates flags */
-          orxAnimSet_SetLinkTableFlag(pstAnimset->pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_READY | orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE);
-      
-          /* Inits flags */
-          orxAnimSet_SetFlag(pstAnimset, orxANIMSET_KU32_ID_FLAG_LINK_STATIC, orxANIMSET_KU32_ID_MASK_FLAGS);
-        }
-        else
-        {
-          /* !!! MSG !!! */
+        /* Updates flags */
+        orxAnimSet_SetLinkTableFlag(pstAnimset->pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_READY | orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE);
     
-          /* Frees partially allocated texture */
-          orxMemory_Free(pstAnimset->pastAnim);
-          orxMemory_Free(pstAnimset);
-    
-          /* Not created */
-          pstAnimset = orxNULL;
-        }
+        /* Inits flags */
+        orxAnimSet_SetFlag(pstAnimset, orxANIMSET_KU32_ID_FLAG_LINK_STATIC, orxANIMSET_KU32_ID_MASK_FLAGS);
       }
       else
       {
         /* !!! MSG !!! */
   
-        /* Frees partially allocated texture */
-        orxMemory_Free(pstAnimset);
-  
+        /* Frees partially allocated structures */
+        orxMemory_Free(pstAnimset->pastAnim);
+        orxStructure_Delete((orxSTRUCTURE *)pstAnimset);
+
         /* Not created */
         pstAnimset = orxNULL;
       }
@@ -1380,8 +1363,8 @@ orxANIM_SET *orxAnimSet_Create(orxU32 _u32Size)
     {
       /* !!! MSG !!! */
 
-      /* Frees partially allocated texture */
-      orxMemory_Free(pstAnimset);
+      /* Frees partially allocated structure */
+      orxStructure_Delete((orxSTRUCTURE *)pstAnimset);
 
       /* Not created */
       pstAnimset = orxNULL;
@@ -1419,11 +1402,8 @@ orxSTATUS orxAnimSet_Delete(orxANIM_SET *_pstAnimset)
     orxAnimSet_RemoveAllAnims(_pstAnimset);
     orxAnimSet_DeleteLinkTable(_pstAnimset->pstLinkTable);
 
-    /* Cleans structure */
-    orxStructure_Clean((orxSTRUCTURE *)_pstAnimset);
-
-    /* Frees animset memory */
-    orxMemory_Free(_pstAnimset);
+    /* Deletes structure */
+    orxStructure_Delete((orxSTRUCTURE *)_pstAnimset);
   }
   else
   {

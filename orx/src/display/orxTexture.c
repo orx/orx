@@ -278,29 +278,12 @@ orxTEXTURE *orxTexture_Create()
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
 
   /* Creates texture */
-  pstTexture = (orxTEXTURE *)orxMemory_Allocate(sizeof(orxTEXTURE), orxMEMORY_TYPE_MAIN);
+  pstTexture = (orxTEXTURE *)orxStructure_Create(orxSTRUCTURE_ID_TEXTURE);
 
   /* Created? */
   if(pstTexture != orxNULL)
   {
-    /* Cleans it */
-    orxMemory_Set(pstTexture, 0, sizeof(orxTEXTURE));
-
-    /* Inits structure */
-    if(orxStructure_Setup((orxSTRUCTURE *)pstTexture, orxSTRUCTURE_ID_TEXTURE) == orxSTATUS_SUCCESS)
-    {
-      /* Inits it */
-    }
-    else
-    {
-      /* !!! MSG !!! */
-
-      /* Fress partially allocated texture */
-      orxMemory_Free(pstTexture);
-
-      /* Not created */
-      pstTexture = orxNULL;
-    }
+    /* !!! INIT? !!! */
   }
   else
   {
@@ -395,11 +378,8 @@ orxSTATUS orxTexture_Delete(orxTEXTURE *_pstTexture)
       /* Cleans bitmap reference */
       orxTexture_UnlinkBitmap(_pstTexture);
 
-      /* Cleans structure */
-      orxStructure_Clean((orxSTRUCTURE *)_pstTexture);
-
-      /* Frees texture memory */
-      orxMemory_Free(_pstTexture);
+      /* Deletes structure */
+      orxStructure_Delete((orxSTRUCTURE *)_pstTexture);
     }
     else
     {

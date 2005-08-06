@@ -346,26 +346,11 @@ orxANIM *orxAnim_Create(orxU32 _u32IDFlag, orxU32 _u32Size)
   orxASSERT(_u32Size <= orxANIM_KS32_TEXTURE_MAX_NUMBER);
 
   /* Creates anim */
-  pstAnim = (orxANIM *)orxMemory_Allocate(sizeof(orxANIM), orxMEMORY_TYPE_MAIN);
+  pstAnim = (orxANIM *)orxStructure_Create(orxSTRUCTURE_ID_ANIM);
 
   /* Non null? */
   if(pstAnim != orxNULL)
   {
-    /* Cleans it */
-    orxMemory_Set(pstAnim, 0, sizeof(orxANIM));
-    
-    /* Inits structure */
-    if(orxStructure_Setup((orxSTRUCTURE *)pstAnim, orxSTRUCTURE_ID_ANIM) != orxSTATUS_SUCCESS)
-    {
-      /* !!! MSG !!! */
-
-      /* Frees partially allocated texture */
-      orxMemory_Free(pstAnim);
-
-      /* Returns nothing */
-      return orxNULL;
-    }
-
     /* Inits flags */
     orxAnim_SetFlag(pstAnim, _u32IDFlag & orxANIM_KU32_ID_MASK_FLAGS, orxANIM_KU32_ID_MASK_FLAGS);
 
@@ -459,11 +444,8 @@ orxSTATUS orxAnim_Delete(orxANIM *_pstAnim)
       /* !!! MSG !!! */
     }
 
-    /* Cleans structure */
-    orxStructure_Clean((orxSTRUCTURE *)_pstAnim);
-
-    /* Frees anim memory */
-    orxMemory_Free(_pstAnim);
+    /* Deletes structure */
+    orxStructure_Delete((orxSTRUCTURE *)_pstAnim);
   }
   else
   {

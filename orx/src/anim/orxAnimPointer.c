@@ -312,52 +312,35 @@ orxANIM_POINTER *orxAnimPointer_Create(orxANIM_SET *_pstAnimset)
   orxASSERT(_pstAnimset != orxNULL);
 
   /* Creates animpointer */
-  pstAnimpointer = (orxANIM_POINTER *)orxMemory_Allocate(sizeof(orxANIM_POINTER), orxMEMORY_TYPE_MAIN);
+  pstAnimpointer = (orxANIM_POINTER *)orxStructure_Create(orxSTRUCTURE_ID_ANIM_POINTER);
 
   /* Was allocated? */
   if(pstAnimpointer != orxNULL)
   {
-    /* Cleans it */
-    orxMemory_Set(pstAnimpointer, 0, sizeof(orxANIM_POINTER));
+    /* Stores animset */
+    pstAnimpointer->pstAnimset = _pstAnimset;
 
-    /* Inits structure */
-    if(orxStructure_Setup((orxSTRUCTURE *)pstAnimpointer, orxSTRUCTURE_ID_ANIM_POINTER) == orxSTATUS_SUCCESS)
+    /* Adds a reference on the animset */
+    orxAnimSet_AddReference(_pstAnimset);
+
+    /* Inits flags */
+    orxAnimPointer_SetFlag(pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET | orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_ID_FLAG_ALL);
+
+    /* Inits value */
+    pstAnimpointer->hCurrentAnim        = (orxHANDLE)0;
+    pstAnimpointer->stCurrentAnimTime   = 0;
+    pstAnimpointer->fFrequency          = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
+    pstAnimpointer->stTime              = orxTime_GetTime();
+    pstAnimpointer->hDstAnim            = orxHANDLE_Undefined;
+
+    /* Is animset link table non-static? */
+    if(orxAnimSet_TestFlag(_pstAnimset, orxANIMSET_KU32_ID_FLAG_LINK_STATIC) == orxFALSE)
     {
-      /* Stores animset */
-      pstAnimpointer->pstAnimset = _pstAnimset;
-  
-      /* Adds a reference on the animset */
-      orxAnimSet_AddReference(_pstAnimset);
-  
-      /* Inits flags */
-      orxAnimPointer_SetFlag(pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET | orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_ID_FLAG_ALL);
-  
-      /* Inits value */
-      pstAnimpointer->hCurrentAnim        = (orxHANDLE)0;
-      pstAnimpointer->stCurrentAnimTime   = 0;
-      pstAnimpointer->fFrequency          = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
-      pstAnimpointer->stTime              = orxTime_GetTime();
-      pstAnimpointer->hDstAnim            = orxHANDLE_Undefined;
+      /* Stores link table */
+      pstAnimpointer->pstLinkTable = orxAnimSet_DuplicateLinkTable(_pstAnimset);
 
-      /* Is animset link table non-static? */
-      if(orxAnimSet_TestFlag(_pstAnimset, orxANIMSET_KU32_ID_FLAG_LINK_STATIC) == orxFALSE)
-      {
-        /* Stores link table */
-        pstAnimpointer->pstLinkTable = orxAnimSet_DuplicateLinkTable(_pstAnimset);
-  
-        /* Updates flags */
-        orxAnimPointer_SetFlag(pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_LINK_TABLE, orxANIMPOINTER_KU32_ID_FLAG_NONE);
-      }
-    }
-    else
-    {
-      /* !!! MSG !!! */
-
-      /* Frees partially allocated texture */
-      orxMemory_Free(pstAnimpointer);
-
-      /* Not created */
-      pstAnimpointer = orxNULL;
+      /* Updates flags */
+      orxAnimPointer_SetFlag(pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_LINK_TABLE, orxANIMPOINTER_KU32_ID_FLAG_NONE);
     }
   }
   else
@@ -403,11 +386,8 @@ orxSTATUS orxAnimPointer_Delete(orxANIM_POINTER *_pstAnimpointer)
       orxAnimSet_DeleteLinkTable(_pstAnimpointer->pstLinkTable);
     }
 
-    /* Cleans structure */
-    orxStructure_Clean((orxSTRUCTURE *)_pstAnimpointer);
-
-    /* Frees animpointer memory */
-    orxMemory_Free(_pstAnimpointer);
+    /* Deletes structure */
+    orxStructure_Delete((orxSTRUCTURE *)_pstAnimpointer);
   }
   else
   {

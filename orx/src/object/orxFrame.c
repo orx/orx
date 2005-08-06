@@ -651,14 +651,11 @@ orxFRAME *orxFrame_Create()
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
 
   /* Creates frame */
-  pstFrame = (orxFRAME *) orxMemory_Allocate(sizeof(orxFRAME), orxMEMORY_TYPE_MAIN);
+  pstFrame = (orxFRAME *)orxStructure_Create(orxSTRUCTURE_ID_FRAME);
 
   /* Non null? */
   if(pstFrame != orxNULL)
   {
-    /* Cleans it */
-    orxMemory_Set(pstFrame, 0, sizeof(orxFRAME));
-    
     /* Inits members */
     if(sstFrame.u32Flags & orxFRAME_KU32_FLAG_DATA_2D)
     {
@@ -676,31 +673,17 @@ orxFRAME *orxFrame_Create()
         /* Cleans it */
         orxMemory_Set(pstData, 0, sizeof(orxFRAME_DATA_2D));
 
-        /* Inits structure */
-        if(orxStructure_Setup((orxSTRUCTURE *)pstFrame, orxSTRUCTURE_ID_FRAME) == orxSTATUS_SUCCESS)
-        {
-          /* Inits values */
-          pstData->fGlobalScale = orx2F(1.0f);
-          pstData->fLocalScale = orx2F(1.0f);
+        /* Inits values */
+        pstData->fGlobalScale = orx2F(1.0f);
+        pstData->fLocalScale = orx2F(1.0f);
 
-          /* Links data to frame */
-          pstFrame->pstData = pstData;
-        }
-        else
-        {
-          /* !!! MSG !!! */
-    
-          /* Fress partially allocated texture */
-          orxMemory_Free(pstFrame);
-    
-          /* Not created */
-          pstFrame = orxNULL;
-        }
+        /* Links data to frame */
+        pstFrame->pstData = pstData;
       }
       else
       {
         /* Deletes partially created frame */
-        orxMemory_Free(pstFrame);
+        orxStructure_Delete((orxSTRUCTURE *)pstFrame);
 
         /* Not created */
         pstFrame = orxNULL;
@@ -743,11 +726,8 @@ orxSTATUS orxFrame_Delete(orxFRAME *_pstFrame)
       orxMemory_Free(_pstFrame->pstData);
     }
 
-    /* Cleans structure */
-    orxStructure_Clean((orxSTRUCTURE *)_pstFrame);
-
-    /* Frees frame memory */
-    orxMemory_Free(_pstFrame);
+    /* Deletes structure */
+    orxStructure_Delete((orxSTRUCTURE *)_pstFrame);
   }
   else
   {

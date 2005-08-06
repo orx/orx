@@ -44,10 +44,6 @@
 
 #define orxVIEWPORT_KU32_ID_MASK_ALIGN            0xF0000000
 
-#define orxVIEWPORT_KU32_ID_MASK_NUMBER           0x0000000F
-
-#define orxVIEWPORT_KU32_VIEWPORT_NUMBER          16
-
 
 /*
  * Viewport structure
@@ -88,9 +84,6 @@ typedef struct __orxVIEWPORT_STATIC_t
 
   /* Control flags */
   orxU32 u32Flags;
-
-  /* Used viewports */
-  orxBOOL abViewportUsed[orxVIEWPORT_KU32_VIEWPORT_NUMBER];
 
 } orxVIEWPORT_STATIC;
 
@@ -353,70 +346,26 @@ orxVOID orxViewport_Exit()
 orxVIEWPORT *orxViewport_Create()
 {
   orxVIEWPORT *pstViewport = orxNULL;
-  orxU32 u32Viewport = orxU32_Undefined, i;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
 
-  /* Gets free viewport slot */
-  for(i = 0; i < orxVIEWPORT_KU32_VIEWPORT_NUMBER; i++)
+  /* Creates viewport */
+  pstViewport = (orxVIEWPORT *)orxStructure_Create(orxSTRUCTURE_ID_VIEWPORT);
+
+  /* Created? */
+  if(pstViewport != orxNULL)
   {
-    /* Veiwport slot free? */
-    if(sstViewport.abViewportUsed[i] == orxFALSE)
-    {
-      u32Viewport = i;
-      break;
-    }
-  }
-
-  /* Free slot found? */
-  if(u32Viewport != orxU32_Undefined)
-  {
-    /* Creates viewport */
-    pstViewport = (orxVIEWPORT *) orxMemory_Allocate(sizeof(orxVIEWPORT), orxMEMORY_TYPE_MAIN);
-  
-    /* Created? */
-    if(pstViewport != orxNULL)
-    {
-      /* Cleans it */
-      orxMemory_Set(pstViewport, 0, sizeof(orxVIEWPORT));
-
-      /* Inits structure */
-      if(orxStructure_Setup((orxSTRUCTURE *)pstViewport, orxSTRUCTURE_ID_VIEWPORT) == orxSTATUS_SUCCESS)
-      {
-        /* Inits viewport flags */
-        pstViewport->u32IDFlags = orxVIEWPORT_KU32_ID_FLAG_VIRTUAL   |
-                                  orxVIEWPORT_KU32_ID_FLAG_ACTIVE    |
-                                  orxVIEWPORT_KU32_FLAG_ALIGN_CENTER |
-                                  orxVIEWPORT_KU32_FLAG_ALIGN_CENTER |
-                                  (orxU32)u32Viewport;
-    
-        /* Updates viewport slot */
-        sstViewport.abViewportUsed[u32Viewport] = orxTRUE;
-      }
-      else
-      {
-        /* !!! MSG !!! */
-
-        /* Fress partially allocated viewport */
-        orxMemory_Free(pstViewport);
-
-        /* Not created */
-        pstViewport = orxNULL;
-      }
-    }
-    else
-    {
-      /* !!! MSG !!! */
-  
-      /* Not created */
-      pstViewport = orxNULL;
-    }
+    /* Inits viewport flags */
+    pstViewport->u32IDFlags = orxVIEWPORT_KU32_ID_FLAG_VIRTUAL   |
+                              orxVIEWPORT_KU32_ID_FLAG_ACTIVE    |
+                              orxVIEWPORT_KU32_FLAG_ALIGN_CENTER |
+                              orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
   }
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Not created */
     pstViewport = orxNULL;
   }
@@ -433,7 +382,6 @@ orxVIEWPORT *orxViewport_Create()
  ***************************************************************************/
 orxSTATUS orxViewport_Delete(orxVIEWPORT *_pstViewport)
 {
-  orxU32    u32Viewport;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -443,12 +391,6 @@ orxSTATUS orxViewport_Delete(orxVIEWPORT *_pstViewport)
   /* Not referenced? */
   if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstViewport) == 0)
   {
-    /* Gets viewport id number */
-    u32Viewport = _pstViewport->u32IDFlags & orxVIEWPORT_KU32_ID_MASK_NUMBER;
-
-    /* Frees viewport slot */
-    sstViewport.abViewportUsed[u32Viewport] = orxFALSE;
-
     /* Was linked to a camera? */
     if(_pstViewport->pstCamera != orxNULL)
     {
@@ -461,11 +403,8 @@ orxSTATUS orxViewport_Delete(orxVIEWPORT *_pstViewport)
       orxStructure_DecreaseCounter((orxSTRUCTURE *)(_pstViewport->pstSurface));
     }
 
-    /* Cleans structure */
-    orxStructure_Clean((orxSTRUCTURE *)_pstViewport);
-
-    /* Frees viewport memory */
-    orxMemory_Free(_pstViewport);
+    /* Deletes structure */
+    orxStructure_Delete((orxSTRUCTURE *)_pstViewport);
   }
   else
   {

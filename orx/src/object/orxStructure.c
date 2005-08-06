@@ -28,17 +28,13 @@
  * Platform independant defines
  */
 
-#define orxSTRUCTURE_KU32_FLAG_NONE         0x00000000
-#define orxSTRUCTURE_KU32_FLAG_READY        0x00000001
+#define orxSTRUCTURE_KU32_FLAG_NONE           0x00000000
+#define orxSTRUCTURE_KU32_FLAG_READY          0x00000001
 
 /* *** Misc *** */
-#define orxSTRUCTURE_KU32_BANK_SIZE         256
+#define orxSTRUCTURE_KU32_STORAGE_BANK_SIZE   256
 
-/* Storage types */
-#define STRUCTURE_KS32_TYPE_NONE          0
-#define STRUCTURE_KS32_TYPE_LIST          1
-#define STRUCTURE_KS32_TYPE_TREE          2
-
+#define orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE 32
 
 
 /*
@@ -46,11 +42,14 @@
  */
 typedef struct __orxSTORAGE_t
 {
-  /* Associated bank */
-  orxBANK *pstBank;
-
   /* Storage type */
   orxSTRUCTURE_STORAGE_TYPE eType;
+
+  /* Associated node bank */
+  orxBANK *pstNodeBank;
+
+  /* Associated structure bank */
+  orxBANK *pstStructureBank;
 
   /* Storage union */
   union
@@ -144,7 +143,7 @@ orxSTATUS orxStructure_Init()
     for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
     {
       /* Creates a bank */
-      sstStructure.astStorage[i].pstBank  = orxBank_Create(orxSTRUCTURE_KU32_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+      sstStructure.astStorage[i].pstNodeBank  = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Cleans storage type */
       sstStructure.astStorage[i].eType    = orxSTRUCTURE_STORAGE_TYPE_NONE;
@@ -169,7 +168,7 @@ orxSTATUS orxStructure_Init()
       for(j = 0; j < i; j++)
       {
         /* Deletes it */
-        orxBank_Delete(sstStructure.astStorage[j].pstBank);
+        orxBank_Delete(sstStructure.astStorage[j].pstNodeBank);
       }
     }
   }
@@ -220,8 +219,9 @@ orxVOID orxStructure_Exit()
         break;
       }
 
-      /* Deletes it */
-      orxBank_Delete(sstStructure.astStorage[i].pstBank);
+      /* Deletes banks */
+      orxBank_Delete(sstStructure.astStorage[i].pstNodeBank);
+      orxBank_Delete(sstStructure.astStorage[i].pstStructureBank);
     }
 
     /* Updates flags */
@@ -255,9 +255,20 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCO
   /* Not already registered? */
   if(sstStructure.astInfo[_eStructureID].u32Size == 0)
   {
-    /* Registers it */
-    orxMemory_Copy(&(sstStructure.astInfo[_eStructureID]), _pstRegisterInfo, sizeof(orxSTRUCTURE_REGISTER_INFO));
-    sstStructure.astStorage[_eStructureID].eType = _pstRegisterInfo->eStorageType;
+    /* Creates bank for structure storage */
+    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE, _pstRegisterInfo->u32Size, orxBANK_KU32_FLAGS_NONE, _pstRegisterInfo->eMemoryType);
+
+    /* Valid? */
+    if(sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL)
+    {
+      /* Registers it */
+      orxMemory_Copy(&(sstStructure.astInfo[_eStructureID]), _pstRegisterInfo, sizeof(orxSTRUCTURE_REGISTER_INFO));
+      sstStructure.astStorage[_eStructureID].eType = _pstRegisterInfo->eStorageType;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
   else
   {
@@ -330,97 +341,125 @@ orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 }
 
 /***************************************************************************
- orxStructure_Setup
- Inits a structure with given type.
+ orxStructure_Create
+ Creates a clean structure for given type.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTRUCTURE pointer / orxNULL
  ***************************************************************************/
-orxSTATUS orxFASTCALL orxStructure_Setup(orxSTRUCTURE *_pstStructure, orxSTRUCTURE_ID _eStructureID)
+orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
+  orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
-  orxASSERT(_pstStructure != orxNULL);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
-  /* Creates node */
-  pstNode = (orxSTORAGE_NODE *)orxBank_Allocate(sstStructure.astStorage[_eStructureID].pstBank);
-
-  /* Valid? */
-  if(pstNode != orxNULL)
+  /* Is structure type registered? */
+  if(sstStructure.astInfo[_eStructureID].u32Size != 0)
   {
-    /* Cleans it */
-    orxMemory_Set(pstNode, 0, sizeof(orxSTORAGE_NODE));
+    /* Creates structure */
+    pstStructure = (orxSTRUCTURE *)orxBank_Allocate(sstStructure.astStorage[_eStructureID].pstStructureBank);
 
-    /* Dependig on type */
-    switch(sstStructure.astStorage[_eStructureID].eType)
+    /* Valid? */
+    if(pstStructure != orxNULL)
     {
-    case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+      /* Creates node */
+      pstNode = (orxSTORAGE_NODE *)orxBank_Allocate(sstStructure.astStorage[_eStructureID].pstNodeBank);
+  
+      /* Valid? */
+      if(pstNode != orxNULL)
+      {
+        orxSTATUS eResult;
 
-      /* Adds node to list */
-      eResult = orxLinkList_AddStart(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
-
-      break;
-
-    case orxSTRUCTURE_STORAGE_TYPE_TREE:
-
-      /* Adds node to tree */
-      eResult = orxTree_AddChild(orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree)), &(pstNode->stTreeNode));
-
-      break;
-
-    default:
-
-      /* !!! MSG !!! */
-
-      /* Wrong type */
-      eResult = orxSTATUS_FAILED;
-    }
+        /* Cleans it */
+        orxMemory_Set(pstNode, 0, sizeof(orxSTORAGE_NODE));
     
-    /* Succesful? */
-    if(eResult == orxSTATUS_SUCCESS)
-    {
-      /* Cleans reference counter */
-      _pstStructure->u32RefCounter = 0;
+        /* Dependig on type */
+        switch(sstStructure.astStorage[_eStructureID].eType)
+        {
+        case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+    
+          /* Adds node to list */
+          eResult = orxLinkList_AddStart(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
+    
+          break;
+    
+        case orxSTRUCTURE_STORAGE_TYPE_TREE:
+    
+          /* Adds node to tree */
+          eResult = orxTree_AddChild(orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree)), &(pstNode->stTreeNode));
+    
+          break;
+    
+        default:
+    
+          /* !!! MSG !!! */
+    
+          /* Wrong type */
+          eResult = orxSTATUS_FAILED;
+        }
+        
+        /* Succesful? */
+        if(eResult == orxSTATUS_SUCCESS)
+        {
+          /* Cleans whole structure */
+          orxMemory_Set(pstStructure, 0, sstStructure.astInfo[_eStructureID].u32Size);
+          
+          /* Stores ID */
+          pstStructure->eID           = _eStructureID;
 
-      /* Stores ID */
-      _pstStructure->eID = _eStructureID;
-      
-      /* Stores storage handle */
-      _pstStructure->hStorageNode = (orxHANDLE)pstNode;
-      
-      /* Stores structure pointer */
-      pstNode->pstStructure = _pstStructure;
+          /* Stores storage handle */
+          pstStructure->hStorageNode  = (orxHANDLE)pstNode;
+
+          /* Stores structure pointer */
+          pstNode->pstStructure       = pstStructure;
+        }
+        else
+        {
+          /* !!! MSG !!! */
+    
+          /* Frees allocated node & structure */
+          orxBank_Free(sstStructure.astStorage[_eStructureID].pstNodeBank, pstNode);
+          orxBank_Free(sstStructure.astStorage[_eStructureID].pstStructureBank, pstStructure);
+
+          /* Not created */
+          pstStructure = orxNULL;
+        }        
+      }
+      else
+      {
+        /* !!! MSG !!! */
+        
+        /* Frees allocated structure */
+        orxBank_Free(sstStructure.astStorage[_eStructureID].pstStructureBank, pstStructure);
+
+        /* Not allocated */
+        pstStructure = orxNULL;
+      }
     }
     else
     {
       /* !!! MSG !!! */
-
-      /* Frees allocated node */
-      orxBank_Free(sstStructure.astStorage[_eStructureID].pstBank, pstNode);
-    }        
+    }
   }
   else
   {
     /* !!! MSG !!! */
-    
-    /* Not allocated */
-    eResult = orxSTATUS_FAILED;
   }
 
   /* Done! */
-  return eResult;
+  return pstStructure;
 }
 
 /***************************************************************************
- orxStructure_Clean
- Cleans a structure.
+ orxStructure_Delete
+ Deletes a structure (needs to be cleaned before).
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFASTCALL orxStructure_Clean(orxSTRUCTURE *_pstStructure)
+orxVOID orxFASTCALL orxStructure_Delete(orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
 
@@ -457,10 +496,13 @@ orxVOID orxFASTCALL orxStructure_Clean(orxSTRUCTURE *_pstStructure)
     }
 
     /* Deletes it */
-    orxBank_Free(sstStructure.astStorage[_pstStructure->eID].pstBank, pstNode);
+    orxBank_Free(sstStructure.astStorage[_pstStructure->eID].pstNodeBank, pstNode);
 
-    /* Cleans structure ID */
-    _pstStructure->eID = orxSTRUCTURE_ID_NONE;
+    /* Deletes structure */
+    orxBank_Free(sstStructure.astStorage[_pstStructure->eID].pstStructureBank, _pstStructure);
+
+    /* Cleans structure */
+    orxMemory_Set(_pstStructure, 0, sizeof(orxSTRUCTURE));
   }
   else
   {
@@ -468,6 +510,44 @@ orxVOID orxFASTCALL orxStructure_Clean(orxSTRUCTURE *_pstStructure)
   }
 
   return;
+}
+
+/***************************************************************************
+ orxStructure_Update
+ Updates structure if update function was registered for the structure type.
+
+ returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ ***************************************************************************/
+orxSTATUS orxFASTCALL orxStructure_Update(orxSTRUCTURE *_pstStructure, orxCONST orxCLOCK_INFO *_pstClockInfo)
+{
+  orxSTATUS eResult = orxSTATUS_FAILED;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_pstStructure != orxNULL);
+  orxASSERT(_pstClockInfo != orxNULL);
+
+  /* Is structure registered? */
+  if(sstStructure.astInfo[_pstStructure->eID].u32Size != 0)
+  {
+    /* Is an update function registered? */
+    if(sstStructure.astInfo[_pstStructure->eID].pfnUpdate != orxNULL)
+    {
+      /* Calls it */
+      eResult = sstStructure.astInfo[_pstStructure->eID].pfnUpdate(_pstStructure, _pstClockInfo);
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 
@@ -533,7 +613,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 
  returns: parent
  ***************************************************************************/
-orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -581,7 +661,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxSTRUCTURE *_pstStructure)
 
  returns: child
  ***************************************************************************/
-orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -629,7 +709,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxSTRUCTURE *_pstStructure)
 
  returns: left sibling
  ***************************************************************************/
-orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -677,7 +757,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxSTRUCTURE *_pstStructure)
 
  returns: previous
  ***************************************************************************/
-orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -725,7 +805,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxSTRUCTURE *_pstStructure)
 
  returns: next
  ***************************************************************************/
-orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxSTRUCTURE *_pstStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxSTRUCTURE *_pstStructure)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
