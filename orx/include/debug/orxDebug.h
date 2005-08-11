@@ -66,7 +66,7 @@
 
   #define orxDEBUG_INIT()                     _orxDebug_Init()
   #define orxDEBUG_EXIT()                     _orxDebug_Exit()
-  #define orxDEBUG_FLAG_SET(SET, UNSET)       _orxDebug_SetFlag(SET, UNSET)
+  #define orxDEBUG_FLAG_SET(SET, UNSET)       _orxDebug_SetFlags(SET, UNSET)
   #define orxDEBUG_FLAG_BACKUP()              _orxDebug_BackupFlags()
   #define orxDEBUG_FLAG_RESTORE()             _orxDebug_RestoreFlags()
 
@@ -162,7 +162,7 @@ extern orxDLLAPI orxVOID                      _orxDebug_BackupFlags();
 extern orxDLLAPI orxVOID                      _orxDebug_RestoreFlags();
 
 /** Debug flag get/set accessor. */
-extern orxDLLAPI orxVOID                      _orxDebug_SetFlag(orxU32 _u32Add, orxU32 _u32Remove);
+extern orxDLLAPI orxVOID                      _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove);
 
 /** Software break function. */
 extern orxDLLAPI orxVOID                      _orxDebug_Break();

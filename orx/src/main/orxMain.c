@@ -63,8 +63,9 @@ orxSTATIC orxMAIN_STATIC sstMain;
  */
 orxSTATUS orxMain_Init()
 {
-  orxU32 u32Index;
-  
+  orxU32    u32Index;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Don't call twice the init function */
   orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) != orxMAIN_KU32_FLAG_READY);
   
@@ -82,6 +83,9 @@ orxSTATUS orxMain_Init()
   
   /* Set module as initialized */
   sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Exit main module
@@ -135,7 +139,7 @@ orxVOID orxMain_InitModule(orxMAIN_MODULE _eModule)
 orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule)
 {
   /* Module initialized ? */
-  orxASSERT(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY == orxMAIN_KU32_FLAG_READY);
+  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY);
   
   /* Decreases the ref counter */
   sstMain.astModuleInfos[_eModule].u32RefCount--;

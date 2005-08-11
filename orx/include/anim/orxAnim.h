@@ -89,8 +89,8 @@ extern orxU32               orxAnim_GetTextureCounter(orxANIM *_pstAnim);
 extern orxU32               orxAnim_GetLength(orxANIM *_pstAnim);
 
 /** Animation flag test accessor. */
-extern orxBOOL              orxAnim_TestFlag(orxANIM *_pstAnim, orxU32 _u32Flag);
+extern orxBOOL              orxAnim_TestFlags(orxANIM *_pstAnim, orxU32 _u32Flag);
 /** Animation flag get/set accessor. */
-extern orxVOID              orxAnim_SetFlag(orxANIM *_pstAnim, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
+extern orxVOID              orxAnim_SetFlags(orxANIM *_pstAnim, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
 
 #endif /* _orxANIM_H_ */

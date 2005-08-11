@@ -127,8 +127,8 @@ extern orxU32                                   orxAnimSet_GetAnimStorageSize(or
 extern orxU32                                   orxAnimSet_GetAnimCounter(orxANIM_SET *_pstAnimset);
 
 /** AnimationSet flag test accessor. */
-extern orxBOOL                                  orxAnimSet_TestFlag(orxANIM_SET *_pstAnimset, orxU32 _u32Flag);
+extern orxBOOL                                  orxAnimSet_TestFlags(orxANIM_SET *_pstAnimset, orxU32 _u32Flag);
 /** AnimationSet flag get/set accessor. */
-extern orxVOID                                  orxAnimSet_SetFlag(orxANIM_SET *_pstAnimset, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
+extern orxVOID                                  orxAnimSet_SetFlags(orxANIM_SET *_pstAnimset, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
 
 #endif /* _orxANIMSET_H_ */

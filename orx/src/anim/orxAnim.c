@@ -156,7 +156,7 @@ orxINLINE orxVOID orxAnim_SetTextureStorageSize(orxANIM *_pstAnim, orxU32 _u32Si
   orxASSERT(_u32Size <= orxANIM_KS32_TEXTURE_MAX_NUMBER);
 
   /* Updates storage size */
-  orxAnim_SetFlag(_pstAnim, _u32Size << orxANIM_KS32_ID_SHIFT_SIZE, orxANIM_KU32_ID_MASK_SIZE);
+  orxAnim_SetFlags(_pstAnim, _u32Size << orxANIM_KS32_ID_SHIFT_SIZE, orxANIM_KU32_ID_MASK_SIZE);
 
   return;
 }  
@@ -174,7 +174,7 @@ orxINLINE orxVOID orxAnim_SetTextureCounter(orxANIM *_pstAnim, orxU32 _u32Textur
   orxASSERT(_u32TextureCounter <= orxAnim_GetTextureStorageSize(_pstAnim));
 
   /* Updates counter */
-  orxAnim_SetFlag(_pstAnim, _u32TextureCounter << orxANIM_KS32_ID_SHIFT_COUNTER, orxANIM_KU32_ID_MASK_COUNTER);
+  orxAnim_SetFlags(_pstAnim, _u32TextureCounter << orxANIM_KS32_ID_SHIFT_COUNTER, orxANIM_KU32_ID_MASK_COUNTER);
 
   return;
 }
@@ -355,7 +355,7 @@ orxANIM *orxAnim_Create(orxU32 _u32IDFlag, orxU32 _u32Size)
   if(pstAnim != orxNULL)
   {
     /* Inits flags */
-    orxAnim_SetFlag(pstAnim, _u32IDFlag & orxANIM_KU32_ID_MASK_FLAGS, orxANIM_KU32_ID_MASK_FLAGS);
+    orxAnim_SetFlags(pstAnim, _u32IDFlag & orxANIM_KU32_ID_MASK_FLAGS, orxANIM_KU32_ID_MASK_FLAGS);
 
     /* 2D Animation? */
     if(_u32IDFlag & orxANIM_KU32_ID_FLAG_2D)
@@ -436,7 +436,7 @@ orxSTATUS orxAnim_Delete(orxANIM *_pstAnim)
     /* Cleans members */
 
     /* 2D Animation? */
-    if(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D))
+    if(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D))
     {
       /* Removes all textures */
       orxAnim_RemoveAllTextures(_pstAnim);
@@ -476,7 +476,7 @@ orxSTATUS orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstTexture, orxU32 
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
   orxASSERT(_pstTexture != orxNULL);
-  orxASSERT(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Gets storage size & counter */
   u32Size     = orxAnim_GetTextureStorageSize(_pstAnim);
@@ -519,7 +519,7 @@ orxSTATUS orxAnim_RemoveTexture(orxANIM *_pstAnim)
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Gets counter */
   u32Counter = orxAnim_GetTextureCounter(_pstAnim);
@@ -562,7 +562,7 @@ orxVOID orxAnim_RemoveAllTextures(orxANIM *_pstAnim)
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Until there are no texture left */
   while(orxAnim_RemoveTexture(_pstAnim) != orxSTATUS_FAILED);
@@ -585,7 +585,7 @@ orxTEXTURE *orxAnim_GetTexture(orxANIM *_pstAnim, orxU32 _u32Index)
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Gets counter */
   u32Counter = orxAnim_GetTextureCounter(_pstAnim);
@@ -619,7 +619,7 @@ orxTEXTURE *orxAnim_ComputeTexture(orxANIM *_pstAnim, orxU32 _u32Time)
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Finds corresponding texture index */
   u32Index = orxAnim_FindTextureIndex(_pstAnim, _u32Time);
@@ -648,7 +648,7 @@ orxU32 orxAnim_GetTextureCounter(orxANIM *_pstAnim)
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Gets counter */
   return((_pstAnim->u32IDFlags & orxANIM_KU32_ID_MASK_COUNTER) >> orxANIM_KS32_ID_SHIFT_COUNTER);
@@ -665,7 +665,7 @@ orxU32 orxAnim_GetTextureStorageSize(orxANIM *_pstAnim)
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Gets storage size */
   return((_pstAnim->u32IDFlags & orxANIM_KU32_ID_MASK_SIZE) >> orxANIM_KS32_ID_SHIFT_SIZE);
@@ -686,7 +686,7 @@ orxU32 orxAnim_GetLength(orxANIM *_pstAnim)
   orxASSERT(_pstAnim != orxNULL);
 
   /* 2D? */
-  if(orxAnim_TestFlag(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
   {
     /* Gets texture counter */
     u32Counter = orxAnim_GetTextureCounter(_pstAnim);
@@ -714,7 +714,7 @@ orxU32 orxAnim_GetLength(orxANIM *_pstAnim)
 
  returns: orxBOOL
  ***************************************************************************/
-orxBOOL orxAnim_TestFlag(orxANIM *_pstAnim, orxU32 _u32Flag)
+orxBOOL orxAnim_TestFlags(orxANIM *_pstAnim, orxU32 _u32Flag)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
@@ -729,7 +729,7 @@ orxBOOL orxAnim_TestFlag(orxANIM *_pstAnim, orxU32 _u32Flag)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxAnim_SetFlag(orxANIM *_pstAnim, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
+orxVOID orxAnim_SetFlags(orxANIM *_pstAnim, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);

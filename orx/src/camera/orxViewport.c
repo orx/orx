@@ -121,7 +121,7 @@ orxSTATIC orxVOID orxViewport_ComputeClipCorners(orxVIEWPORT *_pstViewport)
   pvClipSize      = &(_pstViewport->vClipSize);
 
   /* 2D? */
-  if(orxCamera_TestFlag(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxCamera_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
   {
     /* Gets camera infos */
     orxCamera_GetOnScreenPosition(_pstViewport->pstCamera, &vCamPos);
@@ -166,7 +166,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
   if((u32Flags & orxVIEWPORT_KU32_ID_FLAG_VIRTUAL) && (u32Flags & orxVIEWPORT_KU32_ID_FLAG_CAMERA))
   {
     /* 2D? */
-    if(orxCamera_TestFlag(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+    if(orxCamera_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
     {
       orxVEC vCamSize;
 

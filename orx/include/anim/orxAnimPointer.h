@@ -91,8 +91,8 @@ extern orxFLOAT                                     orxAnimPointer_GetFrequency(
 extern orxSTATUS                                    orxAnimPointer_SetFrequency(orxANIM_POINTER *_pstAnimpointer, orxFLOAT _fFrequency);
 
 /** AnimationPointer flag test accessor. */
-extern orxBOOL                                      orxAnimPointer_TestFlag(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32Flag);
+extern orxBOOL                                      orxAnimPointer_TestFlags(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32Flag);
 /** AnimationPointer flag get/set accessor. */
-extern orxVOID                                      orxAnimPointer_SetFlag(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
+extern orxVOID                                      orxAnimPointer_SetFlags(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
 
 #endif /* _orxANIMPOINTER_H_ */

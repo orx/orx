@@ -381,7 +381,6 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 {
   orxREGISTER orxSTORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);

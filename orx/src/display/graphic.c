@@ -268,7 +268,7 @@ orxVOID graphic_struct_link(graphic_st_graphic *_pstGraphic, orxSTRUCTURE *_pstS
       /* Animpointer */
       case orxSTRUCTURE_ID_ANIM_POINTER:
         /* Checks current anim */
-        if(orxAnim_TestFlag(orxAnimPointer_GetAnim((orxANIM_POINTER *)_pstStructure), orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
+        if(orxAnim_TestFlags(orxAnimPointer_GetAnim((orxANIM_POINTER *)_pstStructure), orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
         {
           /* Updates flag */
           graphic_flag_set(_pstGraphic, GRAPHIC_KU32_ID_FLAG_2D | GRAPHIC_KU32_ID_FLAG_ANIM, GRAPHIC_KU32_ID_FLAG_NONE);
@@ -427,7 +427,7 @@ orxTEXTURE *graphic_2d_data_get(graphic_st_graphic *_pstGraphic)
     pstAnim = orxAnimPointer_GetAnim(pstAnimpointer);
 
     /* Is animation 2D? */
-    if(orxAnim_TestFlag(pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
+    if(orxAnim_TestFlags(pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
     {
       orxU32 u32Time;
 

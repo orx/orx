@@ -245,7 +245,7 @@ orxVOID _orxDebug_RestoreFlags()
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID _orxDebug_SetFlag(orxU32 _u32Add, orxU32 _u32Remove)
+orxVOID _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY);
