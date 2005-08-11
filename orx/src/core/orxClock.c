@@ -563,6 +563,77 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCLOCK_FUNCTION
 }
 
 /***************************************************************************
+ orxClock_GetContext
+ Gets a callback function context.
+
+ returns: orxVOID *
+ ***************************************************************************/
+orxVOID *orxFASTCALL orxClock_GetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback)
+{
+  orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
+  orxVOID *pstContext = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(_pstClock != orxNULL);
+  orxASSERT(_pfnCallback != orxNULL);
+
+  /* Finds clock function storage */
+  pstFunctionStorage = orxClock_FindFunctionStorage(_pstClock, _pfnCallback);
+
+  /* Found? */
+  if(pstFunctionStorage != orxNULL)
+  {
+    /* Gets context */
+    pstContext = pstFunctionStorage->pstContext;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return pstContext;
+}
+
+/***************************************************************************
+ orxClock_SetContext
+ Sets a callback function context.
+
+ returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ ***************************************************************************/
+orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
+{
+  orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(_pstClock != orxNULL);
+  orxASSERT(_pfnCallback != orxNULL);
+
+  /* Finds clock function storage */
+  pstFunctionStorage = orxClock_FindFunctionStorage(_pstClock, _pfnCallback);
+
+  /* Found? */
+  if(pstFunctionStorage != orxNULL)
+  {
+    /* Sets context */
+    pstFunctionStorage->pstContext = _pstContext;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Not found */
+    eResult = orxSTATUS_FAILED;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/***************************************************************************
  orxClock_FindFirst
  Finds a clock according to its tick size and its type.
 

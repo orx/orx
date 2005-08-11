@@ -98,6 +98,10 @@ extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCLOCK 
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
 /** Unregisters a callback function from a clock. */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback);
+/** Gets a callback function context. */
+extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback);
+/** Sets a callback function context. */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
 
 /** Finds a clock according to its tick size and its type. */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
