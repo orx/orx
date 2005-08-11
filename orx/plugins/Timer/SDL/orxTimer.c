@@ -20,7 +20,7 @@
 #include "orxInclude.h"
 
 #include "plugin/orxPluginUser.h"
-#include "core/orxTimerType.h"
+#include "core/orxTime.h"
 
 #include <time.h>
 #include <SDL/sdl.h>

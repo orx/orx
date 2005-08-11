@@ -66,7 +66,7 @@ orxSTATUS orxMain_Init()
   orxU32 u32Index;
   
   /* Don't call twice the init function */
-  orxASSERT(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY != orxMAIN_KU32_FLAG_READY);
+  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) != orxMAIN_KU32_FLAG_READY);
   
   /* Require orxMemory to clear datas */
   orxMAIN_INIT_MODULE(Memory);
@@ -89,7 +89,7 @@ orxSTATUS orxMain_Init()
 orxVOID orxMain_Exit()
 {
   /* Module initialized ? */
-  orxASSERT(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY == orxMAIN_KU32_FLAG_READY);
+  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY);
 
   /* Set module as not ready */
   sstMain.u32Flags &= ~orxMAIN_KU32_FLAG_READY;
@@ -103,7 +103,7 @@ orxVOID orxMain_Exit()
 orxVOID orxMain_SetModuleCallback(orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit, orxMAIN_MODULE_EXIT_CB _cbExit)
 {
   /* Module initialized ? */
-  orxASSERT(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY == orxMAIN_KU32_FLAG_READY);
+  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY);
 
   /* Set callbacks */
   sstMain.astModuleInfos[_eModule].cbInit = _cbInit;
@@ -116,7 +116,7 @@ orxVOID orxMain_SetModuleCallback(orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_C
 orxVOID orxMain_InitModule(orxMAIN_MODULE _eModule)
 {
   /* Module initialized ? */
-  orxASSERT(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY == orxMAIN_KU32_FLAG_READY);
+  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY);
   
   /* If not initialized yet, Init the module */
   if (sstMain.astModuleInfos[_eModule].u32RefCount == 0)
