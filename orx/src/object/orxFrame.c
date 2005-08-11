@@ -626,6 +626,9 @@ orxVOID orxFrame_Exit()
     /* Deletes frame tree */
     orxFrame_DeleteAll();
 
+    /* Unregisters structure type */
+    orxStructure_Unregister(orxSTRUCTURE_ID_FRAME);
+
     /* Updates flags */
     sstFrame.u32Flags &= ~orxFRAME_KU32_FLAG_READY;
   }

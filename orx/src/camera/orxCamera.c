@@ -898,6 +898,9 @@ orxVOID orxCamera_Exit()
     /* Deletes camera list */
     orxCamera_DeleteAll();
 
+    /* Unregisters structure type */
+    orxStructure_Unregister(orxSTRUCTURE_ID_CAMERA);
+
     /* Updates flags */
     sstCamera.u32Flags &= ~orxCAMERA_KU32_FLAG_READY;
   }

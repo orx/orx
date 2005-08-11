@@ -48,15 +48,22 @@
 /** Structure IDs. */
 typedef enum __orxSTRUCTURE_ID_t
 {
-  orxSTRUCTURE_ID_OBJECT = 0,
-  orxSTRUCTURE_ID_FRAME,
-  orxSTRUCTURE_ID_TEXTURE,
+  /* *** Following structures can be linked to objects *** */
+
+  orxSTRUCTURE_ID_FRAME = 0,
   orxSTRUCTURE_ID_GRAPHIC,
+  orxSTRUCTURE_ID_ANIM_POINTER,
+
+  orxSTRUCTURE_ID_LINKABLE_NUMBER,
+
+  /* *** Below this point, structures can be linked to objects *** */
+
+  orxSTRUCTURE_ID_TEXTURE = orxSTRUCTURE_ID_LINKABLE_NUMBER,
+  orxSTRUCTURE_ID_OBJECT,
   orxSTRUCTURE_ID_CAMERA,
   orxSTRUCTURE_ID_VIEWPORT,
   orxSTRUCTURE_ID_ANIM,
   orxSTRUCTURE_ID_ANIM_SET,
-  orxSTRUCTURE_ID_ANIM_POINTER,
 
   orxSTRUCTURE_ID_NUMBER,
 
@@ -95,7 +102,7 @@ typedef struct __orxSTRUCTURE_t
 
 
 /** Structure update callback function type. */
-typedef orxSTATUS orxFASTCALL (*orxSTRUCTURE_FUNCTION_UPDATE)(orxSTRUCTURE *_pstStructure, orxCONST orxCLOCK_INFO *_pstClockInfo);
+typedef orxSTATUS orxFASTCALL (*orxSTRUCTURE_FUNCTION_UPDATE)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
 /** Structure registration info. */
 typedef struct __orxSTRUCTURE_REGISTER_INFO_t
@@ -120,8 +127,10 @@ extern orxSTATUS                      orxStructure_Init();
 /** Exits from the structure system. */
 extern orxVOID                        orxStructure_Exit();
 
-/** Registers a storage type for a given ID. */
+/** Registers a given ID. */
 extern orxSTATUS  orxFASTCALL         orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCONST orxSTRUCTURE_REGISTER_INFO *_pstRegisterInfo);
+/** Unregisters a given ID. */
+extern orxVOID    orxFASTCALL         orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
 
 /** Creates a clean structure for given type. */
 extern orxSTRUCTURE *orxFASTCALL      orxStructure_Create(orxSTRUCTURE_ID _eStructureID);
@@ -135,7 +144,7 @@ extern orxU32     orxFASTCALL         orxStructure_GetNumber(orxSTRUCTURE_ID _eS
 extern orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID);
 
 /** Updates structure if update function was registered for the structure type. */
-extern orxSTATUS  orxFASTCALL         orxStructure_Update(orxSTRUCTURE *_pstStructure, orxCONST orxCLOCK_INFO *_pstClockInfo);
+extern orxSTATUS  orxFASTCALL         orxStructure_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
 
 /** *** Structure storage accessors *** */

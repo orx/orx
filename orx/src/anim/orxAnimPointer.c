@@ -192,7 +192,7 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIM_POINTER *_pstAnimPo
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxCLOCK_INFO *_pstClockInfo)
+orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
   orxREGISTER orxANIM_POINTER *pstAnimPointer;
 
@@ -286,6 +286,9 @@ orxVOID orxAnimPointer_Exit()
   {
     /* Deletes animpointer list */
     orxAnimPointer_DeleteAll();
+
+    /* Unregisters structure type */
+    orxStructure_Unregister(orxSTRUCTURE_ID_ANIM_POINTER);
 
     /* Updates flags */
     sstAnimPointer.u32Flags &= ~orxANIMPOINTER_KU32_FLAG_READY;

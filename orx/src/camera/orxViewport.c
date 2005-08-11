@@ -326,6 +326,9 @@ orxVOID orxViewport_Exit()
     /* Deletes viewport list */
     orxViewport_DeleteAll();
 
+    /* Unregisters structure type */
+    orxStructure_Unregister(orxSTRUCTURE_ID_VIEWPORT);
+
     /* Updates flags */
     sstViewport.u32Flags &= ~orxVIEWPORT_KU32_FLAG_READY;
   }

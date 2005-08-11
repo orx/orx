@@ -253,6 +253,9 @@ orxVOID orxTexture_Exit()
     /* Deletes texture list */
     orxTexture_DeleteAll();
 
+    /* Unregisters structure type */
+    orxStructure_Unregister(orxSTRUCTURE_ID_TEXTURE);
+
     /* Updates flags */
     sstTexture.u32Flags &= ~orxTEXTURE_KU32_FLAG_READY;
   }

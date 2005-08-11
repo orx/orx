@@ -1292,6 +1292,9 @@ orxVOID orxAnimSet_Exit()
     /* Deletes anim list */
     orxAnimSet_DeleteAll();
 
+    /* Unregisters structure type */
+    orxStructure_Unregister(orxSTRUCTURE_ID_ANIM_SET);
+
     /* Updates flags */
     sstAnimSet.u32Flags &= ~orxANIMSET_KU32_FLAG_READY;
 

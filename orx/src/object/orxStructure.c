@@ -283,6 +283,37 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCO
 }
 
 /***************************************************************************
+ orxStructure_Unregister
+ Unregisters a structure type.
+
+ returns: orxVOID
+ ***************************************************************************/
+orxVOID orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
+{
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
+
+  /* Registered? */
+  if(sstStructure.astInfo[_eStructureID].u32Size != 0)
+  {
+    /* Deletes structure storage bank */
+    orxBank_Delete(sstStructure.astStorage[_eStructureID].pstStructureBank);
+
+    /* Unregisters it */
+    orxMemory_Copy(&(sstStructure.astInfo[_eStructureID]), 0, sizeof(orxSTRUCTURE_REGISTER_INFO));
+    sstStructure.astStorage[_eStructureID].pstStructureBank = orxNULL;
+    sstStructure.astStorage[_eStructureID].eType            = orxSTRUCTURE_STORAGE_TYPE_NONE;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  return;
+}
+
+/***************************************************************************
  orxStructure_GetStorageType
  Gets structure storage type.
 
@@ -518,7 +549,7 @@ orxVOID orxFASTCALL orxStructure_Delete(orxSTRUCTURE *_pstStructure)
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATUS orxFASTCALL orxStructure_Update(orxSTRUCTURE *_pstStructure, orxCONST orxCLOCK_INFO *_pstClockInfo)
+orxSTATUS orxFASTCALL orxStructure_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
@@ -534,7 +565,7 @@ orxSTATUS orxFASTCALL orxStructure_Update(orxSTRUCTURE *_pstStructure, orxCONST 
     if(sstStructure.astInfo[_pstStructure->eID].pfnUpdate != orxNULL)
     {
       /* Calls it */
-      eResult = sstStructure.astInfo[_pstStructure->eID].pfnUpdate(_pstStructure, _pstClockInfo);
+      eResult = sstStructure.astInfo[_pstStructure->eID].pfnUpdate(_pstStructure, _pstCaller, _pstClockInfo);
     }
     else
     {
