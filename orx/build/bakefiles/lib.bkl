@@ -19,6 +19,7 @@
         </sources>
         <sources>
             src/core/orxClock.c
+            src/core/orxMessageQueue.c
             src/core/orxTime.c
         </sources>
         <sources>
@@ -124,6 +125,7 @@
             camera/orxrender.h
             camera/orxViewport.h
             core/orxClock.h
+            core/orxMessageQueue.h
             core/orxTime.h
             debug/orxDebug.h
             debug/orxFps.h

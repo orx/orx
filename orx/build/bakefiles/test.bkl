@@ -61,4 +61,9 @@
     <sources>test/orxTest_MathSet.c</sources>
   </module>
 
+  <module id="MessageQueue" template="orxBASE,orxLINK,orxMODULELINK">
+    <dirname>bin/modules</dirname>
+    <sources>test/orxTest_MessageQueue.c</sources>
+  </module>
+
 </bakefile>
