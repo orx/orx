@@ -96,7 +96,9 @@ extern orxVOID orxDLLAPI                    orxFSM_Clear(orxFSM * _pstStateMachi
 /** Add a state.
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _u16Id                Identifier for the state.
- * @param[in] _cbAction             Action callback.
+ * @param[in] _cbInit               Init callback.
+ * @param[in] _cbExecute            Execute callback.
+ * @param[in] _cbExit               Exit callback.
  * @return Returns the new state.
  */
 extern orxFSM_STATE * orxDLLAPI             orxFSM_State_Add(orxFSM * _pstStateMachine, orxU16 _u16Id, orxFSM_ACTION_PTR _cbInit, orxFSM_ACTION_PTR _cbExecute, orxFSM_ACTION_PTR _cbExit);
