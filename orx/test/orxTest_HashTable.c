@@ -74,7 +74,7 @@ orxVOID orxTest_HashTable_PrintUsedID()
  */
 orxVOID orxTest_HashTable_Infos()
 {
-  orxTextIO_PrintLn("This test module is able to manage %ul HashTables", orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM);
+  orxTextIO_PrintLn("This test module is able to manage %lu HashTables", orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM);
   orxTextIO_PrintLn("* When you create a Hash Table, you can select an index between 0 and %d to set the Hash Table to use", orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1);
   orxTextIO_PrintLn("* When you have created a bank, you can add/remove/get new key/value for it");
   orxTextIO_PrintLn("* You can also display the list of stored keys/value in a hash table");

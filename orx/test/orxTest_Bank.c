@@ -75,7 +75,7 @@ orxVOID orxTest_Bank_PrintUsedID()
  */
 orxVOID orxTest_Bank_Infos()
 {
-  orxTextIO_PrintLn("This test module is able to manage %ul ChunkBanks", orxTEST_BANK_KU32_ARRAY_NB_ELEM);
+  orxTextIO_PrintLn("This test module is able to manage %lu ChunkBanks", orxTEST_BANK_KU32_ARRAY_NB_ELEM);
   orxTextIO_PrintLn("* When you create a memory bank, you can select an index between 0 and %d to set the Bank to use", orxTEST_BANK_KU32_ARRAY_NB_ELEM - 1);
   orxTextIO_PrintLn("* When you have created a bank, you can add new cells for it");
   orxTextIO_PrintLn("* The function will display the adress associated to this cell for you");
