@@ -207,7 +207,7 @@ orxVOID orxTest_HashTable_Add()
     orxTextIO_PrintLn("Trying to add the pair key/value (%u/%d)...", (orxU32)s32Key, s32Data);
     if (orxHashTable_Add(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key, (orxVOID *)s32Data) == orxSTATUS_FAILED)
     {
-      /* Insetion failed */
+      /* Insertion failed */
       orxTextIO_PrintLn("Insertion failed...");
     }
 
