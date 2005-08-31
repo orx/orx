@@ -378,7 +378,7 @@ orxVOID orxTest_HashTable_Init()
   orxTest_Register("Hash", "Create a hash table", orxTest_HashTable_Create);
   orxTest_Register("Hash", "Delete a hash table", orxTest_HashTable_Destroy);
   orxTest_Register("Hash", "Add a key associated with a data in a table", orxTest_HashTable_Add);
-  orxTest_Register("Hash", "Remove a pai key/vlaue", orxTest_HashTable_Remove);
+  orxTest_Register("Hash", "Remove a pair key/value", orxTest_HashTable_Remove);
   orxTest_Register("Hash", "Print the value associated to a key in a hash table", orxTest_HashTable_Get);
   orxTest_Register("Hash", "Remove all stored keys/value from a hash table", orxTest_HashTable_Clear);
   orxTest_Register("Hash", "Print the internal content of a hash table", orxTest_HashTable_PrintAll);
