@@ -194,7 +194,7 @@ orxVOID orxFSM_Exit()
  */
 orxFSM * orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
-  orxFSM * pstStateMachine = orxNULL;    /* New created state machine. */
+  orxFSM * pstStateMachine = orxNULL;             /* New created state machine. */
   orxU32 u32BankFlags;                            /* Flags used for bank creation. */
   orxU32 u32LinkFlags;                            /* Flags used for hash table creation. */
   
@@ -212,7 +212,7 @@ orxFSM * orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU32 _u32Flags
   
   /* Allocation succeeded ? */
   if (pstStateMachine != orxNULL)
-  {
+  { 
     /* Set flags */
     if (_u32Flags == orxFSM_KU32_FLAGS_NOT_EXPANDABLE)
     {
@@ -228,7 +228,7 @@ orxFSM * orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU32 _u32Flags
     
     /* Correct bank allocations? */
     if (pstStateMachine->pstStatesBank != orxNULL)
-    {
+    { 
       /* Allocate hash table for states. */
       pstStateMachine->pstStatesHashTable = orxHashTable_Create(_u16NbStates, u32BankFlags, _eMemType);
       
@@ -236,7 +236,7 @@ orxFSM * orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU32 _u32Flags
       pstStateMachine->pstLinksBank = orxBank_Create(_u32NbLinks, sizeof(orxFSM_LINK), u32LinkFlags, _eMemType);
     
       /* Correct bank allocations? */
-      if (pstStateMachine->pstLinksHashTable != orxNULL)
+      if (pstStateMachine->pstLinksBank != orxNULL)
       {
         /* Allocate hash table for links. */
         pstStateMachine->pstLinksHashTable = orxHashTable_Create(_u32NbLinks, u32LinkFlags, _eMemType);
@@ -422,7 +422,7 @@ orxFSM_STATE * orxFSM_State_Get(orxFSM * _pstStateMachine, orxU16 _u16Id)
  */
 orxSTATUS orxFSM_State_Remove(orxFSM * _pstStateMachine, orxFSM_STATE * _pstState, orxBOOL _bRemoveLinks)
 {
-  orxFSM_LINK * pstLink;         /* Explored link. */
+  orxFSM_LINK * pstLink;                  /* Explored link. */
   orxSTATUS eStatus = orxSTATUS_SUCCESS;  /* Status to return. */
   
   /* Module initialized? */
@@ -753,7 +753,7 @@ orxSTATUS orxFSM_InstanceUpdate(orxFSM_INSTANCE * _pstInstance)
  */
 orxSTATUS orxFSM_Update(orxFSM * _pstStateMachine)
 {
-  orxFSM_INSTANCE * pstInstance;   /* Explored instance. */
+  orxFSM_INSTANCE * pstInstance;            /* Explored instance. */
   orxSTATUS eStatus = orxSTATUS_SUCCESS;    /* Status to return. */
   
   /* Module initialized? */
