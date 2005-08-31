@@ -162,7 +162,7 @@ extern orxSTATUS orxDLLAPI                  orxFSM_Instance_Remove(orxFSM_INSTAN
  * @param[in] _pstInstance          The instance.
  * @return Returns the status of the operation. It fails if nothing has happend.
  */
-extern orxSTATUS orxDLLAPI                  orxFSM_InstanceUpdate(orxFSM_INSTANCE * _pstInstance);
+extern orxSTATUS orxDLLAPI                  orxFSM_Instance_Update(orxFSM_INSTANCE * _pstInstance);
 
 /** Update all instances of a state machine. If current state is orxNULL, it enters the initial state.
  * @param[in] _pstStateMachine      The state machine.

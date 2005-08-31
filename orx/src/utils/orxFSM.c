@@ -641,7 +641,7 @@ orxSTATUS orxFSM_Instance_Remove(orxFSM_INSTANCE * _pstInstance)
  * @param[in] _pstInstance          The instance.
  * @return Returns the status of the operation. It fails if nothing has happend.
  */
-orxSTATUS orxFSM_InstanceUpdate(orxFSM_INSTANCE * _pstInstance)
+orxSTATUS orxFSM_Instance_Update(orxFSM_INSTANCE * _pstInstance)
 {
   orxSTATUS eStatus = orxSTATUS_FAILED;     /* Status to return. */
   
@@ -766,7 +766,7 @@ orxSTATUS orxFSM_Update(orxFSM * _pstStateMachine)
   pstInstance = orxBank_GetNext(_pstStateMachine->pstInstancesBank, orxNULL);
   while (pstInstance != orxNULL && eStatus == orxSTATUS_SUCCESS)
   {
-    eStatus = orxFSM_InstanceUpdate(pstInstance);
+    eStatus = orxFSM_Instance_Update(pstInstance);
   }
   
   return eStatus;
