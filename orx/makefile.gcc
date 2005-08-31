@@ -166,6 +166,10 @@ MESSAGEQUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 MESSAGEQUEUE_OBJECTS =  \
 	.\build\$(BUILD)\MessageQueue_orxTest_MessageQueue.o
+FSM_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
+FSM_OBJECTS =  \
+	.\build\$(BUILD)\FSM_orxTest_FSM.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 SOUND_FMOD_OBJECTS =  \
@@ -262,7 +266,7 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\Memory.dll bin\modules\Bank.dll bin\modules\HashTable.dll bin\modules\Sound.dll bin\modules\Plugin.dll bin\modules\MathSet.dll bin\modules\MessageQueue.dll $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin\plugins\core\joystick\Joystick_NONE.dll
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\Memory.dll bin\modules\Bank.dll bin\modules\HashTable.dll bin\modules\Sound.dll bin\modules\Plugin.dll bin\modules\MathSet.dll bin\modules\MessageQueue.dll bin\modules\FSM.dll $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin\plugins\core\joystick\Joystick_NONE.dll
 
 clean: 
 	-if exist .\build\$(BUILD)\*.o del .\build\$(BUILD)\*.o
@@ -278,6 +282,7 @@ clean:
 	-if exist bin\modules\Plugin.dll del bin\modules\Plugin.dll
 	-if exist bin\modules\MathSet.dll del bin\modules\MathSet.dll
 	-if exist bin\modules\MessageQueue.dll del bin\modules\MessageQueue.dll
+	-if exist bin\modules\FSM.dll del bin\modules\FSM.dll
 	-if exist bin\plugins\core\sound\Sound_Fmod.dll del bin\plugins\core\sound\Sound_Fmod.dll
 	-if exist bin\plugins\core\mouse\Mouse_Allegro.dll del bin\plugins\core\mouse\Mouse_Allegro.dll
 	-if exist bin\plugins\core\keyboard\Keyboard_Allegro.dll del bin\plugins\core\keyboard\Keyboard_Allegro.dll
@@ -318,6 +323,9 @@ bin\modules\MathSet.dll: $(MATHSET_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 bin\modules\MessageQueue.dll: $(MESSAGEQUEUE_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(MESSAGEQUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+
+bin\modules\FSM.dll: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
 
 ifeq ($(USE_FMOD),1)
 bin\plugins\core\sound\Sound_Fmod.dll: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP)
@@ -606,6 +614,9 @@ bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIN
 
 .\build\$(BUILD)\MessageQueue_orxTest_MessageQueue.o: ./test/orxTest_MessageQueue.c
 	$(CC) -c -o $@ $(MESSAGEQUEUE_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\FSM_orxTest_FSM.o: ./test/orxTest_FSM.c
+	$(CC) -c -o $@ $(FSM_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Sound_Fmod_orxSound.o: ./plugins/Sound/Fmod/orxSound.c
 	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<

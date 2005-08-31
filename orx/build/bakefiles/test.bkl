@@ -66,4 +66,9 @@
     <sources>test/orxTest_MessageQueue.c</sources>
   </module>
 
+  <module id="FSM" template="orxBASE,orxLINK,orxMODULELINK">
+    <dirname>bin/modules</dirname>
+    <sources>test/orxTest_FSM.c</sources>
+  </module>
+
 </bakefile>

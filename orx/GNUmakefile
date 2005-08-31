@@ -185,6 +185,11 @@ MESSAGEQUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 MESSAGEQUEUE_OBJECTS =  \
 	./build/$(BUILD)/MessageQueue_orxTest_MessageQueue.o
+FSM_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
+	$(CFLAGS)
+FSM_OBJECTS =  \
+	./build/$(BUILD)/FSM_orxTest_FSM.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
@@ -283,7 +288,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so bin/modules/MathSet.so bin/modules/MessageQueue.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so bin/modules/MathSet.so bin/modules/MessageQueue.so bin/modules/FSM.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
@@ -310,6 +315,7 @@ clean:
 	rm -f bin/modules/Plugin.so
 	rm -f bin/modules/MathSet.so
 	rm -f bin/modules/MessageQueue.so
+	rm -f bin/modules/FSM.so
 	rm -f bin/plugins/core/sound/Sound_Fmod.so
 	rm -f bin/plugins/core/mouse/Mouse_Allegro.so
 	rm -f bin/plugins/core/keyboard/Keyboard_Allegro.so
@@ -363,6 +369,9 @@ bin/modules/MathSet.so: $(MATHSET_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 bin/modules/MessageQueue.so: $(MESSAGEQUEUE_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(MESSAGEQUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
+
+bin/modules/FSM.so: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 
 ifeq ($(USE_FMOD),1)
 bin/plugins/core/sound/Sound_Fmod.so: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP)
@@ -651,6 +660,9 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 
 ./build/$(BUILD)/MessageQueue_orxTest_MessageQueue.o: ./test/orxTest_MessageQueue.c
 	$(CC) -c -o $@ $(MESSAGEQUEUE_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/FSM_orxTest_FSM.o: ./test/orxTest_FSM.c
+	$(CC) -c -o $@ $(FSM_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Sound_Fmod_orxSound.o: ./plugins/Sound/Fmod/orxSound.c
 	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<
