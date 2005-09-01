@@ -131,15 +131,17 @@ orxSTATUS _orxDebug_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Init dependencies */
-  /* Already Initialized? */
-  if(!(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY))
+  
+  /* Correct parameters ? */
+  if (orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
   {
     /* !!! MSG !!! */
 
     eResult = orxSTATUS_FAILED;
   }
-  else if (orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
+  else if (sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY)
   {
+    /* Already Initialized? */
     /* !!! MSG !!! */
 
     eResult = orxSTATUS_FAILED;
