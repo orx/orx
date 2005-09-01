@@ -617,6 +617,10 @@ orxVOID orxTest_FSM_Instance_Update()
   }
   else
   {
+    // Mystery bloc: the second line fails.
+    //orxFSM_INSTANCE * pstInst = sstTest_FSM_Inst.apstFSM_Inst[s32ID];
+    //pstInst->pstCurrentState = orxNULL;
+    
     /* Update the instance. */
     if (orxFSM_Instance_Update(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) == orxSTATUS_FAILED)
     {
