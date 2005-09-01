@@ -46,6 +46,9 @@ USE_ALLEGRO = 0
 #  [0,1]
 USE_FMOD = 0
 
+#  [0,1]
+USE_SDL = 0
+
 
 
 # -------------------------------------------------------------------------
@@ -210,6 +213,11 @@ JOYSTICK_NONE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 JOYSTICK_NONE_OBJECTS =  \
 	./build/$(BUILD)/Joystick_NONE_orxJoystick.o
+TIME_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
+	$(CFLAGS)
+TIME_SDL_OBJECTS =  \
+	./build/$(BUILD)/Time_SDL_orxTime.o
 
 ### Conditionally set variables: ###
 
@@ -246,6 +254,9 @@ __Mouse_Allegro___depname = bin/plugins/core/mouse/Mouse_Allegro.so
 endif
 ifeq ($(USE_ALLEGRO),1)
 __Keyboard_Allegro___depname = bin/plugins/core/keyboard/Keyboard_Allegro.so
+endif
+ifeq ($(USE_SDL),1)
+__Time_SDL___depname = bin/plugins/core/time/Time_SDL.so
 endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
@@ -288,7 +299,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so bin/modules/MathSet.so bin/modules/MessageQueue.so bin/modules/FSM.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so bin/modules/MathSet.so bin/modules/MessageQueue.so bin/modules/FSM.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so $(__Time_SDL___depname)
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
@@ -320,6 +331,7 @@ clean:
 	rm -f bin/plugins/core/mouse/Mouse_Allegro.so
 	rm -f bin/plugins/core/keyboard/Keyboard_Allegro.so
 	rm -f bin/plugins/core/joystick/Joystick_NONE.so
+	rm -f bin/plugins/core/time/Time_SDL.so
 
 ifeq ($(LINK),dynamic)
 lib/liborx$(orxSUFFIX).so: $(ORXDLL_OBJECTS)
@@ -390,6 +402,11 @@ endif
 
 bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(JOYSTICK_NONE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
+
+ifeq ($(USE_SDL),1)
+bin/plugins/core/time/Time_SDL.so: $(TIME_SDL_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
+endif
 
 ./build/$(BUILD)/orxDLL_orxAnim.o: ./src/anim/orxAnim.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
@@ -675,6 +692,9 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 
 ./build/$(BUILD)/Joystick_NONE_orxJoystick.o: ./plugins/Joystick/NONE/orxJoystick.c
 	$(CC) -c -o $@ $(JOYSTICK_NONE_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/Time_SDL_orxTime.o: ./plugins/Time/SDL/orxTime.c
+	$(CC) -c -o $@ $(TIME_SDL_CFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean install_orxDLL install_orxLIB
 
