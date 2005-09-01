@@ -47,6 +47,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_Exit, orxVOID);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_GetTime, orxTIME);
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_GetDate, orxDATE);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxTime_Delay, orxVOID, orxTIME);
 
 
 /** Inits the time module.
@@ -81,5 +82,12 @@ orxSTATIC orxINLINE orxDLLAPI orxDATE orxTime_GetDate()
   return orxPLUGIN_BODY_CORE_FUNCTION(orxTime_GetDate)();
 }
 
+/** Delay the program for given number of milliseconds.
+ * @param[in] _stTime Number of milliseconds to wait.
+ */
+orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Delay(orxTIME _stTime)
+{
+  return orxPLUGIN_BODY_CORE_FUNCTION(orxTime_Delay)(_stTime);
+}
 
 #endif /* _orxTIME_H_ */
