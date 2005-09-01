@@ -167,7 +167,7 @@ orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _
   orxASSERT(_cbFunction != orxNULL);
 
   /* Module full ? */
-  if (sstTest.u32NbRegisteredFunc < 50)
+  if (sstTest.u32NbRegisteredFunc < orxTEST_KU32_MAX_REGISTERED_FUNCTIONS)
   {
     /* Copy datas in the registered function array */
     pstTest = &(sstTest.astTestFunctions[sstTest.u32NbRegisteredFunc]);
