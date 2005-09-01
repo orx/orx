@@ -94,7 +94,7 @@ extern orxSTATUS orxDLLAPI                  orxFSM_Delete(orxFSM * _pstStateMach
  */
 extern orxVOID orxDLLAPI                    orxFSM_Clear(orxFSM * _pstStateMachine);
 
-/** Add a state.
+/** Add a state, setting it as the initial state if it is the first one.
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _u16Id                Identifier for the state.
  * @param[in] _cbInit               Init callback.

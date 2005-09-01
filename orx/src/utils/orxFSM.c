@@ -398,7 +398,7 @@ orxVOID orxFSM_Clear(orxFSM * _pstStateMachine)
   orxBank_Clear(_pstStateMachine->pstInstancesBank);
 }
 
-/** Add a state.
+/** Add a state, setting it as the initial state if it is the first one.
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _u16Id                Identifier for the state.
  * @param[in] _cbInit               Init callback.
@@ -408,7 +408,8 @@ orxVOID orxFSM_Clear(orxFSM * _pstStateMachine)
  */
 orxFSM_STATE * orxFSM_State_Add(orxFSM * _pstStateMachine, orxU16 _u16Id, orxFSM_ACTION_PTR _cbInit, orxFSM_ACTION_PTR _cbExecute, orxFSM_ACTION_PTR _cbExit)
 {
-  orxFSM_STATE * pstState;       /* New state to add. */
+  orxFSM_STATE * pstState;          /* New state to add. */
+  orxBOOL bFirst;                   /* First state to be added? */
   
   /* Module initialized? */
   orxASSERT((sstStateMachine.u32Flags & orxFSM_KU32_FLAG_READY) == orxFSM_KU32_FLAG_READY);
@@ -419,12 +420,21 @@ orxFSM_STATE * orxFSM_State_Add(orxFSM * _pstStateMachine, orxU16 _u16Id, orxFSM
   orxASSERT(_cbExecute != orxNULL);
   orxASSERT(_cbExit != orxNULL);
   
+  /* Is it the first state? */
+  bFirst = (orxBank_GetNext(_pstStateMachine->pstStatesBank, orxNULL) == orxNULL);
+
   /* Allocate a new state if possible. */
   pstState = (orxFSM_STATE *)orxBank_Allocate(_pstStateMachine->pstStatesBank);
   
   /* Define the new state. */
   if (pstState != orxNULL)
   {
+    if (bFirst)
+    {
+      /* It is the first state: set it as the initial state. */
+      _pstStateMachine->pstInitialState = pstState;
+    }
+    
     /* Set datas. */
     pstState->u16Id = _u16Id;
     pstState->cbInit = _cbInit;
