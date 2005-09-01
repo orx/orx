@@ -388,7 +388,7 @@ orxFSM_STATE * orxFSM_State_Add(orxFSM * _pstStateMachine, orxU16 _u16Id, orxFSM
   
   /* Correct parameters? */
   orxASSERT(_pstStateMachine != orxNULL);
-  orxASSERT(_u16Id > 0);
+  orxASSERT(_u16Id >= 0);
   orxASSERT(_cbInit != orxNULL);
   orxASSERT(_cbExecute != orxNULL);
   orxASSERT(_cbExit != orxNULL);
