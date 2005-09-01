@@ -12,6 +12,11 @@
     <default-value>0</default-value>
   </option>
 
+  <option name="USE_SDL">
+    <values>0,1</values>
+    <default-value>0</default-value>
+  </option>
+
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->
 
@@ -53,5 +58,13 @@
   <!-- FILE_SYSTEM -->
 
   <!-- PACKAGE -->
+
+  <!-- TIME -->
+
+	  <!-- Depends on SDL -->
+	  <module id="Time_SDL" cond="USE_SDL=='1'" template="orxBASE,orxLINK,orxMODULELINK">
+	    <dirname>bin/plugins/core/time</dirname>
+	    <sources>plugins/Time/SDL/orxTime.c</sources>
+	  </module>
 
 </bakefile>
