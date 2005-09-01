@@ -92,6 +92,9 @@ extern orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_C
  */
 #define orxMAIN_INIT_MODULE(ModuleName)                                                           \
 (                                                                                                 \
+  /* Trace */                                                                                     \
+  orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "Init : "#ModuleName),                                         \
+                                                                                                  \
   /* Call the module init function */                                                             \
   orxMain_InitModule(orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Init)                   \
 )
@@ -100,6 +103,9 @@ extern orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_C
  */
 #define orxMAIN_EXIT_MODULE(ModuleName)                                                           \
 {                                                                                                 \
+  /* Trace */                                                                                     \
+  orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "Exit : "#ModuleName),                                         \
+                                                                                                  \
   /* Call the module exit function */                                                             \
   orxMain_ExitModule(orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Exit);                  \
 }
