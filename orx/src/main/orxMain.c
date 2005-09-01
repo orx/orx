@@ -25,7 +25,6 @@
 
 #include "main/orxMain.h"
 #include "memory/orxMemory.h"
-#include "debug/orxDebug.h"
 
 #define orxMAIN_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxMAIN_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
@@ -37,8 +36,6 @@ typedef struct __orxMAIN_MODULE_INFOS_t
 {
   orxSTATUS eStatus;              /**< Module init status */
   orxU32 u32RefCount;             /**< Number of time that a Init has been called */
-  orxMAIN_MODULE_INIT_CB cbInit;  /**< Init module function */
-  orxMAIN_MODULE_EXIT_CB cbExit;  /**< Exit module function */
 } orxMAIN_MODULE_INFOS;
 
 typedef struct __orxMAIN_STATIC_t
@@ -99,48 +96,32 @@ orxVOID orxMain_Exit()
   sstMain.u32Flags &= ~orxMAIN_KU32_FLAG_READY;
 }
 
-/** Set Init and Exit Callback for a Module
- * @param[in] _eModule  Module's type
- * @param[in] _cbInit   Init callback
- * @param[in] _cbExit   Exit callback
- */
-orxVOID orxMain_SetModuleCallback(orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit, orxMAIN_MODULE_EXIT_CB _cbExit)
-{
-  /* Module initialized ? */
-  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY);
-
-  /* Set callbacks */
-  sstMain.astModuleInfos[_eModule].cbInit = _cbInit;
-  sstMain.astModuleInfos[_eModule].cbExit = _cbExit;
-}
-
 /** Call the Init callback function for a module
  * @param[in] _eModule  Module's type
+ * @param[in] _cbInit   Init function
  */
-orxVOID orxMain_InitModule(orxMAIN_MODULE _eModule)
+orxSTATUS orxMain_InitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit)
 {
-  /* Module initialized ? */
-  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY);
-  
   /* If not initialized yet, Init the module */
   if (sstMain.astModuleInfos[_eModule].u32RefCount == 0)
   {
     /* Call Init function */
-    sstMain.astModuleInfos[_eModule].eStatus = sstMain.astModuleInfos[_eModule].cbInit();
+    sstMain.astModuleInfos[_eModule].eStatus = _cbInit();
   }
   
   /* Increases ref counter */
   sstMain.astModuleInfos[_eModule].u32RefCount++;
+  
+  /* Return Init status */
+  return sstMain.astModuleInfos[_eModule].eStatus;
 }
 
 /** Call the Exit callback function for a module
  * @param[in] _eModule  Module's type
+ * @param[in] _cbExit   Exit function
  */
-orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule)
+orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_CB _cbExit)
 {
-  /* Module initialized ? */
-  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY);
-  
   /* Decreases the ref counter */
   sstMain.astModuleInfos[_eModule].u32RefCount--;
   
@@ -148,6 +129,6 @@ orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule)
   if ((sstMain.astModuleInfos[_eModule].u32RefCount == 0) && (sstMain.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS))
   {
     /* Call Exit callback */
-    sstMain.astModuleInfos[_eModule].cbExit();
+    _cbExit();
   }
 }

@@ -26,6 +26,7 @@
 #define _orxMAIN_H_
 
 #include "orxInclude.h"
+#include "debug/orxDebug.h"
 
 /** WARNING : This enum definition doesn't respect the standard coding style.
  * The complete enum name should use upper case but this excepetion is needed
@@ -35,7 +36,29 @@ typedef enum __orxMAIN_MODULE_t
 {
   orxMAIN_MODULE_Memory = 0,
   orxMAIN_MODULE_Bank,
-
+  orxMAIN_MODULE_AnimSet,
+  orxMAIN_MODULE_Anim,
+  orxMAIN_MODULE_AnimPointer,
+  orxMAIN_MODULE_Plugin,
+  orxMAIN_MODULE_Structure,
+  orxMAIN_MODULE_Frame,
+  orxMAIN_MODULE_Texture,
+  orxMAIN_MODULE_Display,
+  orxMAIN_MODULE_Camera,
+  orxMAIN_MODULE_Viewport,
+  orxMAIN_MODULE_Time,
+  orxMAIN_MODULE_Object,
+  orxMAIN_MODULE_Clock,
+  orxMAIN_MODULE_String,
+  orxMAIN_MODULE_LinkList,
+  orxMAIN_MODULE_Tree,
+  orxMAIN_MODULE_TextIO,
+  orxMAIN_MODULE_HashTable,
+  orxMAIN_MODULE_File,
+  orxMAIN_MODULE_Test,
+  orxMAIN_MODULE_MessageQueue,
+  orxMAIN_MODULE_String,
+    
   orxMAIN_MODULE_NUMBER,
   orxMAIN_MODULE_NONE = 0xFFFFFFFF
 } orxMAIN_MODULE;
@@ -51,40 +74,33 @@ extern orxSTATUS orxDLLAPI orxMain_Init();
  */
 extern orxVOID orxDLLAPI orxMain_Exit();
 
-/** Set Init and Exit Callback for a Module
- * @param[in] _eModule  Module's type
- * @param[in] _cbInit   Init callback
- * @param[in] _cbExit   Exit callback
- */
-extern orxVOID orxDLLAPI orxMain_SetModuleCallback(orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit, orxMAIN_MODULE_EXIT_CB _cbExit);
-
 /** Call the Init callback function for a module
  * @param[in] _eModule  Module's type
+ * @param[in] _cbInit   Init function
+ * @return Module's Init status
  */
-extern orxVOID orxDLLAPI orxMain_InitModule(orxMAIN_MODULE _eModule);
+extern orxSTATUS orxMain_InitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit);
 
 /** Call the Exit callback function for a module
  * @param[in] _eModule  Module's type
+ * @param[in] _cbExit   Exit function
  */
-extern orxVOID orxDLLAPI orxMain_ExitModule(orxMAIN_MODULE _eModule);
+extern orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_CB _cbExit);
 
 /** Macro that automatically call Init function and register module Init/Exit function.
  */
 #define orxMAIN_INIT_MODULE(ModuleName)                                                           \
-{                                                                                                 \
-  /* Set the module callback functions (constrcut a module name and init/exit function name */    \
-  orxMain_SetModuleCallback(orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Init, orx ## ModuleName ## _Exit); \
-                                                                                                  \
+(                                                                                                 \
   /* Call the module init function */                                                             \
-  orxMain_InitModule(orxMAIN_MODULE_ ## ModuleName);                                              \
-}
+  orxMain_InitModule(orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Init)                   \
+)
 
 /** Macro that call modules' exit function
  */
 #define orxMAIN_EXIT_MODULE(ModuleName)                                                           \
 {                                                                                                 \
   /* Call the module exit function */                                                             \
-  orxMain_ExitModule(orxMAIN_MODULE_ ## ModuleName);                                              \
+  orxMain_ExitModule(orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Exit);                  \
 }
 
 #endif /*_orxMAIN_H_*/
