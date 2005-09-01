@@ -122,8 +122,8 @@ orxSTATIC orxCONST  orxFLOAT    orxFLOAT_1          = orx2F(orx2F(1.0f));
 /* *** Status defines *** */
 typedef enum __orxSTATUS_t
 {
-  orxSTATUS_SUCCESS = 0,        /**< Success status, the operation has worked has expected */
-  orxSTATUS_FAILED,             /**< Failed operation */
+  orxSTATUS_FAILED = 0,         /**< Failed operation */
+  orxSTATUS_SUCCESS,            /**< Success status, the operation has worked has expected */
 
   orxSTATUS_NUMBER,             /**< Sentinel : Number of status */
 
