@@ -455,7 +455,6 @@ orxFSM_STATE * orxFSM_State_Get(orxFSM * _pstStateMachine, orxU16 _u16Id)
   
   /* Correct parameters? */
   orxASSERT(_pstStateMachine != orxNULL);
-  orxASSERT(_u16Id > 0);
   
   return orxHashTable_Get(_pstStateMachine->pstStatesHashTable, _u16Id);
 }
