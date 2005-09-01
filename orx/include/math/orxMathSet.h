@@ -44,7 +44,6 @@
 
 #include "orxInclude.h"
 #include "utils/orxLinkList.h"
-#include "memory/orxBank.h"
 
 
 /**
