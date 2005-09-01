@@ -663,8 +663,10 @@ orxVOID orxTest_FSM_Update()
     {
       orxTextIO_PrintLn("Update of all instances failed...");
     }
-    
-    orxTextIO_PrintLn("Update of all instances done!");
+    else
+    {
+      orxTextIO_PrintLn("Update of all instances done!");
+    }
   }
 }
 
