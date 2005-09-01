@@ -96,7 +96,7 @@ struct __orxFSM_LINK_t
 struct __orxFSM_t
 {
   /* Initial state. */
-  orxFSM_STATE * stInitialState;
+  orxFSM_STATE * pstInitialState;
   
   /* Bank where states are stored. */
   orxBANK * pstStatesBank;
@@ -388,7 +388,7 @@ orxVOID orxFSM_Clear(orxFSM * _pstStateMachine)
   orxASSERT(_pstStateMachine != orxNULL);
   
   /* Set values to default. */
-  _pstStateMachine->stInitialState = orxNULL;
+  _pstStateMachine->pstInitialState = orxNULL;
   
   /* Clear memory banks and hash tables. */
   orxBank_Clear(_pstStateMachine->pstStatesBank);
@@ -441,6 +441,46 @@ orxFSM_STATE * orxFSM_State_Add(orxFSM * _pstStateMachine, orxU16 _u16Id, orxFSM
   }
   
   return pstState;
+}
+
+/** Set an initial state.
+ * @param[in] _pstStateMachine      The state machine.
+ * @param[in] _pstInitialState      The initial state.
+ * @return Returns the status of the operation.
+ */
+orxSTATUS orxFSM_State_Initial(orxFSM * _pstStateMachine, orxFSM_STATE * _pstInitialState)
+{
+  orxFSM_STATE * pstState;                  /* The explored state. */
+  orxSTATUS eStatus = orxSTATUS_FAILED;     /* Status to return. */
+  
+  /* Module initialized? */
+  orxASSERT((sstStateMachine.u32Flags & orxFSM_KU32_FLAG_READY) == orxFSM_KU32_FLAG_READY);
+  
+  /* Correct parameters? */
+  orxASSERT(_pstStateMachine != orxNULL);
+  orxASSERT(_pstInitialState != orxNULL);
+  
+  /* Verify that the proposed initial state is part of the FSM. */
+  pstState = orxBank_GetNext(_pstStateMachine->pstStatesBank, orxNULL);
+  while (pstState != orxNULL && eStatus == orxSTATUS_FAILED)
+  {
+    if (pstState == _pstInitialState)
+    {
+      /* The initial state is part of the FSM. */
+      eStatus = orxSTATUS_SUCCESS;
+    }
+    
+    /* Explore the next state. */
+    pstState = orxBank_GetNext(_pstStateMachine->pstStatesBank, pstState);
+  }
+  
+  if (eStatus == orxSTATUS_SUCCESS)
+  {
+    /* Set the initial state. */
+    _pstStateMachine->pstInitialState = _pstInitialState;
+  }
+  
+  return eStatus;
 }
 
 /** Find a state.
@@ -699,7 +739,7 @@ orxSTATUS orxFSM_Instance_Update(orxFSM_INSTANCE * _pstInstance)
   if (_pstInstance->pstCurrentState == orxNULL)
   {
     /* Enter the initial state. */
-    _pstInstance->pstCurrentState = _pstInstance->pstStateMachine->stInitialState;
+    _pstInstance->pstCurrentState = _pstInstance->pstStateMachine->pstInitialState;
     
     /* Set current position to 'Init'. */
     _pstInstance->eStatePosition = orxFSM_STATE_POSITION_INIT;

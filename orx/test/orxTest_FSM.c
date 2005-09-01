@@ -258,6 +258,48 @@ orxVOID orxTest_FSM_State_Add()
   }
 }
 
+/** Set an initial state. */
+orxVOID orxTest_FSM_State_Initial()
+{
+  orxS32 s32ID;
+  orxS32 s32InitialStateId;
+  orxFSM_STATE * pstInitialState;
+  
+  /* Are there allocated FSM? */
+  if (sstTest_FSM.u32NbUsedFSM == 0)
+  {
+    orxTextIO_PrintLn("No FSM have been created. Create a FSM before trying to set initial state.");
+    return;
+  }
+  
+  /* Display the list of FSM. */
+  orxTest_FSM_PrintUsedID();
+  
+  /* Get the ID to use */
+  orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
+  
+  /* Not used ID? */
+  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  {
+    orxTextIO_PrintLn("This ID is not used.");
+  }
+  else
+  {
+    /* Get identifier of the initial state. */
+    orxTextIO_ReadS32(&s32InitialStateId, 10, "Identifier for the initial state: ", orxTRUE);
+    
+    orxTextIO_PrintLn("Trying to add the initial state %u...", (orxU32)s32InitialStateId);
+    pstInitialState = orxFSM_State_Get(sstTest_FSM.apstFSM[s32ID], (orxU32)s32InitialStateId);
+    if (orxFSM_State_Initial(sstTest_FSM.apstFSM[s32ID], pstInitialState) == orxSTATUS_FAILED)
+    {
+      /* Insertion failed. */
+      orxTextIO_PrintLn("Set of initial state failed...");
+    }
+
+    orxTextIO_PrintLn("Done!");
+  }
+}
+
 /** Remove a state from the FSM with related links. */
 orxVOID orxTest_FSM_State_Remove()
 {
@@ -633,6 +675,7 @@ orxVOID orxTest_FSM_Init()
   orxTest_Register("FSM", "Create a FSM", orxTest_FSM_Create);
   orxTest_Register("FSM", "Delete a FSM", orxTest_FSM_Destroy);
   orxTest_Register("FSM", "Add a state", orxTest_FSM_State_Add);
+  orxTest_Register("FSM", "Set initial state", orxTest_FSM_State_Initial);
   orxTest_Register("FSM", "Remove a state with related links", orxTest_FSM_State_Remove);
   orxTest_Register("FSM", "Add a link", orxTest_FSM_Link_Add);
   orxTest_Register("FSM", "Remove a link", orxTest_FSM_Link_Remove);

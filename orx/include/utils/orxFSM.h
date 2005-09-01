@@ -104,6 +104,13 @@ extern orxVOID orxDLLAPI                    orxFSM_Clear(orxFSM * _pstStateMachi
  */
 extern orxFSM_STATE * orxDLLAPI             orxFSM_State_Add(orxFSM * _pstStateMachine, orxU16 _u16Id, orxFSM_ACTION_PTR _cbInit, orxFSM_ACTION_PTR _cbExecute, orxFSM_ACTION_PTR _cbExit);
 
+/** Set an initial state.
+ * @param[in] _pstStateMachine      The state machine.
+ * @param[in] _pstInitialState      The initial state.
+ * @return Returns the status of the operation.
+ */
+extern orxSTATUS orxDLLAPI                  orxFSM_State_Initial(orxFSM * _pstStateMachine, orxFSM_STATE * _pstInitialState);
+
 /** Find a state.
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _u16Id                The identifier of the state.
