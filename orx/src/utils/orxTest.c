@@ -31,7 +31,7 @@
 #define orxTEST_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxTEST_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
 
-#define orxTEST_KU32_MAX_REGISTERED_FUNCTIONS 50
+#define orxTEST_KU32_MAX_REGISTERED_FUNCTIONS 256
 
 /***************************************************************************
  * Structure declaration                                                   *
