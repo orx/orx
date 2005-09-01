@@ -100,16 +100,26 @@ orxSTATIC orxCONST orxU32 sau32CRCTable[256] =
  */
 orxSTATUS orxString_Init()
 {
-  /* Module not already registered ? */
-  orxASSERT((sstString.u32Flags & orxSTRING_KU32_FLAG_READY) != orxSTRING_KU32_FLAG_READY);
-  
-  /* Initialize values */
-  orxMemory_Set(&sstString, 0, sizeof(orxSTRING_STATIC));
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Module ready */
-  sstString.u32Flags |= orxSTRING_KU32_FLAG_READY;
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
+  {
+    /* Not already Initialized? */
+    if(!(sstString.u32Flags & orxSTRING_KU32_FLAG_READY))
+    {
+      /* Initialize values */
+      orxMemory_Set(&sstString, 0, sizeof(orxSTRING_STATIC));
+      
+      /* Module ready */
+      sstString.u32Flags |= orxSTRING_KU32_FLAG_READY;
+      
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
     
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /** Uninitialize the test module
@@ -121,50 +131,9 @@ orxVOID orxString_Exit()
   
   /* Module becomes not ready */
   sstString.u32Flags &= ~orxSTRING_KU32_FLAG_READY;
-}
 
-/** Read a String from STDIN and store it in the given buffer
- * @param _zOutputBuffer  (OUT) Buffer where the read value will be stored
- * @param _u32NbChar      (IN)  Number of character maximum to read (to avoid overflow)
- * @param _zMessage       (IN)  Message that will be displayed before read
- * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status
- */
-orxSTATUS orxFASTCALL orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage)
-{
-  orxSTRING _zReturnString; /* String read (orxNULL if a problem has occured) */
-  orxU32 u32StringLength;   /* Read string length */
-  
-  /* Module initialized ? */
-  orxASSERT((sstString.u32Flags & orxSTRING_KU32_FLAG_READY) == orxSTRING_KU32_FLAG_READY);
-  
-  /* Correct parameters ? */
-  orxASSERT(_zOutputBuffer != orxNULL);
-
-  /* Initialize output string */
-  orxMemory_Set(_zOutputBuffer, 0, _u32NbChar * sizeof(orxCHAR));
-
-  /* Print message (if not NULL)*/
-  orxTextIO_Print(_zMessage);
-  
-  /* Read message */
-  _zReturnString = fgets(_zOutputBuffer, _u32NbChar, stdin);
-  
-  /* Set \0 on the last character instead of \n (if present and if string length > 0) */
-  u32StringLength = strlen(_zReturnString);
-  if ((u32StringLength > 0) && (_zReturnString[u32StringLength - 1] == '\n'))
-  {
-    _zOutputBuffer[u32StringLength - 1] = '\0';
-  }
-  
-  /* Read a valid value ? */
-  if (_zReturnString != orxNULL)
-  {
-    return orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    return orxSTATUS_FAILED;
-  }
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Memory);
 }
 
 /** Continues a CRC with a string one

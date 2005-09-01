@@ -46,14 +46,6 @@ extern orxDLLAPI orxSTATUS              orxString_Init();
 extern orxDLLAPI orxVOID                orxString_Exit();
 
 
-/** Read a String from STDIN and store it in the given buffer
- * @param _zOutputBuffer  (OUT) Buffer where the read value will be stored
- * @param _u32NbChar      (IN)  Number of character maximum to read (to avoid overflow)
- * @param _zMessage       (IN)  Message that will be displayed before read
- * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status
- */
-//extern orxDLLAPI orxSTATUS orxFASTCALL  orxString_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage);
-
 /** Continues a CRC with a string one
  * @param _zString        (IN)  String used to continue the given CRC
  * @param _u32CRC         (IN)  Base CRC.
