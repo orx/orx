@@ -37,7 +37,7 @@ extern orxDLLAPI orxSTATUS orxTextIO_Init();
 
 /** Uninitialize the string module
  */
-extern orxDLLAPI orxVOID orxFASTCALL orxTextIO_Exit();
+extern orxDLLAPI orxVOID orxTextIO_Exit();
 
 /***************************************************************************
  * INPUT                                                                   *
