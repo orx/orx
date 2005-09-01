@@ -23,22 +23,27 @@ email                : cursor@arcallians.org
  ***************************************************************************/
 
 #include "math/orxMathSet.h"
-
+#include "memory/orxBank.h"
 
 #define orxMATHSET_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxMATHSET_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
 
+#define orxMATHSET_KU32_BANK_SIZE 10           /**< Banks' size */
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+typedef struct __orxMATHSET_STATIC_t
+{
+  orxU32 u32Flags;               /**< Module state flag.*/
+  orxBANK *pstFloatIntervalBank; /**< Module bank for float-based intervals.*/
+  orxBANK *pstInt32IntervalBank; /**< Module bank for s32-based intervals.*/
+} orxMATHSET_STATIC;
 
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
-/** Module state flag.*/
-orxSTATIC orxU32 su32MathSetModuleFlags = orxMATHSET_KU32_FLAG_NONE;
-/** Module bank for float-based intervals.*/
-orxSTATIC orxBANK *spstFloatIntervalBank;
-/** Module bank for s32-based intervals.*/
-orxSTATIC orxBANK *spstInt32IntervalBank;
-
+orxSTATIC orxMATHSET_STATIC sstMathSet;
 
 /***************************************************************************
  orxMathSets_Init
@@ -49,13 +54,40 @@ orxSTATIC orxBANK *spstInt32IntervalBank;
  ***************************************************************************/
 orxSTATUS orxMathSet_Init()
 {
-    if((su32MathSetModuleFlags&orxMATHSET_KU32_FLAG_READY)==orxMATHSET_KU32_FLAG_READY)
+  orxSTATUS eResult = orxSTATUS_FAILED;
+
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory)   == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Bank)     == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(LinkList) == orxSTATUS_SUCCESS))
+  {
+    /* Not already Initialized? */
+    if(!(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY))
     {
-        spstFloatIntervalBank = orxBank_Create(10, sizeof(orxINTERVAL_FLOAT_NODE), 0, orxMEMORY_TYPE_MAIN);
-        spstInt32IntervalBank = orxBank_Create(10, sizeof(orxINTERVAL_INT32_NODE), 0, orxMEMORY_TYPE_MAIN);
+      /* Cleans static variable */
+      orxMemory_Set(&sstMathSet, 0, sizeof(orxMATHSET_STATIC));
+      
+      sstMathSet.pstFloatIntervalBank = orxBank_Create(orxMATHSET_KU32_BANK_SIZE, sizeof(orxINTERVAL_FLOAT_NODE), 0, orxMEMORY_TYPE_MAIN);
+      
+      if (sstMathSet.pstFloatIntervalBank != orxNULL)
+      {
+        sstMathSet.pstInt32IntervalBank = orxBank_Create(orxMATHSET_KU32_BANK_SIZE, sizeof(orxINTERVAL_INT32_NODE), 0, orxMEMORY_TYPE_MAIN);
+        
+        /* Success ? */
+        if (sstMathSet.pstInt32IntervalBank != orxNULL)
+        {
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          orxBank_Delete(sstMathSet.pstFloatIntervalBank);
+        }
+      }
     }
-    /* Done! */
-    return orxSTATUS_SUCCESS;
+  }
+ 
+  /* Done! */
+  return eResult;
 }
 
 /***************************************************************************
@@ -66,9 +98,27 @@ orxSTATUS orxMathSet_Init()
  ***************************************************************************/
 orxVOID orxMathSet_Exit()
 {
-    orxBank_Delete(spstFloatIntervalBank);
-    orxBank_Delete(spstInt32IntervalBank);
-    return;
+  /* Initialized? */
+  if(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY)
+  {
+    orxBank_Delete(sstMathSet.pstFloatIntervalBank);
+    orxBank_Delete(sstMathSet.pstInt32IntervalBank);
+    
+    /* Not ready now */
+    sstMathSet.u32Flags = orxMATHSET_KU32_FLAG_NONE;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+  
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(LinkList);
+  orxMAIN_EXIT_MODULE(Bank);
+  orxMAIN_EXIT_MODULE(Memory);
+
+  /* Done */
+  return;
 }
 
 
@@ -78,47 +128,75 @@ orxVOID orxMathSet_Exit()
 /* Validate an interval. */
 orxVOID orxIntervalFloat_Validate(orxINTERVAL_FLOAT *_pstInterval)
 {
-    if (_pstInterval->fMin >_pstInterval->fMax)
+  /* Module intialized ? */
+  orxASSERT(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY);
+  
+  /* Correct parameters ? */
+  orxASSERT(_pstInterval != orxNULL);
+
+  if (_pstInterval->fMin >_pstInterval->fMax)
+  {
+    orxSWAP32(_pstInterval->fMin, _pstInterval->fMax);
+    
+    if (_pstInterval->u32Flags==orxINTERVALFLOAT_MIN_INCLUDED)
     {
-        orxSWAP32(_pstInterval->fMin, _pstInterval->fMax);
-        if (_pstInterval->u32Flags==orxINTERVALFLOAT_MIN_INCLUDED)
-            _pstInterval->u32Flags = orxINTERVALFLOAT_MAX_INCLUDED;
-        else if (_pstInterval->u32Flags==orxINTERVALFLOAT_MAX_INCLUDED)
-            _pstInterval->u32Flags = orxINTERVALFLOAT_MIN_INCLUDED;
+      _pstInterval->u32Flags = orxINTERVALFLOAT_MAX_INCLUDED;
     }
+    else if (_pstInterval->u32Flags==orxINTERVALFLOAT_MAX_INCLUDED)
+    {
+      _pstInterval->u32Flags = orxINTERVALFLOAT_MIN_INCLUDED;
+    }
+  }
 }
 
 /* Swap two interval content. */
 orxVOID orxIntervalFloat_Swap(orxINTERVAL_FLOAT *_pstInter1, orxINTERVAL_FLOAT *_pstInter2)
 {
-     orxSWAP32(_pstInter1->fMin, _pstInter2->fMin);
-     orxSWAP32(_pstInter1->fMax, _pstInter2->fMax);
-     orxSWAP32(_pstInter1->u32Flags, _pstInter2->u32Flags);
+  /* Module intialized ? */
+  orxASSERT(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY);
+  
+  /* Correct parameters ? */
+  orxASSERT(_pstInter1 != orxNULL);
+  orxASSERT(_pstInter2 != orxNULL);
+
+  orxSWAP32(_pstInter1->fMin, _pstInter2->fMin);
+  orxSWAP32(_pstInter1->fMax, _pstInter2->fMax);
+  orxSWAP32(_pstInter1->u32Flags, _pstInter2->u32Flags);
 }
 
 /* Extand an interval to a value.*/
 orxVOID orxFASTCALL orxIntervalFloat_Extand(orxINTERVAL_FLOAT *_pstInterval, orxFLOAT _fValue, orxBOOL _bIncluded)
 {
-    if (_pstInterval->fMin > _fValue)
+  /* Module intialized ? */
+  orxASSERT(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY);
+  
+  /* Correct parameters ? */
+  orxASSERT(_pstInterval != orxNULL);
+
+  if (_pstInterval->fMin > _fValue)
+  {
+    _pstInterval->fMin = _fValue;
+    if (_bIncluded)
     {
-        _pstInterval->fMin = _fValue;
-        if (_bIncluded)
-            orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MIN_INCLUDED, orxINTERVALFLOAT_MIN_INCLUDED);
+      orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MIN_INCLUDED, orxINTERVALFLOAT_MIN_INCLUDED);
     }
-    else if (_pstInterval->fMax < _fValue)
+  }
+  else if (_pstInterval->fMax < _fValue)
+  {
+    _pstInterval->fMax = _fValue;
+    if (_bIncluded)
     {
-        _pstInterval->fMax = _fValue;
-        if (_bIncluded)
-            orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MAX_INCLUDED, orxINTERVALFLOAT_MAX_INCLUDED);
+      orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MAX_INCLUDED, orxINTERVALFLOAT_MAX_INCLUDED);
     }
-    else if ((_pstInterval->fMin==_fValue)&&_bIncluded&&!orxFLAG32_TEST(_pstInterval->u32Flags,orxINTERVALFLOAT_MIN_INCLUDED))
-    {
-        orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MIN_INCLUDED, orxINTERVALFLOAT_MIN_INCLUDED);
-    }
-    else if ((_pstInterval->fMax==_fValue)&&_bIncluded&&!orxFLAG32_TEST(_pstInterval->u32Flags,orxINTERVALFLOAT_MAX_INCLUDED))
-    {
-        orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MAX_INCLUDED, orxINTERVALFLOAT_MAX_INCLUDED);
-    }    
+  }
+  else if ((_pstInterval->fMin==_fValue)&&_bIncluded&&!orxFLAG32_TEST(_pstInterval->u32Flags,orxINTERVALFLOAT_MIN_INCLUDED))
+  {
+    orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MIN_INCLUDED, orxINTERVALFLOAT_MIN_INCLUDED);
+  }
+  else if ((_pstInterval->fMax==_fValue)&&_bIncluded&&!orxFLAG32_TEST(_pstInterval->u32Flags,orxINTERVALFLOAT_MAX_INCLUDED))
+  {
+    orxFLAG32_SET(_pstInterval->u32Flags, orxINTERVALFLOAT_MAX_INCLUDED, orxINTERVALFLOAT_MAX_INCLUDED);
+  }    
 }
 
 
@@ -130,14 +208,20 @@ orxVOID orxFASTCALL orxIntervalFloat_Extand(orxINTERVAL_FLOAT *_pstInterval, orx
  ***************************************************************************/
 orxVOID orxFASTCALL orxIntervalInt32_Extand(orxINTERVAL_INT32 *_pstInterval, orxS32 _s32Value)
 {
-    if (_pstInterval->s32Min > _s32Value)
-    {
-        _pstInterval->s32Min = _s32Value;
-    }
-    else if (_pstInterval->s32Max < _s32Value)
-    {
-        _pstInterval->s32Max = _s32Value;
-    }
+  /* Module intialized ? */
+  orxASSERT(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY);
+  
+  /* Correct parameters ? */
+  orxASSERT(_pstInterval != orxNULL);
+
+  if (_pstInterval->s32Min > _s32Value)
+  {
+    _pstInterval->s32Min = _s32Value;
+  }
+  else if (_pstInterval->s32Max < _s32Value)
+  {
+    _pstInterval->s32Max = _s32Value;
+  }
 }
 
 
@@ -148,13 +232,27 @@ orxVOID orxFASTCALL orxIntervalInt32_Extand(orxINTERVAL_INT32 *_pstInterval, orx
 /** Allocate a new node based on an interval. */
 orxINTERVAL_FLOAT_NODE* orxSetNodeFloat_AllocateNode(orxINTERVAL_FLOAT _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData)
 {
-    orxINTERVAL_FLOAT_NODE *pstNode = (orxINTERVAL_FLOAT_NODE*)orxBank_Allocate(spstFloatIntervalBank);
+  orxINTERVAL_FLOAT_NODE *pstNode;
+  
+  /* Module intialized ? */
+  orxASSERT(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY);
+  
+  pstNode = (orxINTERVAL_FLOAT_NODE*)orxBank_Allocate(sstMathSet.pstFloatIntervalBank);
+  
+  if (pstNode != orxNULL)
+  {  
     pstNode->stInterval.fMin = _stInterval.fMin;
     pstNode->stInterval.fMax = _stInterval.fMax;
     pstNode->stInterval.u32Flags = _stInterval.u32Flags;
     pstNode->u32ExtDataType = _u32ExtDataType;
     pstNode->hExtData = _hExtData;
-    return pstNode;
+  }
+  else
+  {
+    /* MSG !!! */
+  }
+  
+  return pstNode;
 }
 
 
@@ -167,7 +265,9 @@ orxVOID orxFASTCALL orxSetFloat_Clear(orxSET_FLOAT *_pstSet)
     orxLINKLIST *pstList = orxSetFloat_GetIntervalList(_pstSet);
     pstNode = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
     while (pstNode!=NULL)
-        orxBank_Free(spstFloatIntervalBank, pstNode);
+    {
+      orxBank_Free(sstMathSet.pstFloatIntervalBank, pstNode);
+    }
 
     /** Clear the internal list. */
     orxLinkList_Clean(&(_pstSet->sIntervalList));
@@ -183,9 +283,15 @@ orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
                            *pstNodeLast  = orxNULL,
                            *pstNodeTemp  = orxNULL;
 
-    orxLINKLIST *pstList = orxSetFloat_GetIntervalList(_pstSet);
-    pstNodeLast  = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetLast((orxLINKLIST*) pstList);
-    pstNodeFirst = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
+  /* Module intialized ? */
+  orxASSERT(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY);
+  
+  /* Correct parameters ? */
+  orxASSERT(_pstSet != orxNULL);
+
+  orxLINKLIST *pstList = orxSetFloat_GetIntervalList(_pstSet);
+  pstNodeLast  = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetLast((orxLINKLIST*) pstList);
+  pstNodeFirst = (orxINTERVAL_FLOAT_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
 
     /** Search greatest interval before _strInterval.*/
     while ( (pstNodeTemp!=NULL) && orxIntervalFloat_IsLess(*orxSetNodeFloat_GetInterval((orxINTERVAL_FLOAT_NODE*)pstNodeTemp), _stInterval))
@@ -220,7 +326,7 @@ orxVOID orxFASTCALL orxSetFloat_Add(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
     while (pstNodeTemp!=orxNULL && pstNodeTemp!=pstNodeLast)
     {
         orxLinkList_Remove((orxLINKLIST_NODE*) pstNodeTemp);
-        orxBank_Free(spstFloatIntervalBank, pstNodeTemp);
+        orxBank_Free(sstMathSet.pstFloatIntervalBank, pstNodeTemp);
         pstNodeTemp = (orxINTERVAL_FLOAT_NODE*)  orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeFirst);
     }
 }
@@ -273,7 +379,7 @@ orxVOID orxFASTCALL orxSetFloat_Sub(orxSET_FLOAT *_pstSet, orxINTERVAL_FLOAT _st
     while (pstNodeTemp!=orxNULL && pstNodeTemp!=pstNodeLast)
     {
         orxLinkList_Remove((orxLINKLIST_NODE*) pstNodeTemp);
-        orxBank_Free(spstFloatIntervalBank, pstNodeTemp);
+        orxBank_Free(sstMathSet.pstFloatIntervalBank, pstNodeTemp);
         pstNodeTemp = (orxINTERVAL_FLOAT_NODE*)  orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeFirst);
     }
 }
@@ -306,7 +412,7 @@ orxINTERVAL_FLOAT_NODE *orxFASTCALL orxSetFloat_FindValueIntervalNode(orxSET_FLO
 /** Allocate a new node based on an interval. */
 orxINTERVAL_INT32_NODE* orxSetNodeInt32_AllocateNode(orxINTERVAL_INT32 _stInterval, orxU32 _u32ExtDataType, orxHANDLE _hExtData)
 {
-    orxINTERVAL_INT32_NODE *pstNode = (orxINTERVAL_INT32_NODE*)orxBank_Allocate(spstInt32IntervalBank);
+    orxINTERVAL_INT32_NODE *pstNode = (orxINTERVAL_INT32_NODE*)orxBank_Allocate(sstMathSet.pstInt32IntervalBank);
     pstNode->stInterval.s32Min = _stInterval.s32Min;
     pstNode->stInterval.s32Max = _stInterval.s32Max;
     pstNode->u32ExtDataType = _u32ExtDataType;
@@ -323,8 +429,10 @@ orxVOID orxFASTCALL orxSetInt32_Clear(orxSET_INT32 *_pstSet)
     orxINTERVAL_INT32_NODE *pstNode = orxNULL;
     orxLINKLIST *pstList = orxSetInt32_GetIntervalList(_pstSet);
     pstNode = (orxINTERVAL_INT32_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
-    while (pstNode!=NULL)
-        orxBank_Free(spstInt32IntervalBank, pstNode);
+    while (pstNode!=orxNULL)
+    {
+        orxBank_Free(sstMathSet.pstInt32IntervalBank, pstNode);
+    }
 
     /** Clear the internal list. */
     orxLinkList_Clean(&(_pstSet->sIntervalList));
@@ -377,7 +485,7 @@ orxVOID orxFASTCALL orxSetInt32_Add(orxSET_INT32 *_pstSet, orxINTERVAL_INT32 _st
     while (pstNodeTemp!=orxNULL && pstNodeTemp!=pstNodeLast)
     {
         orxLinkList_Remove((orxLINKLIST_NODE*) pstNodeTemp);
-        orxBank_Free(spstInt32IntervalBank, pstNodeTemp);
+        orxBank_Free(sstMathSet.pstInt32IntervalBank, pstNodeTemp);
         pstNodeTemp = (orxINTERVAL_INT32_NODE*)  orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeFirst);
     }
 }
@@ -430,7 +538,7 @@ orxVOID orxFASTCALL orxSetInt32_Sub(orxSET_INT32 *_pstSet, orxINTERVAL_INT32 _st
     while (pstNodeTemp!=orxNULL && pstNodeTemp!=pstNodeLast)
     {
         orxLinkList_Remove((orxLINKLIST_NODE*) pstNodeTemp);
-        orxBank_Free(spstFloatIntervalBank, pstNodeTemp);
+        orxBank_Free(sstMathSet.pstFloatIntervalBank, pstNodeTemp);
         pstNodeTemp = (orxINTERVAL_INT32_NODE*)  orxLinkList_GetNext((orxLINKLIST_NODE*) pstNodeFirst);
     }
 }
@@ -449,7 +557,9 @@ orxINTERVAL_INT32_NODE *orxFASTCALL orxSetInt32_FindValueIntervalNode(orxSET_INT
     pstNode = (orxINTERVAL_INT32_NODE*) orxLinkList_GetFirst((orxLINKLIST*) pstList);
 
     while (pstNode!=orxNULL && !orxIntervalInt32_HasValue(pstNode->stInterval, _s32Value))
+    {
         pstNode = (orxINTERVAL_INT32_NODE*) orxLinkList_GetNext((orxLINKLIST_NODE*) pstNode);
+    }
     return pstNode;
 }
 
