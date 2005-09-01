@@ -58,7 +58,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxRender.o \
 	.\build\$(BUILD)\orxDLL_orxViewport.o \
 	.\build\$(BUILD)\orxDLL_orxClock.o \
-	.\build\$(BUILD)\orxDLL_orxMessageQueue.o \
+	.\build\$(BUILD)\orxDLL_orxEvent.o \
 	.\build\$(BUILD)\orxDLL_orxTime.o \
 	.\build\$(BUILD)\orxDLL_orxDebug.o \
 	.\build\$(BUILD)\orxDLL_orxFps.o \
@@ -87,6 +87,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxFSM.o \
 	.\build\$(BUILD)\orxDLL_orxHashTable.o \
 	.\build\$(BUILD)\orxDLL_orxLinkList.o \
+	.\build\$(BUILD)\orxDLL_orxQueue.o \
 	.\build\$(BUILD)\orxDLL_orxScreenshot.o \
 	.\build\$(BUILD)\orxDLL_orxString.o \
 	.\build\$(BUILD)\orxDLL_orxTest.o \
@@ -103,7 +104,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxRender.o \
 	.\build\$(BUILD)\orxLIB_orxViewport.o \
 	.\build\$(BUILD)\orxLIB_orxClock.o \
-	.\build\$(BUILD)\orxLIB_orxMessageQueue.o \
+	.\build\$(BUILD)\orxLIB_orxEvent.o \
 	.\build\$(BUILD)\orxLIB_orxTime.o \
 	.\build\$(BUILD)\orxLIB_orxDebug.o \
 	.\build\$(BUILD)\orxLIB_orxFps.o \
@@ -132,6 +133,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxFSM.o \
 	.\build\$(BUILD)\orxLIB_orxHashTable.o \
 	.\build\$(BUILD)\orxLIB_orxLinkList.o \
+	.\build\$(BUILD)\orxLIB_orxQueue.o \
 	.\build\$(BUILD)\orxLIB_orxScreenshot.o \
 	.\build\$(BUILD)\orxLIB_orxString.o \
 	.\build\$(BUILD)\orxLIB_orxTest.o \
@@ -165,10 +167,10 @@ MATHSET_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 MATHSET_OBJECTS =  \
 	.\build\$(BUILD)\MathSet_orxTest_MathSet.o
-MESSAGEQUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+QUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
-MESSAGEQUEUE_OBJECTS =  \
-	.\build\$(BUILD)\MessageQueue_orxTest_MessageQueue.o
+QUEUE_OBJECTS =  \
+	.\build\$(BUILD)\Queue_orxTest_Queue.o
 FSM_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 FSM_OBJECTS =  \
@@ -276,7 +278,7 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\Memory.dll bin\modules\Bank.dll bin\modules\HashTable.dll bin\modules\Sound.dll bin\modules\Plugin.dll bin\modules\MathSet.dll bin\modules\MessageQueue.dll bin\modules\FSM.dll $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin\plugins\core\joystick\Joystick_NONE.dll $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin\testbed.exe bin\modules\Memory.dll bin\modules\Bank.dll bin\modules\HashTable.dll bin\modules\Sound.dll bin\modules\Plugin.dll bin\modules\MathSet.dll bin\modules\Queue.dll bin\modules\FSM.dll $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin\plugins\core\joystick\Joystick_NONE.dll $(__Time_SDL___depname)
 
 clean: 
 	-if exist .\build\$(BUILD)\*.o del .\build\$(BUILD)\*.o
@@ -291,7 +293,7 @@ clean:
 	-if exist bin\modules\Sound.dll del bin\modules\Sound.dll
 	-if exist bin\modules\Plugin.dll del bin\modules\Plugin.dll
 	-if exist bin\modules\MathSet.dll del bin\modules\MathSet.dll
-	-if exist bin\modules\MessageQueue.dll del bin\modules\MessageQueue.dll
+	-if exist bin\modules\Queue.dll del bin\modules\Queue.dll
 	-if exist bin\modules\FSM.dll del bin\modules\FSM.dll
 	-if exist bin\plugins\core\sound\Sound_Fmod.dll del bin\plugins\core\sound\Sound_Fmod.dll
 	-if exist bin\plugins\core\mouse\Mouse_Allegro.dll del bin\plugins\core\mouse\Mouse_Allegro.dll
@@ -332,8 +334,8 @@ bin\modules\Plugin.dll: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP)
 bin\modules\MathSet.dll: $(MATHSET_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(MATHSET_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
 
-bin\modules\MessageQueue.dll: $(MESSAGEQUEUE_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(MESSAGEQUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+bin\modules\Queue.dll: $(QUEUE_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(QUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
 
 bin\modules\FSM.dll: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
@@ -382,7 +384,7 @@ endif
 .\build\$(BUILD)\orxDLL_orxClock.o: ./src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_orxMessageQueue.o: ./src/core/orxMessageQueue.c
+.\build\$(BUILD)\orxDLL_orxEvent.o: ./src/core/orxEvent.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxTime.o: ./src/core/orxTime.c
@@ -469,6 +471,9 @@ endif
 .\build\$(BUILD)\orxDLL_orxLinkList.o: ./src/utils/orxLinkList.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+.\build\$(BUILD)\orxDLL_orxQueue.o: ./src/utils/orxQueue.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 .\build\$(BUILD)\orxDLL_orxScreenshot.o: ./src/utils/orxScreenshot.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -505,7 +510,7 @@ endif
 .\build\$(BUILD)\orxLIB_orxClock.o: ./src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_orxMessageQueue.o: ./src/core/orxMessageQueue.c
+.\build\$(BUILD)\orxLIB_orxEvent.o: ./src/core/orxEvent.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxTime.o: ./src/core/orxTime.c
@@ -592,6 +597,9 @@ endif
 .\build\$(BUILD)\orxLIB_orxLinkList.o: ./src/utils/orxLinkList.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+.\build\$(BUILD)\orxLIB_orxQueue.o: ./src/utils/orxQueue.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 .\build\$(BUILD)\orxLIB_orxScreenshot.o: ./src/utils/orxScreenshot.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -628,8 +636,8 @@ endif
 .\build\$(BUILD)\MathSet_orxTest_MathSet.o: ./test/orxTest_MathSet.c
 	$(CC) -c -o $@ $(MATHSET_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\MessageQueue_orxTest_MessageQueue.o: ./test/orxTest_MessageQueue.c
-	$(CC) -c -o $@ $(MESSAGEQUEUE_CFLAGS) $(CPPDEPS) $<
+.\build\$(BUILD)\Queue_orxTest_Queue.o: ./test/orxTest_Queue.c
+	$(CC) -c -o $@ $(QUEUE_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\FSM_orxTest_FSM.o: ./test/orxTest_FSM.c
 	$(CC) -c -o $@ $(FSM_CFLAGS) $(CPPDEPS) $<

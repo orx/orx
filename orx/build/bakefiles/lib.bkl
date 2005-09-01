@@ -19,7 +19,7 @@
         </sources>
         <sources>
             src/core/orxClock.c
-            src/core/orxMessageQueue.c
+            src/core/orxEvent.c
             src/core/orxTime.c
         </sources>
         <sources>
@@ -70,6 +70,7 @@
             src/utils/orxFSM.c
             src/utils/orxHashTable.c
             src/utils/orxLinkList.c
+            src/utils/orxQueue.c
             src/utils/orxScreenshot.c
             src/utils/orxString.c
             src/utils/orxTest.c
@@ -125,7 +126,7 @@
             camera/orxrender.h
             camera/orxViewport.h
             core/orxClock.h
-            core/orxMessageQueue.h
+            core/orxEvent.h
             core/orxTime.h
             debug/orxDebug.h
             debug/orxFps.h
@@ -175,6 +176,7 @@
             utils/orxFSM.h
             utils/orxHashTable.h
             utils/orxLinkList.h
+            utils/orxQueue.h
             utils/orxScreenshot.h
             utils/orxString.h
             utils/orxTest.h

@@ -56,8 +56,9 @@ typedef enum __orxMAIN_MODULE_t
   orxMAIN_MODULE_HashTable,
   orxMAIN_MODULE_File,
   orxMAIN_MODULE_Test,
-  orxMAIN_MODULE_MessageQueue,
+  orxMAIN_MODULE_Queue,
   orxMAIN_MODULE_String,
+  orxMAIN_MODULE_Event,
     
   orxMAIN_MODULE_NUMBER,
   orxMAIN_MODULE_NONE = 0xFFFFFFFF

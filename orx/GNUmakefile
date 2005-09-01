@@ -70,7 +70,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxRender.o \
 	./build/$(BUILD)/orxDLL_orxViewport.o \
 	./build/$(BUILD)/orxDLL_orxClock.o \
-	./build/$(BUILD)/orxDLL_orxMessageQueue.o \
+	./build/$(BUILD)/orxDLL_orxEvent.o \
 	./build/$(BUILD)/orxDLL_orxTime.o \
 	./build/$(BUILD)/orxDLL_orxDebug.o \
 	./build/$(BUILD)/orxDLL_orxFps.o \
@@ -99,6 +99,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxFSM.o \
 	./build/$(BUILD)/orxDLL_orxHashTable.o \
 	./build/$(BUILD)/orxDLL_orxLinkList.o \
+	./build/$(BUILD)/orxDLL_orxQueue.o \
 	./build/$(BUILD)/orxDLL_orxScreenshot.o \
 	./build/$(BUILD)/orxDLL_orxString.o \
 	./build/$(BUILD)/orxDLL_orxTest.o \
@@ -115,7 +116,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxRender.o \
 	./build/$(BUILD)/orxLIB_orxViewport.o \
 	./build/$(BUILD)/orxLIB_orxClock.o \
-	./build/$(BUILD)/orxLIB_orxMessageQueue.o \
+	./build/$(BUILD)/orxLIB_orxEvent.o \
 	./build/$(BUILD)/orxLIB_orxTime.o \
 	./build/$(BUILD)/orxLIB_orxDebug.o \
 	./build/$(BUILD)/orxLIB_orxFps.o \
@@ -144,6 +145,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxFSM.o \
 	./build/$(BUILD)/orxLIB_orxHashTable.o \
 	./build/$(BUILD)/orxLIB_orxLinkList.o \
+	./build/$(BUILD)/orxLIB_orxQueue.o \
 	./build/$(BUILD)/orxLIB_orxScreenshot.o \
 	./build/$(BUILD)/orxLIB_orxString.o \
 	./build/$(BUILD)/orxLIB_orxTest.o \
@@ -183,11 +185,11 @@ MATHSET_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 MATHSET_OBJECTS =  \
 	./build/$(BUILD)/MathSet_orxTest_MathSet.o
-MESSAGEQUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+QUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
-MESSAGEQUEUE_OBJECTS =  \
-	./build/$(BUILD)/MessageQueue_orxTest_MessageQueue.o
+QUEUE_OBJECTS =  \
+	./build/$(BUILD)/Queue_orxTest_Queue.o
 FSM_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
 	$(CFLAGS)
@@ -299,11 +301,11 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so bin/modules/MathSet.so bin/modules/MessageQueue.so bin/modules/FSM.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so bin/modules/MathSet.so bin/modules/Queue.so bin/modules/FSM.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so $(__Time_SDL___depname)
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
-	for f in anim/orxAnim.h anim/orxAnimPointer.h anim/orxAnimSet.h base/orxDecl.h base/orxType.h camera/orxCamera.h camera/orxrender.h camera/orxViewport.h core/orxClock.h core/orxMessageQueue.h core/orxTime.h debug/orxDebug.h debug/orxFps.h display/graphic.h display/orxDisplay.h display/orxTexture.h io/orxFile.h io/interaction.h io/orxJoystick.h io/orxKeyboard.h io/orxMouse.h io/orxPackage.h io/orxTextIO.h main/orxMain.h math/orxMath.h math/orxMathSet.h math/orxVec.h memory/orxBank.h memory/orxMemory.h msg/msg_file.h msg/msg_fps.h msg/msg_game.h msg/msg_graph.h msg/msg_plugin.h msg/msg_screenshot.h msg/msg_timer.h object/orxFrame.h object/orxObject.h object/orxStructure.h plugin/orxPlugin.h plugin/orxPluginCore.h plugin/orxPluginType.h plugin/orxPluginUser.h plugin/define/orxPlugin_CoreDefine.h plugin/define/orxPlugin_CoreID.h plugin/define/orxPlugin_Display.h plugin/define/orxPlugin_File.h plugin/define/orxPlugin_Joystick.h plugin/define/orxPlugin_Keyboard.h plugin/define/orxPlugin_Mouse.h plugin/define/orxPlugin_Package.h plugin/define/orxPlugin_Script.h plugin/define/orxPlugin_Sound.h plugin/define/orxPlugin_Time.h script/orxScript.h sound/orxSound.h utils/orxFSM.h utils/orxHashTable.h utils/orxLinkList.h utils/orxScreenshot.h utils/orxString.h utils/orxTest.h utils/orxTree.h utils/pathfinder.h orxInclude.h; do \
+	for f in anim/orxAnim.h anim/orxAnimPointer.h anim/orxAnimSet.h base/orxDecl.h base/orxType.h camera/orxCamera.h camera/orxrender.h camera/orxViewport.h core/orxClock.h core/orxEvent.h core/orxTime.h debug/orxDebug.h debug/orxFps.h display/graphic.h display/orxDisplay.h display/orxTexture.h io/orxFile.h io/interaction.h io/orxJoystick.h io/orxKeyboard.h io/orxMouse.h io/orxPackage.h io/orxTextIO.h main/orxMain.h math/orxMath.h math/orxMathSet.h math/orxVec.h memory/orxBank.h memory/orxMemory.h msg/msg_file.h msg/msg_fps.h msg/msg_game.h msg/msg_graph.h msg/msg_plugin.h msg/msg_screenshot.h msg/msg_timer.h object/orxFrame.h object/orxObject.h object/orxStructure.h plugin/orxPlugin.h plugin/orxPluginCore.h plugin/orxPluginType.h plugin/orxPluginUser.h plugin/define/orxPlugin_CoreDefine.h plugin/define/orxPlugin_CoreID.h plugin/define/orxPlugin_Display.h plugin/define/orxPlugin_File.h plugin/define/orxPlugin_Joystick.h plugin/define/orxPlugin_Keyboard.h plugin/define/orxPlugin_Mouse.h plugin/define/orxPlugin_Package.h plugin/define/orxPlugin_Script.h plugin/define/orxPlugin_Sound.h plugin/define/orxPlugin_Time.h script/orxScript.h sound/orxSound.h utils/orxFSM.h utils/orxHashTable.h utils/orxLinkList.h utils/orxQueue.h utils/orxScreenshot.h utils/orxString.h utils/orxTest.h utils/orxTree.h utils/pathfinder.h orxInclude.h; do \
 	if test ! -d $(prefix)/include/orx/`dirname $$f` ; then \
 	$(INSTALL) -d $(prefix)/include/orx/`dirname $$f`; \
 	fi; \
@@ -325,7 +327,7 @@ clean:
 	rm -f bin/modules/Sound.so
 	rm -f bin/modules/Plugin.so
 	rm -f bin/modules/MathSet.so
-	rm -f bin/modules/MessageQueue.so
+	rm -f bin/modules/Queue.so
 	rm -f bin/modules/FSM.so
 	rm -f bin/plugins/core/sound/Sound_Fmod.so
 	rm -f bin/plugins/core/mouse/Mouse_Allegro.so
@@ -379,8 +381,8 @@ bin/modules/Plugin.so: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP)
 bin/modules/MathSet.so: $(MATHSET_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(MATHSET_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 
-bin/modules/MessageQueue.so: $(MESSAGEQUEUE_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(MESSAGEQUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
+bin/modules/Queue.so: $(QUEUE_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(QUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
 
 bin/modules/FSM.so: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
@@ -429,7 +431,7 @@ endif
 ./build/$(BUILD)/orxDLL_orxClock.o: ./src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_orxMessageQueue.o: ./src/core/orxMessageQueue.c
+./build/$(BUILD)/orxDLL_orxEvent.o: ./src/core/orxEvent.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxTime.o: ./src/core/orxTime.c
@@ -516,6 +518,9 @@ endif
 ./build/$(BUILD)/orxDLL_orxLinkList.o: ./src/utils/orxLinkList.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxDLL_orxQueue.o: ./src/utils/orxQueue.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxDLL_orxScreenshot.o: ./src/utils/orxScreenshot.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -552,7 +557,7 @@ endif
 ./build/$(BUILD)/orxLIB_orxClock.o: ./src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_orxMessageQueue.o: ./src/core/orxMessageQueue.c
+./build/$(BUILD)/orxLIB_orxEvent.o: ./src/core/orxEvent.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxTime.o: ./src/core/orxTime.c
@@ -639,6 +644,9 @@ endif
 ./build/$(BUILD)/orxLIB_orxLinkList.o: ./src/utils/orxLinkList.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxLIB_orxQueue.o: ./src/utils/orxQueue.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxLIB_orxScreenshot.o: ./src/utils/orxScreenshot.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -675,8 +683,8 @@ endif
 ./build/$(BUILD)/MathSet_orxTest_MathSet.o: ./test/orxTest_MathSet.c
 	$(CC) -c -o $@ $(MATHSET_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/MessageQueue_orxTest_MessageQueue.o: ./test/orxTest_MessageQueue.c
-	$(CC) -c -o $@ $(MESSAGEQUEUE_CFLAGS) $(CPPDEPS) $<
+./build/$(BUILD)/Queue_orxTest_Queue.o: ./test/orxTest_Queue.c
+	$(CC) -c -o $@ $(QUEUE_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/FSM_orxTest_FSM.o: ./test/orxTest_FSM.c
 	$(CC) -c -o $@ $(FSM_CFLAGS) $(CPPDEPS) $<
