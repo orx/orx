@@ -23,9 +23,6 @@
 #include "math/orxMath.h"
 #include "debug/orxDebug.h"
 
-#include "io/orxTextIO.h"
-
-
 /*
  * Message module status flag definition.
  */
@@ -35,17 +32,17 @@
 /*
  * Message module state structure.
  */
-typedef struct __orxMESSAGEQUEUE_MODULE_STATE_t
+typedef struct __orxMESSAGEQUEUE_STATIC_t
 {
   /* Control flags */
   orxU32 u32Flags;
-} orxMESSAGEQUEUE_MODULE_STATE;
+} orxMESSAGEQUEUE_STATIC;
 
 
 /*
  * Static data
  */
-orxSTATIC orxMESSAGEQUEUE_MODULE_STATE sstMessageQueue;
+orxSTATIC orxMESSAGEQUEUE_STATIC sstMessageQueue;
 
 
 
@@ -81,6 +78,12 @@ struct __orxMESSAGE_QUEUE_t
  */
 orxINLINE orxVOID orxMessage_Clear(orxMESSAGE* _pstMessage)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstMessage != orxNULL);
+
 	_pstMessage->pExtraData    = orxNULL;
 	_pstMessage->u32Identifier = 0x00000000;
 }
@@ -93,6 +96,12 @@ orxINLINE orxVOID orxMessage_Clear(orxMESSAGE* _pstMessage)
  */
 orxINLINE orxVOID orxMessage_Set(orxMESSAGE* _pstMessage, orxMESSAGE_IDENTIFIER _u32ID, orxVOID* _pData)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstMessage != orxNULL);
+
 	_pstMessage->u32Identifier = _u32ID;
 	_pstMessage->pExtraData    = _pData;
 }
@@ -104,6 +113,13 @@ orxINLINE orxVOID orxMessage_Set(orxMESSAGE* _pstMessage, orxMESSAGE_IDENTIFIER 
  */
 orxINLINE orxVOID orxMessage_Copy(orxMESSAGE* _pstSourceMessage, orxMESSAGE* _pstTargetMessage)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstSourceMessage != orxNULL);
+  orxASSERT(_pstTargetMessage != orxNULL);
+
 	orxMemory_Copy(_pstTargetMessage, _pstSourceMessage, sizeof(orxMESSAGE));
 }
 
@@ -117,20 +133,27 @@ orxINLINE orxVOID orxMessage_Copy(orxMESSAGE* _pstSourceMessage, orxMESSAGE* _ps
  **/
 orxSTATUS orxMessageQueue_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /** @note Depend of Memory, maths and debug modules.*/
-  /** @todo Ajouter le code d'initialisation.*/
-
-  /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
+  orxSTATUS eResult = orxSTATUS_FAILED;
+  
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
   {
-    /* Inits Flags */
-    sstMessageQueue.u32Flags = orxMESSAGEQUEUE_KU32_FLAG_READY;
-  }
-  else
-  {
-    /* !!! MSG !!! */
+    /* Not already initialized ? */
+    if(!(sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY))
+    {
+      /* Cleans control structure */
+      orxMemory_Set(&sstMessageQueue, 0, sizeof(orxMESSAGEQUEUE_STATIC));
+    
+      /* Inits Flags */
+      sstMessageQueue.u32Flags = orxMESSAGEQUEUE_KU32_FLAG_READY;
+      
+      /* Successfull Init */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
 
   /* Done! */
@@ -153,6 +176,9 @@ orxVOID orxMessageQueue_Exit()
     /* !!! MSG !!! */
   }
 
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Memory);
+
   return;
 }
 
@@ -161,6 +187,12 @@ orxVOID orxMessageQueue_Exit()
  */
 orxMESSAGE_IDENTIFIER orxMessage_GetIdentifier(orxMESSAGE* _pstMessage)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstMessage != orxNULL);
+
 	return _pstMessage->u32Identifier;
 }
 
@@ -170,6 +202,12 @@ orxMESSAGE_IDENTIFIER orxMessage_GetIdentifier(orxMESSAGE* _pstMessage)
  */
 orxVOID* orxMessage_GetExtraData(orxMESSAGE* _pstMessage)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstMessage != orxNULL);
+
 	return _pstMessage->pExtraData;
 }
 
@@ -180,6 +218,9 @@ orxVOID* orxMessage_GetExtraData(orxMESSAGE* _pstMessage)
  */
 orxMESSAGE_QUEUE *orxMessageQueue_Create(orxU16 _u16MessageNumber)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the number of message is superior to 0.*/
 	orxASSERT(_u16MessageNumber>0);
 	
@@ -196,11 +237,17 @@ orxMESSAGE_QUEUE *orxMessageQueue_Create(orxU16 _u16MessageNumber)
  */
 orxVOID orxMessageQueue_Delete(orxMESSAGE_QUEUE* _pstQueue)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
 
 	if(_pstQueue->pastMessages!=orxNULL)
+  {
 		orxMemory_Free(_pstQueue->pastMessages);
+  }
+  
 	orxMemory_Free(_pstQueue);
 }
 
@@ -210,8 +257,11 @@ orxVOID orxMessageQueue_Delete(orxMESSAGE_QUEUE* _pstQueue)
  */
 orxVOID	orxMessageQueue_Clean(orxMESSAGE_QUEUE* _pstQueue)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
 
 	orxMemory_Set(_pstQueue->pastMessages, 0, sizeof(_pstQueue->pastMessages));
 	_pstQueue->u16Used = 0;
@@ -222,8 +272,11 @@ orxVOID	orxMessageQueue_Clean(orxMESSAGE_QUEUE* _pstQueue)
  */
 orxU16 orxMessageQueue_GetMessageNumber(orxMESSAGE_QUEUE* _pstQueue)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
 	return _pstQueue->u16Used;
 }
 
@@ -233,8 +286,11 @@ orxU16 orxMessageQueue_GetMessageNumber(orxMESSAGE_QUEUE* _pstQueue)
  */
 orxU16 orxMessageQueue_GetAllocatedNumber(orxMESSAGE_QUEUE* _pstQueue)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
 	return _pstQueue->u16Alloc;
 }
 
@@ -244,8 +300,12 @@ orxU16 orxMessageQueue_GetAllocatedNumber(orxMESSAGE_QUEUE* _pstQueue)
  */
 orxVOID	orxMessageQueue_Resize(orxMESSAGE_QUEUE* _pstQueue, orxU16 _u16Size)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
+  
 	/** Assert the number of message is superior to 0.*/
 	orxASSERT(_u16Size>0);
 	
@@ -265,8 +325,11 @@ orxVOID	orxMessageQueue_Resize(orxMESSAGE_QUEUE* _pstQueue, orxU16 _u16Size)
  */
 orxMESSAGE* orxMessageQueue_AddMessage(orxMESSAGE_QUEUE* _pstQueue, orxMESSAGE_IDENTIFIER _u32ID, orxVOID* _pData)
 {
-	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
+/** Assert the queue is exists.*/
+	orxASSERT(_pstQueue != orxNULL);
 	
 	/** If no message, add it direcly.*/
 	if(_pstQueue->u16Used==0)
@@ -296,7 +359,9 @@ orxMESSAGE* orxMessageQueue_AddMessage(orxMESSAGE_QUEUE* _pstQueue, orxMESSAGE_I
 		orxMessage_Set(pCurrentMessage, _u32ID, _pData);
 
 		if(_pstQueue->u16Used<_pstQueue->u16Alloc)
+    {
 			_pstQueue->u16Used++;
+    }
 		return pCurrentMessage;
 	}	
 }
@@ -306,8 +371,11 @@ orxMESSAGE* orxMessageQueue_AddMessage(orxMESSAGE_QUEUE* _pstQueue, orxMESSAGE_I
  */
 void orxMessageQueue_RemoveMessage(orxMESSAGE_QUEUE* _pstQueue, orxMESSAGE* _pstMessage)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
 	/** Assert the message to remove is in message queue array bounds.*/
 	orxASSERT((_pstMessage>=_pstQueue->pastMessages)&&(_pstMessage<_pstQueue->pastMessages+(_pstQueue->u16Used*sizeof(orxMESSAGE))));
 	
@@ -326,18 +394,25 @@ void orxMessageQueue_RemoveMessage(orxMESSAGE_QUEUE* _pstQueue, orxMESSAGE* _pst
  */
 orxMESSAGE* orxMessageQueue_FindMessage(orxMESSAGE_QUEUE* _pstQueue, orxMESSAGE_IDENTIFIER _u32ID)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
 
 	orxMESSAGE* pCurrentMessage = orxMessageQueue_GetFirstMessage(_pstQueue);
 	if(pCurrentMessage==orxNULL)
-		return orxNULL;
+  {
+    return orxNULL;
+  }
 	orxMESSAGE* pLastMessage = orxMessageQueue_GetLastMessage(_pstQueue);
 	
 	while(pCurrentMessage<=pLastMessage)
 	{
 		if(pCurrentMessage->u32Identifier==_u32ID)
+    {
 			return pCurrentMessage;
+    }
 		pCurrentMessage = orxMessageQueue_GetNextMessage(pCurrentMessage);
 	}
 	return orxNULL;
@@ -349,8 +424,11 @@ orxMESSAGE* orxMessageQueue_FindMessage(orxMESSAGE_QUEUE* _pstQueue, orxMESSAGE_
  */
 orxMESSAGE* orxMessageQueue_GetFirstMessage(orxMESSAGE_QUEUE* _pstQueue)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
 	if(_pstQueue->u16Used==0)
 		return orxNULL;
 	else
@@ -362,8 +440,11 @@ orxMESSAGE* orxMessageQueue_GetFirstMessage(orxMESSAGE_QUEUE* _pstQueue)
  */
 orxMESSAGE* orxMessageQueue_GetLastMessage(orxMESSAGE_QUEUE* _pstQueue)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
 	/** Assert the queue is exists.*/
-	orxASSERT(_pstQueue!=NULL);
+	orxASSERT(_pstQueue != orxNULL);
 	if(_pstQueue->u16Used==0)
 		return orxNULL;
 	else
@@ -375,6 +456,12 @@ orxMESSAGE* orxMessageQueue_GetLastMessage(orxMESSAGE_QUEUE* _pstQueue)
  */
 orxMESSAGE* orxMessageQueue_GetNextMessage(orxMESSAGE* _pstMessage)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstMessage != orxNULL);
+  
 	return _pstMessage + sizeof(orxMESSAGE);
 }
 
@@ -383,6 +470,12 @@ orxMESSAGE* orxMessageQueue_GetNextMessage(orxMESSAGE* _pstMessage)
  */
 orxMESSAGE* orxMessageQueue_GetPreviousMessage(orxMESSAGE* _pstMessage)
 {
+  /* Module initialized ? */
+  orxASSERT((sstMessageQueue.u32Flags & orxMESSAGEQUEUE_KU32_FLAG_READY) == orxMESSAGEQUEUE_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstMessage != orxNULL);
+
 	return _pstMessage - sizeof(orxMESSAGE);
 }
 
