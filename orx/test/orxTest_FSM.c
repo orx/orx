@@ -129,7 +129,7 @@ orxVOID orxTest_FSM_Infos()
 orxVOID orxTest_FSM_Create()
 {
   orxS32 s32ID;
-  orxS32 s32NbStates, s32NbLinks;
+  orxS32 s32NbStates, s32NbLinks, s32NbInstances;
   
   /* Is it possible to create a FSM? */
   if (sstTest_FSM.u32NbUsedFSM == orxTEST_FSM_KU32_ARRAY_NB_ELEM)
@@ -161,8 +161,11 @@ orxVOID orxTest_FSM_Create()
     /* Get the number of links. */
     orxTextIO_ReadS32InRange(&s32NbLinks, 10, 1, 0x7FFFFFFF, "Number of links: ", orxTRUE);
     
+    /* Get the number of instances. */
+    orxTextIO_ReadS32InRange(&s32NbInstances, 10, 1, 0x7FFFFFFF, "Number of instances: ", orxTRUE);
+    
     /* Now, allocate s32NbStates states and s32NbLinks links in a new FSM at the index position s32ID. */
-    sstTest_FSM.apstFSM[s32ID] = orxFSM_Create(s32NbStates, s32NbLinks, orxFSM_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+    sstTest_FSM.apstFSM[s32ID] = orxFSM_Create(s32NbStates, s32NbLinks, s32NbInstances, orxFSM_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
     
     if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
     {

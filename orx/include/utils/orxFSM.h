@@ -76,11 +76,12 @@ typedef orxBOOL (*orxFSM_CONDITION_PTR)(orxVOID);
 /** Create a state machine and return a pointer on it.
  * @param[in] _u16NbStates          Number of states.
  * @param[in] _u32NbLinks           Number of links.
+ * @param[in] _u32NbInstances       Number of instances.
  * @param[in] _u32Flags             Flags used by the state machine.
  * @param[in] _eMemType             Memory type to use.
  * @return Returns a pointer on the state machine or orxNULL if failed.
  */
-extern orxFSM * orxDLLAPI                   orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
+extern orxFSM * orxDLLAPI                   orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU32 _u32NbInstances, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
 
 /** Delete a state machine.
  * @param[in] _pstStateMachine      The state machine to remove.
