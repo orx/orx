@@ -493,7 +493,7 @@ orxSTATUS orxFSM_State_Initial(orxFSM * _pstStateMachine, orxFSM_STATE * _pstIni
   return eStatus;
 }
 
-/** Find a state.
+/** Get a state.
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _u16Id                The identifier of the state.
  * @return Returns the state.
@@ -507,6 +507,23 @@ orxFSM_STATE * orxFSM_State_Get(orxFSM * _pstStateMachine, orxU16 _u16Id)
   orxASSERT(_pstStateMachine != orxNULL);
   
   return orxHashTable_Get(_pstStateMachine->pstStatesHashTable, _u16Id);
+}
+
+/** Get a state Id.
+ * @param[in] _pstStateMachine      The state machine.
+ * @param[in] _pstState             The state.
+ * @return Returns the Id of the state.
+ */
+orxU16 orxFSM_State_GetId(orxFSM * _pstStateMachine, orxFSM_STATE * _pstState)
+{
+  /* Module initialized? */
+  orxASSERT((sstStateMachine.u32Flags & orxFSM_KU32_FLAG_READY) == orxFSM_KU32_FLAG_READY);
+  
+  /* Correct parameters? */
+  orxASSERT(_pstStateMachine != orxNULL);
+  orxASSERT(_pstState != orxNULL);
+  
+  return _pstState->u16Id;
 }
 
 /** Remove a state.
@@ -730,6 +747,36 @@ orxSTATUS orxFSM_Instance_Remove(orxFSM_INSTANCE * _pstInstance)
   _pstInstance = orxNULL;
     
   return eStatus;
+}
+
+/** Get the state machine associated to an instance.
+ * @param[in] _pstInstance          The instance.
+ * @return Returns the state machine.
+ */
+orxFSM * orxFSM_Instance_GetFSM(orxFSM_INSTANCE * _pstInstance)
+{
+  /* Module initialized? */
+  orxASSERT((sstStateMachine.u32Flags & orxFSM_KU32_FLAG_READY) == orxFSM_KU32_FLAG_READY);
+  
+  /* Correct parameters? */
+  orxASSERT(_pstInstance != orxNULL);
+  
+  return _pstInstance->pstStateMachine;
+}
+
+/** Get the current state of an instance.
+ * @param[in] _pstInstance          The instance.
+ * @return Returns the current state.
+ */
+orxFSM_STATE * orxFSM_Instance_GetCurrentState(orxFSM_INSTANCE * _pstInstance)
+{
+  /* Module initialized? */
+  orxASSERT((sstStateMachine.u32Flags & orxFSM_KU32_FLAG_READY) == orxFSM_KU32_FLAG_READY);
+  
+  /* Correct parameters? */
+  orxASSERT(_pstInstance != orxNULL);
+  
+  return _pstInstance->pstCurrentState;
 }
 
 /** Update an instance of a state machine.

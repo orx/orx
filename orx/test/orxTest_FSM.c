@@ -617,17 +617,19 @@ orxVOID orxTest_FSM_Instance_Update()
   }
   else
   {
-    // Mystery bloc: the second line fails.
-    //orxFSM_INSTANCE * pstInst = sstTest_FSM_Inst.apstFSM_Inst[s32ID];
-    //pstInst->pstCurrentState = orxNULL;
+    if (orxFSM_Instance_GetCurrentState(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) != orxNULL)
+      orxTextIO_PrintLn("Current state: %u", (orxU16)orxFSM_State_GetId(orxFSM_Instance_GetFSM(sstTest_FSM_Inst.apstFSM_Inst[s32ID]), orxFSM_Instance_GetCurrentState(sstTest_FSM_Inst.apstFSM_Inst[s32ID])));
     
     /* Update the instance. */
     if (orxFSM_Instance_Update(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) == orxSTATUS_FAILED)
     {
       orxTextIO_PrintLn("Update failed...");
     }
-    
-    orxTextIO_PrintLn("Update done!");
+    else
+    {
+      orxTextIO_PrintLn("New state: %u", (orxU16)orxFSM_State_GetId(orxFSM_Instance_GetFSM(sstTest_FSM_Inst.apstFSM_Inst[s32ID]), orxFSM_Instance_GetCurrentState(sstTest_FSM_Inst.apstFSM_Inst[s32ID])));
+      orxTextIO_PrintLn("Update done!");
+    }
   }
 }
 

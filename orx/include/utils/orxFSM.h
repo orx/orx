@@ -111,12 +111,19 @@ extern orxFSM_STATE * orxDLLAPI             orxFSM_State_Add(orxFSM * _pstStateM
  */
 extern orxSTATUS orxDLLAPI                  orxFSM_State_Initial(orxFSM * _pstStateMachine, orxFSM_STATE * _pstInitialState);
 
-/** Find a state.
+/** Get a state.
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _u16Id                The identifier of the state.
  * @return Returns the state.
  */
 extern orxFSM_STATE * orxDLLAPI             orxFSM_State_Get(orxFSM * _pstStateMachine, orxU16 _u16Id);
+
+/** Get a state Id.
+ * @param[in] _pstStateMachine      The state machine.
+ * @param[in] _pstState             The state.
+ * @return Returns the Id of the state.
+ */
+extern orxU16 orxDLLAPI                     orxFSM_State_GetId(orxFSM * _pstStateMachine, orxFSM_STATE * _pstState);
 
 /** Remove a state.
  * @param[in] _pstStateMachine      The state machine.
@@ -165,6 +172,18 @@ extern orxFSM_INSTANCE * orxDLLAPI          orxFSM_Instance_Create(orxFSM * _pst
  * @return Returns the status of the operation.
  */
 extern orxSTATUS orxDLLAPI                  orxFSM_Instance_Remove(orxFSM_INSTANCE * _pstInstance);
+
+/** Get the state machine associated to an instance.
+ * @param[in] _pstInstance          The instance.
+ * @return Returns the state machine.
+ */
+extern orxFSM * orxDLLAPI                   orxFSM_Instance_GetFSM(orxFSM_INSTANCE * _pstInstance);
+
+/** Get the current state of an instance.
+ * @param[in] _pstInstance          The instance.
+ * @return Returns the current state.
+ */
+extern orxFSM_STATE * orxDLLAPI             orxFSM_Instance_GetCurrentState(orxFSM_INSTANCE * _pstInstance);
 
 /** Update an instance of a state machine. If current state is orxNULL, it enters the initial state. 
  * @param[in] _pstInstance          The instance.
