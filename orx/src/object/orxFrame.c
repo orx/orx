@@ -555,59 +555,64 @@ orxSTATIC orxVOID orxFrame_DeleteAll()
  ***************************************************************************/
 orxSTATUS orxFrame_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Not already Initialized? */
-  if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS))
   {
-    /* Cleans control structure */
-    orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
-
-    /* Inits ID Flags */
-    sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
-
-    /* Inits frame tree */
-    sstFrame.pstRoot = orxFrame_Create();
-
-    /* Not created? */
-    if(sstFrame.pstRoot == orxNULL)
+    /* Not already Initialized? */
+    if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
     {
-      /* Cleans flags */
-      sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
-
-      /* Can't process */
-      eResult = orxSTATUS_FAILED;
-    }
-
-    /* Initialized? */
-    if(eResult == orxSTATUS_SUCCESS)
-    {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-  
-      /* Cleans static controller */
+      /* Cleans control structure */
       orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
   
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_TREE;
-      stRegisterInfo.u32Size      = sizeof(orxFRAME);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
+      /* Inits ID Flags */
+      sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
   
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_FRAME, &stRegisterInfo);
+      /* Inits frame tree */
+      sstFrame.pstRoot = orxFrame_Create();
+  
+      /* Not created? */
+      if(sstFrame.pstRoot == orxNULL)
+      {
+        /* Cleans flags */
+        sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
+  
+        /* Can't process */
+        eResult = orxSTATUS_FAILED;
+      }
+  
+      /* Initialized? */
+      if(eResult == orxSTATUS_SUCCESS)
+      {
+        orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+    
+        /* Cleans static controller */
+        orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
+    
+        /* Registers structure type */
+        stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_TREE;
+        stRegisterInfo.u32Size      = sizeof(orxFRAME);
+        stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+        stRegisterInfo.pfnUpdate    = orxNULL;
+    
+        eResult = orxStructure_Register(orxSTRUCTURE_ID_FRAME, &stRegisterInfo);
+      }
+      else
+      {
+        /* !!! MSG !!! */
+      }
     }
     else
     {
       /* !!! MSG !!! */
+  
+      /* Already initialized */
+      eResult = orxSTATUS_FAILED;
     }
   }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_FAILED;
-  }
-
+  
   /* Done! */
   return eResult;
 }
@@ -636,6 +641,10 @@ orxVOID orxFrame_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Structure);
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }

@@ -843,41 +843,48 @@ orxINLINE orxVOID orxCamera_SortViewList(orxCAMERA *_pstCamera)
  ***************************************************************************/
 orxSTATUS orxCamera_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Not already Initialized? */
-  if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
+  orxSTATUS eResult = orxSTATUS_FAILED;
+  
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Frame)     == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Object)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS))
   {
-    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+    /* Not already Initialized? */
+    if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
+    {
+      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+    
+      /* Cleans static controller */
+      orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
+  
+      /* Registers structure type */
+      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+      stRegisterInfo.u32Size      = sizeof(orxCAMERA);
+      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+      stRegisterInfo.pfnUpdate    = orxNULL;
 
-    /* Cleans static controller */
-    orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
-
-    /* Registers structure type */
-    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-    stRegisterInfo.u32Size      = sizeof(orxCAMERA);
-    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-    stRegisterInfo.pfnUpdate    = orxNULL;
-
-    eResult = orxStructure_Register(orxSTRUCTURE_ID_CAMERA, &stRegisterInfo);
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_FAILED;
-  }
-
-  /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
-  {
-    /* Inits Flags */
-    sstCamera.u32Flags = orxCAMERA_KU32_FLAG_READY|orxCAMERA_KU32_FLAG_DEFAULT;
-  }
-  else
-  {
-    /* !!! MSG !!! */
+      eResult = orxStructure_Register(orxSTRUCTURE_ID_CAMERA, &stRegisterInfo);
+    }
+    else
+    {
+      /* !!! MSG !!! */
+  
+      /* Already initialized */
+      eResult = orxSTATUS_FAILED;
+    }
+  
+    /* Initialized? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      /* Inits Flags */
+      sstCamera.u32Flags = orxCAMERA_KU32_FLAG_READY|orxCAMERA_KU32_FLAG_DEFAULT;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
 
   /* Done! */
@@ -908,6 +915,11 @@ orxVOID orxCamera_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  orxMAIN_EXIT_MODULE(Structure);
+  orxMAIN_EXIT_MODULE(Object);
+  orxMAIN_EXIT_MODULE(Memory);
+  orxMAIN_EXIT_MODULE(Frame);
 
   return;
 }

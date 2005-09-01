@@ -128,41 +128,46 @@ orxSTATUS _orxDebug_Init()
 {
   orxU32 i;
   orxU8 *pu8;
-
-  /* Already Initialized? */
-  if(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY)
-  {
-    /* !!! MSG !!! */
-
-    return orxSTATUS_FAILED;
-  }
-
-  /* Are debug level correct? */
-  if(orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
-  {
-    /* !!! MSG !!! */
-
-    return orxSTATUS_FAILED;
-  }
-
-  /* Cleans static controller */
-  for(i = 0, pu8 = (orxU8 *)&sstDebug; i < sizeof(orxDEBUG_STATIC); i++)
-  {
-    *pu8++ = 0;
-  }
-
-  /* Inits default files */
-  sstDebug.zDebugFile     = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
-  sstDebug.zLogFile       = orxDEBUG_KZ_DEFAULT_LOG_FILE;
-
-  /* Inits default debug flags */
-  sstDebug.u32DebugFlags  = orxDEBUG_KU32_FLAG_DEFAULT;
+  orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Set module as initialized */
-  sstDebug.u32Flags       = orxDEBUG_KU32_CONTROL_FLAG_READY;
+  /* Init dependencies */
+  /* Already Initialized? */
+  if(!(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY))
+  {
+    /* !!! MSG !!! */
+
+    eResult = orxSTATUS_FAILED;
+  }
+  else if (orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
+  {
+    /* !!! MSG !!! */
+
+    eResult = orxSTATUS_FAILED;
+  }
+  else
+  {
+    /* Cleans static controller */
+    for(i = 0, pu8 = (orxU8 *)&sstDebug; i < sizeof(orxDEBUG_STATIC); i++)
+    {
+      *pu8++ = 0;
+    }
+  
+    /* Inits default files */
+    sstDebug.zDebugFile     = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
+    sstDebug.zLogFile       = orxDEBUG_KZ_DEFAULT_LOG_FILE;
+  
+    /* Inits default debug flags */
+    sstDebug.u32DebugFlags  = orxDEBUG_KU32_FLAG_DEFAULT;
+    
+    /* Set module as initialized */
+    sstDebug.u32Flags       = orxDEBUG_KU32_CONTROL_FLAG_READY;
+    
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
+  }
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /***************************************************************************

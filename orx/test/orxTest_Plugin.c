@@ -357,7 +357,7 @@ orxVOID orxTest_Plugin_Init()
   orxU32 u32Index;
     
   /* Initialize Memory module */
-  orxPlugin_Init();
+  orxMAIN_INIT_MODULE(Plugin);
   
   /* Register test functions */
   orxTest_Register("Plugin", "Display module informations", orxTest_Plugin_Infos);
@@ -388,7 +388,7 @@ orxVOID orxTest_Plugin_Init()
 orxVOID orxTest_Plugin_Exit()
 {
   /* Uninitialize Memory module */
-  orxPlugin_Exit();
+  orxMAIN_EXIT_MODULE(Plugin);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Plugin_Init, orxTest_Plugin_Exit)

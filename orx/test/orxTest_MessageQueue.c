@@ -165,7 +165,7 @@ orxVOID orxTest_MessageQueue_RemoveMessage()
 orxVOID orxTest_MessageQueue_Init()
 {
 	/* Initialize bank module */
-	orxMessageQueue_Init();
+	orxMAIN_INIT_MODULE(MessageQueue);
 	  
 	/* Register test functions */
 	orxTest_Register("MessageQueue", "Display module informations", orxTest_MessageQueue_Infos);
@@ -187,7 +187,7 @@ orxVOID orxTest_MessageQueue_Exit()
 	}
 		
 	/* Uninitialize module */
-	orxMessageQueue_Exit();
+	orxMAIN_EXIT_MODULE(MessageQueue);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_MessageQueue_Init, orxTest_MessageQueue_Exit)

@@ -124,7 +124,7 @@ orxVOID orxTest_Memory_Free()
 orxVOID orxTest_Memory_Init()
 {
   /* Initialize Memory module */
-  orxMemory_Init();
+  orxMAIN_INIT_MODULE(Memory);
   
   /* Register test functions */
   orxTest_Register("Memory", "Display module informations", orxTest_Memory_Infos);
@@ -152,7 +152,7 @@ orxVOID orxTest_Memory_Exit()
   }
     
   /* Uninitialize Memory module */
-  orxMemory_Exit();
+  orxMAIN_EXIT_MODULE(Memory);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Memory_Init, orxTest_Memory_Exit)

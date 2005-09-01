@@ -74,9 +74,9 @@ orxSTATIC orxBANK_STATIC sstBank;
  ***************************************************************************/
 
 /** Create a new segment of memory and returns a pointer on it
- * @param _u32NbElem  (IN)  Number of elements per segments
- * @param _u32Size    (IN)  Size of an element
- * @param _eMemType   (IN)  Memory type where the datas will be allocated
+ * @param[in] _u32NbElem  Number of elements per segments
+ * @param[in] _u32Size    Size of an element
+ * @param[in] _eMemType   Memory type where the datas will be allocated
  * @return  returns a pointer on the memory segment (orxNULL if an error occured)
  */
 orxBANK_SEGMENT *orxBank_SegmentCreate(orxBANK *_pstBank)
@@ -91,8 +91,8 @@ orxBANK_SEGMENT *orxBank_SegmentCreate(orxBANK *_pstBank)
   orxASSERT(_pstBank != orxNULL);
   
   /* Compute the segment size */
-  u32SegmentSize = sizeof(orxBANK_SEGMENT) +                                        /* Size of the structure */
-                   _pstBank->u32SizeSegmentBitField * sizeof(orxU32) +              /* Size of bitfields */
+  u32SegmentSize = sizeof(orxBANK_SEGMENT) +                                /* Size of the structure */
+                   _pstBank->u32SizeSegmentBitField * sizeof(orxU32) +      /* Size of bitfields */
                    _pstBank->u32NbCellPerSegments * _pstBank->u32ElemSize;  /* Size of stored datas */
   
   /* Allocate a new segent of memory */
@@ -111,7 +111,7 @@ orxBANK_SEGMENT *orxBank_SegmentCreate(orxBANK *_pstBank)
 }
 
 /** Free a segment of memory (and recursivly all next segments)
- * @param _pstSegment   (IN)  Allocated segment of memory
+ * @param[in] _pstSegment  Allocated segment of memory
  */
 orxVOID orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
 {
@@ -133,16 +133,16 @@ orxVOID orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
 }
 
 /** Returns the segment where is stored _pCell
- * @param _pstBank    (IN)  Bank that stores segments
- * @param _pCell      (IN)  Cell stored by the segment to find
+ * @param[in] _pstBank  Bank that stores segments
+ * @param[in] _pCell    Cell stored by the segment to find
  * @return  The segment where is stored _pCell (orxNULL if not found)
  */
 orxBANK_SEGMENT *orxBank_GetSegment(orxBANK *_pstBank, orxVOID *_pCell)
 {
-  orxBANK_SEGMENT *pstSegment;          /* Returned segment */
+  orxBANK_SEGMENT *pstSegment;        /* Returned segment */
   orxU8 *pStartAddress;               /* Start address of the segment */
   orxU8 *pEndAddress;                 /* End address of the segment */
-  orxBOOL bFound;                       /* orxTRUE when segment found */
+  orxBOOL bFound;                     /* orxTRUE when segment found */
   
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
@@ -196,43 +196,53 @@ orxSTATUS orxBank_Init()
   orxU8 u8Bit;     /* Bit to test */
   orxU8 u8Test;    /* Bitfield used to do the test (bit 1 set on u8Bit) */
   orxBOOL bFound;  /* set to orxTRUE when the bit has been found */
-  
-  /* Module not already initialized ? */
-  orxASSERT(!(sstBank.u32Flags & orxBANK_KU32_FLAG_READY));
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstBank, 0, sizeof(orxBANK_STATIC));
+  orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Set initial values */
-  /* Compute the array of 0 index for each values between 0 and 255 */
-  for (u32Index = 0; u32Index < 256; u32Index++)
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
   {
-    /* Set the initial value of the index (not defined yet) */
-    sstBank.au8Index0[u32Index] = orxU8_Undefined;
-    bFound = orxFALSE;
-    u8Test = 1;
-    
-    /* Loop on each bit to find the first equals to 0 */
-    for (u8Bit = 0; !bFound && (u8Bit < 8); u8Bit++)
+    /* Not already Initialized? */
+    if(!(sstBank.u32Flags & orxBANK_KU32_FLAG_READY))
     {
-      /* Is & between Index flag and the test flag == 0 ? (!= 0 means tested bit = 1) */
-      if (((orxU8)u32Index & u8Test) == 0)
+      /* Cleans static controller */
+      orxMemory_Set(&sstBank, 0, sizeof(orxBANK_STATIC));
+      
+      /* Set initial values */
+      /* Compute the array of 0 index for each values between 0 and 255 */
+      for (u32Index = 0; u32Index < 256; u32Index++)
       {
-        /* Bit 0 found, store the index and stop search */
-        sstBank.au8Index0[u32Index] = u8Bit;
-        bFound = orxTRUE;
+        /* Set the initial value of the index (not defined yet) */
+        sstBank.au8Index0[u32Index] = orxU8_Undefined;
+        bFound = orxFALSE;
+        u8Test = 1;
+        
+        /* Loop on each bit to find the first equals to 0 */
+        for (u8Bit = 0; !bFound && (u8Bit < 8); u8Bit++)
+        {
+          /* Is & between Index flag and the test flag == 0 ? (!= 0 means tested bit = 1) */
+          if (((orxU8)u32Index & u8Test) == 0)
+          {
+            /* Bit 0 found, store the index and stop search */
+            sstBank.au8Index0[u32Index] = u8Bit;
+            bFound = orxTRUE;
+          }
+          
+          /* Shift test flag bit to check the next one */
+          u8Test <<= 1;
+        } 
       }
       
-      /* Shift test flag bit to check the next one */
-      u8Test <<= 1;
-    } 
+      /* Set module has ready */
+      sstBank.u32Flags = orxBANK_KU32_FLAG_READY;
+      
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
   
-  /* Set module has ready */
-  sstBank.u32Flags = orxBANK_KU32_FLAG_READY;
-  
-  /* Module successfully initialized */
-  return orxSTATUS_SUCCESS;
+  /* Done */
+  return eResult;
 }
 
 /** Exit bank module
@@ -244,13 +254,16 @@ orxVOID orxBank_Exit()
   
   /* Module not ready now */
   sstBank.u32Flags = orxBANK_KU32_FLAG_NONE;
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Memory);
 }
 
 /** Create a new bank in memory and returns a pointer on it
- * @param _u32NbElem  (IN)  Number of elements per segments
- * @param _u32Size    (IN)  Size of an element
- * @param _u32Flags   (IN)  Flags set for this bank
- * @param _eMemType   (IN)  Memory type where the datas will be allocated
+ * @param[in] _u32NbElem  Number of elements per segments
+ * @param[in] _u32Size    Size of an element
+ * @param[in] _u32Flags   Flags set for this bank
+ * @param[in] _eMemType   Memory type where the datas will be allocated
  * @return  returns a pointer on the memory bank
  */
 orxBANK *orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
@@ -295,7 +308,7 @@ orxBANK *orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, or
 }
 
 /** Free a portion of memory allocated with orxMemory_Allocate
- * @param _pstBank    (IN)  Pointer on the memory bank allocated by orx
+ * @param[in] _pstBank    Pointer on the memory bank allocated by orx
  */
 orxVOID orxBank_Delete(orxBANK *_pstBank)
 {
@@ -314,7 +327,7 @@ orxVOID orxBank_Delete(orxBANK *_pstBank)
 }
 
 /** Allocate a new cell from the bank
- * @param _pstBank    (IN) Pointer on the memory bank to use
+ * @param[in] _pstBank    Pointer on the memory bank to use
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
 orxVOID *orxBank_Allocate(orxBANK *_pstBank)
@@ -409,8 +422,8 @@ orxVOID *orxBank_Allocate(orxBANK *_pstBank)
 }
 
 /** Free an allocated cell
- * @param _pstBank    (IN)  Bank of memory from where _pCell has been allocated
- * @param _pCell      (IN)  Pointer on the cell to free
+ * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
+ * @param[in] _pCell      Pointer on the cell to free
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
 orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
@@ -447,7 +460,7 @@ orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
 }
 
 /** Free all allocated cell from a bank
- * @param _pstBank  (IN)  Bank of memory to clear
+ * @param[in] _pstBank    Bank of memory to clear
  */
 orxVOID orxBank_Clear(orxBANK *_pstBank)
 {
@@ -467,10 +480,9 @@ orxVOID orxBank_Clear(orxBANK *_pstBank)
 }
 
 /** Get the next cell
- * @param _pstBank    (IN)  Bank of memory from where _pCell has been allocated
- * @param _pCell      (IN)  Pointer on the current cell of memory
- * @return The next cell. If _pCell is orxNULL, the first cell will be returned.
- * @return Returns orxNULL when no more cell can be returned.
+ * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
+ * @param[in] _pCell      Pointer on the current cell of memory
+ * @return The next cell. If _pCell is orxNULL, the first cell will be returned. Returns orxNULL when no more cell can be returned.
  */
 orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell)
 {
@@ -556,7 +568,7 @@ orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell)
  ******************************************************************************/
 
 /** Print the content of a chunk bank
- * @param _pstBank    (IN)  Bank's pointer
+ * @param[in] _pstBank    Bank's pointer
  */
 orxVOID orxBank_DebugPrint(orxBANK *_pstBank)
 {

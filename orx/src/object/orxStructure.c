@@ -130,51 +130,58 @@ orxSTATIC orxSTRUCTURE_STATIC sstStructure;
  ***************************************************************************/
 orxSTATUS orxStructure_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
   orxU32 i;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Not already Initialized? */
-  if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY))
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory)   == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Bank)     == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(LinkList) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Tree)     == orxSTATUS_SUCCESS))
   {
-    /* Cleans static controller */
-    orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
-
-    /* For all IDs */
-    for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+    /* Not already Initialized? */
+    if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY))
     {
-      /* Creates a bank */
-      sstStructure.astStorage[i].pstNodeBank  = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-
-      /* Cleans storage type */
-      sstStructure.astStorage[i].eType    = orxSTRUCTURE_STORAGE_TYPE_NONE;
-    }
-
-    /* All banks created? */
-    if(i == orxSTRUCTURE_ID_NUMBER)
-    {
-      /* Inits Flags */
-      sstStructure.u32Flags = orxSTRUCTURE_KU32_FLAG_READY;
-
-      /* Everything's ok */
-      eResult = orxSTATUS_SUCCESS;
+      /* Cleans static controller */
+      orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
+  
+      /* For all IDs */
+      for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
+      {
+        /* Creates a bank */
+        sstStructure.astStorage[i].pstNodeBank  = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+  
+        /* Cleans storage type */
+        sstStructure.astStorage[i].eType    = orxSTRUCTURE_STORAGE_TYPE_NONE;
+      }
+  
+      /* All banks created? */
+      if(i == orxSTRUCTURE_ID_NUMBER)
+      {
+        /* Inits Flags */
+        sstStructure.u32Flags = orxSTRUCTURE_KU32_FLAG_READY;
+  
+        /* Everything's ok */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        orxU32 j;
+  
+        /* !!! MSG !!! */
+  
+        /* For all created banks */
+        for(j = 0; j < i; j++)
+        {
+          /* Deletes it */
+          orxBank_Delete(sstStructure.astStorage[j].pstNodeBank);
+        }
+      }
     }
     else
     {
-      orxU32 j;
-
       /* !!! MSG !!! */
-
-      /* For all created banks */
-      for(j = 0; j < i; j++)
-      {
-        /* Deletes it */
-        orxBank_Delete(sstStructure.astStorage[j].pstNodeBank);
-      }
     }
-  }
-  else
-  {
-    /* !!! MSG !!! */
   }
 
   /* Done! */
@@ -231,6 +238,12 @@ orxVOID orxStructure_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Tree);
+  orxMAIN_EXIT_MODULE(LinkList);
+  orxMAIN_EXIT_MODULE(Bank);
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }

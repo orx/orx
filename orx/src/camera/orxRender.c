@@ -27,6 +27,7 @@
 #include "memory/orxMemory.h"
 
 
+
 /*
  * Platform independant defines
  */
@@ -237,21 +238,36 @@ orxVOID orxRender_SortViewportList(orxRENDER_VIEWPORT_LIST *_pstViewportList, or
  ***************************************************************************/
 orxSTATUS orxRender_Init()
 {
-  /* Already Initialized? */
-  if(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY)
+	orxSTATUS eResult = orxSTATUS_FAILED;
+	
+  /* Call init dependencies */
+  if ((orxMAIN_INIT_MODULE(Viewport)  == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Texture)   == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Display)   == orxSTATUS_SUCCESS))
   {
-    /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    /* Already Initialized? */
+    if(!(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY))
+    {
+      /* Cleans static controller */
+      orxMemory_Set(&sstRender, 0, sizeof(orxRENDER_STATIC));
+  
+      /* Inits Flags */
+      sstRender.u32Flags = orxRENDER_KU32_FLAG_READY | orxRENDER_KU32_FLAG_DATA_2D;
+
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+  
+      eResult = orxSTATUS_FAILED;
+    }
   }
-
-  /* Cleans static controller */
-  orxMemory_Set(&sstRender, 0, sizeof(orxRENDER_STATIC));
-
-  /* Inits Flags */
-  sstRender.u32Flags = orxRENDER_KU32_FLAG_READY | orxRENDER_KU32_FLAG_DATA_2D;
-
-  return orxSTATUS_SUCCESS;
+  
+  /* Done */
+  return eResult;
 }
 
 /***************************************************************************
@@ -272,6 +288,11 @@ orxVOID orxRender_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  orxMAIN_EXIT_MODULE(Display);
+  orxMAIN_EXIT_MODULE(Memory);
+  orxMAIN_EXIT_MODULE(Texture);
+  orxMAIN_EXIT_MODULE(Viewport);
 
   return;
 }

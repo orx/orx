@@ -279,10 +279,11 @@ int main(int argc, char **argv)
   orxS32 s32Val;                                          /* value of entry */
   
   /* Minimum initialisation */
-  orxDEBUG_INIT();      /* Debug module is necessary to display debug from each module */
-  orxTest_Init();       /* Test Module is necessary to register test function */
-  orxString_Init();     /* String mdule to manage string (and read value from user) */
-  orxTextIO_Init();     /* Text IO module to manage user input/output */
+  orxDEBUG_INIT();              /* Debug module is necessary to display debug from each module */
+  orxMAIN_INIT_MODULE(Test);    /* Test Module is necessary to register test function */
+  orxMAIN_INIT_MODULE(String);  /* String mdule to manage string (and read value from user) */
+  orxMAIN_INIT_MODULE(TextIO);  /* Text IO module to manage user input/output */
+
   orxTestMain_Init();   /* Initialise application (load dynamic library */
   
   /* Display menu and get user entry */
@@ -332,9 +333,10 @@ int main(int argc, char **argv)
   
   /* Uninitialize modules */
   orxTestMain_Exit();
-  orxTextIO_Exit();
-  orxString_Exit();
-  orxTest_Exit();
+  
+  orxMAIN_EXIT_MODULE(TextIO);
+  orxMAIN_EXIT_MODULE(String);
+  orxMAIN_EXIT_MODULE(Test);
   orxDEBUG_EXIT();
   
   /* That's all folks ! */

@@ -367,7 +367,7 @@ orxVOID orxTest_Bank_DisplayCells()
 orxVOID orxTest_Bank_Init()
 {
   /* Initialize bank module */
-  orxBank_Init();
+  orxMAIN_INIT_MODULE(Bank);
   
   /* Register test functions */
   orxTest_Register("Bank", "Display module informations", orxTest_Bank_Infos);
@@ -400,7 +400,7 @@ orxVOID orxTest_Bank_Exit()
   }
   
   /* Uninitialize module */
-  orxBank_Exit();
+  orxMAIN_EXIT_MODULE(Bank);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Bank_Init, orxTest_Bank_Exit)

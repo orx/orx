@@ -225,38 +225,37 @@ orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT)
 orxSTATUS orxClock_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
-    
-  /* Not already Initialized? */
-  if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY))
+  
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Time)   == orxSTATUS_SUCCESS) && 
+      (orxMAIN_INIT_MODULE(Bank)   == orxSTATUS_SUCCESS))
   {
-    /* Cleans control structure */
-    orxMemory_Set(&sstClock, 0, sizeof(orxCLOCK_STATIC));
-
-    /* Inits time module before */
-    eResult = orxTime_Init();
-
-    /* Valid? */
-    if(eResult == orxSTATUS_SUCCESS)
+    /* Not already Initialized? */
+    if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY))
     {
+      /* Cleans control structure */
+      orxMemory_Set(&sstClock, 0, sizeof(orxCLOCK_STATIC));
+  
       /* Creates clock bank */
       sstClock.pstClockBank = orxBank_Create(orxCLOCK_KU32_CLOCK_BANK_SIZE, sizeof(orxCLOCK), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-
+  
       /* Valid? */
       if(sstClock.pstClockBank != orxNULL)
       {
         /* No mod type by default */
         sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
-
+  
         /* Gets init time */
         sstClock.u32Time  = orxTime_GetTime();
-
+  
         /* Inits Flags */
         sstClock.u32Flags = orxCLOCK_KU32_FLAG_READY;
       }
       else
       {
         /* !!! MSG !!! */
-
+  
         /* Clock bank not created */
         eResult = orxSTATUS_FAILED;
       }
@@ -265,10 +264,6 @@ orxSTATUS orxClock_Init()
     {
       /* !!! MSG !!! */
     }
-  }
-  else
-  {
-    /* !!! MSG !!! */
   }
 
   /* Done! */
@@ -304,6 +299,10 @@ orxVOID orxClock_Exit()
     /* Updates flags */
     sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_READY;
   }
+
+  orxMAIN_EXIT_MODULE(Bank);
+  orxMAIN_EXIT_MODULE(Time);
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }

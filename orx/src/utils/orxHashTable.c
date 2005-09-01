@@ -40,8 +40,8 @@
 /** Hash table cell definition.*/
 typedef struct __orxHASHTABLE_CELL_t
 {
-  orxU32   u32Key;                      /**< Key element of a hash table. */
-  orxVOID  *pData;                      /**< Address of data. */
+  orxU32   u32Key;                        /**< Key element of a hash table. */
+  orxVOID  *pData;                        /**< Address of data. */
   struct __orxHASHTABLE_CELL_t *pstNext;  /**< Next cell with the same index. */
 } orxHASHTABLE_CELL;
 
@@ -49,7 +49,7 @@ typedef struct __orxHASHTABLE_CELL_t
 struct __orxHASHTABLE_t
 {
   orxHASHTABLE_CELL *apstCell[orxHASHTABLE_KU32_INDEX_SIZE]; /**< Hash table */
-  orxBANK *pstBank;                                      /**< Bank where are stored cells */
+  orxBANK *pstBank;                                          /**< Bank where are stored cells */
 };
 
 /** Module static structure */
@@ -96,17 +96,31 @@ orxINLINE orxU32 orxHashTable_FindIndex(orxHASHTABLE *_pstHashTable, orxU32 _u32
  */
 orxSTATUS orxHashTable_Init()
 {
-  /* Module not already initialized ? */
-  orxASSERT(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY));
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstHashTable, 0, sizeof(orxHASHTABLE_STATIC));
-
-  /* Set module as ready */
-  sstHashTable.u32Flags = orxHASHTABLE_KU32_FLAG_READY;
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Bank)   == orxSTATUS_SUCCESS))
+  {
+    /* Not already Initialized? */
+    if(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY))
+    {
+      /* Module not already initialized ? */
+      orxASSERT(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY));
+    
+      /* Cleans static controller */
+      orxMemory_Set(&sstHashTable, 0, sizeof(orxHASHTABLE_STATIC));
+    
+      /* Set module as ready */
+      sstHashTable.u32Flags = orxHASHTABLE_KU32_FLAG_READY;
+      
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
   
   /* Successfull initialization */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /** Exit HashTable module
@@ -118,6 +132,10 @@ orxVOID orxHashTable_Exit()
   
   /* Module not ready now */
   sstHashTable.u32Flags = orxHASHTABLE_KU32_FLAG_NONE;
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Bank);
+  orxMAIN_EXIT_MODULE(Memory);
 }
 
 /** @name HashTable creation/destruction.

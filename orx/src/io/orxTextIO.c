@@ -55,17 +55,26 @@ static orxTEXTIO_STATIC sstTextIO;
  */
 orxSTATUS orxTextIO_Init()
 {
-  /* Module not already registered ? */
-  if(!(sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY))
+  orxSTATUS eResult = orxSTATUS_FAILED;
+  
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(String) == orxSTATUS_SUCCESS))
   {
-    /* Initialize values */
-    orxMemory_Set(&sstTextIO, 0, sizeof(orxTEXTIO_STATIC));
-
-    /* Module ready */
-    sstTextIO.u32Flags |= orxTEXTIO_KU32_FLAG_READY;
+    /* Module not already registered ? */
+    if(!(sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY))
+    {
+      /* Initialize values */
+      orxMemory_Set(&sstTextIO, 0, sizeof(orxTEXTIO_STATIC));
+  
+      /* Module ready */
+      sstTextIO.u32Flags |= orxTEXTIO_KU32_FLAG_READY;
+      
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
-    
-  return orxSTATUS_SUCCESS;
+  
+  /* Done */ 
+  return eResult;
 }
 
 /** Uninitialize the test module
@@ -77,6 +86,10 @@ orxVOID orxTextIO_Exit()
   
   /* Module becomes not ready */
   sstTextIO.u32Flags &= ~orxTEXTIO_KU32_FLAG_READY;
+  
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(String);
+  orxMAIN_EXIT_MODULE(Memory);
 }
 
 /** Read a String from STDIN and store it in the given buffer

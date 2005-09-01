@@ -136,16 +136,26 @@ orxSTATIC orxVOID graphic_list_delete()
  ***************************************************************************/
 orxU32 graphic_init()
 {
-  /* Not already Initialized? */
-  if(!(graphic_su32Flags & GRAPHIC_KU32_FLAG_READY))
+  orxSTATUS eResult = orxSTATUS_FAILED;
+  
+  /* Init Dependencies */
+  if ((orxMAIN_INIT_MODULE(Structure)   == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Anim)        == orxSTATUS_SUCCESS) && 
+      (orxMAIN_INIT_MODULE(AnimPointer) == orxSTATUS_SUCCESS) && 
+      (orxMAIN_INIT_MODULE(Texture)     == orxSTATUS_SUCCESS))
   {
-    /* Inits Flags */
-    graphic_su32Flags = GRAPHIC_KU32_FLAG_READY;
-
-    return orxSTATUS_SUCCESS;
+    /* Not already Initialized? */
+    if(!(graphic_su32Flags & GRAPHIC_KU32_FLAG_READY))
+    {
+      /* Inits Flags */
+      graphic_su32Flags = GRAPHIC_KU32_FLAG_READY;
+  
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
-
-  return orxSTATUS_FAILED;
+  
+  /* Done */
+  return eResult;
 }
 
 /***************************************************************************
@@ -164,6 +174,12 @@ orxVOID graphic_exit()
     /* Deletes graphic list */
     graphic_list_delete();
   }
+  
+  /* Exit Dependencies */
+  orxMAIN_EXIT_MODULE(Texture);
+  orxMAIN_EXIT_MODULE(AnimPointer);
+  orxMAIN_EXIT_MODULE(Anim);
+  orxMAIN_EXIT_MODULE(Structure);
 
   return;
 }

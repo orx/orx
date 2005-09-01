@@ -151,20 +151,35 @@ orxSTATIC orxFSM_STATIC sstStateMachine;
  */
 orxSTATUS orxFSM_Init()
 {
-  /* Module not already initialized? */
-  orxASSERT(!(sstStateMachine.u32Flags & orxFSM_KU32_FLAG_READY));
-  
-  /* Cleans static controller. */
-  orxMemory_Set(&sstStateMachine, 0, sizeof(orxFSM_STATIC));
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Allocate bank for state machines. */
-  sstStateMachine.pstStateMachinesBank = orxBank_Create(orxFSM_ALLOC_NB, sizeof(orxFSM), orxFSM_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-  
-  /* Set module as ready. */
-  sstStateMachine.u32Flags = orxFSM_KU32_FLAG_READY;
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Bank)      == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(HashTable) == orxSTATUS_SUCCESS))
+  {
+    /* Not already Initialized? */
+    if(!(sstStateMachine.u32Flags & orxFSM_KU32_FLAG_READY))
+    {
+      /* Cleans static controller. */
+      orxMemory_Set(&sstStateMachine, 0, sizeof(orxFSM_STATIC));
+    
+      /* Allocate bank for state machines. */
+      sstStateMachine.pstStateMachinesBank = orxBank_Create(orxFSM_ALLOC_NB, sizeof(orxFSM), orxFSM_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+      
+      if (sstStateMachine.pstStateMachinesBank != orxNULL)
+      {
+        /* Set module as ready. */
+        sstStateMachine.u32Flags = orxFSM_KU32_FLAG_READY;
+      
+        /* Success */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
+  }
   
   /* Module successfully initialized. */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /** Exit state machine module.
@@ -183,6 +198,11 @@ orxVOID orxFSM_Exit()
   
   /* Module not ready now. */
   sstStateMachine.u32Flags = orxFSM_KU32_FLAG_NONE;
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(HashTable);
+  orxMAIN_EXIT_MODULE(Bank);
+  orxMAIN_EXIT_MODULE(Memory);
 }
 
 /** Create a state machine and return a pointer on it.

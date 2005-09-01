@@ -1226,52 +1226,55 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIM_SET_LINK_TABLE *_pstLinkTable)
  ***************************************************************************/
 orxSTATUS orxAnimSet_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Not already Initialized? */
-  if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY))
+  if ((orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Anim)      == orxSTATUS_SUCCESS) && 
+      (orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS))
   {
-    /* Cleans control structure */
-    orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIM_SET_STATIC));
 
-    /* Inits Anim before */
-    eResult = orxAnim_Init();
+    /* Not already Initialized? */
+    if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY))
+    {
+      /* Cleans control structure */
+      orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIM_SET_STATIC));
+  
+      /* Initialized? */
+      if(eResult == orxSTATUS_SUCCESS)
+      {
+        orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
 
+        /* Registers structure type */
+        stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+        stRegisterInfo.u32Size      = sizeof(orxANIM_SET);
+        stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+        stRegisterInfo.pfnUpdate    = orxNULL;
+
+        eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIM_SET, &stRegisterInfo);
+      }
+      else
+      {
+        /* !!! MSG !!! */
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+  
+      /* Already initialized */
+      eResult = orxSTATUS_FAILED;
+    }
+  
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
     {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-      stRegisterInfo.u32Size      = sizeof(orxANIM_SET);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
-
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIM_SET, &stRegisterInfo);
+      /* Inits Flags */
+      sstAnimSet.u32Flags = orxANIMSET_KU32_FLAG_READY;
     }
     else
     {
       /* !!! MSG !!! */
     }
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_FAILED;
-  }
-
-  /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
-  {
-    /* Inits Flags */
-    sstAnimSet.u32Flags = orxANIMSET_KU32_FLAG_READY;
-  }
-  else
-  {
-    /* !!! MSG !!! */
   }
 
   /* Done! */
@@ -1297,10 +1300,11 @@ orxVOID orxAnimSet_Exit()
 
     /* Updates flags */
     sstAnimSet.u32Flags &= ~orxANIMSET_KU32_FLAG_READY;
-
-    /* Exit from Anim after */
-    orxAnim_Exit();
   }
+  
+  orxMAIN_EXIT_MODULE(Memory);
+  orxMAIN_EXIT_MODULE(Anim);
+  orxMAIN_EXIT_MODULE(Structure);
 
   return;
 }

@@ -371,7 +371,7 @@ orxVOID orxTest_HashTable_PrintAll()
 orxVOID orxTest_HashTable_Init()
 {
   /* Initialize bank module */
-  orxHashTable_Init();
+  orxMAIN_INIT_MODULE(HashTable);
   
   /* Register test functions */
   orxTest_Register("Hash", "Display module informations", orxTest_HashTable_Infos);
@@ -404,7 +404,7 @@ orxVOID orxTest_HashTable_Exit()
   }
   
   /* Uninitialize module */
-  orxHashTable_Exit();
+  orxMAIN_EXIT_MODULE(HashTable);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_HashTable_Init, orxTest_HashTable_Exit)

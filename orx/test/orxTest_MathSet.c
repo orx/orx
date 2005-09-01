@@ -594,8 +594,12 @@ orxVOID orxTest_MathSet_AutoTestIntervals()
  ******************************************************/
 orxVOID orxTest_MathSet_Init()
 {
-  /* Initialize bank module */
-  orxMathSet_Init();
+  /* Initialize module */
+  
+  /* NB: Here, we should have a call to orxMAIN_INIT_MODULE(MathSet) But it seems that
+   * MathSet module doesn't respects the coding style for function naming convention
+   * and initialization : change it later
+   */
   
   /* Register test functions */
   orxTest_Register("MathSet", "Display module informations", orxTest_MathSet_Infos);
@@ -609,7 +613,6 @@ orxVOID orxTest_MathSet_Init()
 orxVOID orxTest_MathSet_Exit()
 {
   /* Uninitialize module */
-  orxMathSet_Exit();
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_MathSet_Init, orxTest_MathSet_Exit)

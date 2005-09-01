@@ -343,9 +343,12 @@ orxVOID orxTest_Sound_ChannelSetVolume()
  ******************************************************/
 orxVOID orxTest_Sound_Init()
 {
-  /* Initialize bank module */
+  orxMAIN_INIT_MODULE(Plugin);  /* Initialize Plugin module */
   orxSound_Plugin_Init();
-  orxSound_Init();
+  
+  /* orxSound_Init (orxMAIN_INIT_MODULE(Sound)) have to be called after the plugin
+   * loading. I have to find a way to do it
+   */
   
   /* Register test functions */
   orxTest_Register("Sound", "Display module informations", orxTest_Sound_Infos);
@@ -380,7 +383,7 @@ orxVOID orxTest_Sound_Exit()
   orxBank_Delete(sstTest_Sound.pstSampleBank);
     
   /* Uninitialize module */
-  orxSound_Exit();
+  orxMAIN_EXIT_MODULE(Plugin);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Sound_Init, orxTest_Sound_Exit)

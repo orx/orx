@@ -154,41 +154,50 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
  ***************************************************************************/
 orxSTATUS orxObject_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Not already Initialized? */
-  if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
+  /* Init dependencies */
+  /** WARNING : This module depends on graphic too, but since all the graphic
+   * layer has to be redesigned and rewritten, we won't include it at the moment
+   */
+  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Frame)     == orxSTATUS_SUCCESS))
   {
-    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-
-    /* Cleans static controller */
-    orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
-
-    /* Registers structure type */
-    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-    stRegisterInfo.u32Size      = sizeof(orxOBJECT);
-    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-    stRegisterInfo.pfnUpdate    = orxNULL;
-
-    eResult = orxStructure_Register(orxSTRUCTURE_ID_OBJECT, &stRegisterInfo);
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_FAILED;
-  }
-
-  /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
-  {
-    /* Inits Flags */
-    sstObject.u32Flags = orxOBJECT_KU32_FLAG_READY;
-  }
-  else
-  {
-    /* !!! MSG !!! */
+    /* Not already Initialized? */
+    if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
+    {
+      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+  
+      /* Cleans static controller */
+      orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
+  
+      /* Registers structure type */
+      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+      stRegisterInfo.u32Size      = sizeof(orxOBJECT);
+      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+      stRegisterInfo.pfnUpdate    = orxNULL;
+  
+      eResult = orxStructure_Register(orxSTRUCTURE_ID_OBJECT, &stRegisterInfo);
+    }
+    else
+    {
+      /* !!! MSG !!! */
+  
+      /* Already initialized */
+      eResult = orxSTATUS_FAILED;
+    }
+  
+    /* Initialized? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      /* Inits Flags */
+      sstObject.u32Flags = orxOBJECT_KU32_FLAG_READY;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
 
   /* Done! */
@@ -219,6 +228,11 @@ orxVOID orxObject_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Frame);
+  orxMAIN_EXIT_MODULE(Structure);
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }

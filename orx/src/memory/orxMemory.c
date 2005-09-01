@@ -60,17 +60,26 @@ orxSTATIC orxMEMORY_STATIC sstMemory;
  */
 orxSTATUS orxMemory_Init()
 {
-  /* Module not already initialized ? */
-  orxASSERT(!(sstMemory.u32Flags & orxMEMORY_KU32_FLAG_READY));
-
-  /* Cleans static controller */
-  orxMemory_Set(&sstMemory, 0, sizeof(orxMEMORY_STATIC));
-
-  /* Module initialized */
-  sstMemory.u32Flags = orxMEMORY_KU32_FLAG_READY;
+  orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Module correctly initialised */
-  return orxSTATUS_SUCCESS;
+  /* No dependencies for this module */
+
+  /* Module not already initialized ? */
+  /* Not already Initialized? */
+  if(!(sstMemory.u32Flags & orxMEMORY_KU32_FLAG_READY))
+  {
+    /* Cleans static controller */
+    orxMemory_Set(&sstMemory, 0, sizeof(orxMEMORY_STATIC));
+  
+    /* Module initialized */
+    sstMemory.u32Flags = orxMEMORY_KU32_FLAG_READY;
+    
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  
+  /* Done */
+  return eResult;
 }
 
 /** Uninitialize memory allocation module

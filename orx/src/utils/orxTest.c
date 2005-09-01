@@ -110,17 +110,27 @@ orxVOID orxTest_ResetVisibility()
  */
 orxSTATUS orxTest_Init()
 {
-  /* Module not already registered ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) != orxTEST_KU32_FLAG_READY);
-  
-  /* Initialize values */
-  orxMemory_Set(&sstTest, 0, sizeof(orxTEST_STATIC));
-  sstTest.u32NbRegisteredFunc = 0;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Module ready */
-  sstTest.u32Flags |= orxTEST_KU32_FLAG_READY;
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
+  {
+    /* Not already Initialized? */
+    if(!(sstTest.u32Flags & orxTEST_KU32_FLAG_READY))
+    {
+      /* Initialize values */
+      orxMemory_Set(&sstTest, 0, sizeof(orxTEST_STATIC));
+      sstTest.u32NbRegisteredFunc = 0;
     
-  return orxSTATUS_SUCCESS;
+      /* Module ready */
+      sstTest.u32Flags |= orxTEST_KU32_FLAG_READY;
+      
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
+    
+  return eResult;
 }
 
 /** Uninitialize the test module
@@ -132,6 +142,9 @@ orxVOID orxTest_Exit()
   
   /* Module becomes not ready */
   sstTest.u32Flags &= ~orxTEST_KU32_FLAG_READY;
+  
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Memory);
 }
 
 /** Register a new function

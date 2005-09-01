@@ -271,43 +271,49 @@ orxVOID orxViewport_DeleteAll()
  ***************************************************************************/
 orxSTATUS orxViewport_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Not already Initialized? */
-  if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
+  orxSTATUS eResult = orxSTATUS_FAILED;
+  
+  if ((orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Camera)    == orxSTATUS_SUCCESS) && 
+      (orxMAIN_INIT_MODULE(Texture)   == orxSTATUS_SUCCESS) && 
+      (orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS))
   {
-    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+    /* Not already Initialized? */
+    if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
+    {
+      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+    
+      /* Cleans static controller */
+      orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
+  
+      /* Registers structure type */
+      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+      stRegisterInfo.u32Size      = sizeof(orxVIEWPORT);
+      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+      stRegisterInfo.pfnUpdate    = orxNULL;
 
-    /* Cleans static controller */
-    orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
-
-    /* Registers structure type */
-    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-    stRegisterInfo.u32Size      = sizeof(orxVIEWPORT);
-    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-    stRegisterInfo.pfnUpdate    = orxNULL;
-
-    eResult = orxStructure_Register(orxSTRUCTURE_ID_VIEWPORT, &stRegisterInfo);
+      eResult = orxStructure_Register(orxSTRUCTURE_ID_VIEWPORT, &stRegisterInfo);
+    }
+    else
+    {
+      /* !!! MSG !!! */
+  
+      /* Already initialized */
+      eResult = orxSTATUS_FAILED;
+    }
+  
+    /* Initialized? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      /* Inits Flags */
+      sstViewport.u32Flags = orxVIEWPORT_KU32_FLAG_READY;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_FAILED;
-  }
-
-  /* Initialized? */
-  if(eResult == orxSTATUS_SUCCESS)
-  {
-    /* Inits Flags */
-    sstViewport.u32Flags = orxVIEWPORT_KU32_FLAG_READY;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-  }
-
+  
   /* Done! */
   return eResult;
 }
@@ -336,6 +342,11 @@ orxVOID orxViewport_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  orxMAIN_EXIT_MODULE(Memory);
+  orxMAIN_EXIT_MODULE(Texture);
+  orxMAIN_EXIT_MODULE(Camera);
+  orxMAIN_EXIT_MODULE(Structure);
 
   return;
 }

@@ -104,51 +104,59 @@ orxSTATIC orxVOID orxFASTCALL orxFps_Update(orxCONST orxCLOCK_INFO *_pstClockInf
  ***************************************************************************/
 orxSTATUS orxFps_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Not already Initialized? */
-  if(!(sstFps.u32Flags & orxFPS_KU32_FLAG_READY))
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Clock)  == orxSTATUS_SUCCESS))
   {
-    /* Cleans control structure */
-    orxMemory_Set((orxFPS_STATIC *)&sstFps, 0, sizeof(orxFPS_STATIC));
-
-    /* Creates clock */
-    sstFps.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_FPS);
-
-    /* Valid? */
-    if(sstFps.pstClock != orxNULL)
+    /* Not already Initialized? */
+    if(!(sstFps.u32Flags & orxFPS_KU32_FLAG_READY))
     {
-      /* Registers callback */
-      eResult = orxClock_Register(sstFps.pstClock, orxFps_Update, orxNULL);
-
-      /* Registered? */
-      if(eResult == orxSTATUS_SUCCESS)
+      /* Cleans control structure */
+      orxMemory_Set((orxFPS_STATIC *)&sstFps, 0, sizeof(orxFPS_STATIC));
+  
+      /* Creates clock */
+      sstFps.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_FPS);
+  
+      /* Valid? */
+      if(sstFps.pstClock != orxNULL)
       {
-        /* Inits Flags */
-        sstFps.u32Flags = orxFPS_KU32_FLAG_READY;
+        /* Registers callback */
+        eResult = orxClock_Register(sstFps.pstClock, orxFps_Update, orxNULL);
+  
+        /* Registered? */
+        if(eResult == orxSTATUS_SUCCESS)
+        {
+          /* Inits Flags */
+          sstFps.u32Flags = orxFPS_KU32_FLAG_READY;
+          
+          /* Success */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* !!! MSG !!! */
+  
+          /* Deletes clock */
+          orxClock_Delete(sstFps.pstClock);
+        }
       }
       else
       {
         /* !!! MSG !!! */
-
-        /* Deletes clock */
-        orxClock_Delete(sstFps.pstClock);
+  
+        /* Not initialized */
+        eResult = orxSTATUS_FAILED;
       }
     }
     else
     {
       /* !!! MSG !!! */
-
-      /* Not initialized */
+  
+      /* Already initialized */
       eResult = orxSTATUS_FAILED;
     }
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_FAILED;
   }
 
   /* Done! */
@@ -179,6 +187,10 @@ orxVOID orxFps_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  /* Exit dependencies */  
+  orxMAIN_EXIT_MODULE(Clock);
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }

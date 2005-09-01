@@ -211,22 +211,33 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
  ***************************************************************************/
 orxSTATUS orxTree_Init()
 {
-  /* Already Initialized? */
-  if(sstTree.u32Flags & orxTREE_KU32_FLAG_READY)
+  orxSTATUS eResult;
+  
+  eResult = orxSTATUS_FAILED;
+  
+    /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
   {
-    /* !!! MSG !!! */
-
-    return orxSTATUS_FAILED;
+    /* Already Initialized? */
+    if(!(sstTree.u32Flags & orxTREE_KU32_FLAG_READY))
+    {
+      /* Cleans static controller */
+      orxMemory_Set(&sstTree, 0, sizeof(orxTREE_STATIC));
+    
+      /* Inits ID Flags */
+      sstTree.u32Flags = orxTREE_KU32_FLAG_READY;
+      
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstTree, 0, sizeof(orxTREE_STATIC));
-
-  /* Inits ID Flags */
-  sstTree.u32Flags = orxTREE_KU32_FLAG_READY;
-
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /***************************************************************************
@@ -247,6 +258,9 @@ orxVOID orxTree_Exit()
   {
     /* !!! MSG !!! */
   }
+  
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }

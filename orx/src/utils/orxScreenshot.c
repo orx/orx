@@ -79,53 +79,61 @@ orxSTATIC orxSCREENSHOT_STATIC sstScreenshot;
 orxSTATUS orxScreenshot_Init()
 {
   orxCHAR zFileName[256];
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxFILE_INFO stFileInfos;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Not already Initialized? */
-  if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory)  == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(File)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(TextIO)  == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Display) == orxSTATUS_SUCCESS))
   {
-    /* Cleans control structure */
-    orxMemory_Set(&sstScreenshot, 0, sizeof(orxSCREENSHOT_STATIC));
-
-    /* Valid? */
-    if(orxFile_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
+    /* Not already Initialized? */
+    if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))
     {
-      /* Gets file to find name */
-      orxTextIO_Printf(zFileName, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
-
-      /* Finds first screenshot file */
-      if(orxFile_FindFirst(zFileName, &stFileInfos) != orxFALSE)
+      /* Cleans control structure */
+      orxMemory_Set(&sstScreenshot, 0, sizeof(orxSCREENSHOT_STATIC));
+  
+      /* Valid? */
+      if(orxFile_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
       {
-        do
+        /* Gets file to find name */
+        orxTextIO_Printf(zFileName, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
+  
+        /* Finds first screenshot file */
+        if(orxFile_FindFirst(zFileName, &stFileInfos) != orxFALSE)
         {
-          /* Updates screenshot counter */
-          sstScreenshot.u32Counter++;
+          do
+          {
+            /* Updates screenshot counter */
+            sstScreenshot.u32Counter++;
+          }
+          /* Till all screenshots have been found */
+          while(orxFile_FindNext(&stFileInfos) != orxFALSE);
+          
+          /* Ends the search */
+          orxFile_FindClose(&stFileInfos);
         }
-        /* Till all screenshots have been found */
-        while(orxFile_FindNext(&stFileInfos) != orxFALSE);
+  
+        /* Inits Flags */
+        sstScreenshot.u32Flags = orxSCREENSHOT_KU32_FLAG_READY;
         
-        /* Ends the search */
-        orxFile_FindClose(&stFileInfos);
+        /* Success */
+        eResult = orxSTATUS_SUCCESS;
       }
-
-      /* Inits Flags */
-      sstScreenshot.u32Flags = orxSCREENSHOT_KU32_FLAG_READY;
+      else
+      {
+          /* !!! MSG !!! */
+  
+          /* Can't find folder */
+      }
     }
     else
     {
-        /* !!! MSG !!! */
-
-        /* Can't find folder */
-        eResult = orxSTATUS_FAILED;
+      /* !!! MSG !!! */
+  
+      /* Already initialized */
     }
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_FAILED;
   }
 
   /* Done! */
@@ -150,6 +158,12 @@ orxVOID orxScreenshot_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Display);
+  orxMAIN_EXIT_MODULE(TextIO);
+  orxMAIN_EXIT_MODULE(File);
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }

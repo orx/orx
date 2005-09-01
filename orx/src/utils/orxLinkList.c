@@ -68,22 +68,31 @@ orxSTATIC orxLINKLIST_STATIC sstLinkList;
  ***************************************************************************/
 orxSTATUS orxLinkList_Init()
 {
-  /* Already Initialized? */
-  if(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY)
-  {
-    /* !!! MSG !!! */
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-    return orxSTATUS_FAILED;
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
+  {
+    /* Already Initialized? */
+    if(!(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY))
+    {
+      /* Cleans static controller */
+      orxMemory_Set(&sstLinkList, 0, sizeof(orxLINKLIST_STATIC));
+    
+      /* Inits ID Flags */
+      sstLinkList.u32Flags = orxLINKLIST_KU32_FLAG_READY;
+      
+      /* Success */ 
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
 
-  /* Cleans static controller */
-  orxMemory_Set(&sstLinkList, 0, sizeof(orxLINKLIST_STATIC));
-
-  /* Inits ID Flags */
-  sstLinkList.u32Flags = orxLINKLIST_KU32_FLAG_READY;
-
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
 /***************************************************************************
@@ -104,6 +113,9 @@ orxVOID orxLinkList_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }

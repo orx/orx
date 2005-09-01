@@ -551,37 +551,47 @@ orxINLINE orxVOID orxPlugin_DeleteAll()
  ***************************************************************************/
 orxSTATUS orxPlugin_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Not already Initialized? */
-  if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
+  /* Init dependencies */
+  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(Bank)      == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(HashTable) == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(String)    == orxSTATUS_SUCCESS) &&
+      (orxMAIN_INIT_MODULE(TextIO)    == orxSTATUS_SUCCESS))
   {
-    /* Cleans control structure */
-    orxMemory_Set(&sstPlugin, 0, sizeof(orxPLUGIN_STATIC));
-
-    /* Creates an empty spst_plugin_list */
-    sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-
-    /* Is bank valid? */
-    if(sstPlugin.pstPluginBank != orxNULL)
+    /* Not already Initialized? */
+    if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
     {
-      /* Updates status flags */
-      sstPlugin.u32Flags = orxPLUGIN_KU32_FLAG_READY;
+      /* Cleans control structure */
+      orxMemory_Set(&sstPlugin, 0, sizeof(orxPLUGIN_STATIC));
+  
+      /* Creates an empty spst_plugin_list */
+      sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+  
+      /* Is bank valid? */
+      if(sstPlugin.pstPluginBank != orxNULL)
+      {
+        /* Updates status flags */
+        sstPlugin.u32Flags = orxPLUGIN_KU32_FLAG_READY;
+        
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* !!! MSG !!! */
+  
+        /* Bank not created */
+        eResult = orxSTATUS_FAILED;
+      }
     }
     else
     {
       /* !!! MSG !!! */
-
-      /* Bank not created */
+  
+      /* Already initialized */
       eResult = orxSTATUS_FAILED;
     }
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_FAILED;
   }
 
   /* Done! */
@@ -613,6 +623,13 @@ orxVOID orxPlugin_Exit()
   {
     /* !!! MSG !!! */
   }
+
+  /* Exit dependencies */
+  orxMAIN_EXIT_MODULE(TextIO);
+  orxMAIN_EXIT_MODULE(String);
+  orxMAIN_EXIT_MODULE(HashTable);
+  orxMAIN_EXIT_MODULE(Bank);
+  orxMAIN_EXIT_MODULE(Memory);
 
   return;
 }
