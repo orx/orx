@@ -198,7 +198,7 @@ orxSTATUS orxFASTCALL orxTextIO_ReadS32InRange(orxS32 *_ps32OutValue, orxU32 _u3
   /* Correct parameters ? */
   orxASSERT(_ps32OutValue != orxNULL);
   orxASSERT((_u32Base >= 2) && (_u32Base <= 36));
-  orxASSERT(_s32Min < _s32Max);
+  orxASSERT(_s32Min <= _s32Max);
     
   do
   {
