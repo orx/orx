@@ -376,7 +376,7 @@ void orxQueue_RemoveItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem)
 	/** Assert the queue is exists.*/
 	orxASSERT(_pstQueue != orxNULL);
 	/** Assert the item to remove is in queue array bounds.*/
-	orxASSERT((_pstItem>=_pstQueue->pastItemss)&&(_pstItem<_pstQueue->pastItems+(_pstQueue->u16Used*sizeof(orxQUEUE_ITEM))));
+	orxASSERT((_pstItem>=_pstQueue->pastItems)&&(_pstItem<_pstQueue->pastItems+(_pstQueue->u16Used*sizeof(orxQUEUE_ITEM))));
 	
 	orxQUEUE_ITEM* pLastItem = orxQueue_GetLastItem(_pstQueue);
 	while(_pstItem < pLastItem)
