@@ -50,7 +50,7 @@ orxSTATIC orxQUEUE_STATIC sstQueue;
 struct __orxQUEUE_ITEM_t
 {
 	/** Queued item identifier.*/
-	orxU32 u32Identifier;
+	orxU32 u32ID;
 	/** Queued item extra data.*/
 	orxVOID* pExtraData;
 };
@@ -84,8 +84,8 @@ orxINLINE orxVOID orxQueueItem_Clear(orxQUEUE_ITEM* _pstItem)
   /* Correct parameters ? */
   orxASSERT(_pstItem != orxNULL);
 
-	_pstItem->pExtraData    = orxNULL;
-	_pstItem->u32Identifier = 0x00000000;
+	_pstItem->pExtraData = orxNULL;
+	_pstItem->u32ID      = 0x00000000;
 }
 
 /**
@@ -102,8 +102,8 @@ orxINLINE orxVOID orxQueueItem_Set(orxQUEUE_ITEM* _pstItem, orxU32 _u32ID, orxVO
   /* Correct parameters ? */
   orxASSERT(_pstItem != orxNULL);
 
-	_pstItem->u32Identifier = _u32ID;
-	_pstItem->pExtraData    = _pData;
+	_pstItem->u32ID      = _u32ID;
+	_pstItem->pExtraData = _pData;
 }
 
 /**
@@ -194,7 +194,7 @@ orxU32 orxQueueItem_GetID(orxQUEUE_ITEM* _pstItem)
     /* Correct parameters ? */
     orxASSERT(_pstItem != orxNULL);
 
-	return _pstItem->u32Identifier;
+	return _pstItem->u32ID;
 }
 
 
@@ -347,7 +347,7 @@ orxQUEUE_ITEM* orxQueue_AddItem(orxQUEUE* _pstQueue, orxU32 _u32ID, orxVOID* _pD
 			pCurrentItem	= orxQueue_GetPreviousItem(pCurrentItem);
 	
 		/** Find the insert position and move all Item after.*/
-		while((pCurrentItem>=pFirstItem) && (pCurrentItem->u32Identifier>_u32ID))
+		while((pCurrentItem>=pFirstItem) && (pCurrentItem->u32ID>_u32ID))
 		{
 			orxQueueItem_Copy(pCurrentItem, orxQueue_GetNextItem(pCurrentItem));
 			pCurrentItem = orxQueue_GetPreviousItem(pCurrentItem);
@@ -408,7 +408,7 @@ orxQUEUE_ITEM* orxQueue_FindItem(orxQUEUE* _pstQueue, orxU32 _u32ID)
 	
 	while(pCurrentItem<=pLastItem)
 	{
-		if(pCurrentItem->u32Identifier==_u32ID)
+		if(pCurrentItem->u32ID==_u32ID)
     {
 			return pCurrentItem;
     }
