@@ -105,7 +105,7 @@
 #define orxDEBUG_KS32_BUFFER_MAX_NUMBER       32
 #define orxDEBUG_KS32_BUFFER_OUTPUT_SIZE      512
 
-#define orxDEBUG_KZ_DATE_FORMAT               "[%Y-%m-%d %H:%M:%S']"
+#define orxDEBUG_KZ_DATE_FORMAT               "[%Y-%m-%d %H:%M:%S]"
 
 
 /*****************************************************************************/

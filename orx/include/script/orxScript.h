@@ -37,10 +37,6 @@ typedef struct __orxSCRIPT_t orxSCRIPT;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Function that initialize the File plugin module
- */
-extern orxDLLAPI orxVOID orxScript_Plugin_Init();
-
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/
@@ -58,14 +54,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxScript_Execute, orxSTATUS, orxSCRIPT *, orx
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_Init()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxScript_Init)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxScript_Init)();
 }
 
 /** Uninitialize the Script Module
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxScript_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxScript_Exit)();
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxScript_Exit)();
 }
 
 /** Create a new script instance
@@ -73,7 +69,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxScript_Exit()
  */
 orxSTATIC orxINLINE orxSCRIPT* orxDLLAPI orxScript_Create()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxScript_Create)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxScript_Create)();
 }
 
 /** Delete a script instance
@@ -81,7 +77,7 @@ orxSTATIC orxINLINE orxSCRIPT* orxDLLAPI orxScript_Create()
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxScript_Delete(orxSCRIPT *_pstScript)
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxScript_Delete)(_pstScript);
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxScript_Delete)(_pstScript);
 }
 
 /** Load and execute a script file.
@@ -91,7 +87,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxScript_Delete(orxSCRIPT *_pstScript)
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_LoadFile(orxSCRIPT *_pstScript, orxCONST orxSTRING _zFile)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxScript_LoadFile)(_pstScript, _zFile);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxScript_LoadFile)(_pstScript, _zFile);
 }
 
 /** Call a function from a loaded script.
@@ -104,7 +100,7 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_LoadFile(orxSCRIPT *_pstScript
 /*
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_CallFunc(orxSCRIPT *_pstScript, orxCONST orxSTRING _zFunction, orxSTRING _zArgs, ...)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxScript_CallFunc)(_pstScript, _zFunction, _zArgs, ...);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxScript_CallFunc)(_pstScript, _zFunction, _zArgs, ...);
 }
 */
 
@@ -116,7 +112,7 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_CallFunc(orxSCRIPT *_pstScript
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_Execute(orxSCRIPT *_pstScript, orxCONST orxSTRING _zScriptCode)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxScript_Execute)(_pstScript, _zScriptCode);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxScript_Execute)(_pstScript, _zScriptCode);
 }
 
 #endif /* _orxSCRIPT_H_ */

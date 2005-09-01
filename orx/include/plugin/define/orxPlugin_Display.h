@@ -18,8 +18,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _orxPLUGIN_GRAPH_H_
-#define _orxPLUGIN_GRAPH_H_
+#ifndef _orxPLUGIN_DISPLAY_H_
+#define _orxPLUGIN_DISPLAY_H_
 
 #include "orxPlugin_CoreID.h"
 
@@ -53,4 +53,4 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_t
 } orxPLUGIN_FUNCTION_BASE_ID_DISPLAY;
 
 
-#endif /* _orxPLUGIN_GRAPH_H_ */
+#endif /* _orxPLUGIN_DISPLAY_H_ */

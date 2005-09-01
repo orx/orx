@@ -35,14 +35,4 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, GET_TIME, orxTime_GetTime)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, GET_DATE, orxTime_GetDate)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, DELAY, orxTime_Delay)
 
-orxPLUGIN_END_CORE_FUNCTION_ARRAY()
-
-
-/* *** Plugin init function *** */
-orxVOID orxTime_Plugin_Init()
-{
-  /* Plugin init */
-  orxPLUGIN_REGISTER_CORE_INFO(TIME);
-
-  return;
-}
+orxPLUGIN_END_CORE_FUNCTION_ARRAY(TIME)

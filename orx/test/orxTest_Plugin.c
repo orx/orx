@@ -355,6 +355,7 @@ orxVOID orxTest_Plugin_Load()
       }
       else
       {
+        orxJoystick_Init();
         orxTextIO_PrintLn("Can't Init the new loaded plugin, there is a problem somewhere... I'm going to unload the plugin...");
         
         /* Unload the plugin */
@@ -385,7 +386,7 @@ orxVOID orxTest_Plugin_Unload()
 /******************************************************
  * DYNAMIC LIBRARY ENTRY POINTS
  ******************************************************/
-orxVOID orxTest_Plugin_Init()
+orxVOID orxTest_RegisterCorePlugin()
 {
   orxU32 u32Index;
     
@@ -412,36 +413,36 @@ orxVOID orxTest_Plugin_Init()
   sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxDisplay_Exit;
   
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_FILE].zType,     "file");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbInit = orxFile_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxFile_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_FILE].cbInit = orxFile_Init;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_FILE].cbExit = orxFile_Exit;
   
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_JOYSTICK].zType, "joystick");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbInit = orxJoystick_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxJoystick_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_JOYSTICK].cbInit = orxJoystick_Init;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_JOYSTICK].cbExit = orxJoystick_Exit;
   
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_KEYBOARD].zType, "keyboard");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbInit = orxKeyboard_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxKeyboard_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_KEYBOARD].cbInit = orxKeyboard_Init;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_KEYBOARD].cbExit = orxKeyboard_Exit;
   
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_MOUSE].zType,    "mouse");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbInit = orxMouse_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxMouse_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_MOUSE].cbInit = orxMouse_Init;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_MOUSE].cbExit = orxMouse_Exit;
   
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].zType,  "package");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbInit = orxPackage_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxPackage_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].cbInit = orxPackage_Init;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].cbExit = orxPackage_Exit;
   
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].zType,   "script");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbInit = orxScript_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxScript_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].cbInit = orxScript_Init;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].cbExit = orxScript_Exit;
   
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].zType,    "sound");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbInit = orxSound_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxSound_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].cbInit = orxSound_Init;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].cbExit = orxSound_Exit;
   
   orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].zType,     "time");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbInit = orxTime_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].cbExit = orxTime_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].cbInit = orxTime_Init;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].cbExit = orxTime_Exit;
   
   orxMemory_Set(&sstTest_Plugin.azFileName, 0, sizeof(sstTest_Plugin.azFileName));
 }
@@ -452,4 +453,4 @@ orxVOID orxTest_Plugin_Exit()
   orxMAIN_EXIT_MODULE(Plugin);
 }
 
-orxTEST_DEFINE_ENTRY_POINT(orxTest_Plugin_Init, orxTest_Plugin_Exit)
+orxTEST_DEFINE_ENTRY_POINT(orxTest_RegisterCorePlugin, orxTest_Plugin_Exit)

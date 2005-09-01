@@ -344,7 +344,6 @@ orxVOID orxTest_Sound_ChannelSetVolume()
 orxVOID orxTest_Sound_Init()
 {
   orxMAIN_INIT_MODULE(Plugin);  /* Initialize Plugin module */
-  orxSound_Plugin_Init();
   
   /* orxSound_Init (orxMAIN_INIT_MODULE(Sound)) have to be called after the plugin
    * loading. I have to find a way to do it

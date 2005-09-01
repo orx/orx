@@ -49,10 +49,6 @@ typedef struct __orxPACKAGE_t orxPACKAGE;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Function that initialize the Package plugin module
- */
-extern orxDLLAPI orxVOID orxPackage_Plugin_Init();
-
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/
@@ -74,14 +70,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxPackage_Read,      orxU32,       orxVOID *,
  */
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxPackage_Init()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Init)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_Init)();
 }
 
 /** Uninitialize the Package Module
  */
 orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Exit)();
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_Exit)();
 }
 
 /** Open a Package
@@ -92,7 +88,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_Exit()
  */
 orxSTATIC orxINLINE orxPACKAGE* orxDLLAPI orxPackage_Open(orxCONST orxSTRING _zDirPath, orxCONST orxSTRING _zPackageName, orxU32 _u32OpenFlags)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Open)(_zDirPath, _zPackageName, _u32OpenFlags);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_Open)(_zDirPath, _zPackageName, _u32OpenFlags);
 }
 
 /** Close a package
@@ -100,7 +96,7 @@ orxSTATIC orxINLINE orxPACKAGE* orxDLLAPI orxPackage_Open(orxCONST orxSTRING _zD
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_Close(orxPACKAGE *_pstPackage)
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Close)(_pstPackage);
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_Close)(_pstPackage);
 }
 
 
@@ -111,7 +107,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_Close(orxPACKAGE *_pstPackage)
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_SetFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_SetFlags)(_pstPackage, _u32FlagsToRemove, _u32FlagsToAdd);
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_SetFlags)(_pstPackage, _u32FlagsToRemove, _u32FlagsToAdd);
 }
 
 /** Test package flags
@@ -121,7 +117,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_SetFlags(orxPACKAGE *_pstPackag
  */
 orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_TestFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToTest)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_TestFlags)(_pstPackage, _u32FlagsToTest);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_TestFlags)(_pstPackage, _u32FlagsToTest);
 }
 
 /** Commit a file in the package
@@ -131,7 +127,7 @@ orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_TestFlags(orxPACKAGE *_pstPacka
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxPackage_Commit(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Commit)(_pstPackage, _zFileName);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_Commit)(_pstPackage, _zFileName);
 }
 
 /** Extract a file from a package
@@ -141,7 +137,7 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxPackage_Commit(orxPACKAGE *_pstPackag
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxPackage_Extract(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Extract)(_pstPackage, _zFileName);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_Extract)(_pstPackage, _zFileName);
 }
 
 /** Start a new search. Find the first file that will match to the given pattern in the package
@@ -152,7 +148,7 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxPackage_Extract(orxPACKAGE *_pstPacka
  */
 orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_FindFirst(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_FindFirst)(_pstPackage, _zSearchPattern, _pstFileInfos);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_FindFirst)(_pstPackage, _zSearchPattern, _pstFileInfos);
 }
 
 /** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst
@@ -161,7 +157,7 @@ orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_FindFirst(orxPACKAGE *_pstPacka
  */
 orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_FindNext(orxPACKAGE_INFOS *_pstFileInfos)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_FindNext)(_pstFileInfos);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_FindNext)(_pstFileInfos);
 }
 
 /** Close a search (free the memory allocated for this search).
@@ -169,7 +165,7 @@ orxSTATIC orxINLINE orxBOOL orxDLLAPI orxPackage_FindNext(orxPACKAGE_INFOS *_pst
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos)
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_FindClose)(_pstFileInfos);
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_FindClose)(_pstFileInfos);
 }
 
 /** Read data from a package and store it in memory
@@ -181,7 +177,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxPackage_FindClose(orxPACKAGE_INFOS *_ps
  */
 orxSTATIC orxINLINE orxU32 orxDLLAPI orxPackage_Read(orxVOID *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxPackage_Read)(_pDataToWrite, _u32FileSize, _pstPackage, _zFileName);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxPackage_Read)(_pDataToWrite, _u32FileSize, _pstPackage, _zFileName);
 }
 
 

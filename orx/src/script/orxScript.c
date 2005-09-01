@@ -39,7 +39,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, LOAD_FILE, orxScript_LoadFile)
 //orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, CALL_FUNCTION, orxScript_CallFunc)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, EXECUTE, orxScript_Execute)
 
-orxPLUGIN_END_CORE_FUNCTION_ARRAY()
+orxPLUGIN_END_CORE_FUNCTION_ARRAY(SCRIPT)
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -52,10 +52,3 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY()
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
-
-/** Function that initialize the Script plugin module
- */
-orxVOID orxScript_Plugin_Init()
-{
-  orxPLUGIN_REGISTER_CORE_INFO(SCRIPT);
-}

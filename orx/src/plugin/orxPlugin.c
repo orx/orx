@@ -565,22 +565,26 @@ orxSTATUS orxPlugin_Init()
     {
       /* Cleans control structure */
       orxMemory_Set(&sstPlugin, 0, sizeof(orxPLUGIN_STATIC));
-  
+
       /* Creates an empty spst_plugin_list */
       sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-  
+
       /* Is bank valid? */
       if(sstPlugin.pstPluginBank != orxNULL)
       {
         /* Updates status flags */
         sstPlugin.u32Flags = orxPLUGIN_KU32_FLAG_READY;
-        
+
+        /* Registers all core plugins */
+        orxPlugin_RegisterCorePlugins();
+
+        /* Successful */
         eResult = orxSTATUS_SUCCESS;
       }
       else
       {
         /* !!! MSG !!! */
-  
+
         /* Bank not created */
         eResult = orxSTATUS_FAILED;
       }
@@ -588,7 +592,7 @@ orxSTATUS orxPlugin_Init()
     else
     {
       /* !!! MSG !!! */
-  
+
       /* Already initialized */
       eResult = orxSTATUS_FAILED;
     }

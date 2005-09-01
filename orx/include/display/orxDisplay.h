@@ -51,7 +51,7 @@ typedef struct __orxBITMAP_TRANSFORM_t
 
 /** Function that initializes the display plugin module
  */
-extern orxDLLAPI orxVOID          orxFASTCALL orxDisplay_Plugin_Init();
+extern orxDLLAPI orxVOID          orxFASTCALL orxDisplay_RegisterCorePlugin();
 
 
 /***************************************************************************
@@ -87,77 +87,77 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST 
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_Init()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_Init)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_Init)();
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxVOID orxDisplay_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_Exit)();
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_Exit)();
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_Swap()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_Swap)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_Swap)();
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVEC *_pvPos, orxARGB _stColor, orxCONST orxSTRING _zText)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_DrawText)(_pstBitmap, _pvPos, _stColor, _zText);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_DrawText)(_pstBitmap, _pvPos, _stColor, _zText);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxBITMAP *orxDisplay_CreateBitmap(orxCONST orxVEC *_pvSize, orxU32 _u32Flags)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_CreateBitmap)(_pvSize, _u32Flags);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_CreateBitmap)(_pvSize, _u32Flags);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxVOID orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_DeleteBitmap)(_pstBitmap);
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_DeleteBitmap)(_pstBitmap);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxBITMAP *orxDisplay_GetScreenBitmap()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_GetScreenBitmap)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_GetScreenBitmap)();
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxARGB _stColor)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_ClearBitmap)(_pstBitmap, _stColor);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_ClearBitmap)(_pstBitmap, _stColor);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_TransformBitmap)(_pstDst, _pstSrc, _pstTransform, _u32Flags);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_TransformBitmap)(_pstDst, _pstSrc, _pstTransform, _u32Flags);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxARGB _stColor, orxBOOL _bEnable)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_SetBitmapColorKey)(_pstBitmap, _stColor, _bEnable);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_SetBitmapColorKey)(_pstBitmap, _stColor, _bEnable);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxCONST orxVEC *_pvTL, orxCONST orxVEC *_pvBR)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_SetBitmapClipping)(_pstBitmap, _pvTL, _pvBR);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_SetBitmapClipping)(_pstBitmap, _pvTL, _pvBR);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVEC *_pvDstCoord, orxCONST orxVEC *_pvSrcCoord, orxCONST orxVEC *_pvSize)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_BlitBitmap)(_pstDst, _pstSrc, _pvDstCoord, _pvSrcCoord, _pvSize);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_BlitBitmap)(_pstDst, _pstSrc, _pvDstCoord, _pvSrcCoord, _pvSize);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFileName)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_SaveBitmap)(_pstBitmap, _zFileName);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_SaveBitmap)(_pstBitmap, _zFileName);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileName)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_LoadBitmap)(_zFileName);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_LoadBitmap)(_zFileName);
 }
 
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxVEC *_pvSize)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxDisplay_GetBitmapSize)(_pstBitmap, _pvSize);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxDisplay_GetBitmapSize)(_pstBitmap, _pvSize);
 }
 
 

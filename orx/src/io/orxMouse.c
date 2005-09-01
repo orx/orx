@@ -32,15 +32,4 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, INIT, orxMouse_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, EXIT, orxMouse_Exit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_MOVE, orxMouse_GetMove)
 
-orxPLUGIN_END_CORE_FUNCTION_ARRAY()
-
-
-/** Init the mouse core plugin
- */
-orxVOID orxMouse_Plugin_Init()
-{
-  /* Plugin init */
-  orxPLUGIN_REGISTER_CORE_INFO(MOUSE);
-
-  return;
-}
+orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)

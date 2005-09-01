@@ -52,14 +52,4 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, GET_SCREEN_BITMAP, orxDisplay_GetScre
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(DISPLAY, DRAW_TEXT, orxDisplay_DrawText)
 
-orxPLUGIN_END_CORE_FUNCTION_ARRAY()
-
-
-/* *** Plugin init function *** */
-orxVOID orxDisplay_Plugin_Init()
-{
-  /* Plugin init */
-  orxPLUGIN_REGISTER_CORE_INFO(DISPLAY);
-
-  return;
-}
+orxPLUGIN_END_CORE_FUNCTION_ARRAY(DISPLAY)

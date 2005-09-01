@@ -33,11 +33,6 @@ typedef orxU32                      orxTIME;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Inits the time core plugin.
- */
-extern orxDLLAPI orxVOID            orxTime_Plugin_Init();
-
-
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/
@@ -55,7 +50,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxTime_Delay, orxVOID, orxTIME);
  */
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxTime_Init()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxTime_Init)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxTime_Init)();
 }
 
 /** Exits from the time module.
@@ -63,7 +58,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxTime_Init()
  */
 orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxTime_Exit)();
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxTime_Exit)();
 }
 
 /** Gets time.
@@ -71,7 +66,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Exit()
  */
 orxSTATIC orxINLINE orxDLLAPI orxTIME orxTime_GetTime()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxTime_GetTime)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxTime_GetTime)();
 }
 
 /** Gets date.
@@ -79,7 +74,7 @@ orxSTATIC orxINLINE orxDLLAPI orxTIME orxTime_GetTime()
  */
 orxSTATIC orxINLINE orxDLLAPI orxDATE orxTime_GetDate()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxTime_GetDate)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxTime_GetDate)();
 }
 
 /** Delay the program for given number of milliseconds.
@@ -87,7 +82,7 @@ orxSTATIC orxINLINE orxDLLAPI orxDATE orxTime_GetDate()
  */
 orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Delay(orxTIME _stTime)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxTime_Delay)(_stTime);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxTime_Delay)(_stTime);
 }
 
 #endif /* _orxTIME_H_ */

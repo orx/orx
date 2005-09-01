@@ -45,7 +45,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, FIND_NEXT, orxPackage_FindNext)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, FIND_CLOSE, orxPackage_FindClose)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, READ, orxPackage_Read)
 
-orxPLUGIN_END_CORE_FUNCTION_ARRAY()
+orxPLUGIN_END_CORE_FUNCTION_ARRAY(PACKAGE)
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -62,11 +62,3 @@ struct __orxPACKAGE_t
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
-
-/** Function that initialize the File plugin module
- */
-orxVOID orxPackage_Plugin_Init()
-{
-  /* Plugin init */
-  orxPLUGIN_REGISTER_CORE_INFO(PACKAGE);
-}

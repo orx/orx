@@ -33,15 +33,4 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, HIT, orxKeyboard_Hit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ, orxKeyboard_Read)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, CLEAR_BUFFER, orxKeyboard_ClearBuffer)
 
-orxPLUGIN_END_CORE_FUNCTION_ARRAY()
-
-
-/** Init the keyboard core plugin
- */
-orxVOID keyboard_plugin_init()
-{
-  /* Plugin init */
-  orxPLUGIN_REGISTER_CORE_INFO(KEYBOARD);
-
-  return;
-}
+orxPLUGIN_END_CORE_FUNCTION_ARRAY(KEYBOARD)

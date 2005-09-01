@@ -29,24 +29,19 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Exit, orxVOID);
 orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 *);
 
 
-/** Init the mouse core plugin
- */
-extern orxVOID   orxDLLAPI orxMouse_Plugin_Init();
-
-
 /** Init the mouse module
  * @return Returns the status of the operation
  */
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxMouse_Init()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxMouse_Init)();
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxMouse_Init)();
 }
 
 /** Exit the mouse module
  */
 orxSTATIC orxINLINE orxDLLAPI orxVOID orxMouse_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION(orxMouse_Exit)();
+  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxMouse_Exit)();
 }
 
 /** Measures how far the mouse has moved since the last call to this function
@@ -55,7 +50,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxMouse_Exit()
  */
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxMouse_GetMove(orxS32 *_s32X, orxS32 *_s32Y)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION(orxMouse_GetMove)(_s32X, _s32Y);
+  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxMouse_GetMove)(_s32X, _s32Y);
 }
 
 

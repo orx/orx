@@ -47,8 +47,8 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE, orxFile_Delete)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, CREATE_DIR, orxFile_CreateDir)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE_DIR, orxFile_DeleteDir)
 
-orxPLUGIN_END_CORE_FUNCTION_ARRAY()
- 
+orxPLUGIN_END_CORE_FUNCTION_ARRAY(FILE)
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -64,13 +64,6 @@ struct __orxFILE_t
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
-
-/** Function that initialize the File plugin module
- */
-orxVOID orxFile_Plugin_Init()
-{
-  orxPLUGIN_REGISTER_CORE_INFO(FILE);
-}
 
 /** Delete recursively a direcory and all its subfolders.
  * \param _zDirectory     (IN)     Name of the directory directory to remove (with subfolders)
