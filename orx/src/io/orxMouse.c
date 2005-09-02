@@ -26,6 +26,7 @@
  ********************/
 
 /* *** Core function info array *** */
+
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(MOUSE)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, INIT, orxMouse_Init)
@@ -33,3 +34,10 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, EXIT, orxMouse_Exit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_MOVE, orxMouse_GetMove)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
+
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxMouse_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxMouse_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 *);

@@ -29,6 +29,7 @@
  ********************/
 
 /* *** Core function info array *** */
+
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SCRIPT)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, INIT, orxScript_Init)
@@ -40,6 +41,18 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, LOAD_FILE, orxScript_LoadFile)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, EXECUTE, orxScript_Execute)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(SCRIPT)
+
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxScript_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxScript_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxScript_Create, orxSCRIPT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxScript_Delete, orxVOID, orxSCRIPT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxScript_LoadFile, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
+//orxPLUGIN_DEFINE_CORE_FUNCTION_4(orxScript_CallFunc, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING, orxSTRING, ...);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxScript_Execute, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
+
 
 /***************************************************************************
  * Structure declaration                                                   *

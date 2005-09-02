@@ -33,6 +33,7 @@
  ********************/
  
 /* *** Core function info array *** */
+
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(FILE)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, INIT, orxFile_Init)
@@ -48,6 +49,22 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, CREATE_DIR, orxFile_CreateDir)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE_DIR, orxFile_DeleteDir)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(FILE)
+
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxFile_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxFile_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_FindFirst, orxBOOL, orxSTRING, orxFILE_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_FindNext, orxBOOL, orxFILE_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_FindClose, orxVOID, orxFILE_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_Info, orxSTATUS, orxSTRING, orxFILE_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_Copy, orxSTATUS, orxSTRING, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_Rename, orxSTATUS, orxSTRING, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_Delete, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_CreateDir, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_DeleteDir, orxSTATUS, orxSTRING);
+
 
 /***************************************************************************
  * Structure declaration                                                   *

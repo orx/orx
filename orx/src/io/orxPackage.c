@@ -30,6 +30,7 @@
 /********************
  *  Plugin Related  *
  ********************/
+
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(PACKAGE)
  
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, INIT, orxPackage_Init)
@@ -46,6 +47,23 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, FIND_CLOSE, orxPackage_FindClose)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PACKAGE, READ, orxPackage_Read)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(PACKAGE)
+
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxPackage_Init,      orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxPackage_Exit,      orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxPackage_Close,     orxSTATUS,    orxPACKAGE *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxPackage_FindNext,  orxBOOL,      orxPACKAGE_INFOS *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxPackage_FindClose, orxVOID,      orxPACKAGE_INFOS *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxPackage_TestFlags, orxBOOL,      orxPACKAGE *,       orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxPackage_Commit,    orxSTATUS,    orxPACKAGE *,       orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxPackage_Extract,   orxSTATUS,    orxPACKAGE *,       orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION_3(orxPackage_Open,      orxPACKAGE *, orxCONST orxSTRING, orxCONST orxSTRING,   orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_3(orxPackage_SetFlags,  orxVOID,      orxPACKAGE *,       orxU32,               orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_3(orxPackage_FindFirst, orxBOOL,      orxPACKAGE *,       orxCONST orxSTRING,   orxPACKAGE_INFOS *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_4(orxPackage_Read,      orxU32,       orxVOID *,          orxU32,               orxPACKAGE *,      orxCONST orxSTRING);
+
 
 /***************************************************************************
  * Structure declaration                                                   *

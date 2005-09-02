@@ -26,6 +26,7 @@
  ********************/
 
 /* *** Core function info array *** */
+
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(TIME)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, INIT, orxTime_Init)
@@ -36,3 +37,13 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, GET_DATE, orxTime_GetDate)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(TIME, DELAY, orxTime_Delay)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(TIME)
+
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxTime_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxTime_Exit, orxVOID);
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxTime_GetTime, orxTIME);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxTime_GetDate, orxDATE);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxTime_Delay, orxVOID, orxTIME);

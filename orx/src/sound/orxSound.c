@@ -32,6 +32,7 @@
  ********************/
 
 /* *** Core function info array *** */
+
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SOUND)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, INIT, orxSound_Init)
@@ -47,3 +48,20 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, CHANNEL_SET_FLAGS, orxSound_ChannelSetF
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, CHANNEL_SET_VOLUME, orxSound_ChannelSetVolume)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(SOUND)
+
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxSound_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxSound_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxSound_SampleLoadFromFile, orxSOUND_SAMPLE*, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxSound_SampleLoadFromMemory, orxSOUND_SAMPLE*, orxCONST orxVOID *, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxSound_SampleUnload, orxVOID, orxSOUND_SAMPLE *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxSound_SamplePlay, orxU32, orxU32, orxSOUND_SAMPLE *);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxSound_SampleTestFlags, orxBOOL, orxSOUND_SAMPLE *, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_3(orxSound_SampleSetFlags, orxVOID, orxSOUND_SAMPLE *, orxU32, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxSound_ChannelStop, orxSTATUS, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxSound_ChannelPause, orxSTATUS, orxU32, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxSound_ChannelTestFlags, orxBOOL, orxU32, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_3(orxSound_ChannelSetFlags, orxVOID, orxU32, orxU32, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxSound_ChannelSetVolume, orxSTATUS, orxU32, orxU8);

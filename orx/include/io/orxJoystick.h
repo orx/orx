@@ -32,10 +32,7 @@
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DEFAULT_CORE_FUNCTION(orxJoystick_Init)
-
-orxSTATIC orxSTATUS (*_orxCoreFunctionPointer_orxJoystick_Init)() = (orxSTATUS (*)()) (&orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(orxJoystick_Init));
-
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);
 
 
@@ -44,7 +41,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);
  */
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxJoystick_Init()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxJoystick_Init)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Init)();
 }
 
 /** Exits from the joystick module.
@@ -52,7 +49,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxJoystick_Init()
  */
 orxSTATIC orxINLINE orxDLLAPI orxVOID orxJoystick_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxJoystick_Exit)();
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Exit)();
 }
 
 #endif /* _orxJOYSTICK_H_ */

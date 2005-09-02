@@ -69,14 +69,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxSound_ChannelSetVolume, orxSTATUS, orxU32, 
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_Init()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_Init)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_Init)();
 }
 
 /** Uninitialize the Sound Module
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_Exit)();
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_Exit)();
 }
 
 /** Load a sample From a file
@@ -85,7 +85,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_Exit()
  */
 orxSTATIC orxINLINE orxSOUND_SAMPLE* orxDLLAPI orxSound_SampleLoadFromFile(orxCONST orxSTRING _zFileName)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_SampleLoadFromFile)(_zFileName);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_SampleLoadFromFile)(_zFileName);
 }
 
 /** Load a sample From memory
@@ -95,7 +95,7 @@ orxSTATIC orxINLINE orxSOUND_SAMPLE* orxDLLAPI orxSound_SampleLoadFromFile(orxCO
  */
 orxSTATIC orxINLINE orxSOUND_SAMPLE* orxDLLAPI orxSound_SampleLoadFromMemory(orxCONST orxVOID *_pMem, orxU32 _u32Size)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_SampleLoadFromMemory)(_pMem, _u32Size);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_SampleLoadFromMemory)(_pMem, _u32Size);
 }
 
 /** Unload a sample
@@ -103,7 +103,7 @@ orxSTATIC orxINLINE orxSOUND_SAMPLE* orxDLLAPI orxSound_SampleLoadFromMemory(orx
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_SampleUnload(orxSOUND_SAMPLE *_pstSample)
 {
-  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_SampleUnload)(_pstSample);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_SampleUnload)(_pstSample);
 }
 
 /** Play a sample
@@ -113,7 +113,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_SampleUnload(orxSOUND_SAMPLE *_ps
  */
 orxSTATIC orxINLINE orxU32 orxDLLAPI orxSound_SamplePlay(orxU32 _u32Channel, orxSOUND_SAMPLE *_pstSample)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_SamplePlay)(_u32Channel, _pstSample);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_SamplePlay)(_u32Channel, _pstSample);
 }
 
 /** Stop a sample
@@ -122,7 +122,7 @@ orxSTATIC orxINLINE orxU32 orxDLLAPI orxSound_SamplePlay(orxU32 _u32Channel, orx
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_ChannelStop(orxU32 _u32Channel)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_ChannelStop)(_u32Channel);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelStop)(_u32Channel);
 }
 
 /** Pause/UnPause a sample
@@ -132,7 +132,7 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_ChannelStop(orxU32 _u32Channel)
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_ChannelPause(orxU32 _u32Channel, orxBOOL _bPause)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_ChannelPause)(_u32Channel, _bPause);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelPause)(_u32Channel, _bPause);
 }
 
 /** Test Sample flags
@@ -142,7 +142,7 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_ChannelPause(orxU32 _u32Channel
  */
 orxSTATIC orxINLINE orxBOOL orxDLLAPI orxSound_ChannelTestFlags(orxU32 _u32Channel, orxU32 _u32FlagsToTest)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_ChannelTestFlags)(_u32Channel, _u32FlagsToTest);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelTestFlags)(_u32Channel, _u32FlagsToTest);
 }
 
 /** Set Sample flags
@@ -152,7 +152,7 @@ orxSTATIC orxINLINE orxBOOL orxDLLAPI orxSound_ChannelTestFlags(orxU32 _u32Chann
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_ChannelSetFlags(orxU32 _u32Channel, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
 {
-  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_ChannelSetFlags)(_u32Channel, _u32FlagsToRemove, _u32FlagsToAdd);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelSetFlags)(_u32Channel, _u32FlagsToRemove, _u32FlagsToAdd);
 }
 
 /** Set Channel volume
@@ -161,7 +161,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxSound_ChannelSetFlags(orxU32 _u32Channe
  */
 orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxSound_ChannelSetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxSound_ChannelSetVolume)(_u32Channel, _u8Volume);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelSetVolume)(_u32Channel, _u8Volume);
 }
 
 #endif /* _orxSOUND_H_ */

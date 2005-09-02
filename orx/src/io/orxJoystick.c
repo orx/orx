@@ -26,9 +26,16 @@
  ********************/
 
 /* *** Core function info array *** */
+
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(JOYSTICK)
 
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, INIT, orxJoystick_Init)
+{(orxPLUGIN_FUNCTION *) &_orxCoreFunctionPointer_orxJoystick_Init, orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_INIT},
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, EXIT, orxJoystick_Exit)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(JOYSTICK)
+
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxJoystick_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);

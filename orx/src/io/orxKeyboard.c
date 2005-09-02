@@ -25,6 +25,7 @@
  ********************/
 
 /* *** Core function info array *** */
+
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(KEYBOARD)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, INIT, orxKeyboard_Init)
@@ -34,3 +35,12 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, READ, orxKeyboard_Read)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, CLEAR_BUFFER, orxKeyboard_ClearBuffer)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(KEYBOARD)
+
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_Hit, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_Read, orxS32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_ClearBuffer, orxVOID);

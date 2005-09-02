@@ -35,14 +35,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_ClearBuffer, orxVOID);
  */
 orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxKeyboard_Init()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxKeyboard_Init)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Init)();
 }
 
 /** Exit the keyboard module
  */
 orxSTATIC orxINLINE orxDLLAPI orxVOID orxKeyboard_Exit()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxKeyboard_Exit)();
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Exit)();
 }
 
 /** Returns orxTRUE if there are keypresses waiting in the input buffer.
@@ -50,7 +50,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxKeyboard_Exit()
  */
 orxSTATIC orxINLINE orxDLLAPI orxBOOL orxKeyboard_Hit()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxKeyboard_Hit)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Hit)();
 }
 
 /** Returns the next character from the keyboard buffer, in ASCII format.
@@ -61,14 +61,14 @@ orxSTATIC orxINLINE orxDLLAPI orxBOOL orxKeyboard_Hit()
  */
 orxSTATIC orxINLINE orxS32 orxDLLAPI orxKeyboard_Read()
 {
-  return orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxKeyboard_Read)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Read)();
 }
 
 /**  Empties the keyboard buffer.
  */
 orxSTATIC orxINLINE orxVOID orxDLLAPI orxKeyboard_ClearBuffer()
 {
-  orxPLUGIN_BODY_CORE_FUNCTION_NAME(orxKeyboard_ClearBuffer)();
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ClearBuffer)();
 }
 
 
