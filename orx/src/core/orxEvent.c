@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "core/orxEvent.h"
+#include "memory/orxMemory.h"
 #include "utils/orxQueue.h"
 
 /*
