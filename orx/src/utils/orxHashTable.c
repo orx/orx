@@ -277,6 +277,59 @@ orxVOID *orxHashTable_Get(orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
   }
 }
 
+/** Set an item value.
+ * @param _pstHashTable The hash table where set.
+ * @param _u32Key     (IN) Key to assign.
+ * @param _pData      (IN) Data to assign.
+ */
+orxVOID orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData)
+{
+  orxU32 u32Index;                    /* Hash table index */
+  orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
+  
+  /* Module initialized ? */
+  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY) == orxHASHTABLE_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_pstHashTable != orxNULL);
+
+  /* Get the index from the key */
+  u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
+  
+  /* Traverse to find the key */
+  pstCell = _pstHashTable->apstCell[u32Index];
+  while (pstCell != orxNULL && pstCell->u32Key != _u32Key)
+  {
+    /* Try with next cell */
+    pstCell = pstCell->pstNext;
+  }
+  
+  /* Cell found ? */
+  if (pstCell != orxNULL)
+  {
+    /* Set associated datas */
+    pstCell->pData = _pData;
+  }
+  else
+  {
+    /* Allocate a new cell if possible */
+    pstCell = (orxHASHTABLE_CELL *)orxBank_Allocate(_pstHashTable->pstBank);
+    
+    /* If allocation succeed, insert the new cell */
+    if (pstCell != orxNULL)
+    {
+      /* Set datas */
+      pstCell->u32Key = _u32Key;
+      pstCell->pData  = _pData;
+      pstCell->pstNext = _pstHashTable->apstCell[u32Index];
+      
+      /* Insert it */
+      _pstHashTable->apstCell[u32Index] = pstCell;
+    }
+  }
+}
+
+
 /** Add an item value.
  * @param _pstHashTable The hash table where set.
  * @param _u32Key     (IN) Key to assign.

@@ -79,6 +79,14 @@ extern orxDLLAPI orxVOID orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
  */
 extern orxDLLAPI orxVOID *orxHashTable_Get(orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
 
+/** Set an item value.
+ * @param _pstHashTable The hash table where set.
+ * @param _u32Key     (IN) Key to assign.
+ * @param _pData      (IN) Data to assign.
+ */
+extern orxDLLAPI orxVOID orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData);
+
+
 /** Add an item value.
  * @param _pstHashTable The hash table where set.
  * @param _u32Key     (IN) Key to assign.
