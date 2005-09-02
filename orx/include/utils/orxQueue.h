@@ -119,16 +119,18 @@ extern orxQUEUE_ITEM* orxQueue_GetFirstItem(orxQUEUE* _pstQueue);
 extern orxQUEUE_ITEM* orxQueue_GetLastItem(orxQUEUE* _pstQueue);
 
 /** Return the next item in a queue.
+ * @param _pstQueue Queue.
  * @param _pstItem Item to search the nextone.
  * @return Address of next Item, orxNULL if not found.
  */
-extern orxQUEUE_ITEM* orxQueue_GetNextItem(orxQUEUE_ITEM* _pstItem);
+extern orxQUEUE_ITEM* orxQueue_GetNextItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
 
 /** Return the previous item in a queue.
+ * @param _pstQueue Queue.
  * @param _pstItem Item to search the previousone.
  * @return Address of previous Item or orxNULL if not found.
  */
-extern orxQUEUE_ITEM* orxQueue_GetPreviousItem(orxQUEUE_ITEM* _pstItem);
+extern orxQUEUE_ITEM* orxQueue_GetPreviousItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
 
  
 /** Initialize Queue Module

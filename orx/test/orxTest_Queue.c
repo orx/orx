@@ -62,7 +62,7 @@ orxVOID orxTest_Queue_DisplayContent()
 	    {
 	    	orxTextIO_PrintLn("  [0x%08lx : %p]", orxQueueItem_GetID(pstItem),
 	    										  orxQueueItem_GetExtraData(pstItem));
-	    	pstItem = orxQueue_GetNextItem(pstItem);
+	    	pstItem = orxQueue_GetNextItem(spstQueue, pstItem);
 	    }
 	}
 }
