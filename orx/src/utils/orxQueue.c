@@ -454,21 +454,25 @@ orxQUEUE_ITEM* orxQueue_GetLastItem(orxQUEUE* _pstQueue)
  */
 orxQUEUE_ITEM* orxQueue_GetNextItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem)
 {
-    /* Module initialized ? */
-    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+  /* Module initialized ? */
+  orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
 
 	/* Correct parameters ? */
-    orxASSERT(_pstItem != orxNULL);
-    orxASSERT(_pstQueue != orxNULL);
+  orxASSERT(_pstItem != orxNULL);
+  orxASSERT(_pstQueue != orxNULL);
 
 	/** Correct current item bound.*/
 	orxASSERT(_pstItem >= _pstQueue->pastItems);
 	orxASSERT(_pstItem <= (_pstQueue->pastItems + (_pstQueue->u16Used * sizeof(orxQUEUE_ITEM))));
 
 	if(_pstItem == (_pstQueue->pastItems + (_pstQueue->u16Used * sizeof(orxQUEUE_ITEM))))
-		return orxNULL;
-	else
-		_pstItem + sizeof(orxQUEUE_ITEM);
+  {
+    return orxNULL;
+  }
+  else
+  {
+    return(_pstItem + sizeof(orxQUEUE_ITEM));
+  }
 }
 
 /**
@@ -476,20 +480,24 @@ orxQUEUE_ITEM* orxQueue_GetNextItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem
  */
 orxQUEUE_ITEM* orxQueue_GetPreviousItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem)
 {
-    /* Module initialized ? */
-    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+  /* Module initialized ? */
+  orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
 
-    /* Correct parameters ? */
-    orxASSERT(_pstItem != orxNULL);
-    orxASSERT(_pstQueue != orxNULL);
+  /* Correct parameters ? */
+  orxASSERT(_pstItem != orxNULL);
+  orxASSERT(_pstQueue != orxNULL);
 
 	/** Correct current item bound.*/
 	orxASSERT(_pstItem >= _pstQueue->pastItems);
 	orxASSERT(_pstItem <= (_pstQueue->pastItems + (_pstQueue->u16Used * sizeof(orxQUEUE_ITEM))));
 
 	if(_pstItem == _pstQueue->pastItems)
+  {
 		return orxNULL;
+  }
 	else
-		_pstItem - sizeof(orxQUEUE_ITEM);
+  {
+		return(_pstItem - sizeof(orxQUEUE_ITEM));
+  }
 }
 
