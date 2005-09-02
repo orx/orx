@@ -60,7 +60,7 @@ orxVOID orxTest_Queue_DisplayContent()
 	    orxQUEUE_ITEM* pstLastItem = orxQueue_GetLastItem(spstQueue);
 	    while(pstItem<=pstLastItem)
 	    {
-	    	orxTextIO_PrintLn("  [0x%08lx : %p]", orxQueueItem_GetIdentifier(pstItem),
+	    	orxTextIO_PrintLn("  [0x%08lx : %p]", orxQueueItem_GetID(pstItem),
 	    										  orxQueueItem_GetExtraData(pstItem));
 	    	pstItem = orxQueue_GetNextItem(pstItem);
 	    }
