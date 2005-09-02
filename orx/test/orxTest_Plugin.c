@@ -355,7 +355,6 @@ orxVOID orxTest_Plugin_Load()
       }
       else
       {
-        orxJoystick_Init();
         orxTextIO_PrintLn("Can't Init the new loaded plugin, there is a problem somewhere... I'm going to unload the plugin...");
         
         /* Unload the plugin */
