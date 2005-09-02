@@ -76,38 +76,34 @@ extern orxSTATUS orxDLLAPI orxMain_Init();
 extern orxVOID orxDLLAPI orxMain_Exit();
 
 /** Call the Init callback function for a module
+ * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
  * @param[in] _cbInit   Init function
  * @return Module's Init status
  */
-extern orxSTATUS orxMain_InitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit);
+extern orxSTATUS orxMain_InitModule(orxCONST orxSTRING _zName, orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit);
 
 /** Call the Exit callback function for a module
+ * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
  * @param[in] _cbExit   Exit function
  */
-extern orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_CB _cbExit);
+extern orxVOID orxMain_ExitModule(orxCONST orxSTRING _zName, orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_CB _cbExit);
 
 /** Macro that automatically call Init function and register module Init/Exit function.
  */
 #define orxMAIN_INIT_MODULE(ModuleName)                                                           \
 (                                                                                                 \
-  /* Trace */                                                                                     \
-  orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "Init : "#ModuleName),                                         \
-                                                                                                  \
   /* Call the module init function */                                                             \
-  orxMain_InitModule(orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Init)                   \
+  orxMain_InitModule(#ModuleName, orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Init)      \
 )
 
 /** Macro that call modules' exit function
  */
 #define orxMAIN_EXIT_MODULE(ModuleName)                                                           \
 {                                                                                                 \
-  /* Trace */                                                                                     \
-  orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "Exit : "#ModuleName),                                         \
-                                                                                                  \
   /* Call the module exit function */                                                             \
-  orxMain_ExitModule(orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Exit);                  \
+  orxMain_ExitModule(#ModuleName, orxMAIN_MODULE_ ## ModuleName, orx ## ModuleName ## _Exit);     \
 }
 
 #endif /*_orxMAIN_H_*/

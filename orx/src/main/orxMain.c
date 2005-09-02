@@ -97,31 +97,52 @@ orxVOID orxMain_Exit()
 }
 
 /** Call the Init callback function for a module
+ * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
  * @param[in] _cbInit   Init function
+ * @return Module's Init status
  */
-orxSTATUS orxMain_InitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit)
+orxSTATUS orxMain_InitModule(orxCONST orxSTRING _zName, orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit)
 {
   /* If not initialized yet, Init the module */
   if (sstMain.astModuleInfos[_eModule].u32RefCount == 0)
   {
     /* Call Init function */
     sstMain.astModuleInfos[_eModule].eStatus = _cbInit();
+    
+    /* First Call to the Init function, really Initialize it */
+    if (sstMain.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS)
+    {
+      orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "INIT %s : First call => Init function success", _zName);
+    }
+    else
+    {
+      orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "INIT %s : First call => Init function FAILED !", _zName);
+    }
   }
   
   /* Increases ref counter */
   sstMain.astModuleInfos[_eModule].u32RefCount++;
+  
+  if (sstMain.astModuleInfos[_eModule].u32RefCount > 1)
+  {
+    orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "INIT %s : %lu Init call", _zName, sstMain.astModuleInfos[_eModule].u32RefCount);
+  }
   
   /* Return Init status */
   return sstMain.astModuleInfos[_eModule].eStatus;
 }
 
 /** Call the Exit callback function for a module
+ * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
  * @param[in] _cbExit   Exit function
  */
-orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_CB _cbExit)
+orxVOID orxMain_ExitModule(orxCONST orxSTRING _zName, orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_CB _cbExit)
 {
+  /* It's not possible that there are more Exit than Init */
+  orxASSERT(sstMain.astModuleInfos[_eModule].u32RefCount > 0);
+  
   /* Decreases the ref counter */
   sstMain.astModuleInfos[_eModule].u32RefCount--;
   
@@ -130,5 +151,12 @@ orxVOID orxMain_ExitModule(orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_CB _cbEx
   {
     /* Call Exit callback */
     _cbExit();
+    
+    /* Log Exit */
+    orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "EXIT %s : Last call => Exit function called", _zName);
+  }
+  else
+  {
+    orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "EXIT %s : %lu call remaining", _zName, sstMain.astModuleInfos[_eModule].u32RefCount);
   }
 }
