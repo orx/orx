@@ -21,6 +21,7 @@
 #include "memory/orxMemory.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxQueue.h"
+#include "debug/orxDebug.h"
 
 
 /***************************************************************************
