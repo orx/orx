@@ -156,36 +156,36 @@ orxVOID orxTest_Sound_SamplePlay()
   /* Read the sample address */
   orxTextIO_ReadS32(&s32SampleID, 16, "Enter the sample ID to play : ", orxTRUE);
   
-  /* Search through all samples */
-  for(pstSampleInfos = orxBank_GetNext(sstTest_Sound.pstSampleBank, orxNULL);
-      pstSampleInfos != orxNULL;
-      pstSampleInfos = orxBank_GetNext(sstTest_Sound.pstSampleBank, pstSampleInfos))
+  pstSampleInfos = orxNULL;
+  
+  /* Traverse Bank and check if the entered address has really been allocated */
+  while ((pstSampleInfos = orxBank_GetNext(sstTest_Sound.pstSampleBank, pstSampleInfos)) && ((orxS32)pstSampleInfos != s32SampleID))
+  {}
+  
+  /* Retrieve sample information from read address */
+  if ((orxS32)pstSampleInfos == s32SampleID)
   {
-    /* Is it the selected one? */
-    if((orxS32)pstSampleInfos == s32SampleID)
+    /* Sample has been found... Select the channel ID to use */
+    orxTextIO_PrintLn("Enter the channel to use (between 0 and %d).", orxSOUND_CHANNEL_KU32_NUMBER - 1);
+    orxTextIO_PrintLn("Enter %d to automatically select a free channel.", orxSOUND_CHANNEL_KU32_SELECT_FREE);
+    orxTextIO_ReadS32InRange(&s32Channel, 10, 0, orxSOUND_CHANNEL_KU32_SELECT_FREE, "Channel : ", orxTRUE);
+    
+    /* Try to play the sample */
+    orxTextIO_PrintLn("Trying to play %s...", pstSampleInfos->zFileName);
+    s32Channel = orxSound_SamplePlay(s32Channel, pstSampleInfos->pstSample);
+    
+    if (s32Channel != orxSOUND_CHANNEL_KU32_ERROR)
     {
-      /* Sample has been found... Select the channel ID to use */
-      orxTextIO_PrintLn("Enter the channel to use (between 0 and %d).", orxSOUND_CHANNEL_KU32_NUMBER - 1);
-      orxTextIO_PrintLn("Enter %d to automatically select a free channel.", orxSOUND_CHANNEL_KU32_SELECT_FREE);
-      orxTextIO_ReadS32InRange(&s32Channel, 10, 0, orxSOUND_CHANNEL_KU32_SELECT_FREE, "Channel : ", orxTRUE);
-      
-      /* Try to play the sample */
-      orxTextIO_PrintLn("Trying to play %s...", pstSampleInfos->zFileName);
-      s32Channel = orxSound_SamplePlay(s32Channel, pstSampleInfos->pstSample);
-      
-      if (s32Channel != orxSOUND_CHANNEL_KU32_ERROR)
-      {
-        orxTextIO_PrintLn("Play %s on channel %d", pstSampleInfos->zFileName, s32Channel);
-      }
-      else
-      {
-        orxTextIO_PrintLn("Error : Can't send sample on channel...");
-      }
+      orxTextIO_PrintLn("Play %s on channel %d", pstSampleInfos->zFileName, s32Channel);
     }
     else
     {
-      orxTextIO_PrintLn("Invalid Sample ID");
+      orxTextIO_PrintLn("Error : Can't send sample on channel...");
     }
+  }
+  else
+  {
+    orxTextIO_PrintLn("Invalid Sample ID");
   }
 }
 
@@ -344,10 +344,6 @@ orxVOID orxTest_Sound_ChannelSetVolume()
 orxVOID orxTest_Sound_Init()
 {
   orxMAIN_INIT_MODULE(Plugin);  /* Initialize Plugin module */
-  
-  /* orxSound_Init (orxMAIN_INIT_MODULE(Sound)) have to be called after the plugin
-   * loading. I have to find a way to do it
-   */
   
   /* Register test functions */
   orxTest_Register("Sound", "Display module informations", orxTest_Sound_Infos);
