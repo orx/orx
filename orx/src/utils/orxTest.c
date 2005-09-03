@@ -27,6 +27,7 @@
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 #include "io/orxTextIO.h"
+#include "utils/orxString.h"
 
 #define orxTEST_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxTEST_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
@@ -79,7 +80,7 @@ orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleName)
   /* Display all functions not already displayed and that have the same module name */
   for (u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
   {
-    if (!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, strlen(_zModuleName) * sizeof(orxCHAR)) == 0))
+    if (!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, orxString_Length(_zModuleName) * sizeof(orxCHAR)) == 0))
     {
       sstTest.astTestFunctions[u32Index].bDisplayed = orxTRUE;
       orxTextIO_PrintLn("* %lu - %s", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
