@@ -448,7 +448,21 @@ orxVOID orxTest_RegisterCorePlugin()
 
 orxVOID orxTest_Plugin_Exit()
 {
-  /* Uninitialize Memory module */
+  orxU32 u32Index;
+  
+  /* Unload all the loaded plugins before exit */
+  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
+  {
+    if (sstTest_Plugin.astPlugins[u32Index].hPlugin != orxHANDLE_Undefined)
+    {
+      /* Unload the selected plugin */
+      orxPlugin_Unload(sstTest_Plugin.astPlugins[u32Index].hPlugin);
+      sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_Undefined;
+    }
+  }
+  
+  
+  /* Uninitialize plugin module */
   orxMAIN_EXIT_MODULE(Plugin);
 }
 
