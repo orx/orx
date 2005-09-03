@@ -25,8 +25,7 @@
 #ifndef _orxMAIN_H_
 #define _orxMAIN_H_
 
-#include "orxInclude.h"
-#include "debug/orxDebug.h"
+#include "base/orxType.h"
 
 /** WARNING : This enum definition doesn't respect the standard coding style.
  * The complete enum name should use upper case but this excepetion is needed
@@ -61,19 +60,11 @@ typedef enum __orxMAIN_MODULE_t
   orxMAIN_MODULE_Event,
     
   orxMAIN_MODULE_NUMBER,
-  orxMAIN_MODULE_NONE = 0xFFFFFFFF
+  orxMAIN_MODULE_NONE = orxENUM_NONE
 } orxMAIN_MODULE;
 
 typedef orxSTATUS (*orxMAIN_MODULE_INIT_CB)();
 typedef orxVOID   (*orxMAIN_MODULE_EXIT_CB)();
-
-/** Initialize the main module (will initialize all needed modules)
- */
-extern orxSTATUS orxDLLAPI orxMain_Init();
-
-/** Exit main module
- */
-extern orxVOID orxDLLAPI orxMain_Exit();
 
 /** Call the Init callback function for a module
  * @param[in] _zName    Module's name
