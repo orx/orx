@@ -122,12 +122,11 @@ orxSTATIC orxINLINE orxU32              orxString_Length(orxSTRING _zString)
 /** Convert a String to a value
  * @param _ps32OutValue   (OUT) Converted value
  * @param _zString        (IN)  String To convert
- * @param _u32Base        (IN)  BAse of the read value (generally 10, but can be 16 to read hexa)
+ * @param _u32Base        (IN)  Base of the read value (generally 10, but can be 16 to read hexa)
  * @return  return the status of the conversion
  */
 orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxS32 *_ps32OutValue, orxSTRING _zString, orxU32 _u32Base)
 {
-  /* char instead of orxCHAR to avoid compilation warnings */
   orxCHAR *pcEndPtr; /* Address of the first invalid character */
   
   /* Correct parameters ? */
@@ -138,7 +137,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxS32 *_ps32OutValue, o
   *_ps32OutValue = strtol(_zString, &pcEndPtr, _u32Base);
   
   /* Valid conversion ? */
-  if ((orxString_Length(_zString) > 0) && (isdigit((pcEndPtr - 1)[0])))
+  if ((orxString_Length(_zString) > 0) && ((_zString[0] != '\0' && pcEndPtr[0] == '\0')))
   {
     return orxSTATUS_SUCCESS;
   }
@@ -160,6 +159,10 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxFLOAT *_pfOutValue,
   orxASSERT(_zString != orxNULL);
 
   /* Convert */
+  /* Note : Here we should use strtot which detects errors.
+   * This function is C99 compliant but it doesn't seems to be implemented in
+   * the standard GNU lib C. We will use atof instead (which doesn't detect errors :( )
+   */
   *_pfOutValue = atof(_zString);
 
   return orxSTATUS_SUCCESS;
