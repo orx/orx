@@ -60,12 +60,13 @@ USE_SDL = 0
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD
 orxPLATFORM = __orxLINUX__
 ORXDLL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -DorxDLLEXPORT -fPIC -DPIC \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -D__orxDLLEXPORT__ -fPIC -DPIC \
 	$(CPPFLAGS) $(CFLAGS)
 ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxAnim.o \
 	./build/$(BUILD)/orxDLL_orxAnimPointer.o \
 	./build/$(BUILD)/orxDLL_orxAnimSet.o \
+	./build/$(BUILD)/orxDLL_orxDepend.o \
 	./build/$(BUILD)/orxDLL_orxCamera.o \
 	./build/$(BUILD)/orxDLL_orxRender.o \
 	./build/$(BUILD)/orxDLL_orxViewport.o \
@@ -84,7 +85,6 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxMouse.o \
 	./build/$(BUILD)/orxDLL_orxPackage.o \
 	./build/$(BUILD)/orxDLL_orxTextIO.o \
-	./build/$(BUILD)/orxDLL_orxMain.o \
 	./build/$(BUILD)/orxDLL_orxMathSet.o \
 	./build/$(BUILD)/orxDLL_orxVec.o \
 	./build/$(BUILD)/orxDLL_orxBank.o \
@@ -106,12 +106,13 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxTree.o \
 	./build/$(BUILD)/orxDLL_pathfinder.o
 ORXLIB_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -DorxDLLEXPORT $(CPPFLAGS) \
-	$(CFLAGS)
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -D__orxDLLEXPORT__ \
+	$(CPPFLAGS) $(CFLAGS)
 ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxAnim.o \
 	./build/$(BUILD)/orxLIB_orxAnimPointer.o \
 	./build/$(BUILD)/orxLIB_orxAnimSet.o \
+	./build/$(BUILD)/orxLIB_orxDepend.o \
 	./build/$(BUILD)/orxLIB_orxCamera.o \
 	./build/$(BUILD)/orxLIB_orxRender.o \
 	./build/$(BUILD)/orxLIB_orxViewport.o \
@@ -130,7 +131,6 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxMouse.o \
 	./build/$(BUILD)/orxLIB_orxPackage.o \
 	./build/$(BUILD)/orxLIB_orxTextIO.o \
-	./build/$(BUILD)/orxLIB_orxMain.o \
 	./build/$(BUILD)/orxLIB_orxMathSet.o \
 	./build/$(BUILD)/orxLIB_orxVec.o \
 	./build/$(BUILD)/orxLIB_orxBank.o \
@@ -151,6 +151,10 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxTest.o \
 	./build/$(BUILD)/orxLIB_orxTree.o \
 	./build/$(BUILD)/orxLIB_pathfinder.o
+ORX_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
+ORX_OBJECTS =  \
+	./build/$(BUILD)/orx_orxMain.o
 TESTBED_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude $(CPPFLAGS) $(CFLAGS)
 TESTBED_OBJECTS =  \
@@ -301,7 +305,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so bin/modules/MathSet.so bin/modules/Queue.so bin/modules/FSM.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) bin/orx bin/testbed bin/modules/Memory.so bin/modules/Bank.so bin/modules/HashTable.so bin/modules/Sound.so bin/modules/Plugin.so bin/modules/MathSet.so bin/modules/Queue.so bin/modules/FSM.so $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) bin/plugins/core/joystick/Joystick_NONE.so $(__Time_SDL___depname)
 
 install: all $(__install_orxDLL___depname) $(__install_orxLIB___depname)
 	$(INSTALL) -d $(prefix)/include/orx
@@ -320,6 +324,7 @@ clean:
 	rm -f lib/liborx$(orxSUFFIX).so
 	rm -f lib/liborx$(orxSUFFIX).so
 	rm -f lib/liborx$(orxSUFFIX).a
+	rm -f bin/orx
 	rm -f bin/testbed
 	rm -f bin/modules/Memory.so
 	rm -f bin/modules/Bank.so
@@ -359,6 +364,9 @@ install_orxLIB:
 	$(INSTALL) -d $(prefix)/lib
 	$(INSTALL) -m 644 lib/liborx$(orxSUFFIX).a $(prefix)/lib
 endif
+
+bin/orx: $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -o $@ $(ORX_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(orxLDFLAGS)   -ldl
 
 bin/testbed: $(TESTBED_OBJECTS) $(__orxLINKDEPEND_DEP)
 	$(CC) -o $@ $(TESTBED_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  $(orxLDFLAGS)   -ldl
@@ -419,6 +427,9 @@ endif
 ./build/$(BUILD)/orxDLL_orxAnimSet.o: ./src/anim/orxAnimSet.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxDLL_orxDepend.o: ./src/base/orxDepend.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxDLL_orxCamera.o: ./src/camera/orxCamera.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -471,9 +482,6 @@ endif
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxTextIO.o: ./src/io/orxTextIO.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxDLL_orxMain.o: ./src/main/orxMain.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxMathSet.o: ./src/math/orxMathSet.c
@@ -545,6 +553,9 @@ endif
 ./build/$(BUILD)/orxLIB_orxAnimSet.o: ./src/anim/orxAnimSet.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxLIB_orxDepend.o: ./src/base/orxDepend.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxLIB_orxCamera.o: ./src/camera/orxCamera.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -597,9 +608,6 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxTextIO.o: ./src/io/orxTextIO.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxLIB_orxMain.o: ./src/main/orxMain.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxMathSet.o: ./src/math/orxMathSet.c
@@ -661,6 +669,9 @@ endif
 
 ./build/$(BUILD)/orxLIB_pathfinder.o: ./src/utils/pathfinder.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/orx_orxMain.o: ./src/main/orxMain.c
+	$(CC) -c -o $@ $(ORX_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/testbed_orxTest_Main.o: ./test/orxTest_Main.c
 	$(CC) -c -o $@ $(TESTBED_CFLAGS) $(CPPDEPS) $<
