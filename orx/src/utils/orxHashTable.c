@@ -99,8 +99,9 @@ orxSTATUS orxHashTable_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Bank)   == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Bank)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY))
@@ -128,14 +129,16 @@ orxSTATUS orxHashTable_Init()
 orxVOID orxHashTable_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY) == orxHASHTABLE_KU32_FLAG_READY);
+  if ((sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY) == orxHASHTABLE_KU32_FLAG_READY)
+  {
+    /* Module not ready now */
+    sstHashTable.u32Flags = orxHASHTABLE_KU32_FLAG_NONE;
+  }
   
-  /* Module not ready now */
-  sstHashTable.u32Flags = orxHASHTABLE_KU32_FLAG_NONE;
-
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Bank);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Bank);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 }
 
 /** @name HashTable creation/destruction.

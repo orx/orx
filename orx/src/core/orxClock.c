@@ -227,9 +227,10 @@ orxSTATUS orxClock_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Time)   == orxSTATUS_SUCCESS) && 
-      (orxMAIN_INIT_MODULE(Bank)   == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Time) &
+       orxDEPEND_INIT(Bank)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY))
@@ -300,9 +301,10 @@ orxVOID orxClock_Exit()
     sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_READY;
   }
 
-  orxMAIN_EXIT_MODULE(Bank);
-  orxMAIN_EXIT_MODULE(Time);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Bank);
+  orxDEPEND_EXIT(Time);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

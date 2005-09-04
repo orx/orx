@@ -103,7 +103,8 @@ orxSTATUS orxString_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstString.u32Flags & orxSTRING_KU32_FLAG_READY))
@@ -127,13 +128,15 @@ orxSTATUS orxString_Init()
 orxVOID orxString_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstString.u32Flags & orxSTRING_KU32_FLAG_READY) == orxSTRING_KU32_FLAG_READY);
-  
-  /* Module becomes not ready */
-  sstString.u32Flags &= ~orxSTRING_KU32_FLAG_READY;
+  if ((sstString.u32Flags & orxSTRING_KU32_FLAG_READY) == orxSTRING_KU32_FLAG_READY)
+  {
+    /* Module becomes not ready */
+    sstString.u32Flags &= ~orxSTRING_KU32_FLAG_READY;
+  }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 }
 
 /** Continues a CRC with a string one

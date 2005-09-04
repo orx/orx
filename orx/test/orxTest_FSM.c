@@ -676,7 +676,7 @@ orxVOID orxTest_FSM_Update()
 orxVOID orxTest_FSM_Init()
 {
   /* Initialize bank module */
-  orxFSM_Init();
+  orxDEPEND_INIT(FSM);
   
   /* Register test functions */
   orxTest_Register("FSM", "Display module informations", orxTest_FSM_Infos);
@@ -715,7 +715,7 @@ orxVOID orxTest_FSM_Exit()
   }
   
   /* Uninitialize module. */
-  orxFSM_Exit();
+  orxDEPEND_EXIT(FSM);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_FSM_Init, orxTest_FSM_Exit)

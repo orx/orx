@@ -224,10 +224,11 @@ orxSTATUS orxAnimPointer_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(AnimSet)   == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Time)      == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Structure) &
+       orxDEPEND_INIT(AnimSet) &
+       orxDEPEND_INIT(Time)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY))
@@ -300,10 +301,11 @@ orxVOID orxAnimPointer_Exit()
 
   }
 
-  orxMAIN_EXIT_MODULE(Time);
-  orxMAIN_EXIT_MODULE(AnimSet);
-  orxMAIN_EXIT_MODULE(Structure);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Time);
+  orxDEPEND_EXIT(AnimSet);
+  orxDEPEND_EXIT(Structure);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
   
   return;
 }

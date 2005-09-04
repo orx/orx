@@ -57,8 +57,9 @@ orxSTATUS orxTextIO_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(String) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(String)) == orxSTATUS_SUCCESS)
   {
     /* Module not already registered ? */
     if(!(sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY))
@@ -82,14 +83,16 @@ orxSTATUS orxTextIO_Init()
 orxVOID orxTextIO_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY) == orxTEXTIO_KU32_FLAG_READY);
-  
-  /* Module becomes not ready */
-  sstTextIO.u32Flags &= ~orxTEXTIO_KU32_FLAG_READY;
+  if ((sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY) == orxTEXTIO_KU32_FLAG_READY)
+  {
+    /* Module becomes not ready */
+    sstTextIO.u32Flags &= ~orxTEXTIO_KU32_FLAG_READY;
+  }
   
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(String);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(String);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 }
 
 /** Read a String from STDIN and store it in the given buffer

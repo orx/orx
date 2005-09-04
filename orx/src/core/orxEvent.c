@@ -194,9 +194,10 @@ orxSTATUS orxEvent_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(HashTable) == orxSTATUS_SUCCESS) &&
-  	  (orxMAIN_INIT_MODULE(Queue) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(HashTable) &
+       orxDEPEND_INIT(Queue)) == orxSTATUS_SUCCESS)
   {
     /* Not already initialized ? */
     if(!(sstEvent.u32Flags & orxEVENT_KU32_FLAG_READY))
@@ -237,9 +238,10 @@ orxVOID orxEvent_Exit()
   }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Queue);
-  orxMAIN_EXIT_MODULE(HashTable);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Queue);
+  orxDEPEND_EXIT(HashTable);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

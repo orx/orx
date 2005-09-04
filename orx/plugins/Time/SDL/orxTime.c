@@ -62,7 +62,7 @@ orxSTATUS orxTimeSDL_Init()
   sstTime.u32Flags = orxTIME_KU32_FLAG_NONE;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) /* && 
+  if ((orxDEPEND_INIT(Memory) == orxSTATUS_SUCCESS) /* && 
       (orxMAIN_INIT_MODULE(Plugin) == orxSTATUS_SUCCESS)*/)
   {
   
@@ -120,6 +120,8 @@ orxVOID orxTimeSDL_Exit()
     /* Module not ready now */
     sstTime.u32Flags = orxTIME_KU32_FLAG_NONE;
   }
+  
+  orxDEPEND_EXIT(Memory);
 }
 
 /** Gets App Elapsed time.

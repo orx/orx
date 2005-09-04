@@ -139,10 +139,11 @@ orxU32 graphic_init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Init Dependencies */
-  if ((orxMAIN_INIT_MODULE(Structure)   == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Anim)        == orxSTATUS_SUCCESS) && 
-      (orxMAIN_INIT_MODULE(AnimPointer) == orxSTATUS_SUCCESS) && 
-      (orxMAIN_INIT_MODULE(Texture)     == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Structure) &
+       orxDEPEND_INIT(Anim) &
+       orxDEPEND_INIT(AnimPointer) &
+       orxDEPEND_INIT(Texture)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(graphic_su32Flags & GRAPHIC_KU32_FLAG_READY))
@@ -176,10 +177,11 @@ orxVOID graphic_exit()
   }
   
   /* Exit Dependencies */
-  orxMAIN_EXIT_MODULE(Texture);
-  orxMAIN_EXIT_MODULE(AnimPointer);
-  orxMAIN_EXIT_MODULE(Anim);
-  orxMAIN_EXIT_MODULE(Structure);
+  orxDEPEND_EXIT(Texture);
+  orxDEPEND_EXIT(AnimPointer);
+  orxDEPEND_EXIT(Anim);
+  orxDEPEND_EXIT(Structure);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

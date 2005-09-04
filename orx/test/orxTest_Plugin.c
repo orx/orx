@@ -87,8 +87,8 @@ typedef struct __orxTEST_PLUGINS_t
   orxHANDLE hPlugin;
   orxCHAR zType[orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE];
   orxCHAR zFile[orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE];
-  orxMAIN_MODULE_INIT_CB cbInit;
-  orxMAIN_MODULE_EXIT_CB cbExit;
+  orxDEPEND_INIT_CB cbInit;
+  orxDEPEND_EXIT_CB cbExit;
 } orxTEST_PLUGINS;
 
 typedef struct __orxTEST_PLUGINS_STATIC_t
@@ -390,7 +390,7 @@ orxVOID orxTest_RegisterCorePlugin()
   orxU32 u32Index;
     
   /* Initialize Memory module */
-  orxMAIN_INIT_MODULE(Plugin);
+  orxDEPEND_INIT(Plugin);
   
   /* Register test functions */
   orxTest_Register("Plugin", "Display module informations", orxTest_Plugin_Infos);
@@ -463,7 +463,7 @@ orxVOID orxTest_Plugin_Exit()
   
   
   /* Uninitialize plugin module */
-  orxMAIN_EXIT_MODULE(Plugin);
+  orxDEPEND_EXIT(Plugin);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_RegisterCorePlugin, orxTest_Plugin_Exit)

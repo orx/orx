@@ -134,10 +134,11 @@ orxSTATUS orxStructure_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory)   == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Bank)     == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(LinkList) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Tree)     == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Bank) &
+       orxDEPEND_INIT(LinkList) &
+       orxDEPEND_INIT(Tree)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY))
@@ -240,10 +241,11 @@ orxVOID orxStructure_Exit()
   }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Tree);
-  orxMAIN_EXIT_MODULE(LinkList);
-  orxMAIN_EXIT_MODULE(Bank);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Tree);
+  orxDEPEND_EXIT(LinkList);
+  orxDEPEND_EXIT(Bank);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

@@ -83,10 +83,11 @@ orxSTATUS orxScreenshot_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory)  == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(File)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(TextIO)  == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Display) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(File) &
+       orxDEPEND_INIT(TextIO) &
+       orxDEPEND_INIT(Display)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))
@@ -160,11 +161,11 @@ orxVOID orxScreenshot_Exit()
   }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Display);
-  orxMAIN_EXIT_MODULE(TextIO);
-  orxMAIN_EXIT_MODULE(File);
-  orxMAIN_EXIT_MODULE(Memory);
-
+  orxDEPEND_EXIT(Display);
+  orxDEPEND_EXIT(TextIO);
+  orxDEPEND_EXIT(File);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
   return;
 }
 

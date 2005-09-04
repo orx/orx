@@ -107,8 +107,9 @@ orxSTATUS orxFps_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Clock)  == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstFps.u32Flags & orxFPS_KU32_FLAG_READY))
@@ -189,8 +190,9 @@ orxVOID orxFps_Exit()
   }
 
   /* Exit dependencies */  
-  orxMAIN_EXIT_MODULE(Clock);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Clock);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

@@ -558,8 +558,9 @@ orxSTATUS orxFrame_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Structure)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
@@ -643,8 +644,9 @@ orxVOID orxFrame_Exit()
   }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Structure);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Structure);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

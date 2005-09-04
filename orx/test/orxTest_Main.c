@@ -280,63 +280,74 @@ int main(int argc, char **argv)
   
   /* Minimum initialisation */
   orxDEBUG_INIT();              /* Debug module is necessary to display debug from each module */
-  orxMAIN_INIT_MODULE(Test);    /* Test Module is necessary to register test function */
-  orxMAIN_INIT_MODULE(String);  /* String mdule to manage string (and read value from user) */
-  orxMAIN_INIT_MODULE(TextIO);  /* Text IO module to manage user input/output */
+  
+  if ((orxDEPEND_INIT(Depend) &                      /* Test Module is necessary to register test function */
+       orxDEPEND_INIT(Test) &                        /* Test Module is necessary to register test function */
+       orxDEPEND_INIT(String) &                      /* String mdule to manage string (and read value from user) */
+       orxDEPEND_INIT(TextIO)) == orxSTATUS_SUCCESS) /* Text IO module to manage user input/output */
+  {  
 
-  orxTestMain_Init();   /* Initialise application (load dynamic library */
-  
-  /* Display menu and get user entry */
-  do
-  {
-    /* Show list of registered function */
-    orxTest_DisplayMenu();
+    orxTestMain_Init();   /* Initialise application (load dynamic library */
     
-    /* Get user choice */
-    orxTextIO_PrintLn("quit : Quit the test program");
-    orxTextIO_ReadString(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, "Choice : ");
-    
-    /* Check overflow */
-    if ((orxString_Length(zChoice) > 0) && zChoice[orxString_Length(zChoice)-1] == '\n')
+    /* Display menu and get user entry */
+    do
     {
-      zChoice[strlen(zChoice)-1] = '\0';
-    }
-    
-    /* The user wants to quit ? */
-    if (orxString_Compare(zChoice, "quit") != 0)
-    {
-      /* No, so parse its choice */
-      if ((orxString_ToS32(&s32Val, zChoice, 10) == orxSTATUS_FAILED))
+      /* Show list of registered function */
+      orxTest_DisplayMenu();
+      
+      /* Get user choice */
+      orxTextIO_PrintLn("quit : Quit the test program");
+      orxTextIO_ReadString(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, "Choice : ");
+      
+      /* Check overflow */
+      if ((orxString_Length(zChoice) > 0) && zChoice[orxString_Length(zChoice)-1] == '\n')
       {
-        /* The value is not a digit */
-        orxTextIO_PrintLn("The Value is not a digit");
+        zChoice[strlen(zChoice)-1] = '\0';
       }
-      else
+      
+      /* The user wants to quit ? */
+      if (orxString_Compare(zChoice, "quit") != 0)
       {
-        if (orxTest_Execute((orxHANDLE)s32Val) == orxSTATUS_FAILED)
+        /* No, so parse its choice */
+        if ((orxString_ToS32(&s32Val, zChoice, 10) == orxSTATUS_FAILED))
         {
-          /* Invalid choice was used */
-          orxTextIO_PrintLn("Unknown command");
+          /* The value is not a digit */
+          orxTextIO_PrintLn("The Value is not a digit");
         }
+        else
+        {
+          if (orxTest_Execute((orxHANDLE)s32Val) == orxSTATUS_FAILED)
+          {
+            /* Invalid choice was used */
+            orxTextIO_PrintLn("Unknown command");
+          }
+        }
+        
+        /* Function has been executed. Wait for a pressed key before displaying the menu (clear screen would be fine) */
+        orxTextIO_PrintLn("Press Enter to continue");
+        getchar();
+        
+        /* Reinitialize user choice */
+        memset(zChoice, 0, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE * sizeof(char));
+        s32Val = -1;
       }
-      
-      /* Function has been executed. Wait for a pressed key before displaying the menu (clear screen would be fine) */
-      orxTextIO_PrintLn("Press Enter to continue");
-      getchar();
-      
-      /* Reinitialize user choice */
-      memset(zChoice, 0, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE * sizeof(char));
-      s32Val = -1;
     }
+    while (orxString_Compare(zChoice, "quit") != 0);
+
+    /* Uninitialize modules */
+    orxTestMain_Exit();
   }
-  while (orxString_Compare(zChoice, "quit") != 0);
-  
-  /* Uninitialize modules */
-  orxTestMain_Exit();
-  
-  orxMAIN_EXIT_MODULE(TextIO);
-  orxMAIN_EXIT_MODULE(String);
-  orxMAIN_EXIT_MODULE(Test);
+  else
+  {
+    orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "Error : Can't Initialize Dependencies... Exit");
+  }
+
+  /* Exit dependencies */  
+  orxDEPEND_EXIT(TextIO);
+  orxDEPEND_EXIT(String);
+  orxDEPEND_EXIT(Test);
+  orxDEPEND_EXIT(Depend);
+
   orxDEBUG_EXIT();
   
   /* That's all folks ! */

@@ -1228,9 +1228,10 @@ orxSTATUS orxAnimSet_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  if ((orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Anim)      == orxSTATUS_SUCCESS) && 
-      (orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Structure) &
+       orxDEPEND_INIT(Anim) &
+       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
   {
 
     /* Not already Initialized? */
@@ -1302,9 +1303,10 @@ orxVOID orxAnimSet_Exit()
     sstAnimSet.u32Flags &= ~orxANIMSET_KU32_FLAG_READY;
   }
   
-  orxMAIN_EXIT_MODULE(Memory);
-  orxMAIN_EXIT_MODULE(Anim);
-  orxMAIN_EXIT_MODULE(Structure);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Anim);
+  orxDEPEND_EXIT(Structure);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

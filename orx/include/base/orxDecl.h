@@ -94,15 +94,15 @@
 #endif /* __orxWINDOWS__ */  
 
 /* DLL? */
-#ifdef orxDLL          /* orx compiled as a dynamic library */
-  #ifdef orxDLLEXPORT  /* export functions (orx.dll compilation) */
+#ifdef __orxDLL__          /* orx compiled as a dynamic library */
+  #ifdef __orxDLLEXPORT__  /* export functions (orx.dll compilation) */
     #define orxDLLAPI orxEXPORT
-  #else                /* no orxDLLEXPORT */
+  #else                    /* no __orxDLLEXPORT__ */
     #define orxDLLAPI orxIMPORT
-  #endif               /* end orxDLLEXPORT */
-#else                  /* no orxDLL */
+  #endif                   /* end orxDLLEXPORT */
+#else                      /* no __orxDLL__ (it should be __orxLIB__) */
   #define orxDLLAPI
-#endif                 /* end orxDLL */
+#endif                     /* end __orxDLL__ */
 
 
 /** Extremely fast swap macros for two 32-bits objects. */

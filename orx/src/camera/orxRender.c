@@ -241,10 +241,11 @@ orxSTATUS orxRender_Init()
 	orxSTATUS eResult = orxSTATUS_FAILED;
 	
   /* Call init dependencies */
-  if ((orxMAIN_INIT_MODULE(Viewport)  == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Texture)   == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Display)   == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Viewport) &
+       orxDEPEND_INIT(Texture) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Display)) == orxSTATUS_SUCCESS)
   {
 
     /* Already Initialized? */
@@ -289,10 +290,11 @@ orxVOID orxRender_Exit()
     /* !!! MSG !!! */
   }
 
-  orxMAIN_EXIT_MODULE(Display);
-  orxMAIN_EXIT_MODULE(Memory);
-  orxMAIN_EXIT_MODULE(Texture);
-  orxMAIN_EXIT_MODULE(Viewport);
+  orxDEPEND_EXIT(Display);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Texture);
+  orxDEPEND_EXIT(Viewport);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

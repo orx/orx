@@ -273,10 +273,11 @@ orxSTATUS orxViewport_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  if ((orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Camera)    == orxSTATUS_SUCCESS) && 
-      (orxMAIN_INIT_MODULE(Texture)   == orxSTATUS_SUCCESS) && 
-      (orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Structure) &
+       orxDEPEND_INIT(Camera) &
+       orxDEPEND_INIT(Texture) &
+       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
@@ -343,10 +344,11 @@ orxVOID orxViewport_Exit()
     /* !!! MSG !!! */
   }
 
-  orxMAIN_EXIT_MODULE(Memory);
-  orxMAIN_EXIT_MODULE(Texture);
-  orxMAIN_EXIT_MODULE(Camera);
-  orxMAIN_EXIT_MODULE(Structure);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Texture);
+  orxDEPEND_EXIT(Camera);
+  orxDEPEND_EXIT(Structure);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

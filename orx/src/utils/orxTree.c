@@ -216,7 +216,8 @@ orxSTATUS orxTree_Init()
   eResult = orxSTATUS_FAILED;
   
     /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
   {
     /* Already Initialized? */
     if(!(sstTree.u32Flags & orxTREE_KU32_FLAG_READY))
@@ -260,7 +261,8 @@ orxVOID orxTree_Exit()
   }
   
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

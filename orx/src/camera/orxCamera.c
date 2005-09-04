@@ -846,10 +846,11 @@ orxSTATUS orxCamera_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Frame)     == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Object)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Frame) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Object) &
+       orxDEPEND_INIT(Structure)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
@@ -916,10 +917,11 @@ orxVOID orxCamera_Exit()
     /* !!! MSG !!! */
   }
 
-  orxMAIN_EXIT_MODULE(Structure);
-  orxMAIN_EXIT_MODULE(Object);
-  orxMAIN_EXIT_MODULE(Memory);
-  orxMAIN_EXIT_MODULE(Frame);
+  orxDEPEND_EXIT(Structure);
+  orxDEPEND_EXIT(Object);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Frame);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

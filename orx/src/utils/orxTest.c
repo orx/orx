@@ -114,7 +114,8 @@ orxSTATUS orxTest_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstTest.u32Flags & orxTEST_KU32_FLAG_READY))
@@ -139,13 +140,15 @@ orxSTATUS orxTest_Init()
 orxVOID orxTest_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
-  
-  /* Module becomes not ready */
-  sstTest.u32Flags &= ~orxTEST_KU32_FLAG_READY;
+  if ((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY)
+  {
+    /* Module becomes not ready */
+    sstTest.u32Flags &= ~orxTEST_KU32_FLAG_READY;
+  }
   
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 }
 
 /** Register a new function

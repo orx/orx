@@ -268,9 +268,10 @@ orxSTATUS orxAnim_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Call init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Texture) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Structure) &
+       orxDEPEND_INIT(Texture)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY))
@@ -338,9 +339,10 @@ orxVOID orxAnim_Exit()
   }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Texture);
-  orxMAIN_EXIT_MODULE(Structure);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Texture);
+  orxDEPEND_EXIT(Structure);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

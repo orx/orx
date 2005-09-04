@@ -155,9 +155,10 @@ orxSTATUS orxFSM_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Bank)      == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(HashTable) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Bank) &
+       orxDEPEND_INIT(HashTable)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstStateMachine.u32Flags & orxFSM_KU32_FLAG_READY))
@@ -201,9 +202,10 @@ orxVOID orxFSM_Exit()
   sstStateMachine.u32Flags = orxFSM_KU32_FLAG_NONE;
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(HashTable);
-  orxMAIN_EXIT_MODULE(Bank);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(HashTable);
+  orxDEPEND_EXIT(Bank);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 }
 
 /** Create a state machine and return a pointer on it.

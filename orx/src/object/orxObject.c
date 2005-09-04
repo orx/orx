@@ -160,9 +160,10 @@ orxSTATUS orxObject_Init()
   /** WARNING : This module depends on graphic too, but since all the graphic
    * layer has to be redesigned and rewritten, we won't include it at the moment
    */
-  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Structure) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Frame)     == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Structure) &
+       orxDEPEND_INIT(Frame)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
@@ -230,9 +231,10 @@ orxVOID orxObject_Exit()
   }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Frame);
-  orxMAIN_EXIT_MODULE(Structure);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Frame);
+  orxDEPEND_EXIT(Structure);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

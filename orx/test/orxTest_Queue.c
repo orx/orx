@@ -32,7 +32,7 @@
 /******************************************************
  * GLOBAL OBJECTS.
  ******************************************************/
-static orxQUEUE* spstQueue = orxNULL;
+orxSTATIC orxQUEUE* spstQueue = orxNULL;
 
 
 /******************************************************
@@ -162,7 +162,7 @@ orxVOID orxTest_Queue_RemoveItem()
 orxVOID orxTest_Queue_Init()
 {
 	/* Initialize bank module */
-	orxMAIN_INIT_MODULE(Queue);
+	orxDEPEND_INIT(Queue);
 	  
 	/* Register test functions */
 	orxTest_Register("Queue", "Display module informations", orxTest_Queue_Infos);
@@ -184,9 +184,7 @@ orxVOID orxTest_Queue_Exit()
 	}
 		
 	/* Uninitialize module */
-	orxMAIN_EXIT_MODULE(Queue);
+	orxDEPEND_EXIT(Queue);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Queue_Init, orxTest_Queue_Exit)
-
-

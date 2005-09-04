@@ -554,11 +554,12 @@ orxSTATUS orxPlugin_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Bank)      == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(HashTable) == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(String)    == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(TextIO)    == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Bank) &
+       orxDEPEND_INIT(HashTable) &
+       orxDEPEND_INIT(String) &
+       orxDEPEND_INIT(TextIO)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
@@ -629,11 +630,12 @@ orxVOID orxPlugin_Exit()
   }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(TextIO);
-  orxMAIN_EXIT_MODULE(String);
-  orxMAIN_EXIT_MODULE(HashTable);
-  orxMAIN_EXIT_MODULE(Bank);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(TextIO);
+  orxDEPEND_EXIT(String);
+  orxDEPEND_EXIT(HashTable);
+  orxDEPEND_EXIT(Bank);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   return;
 }

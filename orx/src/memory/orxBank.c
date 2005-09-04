@@ -200,7 +200,8 @@ orxSTATUS orxBank_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstBank.u32Flags & orxBANK_KU32_FLAG_READY))
@@ -250,13 +251,15 @@ orxSTATUS orxBank_Init()
 orxVOID orxBank_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
-  
-  /* Module not ready now */
-  sstBank.u32Flags = orxBANK_KU32_FLAG_NONE;
+  if ((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY)
+  {
+    /* Module not ready now */
+    sstBank.u32Flags = orxBANK_KU32_FLAG_NONE;
+  }
 
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 }
 
 /** Create a new bank in memory and returns a pointer on it

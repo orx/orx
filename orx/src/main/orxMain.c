@@ -9,7 +9,7 @@
  orxMain.c
  Main program implementation
  
- begin                : 21/07/2005
+ begin                : 04/09/2005
  author               : (C) Arcallians
  email                : bestel@arcallians.org
  ***************************************************************************/
@@ -23,26 +23,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "main/orxMain.h"
-#include "memory/orxMemory.h"
-#include "debug/orxDebug.h"
+#include "orx.h"
 
 #define orxMAIN_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxMAIN_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
 
+#define orxMAIN_KU32_FLAG_EXIT  0x00000004  /**< an Exit Event has been received */
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
-typedef struct __orxMAIN_MODULE_INFOS_t
-{
-  orxSTATUS eStatus;              /**< Module init status */
-  orxU32 u32RefCount;             /**< Number of time that a Init has been called */
-} orxMAIN_MODULE_INFOS;
-
 typedef struct __orxMAIN_STATIC_t
 {
-  orxU32 u32Flags;                                              /**< Flags set by the main module */
-  orxMAIN_MODULE_INFOS astModuleInfos[orxMAIN_MODULE_NUMBER];   /**< Array on infos for each declared modules */
+  orxU32 u32Flags; /**< Flags set by the main module */
 } orxMAIN_STATIC;
 
 /***************************************************************************
@@ -51,36 +44,38 @@ typedef struct __orxMAIN_STATIC_t
 orxSTATIC orxMAIN_STATIC sstMain;
 
 /***************************************************************************
- * Private functions                                                       *
+ * Functions                                                               *
  ***************************************************************************/
 
-/***************************************************************************
- * Public functions                                                        *
- ***************************************************************************/
 /** Initialize the main module (will initialize all needed modules)
  */
 orxSTATUS orxMain_Init()
 {
-  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Init Debug System */
+  orxDEBUG_INIT();
+
   /* Don't call twice the init function */
-  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) != orxMAIN_KU32_FLAG_READY);
-  
-  /* Require orxMemory to clear datas */
-  orxMAIN_INIT_MODULE(Memory);
-  
-  /* Clear the static control */
-  orxMemory_Set(&sstMain, 0, sizeof(orxMAIN_STATIC));
-  
-  /* Initialize modules datas */
-  for (u32Index = 0; u32Index < orxMAIN_MODULE_NUMBER; u32Index++)
+  if (!(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY))
   {
-    sstMain.astModuleInfos[u32Index].eStatus = orxSTATUS_FAILED;
+    /* Try to Init the Engine */
+    if ((orxDEPEND_INIT(Depend) &
+         orxDEPEND_INIT(Memory) &
+         orxDEPEND_INIT(Plugin) &
+         orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
+         /** Todo : Complete remaining dependencies */
+    {
+      /* Clear the static control */
+      orxMemory_Set(&sstMain, 0, sizeof(orxMAIN_STATIC));
+      
+      /* Set module as initialized */
+      sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
+    }
   }
   
-  /* Set module as initialized */
-  sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
+  /* Exit Debug system */
+  orxDEBUG_EXIT();
 
   /* Done! */
   return eResult;
@@ -91,73 +86,37 @@ orxSTATUS orxMain_Init()
 orxVOID orxMain_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY);
-
-  /* Set module as not ready */
-  sstMain.u32Flags &= ~orxMAIN_KU32_FLAG_READY;
+  if ((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY)
+  {
+    /* Set module as not ready */
+    sstMain.u32Flags &= ~orxMAIN_KU32_FLAG_READY;
+  }
+  
+  /* Done */
+  return;
 }
 
-/** Call the Init callback function for a module
- * @param[in] _zName    Module's name
- * @param[in] _eModule  Module's type
- * @param[in] _cbInit   Init function
- * @return Module's Init status
+/** Main function
+ * @param[in] _u32NbParam  Number of parameters
+ * @param[in] _azParam     List array of parameters
+ * @note Since the event function is not registered, the program will not
+ * be able to exit properly.
  */
-orxSTATUS orxMain_InitModule(orxCONST orxSTRING _zName, orxMAIN_MODULE _eModule, orxMAIN_MODULE_INIT_CB _cbInit)
+int main(int argc, char **argv)
 {
-  /* If not initialized yet, Init the module */
-  if (sstMain.astModuleInfos[_eModule].u32RefCount == 0)
+  /* Init the Engine */
+  if (orxMain_Init() == orxSTATUS_SUCCESS)
   {
-    /* Call Init function */
-    sstMain.astModuleInfos[_eModule].eStatus = _cbInit();
-    
-    /* First Call to the Init function, really Initialize it */
-    if (sstMain.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS)
+    /* Main Loop (Until Exit event received) */
+    while ((sstMain.u32Flags & orxMAIN_KU32_FLAG_EXIT) != orxMAIN_KU32_FLAG_EXIT)
     {
-      orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "INIT %s : First call => Init function success", _zName);
+      /* Update clocks */
+      orxClock_Update();
     }
-    else
-    {
-      orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "INIT %s : First call => Init function FAILED !", _zName);
-    }
-  }
-  
-  /* Increases ref counter */
-  sstMain.astModuleInfos[_eModule].u32RefCount++;
-  
-  if (sstMain.astModuleInfos[_eModule].u32RefCount > 1)
-  {
-    orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "INIT %s : %lu Init call", _zName, sstMain.astModuleInfos[_eModule].u32RefCount);
-  }
-  
-  /* Return Init status */
-  return sstMain.astModuleInfos[_eModule].eStatus;
-}
-
-/** Call the Exit callback function for a module
- * @param[in] _zName    Module's name
- * @param[in] _eModule  Module's type
- * @param[in] _cbExit   Exit function
- */
-orxVOID orxMain_ExitModule(orxCONST orxSTRING _zName, orxMAIN_MODULE _eModule, orxMAIN_MODULE_EXIT_CB _cbExit)
-{
-  /* It's not possible that there are more Exit than Init */
-  orxASSERT(sstMain.astModuleInfos[_eModule].u32RefCount > 0);
-  
-  /* Decreases the ref counter */
-  sstMain.astModuleInfos[_eModule].u32RefCount--;
-  
-  /* Counter has reached 0 And module successfully initialized ? */
-  if ((sstMain.astModuleInfos[_eModule].u32RefCount == 0) && (sstMain.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS))
-  {
-    /* Call Exit callback */
-    _cbExit();
     
-    /* Log Exit */
-    orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "EXIT %s : Last call => Exit function called", _zName);
+    /* Exit the engine */
+    orxMain_Exit();
   }
-  else
-  {
-    orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "EXIT %s : %lu call remaining", _zName, sstMain.astModuleInfos[_eModule].u32RefCount);
-  }
+  
+  return 0;
 }

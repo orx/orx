@@ -57,9 +57,10 @@ orxSTATUS orxMathSet_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init dependencies */
-  if ((orxMAIN_INIT_MODULE(Memory)   == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(Bank)     == orxSTATUS_SUCCESS) &&
-      (orxMAIN_INIT_MODULE(LinkList) == orxSTATUS_SUCCESS))
+  if ((orxDEPEND_INIT(Depend) &
+       orxDEPEND_INIT(Memory) &
+       orxDEPEND_INIT(Bank) &
+       orxDEPEND_INIT(LinkList)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY))
@@ -113,9 +114,10 @@ orxVOID orxMathSet_Exit()
   }
   
   /* Exit dependencies */
-  orxMAIN_EXIT_MODULE(LinkList);
-  orxMAIN_EXIT_MODULE(Bank);
-  orxMAIN_EXIT_MODULE(Memory);
+  orxDEPEND_EXIT(LinkList);
+  orxDEPEND_EXIT(Bank);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
 
   /* Done */
   return;
