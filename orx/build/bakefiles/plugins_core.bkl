@@ -1,13 +1,28 @@
 <?xml version="1.0"?>
 <bakefile>
 
+  <!-- Since on linux, FMOD packaging is not good, we are obliged to use this trick :/ -->
+  <set var="orxFMODLIB_WIN">
+    <if cond="PLATFORM_WIN32=='1'">fmod</if>
+  </set>
+
+  <set var="orxFMODLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">/usr/lib/libfmod.so</if>
+  </set>
+
+  <!-- Define the module template -->
+  <template id="orxFMOD">
+    <sys-lib>$(orxFMODLIB_WIN)</sys-lib>
+    <ldflags>$(orxFMODLIB_UNIX)</ldflags>
+  </template>
+
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->
 
   <!-- SOUND -->
 
 	  <!-- Depends on fmod -->
-	  <module id="Sound_Fmod" cond="USE_FMOD=='1'" template="orxBASE,orxLINK,orxMODULELINK">
+	  <module id="Sound_Fmod" cond="USE_FMOD=='1'" template="orxBASE,orxLINK,orxMODULELINK,orxFMOD">
 	    <dirname>bin/plugins/core/sound</dirname>
 	    <sources>plugins/Sound/Fmod/orxSound.c</sources>
 	  </module>

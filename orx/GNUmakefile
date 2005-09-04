@@ -397,7 +397,7 @@ bin/modules/FSM.so: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 ifeq ($(USE_FMOD),1)
 bin/plugins/core/sound/Sound_Fmod.so: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
+	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  /usr/lib/libfmod.so  $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_ALLEGRO),1)
