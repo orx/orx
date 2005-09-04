@@ -56,7 +56,6 @@ typedef enum __orxDEPEND_MODULE_t
   orxDEPEND_MODULE_File,
   orxDEPEND_MODULE_Test,
   orxDEPEND_MODULE_Queue,
-  orxDEPEND_MODULE_String,
   orxDEPEND_MODULE_Event,
   orxDEPEND_MODULE_Depend,
   orxDEPEND_MODULE_FSM,
