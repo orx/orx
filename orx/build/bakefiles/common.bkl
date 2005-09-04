@@ -13,6 +13,23 @@
         <default-value>static</default-value>
     </option>
     
+    <!-- Define plugins options -->
+	  <option name="USE_ALLEGRO">
+	    <values>0,1</values>
+	    <default-value>0</default-value>
+	  </option>
+	
+	  <option name="USE_FMOD">
+	    <values>0,1</values>
+	    <default-value>0</default-value>
+	  </option>
+	
+	  <option name="USE_SDL">
+	    <values>0,1</values>
+	    <default-value>0</default-value>
+	  </option>
+    
+    
     <!-- Set a flag to specify if build is static. -->
     <set var="orxLINKSTATIC">
         <if cond="LINK=='static'">1</if>
@@ -88,11 +105,12 @@
         <depends>$(orxLINKDEPEND)</depends>
     </template>
 
-    <!-- Set module ilink lib -->
+    <!-- Set module link lib -->
     <set var="orxEXTRALINK">
      <if cond="LINK=='dynamic'">orx$(orxSUFFIX)</if>
     </set>
      
+     <!-- Under window, DLL application have to be linked with a small static lib too -->
     <set var="orxEXTRAFLAGS">
       <if cond="LINK=='static' and FORMAT=='mingw'">lib\testbed.a</if>
     </set>
@@ -101,6 +119,88 @@
     <template id="orxMODULELINK">
 	  <sys-lib>$(orxEXTRALINK)</sys-lib>
       <ldflags>$(orxEXTRAFLAGS)</ldflags>
+    </template>
+
+    <!-- Template for orx libraries. -->
+    <template id="orxLibBase" template="orxBASE">
+        <libname>orx$(orxSUFFIX)</libname>
+        
+        <!-- Set source files -->
+        <sources>
+            src/anim/orxAnim.c
+            src/anim/orxAnimPointer.c
+            src/anim/orxAnimSet.c
+        </sources>
+        <sources>
+            src/base/orxDepend.c
+        </sources>
+        <sources>
+            src/camera/orxCamera.c
+            src/camera/orxRender.c
+            src/camera/orxViewport.c
+        </sources>
+        <sources>
+            src/core/orxClock.c
+            src/core/orxEvent.c
+            src/core/orxTime.c
+        </sources>
+        <sources>
+            src/debug/orxDebug.c
+            src/debug/orxFps.c
+        </sources>
+        <sources>
+            src/display/graphic.c
+            src/display/orxDisplay.c
+            src/display/orxTexture.c
+        </sources>
+        <sources>
+            src/io/orxFile.c
+            src/io/interaction.c
+            src/io/orxJoystick.c
+            src/io/orxKeyboard.c
+            src/io/orxMouse.c
+            src/io/orxPackage.c
+            src/io/orxTextIO.c
+        </sources>
+<!--
+        <sources>
+            src/main/orxMain.c
+        </sources>
+-->
+        <sources>
+            src/math/orxMathSet.c
+            src/math/orxVec.c
+        </sources>
+        <sources>
+            src/memory/orxBank.c
+            src/memory/orxMemory.c
+        </sources>
+        <sources>
+            src/object/orxFrame.c
+            src/object/orxObject.c
+            src/object/orxStructure.c
+        </sources>
+        <sources>
+            src/plugin/orxPlugin.c
+        </sources>
+        <sources>
+            src/script/orxScript.c
+        </sources>
+        <sources>
+            src/sound/orxSound.c
+        </sources>
+        <sources>
+            src/utils/orxBayes.c
+            src/utils/orxFSM.c
+            src/utils/orxHashTable.c
+            src/utils/orxLinkList.c
+            src/utils/orxQueue.c
+            src/utils/orxScreenshot.c
+            src/utils/orxString.c
+            src/utils/orxTest.c
+            src/utils/orxTree.c
+            src/utils/pathfinder.c
+        </sources>
     </template>
 
 </bakefile>

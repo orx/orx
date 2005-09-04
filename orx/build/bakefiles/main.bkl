@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<bakefile>
+
+
+  <!--- Create main program -->
+  <exe id="orx" template="orxBASE,orxLINK">
+    <dirname>bin</dirname>
+    <app-type>console</app-type> <!-- Windows specific : gui/console change the link behaviour -->
+  
+    <ldflags>$(orxLDFLAGS) $(orxLDFLAGS_IMPLIB)</ldflags>
+    <sys-lib>$(orxLINKLIB)</sys-lib>
+    <sources>src/main/orxMain.c</sources>
+  </exe>
+
+</bakefile>

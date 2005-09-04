@@ -1,22 +1,6 @@
 <?xml version="1.0"?>
 <bakefile>
 
-  <!-- Define plugins options -->
-  <option name="USE_ALLEGRO">
-    <values>0,1</values>
-    <default-value>0</default-value>
-  </option>
-
-  <option name="USE_FMOD">
-    <values>0,1</values>
-    <default-value>0</default-value>
-  </option>
-
-  <option name="USE_SDL">
-    <values>0,1</values>
-    <default-value>0</default-value>
-  </option>
-
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->
 
