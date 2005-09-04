@@ -20,15 +20,15 @@
 /* Include all the module of the project.
  * This file will be used to generate a precompiled header for compiler that
  * support this feature.
- * This header is also the only file to include inside user plugin
+ * Orx Engine :   This header must not be used by modules of the engine (only main program)
+ * User Plugins : This header is the only one that have to be used
  */
+
+#include "orxInclude.h"
 
 #include "anim/orxAnim.h"
 #include "anim/orxAnimPointer.h"
 #include "anim/orxAnimSet.h"
-
-#include "base/orxDecl.h"
-#include "base/orxType.h"
 
 #include "camera/orxCamera.h"
 #include "camera/orxRender.h"
@@ -53,8 +53,6 @@
 #include "io/orxPackage.h"
 #include "io/orxTextIO.h"
 
-#include "main/orxMain.h"
-
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
 #include "object/orxStructure.h"
@@ -78,7 +76,4 @@
 #include "utils/orxTree.h"
 #include "utils/pathfinder.h"
 
-
 #endif /*_orx_H_*/
-
-/** @} */
