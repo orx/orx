@@ -21,6 +21,7 @@
 #include "memory/orxMemory.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxQueue.h"
+#include "core/orxClock.h"
 #include "debug/orxDebug.h"
 
 
@@ -57,6 +58,8 @@ orxSTATIC orxEVENT_STATIC sstEvent;
  ***************************************************************************/
 struct __orxEVENT_MANAGER_t
 {
+	/** Manipulation flags of queue.*/
+	orxU32 u32ManipFlags;
 	/** Message queue.*/
 	orxQUEUE* pstMessageQueue;
 	/** Callback hash table.*/
@@ -71,7 +74,7 @@ struct __orxEVENT_MANAGER_t
 /**
  *  Create an event manager.
  */
-orxEVENT_MANAGER *orxEventManager_Create(orxU16 _u16Number, orxU16 _u16HandlerNumber)
+orxEVENT_MANAGER *orxEventManager_Create(orxU16 _u16Number, orxU16 _u16HandlerNumber, orxU32 _u32Flags)
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_ISNT_INITIALIZED
@@ -102,6 +105,7 @@ orxEVENT_MANAGER *orxEventManager_Create(orxU16 _u16Number, orxU16 _u16HandlerNu
 	
 	pstManager->pstMessageQueue  = pstMessageQueue;
 	pstManager->pstCallbackTable = pstCallbackTable;
+	pstManager->u32ManipFlags = _u32Flags;
 	return pstManager;
 }
 
@@ -120,6 +124,31 @@ orxVOID orxEventManager_Delete(orxEVENT_MANAGER* _pstEventManager)
 	orxMemory_Free(_pstEventManager);	
 }
 
+/**
+ *  Set the flags of event manager.
+ */
+orxVOID orxEventManager_SetFlags(orxEVENT_MANAGER* _pstEventManager, orxU32 _u32Flags)
+{
+	/** Assert the module is initialized.*/
+	orxEVENT_ASSERT_MODULE_ISNT_INITIALIZED
+    /** Assert the Event manager is ok.*/
+    orxASSERT(_pstEventManager!=orxNULL);
+    
+    _pstEventManager->u32ManipFlags = _u32Flags;
+}
+
+/**
+ *  Retrieve the flags of the event manager.
+ */
+orxU32  orxEventManager_GetFlags(orxEVENT_MANAGER* _pstEventManager)
+{
+	/** Assert the module is initialized.*/
+	orxEVENT_ASSERT_MODULE_ISNT_INITIALIZED
+    /** Assert the Event manager is ok.*/
+    orxASSERT(_pstEventManager!=orxNULL);
+    
+    return _pstEventManager->u32ManipFlags;
+}
 
 /** 
  * Register an event callback function.
@@ -156,28 +185,80 @@ orxVOID orxEventManager_AddEvent(orxEVENT_MANAGER* _pstEventManager, orxEVENT_ME
 /**
  *  Process the events.
  */
-orxVOID orxEventManager_ProcessEvent(orxEVENT_MANAGER* _pstEventManager)
+orxVOID ProcessEvent(orxEVENT_MANAGER* _pstEventManager, orxS16 _s16Ticks)
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_ISNT_INITIALIZED
     /** Assert the Event manager is ok.*/
     orxASSERT(_pstEventManager!=orxNULL);
     
-    while(orxQueue_GetItemNumber(_pstEventManager->pstMessageQueue)>0)
+    orxBOOL bRemoveNegative = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_MANAGER_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT);
+    orxBOOL bRemoveUnprocessed = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_MANAGER_MANIPULATION_REMOVE_UNPROCESSED);
+    orxBOOL bPartialProcess = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_MANAGER_MANIPULATION_PARTIAL_PROCESS);
+    
+    orxQUEUE_ITEM* pstCurrentItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);
+    orxQUEUE_ITEM* pstItem;
+    
+    while(pstCurrentItem!=orxNULL)
     {
-    	orxQUEUE_ITEM* pstItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);
-    	
     	orxU16 u16Type = orxEVENT_MESSAGE_GET_TYPE(orxQueueItem_GetID(pstItem));
     	orxS16 s16Life = orxEVENT_MESSAGE_GET_LIFETIME(orxQueueItem_GetID(pstItem));
     	orxVOID* pData = orxQueueItem_GetExtraData(pstItem);
     	
-    	orxEVENT_CB pEventHandler = (orxEVENT_CB) orxHashTable_Get(_pstEventManager->pstCallbackTable, u16Type);
-    	if(pEventHandler!=orxNULL)
+    	orxBOOL bProcessed = orxFALSE;
+    	
+    	/** Decrement lifetime.*/
+    	if(s16Life!=orxEVENT_MESSAGE_LIFETIME_CONSTANT)
     	{
-    		pEventHandler(u16Type, s16Life, pData);
+	    	s16Life -= _s16Ticks;
     	}
     	
-    	orxQueue_RemoveItem(_pstEventManager->pstMessageQueue, pstItem);
+    	/** Intend to process it if lifetime is correct.*/
+    	if(!bRemoveNegative || (bRemoveNegative && s16Life>=0))
+    	{
+	    	/** Find handler and process event if any.*/
+	    	orxEVENT_CB pEventHandler = (orxEVENT_CB) orxHashTable_Get(_pstEventManager->pstCallbackTable, u16Type);
+	    	if(pEventHandler!=orxNULL)
+	    	{
+	    		pEventHandler(u16Type, s16Life, pData);
+	    		bProcessed = orxTRUE;
+	    	}
+	    	
+	    	/** If not processed, restore new lifetime.*/
+	    	if(!bProcessed && !bRemoveUnprocessed)
+	    	{
+	    		orxQueueItem_SetID(pstItem, orxEVENT_MESSAGE_GET_ID(u16Type, s16Life));
+	    	}
+    	}
+    	
+    	
+    	/** Find next item to process according to total/partial process config.*/
+    	pstItem = pstCurrentItem;
+    	if(bPartialProcess)
+    	{
+    		/** the next item with a different type.*/
+    		while(orxEVENT_MESSAGE_GET_TYPE(orxQueueItem_GetID(pstCurrentItem))==u16Type)
+    		{
+		    	pstCurrentItem = orxQueue_GetNextItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+		    	if(pstCurrentItem==orxNULL)
+		    		break;
+    		}
+    	}
+    	else
+    	{
+	    	pstCurrentItem = orxQueue_GetNextItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+	    	/** Suppress if processed, unused or if olded.*/
+	    	if(bProcessed || (bRemoveNegative && s16Life<0))
+	    	{
+		    	orxQueue_RemoveItem(_pstEventManager->pstMessageQueue, pstItem);
+	    	}
+    	}
+    }
+    
+    /** Clear the queue if not saving no processed events.*/
+    if(bRemoveUnprocessed)
+    {
+    	orxQueue_Clean(_pstEventManager->pstMessageQueue);
     }
 }
 
@@ -194,10 +275,10 @@ orxSTATUS orxEvent_Init()
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(HashTable) &
-       orxDEPEND_INIT(Queue)) == orxSTATUS_SUCCESS)
+  if (orxDEPEND_INIT(Memory) &&
+      orxDEPEND_INIT(Clock) &&
+      orxDEPEND_INIT(HashTable) &&
+  	  orxDEPEND_INIT(Queue))
   {
     /* Not already initialized ? */
     if(!(sstEvent.u32Flags & orxEVENT_KU32_FLAG_READY))
@@ -240,8 +321,8 @@ orxVOID orxEvent_Exit()
   /* Exit dependencies */
   orxDEPEND_EXIT(Queue);
   orxDEPEND_EXIT(HashTable);
+  orxDEPEND_EXIT(Clock);
   orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

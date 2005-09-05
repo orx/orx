@@ -49,6 +49,10 @@ typedef orxS16 orxEVENT_MESSAGE_LIFETIME;
 /** Event message lifetime accessor.*/
 #define orxEVENT_MESSAGE_GET_LIFETIME(_ID)	((orxS16)(_ID&0xFFFF))
 
+/** Event message lifetime constant.
+ * Minimum negative value.*/
+#define orxEVENT_MESSAGE_LIFETIME_CONSTANT	0x7FFF
+
 /**
  * Event handler callback prototype.
  */
@@ -62,17 +66,41 @@ typedef orxVOID (*orxEVENT_CB)(orxEVENT_MESSAGE_TYPE, orxEVENT_MESSAGE_LIFETIME,
 /** Event manager.*/
 typedef struct __orxEVENT_MANAGER_t orxEVENT_MANAGER;
 
+/** Event manager manipulation flags.*/
+typedef enum __orxEVENT_MANAGER_MANIPULATION_t
+{
+  orxEVENT_MANAGER_MANIPULATION_STANDARD 						= 0x0000,	/**< Nothing special is done.*/
+  orxEVENT_MANAGER_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT	= 0x0001,   /**< Remove negative timelife event and do not process it. */
+  orxEVENT_MANAGER_MANIPULATION_REMOVE_UNPROCESSED				= 0x0002,	/**< Remove all unprocessed events. Dangerous if used with partial process : possible loss of data.*/
+  orxEVENT_MANAGER_MANIPULATION_PARTIAL_PROCESS					= 0x0010,	/**< Just do a partial process. */
+  orxEVENT_MANAGER_MANIPULATION_ERROR = orxENUM_NONE    /**< Invalid Manipulation flag. */
+
+} orxEVENT_MANAGER_MANIPULATION;
+
 /** Create an event manager.
  * @param _u16EventNumber Number of event the manager can store.
  * @param _u16HandlerNumber Number of handler the manager can store.
+ * @param _u32Flags Flags of event manager.
  * @return Address of the manager structure, orxNULL if failed.
  */
-extern orxEVENT_MANAGER *orxEventManager_Create(orxU16 _u16EventNumber, orxU16 _u16HandlerNumber);
+extern orxEVENT_MANAGER *orxEventManager_Create(orxU16 _u16EventNumber, orxU16 _u16HandlerNumber, orxU32 _u32Flags);
 
 /** Delete an event manager.
  * @param _pstEventManager Event manager to destroy.
  */
 extern orxVOID orxEventManager_Delete(orxEVENT_MANAGER* _pstEventManager);
+
+/** Set the flags of event manager.
+ * @param _pstEventManager Event manager.
+ * @param _u32Flags Flags of event manager.
+ */
+extern orxVOID orxEventManager_SetFlags(orxEVENT_MANAGER* _pstEventManager, orxU32 _u32Flags);
+
+/** Retrieve the flags of the event manager.
+ * @param _pstEventManager Event manager.
+ * @return Flags.
+ */
+extern orxU32  orxEventManager_GetFlags(orxEVENT_MANAGER* _pstEventManager);
 
 /** Register an event callback function.
  * Unregister previous handler and set the new instead.
@@ -90,10 +118,12 @@ extern orxVOID orxEventManager_RegisterHandler(orxEVENT_MANAGER* _pstEventManage
  */
 extern orxVOID orxEventManager_AddEvent(orxEVENT_MANAGER* _pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_MESSAGE_LIFETIME _s16Life, orxVOID* _pExtraData);
 
-/** Process the events.
+/** Process events of the manager.
+ * Process the events.
  * @param _pstEventManager Event manager.
+ * @param _s16Ticks Number of ticks to remove from the lifetime.
  */
-extern orxVOID orxEventManager_ProcessEvent(orxEVENT_MANAGER* _pstEventManager);
+extern orxVOID orxEventManager_ProcessEvent(orxEVENT_MANAGER* _pstEventManager, orxS16 _s16Ticks);
 
 
 /** Initialize Event Module
