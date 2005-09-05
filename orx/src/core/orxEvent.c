@@ -21,7 +21,6 @@
 #include "memory/orxMemory.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxQueue.h"
-#include "core/orxClock.h"
 #include "debug/orxDebug.h"
 
 
@@ -185,7 +184,7 @@ orxVOID orxEventManager_AddEvent(orxEVENT_MANAGER* _pstEventManager, orxEVENT_ME
 /**
  *  Process the events.
  */
-orxVOID ProcessEvent(orxEVENT_MANAGER* _pstEventManager, orxS16 _s16Ticks)
+orxVOID orxEventManager_ProcessEvent(orxEVENT_MANAGER* _pstEventManager, orxS16 _s16Ticks)
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_ISNT_INITIALIZED
@@ -260,6 +259,22 @@ orxVOID ProcessEvent(orxEVENT_MANAGER* _pstEventManager, orxS16 _s16Ticks)
     {
     	orxQueue_Clean(_pstEventManager->pstMessageQueue);
     }
+}
+
+/**
+ *  Update the event manager.
+ * @param _pstContext Context. Here it is orxEVENT_MANAGER address.
+ **/
+orxVOID orxEventManager_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+{
+	/** Assert the module is initialized.*/
+	orxEVENT_ASSERT_MODULE_ISNT_INITIALIZED
+    /** Assert the params is ok.*/
+    orxASSERT(_pstClockInfo!=orxNULL);
+    orxASSERT(_pstContext!=orxNULL);
+	
+	/** @todo More _pstClockInfo->fDT asserts or live verifs.*/
+	orxEventManager_ProcessEvent((orxEVENT_MANAGER*)_pstContext, (orxS16)_pstClockInfo->fDT);
 }
 
 

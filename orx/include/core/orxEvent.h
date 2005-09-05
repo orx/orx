@@ -26,6 +26,7 @@
 #define _orxEVENT_H_
 
 #include "orxInclude.h"
+#include "core/orxClock.h"
 
 /**
  *  Event message manipulation :
@@ -125,6 +126,12 @@ extern orxVOID orxEventManager_AddEvent(orxEVENT_MANAGER* _pstEventManager, orxE
  */
 extern orxVOID orxEventManager_ProcessEvent(orxEVENT_MANAGER* _pstEventManager, orxS16 _s16Ticks);
 
+/** Update the event manager.
+ * Function to plug into clock system.
+ * @param _pstClockInfo Clock infos.
+ * @param _pstContext Context. Here it is orxEVENT_MANAGER address.
+ **/
+extern orxVOID orxEventManager_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext);
 
 /** Initialize Event Module
  */
