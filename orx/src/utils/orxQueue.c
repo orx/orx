@@ -215,6 +215,35 @@ orxVOID* orxQueueItem_GetExtraData(orxQUEUE_ITEM* _pstItem)
 }
 
 /**
+ *  Modify a queued item identifier.
+ */
+orxVOID orxQueueItem_SetID(orxQUEUE_ITEM* _pstItem, orxU32 _u32ID)
+{
+   /* Module initialized ? */
+    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+
+    /* Correct parameters ? */
+    orxASSERT(_pstItem != orxNULL);
+    
+    _pstItem->u32ID = _u32ID;
+}
+
+/**
+ *  Modify an item extra data adress.
+ */
+orxVOID orxQueueItem_SetExtraData(orxQUEUE_ITEM* _pstItem, orxVOID* _pData)
+{
+   /* Module initialized ? */
+    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+
+    /* Correct parameters ? */
+    orxASSERT(_pstItem != orxNULL);
+
+	_pstItem->pExtraData = _pData;
+}
+
+
+/**
  * Create a queue.
  */
 orxQUEUE *orxQueue_Create(orxU16 _u16Number)

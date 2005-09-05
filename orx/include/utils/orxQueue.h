@@ -43,6 +43,19 @@ extern orxU32 orxQueueItem_GetID(orxQUEUE_ITEM* _pstItem);
  */
 extern orxVOID* orxQueueItem_GetExtraData(orxQUEUE_ITEM* _pstItem);
 
+/** Modify a queued item identifier.
+ * Be carefull because this function do not rearrange items with theirs ID.
+ * @param _pstItem Adress of the item.
+ * @param _u32ID Identifier of the item.
+ */
+extern orxVOID orxQueueItem_SetID(orxQUEUE_ITEM* _pstItem, orxU32 _u32ID);
+
+/** Modify an item extra data adress.
+ * @param _pstItem Adress of the Item.
+ * @param _pData Extra data adress of the item.
+ */
+extern orxVOID orxQueueItem_SetExtraData(orxQUEUE_ITEM* _pstItem, orxVOID* _pData);
+
 
 /** Queue structure. */
 typedef struct __orxQUEUE_t		orxQUEUE;
