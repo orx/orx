@@ -61,7 +61,6 @@ orxSTATIC orxDEPEND_STATIC sstDepend;
  */
 orxSTATUS orxDepend_Init()
 {
-  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILED;
   
   /* Not already Initialized? */

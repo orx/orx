@@ -268,8 +268,6 @@ void orxDisplay_GetBitmapSize(SDL_Surface *_pst_bitmap, int32 *_pi_width, int32 
 }
 
 
-#endif /*GRAPH_SDL*/
-
 
 /********************
  *  Plugin Related  *
