@@ -39,8 +39,9 @@
  
 typedef struct __orxPLUGIN_CORE_FUNCTION_t
 {
-  orxPLUGIN_FUNCTION *pfnFunction;        /**< Function Address */
   orxPLUGIN_FUNCTION_ID eFunctionID;      /**< Function ID */
+  orxPLUGIN_FUNCTION *pfnFunction;        /**< Function Address */
+  orxPLUGIN_FUNCTION pfnDefaultFunction;  /**< Default Function */
 
 } orxPLUGIN_CORE_FUNCTION;
 
@@ -182,7 +183,7 @@ extern orxVOID *orxDLLAPI orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 
 /* *** Core info array add macro *** */
 #define orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX, FUNCTION_SUFFIX, FUNCTION_NAME) \
-  {(orxPLUGIN_FUNCTION *) &orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME), orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##FUNCTION_SUFFIX},
+  {orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##FUNCTION_SUFFIX, (orxPLUGIN_FUNCTION *)&orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME), (orxPLUGIN_FUNCTION)&orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)},
 
 /* *** Core info array end macro *** */
 #define orxPLUGIN_END_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX)                        \

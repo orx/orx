@@ -91,20 +91,17 @@
  */
 typedef struct __orxPLUGIN_FUNCTION_INFO_t
 {
-  /* Function pointer */
-  orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address : 4 */
-
   /* Function ID */
   orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID : 8 */
 
+  /* Function pointer */
+  orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address : 4 */
+
   /* Funtion name */
-  orxCHAR zFunctionName[orxPLUGIN_KU32_NAME_SIZE];          /**< Function Name : 40 */
+  orxSTRING zFunctionName;                                  /**< Function Name : 12 */
 
   /* Function argument types */
-  orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];  /**< Function Argument Types : 168 */
-
-  /* 8 extra bytes of padding : 176 */
-  orxU8 au8Unused[8];
+  orxSTRING zFunctionArgs;                                  /**< Function Argument Types : 16 */
 
 } orxPLUGIN_FUNCTION_INFO;
 
@@ -215,6 +212,96 @@ orxVOID orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo,
 }
 
 /***************************************************************************
+ orxPlugin_RegisterCoreFunction
+ 
+ This function registers a core function.
+ Returns orxVOID.
+ ***************************************************************************/
+orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
+{
+  orxCONST orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
+  orxU32 u32PluginIndex, u32FunctionIndex;
+
+  /* Checks */
+  orxASSERT(_pfnFunctionInfo != orxNULL);
+
+  /* Gets plugin index */
+  u32PluginIndex = (_pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_PLUGIN_ID) >> orxPLUGIN_KU32_SHIFT_PLUGIN_ID;
+
+  /* Checks */
+  orxASSERT(u32PluginIndex < orxPLUGIN_CORE_ID_NUMBER);
+  
+  /* Gets core function table */
+  pstCoreFunction = sstPlugin.pastCoreFunctionTable[u32PluginIndex];
+
+  /* Core plugin defined? */
+  if(pstCoreFunction != orxNULL)
+  {
+    /* Gets function index */
+    u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
+
+    /* Checks */
+    orxASSERT(u32FunctionIndex < sstPlugin.au32CoreFunctionCounter[u32PluginIndex]);
+    orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
+
+    /* Registers core function */
+    *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunctionInfo->pfnFunction;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return;
+}
+
+/***************************************************************************
+ orxPlugin_UnregisterCoreFunction
+ 
+ This function unregisters a core function.
+ Returns orxVOID.
+ ***************************************************************************/
+orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
+{
+  orxCONST orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
+  orxU32 u32PluginIndex, u32FunctionIndex;
+
+  /* Checks */
+  orxASSERT(_pfnFunctionInfo != orxNULL);
+
+  /* Gets plugin index */
+  u32PluginIndex = (_pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_PLUGIN_ID) >> orxPLUGIN_KU32_SHIFT_PLUGIN_ID;
+
+  /* Checks */
+  orxASSERT(u32PluginIndex < orxPLUGIN_CORE_ID_NUMBER);
+
+  /* Gets core function table */
+  pstCoreFunction = sstPlugin.pastCoreFunctionTable[u32PluginIndex];
+
+  /* Core plugin defined? */
+  if(pstCoreFunction != orxNULL)
+  {
+    /* Gets function index */
+    u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
+
+    /* Checks */
+    orxASSERT(u32FunctionIndex < sstPlugin.au32CoreFunctionCounter[u32PluginIndex]);
+    orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
+
+    /* Restores default core function */
+    *(pstCoreFunction[u32FunctionIndex].pfnFunction) = pstCoreFunction[u32FunctionIndex].pfnDefaultFunction;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return;
+}
+
+/***************************************************************************
  orxPlugin_CreatePluginInfo
  
  This function creates & initiates a plugin_info cell. 
@@ -297,17 +384,20 @@ orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
     _pstPluginInfo->pstSysPlugin = orxNULL;
   }
 
-  /* Gets first function info */
-  pstFunctionInfo = orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL);
-
-  /* Not empty */
-  while(pstFunctionInfo != orxNULL)
+  /* Deletes all function info */
+  for(pstFunctionInfo = orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL);
+      pstFunctionInfo != orxNULL;
+      pstFunctionInfo = orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL))
   {
+    /* Is it a core function? */
+    if(pstFunctionInfo->eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID)
+    {
+      /* Registers core function */
+      orxPlugin_UnregisterCoreFunction(pstFunctionInfo);
+    }
+
     /* Deletes it */
     orxPlugin_DeleteFunctionInfo(_pstPluginInfo, pstFunctionInfo);
-
-    /* Gets first function info */
-    pstFunctionInfo = orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL);
   }
 
   /* Deletes function hash table */
@@ -376,51 +466,6 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
 }
 
 /***************************************************************************
- orxPlugin_RegisterCoreFunction
- 
- This function registers a core function.
- Returns orxVOID.
- ***************************************************************************/
-orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION _pfnFunction, orxPLUGIN_FUNCTION_ID _eFunctionID)
-{
-  orxCONST orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
-  orxU32 u32PluginIndex, u32FunctionIndex;
-
-  /* Checks */
-  orxASSERT(_pfnFunction != orxNULL);
-
-  /* Gets plugin index */
-  u32PluginIndex = (_eFunctionID & orxPLUGIN_KU32_MASK_PLUGIN_ID) >> orxPLUGIN_KU32_SHIFT_PLUGIN_ID;
-
-  /* Checks */
-  orxASSERT(u32PluginIndex < orxPLUGIN_CORE_ID_NUMBER);
-  
-  /* Gets core function table */
-  pstCoreFunction = sstPlugin.pastCoreFunctionTable[u32PluginIndex];
-
-  /* Core plugin defined? */
-  if(pstCoreFunction != orxNULL)
-  {
-    /* Gets function index */
-    u32FunctionIndex = _eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
-
-    /* Checks */
-    orxASSERT(u32FunctionIndex < sstPlugin.au32CoreFunctionCounter[u32PluginIndex]);
-    orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
-
-    /* Registers core function */
-    *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunction;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-  }
-
-  /* Done! */
-  return;
-}
-
-/***************************************************************************
  orxPlugin_RegisterPlugin
  
  This function registers a plugin.
@@ -460,19 +505,19 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
         pstFunctionInfo = orxPlugin_CreateFunctionInfo(_pstPluginInfo);
 
         /* Copies infos */
-        pstFunctionInfo->pfnFunction = astUserFunctionInfo[i].pfnFunction;
-        pstFunctionInfo->eFunctionID = astUserFunctionInfo[i].eFunctionID;
-        strcpy(pstFunctionInfo->zFunctionArgs, astUserFunctionInfo[i].zFunctionArgs);
-        strcpy(pstFunctionInfo->zFunctionName, astUserFunctionInfo[i].zFunctionName);
+        pstFunctionInfo->pfnFunction    = astUserFunctionInfo[i].pfnFunction;
+        pstFunctionInfo->eFunctionID    = astUserFunctionInfo[i].eFunctionID;
+        pstFunctionInfo->zFunctionArgs  = astUserFunctionInfo[i].zFunctionArgs;
+        pstFunctionInfo->zFunctionName  = astUserFunctionInfo[i].zFunctionName;
 
         /* Adds function info in plugin info structure */
         orxHashTable_Add(_pstPluginInfo->pstFunctionTable, pstFunctionInfo->eFunctionID, pstFunctionInfo);
 
-        /* Checks if it's a core plugin */
+        /* Is it a core function? */
         if(pstFunctionInfo->eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID)
         {
           /* Registers core function */
-          orxPlugin_RegisterCoreFunction(pstFunctionInfo->pfnFunction, pstFunctionInfo->eFunctionID);
+          orxPlugin_RegisterCoreFunction(pstFunctionInfo);
         }
       }
     }
