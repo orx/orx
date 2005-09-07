@@ -368,7 +368,7 @@ bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIN
 
 ifeq ($(USE_SDL),1)
 bin\plugins\core\time\Time_SDL.dll: $(TIME_SDL_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)  $(__orxEXTRALINK_p)
+	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p) -lSDL
 endif
 
 .\build\$(BUILD)\orxDLL_orxAnim.o: ./src/anim/orxAnim.c

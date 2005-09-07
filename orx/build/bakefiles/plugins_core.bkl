@@ -15,6 +15,26 @@
     <sys-lib>$(orxFMODLIB_WIN)</sys-lib>
     <ldflags>$(orxFMODLIB_UNIX)</ldflags>
   </template>
+  
+  <!-- On windows, sdl-config is not available, so we have to specify the option manually -->
+  <set var="orxSDLLIB_WIN">
+    <if cond="PLATFORM_WIN32=='1'">SDL</if>
+  </set>
+
+  <set var="orxFMODCFLAGS_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">`sdl-config --cflags`</if>
+  </set>
+  <set var="orxFMODLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">`sdl-config --libs`</if>
+  </set>
+
+  <!-- Define the module template -->
+  <template id="orxSDL">
+    <cflags>$(orxFMODCFLAGS_UNIX)</cflags>
+    <sys-lib>$(orxSDLLIB_WIN)</sys-lib>
+    <ldflags>$(orxFMODLIB_UNIX)</ldflags>
+  </template>
+  
 
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->
@@ -61,7 +81,7 @@
   <!-- TIME -->
 
 	  <!-- Depends on SDL -->
-	  <module id="Time_SDL" cond="USE_SDL=='1'" template="orxBASE,orxLINK,orxMODULELINK">
+	  <module id="Time_SDL" cond="USE_SDL=='1'" template="orxBASE,orxLINK,orxMODULELINK,orxSDL">
 	    <dirname>bin/plugins/core/time</dirname>
 	    <sources>plugins/Time/SDL/orxTime.c</sources>
 	  </module>

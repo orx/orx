@@ -220,8 +220,8 @@ JOYSTICK_NONE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 JOYSTICK_NONE_OBJECTS =  \
 	./build/$(BUILD)/Joystick_NONE_orxJoystick.o
 TIME_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC $(CPPFLAGS) \
-	$(CFLAGS)
+	-D$(orxPLATFORM) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC `sdl-config \
+	--cflags` $(CPPFLAGS) $(CFLAGS)
 TIME_SDL_OBJECTS =  \
 	./build/$(BUILD)/Time_SDL_orxTime.o
 
@@ -397,7 +397,7 @@ bin/modules/FSM.so: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 ifeq ($(USE_FMOD),1)
 bin/plugins/core/sound/Sound_Fmod.so: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  /usr/lib/libfmod.so  $(__orxEXTRALINK_p)
+	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  `sdl-config --libs`  $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_ALLEGRO),1)
@@ -415,7 +415,7 @@ bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINK
 
 ifeq ($(USE_SDL),1)
 bin/plugins/core/time/Time_SDL.so: $(TIME_SDL_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib   $(__orxEXTRALINK_p)
+	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  `sdl-config --libs`  $(__orxEXTRALINK_p)
 endif
 
 ./build/$(BUILD)/orxDLL_orxAnim.o: ./src/anim/orxAnim.c
