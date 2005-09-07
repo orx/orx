@@ -58,8 +58,7 @@ orxSTATIC orxTIME_STATIC sstTime;
  */
 orxSTATUS orxTimeSDL_Init()
 {
-  
-  sstTime.u32Flags = orxTIME_KU32_FLAG_NONE;
+  orxSTATUS eResult = orxSTATUS_FAILED; /* Init result */
 
   /* Init dependencies */
   if ((orxDEPEND_INIT(Memory) == orxSTATUS_SUCCESS) /* && 
@@ -79,25 +78,21 @@ orxSTATUS orxTimeSDL_Init()
         if (SDL_Init(0)==0)
         {
           /* Init time subsystem */
-          if (SDL_InitSubSystem(SDL_INIT_TIMER))
+          if (SDL_InitSubSystem(SDL_INIT_TIMER)==0)
           {
             /* Set module as ready */
             sstTime.u32Flags = orxTIME_KU32_FLAG_READY;
+            
+            /* Successfull init */
+            eResult = orxSTATUS_SUCCESS;
           }
         }
       }
     }
   }
-        
-  /* Module successfully initialized ? */
-  if ((sstTime.u32Flags & orxTIME_KU32_FLAG_READY) == orxTIME_KU32_FLAG_READY)
-  {
-    return orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    return orxSTATUS_FAILED;
-  }
+  
+  /* Done */
+  return eResult;
 }
 
 /** Exit the time module
