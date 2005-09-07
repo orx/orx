@@ -140,7 +140,7 @@ orxVOID orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModul
   sstDepend.astModuleInfos[_eModule].u32RefCount--;
   
   /* Counter has reached 0 And module successfully initialized ? */
-  if ((sstDepend.astModuleInfos[_eModule].u32RefCount == 0) && (sstDepend.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS))
+  if ((sstDepend.astModuleInfos[_eModule].u32RefCount == 0)/* && (sstDepend.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS)*/)
   {
     /* Call Exit callback */
     _cbExit();
