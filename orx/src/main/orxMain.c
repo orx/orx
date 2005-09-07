@@ -64,7 +64,7 @@ orxSTATUS orxMain_Init()
          orxDEPEND_INIT(Plugin)) == orxSTATUS_SUCCESS)
          /** Todo : Complete remaining dependencies */
     {
-      if (orxPlugin_Load("Time_SDL.so", "time"))
+      if (orxPlugin_LoadUsingExt("Time_SDL", "time"))
       {
         if ((orxDEPEND_INIT(Memory) &
              orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
