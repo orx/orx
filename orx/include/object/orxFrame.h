@@ -39,50 +39,50 @@
 
 
 /** Internal frame structure. */
-typedef struct __orxFRAME_t orxFRAME;
+typedef struct __orxFRAME_t             orxFRAME;
 
 
 /** Inits the frame system. */
-extern orxSTATUS            orxFrame_Init();
+extern orxDLLAPI orxSTATUS              orxFrame_Init();
 /** Ends the frame system. */
-extern orxVOID              orxFrame_Exit();
+extern orxDLLAPI orxVOID                orxFrame_Exit();
 
 /** Creates a frame. */
-extern orxFRAME            *orxFrame_Create();
+extern orxDLLAPI orxFRAME *             orxFrame_Create();
 /** Deletes a frame. */
-extern orxSTATUS            orxFrame_Delete(orxFRAME *_pstFrame);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxFrame_Delete(orxFRAME *_pstFrame);
 
 /** Cleans all frames render status */
-extern orxVOID              orxFrame_CleanAllRenderStatus();
+extern orxDLLAPI orxVOID                orxFrame_CleanAllRenderStatus();
 /** Test frame render status (TRUE : clean / orxFALSE : dirty)*/
-extern orxBOOL              orxFrame_IsRenderStatusClean(orxFRAME *_pstFrame);
+extern orxDLLAPI orxBOOL orxFASTCALL    orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame);
 
 /** Does frame has differential scrolling? */
-extern orxBOOL              orxFrame_HasDifferentialScrolling(orxFRAME *_pstFrame);
+extern orxDLLAPI orxBOOL orxFASTCALL    orxFrame_HasDifferentialScrolling(orxCONST orxFRAME *_pstFrame);
 /** Sets frame differential scrolling values (X & Y axis / orx2F(0.0f) : none) */
-extern orxVOID              orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScroll);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxCONST orxVEC *_pvScroll);
 /** Gets frame differential scrolling values (X & Y axis / orx2F(0.0f) : none) */
-extern orxVOID              orxFrame_GetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScroll);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFrame, orxVEC *_pvScroll);
 
 /** Sets a frame parent. */
-extern orxVOID              orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME * _pstParent);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME * _pstParent);
 
 /** Sets 2D local position */
-extern orxVOID              orxFrame_SetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVEC *_pvPos);
 /** Sets 2D local rotation */
-extern orxVOID              orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle);
 /** Sets 2D local scale */
-extern orxVOID              orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale);
 
 /** Gets 2D position global/local according to param */
-extern orxVOID              orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLocal);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLocal);
 /** Gets 2D global rotation global/local according to param */
-extern orxFLOAT             orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal);
+extern orxDLLAPI orxFLOAT orxFASTCALL   orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal);
 /** Gets 2D scale global/local according to param */
-extern orxFLOAT             orxFrame_GetScale(orxFRAME *_pstFrame, orxBOOL _bLocal);
+extern orxDLLAPI orxFLOAT orxFASTCALL   orxFrame_GetScale(orxFRAME *_pstFrame, orxBOOL _bLocal);
 
 /** Computes a frame global data using parent's global & self local ones. Result is stored in another frame. */
-extern orxVOID              orxFrame_ComputeGlobalData(orxFRAME *_pstDstFrame, orxFRAME *_pstSrcFrame, orxFRAME *_pstParentFrame);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_ComputeGlobalData(orxFRAME *_pstDstFrame, orxCONST orxFRAME *_pstSrcFrame, orxCONST orxFRAME *_pstParentFrame);
 
 
 #endif /* _orxFRAME_H_ */

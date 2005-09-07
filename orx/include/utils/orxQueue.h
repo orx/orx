@@ -35,26 +35,26 @@ typedef struct __orxQUEUE_ITEM_t		orxQUEUE_ITEM;
  * @param _pstItem Adress of the item.
  * @return Identifier of the item.
  */
-extern orxU32 orxQueueItem_GetID(orxQUEUE_ITEM* _pstItem);
+extern orxDLLAPI orxU32 orxQueueItem_GetID(orxQUEUE_ITEM* _pstItem);
 
 /** Return an item extra data adress.
  * @param _pstItem Adress of the Item.
  * @return Extra data adress of the item.
  */
-extern orxVOID* orxQueueItem_GetExtraData(orxQUEUE_ITEM* _pstItem);
+extern orxDLLAPI orxVOID* orxQueueItem_GetExtraData(orxQUEUE_ITEM* _pstItem);
 
 /** Modify a queued item identifier.
  * Be carefull because this function do not rearrange items with theirs ID.
  * @param _pstItem Adress of the item.
  * @param _u32ID Identifier of the item.
  */
-extern orxVOID orxQueueItem_SetID(orxQUEUE_ITEM* _pstItem, orxU32 _u32ID);
+extern orxDLLAPI orxVOID orxQueueItem_SetID(orxQUEUE_ITEM* _pstItem, orxU32 _u32ID);
 
 /** Modify an item extra data adress.
  * @param _pstItem Adress of the Item.
  * @param _pData Extra data adress of the item.
  */
-extern orxVOID orxQueueItem_SetExtraData(orxQUEUE_ITEM* _pstItem, orxVOID* _pData);
+extern orxDLLAPI orxVOID orxQueueItem_SetExtraData(orxQUEUE_ITEM* _pstItem, orxVOID* _pData);
 
 
 /** Queue structure. */
@@ -65,37 +65,37 @@ typedef struct __orxQUEUE_t		orxQUEUE;
  * @param _u16Number Number of item the queue can store.
  * @return Address of the queue structure.
  */
-extern orxQUEUE *orxQueue_Create(orxU16 _u16Number);
+extern orxDLLAPI orxQUEUE *orxQueue_Create(orxU16 _u16Number);
 
 /** Delete a queue.
  * @warning All the content will be lost.
  * @param _pstQueue Queue to delete.
  */
-extern orxVOID orxQueue_Delete(orxQUEUE* _pstQueue);
+extern orxDLLAPI orxVOID orxQueue_Delete(orxQUEUE* _pstQueue);
 
 /** Clean a queue.
  * @param _pstQueue Address of queue to clean.
  */
-extern orxVOID	orxQueue_Clean(orxQUEUE* _pstQueue);
+extern orxDLLAPI orxVOID	orxQueue_Clean(orxQUEUE* _pstQueue);
 
 /** Get the number of item stored in the queue.
  * @param _pstQueue Address of queue.
  * @return Number of items currently stored.
  */
-extern orxU16 orxQueue_GetItemNumber(orxQUEUE* _pstQueue);
+extern orxDLLAPI orxU16 orxQueue_GetItemNumber(orxQUEUE* _pstQueue);
 
 /** Get the number of item places allocated for the queue.
  * @param _pstQueue Address of queue.
  * @return Number of item places allocated.
  */
-extern orxU16 orxQueue_GetAllocatedNumber(orxQUEUE* _pstQueue);
+extern orxDLLAPI orxU16 orxQueue_GetAllocatedNumber(orxQUEUE* _pstQueue);
 
 /** Resize the queue to allocate another number of items.
  * @warning If used item number is greater than wanted allocation, extra items will be deleted.
  * @param _pstQueue Address of the queue.
  * @param _u16Size New size in number of items.
  */
-extern orxVOID	orxQueue_Resize(orxQUEUE* _pstQueue, orxU16 _u16Size);
+extern orxDLLAPI orxVOID	orxQueue_Resize(orxQUEUE* _pstQueue, orxU16 _u16Size);
 
 /** Add an item to the queue.
  * If the item queue is full, the last item will be lost.
@@ -104,55 +104,55 @@ extern orxVOID	orxQueue_Resize(orxQUEUE* _pstQueue, orxU16 _u16Size);
  * @param _pData	Adress of extra data.
  * @return Address of the item.
  */
-extern orxQUEUE_ITEM* orxQueue_AddItem(orxQUEUE* _pstQueue, orxU32 _u32ID, orxVOID* _pData);
+extern orxDLLAPI orxQUEUE_ITEM* orxQueue_AddItem(orxQUEUE* _pstQueue, orxU32 _u32ID, orxVOID* _pData);
 
 /** Remove an item from a queue.
  * @param _pstQueue Queue.
  * @param _pstItem Item to remove.
  */
-extern void orxQueue_RemoveItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
+extern orxDLLAPI void orxQueue_RemoveItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
 
 /** Find a message in the queue.
  * @param _pstQueue Queue.
  * @param _u32ID Identifier of the Item.
  * @return The first item or orxNULL if not found.
  */
-extern orxQUEUE_ITEM* orxQueue_FindItem(orxQUEUE* _pstQueue, orxU32 _u32ID);
+extern orxDLLAPI orxQUEUE_ITEM* orxQueue_FindItem(orxQUEUE* _pstQueue, orxU32 _u32ID);
 
 /** Return the first item of a queue.
  * @param _pstQueue Queue.
  * @return Address of the first Item or orxNULL if no item in the queue.
  */
-extern orxQUEUE_ITEM* orxQueue_GetFirstItem(orxQUEUE* _pstQueue);
+extern orxDLLAPI orxQUEUE_ITEM* orxQueue_GetFirstItem(orxQUEUE* _pstQueue);
 
 /** Return the last item of a queue.
  * @param _pstQueue Queue.
  * @return Address of the last item or orxNULL if no item in the queue.
  */
-extern orxQUEUE_ITEM* orxQueue_GetLastItem(orxQUEUE* _pstQueue);
+extern orxDLLAPI orxQUEUE_ITEM* orxQueue_GetLastItem(orxQUEUE* _pstQueue);
 
 /** Return the next item in a queue.
  * @param _pstQueue Queue.
  * @param _pstItem Item to search the nextone.
  * @return Address of next Item, orxNULL if not found.
  */
-extern orxQUEUE_ITEM* orxQueue_GetNextItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
+extern orxDLLAPI orxQUEUE_ITEM* orxQueue_GetNextItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
 
 /** Return the previous item in a queue.
  * @param _pstQueue Queue.
  * @param _pstItem Item to search the previousone.
  * @return Address of previous Item or orxNULL if not found.
  */
-extern orxQUEUE_ITEM* orxQueue_GetPreviousItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
+extern orxDLLAPI orxQUEUE_ITEM* orxQueue_GetPreviousItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
 
  
 /** Initialize Queue Module
  */
-extern orxSTATUS orxDLLAPI orxQueue_Init();
+extern orxDLLAPI orxSTATUS orxDLLAPI orxQueue_Init();
 
 /** Exit Queue module
  */
-extern orxVOID orxDLLAPI orxQueue_Exit();
+extern orxDLLAPI orxVOID orxDLLAPI orxQueue_Exit();
 
 #endif /*_orxQUEUE_H_*/
 /* @} */

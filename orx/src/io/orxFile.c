@@ -86,7 +86,7 @@ struct __orxFILE_t
  * \param _zDirectory     (IN)     Name of the directory directory to remove (with subfolders)
  * \return status of the operation (orxSTATUS_FAILED or orxSTATUS_SUCCESS)
  */
-orxSTATUS orxFile_Deltree(orxSTRING _zDirectory)
+orxSTATUS orxFASTCALL orxFile_Deltree(orxCONST orxSTRING _zDirectory)
 {
   /* TODO */
   return orxSTATUS_FAILED;
@@ -96,7 +96,7 @@ orxSTATUS orxFile_Deltree(orxSTRING _zDirectory)
  * \param _zFileName     (IN)      Full File's name to test
  * \return orxFALSE if _zFileName doesn't exist, else orxTRUE
  */
-orxBOOL orxFile_Exists(orxSTRING _zFile_name)
+orxBOOL orxFASTCALL orxFile_Exists(orxCONST orxSTRING _zFileName)
 {
   /* TODO */
   return orxFALSE;
@@ -107,7 +107,7 @@ orxBOOL orxFile_Exists(orxSTRING _zFile_name)
  * @param _u32OpenFlags  (IN)      List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
-orxFILE *orxFile_Open(orxSTRING _zPath, orxU32 _u32OpenFlags)
+orxFILE *orxFASTCALL orxFile_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
 {
   /* TODO */
   return orxNULL;   
@@ -120,7 +120,7 @@ orxFILE *orxFile_Open(orxSTRING _zPath, orxU32 _u32OpenFlags)
  * @param _pstFile       (IN)      Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-orxU32 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxU32 orxFASTCALL orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
   /* TODO */
   return 0;
@@ -133,7 +133,7 @@ orxU32 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem,
  * @param _pstFile       (IN)      Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-orxU32 orxFile_Write(orxCONST orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxU32 orxFASTCALL orxFile_Write(orxCONST orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
   /* TODO */
   return 0;
@@ -143,7 +143,7 @@ orxU32 orxFile_Write(orxCONST orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU3
  * @param _pstFile       (IN)      File's pointer to close
  * @return Returns the status of the operation
  */
-orxSTATUS orxFile_Close(orxFILE *_pstFile)
+orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
 {
   /* TODO */
   return orxSTATUS_FAILED;

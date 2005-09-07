@@ -59,7 +59,7 @@
 
 /*** Math Definitions ***/
 
-#define KF_MATH_SQRT2             1.414213562f
+#define KF_MATH_SQRT2             orx2F(1.414213562f)
 
 
 #endif /* _orxMATH_H_ */

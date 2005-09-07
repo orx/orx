@@ -24,9 +24,9 @@
 #include "core/orxTime.h"
 
 
-#define orxCLOCK_KU32_CLOCK_BANK_SIZE       16          /**< Clock bank size */
+#define orxCLOCK_KU32_CLOCK_BANK_SIZE                 16  /**< Clock bank size */
 
-#define orxCLOCK_KU32_FUNCTION_BANK_SIZE    16          /**< Function bank size */
+#define orxCLOCK_KU32_FUNCTION_BANK_SIZE              16  /**< Function bank size */
 
 
 /** Clock type enum */
@@ -89,24 +89,24 @@ extern orxDLLAPI orxSTATUS                            orxClock_Update();
 /** Creates a Clock. */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
 /** Deletes a Clock. */
-extern orxDLLAPI orxVOID                              orxClock_Delete(orxCLOCK *_pstClock);
+extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Delete(orxCLOCK *_pstClock);
 
 /** Gets informations about a Clock. */
-extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCLOCK *_pstClock);
+extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock);
 
 /** Registers a callback function to a clock. */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
 /** Unregisters a callback function from a clock. */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
 /** Gets a callback function context. */
-extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback);
+extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
 /** Sets a callback function context. */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
 
 /** Finds a clock according to its tick size and its type. */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
 /** Finds next clock of same type/tick size. */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(orxCLOCK *_pstClock);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(orxCONST orxCLOCK *_pstClock);
 
 
 #endif /* _orxCLOCK_H_ */

@@ -116,7 +116,7 @@ orxSTATIC orxCLOCK_STATIC sstClock;
 
  returns: orxCLOCK_FUNCTION_STORAGE * / orxNULL
  ***************************************************************************/
-orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback)
+orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
 
@@ -148,7 +148,7 @@ orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxCLOCK *_pst
 
  returns: orxCLOCK * / orxNULL
  ***************************************************************************/
-orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType, orxCLOCK *_pstStartClock)
+orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType, orxCONST orxCLOCK *_pstStartClock)
 {
   orxCLOCK *pstClock;
 
@@ -180,7 +180,7 @@ orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType
 
  returns: Computed DT.
  ***************************************************************************/
-orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT)
+orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT)
 {
   orxREGISTER orxFLOAT fNewDT = _fDT;
 
@@ -252,15 +252,13 @@ orxSTATUS orxClock_Init()
   
         /* Inits Flags */
         sstClock.u32Flags = orxCLOCK_KU32_FLAG_READY;
-        
-        /* Success */
-        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
         /* !!! MSG !!! */
   
         /* Clock bank not created */
+        eResult = orxSTATUS_FAILED;
       }
     }
     else
@@ -380,16 +378,13 @@ orxSTATUS orxClock_Update()
         pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
       }
     }
-    
+
     /* Computes global time */
     pstClock->stClockInfo.stTime = orxF2U((orxU2F(pstClock->stClockInfo.u32TickCounter) + pstClock->stClockInfo.fTickValue) * pstClock->stClockInfo.fTickSize);
   }
 
   /* Updates time */
   sstClock.u32Time = u32NewTime;
-
-  /* Sleep the program for 1ms (to help the scheduler) */
-  orxTime_Delay(1);
 
   /* Done! */
   return eResult;
@@ -455,7 +450,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxClock_Delete(orxCLOCK *_pstClock)
+orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
@@ -476,7 +471,7 @@ orxVOID orxClock_Delete(orxCLOCK *_pstClock)
 
  returns: Pointer on the clock info structure
  ***************************************************************************/
-orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCLOCK *_pstClock)
+orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock)
 {
   orxCONST orxCLOCK_INFO *pstClockInfo = orxNULL;
 
@@ -497,7 +492,7 @@ orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCLOCK *_pstClock)
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
+orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -537,7 +532,7 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback)
+orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -574,7 +569,7 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCLOCK_FUNCTION
 
  returns: orxVOID *
  ***************************************************************************/
-orxVOID *orxFASTCALL orxClock_GetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback)
+orxVOID *orxFASTCALL orxClock_GetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxVOID *pstContext = orxNULL;
@@ -608,7 +603,7 @@ orxVOID *orxFASTCALL orxClock_GetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION 
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
+orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -666,7 +661,7 @@ orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eTy
 
  returns: orxCLOCK * / orxNULL
  ***************************************************************************/
-orxCLOCK *orxFASTCALL orxClock_FindNext(orxCLOCK *_pstClock)
+orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
 {
   orxCLOCK *pstClock;
 

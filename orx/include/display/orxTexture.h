@@ -45,36 +45,36 @@ typedef struct __orxTEXTURE_t           orxTEXTURE;
 
 
 /** Inits the texture system. */
-extern orxSTATUS                        orxTexture_Init();
+extern orxDLLAPI orxSTATUS              orxTexture_Init();
 /** Exits from the texture system. */
-extern orxVOID                          orxTexture_Exit();
+extern orxDLLAPI orxVOID                orxTexture_Exit();
 
 /** Creates an empty texture. */
-extern orxTEXTURE                      *orxTexture_Create();
+extern orxDLLAPI orxTEXTURE *           orxTexture_Create();
 /** Creates a texture from a bitmap. */
-extern orxTEXTURE                      *orxTexture_CreateFromBitmap(orxCONST orxSTRING _zBitmapFileName);
+extern orxDLLAPI orxTEXTURE *           orxTexture_CreateFromBitmap(orxCONST orxSTRING _zBitmapFileName);
 /** Deletes a texture (Warning : it deletes referenced bitmap too!). */
-extern orxSTATUS                        orxTexture_Delete(orxTEXTURE *_pstTexture);
+extern orxDLLAPI orxSTATUS              orxTexture_Delete(orxTEXTURE *_pstTexture);
 
 /** Links a bitmap to a texture (Warning : use a different bitmap for each texture). */
-extern orxSTATUS                        orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap);
+extern orxDLLAPI orxSTATUS              orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap);
 /** Unlinks a bitmap from a texture (Warning : it deletes it). */
-extern orxSTATUS                        orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture);
+extern orxDLLAPI orxSTATUS              orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture);
 
 
 /** !!! Texture accessors !!! */
 
 
 /** Corresponding bitmap get accessor. */
-extern orxCONST orxBITMAP              *orxTexture_GetBitmap(orxTEXTURE *_pstTexture);
+extern orxDLLAPI orxCONST orxBITMAP *   orxTexture_GetBitmap(orxTEXTURE *_pstTexture);
 
 /** Texture size get accessor. */
-extern orxSTATUS                        orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize);
+extern orxDLLAPI orxSTATUS              orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize);
 
 /** Reference coordinates set accessor (used for rendering purpose). */
-extern orxVOID                          orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
+extern orxDLLAPI orxVOID                orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
 /** Reference coordinates get accessor (used for rendering purpose). */
-extern orxSTATUS                        orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
+extern orxDLLAPI orxSTATUS              orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
 
 
 #endif /* _orxTEXTURE_H_ */

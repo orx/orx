@@ -76,7 +76,7 @@ struct __orxQUEUE_t
  *  Clear a item content.
  * @param _pstItem Item to clear.
  */
-orxINLINE orxVOID orxQueueItem_Clear(orxQUEUE_ITEM* _pstItem)
+orxSTATIC orxINLINE orxVOID orxQueueItem_Clear(orxQUEUE_ITEM* _pstItem)
 {
   /* Module initialized ? */
   orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
@@ -94,7 +94,7 @@ orxINLINE orxVOID orxQueueItem_Clear(orxQUEUE_ITEM* _pstItem)
  * @param _u32ID Identifier.
  * @param _pData Extra data.
  */
-orxINLINE orxVOID orxQueueItem_Set(orxQUEUE_ITEM* _pstItem, orxU32 _u32ID, orxVOID* _pData)
+orxSTATIC orxINLINE orxVOID orxQueueItem_Set(orxQUEUE_ITEM* _pstItem, orxU32 _u32ID, orxVOID* _pData)
 {
   /* Module initialized ? */
   orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
@@ -111,7 +111,7 @@ orxINLINE orxVOID orxQueueItem_Set(orxQUEUE_ITEM* _pstItem, orxU32 _u32ID, orxVO
  * @param _pstSourceItem Source item.
  * @param _pstTargetItem Target item.
  */
-orxINLINE orxVOID orxQueueItem_Copy(orxQUEUE_ITEM* _pstSourceItem, orxQUEUE_ITEM* _pstTargetItem)
+orxSTATIC orxINLINE orxVOID orxQueueItem_Copy(orxQUEUE_ITEM* _pstSourceItem, orxQUEUE_ITEM* _pstTargetItem)
 {
   /* Module initialized ? */
   orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);

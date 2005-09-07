@@ -42,29 +42,29 @@ typedef orxVOID (*orxTEST_FUNCTIONCB)(orxVOID);
 
 /** Initialize the test module
  */
-extern orxDLLAPI orxSTATUS orxTest_Init();
+extern orxDLLAPI orxSTATUS              orxTest_Init();
 
 /** Uninitialize the test module
  */
-extern orxDLLAPI orxVOID orxTest_Exit();
+extern orxDLLAPI orxVOID                orxTest_Exit();
 
 /** Register a new function
  * @param   (IN)  _zModuleName      Name of the module (to group a list of functions)
  * @param   (IN)  _zMenuEntry       Text displayed to describe the test function
- * @param   (IN)  _cbFunction       Function executed when the menu entry is selected
+ * @param   (IN)  _pfnFunction       Function executed when the menu entry is selected
  * @return Returns an Handle on the function
  */
-extern orxDLLAPI orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxTEST_FUNCTIONCB _cbFunction);
+extern orxDLLAPI orxHANDLE orxFASTCALL  orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTIONCB _pfnFunction);
 
 /** Execute a registered function
  * @param   (IN)  _hRegisteredFunc  Handle of the registered function to execute
  * @return  Returns the success / fail status (failed when the Handle is unknown)
  */
-extern orxDLLAPI orxSTATUS orxTest_Execute(orxHANDLE _hRegisteredFunc);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxTest_Execute(orxHANDLE _hRegisteredFunc);
 
 /** Display a Menu with registered function list
  */
-extern orxDLLAPI orxVOID orxTest_DisplayMenu();
+extern orxDLLAPI orxVOID                orxTest_DisplayMenu();
 
 /* Define test module registration MACRO (entry point of dynamic library) */
 #ifdef __orxLINUX__

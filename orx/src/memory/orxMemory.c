@@ -101,7 +101,7 @@ orxVOID orxMemory_Exit()
  * @param _u32AlignValue (ex : 32) (The value has to be a power of 2 and > 0) (ex : 32)
  * @return the aligned _u32OriginalValue on _u32AlignValue (ex : will return 96 for previous values)
  */
-orxU32 orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue)
+orxU32 orxFASTCALL orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue)
 {
   /* The align value has to be a power of 2 and > 0 */
   orxASSERT(_u32AlignValue > 0);
@@ -116,7 +116,7 @@ orxU32 orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue)
  * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
  * @todo Use the memory managed by orxMemory (initialized with orxMemory_Init())
  */
-orxVOID *orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
+orxVOID *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
   /* Module initialized ? */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_FLAG_READY) == orxMEMORY_KU32_FLAG_READY);
@@ -132,7 +132,7 @@ orxVOID *orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
  * @param _pMem     (IN)  Pointer on the memory allocated by orx
  * @todo Use the memory managed by orxMemory (not OS)
  */
-orxVOID orxMemory_Free(orxVOID *_pMem)
+orxVOID orxFASTCALL orxMemory_Free(orxVOID *_pMem)
 {
   /* Module initialized ? */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_FLAG_READY) == orxMEMORY_KU32_FLAG_READY);
@@ -151,7 +151,7 @@ orxVOID orxMemory_Free(orxVOID *_pMem)
  * @return returns a pointer on _pDest
  * @note if _pSrc and _pDest overlap, use orxMemory_Move instead
  */
-orxVOID *orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size)
+orxVOID *orxFASTCALL orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size)
 {
   return (orxVOID *)memcpy(_pDest, _pSrc, _u32Size);
 }
@@ -162,7 +162,7 @@ orxVOID *orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Siz
  * @param _u32Size  (IN)  Size of data
  * @return returns a pointer on _pDest
  */
-orxVOID *orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size)
+orxVOID *orxFASTCALL orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size)
 {
   return (orxVOID *)memmove(_pDest, _pSrc, _u32Size);
 }
@@ -173,7 +173,7 @@ orxVOID *orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size)
  * @param _u32Size  (IN)  Size of data to test
  * @return returns a velue less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
  */
-orxU32 orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size)
+orxU32 orxFASTCALL orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size)
 {
   return (orxU32)memcmp(_pMem1, _pMem2, _u32Size);
 }
@@ -184,7 +184,7 @@ orxU32 orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orx
  * @param _u32Size  (IN)  Size of data
  * @return returns a pointer on _pDest
  */
-orxVOID *orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size)
+orxVOID *orxFASTCALL orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size)
 {
   return (orxVOID *)memset(_pDest, _u8Data, _u32Size);
 }

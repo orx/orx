@@ -56,12 +56,12 @@ typedef struct __orxPLUGIN_CORE_FUNCTION_t
  * \param _astCoreFunction the pointer on the core functions info array
  * \return nothing.
  */
-extern orxVOID orxFASTCALL  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
+extern orxDLLAPI orxVOID orxFASTCALL  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
 
 /** Default core plugin function.
  * Needs to be referenced by all core functions at module init.
  */
-extern orxVOID *orxDLLAPI orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line);
+extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line);
 
 
 /***************************************************************************

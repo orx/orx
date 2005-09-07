@@ -34,6 +34,7 @@
 #ifndef _orxCAMERA_H_
 #define _orxCAMERA_H_
 
+
 #include "orxInclude.h"
 
 #include "math/orxMath.h"
@@ -56,71 +57,71 @@ typedef struct __orxCAMERA_VIEW_LIST_t  orxCAMERA_VIEW_LIST;
 
 
 /** Inits the camera system. */
-extern orxSTATUS                        orxCamera_Init();
+extern orxDLLAPI orxSTATUS              orxCamera_Init();
 /** Exits from the camera system. */
-extern orxVOID                          orxCamera_Exit();
+extern orxDLLAPI orxVOID                orxCamera_Exit();
 
 /** Creates an empty camera. */
-extern orxCAMERA                       *orxCamera_Create();
+extern orxDLLAPI orxCAMERA *            orxCamera_Create();
 /** Deletes a camera. */
-extern orxSTATUS                        orxCamera_Delete(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxSTATUS              orxCamera_Delete(orxCAMERA *_pstCamera);
 
 /** Updates camera view list. */
-extern orxVOID                          orxCamera_UpdateViewList(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxVOID                orxCamera_UpdateViewList(orxCAMERA *_pstCamera);
 
 /** !!! Warning : Camera accessors don't test parameter validity !!! */
 
 /** Gets camera first view list. */
-extern orxCAMERA_VIEW_LIST             *orxCamera_GetViewListFirstCell(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxCAMERA_VIEW_LIST *  orxCamera_GetViewListFirstCell(orxCAMERA *_pstCamera);
 /** Gets camera next view list. */
-extern orxCAMERA_VIEW_LIST             *orxCamera_GetViewListNextCell(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxCAMERA_VIEW_LIST *  orxCamera_GetViewListNextCell(orxCAMERA *_pstCamera);
 
 /** Gets camera view list number. */
-extern orxS32                           orxCamera_GetViewListSize(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxS32                 orxCamera_GetViewListSize(orxCAMERA *_pstCamera);
 /** Gets view list screen frame. */
-extern orxFRAME                        *orxCamera_GetViewListFrame(orxCAMERA_VIEW_LIST *_pstViewList);
+extern orxDLLAPI orxFRAME *             orxCamera_GetViewListFrame(orxCAMERA_VIEW_LIST *_pstViewList);
 /** Gets view list object. */
-extern orxOBJECT                       *orxCamera_GetViewListObject(orxCAMERA_VIEW_LIST *_pstViewList);
+extern orxDLLAPI orxOBJECT *            orxCamera_GetViewListObject(orxCAMERA_VIEW_LIST *_pstViewList);
 
 /** Camera position set accessor. */
-extern orxVOID                          orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
+extern orxDLLAPI orxVOID                orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
 /** Camera size set accessor. */
-extern orxVOID                          orxCamera_SetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize);
+extern orxDLLAPI orxVOID                orxCamera_SetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize);
 /** Camera rotation set accessor. */
-extern orxVOID                          orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation);
+extern orxDLLAPI orxVOID                orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation);
 /** Camera zoom set accessor. */
-extern orxVOID                          orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom);
+extern orxDLLAPI orxVOID                orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom);
 
 /** Camera link set accessor. */
-extern orxVOID                          orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject);
+extern orxDLLAPI orxVOID                orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject);
 /** Camera limit set accessor (Upper left & Bottom right corners positions). */
-extern orxVOID                          orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR);
+extern orxDLLAPI orxVOID                orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR);
 /** Camera limit reset accessor (Removes all position limits). */
-extern orxVOID                          orxCamera_RemoveLimits(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxVOID                orxCamera_RemoveLimits(orxCAMERA *_pstCamera);
 
 /** Camera on screen position set accessor. */
-extern orxVOID                          orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
+extern orxDLLAPI orxVOID                orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
 
 /** Camera position get accessor. */
-extern orxVOID                          orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
+extern orxDLLAPI orxVOID                orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
 /** Camera size get accessor. */
-extern orxVOID                          orxCamera_GetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize);
+extern orxDLLAPI orxVOID                orxCamera_GetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize);
 /** Camera rotation get accessor. */
-extern orxFLOAT                         orxCamera_GetRotation(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxFLOAT               orxCamera_GetRotation(orxCAMERA *_pstCamera);
 /** Camera zoom get accessor. */
-extern orxFLOAT                         orxCamera_GetZoom(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxFLOAT               orxCamera_GetZoom(orxCAMERA *_pstCamera);
 /** Camera link get accessor. */
 
-extern orxOBJECT                       *orxCamera_GetTarget(orxCAMERA *_pstCamera);
+extern orxDLLAPI orxOBJECT *            orxCamera_GetTarget(orxCAMERA *_pstCamera);
 /** Camera limit get accessor (Upper left & Bottom right corners positions). */
-extern orxVOID                          orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR);
+extern orxDLLAPI orxVOID                orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR);
 /** Camera on screen position get accessor. */
-extern orxVOID                          orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
+extern orxDLLAPI orxVOID                orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
 
 /** Camera flag test accessor. */
-extern orxBOOL                          orxCamera_TestFlags(orxCAMERA *_pstCamera, orxU32 _u32Flag);
+extern orxDLLAPI orxBOOL                orxCamera_TestFlags(orxCAMERA *_pstCamera, orxU32 _u32Flag);
 /** Camera flag get/set accessor. */
-extern orxVOID                          orxCamera_SetFlags(orxCAMERA *_pstCamera, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
+extern orxDLLAPI orxVOID                orxCamera_SetFlags(orxCAMERA *_pstCamera, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
 
 
 #endif /* _orxCAMERA_H_ */

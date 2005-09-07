@@ -49,10 +49,6 @@ typedef struct __orxBITMAP_TRANSFORM_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Function that initializes the display plugin module
- */
-extern orxDLLAPI orxVOID          orxFASTCALL orxDisplay_RegisterCorePlugin();
-
 
 /***************************************************************************
  * Functions extended by plugins

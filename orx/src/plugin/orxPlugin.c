@@ -217,7 +217,7 @@ orxVOID orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo,
  This function registers a core function.
  Returns orxVOID.
  ***************************************************************************/
-orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
+orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
   orxCONST orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
   orxU32 u32PluginIndex, u32FunctionIndex;
@@ -262,7 +262,7 @@ orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INF
  This function unregisters a core function.
  Returns orxVOID.
  ***************************************************************************/
-orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
+orxSTATIC orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
   orxCONST orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
   orxU32 u32PluginIndex, u32FunctionIndex;
@@ -420,7 +420,7 @@ orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
  if it exists, otherwise orxNULL.
 
  ***************************************************************************/
-orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHandle)
+orxSTATIC orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHandle)
 {
   orxPLUGIN_INFO *pstPluginInfo = orxNULL;
 
@@ -561,7 +561,7 @@ orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxC
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxPlugin_DeleteAll()
+orxSTATIC orxINLINE orxVOID orxPlugin_DeleteAll()
 {
   orxPLUGIN_INFO *pstPluginInfo;
 

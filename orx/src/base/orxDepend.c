@@ -92,16 +92,16 @@ orxVOID orxDepend_Exit()
 /** Call the Init callback function for a module
  * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
- * @param[in] _cbInit   Init function
+ * @param[in] _pfnInit   Init function
  * @return Module's Init status
  */
-orxSTATUS orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_CB _cbInit)
+orxSTATUS orxFASTCALL orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_CB _pfnInit)
 {
   /* If not initialized yet, Init the module */
   if (sstDepend.astModuleInfos[_eModule].u32RefCount == 0)
   {
     /* Call Init function */
-    sstDepend.astModuleInfos[_eModule].eStatus = _cbInit();
+    sstDepend.astModuleInfos[_eModule].eStatus = _pfnInit();
     
     /* First Call to the Init function, really Initialize it */
     if (sstDepend.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS)
@@ -129,9 +129,9 @@ orxSTATUS orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eMod
 /** Call the Exit callback function for a module
  * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
- * @param[in] _cbExit   Exit function
+ * @param[in] _pfnExit   Exit function
  */
-orxVOID orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_EXIT_CB _cbExit)
+orxVOID orxFASTCALL orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_EXIT_CB _pfnExit)
 {
   /* It's not possible that there are more Exit than Init */
   orxASSERT(sstDepend.astModuleInfos[_eModule].u32RefCount > 0);
@@ -140,10 +140,10 @@ orxVOID orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModul
   sstDepend.astModuleInfos[_eModule].u32RefCount--;
   
   /* Counter has reached 0 And module successfully initialized ? */
-  if ((sstDepend.astModuleInfos[_eModule].u32RefCount == 0)/* && (sstDepend.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS)*/)
+  if ((sstDepend.astModuleInfos[_eModule].u32RefCount == 0) && (sstDepend.astModuleInfos[_eModule].eStatus == orxSTATUS_SUCCESS))
   {
     /* Call Exit callback */
-    _cbExit();
+    _pfnExit();
     
     /* Log Exit */
     orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "EXIT %s : Last call => Exit function called", _zName);

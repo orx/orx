@@ -118,11 +118,11 @@ orxVOID orxTest_MathSet_DisplayContent()
 {
     orxTextIO_Print("Float-based interval : ");
     orxTest_MathSet_PrintIntervalFloat(sstIntervFloat);
-    orxTextIO_PrintLn("");
+    orxTextIO_PrintLn(orxSTRING_Empty);
     
     orxTextIO_Print("Integer-based interval : ");
     orxTest_MathSet_PrintIntervalInt32(sstIntervInt32);
-    orxTextIO_PrintLn("");
+    orxTextIO_PrintLn(orxSTRING_Empty);
 }
 
 /** Set float-based interval.

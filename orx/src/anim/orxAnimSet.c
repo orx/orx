@@ -77,7 +77,7 @@
 typedef struct __orxLINK_UPDATE_INFO_t
 {
   /* Link Table : 4 */
-  orxANIM_SET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
 
   /* Link update info : 8 */
   orxU8 *au8LinkInfo;
@@ -93,7 +93,7 @@ typedef struct __orxLINK_UPDATE_INFO_t
 /*
  * Internal Animation Set Link table structure
  */
-struct __orxANIM_SET_LINK_TABLE_t
+struct __orxANIMSET_LINK_TABLE_t
 {
   /* Link array : 4 */
   orxU32 *au32LinkArray;
@@ -114,7 +114,7 @@ struct __orxANIM_SET_LINK_TABLE_t
 /*
  * Animation Set structure
  */
-struct __orxANIM_SET_t
+struct __orxANIMSET_t
 {
   /* Public structure, first structure member : 16 */
   orxSTRUCTURE stStructure;
@@ -126,7 +126,7 @@ struct __orxANIM_SET_t
   orxANIM **pastAnim;
 
   /* Link table pointer : 28 */
-  orxANIM_SET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
 
   /* 4 extra bytes of padding : 32 */
   orxU8 au8Unused[4];
@@ -135,19 +135,19 @@ struct __orxANIM_SET_t
 /*
  * Static structure
  */
-typedef struct __orxANIM_SET_STATIC_t
+typedef struct __orxANIMSET_STATIC_t
 {
 
   /* Control flags */
   orxU32 u32Flags;
 
-} orxANIM_SET_STATIC;
+} orxANIMSET_STATIC;
 
 
 /*
  * Static data
  */
-orxSTATIC orxANIM_SET_STATIC sstAnimSet;
+orxSTATIC orxANIMSET_STATIC sstAnimSet;
 
 
 /***************************************************************************
@@ -162,7 +162,7 @@ orxSTATIC orxANIM_SET_STATIC sstAnimSet;
 
  returns: orxBOOL
  ***************************************************************************/
-orxBOOL orxAnimSet_TestLinkTableFlag(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32Flag)
+orxBOOL orxAnimSet_TestLinkTableFlag(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32Flag)
 {
   /* Checks */
   orxASSERT(_pstLinkTable != orxNULL);
@@ -176,7 +176,7 @@ orxBOOL orxAnimSet_TestLinkTableFlag(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxAnimSet_SetLinkTableFlag(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
+orxVOID orxAnimSet_SetLinkTableFlag(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
 {
   /* Checks */
   orxASSERT(_pstLinkTable != orxNULL);
@@ -193,7 +193,7 @@ orxVOID orxAnimSet_SetLinkTableFlag(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU3
 
  returns: orxU32 link value
  ***************************************************************************/
-orxU32 orxAnimSet_GetLinkTableLink(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32Index)
+orxU32 orxAnimSet_GetLinkTableLink(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32Index)
 {
   /* Checks */
   orxASSERT(_pstLinkTable != orxNULL);
@@ -208,7 +208,7 @@ orxU32 orxAnimSet_GetLinkTableLink(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimSet_SetLinkTableLink(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32Index, orxU32 _u32LinkValue)
+orxSTATUS orxAnimSet_SetLinkTableLink(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32Index, orxU32 _u32LinkValue)
 {
   /* Checks */
   orxASSERT(_pstLinkTable != orxNULL);
@@ -226,7 +226,7 @@ orxSTATUS orxAnimSet_SetLinkTableLink(orxANIM_SET_LINK_TABLE *_pstLinkTable, orx
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32LinkIndex, orxU32 _u32Property, orxU32 _u32Value)
+orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32LinkIndex, orxU32 _u32Property, orxU32 _u32Value)
 {
   /* Checks */
   orxASSERT(_pstLinkTable != orxNULL);
@@ -300,7 +300,7 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIM_SET_LINK_TABLE *_pstLinkTa
 
  returns: orxU32 Property value / orxU32_Undefined
  ***************************************************************************/
-orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32LinkIndex, orxU32 _u32Property)
+orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32LinkIndex, orxU32 _u32Property)
 {
   orxU32 u32Value;
 
@@ -376,7 +376,7 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIM_SET_LINK_TABLE *_pstLinkTable
 
  returns: Nothing
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
+orxSTATIC orxINLINE orxVOID orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
   orxREGISTER orxU32 u32Index;
   orxREGISTER orxU8 u8Mask;
@@ -402,7 +402,7 @@ orxINLINE orxVOID orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _
 
  returns: Nothing
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
+orxSTATIC orxINLINE orxVOID orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
   orxREGISTER orxU32 u32Index;
   orxREGISTER orxU8 u8Mask;
@@ -430,7 +430,7 @@ orxINLINE orxVOID orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32
 
  returns: Nothing
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex)
+orxSTATIC orxINLINE orxVOID orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex)
 {
   orxU32 u32Index, i;
 
@@ -456,7 +456,7 @@ orxINLINE orxVOID orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32
 
  returns: orxTRUE on success / orxFALSE on failure
  ***************************************************************************/
-orxINLINE orxBOOL orxAnimSet_GetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
+orxSTATIC orxINLINE orxBOOL orxAnimSet_GetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
   orxREGISTER orxU32 u32Index;
   orxREGISTER orxU8 u8Mask;
@@ -488,7 +488,7 @@ orxSTATIC orxBOOL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU3
   orxU32 u32SrcLink, u32DstLink, u32SrcLength, u32DstLength;
   orxU32 u32DirectLink, u32DirectPriority, u32Priority;
   orxU32 u32SrcBaseIndex, u32DstBaseIndex, i;
-  orxANIM_SET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
 
   /* Checks */
   orxASSERT(_pstInfo != orxNULL);
@@ -594,7 +594,7 @@ orxSTATIC orxBOOL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU3
 orxVOID orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
 {
   orxU32 u32BaseIndex;
-  orxANIM_SET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
   orxU32 i;
 
   /* Checks */
@@ -654,7 +654,7 @@ orxVOID orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
 
  returns: orxLINK_UPDATE_INFO pointer / orxNULL on failure
  ***************************************************************************/
-orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIM_SET_LINK_TABLE *_pstLinkTable)
+orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
   orxLINK_UPDATE_INFO *pstInfo = orxNULL;
   orxU32 u32Number;
@@ -718,7 +718,7 @@ orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIM_SET_LINK_
 
  returns: Nothing
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_DeleteLinkUpdateInfo(orxLINK_UPDATE_INFO *_pstLinkUpdateInfo)
+orxSTATIC orxINLINE orxVOID orxAnimSet_DeleteLinkUpdateInfo(orxLINK_UPDATE_INFO *_pstLinkUpdateInfo)
 {
   /* Checks */
   orxASSERT(_pstLinkUpdateInfo != orxNULL);
@@ -736,7 +736,7 @@ orxINLINE orxVOID orxAnimSet_DeleteLinkUpdateInfo(orxLINK_UPDATE_INFO *_pstLinkU
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxVOID orxAnimSet_CleanLinkTable(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32AnimIndex)
+orxSTATIC orxVOID orxAnimSet_CleanLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32AnimIndex)
 {
   orxU32 u32Size, u32AnimBaseIndex, i;
 
@@ -776,23 +776,23 @@ orxSTATIC orxVOID orxAnimSet_CleanLinkTable(orxANIM_SET_LINK_TABLE *_pstLinkTabl
  orxAnimSet_CreateLinkTable
  Creates and init the Link Table.
 
- returns: orxANIM_SET_LINK_TABLE *
+ returns: orxANIMSET_LINK_TABLE *
  ***************************************************************************/
-orxSTATIC orxANIM_SET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
+orxSTATIC orxANIMSET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
 {
-  orxANIM_SET_LINK_TABLE *pstLinkTable = orxNULL;
+  orxANIMSET_LINK_TABLE *pstLinkTable = orxNULL;
 
   /* Checks */
   orxASSERT(_u32Size < 0xFFFF);
 
   /* Allocates link table */
-  pstLinkTable = (orxANIM_SET_LINK_TABLE *)orxMemory_Allocate(sizeof(orxANIM_SET_LINK_TABLE), orxMEMORY_TYPE_MAIN);
+  pstLinkTable = (orxANIMSET_LINK_TABLE *)orxMemory_Allocate(sizeof(orxANIMSET_LINK_TABLE), orxMEMORY_TYPE_MAIN);
 
   /* Was allocated? */
   if(pstLinkTable != orxNULL)
   {
     /* Cleans it */
-    orxMemory_Set(pstLinkTable, 0, sizeof(orxANIM_SET_LINK_TABLE));
+    orxMemory_Set(pstLinkTable, 0, sizeof(orxANIMSET_LINK_TABLE));
     
     /* Creates link array */
     pstLinkTable->au32LinkArray = (orxU32 *)orxMemory_Allocate(_u32Size * _u32Size * sizeof(orxU32), orxMEMORY_TYPE_MAIN);
@@ -858,7 +858,7 @@ orxSTATIC orxANIM_SET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
 
  returns: Nothing
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_CopyLinkTable(orxANIM_SET_LINK_TABLE *_pstSrcLinkTable, orxANIM_SET_LINK_TABLE *_pstDstLinkTable)
+orxSTATIC orxINLINE orxVOID orxAnimSet_CopyLinkTable(orxANIMSET_LINK_TABLE *_pstSrcLinkTable, orxANIMSET_LINK_TABLE *_pstDstLinkTable)
 {
   /* Checks */
   orxASSERT(_pstSrcLinkTable != orxNULL);
@@ -882,7 +882,7 @@ orxINLINE orxVOID orxAnimSet_CopyLinkTable(orxANIM_SET_LINK_TABLE *_pstSrcLinkTa
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_SetAnimStorageSize(orxANIM_SET *_pstAnimset, orxU32 _u32Size)
+orxSTATIC orxINLINE orxVOID orxAnimSet_SetAnimStorageSize(orxANIMSET *_pstAnimset, orxU32 _u32Size)
 {
   /* Checks */
   orxASSERT(_pstAnimset != orxNULL);
@@ -901,7 +901,7 @@ orxINLINE orxVOID orxAnimSet_SetAnimStorageSize(orxANIM_SET *_pstAnimset, orxU32
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_SetAnimCounter(orxANIM_SET *_pstAnimset, orxU32 _u32AnimCounter)
+orxSTATIC orxINLINE orxVOID orxAnimSet_SetAnimCounter(orxANIMSET *_pstAnimset, orxU32 _u32AnimCounter)
 {
   /* Checks */
   orxASSERT(_u32AnimCounter <= orxAnimSet_GetAnimStorageSize(_pstAnimset));
@@ -919,7 +919,7 @@ orxINLINE orxVOID orxAnimSet_SetAnimCounter(orxANIM_SET *_pstAnimset, orxU32 _u3
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_IncreaseAnimCounter(orxANIM_SET *_pstAnimset)
+orxSTATIC orxINLINE orxVOID orxAnimSet_IncreaseAnimCounter(orxANIMSET *_pstAnimset)
 {
   orxREGISTER orxU32 u32AnimCounter;
 
@@ -941,7 +941,7 @@ orxINLINE orxVOID orxAnimSet_IncreaseAnimCounter(orxANIM_SET *_pstAnimset)
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxAnimSet_DecreaseAnimCounter(orxANIM_SET *_pstAnimset)
+orxSTATIC orxINLINE orxVOID orxAnimSet_DecreaseAnimCounter(orxANIMSET *_pstAnimset)
 {
   orxREGISTER orxU32 u32AnimCounter;
 
@@ -965,10 +965,10 @@ orxINLINE orxVOID orxAnimSet_DecreaseAnimCounter(orxANIM_SET *_pstAnimset)
  ***************************************************************************/
 orxSTATIC orxVOID orxAnimSet_DeleteAll()
 {
-  orxANIM_SET *pstAnimset;
+  orxANIMSET *pstAnimset;
   
   /* Gets first anim set */
-  pstAnimset = (orxANIM_SET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM_SET);
+  pstAnimset = (orxANIMSET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET);
 
   /* Non empty? */
   while(pstAnimset != orxNULL)
@@ -977,7 +977,7 @@ orxSTATIC orxVOID orxAnimSet_DeleteAll()
     orxAnimSet_Delete(pstAnimset);
 
     /* Gets first Animation Set */
-    pstAnimset = (orxANIM_SET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM_SET);
+    pstAnimset = (orxANIMSET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET);
   }
 
   return;
@@ -989,7 +989,7 @@ orxSTATIC orxVOID orxAnimSet_DeleteAll()
 
  returns: orxU32 animation index / orxU32_Undefined if none found
  ***************************************************************************/
-orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32AnimIndex)
+orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32AnimIndex)
 {
   orxU32 u32Size, u32BaseIndex;
   orxU32 u32LinkPriority, u32ResLinkPriority, u32Loop;
@@ -1080,7 +1080,7 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIM_SET_LINK_TABLE *_pstLinkTabl
 
  returns: orxU32 animation index / orxU32_Undefined if none found
  ***************************************************************************/
-orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIM_SET_LINK_TABLE *_pstLinkTable, orxU32 _u32SrcAnim, orxU32 _u32DstAnim)
+orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32SrcAnim, orxU32 _u32DstAnim)
 {
   orxU32 u32BaseIndex, u32Size, u32Loop;
   orxU32 u32Anim = orxU32_Undefined, u32Link, u32LinkIndex;
@@ -1137,7 +1137,7 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIM_SET_LINK_TABLE *_ps
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimSet_ComputeLinkTable(orxANIM_SET_LINK_TABLE *_pstLinkTable)
+orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
   orxLINK_UPDATE_INFO *pstUpdateInfo;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1238,7 +1238,7 @@ orxSTATUS orxAnimSet_Init()
     if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY))
     {
       /* Cleans control structure */
-      orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIM_SET_STATIC));
+      orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIMSET_STATIC));
   
       /* Initialized? */
       if(eResult == orxSTATUS_SUCCESS)
@@ -1247,11 +1247,11 @@ orxSTATUS orxAnimSet_Init()
 
         /* Registers structure type */
         stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-        stRegisterInfo.u32Size      = sizeof(orxANIM_SET);
+        stRegisterInfo.u32Size      = sizeof(orxANIMSET);
         stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
         stRegisterInfo.pfnUpdate    = orxNULL;
 
-        eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIM_SET, &stRegisterInfo);
+        eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMSET, &stRegisterInfo);
       }
       else
       {
@@ -1297,7 +1297,7 @@ orxVOID orxAnimSet_Exit()
     orxAnimSet_DeleteAll();
 
     /* Unregisters structure type */
-    orxStructure_Unregister(orxSTRUCTURE_ID_ANIM_SET);
+    orxStructure_Unregister(orxSTRUCTURE_ID_ANIMSET);
 
     /* Updates flags */
     sstAnimSet.u32Flags &= ~orxANIMSET_KU32_FLAG_READY;
@@ -1317,16 +1317,16 @@ orxVOID orxAnimSet_Exit()
 
  returns: Created animset.
  ***************************************************************************/
-orxANIM_SET *orxAnimSet_Create(orxU32 _u32Size)
+orxANIMSET *orxAnimSet_Create(orxU32 _u32Size)
 {
-  orxANIM_SET *pstAnimset;
+  orxANIMSET *pstAnimset;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
   orxASSERT(_u32Size <= orxANIMSET_KU32_MAX_ANIM_NUMBER);
 
   /* Creates animset */
-  pstAnimset = (orxANIM_SET *)orxStructure_Create(orxSTRUCTURE_ID_ANIM_SET);
+  pstAnimset = (orxANIMSET *)orxStructure_Create(orxSTRUCTURE_ID_ANIMSET);
 
   /* Non null? */
   if(pstAnimset != orxNULL)
@@ -1396,7 +1396,7 @@ orxANIM_SET *orxAnimSet_Create(orxU32 _u32Size)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimSet_Delete(orxANIM_SET *_pstAnimset)
+orxSTATUS orxAnimSet_Delete(orxANIMSET *_pstAnimset)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1431,7 +1431,7 @@ orxSTATUS orxAnimSet_Delete(orxANIM_SET *_pstAnimset)
 
  returns: Nothing
  ***************************************************************************/
-orxVOID orxAnimSet_AddReference(orxANIM_SET *_pstAnimset)
+orxVOID orxAnimSet_AddReference(orxANIMSET *_pstAnimset)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -1452,7 +1452,7 @@ orxVOID orxAnimSet_AddReference(orxANIM_SET *_pstAnimset)
 
  returns: Nothing
  ***************************************************************************/
-orxVOID orxAnimSet_RemoveReference(orxANIM_SET *_pstAnimset)
+orxVOID orxAnimSet_RemoveReference(orxANIMSET *_pstAnimset)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -1477,7 +1477,7 @@ orxVOID orxAnimSet_RemoveReference(orxANIM_SET *_pstAnimset)
 
  returns: Added Animation handle / orxHANDLE_Undefined
  ***************************************************************************/
-orxHANDLE orxAnimSet_AddAnim(orxANIM_SET *_pstAnimset, orxANIM *_pstAnim)
+orxHANDLE orxAnimSet_AddAnim(orxANIMSET *_pstAnimset, orxANIM *_pstAnim)
 {
   orxU32 u32Counter, u32Size, u32Index;
   orxHANDLE hResult = orxHANDLE_Undefined;
@@ -1547,7 +1547,7 @@ orxHANDLE orxAnimSet_AddAnim(orxANIM_SET *_pstAnimset, orxANIM *_pstAnim)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimSet_RemoveAnim(orxANIM_SET *_pstAnimset, orxHANDLE _hAnimHandle)
+orxSTATUS orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimset, orxHANDLE _hAnimHandle)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1604,7 +1604,7 @@ orxSTATUS orxAnimSet_RemoveAnim(orxANIM_SET *_pstAnimset, orxHANDLE _hAnimHandle
 
  returns: orxSTATUS_SUCCESS on success / orxSTATUS_FAILED otherwise
  ***************************************************************************/
-orxSTATUS orxAnimSet_RemoveAllAnims(orxANIM_SET *_pstAnimset)
+orxSTATUS orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimset)
 {
   orxU32 u32Counter, i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1640,7 +1640,7 @@ orxSTATUS orxAnimSet_RemoveAllAnims(orxANIM_SET *_pstAnimset)
 
  returns: orxAnim *
  ***************************************************************************/
-orxANIM *orxAnimSet_GetAnim(orxANIM_SET *_pstAnimset, orxHANDLE _hAnimHandle)
+orxANIM *orxAnimSet_GetAnim(orxANIMSET *_pstAnimset, orxHANDLE _hAnimHandle)
 {
   orxU32 u32Counter;
   orxANIM *pstAnim = orxNULL;
@@ -1674,10 +1674,10 @@ orxANIM *orxAnimSet_GetAnim(orxANIM_SET *_pstAnimset, orxHANDLE _hAnimHandle)
 
  returns: orxHANDLE Link handle / orxHANDLE_Undefined
  ***************************************************************************/
-orxHANDLE orxAnimSet_AddLink(orxANIM_SET *_pstAnimset, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim)
+orxHANDLE orxAnimSet_AddLink(orxANIMSET *_pstAnimset, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim)
 {
   orxU32 u32Size, u32Link, u32Index;
-  orxANIM_SET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
   orxHANDLE hResult = orxHANDLE_Undefined;
 
   /* Checks */
@@ -1750,10 +1750,10 @@ orxHANDLE orxAnimSet_AddLink(orxANIM_SET *_pstAnimset, orxHANDLE _hSrcAnim, orxH
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimSet_RemoveLink(orxANIM_SET *_pstAnimset, orxHANDLE _hLinkHandle)
+orxSTATUS orxAnimSet_RemoveLink(orxANIMSET *_pstAnimset, orxHANDLE _hLinkHandle)
 {
   orxU32 u32Size;
-  orxANIM_SET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -1808,7 +1808,7 @@ orxSTATUS orxAnimSet_RemoveLink(orxANIM_SET *_pstAnimset, orxHANDLE _hLinkHandle
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimSet_ComputeLinks(orxANIM_SET *_pstAnimset)
+orxSTATUS orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimset)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -1832,10 +1832,10 @@ orxSTATUS orxAnimSet_ComputeLinks(orxANIM_SET *_pstAnimset)
 
  returns: orxU32 Link ID / orxU32_Undefined
  ***************************************************************************/
-orxHANDLE orxAnimSet_GetLink(orxANIM_SET *_pstAnimset, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim)
+orxHANDLE orxAnimSet_GetLink(orxANIMSET *_pstAnimset, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim)
 {
   orxU32 u32Index, u32Size;
-  orxANIM_SET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
   orxHANDLE hResult = orxHANDLE_Undefined;
 
   /* Checks */
@@ -1877,7 +1877,7 @@ orxHANDLE orxAnimSet_GetLink(orxANIM_SET *_pstAnimset, orxHANDLE _hSrcAnim, orxH
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimSet_SetLinkProperty(orxANIM_SET *_pstAnimset, orxHANDLE _hLinkHandle, orxU32 _u32Property, orxU32 _u32Value)
+orxSTATUS orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimset, orxHANDLE _hLinkHandle, orxU32 _u32Property, orxU32 _u32Value)
 {
   orxSTATUS eResult;
 
@@ -1921,7 +1921,7 @@ orxSTATUS orxAnimSet_SetLinkProperty(orxANIM_SET *_pstAnimset, orxHANDLE _hLinkH
 
  returns: orxU32 Property value / orxU32_Undefined
  ***************************************************************************/
-orxU32 orxAnimSet_GetLinkProperty(orxANIM_SET *_pstAnimset, orxHANDLE _hLinkHandle, orxU32 _u32Property)
+orxU32 orxAnimSet_GetLinkProperty(orxANIMSET *_pstAnimset, orxHANDLE _hLinkHandle, orxU32 _u32Property)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -1937,11 +1937,11 @@ orxU32 orxAnimSet_GetLinkProperty(orxANIM_SET *_pstAnimset, orxHANDLE _hLinkHand
 
  returns: active animation handle (_pu32Time is updated at need) / orxHANDLE_Undefined if none
  ***************************************************************************/
-orxHANDLE orxAnimSet_ComputeAnim(orxANIM_SET *_pstAnimset, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxU32 *_pu32Time, orxANIM_SET_LINK_TABLE *_pstLinkTable)
+orxHANDLE orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimset, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxU32 *_pu32Time, orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
   orxU32 u32Length, u32Anim;
   orxHANDLE hResult = orxHANDLE_Undefined;
-  orxANIM_SET_LINK_TABLE *pstWorkTable;
+  orxANIMSET_LINK_TABLE *pstWorkTable;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -2027,7 +2027,7 @@ orxHANDLE orxAnimSet_ComputeAnim(orxANIM_SET *_pstAnimset, orxHANDLE _hSrcAnim, 
 
  returns: orxU32 counter
  ***************************************************************************/
-orxU32 orxAnimSet_GetAnimCounter(orxANIM_SET *_pstAnimset)
+orxU32 orxAnimSet_GetAnimCounter(orxANIMSET *_pstAnimset)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -2043,7 +2043,7 @@ orxU32 orxAnimSet_GetAnimCounter(orxANIM_SET *_pstAnimset)
 
  returns: orxU32 storage size
  ***************************************************************************/
-orxU32 orxAnimSet_GetAnimStorageSize(orxANIM_SET *_pstAnimset)
+orxU32 orxAnimSet_GetAnimStorageSize(orxANIMSET *_pstAnimset)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -2059,7 +2059,7 @@ orxU32 orxAnimSet_GetAnimStorageSize(orxANIM_SET *_pstAnimset)
 
  returns: orxBOOL
  ***************************************************************************/
-orxBOOL orxAnimSet_TestFlags(orxANIM_SET *_pstAnimset, orxU32 _u32Flag)
+orxBOOL orxAnimSet_TestFlags(orxANIMSET *_pstAnimset, orxU32 _u32Flag)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -2075,7 +2075,7 @@ orxBOOL orxAnimSet_TestFlags(orxANIM_SET *_pstAnimset, orxU32 _u32Flag)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxAnimSet_SetFlags(orxANIM_SET *_pstAnimset, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
+orxVOID orxAnimSet_SetFlags(orxANIMSET *_pstAnimset, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -2096,7 +2096,7 @@ orxVOID orxAnimSet_SetFlags(orxANIM_SET *_pstAnimset, orxU32 _u32AddFlags, orxU3
 
  returns: Nothing
  ***************************************************************************/
-orxVOID orxAnimSet_DeleteLinkTable(orxANIM_SET_LINK_TABLE *_pstLinkTable)
+orxVOID orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
@@ -2114,11 +2114,11 @@ orxVOID orxAnimSet_DeleteLinkTable(orxANIM_SET_LINK_TABLE *_pstLinkTable)
  orxAnimSet_DuplicateLinkTable
  Duplicates an Animset link table.
 
- returns: orxANIM_SET_LINK_TABLE *
+ returns: orxANIMSET_LINK_TABLE *
  ***************************************************************************/
-orxANIM_SET_LINK_TABLE *orxAnimSet_DuplicateLinkTable(orxANIM_SET *_pstAnimset)
+orxANIMSET_LINK_TABLE *orxAnimSet_DuplicateLinkTable(orxANIMSET *_pstAnimset)
 {
-  orxANIM_SET_LINK_TABLE *pstLinkTable = orxNULL;
+  orxANIMSET_LINK_TABLE *pstLinkTable = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);

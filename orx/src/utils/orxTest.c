@@ -64,7 +64,7 @@ static orxTEST_STATIC sstTest;
 /** Display list of functions associated to a module
  * @param _zModuleName  (IN)  Name of the module
  */
-orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleName)
+orxSTATIC orxINLINE orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleName)
 {
   orxU32 u32Index;  /* Index used to traverse the function array */
 
@@ -90,7 +90,7 @@ orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleName)
 
 /** Reset all visibility flag (set with orxTest_PrintModuleFunc to knwow if a function has already been displayed
  */
-orxVOID orxTest_ResetVisibility()
+orxSTATIC orxINLINE orxVOID orxTest_ResetVisibility()
 {
   orxU32 u32Index;  /* Index used to traverse the function array */
   
@@ -154,10 +154,10 @@ orxVOID orxTest_Exit()
 /** Register a new function
  * @param   (IN)  _zModuleName      Name of the module (to group a list of functions)
  * @param   (IN)  _zMenuEntry       Text displayed to describe the test function
- * @param   (IN)  _cbFunction       Function executed when the menu entry is selected
+ * @param   (IN)  _pfnFunction       Function executed when the menu entry is selected
  * @return Returns an Handle on the function
  */
-orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxTEST_FUNCTIONCB _cbFunction)
+orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTIONCB _pfnFunction)
 {
   orxTEST *pstTest; /* Structure that will store new datas */
   orxHANDLE hRet;   /* Returnd handle value */
@@ -168,7 +168,7 @@ orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _
   /* Correct parameters ? */
   orxASSERT(_zModuleName != orxNULL);
   orxASSERT(_zMenuEntry != orxNULL);
-  orxASSERT(_cbFunction != orxNULL);
+  orxASSERT(_pfnFunction != orxNULL);
 
   /* Module full ? */
   if (sstTest.u32NbRegisteredFunc < orxTEST_KU32_MAX_REGISTERED_FUNCTIONS)
@@ -177,7 +177,7 @@ orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _
     pstTest = &(sstTest.astTestFunctions[sstTest.u32NbRegisteredFunc]);
     orxMemory_Copy(pstTest->zModule, _zModuleName, 31 * sizeof(orxCHAR));
     orxMemory_Copy(pstTest->zMenuEntry, _zMenuEntry, 255 * sizeof(orxCHAR));
-    pstTest->cbFunction = _cbFunction;
+    pstTest->cbFunction = _pfnFunction;
     pstTest->bDisplayed = orxFALSE;
     
     /* Set the returned handle (array index value) */
@@ -199,7 +199,7 @@ orxHANDLE orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _
  * @param   (IN)  _hRegisteredFunc  Handle of the registered function to execute
  * @return  Returns the success / fail status (failed when the Handle is unknown)
  */
-orxSTATUS orxTest_Execute(orxHANDLE _hRegisteredFunc)
+orxSTATUS orxFASTCALL orxTest_Execute(orxHANDLE _hRegisteredFunc)
 {
   /* Module initialized ? */
   orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);

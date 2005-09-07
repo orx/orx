@@ -3,7 +3,7 @@
 
 #include "orxInclude.h"
 
-extern orxU32 interaction_init();
-extern orxVOID interaction_exit();
+extern orxDLLAPI orxU32 interaction_init();
+extern orxDLLAPI orxVOID interaction_exit();
 
 #endif /* _INTERACTION_H_ */

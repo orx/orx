@@ -79,7 +79,7 @@ orxSTATIC orxU32 graphic_su32Flags = GRAPHIC_KU32_FLAG_DEFAULT;
 
  returns: requested structure offset
  ***************************************************************************/
-orxINLINE orxS32 graphic_struct_offset_get(orxSTRUCTURE_ID _eStructureID)
+orxSTATIC orxINLINE orxS32 graphic_struct_offset_get(orxSTRUCTURE_ID _eStructureID)
 {
   /* Gets structure offset according to id */
   switch(_eStructureID)
@@ -89,7 +89,7 @@ orxINLINE orxS32 graphic_struct_offset_get(orxSTRUCTURE_ID _eStructureID)
       return GRAPHIC_KS32_STRUCT_OFFSET_TEXTURE;
 
     /* AnimationPointer structure*/
-    case orxSTRUCTURE_ID_ANIM_POINTER:
+    case orxSTRUCTURE_ID_ANIMPOINTER:
       return GRAPHIC_KS32_STRUCT_OFFSET_ANIMPOINTER;
 
     default:
@@ -284,9 +284,9 @@ orxVOID graphic_struct_link(graphic_st_graphic *_pstGraphic, orxSTRUCTURE *_pstS
         break;
 
       /* Animpointer */
-      case orxSTRUCTURE_ID_ANIM_POINTER:
+      case orxSTRUCTURE_ID_ANIMPOINTER:
         /* Checks current anim */
-        if(orxAnim_TestFlags(orxAnimPointer_GetAnim((orxANIM_POINTER *)_pstStructure), orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
+        if(orxAnim_TestFlags(orxAnimPointer_GetAnim((orxANIMPOINTER *)_pstStructure), orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
         {
           /* Updates flag */
           graphic_flag_set(_pstGraphic, GRAPHIC_KU32_ID_FLAG_2D | GRAPHIC_KU32_ID_FLAG_ANIM, GRAPHIC_KU32_ID_FLAG_NONE);
@@ -339,7 +339,7 @@ orxVOID graphic_struct_unlink(graphic_st_graphic *_pstGraphic, orxSTRUCTURE_ID _
     _pstGraphic->u32LinkedStructures &= ~u32ID;
 
     /* Updates flags */
-    if(_eStructureID == orxSTRUCTURE_ID_ANIM_POINTER)
+    if(_eStructureID == orxSTRUCTURE_ID_ANIMPOINTER)
     {
       graphic_flag_set(_pstGraphic, GRAPHIC_KU32_ID_FLAG_NONE, GRAPHIC_KU32_ID_FLAG_ANIM);
     }
@@ -433,13 +433,13 @@ orxSTRUCTURE *graphic_struct_get(graphic_st_graphic *_pstGraphic, orxSTRUCTURE_I
 orxTEXTURE *graphic_2d_data_get(graphic_st_graphic *_pstGraphic)
 {
   /* Use an animation? */
-  if(_pstGraphic->u32LinkedStructures & orxSTRUCTURE_ID_ANIM_POINTER)
+  if(_pstGraphic->u32LinkedStructures & orxSTRUCTURE_ID_ANIMPOINTER)
   {
-    orxANIM_POINTER *pstAnimpointer;
+    orxANIMPOINTER *pstAnimpointer;
     orxANIM *pstAnim;
 
     /* Gets animpointer */
-    pstAnimpointer = (orxANIM_POINTER *)graphic_struct_get(_pstGraphic, orxSTRUCTURE_ID_ANIM_POINTER);
+    pstAnimpointer = (orxANIMPOINTER *)graphic_struct_get(_pstGraphic, orxSTRUCTURE_ID_ANIMPOINTER);
 
     /* Gets current animation */
     pstAnim = orxAnimPointer_GetAnim(pstAnimpointer);

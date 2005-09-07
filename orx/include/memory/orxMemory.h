@@ -22,12 +22,14 @@
  * Memory allocation / Unallocation module
  * @{
  */
- 
+
 #ifndef _orxMEMORY_H_
 #define _orxMEMORY_H_
+
  
 #include "orxInclude.h"
- 
+
+
 typedef enum __orxMEMORY_TYPE_t
 {
   orxMEMORY_TYPE_MAIN = 0,              /**< Main memory type */
@@ -42,11 +44,11 @@ typedef enum __orxMEMORY_TYPE_t
 /** Initialize memory allocation module
  * @todo Really initialize the memory to be managed by the module and not OS
  */
-extern orxSTATUS orxDLLAPI orxMemory_Init();
+extern orxDLLAPI orxSTATUS              orxMemory_Init();
 
 /** Uninitialize memory allocation module
  */
-extern orxVOID orxDLLAPI orxMemory_Exit();
+extern orxDLLAPI orxVOID                orxMemory_Exit();
 
 /** Allocate a portion of memory in the system and returns a pointer on it
  * @param[in]  _u32Size  Size of the memory to allocate
@@ -54,20 +56,20 @@ extern orxVOID orxDLLAPI orxMemory_Exit();
  * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
  * @todo Use the memory managed by orxMemory (initialized with orxMemory_Init())
  */
-extern orxVOID* orxDLLAPI orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
+extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
 
 /** Free a portion of memory allocated with orxMemory_Allocate
  * @param[in]  _pMem     Pointer on the memory allocated by orx
  * @todo Use the memory managed by orxMemory (not OS)
  */
-extern orxVOID orxDLLAPI orxMemory_Free(orxVOID *_pMem);
+extern orxDLLAPI orxVOID orxFASTCALL    orxMemory_Free(orxVOID *_pMem);
 
 /** Get the an aligned data size
  * @param[in]  _u32OriginalValue Original value (ex: 70)
  * @param[in]  _u32AlignValue    Align size (The value has to be a power of 2 and > 0) (ex : 32)
  * @return the aligned _u32OriginalValue on _u32AlignValue (ex : will return 96 for previous values)
  */
-extern orxU32 orxDLLAPI orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue);
+extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue);
 
 /** Copy a portion of memory into another one
  * @param[out] _pDest    Destination pointer
@@ -76,7 +78,7 @@ extern orxU32 orxDLLAPI orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32
  * @return returns a pointer on _pDest
  * @note if _pSrc and _pDest overlap, use orxMemory_Move instead
  */
-extern orxVOID* orxDLLAPI orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size);
+extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size);
 
 /** Copy a portion of memory into another one
  * @param[out] _pDest   Destination pointer
@@ -84,7 +86,7 @@ extern orxVOID* orxDLLAPI orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSr
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
-extern orxVOID* orxDLLAPI orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size);
+extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size);
 
 /** Compare two portion of memory
  * @param[in]  _pMem1   First potion to test
@@ -92,7 +94,7 @@ extern orxVOID* orxDLLAPI orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32
  * @param[in]  _u32Size Size of data to test
  * @return returns a velue less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
  */
-extern orxU32 orxDLLAPI orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size);
+extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size);
 
 /** Fill a portion of memory with _u32Data
  * @param[out] _pDest   Destination pointer
@@ -100,7 +102,8 @@ extern orxU32 orxDLLAPI orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orx
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
-extern orxVOID* orxDLLAPI orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size);
+extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size);
+
 
 #endif /* _orxMEMORY_H_ */
 

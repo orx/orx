@@ -101,7 +101,7 @@ orxVOID orxTextIO_Exit()
  * @param _zMessage       (IN)  Message that will be displayed before read
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status
  */
-orxSTATUS orxFASTCALL orxTextIO_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage)
+orxSTATUS orxFASTCALL orxTextIO_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxCONST orxSTRING _zMessage)
 {
   orxSTRING _zReturnString; /* String read (orxNULL if a problem has occured) */
   orxU32 u32StringLength;   /* Read string length */

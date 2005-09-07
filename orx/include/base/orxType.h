@@ -132,8 +132,4 @@ typedef enum __orxSTATUS_t
 } orxSTATUS;
 
 
-/* Graph */
-typedef orxS32 graph_st_sprite;
-
-
 #endif /*_orxTYPE_H_*/

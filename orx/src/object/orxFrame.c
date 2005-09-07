@@ -133,7 +133,7 @@ orxSTATIC orxFRAME_STATIC sstFrame;
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVEC *_pvPos, orxFRAME_SPACE eSpace)
 {
   /* Checks */
   orxASSERT(_pstFrame != orxNULL);
@@ -245,7 +245,7 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fS
 
  returns: Internal coord data pointer
  ***************************************************************************/
-orxSTATIC orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
   orxVEC *pvPos = orxNULL;
 
@@ -285,7 +285,7 @@ orxSTATIC orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxFRAME *_pstFrame, 
 
  returns: Requested angle value
  ***************************************************************************/
-orxSTATIC orxINLINE orxFLOAT _orxFrame_GetAngle(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxFLOAT _orxFrame_GetAngle(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
   orxFLOAT fAngle = orx2F(0.0f);
 
@@ -325,7 +325,7 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetAngle(orxFRAME *_pstFrame, orxFRAME_SP
 
  returns: Requested scale value
  ***************************************************************************/
-orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
   orxFLOAT fScale = orx2F(1.0f);
  
@@ -360,7 +360,7 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SP
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxFRAME *_pstSrcFrame, orxFRAME *_pstParentFrame)
+orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME *_pstSrcFrame, orxCONST orxFRAME *_pstParentFrame)
 {
   /* Checks */
   orxASSERT((_pstSrcFrame != orxNULL));
@@ -407,19 +407,9 @@ orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxFRAME *_pstSrcF
     vTempPos.fZ   = pvParentPos->fZ + pvPos->fZ;
 
     /* Stores them */
-    /* Is destination frame non null? */
-    if(_pstDstFrame != orxNULL)
-    {
-      _orxFrame_SetAngle(_pstDstFrame, fAngle, orxFRAME_SPACE_GLOBAL);
-      _orxFrame_SetScale(_pstDstFrame, fScale, orxFRAME_SPACE_GLOBAL);
-      _orxFrame_SetPosition(_pstDstFrame, &vTempPos, orxFRAME_SPACE_GLOBAL);
-    }
-    else
-    {
-      _orxFrame_SetAngle(_pstSrcFrame, fAngle, orxFRAME_SPACE_GLOBAL);
-      _orxFrame_SetScale(_pstSrcFrame, fScale, orxFRAME_SPACE_GLOBAL);
-      _orxFrame_SetPosition(_pstSrcFrame, &vTempPos, orxFRAME_SPACE_GLOBAL);
-    }
+    _orxFrame_SetAngle(_pstDstFrame, fAngle, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_SetScale(_pstDstFrame, fScale, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_SetPosition(_pstDstFrame, &vTempPos, orxFRAME_SPACE_GLOBAL);
   }
   else
   {
@@ -453,7 +443,7 @@ orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
     orxFrame_ProcessDirty(pstParentFrame);
 
     /* Updates frame global data */
-    orxFrame_UpdateData(orxNULL, _pstFrame, pstParentFrame);
+    orxFrame_UpdateData(_pstFrame, _pstFrame, pstParentFrame);
   }
 
   /* Updates cell dirty status */
@@ -722,7 +712,7 @@ orxFRAME *orxFrame_Create()
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxFrame_Delete(orxFRAME *_pstFrame)
+orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -761,7 +751,7 @@ orxSTATUS orxFrame_Delete(orxFRAME *_pstFrame)
 
  returns: orxTRUE (clean) / orxFALSE (dirty)
  ***************************************************************************/
-orxBOOL orxFrame_IsRenderStatusClean(orxFRAME *_pstFrame)
+orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -794,7 +784,7 @@ orxVOID orxFrame_CleanAllRenderStatus()
 
  returns: orxTRUE/FALSE
  ***************************************************************************/
-orxBOOL orxFrame_HasDifferentialScrolling(orxFRAME *_pstFrame)
+orxBOOL orxFASTCALL orxFrame_HasDifferentialScrolling(orxCONST orxFRAME *_pstFrame)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -809,7 +799,7 @@ orxBOOL orxFrame_HasDifferentialScrolling(orxFRAME *_pstFrame)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFrame_GetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScroll)
+orxVOID orxFASTCALL orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFrame, orxVEC *_pvScroll)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -857,7 +847,7 @@ orxVOID orxFrame_GetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScrol
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScroll)
+orxVOID orxFASTCALL orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxCONST orxVEC *_pvScroll)
 {
   orxU32 u32AddFlags = orxFRAME_KU32_ID_FLAG_NONE, u32RemoveFlags = orxFRAME_KU32_ID_FLAG_NONE;
 
@@ -905,7 +895,7 @@ orxVOID orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxVEC *_pvScrol
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
+orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -935,7 +925,7 @@ orxVOID orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFrame_SetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos)
+orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVEC *_pvPos)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -957,7 +947,7 @@ orxVOID orxFrame_SetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
+orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -978,7 +968,7 @@ orxVOID orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
+orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -999,7 +989,7 @@ orxVOID orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLocal)
+orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLocal)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -1043,7 +1033,7 @@ orxVOID orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLoca
 
  returns: Requested rotation value
  ***************************************************************************/
-orxFLOAT orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal)
+orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal)
 {
   orxFLOAT fAngle = orx2F(0.0f);
 
@@ -1078,7 +1068,7 @@ orxFLOAT orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal)
 
  returns: Requested scale value
  ***************************************************************************/
-orxFLOAT orxFrame_GetScale(orxFRAME *_pstFrame, orxBOOL _bLocal)
+orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxBOOL _bLocal)
 {
   orxFLOAT fScale = orx2F(1.0f);
 
@@ -1114,7 +1104,7 @@ orxFLOAT orxFrame_GetScale(orxFRAME *_pstFrame, orxBOOL _bLocal)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFrame_ComputeGlobalData(orxFRAME *_pstSrcFrame, orxFRAME *_pstParentFrame, orxFRAME *_pstDstFrame)
+orxVOID orxFASTCALL orxFrame_ComputeGlobalData(orxFRAME *_pstDstFrame, orxCONST orxFRAME *_pstSrcFrame, orxCONST orxFRAME *_pstParentFrame)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);

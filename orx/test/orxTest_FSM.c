@@ -248,7 +248,7 @@ orxVOID orxTest_FSM_State_Add()
     orxTextIO_ReadS32(&s32StateId, 10, "Identifier for the state to add: ", orxTRUE);
     
     orxTextIO_PrintLn("Trying to add the state %u...", (orxU32)s32StateId);
-    if (orxFSM_State_Add(sstTest_FSM.apstFSM[s32ID], (orxU32)s32StateId, orxTest_FSM_InitAction, orxTest_FSM_ExecuteAction, orxTest_FSM_ExitAction) == orxNULL)
+    if (orxFSM_AddState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32StateId, orxTest_FSM_InitAction, orxTest_FSM_ExecuteAction, orxTest_FSM_ExitAction) == orxNULL)
     {
       /* Insertion failed. */
       orxTextIO_PrintLn("Insertion failed...");
@@ -289,8 +289,8 @@ orxVOID orxTest_FSM_State_Initial()
     orxTextIO_ReadS32(&s32InitialStateId, 10, "Identifier for the initial state: ", orxTRUE);
     
     orxTextIO_PrintLn("Trying to add the initial state %u...", (orxU32)s32InitialStateId);
-    pstInitialState = orxFSM_State_Get(sstTest_FSM.apstFSM[s32ID], (orxU32)s32InitialStateId);
-    if (orxFSM_State_Initial(sstTest_FSM.apstFSM[s32ID], pstInitialState) == orxSTATUS_FAILED)
+    pstInitialState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32InitialStateId);
+    if (orxFSM_SetInitState(sstTest_FSM.apstFSM[s32ID], pstInitialState) == orxSTATUS_FAILED)
     {
       /* Insertion failed. */
       orxTextIO_PrintLn("Set of initial state failed...");
@@ -331,8 +331,8 @@ orxVOID orxTest_FSM_State_Remove()
     orxTextIO_ReadS32(&s32StateId, 10, "State to remove: ", orxTRUE);
 
     /* Try to remove it. */
-    pstState = orxFSM_State_Get(sstTest_FSM.apstFSM[s32ID], (orxU32)s32StateId);
-    if (orxFSM_State_Remove(sstTest_FSM.apstFSM[s32ID], pstState, orxTRUE) == orxSTATUS_FAILED)
+    pstState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32StateId);
+    if (orxFSM_RemoveState(sstTest_FSM.apstFSM[s32ID], pstState, orxTRUE) == orxSTATUS_FAILED)
     {
       /* Failed to remove. */
       orxTextIO_PrintLn("Remove failed...");
@@ -374,9 +374,9 @@ orxVOID orxTest_FSM_Link_Add()
     orxTextIO_ReadS32(&s32EndingStateId, 10, "Identifier of the ending state: ", orxTRUE);
     
     orxTextIO_PrintLn("Trying to add the link...");
-    pstBeginningState = orxFSM_State_Get(sstTest_FSM.apstFSM[s32ID], (orxU32)s32BeginningStateId);
-    pstEndingState = orxFSM_State_Get(sstTest_FSM.apstFSM[s32ID], (orxU32)s32EndingStateId);
-    if (orxFSM_Link_Add(sstTest_FSM.apstFSM[s32ID], pstBeginningState, pstEndingState, orxTest_FSM_Condition) == orxNULL)
+    pstBeginningState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32BeginningStateId);
+    pstEndingState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32EndingStateId);
+    if (orxFSM_AddLink(sstTest_FSM.apstFSM[s32ID], pstBeginningState, pstEndingState, orxTest_FSM_Condition) == orxNULL)
     {
       /* Insertion failed */
       orxTextIO_PrintLn("Insertion failed...");
@@ -422,10 +422,10 @@ orxVOID orxTest_FSM_Link_Remove()
 
     /* Try to remove it. */
     orxTextIO_PrintLn("Trying to remove the link...");
-    pstBeginningState = orxFSM_State_Get(sstTest_FSM.apstFSM[s32ID], (orxU32)s32BeginningStateId);
-    pstEndingState = orxFSM_State_Get(sstTest_FSM.apstFSM[s32ID], (orxU32)s32EndingStateId);
-    pstLink = orxFSM_Link_Get(sstTest_FSM.apstFSM[s32ID], pstBeginningState, pstEndingState);
-    if (orxFSM_Link_Remove(sstTest_FSM.apstFSM[s32ID], pstLink) == orxSTATUS_FAILED)
+    pstBeginningState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32BeginningStateId);
+    pstEndingState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32EndingStateId);
+    pstLink = orxFSM_GetLink(sstTest_FSM.apstFSM[s32ID], pstBeginningState, pstEndingState);
+    if (orxFSM_RemoveLink(sstTest_FSM.apstFSM[s32ID], pstLink) == orxSTATUS_FAILED)
     {
       /* Failed to remove. */
       orxTextIO_PrintLn("Remove failed...");
@@ -460,7 +460,7 @@ orxVOID orxTest_FSM_Link_Clear()
   {
     /* Clear the FSM. */
     orxTextIO_PrintLn("Clear links from FSM...");
-    orxFSM_Link_Clear(sstTest_FSM.apstFSM[s32ID]);
+    orxFSM_ClearLink(sstTest_FSM.apstFSM[s32ID]);
   }
 }
 
@@ -534,7 +534,7 @@ orxVOID orxTest_FSM_Instance_Create()
     if (pstFSM != orxNULL)
     {
       /* Now, allocate an instance of the FSM at the index position s32ID. */
-      sstTest_FSM_Inst.apstFSM_Inst[s32ID] = orxFSM_Instance_Create(pstFSM);
+      sstTest_FSM_Inst.apstFSM_Inst[s32ID] = orxFSM_CreateInstance(pstFSM);
     
       if (sstTest_FSM_Inst.apstFSM_Inst[s32ID] == orxNULL)
       {
@@ -581,7 +581,7 @@ orxVOID orxTest_FSM_Instance_Destroy()
   else
   {
     /* Delete the instance. */
-    orxFSM_Instance_Remove(sstTest_FSM_Inst.apstFSM_Inst[s32ID]);
+    orxFSM_DeleteInstance(sstTest_FSM_Inst.apstFSM_Inst[s32ID]);
     sstTest_FSM_Inst.apstFSM_Inst[s32ID] = orxNULL;
     
     /* Decrease the counter. */
@@ -617,17 +617,17 @@ orxVOID orxTest_FSM_Instance_Update()
   }
   else
   {
-    if (orxFSM_Instance_GetCurrentState(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) != orxNULL)
-      orxTextIO_PrintLn("Current state: %u", (orxU16)orxFSM_State_GetId(orxFSM_Instance_GetFSM(sstTest_FSM_Inst.apstFSM_Inst[s32ID]), orxFSM_Instance_GetCurrentState(sstTest_FSM_Inst.apstFSM_Inst[s32ID])));
+    if (orxFSM_GetInstanceState(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) != orxNULL)
+      orxTextIO_PrintLn("Current state: %u", (orxU16)orxFSM_GetStateID(orxFSM_GetFSM(sstTest_FSM_Inst.apstFSM_Inst[s32ID]), orxFSM_GetInstanceState(sstTest_FSM_Inst.apstFSM_Inst[s32ID])));
     
     /* Update the instance. */
-    if (orxFSM_Instance_Update(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) == orxSTATUS_FAILED)
+    if (orxFSM_UpdateInstance(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) == orxSTATUS_FAILED)
     {
       orxTextIO_PrintLn("Update failed...");
     }
     else
     {
-      orxTextIO_PrintLn("New state: %u", (orxU16)orxFSM_State_GetId(orxFSM_Instance_GetFSM(sstTest_FSM_Inst.apstFSM_Inst[s32ID]), orxFSM_Instance_GetCurrentState(sstTest_FSM_Inst.apstFSM_Inst[s32ID])));
+      orxTextIO_PrintLn("New state: %u", (orxU16)orxFSM_GetStateID(orxFSM_GetFSM(sstTest_FSM_Inst.apstFSM_Inst[s32ID]), orxFSM_GetInstanceState(sstTest_FSM_Inst.apstFSM_Inst[s32ID])));
       orxTextIO_PrintLn("Update done!");
     }
   }

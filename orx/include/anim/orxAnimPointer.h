@@ -42,10 +42,10 @@
 #ifndef _orxANIMPOINTER_H_
 #define _orxANIMPOINTER_H_
 
+
 #include "orxInclude.h"
 
 #include "anim/orxAnimSet.h"
-#include "core/orxTime.h"
 
 
 /** AnimationPointer Link Flags. */
@@ -55,44 +55,45 @@
 
 
 /** Internal AnimationPointer structure. */
-typedef struct __orxANIM_POINTER_t                  orxANIM_POINTER;
+typedef struct __orxANIMPOINTER_t                   orxANIMPOINTER;
 
 
 /** Inits the AnimationPointer system. */
-extern orxSTATUS                                    orxAnimPointer_Init();
+extern orxDLLAPI orxSTATUS                          orxAnimPointer_Init();
 /** Exits from the AnimationPointer system. */
-extern orxVOID                                      orxAnimPointer_Exit();
+extern orxDLLAPI orxVOID                            orxAnimPointer_Exit();
 
 /** Creates an empty AnimationPointer, given its AnimationSet reference. */
-extern orxANIM_POINTER                             *orxAnimPointer_Create(orxANIM_SET *_pstAnimset);
+extern orxDLLAPI orxANIMPOINTER *                   orxAnimPointer_Create(orxANIMSET *_pstAnimset);
 /** Deletes an AnimationPointer. */
-extern orxSTATUS                                    orxAnimPointer_Delete(orxANIM_POINTER *_pstAnimpointer);
+extern orxDLLAPI orxSTATUS                          orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimpointer);
 
 /** Gets the referenced Animation Set. */
-extern orxANIM_SET                                 *orxAnimPointer_GetAnimSet(orxANIM_POINTER *_pstAnimpointer);
+extern orxDLLAPI orxANIMSET *                       orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstAnimpointer);
 
 
 /** !!! Warning : AnimationPointer accessors don't test parameter validity !!! */
 
 
 /** AnimationPointer current Animation get accessor. */
-extern orxANIM                                     *orxAnimPointer_GetAnim(orxANIM_POINTER *_pstAnimpointer);
+extern orxDLLAPI orxANIM *                          orxAnimPointer_GetAnim(orxCONST orxANIMPOINTER *_pstAnimpointer);
 /** AnimationPointer current Animation Time get accessor. */
-extern orxTIME                                      orxAnimPointer_GetTime(orxANIM_POINTER *_pstAnimpointer);
+extern orxDLLAPI orxTIME                            orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimpointer);
 
 /** AnimationPointer current Animation set accessor. */
-extern orxSTATUS                                    orxAnimPointer_SetAnim(orxANIM_POINTER *_pstAnimpointer, orxHANDLE _hAnimHandle);
+extern orxDLLAPI orxSTATUS                          orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimpointer, orxHANDLE _hAnimHandle);
 /** AnimationPointer current Animation Time set accessor. */
-extern orxSTATUS                                    orxAnimPointer_SetTime(orxANIM_POINTER *_pstAnimpointer, orxTIME _stTime);
+extern orxDLLAPI orxSTATUS                          orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimpointer, orxTIME _stTime);
 
 /** AnimationPointer Frequency get accessor. */
-extern orxFLOAT                                     orxAnimPointer_GetFrequency(orxANIM_POINTER *_pstAnimpointer);
+extern orxDLLAPI orxFLOAT                           orxAnimPointer_GetFrequency(orxCONST orxANIMPOINTER *_pstAnimpointer);
 /** AnimationPointer Frequency set accessor. */
-extern orxSTATUS                                    orxAnimPointer_SetFrequency(orxANIM_POINTER *_pstAnimpointer, orxFLOAT _fFrequency);
+extern orxDLLAPI orxSTATUS                          orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimpointer, orxFLOAT _fFrequency);
 
 /** AnimationPointer flag test accessor. */
-extern orxBOOL                                      orxAnimPointer_TestFlags(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32Flag);
+extern orxDLLAPI orxBOOL                            orxAnimPointer_TestFlags(orxCONST orxANIMPOINTER *_pstAnimpointer, orxU32 _u32Flag);
 /** AnimationPointer flag get/set accessor. */
-extern orxVOID                                      orxAnimPointer_SetFlags(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
+extern orxDLLAPI orxVOID                            orxAnimPointer_SetFlags(orxANIMPOINTER *_pstAnimpointer, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
+
 
 #endif /* _orxANIMPOINTER_H_ */

@@ -25,10 +25,11 @@
 #ifndef _orxDEPEND_H_
 #define _orxDEPEND_H_
 
+
 #include "base/orxType.h"
 
 /** WARNING : This enum definition doesn't respect the standard coding style.
- * The complete enum name should use upper case but this excepetion is needed
+ * The complete enum name should use upper case but this exception is needed
  * to have an automatic working init/exit macro system.
  */
 typedef enum __orxDEPEND_MODULE_t
@@ -69,26 +70,26 @@ typedef orxVOID   (*orxDEPEND_EXIT_CB)();
 
 /** Initialize the Dependency's module
  */
-extern orxSTATUS orxDepend_Init();
+extern orxDLLAPI orxSTATUS              orxDepend_Init();
 
 /** Uninitialize the Dependency's module
  */
-extern orxVOID orxDepend_Exit();
+extern orxDLLAPI orxVOID                orxDepend_Exit();
 
 /** Call the Init callback function for a module
  * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
- * @param[in] _cbInit   Init function
+ * @param[in] _pfnInit   Init function
  * @return Module's Init status
  */
-extern orxSTATUS orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_CB _cbInit);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_CB _pfnInit);
 
 /** Call the Exit callback function for a module
  * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
- * @param[in] _cbExit   Exit function
+ * @param[in] _pfnExit   Exit function
  */
-extern orxVOID orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_EXIT_CB _cbExit);
+extern orxDLLAPI orxVOID orxFASTCALL    orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_EXIT_CB _pfnExit);
 
 /** Macro that automatically call Init function and register module Init/Exit function.
  */
@@ -105,6 +106,7 @@ extern orxVOID orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE 
   /* Call the module exit function */                                                             \
   orxDepend_ExitModule(#ModuleName, orxDEPEND_MODULE_ ## ModuleName, orx ## ModuleName ## _Exit); \
 }
+
 
 #endif /*_orxDEPEND_H_*/
 

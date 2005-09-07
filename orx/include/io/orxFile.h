@@ -62,20 +62,20 @@ typedef struct __orxFILE_t orxFILE;
  * @param _zDirectory     (IN)     Name of the directory directory to remove (with subfolders)
  * @return status of the operation (orxSTATUS_FAILED or orxSTATUS_SUCCESS)
  */
-extern orxDLLAPI orxSTATUS orxFile_Deltree(orxSTRING _zDirectory);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxFile_Deltree(orxCONST orxSTRING _zDirectory);
 
 /** Returns orxTRUE if a file exists, else orxFALSE.
  * @param _zFileName     (IN)      Full File's name to test
  * @return orxFALSE if _zFileName doesn't exist, else orxTRUE
  */
-extern orxDLLAPI orxBOOL orxFile_Exists(orxSTRING _zFile_name);
+extern orxDLLAPI orxBOOL orxFASTCALL    orxFile_Exists(orxCONST orxSTRING _zFileName);
 
 /** Open a file for later read or write operation.
  * @param _zPath         (IN)      Full file's path to open
  * @param _u32OpenFlags  (IN)      List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
-extern orxDLLAPI orxFILE *orxFile_Open(orxSTRING _zPath, orxU32 _u32OpenFlags);
+extern orxDLLAPI orxFILE *orxFASTCALL   orxFile_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags);
 
 /** Read datas from a file
  * @param _pReadData     (OUT)     Pointer where will be stored datas
@@ -84,7 +84,7 @@ extern orxDLLAPI orxFILE *orxFile_Open(orxSTRING _zPath, orxU32 _u32OpenFlags);
  * @param _pstFile       (IN)      Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** write datas to a file
  * @param _pDataToWrite  (IN)      Pointer where will be stored datas
@@ -93,13 +93,13 @@ extern orxDLLAPI orxU32 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, o
  * @param _pstFile       (IN)      Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-extern orxDLLAPI orxU32 orxFile_Write(orxCONST orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Write(orxCONST orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** Close an oppened file
  * @param _pstFile       (IN)      File's pointer to close
  * @return Returns the status of the operation
  */
-extern orxDLLAPI orxSTATUS orxFile_Close(orxFILE *_pstFile);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxFile_Close(orxFILE *_pstFile);
 
 /***************************************************************************
  * Functions extended by plugins

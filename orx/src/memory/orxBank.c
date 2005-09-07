@@ -29,12 +29,12 @@
 #include "debug/orxDebug.h"
 #include "io/orxTextIO.h"
 
-#define orxBANK_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxBANK_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxBANK_KU32_FLAG_NONE                0x00000000  /**< No flags have been set */
+#define orxBANK_KU32_FLAG_READY               0x00000001  /**< The module has been initialized */
 
-#define orxBANK_KU32_UNALLOCATION_HYSTERESIS  5 /**< The next segment will be unallocated when the current */
-                                                /**< segment will have orxBANK_KU32_UNALLOCATION_HYSTERESYS */
-                                                /**< free cells */
+#define orxBANK_KU32_UNALLOCATION_HYSTERESIS  5           /**< The next segment will be unallocated when the current */
+                                                          /**< segment will have orxBANK_KU32_UNALLOCATION_HYSTERESYS */
+                                                          /**< free cells */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -45,23 +45,24 @@ typedef struct __orxBANK_SEGMENT_t
   orxU32 *pu32FreeElemBits;             /**< List of bits that represents free and used elements in the segment */
   orxVOID *pSegmentDatas;               /**< Pointer address on the head of the segment data cells */
   struct __orxBANK_SEGMENT_t *pstNext;  /**< Pointer on the next segment */
+
 } orxBANK_SEGMENT;
  
 struct __orxBANK_t
 {
-  orxU32 u32NbCellPerSegments;        /**< Number of cells per banks */
-  orxU32 u32ElemSize;                 /**< Size of a cell */
-  orxU32 u32Flags;                    /**< Flags set for the memory bank */
-  orxMEMORY_TYPE eMemType;            /**< Memory type that will be used by the memory allocation */
-  orxU32 u32SizeSegmentBitField;      /**< Number of u32 (4 bytes) to represent a segment */
-  orxBANK_SEGMENT *pstFirstSegment;   /**< First segment used in the bank */
+  orxU32 u32NbCellPerSegments;          /**< Number of cells per banks */
+  orxU32 u32ElemSize;                   /**< Size of a cell */
+  orxU32 u32Flags;                      /**< Flags set for the memory bank */
+  orxMEMORY_TYPE eMemType;              /**< Memory type that will be used by the memory allocation */
+  orxU32 u32SizeSegmentBitField;        /**< Number of u32 (4 bytes) to represent a segment */
+  orxBANK_SEGMENT *pstFirstSegment;     /**< First segment used in the bank */
 };
 
 typedef struct __orxBANK_STATIC_t
 {
-  orxU32 u32Flags;         /**< Flags set by the memory module */
-  orxU8 au8Index0[256];    /**< Array of values that defines the index position of */
-                           /**< the first flag set to 0 in a bit field */
+  orxU32 u32Flags;                      /**< Flags set by the memory module */
+  orxU8 au8Index0[256];                 /**< Array of values that defines the index position of */
+                                        /**< the first flag set to 0 in a bit field */
 } orxBANK_STATIC;
 
 /***************************************************************************
@@ -79,7 +80,7 @@ orxSTATIC orxBANK_STATIC sstBank;
  * @param[in] _eMemType   Memory type where the datas will be allocated
  * @return  returns a pointer on the memory segment (orxNULL if an error occured)
  */
-orxBANK_SEGMENT *orxBank_SegmentCreate(orxBANK *_pstBank)
+orxSTATIC orxINLINE orxBANK_SEGMENT *orxBank_SegmentCreate(orxCONST orxBANK *_pstBank)
 {
   orxBANK_SEGMENT *pstSegment;  /* Pointer on the segment of memory */
   orxU32 u32SegmentSize;        /* Size of segment allocation */
@@ -113,7 +114,7 @@ orxBANK_SEGMENT *orxBank_SegmentCreate(orxBANK *_pstBank)
 /** Free a segment of memory (and recursivly all next segments)
  * @param[in] _pstSegment  Allocated segment of memory
  */
-orxVOID orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
+orxSTATIC orxINLINE orxVOID orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
 {
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
@@ -137,7 +138,7 @@ orxVOID orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
  * @param[in] _pCell    Cell stored by the segment to find
  * @return  The segment where is stored _pCell (orxNULL if not found)
  */
-orxBANK_SEGMENT *orxBank_GetSegment(orxBANK *_pstBank, orxVOID *_pCell)
+orxSTATIC orxINLINE orxBANK_SEGMENT *orxBank_GetSegment(orxCONST orxBANK *_pstBank, orxCONST orxVOID *_pCell)
 {
   orxBANK_SEGMENT *pstSegment;        /* Returned segment */
   orxU8 *pStartAddress;               /* Start address of the segment */
@@ -269,7 +270,7 @@ orxVOID orxBank_Exit()
  * @param[in] _eMemType   Memory type where the datas will be allocated
  * @return  returns a pointer on the memory bank
  */
-orxBANK *orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
+orxBANK *orxFASTCALL orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
@@ -313,7 +314,7 @@ orxBANK *orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, or
 /** Free a portion of memory allocated with orxMemory_Allocate
  * @param[in] _pstBank    Pointer on the memory bank allocated by orx
  */
-orxVOID orxBank_Delete(orxBANK *_pstBank)
+orxVOID orxFASTCALL orxBank_Delete(orxBANK *_pstBank)
 {
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
@@ -333,7 +334,7 @@ orxVOID orxBank_Delete(orxBANK *_pstBank)
  * @param[in] _pstBank    Pointer on the memory bank to use
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
-orxVOID *orxBank_Allocate(orxBANK *_pstBank)
+orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
 {
   orxVOID *pCell = orxNULL;   /* Returned cell */
   orxBANK_SEGMENT *pstCurrentSegment;
@@ -429,7 +430,7 @@ orxVOID *orxBank_Allocate(orxBANK *_pstBank)
  * @param[in] _pCell      Pointer on the cell to free
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
-orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
+orxVOID orxFASTCALL orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
 {
   orxBANK_SEGMENT *pstSegment;  /* Segment associated to the cell */
   orxU32 u32Index32Bits;        /* Index of 32 the bits data */
@@ -465,7 +466,7 @@ orxVOID orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
 /** Free all allocated cell from a bank
  * @param[in] _pstBank    Bank of memory to clear
  */
-orxVOID orxBank_Clear(orxBANK *_pstBank)
+orxVOID orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
 {
   orxVOID *pstCell = orxNULL;
   
@@ -487,7 +488,7 @@ orxVOID orxBank_Clear(orxBANK *_pstBank)
  * @param[in] _pCell      Pointer on the current cell of memory
  * @return The next cell. If _pCell is orxNULL, the first cell will be returned. Returns orxNULL when no more cell can be returned.
  */
-orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell)
+orxVOID *orxFASTCALL orxBank_GetNext(orxCONST orxBANK *_pstBank, orxCONST orxVOID *_pCell)
 {
   orxBANK_SEGMENT *pstSegment;  /* Segment associated to the cell */
   orxU32 u32Index32Bits;        /* Index of 32 the bits data */
@@ -573,7 +574,7 @@ orxVOID *orxBank_GetNext(orxBANK *_pstBank, orxVOID *_pCell)
 /** Print the content of a chunk bank
  * @param[in] _pstBank    Bank's pointer
  */
-orxVOID orxBank_DebugPrint(orxBANK *_pstBank)
+orxVOID orxFASTCALL orxBank_DebugPrint(orxCONST orxBANK *_pstBank)
 {
   orxBANK_SEGMENT *pstSegment;  /* Pointer on the current segment */
   orxU32 u32Index1, u32Index2, u32Index3;
@@ -628,7 +629,7 @@ orxVOID orxBank_DebugPrint(orxBANK *_pstBank)
         orxTextIO_Print("]");
       }
       
-      orxTextIO_PrintLn("");
+      orxTextIO_PrintLn(orxSTRING_Empty);
     }
     
     /* Go to next segment */

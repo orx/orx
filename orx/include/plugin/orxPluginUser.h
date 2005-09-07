@@ -23,10 +23,6 @@
 #define _orxPLUGIN_USER_H_
 
 
-/*********************************************
- Constants
- *********************************************/
-
 #include "orxInclude.h"
 
 #include "plugin/orxPluginType.h"
@@ -35,6 +31,10 @@
 #include "memory/orxMemory.h"
 #include "utils/orxString.h"
 
+
+/*********************************************
+ Constants
+ *********************************************/
 
 /* Defines plugin registration info constants */
 #define orxPLUGIN_KZ_INIT_FUNCTION_NAME         "orxPlugin_Init" /**< Plugin init function name */
@@ -101,5 +101,6 @@ typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
 /*********************************************
  Function prototypes
  *********************************************/
+
 
 #endif /* _orxPLUGIN_USER_H_ */

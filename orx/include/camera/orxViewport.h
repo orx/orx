@@ -49,50 +49,50 @@
 typedef struct __orxVIEWPORT_t                orxVIEWPORT;
 
 /** Inits the viewport system. */
-extern orxSTATUS                              orxViewport_Init();
+extern orxDLLAPI orxSTATUS                    orxViewport_Init();
 /** Ends the viewport system. */
-extern orxVOID                                orxViewport_Exit();
+extern orxDLLAPI orxVOID                      orxViewport_Exit();
 
 /** Creates an empty viewport. */
-extern orxVIEWPORT                           *orxViewport_Create();
+extern orxDLLAPI orxVIEWPORT *                orxViewport_Create();
 /** Deletes a viewport. */
-extern orxSTATUS                              orxViewport_Delete(orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxSTATUS                    orxViewport_Delete(orxVIEWPORT *_pstViewport);
 
 
 /** *** Viewport accessors *** */
 
 /** Viewport alignment set accessor (flags must be OR'ed). */
-extern orxVOID                                orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags);
+extern orxDLLAPI orxVOID                      orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags);
 
 /** Viewport on screen camera position get accessor. */
-extern orxVOID                                orxViewport_GetCameraOnScreenPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition);
+extern orxDLLAPI orxVOID                      orxViewport_GetCameraOnScreenPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition);
 
 /** Viewport surface set accessor. */
-extern orxVOID                                orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstSurface);
+extern orxDLLAPI orxVOID                      orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstSurface);
 /** Viewport surface get accessor. */
-extern orxTEXTURE                            *orxViewport_GetSurface(orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxTEXTURE *                 orxViewport_GetSurface(orxVIEWPORT *_pstViewport);
 
 /** Viewport enable accessor. */
-extern orxVOID                                orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
+extern orxDLLAPI orxVOID                      orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
 /** Viewport is enabled accessor. */
-extern orxBOOL                                orxViewport_IsEnabled(orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxBOOL                      orxViewport_IsEnabled(orxVIEWPORT *_pstViewport);
 
 /** Viewport clip get accessor. */
-extern orxVOID                                orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVEC *_pvTL, orxVEC *_pvBR);
+extern orxDLLAPI orxVOID                      orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVEC *_pvTL, orxVEC *_pvBR);
 
 /** Viewport camera set accessor. */
-extern orxVOID                                orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera);
+extern orxDLLAPI orxVOID                      orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera);
 /** Viewport position set accessor. */
-extern orxVOID                                orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition);
+extern orxDLLAPI orxVOID                      orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition);
 /** Viewport size set accessor. */
-extern orxVOID                                orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize);
+extern orxDLLAPI orxVOID                      orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize);
 
 /** Viewport camera get accessor. */
-extern orxCAMERA                             *orxViewport_GetCamera(orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxCAMERA *                  orxViewport_GetCamera(orxVIEWPORT *_pstViewport);
 /** Viewport position get accessor. */
-extern orxVOID                                orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition);
+extern orxDLLAPI orxVOID                      orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition);
 /** Viewport size get accessor. */
-extern orxVOID                                orxViewport_GetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize);
+extern orxDLLAPI orxVOID                      orxViewport_GetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize);
 
 
 #endif /* _orxVIEWPORT_H_ */

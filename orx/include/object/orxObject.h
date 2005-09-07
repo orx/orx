@@ -40,33 +40,33 @@
 
 
 /** Internal object structure. */
-typedef struct __orxOBJECT_t          orxOBJECT;
+typedef struct __orxOBJECT_t                orxOBJECT;
 
 
 /** Inits the object system. */
-extern orxSTATUS                      orxObject_Init();
+extern orxDLLAPI orxSTATUS                  orxObject_Init();
 /** Ends the object system. */
-extern orxVOID                        orxObject_Exit();
+extern orxDLLAPI orxVOID                    orxObject_Exit();
 
 /** Creates an empty object. */
-extern orxOBJECT                     *orxObject_Create();
+extern orxDLLAPI orxOBJECT *                orxObject_Create();
 /** Deletes an object. */
-extern orxSTATUS orxFASTCALL          orxObject_Delete(orxOBJECT *_pstObject);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObject);
 
 /** Test object render status (TRUE : clean / orxFALSE : dirty)*/
-extern orxBOOL orxFASTCALL            orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject);
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject);
 
 /** Links a structure to an object. */
-extern orxSTATUS orxFASTCALL          orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure);
 /** Unlinks structure from an object, given its structure ID. */
-extern orxVOID orxFASTCALL            orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxVOID orxFASTCALL        orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
 /* *** Object accessors *** */
 
 
 /** Structure used by an object get accessor, given its structure ID. Structure must be cast correctly. */
-extern orxSTRUCTURE *orxFASTCALL      orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
 #endif /* _orxOBJECT_H_ */

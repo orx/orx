@@ -47,7 +47,7 @@
 /*
  * Animation Pointer structure
  */
-struct __orxANIM_POINTER_t
+struct __orxANIMPOINTER_t
 {
   /* Public structure, first structure member : 16 */
   orxSTRUCTURE stStructure;
@@ -56,10 +56,10 @@ struct __orxANIM_POINTER_t
   orxU32 u32IDFlags;
 
   /* Referenced AnimationSet : 24 */
-  orxANIM_SET *pstAnimset;
+  orxANIMSET *pstAnimset;
 
   /* Link table pointer : 28 */
-  orxANIM_SET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE *pstLinkTable;
 
   /* Current animation ID : 32 */
   orxHANDLE hCurrentAnim;
@@ -81,18 +81,18 @@ struct __orxANIM_POINTER_t
 /*
  * Static structure
  */
-typedef struct __orxANIM_POINTER_STATIC_t
+typedef struct __orxANIMPOINTER_STATIC_t
 {
   /* Control flags */
   orxU32 u32Flags;
 
-} orxANIM_POINTER_STATIC;
+} orxANIMPOINTER_STATIC;
 
 
 /*
  * Static data
  */
-orxSTATIC orxANIM_POINTER_STATIC sstAnimPointer;
+orxSTATIC orxANIMPOINTER_STATIC sstAnimPointer;
 
 
 /***************************************************************************
@@ -109,10 +109,10 @@ orxSTATIC orxANIM_POINTER_STATIC sstAnimPointer;
  ***************************************************************************/
 orxSTATIC orxVOID orxAnimPointer_DeleteAll()
 {
-  orxREGISTER orxANIM_POINTER *pstAnimpointer;
+  orxREGISTER orxANIMPOINTER *pstAnimpointer;
   
   /* Gets first anim pointer */
-  pstAnimpointer = (orxANIM_POINTER *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM_POINTER);
+  pstAnimpointer = (orxANIMPOINTER *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMPOINTER);
 
   /* Non empty? */
   while(pstAnimpointer != orxNULL)
@@ -121,7 +121,7 @@ orxSTATIC orxVOID orxAnimPointer_DeleteAll()
     orxAnimPointer_Delete(pstAnimpointer);
 
     /* Gets first Animation Set */
-    pstAnimpointer = (orxANIM_POINTER *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM_POINTER);
+    pstAnimpointer = (orxANIMPOINTER *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMPOINTER);
   }
 
   return;
@@ -133,7 +133,7 @@ orxSTATIC orxVOID orxAnimPointer_DeleteAll()
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIM_POINTER *_pstAnimPointer, orxTIME _stTime)
+orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxTIME _stTime)
 {
   orxHANDLE hNewAnim;
   orxTIME stDT;
@@ -194,10 +194,10 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIM_POINTER *_pstAnimPo
  ***************************************************************************/
 orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
-  orxREGISTER orxANIM_POINTER *pstAnimPointer;
+  orxREGISTER orxANIMPOINTER *pstAnimPointer;
 
   /* Gets pointer */
-  pstAnimPointer = orxSTRUCTURE_GET_POINTER(_pstStructure, ANIM_POINTER);
+  pstAnimPointer = orxSTRUCTURE_GET_POINTER(_pstStructure, ANIMPOINTER);
 
   /* Checks */
   orxASSERT(pstAnimPointer != orxNULL);
@@ -236,18 +236,18 @@ orxSTATUS orxAnimPointer_Init()
       orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
     
       /* Cleans control structure */
-      orxMemory_Set(&sstAnimPointer, 0, sizeof(orxANIM_POINTER_STATIC));
+      orxMemory_Set(&sstAnimPointer, 0, sizeof(orxANIMPOINTER_STATIC));
   
       /* Initialized? */
       if(eResult == orxSTATUS_SUCCESS)
       {
         /* Registers structure type */
         stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-        stRegisterInfo.u32Size      = sizeof(orxANIM_POINTER);
+        stRegisterInfo.u32Size      = sizeof(orxANIMPOINTER);
         stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
         stRegisterInfo.pfnUpdate    = &orxAnimPointer_Update;
 
-        eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIM_POINTER, &stRegisterInfo);
+        eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMPOINTER, &stRegisterInfo);
       }
       else
       {
@@ -294,7 +294,7 @@ orxVOID orxAnimPointer_Exit()
     orxAnimPointer_DeleteAll();
 
     /* Unregisters structure type */
-    orxStructure_Unregister(orxSTRUCTURE_ID_ANIM_POINTER);
+    orxStructure_Unregister(orxSTRUCTURE_ID_ANIMPOINTER);
 
     /* Updates flags */
     sstAnimPointer.u32Flags &= ~orxANIMPOINTER_KU32_FLAG_READY;
@@ -316,16 +316,16 @@ orxVOID orxAnimPointer_Exit()
 
  returns: Created animpointer.
  ***************************************************************************/
-orxANIM_POINTER *orxAnimPointer_Create(orxANIM_SET *_pstAnimset)
+orxANIMPOINTER *orxAnimPointer_Create(orxANIMSET *_pstAnimset)
 {
-  orxANIM_POINTER *pstAnimpointer = orxNULL;
+  orxANIMPOINTER *pstAnimpointer = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
   orxASSERT(_pstAnimset != orxNULL);
 
   /* Creates animpointer */
-  pstAnimpointer = (orxANIM_POINTER *)orxStructure_Create(orxSTRUCTURE_ID_ANIM_POINTER);
+  pstAnimpointer = (orxANIMPOINTER *)orxStructure_Create(orxSTRUCTURE_ID_ANIMPOINTER);
 
   /* Was allocated? */
   if(pstAnimpointer != orxNULL)
@@ -374,7 +374,7 @@ orxANIM_POINTER *orxAnimPointer_Create(orxANIM_SET *_pstAnimset)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimPointer_Delete(orxANIM_POINTER *_pstAnimpointer)
+orxSTATUS orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimpointer)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -420,9 +420,9 @@ orxSTATUS orxAnimPointer_Delete(orxANIM_POINTER *_pstAnimpointer)
 
  returns: orxVOID
  ***************************************************************************/
-orxANIM_SET *orxAnimPointer_GetAnimSet(orxANIM_POINTER *_pstAnimpointer)
+orxANIMSET *orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstAnimpointer)
 {
-  orxANIM_SET *pstAnimset = orxNULL;
+  orxANIMSET *pstAnimset = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
@@ -448,7 +448,7 @@ orxANIM_SET *orxAnimPointer_GetAnimSet(orxANIM_POINTER *_pstAnimpointer)
 
  returns: orxAnim
  ***************************************************************************/
-orxANIM *orxAnimPointer_GetAnim(orxANIM_POINTER *_pstAnimpointer)
+orxANIM *orxAnimPointer_GetAnim(orxCONST orxANIMPOINTER *_pstAnimpointer)
 {
   orxANIM *pstAnim = orxNULL;
 
@@ -477,7 +477,7 @@ orxANIM *orxAnimPointer_GetAnim(orxANIM_POINTER *_pstAnimpointer)
 
  returns: orxU32 timestamp
  ***************************************************************************/
-orxTIME orxAnimPointer_GetTime(orxANIM_POINTER *_pstAnimpointer)
+orxTIME orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimpointer)
 {
   orxTIME stResult = 0;
 
@@ -506,7 +506,7 @@ orxTIME orxAnimPointer_GetTime(orxANIM_POINTER *_pstAnimpointer)
 
  returns: orxFLOAT frequency
  ***************************************************************************/
-orxFLOAT orxAnimPointer_GetFrequency(orxANIM_POINTER *_pstAnimpointer)
+orxFLOAT orxAnimPointer_GetFrequency(orxCONST orxANIMPOINTER *_pstAnimpointer)
 {
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
@@ -522,7 +522,7 @@ orxFLOAT orxAnimPointer_GetFrequency(orxANIM_POINTER *_pstAnimpointer)
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimPointer_SetAnim(orxANIM_POINTER *_pstAnimpointer, orxHANDLE _hAnimHandle)
+orxSTATUS orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimpointer, orxHANDLE _hAnimHandle)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   
@@ -574,7 +574,7 @@ orxSTATUS orxAnimPointer_SetAnim(orxANIM_POINTER *_pstAnimpointer, orxHANDLE _hA
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimPointer_SetTime(orxANIM_POINTER *_pstAnimpointer, orxTIME _stTime)
+orxSTATUS orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimpointer, orxTIME _stTime)
 {
   orxSTATUS eResult;
 
@@ -601,7 +601,7 @@ orxSTATUS orxAnimPointer_SetTime(orxANIM_POINTER *_pstAnimpointer, orxTIME _stTi
 
  returns: orxFLOAT frequency
  ***************************************************************************/
-orxSTATUS orxAnimPointer_SetFrequency(orxANIM_POINTER *_pstAnimpointer, orxFLOAT _fFrequency)
+orxSTATUS orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimpointer, orxFLOAT _fFrequency)
 {
   orxSTATUS eResult;
 
@@ -630,7 +630,7 @@ orxSTATUS orxAnimPointer_SetFrequency(orxANIM_POINTER *_pstAnimpointer, orxFLOAT
 
  returns: orxBOOL
  ***************************************************************************/
-orxBOOL orxAnimPointer_TestFlags(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32Flag)
+orxBOOL orxAnimPointer_TestFlags(orxCONST orxANIMPOINTER *_pstAnimpointer, orxU32 _u32Flag)
 {
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
@@ -646,7 +646,7 @@ orxBOOL orxAnimPointer_TestFlags(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32Fl
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxAnimPointer_SetFlags(orxANIM_POINTER *_pstAnimpointer, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
+orxVOID orxAnimPointer_SetFlags(orxANIMPOINTER *_pstAnimpointer, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
 {
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);

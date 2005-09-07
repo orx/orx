@@ -31,20 +31,21 @@
 #ifndef _orxRENDER_H_
 #define _orxRENDER_H_
 
+
 #include "orxInclude.h"
 
 #include "camera/orxViewport.h"
 
 
 /** Inits the render system. */
-extern orxSTATUS                orxRender_Init();
+extern orxDLLAPI orxSTATUS                orxRender_Init();
 /** Ends the render system. */
-extern orxVOID                  orxRender_Exit();
+extern orxDLLAPI orxVOID                  orxRender_Exit();
 
 /** Renders all viewports. */
-extern orxVOID                  orxRender_RenderAllViewports();
+extern orxDLLAPI orxVOID                  orxRender_RenderAllViewports();
 /** Rendres given viewport. */
-extern orxVOID                  orxRender_RenderViewport(orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxVOID                  orxRender_RenderViewport(orxVIEWPORT *_pstViewport);
 
 
 #endif /* _orxRENDER_H_ */

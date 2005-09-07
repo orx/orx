@@ -52,14 +52,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxScript_Execute, orxSTATUS, orxSCRIPT *, orx
 /** Initialize the Script Module
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_Init()
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxScript_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Init)();
 }
 
 /** Uninitialize the Script Module
  */
-orxSTATIC orxINLINE orxVOID orxDLLAPI orxScript_Exit()
+orxSTATIC orxINLINE orxDLLAPI orxVOID orxScript_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Exit)();
 }
@@ -67,7 +67,7 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxScript_Exit()
 /** Create a new script instance
  * @return A pointer on a new script instance
  */
-orxSTATIC orxINLINE orxSCRIPT* orxDLLAPI orxScript_Create()
+orxSTATIC orxINLINE orxDLLAPI orxSCRIPT* orxScript_Create()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Create)();
 }
@@ -75,7 +75,7 @@ orxSTATIC orxINLINE orxSCRIPT* orxDLLAPI orxScript_Create()
 /** Delete a script instance
  * @param _pstScript      (IN)     Pointer on the script instance
  */
-orxSTATIC orxINLINE orxVOID orxDLLAPI orxScript_Delete(orxSCRIPT *_pstScript)
+orxSTATIC orxINLINE orxDLLAPI orxVOID orxScript_Delete(orxSCRIPT *_pstScript)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Delete)(_pstScript);
 }
@@ -85,24 +85,22 @@ orxSTATIC orxINLINE orxVOID orxDLLAPI orxScript_Delete(orxSCRIPT *_pstScript)
  * @param _zFile          (IN)     File script to use
  * @return The status of the operation
  */
-orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_LoadFile(orxSCRIPT *_pstScript, orxCONST orxSTRING _zFile)
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxScript_LoadFile(orxSCRIPT *_pstScript, orxCONST orxSTRING _zFile)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_LoadFile)(_pstScript, _zFile);
 }
 
-/** Call a function from a loaded script.
- * @param _pstScript      (IN)     Script instance to use
- * @param _zFunction      (IN)     Function name to execute
- * @param _zArgs          (IN)     in and out variables type (List of attributes similar to printf/scanf. See detailed documentation)
- * @param va_list         (IN/OUT) Variable list of variables that match to attributes defined in _zFunction
- * @return The status of the operation
- */
-/*
-orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_CallFunc(orxSCRIPT *_pstScript, orxCONST orxSTRING _zFunction, orxSTRING _zArgs, ...)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_CallFunc)(_pstScript, _zFunction, _zArgs, ...);
-}
-*/
+///** Call a function from a loaded script.
+// * @param _pstScript      (IN)     Script instance to use
+// * @param _zFunction      (IN)     Function name to execute
+// * @param _zArgs          (IN)     in and out variables type (List of attributes similar to printf/scanf. See detailed documentation)
+// * @param va_list         (IN/OUT) Variable list of variables that match to attributes defined in _zFunction
+// * @return The status of the operation
+// */
+//orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxScript_CallFunc(orxSCRIPT *_pstScript, orxCONST orxSTRING _zFunction, orxSTRING _zArgs, ...)
+//{
+//  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_CallFunc)(_pstScript, _zFunction, _zArgs, ...);
+//}
 
 /** Execute arbitraty script code
  * @param _zScriptCode    (IN)     Script code to execute
@@ -110,7 +108,7 @@ orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_CallFunc(orxSCRIPT *_pstScript
  * @note This function parse the content of the sent script code, translate it and send it to Script VM.
  * @note It might be a bit slower and must not been used for critical section.
  */
-orxSTATIC orxINLINE orxSTATUS orxDLLAPI orxScript_Execute(orxSCRIPT *_pstScript, orxCONST orxSTRING _zScriptCode)
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxScript_Execute(orxSCRIPT *_pstScript, orxCONST orxSTRING _zScriptCode)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Execute)(_pstScript, _zScriptCode);
 }

@@ -149,7 +149,7 @@ orxSTATIC orxU32 orxAnim_FindTextureIndex(orxANIM *_pstAnim, orxU32 _u32Time)
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxAnim_SetTextureStorageSize(orxANIM *_pstAnim, orxU32 _u32Size)
+orxSTATIC orxINLINE orxVOID orxAnim_SetTextureStorageSize(orxANIM *_pstAnim, orxU32 _u32Size)
 {
   /* Checks */
   orxASSERT(_pstAnim != orxNULL);
@@ -167,7 +167,7 @@ orxINLINE orxVOID orxAnim_SetTextureStorageSize(orxANIM *_pstAnim, orxU32 _u32Si
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxAnim_SetTextureCounter(orxANIM *_pstAnim, orxU32 _u32TextureCounter)
+orxSTATIC orxINLINE orxVOID orxAnim_SetTextureCounter(orxANIM *_pstAnim, orxU32 _u32TextureCounter)
 {
   /* Checks */
   orxASSERT(_pstAnim != orxNULL);
@@ -185,7 +185,7 @@ orxINLINE orxVOID orxAnim_SetTextureCounter(orxANIM *_pstAnim, orxU32 _u32Textur
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxAnim_IncreaseTextureCounter(orxANIM *_pstAnim)
+orxSTATIC orxINLINE orxVOID orxAnim_IncreaseTextureCounter(orxANIM *_pstAnim)
 {
   orxREGISTER orxU32 u32TextureCounter;
 
@@ -207,7 +207,7 @@ orxINLINE orxVOID orxAnim_IncreaseTextureCounter(orxANIM *_pstAnim)
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxAnim_DecreaseTextureCounter(orxANIM *_pstAnim)
+orxSTATIC orxINLINE orxVOID orxAnim_DecreaseTextureCounter(orxANIM *_pstAnim)
 {
   orxREGISTER orxU32 u32TextureCounter;
 

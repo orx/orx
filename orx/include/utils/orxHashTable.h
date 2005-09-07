@@ -36,16 +36,16 @@ typedef struct __orxHASHTABLE_t orxHASHTABLE;
 #define orxHASHTABLE_KU32_FLAGS_NONE            0x00000000  /**< No flags (default behaviour) */
 #define orxHASHTABLE_KU32_FLAGS_NOT_EXPANDABLE  0x00000001  /**< The Hash table will not be expandable */
 
+
 /** @name Module management.
  * @{ */
 /** Initialize HashTable Module
  * @return Returns the initialization status.
  */
-extern orxDLLAPI orxSTATUS orxHashTable_Init();
-
+extern orxDLLAPI orxSTATUS                      orxHashTable_Init();
 /** Exit HashTable module
  */
-extern orxDLLAPI orxVOID orxHashTable_Exit();
+extern orxDLLAPI orxVOID                        orxHashTable_Exit();
 /** @} */
 
 /** @name HashTable creation/destruction.
@@ -56,17 +56,17 @@ extern orxDLLAPI orxVOID orxHashTable_Exit();
  * @param _eMemType   (IN) Memory type to use
  * @return Returns the hashtable pointer or orxNULL if failed.
  */
-extern orxDLLAPI orxHASHTABLE *orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
+extern orxDLLAPI orxHASHTABLE *orxFASTCALL      orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
 
 /** Delete a hash table.
  * @param _pstHashTable (IN) Hash table to delete.
  */
-extern orxDLLAPI orxVOID orxHashTable_Delete(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_Delete(orxHASHTABLE *_pstHashTable);
 
 /** Clear a hash table.
  * @param _pstHashTable (IN) Hash table to clear.
  */
-extern orxDLLAPI orxVOID orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
 /** @} */
 
 
@@ -77,14 +77,14 @@ extern orxDLLAPI orxVOID orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
  * @param _u32Key     (IN) Key to find.
  * @return The Element associated to the key or orxNULL if not found.
  */
-extern orxDLLAPI orxVOID *orxHashTable_Get(orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
+extern orxDLLAPI orxVOID *orxFASTCALL           orxHashTable_Get(orxCONST orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
 
 /** Set an item value.
  * @param _pstHashTable The hash table where set.
  * @param _u32Key     (IN) Key to assign.
  * @param _pData      (IN) Data to assign.
  */
-extern orxDLLAPI orxVOID orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData);
+extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData);
 
 
 /** Add an item value.
@@ -93,15 +93,16 @@ extern orxDLLAPI orxVOID orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u
  * @param _pData      (IN) Data to assign.
  * @return Returns the status of the operation. (fails if key already used)
  */
-extern orxDLLAPI orxSTATUS orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData);
 
 /** Remove an item.
  * @param _pstHashTable (IN) The hash table where remove.
  * @param _u32Key     (IN) Key to remove.
  * @return Returns the status of the operation.
  */
-extern orxDLLAPI orxSTATUS orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
 /** @} */
+
 
 /*******************************************************************************
  * DEBUG FUNCTION
@@ -110,6 +111,7 @@ extern orxDLLAPI orxSTATUS orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU
 /** Print the content of a Hash table
  * @param _pstHashTable (IN) Hash table to display
  */
-extern orxDLLAPI orxVOID orxHashTable_DebugPrint(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_DebugPrint(orxCONST orxHASHTABLE *_pstHashTable);
+
 
 #endif /* _orxHASHTABLE_H_ */

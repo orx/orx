@@ -53,9 +53,10 @@
 typedef enum __orxPLUGIN_FUNCTION_ID_t
 {
   orxPLUGIN_FUNCTION_ID_NONE = orxENUM_NONE
+
 } orxPLUGIN_FUNCTION_ID;
 
-typedef orxVOID(*orxPLUGIN_FUNCTION)();
+typedef orxVOID (*orxPLUGIN_FUNCTION)();
 
 
 /*********************************************

@@ -104,8 +104,14 @@
   #define orxDLLAPI
 #endif                     /* end __orxDLL__ */
 
+#ifdef __orxDLLEXPORT__     /* export functions (orx.dll compilation) */
+  #define orxSDKAPI orxEXPORT
+#else                       /* no __orxDLLEXPORT__ */
+  #define orxSDKAPI orxIMPORT
+#endif                      /* end orxDLLEXPORT */
 
-/** Extremely fast swap macros for two 32-bits objects. */
+
+/** Fast in-place swap macros for two 32-bits objects. */
 #define orxSWAP32(A, B)                                       \
 do                                                            \
 {                                                             \

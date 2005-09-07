@@ -82,7 +82,7 @@ orxSTATIC orxDEBUG_STATIC sstDebug;
 
  returns: orxCONST orxSTRING level string
  ***************************************************************************/
-orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
+orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
   /* Depending on level */
   switch(_eLevel)
@@ -252,7 +252,7 @@ orxVOID _orxDebug_RestoreFlags()
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
+orxVOID orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY);
@@ -270,7 +270,7 @@ orxVOID _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...)
+orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...)
 {
   va_list stArgs;
   FILE *pstFile = orxNULL;

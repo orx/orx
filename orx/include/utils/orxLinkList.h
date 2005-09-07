@@ -109,36 +109,36 @@ struct __orxLINKLIST_t
 };
 
 /* Link list types */
-typedef struct __orxLINKLIST_t        orxLINKLIST;
-typedef struct __orxLINKLIST_NODE_t   orxLINKLIST_NODE;
+typedef struct __orxLINKLIST_t                  orxLINKLIST;
+typedef struct __orxLINKLIST_NODE_t             orxLINKLIST_NODE;
 
 
 /** Inits the object system. */
-extern orxSTATUS                      orxLinkList_Init();
+extern orxDLLAPI orxSTATUS                      orxLinkList_Init();
 /** Ends the object system. */
-extern orxVOID                        orxLinkList_Exit();
+extern orxDLLAPI orxVOID                        orxLinkList_Exit();
 
 /** Cleans a link list. */
-extern orxSTATUS                      orxLinkList_Clean(orxLINKLIST *_pstList);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_Clean(orxLINKLIST *_pstList);
 
 /** Adds a node at the start of the list. */
-extern orxSTATUS                      orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode);
 /** Adds a node at the end of the list. */
-extern orxSTATUS                      orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode);
 /** Adds a node before another one. */
-extern orxSTATUS                      orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode);
 /** Adds a node after another one. */
-extern orxSTATUS                      orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode);
 
 /** Removes a node from its list. */
-extern orxSTATUS                      orxLinkList_Remove(orxLINKLIST_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_Remove(orxLINKLIST_NODE *_pstNode);
 
 
 /* *** LinkList inlined accessors *** */
 
 
 /** Gets a node list. */
-orxSTATIC orxINLINE orxLINKLIST      *orxLinkList_GetList(orxLINKLIST_NODE *_pstNode)
+orxSTATIC orxINLINE orxDLLAPI orxLINKLIST      *orxLinkList_GetList(orxCONST orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -148,7 +148,7 @@ orxSTATIC orxINLINE orxLINKLIST      *orxLinkList_GetList(orxLINKLIST_NODE *_pst
 }
 
 /** Gets a node previous. */
-orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetPrevious(orxLINKLIST_NODE *_pstNode)
+orxSTATIC orxINLINE orxDLLAPI orxLINKLIST_NODE *orxLinkList_GetPrevious(orxCONST orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -158,7 +158,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetPrevious(orxLINKLIST_NODE *
 }
 
 /** Gets a node next. */
-orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetNext(orxLINKLIST_NODE *_pstNode)
+orxSTATIC orxINLINE orxDLLAPI orxLINKLIST_NODE *orxLinkList_GetNext(orxCONST orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -169,7 +169,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetNext(orxLINKLIST_NODE *_pst
 
 
 /** Gets a list first node. */
-orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetFirst(orxLINKLIST *_pstList)
+orxSTATIC orxINLINE orxDLLAPI orxLINKLIST_NODE *orxLinkList_GetFirst(orxCONST orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -179,7 +179,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetFirst(orxLINKLIST *_pstList
 }
 
 /** Gets a list last node. */
-orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetLast(orxLINKLIST *_pstList)
+orxSTATIC orxINLINE orxDLLAPI orxLINKLIST_NODE *orxLinkList_GetLast(orxCONST orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -189,7 +189,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *orxLinkList_GetLast(orxLINKLIST *_pstList)
 }
 
 /** Gets a list counter. */
-orxSTATIC orxINLINE orxU32            orxLinkList_GetCounter(orxLINKLIST *_pstList)
+orxSTATIC orxINLINE orxDLLAPI orxU32            orxLinkList_GetCounter(orxCONST orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);

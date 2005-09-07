@@ -51,7 +51,7 @@ extern orxDLLAPI orxVOID                orxString_Exit();
  * @param _u32CRC         (IN)  Base CRC.
  * @return The resulting CRC.
  */
-extern orxDLLAPI orxU32 orxFASTCALL     orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC);
+extern orxDLLAPI orxU32 orxFASTCALL     orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC);
 
 
 /* *** String inlined functions *** */
@@ -62,7 +62,7 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxString_ContinueCRC(orxSTRING _zString
  * @param _zSrcString     (IN) Source string
  * @return Copied string.
  */
-orxSTATIC orxINLINE orxSTRING           orxString_Copy(orxSTRING _zDstString, orxSTRING _zSrcString)
+orxSTATIC orxINLINE orxDLLAPI orxSTRING orxString_Copy(orxSTRING _zDstString, orxCONST orxSTRING _zSrcString)
 {
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
@@ -78,7 +78,7 @@ orxSTATIC orxINLINE orxSTRING           orxString_Copy(orxSTRING _zDstString, or
  * @param _zString2   (IN) Second string to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
-orxSTATIC orxINLINE orxS32              orxString_Compare(orxSTRING _zString1, orxSTRING _zString2)
+orxSTATIC orxINLINE orxDLLAPI orxS32    orxString_Compare(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2)
 {
   /* Checks */
   orxASSERT(_zString1 != orxNULL);
@@ -96,7 +96,7 @@ orxSTATIC orxINLINE orxS32              orxString_Compare(orxSTRING _zString1, o
  * @param _u32NbChar  (IN) Number of character to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
-orxSTATIC orxINLINE orxS32              orxString_NCompare(orxSTRING _zString1, orxSTRING _zString2, orxU32 _u32NbChar)
+orxSTATIC orxINLINE orxDLLAPI orxS32    orxString_NCompare(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2, orxU32 _u32NbChar)
 {
   /* Checks */
   orxASSERT(_zString1 != orxNULL);
@@ -110,7 +110,7 @@ orxSTATIC orxINLINE orxS32              orxString_NCompare(orxSTRING _zString1, 
  * @param _zString (IN) String used for length computation
  * @return Length of the string (doesn't count final '\0')
  */
-orxSTATIC orxINLINE orxU32              orxString_Length(orxSTRING _zString)
+orxSTATIC orxINLINE orxDLLAPI orxU32    orxString_Length(orxSTRING _zString)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -125,7 +125,7 @@ orxSTATIC orxINLINE orxU32              orxString_Length(orxSTRING _zString)
  * @param _u32Base        (IN)  Base of the read value (generally 10, but can be 16 to read hexa)
  * @return  return the status of the conversion
  */
-orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxS32 *_ps32OutValue, orxSTRING _zString, orxU32 _u32Base)
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxString_ToS32(orxS32 *_ps32OutValue, orxCONST orxSTRING _zString, orxU32 _u32Base)
 {
   orxCHAR *pcEndPtr; /* Address of the first invalid character */
   
@@ -152,7 +152,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxS32 *_ps32OutValue, o
  * @param _zString        (IN)  String To convert
  * @return  return the status of the conversion
  */
-orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxFLOAT *_pfOutValue, orxSTRING _zString)
+orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxString_ToFloat(orxFLOAT *_pfOutValue, orxCONST orxSTRING _zString)
 {
   /* Correct parameters ? */
   orxASSERT(_pfOutValue != orxNULL);
@@ -174,7 +174,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxFLOAT *_pfOutValue,
  * @param _zString        (IN)  String To convert
  * @return The converted string.
  */
-orxSTATIC orxINLINE orxSTRING           orxString_LowerCase(orxSTRING _zString)
+orxSTATIC orxINLINE orxDLLAPI orxSTRING orxString_LowerCase(orxSTRING _zString)
 {
   orxCHAR *pc;
 
@@ -199,7 +199,7 @@ orxSTATIC orxINLINE orxSTRING           orxString_LowerCase(orxSTRING _zString)
  * @param _zString        (IN)  String To convert
  * @return The converted string.
  */
-orxSTATIC orxINLINE orxSTRING           orxString_UpperCase(orxSTRING _zString)
+orxSTATIC orxINLINE orxDLLAPI orxSTRING orxString_UpperCase(orxSTRING _zString)
 {
   orxCHAR *pc;
 
@@ -224,7 +224,7 @@ orxSTATIC orxINLINE orxSTRING           orxString_UpperCase(orxSTRING _zString)
  * @param _zString        (IN)  String To convert
  * @return The resulting CRC.
  */
-orxSTATIC orxINLINE orxU32              orxString_ToCRC(orxSTRING _zString)
+orxSTATIC orxINLINE orxDLLAPI orxU32    orxString_ToCRC(orxCONST orxSTRING _zString)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);

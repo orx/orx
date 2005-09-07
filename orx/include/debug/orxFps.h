@@ -34,15 +34,15 @@
 #include "orxInclude.h"
 
 /** Inits the fps system. */
-extern orxSTATUS                        orxFps_Init();
+extern orxDLLAPI orxSTATUS                        orxFps_Init();
 /** Exits from the fps system. */
-extern orxVOID                          orxFps_Exit();
+extern orxDLLAPI orxVOID                          orxFps_Exit();
 
 /** Increases fps counter */
-extern orxVOID                          orxFps_IncreaseFrameCounter();
+extern orxDLLAPI orxVOID                          orxFps_IncreaseFrameCounter();
 
 /** Gets fps counter */
-extern orxU32                           orxFps_GetFPS();
+extern orxDLLAPI orxU32                           orxFps_GetFPS();
 
 
 #endif /* _orxFPS_H_ */

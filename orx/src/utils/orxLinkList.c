@@ -128,7 +128,7 @@ orxVOID orxLinkList_Exit()
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_Clean(orxLINKLIST *_pstList)
+orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
@@ -169,7 +169,7 @@ orxSTATUS orxLinkList_Clean(orxLINKLIST *_pstList)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -216,7 +216,7 @@ orxSTATUS orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -263,7 +263,7 @@ orxSTATUS orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxREGISTER orxLINKLIST *pstList;
@@ -334,7 +334,7 @@ orxSTATUS orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE 
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxREGISTER orxLINKLIST *pstList;
@@ -405,7 +405,7 @@ orxSTATUS orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxLINKLIST *pstList;
   orxREGISTER orxLINKLIST_NODE *pstPrevious, *pstNext;

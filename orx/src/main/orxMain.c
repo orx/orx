@@ -146,6 +146,9 @@ int main(int argc, char **argv)
     {
       /* Update clocks */
       orxClock_Update();
+
+      /* Sleep the program for 1ms (to help the scheduler) */
+      orxTime_Delay(1);
     }
   }
 

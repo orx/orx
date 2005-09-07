@@ -152,7 +152,7 @@ orxU32  orxEventManager_GetFlags(orxEVENT_MANAGER* _pstEventManager)
 /** 
  * Register an event callback function.
  */
-orxVOID orxEventManager_RegisterHandler(orxEVENT_MANAGER* _pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_CB _cbHandler)
+orxVOID orxEventManager_RegisterHandler(orxEVENT_MANAGER* _pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_CB _pfnHandler)
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_ISNT_INITIALIZED
@@ -160,9 +160,9 @@ orxVOID orxEventManager_RegisterHandler(orxEVENT_MANAGER* _pstEventManager, orxE
     orxASSERT(_pstEventManager!=orxNULL);
     /** Assert the other params.*/
     orxASSERT(_u16Type!=0);
-    orxASSERT(_cbHandler!=orxNULL);
+    orxASSERT(_pfnHandler!=orxNULL);
 
-	orxHashTable_Set(_pstEventManager->pstCallbackTable, _u16Type, (orxVOID*)_cbHandler);
+	orxHashTable_Set(_pstEventManager->pstCallbackTable, _u16Type, (orxVOID*)_pfnHandler);
 }
 
 /**

@@ -52,7 +52,7 @@ typedef enum __orxSTRUCTURE_ID_t
 
   orxSTRUCTURE_ID_FRAME = 0,
   orxSTRUCTURE_ID_GRAPHIC,
-  orxSTRUCTURE_ID_ANIM_POINTER,
+  orxSTRUCTURE_ID_ANIMPOINTER,
 
   orxSTRUCTURE_ID_LINKABLE_NUMBER,
 
@@ -63,7 +63,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_CAMERA,
   orxSTRUCTURE_ID_VIEWPORT,
   orxSTRUCTURE_ID_ANIM,
-  orxSTRUCTURE_ID_ANIM_SET,
+  orxSTRUCTURE_ID_ANIMSET,
 
   orxSTRUCTURE_ID_NUMBER,
 
@@ -123,57 +123,57 @@ typedef struct __orxSTRUCTURE_REGISTER_INFO_t
 
 
 /** Inits the structure system. */
-extern orxSTATUS                      orxStructure_Init();
+extern orxDLLAPI orxSTATUS                      orxStructure_Init();
 /** Exits from the structure system. */
-extern orxVOID                        orxStructure_Exit();
+extern orxDLLAPI orxVOID                        orxStructure_Exit();
 
 /** Registers a given ID. */
-extern orxSTATUS  orxFASTCALL         orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCONST orxSTRUCTURE_REGISTER_INFO *_pstRegisterInfo);
+extern orxDLLAPI orxSTATUS  orxFASTCALL         orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCONST orxSTRUCTURE_REGISTER_INFO *_pstRegisterInfo);
 /** Unregisters a given ID. */
-extern orxVOID    orxFASTCALL         orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxVOID    orxFASTCALL         orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
 
 /** Creates a clean structure for given type. */
-extern orxSTRUCTURE *orxFASTCALL      orxStructure_Create(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxStructure_Create(orxSTRUCTURE_ID _eStructureID);
 /** Deletes a structure (needs to be cleaned before). */
-extern orxVOID    orxFASTCALL         orxStructure_Delete(orxSTRUCTURE *_pstStructure);
+extern orxDLLAPI orxVOID    orxFASTCALL         orxStructure_Delete(orxSTRUCTURE *_pstStructure);
 
 /** Gets given type structure number. */
-extern orxU32     orxFASTCALL         orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxU32     orxFASTCALL         orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID);
 
 /** Gets structure storage type. */
-extern orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID);
 
 /** Updates structure if update function was registered for the structure type. */
-extern orxSTATUS  orxFASTCALL         orxStructure_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
+extern orxDLLAPI orxSTATUS  orxFASTCALL         orxStructure_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
 
 /** *** Structure storage accessors *** */
 
 
 /** Gets first stored structure (first list cell or tree root depending on storage type). */
-extern orxSTRUCTURE *orxFASTCALL      orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID);
 
 /** Structure tree parent get accessor. */
-extern orxSTRUCTURE *orxFASTCALL      orxStructure_GetParent(orxCONST orxSTRUCTURE *_pstStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxStructure_GetParent(orxCONST orxSTRUCTURE *_pstStructure);
 /** Structure tree child get accessor. */
-extern orxSTRUCTURE *orxFASTCALL      orxStructure_GetChild(orxCONST orxSTRUCTURE *_pstStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxStructure_GetChild(orxCONST orxSTRUCTURE *_pstStructure);
 /** Structure tree sibling get accessor. */
-extern orxSTRUCTURE *orxFASTCALL      orxStructure_GetSibling(orxCONST orxSTRUCTURE *_pstStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxStructure_GetSibling(orxCONST orxSTRUCTURE *_pstStructure);
 /** Structure list previous get accessor. */
 
-extern orxSTRUCTURE *orxFASTCALL      orxStructure_GetPrevious(orxCONST orxSTRUCTURE *_pstStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxStructure_GetPrevious(orxCONST orxSTRUCTURE *_pstStructure);
 /** Structure list next get accessor. */
-extern orxSTRUCTURE *orxFASTCALL      orxStructure_GetNext(orxCONST orxSTRUCTURE *_pstStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxStructure_GetNext(orxCONST orxSTRUCTURE *_pstStructure);
 
 /** Structure tree parent set accessor. */
-extern orxSTATUS  orxFASTCALL         orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent);
+extern orxDLLAPI orxSTATUS  orxFASTCALL         orxStructure_SetParent(orxSTRUCTURE *_pstStructure, orxSTRUCTURE *_pstParent);
 
 
 /** *** Inlined structure accessors *** */
 
 
 /** Increases structure reference counter. */
-orxSTATIC orxINLINE orxVOID           orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxDLLAPI  orxVOID          orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -185,7 +185,7 @@ orxSTATIC orxINLINE orxVOID           orxStructure_IncreaseCounter(orxSTRUCTURE 
 }
 
 /** Decreases structure reference counter. */
-orxSTATIC orxINLINE orxVOID           orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxDLLAPI  orxVOID          orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -198,7 +198,7 @@ orxSTATIC orxINLINE orxVOID           orxStructure_DecreaseCounter(orxSTRUCTURE 
 }
 
 /** Gets structure reference counter. */
-orxSTATIC orxINLINE orxU32            orxStructure_GetRefCounter(orxCONST orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxDLLAPI  orxU32           orxStructure_GetRefCounter(orxCONST orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -208,7 +208,7 @@ orxSTATIC orxINLINE orxU32            orxStructure_GetRefCounter(orxCONST orxSTR
 }
 
 /** Gets structure ID. */
-orxSTATIC orxINLINE orxSTRUCTURE_ID   orxStructure_GetID(orxCONST orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxDLLAPI  orxSTRUCTURE_ID  orxStructure_GetID(orxCONST orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);

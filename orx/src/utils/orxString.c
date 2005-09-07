@@ -144,7 +144,7 @@ orxVOID orxString_Exit()
  * @param _u32CRC         (IN)  Base CRC.
  * @return The resulting CRC.
  */
-orxU32 orxFASTCALL orxString_ContinueCRC(orxSTRING _zString, orxU32 _u32CRC)
+orxU32 orxFASTCALL orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC)
 {
   orxREGISTER orxU32 u32CRC;
   orxREGISTER orxCHAR *pc;

@@ -260,7 +260,7 @@ orxVOID orxTest_Plugin_ShowList()
   {
     orxTextIO_Print("*");
   }
-  orxTextIO_PrintLn("");  
+  orxTextIO_PrintLn(orxSTRING_Empty);  
   
   /* Print list of loaded plugins */
   for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
@@ -281,14 +281,14 @@ orxVOID orxTest_Plugin_ShowList()
       orxTextIO_Print(" ");
     }
   }
-  orxTextIO_PrintLn("");
+  orxTextIO_PrintLn(orxSTRING_Empty);
   
   /* Print a line of stars */
   for (u32Index = 0; u32Index < orxTEST_PLUGINS_KU32_NB_COLS; u32Index++)
   {
     orxTextIO_Print("*");
   }
-  orxTextIO_PrintLn("");
+  orxTextIO_PrintLn(orxSTRING_Empty);
 
   /* Everythings done */
   orxTextIO_PrintLn("Done !");

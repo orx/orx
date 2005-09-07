@@ -153,7 +153,7 @@ extern orxDLLAPI orxSTATUS                    _orxDebug_Init();
 extern orxDLLAPI orxVOID                      _orxDebug_Exit();
 
 /** Debug output function. */
-extern orxDLLAPI orxVOID                      _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...);
+extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...);
 
 /** Debug flag backup function. */
 extern orxDLLAPI orxVOID                      _orxDebug_BackupFlags();
@@ -162,7 +162,7 @@ extern orxDLLAPI orxVOID                      _orxDebug_BackupFlags();
 extern orxDLLAPI orxVOID                      _orxDebug_RestoreFlags();
 
 /** Debug flag get/set accessor. */
-extern orxDLLAPI orxVOID                      _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove);
+extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove);
 
 /** Software break function. */
 extern orxDLLAPI orxVOID                      _orxDebug_Break();

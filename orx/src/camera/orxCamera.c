@@ -180,7 +180,7 @@ orxSTATIC orxVOID orxCamera_DeleteAll()
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxCamera_CleanViewListCell(orxCAMERA_VIEW_LIST *_pstViewList)
+orxSTATIC orxINLINE orxVOID orxCamera_CleanViewListCell(orxCAMERA_VIEW_LIST *_pstViewList)
 {
   /* Checks */
   orxASSERT(_pstViewList != orxNULL);
@@ -197,7 +197,7 @@ orxINLINE orxVOID orxCamera_CleanViewListCell(orxCAMERA_VIEW_LIST *_pstViewList)
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxCamera_CleanViewList(orxCAMERA *_pstCamera)
+orxSTATIC orxINLINE orxVOID orxCamera_CleanViewList(orxCAMERA *_pstCamera)
 {
   orxU32 i;
 
@@ -568,7 +568,7 @@ orxSTATIC orxVOID orxCamera_InsertViewListCell(orxCAMERA *_pstCamera, orxCAMERA_
 
  returns: object cell/orxNULL
  ***************************************************************************/
-orxINLINE orxCAMERA_VIEW_LIST *orxCamera_SearchViewList(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
+orxSTATIC orxINLINE orxCAMERA_VIEW_LIST *orxCamera_SearchViewList(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 {
   orxREGISTER orxCAMERA_VIEW_LIST *pstCell = orxNULL;
 
@@ -591,7 +591,7 @@ orxINLINE orxCAMERA_VIEW_LIST *orxCamera_SearchViewList(orxCAMERA *_pstCamera, o
 
  returns: object cell/orxNULL
  ***************************************************************************/
-orxINLINE orxCAMERA_VIEW_LIST *orxCamera_FindFreeViewListCell(orxCAMERA *_pstCamera)
+orxSTATIC orxINLINE orxCAMERA_VIEW_LIST *orxCamera_FindFreeViewListCell(orxCAMERA *_pstCamera)
 {
   orxREGISTER orxCAMERA_VIEW_LIST *pstCell = orxNULL;
   orxU32 i;
@@ -802,7 +802,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxVOID orxCamera_SortViewList(orxCAMERA *_pstCamera)
+orxSTATIC orxINLINE orxVOID orxCamera_SortViewList(orxCAMERA *_pstCamera)
 {
   orxU32 i;
 

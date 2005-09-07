@@ -120,7 +120,7 @@ orxVOID orxTexture_DeleteAll()
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxTEXTURE *orxTexture_FindByName(orxCONST orxSTRING _zDataName)
+orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByName(orxCONST orxSTRING _zDataName)
 {
   orxREGISTER orxTEXTURE *pstTexture;
 
@@ -158,7 +158,7 @@ orxINLINE orxTEXTURE *orxTexture_FindByName(orxCONST orxSTRING _zDataName)
 
  returns: orxVOID
  ***************************************************************************/
-orxINLINE orxTEXTURE *orxTexture_FindByData(orxVOID *_pstData)
+orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByData(orxVOID *_pstData)
 {
   orxREGISTER orxTEXTURE *pstTexture;
 

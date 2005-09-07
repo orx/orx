@@ -26,18 +26,21 @@
 #ifndef _orxTEXTIO_H_
 #define _orxTEXTIO_H_
 
+
 #include "orxInclude.h"
 #include "debug/orxDebug.h"
 #include <stdio.h>
 #include <stdarg.h>
 
+
 /** Initialize the text input output module
  */
-extern orxDLLAPI orxSTATUS orxTextIO_Init();
+extern orxDLLAPI orxSTATUS              orxTextIO_Init();
 
 /** Uninitialize the string module
  */
-extern orxDLLAPI orxVOID orxTextIO_Exit();
+extern orxDLLAPI orxVOID                orxTextIO_Exit();
+
 
 /***************************************************************************
  * INPUT                                                                   *
@@ -49,7 +52,7 @@ extern orxDLLAPI orxVOID orxTextIO_Exit();
  * @param _zMessage       (IN)  Message that will be displayed before read
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxSTRING _zMessage);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxTextIO_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32NbChar, orxCONST orxSTRING _zMessage);
 
 /** Read a S32 Value from STDIN
  * @param _ps32OutValue   (OUT) place where the read value will be stored
@@ -58,7 +61,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadString(orxSTRING _zOutputBu
  * @param _bLoop          (IN)  Must be frTRUE if the function has to loop until the user send a valid entry
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status (if no loop asked)
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadS32(orxS32 *_ps32OutValue, orxU32 _u32Base, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxTextIO_ReadS32(orxS32 *_ps32OutValue, orxU32 _u32Base, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
 
 /** Read a S32 Value that must be in a valid range from STDIN
  * @param _ps32OutValue   (OUT) place where the read value will be stored
@@ -69,7 +72,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadS32(orxS32 *_ps32OutValue, 
  * @param _bLoop          (IN)  Must be frTRUE if the function has to loop until the user send a valid entry
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status (if no loop asked)
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadS32InRange(orxS32 *_ps32OutValue, orxU32 _u32Base, orxS32 _s32Min, orxS32 _s32Max, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxTextIO_ReadS32InRange(orxS32 *_ps32OutValue, orxU32 _u32Base, orxS32 _s32Min, orxS32 _s32Max, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
 
 /** Read a FLOAT Value from STDIN
  * @param _pfOutValue     (OUT) place where the read value will be stored
@@ -77,7 +80,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadS32InRange(orxS32 *_ps32Out
  * @param _bLoop          (IN)  Must be frTRUE if the function has to loop until the user send a valid entry
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status (if no loop asked)
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxFLOAT *_pfOutValue, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxTextIO_ReadFloat(orxFLOAT *_pfOutValue, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
 
 /** Read a FLOAT Value that must be in a valid range from STDIN
  * @param _pfOutValue     (OUT) place where the read value will be stored
@@ -87,18 +90,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxFLOAT *_pfOutValue
  * @param _bLoop          (IN)  Must be frTRUE if the function has to loop until the user send a valid entry
  * @retrun orxSTATUS_SUCCESS if no error has occured, else returns the error status (if no loop asked)
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxTextIO_ReadFloatInRange(orxFLOAT *_pfOutValue, orxFLOAT _fMin, orxFLOAT _fMax, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxTextIO_ReadFloatInRange(orxFLOAT *_pfOutValue, orxFLOAT _fMin, orxFLOAT _fMax, orxCONST orxSTRING _zMessage, orxBOOL _bLoop);
 
 /***************************************************************************
  * OUTPUT                                                                  *
  ***************************************************************************/
 
 /** Prints a formated string
- * @param _zDstString     (IN)  Destination string
+ * @param _zDstString     (OUT) Destination string
  * @param _zSrcString     (IN)  Source formated string
  * @retrun The number of written characters
  */
-orxSTATIC orxINLINE orxS32 orxTextIO_Printf(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
+orxSTATIC orxINLINE orxDLLAPI orxS32    orxTextIO_Printf(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
 {
   va_list stArgs;
   orxS32 s32Result;
@@ -118,7 +121,7 @@ orxSTATIC orxINLINE orxS32 orxTextIO_Printf(orxSTRING _zDstString, orxSTRING _zS
 /** Print a message on STDIN
  * @param _zMessage       (IN)  Message to print (with optional parameters. Same syntax as printf
  */
-orxSTATIC orxINLINE orxVOID orxTextIO_Print(orxSTRING _zMessage, ...)
+orxSTATIC orxINLINE orxDLLAPI orxVOID   orxTextIO_Print(orxSTRING _zMessage, ...)
 {
   /* Declare argument lists */
   va_list args;
@@ -132,7 +135,7 @@ orxSTATIC orxINLINE orxVOID orxTextIO_Print(orxSTRING _zMessage, ...)
 /** Print a message on STDIN and returns to line
  * @param _zMessage       (IN)  Message to print (with optional parameters. Same syntax as printf
  */
-orxSTATIC orxINLINE orxVOID orxTextIO_PrintLn(orxSTRING _zMessage, ...)
+orxSTATIC orxINLINE orxDLLAPI orxVOID   orxTextIO_PrintLn(orxSTRING _zMessage, ...)
 {
   /* Declare argument lists */
   va_list args;
@@ -145,5 +148,6 @@ orxSTATIC orxINLINE orxVOID orxTextIO_PrintLn(orxSTRING _zMessage, ...)
   /* return to line */
   printf("\n");
 }
+
 
 #endif /* _orxTEXTIO_H_ */
