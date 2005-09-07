@@ -36,6 +36,7 @@
 typedef struct __orxMAIN_STATIC_t
 {
   orxU32 u32Flags; /**< Flags set by the main module */
+  orxCLOCK *pstClock;
 } orxMAIN_STATIC;
 
 /***************************************************************************
@@ -46,6 +47,19 @@ orxSTATIC orxMAIN_STATIC sstMain;
 /***************************************************************************
  * Functions                                                               *
  ***************************************************************************/
+
+orxVOID orxFASTCALL orxMain_TestClock(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+{
+  orxTextIO_PrintLn("eType = %d, ", _pstClockInfo->eType);
+  orxTextIO_PrintLn("u32TickCounter = %lu, ", _pstClockInfo->u32TickCounter);
+  orxTextIO_PrintLn("fTickSize = %f, ", _pstClockInfo->fTickSize);
+  orxTextIO_PrintLn("fTickValue = %f, ", _pstClockInfo->fTickValue);
+  orxTextIO_PrintLn("eModType = %d, ", _pstClockInfo->eModType);
+  orxTextIO_PrintLn("fModValue = %f, ", _pstClockInfo->fModValue);
+  orxTextIO_PrintLn("fDT = %f, ", _pstClockInfo->fDT);
+  orxTextIO_PrintLn("Time = %lu, ", _pstClockInfo->stTime);
+}
+
 
 /** Initialize the main module (will initialize all needed modules)
  */
@@ -67,10 +81,17 @@ orxSTATUS orxMain_Init()
       if (orxPlugin_LoadUsingExt("Time_SDL", "time"))
       {
         if ((orxDEPEND_INIT(Memory) &
+             orxDEPEND_INIT(TextIO) &
              orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
         {
           /* Clear the static control */
           orxMemory_Set(&sstMain, 0, sizeof(orxMAIN_STATIC));
+          
+          /* Create a clock */
+          sstMain.pstClock = orxClock_Create(1000, orxCLOCK_TYPE_CORE);
+          
+          /* Register a test function */
+          orxClock_Register(sstMain.pstClock, orxMain_TestClock, orxNULL);
 
           /* Set module as initialized */
           sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
@@ -78,15 +99,10 @@ orxSTATUS orxMain_Init()
           /* Success */
           eResult = orxSTATUS_SUCCESS;
         }
-            
-        
       }
     }
   }
   
-  /* Exit Debug system */
-  orxDEBUG_EXIT();
-
   /* Done! */
   return eResult;
 }
@@ -106,6 +122,9 @@ orxVOID orxMain_Exit()
   orxDEPEND_EXIT(Plugin);
   orxDEPEND_EXIT(Memory);
   orxDEPEND_EXIT(Depend);
+
+  /* Exit Debug system */
+  orxDEBUG_EXIT();
 
   /* Done */
   return;
