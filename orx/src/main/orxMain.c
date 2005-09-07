@@ -51,7 +51,7 @@ orxSTATIC orxMAIN_STATIC sstMain;
  */
 orxSTATUS orxMain_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILED;
 
   /* Init Debug System */
   orxDEBUG_INIT();
@@ -61,16 +61,26 @@ orxSTATUS orxMain_Init()
   {
     /* Try to Init the Engine */
     if ((orxDEPEND_INIT(Depend) &
-         orxDEPEND_INIT(Memory) &
-         orxDEPEND_INIT(Plugin) &
-         orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
+         orxDEPEND_INIT(Plugin)) == orxSTATUS_SUCCESS)
          /** Todo : Complete remaining dependencies */
     {
-      /* Clear the static control */
-      orxMemory_Set(&sstMain, 0, sizeof(orxMAIN_STATIC));
-      
-      /* Set module as initialized */
-      sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
+      if (orxPlugin_Load("Time_SDL.so", "time"))
+      {
+        if ((orxDEPEND_INIT(Memory) &
+             orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
+        {
+          /* Clear the static control */
+          orxMemory_Set(&sstMain, 0, sizeof(orxMAIN_STATIC));
+
+          /* Set module as initialized */
+          sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
+          
+          /* Success */
+          eResult = orxSTATUS_SUCCESS;
+        }
+            
+        
+      }
     }
   }
   
@@ -92,6 +102,11 @@ orxVOID orxMain_Exit()
     sstMain.u32Flags &= ~orxMAIN_KU32_FLAG_READY;
   }
   
+  orxDEPEND_EXIT(Clock);
+  orxDEPEND_EXIT(Plugin);
+  orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Depend);
+
   /* Done */
   return;
 }
@@ -113,10 +128,10 @@ int main(int argc, char **argv)
       /* Update clocks */
       orxClock_Update();
     }
-    
-    /* Exit the engine */
-    orxMain_Exit();
   }
+
+  /* Exit the engine */
+  orxMain_Exit();
   
   return 0;
 }
