@@ -252,6 +252,9 @@ orxSTATUS orxClock_Init()
   
         /* Inits Flags */
         sstClock.u32Flags = orxCLOCK_KU32_FLAG_READY;
+
+        /* Success */
+        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
