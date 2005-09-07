@@ -252,13 +252,15 @@ orxSTATUS orxClock_Init()
   
         /* Inits Flags */
         sstClock.u32Flags = orxCLOCK_KU32_FLAG_READY;
+        
+        /* Success */
+        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
         /* !!! MSG !!! */
   
         /* Clock bank not created */
-        eResult = orxSTATUS_FAILED;
       }
     }
     else
@@ -378,13 +380,16 @@ orxSTATUS orxClock_Update()
         pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
       }
     }
-
+    
     /* Computes global time */
     pstClock->stClockInfo.stTime = orxF2U((orxU2F(pstClock->stClockInfo.u32TickCounter) + pstClock->stClockInfo.fTickValue) * pstClock->stClockInfo.fTickSize);
   }
 
   /* Updates time */
   sstClock.u32Time = u32NewTime;
+
+  /* Sleep the program for 1ms (to help the scheduler) */
+  orxTime_Delay(1);
 
   /* Done! */
   return eResult;
