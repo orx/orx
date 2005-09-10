@@ -53,11 +53,11 @@ orxVOID orxFASTCALL orxMain_TestClock(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
 {
   orxTextIO_PrintLn("eType = %d, ", _pstClockInfo->eType);
   orxTextIO_PrintLn("u32TickCounter = %lu, ", _pstClockInfo->u32TickCounter);
-  orxTextIO_PrintLn("fTickSize = %f, ", _pstClockInfo->fTickSize);
-  orxTextIO_PrintLn("fTickValue = %f, ", _pstClockInfo->fTickValue);
+  orxTextIO_PrintLn("stTickSize = %lu, ", _pstClockInfo->stTickSize);
+  orxTextIO_PrintLn("stTickValue = %lu, ", _pstClockInfo->stTickValue);
   orxTextIO_PrintLn("eModType = %d, ", _pstClockInfo->eModType);
   orxTextIO_PrintLn("fModValue = %f, ", _pstClockInfo->fModValue);
-  orxTextIO_PrintLn("fDT = %f, ", _pstClockInfo->fDT);
+  orxTextIO_PrintLn("stDT = %lu, ", _pstClockInfo->stDT);
   orxTextIO_PrintLn("Time = %lu, ", _pstClockInfo->stTime);
 }
 

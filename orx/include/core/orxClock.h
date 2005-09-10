@@ -60,13 +60,13 @@ typedef struct __orxCLOCK_INFO_t
 {
   orxCLOCK_TYPE     eType;                            /**< Clock type : 4 */
   orxU32            u32TickCounter;                   /**< Clock tick counter : 8 */
-  orxFLOAT          fTickSize;                        /**< Clock tick size (in milliseconds) : 12 */
-  orxFLOAT          fTickValue;                       /**< Clock current tick value ellapsed after last tick 0.0 - 1.0 : 16 */
+  orxTIME           stTickSize;                       /**< Clock tick size (in milliseconds) : 12 */
+  orxTIME           stTickValue;                      /**< Clock current tick value (in milliseconds) ellapsed after last tick 0.0 - tick size : 16 */
   orxCLOCK_MOD_TYPE eModType;                         /**> Clock mod type : 20 */
   orxFLOAT          fModValue;                        /**> Clock mod value : 24 */
-  orxFLOAT          fDT;                              /**> Clock DT (time ellapsed between 2 tick calls) : 28 */
+  orxTIME           stDT;                             /**> Clock DT (time ellapsed between 2 clock calls in milliseconds) : 28 */
 
-  orxTIME           stTime;                           /**> Clock time (= (tick counter + tick value) * tick size) : 32 */ 
+  orxTIME           stTime;                           /**> Clock time (= (tick counter * tick size) + tick value : 32 */ 
 
 } orxCLOCK_INFO;
 
@@ -87,7 +87,7 @@ extern orxDLLAPI orxVOID                              orxClock_Exit();
 extern orxDLLAPI orxSTATUS                            orxClock_Update();
 
 /** Creates a Clock. */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _stTickSize, orxCLOCK_TYPE _eType);
 /** Deletes a Clock. */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Delete(orxCLOCK *_pstClock);
 
@@ -104,7 +104,7 @@ extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCLO
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
 
 /** Finds a clock according to its tick size and its type. */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOAT _stTickSize, orxCLOCK_TYPE _eType);
 /** Finds next clock of same type/tick size. */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(orxCONST orxCLOCK *_pstClock);
 
