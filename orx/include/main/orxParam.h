@@ -54,17 +54,17 @@ typedef struct __orxPARAM_t
   orxU32 u32Flags;
   
   /* Short parameter name (ex: "h" for help (will be -h)) */
-  orxSTRING azShortName[orxPARAM_SHORT_NAME_LENGTH];
+  orxCHAR zShortName[orxPARAM_KU32_SHORT_NAME_LENGTH];
 
   /* Long parameter name (ex: "help" for help (will be --help)) */
-  orxSTRING azLongName[orxPARAM_LONG_NAME_LENGTH];
+  orxCHAR zLongName[orxPARAM_KU32_LONG_NAME_LENGTH];
 
   /* Short description (ex: "shows params' list") */
-  orxSTRING azShortDesc[orxPARAM_SHORT_DESC_LENGTH];
+  orxCHAR zShortDesc[orxPARAM_KU32_SHORT_DESC_LENGTH];
 
   /* Long description (ex: "Display the list of parameters.
    * -help <param> displays the <param> long description") */
-  orxSTRING azlongDesc[orxPARAM_LONG_DESC_LENGTH];
+  orxCHAR zlongDesc[orxPARAM_KU32_LONG_DESC_LENGTH];
   
   /* Function called when the parameter is detected in the command line */
   orxPARAM_INFOS_CB cbParser;
@@ -80,12 +80,12 @@ extern orxDLLAPI orxSTATUS orxParam_Init();
 extern orxDLLAPI orxVOID orxParam_Exit();
 
 /** Register a new parameter
- * @param[in] _pstParamInfos Informations about the option to register
+ * @param[in] _pstParam Informations about the option to register
  * @return Returns the status of the registration
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstPramInfos);
+extern orxDLLAPI orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam);
 
-/** Start the parser
+/** Parse the command line
  * @param[in] _u32NbParam Number of read parameters
  * @param[in] _azParams   List of parameters
  * @return Returns the parsing status
