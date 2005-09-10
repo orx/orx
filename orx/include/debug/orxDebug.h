@@ -125,6 +125,7 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_FILE,                        /**< File Debug */
   orxDEBUG_LEVEL_PATHFINDER,                  /**< Pathfinder Debug */
   orxDEBUG_LEVEL_PLUGIN,                      /**< Plug-in Debug */
+  orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
 
   orxDEBUG_LEVEL_LOG,                         /**< Log Debug */
 
