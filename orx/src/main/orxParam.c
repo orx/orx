@@ -26,6 +26,7 @@
 #include "main/orxParam.h"
 #include "memory/orxMemory.h"
 #include "utils/orxString.h"
+#include "io/orxTextIO.h"
 #include "memory/orxBank.h"
 #include "utils/orxHashTable.h"
 #include "debug/orxDebug.h"
@@ -81,6 +82,73 @@ orxPARAM_INFOS *orxParam_Get(orxU32 _u32ParamName)
   return pstParamInfos;
 }
 
+/** Help callback (for -h or --help)
+ * @param[in] _u32NbParam Number of extra parameters read for this option
+ * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
+ * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
+ */
+orxSTATUS orxParamHelpCB(orxU32 _u32NbParam, orxSTRING _azParams[])
+{
+  /* Module initialized ? */
+  orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
+  
+  /* Correct parameters ? */
+  orxASSERT(_u32NbParam > 0);
+  
+  /* Extra parameters ? */
+  if (_u32NbParam == 1)
+  {
+    orxPARAM_INFOS *pstParamInfos = orxNULL;
+
+    /* No => display the full list of registered option with short description */
+    while ((pstParamInfos = orxBank_GetNext(sstParam.pstBank, pstParamInfos)))
+    {
+      orxTextIO_PrintLn("%s%s (%s%s) : %s",
+                        orxPARAM_KZ_MODULE_SHORT_PREFIX,
+                        pstParamInfos->stParam.zShortName,
+                        orxPARAM_KZ_MODULE_LONG_PREFIX,
+                        pstParamInfos->stParam.zLongName,
+                        pstParamInfos->stParam.zShortDesc);
+    }
+  }
+  else
+  {
+    orxU32 u32Index;          /* Index to traverse extra parameters */
+    orxU32 u32LongPrefixCRC;  /* CRC for the long prefix string */
+    
+    /* Create the CRC VAlue of the prefix */
+    u32LongPrefixCRC = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
+    
+    /* Display the long description of the extra parameters only */
+    for (u32Index = 1; u32Index < _u32NbParam; u32Index++)
+    {
+      orxU32 u32Name;                 /* CRC Name of the long option */
+      orxPARAM_INFOS *pstParamInfos;  /* Stored parameter value */
+      
+      /* Create the full CRC Value */
+      u32Name = orxString_ContinueCRC((orxCONST orxSTRING)_azParams[u32Index], u32LongPrefixCRC);
+      
+      /* Get the parameter infos */
+      pstParamInfos = (orxPARAM_INFOS *)orxParam_Get(u32Name);
+      
+      /* Valid infos ? */
+      if (pstParamInfos != orxNULL)
+      {
+        /* Display the full help */
+        orxTextIO_PrintLn("%s :\n%s\n",
+                          pstParamInfos->stParam.zLongName,
+                          pstParamInfos->stParam.zShortDesc);
+      }
+      else
+      {
+        orxTextIO_PrintLn("%s : Unkown parameter\n", _azParams[u32Index]);
+      }
+    }
+  }
+  
+  return orxSTATUS_SUCCESS;
+}
+
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
@@ -95,6 +163,7 @@ orxSTATUS orxParam_Init()
   if ((orxDEPEND_INIT(Depend) &
        orxDEPEND_INIT(Memory) &
        orxDEPEND_INIT(String) &
+       orxDEPEND_INIT(TextIO) &
        orxDEPEND_INIT(HashTable) &
        orxDEPEND_INIT(Bank)) == orxSTATUS_SUCCESS)
   {
@@ -121,11 +190,26 @@ orxSTATUS orxParam_Init()
         /* HashTable Created ? */
         if (sstParam.pstHashTable != orxNULL)
         {
+          orxPARAM stParam;
+          
           /* Set module as ready */
           sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_READY;
+
+          /* Everything seems ok. Register the module help function */
+          orxString_Copy(stParam.zShortName, "h");
+          orxString_Copy(stParam.zLongName,  "help");
+          orxString_Copy(stParam.zShortDesc, "Display this help. You can use extra parameter to display complete description (-h <param>)");
+          orxString_Copy(stParam.zlongDesc,  "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed");
+          stParam.cbParser   = orxParamHelpCB;
           
-          /* Success */
-          eResult = orxSTATUS_SUCCESS;
+          /* Register */          
+          eResult = orxParam_Register(&stParam);
+          
+          /* If registration failed, module become unready */
+          if (eResult == orxSTATUS_FAILED)
+          {
+            sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
+          }
         }
       }
     }
@@ -149,6 +233,7 @@ orxVOID orxParam_Exit()
   /* Exit dependencies */
   orxDEPEND_EXIT(Bank);
   orxDEPEND_EXIT(HashTable);
+  orxDEPEND_EXIT(TextIO);
   orxDEPEND_EXIT(String);
   orxDEPEND_EXIT(Memory);
   orxDEPEND_EXIT(Depend);
