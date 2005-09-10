@@ -60,6 +60,7 @@ typedef enum __orxDEPEND_MODULE_t
   orxDEPEND_MODULE_Event,
   orxDEPEND_MODULE_Depend,
   orxDEPEND_MODULE_FSM,
+  orxDEPEND_MODULE_Param,
     
   orxDEPEND_MODULE_NUMBER,
   orxDEPEND_MODULE_NONE = orxENUM_NONE
