@@ -54,6 +54,8 @@
 #include "io/orxPackage.h"
 #include "io/orxTextIO.h"
 
+#include "main/orxParam.h"
+
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
 #include "object/orxStructure.h"
