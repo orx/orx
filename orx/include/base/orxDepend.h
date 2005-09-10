@@ -66,8 +66,8 @@ typedef enum __orxDEPEND_MODULE_t
   orxDEPEND_MODULE_NONE = orxENUM_NONE
 } orxDEPEND_MODULE;
 
-typedef orxSTATUS (*orxDEPEND_INIT_CB)();
-typedef orxVOID   (*orxDEPEND_EXIT_CB)();
+typedef orxSTATUS (*orxDEPEND_INIT_FUNCTION)();
+typedef orxVOID   (*orxDEPEND_EXIT_FUNCTION)();
 
 /** Initialize the Dependency's module
  */
@@ -83,14 +83,14 @@ extern orxDLLAPI orxVOID                orxDepend_Exit();
  * @param[in] _pfnInit   Init function
  * @return Module's Init status
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_CB _pfnInit);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_FUNCTION _pfnInit);
 
 /** Call the Exit callback function for a module
  * @param[in] _zName    Module's name
  * @param[in] _eModule  Module's type
  * @param[in] _pfnExit   Exit function
  */
-extern orxDLLAPI orxVOID orxFASTCALL    orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_EXIT_CB _pfnExit);
+extern orxDLLAPI orxVOID orxFASTCALL    orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_EXIT_FUNCTION _pfnExit);
 
 /** Macro that automatically call Init function and register module Init/Exit function.
  */

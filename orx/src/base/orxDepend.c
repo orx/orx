@@ -95,7 +95,7 @@ orxVOID orxDepend_Exit()
  * @param[in] _pfnInit   Init function
  * @return Module's Init status
  */
-orxSTATUS orxFASTCALL orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_CB _pfnInit)
+orxSTATUS orxFASTCALL orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_FUNCTION _pfnInit)
 {
   /* If not initialized yet, Init the module */
   if (sstDepend.astModuleInfos[_eModule].u32RefCount == 0)
@@ -131,7 +131,7 @@ orxSTATUS orxFASTCALL orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_
  * @param[in] _eModule  Module's type
  * @param[in] _pfnExit   Exit function
  */
-orxVOID orxFASTCALL orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_EXIT_CB _pfnExit)
+orxVOID orxFASTCALL orxDepend_ExitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_EXIT_FUNCTION _pfnExit)
 {
   /* It's not possible that there are more Exit than Init */
   orxASSERT(sstDepend.astModuleInfos[_eModule].u32RefCount > 0);

@@ -74,20 +74,20 @@ struct __orxFSM_STATE_t
   orxU16 u16Id;
   
   /* Action to realize when entering this state. */
-  orxFSM_ACTION_PTR cbInit;
+  orxFSM_ACTION_FUNCTION pfnInit;
   
   /* Action to realize when executing this state. */
-  orxFSM_ACTION_PTR cbExecute;
+  orxFSM_ACTION_FUNCTION pfnExecute;
   
   /* Action to realize when exiting this state. */
-  orxFSM_ACTION_PTR cbExit;
+  orxFSM_ACTION_FUNCTION pfnExit;
 };
 
 /** Link structure. */
 struct __orxFSM_LINK_t
 {
   /* Condition to follow the link. */
-  orxFSM_CONDITION_PTR cbCondition;
+  orxFSM_CONDITION_FUNCTION pfnCondition;
   
   /* The state marking the beginning of the link. */
   orxFSM_STATE *pstBeginningState;
@@ -380,7 +380,7 @@ orxVOID orxFASTCALL orxFSM_Clear(orxFSM *_pstStateMachine)
  * @param[in] _pfnExit               Exit callback.
  * @return Returns the new state.
  */
-orxFSM_STATE *orxFASTCALL orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16Id, orxCONST orxFSM_ACTION_PTR _pfnInit, orxCONST orxFSM_ACTION_PTR _pfnExecute, orxCONST orxFSM_ACTION_PTR _pfnExit)
+orxFSM_STATE *orxFASTCALL orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16Id, orxCONST orxFSM_ACTION_FUNCTION _pfnInit, orxCONST orxFSM_ACTION_FUNCTION _pfnExecute, orxCONST orxFSM_ACTION_FUNCTION _pfnExit)
 {
   orxFSM_STATE *pstState;          /* New state to add. */
   orxBOOL bFirst;                   /* First state to be added? */
@@ -413,10 +413,10 @@ orxFSM_STATE *orxFASTCALL orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16I
     }
     
     /* Set datas. */
-    pstState->u16Id = _u16Id;
-    pstState->cbInit = _pfnInit;
-    pstState->cbExecute = _pfnExecute;
-    pstState->cbExit = _pfnExit;
+    pstState->u16Id       = _u16Id;
+    pstState->pfnInit     = _pfnInit;
+    pstState->pfnExecute  = _pfnExecute;
+    pstState->pfnExit     = _pfnExit;
     
     /* Try to add the state to the hash table. */
     if (orxHashTable_Add(_pstStateMachine->pstStatesHashTable, _u16Id, pstState) != orxSTATUS_SUCCESS)
@@ -578,7 +578,7 @@ orxSTATUS orxFASTCALL orxFSM_RemoveState(orxFSM *_pstStateMachine, orxFSM_STATE 
  * @param[in] _pfnCondition          Condition callback.
  * @return Returns the new link.
  */
-orxFSM_LINK *orxFASTCALL orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, orxCONST orxFSM_CONDITION_PTR _pfnCondition)
+orxFSM_LINK *orxFASTCALL orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, orxCONST orxFSM_CONDITION_FUNCTION _pfnCondition)
 {
   orxFSM_LINK *pstLink;     /* New link to add. */
   
@@ -601,7 +601,7 @@ orxFSM_LINK *orxFASTCALL orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *
     orxMemory_Set(pstLink, 0, sizeof(orxFSM_LINK));
 
     /* Set datas. */
-    pstLink->cbCondition = _pfnCondition;
+    pstLink->pfnCondition = _pfnCondition;
     pstLink->pstBeginningState = _pstBeginningState;
     pstLink->pstEndingState = _pstEndingState;
     
@@ -785,7 +785,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
     _pstInstance->eStatePosition = orxFSM_STATE_POSITION_INIT;
     
     /* Execute 'Init' callback */
-    _pstInstance->pstCurrentState->cbInit();
+    _pstInstance->pstCurrentState->pfnInit();
     
     eStatus = orxSTATUS_SUCCESS;
   }
@@ -799,7 +799,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
         _pstInstance->eStatePosition = orxFSM_STATE_POSITION_EXECUTE;
         
         /* Execute 'Execute' callback. */
-        _pstInstance->pstCurrentState->cbExecute();
+        _pstInstance->pstCurrentState->pfnExecute();
         
         eStatus = orxSTATUS_SUCCESS;
         
@@ -811,7 +811,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
         _pstInstance->eStatePosition = orxFSM_STATE_POSITION_EXIT;
         
         /* Execute 'Exit' callback. */
-        _pstInstance->pstCurrentState->cbExit();
+        _pstInstance->pstCurrentState->pfnExit();
         
         eStatus = orxSTATUS_SUCCESS;
         
@@ -835,7 +835,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
           else
           {
             /* A link has been found... verify it. */
-            if (pstLink->cbCondition())
+            if (pstLink->pfnCondition())
             {
               /* The link is valid... enter the new state. */
               _pstInstance->pstCurrentState = pstLink->pstEndingState;
@@ -844,7 +844,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
               _pstInstance->eStatePosition = orxFSM_STATE_POSITION_INIT;
               
               /* Execute 'Init' callback. */
-              _pstInstance->pstCurrentState->cbInit();
+              _pstInstance->pstCurrentState->pfnInit();
               
               eStatus = orxSTATUS_SUCCESS;
               

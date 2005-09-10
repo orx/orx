@@ -66,10 +66,10 @@ extern orxDLLAPI orxVOID                      orxFSM_Exit();
  ***************************************************************************/
 
 /**Action pointer for state machines. */
-typedef orxVOID (*orxFSM_ACTION_PTR)(orxVOID);
+typedef orxVOID (*orxFSM_ACTION_FUNCTION)(orxVOID);
 
 /**condition pointer for state machines. */
-typedef orxBOOL (*orxFSM_CONDITION_PTR)(orxVOID);
+typedef orxBOOL (*orxFSM_CONDITION_FUNCTION)(orxVOID);
 
 
 /***************************************************************************
@@ -104,7 +104,7 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxFSM_Clear(orxFSM *_pstStateMach
  *@param[in] _pfnExit               Exit callback.
  *@return Returns the new state.
  */
-extern orxDLLAPI orxFSM_STATE *orxFASTCALL    orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16Id, orxCONST orxFSM_ACTION_PTR _pfnInit, orxCONST orxFSM_ACTION_PTR _pfnExecute, orxCONST orxFSM_ACTION_PTR _pfnExit);
+extern orxDLLAPI orxFSM_STATE *orxFASTCALL    orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16Id, orxCONST orxFSM_ACTION_FUNCTION _pfnInit, orxCONST orxFSM_ACTION_FUNCTION _pfnExecute, orxCONST orxFSM_ACTION_FUNCTION _pfnExit);
 
 /**Set an initial state.
  *@param[in] _pstStateMachine      The state machine.
@@ -141,7 +141,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_RemoveState(orxFSM *_pstSta
  *@param[in] _pfnCondition          Condition callback.
  *@return Returns the new link.
  */
-extern orxDLLAPI orxFSM_LINK *orxFASTCALL     orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, orxCONST orxFSM_CONDITION_PTR _pfnCondition);
+extern orxDLLAPI orxFSM_LINK *orxFASTCALL     orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, orxCONST orxFSM_CONDITION_FUNCTION _pfnCondition);
 
 /**Find a link.
  *@param[in] _pstStateMachine      The state machine.

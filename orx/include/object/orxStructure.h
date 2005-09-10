@@ -102,7 +102,7 @@ typedef struct __orxSTRUCTURE_t
 
 
 /** Structure update callback function type. */
-typedef orxSTATUS orxFASTCALL (*orxSTRUCTURE_FUNCTION_UPDATE)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
+typedef orxSTATUS orxFASTCALL (*orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
 /** Structure registration info. */
 typedef struct __orxSTRUCTURE_REGISTER_INFO_t
@@ -117,7 +117,7 @@ typedef struct __orxSTRUCTURE_REGISTER_INFO_t
   orxMEMORY_TYPE eMemoryType;
 
   /* Structure update callbacks : 16 */
-  orxSTRUCTURE_FUNCTION_UPDATE pfnUpdate;
+  orxSTRUCTURE_UPDATE_FUNCTION pfnUpdate;
 
 } orxSTRUCTURE_REGISTER_INFO;
 

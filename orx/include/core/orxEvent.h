@@ -57,7 +57,7 @@ typedef orxS16 orxEVENT_MESSAGE_LIFETIME;
 /**
  * Event handler callback prototype.
  */
-typedef orxVOID (*orxEVENT_CB)(orxEVENT_MESSAGE_TYPE, orxEVENT_MESSAGE_LIFETIME, orxVOID*);
+typedef orxVOID (*orxEVENT_FUNCTION)(orxEVENT_MESSAGE_TYPE, orxEVENT_MESSAGE_LIFETIME, orxVOID*);
 
 
 /**
@@ -118,7 +118,7 @@ extern orxDLLAPI orxU32                     orxEventManager_GetFlags(orxEVENT_MA
  * @param _u16Type Type of event to intercept.
  * @param _pfnHandler Event callback function, orxNULL to only unregister previous handler.
  */
-extern orxDLLAPI orxVOID                    orxEventManager_RegisterHandler(orxEVENT_MANAGER* _pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_CB _pfnHandler);
+extern orxDLLAPI orxVOID                    orxEventManager_RegisterHandler(orxEVENT_MANAGER* _pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_FUNCTION _pfnHandler);
 
 /** Add an event to the manager.
  * @param _pstEventManager Event manager.
