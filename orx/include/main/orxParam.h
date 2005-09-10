@@ -45,7 +45,7 @@
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
  */
-typedef orxSTATUS (*orxPARAM_INFOS_CB)(orxU32 _u32NbParam, orxSTRING _azParams[]);
+typedef orxSTATUS (*orxPARAM_INFOS_FUNCTION)(orxU32 _u32NbParam, orxSTRING _azParams[]);
  
 /* Parameter's infos */
 typedef struct __orxPARAM_t
@@ -64,10 +64,10 @@ typedef struct __orxPARAM_t
 
   /* Long description (ex: "Display the list of parameters.
    * -help <param> displays the <param> long description") */
-  orxCHAR zlongDesc[orxPARAM_KU32_LONG_DESC_LENGTH];
+  orxCHAR zLongDesc[orxPARAM_KU32_LONG_DESC_LENGTH];
   
   /* Function called when the parameter is detected in the command line */
-  orxPARAM_INFOS_CB cbParser;
+  orxPARAM_INFOS_FUNCTION pfnParser;
   
 } orxPARAM;
 

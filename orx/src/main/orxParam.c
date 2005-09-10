@@ -87,7 +87,7 @@ orxPARAM_INFOS *orxParam_Get(orxU32 _u32ParamName)
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
  */
-orxSTATUS orxParamHelpCB(orxU32 _u32NbParam, orxSTRING _azParams[])
+orxSTATUS orxParamHelp(orxU32 _u32NbParam, orxSTRING _azParams[])
 {
   /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
@@ -137,7 +137,7 @@ orxSTATUS orxParamHelpCB(orxU32 _u32NbParam, orxSTRING _azParams[])
         /* Display the full help */
         orxTextIO_PrintLn("%s :\n%s\n",
                           pstParamInfos->stParam.zLongName,
-                          pstParamInfos->stParam.zShortDesc);
+                          pstParamInfos->stParam.zLongDesc);
       }
       else
       {
@@ -197,12 +197,12 @@ orxSTATUS orxParam_Init()
           sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_READY;
 
           /* Everything seems ok. Register the module help function */
-          stParam.u32Flags = orxPARAM_KU32_FLAGS_STOP_ON_ERROR;
-          stParam.cbParser = orxParamHelpCB;
+          stParam.u32Flags  = orxPARAM_KU32_FLAGS_STOP_ON_ERROR;
+          stParam.pfnParser = orxParamHelp;
           orxString_Copy(stParam.zShortName, "h");
           orxString_Copy(stParam.zLongName,  "help");
           orxString_Copy(stParam.zShortDesc, "Display this help. You can use extra parameter to display complete description (-h <param>)");
-          orxString_Copy(stParam.zlongDesc,  "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed");
+          orxString_Copy(stParam.zLongDesc,  "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed");
           
           /* Register */          
           eResult = orxParam_Register(&stParam);
@@ -259,7 +259,7 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
   /* Short parameters and callbacks are compulsory */
   if (_pstParam->zShortName != orxNULL &&
       _pstParam->zShortDesc != orxNULL &&
-      _pstParam->cbParser   != orxNULL)
+      _pstParam->pfnParser  != orxNULL)
   {
     orxU32 u32ShortName;
     
@@ -393,7 +393,7 @@ orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _az
           /* Call the callback function
            * (It can't be orxNULL since only param with a registered callback can be stored)
            */
-          if ((pstParamInfos->stParam.cbParser(u32NbExtra + 1, (orxSTRING *)(&(_azParams[u32Index]))) == orxSTATUS_FAILED) &&
+          if ((pstParamInfos->stParam.pfnParser(u32NbExtra + 1, (orxSTRING *)(&(_azParams[u32Index]))) == orxSTATUS_FAILED) &&
               ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAGS_STOP_ON_ERROR) == orxPARAM_KU32_FLAGS_STOP_ON_ERROR))
           {
             eResult = orxSTATUS_FAILED;
@@ -402,13 +402,17 @@ orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _az
       }
       else
       {
-        /* Increases ref counter */
-        pstParamInfos->u32Count++;
-        
-        /* No multiple instance are allowed. Stop the process ? */
-        if ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAGS_STOP_ON_ERROR) == orxPARAM_KU32_FLAGS_STOP_ON_ERROR)
+        /* Was it found ? */
+        if (pstParamInfos != orxNULL)
         {
-          eResult = orxSTATUS_FAILED;
+          /* Increases ref counter */
+          pstParamInfos->u32Count++;
+          
+          /* No multiple instance are allowed. Stop the process ? */
+          if ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAGS_STOP_ON_ERROR) == orxPARAM_KU32_FLAGS_STOP_ON_ERROR)
+          {
+            eResult = orxSTATUS_FAILED;
+          }
         }
       }
     }
