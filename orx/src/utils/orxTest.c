@@ -41,7 +41,7 @@ typedef struct __orxTEST_t
 {
   orxCHAR zModule[32];            /**< Module Name */
   orxCHAR zMenuEntry[256];        /**< Description of the command */
-  orxTEST_FUNCTIONCB cbFunction;  /**< Pointer on the registered function to execute */
+  orxTEST_FUNCTION pfnFunction; /**< Pointer on the registered function to execute */
   orxBOOL bDisplayed;             /**< Menu entry displayed in the menu */
 } orxTEST;
 
@@ -157,7 +157,7 @@ orxVOID orxTest_Exit()
  * @param   (IN)  _pfnFunction       Function executed when the menu entry is selected
  * @return Returns an Handle on the function
  */
-orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTIONCB _pfnFunction)
+orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTION _pfnFunction)
 {
   orxTEST *pstTest; /* Structure that will store new datas */
   orxHANDLE hRet;   /* Returnd handle value */
@@ -177,7 +177,7 @@ orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST
     pstTest = &(sstTest.astTestFunctions[sstTest.u32NbRegisteredFunc]);
     orxMemory_Copy(pstTest->zModule, _zModuleName, 31 * sizeof(orxCHAR));
     orxMemory_Copy(pstTest->zMenuEntry, _zMenuEntry, 255 * sizeof(orxCHAR));
-    pstTest->cbFunction = _pfnFunction;
+    pstTest->pfnFunction = _pfnFunction;
     pstTest->bDisplayed = orxFALSE;
     
     /* Set the returned handle (array index value) */
@@ -208,7 +208,7 @@ orxSTATUS orxFASTCALL orxTest_Execute(orxHANDLE _hRegisteredFunc)
   if ((_hRegisteredFunc != orxHANDLE_Undefined) && ((orxU32)_hRegisteredFunc < sstTest.u32NbRegisteredFunc))
   {
     /* Execute the function */
-    sstTest.astTestFunctions[(orxU32)_hRegisteredFunc].cbFunction();
+    sstTest.astTestFunctions[(orxU32)_hRegisteredFunc].pfnFunction();
     
     return orxSTATUS_SUCCESS;
   }
@@ -241,4 +241,13 @@ orxVOID orxTest_DisplayMenu()
   
   /* Reset temp helper bool */
   orxTest_ResetVisibility();
+}
+
+/** Run the test engine
+ * @param[in] _u32NbParam Number of parameters read
+ * @param[in] _azParams   Array of parameters
+ */
+orxVOID orxTest_Run(orxU32 _u32NbParam, orxSTRING _azParams[])
+{
+  
 }

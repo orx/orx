@@ -38,7 +38,7 @@
 
 #include "orxInclude.h"
 
-typedef orxVOID (*orxTEST_FUNCTIONCB)(orxVOID);
+typedef orxVOID (*orxTEST_FUNCTION)(orxVOID);
 
 /** Initialize the test module
  */
@@ -54,7 +54,7 @@ extern orxDLLAPI orxVOID                orxTest_Exit();
  * @param   (IN)  _pfnFunction       Function executed when the menu entry is selected
  * @return Returns an Handle on the function
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL  orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTIONCB _pfnFunction);
+extern orxDLLAPI orxHANDLE orxFASTCALL  orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTION _pfnFunction);
 
 /** Execute a registered function
  * @param   (IN)  _hRegisteredFunc  Handle of the registered function to execute
@@ -65,6 +65,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxTest_Execute(orxHANDLE _hRegisteredFu
 /** Display a Menu with registered function list
  */
 extern orxDLLAPI orxVOID                orxTest_DisplayMenu();
+
+/** Run the main engine
+ * @param[in] _u32NbParam Number of parameters read
+ * @param[in] _azParams   Array of parameters
+ */
+extern orxDLLAPI orxVOID                orxTest_Run(orxU32 _u32NbParam, orxSTRING _azParams[]);
 
 /* Define test module registration MACRO (entry point of dynamic library) */
 #ifdef __orxLINUX__
