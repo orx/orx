@@ -85,6 +85,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxMouse.o \
 	./build/$(BUILD)/orxDLL_orxPackage.o \
 	./build/$(BUILD)/orxDLL_orxTextIO.o \
+	./build/$(BUILD)/orxDLL_orxParam.o \
 	./build/$(BUILD)/orxDLL_orxMathSet.o \
 	./build/$(BUILD)/orxDLL_orxVec.o \
 	./build/$(BUILD)/orxDLL_orxBank.o \
@@ -131,6 +132,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxMouse.o \
 	./build/$(BUILD)/orxLIB_orxPackage.o \
 	./build/$(BUILD)/orxLIB_orxTextIO.o \
+	./build/$(BUILD)/orxLIB_orxParam.o \
 	./build/$(BUILD)/orxLIB_orxMathSet.o \
 	./build/$(BUILD)/orxLIB_orxVec.o \
 	./build/$(BUILD)/orxLIB_orxBank.o \
@@ -484,6 +486,9 @@ endif
 ./build/$(BUILD)/orxDLL_orxTextIO.o: ./src/io/orxTextIO.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./build/$(BUILD)/orxDLL_orxParam.o: ./src/main/orxParam.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./build/$(BUILD)/orxDLL_orxMathSet.o: ./src/math/orxMathSet.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -608,6 +613,9 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxTextIO.o: ./src/io/orxTextIO.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/orxLIB_orxParam.o: ./src/main/orxParam.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxMathSet.o: ./src/math/orxMathSet.c

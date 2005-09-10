@@ -162,11 +162,11 @@
             src/io/orxPackage.c
             src/io/orxTextIO.c
         </sources>
-<!--
+
         <sources>
-            src/main/orxMain.c
+            src/main/orxParam.c
         </sources>
--->
+
         <sources>
             src/math/orxMathSet.c
             src/math/orxVec.c
