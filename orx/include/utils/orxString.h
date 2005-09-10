@@ -168,8 +168,6 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxString_ToFloat(orxFLOAT *_pfOutValue,
   return orxSTATUS_SUCCESS;
 }
 
-
-
 /** Lowercase a string
  * @param _zString        (IN)  String To convert
  * @return The converted string.
@@ -231,6 +229,35 @@ orxSTATIC orxINLINE orxDLLAPI orxU32    orxString_ToCRC(orxCONST orxSTRING _zStr
   
   /* Computes the ID */
   return(orxString_ContinueCRC(_zString, 0));
+}
+
+/** Returns the first occurence of _zString2 in _zString1
+ * @param[in] _zString1 String to analyze
+ * @param[in] _zString2 String that must be inside _zString1
+ * @return The pointer of the first occurence of _zString2, or orxNULL if not found
+ */
+orxSTATIC orxINLINE orxDLLAPI orxSTRING orxString_SearchString(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2)
+{
+  /* Correct parameters ? */
+  orxASSERT(_zString1 != orxNULL);
+  orxASSERT(_zString2 != orxNULL);
+  
+  /* Returns result */
+  return (strstr(_zString1, _zString2));
+}
+
+/** Returns the first occurence of _cChar in _zString
+ * @param[in] _zString String to analyze
+ * @param[in] _cChar   The character to find
+ * @return The pointer of the first occurence of _cChar, or orxNULL if not found
+ */
+orxSTATIC orxINLINE orxDLLAPI orxSTRING orxString_SearchChar(orxCONST orxSTRING _zString, orxCHAR _cChar)
+{
+  /* Correct parameters ? */
+  orxASSERT(_zString != orxNULL);
+  
+  /* Returns result */
+  return (strchr(_zString, _cChar));
 }
 
 #endif /* _orxSTRING_H_ */
