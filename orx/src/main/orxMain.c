@@ -28,7 +28,7 @@
 #define orxMAIN_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxMAIN_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
 
-#define orxMAIN_KU32_FLAG_TEST  0x00000004  /**< orx runs in test mode */
+#define orxMAIN_KU32_FLAG_TEST  0x00000002  /**< orx runs in test mode */
 #define orxMAIN_KU32_FLAG_EXIT  0x00000004  /**< an Exit Event has been received */
 
 /***************************************************************************
@@ -66,7 +66,7 @@ orxVOID orxFASTCALL orxMain_TestClock(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
  */
-orxSTATUS orxMain_ParamTestCB(orxU32 _u32NbParam, orxSTRING _azParams[])
+orxSTATUS orxMain_ParamTest(orxU32 _u32NbParam, orxSTRING _azParams[])
 {
   /* Set Test Flag */
   sstMain.u32Flags |= orxMAIN_KU32_FLAG_TEST;
@@ -181,12 +181,12 @@ int main(int argc, char **argv)
        orxDEPEND_INIT(Param)) == orxSTATUS_SUCCESS)
   {
     
-//#ifdef __orxTEST__ /* Only compile this portion of code if __orxTEST__ is used */
+#ifdef __orxTEST__ /* Only compile this portion of code if __orxTEST__ is used */
     orxPARAM stParam;
     
     /* Register a parameter to start the test program */
     stParam.u32Flags  = 0;
-    stParam.pfnParser = orxMain_ParamTestCB;
+    stParam.pfnParser = orxMain_ParamTest;
     orxString_Copy(stParam.zShortName, "T");
     orxString_Copy(stParam.zLongName,  "test");
     orxString_Copy(stParam.zShortDesc, "Start the test program");
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
 
     orxParam_Register(&stParam);
 
-//#endif /* __orxTEST__ */
+#endif /* __orxTEST__ */
     
     /* Parse the command line */
     if (orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
