@@ -82,6 +82,8 @@ orxSTATUS orxMain_Init()
       {
         if ((orxDEPEND_INIT(Memory) &
              orxDEPEND_INIT(TextIO) &
+             orxDEPEND_INIT(Param) &
+             orxDEPEND_INIT(Time) &
              orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
         {
           /* Clear the static control */
@@ -119,8 +121,11 @@ orxVOID orxMain_Exit()
   }
   
   orxDEPEND_EXIT(Clock);
-  orxDEPEND_EXIT(Plugin);
+  orxDEPEND_EXIT(Time);
+  orxDEPEND_EXIT(Param);
+  orxDEPEND_EXIT(TextIO);
   orxDEPEND_EXIT(Memory);
+  orxDEPEND_EXIT(Plugin);
   orxDEPEND_EXIT(Depend);
 
   /* Exit Debug system */
@@ -141,14 +146,18 @@ int main(int argc, char **argv)
   /* Init the Engine */
   if (orxMain_Init() == orxSTATUS_SUCCESS)
   {
-    /* Main Loop (Until Exit event received) */
-    while ((sstMain.u32Flags & orxMAIN_KU32_FLAG_EXIT) != orxMAIN_KU32_FLAG_EXIT)
+    /* Parse the command line */
+    if (orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
     {
-      /* Update clocks */
-      orxClock_Update();
-
-      /* Sleep the program for 1ms (to help the scheduler) */
-      orxTime_Delay(1);
+      /* Main Loop (Until Exit event received) */
+      while ((sstMain.u32Flags & orxMAIN_KU32_FLAG_EXIT) != orxMAIN_KU32_FLAG_EXIT)
+      {
+        /* Update clocks */
+        orxClock_Update();
+  
+        /* Sleep the program for 1ms (to help the scheduler) */
+        orxTime_Delay(1);
+      }
     }
   }
 
