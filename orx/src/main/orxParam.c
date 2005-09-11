@@ -30,6 +30,7 @@
 #include "memory/orxBank.h"
 #include "utils/orxHashTable.h"
 #include "debug/orxDebug.h"
+#include "core/orxEvent.h"
 
 #define orxPARAM_KU32_MODULE_FLAG_NONE   0x00000000  /**< No flags have been set */
 #define orxPARAM_KU32_MODULE_FLAG_READY  0x00000001  /**< The module has been initialized */
@@ -146,8 +147,11 @@ orxSTATUS orxParamHelp(orxU32 _u32NbParam, orxSTRING _azParams[])
     }
   }
   
+  /* Send the Exit Event to the engine */
+/*  orxEventManager_AddEvent() */
+  
   /* Help request always fail => Show help instead of starting the engine */
-  return orxSTATUS_FAILED;
+  return orxSTATUS_SUCCESS;
 }
 
 /***************************************************************************
@@ -166,7 +170,8 @@ orxSTATUS orxParam_Init()
        orxDEPEND_INIT(String) &
        orxDEPEND_INIT(TextIO) &
        orxDEPEND_INIT(HashTable) &
-       orxDEPEND_INIT(Bank)) == orxSTATUS_SUCCESS)
+       orxDEPEND_INIT(Bank)/* &
+       orxDEPEND_INIT(Event)*/) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
     if(!(sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY))
@@ -233,6 +238,7 @@ orxVOID orxParam_Exit()
   }
 
   /* Exit dependencies */
+/*  orxDEPEND_EXIT(Event); */
   orxDEPEND_EXIT(Bank);
   orxDEPEND_EXIT(HashTable);
   orxDEPEND_EXIT(TextIO);
