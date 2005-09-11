@@ -37,7 +37,6 @@
 typedef struct __orxMAIN_STATIC_t
 {
   orxU32 u32Flags; /**< Flags set by the main module */
-  orxCLOCK *pstClock;
 } orxMAIN_STATIC;
 
 /***************************************************************************
@@ -48,18 +47,6 @@ orxSTATIC orxMAIN_STATIC sstMain;
 /***************************************************************************
  * Functions                                                               *
  ***************************************************************************/
-
-orxVOID orxFASTCALL orxMain_TestClock(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
-{
-  orxTextIO_PrintLn("eType = %d, ", _pstClockInfo->eType);
-  orxTextIO_PrintLn("u32TickCounter = %lu, ", _pstClockInfo->u32TickCounter);
-  orxTextIO_PrintLn("stTickSize = %lu, ", _pstClockInfo->stTickSize);
-  orxTextIO_PrintLn("stTickValue = %lu, ", _pstClockInfo->stTickValue);
-  orxTextIO_PrintLn("eModType = %d, ", _pstClockInfo->eModType);
-  orxTextIO_PrintLn("fModValue = %f, ", _pstClockInfo->fModValue);
-  orxTextIO_PrintLn("stDT = %lu, ", _pstClockInfo->stDT);
-  orxTextIO_PrintLn("Time = %lu, ", _pstClockInfo->stTime);
-}
 
 /** Set Test flag (the test parameter has been given)
  * @param[in] _u32NbParam Number of extra parameters read for this option
@@ -87,6 +74,7 @@ orxSTATUS orxMain_Init()
     /* Try to Init the Engine */
     if ((orxDEPEND_INIT(Plugin)) == orxSTATUS_SUCCESS)
          /** Todo : Complete remaining dependencies */
+         /** @note : This is very temporary !! (hard coded plugin name) */
     {
       if (orxPlugin_LoadUsingExt("Time_SDL", "time"))
       {
@@ -95,12 +83,6 @@ orxSTATUS orxMain_Init()
              orxDEPEND_INIT(Time) &
              orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
         {
-          /* Create a clock */
-          sstMain.pstClock = orxClock_Create(1000, orxCLOCK_TYPE_CORE);
-          
-          /* Register a test function */
-          orxClock_Register(sstMain.pstClock, orxMain_TestClock, orxNULL);
-
           /* Set module as initialized */
           sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
           
@@ -145,7 +127,7 @@ orxVOID orxMain_Run(orxU32 _u32NbParam, orxSTRING _azParams[])
   /* Init the Engine */
   if (orxMain_Init() == orxSTATUS_SUCCESS)
   {
-    /* Parse the command line */
+    /* Parse the command line for the second time (now all modules have registered their options) */
     if (orxParam_Parse(_u32NbParam, _azParams) == orxSTATUS_SUCCESS)
     {
       /* Main Loop (Until Exit event received) */
