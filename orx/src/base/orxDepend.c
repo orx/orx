@@ -98,7 +98,7 @@ orxVOID orxDepend_Exit()
 orxSTATUS orxFASTCALL orxDepend_InitModule(orxCONST orxSTRING _zName, orxDEPEND_MODULE _eModule, orxDEPEND_INIT_FUNCTION _pfnInit)
 {
   /* If not initialized yet, Init the module */
-  if (sstDepend.astModuleInfos[_eModule].u32RefCount == 0)
+  if ((sstDepend.astModuleInfos[_eModule].u32RefCount == 0) || (sstDepend.astModuleInfos[_eModule].eStatus == orxSTATUS_FAILED))
   {
     /* Call Init function */
     sstDepend.astModuleInfos[_eModule].eStatus = _pfnInit();
