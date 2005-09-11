@@ -29,6 +29,15 @@
 	    <default-value>0</default-value>
 	  </option>
     
+	  <option name="USE_TEST">
+	    <values>0,1</values>
+	    <default-value>1</default-value>
+	  </option>
+
+	  <option name="USE_PLUGINS">
+	    <values>0,1</values>
+	    <default-value>1</default-value>
+	  </option>
     
     <!-- Set a flag to specify if build is static. -->
     <set var="orxLINKSTATIC">
@@ -46,6 +55,11 @@
     <set var="orxDEBUG">
         <if cond="BUILD=='debug'">__orxDEBUG__</if>
         <if cond="BUILD=='release'"></if>
+    </set>
+
+    <!-- Set the preprocessor definition for test mode. -->
+    <set var="orxTEST">
+        <if cond="USE_TEST=='1'">__orxTEST__</if>
     </set>
 
     <!-- Set the debug flag content. -->
@@ -91,6 +105,7 @@
         <!-- Preprocessor definitions. -->
         <define>$(orxDEBUG)</define>
         <define>$(orxPLATFORM)</define>
+        <define>$(orxTEST)</define>
 <!--        <define>orxDLL</define> -->
         <!-- Warning level. -->
         <warnings>$(orxWARNINGFLAG)</warnings>
@@ -112,12 +127,12 @@
      
      <!-- Under window, DLL application have to be linked with a small static lib too -->
     <set var="orxEXTRAFLAGS">
-      <if cond="LINK=='static' and FORMAT=='mingw'">lib\testbed.a</if>
+      <if cond="LINK=='static' and FORMAT=='mingw'">lib\orx.a</if>
     </set>
 
     <!-- Define the module template -->
     <template id="orxMODULELINK">
-	  <sys-lib>$(orxEXTRALINK)</sys-lib>
+	    <sys-lib>$(orxEXTRALINK)</sys-lib>
       <ldflags>$(orxEXTRAFLAGS)</ldflags>
     </template>
 
@@ -162,11 +177,9 @@
             src/io/orxPackage.c
             src/io/orxTextIO.c
         </sources>
-
         <sources>
             src/main/orxParam.c
         </sources>
-
         <sources>
             src/math/orxMathSet.c
             src/math/orxVec.c

@@ -41,12 +41,14 @@
     <if cond="LINK=='dynamic' and COMPILER=='gcc'">-lorx$(orxSUFFIX)</if>
   </set>
 
+  <!-- GENERATE A .a FROM THE MAIN PROGRAM (That include all symbols from orx static library + Main program) -->
   <set var="orxLDFLAGS_IMPLIB">
-    <if cond="LINK=='static' and FORMAT=='mingw'">-Wl,--export-all-symbols -Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)testbed.a</if>
+    <if cond="LINK=='static' and FORMAT=='mingw'">-Wl,--export-all-symbols -Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)orx.a</if>
   </set>
   
+  <!-- USED TO GENERATE THE .a FROM THE DLL -->
   <set var="orxDYNLINK">
-    <if cond="LINK=='dynamic' and FORMAT=='mingw'">-Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)testbed.a</if>
+    <if cond="LINK=='dynamic' and FORMAT=='mingw'">-Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)orx.a</if>
   </set>
 
     <!-- Use datafiles module to allow to easily install files. -->

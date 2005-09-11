@@ -14,10 +14,10 @@
     <include file="build/bakefiles/main.bkl"/>
 
     <!-- Include test target definbitions. -->
-    <include file="build/bakefiles/test.bkl"/>
+    <include file="build/bakefiles/modules.bkl"/>
 
     <!-- Include plugins target definbitions. -->
     <include file="build/bakefiles/plugins_core.bkl"/>
-
+ 
 
 </bakefile>
