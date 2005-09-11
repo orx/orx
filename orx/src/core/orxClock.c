@@ -368,7 +368,7 @@ orxSTATUS orxClock_Update()
     pstClock->stClockInfo.stTickValue = stTime;
 
     /* Computes global time */
-    pstClock->stClockInfo.stTime = (pstClock->stClockInfo.u32TickCounter * pstClock->stClockInfo.stTickSize) + pstClock->stClockInfo.stTickValue;
+    pstClock->stClockInfo.stTime += stDT;
 
     /* New tick happened? */
     if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
