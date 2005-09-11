@@ -233,7 +233,7 @@ orxSTATUS orxClock_Init()
   /* Init dependencies */
   if ((orxDEPEND_INIT(Depend) &
        orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Time) &
+       /*orxDEPEND_INIT(Time) &*/
        orxDEPEND_INIT(Bank)) == orxSTATUS_SUCCESS)
   {
     /* Not already Initialized? */
@@ -309,7 +309,7 @@ orxVOID orxClock_Exit()
   }
 
   orxDEPEND_EXIT(Bank);
-  orxDEPEND_EXIT(Time);
+  /*orxDEPEND_EXIT(Time);*/
   orxDEPEND_EXIT(Memory);
   orxDEPEND_EXIT(Depend);
 
@@ -369,7 +369,7 @@ orxSTATUS orxClock_Update()
 
     /* Computes global time */
     pstClock->stClockInfo.stTime += stDT;
-
+    
     /* New tick happened? */
     if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
     {
