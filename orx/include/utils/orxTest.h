@@ -56,16 +56,6 @@ extern orxDLLAPI orxVOID                orxTest_Exit();
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL  orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTION _pfnFunction);
 
-/** Execute a registered function
- * @param   (IN)  _hRegisteredFunc  Handle of the registered function to execute
- * @return  Returns the success / fail status (failed when the Handle is unknown)
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxTest_Execute(orxHANDLE _hRegisteredFunc);
-
-/** Display a Menu with registered function list
- */
-extern orxDLLAPI orxVOID                orxTest_DisplayMenu();
-
 /** Run the main engine
  * @param[in] _u32NbParam Number of parameters read
  * @param[in] _azParams   Array of parameters
