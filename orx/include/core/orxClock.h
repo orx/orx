@@ -115,5 +115,8 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxU32 
 /** Finds next clock of same type/tick size. */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(orxCONST orxCLOCK *_pstClock);
 
+/** Gets next existing clock (can be used to parse all existing clocks). */
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(orxCONST orxCLOCK *_pstClock);
+
 
 #endif /* _orxCLOCK_H_ */

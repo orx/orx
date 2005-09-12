@@ -757,3 +757,18 @@ orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
   /* Done! */
   return pstClock;
 }
+
+/***************************************************************************
+ orxClock_GetNext
+ Gets next existing clock (can be used to parse all existing clocks).
+
+ returns: orxCLOCK * / orxNULL
+ ***************************************************************************/
+orxCLOCK *orxFASTCALL orxClock_GetNext(orxCONST orxCLOCK *_pstClock)
+{
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+
+  /* Returns next stored clock */
+  return((orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, _pstClock));
+}
