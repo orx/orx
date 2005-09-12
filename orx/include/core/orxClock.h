@@ -24,9 +24,9 @@
 #include "core/orxTime.h"
 
 
-#define orxCLOCK_KU32_CLOCK_BANK_SIZE                 16  /**< Clock bank size */
+#define orxCLOCK_KU32_CLOCK_BANK_SIZE                 16          /**< Clock bank size */
 
-#define orxCLOCK_KU32_FUNCTION_BANK_SIZE              16  /**< Function bank size */
+#define orxCLOCK_KU32_FUNCTION_BANK_SIZE              16          /**< Function bank size */
 
 
 /** Clock type enum */
@@ -90,6 +90,13 @@ extern orxDLLAPI orxSTATUS                            orxClock_Update();
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType);
 /** Deletes a Clock. */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Delete(orxCLOCK *_pstClock);
+
+/** Pauses a Clock. */
+extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Pause(orxCLOCK *_pstClock);
+/** Unpauses a Clock. */
+extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Unpause(orxCLOCK *_pstClock);
+/** Is a Clock paused? */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(orxCLOCK *_pstClock);
 
 /** Gets informations about a Clock. */
 extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock);

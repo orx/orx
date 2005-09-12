@@ -38,7 +38,7 @@
 
 /** Clock ID flags */
 #define orxCLOCK_KU32_CLOCK_FLAG_NONE       0x00000000  /**< No flags */
-#define orxCLOCK_KU32_CLOCK_FLAG_USER       0x10000000  /**< Clock is user defined */
+#define orxCLOCK_KU32_CLOCK_FLAG_PAUSED     0x10000000  /**< Clock is paused */
 
 
 /*
@@ -469,6 +469,58 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   orxBank_Free(sstClock.pstClockBank, _pstClock);
 
   return;
+}
+
+/***************************************************************************
+ orxClock_Pause
+ Pauses a clock.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
+{
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(_pstClock != orxNULL);
+
+  /* Updates clock flags */
+  _pstClock->u32Flags |= orxCLOCK_KU32_CLOCK_FLAG_PAUSED;
+
+  return;
+}
+
+/***************************************************************************
+ orxClock_Unpause
+ Unpauses a clock.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
+{
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(_pstClock != orxNULL);
+
+  /* Updates clock flags */
+  _pstClock->u32Flags &= ~orxCLOCK_KU32_CLOCK_FLAG_PAUSED;
+
+  return;
+}
+
+/***************************************************************************
+ orxClock_IsPaused
+ Is a clock paused?
+
+ returns: orxTRUE / orxFALSE
+ ***************************************************************************/
+orxBOOL orxFASTCALL orxClock_IsPaused(orxCLOCK *_pstClock)
+{
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(_pstClock != orxNULL);
+
+  /* Tests flags */
+  return((_pstClock->u32Flags & orxCLOCK_KU32_CLOCK_FLAG_PAUSED) ? orxTRUE : orxFALSE);
 }
 
 /***************************************************************************
