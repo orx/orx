@@ -274,7 +274,7 @@ orxVOID orxEventManager_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_
     orxASSERT(_pstContext!=orxNULL);
 	
 	/** @todo More _pstClockInfo->u32DT asserts or live verifs.*/
-	orxEventManager_ProcessEvent((orxEVENT_MANAGER*)_pstContext, (orxS16)_pstClockInfo->u32DT);
+	orxEventManager_ProcessEvent((orxEVENT_MANAGER*)_pstContext, (orxS16)_pstClockInfo->u32StableDT);
 }
 
 

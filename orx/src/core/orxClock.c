@@ -180,23 +180,38 @@ orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxU32 _u32TickSize, orxCLOCK_T
 
  returns: Computed DT.
  ***************************************************************************/
-orxSTATIC orxINLINE orxU32 orxClock_ComputeDT(orxU32 _u32DT)
+orxSTATIC orxINLINE orxU32 orxClock_ComputeDT(orxU32 _u32DT, orxCLOCK_INFO *_pstClockInfo)
 {
-  orxREGISTER orxU32 u32NewDT = _u32DT;
+  orxREGISTER orxCLOCK_MOD_TYPE  *peModType;
+  orxREGISTER orxFLOAT           *pfModValue;
+  orxREGISTER orxU32              u32NewDT = _u32DT;
+
+  /* Using global one? */
+  if(_pstClockInfo == orxNULL)
+  {
+    peModType   = &(sstClock.eModType);
+    pfModValue  = &(sstClock.fModValue);
+  }
+  /* Using clock one */
+  else
+  {
+    peModType   = &(_pstClockInfo->eModType);
+    pfModValue  = &(_pstClockInfo->fModValue);
+  }
 
   /* Depending on modifier type */
-  switch(sstClock.eModType)
+  switch(*peModType)
   {
   case orxCLOCK_MOD_TYPE_FIXED:
 
     /* Fixed DT value */    
-    u32NewDT = orxF2U(sstClock.fModValue);
+    u32NewDT = orxF2U(*pfModValue);
     break;
 
   case orxCLOCK_MOD_TYPE_MULTIPLY:
 
     /* Multiplied DT value */
-    u32NewDT = orxF2U(sstClock.fModValue * orxU2F(_u32DT));
+    u32NewDT = orxF2U(*pfModValue * orxU2F(_u32DT));
     break;
 
   case orxCLOCK_MOD_TYPE_NONE:
@@ -338,21 +353,30 @@ orxSTATUS orxClock_Update()
   u32DT        = u32NewTime - sstClock.u32Time;
 
   /* Gets modified DT */
-  u32DT        = orxClock_ComputeDT(u32DT);
+  u32DT        = orxClock_ComputeDT(u32DT, orxNULL);
 
   /* For all clocks */
   for(pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, orxNULL);
       pstClock != orxNULL;
       pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
   {
-    orxU32 u32Time;
-    orxU32  u32TickCounterBackup;
+    orxU32 u32Time, u32TickCounterBackup, u32ClockDT;
+
+    /* Is clock paused? */
+    if(orxClock_IsPaused(pstClock) != orxFALSE)
+    {
+      /* Gets to the next one */
+      continue;
+    }
+
+    /* Gets clock modified DT */
+    u32ClockDT = orxClock_ComputeDT(u32DT, &(pstClock->stClockInfo));
 
     /* Backups clock tick counter */
     u32TickCounterBackup = pstClock->stClockInfo.u32TickCounter;
 
     /* Gets cumulated time */
-    u32Time = u32DT + pstClock->stClockInfo.u32TickValue;
+    u32Time = u32ClockDT + pstClock->stClockInfo.u32TickValue;
 
     /* Updates new ticks if needed */
     while(u32Time >= pstClock->stClockInfo.u32TickSize)
@@ -368,15 +392,15 @@ orxSTATUS orxClock_Update()
     pstClock->stClockInfo.u32TickValue = u32Time;
 
     /* Computes global time */
-    pstClock->stClockInfo.u32Time += u32DT;
-    
+    pstClock->stClockInfo.u32Time += u32ClockDT;
+
     /* New tick happened? */
     if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
     {
       orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
 
       /* Updates clock DT for these calls */
-      pstClock->stClockInfo.u32DT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.u32TickSize;
+      pstClock->stClockInfo.u32StableDT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.u32TickSize;
 
       /* For all registered callbacks */
       for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);

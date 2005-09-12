@@ -64,7 +64,7 @@ typedef struct __orxCLOCK_INFO_t
   orxU32            u32TickValue;                     /**< Clock current tick value (in milliseconds) ellapsed after last tick 0.0 - tick size : 16 */
   orxCLOCK_MOD_TYPE eModType;                         /**> Clock mod type : 20 */
   orxFLOAT          fModValue;                        /**> Clock mod value : 24 */
-  orxU32            u32DT;                            /**> Clock DT (time ellapsed between 2 clock calls in milliseconds) : 28 */
+  orxU32            u32StableDT;                      /**> Clock DT (time ellapsed between 2 clock calls in milliseconds) : 28 */
 
   orxU32            u32Time;                          /**> Clock time (= (tick counter * tick size) + tick value : 32 */ 
 
