@@ -122,12 +122,12 @@ orxVOID orxTimeSDL_Exit()
 /** Gets App Elapsed time.
  * @return Returns the amount of milliseconds elapsed from the application start.
  */
-orxTIME orxTimeSDL_GetTime()
+orxU32 orxTimeSDL_GetTime()
 {
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_FLAG_READY) == orxTIME_KU32_FLAG_READY);
 
-  return (orxTIME)SDL_GetTicks();
+  return((orxU32)SDL_GetTicks());
 }
 
 /** Gets date.
@@ -142,14 +142,14 @@ orxDATE orxTimeSDL_GetDate()
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _stTime Number of milliseconds to wait.
+ * @param[in] _u32Time Number of milliseconds to wait.
  */
-orxVOID orxTimeSDL_Delay(orxTIME _stTime)
+orxVOID orxTimeSDL_Delay(orxU32 _u32Time)
 {
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_FLAG_READY) == orxTIME_KU32_FLAG_READY);
   
-  SDL_Delay((Uint32)_stTime);
+  SDL_Delay((Uint32)_u32Time);
 }
 
 
@@ -157,11 +157,11 @@ orxVOID orxTimeSDL_Delay(orxTIME _stTime)
  * Plugin Related                                                          *
  ***************************************************************************/
 
-orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sastTime_Function[orxPLUGIN_FUNCTION_BASE_ID_TIME_NUMBER];
+orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sau32Time_Function[orxPLUGIN_FUNCTION_BASE_ID_TIME_NUMBER];
 
 orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfos)
 {
-  orxPLUGIN_USER_FUNCTION_START(sastTime_Function);
+  orxPLUGIN_USER_FUNCTION_START(sau32Time_Function);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Init, TIME, INIT);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Exit, TIME, EXIT);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_GetTime, TIME, GET_TIME);

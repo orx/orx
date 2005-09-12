@@ -90,7 +90,7 @@ typedef struct __orxCLOCK_STATIC_t
   orxFLOAT          fModValue;
 
   /* Current time */
-  orxTIME           stTime;
+  orxU32            u32Time;
 
   /* Control flags */
   orxU32            u32Flags;
@@ -148,7 +148,7 @@ orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxC
 
  returns: orxCLOCK * / orxNULL
  ***************************************************************************/
-orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _stTickSize, orxCLOCK_TYPE _eType, orxCONST orxCLOCK *_pstStartClock)
+orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxU32 _u32TickSize, orxCLOCK_TYPE _eType, orxCONST orxCLOCK *_pstStartClock)
 {
   orxCLOCK *pstClock;
 
@@ -163,7 +163,7 @@ orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _stTickSize, orxCLOCK_
   {
     /* Match? */
     if((pstClock->stClockInfo.eType == _eType)
-    && (pstClock->stClockInfo.stTickSize == _stTickSize))
+    && (pstClock->stClockInfo.u32TickSize == _u32TickSize))
     {
       /* Found */
       break;
@@ -180,9 +180,9 @@ orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _stTickSize, orxCLOCK_
 
  returns: Computed DT.
  ***************************************************************************/
-orxSTATIC orxINLINE orxTIME orxClock_ComputeDT(orxTIME _stDT)
+orxSTATIC orxINLINE orxU32 orxClock_ComputeDT(orxU32 _u32DT)
 {
-  orxREGISTER orxTIME stNewDT = _stDT;
+  orxREGISTER orxU32 u32NewDT = _u32DT;
 
   /* Depending on modifier type */
   switch(sstClock.eModType)
@@ -190,13 +190,13 @@ orxSTATIC orxINLINE orxTIME orxClock_ComputeDT(orxTIME _stDT)
   case orxCLOCK_MOD_TYPE_FIXED:
 
     /* Fixed DT value */    
-    stNewDT = orxF2U(sstClock.fModValue);
+    u32NewDT = orxF2U(sstClock.fModValue);
     break;
 
   case orxCLOCK_MOD_TYPE_MULTIPLY:
 
     /* Multiplied DT value */
-    stNewDT = orxF2U(sstClock.fModValue * orxU2F(_stDT));
+    u32NewDT = orxF2U(sstClock.fModValue * orxU2F(_u32DT));
     break;
 
   case orxCLOCK_MOD_TYPE_NONE:
@@ -210,7 +210,7 @@ orxSTATIC orxINLINE orxTIME orxClock_ComputeDT(orxTIME _stDT)
   }
 
   /* Done! */  
-  return stNewDT;
+  return u32NewDT;
 }
 
 
@@ -252,7 +252,7 @@ orxSTATUS orxClock_Init()
         sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
   
         /* Gets init time */
-        sstClock.stTime  = orxTime_GetTime();
+        sstClock.u32Time  = orxTime_GetTime();
   
         /* Inits Flags */
         sstClock.u32Flags = orxCLOCK_KU32_FLAG_READY;
@@ -324,7 +324,7 @@ orxVOID orxClock_Exit()
  ***************************************************************************/
 orxSTATUS orxClock_Update()
 {
-  orxTIME   stNewTime, stDT;
+  orxU32    u32NewTime, u32DT;
   orxCLOCK *pstClock;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -332,43 +332,43 @@ orxSTATUS orxClock_Update()
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
 
   /* Gets new time */
-  stNewTime  = orxTime_GetTime();
+  u32NewTime  = orxTime_GetTime();
 
   /* Computes natural DT */
-  stDT        = stNewTime - sstClock.stTime;
+  u32DT        = u32NewTime - sstClock.u32Time;
 
   /* Gets modified DT */
-  stDT        = orxClock_ComputeDT(stDT);
+  u32DT        = orxClock_ComputeDT(u32DT);
 
   /* For all clocks */
   for(pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, orxNULL);
       pstClock != orxNULL;
       pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
   {
-    orxTIME stTime;
+    orxU32 u32Time;
     orxU32  u32TickCounterBackup;
 
     /* Backups clock tick counter */
     u32TickCounterBackup = pstClock->stClockInfo.u32TickCounter;
 
     /* Gets cumulated time */
-    stTime = stDT + pstClock->stClockInfo.stTickValue;
+    u32Time = u32DT + pstClock->stClockInfo.u32TickValue;
 
     /* Updates new ticks if needed */
-    while(stTime >= pstClock->stClockInfo.stTickSize)
+    while(u32Time >= pstClock->stClockInfo.u32TickSize)
     {
       /* Updates tick counter */
       pstClock->stClockInfo.u32TickCounter++;
 
       /* Updates remaining cumulated time */
-      stTime -= pstClock->stClockInfo.stTickSize;
+      u32Time -= pstClock->stClockInfo.u32TickSize;
     }
 
     /* Updates tick value */
-    pstClock->stClockInfo.stTickValue = stTime;
+    pstClock->stClockInfo.u32TickValue = u32Time;
 
     /* Computes global time */
-    pstClock->stClockInfo.stTime += stDT;
+    pstClock->stClockInfo.u32Time += u32DT;
     
     /* New tick happened? */
     if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
@@ -376,7 +376,7 @@ orxSTATUS orxClock_Update()
       orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
 
       /* Updates clock DT for these calls */
-      pstClock->stClockInfo.stDT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.stTickSize;
+      pstClock->stClockInfo.u32DT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.u32TickSize;
 
       /* For all registered callbacks */
       for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
@@ -390,7 +390,7 @@ orxSTATUS orxClock_Update()
   }
 
   /* Updates time */
-  sstClock.stTime = stNewTime;
+  sstClock.u32Time = u32NewTime;
 
   /* Done! */
   return eResult;
@@ -402,7 +402,7 @@ orxSTATUS orxClock_Update()
 
  returns: orxCLOCK * on success / NULL otherwise
  ***************************************************************************/
-orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _stTickSize, orxCLOCK_TYPE _eType)
+orxCLOCK *orxFASTCALL orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
 {
   orxCLOCK *pstClock;
 
@@ -425,7 +425,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _stTickSize, orxCLOCK_TYPE _eType
     if(pstClock->pstFunctionBank != orxNULL)
     {
       /* Inits clock */
-      pstClock->stClockInfo.stTickSize   = _stTickSize;
+      pstClock->stClockInfo.u32TickSize = _u32TickSize;
       pstClock->stClockInfo.eType       = _eType;
       pstClock->stClockInfo.eModType    = orxCLOCK_MOD_TYPE_NONE;
       pstClock->u32Flags                = orxCLOCK_KU32_CLOCK_FLAG_NONE;
@@ -646,7 +646,7 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK
 
  returns: orxCLOCK * / orxNULL
  ***************************************************************************/
-orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _stTickSize, orxCLOCK_TYPE _eType)
+orxCLOCK *orxFASTCALL orxClock_FindFirst(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
 {
   orxCLOCK *pstClock;
 
@@ -655,7 +655,7 @@ orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _stTickSize, orxCLOCK_TYPE _eT
   orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
 
   /* Finds first matching clock */
-  pstClock = orxClock_FindClock(_stTickSize, _eType, orxNULL);
+  pstClock = orxClock_FindClock(_u32TickSize, _eType, orxNULL);
 
   /* Done! */
   return pstClock;
@@ -676,7 +676,7 @@ orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
   orxASSERT(_pstClock != orxNULL);
 
   /* Finds next matching clock */
-  pstClock = orxClock_FindClock(_pstClock->stClockInfo.stTickSize, _pstClock->stClockInfo.eType, _pstClock);
+  pstClock = orxClock_FindClock(_pstClock->stClockInfo.u32TickSize, _pstClock->stClockInfo.eType, _pstClock);
   
   /* Done! */
   return pstClock;

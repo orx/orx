@@ -26,8 +26,6 @@
 
 typedef orxU32                      orxDATE;
 
-typedef orxU32                      orxTIME;
-
 
 /***************************************************************************
  * Functions directly implemented by orx core
@@ -40,9 +38,9 @@ typedef orxU32                      orxTIME;
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_Exit, orxVOID);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_GetTime, orxTIME);
+orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_GetTime, orxU32);
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_GetDate, orxDATE);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxTime_Delay, orxVOID, orxTIME);
+orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxTime_Delay, orxVOID, orxU32);
 
 
 /** Inits the time module.
@@ -64,7 +62,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Exit()
 /** Gets time.
  * @return Current time.
  */
-orxSTATIC orxINLINE orxDLLAPI orxTIME orxTime_GetTime()
+orxSTATIC orxINLINE orxDLLAPI orxU32 orxTime_GetTime()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_GetTime)();
 }
@@ -78,11 +76,11 @@ orxSTATIC orxINLINE orxDLLAPI orxDATE orxTime_GetDate()
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _stTime Number of milliseconds to wait.
+ * @param[in] _u32Time Number of milliseconds to wait.
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Delay(orxTIME _stTime)
+orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Delay(orxU32 _u32Time)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Delay)(_stTime);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Delay)(_u32Time);
 }
 
 #endif /* _orxTIME_H_ */

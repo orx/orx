@@ -95,12 +95,12 @@ orxVOID orxTest_Clock_DisplayInfos(orxCONST orxCLOCK_INFO *_pstClockInfo)
   /* Display informations */
   orxTextIO_PrintLn("* eType          = %d",    _pstClockInfo->eType);
   orxTextIO_PrintLn("* u32TickCounter = %lu",   _pstClockInfo->u32TickCounter);
-  orxTextIO_PrintLn("* stTickSize     = %lu",   _pstClockInfo->stTickSize);
-  orxTextIO_PrintLn("* stTickValue    = %lu",   _pstClockInfo->stTickValue);
+  orxTextIO_PrintLn("* u32TickSize     = %lu",   _pstClockInfo->u32TickSize);
+  orxTextIO_PrintLn("* u32TickValue    = %lu",   _pstClockInfo->u32TickValue);
   orxTextIO_PrintLn("* eModType       = %d",    _pstClockInfo->eModType);
   orxTextIO_PrintLn("* fModValue      = %f",    _pstClockInfo->fModValue);
-  orxTextIO_PrintLn("* stDT           = %lu",   _pstClockInfo->stDT);
-  orxTextIO_PrintLn("* Time           = %lu\n", _pstClockInfo->stTime);
+  orxTextIO_PrintLn("* u32DT           = %lu",   _pstClockInfo->u32DT);
+  orxTextIO_PrintLn("* Time           = %lu\n", _pstClockInfo->u32Time);
 }
 
 orxVOID orxFASTCALL orxTest_Clock_EndLoop(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
@@ -136,7 +136,7 @@ orxVOID orxTest_Clock_Infos()
 
 orxVOID orxTest_Clock_Create()
 {
-  orxFLOAT fTickSize;
+  orxU32 u32TickSize;
   orxCLOCK *pstClock;
   orxTEST_CLOCK_INFO *pstClockCell;
 
@@ -147,10 +147,10 @@ orxVOID orxTest_Clock_Create()
     orxTextIO_PrintLn("Only the tick size.");
     
     /* Read tick size */
-    orxTextIO_ReadFloat(&fTickSize, "Choose a tick size", orxTRUE);
+    orxTextIO_ReadS32InRange(&u32TickSize, 10, 1, 0x7FFFFFFF, "Choose a tick size", orxTRUE);
     
     /* Try to create the clock */
-    pstClock = orxClock_Create(fTickSize, orxCLOCK_TYPE_USER);
+    pstClock = orxClock_Create(u32TickSize, orxCLOCK_TYPE_USER);
     
     /* Clock created ? */
     if (pstClock != orxNULL)
@@ -269,8 +269,8 @@ orxVOID orxTest_Clock_Simulate()
   if (orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
   {
     /* Create a clock of 10 seconds */
-    pstClock = orxClock_Create(orxU2F(10 * 1000), orxCLOCK_TYPE_USER);
-    
+    pstClock = orxClock_Create(10000, orxCLOCK_TYPE_USER);
+
     /* Register the callback */
     orxClock_Register(pstClock, orxTest_Clock_EndLoop, orxNULL);
     

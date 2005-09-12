@@ -68,10 +68,10 @@ struct __orxANIMPOINTER_t
   orxHANDLE hDstAnim;
 
   /* Current Time (Relative to current animation) : 40 */
-  orxTIME stCurrentAnimTime;
+  orxU32 u32CurrentAnimTime;
 
   /* Current Time (Absolute) : 44 */
-  orxTIME stTime;
+  orxU32 u32Time;
 
   /* Current animation frequency : 48 */
   orxFLOAT fFrequency;
@@ -133,10 +133,10 @@ orxSTATIC orxVOID orxAnimPointer_DeleteAll()
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxTIME _stTime)
+orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32Time)
 {
   orxHANDLE hNewAnim;
-  orxTIME stDT;
+  orxU32 u32DT;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -150,14 +150,14 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
     if(orxAnimPointer_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
       /* Computes TimeDT */
-      stDT = orxF2U(orxU2F(_stTime - _pstAnimPointer->stTime) * _pstAnimPointer->fFrequency);
+      u32DT = orxF2U(orxU2F(_u32Time - _pstAnimPointer->u32Time) * _pstAnimPointer->fFrequency);
 
       /* Updates Times */
-      _pstAnimPointer->stTime = _stTime;
-      _pstAnimPointer->stCurrentAnimTime += stDT;
+      _pstAnimPointer->u32Time = _u32Time;
+      _pstAnimPointer->u32CurrentAnimTime += u32DT;
 
       /* Computes & updates anim*/
-      hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimset, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hDstAnim, &(_pstAnimPointer->stCurrentAnimTime), _pstAnimPointer->pstLinkTable);
+      hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimset, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hDstAnim, &(_pstAnimPointer->u32CurrentAnimTime), _pstAnimPointer->pstLinkTable);
     
       /* Change happened? */
       if(hNewAnim != _pstAnimPointer->hCurrentAnim)
@@ -203,7 +203,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructur
   orxASSERT(pstAnimPointer != orxNULL);
 
   /* Computes animation pointer */
-  return(orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->stTime));
+  return(orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->u32Time));
 }
 
 
@@ -341,9 +341,9 @@ orxANIMPOINTER *orxAnimPointer_Create(orxANIMSET *_pstAnimset)
 
     /* Inits value */
     pstAnimpointer->hCurrentAnim        = (orxHANDLE)0;
-    pstAnimpointer->stCurrentAnimTime   = 0;
+    pstAnimpointer->u32CurrentAnimTime   = 0;
     pstAnimpointer->fFrequency          = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
-    pstAnimpointer->stTime              = orxTime_GetTime();
+    pstAnimpointer->u32Time              = orxTime_GetTime();
     pstAnimpointer->hDstAnim            = orxHANDLE_Undefined;
 
     /* Is animset link table non-static? */
@@ -477,9 +477,9 @@ orxANIM *orxAnimPointer_GetAnim(orxCONST orxANIMPOINTER *_pstAnimpointer)
 
  returns: orxU32 timestamp
  ***************************************************************************/
-orxTIME orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimpointer)
+orxU32 orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimpointer)
 {
-  orxTIME stResult = 0;
+  orxU32 u32Result = 0;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
@@ -489,7 +489,7 @@ orxTIME orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimpointer)
   if(orxAnimPointer_TestFlags(_pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
   {
     /* Gets time */
-    stResult = _pstAnimpointer->stCurrentAnimTime;
+    u32Result = _pstAnimpointer->u32CurrentAnimTime;
   }
   else
   {
@@ -497,7 +497,7 @@ orxTIME orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimpointer)
   }
   
   /* Done! */
-  return stResult;
+  return u32Result;
 }
 
 /***************************************************************************
@@ -540,13 +540,13 @@ orxSTATUS orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimpointer, orxHANDLE _hAn
       _pstAnimpointer->hCurrentAnim = _hAnimHandle;
 
       /* Updates absolute timestamp */
-      _pstAnimpointer->stTime       = orxTime_GetTime();
+      _pstAnimpointer->u32Time       = orxTime_GetTime();
     
       /* Updates flags */
       orxAnimPointer_SetFlags(_pstAnimpointer, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_ID_FLAG_NONE);
     
       /* Computes animpointer */
-      eResult = orxAnimPointer_Compute(_pstAnimpointer, _pstAnimpointer->stTime);
+      eResult = orxAnimPointer_Compute(_pstAnimpointer, _pstAnimpointer->u32Time);
     }
     else
     {
@@ -574,7 +574,7 @@ orxSTATUS orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimpointer, orxHANDLE _hAn
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimpointer, orxTIME _stTime)
+orxSTATUS orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimpointer, orxU32 _u32Time)
 {
   orxSTATUS eResult;
 
@@ -583,13 +583,13 @@ orxSTATUS orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimpointer, orxTIME _stTim
   orxASSERT(_pstAnimpointer != orxNULL);
 
   /* Stores relative timestamp */
-  _pstAnimpointer->stCurrentAnimTime = _stTime;
+  _pstAnimpointer->u32CurrentAnimTime = _u32Time;
   
   /* Updates absolute timestamp */
-  _pstAnimpointer->stTime = orxTime_GetTime();
+  _pstAnimpointer->u32Time = orxTime_GetTime();
 
   /* Computes animpointer */
-  eResult = orxAnimPointer_Compute(_pstAnimpointer, _pstAnimpointer->stTime);
+  eResult = orxAnimPointer_Compute(_pstAnimpointer, _pstAnimpointer->u32Time);
 
   /* Done! */
   return eResult;

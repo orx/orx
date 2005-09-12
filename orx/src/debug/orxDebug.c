@@ -283,12 +283,12 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   /* Time Stamp? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_FLAG_TIMESTAMP)
   {
-    time_t stTime;
+    time_t u32Time;
 
     /* Inits Log Time */
-    time(&stTime);
+    time(&u32Time);
 
-    strftime(sstDebug.zBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&stTime));
+    strftime(sstDebug.zBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&u32Time));
   }
 
   /* Log Type? */

@@ -78,12 +78,12 @@ extern orxDLLAPI orxANIMSET *                       orxAnimPointer_GetAnimSet(or
 /** AnimationPointer current Animation get accessor. */
 extern orxDLLAPI orxANIM *                          orxAnimPointer_GetAnim(orxCONST orxANIMPOINTER *_pstAnimpointer);
 /** AnimationPointer current Animation Time get accessor. */
-extern orxDLLAPI orxTIME                            orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimpointer);
+extern orxDLLAPI orxU32                             orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimpointer);
 
 /** AnimationPointer current Animation set accessor. */
 extern orxDLLAPI orxSTATUS                          orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimpointer, orxHANDLE _hAnimHandle);
 /** AnimationPointer current Animation Time set accessor. */
-extern orxDLLAPI orxSTATUS                          orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimpointer, orxTIME _stTime);
+extern orxDLLAPI orxSTATUS                          orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimpointer, orxU32 _u32Time);
 
 /** AnimationPointer Frequency get accessor. */
 extern orxDLLAPI orxFLOAT                           orxAnimPointer_GetFrequency(orxCONST orxANIMPOINTER *_pstAnimpointer);
