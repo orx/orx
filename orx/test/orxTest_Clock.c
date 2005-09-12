@@ -165,6 +165,9 @@ orxVOID orxTest_Clock_Create()
           
           /* Clock Created  */
           orxTextIO_PrintLn("Clock %x created.", pstClock);
+          
+          /* Pauses it */
+          orxClock_Pause(pstClock);
         }
         else
         {
@@ -268,8 +271,16 @@ orxVOID orxTest_Clock_Simulate()
   
   if (orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
   {
-    /* Update clocks */
+    /* Update clocks : reinits DT */
     orxClock_Update();
+
+    /* Unpauses all clocks */
+    for(pstClock = orxClock_GetNext(orxNULL);
+        pstClock != orxNULL;
+        pstClock = orxClock_GetNext(pstClock))
+    {
+      orxClock_Unpause(pstClock);
+    }
 
     /* Create a clock of 10 seconds */
     pstClock = orxClock_Create(10000, orxCLOCK_TYPE_USER);
@@ -289,10 +300,18 @@ orxVOID orxTest_Clock_Simulate()
     
     /* Unregister the callback */
     orxClock_Unregister(pstClock, orxTest_Clock_EndLoop);
-    
+
     /* Delete the clock */
     orxClock_Delete(pstClock);
-    
+
+    /* Pauses all clocks */
+    for(pstClock = orxClock_GetNext(orxNULL);
+        pstClock != orxNULL;
+        pstClock = orxClock_GetNext(pstClock))
+    {
+      orxClock_Pause(pstClock);
+    }
+   
     /* Reset exit bool */
     sstTest_Clock.bExit = orxFALSE;
   }
