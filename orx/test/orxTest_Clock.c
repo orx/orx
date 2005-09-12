@@ -95,11 +95,11 @@ orxVOID orxTest_Clock_DisplayInfos(orxCONST orxCLOCK_INFO *_pstClockInfo)
   /* Display informations */
   orxTextIO_PrintLn("* eType          = %d",    _pstClockInfo->eType);
   orxTextIO_PrintLn("* u32TickCounter = %lu",   _pstClockInfo->u32TickCounter);
-  orxTextIO_PrintLn("* u32TickSize     = %lu",   _pstClockInfo->u32TickSize);
-  orxTextIO_PrintLn("* u32TickValue    = %lu",   _pstClockInfo->u32TickValue);
+  orxTextIO_PrintLn("* u32TickSize    = %lu",   _pstClockInfo->u32TickSize);
+  orxTextIO_PrintLn("* u32TickValue   = %lu",   _pstClockInfo->u32TickValue);
   orxTextIO_PrintLn("* eModType       = %d",    _pstClockInfo->eModType);
   orxTextIO_PrintLn("* fModValue      = %f",    _pstClockInfo->fModValue);
-  orxTextIO_PrintLn("* u32DT           = %lu",   _pstClockInfo->u32DT);
+  orxTextIO_PrintLn("* u32DT          = %lu",   _pstClockInfo->u32StableDT);
   orxTextIO_PrintLn("* Time           = %lu\n", _pstClockInfo->u32Time);
 }
 
@@ -268,6 +268,9 @@ orxVOID orxTest_Clock_Simulate()
   
   if (orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
   {
+    /* Update clocks */
+    orxClock_Update();
+
     /* Create a clock of 10 seconds */
     pstClock = orxClock_Create(10000, orxCLOCK_TYPE_USER);
 
