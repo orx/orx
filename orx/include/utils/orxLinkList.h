@@ -113,6 +113,8 @@ typedef struct __orxLINKLIST_t                  orxLINKLIST;
 typedef struct __orxLINKLIST_NODE_t             orxLINKLIST_NODE;
 
 
+/** LinkList module setup. */
+extern orxDLLAPI orxVOID                        orxLinkList_Setup();
 /** Inits the object system. */
 extern orxDLLAPI orxSTATUS                      orxLinkList_Init();
 /** Ends the object system. */

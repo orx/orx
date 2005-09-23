@@ -88,6 +88,20 @@ orxSTATIC orxINLINE orxU32 orxHashTable_FindIndex(orxCONST orxHASHTABLE *_pstHas
  * Public functions                                                        *
  ***************************************************************************/
 
+/***************************************************************************
+ orxHashTable_Setup
+ HashTable module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxHashTable_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_HASHTABLE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_HASHTABLE, orxMODULE_ID_BANK);
+
+  return;
+}
 
 /** @name Module management.
  * @{ */
@@ -98,28 +112,29 @@ orxSTATUS orxHashTable_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Bank)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY))
-    {
-      /* Module not already initialized ? */
-      orxASSERT(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY));
-    
-      /* Cleans static controller */
-      orxMemory_Set(&sstHashTable, 0, sizeof(orxHASHTABLE_STATIC));
-    
-      /* Set module as ready */
-      sstHashTable.u32Flags = orxHASHTABLE_KU32_FLAG_READY;
-      
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
-    }
-  }
+    /* Module not already initialized ? */
+    orxASSERT(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY));
   
+    /* Cleans static controller */
+    orxMemory_Set(&sstHashTable, 0, sizeof(orxHASHTABLE_STATIC));
+  
+    /* Set module as ready */
+    sstHashTable.u32Flags = orxHASHTABLE_KU32_FLAG_READY;
+    
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
   /* Successfull initialization */
   return eResult;
 }
@@ -135,10 +150,7 @@ orxVOID orxHashTable_Exit()
     sstHashTable.u32Flags = orxHASHTABLE_KU32_FLAG_NONE;
   }
   
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Bank);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
+  return;
 }
 
 /** @name HashTable creation/destruction.

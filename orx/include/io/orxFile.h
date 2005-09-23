@@ -58,6 +58,9 @@ typedef struct __orxFILE_t orxFILE;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+/** File module setup */
+extern orxDLLAPI orxVOID                orxFile_Setup();
+
 /** Delete recursively a direcory and all its subfolders.
  * @param _zDirectory     (IN)     Name of the directory directory to remove (with subfolders)
  * @return status of the operation (orxSTATUS_FAILED or orxSTATUS_SUCCESS)

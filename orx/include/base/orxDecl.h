@@ -111,6 +111,37 @@
 #endif                      /* end orxDLLEXPORT */
 
 
+/** Memory alignment macros */
+#define _orxALIGN(ADDRESS, BLOCK_SIZE)  ((ADDRESS + (BLOCK_SIZE - 1)) & (~(BLOCK_SIZE - 1)))
+
+#define orxALIGN16(ADDRESS)             _orxALIGN(ADRESS, 16)
+#define orxALIGN32(ADDRESS)             _orxALIGN(ADRESS, 32)
+#define orxALIGN64(ADDRESS)             _orxALIGN(ADRESS, 64)
+
+
+/* Padding macro */
+#ifdef __orxPADDING__
+
+  #ifdef orxPADDING_SIZE                /* Padding size defined */
+
+    #define orxPAD(SIZE)                /* No padding applied */
+
+  #else /* orxPADDING_SIZE */           /* Padding size not defined */
+
+    #define orxPAD(SIZE)                orxU8 au8Pad[_orxALIGN(SIZE, orxPADDING_SIZE) - SIZE]
+
+    #warning orxPADDING_SIZE is undefined : its value should be a power of 2!
+    #undef __orxPADDING__
+
+  #endif /* orxPADDING_SIZE */
+
+#else /* __orxPADDING__ */
+
+  #define orxPAD(SIZE)                  /* No padding applied */
+
+#endif /* __orxPADDING__ */
+
+
 /** Fast in-place swap macros for two 32-bits objects. */
 #define orxSWAP32(A, B)                                       \
 do                                                            \

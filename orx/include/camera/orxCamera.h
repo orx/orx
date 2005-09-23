@@ -55,7 +55,8 @@ typedef struct __orxCAMERA_t            orxCAMERA;
 /** Public camera view list structure. */
 typedef struct __orxCAMERA_VIEW_LIST_t  orxCAMERA_VIEW_LIST;
 
-
+/** Camera system setup */
+extern orxDLLAPI orxVOID                orxCamera_Setup();
 /** Inits the camera system. */
 extern orxDLLAPI orxSTATUS              orxCamera_Init();
 /** Exits from the camera system. */

@@ -51,7 +51,8 @@
 /** Internal Animation structure. */
 typedef struct __orxANIM_t  orxANIM;
 
-
+/** Animation system setup. */
+extern orxDLLAPI orxVOID                      orxAnim_Setup();
 /** Inits the Animation system. */
 extern orxDLLAPI orxSTATUS                    orxAnim_Init();
 /** Exits from the Animation system. */

@@ -138,13 +138,13 @@ orxU32 graphic_init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Init Dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Structure) &
-       orxDEPEND_INIT(Anim) &
-       orxDEPEND_INIT(AnimPointer) &
-       orxDEPEND_INIT(Texture)) == orxSTATUS_SUCCESS)
-  {
+//  /* Init Dependencies */
+//  if ((orxDEPEND_INIT(Depend) &
+//       orxDEPEND_INIT(Structure) &
+//       orxDEPEND_INIT(Anim) &
+//       orxDEPEND_INIT(AnimPointer) &
+//       orxDEPEND_INIT(Texture)) == orxSTATUS_SUCCESS)
+//  {
     /* Not already Initialized? */
     if(!(graphic_su32Flags & GRAPHIC_KU32_FLAG_READY))
     {
@@ -153,7 +153,7 @@ orxU32 graphic_init()
   
       eResult = orxSTATUS_SUCCESS;
     }
-  }
+//  }
   
   /* Done */
   return eResult;
@@ -177,11 +177,11 @@ orxVOID graphic_exit()
   }
   
   /* Exit Dependencies */
-  orxDEPEND_EXIT(Texture);
-  orxDEPEND_EXIT(AnimPointer);
-  orxDEPEND_EXIT(Anim);
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Depend);
+//  orxDEPEND_EXIT(Texture);
+//  orxDEPEND_EXIT(AnimPointer);
+//  orxDEPEND_EXIT(Anim);
+//  orxDEPEND_EXIT(Structure);
+//  orxDEPEND_EXIT(Depend);
 
   return;
 }

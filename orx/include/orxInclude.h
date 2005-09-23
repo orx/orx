@@ -46,8 +46,8 @@
  */
 
 
-/* *** Types include *** */
-#include "base/orxDepend.h"
+/* *** Module include *** */
+#include "base/orxModule.h"
 
 
 #endif /* _orxINCLUDE_H_ */

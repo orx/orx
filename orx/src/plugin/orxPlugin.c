@@ -589,6 +589,23 @@ orxSTATIC orxINLINE orxVOID orxPlugin_DeleteAll()
  ***************************************************************************/
 
 /***************************************************************************
+ orxPlugin_Setup
+ Plugin module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxPlugin_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_HASHTABLE);
+  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_TEXTIO);
+
+  return;
+}
+
+/***************************************************************************
  orxPlugin_Init
  Inits plugin system.
 
@@ -598,50 +615,41 @@ orxSTATUS orxPlugin_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Bank) &
-       orxDEPEND_INIT(HashTable) &
-       orxDEPEND_INIT(String) &
-       orxDEPEND_INIT(TextIO)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
+    /* Cleans control structure */
+    orxMemory_Set(&sstPlugin, 0, sizeof(orxPLUGIN_STATIC));
+
+    /* Creates an empty spst_plugin_list */
+    sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Is bank valid? */
+    if(sstPlugin.pstPluginBank != orxNULL)
     {
-      /* Cleans control structure */
-      orxMemory_Set(&sstPlugin, 0, sizeof(orxPLUGIN_STATIC));
+      /* Updates status flags */
+      sstPlugin.u32Flags = orxPLUGIN_KU32_FLAG_READY;
 
-      /* Creates an empty spst_plugin_list */
-      sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+      /* Registers all core plugins */
+      orxPlugin_RegisterCorePlugins();
 
-      /* Is bank valid? */
-      if(sstPlugin.pstPluginBank != orxNULL)
-      {
-        /* Updates status flags */
-        sstPlugin.u32Flags = orxPLUGIN_KU32_FLAG_READY;
-
-        /* Registers all core plugins */
-        orxPlugin_RegisterCorePlugins();
-
-        /* Successful */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        /* !!! MSG !!! */
-
-        /* Bank not created */
-        eResult = orxSTATUS_FAILED;
-      }
+      /* Successful */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
       /* !!! MSG !!! */
 
-      /* Already initialized */
+      /* Bank not created */
       eResult = orxSTATUS_FAILED;
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -673,14 +681,6 @@ orxVOID orxPlugin_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  /* Exit dependencies */
-  orxDEPEND_EXIT(TextIO);
-  orxDEPEND_EXIT(String);
-  orxDEPEND_EXIT(HashTable);
-  orxDEPEND_EXIT(Bank);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

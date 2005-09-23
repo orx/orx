@@ -148,7 +148,7 @@ orxSTATUS orxParamHelp(orxU32 _u32NbParam, orxSTRING _azParams[])
   }
   
   /* Send the Exit Event to the engine */
-/*  orxEventManager_AddEvent() */
+/*  orxEvent_Add() */
   
   /* Help request always fail => Show help instead of starting the engine */
   return orxSTATUS_SUCCESS;
@@ -157,69 +157,85 @@ orxSTATUS orxParamHelp(orxU32 _u32NbParam, orxSTRING _azParams[])
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
+
+/***************************************************************************
+ orxParam_Setup
+ Param module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxParam_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_TEXTIO);
+  orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_HASHTABLE);
+
+  return;
+}
+
+
 /** Initialize Param Module
  */
 orxSTATUS orxParam_Init()
 {
   /* Declare variables */
   orxSTATUS eResult = orxSTATUS_FAILED;
-  
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(String) &
-       orxDEPEND_INIT(TextIO) &
-       orxDEPEND_INIT(HashTable) &
-       orxDEPEND_INIT(Bank)/* &
-       orxDEPEND_INIT(Event)*/) == orxSTATUS_SUCCESS)
+
+  /* Not already Initialized? */
+  if(!(sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY))
+    /* Cleans static controller */
+    orxMemory_Set(&sstParam, 0, sizeof(orxPARAM_STATIC));
+    
+    /* Create an empty bank to store parameters */
+    sstParam.pstBank = orxBank_Create(orxPARAM_KU32_MODULE_BANK_SIZE,
+                                      sizeof(orxPARAM_INFOS),
+                                      orxBANK_KU32_FLAGS_NONE,
+                                      orxMEMORY_TYPE_MAIN);
+
+    /* Bank successfully created ? */
+    if (sstParam.pstBank != orxNULL)
     {
-      /* Cleans static controller */
-      orxMemory_Set(&sstParam, 0, sizeof(orxPARAM_STATIC));
-      
-      /* Create an empty bank to store parameters */
-      sstParam.pstBank = orxBank_Create(orxPARAM_KU32_MODULE_BANK_SIZE,
-                                        sizeof(orxPARAM_INFOS),
-                                        orxBANK_KU32_FLAGS_NONE,
-                                        orxMEMORY_TYPE_MAIN);
-
-      /* Bank successfully created ? */
-      if (sstParam.pstBank != orxNULL)
+      /* Now create the hash table */
+      sstParam.pstHashTable = orxHashTable_Create(orxPARAM_KU32_MODULE_BANK_SIZE * 2,
+                                                  orxHASHTABLE_KU32_FLAGS_NONE,
+                                                  orxMEMORY_TYPE_MAIN);
+                                                  
+      /* HashTable Created ? */
+      if (sstParam.pstHashTable != orxNULL)
       {
-        /* Now create the hash table */
-        sstParam.pstHashTable = orxHashTable_Create(orxPARAM_KU32_MODULE_BANK_SIZE * 2,
-                                                    orxHASHTABLE_KU32_FLAGS_NONE,
-                                                    orxMEMORY_TYPE_MAIN);
-                                                    
-        /* HashTable Created ? */
-        if (sstParam.pstHashTable != orxNULL)
-        {
-          orxPARAM stParam;
-          
-          /* Set module as ready */
-          sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_READY;
+        orxPARAM stParam;
+        
+        /* Set module as ready */
+        sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_READY;
 
-          /* Everything seems ok. Register the module help function */
-          stParam.u32Flags  = orxPARAM_KU32_FLAGS_STOP_ON_ERROR;
-          stParam.pfnParser = orxParamHelp;
-          orxString_Copy(stParam.zShortName, "h");
-          orxString_Copy(stParam.zLongName,  "help");
-          orxString_Copy(stParam.zShortDesc, "Display this help. You can use extra parameter to display complete description (-h <param>)");
-          orxString_Copy(stParam.zLongDesc,  "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed");
-          
-          /* Register */          
-          eResult = orxParam_Register(&stParam);
-          
-          /* If registration failed, module become unready */
-          if (eResult == orxSTATUS_FAILED)
-          {
-            sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
-          }
+        /* Everything seems ok. Register the module help function */
+        stParam.u32Flags    = orxPARAM_KU32_FLAGS_STOP_ON_ERROR;
+        stParam.pfnParser   = orxParamHelp;
+        stParam.zShortName  = "h";
+        stParam.zLongName   = "help";
+        stParam.zShortDesc  = "Display this help. You can use extra parameter to display complete description (-h <param>)";
+        stParam.zLongDesc   = "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed";
+        
+        /* Register */          
+        eResult = orxParam_Register(&stParam);
+        
+        /* If registration failed, module become unready */
+        if (eResult == orxSTATUS_FAILED)
+        {
+          sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
         }
       }
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
   
   /* Done */
@@ -237,14 +253,7 @@ orxVOID orxParam_Exit()
     sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
   }
 
-  /* Exit dependencies */
-/*  orxDEPEND_EXIT(Event); */
-  orxDEPEND_EXIT(Bank);
-  orxDEPEND_EXIT(HashTable);
-  orxDEPEND_EXIT(TextIO);
-  orxDEPEND_EXIT(String);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
+  return;
 }
 
 /** Register a new parameter

@@ -81,7 +81,6 @@ typedef struct __orxTEXTURE_STATIC_t
 orxSTATIC orxTEXTURE_STATIC sstTexture;
 
 
-
 /***************************************************************************
  ***************************************************************************
  ******                       LOCAL FUNCTIONS                         ******
@@ -197,6 +196,20 @@ orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByData(orxVOID *_pstData)
  ***************************************************************************
  ***************************************************************************/
 
+/***************************************************************************
+ orxTexture_Setup
+ Texture module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxTexture_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRUCTURE);
+
+  return;
+}
 
 /***************************************************************************
  orxTexture_Init
@@ -208,40 +221,34 @@ orxSTATUS orxTexture_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Structure)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY))
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+
+    /* Cleans static controller */
+    orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE));
+
+    /* Registers structure type */
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxTEXTURE);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
+
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_TEXTURE, &stRegisterInfo);
+
+    if (eResult == orxSTATUS_SUCCESS)
     {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-  
-      /* Cleans static controller */
-      orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE));
-  
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-      stRegisterInfo.u32Size      = sizeof(orxTEXTURE);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
-  
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_TEXTURE, &stRegisterInfo);
-  
-      if (eResult == orxSTATUS_SUCCESS)
-      {
-        /* Inits Flags */
-        sstTexture.u32Flags = orxTEXTURE_KU32_FLAG_READY;
-      }
+      /* Inits Flags */
+      sstTexture.u32Flags = orxTEXTURE_KU32_FLAG_READY;
     }
-    else
-    {
-      /* !!! MSG !!! */
-  
-      /* Already initialized */
-      eResult = orxSTATUS_FAILED;
-    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -272,11 +279,6 @@ orxVOID orxTexture_Exit()
   {
     /* !!! MSG !!! */
   }
-  
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

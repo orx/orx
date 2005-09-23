@@ -47,8 +47,8 @@
 //  orxBOOL b_open;
 //  orxBOOL b_blocked;
 //
-//  /* 12 extra bytes of padding : 80 */
-//  orxU8 au8Unused[12];
+//  /* Padding */
+//  orxPAD(68);
 //};
 //
 //struct st_mask_t
@@ -56,8 +56,8 @@
 //  orxS32 fX, fY;
 //  orxFLOAT fCost;
 //
-//  /* 4 extra bytes of padding : 16 */
-//  orxU8 au8Unused[4];
+//  /* Padding */
+//  orxPAD(12);
 //};
 //
 //orxVOID pathfinder_tile_copy(pathfinder_st_tile *_pst_dest, pathfinder_st_tile *_pst_src)

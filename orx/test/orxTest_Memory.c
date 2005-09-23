@@ -24,7 +24,7 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "memory/orxMemory.h"
 #include "io/orxTextIO.h"
 
@@ -124,7 +124,7 @@ orxVOID orxTest_Memory_Free()
 orxVOID orxTest_Memory_Init()
 {
   /* Initialize Memory module */
-  orxDEPEND_INIT(Memory);
+  orxModule_Init(orxMODULE_ID_MEMORY);
   
   /* Register test functions */
   orxTest_Register("Memory", "Display module informations", orxTest_Memory_Infos);
@@ -150,9 +150,6 @@ orxVOID orxTest_Memory_Exit()
       sapMemory[u32ElemIndex] = orxNULL;
     }
   }
-    
-  /* Uninitialize Memory module */
-  orxDEPEND_EXIT(Memory);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Memory_Init, orxTest_Memory_Exit)

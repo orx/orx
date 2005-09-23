@@ -81,23 +81,6 @@
     orxBREAK();                               \
   }
 
-#else /* __orxDEBUG__ */
-
-  #define orxDEBUG_LOG(LEVEL, STRING, ...)
-
-  #define orxBREAK()
-
-  #define orxASSERT(TEST)
-
-  #define orxDEBUG_INIT()
-  #define orxDEBUG_EXIT()
-  #define orxDEBUG_FLAG_SET(SET, UNSET)
-  #define orxDEBUG_FLAG_BACKUP()
-  #define orxDEBUG_FLAG_RESTORE()
-
-#endif /* __orxDEBUG__ */
-
-
 /*****************************************************************************/
 
 /* *** Debug defines. *** */
@@ -167,6 +150,25 @@ extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_SetFlags(orxU32 _u32Add,
 
 /** Software break function. */
 extern orxDLLAPI orxVOID                      _orxDebug_Break();
+
+
+#else /* __orxDEBUG__ */
+
+
+  #define orxDEBUG_LOG(LEVEL, STRING, ...)
+
+  #define orxBREAK()
+
+  #define orxASSERT(TEST)
+
+  #define orxDEBUG_INIT()
+  #define orxDEBUG_EXIT()
+  #define orxDEBUG_FLAG_SET(SET, UNSET)
+  #define orxDEBUG_FLAG_BACKUP()
+  #define orxDEBUG_FLAG_RESTORE()
+
+
+#endif /* __orxDEBUG__ */
 
 
 #endif /* _orxDEBUG_H_ */

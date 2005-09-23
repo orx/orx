@@ -85,8 +85,8 @@ typedef struct __orxLINK_UPDATE_INFO_t
   /* Byte number per animation : 12 */
   orxU32 u32ByteNumber;
 
-  /* 4 extra bytes of padding : 16 */
-  orxU8 au8Unused[4];
+  /* Padding */
+  orxPAD(12);
 
 } orxLINK_UPDATE_INFO;
 
@@ -128,8 +128,8 @@ struct __orxANIMSET_t
   /* Link table pointer : 28 */
   orxANIMSET_LINK_TABLE *pstLinkTable;
 
-  /* 4 extra bytes of padding : 32 */
-  orxU8 au8Unused[4];
+  /* Padding */
+  orxPAD(28);
 };
 
 /*
@@ -1219,6 +1219,22 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
  ***************************************************************************/
 
 /***************************************************************************
+ orxAnimSet_Setup
+ AnimSet module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxAnimSet_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_ANIM);
+
+  return;
+}
+
+/***************************************************************************
  orxAnimSet_Init
  Inits Animation Set system.
 
@@ -1228,54 +1244,47 @@ orxSTATUS orxAnimSet_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Structure) &
-       orxDEPEND_INIT(Anim) &
-       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY))
   {
+    /* Cleans control structure */
+    orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIMSET_STATIC));
 
-    /* Not already Initialized? */
-    if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY))
-    {
-      /* Cleans control structure */
-      orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIMSET_STATIC));
-  
-      /* Initialized? */
-      if(eResult == orxSTATUS_SUCCESS)
-      {
-        orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-
-        /* Registers structure type */
-        stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-        stRegisterInfo.u32Size      = sizeof(orxANIMSET);
-        stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-        stRegisterInfo.pfnUpdate    = orxNULL;
-
-        eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMSET, &stRegisterInfo);
-      }
-      else
-      {
-        /* !!! MSG !!! */
-      }
-    }
-    else
-    {
-      /* !!! MSG !!! */
-  
-      /* Already initialized */
-      eResult = orxSTATUS_FAILED;
-    }
-  
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
     {
-      /* Inits Flags */
-      sstAnimSet.u32Flags = orxANIMSET_KU32_FLAG_READY;
+      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+
+      /* Registers structure type */
+      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+      stRegisterInfo.u32Size      = sizeof(orxANIMSET);
+      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+      stRegisterInfo.pfnUpdate    = orxNULL;
+
+      eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMSET, &stRegisterInfo);
     }
     else
     {
       /* !!! MSG !!! */
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstAnimSet.u32Flags = orxANIMSET_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
   }
 
   /* Done! */
@@ -1302,11 +1311,6 @@ orxVOID orxAnimSet_Exit()
     /* Updates flags */
     sstAnimSet.u32Flags &= ~orxANIMSET_KU32_FLAG_READY;
   }
-  
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Anim);
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }
@@ -2087,8 +2091,6 @@ orxVOID orxAnimSet_SetFlags(orxANIMSET *_pstAnimset, orxU32 _u32AddFlags, orxU32
   return;
 }
 
-
-/* *** Link Table public functions *** */
 
 /***************************************************************************
  orxAnimSet_DeleteLinkTable

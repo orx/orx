@@ -24,7 +24,7 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "core/orxClock.h"
 #include "io/orxTextIO.h"
 #include "memory/orxBank.h"
@@ -70,7 +70,7 @@ orxSTATUS orxTest_Clock_Depend()
     sstTest_Clock.u32InitCounter++;
     
     /* Init Clock */
-    if (orxDEPEND_INIT(Clock) == orxSTATUS_SUCCESS)
+    if (orxModule_Init(orxMODULE_ID_CLOCK) == orxSTATUS_SUCCESS)
     {
       sstTest_Clock.bInit = orxTRUE;
     }
@@ -156,7 +156,7 @@ orxVOID orxTest_Clock_Create()
     if (pstClock != orxNULL)
     {
       /* Now, try to register the update function */
-      if (orxClock_Register(pstClock, orxTest_Clock_ShowInfos, pstClock) == orxSTATUS_SUCCESS)
+      if (orxClock_Register(pstClock, orxTest_Clock_ShowInfos, pstClock, orxMODULE_ID_TEST) == orxSTATUS_SUCCESS)
       {
         /* Store the clock address */
         if ((pstClockCell = (orxTEST_CLOCK_INFO *)orxBank_Allocate(sstTest_Clock.pstBank)))
@@ -286,7 +286,7 @@ orxVOID orxTest_Clock_Simulate()
     pstClock = orxClock_Create(10000, orxCLOCK_TYPE_USER);
 
     /* Register the callback */
-    orxClock_Register(pstClock, orxTest_Clock_EndLoop, orxNULL);
+    orxClock_Register(pstClock, orxTest_Clock_EndLoop, orxNULL, orxMODULE_ID_TEST);
     
     /* Loop Until Exit received */
     while (!sstTest_Clock.bExit)
@@ -361,7 +361,6 @@ orxVOID orxTest_Clock_Exit()
   {
     while (sstTest_Clock.u32InitCounter > 0)
     {
-      orxDEPEND_EXIT(Clock);
       sstTest_Clock.u32InitCounter--;
     }
   }

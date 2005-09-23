@@ -71,6 +71,23 @@ orxSTATIC orxSCREENSHOT_STATIC sstScreenshot;
  ***************************************************************************/
 
 /***************************************************************************
+ orxScreenshot_Setup
+ Screenshot module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxScreenshot_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILE);
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_TEXTIO);
+  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_DISPLAY);
+
+  return;
+}
+
+/***************************************************************************
  orxScreenshot_Init
  Inits the screenshot system.
 
@@ -82,59 +99,53 @@ orxSTATUS orxScreenshot_Init()
   orxFILE_INFO stFileInfos;
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(File) &
-       orxDEPEND_INIT(TextIO) &
-       orxDEPEND_INIT(Display)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))
+    /* Cleans control structure */
+    orxMemory_Set(&sstScreenshot, 0, sizeof(orxSCREENSHOT_STATIC));
+
+    /* Valid? */
+    if(orxFile_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
     {
-      /* Cleans control structure */
-      orxMemory_Set(&sstScreenshot, 0, sizeof(orxSCREENSHOT_STATIC));
-  
-      /* Valid? */
-      if(orxFile_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
+      /* Gets file to find name */
+      orxTextIO_Printf(zFileName, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
+
+      /* Finds first screenshot file */
+      if(orxFile_FindFirst(zFileName, &stFileInfos) != orxFALSE)
       {
-        /* Gets file to find name */
-        orxTextIO_Printf(zFileName, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
-  
-        /* Finds first screenshot file */
-        if(orxFile_FindFirst(zFileName, &stFileInfos) != orxFALSE)
+        do
         {
-          do
-          {
-            /* Updates screenshot counter */
-            sstScreenshot.u32Counter++;
-          }
-          /* Till all screenshots have been found */
-          while(orxFile_FindNext(&stFileInfos) != orxFALSE);
-          
-          /* Ends the search */
-          orxFile_FindClose(&stFileInfos);
+          /* Updates screenshot counter */
+          sstScreenshot.u32Counter++;
         }
-  
-        /* Inits Flags */
-        sstScreenshot.u32Flags = orxSCREENSHOT_KU32_FLAG_READY;
+        /* Till all screenshots have been found */
+        while(orxFile_FindNext(&stFileInfos) != orxFALSE);
         
-        /* Success */
-        eResult = orxSTATUS_SUCCESS;
+        /* Ends the search */
+        orxFile_FindClose(&stFileInfos);
       }
-      else
-      {
-          /* !!! MSG !!! */
-  
-          /* Can't find folder */
-      }
+
+      /* Inits Flags */
+      sstScreenshot.u32Flags = orxSCREENSHOT_KU32_FLAG_READY;
+      
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
       /* !!! MSG !!! */
-  
-      /* Already initialized */
+
+      /* Can't find folder */
+      eResult = orxSTATUS_FAILED;
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -160,12 +171,6 @@ orxVOID orxScreenshot_Exit()
     /* !!! MSG !!! */
   }
 
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Display);
-  orxDEPEND_EXIT(TextIO);
-  orxDEPEND_EXIT(File);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
   return;
 }
 

@@ -48,6 +48,8 @@
 
 /* *** Functions *** */
 
+/** Screenshot module setup. */
+extern orxDLLAPI orxVOID                orxScreenshot_Setup();
 /** Inits the screenshot system. */
 extern orxDLLAPI orxSTATUS              orxScreenshot_Init();
 /** Exits from the screenshot system. */

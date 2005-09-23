@@ -46,6 +46,22 @@ typedef struct __orxMATHSET_STATIC_t
 orxSTATIC orxMATHSET_STATIC sstMathSet;
 
 /***************************************************************************
+ orxMathSet_Setup
+ MathSet module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxMathSet_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_MATHSET, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_MATHSET, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_MATHSET, orxMODULE_ID_LINKLIST);
+
+  return;
+}
+
+/***************************************************************************
  orxMathSets_Init
  Inits the mathematical set system.
  
@@ -56,37 +72,37 @@ orxSTATUS orxMathSet_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Bank) &
-       orxDEPEND_INIT(LinkList)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstMathSet.u32Flags & orxMATHSET_KU32_FLAG_READY))
+    /* Cleans static variable */
+    orxMemory_Set(&sstMathSet, 0, sizeof(orxMATHSET_STATIC));
+    
+    sstMathSet.pstFloatIntervalBank = orxBank_Create(orxMATHSET_KU32_BANK_SIZE, sizeof(orxINTERVAL_FLOAT_NODE), 0, orxMEMORY_TYPE_MAIN);
+    
+    if (sstMathSet.pstFloatIntervalBank != orxNULL)
     {
-      /* Cleans static variable */
-      orxMemory_Set(&sstMathSet, 0, sizeof(orxMATHSET_STATIC));
+      sstMathSet.pstInt32IntervalBank = orxBank_Create(orxMATHSET_KU32_BANK_SIZE, sizeof(orxINTERVAL_INT32_NODE), 0, orxMEMORY_TYPE_MAIN);
       
-      sstMathSet.pstFloatIntervalBank = orxBank_Create(orxMATHSET_KU32_BANK_SIZE, sizeof(orxINTERVAL_FLOAT_NODE), 0, orxMEMORY_TYPE_MAIN);
-      
-      if (sstMathSet.pstFloatIntervalBank != orxNULL)
+      /* Success ? */
+      if (sstMathSet.pstInt32IntervalBank != orxNULL)
       {
-        sstMathSet.pstInt32IntervalBank = orxBank_Create(orxMATHSET_KU32_BANK_SIZE, sizeof(orxINTERVAL_INT32_NODE), 0, orxMEMORY_TYPE_MAIN);
-        
-        /* Success ? */
-        if (sstMathSet.pstInt32IntervalBank != orxNULL)
-        {
-          eResult = orxSTATUS_SUCCESS;
-        }
-        else
-        {
-          orxBank_Delete(sstMathSet.pstFloatIntervalBank);
-        }
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        orxBank_Delete(sstMathSet.pstFloatIntervalBank);
       }
     }
   }
- 
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
   /* Done! */
   return eResult;
 }
@@ -113,12 +129,6 @@ orxVOID orxMathSet_Exit()
     /* !!! MSG !!! */
   }
   
-  /* Exit dependencies */
-  orxDEPEND_EXIT(LinkList);
-  orxDEPEND_EXIT(Bank);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
-
   /* Done */
   return;
 }

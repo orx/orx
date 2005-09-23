@@ -50,10 +50,13 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
   orxCLOCK_FUNCTION pfnCallback;
 
   /* Clock function context : 8 */
-  orxVOID *pstContext;
+  orxVOID          *pstContext;
 
-  /* 8 extra bytes of padding : 16 */
-  orxU8 au8Unused[8];
+  /* Clock function module ID : 12 */
+  orxMODULE_ID      eModuleID;
+
+  /* Padding */
+  orxPAD(12);
 
 } orxCLOCK_FUNCTION_STORAGE;
 
@@ -71,8 +74,8 @@ struct __orxCLOCK_t
   /* Clock flags : 40 */
   orxU32 u32Flags;
 
-  /* 8 extra bytes of padding : 48 */
-  orxU8 au8Unused[8];
+  /* Padding */
+  orxPAD(40);
 };
 
 /*
@@ -236,6 +239,22 @@ orxSTATIC orxINLINE orxU32 orxClock_ComputeDT(orxU32 _u32DT, orxCLOCK_INFO *_pst
  ***************************************************************************/
 
 /***************************************************************************
+ orxClock_Setup
+ Clock module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxClock_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_TIME);
+
+  return;
+}
+
+/***************************************************************************
  orxClock_Init
  Inits the clock module.
 
@@ -245,48 +264,44 @@ orxSTATUS orxClock_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       /*orxDEPEND_INIT(Time) &*/
-       orxDEPEND_INIT(Bank)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY))
-    {
-      /* Cleans control structure */
-      orxMemory_Set(&sstClock, 0, sizeof(orxCLOCK_STATIC));
-  
-      /* Creates clock bank */
-      sstClock.pstClockBank = orxBank_Create(orxCLOCK_KU32_CLOCK_BANK_SIZE, sizeof(orxCLOCK), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-  
-      /* Valid? */
-      if(sstClock.pstClockBank != orxNULL)
-      {
-        /* No mod type by default */
-        sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
-  
-        /* Gets init time */
-        sstClock.u32Time  = orxTime_GetTime();
-  
-        /* Inits Flags */
-        sstClock.u32Flags = orxCLOCK_KU32_FLAG_READY;
+    /* Cleans control structure */
+    orxMemory_Set(&sstClock, 0, sizeof(orxCLOCK_STATIC));
 
-        /* Success */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        /* !!! MSG !!! */
-  
-        /* Clock bank not created */
-        eResult = orxSTATUS_FAILED;
-      }
+    /* Creates clock bank */
+    sstClock.pstClockBank = orxBank_Create(orxCLOCK_KU32_CLOCK_BANK_SIZE, sizeof(orxCLOCK), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if(sstClock.pstClockBank != orxNULL)
+    {
+      /* No mod type by default */
+      sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
+
+      /* Gets init time */
+      sstClock.u32Time  = orxTime_GetTime();
+
+      /* Inits Flags */
+      sstClock.u32Flags = orxCLOCK_KU32_FLAG_READY;
+
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
       /* !!! MSG !!! */
+
+      /* Clock bank not created */
+      eResult = orxSTATUS_FAILED;
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+    
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -322,11 +337,6 @@ orxVOID orxClock_Exit()
     /* Updates flags */
     sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_READY;
   }
-
-  orxDEPEND_EXIT(Bank);
-  /*orxDEPEND_EXIT(Time);*/
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }
@@ -574,7 +584,7 @@ orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClo
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
+orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -595,6 +605,9 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
 
     /* Stores context */
     pstFunctionStorage->pstContext  = _pstContext;
+    
+    /* Stores module id */
+    pstFunctionStorage->eModuleID   = _eModuleID;
   }
   else
   {

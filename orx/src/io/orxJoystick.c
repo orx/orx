@@ -21,6 +21,25 @@
 #include "plugin/orxPluginCore.h"
 
 
+/***************************************************************************
+ orxJoystick_Setup
+ Joystick module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxJoystick_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_TREE);
+
+  return;
+}
+
+
 /********************
  *  Plugin Related  *
  ********************/

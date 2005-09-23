@@ -58,34 +58,28 @@ orxSTATIC orxTIME_STATIC sstTime;
  */
 orxSTATUS orxTimeSDL_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED; /* Init result */
+  orxSTATUS eResult = orxSTATUS_SUCCESS; /* Init result */
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Memory) == orxSTATUS_SUCCESS) /* && 
-      (orxMAIN_INIT_MODULE(Plugin) == orxSTATUS_SUCCESS)*/)
+  /* Module not already initialized ? */
+  if (!(sstTime.u32Flags & orxTIME_KU32_FLAG_READY))
   {
-  
-    /* Module not already initialized ? */
-    if (!(sstTime.u32Flags & orxTIME_KU32_FLAG_READY))
+    /* Cleans static controller */
+    orxMemory_Set(&sstTime, 0, sizeof(orxTIME_STATIC));
+
+    /* Is SDL_Init has already been called ? */
+    if (SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
     {
-      /* Cleans static controller */
-      orxMemory_Set(&sstTime, 0, sizeof(orxTIME_STATIC));
-    
-      /* Is SDL_Init has already been called ? */
-      if (SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
+      /* No, calls it */
+      if (SDL_Init(0)==0)
       {
-        /* No, calls it */
-        if (SDL_Init(0)==0)
+        /* Init time subsystem */
+        if (SDL_InitSubSystem(SDL_INIT_TIMER)==0)
         {
-          /* Init time subsystem */
-          if (SDL_InitSubSystem(SDL_INIT_TIMER)==0)
-          {
-            /* Set module as ready */
-            sstTime.u32Flags = orxTIME_KU32_FLAG_READY;
-            
-            /* Successfull init */
-            eResult = orxSTATUS_SUCCESS;
-          }
+          /* Set module as ready */
+          sstTime.u32Flags = orxTIME_KU32_FLAG_READY;
+          
+          /* Successfull init */
+          eResult = orxSTATUS_SUCCESS;
         }
       }
     }
@@ -115,8 +109,6 @@ orxVOID orxTimeSDL_Exit()
     /* Module not ready now */
     sstTime.u32Flags = orxTIME_KU32_FLAG_NONE;
   }
-  
-  orxDEPEND_EXIT(Memory);
 }
 
 /** Gets App Elapsed time.

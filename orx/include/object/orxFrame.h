@@ -42,6 +42,8 @@
 typedef struct __orxFRAME_t             orxFRAME;
 
 
+/** Frame module setup. */
+extern orxDLLAPI orxVOID                orxFrame_Setup();
 /** Inits the frame system. */
 extern orxDLLAPI orxSTATUS              orxFrame_Init();
 /** Ends the frame system. */

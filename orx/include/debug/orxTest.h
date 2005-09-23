@@ -38,12 +38,17 @@
 
 #include "orxInclude.h"
 
+#ifdef __orxTEST__
+
+
 typedef orxVOID (*orxTEST_FUNCTION)(orxVOID);
 
+/** Test module setup
+ */
+extern orxDLLAPI orxVOID                orxTest_Setup();
 /** Initialize the test module
  */
 extern orxDLLAPI orxSTATUS              orxTest_Init();
-
 /** Uninitialize the test module
  */
 extern orxDLLAPI orxVOID                orxTest_Exit();
@@ -115,6 +120,8 @@ void __attribute__ ((destructor)) module_exit()   \
     #warning orxTEST Module can not be compiled on this platform, Entry points (#INIT, #EXIT) not defined
   #endif
 #endif
+
+#endif /* __orxTEST__ */
 
 
 #endif /* _orxTEST_H_ */

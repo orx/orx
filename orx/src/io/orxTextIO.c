@@ -51,27 +51,43 @@ static orxTEXTIO_STATIC sstTextIO;
  * Public functions                                                        *
  ***************************************************************************/
 
+/***************************************************************************
+ orxTextIO_Setup
+ TextIO module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxTextIO_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_TEXTIO, orxMODULE_ID_MEMORY);
+
+  return;
+}
+
 /** Initialize the test module
  */
 orxSTATUS orxTextIO_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(String)) == orxSTATUS_SUCCESS)
+  /* Module not already registered ? */
+  if(!(sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY))
   {
-    /* Module not already registered ? */
-    if(!(sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY))
-    {
-      /* Initialize values */
-      orxMemory_Set(&sstTextIO, 0, sizeof(orxTEXTIO_STATIC));
-  
-      /* Module ready */
-      sstTextIO.u32Flags |= orxTEXTIO_KU32_FLAG_READY;
-      
-      eResult = orxSTATUS_SUCCESS;
-    }
+    /* Initialize values */
+    orxMemory_Set(&sstTextIO, 0, sizeof(orxTEXTIO_STATIC));
+
+    /* Module ready */
+    sstTextIO.u32Flags |= orxTEXTIO_KU32_FLAG_READY;
+    
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
   
   /* Done */ 
@@ -88,11 +104,8 @@ orxVOID orxTextIO_Exit()
     /* Module becomes not ready */
     sstTextIO.u32Flags &= ~orxTEXTIO_KU32_FLAG_READY;
   }
-  
-  /* Exit dependencies */
-  orxDEPEND_EXIT(String);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
+
+  return;
 }
 
 /** Read a String from STDIN and store it in the given buffer

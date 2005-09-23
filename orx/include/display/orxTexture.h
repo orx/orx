@@ -44,6 +44,8 @@
 typedef struct __orxTEXTURE_t           orxTEXTURE;
 
 
+/** Texture module setup */
+extern orxDLLAPI orxVOID                orxTexture_Setup();
 /** Inits the texture system. */
 extern orxDLLAPI orxSTATUS              orxTexture_Init();
 /** Exits from the texture system. */

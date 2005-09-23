@@ -32,6 +32,25 @@
  *  Plugin Related  *
  ********************/
  
+/***************************************************************************
+ orxFile_Setup
+ File module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxFile_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_TREE);
+
+  return;
+}
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(FILE)
@@ -69,10 +88,6 @@ orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_DeleteDir, orxSTATUS, orxSTRING);
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
-
-struct __orxFILE_t
-{
-};
 
 /***************************************************************************
  * Module global variable                                                  *

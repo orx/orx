@@ -39,8 +39,8 @@
  * @{
  */
 
-#ifndef _orxSETS_H_
-#define _orxSETS_H_
+#ifndef _orxMATHSET_H_
+#define _orxMATHSET_H_
 
 #include "orxInclude.h"
 #include "utils/orxLinkList.h"
@@ -51,6 +51,8 @@
  * @{
  */
 
+/** MathSet module setup */
+extern orxDLLAPI orxVOID                        orxMathSet_Setup();
 /** Inits the object system. */
 extern orxDLLAPI orxSTATUS                      orxMathSet_Init();
 /** Ends the object system. */
@@ -273,7 +275,7 @@ orxSTATIC orxINLINE orxDLLAPI orxBOOL orxIntervalFloat_IsLess(orxINTERVAL_FLOAT 
  * @param _stInter2 Second interval.
  * @return true if the first is less or bottom-throw than the second.
  */
-orxBOOL orxIntervalFloat_IsLessOrBottomThrow(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
+orxSTATIC orxINLINE orxBOOL orxIntervalFloat_IsLessOrBottomThrow(orxINTERVAL_FLOAT _stInter1, orxINTERVAL_FLOAT _stInter2)
 {
     return orxIntervalFloat_IsPointMinLessMin(_stInter1, _stInter2) &&
             orxIntervalFloat_IsPointMaxLessMax(_stInter1, _stInter2);
@@ -660,5 +662,5 @@ orxSTATIC orxINLINE orxDLLAPI orxLINKLIST *orxFASTCALL orxSetInt32_GetIntervalLi
 /** @} */
 
 
-#endif
+#endif /* _orxMATHSET_H_ */
 /** @} */

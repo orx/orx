@@ -49,6 +49,10 @@ typedef struct __orxSOUND_SAMPLE_t orxSOUND_SAMPLE;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+/** Sound module setup. */
+extern orxDLLAPI orxVOID                              orxSound_Setup();
+
+
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/

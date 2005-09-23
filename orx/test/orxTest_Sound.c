@@ -25,7 +25,7 @@
 
 #include "orxInclude.h"
 #include "memory/orxMemory.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "io/orxTextIO.h"
 #include "plugin/orxPlugin.h"
 #include "sound/orxSound.h"
@@ -343,7 +343,7 @@ orxVOID orxTest_Sound_ChannelSetVolume()
  ******************************************************/
 orxVOID orxTest_Sound_Init()
 {
-  orxDEPEND_INIT(Plugin);  /* Initialize Plugin module */
+  orxModule_Init(orxMODULE_ID_SOUND);  /* Initialize Plugin module */
   
   /* Register test functions */
   orxTest_Register("Sound", "Display module informations", orxTest_Sound_Infos);
@@ -376,9 +376,6 @@ orxVOID orxTest_Sound_Exit()
   
   /* Destroy bank */
   orxBank_Delete(sstTest_Sound.pstSampleBank);
-    
-  /* Uninitialize module */
-  orxDEPEND_EXIT(Plugin);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Sound_Init, orxTest_Sound_Exit)

@@ -24,6 +24,18 @@
 #include "plugin/orxPluginCore.h"
 
 
+/***************************************************************************
+ * Functions directly implemented by orx core
+ ***************************************************************************/
+
+/** Keyboard module setup */
+extern orxDLLAPI orxVOID                              orxKeyboard_Setup();
+
+
+/***************************************************************************
+ * Functions extended by plugins
+ ***************************************************************************/
+
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Exit, orxVOID);
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_Hit, orxBOOL);

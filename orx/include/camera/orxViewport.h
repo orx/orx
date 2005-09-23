@@ -48,6 +48,8 @@
 /** Internal viewport structure. */
 typedef struct __orxVIEWPORT_t                orxVIEWPORT;
 
+/** Viewport system setup */
+extern orxDLLAPI orxVOID                      orxViewport_Setup();
 /** Inits the viewport system. */
 extern orxDLLAPI orxSTATUS                    orxViewport_Init();
 /** Ends the viewport system. */

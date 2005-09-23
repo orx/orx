@@ -17,6 +17,9 @@
  ***************************************************************************/
 
 
+#ifdef __orxDEBUG__
+
+
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -24,8 +27,6 @@
 
 #include "debug/orxDebug.h"
 
-
-#ifdef __orxDEBUG__
 
 /*
  * Platform independant defines
@@ -144,7 +145,7 @@ orxSTATUS _orxDebug_Init()
     /* Already Initialized? */
     /* !!! MSG !!! */
 
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {

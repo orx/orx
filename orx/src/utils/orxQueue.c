@@ -128,6 +128,20 @@ orxSTATIC orxINLINE orxVOID orxQueueItem_Copy(orxQUEUE_ITEM* _pstSourceItem, orx
  * Public functions                                                        *
  ***************************************************************************/
  
+/***************************************************************************
+ orxQueue_Setup
+ Queue module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxQueue_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_QUEUE, orxMODULE_ID_MEMORY);
+
+  return;
+}
+
 /** 
  * orxQueue_Init
  **/
@@ -135,26 +149,24 @@ orxSTATUS orxQueue_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
+  /* Not already initialized ? */
+  if(!(sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY))
   {
-    /* Not already initialized ? */
-    if(!(sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY))
-    {
-      /* Cleans control structure */
-      orxMemory_Set(&sstQueue, 0, sizeof(orxQUEUE_STATIC));
+    /* Cleans control structure */
+    orxMemory_Set(&sstQueue, 0, sizeof(orxQUEUE_STATIC));
+  
+    /* Inits Flags */
+    sstQueue.u32Flags = orxQUEUE_KU32_FLAG_READY;
     
-      /* Inits Flags */
-      sstQueue.u32Flags = orxQUEUE_KU32_FLAG_READY;
-      
-      /* Successfull Init */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* !!! MSG !!! */
-    }
+    /* Successfull Init */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -176,10 +188,6 @@ orxVOID orxQueue_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

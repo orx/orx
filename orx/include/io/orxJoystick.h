@@ -28,6 +28,10 @@
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+/** Joystick module setup */
+extern orxDLLAPI orxVOID                              orxJoystick_Setup();
+
+
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/

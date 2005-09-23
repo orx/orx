@@ -95,8 +95,8 @@ typedef struct __orxSTRUCTURE_t
   /* Handle of internal storage node. : 12 */
   orxHANDLE hStorageNode;
 
-  /* 4 extra bytes of padding : 16 */
-  orxU8 au8Unused[4];
+  /* Padding */
+  orxPAD(12);
   
 } orxSTRUCTURE;
 
@@ -122,6 +122,8 @@ typedef struct __orxSTRUCTURE_REGISTER_INFO_t
 } orxSTRUCTURE_REGISTER_INFO;
 
 
+/** Structure module setup. */
+extern orxDLLAPI orxVOID                        orxStructure_Setup();
 /** Inits the structure system. */
 extern orxDLLAPI orxSTATUS                      orxStructure_Init();
 /** Exits from the structure system. */

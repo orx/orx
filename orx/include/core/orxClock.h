@@ -1,5 +1,10 @@
 /**
  * \file orxClock.h
+ * 
+ * \todo
+ * Add internal/external dependency system
+ * Optimize dependencies storage
+ * Add freezing behaviour
  */
 
 /***************************************************************************
@@ -34,7 +39,7 @@ typedef enum __orxCLOCK_TYPE_t
 {
   orxCLOCK_TYPE_CORE = 0,
   orxCLOCK_TYPE_USER,
-  
+
   orxCLOCK_TYPE_FPS,
 
   orxCLOCK_TYPE_NUMBER,
@@ -78,6 +83,8 @@ typedef struct __orxCLOCK_t                           orxCLOCK;
 typedef orxVOID orxFASTCALL (*orxCLOCK_FUNCTION)(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext);
 
 
+/** Clock module setup. */
+extern orxDLLAPI orxVOID                              orxClock_Setup();
 /** Inits Clock module. */
 extern orxDLLAPI orxSTATUS                            orxClock_Init();
 /** Exits from Clock module. */
@@ -102,7 +109,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(orxCLOCK
 extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock);
 
 /** Registers a callback function to a clock. */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID);
 /** Unregisters a callback function from a clock. */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
 /** Gets a callback function context. */

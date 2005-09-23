@@ -71,8 +71,8 @@ struct __orxVIEWPORT_t
   /* Associated surface : 92 */
   orxTEXTURE *pstSurface;
 
-  /* 4 extra bytes of padding : 96 */
-  orxU8 au8Unused[4];
+  /* Padding */
+  orxPAD(92);
 };
 
 
@@ -262,6 +262,22 @@ orxVOID orxViewport_DeleteAll()
  ***************************************************************************
  ***************************************************************************/
 
+/***************************************************************************
+ orxViewport_Setup
+ Viewport system setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxViewport_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_TEXTURE);
+  orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_CAMERA);
+
+  return;
+}
 
 /***************************************************************************
  orxViewport_Init
@@ -272,37 +288,24 @@ orxVOID orxViewport_DeleteAll()
 orxSTATUS orxViewport_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
-  
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Structure) &
-       orxDEPEND_INIT(Camera) &
-       orxDEPEND_INIT(Texture) &
-       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
-  {
-    /* Not already Initialized? */
-    if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
-    {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-    
-      /* Cleans static controller */
-      orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
-  
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-      stRegisterInfo.u32Size      = sizeof(orxVIEWPORT);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
 
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_VIEWPORT, &stRegisterInfo);
-    }
-    else
-    {
-      /* !!! MSG !!! */
+  /* Not already Initialized? */
+  if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
+  {
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
   
-      /* Already initialized */
-      eResult = orxSTATUS_FAILED;
-    }
-  
+    /* Cleans static controller */
+    orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
+
+    /* Registers structure type */
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxVIEWPORT);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
+
+    /* Registers structure */
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_VIEWPORT, &stRegisterInfo);
+
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
     {
@@ -313,6 +316,13 @@ orxSTATUS orxViewport_Init()
     {
       /* !!! MSG !!! */
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
   
   /* Done! */
@@ -343,12 +353,6 @@ orxVOID orxViewport_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Texture);
-  orxDEPEND_EXIT(Camera);
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

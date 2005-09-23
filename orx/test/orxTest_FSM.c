@@ -24,7 +24,7 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "utils/orxFSM.h"
 #include "io/orxTextIO.h"
 
@@ -676,7 +676,7 @@ orxVOID orxTest_FSM_Update()
 orxVOID orxTest_FSM_Init()
 {
   /* Initialize bank module */
-  orxDEPEND_INIT(FSM);
+  orxModule_Init(orxMODULE_ID_FSM);
   
   /* Register test functions */
   orxTest_Register("FSM", "Display module informations", orxTest_FSM_Infos);
@@ -713,9 +713,6 @@ orxVOID orxTest_FSM_Exit()
       sstTest_FSM.apstFSM[u32FSMIndex] = orxNULL;
     }
   }
-  
-  /* Uninitialize module. */
-  orxDEPEND_EXIT(FSM);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_FSM_Init, orxTest_FSM_Exit)

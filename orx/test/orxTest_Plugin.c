@@ -25,7 +25,7 @@
 
 #include "orxInclude.h"
 #include "memory/orxMemory.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "utils/orxString.h"
 #include "io/orxTextIO.h"
 #include "plugin/orxPlugin.h"
@@ -66,17 +66,20 @@
   #endif /* __orxWINDOWS__ */
 #endif /* __orxLINUX__ */
 
+
 /******************************************************
  * DEFINES
  ******************************************************/
-#define orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE  64  /**< Maximum size (number of characters) for a plugin */
-#define orxTEST_PLUGINS_KU32_NB_COLS 80
+ 
+#define orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE    64  /**< Maximum size (number of characters) for a plugin */
+#define orxTEST_PLUGINS_KU32_NB_COLS              80
 
 #define orxTEST_PLUGINS_KU32_MAX_PLUGINS_PER_TYPE 10
 
-#define orxTEST_PLUGINS_KZ_UNLOADED_NAME "Not loaded"
-#define orxTEST_PLUGINS_KZ_UNKNOWN_NAME  "Unknown"
-#define orxTEST_PLUGINS_KZ_PLUGINS_TITLE "LOADED PLUGINS"
+#define orxTEST_PLUGINS_KZ_UNLOADED_NAME          "Not loaded"
+#define orxTEST_PLUGINS_KZ_UNKNOWN_NAME           "Unknown"
+#define orxTEST_PLUGINS_KZ_PLUGINS_TITLE          "LOADED PLUGINS"
+
 
 /******************************************************
  * TYPES AND STRUCTURES
@@ -84,11 +87,10 @@
 
 typedef struct __orxTEST_PLUGINS_t
 {
-  orxHANDLE hPlugin;
-  orxCHAR zType[orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE];
-  orxCHAR zFile[orxTEST_PLUGINS_KU32_PLUGINS_NAME_SIZE];
-  orxDEPEND_INIT_FUNCTION pfnInit;
-  orxDEPEND_EXIT_FUNCTION pfnExit;
+  orxHANDLE     hPlugin;
+  orxSTRING     zType;
+  orxSTRING     zFile;
+  orxMODULE_ID  eModuleID;
 } orxTEST_PLUGINS;
 
 typedef struct __orxTEST_PLUGINS_STATIC_t
@@ -98,6 +100,8 @@ typedef struct __orxTEST_PLUGINS_STATIC_t
 } orxTEST_PLUGINS_STATIC;
 
 orxSTATIC orxTEST_PLUGINS_STATIC sstTest_Plugin;
+
+
 /******************************************************
  * TEST FUNCTIONS
  ******************************************************/
@@ -327,7 +331,7 @@ orxVOID orxTest_Plugin_Load()
       orxTextIO_PrintLn("Unloading %s...", sstTest_Plugin.astPlugins[s32TypeResult].zFile);
       
       /* Exit the loaded module */
-      sstTest_Plugin.astPlugins[s32TypeResult].pfnExit();
+      orxModule_Exit(sstTest_Plugin.astPlugins[s32TypeResult].eModuleID);
       
       /* Unload the plugin */
       orxPlugin_Unload(sstTest_Plugin.astPlugins[s32TypeResult].hPlugin);
@@ -342,14 +346,14 @@ orxVOID orxTest_Plugin_Load()
       orxTextIO_PrintLn("Can't load plugin...");
       
       /* Store plugin name */
-      orxTextIO_Printf(sstTest_Plugin.astPlugins[s32TypeResult].zFile, "%s", sstTest_Plugin.azFileName[s32FileResult]);
+      sstTest_Plugin.astPlugins[s32TypeResult].zFile = sstTest_Plugin.azFileName[s32FileResult];
     }
     else
     {
       orxTextIO_PrintLn("Plugin loaded");
       
       /* Init the loaded plugin (call the plugin init function) */
-      if (sstTest_Plugin.astPlugins[s32TypeResult].pfnInit() == orxSTATUS_SUCCESS)
+      if(orxModule_Init(sstTest_Plugin.astPlugins[s32TypeResult].eModuleID) == orxSTATUS_SUCCESS)
       {
         orxTextIO_PrintLn("Plugin successfully initialized");
       }
@@ -390,7 +394,7 @@ orxVOID orxTest_RegisterCorePlugin()
   orxU32 u32Index;
     
   /* Initialize Memory module */
-  orxDEPEND_INIT(Plugin);
+  orxModule_Init(orxMODULE_ID_PLUGIN);
   
   /* Register test functions */
   orxTest_Register("Plugin", "Display module informations", orxTest_Plugin_Infos);
@@ -402,47 +406,38 @@ orxVOID orxTest_RegisterCorePlugin()
   for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
   {
     sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_Undefined;
-    orxString_Copy(sstTest_Plugin.astPlugins[u32Index].zType, orxTEST_PLUGINS_KZ_UNKNOWN_NAME);
-    orxString_Copy(sstTest_Plugin.astPlugins[u32Index].zFile, orxTEST_PLUGINS_KZ_UNLOADED_NAME);
+    sstTest_Plugin.astPlugins[u32Index].zType   = orxTEST_PLUGINS_KZ_UNKNOWN_NAME;
+    sstTest_Plugin.astPlugins[u32Index].zFile   = orxTEST_PLUGINS_KZ_UNLOADED_NAME;
   }
   
   /* Set plugin name (used for name and directory), and Init / Exit function associated */
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].zType,  "display");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].pfnInit = orxDisplay_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].pfnExit = orxDisplay_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].zType      = "display";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_DISPLAY].eModuleID  = orxMODULE_ID_DISPLAY;
   
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_FILE].zType,     "file");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_FILE].pfnInit = orxFile_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_FILE].pfnExit = orxFile_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_FILE].zType         = "file";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_FILE].eModuleID     = orxMODULE_ID_FILE;
   
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_JOYSTICK].zType, "joystick");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_JOYSTICK].pfnInit = orxJoystick_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_JOYSTICK].pfnExit = orxJoystick_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_JOYSTICK].zType     = "joystick";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_JOYSTICK].eModuleID = orxMODULE_ID_JOYSTICK;
   
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_KEYBOARD].zType, "keyboard");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_KEYBOARD].pfnInit = orxKeyboard_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_KEYBOARD].pfnExit = orxKeyboard_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_KEYBOARD].zType     = "keyboard";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_KEYBOARD].eModuleID = orxMODULE_ID_KEYBOARD;
   
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_MOUSE].zType,    "mouse");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_MOUSE].pfnInit = orxMouse_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_MOUSE].pfnExit = orxMouse_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_MOUSE].zType        = "mouse";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_MOUSE].eModuleID    = orxMODULE_ID_MOUSE;
   
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].zType,  "package");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].pfnInit = orxPackage_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].pfnExit = orxPackage_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].zType      = "package";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_PACKAGE].eModuleID  = orxMODULE_ID_PACKAGE;
   
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].zType,   "script");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].pfnInit = orxScript_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].pfnExit = orxScript_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].zType       = "script";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SCRIPT].eModuleID   = orxMODULE_ID_SCRIPT;
   
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].zType,    "sound");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].pfnInit = orxSound_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].pfnExit = orxSound_Exit;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].zType        = "sound";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].eModuleID    = orxMODULE_ID_SOUND;
   
-  orxString_Copy(sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].zType,     "time");
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].pfnInit = orxTime_Init;
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].pfnExit = orxTime_Exit;
-  
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].zType         = "time";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].eModuleID     = orxMODULE_ID_TIME;
+
   orxMemory_Set(&sstTest_Plugin.azFileName, 0, sizeof(sstTest_Plugin.azFileName));
 }
 
@@ -460,10 +455,6 @@ orxVOID orxTest_Plugin_Exit()
       sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_Undefined;
     }
   }
-  
-  
-  /* Uninitialize plugin module */
-  orxDEPEND_EXIT(Plugin);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_RegisterCorePlugin, orxTest_Plugin_Exit)

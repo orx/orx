@@ -49,6 +49,9 @@ typedef struct __orxBITMAP_TRANSFORM_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+/** Display module setup */
+extern orxDLLAPI orxVOID            orxDisplay_Setup();
+
 
 /***************************************************************************
  * Functions extended by plugins

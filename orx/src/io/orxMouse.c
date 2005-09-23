@@ -21,6 +21,25 @@
 #include "plugin/orxPluginCore.h"
 
 
+/***************************************************************************
+ orxMouse_Setup
+ Mouse module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxMouse_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_TREE);
+
+  return;
+}
+
+
 /********************
  *  Plugin Related  *
  ********************/

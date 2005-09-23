@@ -24,7 +24,7 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "math/orxMathSet.h"
 #include "io/orxTextIO.h"
 
@@ -595,7 +595,8 @@ orxVOID orxTest_MathSet_AutoTestIntervals()
 orxVOID orxTest_MathSet_Init()
 {
   /* Initialize module */
-  
+  orxModule_Init(orxMODULE_ID_MATHSET);
+
   /* NB: Here, we should have a call to orxMAIN_INIT_MODULE(MathSet) But it seems that
    * MathSet module doesn't respects the coding style for function naming convention
    * and initialization : change it later
@@ -612,7 +613,6 @@ orxVOID orxTest_MathSet_Init()
 
 orxVOID orxTest_MathSet_Exit()
 {
-  /* Uninitialize module */
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_MathSet_Init, orxTest_MathSet_Exit)

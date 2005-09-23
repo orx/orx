@@ -9,27 +9,28 @@
 
 /**
  * @file
- * @date 02/09/2005
+ * @date 12/09/2005
  * @author (C) Arcallians
  * 
  */
 
-#ifndef _orx_H_
-#define _orx_H_
+#ifndef _orxUTILS_H_
+#define _orxUTILS_H_
 
 
-/* Include all the module of the project.
- * This file will be used to generate a precompiled header for compiler that
- * support this feature.
- * Orx Engine :   This header must not be used by modules of the engine (only main program)
- * User Plugins : This header is the only one that have to be used
+/*
+ * Includes all the utils modules of the engine.
  */
 
-#include "orxInclude.h"
+#include "utils/orxBayes.h"
+#include "utils/orxFSM.h"
+#include "utils/orxHashTable.h"
+#include "utils/orxLinkList.h"
+#include "utils/orxQueue.h"
+#include "utils/orxScreenshot.h"
+#include "utils/orxString.h"
+#include "utils/orxTree.h"
+#include "utils/pathfinder.h"
 
-#include "orxKernel.h"
 
-#include "orxUtils.h"
-
-
-#endif /*_orx_H_*/
+#endif /* _orxUTILS_H_*/

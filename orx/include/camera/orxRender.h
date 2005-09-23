@@ -37,6 +37,8 @@
 #include "camera/orxViewport.h"
 
 
+/** Render system setup */
+extern orxDLLAPI orxVOID                  orxRender_Setup();
 /** Inits the render system. */
 extern orxDLLAPI orxSTATUS                orxRender_Init();
 /** Ends the render system. */

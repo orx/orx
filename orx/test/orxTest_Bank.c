@@ -24,7 +24,7 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "memory/orxBank.h"
 #include "io/orxTextIO.h"
 
@@ -367,7 +367,7 @@ orxVOID orxTest_Bank_DisplayCells()
 orxVOID orxTest_Bank_Init()
 {
   /* Initialize bank module */
-  orxDEPEND_INIT(Bank);
+  orxModule_Init(orxMODULE_ID_BANK);
   
   /* Register test functions */
   orxTest_Register("Bank", "Display module informations", orxTest_Bank_Infos);
@@ -398,9 +398,6 @@ orxVOID orxTest_Bank_Exit()
       sstTest_Bank.apstBank[u32BankIndex] = orxNULL;
     }
   }
-  
-  /* Uninitialize module */
-  orxDEPEND_EXIT(Bank);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Bank_Init, orxTest_Bank_Exit)

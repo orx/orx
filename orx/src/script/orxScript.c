@@ -28,6 +28,25 @@
  *  Plugin Related  *
  ********************/
 
+/***************************************************************************
+ orxScript_Setup
+ Script module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxScript_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_SCRIPT, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_SCRIPT, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_SCRIPT, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_SCRIPT, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_SCRIPT, orxMODULE_ID_TREE);
+
+  return;
+}
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SCRIPT)

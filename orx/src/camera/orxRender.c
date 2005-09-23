@@ -49,8 +49,8 @@ typedef struct __orxRENDER_VIEWPORT_LIST_t
   /* Z sort value : 8 */
   orxFLOAT fZSort;
 
-  /* 8 extra bytes of padding : 16 */
-  orxU8 au8Unused[8];
+  /* Padding */
+  orxPAD(8);
 
 } orxRENDER_VIEWPORT_LIST;
 
@@ -231,6 +231,24 @@ orxVOID orxRender_SortViewportList(orxRENDER_VIEWPORT_LIST *_pstViewportList, or
  ***************************************************************************/
 
 /***************************************************************************
+ orxRender_Setup
+ Render system setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxRender_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_TEXTURE);
+  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_DISPLAY);
+  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_VIEWPORT);
+  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_CAMERA);
+
+  return;
+}
+
+/***************************************************************************
  orxRender_Init
  Inits render system.
 
@@ -239,32 +257,24 @@ orxVOID orxRender_SortViewportList(orxRENDER_VIEWPORT_LIST *_pstViewportList, or
 orxSTATUS orxRender_Init()
 {
 	orxSTATUS eResult = orxSTATUS_FAILED;
-	
-  /* Call init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Viewport) &
-       orxDEPEND_INIT(Texture) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Display)) == orxSTATUS_SUCCESS)
+
+  /* Already Initialized? */
+  if(!(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY))
   {
+    /* Cleans static controller */
+    orxMemory_Set(&sstRender, 0, sizeof(orxRENDER_STATIC));
 
-    /* Already Initialized? */
-    if(!(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY))
-    {
-      /* Cleans static controller */
-      orxMemory_Set(&sstRender, 0, sizeof(orxRENDER_STATIC));
-  
-      /* Inits Flags */
-      sstRender.u32Flags = orxRENDER_KU32_FLAG_READY | orxRENDER_KU32_FLAG_DATA_2D;
+    /* Inits Flags */
+    sstRender.u32Flags = orxRENDER_KU32_FLAG_READY | orxRENDER_KU32_FLAG_DATA_2D;
 
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* !!! MSG !!! */
-  
-      eResult = orxSTATUS_FAILED;
-    }
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
   
   /* Done */
@@ -289,12 +299,6 @@ orxVOID orxRender_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  orxDEPEND_EXIT(Display);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Texture);
-  orxDEPEND_EXIT(Viewport);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

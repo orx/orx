@@ -33,6 +33,9 @@
 #include <stdarg.h>
 
 
+/** TextIO module setup
+ */
+extern orxDLLAPI orxVOID                orxTextIO_Setup();
 /** Initialize the text input output module
  */
 extern orxDLLAPI orxSTATUS              orxTextIO_Init();

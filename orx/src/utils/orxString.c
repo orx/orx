@@ -25,28 +25,6 @@
 
 #include "utils/orxString.h"
 
-#include <stdio.h>
-#include <string.h>
-
-#include "io/orxTextIO.h"
-#include "memory/orxMemory.h"
-
-
-#define orxSTRING_KU32_FLAG_NONE            0x00000000  /**< No flags have been set */
-#define orxSTRING_KU32_FLAG_READY           0x00000001  /**< The module has been initialized */
-
-/***************************************************************************
- * Structure declaration                                                   *
- ***************************************************************************/
-typedef struct __orxSTRING_STATIC_t
-{
-  orxU32 u32Flags;  /**< Module flags */
-} orxSTRING_STATIC;
-
-/***************************************************************************
- * Module global variable                                                  *
- ***************************************************************************/
-static orxSTRING_STATIC sstString;
 
 /***************************************************************************
  * CRC Table                                                               *
@@ -96,49 +74,6 @@ orxSTATIC orxCONST orxU32 sau32CRCTable[256] =
  * Public functions                                                        *
  ***************************************************************************/
 
-/** Initialize the test module
- */
-orxSTATUS orxString_Init()
-{
-  orxSTATUS eResult = orxSTATUS_FAILED;
-
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
-  {
-    /* Not already Initialized? */
-    if(!(sstString.u32Flags & orxSTRING_KU32_FLAG_READY))
-    {
-      /* Initialize values */
-      orxMemory_Set(&sstString, 0, sizeof(orxSTRING_STATIC));
-      
-      /* Module ready */
-      sstString.u32Flags |= orxSTRING_KU32_FLAG_READY;
-      
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
-    }
-  }
-    
-  return eResult;
-}
-
-/** Uninitialize the test module
- */
-orxVOID orxString_Exit()
-{
-  /* Module initialized ? */
-  if ((sstString.u32Flags & orxSTRING_KU32_FLAG_READY) == orxSTRING_KU32_FLAG_READY)
-  {
-    /* Module becomes not ready */
-    sstString.u32Flags &= ~orxSTRING_KU32_FLAG_READY;
-  }
-
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
-}
-
 /** Continues a CRC with a string one
  * @param _zString        (IN)  String used to continue the given CRC
  * @param _u32CRC         (IN)  Base CRC.
@@ -150,7 +85,6 @@ orxU32 orxFASTCALL orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u3
   orxREGISTER orxCHAR *pc;
 
   /* Checks */
-  orxASSERT(sstString.u32Flags & orxSTRING_KU32_FLAG_READY);
   orxASSERT(_zString != orxNULL);
 
   /* Inits CRC */

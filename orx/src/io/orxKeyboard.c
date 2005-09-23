@@ -20,6 +20,26 @@
 #include "io/orxKeyboard.h"
 #include "plugin/orxPluginCore.h"
 
+
+/***************************************************************************
+ orxKeyboard_Setup
+ Keyboard module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxKeyboard_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_KEYBOARD, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_KEYBOARD, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_KEYBOARD, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_KEYBOARD, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_KEYBOARD, orxMODULE_ID_TREE);
+
+  return;
+}
+
+
 /********************
  *  Plugin Related  *
  ********************/

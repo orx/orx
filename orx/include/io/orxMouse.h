@@ -24,6 +24,18 @@
 #include "plugin/orxPluginCore.h"
 
 
+/***************************************************************************
+ * Functions directly implemented by orx core
+ ***************************************************************************/
+
+/** Mouse module setup */
+extern orxDLLAPI orxVOID                              orxMouse_Setup();
+
+
+/***************************************************************************
+ * Functions extended by plugins
+ ***************************************************************************/
+
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Exit, orxVOID);
 orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 *);

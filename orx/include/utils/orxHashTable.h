@@ -39,6 +39,10 @@ typedef struct __orxHASHTABLE_t orxHASHTABLE;
 
 /** @name Module management.
  * @{ */
+
+/** HashTable module setup.
+ */
+extern orxDLLAPI orxVOID                        orxHashTable_Setup();
 /** Initialize HashTable Module
  * @return Returns the initialization status.
  */

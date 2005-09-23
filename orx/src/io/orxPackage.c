@@ -27,6 +27,26 @@
 #include "io/orxPackage.h"
 #include "debug/orxDebug.h"
 
+
+/***************************************************************************
+ orxPackage_Setup
+ Package module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxPackage_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_PACKAGE, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_PACKAGE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_PACKAGE, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_PACKAGE, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_PACKAGE, orxMODULE_ID_TREE);
+
+  return;
+}
+
+
 /********************
  *  Plugin Related  *
  ********************/

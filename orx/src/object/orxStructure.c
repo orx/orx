@@ -121,6 +121,22 @@ orxSTATIC orxSTRUCTURE_STATIC sstStructure;
  ***************************************************************************
  ***************************************************************************/
 
+/***************************************************************************
+ orxStructure_Setup
+ Structure module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxStructure_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_TREE);
+
+  return;
+}
 
 /***************************************************************************
  orxStructure_Init
@@ -133,56 +149,51 @@ orxSTATUS orxStructure_Init()
   orxU32 i;
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Bank) &
-       orxDEPEND_INIT(LinkList) &
-       orxDEPEND_INIT(Tree)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY))
+    /* Cleans static controller */
+    orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
+
+    /* For all IDs */
+    for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
     {
-      /* Cleans static controller */
-      orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
-  
-      /* For all IDs */
-      for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
-      {
-        /* Creates a bank */
-        sstStructure.astStorage[i].pstNodeBank  = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-  
-        /* Cleans storage type */
-        sstStructure.astStorage[i].eType    = orxSTRUCTURE_STORAGE_TYPE_NONE;
-      }
-  
-      /* All banks created? */
-      if(i == orxSTRUCTURE_ID_NUMBER)
-      {
-        /* Inits Flags */
-        sstStructure.u32Flags = orxSTRUCTURE_KU32_FLAG_READY;
-  
-        /* Everything's ok */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        orxU32 j;
-  
-        /* !!! MSG !!! */
-  
-        /* For all created banks */
-        for(j = 0; j < i; j++)
-        {
-          /* Deletes it */
-          orxBank_Delete(sstStructure.astStorage[j].pstNodeBank);
-        }
-      }
+      /* Creates a bank */
+      sstStructure.astStorage[i].pstNodeBank  = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Cleans storage type */
+      sstStructure.astStorage[i].eType    = orxSTRUCTURE_STORAGE_TYPE_NONE;
+    }
+
+    /* All banks created? */
+    if(i == orxSTRUCTURE_ID_NUMBER)
+    {
+      /* Inits Flags */
+      sstStructure.u32Flags = orxSTRUCTURE_KU32_FLAG_READY;
+
+      /* Everything's ok */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
+      orxU32 j;
+
       /* !!! MSG !!! */
+
+      /* For all created banks */
+      for(j = 0; j < i; j++)
+      {
+        /* Deletes it */
+        orxBank_Delete(sstStructure.astStorage[j].pstNodeBank);
+      }
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -239,13 +250,6 @@ orxVOID orxStructure_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Tree);
-  orxDEPEND_EXIT(LinkList);
-  orxDEPEND_EXIT(Bank);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

@@ -204,6 +204,20 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
  ***************************************************************************/
 
 /***************************************************************************
+ orxTree_Setup
+ Tree module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxTree_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_TREE, orxMODULE_ID_MEMORY);
+
+  return;
+}
+
+/***************************************************************************
  orxTree_Init
  Inits the tree system.
 
@@ -215,26 +229,24 @@ orxSTATUS orxTree_Init()
   
   eResult = orxSTATUS_FAILED;
   
-    /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
+  /* Already Initialized? */
+  if(!(sstTree.u32Flags & orxTREE_KU32_FLAG_READY))
   {
-    /* Already Initialized? */
-    if(!(sstTree.u32Flags & orxTREE_KU32_FLAG_READY))
-    {
-      /* Cleans static controller */
-      orxMemory_Set(&sstTree, 0, sizeof(orxTREE_STATIC));
+    /* Cleans static controller */
+    orxMemory_Set(&sstTree, 0, sizeof(orxTREE_STATIC));
+  
+    /* Inits ID Flags */
+    sstTree.u32Flags = orxTREE_KU32_FLAG_READY;
     
-      /* Inits ID Flags */
-      sstTree.u32Flags = orxTREE_KU32_FLAG_READY;
-      
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* !!! MSG !!! */
-    }
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -260,10 +272,6 @@ orxVOID orxTree_Exit()
     /* !!! MSG !!! */
   }
   
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
-
   return;
 }
 

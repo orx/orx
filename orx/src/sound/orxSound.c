@@ -31,6 +31,25 @@
  *  Plugin Related  *
  ********************/
 
+/***************************************************************************
+ orxSound_Setup
+ Sound module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxSound_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_TREE);
+
+  return;
+}
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SOUND)

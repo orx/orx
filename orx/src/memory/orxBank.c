@@ -188,6 +188,21 @@ orxSTATIC orxINLINE orxBANK_SEGMENT *orxBank_GetSegment(orxCONST orxBANK *_pstBa
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
+
+/***************************************************************************
+ orxBank_Setup
+ Bank system setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxBank_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_BANK, orxMODULE_ID_MEMORY);
+
+  return;
+}
+
 /** Initialize Bank Module
  */
 orxSTATUS orxBank_Init()
@@ -200,49 +215,51 @@ orxSTATUS orxBank_Init()
 
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstBank.u32Flags & orxBANK_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstBank.u32Flags & orxBANK_KU32_FLAG_READY))
+    /* Cleans static controller */
+    orxMemory_Set(&sstBank, 0, sizeof(orxBANK_STATIC));
+    
+    /* Set initial values */
+    /* Compute the array of 0 index for each values between 0 and 255 */
+    for (u32Index = 0; u32Index < 256; u32Index++)
     {
-      /* Cleans static controller */
-      orxMemory_Set(&sstBank, 0, sizeof(orxBANK_STATIC));
+      /* Set the initial value of the index (not defined yet) */
+      sstBank.au8Index0[u32Index] = orxU8_Undefined;
+      bFound = orxFALSE;
+      u8Test = 1;
       
-      /* Set initial values */
-      /* Compute the array of 0 index for each values between 0 and 255 */
-      for (u32Index = 0; u32Index < 256; u32Index++)
+      /* Loop on each bit to find the first equals to 0 */
+      for (u8Bit = 0; !bFound && (u8Bit < 8); u8Bit++)
       {
-        /* Set the initial value of the index (not defined yet) */
-        sstBank.au8Index0[u32Index] = orxU8_Undefined;
-        bFound = orxFALSE;
-        u8Test = 1;
-        
-        /* Loop on each bit to find the first equals to 0 */
-        for (u8Bit = 0; !bFound && (u8Bit < 8); u8Bit++)
+        /* Is & between Index flag and the test flag == 0 ? (!= 0 means tested bit = 1) */
+        if (((orxU8)u32Index & u8Test) == 0)
         {
-          /* Is & between Index flag and the test flag == 0 ? (!= 0 means tested bit = 1) */
-          if (((orxU8)u32Index & u8Test) == 0)
-          {
-            /* Bit 0 found, store the index and stop search */
-            sstBank.au8Index0[u32Index] = u8Bit;
-            bFound = orxTRUE;
-          }
-          
-          /* Shift test flag bit to check the next one */
-          u8Test <<= 1;
-        } 
-      }
-      
-      /* Set module has ready */
-      sstBank.u32Flags = orxBANK_KU32_FLAG_READY;
-      
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
+          /* Bit 0 found, store the index and stop search */
+          sstBank.au8Index0[u32Index] = u8Bit;
+          bFound = orxTRUE;
+        }
+        
+        /* Shift test flag bit to check the next one */
+        u8Test <<= 1;
+      } 
     }
+    
+    /* Set module has ready */
+    sstBank.u32Flags = orxBANK_KU32_FLAG_READY;
+    
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
   }
-  
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
   /* Done */
   return eResult;
 }
@@ -258,9 +275,7 @@ orxVOID orxBank_Exit()
     sstBank.u32Flags = orxBANK_KU32_FLAG_NONE;
   }
 
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
+  return;
 }
 
 /** Create a new bank in memory and returns a pointer on it

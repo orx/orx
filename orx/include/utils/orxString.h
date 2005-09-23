@@ -28,6 +28,7 @@
 #ifndef _orxSTRING_H_
 #define _orxSTRING_H_
 
+
 #include "orxInclude.h"
 
 #include <stdio.h>
@@ -36,14 +37,6 @@
 #include <ctype.h>
 
 #include "debug/orxDebug.h"
-
-/** Initialize the string module
- */
-extern orxDLLAPI orxSTATUS              orxString_Init();
-
-/** Uninitialize the string module
- */
-extern orxDLLAPI orxVOID                orxString_Exit();
 
 
 /** Continues a CRC with a string one

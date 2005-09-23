@@ -49,8 +49,8 @@ struct __orxOBJECT_t
   /* Property flags : 24*/
   orxU32 u32Flags;
 
-  /* 8 extra bytes of padding : 32 */
-  orxU8 au8Unused[8];
+  /* Padding */
+  orxPAD(24);
 };
 
 /*
@@ -147,6 +147,22 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
  ***************************************************************************/
 
 /***************************************************************************
+ orxObject_Setup
+ Object module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxObject_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FRAME);
+
+  return;
+}
+
+/***************************************************************************
  orxObject_Init
  Inits object system.
 
@@ -156,39 +172,23 @@ orxSTATUS orxObject_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  /** WARNING : This module depends on graphic too, but since all the graphic
-   * layer has to be redesigned and rewritten, we won't include it at the moment
-   */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Structure) &
-       orxDEPEND_INIT(Frame)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
-    {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-  
-      /* Cleans static controller */
-      orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
-  
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-      stRegisterInfo.u32Size      = sizeof(orxOBJECT);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
-  
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_OBJECT, &stRegisterInfo);
-    }
-    else
-    {
-      /* !!! MSG !!! */
-  
-      /* Already initialized */
-      eResult = orxSTATUS_FAILED;
-    }
-  
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+
+    /* Cleans static controller */
+    orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
+
+    /* Registers structure type */
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxOBJECT);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
+
+    /* Registers structure */
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_OBJECT, &stRegisterInfo);
+
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
     {
@@ -199,6 +199,13 @@ orxSTATUS orxObject_Init()
     {
       /* !!! MSG !!! */
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -229,12 +236,6 @@ orxVOID orxObject_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Frame);
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

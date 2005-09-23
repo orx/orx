@@ -24,7 +24,7 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "utils/orxQueue.h"
 #include "io/orxTextIO.h"
 
@@ -162,7 +162,7 @@ orxVOID orxTest_Queue_RemoveItem()
 orxVOID orxTest_Queue_Init()
 {
 	/* Initialize bank module */
-	orxDEPEND_INIT(Queue);
+	orxModule_Init(orxMODULE_ID_QUEUE);
 	  
 	/* Register test functions */
 	orxTest_Register("Queue", "Display module informations", orxTest_Queue_Infos);
@@ -182,9 +182,6 @@ orxVOID orxTest_Queue_Exit()
 		orxQueue_Delete(spstQueue);
 		spstQueue = orxNULL;
 	}
-		
-	/* Uninitialize module */
-	orxDEPEND_EXIT(Queue);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Queue_Init, orxTest_Queue_Exit)

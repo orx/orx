@@ -68,6 +68,8 @@ typedef struct __orxTREE_t                  orxTREE;
 typedef struct __orxTREE_NODE_t             orxTREE_NODE;
 
 
+/** Tree module setup. */
+extern orxDLLAPI orxVOID                    orxTree_Setup();
 /** Inits the object system. */
 extern orxDLLAPI orxSTATUS                  orxTree_Init();
 /** Ends the object system. */

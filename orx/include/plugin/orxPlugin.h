@@ -41,6 +41,10 @@
  Function prototypes
  *********************************************/
 
+/** Clock module setup.
+ * \return nothing.
+ */
+extern orxDLLAPI orxVOID                        orxPlugin_Setup();
 /** Initializes the plugin management engine.
  * \return orxSTATUS_SUCCESS/orxSTATUS_FAILED
  */

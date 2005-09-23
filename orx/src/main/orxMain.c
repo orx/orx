@@ -36,7 +36,10 @@
  ***************************************************************************/
 typedef struct __orxMAIN_STATIC_t
 {
+  orxHANDLE hTimePlugin;
+
   orxU32 u32Flags; /**< Flags set by the main module */
+
 } orxMAIN_STATIC;
 
 /***************************************************************************
@@ -71,28 +74,35 @@ orxSTATUS orxMain_Init()
   /* Don't call twice the init function */
   if (!(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY))
   {
-    /* Try to Init the Engine */
-    if ((orxDEPEND_INIT(Plugin)) == orxSTATUS_SUCCESS)
-         /** Todo : Complete remaining dependencies */
-         /** @note : This is very temporary !! (hard coded plugin name) */
+    /* Inits plugin module */
+    if(orxModule_Init(orxMODULE_ID_PLUGIN) == orxSTATUS_SUCCESS)
     {
-      if (orxPlugin_LoadUsingExt("Time_SDL", "time"))
+      /* Loads time plugin */
+      sstMain.hTimePlugin = orxPlugin_LoadUsingExt("Time_SDL", "time");
+      
+      /* Valid? */
+      if(sstMain.hTimePlugin != orxHANDLE_Undefined)
       {
-        if ((orxDEPEND_INIT(TextIO) &
-             orxDEPEND_INIT(Param) &
-             orxDEPEND_INIT(Time) &
-             orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
+        /* Inits all remaining modules */
+        if(orxModule_InitAll() == orxSTATUS_SUCCESS)
         {
-          /* Set module as initialized */
+          /* Sets module as initialized */
           sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
-          
+
           /* Success */
           eResult = orxSTATUS_SUCCESS;
         }
       }
     }
   }
-  
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
   /* Done! */
   return eResult;
 }
@@ -102,17 +112,14 @@ orxSTATUS orxMain_Init()
 orxVOID orxMain_Exit()
 {
   /* Module initialized ? */
-  if ((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY)
+  if((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY)
   {
     /* Set module as not ready */
     sstMain.u32Flags &= ~orxMAIN_KU32_FLAG_READY;
+    
+    /* Exits from all modules */
+    orxModule_ExitAll();
   }
-  
-  orxDEPEND_EXIT(Clock);
-  orxDEPEND_EXIT(Time);
-  orxDEPEND_EXIT(Param);
-  orxDEPEND_EXIT(TextIO);
-  orxDEPEND_EXIT(Plugin);
 
   /* Done */
   return;
@@ -125,25 +132,27 @@ orxVOID orxMain_Exit()
 orxVOID orxMain_Run(orxU32 _u32NbParam, orxSTRING _azParams[])
 {
   /* Init the Engine */
-  if (orxMain_Init() == orxSTATUS_SUCCESS)
+  if(orxMain_Init() == orxSTATUS_SUCCESS)
   {
     /* Parse the command line for the second time (now all modules have registered their options) */
-    if (orxParam_Parse(_u32NbParam, _azParams) == orxSTATUS_SUCCESS)
+    if(orxParam_Parse(_u32NbParam, _azParams) == orxSTATUS_SUCCESS)
     {
       /* Main Loop (Until Exit event received) */
-      while ((sstMain.u32Flags & orxMAIN_KU32_FLAG_EXIT) != orxMAIN_KU32_FLAG_EXIT)
+      while((sstMain.u32Flags & orxMAIN_KU32_FLAG_EXIT) != orxMAIN_KU32_FLAG_EXIT)
       {
         /* Update clocks */
         orxClock_Update();
-  
+
         /* Sleep the program for 1ms (to help the scheduler) */
         orxTime_Delay(1);
       }
     }
   }
 
-  /* Exit the engine */
+  /* Exits from the engine */
   orxMain_Exit();
+  
+  return;
 }
 
 /** Main function
@@ -154,35 +163,38 @@ orxVOID orxMain_Run(orxU32 _u32NbParam, orxSTRING _azParams[])
  */
 int main(int argc, char **argv)
 {
-  /* Init Debug System */
+  /* Inits the Debug System */
   orxDEBUG_INIT();
-  
-  /* Init the parser */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(String) &
-       orxDEPEND_INIT(Param)) == orxSTATUS_SUCCESS)
+
+  /* Registers all modules */
+  orxModule_RegisterAll();
+
+  /* Calls all modules setup */
+  orxModule_SetupAll();
+
+  /* Inits the parser */
+  if(orxModule_Init(orxMODULE_ID_PARAM) == orxSTATUS_SUCCESS)
   {
-    
 #ifdef __orxTEST__ /* Only compile this portion of code if __orxTEST__ is used */
     orxPARAM stParam;
     
     /* Register a parameter to start the test program */
-    stParam.u32Flags  = 0;
-    stParam.pfnParser = orxMain_ParamTest;
-    orxString_Copy(stParam.zShortName, "T");
-    orxString_Copy(stParam.zLongName,  "test");
-    orxString_Copy(stParam.zShortDesc, "Start the test program");
-    orxString_Copy(stParam.zLongDesc,  "Start the test program instead of orx engine. Test programm allows to test and debug orx modules.");    
+    stParam.u32Flags    = 0;
+    stParam.pfnParser   = orxMain_ParamTest;
+    stParam.zShortName  = "T";
+    stParam.zLongName   = "test";
+    stParam.zShortDesc  = "Start the test program";
+    stParam.zLongDesc   = "Start the test program instead of orx engine. Test program allows to test and debug orx modules.";
 
     orxParam_Register(&stParam);
 
 #endif /* __orxTEST__ */
     
-    /* Parse the command line */
-    if (orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
+    /* Parses the command line */
+    if(orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
     {
-      /* Start the correct program (test program or engine) */
-      if ((sstMain.u32Flags & orxMAIN_KU32_FLAG_TEST) == orxMAIN_KU32_FLAG_TEST)
+      /* Starts the correct program (test program or engine) */
+      if((sstMain.u32Flags & orxMAIN_KU32_FLAG_TEST) == orxMAIN_KU32_FLAG_TEST)
       {
         /* Runs the test programm */
         orxTest_Run(argc, argv);
@@ -194,14 +206,12 @@ int main(int argc, char **argv)
       }
     }
   }
-  
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Param);
-  orxDEPEND_EXIT(String);
-  orxDEPEND_EXIT(Depend);
+
+  /* Exit from all modules */
+  orxModule_ExitAll();
     
-  /* Exit Debug system */
+  /* Exits from the Debug system */
   orxDEBUG_EXIT();
-  
-  return 0;
+
+  return EXIT_SUCCESS;
 }

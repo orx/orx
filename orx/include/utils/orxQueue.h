@@ -146,13 +146,16 @@ extern orxDLLAPI orxQUEUE_ITEM* orxQueue_GetNextItem(orxQUEUE* _pstQueue, orxQUE
 extern orxDLLAPI orxQUEUE_ITEM* orxQueue_GetPreviousItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem);
 
  
+/** Queue module setup.
+ */
+extern orxDLLAPI orxVOID              orxQueue_Setup();
 /** Initialize Queue Module
  */
-extern orxDLLAPI orxSTATUS orxDLLAPI orxQueue_Init();
+extern orxDLLAPI orxSTATUS orxDLLAPI  orxQueue_Init();
 
 /** Exit Queue module
  */
-extern orxDLLAPI orxVOID orxDLLAPI orxQueue_Exit();
+extern orxDLLAPI orxVOID orxDLLAPI    orxQueue_Exit();
 
 #endif /*_orxQUEUE_H_*/
 /* @} */

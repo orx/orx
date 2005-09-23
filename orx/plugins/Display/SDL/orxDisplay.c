@@ -17,10 +17,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "include.h"
+#include "orxInclude.h"
 
-#include "debug/debug.h"
-#include "plugin/plugin_user.h"
+#include "debug/orxDebug.h"
+#include "plugin/orxPluginUser.h"
 
 #include "msg/msg_graph.h"
 

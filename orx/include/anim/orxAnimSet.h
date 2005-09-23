@@ -65,6 +65,8 @@ typedef struct __orxANIMSET_t                   orxANIMSET;
 typedef struct __orxANIMSET_LINK_TABLE_t        orxANIMSET_LINK_TABLE;
 
 
+/** AnimSet module setup. */
+extern orxDLLAPI orxVOID                        orxAnimSet_Setup();
 /** Inits the AnimationSet system. */
 extern orxDLLAPI orxSTATUS                      orxAnimSet_Init();
 /** Exits from the AnimationSet system. */

@@ -55,6 +55,19 @@ orxSTATIC orxMEMORY_STATIC sstMemory;
  * Public functions                                                        *
  ***************************************************************************/
 
+/***************************************************************************
+ orxMemory_Setup
+ Memory module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxMemory_Setup()
+{
+  /* Adds module dependencies */
+
+  return;
+}
+
 /** Initialize memory allocation module
  * @todo Really initialize the memory to be managed by the module and not OS
  */
@@ -70,14 +83,21 @@ orxSTATUS orxMemory_Init()
   {
     /* Cleans static controller */
     orxMemory_Set(&sstMemory, 0, sizeof(orxMEMORY_STATIC));
-  
+
     /* Module initialized */
     sstMemory.u32Flags = orxMEMORY_KU32_FLAG_READY;
-    
+
     /* Success */
     eResult = orxSTATUS_SUCCESS;
   }
-  
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
   /* Done */
   return eResult;
 }
@@ -107,7 +127,7 @@ orxU32 orxFASTCALL orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32Align
   orxASSERT(_u32AlignValue > 0);
   orxASSERT((_u32AlignValue & (_u32AlignValue - 1)) == 0);
 
-  return ((_u32OriginalValue + _u32AlignValue - 1) & (~(_u32AlignValue - 1)));
+  return(_orxALIGN(_u32OriginalValue, _u32AlignValue));
 }
 
 /** Allocate a portion of memory in the system and returns a pointer on it
@@ -125,7 +145,7 @@ orxVOID *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemTyp
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
   
   /* Returns system allocation function */
-  return (orxVOID *)malloc(_u32Size);
+  return((orxVOID *)malloc(_u32Size));
 }
 
 /** Free a portion of memory allocated with orxMemory_Allocateate
@@ -141,7 +161,7 @@ orxVOID orxFASTCALL orxMemory_Free(orxVOID *_pMem)
   orxASSERT(_pMem != orxNULL);
 
   /* System call to free memory */
-  return free(_pMem);
+  return(free(_pMem));
 }
 
 /** Copy a portion of memory into another one
@@ -153,7 +173,7 @@ orxVOID orxFASTCALL orxMemory_Free(orxVOID *_pMem)
  */
 orxVOID *orxFASTCALL orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size)
 {
-  return (orxVOID *)memcpy(_pDest, _pSrc, _u32Size);
+  return((orxVOID *)memcpy(_pDest, _pSrc, _u32Size));
 }
 
 /** Copy a portion of memory into another one
@@ -164,7 +184,7 @@ orxVOID *orxFASTCALL orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, or
  */
 orxVOID *orxFASTCALL orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size)
 {
-  return (orxVOID *)memmove(_pDest, _pSrc, _u32Size);
+  return((orxVOID *)memmove(_pDest, _pSrc, _u32Size));
 }
 
 /** Compare two portion of memory
@@ -175,7 +195,7 @@ orxVOID *orxFASTCALL orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32
  */
 orxU32 orxFASTCALL orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size)
 {
-  return (orxU32)memcmp(_pMem1, _pMem2, _u32Size);
+  return((orxU32)memcmp(_pMem1, _pMem2, _u32Size));
 }
 
 /** Fill a portion of memory with _u32Data
@@ -186,5 +206,5 @@ orxU32 orxFASTCALL orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID 
  */
 orxVOID *orxFASTCALL orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size)
 {
-  return (orxVOID *)memset(_pDest, _u8Data, _u32Size);
+  return((orxVOID *)memset(_pDest, _u8Data, _u32Size));
 }

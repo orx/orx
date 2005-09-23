@@ -256,6 +256,22 @@ orxSTATIC orxVOID orxAnim_DeleteAll()
  ***************************************************************************
  ***************************************************************************/
 
+/***************************************************************************
+ orxAnim_Setup
+ Animation system setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxAnim_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_TIME);
+  orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_TEXTURE);
+
+  return;
+}
 
 /***************************************************************************
  orxAnim_Init
@@ -267,46 +283,39 @@ orxSTATUS orxAnim_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Call init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Structure) &
-       orxDEPEND_INIT(Texture)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY))
-    {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+  
+    /* Cleans static controller */
+    orxMemory_Set(&sstAnim, 0, sizeof(orxANIM_STATIC));
+
+    /* Registers structure type */
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxANIM);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
     
-      /* Cleans static controller */
-      orxMemory_Set(&sstAnim, 0, sizeof(orxANIM_STATIC));
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIM, &stRegisterInfo);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
   
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-      stRegisterInfo.u32Size      = sizeof(orxANIM);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
-      
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIM, &stRegisterInfo);
-    }
-    else
-    {
-      /* !!! MSG !!! */
-  
-      /* Already initialized */
-      eResult = orxSTATUS_FAILED;
-    }
-  
-    /* Initialized? */
-    if(eResult == orxSTATUS_SUCCESS)
-    {
-      /* Inits Flags */
-      sstAnim.u32Flags = orxANIM_KU32_FLAG_READY;
-    }
-    else
-    {
-      /* !!! MSG !!! */
-    }
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstAnim.u32Flags = orxANIM_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
   }
 
   /* Done! */
@@ -337,12 +346,6 @@ orxVOID orxAnim_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Texture);
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

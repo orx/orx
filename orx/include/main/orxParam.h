@@ -25,15 +25,11 @@
 #ifndef _orxPARAM_H_
 #define _orxPARAM_H_
 
+
 #include "orxInclude.h"
 
-/* Macro definition */
 
-/* Max Strings size */
-#define orxPARAM_KU32_SHORT_NAME_LENGTH  4     /**< Short parameter max length */
-#define orxPARAM_KU32_LONG_NAME_LENGTH   32    /**< Long parameter version max length */
-#define orxPARAM_KU32_SHORT_DESC_LENGTH  256   /**< Short parameter description */
-#define orxPARAM_KU32_LONG_DESC_LENGTH   1024  /**< Long parameter description */
+/* Macro definition */
 
 /* Flags definitions */
 #define orxPARAM_KU32_FLAGS_NONE             0x00000000 /**< No flags (default behaviour) */
@@ -45,52 +41,57 @@
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
  */
-typedef orxSTATUS (*orxPARAM_INFOS_FUNCTION)(orxU32 _u32NbParam, orxSTRING _azParams[]);
+typedef orxSTATUS (*orxPARAM_INFO_FUNCTION)(orxU32 _u32NbParam, orxSTRING _azParams[]);
  
 /* Parameter's infos */
 typedef struct __orxPARAM_t
 {
   /* Flags associated to the parameters' parser */
-  orxU32 u32Flags;
+  orxU32                  u32Flags;
   
   /* Short parameter name (ex: "h" for help (will be -h)) */
-  orxCHAR zShortName[orxPARAM_KU32_SHORT_NAME_LENGTH];
+  orxSTRING               zShortName;
 
   /* Long parameter name (ex: "help" for help (will be --help)) */
-  orxCHAR zLongName[orxPARAM_KU32_LONG_NAME_LENGTH];
+  orxSTRING               zLongName;
 
   /* Short description (ex: "shows params' list") */
-  orxCHAR zShortDesc[orxPARAM_KU32_SHORT_DESC_LENGTH];
+  orxSTRING               zShortDesc;
 
   /* Long description (ex: "Display the list of parameters.
    * -help <param> displays the <param> long description") */
-  orxCHAR zLongDesc[orxPARAM_KU32_LONG_DESC_LENGTH];
+  orxSTRING               zLongDesc;
   
   /* Function called when the parameter is detected in the command line */
-  orxPARAM_INFOS_FUNCTION pfnParser;
+  orxPARAM_INFO_FUNCTION pfnParser;
   
 } orxPARAM;
 
+
+/** Clock module setup
+ */
+extern orxDLLAPI orxVOID                orxParam_Setup();
 /** Initialize Param Module
  */
-extern orxDLLAPI orxSTATUS orxParam_Init();
+extern orxDLLAPI orxSTATUS              orxParam_Init();
 
 /** Exit Param module
  */
-extern orxDLLAPI orxVOID orxParam_Exit();
+extern orxDLLAPI orxVOID                orxParam_Exit();
 
 /** Register a new parameter
  * @param[in] _pstParam Informations about the option to register
  * @return Returns the status of the registration
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Register(orxCONST orxPARAM *_pstParam);
 
 /** Parse the command line
  * @param[in] _u32NbParam Number of read parameters
  * @param[in] _azParams   List of parameters
  * @return Returns the parsing status
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _azParams[]);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _azParams[]);
+
 
 #endif /* _orxPARAM_H_ */
 

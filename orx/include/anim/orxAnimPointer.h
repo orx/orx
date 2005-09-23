@@ -58,6 +58,8 @@
 typedef struct __orxANIMPOINTER_t                   orxANIMPOINTER;
 
 
+/** orxAnimPointer module setup. */
+extern orxDLLAPI orxVOID                            orxAnimPointer_Setup();
 /** Inits the AnimationPointer system. */
 extern orxDLLAPI orxSTATUS                          orxAnimPointer_Init();
 /** Exits from the AnimationPointer system. */

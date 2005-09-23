@@ -97,8 +97,8 @@ struct __orxFRAME_t
   /* Data : 24 */
   orxVOID *pstData;
 
-  /* 8 extra bytes of padding : 32 */
-  orxU8 au8Unused[8];
+  /* Padding */
+  orxPAD(24);
 };
 
 /*
@@ -536,6 +536,20 @@ orxSTATIC orxVOID orxFrame_DeleteAll()
  ***************************************************************************
  ***************************************************************************/
 
+/***************************************************************************
+ orxFrame_Setup
+ Frame module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxFrame_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_STRUCTURE);
+
+  return;
+}
 
 /***************************************************************************
  orxFrame_Init
@@ -547,61 +561,55 @@ orxSTATUS orxFrame_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Structure)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
+    /* Cleans control structure */
+    orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
+
+    /* Inits ID Flags */
+    sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
+
+    /* Inits frame tree */
+    sstFrame.pstRoot = orxFrame_Create();
+
+    /* Not created? */
+    if(sstFrame.pstRoot == orxNULL)
     {
-      /* Cleans control structure */
+      /* Cleans flags */
+      sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
+
+      /* Can't process */
+      eResult = orxSTATUS_FAILED;
+    }
+
+    /* Initialized? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+  
+      /* Cleans static controller */
       orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
   
-      /* Inits ID Flags */
-      sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
+      /* Registers structure type */
+      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_TREE;
+      stRegisterInfo.u32Size      = sizeof(orxFRAME);
+      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+      stRegisterInfo.pfnUpdate    = orxNULL;
   
-      /* Inits frame tree */
-      sstFrame.pstRoot = orxFrame_Create();
-  
-      /* Not created? */
-      if(sstFrame.pstRoot == orxNULL)
-      {
-        /* Cleans flags */
-        sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
-  
-        /* Can't process */
-        eResult = orxSTATUS_FAILED;
-      }
-  
-      /* Initialized? */
-      if(eResult == orxSTATUS_SUCCESS)
-      {
-        orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-    
-        /* Cleans static controller */
-        orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
-    
-        /* Registers structure type */
-        stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_TREE;
-        stRegisterInfo.u32Size      = sizeof(orxFRAME);
-        stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-        stRegisterInfo.pfnUpdate    = orxNULL;
-    
-        eResult = orxStructure_Register(orxSTRUCTURE_ID_FRAME, &stRegisterInfo);
-      }
-      else
-      {
-        /* !!! MSG !!! */
-      }
+      eResult = orxStructure_Register(orxSTRUCTURE_ID_FRAME, &stRegisterInfo);
     }
     else
     {
       /* !!! MSG !!! */
-  
-      /* Already initialized */
-      eResult = orxSTATUS_FAILED;
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
   
   /* Done! */
@@ -632,11 +640,6 @@ orxVOID orxFrame_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

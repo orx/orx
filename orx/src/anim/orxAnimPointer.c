@@ -214,6 +214,22 @@ orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructur
  ***************************************************************************/
 
 /***************************************************************************
+ orxAnimPointer_Setup
+ AnimPointer module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxAnimPointer_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_ANIMSET);
+  orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_ANIM);
+
+  return;
+}
+
+/***************************************************************************
  orxAnimPointer_Init
  Inits Animation Pointer system.
 
@@ -223,55 +239,47 @@ orxSTATUS orxAnimPointer_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Structure) &
-       orxDEPEND_INIT(AnimSet) &
-       orxDEPEND_INIT(Time)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY))
-    {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-    
-      /* Cleans control structure */
-      orxMemory_Set(&sstAnimPointer, 0, sizeof(orxANIMPOINTER_STATIC));
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
   
-      /* Initialized? */
-      if(eResult == orxSTATUS_SUCCESS)
-      {
-        /* Registers structure type */
-        stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-        stRegisterInfo.u32Size      = sizeof(orxANIMPOINTER);
-        stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-        stRegisterInfo.pfnUpdate    = &orxAnimPointer_Update;
+    /* Cleans control structure */
+    orxMemory_Set(&sstAnimPointer, 0, sizeof(orxANIMPOINTER_STATIC));
 
-        eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMPOINTER, &stRegisterInfo);
-      }
-      else
-      {
-        /* !!! MSG !!! */
-      }
-    }
-    else
-    {
-      /* !!! MSG !!! */
-  
-      /* Already initialized */
-      eResult = orxSTATUS_FAILED;
-    }
-  
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
     {
-      /* Inits Flags */
-      sstAnimPointer.u32Flags = orxANIMPOINTER_KU32_FLAG_READY;
+      /* Registers structure type */
+      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+      stRegisterInfo.u32Size      = sizeof(orxANIMPOINTER);
+      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+      stRegisterInfo.pfnUpdate    = &orxAnimPointer_Update;
+
+      eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMPOINTER, &stRegisterInfo);
     }
     else
     {
       /* !!! MSG !!! */
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Initialized? */
+  if(eResult == orxSTATUS_SUCCESS)
+  {
+    /* Inits Flags */
+    sstAnimPointer.u32Flags = orxANIMPOINTER_KU32_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
   }
 
   /* Done! */
@@ -286,7 +294,6 @@ orxSTATUS orxAnimPointer_Init()
  ***************************************************************************/
 orxVOID orxAnimPointer_Exit()
 {
-  
   /* Initialized? */
   if(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY)
   {
@@ -300,12 +307,6 @@ orxVOID orxAnimPointer_Exit()
     sstAnimPointer.u32Flags &= ~orxANIMPOINTER_KU32_FLAG_READY;
 
   }
-
-  orxDEPEND_EXIT(Time);
-  orxDEPEND_EXIT(AnimSet);
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
   
   return;
 }

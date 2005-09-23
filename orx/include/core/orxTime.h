@@ -31,6 +31,10 @@ typedef orxU32                      orxDATE;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+/** Time module setup */
+extern orxDLLAPI orxVOID            orxTime_Setup();
+
+
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/

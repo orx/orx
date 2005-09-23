@@ -43,6 +43,8 @@
 typedef struct __orxOBJECT_t                orxOBJECT;
 
 
+/** Object module setup. */
+extern orxDLLAPI orxVOID                    orxObject_Setup();
 /** Inits the object system. */
 extern orxDLLAPI orxSTATUS                  orxObject_Init();
 /** Ends the object system. */

@@ -37,6 +37,10 @@ typedef struct __orxSCRIPT_t orxSCRIPT;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+/** Script module setup. */
+extern orxDLLAPI orxVOID                              orxScript_Setup();
+
+
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/

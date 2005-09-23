@@ -49,6 +49,10 @@ typedef struct __orxPACKAGE_t orxPACKAGE;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
+/** Package module setup */
+extern orxDLLAPI orxVOID                              orxPackage_Setup();
+
+
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/

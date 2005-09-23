@@ -41,11 +41,12 @@ typedef enum __orxMEMORY_TYPE_t
 } orxMEMORY_TYPE;
 
 
+/** Memory module setup */
+extern orxDLLAPI orxVOID                orxMemory_Setup();
 /** Initialize memory allocation module
  * @todo Really initialize the memory to be managed by the module and not OS
  */
 extern orxDLLAPI orxSTATUS              orxMemory_Init();
-
 /** Uninitialize memory allocation module
  */
 extern orxDLLAPI orxVOID                orxMemory_Exit();

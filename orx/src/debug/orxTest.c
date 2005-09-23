@@ -23,9 +23,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "utils/orxTest.h"
+#ifdef __orxTEST__ /* Only compile the content of this file in the lib in test mode */
 
-//#ifdef __orxTEST__ /* Only compile the content of this file in the lib in test mode */
+#include "debug/orxTest.h"
+
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
@@ -86,6 +87,7 @@ typedef struct __orxTEST_STATIC_t
  * Module global variable                                                  *
  ***************************************************************************/
 static orxTEST_STATIC sstTest;
+
 
 /***************************************************************************
  * Private functions                                                       *
@@ -333,38 +335,52 @@ orxVOID orxTest_DisplayMenu()
  * Public functions                                                        *
  ***************************************************************************/
 
+/***************************************************************************
+ orxTest_Setup
+ Test module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxTest_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_TEXTIO);
+
+  return;
+}
+
 /** Initialize the test module
  */
 orxSTATUS orxTest_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-#ifdef __orxTEST__
-
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstTest.u32Flags & orxTEST_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstTest.u32Flags & orxTEST_KU32_FLAG_READY))
-    {
-      /* Initialize values */
-      orxMemory_Set(&sstTest, 0, sizeof(orxTEST_STATIC));
-      sstTest.u32NbRegisteredFunc = 0;
+    /* Initialize values */
+    orxMemory_Set(&sstTest, 0, sizeof(orxTEST_STATIC));
+    sstTest.u32NbRegisteredFunc = 0;
+  
+    /* Module ready */
+    sstTest.u32Flags |= orxTEST_KU32_FLAG_READY;
     
-      /* Module ready */
-      sstTest.u32Flags |= orxTEST_KU32_FLAG_READY;
-      
-      /* Load dynamic library */
-      orxTest_Load("."DIRSEP"modules");
-      
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
-    }
+    /* Load dynamic library */
+    orxTest_Load("."DIRSEP"modules");
+    
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
-#endif /* __orxTEST__ */
-    
   return eResult;
 }
 
@@ -372,8 +388,6 @@ orxSTATUS orxTest_Init()
  */
 orxVOID orxTest_Exit()
 {
-#ifdef __orxTEST__
-
   /* Module initialized ? */
   if ((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY)
   {
@@ -383,12 +397,8 @@ orxVOID orxTest_Exit()
     /* Module becomes not ready */
     sstTest.u32Flags &= ~orxTEST_KU32_FLAG_READY;
   }
-  
-  /* Exit dependencies */
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
-  
-#endif /* __orxTEST__ */
+
+  return;
 }
 
 /** Register a new function
@@ -399,9 +409,6 @@ orxVOID orxTest_Exit()
  */
 orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTION _pfnFunction)
 {
- 
-#ifdef __orxTEST__
-  
   orxTEST *pstTest; /* Structure that will store new datas */
   orxHANDLE hRet;   /* Returnd handle value */
   
@@ -436,12 +443,6 @@ orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST
   }
   
   return hRet;
-  
-#else
-
-  return orxHANDLE_Undefined;
-  
-#endif /* __orxTEST__ */
 }
 
 /** Run the test engine
@@ -450,17 +451,12 @@ orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST
  */
 orxVOID orxTest_Run(orxU32 _u32NbParam, orxSTRING _azParams[])
 {
-#ifdef __orxTEST__ /* Only include the content of this in test mode */
-
   orxCHAR zChoice[orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE];  /* Entry read from user */
   orxS32 s32Val;                                          /* value of entry */
-  
-  if ((orxDEPEND_INIT(Depend) &                      /* Test Module is necessary to register test function */
-       orxDEPEND_INIT(Test) &                        /* Test Module is necessary to register test function */
-       orxDEPEND_INIT(String) &                      /* String mdule to manage string (and read value from user) */
-       orxDEPEND_INIT(TextIO)) == orxSTATUS_SUCCESS) /* Text IO module to manage user input/output */
-  {  
 
+  /* Inits test module */
+  if(orxModule_Init(orxMODULE_ID_TEST) == orxSTATUS_SUCCESS)
+  {
     /* Display menu and get user entry */
     do
     {
@@ -506,16 +502,12 @@ orxVOID orxTest_Run(orxU32 _u32NbParam, orxSTRING _azParams[])
     }
     while (orxString_Compare(zChoice, "quit") != 0);
   }
-  else
-  {
-    orxDEBUG_LOG(orxDEBUG_LEVEL_LOG, "Error : Can't Initialize Dependencies... Exit");
-  }
 
-  /* Exit dependencies */  
-  orxDEPEND_EXIT(TextIO);
-  orxDEPEND_EXIT(String);
-  orxDEPEND_EXIT(Test);
-  orxDEPEND_EXIT(Depend);
-  
-#endif /* __orxTEST__ */
+  /* Exits from test module */
+  orxModule_Exit(orxMODULE_ID_TEST);
+
+  return;
 }
+
+
+#endif /* __orxTEST__ */

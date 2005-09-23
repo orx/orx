@@ -24,7 +24,7 @@
  ***************************************************************************/
 
 #include "orxInclude.h"
-#include "utils/orxTest.h"
+#include "debug/orxTest.h"
 #include "utils/orxHashTable.h"
 #include "io/orxTextIO.h"
 
@@ -371,7 +371,7 @@ orxVOID orxTest_HashTable_PrintAll()
 orxVOID orxTest_HashTable_Init()
 {
   /* Initialize bank module */
-  orxDEPEND_INIT(HashTable);
+  orxModule_Init(orxMODULE_ID_HASHTABLE);
   
   /* Register test functions */
   orxTest_Register("Hash", "Display module informations", orxTest_HashTable_Infos);
@@ -402,9 +402,6 @@ orxVOID orxTest_HashTable_Exit()
       sstTest_HashTable.apstHashTable[u32HashTableIndex] = orxNULL;
     }
   }
-  
-  /* Uninitialize module */
-  orxDEPEND_EXIT(HashTable);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_HashTable_Init, orxTest_HashTable_Exit)

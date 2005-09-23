@@ -50,6 +50,10 @@ typedef struct __orxFSM_INSTANCE_t            orxFSM_INSTANCE;
 
 /**@name Module management.
  *@{ */
+
+/** Clock module setup.
+ */
+extern orxDLLAPI orxVOID                      orxFSM_Setup();
 /**Initialize StateMachine Module.
  *@return Returns the initialization status.
  */
@@ -138,7 +142,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_RemoveState(orxFSM *_pstSta
  *@param[in] _pstStateMachine      The state machine.
  *@param[in] _pstBeginningState    The state marking the beginning of the link.
  *@param[in] _pstEndingState       The state marking the ending of the link.
- *@param[in] _pfnCondition          Condition callback.
+ *@param[in] _pfnCondition         Condition callback.
  *@return Returns the new link.
  */
 extern orxDLLAPI orxFSM_LINK *orxFASTCALL     orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, orxCONST orxFSM_CONDITION_FUNCTION _pfnCondition);

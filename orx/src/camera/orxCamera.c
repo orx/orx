@@ -64,8 +64,8 @@ struct __orxCAMERA_VIEW_LIST_t
   /* Used / Not used : 24 */
   orxBOOL bUsed;
 
-  /* 8 extra bytes of padding : 32 */
-  orxU8 au8Unused[8];
+  /* Padding */
+  orxPAD(24);
 };
 
 /*
@@ -117,8 +117,8 @@ struct __orxCAMERA_t
   /* View list counter : 60 */
   orxS32 s32ViewListCounter;
 
-  /* 8 extra bytes of padding : 64 */
-  orxU8 au8Unused[8];
+  /* Padding */
+  orxPAD(60);
 
   /* View list : 16448 */
   orxCAMERA_VIEW_LIST astViewList[orxCAMERA_KU32_VIEW_LIST_NUMBER];
@@ -834,6 +834,22 @@ orxSTATIC orxINLINE orxVOID orxCamera_SortViewList(orxCAMERA *_pstCamera)
  ***************************************************************************
  ***************************************************************************/
 
+/***************************************************************************
+ orxCamera_Setup
+ Camera system setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxCamera_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_FRAME);
+  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_OBJECT);
+
+  return;
+}
 
 /***************************************************************************
  orxCamera_Init
@@ -845,37 +861,23 @@ orxSTATUS orxCamera_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
   
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Frame) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Object) &
-       orxDEPEND_INIT(Structure)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
-    {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-    
-      /* Cleans static controller */
-      orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
   
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-      stRegisterInfo.u32Size      = sizeof(orxCAMERA);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
+    /* Cleans static controller */
+    orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
 
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_CAMERA, &stRegisterInfo);
-    }
-    else
-    {
-      /* !!! MSG !!! */
-  
-      /* Already initialized */
-      eResult = orxSTATUS_FAILED;
-    }
-  
+    /* Registers structure type */
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxCAMERA);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
+
+    /* Registers structure */
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_CAMERA, &stRegisterInfo);
+
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
     {
@@ -887,7 +889,14 @@ orxSTATUS orxCamera_Init()
       /* !!! MSG !!! */
     }
   }
+  else
+  {
+    /* !!! MSG !!! */
 
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  
   /* Done! */
   return eResult;
 }
@@ -916,12 +925,6 @@ orxVOID orxCamera_Exit()
   {
     /* !!! MSG !!! */
   }
-
-  orxDEPEND_EXIT(Structure);
-  orxDEPEND_EXIT(Object);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Frame);
-  orxDEPEND_EXIT(Depend);
 
   return;
 }

@@ -1,5 +1,5 @@
 /** 
- * \file orxFps.h
+ * \file orxFPS.h
  * 
  * FPS Module.
  * Allows to compute & display FPS.
@@ -10,7 +10,7 @@
 
 
 /***************************************************************************
- orxFps.h
+ orxFPS.h
  FPS module
  
  begin                : 10/12/2003
@@ -33,16 +33,19 @@
 
 #include "orxInclude.h"
 
-/** Inits the fps system. */
-extern orxDLLAPI orxSTATUS                        orxFps_Init();
-/** Exits from the fps system. */
-extern orxDLLAPI orxVOID                          orxFps_Exit();
 
-/** Increases fps counter */
-extern orxDLLAPI orxVOID                          orxFps_IncreaseFrameCounter();
+/** FPS module setup */
+extern orxDLLAPI orxVOID                          orxFPS_Setup();
+/** Inits the FPS system. */
+extern orxDLLAPI orxSTATUS                        orxFPS_Init();
+/** Exits from the FPS system. */
+extern orxDLLAPI orxVOID                          orxFPS_Exit();
 
-/** Gets fps counter */
-extern orxDLLAPI orxU32                           orxFps_GetFPS();
+/** Increases FPS counter */
+extern orxDLLAPI orxVOID                          orxFPS_IncreaseFrameCounter();
+
+/** Gets FPS counter */
+extern orxDLLAPI orxU32                           orxFPS_GetFPS();
 
 
 #endif /* _orxFPS_H_ */

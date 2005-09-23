@@ -1,6 +1,6 @@
 /***************************************************************************
- orxFps.c
- fps module
+ orxFPS.c
+ FPS module
  
  begin                : 10/12/2003
  author               : (C) Arcallians
@@ -17,12 +17,12 @@
  ***************************************************************************/
 
 
-#include "debug/orxFps.h"
+#include "debug/orxFPS.h"
 
 #include "debug/orxDebug.h"
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
-#include "msg/msg_fps.h"
+#include "msg/msg_FPS.h"
 
 /*
  * Platform independant defines
@@ -56,7 +56,7 @@ typedef struct __orxFPS_STATIC_t
 /*
  * Static data
  */
-orxSTATIC volatile orxFPS_STATIC sstFps;
+orxSTATIC volatile orxFPS_STATIC sstFPS;
 
 
 /***************************************************************************
@@ -71,20 +71,16 @@ orxSTATIC volatile orxFPS_STATIC sstFps;
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxVOID orxFASTCALL orxFps_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+orxSTATIC orxVOID orxFASTCALL orxFPS_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   /* Checks */
-  orxASSERT(sstFps.u32Flags & orxFPS_KU32_FLAG_READY);
+  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
   
-  /* !!! Only to avoid warnings !!! */
-  orxASSERT(_pstClockInfo != orxNULL);
-  orxASSERT(_pstContext == NULL);
-
   /* Gets FPS value */
-  sstFps.u32FPS = sstFps.u32FrameCounter;
+  sstFPS.u32FPS = sstFPS.u32FrameCounter;
 
   /* Resets frame counter */
-  sstFps.u32FrameCounter = 0;
+  sstFPS.u32FrameCounter = 0;
 
   return;
 }
@@ -97,67 +93,76 @@ orxSTATIC orxVOID orxFASTCALL orxFps_Update(orxCONST orxCLOCK_INFO *_pstClockInf
  ***************************************************************************/
 
 /***************************************************************************
- orxFps_Init
- Inits fps system.
+ orxFPS_Setup
+ FPS module setup.
+
+ returns: nothing
+ ***************************************************************************/
+orxVOID orxFPS_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_FPS, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_FPS, orxMODULE_ID_CLOCK);
+
+  return;
+}
+
+/***************************************************************************
+ orxFPS_Init
+ Inits FPS system.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
  ***************************************************************************/
-orxSTATUS orxFps_Init()
+orxSTATUS orxFPS_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILED;
 
-  /* Init dependencies */
-  if ((orxDEPEND_INIT(Depend) &
-       orxDEPEND_INIT(Memory) &
-       orxDEPEND_INIT(Clock)) == orxSTATUS_SUCCESS)
+  /* Not already Initialized? */
+  if(!(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY))
   {
-    /* Not already Initialized? */
-    if(!(sstFps.u32Flags & orxFPS_KU32_FLAG_READY))
+    /* Cleans control structure */
+    orxMemory_Set((orxFPS_STATIC *)&sstFPS, 0, sizeof(orxFPS_STATIC));
+
+    /* Creates clock */
+    sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_FPS);
+
+    /* Valid? */
+    if(sstFPS.pstClock != orxNULL)
     {
-      /* Cleans control structure */
-      orxMemory_Set((orxFPS_STATIC *)&sstFps, 0, sizeof(orxFPS_STATIC));
-  
-      /* Creates clock */
-      sstFps.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_FPS);
-  
-      /* Valid? */
-      if(sstFps.pstClock != orxNULL)
+      /* Registers callback */
+      eResult = orxClock_Register(sstFPS.pstClock, orxFPS_Update, orxNULL, orxMODULE_ID_FPS);
+
+      /* Registered? */
+      if(eResult == orxSTATUS_SUCCESS)
       {
-        /* Registers callback */
-        eResult = orxClock_Register(sstFps.pstClock, orxFps_Update, orxNULL);
-  
-        /* Registered? */
-        if(eResult == orxSTATUS_SUCCESS)
-        {
-          /* Inits Flags */
-          sstFps.u32Flags = orxFPS_KU32_FLAG_READY;
-          
-          /* Success */
-          eResult = orxSTATUS_SUCCESS;
-        }
-        else
-        {
-          /* !!! MSG !!! */
-  
-          /* Deletes clock */
-          orxClock_Delete(sstFps.pstClock);
-        }
+        /* Inits Flags */
+        sstFPS.u32Flags = orxFPS_KU32_FLAG_READY;
+        
+        /* Success */
+        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
         /* !!! MSG !!! */
-  
-        /* Not initialized */
-        eResult = orxSTATUS_FAILED;
+
+        /* Deletes clock */
+        orxClock_Delete(sstFPS.pstClock);
       }
     }
     else
     {
       /* !!! MSG !!! */
-  
-      /* Already initialized */
+
+      /* Not initialized */
       eResult = orxSTATUS_FAILED;
     }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
@@ -165,66 +170,61 @@ orxSTATUS orxFps_Init()
 }
 
 /***************************************************************************
- orxFps_Exit
- Exits from the fps system.
+ orxFPS_Exit
+ Exits from the FPS system.
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFps_Exit()
+orxVOID orxFPS_Exit()
 {
   /* Initialized? */
-  if(sstFps.u32Flags & orxFPS_KU32_FLAG_READY)
+  if(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY)
   {
     /* Removes callback */
-    orxClock_Unregister(sstFps.pstClock, orxFps_Update);
+    orxClock_Unregister(sstFPS.pstClock, orxFPS_Update);
 
     /* Deletes clock */
-    orxClock_Delete(sstFps.pstClock);
+    orxClock_Delete(sstFPS.pstClock);
 
     /* Updates flags */
-    sstFps.u32Flags &= ~orxFPS_KU32_FLAG_READY;
+    sstFPS.u32Flags &= ~orxFPS_KU32_FLAG_READY;
   }
   else
   {
     /* !!! MSG !!! */
   }
 
-  /* Exit dependencies */  
-  orxDEPEND_EXIT(Clock);
-  orxDEPEND_EXIT(Memory);
-  orxDEPEND_EXIT(Depend);
-
   return;
 }
 
 /***************************************************************************
- orxFps_IncreaseFrameCounter
+ orxFPS_IncreaseFrameCounter
  Increases frame counter.
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFps_IncreaseFrameCounter()
+orxVOID orxFPS_IncreaseFrameCounter()
 {
   /* Checks */
-  orxASSERT(sstFps.u32Flags & orxFPS_KU32_FLAG_READY);
+  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
 
   /* Updates frame counter */
-  sstFps.u32FrameCounter++;
+  sstFPS.u32FrameCounter++;
 
   return;
 }
 
 /***************************************************************************
- orxFps_GetFPS
+ orxFPS_GetFPS
  Gets FPS value/
 
  returns: orxU32 FPS value
  ***************************************************************************/
-orxU32 orxFps_GetFPS()
+orxU32 orxFPS_GetFPS()
 {
   /* Checks */
-  orxASSERT(sstFps.u32Flags & orxFPS_KU32_FLAG_READY);
+  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
 
   /* Returns it */  
-  return sstFps.u32FPS;
+  return sstFPS.u32FPS;
 }
