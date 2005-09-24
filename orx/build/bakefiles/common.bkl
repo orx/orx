@@ -102,7 +102,7 @@
         <!-- Optimization and debug infos. -->
         <optimize>$(orxOPTIMIZEFLAG)</optimize>
         <debug-info>$(orxDEBUGFLAG)</debug-info>
-        <cflags>-Wno-unused-parameters</cflags>
+        <cflags>-Wno-unused-parameter</cflags>
         <!-- Preprocessor definitions. -->
         <define>$(orxDEBUG)</define>
         <define>$(orxPLATFORM)</define>
