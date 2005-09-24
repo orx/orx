@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <bakefile>
 
+  <!-- ******************** FMOD ********************** -->
+
   <!-- Since on linux, FMOD packaging is not good, we are obliged to use this trick :/ -->
   <set var="orxFMODLIB_WIN">
     <if cond="PLATFORM_WIN32=='1'">fmod</if>
@@ -16,25 +18,31 @@
     <ldflags>$(orxFMODLIB_UNIX)</ldflags>
   </template>
   
+  <!-- ******************** SDL ********************** -->
+  
   <!-- On windows, sdl-config is not available, so we have to specify the option manually -->
   <set var="orxSDLLIB_WIN">
     <if cond="PLATFORM_WIN32=='1'">SDL</if>
   </set>
 
-  <set var="orxFMODCFLAGS_UNIX">
+  <set var="orxSDLCFLAGS_UNIX">
     <if cond="PLATFORM_UNIX=='1'">`sdl-config --cflags`</if>
   </set>
-  <set var="orxFMODLIB_UNIX">
+  <set var="orxSDLLIB_UNIX">
     <if cond="PLATFORM_UNIX=='1'">`sdl-config --libs`</if>
   </set>
 
   <!-- Define the module template -->
   <template id="orxSDL">
-    <cflags>$(orxFMODCFLAGS_UNIX)</cflags>
+    <cflags>$(orxSDLCFLAGS_UNIX)</cflags>
     <sys-lib>$(orxSDLLIB_WIN)</sys-lib>
-    <ldflags>$(orxFMODLIB_UNIX)</ldflags>
+    <ldflags>$(orxSDLLIB_UNIX)</ldflags>
   </template>
   
+
+
+
+
 
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->

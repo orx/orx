@@ -465,7 +465,7 @@ endif
 ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
 bin/plugins/core/sound/Sound_Fmod.so: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  `sdl-config --libs`  $(__orxEXTRALINK_p)
+	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Llib  /usr/lib/libfmod.so  $(__orxEXTRALINK_p)
 endif
 endif
 
