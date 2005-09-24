@@ -67,7 +67,7 @@ CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD
 orxPLATFORM = __orxLINUX__
 ORXDLL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude \
-	-D__orxDLLEXPORT__ -fPIC -DPIC -Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-D__orxDLLEXPORT__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxAnim.o \
 	./build/$(BUILD)/orxDLL_orxAnimPointer.o \
@@ -113,7 +113,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_pathfinder.o
 ORXLIB_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude \
-	-D__orxDLLEXPORT__ -Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-D__orxDLLEXPORT__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxAnim.o \
 	./build/$(BUILD)/orxLIB_orxAnimPointer.o \
@@ -159,77 +159,77 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_pathfinder.o
 ORX_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORX_OBJECTS =  \
 	./build/$(BUILD)/orx_orxMain.o
 MEMORY_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 MEMORY_OBJECTS =  \
 	./build/$(BUILD)/Memory_orxTest_Memory.o
 BANK_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 BANK_OBJECTS =  \
 	./build/$(BUILD)/Bank_orxTest_Bank.o
 HASHTABLE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 HASHTABLE_OBJECTS =  \
 	./build/$(BUILD)/HashTable_orxTest_HashTable.o
 SOUND_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 SOUND_OBJECTS =  \
 	./build/$(BUILD)/Sound_orxTest_Sound.o
 PLUGIN_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 PLUGIN_OBJECTS =  \
 	./build/$(BUILD)/Plugin_orxTest_Plugin.o
 MATHSET_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 MATHSET_OBJECTS =  \
 	./build/$(BUILD)/MathSet_orxTest_MathSet.o
 QUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 QUEUE_OBJECTS =  \
 	./build/$(BUILD)/Queue_orxTest_Queue.o
 FSM_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 FSM_OBJECTS =  \
 	./build/$(BUILD)/FSM_orxTest_FSM.o
 CLOCK_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 CLOCK_OBJECTS =  \
 	./build/$(BUILD)/Clock_orxTest_Clock.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 SOUND_FMOD_OBJECTS =  \
 	./build/$(BUILD)/Sound_Fmod_orxSound.o
 MOUSE_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 MOUSE_ALLEGRO_OBJECTS =  \
 	./build/$(BUILD)/Mouse_Allegro_orxMouse.o
 KEYBOARD_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	$(__orxDEBUG_p) -D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) \
-	-Iinclude -fPIC -DPIC -Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Iinclude -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 KEYBOARD_ALLEGRO_OBJECTS =  \
 	./build/$(BUILD)/Keyboard_Allegro_orxKeyboard.o
 JOYSTICK_NONE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 JOYSTICK_NONE_OBJECTS =  \
 	./build/$(BUILD)/Joystick_NONE_orxJoystick.o
 TIME_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) $(__orxWARNINGFLAG) -Iinclude -fPIC -DPIC \
-	-Wno-unused-parameters `sdl-config --cflags` $(CPPFLAGS) $(CFLAGS)
+	-Wno-unused-parameter `sdl-config --cflags` $(CPPFLAGS) $(CFLAGS)
 TIME_SDL_OBJECTS =  \
 	./build/$(BUILD)/Time_SDL_orxTime.o
 
