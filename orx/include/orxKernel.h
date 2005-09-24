@@ -35,7 +35,7 @@
 #include "core/orxTime.h"
 
 #include "debug/orxDebug.h"
-#include "debug/orxFps.h"
+#include "debug/orxFPS.h"
 #include "debug/orxTest.h"
 
 #include "display/graphic.h"
