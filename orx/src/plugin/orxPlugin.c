@@ -80,8 +80,14 @@
  * Platform independant defines
  */
 
-#define orxPLUGIN_KU32_FLAG_NONE                            0x00000000
-#define orxPLUGIN_KU32_FLAG_READY                           0x00000001
+#define orxPLUGIN_KU32_FLAG_NONE                            0x00000000L
+#define orxPLUGIN_KU32_FLAG_READY                           0x00000001L
+
+
+#define orxPLUGIN_KU32_CORE_INFO_FLAG_NONE                  0x00000000L
+#define orxPLUGIN_KU32_CORE_INFO_FLAG_LOADED                0x00000001L
+#define orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY                 0x10000000L
+
 
 #define orxPLUGIN_KU32_FUNCTION_BANK_SIZE                   16
 
@@ -124,9 +130,34 @@ typedef struct __orxPLUGIN_INFO_t
   orxHASHTABLE *pstFunctionTable;                           /**< Function hash table : 16 */
 
   /* Plugin name */
-  orxCHAR zPluginName[orxPLUGIN_KU32_NAME_SIZE];            /**< Plugin name : 48 */
+  orxSTRING zPluginName;                                    /**< Plugin name : 20 */
+
+  /* Padding */
+  orxPAD(20);
 
 } orxPLUGIN_INFO;
+
+/*
+ * Core info structure
+ */
+typedef struct __orxPLUGIN_CORE_INFO_t
+{
+  /* Core functions : 4 */
+  orxPLUGIN_CORE_FUNCTION orxCONST *pstCoreFunctionTable;
+
+  /* Core functions counter : 8 */
+  orxU32                            u32CoreFunctionCounter;
+
+  /* Core module ID : 12 */
+  orxMODULE_ID                      eModuleID;
+
+  /* Core info status : 16 */
+  orxU32                            u32Flags;
+
+  /* Pad */
+  orxPAD(16);
+
+} orxPLUGIN_CORE_INFO;
 
 
 /*
@@ -137,11 +168,8 @@ typedef struct __orxPLUGIN_STATIC_t
   /* Plugin bank */
   orxBANK *pstPluginBank;
 
-  /* Core functions */
-  orxPLUGIN_CORE_FUNCTION orxCONST *pastCoreFunctionTable[orxPLUGIN_CORE_ID_NUMBER];
-
-  /* Core function counters */
-  orxU32 au32CoreFunctionCounter[orxPLUGIN_CORE_ID_NUMBER];
+  /* Core info table */
+  orxPLUGIN_CORE_INFO astCoreInfo[orxPLUGIN_CORE_ID_NUMBER];
 
   /* Control flags */
   orxU32 u32Flags;
@@ -159,6 +187,72 @@ orxSTATIC orxPLUGIN_STATIC sstPlugin;
  ******                       LOCAL FUNCTIONS                         ******
  ***************************************************************************
  ***************************************************************************/
+
+/***************************************************************************
+ orxPlugin_UpdateAllModule
+ 
+ This function updates all modules relying on core plugins. 
+ Returns nothing.
+ ***************************************************************************/
+orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
+{
+  orxU32 i;
+
+  /* For all core plugins */
+  for(i = 0; i < orxPLUGIN_CORE_ID_NUMBER; i++)
+  {
+    /* Is plugin dirty? */
+    if(sstPlugin.astCoreInfo[i].u32Flags & orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY)
+    {
+      orxU32 j;
+      orxBOOL bLoaded;
+
+      /* Checks all functions */
+      for(j = 0, bLoaded = orxTRUE;
+          (j < sstPlugin.astCoreInfo[i].u32CoreFunctionCounter) && (bLoaded == orxTRUE);
+          j++)
+      {
+        /* Tests if function is loaded */
+        bLoaded = (sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction != sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction) ?
+                  orxTRUE :
+                  orxFALSE;
+      }
+
+      /* Was not already loaded */
+      if(!(sstPlugin.astCoreInfo[i].u32Flags & orxPLUGIN_KU32_CORE_INFO_FLAG_LOADED))
+      {
+        /* Is now loaded? */
+        if(bLoaded != orxFALSE)
+        {
+          /* Marks as loaded */
+          sstPlugin.astCoreInfo[i].u32Flags |= orxPLUGIN_KU32_CORE_INFO_FLAG_LOADED;
+          
+          /* Tries to init associated module */
+          orxModule_Init(sstPlugin.astCoreInfo[i].eModuleID);
+        }
+      }
+      /* Was already loaded */
+      else
+      {
+        /* Isn't loaded any longer */
+        if(bLoaded == orxFALSE)
+        {
+          /* Marks as not loaded */
+          sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_INFO_FLAG_LOADED;
+          
+          /* Tries to exit from associated module */
+          orxModule_Exit(sstPlugin.astCoreInfo[i].eModuleID);
+        }
+      }
+
+      /* Removes dirty flag */
+      sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY;
+    }
+  }
+  
+  /* Done! */
+  return;
+}
 
 /***************************************************************************
  orxPlugin_CreateFunctionInfo
@@ -232,7 +326,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FU
   orxASSERT(u32PluginIndex < orxPLUGIN_CORE_ID_NUMBER);
   
   /* Gets core function table */
-  pstCoreFunction = sstPlugin.pastCoreFunctionTable[u32PluginIndex];
+  pstCoreFunction = sstPlugin.astCoreInfo[u32PluginIndex].pstCoreFunctionTable;
 
   /* Core plugin defined? */
   if(pstCoreFunction != orxNULL)
@@ -241,11 +335,22 @@ orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FU
     u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
     /* Checks */
-    orxASSERT(u32FunctionIndex < sstPlugin.au32CoreFunctionCounter[u32PluginIndex]);
+    orxASSERT(u32FunctionIndex < sstPlugin.astCoreInfo[u32PluginIndex].u32CoreFunctionCounter);
     orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
 
-    /* Registers core function */
-    *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunctionInfo->pfnFunction;
+    /* Was not already loaded? */
+    if(*(pstCoreFunction[u32FunctionIndex].pfnFunction) == pstCoreFunction[u32FunctionIndex].pfnDefaultFunction)
+    {
+      /* Registers core function */
+      *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunctionInfo->pfnFunction;
+
+      /* Updates plugin status */
+      sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
   }
   else
   {
@@ -277,7 +382,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_
   orxASSERT(u32PluginIndex < orxPLUGIN_CORE_ID_NUMBER);
 
   /* Gets core function table */
-  pstCoreFunction = sstPlugin.pastCoreFunctionTable[u32PluginIndex];
+  pstCoreFunction = sstPlugin.astCoreInfo[u32PluginIndex].pstCoreFunctionTable;
 
   /* Core plugin defined? */
   if(pstCoreFunction != orxNULL)
@@ -286,11 +391,14 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_
     u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
     /* Checks */
-    orxASSERT(u32FunctionIndex < sstPlugin.au32CoreFunctionCounter[u32PluginIndex]);
+    orxASSERT(u32FunctionIndex < sstPlugin.astCoreInfo[u32PluginIndex].u32CoreFunctionCounter);
     orxASSERT(pstCoreFunction[u32FunctionIndex].pfnFunction != orxNULL);
 
     /* Restores default core function */
     *(pstCoreFunction[u32FunctionIndex].pfnFunction) = pstCoreFunction[u32FunctionIndex].pfnDefaultFunction;
+
+    /* Marks plugin as dirty */
+    sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY;
   }
   else
   {
@@ -376,14 +484,6 @@ orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
   /* Checks */
   orxASSERT(_pstPluginInfo != orxNULL);
 
-  /* Linked to system plugin? */
-  if(_pstPluginInfo->pstSysPlugin != orxNULL)
-  {
-    /* Closes it */
-    orxPLUGIN_CLOSE(_pstPluginInfo->pstSysPlugin);
-    _pstPluginInfo->pstSysPlugin = orxNULL;
-  }
-
   /* Deletes all function info */
   for(pstFunctionInfo = orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL);
       pstFunctionInfo != orxNULL;
@@ -400,6 +500,9 @@ orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
     orxPlugin_DeleteFunctionInfo(_pstPluginInfo, pstFunctionInfo);
   }
 
+  /* Updates all modules */
+  orxPlugin_UpdateAllModule();
+
   /* Deletes function hash table */
   orxHashTable_Delete(_pstPluginInfo->pstFunctionTable);
 
@@ -408,6 +511,14 @@ orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
 
   /* Deletes plugin info */
   orxBank_Free(sstPlugin.pstPluginBank, _pstPluginInfo);
+
+  /* Linked to system plugin? */
+  if(_pstPluginInfo->pstSysPlugin != orxNULL)
+  {
+    /* Closes it */
+    orxPLUGIN_CLOSE(_pstPluginInfo->pstSysPlugin);
+    _pstPluginInfo->pstSysPlugin = orxNULL;
+  }
 
   /* Done */
   return;
@@ -449,7 +560,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
 
   /* Checks */
   orxASSERT(_pstSysPlugin != orxHANDLE_Undefined);
-  orxASSERT(_zFunctionName != orxSTRING_Empty);
+  orxASSERT(_zFunctionName != orxNULL);
   
   /* Gets function */
   pfnFunction = (orxPLUGIN_FUNCTION)orxPLUGIN_GET_SYMBOL_ADDRESS(_pstSysPlugin, _zFunctionName);
@@ -520,6 +631,10 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
           orxPlugin_RegisterCoreFunction(pstFunctionInfo);
         }
       }
+      else
+      {
+        /* !!! MSG !!! */
+      }
     }
   }
   else
@@ -540,17 +655,20 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
  This function adds a core plugin info structure to the global info array.
  Returns orxVOID.
  ***************************************************************************/
-orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
+orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
 {
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
-  orxASSERT(sstPlugin.pastCoreFunctionTable[_ePluginCoreID] == orxNULL);
+  orxASSERT(sstPlugin.astCoreInfo[_ePluginCoreID].pstCoreFunctionTable == orxNULL);
   orxASSERT(_ePluginCoreID < orxPLUGIN_CORE_ID_NUMBER);
+  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
   orxASSERT(_astCoreFunction != orxNULL);
 
   /* Stores info */
-  sstPlugin.pastCoreFunctionTable[_ePluginCoreID]   = _astCoreFunction;
-  sstPlugin.au32CoreFunctionCounter[_ePluginCoreID] = _u32CoreFunctionNumber;
+  sstPlugin.astCoreInfo[_ePluginCoreID].pstCoreFunctionTable    = _astCoreFunction;
+  sstPlugin.astCoreInfo[_ePluginCoreID].u32CoreFunctionCounter  = _u32CoreFunctionNumber;
+  sstPlugin.astCoreInfo[_ePluginCoreID].eModuleID               = _eModuleID;
+  sstPlugin.astCoreInfo[_ePluginCoreID].u32Flags                = orxPLUGIN_KU32_CORE_INFO_FLAG_NONE;
 
   return;
 }
@@ -722,9 +840,8 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
-  orxASSERT(_zPluginFileName != orxSTRING_Empty);
-  orxASSERT(_zPluginName != orxSTRING_Empty);
-  orxASSERT(orxString_Length(_zPluginName) < orxPLUGIN_KU32_NAME_SIZE);
+  orxASSERT(_zPluginFileName != orxNULL);
+  orxASSERT(_zPluginName != orxNULL);
 
   /* Opens plugin */
   pstSysPlugin = orxPLUGIN_OPEN(_zPluginFileName);
@@ -746,10 +863,13 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
       if(orxPlugin_RegisterPlugin(pstSysPlugin, pstPluginInfo) == orxSTATUS_SUCCESS)
       {
         /* Stores plugin name */  
-        orxString_Copy(pstPluginInfo->zPluginName, _zPluginName);
+        pstPluginInfo->zPluginName = _zPluginName;
 
         /* Gets plugin handle */
         hPluginHandle = pstPluginInfo->hPluginHandle;
+
+        /* Updates all modules */
+        orxPlugin_UpdateAllModule();
       }
       else
       {
@@ -794,13 +914,13 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
  ***************************************************************************/
 orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName)
 {
-  orxCHAR zFileName[128];
+  orxCHAR zFileName[256];
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
-  orxASSERT(_zPluginFileName != orxSTRING_Empty);
-  orxASSERT(orxString_Length(_zPluginFileName) < 124);
-  orxASSERT(_zPluginName != orxSTRING_Empty);
+  orxASSERT(_zPluginFileName != orxNULL);
+  orxASSERT(orxString_Length(_zPluginFileName) < 252);
+  orxASSERT(_zPluginName != orxNULL);
 
   /* Gets complete name */
   orxTextIO_Printf(zFileName, "%s.%s", _zPluginFileName, szPluginLibraryExt);
@@ -860,7 +980,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
   orxASSERT(_hPluginHandle != orxNULL);
-  orxASSERT(_zFunctionName != orxSTRING_Empty);
+  orxASSERT(_zFunctionName != orxNULL);
 
   /* Gets the plugin info */
   pstPluginInfo = orxPlugin_GetPluginInfo(_hPluginHandle);
@@ -902,7 +1022,7 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
-  orxASSERT(_zPluginName != orxSTRING_Empty);
+  orxASSERT(_zPluginName != orxNULL);
 
   /* Search all plugin info */
   for(pstPluginInfo = orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
@@ -940,7 +1060,7 @@ orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
 
   /* Gets plugin info */
   pstPluginInfo = orxPlugin_GetPluginInfo(_hPluginHandle);
-  
+
   /* Valid? */
   if(pstPluginInfo != orxNULL)
   {

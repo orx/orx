@@ -365,17 +365,17 @@ orxVOID orxTest_Sound_Init()
 
 orxVOID orxTest_Sound_Exit()
 {
-  orxTEST_SOUND_SAMPLE_INFOS *pstSampleInfos;
-
-  /* Traverse bank and unload sample */
-  while ((pstSampleInfos = (orxTEST_SOUND_SAMPLE_INFOS *)orxBank_GetNext(sstTest_Sound.pstSampleBank, NULL)))
-  {
-    /* Unload a loaded sample */
-    orxSound_SampleUnload(pstSampleInfos->pstSample);
-  }
-  
-  /* Destroy bank */
-  orxBank_Delete(sstTest_Sound.pstSampleBank);
+//  orxTEST_SOUND_SAMPLE_INFOS *pstSampleInfos;
+//
+//  /* Traverse bank and unload sample */
+//  while ((pstSampleInfos = (orxTEST_SOUND_SAMPLE_INFOS *)orxBank_GetNext(sstTest_Sound.pstSampleBank, NULL)))
+//  {
+//    /* Unload a loaded sample */
+//    orxSound_SampleUnload(pstSampleInfos->pstSample);
+//  }
+//  
+//  /* Destroy bank */
+//  orxBank_Delete(sstTest_Sound.pstSampleBank);
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Sound_Init, orxTest_Sound_Exit)

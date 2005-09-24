@@ -503,7 +503,6 @@ orxVOID orxTest_Run(orxU32 _u32NbParam, orxSTRING _azParams[])
     while (orxString_Compare(zChoice, "quit") != 0);
   }
 
-  /* Exits from test module */
   orxModule_Exit(orxMODULE_ID_TEST);
 
   return;

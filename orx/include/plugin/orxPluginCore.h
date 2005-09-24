@@ -39,9 +39,11 @@
  
 typedef struct __orxPLUGIN_CORE_FUNCTION_t
 {
-  orxPLUGIN_FUNCTION_ID eFunctionID;      /**< Function ID */
-  orxPLUGIN_FUNCTION *pfnFunction;        /**< Function Address */
-  orxPLUGIN_FUNCTION pfnDefaultFunction;  /**< Default Function */
+  orxPLUGIN_FUNCTION_ID eFunctionID;        /**< Function ID : 4 */
+  orxPLUGIN_FUNCTION   *pfnFunction;        /**< Function Address : 8 */
+  orxPLUGIN_FUNCTION    pfnDefaultFunction; /**< Default Function : 12 */
+
+  orxPAD(12);                               /**< Padding */
 
 } orxPLUGIN_CORE_FUNCTION;
 
@@ -56,7 +58,7 @@ typedef struct __orxPLUGIN_CORE_FUNCTION_t
  * \param _astCoreFunction the pointer on the core functions info array
  * \return nothing.
  */
-extern orxDLLAPI orxVOID orxFASTCALL  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
+extern orxDLLAPI orxVOID orxFASTCALL  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
 
 /** Default core plugin function.
  * Needs to be referenced by all core functions at module init.
@@ -203,7 +205,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 
 /* *** Core info register macro *** */
 #define orxPLUGIN_REGISTER_CORE_INFO(PLUGIN_SUFFIX)                             \
-  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(orxPLUGIN_CORE_FUNCTION));
+  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxMODULE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
 
 #endif /* _orxPLUGIN_CORE_H_ */

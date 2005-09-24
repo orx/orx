@@ -39,7 +39,6 @@
 /* Defines plugin registration info constants */
 #define orxPLUGIN_KZ_INIT_FUNCTION_NAME         "orxPlugin_Init" /**< Plugin init function name */
 
-#define orxPLUGIN_KU32_NAME_SIZE                32
 #define orxPLUGIN_KU32_FUNCTION_ARG_SIZE        128
 
 
@@ -51,9 +50,9 @@
 #define _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(FUNCTION, FUNCTION_ID, NAME, ARGS) \
   if(u32UserPluginFunctionCounter < u32UserPluginFunctionMaxNumber) \
   { \
-    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].pfnFunction = (orxPLUGIN_FUNCTION) FUNCTION; \
-    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].eFunctionID = FUNCTION_ID; \
-    orxString_Copy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionName, #NAME); \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].pfnFunction   = (orxPLUGIN_FUNCTION) FUNCTION; \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].eFunctionID   = FUNCTION_ID; \
+    pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionName = #NAME; \
     orxString_Copy(pstUserPluginFunctionInfo[u32UserPluginFunctionCounter].zFunctionArgs, ARGS); \
     u32UserPluginFunctionCounter++; \
   } \
@@ -93,7 +92,7 @@ typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
   orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID */
   orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address */
   orxCHAR zFunctionArgs[orxPLUGIN_KU32_FUNCTION_ARG_SIZE];  /**< Function Argument Types */
-  orxCHAR zFunctionName[orxPLUGIN_KU32_NAME_SIZE];          /**< Function Name */
+  orxSTRING zFunctionName;                                  /**< Function Name */
 
 } orxPLUGIN_USER_FUNCTION_INFO;
 

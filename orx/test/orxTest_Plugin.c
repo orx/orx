@@ -330,9 +330,6 @@ orxVOID orxTest_Plugin_Load()
       /* Unload the plugin */
       orxTextIO_PrintLn("Unloading %s...", sstTest_Plugin.astPlugins[s32TypeResult].zFile);
       
-      /* Exit the loaded module */
-      orxModule_Exit(sstTest_Plugin.astPlugins[s32TypeResult].eModuleID);
-      
       /* Unload the plugin */
       orxPlugin_Unload(sstTest_Plugin.astPlugins[s32TypeResult].hPlugin);
     }
@@ -443,18 +440,18 @@ orxVOID orxTest_RegisterCorePlugin()
 
 orxVOID orxTest_Plugin_Exit()
 {
-  orxU32 u32Index;
-  
-  /* Unload all the loaded plugins before exit */
-  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
-  {
-    if (sstTest_Plugin.astPlugins[u32Index].hPlugin != orxHANDLE_Undefined)
-    {
-      /* Unload the selected plugin */
-      orxPlugin_Unload(sstTest_Plugin.astPlugins[u32Index].hPlugin);
-      sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_Undefined;
-    }
-  }
+//  orxU32 u32Index;
+//  
+//  /* Unload all the loaded plugins before exit */
+//  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
+//  {
+//    if (sstTest_Plugin.astPlugins[u32Index].hPlugin != orxHANDLE_Undefined)
+//    {
+//      /* Unload the selected plugin */
+//      orxPlugin_Unload(sstTest_Plugin.astPlugins[u32Index].hPlugin);
+//      sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_Undefined;
+//    }
+//  }
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_RegisterCorePlugin, orxTest_Plugin_Exit)
