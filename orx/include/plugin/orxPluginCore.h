@@ -80,7 +80,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 
 /* *** Default core function declaration *** */
 #define orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)                   \
-  orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)()                \
+  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)()                \
   {                                                                             \
     return(orxPlugin_DefaultCoreFunction(#FUNCTION_NAME, __FILE__, __LINE__));  \
   }                                                                             \
@@ -94,39 +94,39 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 
 /* *** 0 Arg declaration macro *** */
 #define orxPLUGIN_DECLARE_CORE_FUNCTION_0(FUNCTION_NAME, RETURN)                \
-  extern orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
+  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
                                                                                 \
-  extern RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))();
+  extern orxDLLAPI RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))();
 
 /* *** 1 Arg declaration macro *** */
 #define orxPLUGIN_DECLARE_CORE_FUNCTION_1(FUNCTION_NAME, RETURN, ARG1)          \
-  extern orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
+  extern orxDLLAPI  orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
                                                                                 \
-  extern RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1);
+  extern orxDLLAPI RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1);
 
 /* *** 2 Args declaration macro *** */
 #define orxPLUGIN_DECLARE_CORE_FUNCTION_2(FUNCTION_NAME, RETURN, ARG1, ARG2)    \
-  extern orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
+  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
                                                                                 \
-  extern RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2);
+  extern orxDLLAPI RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2);
 
 /* *** 3 Args declaration macro *** */
 #define orxPLUGIN_DECLARE_CORE_FUNCTION_3(FUNCTION_NAME, RETURN, ARG1, ARG2, ARG3) \
-  extern orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
+  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
                                                                                 \
-  extern RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3);
+  extern orxDLLAPI RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3);
 
 /* *** 4 Args declaration macro *** */
 #define orxPLUGIN_DECLARE_CORE_FUNCTION_4(FUNCTION_NAME, RETURN, ARG1, ARG2, ARG3, ARG4) \
-  extern orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
+  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
                                                                                 \
-  extern RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3, ARG4 _A4);
+  extern orxDLLAPI RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3, ARG4 _A4);
 
 /* *** 5 Args declaration macro *** */
 #define orxPLUGIN_DECLARE_CORE_FUNCTION_5(FUNCTION_NAME, RETURN, ARG1, ARG2, ARG3, ARG4, ARG5) \
-  extern orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
+  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();        \
                                                                                 \
-  extern RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3, ARG4 _A4, ARG5 _A5);
+  extern orxDLLAPI RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(ARG1 _A1, ARG2 _A2, ARG3 _A3, ARG4 _A4, ARG5 _A5);
 
 
 /***************************************************************************
@@ -190,7 +190,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 /* *** Core info array end macro *** */
 #define orxPLUGIN_END_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX)                        \
   };                                                                            \
-  orxVOID orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX)()                \
+  extern orxDLLAPI orxVOID orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX)()                \
   {                                                                             \
     orxPLUGIN_REGISTER_CORE_INFO(PLUGIN_SUFFIX);                                \
     return;                                                                     \
