@@ -1,0 +1,340 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+Project: "orxDLL"=orx_orxDLL.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "orxLIB"=orx_orxLIB.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "orx"=orx_orx.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Memory"=orx_Memory.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Bank"=orx_Bank.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_1)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "HashTable"=orx_HashTable.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_2)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Sound"=orx_Sound.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_3)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Plugin"=orx_Plugin.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_4)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MathSet"=orx_MathSet.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_5)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Queue"=orx_Queue.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_6)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "FSM"=orx_FSM.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_7)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Clock"=orx_Clock.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_8)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Sound_Fmod"=orx_Sound_Fmod.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_9)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Mouse_Allegro"=orx_Mouse_Allegro.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_10)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Keyboard_Allegro"=orx_Keyboard_Allegro.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_11)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Joystick_NONE"=orx_Joystick_NONE.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_12)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Time_SDL"=orx_Time_SDL.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_13)
+End Project Dependency
+}}}
+
+###############################################################################
+
