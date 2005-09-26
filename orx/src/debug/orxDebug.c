@@ -109,7 +109,9 @@ orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
       return "INVALID DEBUG!";
   }
 
-  return orxSTRING_Empty;
+  /* Unreachable code
+   * return orxSTRING_Empty;
+   */
 }
 
 
@@ -206,7 +208,15 @@ orxVOID _orxDebug_Break()
   /* Windows / Linux */
 #if defined(__orxWINDOWS__) || defined(__orxLINUX__)
 
-  asm("int $3");
+  /* Compiler specific */
+
+  #ifdef __orxGCC__
+    asm("int $3");
+  #endif /* __orxGCC__ */
+
+  #ifdef __orxMSVC__
+    __debugbreak();
+  #endif /* __orxMSVC__ */
 
 #endif /* __orxWINDOWS__ || __orxLINUX__ */
 
@@ -266,7 +276,7 @@ orxVOID orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 }
 
 /***************************************************************************
- _orxDebug_Log
+ _orxDEBUG_LOG
  Logs a debug string.
 
  returns: orxVOID
