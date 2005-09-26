@@ -86,7 +86,7 @@ typedef struct __orxLINK_UPDATE_INFO_t
   orxU32 u32ByteNumber;
 
   /* Padding */
-  orxPAD(12);
+  orxPAD(12)
 
 } orxLINK_UPDATE_INFO;
 
@@ -129,7 +129,7 @@ struct __orxANIMSET_t
   orxANIMSET_LINK_TABLE *pstLinkTable;
 
   /* Padding */
-  orxPAD(28);
+  orxPAD(28)
 };
 
 /*
@@ -388,7 +388,7 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo
   u32Index = (_u32SrcIndex * _pstInfo->u32ByteNumber) + (_u32DstIndex >> 3);
 
   /* Computes mask */
-  u8Mask = 0x01 << (0x07 - (_u32DstIndex & 0x00000007));
+  u8Mask = (orxU8)(0x01 << (0x07 - (_u32DstIndex & 0x00000007)));
 
   /* Sets info */
   _pstInfo->au8LinkInfo[u32Index] |= u8Mask;
@@ -416,7 +416,7 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstIn
   u32Index = (_u32SrcIndex * _pstInfo->u32ByteNumber) + (_u32DstIndex >> 3);
 
   /* Computes mask */
-  u8Mask = 0x01 << (0x07 - (_u32DstIndex & 0x00000007));
+  u8Mask = (orxU8)(0x01 << (0x07 - (_u32DstIndex & 0x00000007)));
 
   /* Resets info */
   _pstInfo->au8LinkInfo[u32Index] &= ~u8Mask;
@@ -470,7 +470,7 @@ orxSTATIC orxINLINE orxBOOL orxAnimSet_GetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo
   u32Index = (_u32SrcIndex * _pstInfo->u32ByteNumber) + (_u32DstIndex >> 3);
 
   /* Computes mask */
-  u8Mask = 0x01 << (0x07 - (_u32DstIndex & 0x00000007));
+  u8Mask = (orxU8)(0x01 << (0x07 - (_u32DstIndex & 0x00000007)));
 
   /* Returns info */
   return((_pstInfo->au8LinkInfo[u32Index] & u8Mask) ? orxTRUE : orxFALSE);
