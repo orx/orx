@@ -98,7 +98,7 @@ extern orxDLLAPI orxSTATUS                  orxTree_MoveAsChild(orxTREE_NODE *_p
 
 
 /** Gets a node tree. */
-orxSTATIC orxINLINE orxDLLAPI orxTREE      *orxTree_GetTree(orxCONST orxTREE_NODE *_pstNode)
+orxSTATIC orxINLINE orxTREE                *orxTree_GetTree(orxCONST orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -108,7 +108,7 @@ orxSTATIC orxINLINE orxDLLAPI orxTREE      *orxTree_GetTree(orxCONST orxTREE_NOD
 }
 
 /** Gets a node parent. */
-orxSTATIC orxINLINE orxDLLAPI orxTREE_NODE *orxTree_GetParent(orxCONST orxTREE_NODE *_pstNode)
+orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetParent(orxCONST orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -118,7 +118,7 @@ orxSTATIC orxINLINE orxDLLAPI orxTREE_NODE *orxTree_GetParent(orxCONST orxTREE_N
 }
 
 /** Gets a node first child. */
-orxSTATIC orxINLINE orxDLLAPI orxTREE_NODE *orxTree_GetChild(orxCONST orxTREE_NODE *_pstNode)
+orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetChild(orxCONST orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -128,7 +128,7 @@ orxSTATIC orxINLINE orxDLLAPI orxTREE_NODE *orxTree_GetChild(orxCONST orxTREE_NO
 }
 
 /** Gets a node sibling. */
-orxSTATIC orxINLINE orxDLLAPI orxTREE_NODE *orxTree_GetSibling(orxCONST orxTREE_NODE *_pstNode)
+orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetSibling(orxCONST orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -139,7 +139,7 @@ orxSTATIC orxINLINE orxDLLAPI orxTREE_NODE *orxTree_GetSibling(orxCONST orxTREE_
 
 
 /** Gets a tree root. */
-orxSTATIC orxINLINE orxDLLAPI orxTREE_NODE *orxTree_GetRoot(orxCONST orxTREE *_pstTree)
+orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetRoot(orxCONST orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);
@@ -149,7 +149,7 @@ orxSTATIC orxINLINE orxDLLAPI orxTREE_NODE *orxTree_GetRoot(orxCONST orxTREE *_p
 }
 
 /** Gets a tree counter. */
-orxSTATIC orxINLINE orxDLLAPI orxU32        orxTree_GetCounter(orxCONST orxTREE *_pstTree)
+orxSTATIC orxINLINE orxU32                  orxTree_GetCounter(orxCONST orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);

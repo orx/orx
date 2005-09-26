@@ -45,14 +45,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxKeyboard_ClearBuffer, orxVOID);
 
 /** Init the keyboard module
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxKeyboard_Init()
+orxSTATIC orxINLINE orxSTATUS orxKeyboard_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Init)();
 }
 
 /** Exit the keyboard module
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxKeyboard_Exit()
+orxSTATIC orxINLINE orxVOID orxKeyboard_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Exit)();
 }
@@ -60,7 +60,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxKeyboard_Exit()
 /** Returns orxTRUE if there are keypresses waiting in the input buffer.
  * @return orxTRUE if keys have been pressed, else orxFALSE
  */
-orxSTATIC orxINLINE orxDLLAPI orxBOOL orxKeyboard_Hit()
+orxSTATIC orxINLINE orxBOOL orxKeyboard_Hit()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Hit)();
 }
@@ -71,14 +71,14 @@ orxSTATIC orxINLINE orxDLLAPI orxBOOL orxKeyboard_Hit()
  * and the high byte the scancode.
  * @return Ascii and scancode value
  */
-orxSTATIC orxINLINE orxS32 orxDLLAPI orxKeyboard_Read()
+orxSTATIC orxINLINE orxS32 orxKeyboard_Read()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Read)();
 }
 
 /**  Empties the keyboard buffer.
  */
-orxSTATIC orxINLINE orxVOID orxDLLAPI orxKeyboard_ClearBuffer()
+orxSTATIC orxINLINE orxVOID orxKeyboard_ClearBuffer()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ClearBuffer)();
 }

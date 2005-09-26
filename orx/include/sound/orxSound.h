@@ -74,14 +74,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxSound_ChannelSetVolume, orxSTATUS, orxU32, 
 /** Initialize the Sound Module
  * @return Returns the status of the module initialization
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxSound_Init()
+orxSTATIC orxINLINE orxSTATUS orxSound_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_Init)();
 }
 
 /** Uninitialize the Sound Module
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxSound_Exit()
+orxSTATIC orxINLINE orxVOID orxSound_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_Exit)();
 }
@@ -90,7 +90,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxSound_Exit()
  * @param[in] _zFileName        File name to load
  * @return Returns a sample
  */
-orxSTATIC orxINLINE orxDLLAPI orxSOUND_SAMPLE* orxSound_SampleLoadFromFile(orxCONST orxSTRING _zFileName)
+orxSTATIC orxINLINE orxSOUND_SAMPLE* orxSound_SampleLoadFromFile(orxCONST orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_SampleLoadFromFile)(_zFileName);
 }
@@ -100,7 +100,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSOUND_SAMPLE* orxSound_SampleLoadFromFile(orxCO
  * @param[in] _u32Size          Size of the data block to load
  * @return Returns a pointer on the loaded sample
  */
-orxSTATIC orxINLINE orxDLLAPI orxSOUND_SAMPLE* orxSound_SampleLoadFromMemory(orxCONST orxVOID *_pMem, orxU32 _u32Size)
+orxSTATIC orxINLINE orxSOUND_SAMPLE* orxSound_SampleLoadFromMemory(orxCONST orxVOID *_pMem, orxU32 _u32Size)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_SampleLoadFromMemory)(_pMem, _u32Size);
 }
@@ -108,7 +108,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSOUND_SAMPLE* orxSound_SampleLoadFromMemory(orx
 /** Unload a sample
  * @param[in] _pstSample        Pointer on the sample to unload
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxSound_SampleUnload(orxSOUND_SAMPLE *_pstSample)
+orxSTATIC orxINLINE orxVOID orxSound_SampleUnload(orxSOUND_SAMPLE *_pstSample)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_SampleUnload)(_pstSample);
 }
@@ -118,7 +118,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxSound_SampleUnload(orxSOUND_SAMPLE *_ps
  * @param[in] _pstSample        Sample to play
  * @return Returns the channel used by the sample or orxSOUND_CHANNEL_KU32_ERROR if no channel available
  */
-orxSTATIC orxINLINE orxDLLAPI orxU32 orxSound_SamplePlay(orxU32 _u32Channel, orxSOUND_SAMPLE *_pstSample)
+orxSTATIC orxINLINE orxU32 orxSound_SamplePlay(orxU32 _u32Channel, orxSOUND_SAMPLE *_pstSample)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_SamplePlay)(_u32Channel, _pstSample);
 }
@@ -127,7 +127,7 @@ orxSTATIC orxINLINE orxDLLAPI orxU32 orxSound_SamplePlay(orxU32 _u32Channel, orx
  * @param[in] _u32Channel       Channel to stop (orxSOUND_CHANNEL_KU32_SELECT_ALL can be used to stop all channels)
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxSound_ChannelStop(orxU32 _u32Channel)
+orxSTATIC orxINLINE orxSTATUS orxSound_ChannelStop(orxU32 _u32Channel)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelStop)(_u32Channel);
 }
@@ -137,7 +137,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxSound_ChannelStop(orxU32 _u32Channel)
  * @param[in] _bPause           Pause the channel
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxSound_ChannelPause(orxU32 _u32Channel, orxBOOL _bPause)
+orxSTATIC orxINLINE orxSTATUS orxSound_ChannelPause(orxU32 _u32Channel, orxBOOL _bPause)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelPause)(_u32Channel, _bPause);
 }
@@ -147,7 +147,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxSound_ChannelPause(orxU32 _u32Channel
  * @param[in] _u32FlagsToTest   Flags to tests
  * @return orxTRUE if tested flags are present
  */
-orxSTATIC orxINLINE orxDLLAPI orxBOOL orxSound_ChannelTestFlags(orxU32 _u32Channel, orxU32 _u32FlagsToTest)
+orxSTATIC orxINLINE orxBOOL orxSound_ChannelTestFlags(orxU32 _u32Channel, orxU32 _u32FlagsToTest)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelTestFlags)(_u32Channel, _u32FlagsToTest);
 }
@@ -157,7 +157,7 @@ orxSTATIC orxINLINE orxDLLAPI orxBOOL orxSound_ChannelTestFlags(orxU32 _u32Chann
  * @param[in] _u32FlagsToRemove Flags to remove
  * @param[in] _u32FlagsToAdd    Flags to add
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxSound_ChannelSetFlags(orxU32 _u32Channel, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
+orxSTATIC orxINLINE orxVOID orxSound_ChannelSetFlags(orxU32 _u32Channel, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelSetFlags)(_u32Channel, _u32FlagsToRemove, _u32FlagsToAdd);
 }
@@ -166,7 +166,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxSound_ChannelSetFlags(orxU32 _u32Channe
  * @param[in] _u32Channel       Channel to use
  * @param[in] _u8Volume         New volume
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxSound_ChannelSetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
+orxSTATIC orxINLINE orxSTATUS orxSound_ChannelSetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSound_ChannelSetVolume)(_u32Channel, _u8Volume);
 }

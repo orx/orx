@@ -73,14 +73,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxPackage_Read,      orxU32,       orxVOID *,
 /** Initialize the Package Module
  * @return Returns the status of the initialization
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxPackage_Init()
+orxSTATIC orxINLINE orxSTATUS orxPackage_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Init)();
 }
 
 /** Uninitialize the Package Module
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_Exit()
+orxSTATIC orxINLINE orxVOID orxPackage_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Exit)();
 }
@@ -91,7 +91,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_Exit()
  * @param _u32OpenFlags     (IN)     Open flags (read/write, intern/extern, ...). The package will be created if it doesn't exists and is in write mode
  * @return a Pointer on a package, or orxNULL if an error has occured.
  */
-orxSTATIC orxINLINE orxDLLAPI orxPACKAGE *orxPackage_Open(orxCONST orxSTRING _zDirPath, orxCONST orxSTRING _zPackageName, orxU32 _u32OpenFlags)
+orxSTATIC orxINLINE orxPACKAGE *orxPackage_Open(orxCONST orxSTRING _zDirPath, orxCONST orxSTRING _zPackageName, orxU32 _u32OpenFlags)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Open)(_zDirPath, _zPackageName, _u32OpenFlags);
 }
@@ -99,7 +99,7 @@ orxSTATIC orxINLINE orxDLLAPI orxPACKAGE *orxPackage_Open(orxCONST orxSTRING _zD
 /** Close a package
  * @param _zPackage         (IN)     Package to close
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_Close(orxPACKAGE *_pstPackage)
+orxSTATIC orxINLINE orxVOID orxPackage_Close(orxPACKAGE *_pstPackage)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Close)(_pstPackage);
 }
@@ -110,7 +110,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_Close(orxPACKAGE *_pstPackage)
  * @param _u32FlagsToRemove (IN)     List of flags to remove
  * @param _u32FlagsToAdd    (IN)     List of flags to add
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_SetFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
+orxSTATIC orxINLINE orxVOID orxPackage_SetFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_SetFlags)(_pstPackage, _u32FlagsToRemove, _u32FlagsToAdd);
 }
@@ -120,7 +120,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_SetFlags(orxPACKAGE *_pstPackag
  * @param _u32FlagsToTest   (IN)     List of flags to test
  * @return orxTRUE if flags are presents, else orxFALSE
  */
-orxSTATIC orxINLINE orxDLLAPI orxBOOL orxPackage_TestFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToTest)
+orxSTATIC orxINLINE orxBOOL orxPackage_TestFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToTest)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_TestFlags)(_pstPackage, _u32FlagsToTest);
 }
@@ -130,7 +130,7 @@ orxSTATIC orxINLINE orxDLLAPI orxBOOL orxPackage_TestFlags(orxPACKAGE *_pstPacka
  * @param _zFileName        (IN)     File to commit (a pattern can be used (e.g : *.txt))
  * @return the status of the operation
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxPackage_Commit(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+orxSTATIC orxINLINE orxSTATUS orxPackage_Commit(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Commit)(_pstPackage, _zFileName);
 }
@@ -140,7 +140,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxPackage_Commit(orxPACKAGE *_pstPackag
  * @param _zFileName        (IN)     File to extract (a pattern can be used (e.g : *.png))
  * @return the status of the operation
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+orxSTATIC orxINLINE orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Extract)(_pstPackage, _zFileName);
 }
@@ -151,7 +151,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPacka
  * @param _pstFileInfos     (OUT)    Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
-orxSTATIC orxINLINE orxDLLAPI orxBOOL orxPackage_FindFirst(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos)
+orxSTATIC orxINLINE orxBOOL orxPackage_FindFirst(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_FindFirst)(_pstPackage, _zSearchPattern, _pstFileInfos);
 }
@@ -160,7 +160,7 @@ orxSTATIC orxINLINE orxDLLAPI orxBOOL orxPackage_FindFirst(orxPACKAGE *_pstPacka
  * @param _pstFileInfos     (IN/OUT) Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
-orxSTATIC orxINLINE orxDLLAPI orxBOOL orxPackage_FindNext(orxPACKAGE_INFOS *_pstFileInfos)
+orxSTATIC orxINLINE orxBOOL orxPackage_FindNext(orxPACKAGE_INFOS *_pstFileInfos)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_FindNext)(_pstFileInfos);
 }
@@ -168,7 +168,7 @@ orxSTATIC orxINLINE orxDLLAPI orxBOOL orxPackage_FindNext(orxPACKAGE_INFOS *_pst
 /** Close a search (free the memory allocated for this search).
  * @param _pstFileInfos     (IN)     Informations returned during search
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos)
+orxSTATIC orxINLINE orxVOID orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_FindClose)(_pstFileInfos);
 }
@@ -180,7 +180,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxPackage_FindClose(orxPACKAGE_INFOS *_ps
  * @param _zFileName        (IN)     File to read
  * @return Returns the number of written bytes
  */
-orxSTATIC orxINLINE orxDLLAPI orxU32 orxPackage_Read(orxVOID *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+orxSTATIC orxINLINE orxU32 orxPackage_Read(orxVOID *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Read)(_pDataToWrite, _u32FileSize, _pstPackage, _zFileName);
 }

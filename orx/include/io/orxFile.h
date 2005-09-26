@@ -123,14 +123,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxFile_DeleteDir, orxSTATUS, orxSTRING);
 
 /** Initialize the File Module
  */
-orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Init()
+orxSTATIC orxINLINE orxSTATUS orxFile_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Init)();
 }
 
 /** Uninitialize the File Module
  */
-orxSTATIC orxINLINE  orxDLLAPI orxVOID orxFile_Exit()
+orxSTATIC orxINLINE orxVOID orxFile_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Exit)();
 }
@@ -141,7 +141,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxVOID orxFile_Exit()
  * @param _pstFileInfos   (OUT)    Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
-orxSTATIC orxINLINE  orxDLLAPI orxBOOL orxFile_FindFirst(orxSTRING _zSearchPattern, orxFILE_INFO *_pstFileInfo)
+orxSTATIC orxINLINE orxBOOL orxFile_FindFirst(orxSTRING _zSearchPattern, orxFILE_INFO *_pstFileInfo)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_FindFirst)(_zSearchPattern, _pstFileInfo);
 }
@@ -151,7 +151,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxBOOL orxFile_FindFirst(orxSTRING _zSearchPatte
  * @param _pstFileInfos   (IN/OUT) Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
-orxSTATIC orxINLINE  orxDLLAPI orxBOOL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
+orxSTATIC orxINLINE orxBOOL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_FindNext)(_pstFileInfo);
 }
@@ -160,7 +160,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxBOOL orxFile_FindNext(orxFILE_INFO *_pstFileIn
 /** Close a search (free the memory allocated for this search).
  * @param _pstFileInfos   (IN)     Informations returned during search
  */
-orxSTATIC orxINLINE  orxDLLAPI orxVOID orxFile_FindClose(orxFILE_INFO *_pstFileInfo)
+orxSTATIC orxINLINE orxVOID orxFile_FindClose(orxFILE_INFO *_pstFileInfo)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_FindClose)(_pstFileInfo);
 }
@@ -171,7 +171,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxVOID orxFile_FindClose(orxFILE_INFO *_pstFileI
  * @param _pstFileInfos   (OUT)     Returned file's informations
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Info(orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo)
+orxSTATIC orxINLINE orxSTATUS orxFile_Info(orxSTRING _zFileName, orxFILE_INFO *_pstFileInfo)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Info)(_zFileName, _pstFileInfo);
 }
@@ -182,7 +182,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Info(orxSTRING _zFileName, orxF
  * @param _zDest          (IN)     Destination file's name
  * @return The status of the operation
  */
-orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Copy(orxSTRING _zSource, orxSTRING _zDest)
+orxSTATIC orxINLINE orxSTATUS orxFile_Copy(orxSTRING _zSource, orxSTRING _zDest)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Copy)(_zSource, _zDest);
 }
@@ -193,7 +193,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Copy(orxSTRING _zSource, orxSTR
  * @param _zDest          (IN)     Destination file's name
  * @return The status of the operation
  */
-orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Rename(orxSTRING _zSource, orxSTRING _zDest)
+orxSTATIC orxINLINE orxSTATUS orxFile_Rename(orxSTRING _zSource, orxSTRING _zDest)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Rename)(_zSource, _zDest);
 }
@@ -203,7 +203,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Rename(orxSTRING _zSource, orxS
  * @param _zFileName      (IN)     File's name to delete
  * @return The status of the operation
  */
-orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Delete(orxSTRING _zFileName)
+orxSTATIC orxINLINE orxSTATUS orxFile_Delete(orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Delete)(_zFileName);
 }
@@ -213,7 +213,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_Delete(orxSTRING _zFileName)
  * @param _zDirName       (IN)     New directory's name
  * @return The status of the operation
  */
-orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_CreateDir(orxSTRING _zDirName)
+orxSTATIC orxINLINE orxSTATUS orxFile_CreateDir(orxSTRING _zDirName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_CreateDir)(_zDirName);
 }
@@ -223,7 +223,7 @@ orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_CreateDir(orxSTRING _zDirName)
  * @param _zDirName       (IN)     Directory's name to delete
  * @return The status of the operation
  */
-orxSTATIC orxINLINE  orxDLLAPI orxSTATUS orxFile_DeleteDir(orxSTRING _zDirName)
+orxSTATIC orxINLINE orxSTATUS orxFile_DeleteDir(orxSTRING _zDirName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_DeleteDir)(_zDirName);
 }

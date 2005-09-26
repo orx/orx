@@ -43,7 +43,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);
 /** Inits the joystick module.
  * @return The status of the operation.
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxJoystick_Init()
+orxSTATIC orxINLINE orxSTATUS orxJoystick_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Init)();
 }
@@ -51,7 +51,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxJoystick_Init()
 /** Exits from the joystick module.
  * @return The status of the operation.
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxJoystick_Exit()
+orxSTATIC orxINLINE orxVOID orxJoystick_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Exit)();
 }

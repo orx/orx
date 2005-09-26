@@ -44,14 +44,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 
 /** Init the mouse module
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxMouse_Init()
+orxSTATIC orxINLINE orxSTATUS orxMouse_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Init)();
 }
 
 /** Exit the mouse module
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxMouse_Exit()
+orxSTATIC orxINLINE orxVOID orxMouse_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Exit)();
 }
@@ -60,7 +60,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxMouse_Exit()
  * @param _ps32x (OUT)   X coordinates
  * @param _ps32y (OUT)   Y coordinates
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxMouse_GetMove(orxS32 *_s32X, orxS32 *_s32Y)
+orxSTATIC orxINLINE orxSTATUS orxMouse_GetMove(orxS32 *_s32X, orxS32 *_s32Y)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetMove)(_s32X, _s32Y);
 }

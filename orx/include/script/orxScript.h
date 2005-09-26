@@ -56,14 +56,14 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxScript_Execute, orxSTATUS, orxSCRIPT *, orx
 /** Initialize the Script Module
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxScript_Init()
+orxSTATIC orxINLINE orxSTATUS orxScript_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Init)();
 }
 
 /** Uninitialize the Script Module
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxScript_Exit()
+orxSTATIC orxINLINE orxVOID orxScript_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Exit)();
 }
@@ -71,7 +71,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxScript_Exit()
 /** Create a new script instance
  * @return A pointer on a new script instance
  */
-orxSTATIC orxINLINE orxDLLAPI orxSCRIPT* orxScript_Create()
+orxSTATIC orxINLINE orxSCRIPT* orxScript_Create()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Create)();
 }
@@ -79,7 +79,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSCRIPT* orxScript_Create()
 /** Delete a script instance
  * @param _pstScript      (IN)     Pointer on the script instance
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxScript_Delete(orxSCRIPT *_pstScript)
+orxSTATIC orxINLINE orxVOID orxScript_Delete(orxSCRIPT *_pstScript)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Delete)(_pstScript);
 }
@@ -89,7 +89,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxScript_Delete(orxSCRIPT *_pstScript)
  * @param _zFile          (IN)     File script to use
  * @return The status of the operation
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxScript_LoadFile(orxSCRIPT *_pstScript, orxCONST orxSTRING _zFile)
+orxSTATIC orxINLINE orxSTATUS orxScript_LoadFile(orxSCRIPT *_pstScript, orxCONST orxSTRING _zFile)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_LoadFile)(_pstScript, _zFile);
 }
@@ -112,7 +112,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxScript_LoadFile(orxSCRIPT *_pstScript
  * @note This function parse the content of the sent script code, translate it and send it to Script VM.
  * @note It might be a bit slower and must not been used for critical section.
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxScript_Execute(orxSCRIPT *_pstScript, orxCONST orxSTRING _zScriptCode)
+orxSTATIC orxINLINE orxSTATUS orxScript_Execute(orxSCRIPT *_pstScript, orxCONST orxSTRING _zScriptCode)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Execute)(_pstScript, _zScriptCode);
 }

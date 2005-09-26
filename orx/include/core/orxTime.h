@@ -50,7 +50,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxTime_Delay, orxVOID, orxU32);
 /** Inits the time module.
  * @return The status of the operation.
  */
-orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxTime_Init()
+orxSTATIC orxINLINE orxSTATUS orxTime_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Init)();
 }
@@ -58,7 +58,7 @@ orxSTATIC orxINLINE orxDLLAPI orxSTATUS orxTime_Init()
 /** Exits from the time module.
  * @return The status of the operation.
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Exit()
+orxSTATIC orxINLINE orxVOID orxTime_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Exit)();
 }
@@ -66,7 +66,7 @@ orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Exit()
 /** Gets time.
  * @return Current time.
  */
-orxSTATIC orxINLINE orxDLLAPI orxU32 orxTime_GetTime()
+orxSTATIC orxINLINE orxU32 orxTime_GetTime()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_GetTime)();
 }
@@ -74,7 +74,7 @@ orxSTATIC orxINLINE orxDLLAPI orxU32 orxTime_GetTime()
 /** Gets date.
  * @return Current date.
  */
-orxSTATIC orxINLINE orxDLLAPI orxDATE orxTime_GetDate()
+orxSTATIC orxINLINE orxDATE orxTime_GetDate()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_GetDate)();
 }
@@ -82,9 +82,9 @@ orxSTATIC orxINLINE orxDLLAPI orxDATE orxTime_GetDate()
 /** Delay the program for given number of milliseconds.
  * @param[in] _u32Time Number of milliseconds to wait.
  */
-orxSTATIC orxINLINE orxDLLAPI orxVOID orxTime_Delay(orxU32 _u32Time)
+orxSTATIC orxINLINE orxVOID orxTime_Delay(orxU32 _u32Time)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Delay)(_u32Time);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Delay)(_u32Time);
 }
 
 #endif /* _orxTIME_H_ */

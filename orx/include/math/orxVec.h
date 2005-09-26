@@ -64,7 +64,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxVec_TestAABoxIntersection(o
 
 
 /** Sets vector x / y / z / w values. */
-orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Set4(orxVEC *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ, orxFLOAT _fW)
+orxSTATIC orxINLINE orxVEC                       *orxVec_Set4(orxVEC *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ, orxFLOAT _fW)
 {
   /* Checks */
   orxASSERT(_pvVec != orxNULL);
@@ -80,21 +80,21 @@ orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Set4(orxVEC *_pvVec, o
 }
 
 /** Sets vector x / y / z values. */
-orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Set3(orxVEC *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
+orxSTATIC orxINLINE orxVEC                        *orxVec_Set3(orxVEC *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
 {
   /* Done ! */
   return(orxVec_Set4(_pvVec, _fX, _fY, _fZ, orx2F(0.0f)));
 }
 
 /** Sets value in all vector fields. */
-orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_SetAll(orxVEC *_pvVec, orxFLOAT _fValue)
+orxSTATIC orxINLINE orxVEC                        *orxVec_SetAll(orxVEC *_pvVec, orxFLOAT _fValue)
 {
   /* Done ! */
   return(orxVec_Set4(_pvVec, _fValue, _fValue, _fValue, _fValue));
 }
 
 /** Copies vector values into another one. */
-orxSTATIC orxINLINE orxDLLAPI  orxVOID             orxVec_Copy(orxVEC *_pvDst, orxCONST orxVEC *_pvSrc)
+orxSTATIC orxINLINE orxVOID                        orxVec_Copy(orxVEC *_pvDst, orxCONST orxVEC *_pvSrc)
 {
   /* Checks */
   orxASSERT(_pvDst != orxNULL);
@@ -108,7 +108,7 @@ orxSTATIC orxINLINE orxDLLAPI  orxVOID             orxVec_Copy(orxVEC *_pvDst, o
 }
 
 /** Adds vectors and stores result in a third one. */
-orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Add(orxVEC *_pvRes, orxCONST orxVEC *_pvOp1, orxCONST orxVEC *_pvOp2)
+orxSTATIC orxINLINE orxVEC                        *orxVec_Add(orxVEC *_pvRes, orxCONST orxVEC *_pvOp1, orxCONST orxVEC *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -126,7 +126,7 @@ orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Add(orxVEC *_pvRes, or
 }
 
 /** Muls a vector by an orxFLOAT and stores result in another one. */
-orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Mul(orxVEC *_pvRes, orxCONST orxVEC *_pvOp1, orxFLOAT _fOp2)
+orxSTATIC orxINLINE orxVEC                        *orxVec_Mul(orxVEC *_pvRes, orxCONST orxVEC *_pvOp1, orxFLOAT _fOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -143,7 +143,7 @@ orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Mul(orxVEC *_pvRes, or
 }
 
 /** Negates a vector and stores result in another one. */
-orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Neg(orxVEC *_pvRes, orxCONST orxVEC *_pvOp)
+orxSTATIC orxINLINE orxVEC                        *orxVec_Neg(orxVEC *_pvRes, orxCONST orxVEC *_pvOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -160,7 +160,7 @@ orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Neg(orxVEC *_pvRes, or
 }
 
 /** Reverses a vector and stores result in another one. */
-orxSTATIC orxINLINE orxDLLAPI  orxVEC             *orxVec_Inv(orxVEC *_pvRes, orxCONST orxVEC *_pvOp)
+orxSTATIC orxINLINE orxVEC                        *orxVec_Inv(orxVEC *_pvRes, orxCONST orxVEC *_pvOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
