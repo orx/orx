@@ -89,9 +89,6 @@ orxPLUGIN_DEFINE_CORE_FUNCTION_4(orxPackage_Read,      orxU32,       orxVOID *, 
  * Structure declaration                                                   *
  ***************************************************************************/
 
-struct __orxPACKAGE_t
-{
-};
 
 /***************************************************************************
  * Module global variable                                                  *
