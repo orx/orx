@@ -52,13 +52,21 @@
   #define orxCONST              const
   /** The function or the object will be static. */
   #define orxSTATIC             static
-  /** The function intend to be inlined. */
-  #define orxINLINE             inline
   /** The function or the object will use registers as far as possible. */
   #define orxREGISTER           register
 
   /** The null adress. */
   #define orxNULL               NULL
+
+  /* *** Compiler specific *** */
+  /** The function intend to be inlined. */
+  #ifdef __orxGCC__
+    #define orxINLINE           inline
+  #endif
+  #ifdef __orxMSVC__
+    #define orxINLINE         __inline
+  #endif
+  
 
 #else /* __orxWINDOWS__ */
 
@@ -128,7 +136,7 @@
 
   #else /* orxPADDING_SIZE */           /* Padding size not defined */
 
-    #define orxPAD(SIZE)                orxU8 au8Pad[_orxALIGN(SIZE, orxPADDING_SIZE) - SIZE]
+    #define orxPAD(SIZE)                orxU8 au8Pad[_orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];
 
     #warning orxPADDING_SIZE is undefined : its value should be a power of 2!
     #undef __orxPADDING__
