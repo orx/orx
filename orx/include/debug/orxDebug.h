@@ -62,7 +62,19 @@
 
 #ifdef __orxDEBUG__
 
-  #define orxDEBUG_LOG(LEVEL, STRING, ...)    _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
+  /* Log message */
+  #define orxDEBUG_LOG(LEVEL, STRING)         _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING)
+  #define orxDEBUG_LOG1(LEVEL, STRING, ARG1)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1)
+  #define orxDEBUG_LOG2(LEVEL, STRING, ARG1, ARG2)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2)
+  #define orxDEBUG_LOG3(LEVEL, STRING, ARG1, ARG2, ARG3)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3)
+  #define orxDEBUG_LOG4(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4)
+  #define orxDEBUG_LOG5(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5)
+  #define orxDEBUG_LOG6(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6)
+  #define orxDEBUG_LOG7(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7)
+  #define orxDEBUG_LOG8(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8)
+  #define orxDEBUG_LOG9(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9)
+  
+  /* End platform specific */
 
   #define orxDEBUG_INIT()                     _orxDebug_Init()
   #define orxDEBUG_EXIT()                     _orxDebug_Exit()
@@ -80,6 +92,34 @@
     orxDEBUG_LOG(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : !!!" #TEST "!!!"); \
     orxBREAK();                               \
   }
+
+#else /* __orxDEBUG__ */
+
+  /* Log message */
+  #define orxDEBUG_LOG(LEVEL, STRING)
+  #define orxDEBUG_LOG1(LEVEL, STRING, ARG1)
+  #define orxDEBUG_LOG2(LEVEL, STRING, ARG1, ARG2)
+  #define orxDEBUG_LOG3(LEVEL, STRING, ARG1, ARG2, ARG3)
+  #define orxDEBUG_LOG4(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4)
+  #define orxDEBUG_LOG5(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5)
+  #define orxDEBUG_LOG6(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6)
+  #define orxDEBUG_LOG7(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7)
+  #define orxDEBUG_LOG8(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8)
+  #define orxDEBUG_LOG9(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9)
+
+  #define orxBREAK()
+
+  #define orxASSERT(TEST)
+
+  #define orxDEBUG_INIT()
+  #define orxDEBUG_EXIT()
+  #define orxDEBUG_FLAG_SET(SET, UNSET)
+  #define orxDEBUG_FLAG_BACKUP()
+  #define orxDEBUG_FLAG_RESTORE()
+
+#endif /* __orxDEBUG__ */
+
+
 
 /*****************************************************************************/
 
@@ -152,23 +192,5 @@ extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_SetFlags(orxU32 _u32Add,
 extern orxDLLAPI orxVOID                      _orxDebug_Break();
 
 
-#else /* __orxDEBUG__ */
-
-
-  #define orxDEBUG_LOG(LEVEL, STRING, ...)
-
-  #define orxBREAK()
-
-  #define orxASSERT(TEST)
-
-  #define orxDEBUG_INIT()
-  #define orxDEBUG_EXIT()
-  #define orxDEBUG_FLAG_SET(SET, UNSET)
-  #define orxDEBUG_FLAG_BACKUP()
-  #define orxDEBUG_FLAG_RESTORE()
-
-
 #endif /* __orxDEBUG__ */
 
-
-#endif /* _orxDEBUG_H_ */
