@@ -194,7 +194,7 @@ orxVOID orxScreenshot_Take()
   orxDisplay_SaveBitmap(orxDisplay_GetScreenBitmap(), zName);
 
   /* Logs */
-  orxDEBUG_LOG(orxDEBUG_LEVEL_SCREENSHOT, KZ_MSG_SHOT_TAKEN_S, zName);
+  orxDEBUG_LOG1(orxDEBUG_LEVEL_SCREENSHOT, KZ_MSG_SHOT_TAKEN_S, zName);
 
   /* Updates screenshot counter */
   sstScreenshot.u32Counter++;
