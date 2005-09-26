@@ -80,7 +80,7 @@ typedef struct __orxCLOCK_INFO_t
 typedef struct __orxCLOCK_t                           orxCLOCK;
 
 /** Clock callback function type for used with clock bindings. */
-typedef orxVOID orxFASTCALL (*orxCLOCK_FUNCTION)(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext);
+typedef orxVOID (orxFASTCALL *orxCLOCK_FUNCTION)(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext);
 
 
 /** Clock module setup. */
