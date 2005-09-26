@@ -121,7 +121,13 @@ void __attribute__ ((destructor)) module_exit()   \
   #endif
 #endif
 
-#endif /* __orxTEST__ */
+#else /* __orxTEST__ */
 
+  #define orxTest_Setup()
+  #define orxTest_Init()
+  #define orxTest_Exit()
+  #define orxTest_Register(_zModuleName, _zMenuEntry, _pfnFunction)
+  #define orxTest_Run(_u32NbParam, _azParams)
+#endif /* __orxTEST__ */
 
 #endif /* _orxTEST_H_ */
