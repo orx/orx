@@ -62,7 +62,7 @@ orxPLATFORM = __orxLINUX__
 orxCOMPILER = __orxGCC__
 ORXDLL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -D__orxDLLEXPORT__ -fPIC -DPIC \
+	-I../../../include -D__orxDLL__ -D__orxDLLEXPORT__ -fPIC -DPIC \
 	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxAnim.o \
@@ -109,7 +109,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_pathfinder.o
 ORXLIB_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -D__orxDLLEXPORT__ -Wno-unused-parameter \
+	-I../../../include -D__orxDLL__ -D__orxDLLEXPORT__ -Wno-unused-parameter \
 	$(CPPFLAGS) $(CFLAGS)
 ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxAnim.o \
@@ -156,90 +156,90 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_pathfinder.o
 ORX_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+	-I../../../include -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORX_OBJECTS =  \
 	./build/$(BUILD)/orx_orxMain.o
 MEMORY_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 MEMORY_OBJECTS =  \
 	./build/$(BUILD)/Memory_orxTest_Memory.o
 BANK_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 BANK_OBJECTS =  \
 	./build/$(BUILD)/Bank_orxTest_Bank.o
 HASHTABLE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 HASHTABLE_OBJECTS =  \
 	./build/$(BUILD)/HashTable_orxTest_HashTable.o
 SOUND_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 SOUND_OBJECTS =  \
 	./build/$(BUILD)/Sound_orxTest_Sound.o
 PLUGIN_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 PLUGIN_OBJECTS =  \
 	./build/$(BUILD)/Plugin_orxTest_Plugin.o
 MATHSET_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 MATHSET_OBJECTS =  \
 	./build/$(BUILD)/MathSet_orxTest_MathSet.o
 QUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 QUEUE_OBJECTS =  \
 	./build/$(BUILD)/Queue_orxTest_Queue.o
 FSM_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 FSM_OBJECTS =  \
 	./build/$(BUILD)/FSM_orxTest_FSM.o
 CLOCK_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 CLOCK_OBJECTS =  \
 	./build/$(BUILD)/Clock_orxTest_Clock.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 SOUND_FMOD_OBJECTS =  \
 	./build/$(BUILD)/Sound_Fmod_orxSound.o
 MOUSE_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter \
 	`allegro-config --cflags` $(CPPFLAGS) $(CFLAGS)
 MOUSE_ALLEGRO_OBJECTS =  \
 	./build/$(BUILD)/Mouse_Allegro_orxMouse.o
 KEYBOARD_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	$(__orxDEBUG_p) -D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) \
-	$(__orxWARNINGFLAG) -I../../..include -D__orxDLL__ -fPIC -DPIC \
+	$(__orxWARNINGFLAG) -I../../../include -D__orxDLL__ -fPIC -DPIC \
 	-Wno-unused-parameter `allegro-config --cflags` $(CPPFLAGS) $(CFLAGS)
 KEYBOARD_ALLEGRO_OBJECTS =  \
 	./build/$(BUILD)/Keyboard_Allegro_orxKeyboard.o
 JOYSTICK_NONE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
 	$(CFLAGS)
 JOYSTICK_NONE_OBJECTS =  \
 	./build/$(BUILD)/Joystick_NONE_orxJoystick.o
 TIME_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../..include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter `sdl-config \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter `sdl-config \
 	--cflags` $(CPPFLAGS) $(CFLAGS)
 TIME_SDL_OBJECTS =  \
 	./build/$(BUILD)/Time_SDL_orxTime.o
@@ -250,10 +250,10 @@ ifeq ($(BUILD),debug)
 orxSUFFIX = d
 endif
 ifeq ($(LINK),dynamic)
-__orxDLL___depname = ../../..lib/$(LINK)/liborx$(orxSUFFIX).so
+__orxDLL___depname = ../../../lib/$(LINK)/liborx$(orxSUFFIX).so
 endif
 ifeq ($(LINK),static)
-__orxLIB___depname = ../../..lib/$(LINK)/liborx$(orxSUFFIX).a
+__orxLIB___depname = ../../../lib/$(LINK)/liborx$(orxSUFFIX).a
 endif
 ifeq ($(LINK),dynamic)
 orxLDFLAGS = -lorx$(orxSUFFIX)
@@ -263,55 +263,55 @@ orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm \
 	-Wl,--no-whole-archive
 endif
 ifeq ($(USE_TEST),1)
-__Memory___depname = ../../..bin/modules/Memory.so
+__Memory___depname = ../../../bin/modules/Memory.so
 endif
 ifeq ($(USE_TEST),1)
-__Bank___depname = ../../..bin/modules/Bank.so
+__Bank___depname = ../../../bin/modules/Bank.so
 endif
 ifeq ($(USE_TEST),1)
-__HashTable___depname = ../../..bin/modules/HashTable.so
+__HashTable___depname = ../../../bin/modules/HashTable.so
 endif
 ifeq ($(USE_TEST),1)
-__Sound___depname = ../../..bin/modules/Sound.so
+__Sound___depname = ../../../bin/modules/Sound.so
 endif
 ifeq ($(USE_TEST),1)
-__Plugin___depname = ../../..bin/modules/Plugin.so
+__Plugin___depname = ../../../bin/modules/Plugin.so
 endif
 ifeq ($(USE_TEST),1)
-__MathSet___depname = ../../..bin/modules/MathSet.so
+__MathSet___depname = ../../../bin/modules/MathSet.so
 endif
 ifeq ($(USE_TEST),1)
-__Queue___depname = ../../..bin/modules/Queue.so
+__Queue___depname = ../../../bin/modules/Queue.so
 endif
 ifeq ($(USE_TEST),1)
-__FSM___depname = ../../..bin/modules/FSM.so
+__FSM___depname = ../../../bin/modules/FSM.so
 endif
 ifeq ($(USE_TEST),1)
-__Clock___depname = ../../..bin/modules/Clock.so
+__Clock___depname = ../../../bin/modules/Clock.so
 endif
 ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
-__Sound_Fmod___depname = ../../..bin/plugins/core/sound/Sound_Fmod.so
+__Sound_Fmod___depname = ../../../bin/plugins/core/sound/Sound_Fmod.so
 endif
 endif
 ifeq ($(USE_ALLEGRO),1)
 ifeq ($(USE_PLUGINS),1)
-__Mouse_Allegro___depname = ../../..bin/plugins/core/mouse/Mouse_Allegro.so
+__Mouse_Allegro___depname = ../../../bin/plugins/core/mouse/Mouse_Allegro.so
 endif
 endif
 ifeq ($(USE_ALLEGRO),1)
 ifeq ($(USE_PLUGINS),1)
 __Keyboard_Allegro___depname = \
-	../../..bin/plugins/core/keyboard/Keyboard_Allegro.so
+	../../../bin/plugins/core/keyboard/Keyboard_Allegro.so
 endif
 endif
 ifeq ($(USE_PLUGINS),1)
 __Joystick_NONE___depname = \
-	../../..bin/plugins/core/joystick/Joystick_NONE.so
+	../../../bin/plugins/core/joystick/Joystick_NONE.so
 endif
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
-__Time_SDL___depname = ../../..bin/plugins/core/time/Time_SDL.so
+__Time_SDL___depname = ../../../bin/plugins/core/time/Time_SDL.so
 endif
 endif
 ifeq ($(BUILD),debug)
@@ -355,7 +355,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../..bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__MathSet___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__MathSet___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
 
 install: all
 
@@ -364,115 +364,115 @@ uninstall:
 clean: 
 	rm -f ./build/$(BUILD)/*.o
 	rm -f ./build/$(BUILD)/*.d
-	rm -f ../../..lib/$(LINK)/liborx$(orxSUFFIX).so
-	rm -f ../../..lib/$(LINK)/liborx$(orxSUFFIX).so
-	rm -f ../../..lib/$(LINK)/liborx$(orxSUFFIX).a
-	rm -f ../../..bin/orx
-	rm -f ../../..bin/modules/Memory.so
-	rm -f ../../..bin/modules/Bank.so
-	rm -f ../../..bin/modules/HashTable.so
-	rm -f ../../..bin/modules/Sound.so
-	rm -f ../../..bin/modules/Plugin.so
-	rm -f ../../..bin/modules/MathSet.so
-	rm -f ../../..bin/modules/Queue.so
-	rm -f ../../..bin/modules/FSM.so
-	rm -f ../../..bin/modules/Clock.so
-	rm -f ../../..bin/plugins/core/sound/Sound_Fmod.so
-	rm -f ../../..bin/plugins/core/mouse/Mouse_Allegro.so
-	rm -f ../../..bin/plugins/core/keyboard/Keyboard_Allegro.so
-	rm -f ../../..bin/plugins/core/joystick/Joystick_NONE.so
-	rm -f ../../..bin/plugins/core/time/Time_SDL.so
+	rm -f ../../../lib/$(LINK)/liborx$(orxSUFFIX).so
+	rm -f ../../../lib/$(LINK)/liborx$(orxSUFFIX).so
+	rm -f ../../../lib/$(LINK)/liborx$(orxSUFFIX).a
+	rm -f ../../../bin/orx
+	rm -f ../../../bin/modules/Memory.so
+	rm -f ../../../bin/modules/Bank.so
+	rm -f ../../../bin/modules/HashTable.so
+	rm -f ../../../bin/modules/Sound.so
+	rm -f ../../../bin/modules/Plugin.so
+	rm -f ../../../bin/modules/MathSet.so
+	rm -f ../../../bin/modules/Queue.so
+	rm -f ../../../bin/modules/FSM.so
+	rm -f ../../../bin/modules/Clock.so
+	rm -f ../../../bin/plugins/core/sound/Sound_Fmod.so
+	rm -f ../../../bin/plugins/core/mouse/Mouse_Allegro.so
+	rm -f ../../../bin/plugins/core/keyboard/Keyboard_Allegro.so
+	rm -f ../../../bin/plugins/core/joystick/Joystick_NONE.so
+	rm -f ../../../bin/plugins/core/time/Time_SDL.so
 
 ifeq ($(LINK),dynamic)
-../../..lib/$(LINK)/liborx$(orxSUFFIX).so: $(ORXDLL_OBJECTS)
+../../../lib/$(LINK)/liborx$(orxSUFFIX).so: $(ORXDLL_OBJECTS)
 	$(CC) -shared -fPIC -o $@ $(ORXDLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  -lm
 endif
 
 ifeq ($(LINK),static)
-../../..lib/$(LINK)/liborx$(orxSUFFIX).a: $(ORXLIB_OBJECTS)
+../../../lib/$(LINK)/liborx$(orxSUFFIX).a: $(ORXLIB_OBJECTS)
 	rm -f $@
 	$(AR) rcu $@ $(ORXLIB_OBJECTS)
 	$(RANLIB) $@
 endif
 
-../../..bin/orx: $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -o $@ $(ORX_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)  $(orxLDFLAGS)   -ldl
+../../../bin/orx: $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -o $@ $(ORX_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  $(orxLDFLAGS)   -ldl
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/Memory.so: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/Memory.so: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/Bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/Bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(HASHTABLE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(HASHTABLE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/Sound.so: $(SOUND_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(SOUND_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/Sound.so: $(SOUND_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(SOUND_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/Plugin.so: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/Plugin.so: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/MathSet.so: $(MATHSET_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(MATHSET_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/MathSet.so: $(MATHSET_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(MATHSET_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/Queue.so: $(QUEUE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(QUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/Queue.so: $(QUEUE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(QUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/FSM.so: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/FSM.so: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../..bin/modules/Clock.so: $(CLOCK_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(CLOCK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/modules/Clock.so: $(CLOCK_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(CLOCK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
-../../..bin/plugins/core/sound/Sound_Fmod.so: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    /usr/lib/libfmod.so  $(__orxEXTRALINK_p)
+../../../bin/plugins/core/sound/Sound_Fmod.so: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    /usr/lib/libfmod.so  $(__orxEXTRALINK_p)
 endif
 endif
 
 ifeq ($(USE_ALLEGRO),1)
 ifeq ($(USE_PLUGINS),1)
-../../..bin/plugins/core/mouse/Mouse_Allegro.so: $(MOUSE_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(MOUSE_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)   `allegro-config --libs`   $(__orxEXTRALINK_p)
+../../../bin/plugins/core/mouse/Mouse_Allegro.so: $(MOUSE_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(MOUSE_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   `allegro-config --libs`   $(__orxEXTRALINK_p)
 endif
 endif
 
 ifeq ($(USE_ALLEGRO),1)
 ifeq ($(USE_PLUGINS),1)
-../../..bin/plugins/core/keyboard/Keyboard_Allegro.so: $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(KEYBOARD_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)   `allegro-config --libs`   $(__orxEXTRALINK_p)
+../../../bin/plugins/core/keyboard/Keyboard_Allegro.so: $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(KEYBOARD_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   `allegro-config --libs`   $(__orxEXTRALINK_p)
 endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../..bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(JOYSTICK_NONE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)    $(__orxEXTRALINK_p)
+../../../bin/plugins/core/joystick/Joystick_NONE.so: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(JOYSTICK_NONE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
-../../..bin/plugins/core/time/Time_SDL.so: $(TIME_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ../../..bin/orx
-	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../..lib/$(LINK)   `sdl-config --libs`   $(__orxEXTRALINK_p)
+../../../bin/plugins/core/time/Time_SDL.so: $(TIME_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   `sdl-config --libs`   $(__orxEXTRALINK_p)
 endif
 endif
 

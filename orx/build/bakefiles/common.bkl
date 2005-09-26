@@ -109,10 +109,10 @@
     <set var="orxBUILDDIR">build$(DIRSEP)$(BUILD)</set>
 
     <!-- Set the 'lib' path -->
-    <set var="orxLIBDIR">$(orxDIR)lib$(DIRSEP)$(LINK)</set>
+    <set var="orxLIBDIR">$(orxDIR)$(DIRSEP)lib$(DIRSEP)$(LINK)</set>
 
     <!-- Set the 'bin' path -->
-    <set var="orxBINDIR">$(orxDIR)bin</set>
+    <set var="orxBINDIR">$(orxDIR)$(DIRSEP)bin</set>
 
     <!-- Set path where will be stored temporary compilation files -->
     <set var="BUILDDIR">.$(DIRSEP)$(orxBUILDDIR)</set>
@@ -137,7 +137,7 @@
         <cflags>$(orxDISABLE_WARNING)</cflags>
         
         <!-- Global include directory. -->
-        <include>$(orxDIR)include</include>
+        <include>$(orxDIR)$(DIRSEP)include</include>
         
     </template>
     

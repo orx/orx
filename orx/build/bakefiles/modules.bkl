@@ -34,47 +34,47 @@
 
   <!--- Create orx test module -->
   <module id="Memory" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_Memory.c</sources>
   </module>
 
   <module id="Bank" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_Bank.c</sources>
   </module>
 
   <module id="HashTable" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_HashTable.c</sources>
   </module>
 
   <module id="Sound" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_Sound.c</sources>
   </module>
 
   <module id="Plugin" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_Plugin.c</sources>
   </module>
 
   <module id="MathSet" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_MathSet.c</sources>
   </module>
 
   <module id="Queue" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_Queue.c</sources>
   </module>
 
   <module id="FSM" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_FSM.c</sources>
   </module>
 
   <module id="Clock" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)bin/modules</dirname>
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_Clock.c</sources>
   </module>
 
