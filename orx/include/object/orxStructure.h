@@ -96,13 +96,13 @@ typedef struct __orxSTRUCTURE_t
   orxHANDLE hStorageNode;
 
   /* Padding */
-  orxPAD(12);
+  orxPAD(12)
   
 } orxSTRUCTURE;
 
 
 /** Structure update callback function type. */
-typedef orxSTATUS orxFASTCALL (*orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
+typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
 /** Structure registration info. */
 typedef struct __orxSTRUCTURE_REGISTER_INFO_t
@@ -175,7 +175,7 @@ extern orxDLLAPI orxSTATUS  orxFASTCALL         orxStructure_SetParent(orxSTRUCT
 
 
 /** Increases structure reference counter. */
-orxSTATIC orxINLINE orxDLLAPI  orxVOID          orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxVOID                     orxStructure_IncreaseCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -187,7 +187,7 @@ orxSTATIC orxINLINE orxDLLAPI  orxVOID          orxStructure_IncreaseCounter(orx
 }
 
 /** Decreases structure reference counter. */
-orxSTATIC orxINLINE orxDLLAPI  orxVOID          orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxVOID                     orxStructure_DecreaseCounter(orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -200,7 +200,7 @@ orxSTATIC orxINLINE orxDLLAPI  orxVOID          orxStructure_DecreaseCounter(orx
 }
 
 /** Gets structure reference counter. */
-orxSTATIC orxINLINE orxDLLAPI  orxU32           orxStructure_GetRefCounter(orxCONST orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxU32                      orxStructure_GetRefCounter(orxCONST orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
@@ -210,7 +210,7 @@ orxSTATIC orxINLINE orxDLLAPI  orxU32           orxStructure_GetRefCounter(orxCO
 }
 
 /** Gets structure ID. */
-orxSTATIC orxINLINE orxDLLAPI  orxSTRUCTURE_ID  orxStructure_GetID(orxCONST orxSTRUCTURE *_pstStructure)
+orxSTATIC orxINLINE orxSTRUCTURE_ID             orxStructure_GetID(orxCONST orxSTRUCTURE *_pstStructure)
 {
   /* Checks */
   orxASSERT(_pstStructure != orxNULL);
