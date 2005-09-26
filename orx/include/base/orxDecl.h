@@ -40,13 +40,13 @@
   #define orxFASTCALL           __fastcall
   
   /** The function will be exported (dll compilation) */
-  #define orxEXPORT             __declspec(dllexport)
+  #define orxDLLEXPORT          __declspec(dllexport)
   
   /** The function will be imported (exe comoilation) */
-  #define orxIMPORT             __declspec(dllimport)
+  #define orxDLLIMPORT          __declspec(dllimport)
   
   /** The function will not be exported nor imported */
-  #define orxLOCAL
+  #define orxDLLLOCAL
 
   /** The function or the object will be constant. */
   #define orxCONST              const
@@ -77,13 +77,13 @@
     #define orxFASTCALL         __attribute__ ((fastcall))
     
     /** The function will be exported (dll compilation) */
-    #define orxEXPORT           __attribute__ ((visibility("default")))
+    #define orxDLLEXPORT        __attribute__ ((visibility("default")))
   
     /** The function will be imported (exe comoilation) */
-    #define orxIMPORT
+    #define orxDLLIMPORT
   
     /** The function will not be exported nor imported */
-    #define orxLOCAL            __attribute__ ((visibility("hidden")))
+    #define orxDLLLOCAL         __attribute__ ((visibility("hidden")))
 
     /** The function or the object will be constant. */    
     #define orxCONST            const
@@ -104,18 +104,18 @@
 /* DLL? */
 #ifdef __orxDLL__          /* orx compiled as a dynamic library */
   #ifdef __orxDLLEXPORT__  /* export functions (orx.dll compilation) */
-    #define orxDLLAPI orxEXPORT
+    #define orxDLLAPI orxDLLEXPORT
   #else                    /* no __orxDLLEXPORT__ */
-    #define orxDLLAPI orxIMPORT
+    #define orxDLLAPI orxDLLIMPORT
   #endif                   /* end orxDLLEXPORT */
 #else                      /* no __orxDLL__ (it should be __orxLIB__) */
   #define orxDLLAPI
 #endif                     /* end __orxDLL__ */
 
 #ifdef __orxDLLEXPORT__     /* export functions (orx.dll compilation) */
-  #define orxSDKAPI orxEXPORT
+  #define orxSDKAPI orxDLLEXPORT
 #else                       /* no __orxDLLEXPORT__ */
-  #define orxSDKAPI orxIMPORT
+  #define orxSDKAPI orxDLLIMPORT
 #endif                      /* end orxDLLEXPORT */
 
 
