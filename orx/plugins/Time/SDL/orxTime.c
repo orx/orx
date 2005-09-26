@@ -151,7 +151,7 @@ orxVOID orxTimeSDL_Delay(orxU32 _u32Time)
 
 orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sau32Time_Function[orxPLUGIN_FUNCTION_BASE_ID_TIME_NUMBER];
 
-orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfos)
+extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfos)
 {
   orxPLUGIN_USER_FUNCTION_START(sau32Time_Function);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Init, TIME, INIT);

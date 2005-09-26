@@ -132,7 +132,7 @@ orxVOID orxKeyboard_ClearBuffer()
 
 orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sastKeyboard_Function[orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER];
 
-orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfos)
+extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfos)
 {
   orxPLUGIN_USER_FUNCTION_START(sastKeyboard_Function);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Init, KEYBOARD, INIT);
