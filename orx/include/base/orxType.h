@@ -46,12 +46,10 @@
   
   typedef orxVOID              *orxHANDLE;
   
-  typedef unsigned  long long   orxU64;
   typedef unsigned  long        orxU32;
   typedef unsigned  short       orxU16;
   typedef unsigned  char        orxU8;
 
-  typedef signed    long long   orxS64;
   typedef signed    long        orxS32;
   typedef signed    short       orxS16;
   typedef signed    char        orxS8;
@@ -66,6 +64,18 @@
   #define orx2F(V)              (orxFLOAT)(V)
 
   #define orxENUM_NONE          0xFFFFFFFFL
+
+  /* Platform specific */
+  #ifdef __orxGCC__
+    typedef unsigned  long long   orxU64;
+    typedef signed    long long   orxS64;
+  #endif
+  #ifdef __orxMSVC__
+    typedef unsigned  __int64     orxU64;
+    typedef signed    __int64     orxS64;
+  #endif
+    
+  
 
 #else /* __orxWINDOWS__ */
 
