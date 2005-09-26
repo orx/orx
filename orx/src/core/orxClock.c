@@ -356,75 +356,85 @@ orxSTATUS orxClock_Update()
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
 
-  /* Gets new time */
-  u32NewTime  = orxTime_GetTime();
-
-  /* Computes natural DT */
-  u32DT        = u32NewTime - sstClock.u32Time;
-
-  /* Gets modified DT */
-  u32DT        = orxClock_ComputeDT(u32DT, orxNULL);
-
-  /* For all clocks */
-  for(pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, orxNULL);
-      pstClock != orxNULL;
-      pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
+  /* Not already locked? */
+  if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK))
   {
-    orxU32 u32Time, u32TickCounterBackup, u32ClockDT;
+    /* Lock clocks */
+    sstClock.u32Flags |= orxCLOCK_KU32_FLAG_UPDATE_LOCK;
 
-    /* Is clock paused? */
-    if(orxClock_IsPaused(pstClock) != orxFALSE)
+    /* Gets new time */
+    u32NewTime  = orxTime_GetTime();
+
+    /* Computes natural DT */
+    u32DT        = u32NewTime - sstClock.u32Time;
+
+    /* Gets modified DT */
+    u32DT        = orxClock_ComputeDT(u32DT, orxNULL);
+
+    /* For all clocks */
+    for(pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, orxNULL);
+        pstClock != orxNULL;
+        pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
     {
-      /* Gets to the next one */
-      continue;
-    }
-
-    /* Gets clock modified DT */
-    u32ClockDT = orxClock_ComputeDT(u32DT, &(pstClock->stClockInfo));
-
-    /* Backups clock tick counter */
-    u32TickCounterBackup = pstClock->stClockInfo.u32TickCounter;
-
-    /* Gets cumulated time */
-    u32Time = u32ClockDT + pstClock->stClockInfo.u32TickValue;
-
-    /* Updates new ticks if needed */
-    while(u32Time >= pstClock->stClockInfo.u32TickSize)
-    {
-      /* Updates tick counter */
-      pstClock->stClockInfo.u32TickCounter++;
-
-      /* Updates remaining cumulated time */
-      u32Time -= pstClock->stClockInfo.u32TickSize;
-    }
-
-    /* Updates tick value */
-    pstClock->stClockInfo.u32TickValue = u32Time;
-
-    /* Computes global time */
-    pstClock->stClockInfo.u32Time += u32ClockDT;
-
-    /* New tick happened? */
-    if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
-    {
-      orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-
-      /* Updates clock DT for these calls */
-      pstClock->stClockInfo.u32StableDT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.u32TickSize;
-
-      /* For all registered callbacks */
-      for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
-          pstFunctionStorage != orxNULL;
-          pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, pstFunctionStorage))
+      orxU32 u32Time, u32TickCounterBackup, u32ClockDT;
+  
+      /* Is clock paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
       {
-        /* Calls it */
-        pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
+        /* Gets to the next one */
+        continue;
+      }
+  
+      /* Gets clock modified DT */
+      u32ClockDT = orxClock_ComputeDT(u32DT, &(pstClock->stClockInfo));
+  
+      /* Backups clock tick counter */
+      u32TickCounterBackup = pstClock->stClockInfo.u32TickCounter;
+  
+      /* Gets cumulated time */
+      u32Time = u32ClockDT + pstClock->stClockInfo.u32TickValue;
+  
+      /* Updates new ticks if needed */
+      while(u32Time >= pstClock->stClockInfo.u32TickSize)
+      {
+        /* Updates tick counter */
+        pstClock->stClockInfo.u32TickCounter++;
+  
+        /* Updates remaining cumulated time */
+        u32Time -= pstClock->stClockInfo.u32TickSize;
+      }
+  
+      /* Updates tick value */
+      pstClock->stClockInfo.u32TickValue = u32Time;
+  
+      /* Computes global time */
+      pstClock->stClockInfo.u32Time += u32ClockDT;
+  
+      /* New tick happened? */
+      if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
+      {
+        orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
+  
+        /* Updates clock DT for these calls */
+        pstClock->stClockInfo.u32StableDT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.u32TickSize;
+  
+        /* For all registered callbacks */
+        for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
+            pstFunctionStorage != orxNULL;
+            pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, pstFunctionStorage))
+        {
+          /* Calls it */
+          pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
+        }
       }
     }
+  
+    /* Updates time */
+    sstClock.u32Time = u32NewTime;
+    
+    /* Unlocks clocks */
+    sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_UPDATE_LOCK;
   }
-
-  /* Updates time */
-  sstClock.u32Time = u32NewTime;
 
   /* Done! */
   return eResult;
@@ -496,6 +506,13 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
+  /* Locked? */
+  if(sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK)
+  {
+    /* Can't process */
+    return;
+  }
+
   /* Deletes function bank */
   orxBank_Delete(_pstClock->pstFunctionBank);
 
@@ -510,6 +527,13 @@ orxVOID orxClock_Resync()
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+
+  /* Locked? */
+  if(sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK)
+  {
+    /* Can't process */
+    return;
+  }
 
   /* Resync with current time */
   sstClock.u32Time = orxTime_GetTime();
