@@ -247,21 +247,13 @@ orxSTATUS orxAnimPointer_Init()
     /* Cleans control structure */
     orxMemory_Set(&sstAnimPointer, 0, sizeof(orxANIMPOINTER_STATIC));
 
-    /* Initialized? */
-    if(eResult == orxSTATUS_SUCCESS)
-    {
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-      stRegisterInfo.u32Size      = sizeof(orxANIMPOINTER);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = &orxAnimPointer_Update;
+    /* Registers structure type */
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxANIMPOINTER);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = &orxAnimPointer_Update;
 
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMPOINTER, &stRegisterInfo);
-    }
-    else
-    {
-      /* !!! MSG !!! */
-    }
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMPOINTER, &stRegisterInfo);
   }
   else
   {

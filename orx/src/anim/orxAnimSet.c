@@ -1247,26 +1247,18 @@ orxSTATUS orxAnimSet_Init()
   /* Not already Initialized? */
   if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY))
   {
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+
     /* Cleans control structure */
     orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIMSET_STATIC));
 
-    /* Initialized? */
-    if(eResult == orxSTATUS_SUCCESS)
-    {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+    /* Registers structure type */
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
+    stRegisterInfo.u32Size      = sizeof(orxANIMSET);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
 
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-      stRegisterInfo.u32Size      = sizeof(orxANIMSET);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
-
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMSET, &stRegisterInfo);
-    }
-    else
-    {
-      /* !!! MSG !!! */
-    }
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIMSET, &stRegisterInfo);
   }
   else
   {

@@ -227,7 +227,7 @@ orxSTATUS orxTexture_Init()
     orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
 
     /* Cleans static controller */
-    orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE));
+    orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE_STATIC));
 
     /* Registers structure type */
     stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;

@@ -56,16 +56,20 @@ extern orxDLLAPI orxVOID                orxTest_Exit();
 /** Register a new function
  * @param   (IN)  _zModuleName      Name of the module (to group a list of functions)
  * @param   (IN)  _zMenuEntry       Text displayed to describe the test function
- * @param   (IN)  _pfnFunction       Function executed when the menu entry is selected
+ * @param   (IN)  _pfnFunction      Function executed when the menu entry is selected
  * @return Returns an Handle on the function
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL  orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST orxSTRING _zMenuEntry, orxCONST orxTEST_FUNCTION _pfnFunction);
 
-/** Run the main engine
- * @param[in] _u32NbParam Number of parameters read
- * @param[in] _azParams   Array of parameters
+/** Starts the test module if needed
  */
-extern orxDLLAPI orxVOID                orxTest_Run(orxU32 _u32NbParam, orxSTRING _azParams[]);
+extern orxDLLAPI orxVOID orxFASTCALL    orxTest_Start();
+
+/** Freeze test module (blocking menu display)
+ * @param   (IN)  _bFreeze          Freeze/unfreeze choice
+ */
+extern orxDLLAPI orxVOID orxFASTCALL    orxTest_Freeze(orxBOOL _bFreeze);
+
 
 /* Define test module registration MACRO (entry point of dynamic library) */
 #ifdef __orxLINUX__

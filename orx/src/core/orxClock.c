@@ -505,6 +505,18 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   return;
 }
 
+/** Resync a clock (accumulated DT => 0) */
+orxVOID orxClock_Resync()
+{
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+
+  /* Resync with current time */
+  sstClock.u32Time = orxTime_GetTime();
+
+  return;
+}
+
 /***************************************************************************
  orxClock_Pause
  Pauses a clock.

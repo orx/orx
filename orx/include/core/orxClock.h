@@ -93,6 +93,9 @@ extern orxDLLAPI orxVOID                              orxClock_Exit();
 /** Updates the clock system. */
 extern orxDLLAPI orxSTATUS                            orxClock_Update();
 
+/** Resync a clock (accumulated DT => 0) */
+extern orxDLLAPI orxVOID                              orxClock_Resync();
+
 /** Creates a Clock. */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType);
 /** Deletes a Clock. */

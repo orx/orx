@@ -50,9 +50,10 @@ typedef struct __orxPARAM_INFOS_t
  
 typedef struct __orxPARAM_STATIC_t
 {
-  orxU32        u32Flags;     /* Module flags */
   orxBANK      *pstBank;      /* Bank of registered parameters */
   orxHASHTABLE *pstHashTable; /* HashTable of registered Parameters */
+
+  orxU32        u32Flags;     /* Module flags */
   
 } orxPARAM_STATIC;
 
@@ -209,7 +210,7 @@ orxSTATUS orxParam_Init()
         orxPARAM stParam;
         
         /* Set module as ready */
-        sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_READY;
+        sstParam.u32Flags   = orxPARAM_KU32_MODULE_FLAG_READY;
 
         /* Everything seems ok. Register the module help function */
         stParam.u32Flags    = orxPARAM_KU32_FLAGS_STOP_ON_ERROR;

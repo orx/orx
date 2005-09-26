@@ -393,22 +393,38 @@ orxSTATUS orxModule_InitAll()
 {
   orxMODULE_ID  eID;
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
+  orxU32        u32InitCounter;
 
   /* For all modules */
-  for(eID = 0; eID < orxMODULE_ID_NUMBER; eID++)
+  for(eID = 0, u32InitCounter = 0; eID < orxMODULE_ID_NUMBER; eID++)
   {
     /* Calls module init */
     eResult = orxModule_Init(eID);
-    
-    /* Failed? */
-    if(eResult != orxSTATUS_SUCCESS)
-    {
-      /* Exits from all modules */
-      orxModule_ExitAll();
 
-      /* Done! */
-      break;
+    /* Failed? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      /* Updates init counter */
+      u32InitCounter++;
     }
+    else
+    {
+      /* !!! MSG !!! */
+    }
+  }
+
+  /* Nothing initialized? */
+  if(u32InitCounter == 0)
+  {
+    /* Failed */
+    eResult = orxSTATUS_FAILED;
+
+    /* !!! MSG !!! */
+  }
+  else
+  {
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

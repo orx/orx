@@ -56,7 +56,7 @@ typedef enum __orxSTRUCTURE_ID_t
 
   orxSTRUCTURE_ID_LINKABLE_NUMBER,
 
-  /* *** Below this point, structures can be linked to objects *** */
+  /* *** Below this point, structures can not be linked to objects *** */
 
   orxSTRUCTURE_ID_TEXTURE = orxSTRUCTURE_ID_LINKABLE_NUMBER,
   orxSTRUCTURE_ID_OBJECT,

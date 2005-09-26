@@ -48,7 +48,7 @@ typedef struct __orxTEST_CLOCK_INFO_t
 typedef struct __orxTEST_CLOCK_STATIC_t
 {
   orxBANK *pstBank;         /* Bank of clock */
-  orxBOOL  bExit;           /* Become orxTRUE when the program have to exit the engine simulation loop */
+  orxCLOCK *pstClock;       /* Main test clock */
   orxBOOL  bInit;           /* Init has been called */
   orxU32   u32InitCounter;  /* Number of called init */
 } orxTEST_CLOCK_STATIC;
@@ -61,22 +61,44 @@ orxSTATIC orxTEST_CLOCK_STATIC sstTest_Clock;
 /******************************************************
  * PRIVATE FUNCTIONS
  ******************************************************/
+orxVOID orxFASTCALL orxTest_Clock_EndLoop(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+{
+  orxTEST_CLOCK_INFO *pstInfo;
+
+  /* For all created clocks */
+  for(pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, orxNULL);
+      pstInfo != orxNULL;
+      pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, pstInfo))
+  {
+    /* Pauses it */
+    orxClock_Pause(pstInfo->pstClock);
+  }
+
+  /* Unfreezes test display */
+  orxTest_Freeze(orxFALSE);
+
+  /* Pauses the main clock */
+  orxClock_Pause(sstTest_Clock.pstClock);
+
+  return;   
+}
+
 orxSTATUS orxTest_Clock_Depend()
 {
   /* Try to initialize the clock module (needed since it can't be done on loading */  
-  if (!sstTest_Clock.bInit)
+  if(!sstTest_Clock.bInit)
   {
     /* Increase counter */
     sstTest_Clock.u32InitCounter++;
     
     /* Init Clock */
-    if (orxModule_Init(orxMODULE_ID_CLOCK) == orxSTATUS_SUCCESS)
+    if(orxModule_Init(orxMODULE_ID_CLOCK) == orxSTATUS_SUCCESS)
     {
       sstTest_Clock.bInit = orxTRUE;
     }
   }
   
-  if (sstTest_Clock.bInit)
+  if(sstTest_Clock.bInit)
   {
     return orxSTATUS_SUCCESS;
   }
@@ -87,7 +109,7 @@ orxSTATUS orxTest_Clock_Depend()
   }
 }
  
-orxVOID orxTest_Clock_DisplayInfos(orxCONST orxCLOCK_INFO *_pstClockInfo)
+orxVOID orxTest_Clock_DisplayInfo(orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
   /* Correct parameters ? */
   orxASSERT(_pstClockInfo != orxNULL);
@@ -103,13 +125,7 @@ orxVOID orxTest_Clock_DisplayInfos(orxCONST orxCLOCK_INFO *_pstClockInfo)
   orxTextIO_PrintLn("* Time           = %lu\n", _pstClockInfo->u32Time);
 }
 
-orxVOID orxFASTCALL orxTest_Clock_EndLoop(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
-{
-  /* Exit the loop */
-  sstTest_Clock.bExit = orxTRUE;
-}
-
-orxVOID orxFASTCALL orxTest_Clock_ShowInfos(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+orxVOID orxFASTCALL orxTest_Clock_ShowInfo(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   /* Correct parameters ? */
   orxASSERT(_pstClockInfo != orxNULL);
@@ -119,7 +135,7 @@ orxVOID orxFASTCALL orxTest_Clock_ShowInfos(orxCONST orxCLOCK_INFO *_pstClockInf
   orxTextIO_PrintLn("Clock Address = %x", _pstContext);
   
   /* Show informations */
-  orxTest_Clock_DisplayInfos(_pstClockInfo);
+  orxTest_Clock_DisplayInfo(_pstClockInfo);
 }
 
 /******************************************************
@@ -145,27 +161,27 @@ orxVOID orxTest_Clock_Create()
     orxTextIO_PrintLn("This command allows you to create a Clock. To simplify");
     orxTextIO_PrintLn("the test module, you won't be able to chose the clock type.");
     orxTextIO_PrintLn("Only the tick size.");
-    
+
     /* Read tick size */
     orxTextIO_ReadS32InRange(&u32TickSize, 10, 1, 0x7FFFFFFF, "Choose a tick size", orxTRUE);
-    
+
     /* Try to create the clock */
     pstClock = orxClock_Create(u32TickSize, orxCLOCK_TYPE_USER);
-    
+
     /* Clock created ? */
-    if (pstClock != orxNULL)
+    if(pstClock != orxNULL)
     {
       /* Now, try to register the update function */
-      if (orxClock_Register(pstClock, orxTest_Clock_ShowInfos, pstClock, orxMODULE_ID_TEST) == orxSTATUS_SUCCESS)
+      if(orxClock_Register(pstClock, orxTest_Clock_ShowInfo, pstClock, orxMODULE_ID_TEST) == orxSTATUS_SUCCESS)
       {
         /* Store the clock address */
-        if ((pstClockCell = (orxTEST_CLOCK_INFO *)orxBank_Allocate(sstTest_Clock.pstBank)))
+        if((pstClockCell = (orxTEST_CLOCK_INFO *)orxBank_Allocate(sstTest_Clock.pstBank)))
         {
           pstClockCell->pstClock = pstClock;
-          
+
           /* Clock Created  */
           orxTextIO_PrintLn("Clock %x created.", pstClock);
-          
+
           /* Pauses it */
           orxClock_Pause(pstClock);
         }
@@ -174,7 +190,7 @@ orxVOID orxTest_Clock_Create()
           /* Can't allocate a new cell. */
           orxTextIO_PrintLn("Can't allocate a new bank cell");
           orxTextIO_Print("Unregister function : ");
-          if (orxClock_Unregister(pstClock, orxTest_Clock_ShowInfos) == orxSTATUS_SUCCESS)
+          if(orxClock_Unregister(pstClock, orxTest_Clock_ShowInfo) == orxSTATUS_SUCCESS)
           {
             orxTextIO_PrintLn("Success");
           }
@@ -207,10 +223,10 @@ orxVOID orxTest_Clock_Create()
 orxVOID orxTest_Clock_Delete()
 {
   orxS32 s32Address;
-  orxTEST_CLOCK_INFO *pstInfos = orxNULL;
+  orxTEST_CLOCK_INFO *pstInfo = orxNULL;
   orxCLOCK *pstClock = orxNULL;
   
-  if (orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
+  if(orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
   {
     orxTextIO_PrintLn("This command allows you to delete a Clock.");
     
@@ -221,19 +237,19 @@ orxVOID orxTest_Clock_Delete()
     pstClock = (orxCLOCK *)s32Address;
     
     /* Loop on Cell until the clock has been found */
-    while ((pstInfos = orxBank_GetNext(sstTest_Clock.pstBank, pstInfos)) &&
-           (pstInfos->pstClock != pstClock))
+    while ((pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, pstInfo)) &&
+           (pstInfo->pstClock != pstClock))
     {}
     
     /* Clock found ? */
-    if (pstInfos != orxNULL)
+    if (pstInfo != orxNULL)
     {
       /* Delete the clock */
       orxTextIO_PrintLn("Delete the clock...");
       orxClock_Delete(pstClock);
       
       /* Unallocate cell from bank */
-      orxBank_Free(sstTest_Clock.pstBank, pstInfos);
+      orxBank_Free(sstTest_Clock.pstBank, pstInfo);
     }
     else
     {
@@ -245,75 +261,46 @@ orxVOID orxTest_Clock_Delete()
 
 orxVOID orxTest_Clock_List()
 {
-  orxTEST_CLOCK_INFO *pstInfos = orxNULL;
+  orxTEST_CLOCK_INFO *pstInfo = orxNULL;
     
   if (orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
   {
     orxTextIO_PrintLn("Print list or created clocks : ");
-    
+
     /* Loop on allocated Cells */
-    while ((pstInfos = orxBank_GetNext(sstTest_Clock.pstBank, pstInfos)))
+    while ((pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, pstInfo)))
     {
-      /* Show clock ID */
-      orxTextIO_PrintLn("Clock Address = %x", pstInfos->pstClock);
-      
+      /* Shows clock ID */
+      orxTextIO_PrintLn("Clock Address = %x", pstInfo->pstClock);
+
       /* Show informations */
-      orxTest_Clock_DisplayInfos(orxClock_GetInfo(pstInfos->pstClock));
+      orxTest_Clock_DisplayInfo(orxClock_GetInfo(pstInfo->pstClock));
     }
-    
+
     orxTextIO_PrintLn("Done.");
   }
 }
 
 orxVOID orxTest_Clock_Simulate()
 {
-  orxCLOCK *pstClock;
-  
-  if (orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
+  if(orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
   {
-    /* Update clocks : reinits DT */
-    orxClock_Update();
+    orxTEST_CLOCK_INFO *pstInfo;
 
-    /* Unpauses all clocks */
-    for(pstClock = orxClock_GetNext(orxNULL);
-        pstClock != orxNULL;
-        pstClock = orxClock_GetNext(pstClock))
+    /* Freezes test menu */
+    orxTest_Freeze(orxTRUE);
+
+    /* For all created clocks */
+    for(pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, orxNULL);
+        pstInfo != orxNULL;
+        pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, pstInfo))
     {
-      orxClock_Unpause(pstClock);
+      /* Unpauses it */
+      orxClock_Unpause(pstInfo->pstClock);
     }
 
-    /* Create a clock of 10 seconds */
-    pstClock = orxClock_Create(10000, orxCLOCK_TYPE_USER);
-
-    /* Register the callback */
-    orxClock_Register(pstClock, orxTest_Clock_EndLoop, orxNULL, orxMODULE_ID_TEST);
-    
-    /* Loop Until Exit received */
-    while (!sstTest_Clock.bExit)
-    {
-      /* Update clocks */
-      orxClock_Update();
-  
-      /* Sleep the program for 1ms (to help the scheduler) */
-      orxTime_Delay(1);
-    }
-    
-    /* Unregister the callback */
-    orxClock_Unregister(pstClock, orxTest_Clock_EndLoop);
-
-    /* Delete the clock */
-    orxClock_Delete(pstClock);
-
-    /* Pauses all clocks */
-    for(pstClock = orxClock_GetNext(orxNULL);
-        pstClock != orxNULL;
-        pstClock = orxClock_GetNext(pstClock))
-    {
-      orxClock_Pause(pstClock);
-    }
-   
-    /* Reset exit bool */
-    sstTest_Clock.bExit = orxFALSE;
+    /* Unpauses it */
+    orxClock_Unpause(sstTest_Clock.pstClock);
   }
 }
 
@@ -332,34 +319,42 @@ orxVOID orxTest_Clock_Init()
   /* Initialize static datas */
   orxMemory_Set(&sstTest_Clock, 0, sizeof(orxTEST_CLOCK_STATIC));
   
+  /* Create a clock of 10 seconds */
+  sstTest_Clock.pstClock = orxClock_Create(10000, orxCLOCK_TYPE_USER);
+
+  /* Pauses it */
+  orxClock_Pause(sstTest_Clock.pstClock);
+
+  /* Register the callback */
+  orxClock_Register(sstTest_Clock.pstClock, orxTest_Clock_EndLoop, orxNULL, orxMODULE_ID_TEST);
+
   /* Create a bank to store clocks */
   sstTest_Clock.pstBank = orxBank_Create(orxTEST_CLOCK_KU32_MAX_CLOCK, sizeof(orxTEST_CLOCK_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
-  sstTest_Clock.bExit   = orxFALSE;
   sstTest_Clock.bInit   = orxFALSE;
   sstTest_Clock.u32InitCounter = 0;
 }
 
 orxVOID orxTest_Clock_Exit()
 {
-  orxTEST_CLOCK_INFO *pstInfos = orxNULL;
+  orxTEST_CLOCK_INFO *pstInfo = orxNULL;
   
   /* Release bank */
-  while ((pstInfos = orxBank_GetNext(sstTest_Clock.pstBank, orxNULL)))
+  while((pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, orxNULL)))
   {
     /* Delete clock */
-    orxClock_Delete(pstInfos->pstClock);
+    orxClock_Delete(pstInfo->pstClock);
     
     /* Unallocate Cell */
-    orxBank_Free(sstTest_Clock.pstBank, pstInfos);
+    orxBank_Free(sstTest_Clock.pstBank, pstInfo);
   }
   
   /* Destroy bank */
   orxBank_Delete(sstTest_Clock.pstBank);
-  
+
   /* Uninitialize module */
-  if (sstTest_Clock.bInit)
+  if(sstTest_Clock.bInit)
   {
-    while (sstTest_Clock.u32InitCounter > 0)
+    while(sstTest_Clock.u32InitCounter > 0)
     {
       sstTest_Clock.u32InitCounter--;
     }
@@ -367,4 +362,3 @@ orxVOID orxTest_Clock_Exit()
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Clock_Init, orxTest_Clock_Exit)
-

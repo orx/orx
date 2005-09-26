@@ -27,8 +27,9 @@
 
 #include "debug/orxTest.h"
 
-
+#include "core/orxClock.h"
 #include "debug/orxDebug.h"
+#include "main/orxParam.h"
 #include "memory/orxMemory.h"
 #include "io/orxTextIO.h"
 #include "utils/orxString.h"
@@ -57,11 +58,15 @@
   #endif /* __orxWINDOWS__ */
 #endif /* __orxLINUX__ */
 
-#define orxTEST_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxTEST_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxTEST_KU32_FLAG_NONE                0x00000000L /**< No flags have been set */
+#define orxTEST_KU32_FLAG_READY               0x00000001L /**< The module has been initialized */
+
+#define orxTEST_KU32_FLAG_IN_USE              0x00000002L /**< orx runs in test mode */
+#define orxTEST_KU32_FLAG_FREEZE              0x00000004L /**< Display menu freeze flag */
+
 
 #define orxTEST_KU32_MAX_REGISTERED_FUNCTIONS 256
-#define orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE 16  /**< Maximum size (number of characters) for a user entry */
+#define orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE  16  /**< Maximum size (number of characters) for a user entry */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -77,6 +82,7 @@ typedef struct __orxTEST_t
 typedef struct __orxTEST_STATIC_t
 {
   orxU32 u32Flags;                                                  /**< Module flags */
+  orxCLOCK *pstClock;
   orxTEST astTestFunctions[orxTEST_KU32_MAX_REGISTERED_FUNCTIONS];  /**< List of functions */
   orxU32 u32NbRegisteredFunc;                                       /**< Number of registered functions */
   orxU32 u32NbLibrary;            /**< Number of loaded library */
@@ -92,6 +98,21 @@ static orxTEST_STATIC sstTest;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Set Test flags (the test parameter has been given)
+ * @param[in] _u32NbParam Number of extra parameters read for this option
+ * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
+ * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
+ */
+orxSTATUS orxTest_ParamTest(orxU32 _u32NbParam, orxSTRING _azParams[])
+{
+  /* Set Test Flag */
+  sstTest.u32Flags |= orxTEST_KU32_FLAG_IN_USE;
+
+  /* Done */
+  return orxSTATUS_SUCCESS;
+}
+
 /** Read dynamic library of a directory and load them
  * @param _zDirName (IN)  Name of the directory
  */
@@ -355,6 +376,7 @@ orxVOID orxTest_Setup()
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_TEXTIO);
+  orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_PARAM);
 
   return;
 }
@@ -368,6 +390,8 @@ orxSTATUS orxTest_Init()
   /* Not already Initialized? */
   if(!(sstTest.u32Flags & orxTEST_KU32_FLAG_READY))
   {
+    orxPARAM stParam;
+
     /* Initialize values */
     orxMemory_Set(&sstTest, 0, sizeof(orxTEST_STATIC));
     sstTest.u32NbRegisteredFunc = 0;
@@ -375,6 +399,17 @@ orxSTATUS orxTest_Init()
     /* Module ready */
     sstTest.u32Flags |= orxTEST_KU32_FLAG_READY;
     
+    /* Sets the param structure up */    
+    stParam.u32Flags    = orxPARAM_KU32_FLAGS_NONE;
+    stParam.pfnParser   = orxTest_ParamTest;
+    stParam.zShortName  = "T";
+    stParam.zLongName   = "test";
+    stParam.zShortDesc  = "Starts the test program.";
+    stParam.zLongDesc   = "Starts the test program instead of bare orx engine. The test program allows to test and debug orx modules and run tech demo.";
+
+    /* Registers the parameter to start the test program */
+    orxParam_Register(&stParam);
+
     /* Load dynamic library */
     orxTest_Load("."DIRSEP"modules");
     
@@ -453,67 +488,128 @@ orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST
   return hRet;
 }
 
+/* !!! TEMP : To remove when clean exit with events is done !!! */
+orxVOID orxMain_Exit();
+
 /** Run the test engine
  * @param[in] _u32NbParam Number of parameters read
  * @param[in] _azParams   Array of parameters
  */
-orxVOID orxTest_Run(orxU32 _u32NbParam, orxSTRING _azParams[])
+orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   orxCHAR zChoice[orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE];  /* Entry read from user */
   orxS32 s32Val;                                          /* value of entry */
 
-  /* Inits test module */
-  if(orxModule_Init(orxMODULE_ID_TEST) == orxSTATUS_SUCCESS)
+  /* Frozen? */
+  if(sstTest.u32Flags & orxTEST_KU32_FLAG_FREEZE)
   {
-    /* Display menu and get user entry */
-    do
-    {
-      /* Show list of registered function */
-      orxTest_DisplayMenu();
-      
-      /* Get user choice */
-      orxTextIO_PrintLn("quit : Quit the test program");
-      orxTextIO_ReadString(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, "Choice : ");
-      
-      /* Check overflow */
-      if ((orxString_Length(zChoice) > 0) && zChoice[orxString_Length(zChoice)-1] == '\n')
-      {
-        zChoice[strlen(zChoice)-1] = '\0';
-      }
-      
-      /* The user wants to quit ? */
-      if (orxString_Compare(zChoice, "quit") != 0)
-      {
-        /* No, so parse its choice */
-        if ((orxString_ToS32(&s32Val, zChoice, 10) == orxSTATUS_FAILED))
-        {
-          /* The value is not a digit */
-          orxTextIO_PrintLn("The Value is not a digit");
-        }
-        else
-        {
-          if (orxTest_Execute((orxHANDLE)s32Val) == orxSTATUS_FAILED)
-          {
-            /* Invalid choice was used */
-            orxTextIO_PrintLn("Unknown command");
-          }
-        }
-        
-        /* Function has been executed. Wait for a pressed key before displaying the menu (clear screen would be fine) */
-        orxTextIO_PrintLn("Press Enter to continue");
-        getchar();
-        
-        /* Reinitialize user choice */
-        memset(zChoice, 0, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE * sizeof(char));
-        s32Val = -1;
-      }
-    }
-    while (orxString_Compare(zChoice, "quit") != 0);
+    return;
   }
 
-  orxModule_Exit(orxMODULE_ID_TEST);
+  /* Show list of registered function */
+  orxTest_DisplayMenu();
+
+  /* Get user choice */
+  orxTextIO_PrintLn("quit : Quit the test program");
+  orxTextIO_ReadString(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, "Choice : ");
+
+  /* Check overflow */
+  if((orxString_Length(zChoice) > 0) && zChoice[orxString_Length(zChoice)-1] == '\n')
+  {
+    zChoice[strlen(zChoice)-1] = '\0';
+  }
+
+  /* The user wants to quit ? */
+  if(orxString_Compare(zChoice, "quit") != 0)
+  {
+    /* No, so parse its choice */
+    if((orxString_ToS32(&s32Val, zChoice, 10) == orxSTATUS_FAILED))
+    {
+      /* The value is not a digit */
+      orxTextIO_PrintLn("The Value is not a digit");
+    }
+    else
+    {
+      if(orxTest_Execute((orxHANDLE)s32Val) == orxSTATUS_FAILED)
+      {
+        /* Invalid choice was used */
+        orxTextIO_PrintLn("Unknown command");
+      }
+
+      /* Freeze? */
+      if(sstTest.u32Flags & orxTEST_KU32_FLAG_FREEZE)
+      {
+        return;
+      }
+    }
+
+    /* Function has been executed. Wait for a pressed key before displaying the menu (clear screen would be fine) */
+    orxTextIO_PrintLn("Press Enter to continue");
+    getchar();
+
+    /* Reinitialize user choice */
+    memset(zChoice, 0, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE * sizeof(char));
+    s32Val = -1;
+  }
+  else
+  {
+    /* Quits program */
+    /* !!! TODO : use event !!! */
+    /* !!! TEMP : dirty manual exit !!! */
+    orxMain_Exit();
+  }
 
   return;
+}
+
+/** Starts the test module if needed
+ */
+orxVOID orxFASTCALL orxTest_Start()
+{
+  /* In use? */
+  if(sstTest.u32Flags & orxTEST_KU32_FLAG_IN_USE)
+  {
+    /* Try to create the clock */
+    sstTest.pstClock = orxClock_Create(100, orxCLOCK_TYPE_CORE);
+
+    /* Succesful? */
+    if(sstTest.pstClock != orxNULL)
+    {
+      /* Registers test function */
+      if(orxClock_Register(sstTest.pstClock, orxTest_Run, orxNULL, orxMODULE_ID_TEST) == orxSTATUS_SUCCESS)
+      {
+      }
+      else
+      {
+        /* !!! MSG !!! */
+        
+        /* Deletes clock */
+        orxClock_Delete(sstTest.pstClock);
+        sstTest.pstClock = orxNULL;
+      }
+    }
+  }
+
+  return;
+}
+
+/** Freeze test module (blocking menu display)
+ * @param   (IN)  _bFreeze          Freeze/unfreeze choice
+ */
+orxVOID orxFASTCALL orxTest_Freeze(orxBOOL _bFreeze)
+{
+  /* Freezes */
+  if(_bFreeze != orxFALSE)
+  {
+    /* Updates flags */
+    sstTest.u32Flags |= orxTEST_KU32_FLAG_FREEZE;
+  }
+  /* Unfreezes */
+  else
+  {
+    /* Updates flags */
+    sstTest.u32Flags &= ~orxTEST_KU32_FLAG_FREEZE;
+  }
 }
 
 

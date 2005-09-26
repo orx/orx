@@ -564,44 +564,48 @@ orxSTATUS orxFrame_Init()
   /* Not already Initialized? */
   if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
   {
+    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+
+    /* Cleans static controller */
+    orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
+
     /* Cleans control structure */
     orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
 
     /* Inits ID Flags */
     sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
 
-    /* Inits frame tree */
-    sstFrame.pstRoot = orxFrame_Create();
+    /* Registers structure type */
+    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_TREE;
+    stRegisterInfo.u32Size      = sizeof(orxFRAME);
+    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
+    stRegisterInfo.pfnUpdate    = orxNULL;
 
-    /* Not created? */
-    if(sstFrame.pstRoot == orxNULL)
-    {
-      /* Cleans flags */
-      sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
+    eResult = orxStructure_Register(orxSTRUCTURE_ID_FRAME, &stRegisterInfo);
 
-      /* Can't process */
-      eResult = orxSTATUS_FAILED;
-    }
-
-    /* Initialized? */
+    /* Successful? */
     if(eResult == orxSTATUS_SUCCESS)
     {
-      orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
+      /* Inits frame tree */
+      sstFrame.pstRoot = orxFrame_Create();
+
+      /* Not created? */
+      if(sstFrame.pstRoot == orxNULL)
+      {
+        /* Unregister structure type */
+        orxStructure_Unregister(orxSTRUCTURE_ID_FRAME);
+
+        /* Cleans flags */
+        sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
   
-      /* Cleans static controller */
-      orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
-  
-      /* Registers structure type */
-      stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_TREE;
-      stRegisterInfo.u32Size      = sizeof(orxFRAME);
-      stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-      stRegisterInfo.pfnUpdate    = orxNULL;
-  
-      eResult = orxStructure_Register(orxSTRUCTURE_ID_FRAME, &stRegisterInfo);
-    }
-    else
-    {
-      /* !!! MSG !!! */
+        /* Can't process */
+        eResult = orxSTATUS_FAILED;
+      }
+      else
+      {
+        /* Continue */
+        eResult = orxSTATUS_SUCCESS;
+      }
     }
   }
   else
