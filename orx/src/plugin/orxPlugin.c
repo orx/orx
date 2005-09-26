@@ -133,7 +133,7 @@ typedef struct __orxPLUGIN_INFO_t
   orxSTRING zPluginName;                                    /**< Plugin name : 20 */
 
   /* Padding */
-  orxPAD(20);
+  orxPAD(20)
 
 } orxPLUGIN_INFO;
 
@@ -155,7 +155,7 @@ typedef struct __orxPLUGIN_CORE_INFO_t
   orxU32                            u32Flags;
 
   /* Pad */
-  orxPAD(16);
+  orxPAD(16)
 
 } orxPLUGIN_CORE_INFO;
 
@@ -819,7 +819,7 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
                    |orxDEBUG_KU32_FLAG_TIMESTAMP
                    |orxDEBUG_KU32_FLAG_TYPE,
                     orxDEBUG_KU32_FLAG_ALL);
-  orxDEBUG_LOG(orxDEBUG_LEVEL_ALL, MSG_PLUGIN_KZ_DEFAULT_NOT_LOADED_ZZI, _zFunctionName, _zFileName, _u32Line);
+  orxDEBUG_LOG3(orxDEBUG_LEVEL_ALL, MSG_PLUGIN_KZ_DEFAULT_NOT_LOADED_ZZI, _zFunctionName, _zFileName, _u32Line);
   orxDEBUG_FLAG_RESTORE();
 
   return orxNULL;
