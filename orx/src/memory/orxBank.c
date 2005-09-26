@@ -287,6 +287,8 @@ orxVOID orxBank_Exit()
  */
 orxBANK *orxFASTCALL orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
 {
+  orxBANK *pstBank = orxNULL; /* New bank */
+
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
 
@@ -296,7 +298,7 @@ orxBANK *orxFASTCALL orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _
   orxASSERT(_u32Size > 0);
   
   /* Allocate the bank */
-  orxBANK *pstBank = (orxBANK *)orxMemory_Allocate(sizeof(orxBANK), _eMemType);
+  pstBank = (orxBANK *)orxMemory_Allocate(sizeof(orxBANK), _eMemType);
   
   /* Memory allocated ? */
   if (pstBank != orxNULL)
@@ -384,11 +386,11 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
   /* Is the current segment has free nodes ? (yes : the allocation was correct (if there was), else returns orxNULL) */
   if (pstCurrentSegment->u32NbFree > 0)
   {
-    orxU32 u32Index32Bits;      /* Index between 0 and _pstBank->u32SizeSegmentBitField */
-    orxU32 u32Index8Bits;       /* Index to traverse a 32 bit field (indexed by u32Index32Bits) */
-    orxU32 u32BitResultIndex;   /* Position of the free bit found */
-    orxU32 u32FieldResultIndex; /* Index of the bit field to use */
-    orxBOOL bFound = orxFALSE;  /* Set as orxTRUE, when the bit position will be found */
+    orxU32 u32Index32Bits;          /* Index between 0 and _pstBank->u32SizeSegmentBitField */
+    orxU32 u32Index8Bits;           /* Index to traverse a 32 bit field (indexed by u32Index32Bits) */
+    orxU32 u32BitResultIndex   = 0; /* Position of the free bit found */
+    orxU32 u32FieldResultIndex = 0; /* Index of the bit field to use */
+    orxBOOL bFound = orxFALSE;      /* Set as orxTRUE, when the bit position will be found */
 
     /* Look for the first free cell (use precomputed array to improve search speed) */
     /* Loop on the segment bits */
@@ -492,7 +494,7 @@ orxVOID orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
   orxASSERT(_pstBank != orxNULL);
   
   /* Free all elements */
-  while ((pstCell = orxBank_GetNext(_pstBank, NULL)))
+  while ((pstCell = orxBank_GetNext(_pstBank, NULL)) != orxNULL)
   {
     orxBank_Free(_pstBank, pstCell);
   }
