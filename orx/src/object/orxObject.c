@@ -50,7 +50,7 @@ struct __orxOBJECT_t
   orxU32 u32Flags;
 
   /* Padding */
-  orxPAD(24);
+  orxPAD(24)
 };
 
 /*
