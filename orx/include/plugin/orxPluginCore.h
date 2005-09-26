@@ -43,7 +43,7 @@ typedef struct __orxPLUGIN_CORE_FUNCTION_t
   orxPLUGIN_FUNCTION   *pfnFunction;        /**< Function Address : 8 */
   orxPLUGIN_FUNCTION    pfnDefaultFunction; /**< Default Function : 12 */
 
-  orxPAD(12);                               /**< Padding */
+  orxPAD(12)                                /**< Padding */
 
 } orxPLUGIN_CORE_FUNCTION;
 
