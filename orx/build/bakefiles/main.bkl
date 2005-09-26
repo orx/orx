@@ -10,7 +10,7 @@
   
   <!-- GCC : link on orx. If statically linked, import all symbols -->
   <set var="orxLDFLAGS">
-    <if cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -Wl,--no-whole-archive</if>
+    <if cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm -Wl,--no-whole-archive</if>
     <if cond="LINK=='dynamic' and COMPILER=='gcc'">-lorx$(orxSUFFIX)</if>
   </set>
   

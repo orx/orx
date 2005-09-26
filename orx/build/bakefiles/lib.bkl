@@ -90,13 +90,18 @@
     </template>
     
     <!-- ***************** DYNAMIC LIBRARY ************** -->
+		
+		<!-- Link with math library on linux -->
+		<set var="orxMATHLIB">
+			<if cond="FORMAT=='gnu'">m</if>
+		</set>
 
     <!--- Create orx static library -->
     <dll id="orxDLL" template="orxLIB_BASE" cond="LINK=='dynamic'">
 
         <!-- Set the name of the library (will be different in debug and release mode -->
         <dllname>orx$(orxSUFFIX)</dllname>
-        <!-- <sys-lib>$(orxMATHLIB)</sys-lib> --> <!-- math library is still needed at the moment... It would be better to remove this dependency -->
+        <sys-lib>$(orxMATHLIB)</sys-lib> <!-- math library is still needed at the moment... It would be better to remove this dependency -->
     </dll>
 
     <!-- **************** STATIC LIBRARY ************** -->
