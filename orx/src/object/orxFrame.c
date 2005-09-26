@@ -98,7 +98,7 @@ struct __orxFRAME_t
   orxVOID *pstData;
 
   /* Padding */
-  orxPAD(24);
+  orxPAD(24)
 };
 
 /*
@@ -392,16 +392,16 @@ orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME 
     /* Gets needed orxFLOAT values for rotation & scale applying */
     fLocalX       = pvPos->fX;
     fLocalY       = pvPos->fY;
-    fCos          = cosf(fParentAngle);
-    fSin          = sinf(fParentAngle);
+    fCos          = (orxFLOAT)cos(fParentAngle); /* MSVC doesn't recognize cosf for X86 */
+    fSin          = (orxFLOAT)sin(fParentAngle); /* MSVC doesn't recognize sinf for X86 */
 
     /* Applies rotation & scale on X & Y coordinates*/
     fX            = fParentScale * ((fLocalX * fCos) - (fLocalY * fSin));
     fY            = fParentScale * ((fLocalX * fSin) + (fLocalY * fCos));
 
     /* Computes final global coordinates */
-    vTempPos.fX   = rintf(fX) + pvParentPos->fX;
-    vTempPos.fY   = rintf(fY) + pvParentPos->fY;
+    vTempPos.fX   = (orxFLOAT)floor(fX) + pvParentPos->fX; /* MSVC doesn't recognize floorf or rintf for X86 */
+    vTempPos.fY   = (orxFLOAT)floor(fY) + pvParentPos->fY; /* MSVC doesn't recognize floorf or rintf for X86 */
 
     /* Z coordinate is not affected by rotation nor scale in 2D */
     vTempPos.fZ   = pvParentPos->fZ + pvPos->fZ;
