@@ -203,7 +203,7 @@ graphic_st_graphic *graphic_create()
   if(pstGraphic != orxNULL)
   {
     /* Inits flags */
-    pstGraphic->u32LinkedStructures = orxSTRUCTURE_ID_NONE;
+    pstGraphic->u32LinkedStructures = (orxU32)orxSTRUCTURE_ID_NONE;
     pstGraphic->u32IDFlags = GRAPHIC_KU32_ID_FLAG_NONE;
   }
   else
