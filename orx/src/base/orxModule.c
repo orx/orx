@@ -73,6 +73,9 @@ orxVOID orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SOUND, orxSound);
   orxMODULE_REGISTER(orxMODULE_ID_SCREENSHOT, orxScreenshot);
   orxMODULE_REGISTER(orxMODULE_ID_STRUCTURE, orxStructure);
+#ifdef __orxTEST__ /* Only define it if compiled with __orxTEST__, else functions are not defined */
+  orxMODULE_REGISTER(orxMODULE_ID_TEST, orxTest);
+#endif /* __orxTEST__ */
   orxMODULE_REGISTER(orxMODULE_ID_TEXTIO, orxTextIO);
   orxMODULE_REGISTER(orxMODULE_ID_TEXTURE, orxTexture);
   orxMODULE_REGISTER(orxMODULE_ID_TIME, orxTime);
