@@ -161,7 +161,9 @@ orxVOID orxFASTCALL orxMemory_Free(orxVOID *_pMem)
   orxASSERT(_pMem != orxNULL);
 
   /* System call to free memory */
-  return(free(_pMem));
+  free(_pMem);
+
+  return;
 }
 
 /** Copy a portion of memory into another one
