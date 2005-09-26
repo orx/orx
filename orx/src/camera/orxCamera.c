@@ -65,7 +65,7 @@ struct __orxCAMERA_VIEW_LIST_t
   orxBOOL bUsed;
 
   /* Padding */
-  orxPAD(24);
+  orxPAD(24)
 };
 
 /*
@@ -118,7 +118,7 @@ struct __orxCAMERA_t
   orxS32 s32ViewListCounter;
 
   /* Padding */
-  orxPAD(60);
+  orxPAD(60)
 
   /* View list : 16448 */
   orxCAMERA_VIEW_LIST astViewList[orxCAMERA_KU32_VIEW_LIST_NUMBER];
@@ -742,7 +742,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
             }
 
             /* Updates texture coordinates */
-            orxVec_Set3(&vTextureUL, rintf(vScroll.fX), rintf(vScroll.fY), vTextureUL.fZ);
+            orxVec_Set3(&vTextureUL, (orxFLOAT)floor(vScroll.fX), (orxFLOAT)floor(vScroll.fY), vTextureUL.fZ); /* MSVC doesn't recognize floorf for x86) */
           }
 
           /* Gets into viewport coordinates */

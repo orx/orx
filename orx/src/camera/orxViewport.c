@@ -72,7 +72,7 @@ struct __orxVIEWPORT_t
   orxTEXTURE *pstSurface;
 
   /* Padding */
-  orxPAD(92);
+  orxPAD(92)
 };
 
 
@@ -191,9 +191,8 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
       else
       {
         /* Center aligned */
-        fX = pvPos->fX + rintf(0.5 * (pvSize->fX - vCamSize.fX));
+        fX = pvPos->fX + (orxFLOAT)floor(0.5 * (pvSize->fX - vCamSize.fX)); /* floorf() or rintf() is not recognized by MSVC :/ */
       }
-
       /* Y alignment */
       if(u32Flags & orxVIEWPORT_KU32_FLAG_ALIGN_TOP)
       {
@@ -208,7 +207,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
       else
       {
         /* Center aligned */
-        fY = pvPos->fY + rintf(0.5f * (pvSize->fY - vCamSize.fY));
+        fY = pvPos->fY + (orxFLOAT)floor(0.5f * (pvSize->fY - vCamSize.fY)); /* floorf() or rintf() is not recognized by MSVC :/ */
       }
 
       /* Stores it in a coord structure */
