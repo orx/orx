@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <bakefile>
 
+    <!-- ********************** OPTIONS ********************** -->
+
     <!-- Creates two types of build : Release and Debug -->
     <option name="BUILD">
         <values>debug,release</values>
@@ -39,28 +41,31 @@
 	    <default-value>1</default-value>
 	  </option>
     
-    <!-- Set a flag to specify if build is static. -->
-    <set var="orxLINKSTATIC">
-        <if cond="LINK=='static'">1</if>
-        <if cond="LINK=='dynamic'">0</if>
-    </set>
+    <!-- ******************** PREPROCESSORS ******************** -->
 
     <!-- Set the preprocessor definition for plateform. -->
     <set var="orxPLATFORM" make_var="1">
         <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
-        <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>           <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+        <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>    <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+    </set>
+    
+    <!-- Set the orx compiler var -->
+    <set var="orxCOMPILER" make_var="1">
+        <if cond="COMPILER=='gcc'">__orxGCC__</if>
+        <if cond="COMPILER=='vc'">__orxMSVC__</if>
     </set>
 
     <!-- Set the preprocessor definition for debug mode. -->
     <set var="orxDEBUG">
         <if cond="BUILD=='debug'">__orxDEBUG__</if>
-        <if cond="BUILD=='release'"></if>
     </set>
 
     <!-- Set the preprocessor definition for test mode. -->
     <set var="orxTEST">
         <if cond="USE_TEST=='1'">__orxTEST__</if>
     </set>
+
+    <!-- ****************** COMPILATIONS FLAGS ****************** -->
 
     <!-- Set the debug flag content. -->
     <set var="orxDEBUGFLAG">
@@ -78,142 +83,62 @@
         <if cond="BUILD=='release'">default</if>
     </set>
     
-    
     <!-- Set the suffix for target name. -->
     <set var="orxSUFFIX">
         <if cond="BUILD=='debug'">d</if>
-        <if cond="BUILD=='release'"></if>
     </set>
+    
+    <!-- Disable specifics warnings -->
+    <set var="orxDISABLE_WARNING">
+      <if cond="FORMAT=='mingw' or FORMAT=='gnu'">-Wno-unused-parameter</if>
+      
+      <!-- 4100 = unreferenced formal parameter, 4206 = translation unit is empty (empty file), C4201 = nonstandard extension used : nameless struct/union -->
+      <if cond="FORMAT=='msvc6prj'">/wd4100 /wd4206 /wd4201</if> 
+    </set>
+
+
+    <!-- ****************** PATH ****************** -->
+
+    <!-- Set the relative path where is the orx directory -->
+    <set var="orxDIR">..$(DIRSEP)..$(DIRSEP)..$(DIRSEP)</set>
+    
+    <!-- Set the relative path of source Sirectory -->
+    <set var="SRCDIR">$(orxDIR)</set>
 
     <!-- Set the build directory for each BUILD type. (Will be the same name as the build type) -->
     <set var="orxBUILDDIR">build$(DIRSEP)$(BUILD)</set>
-    <set var="orxLIBDIR">lib</set>
+
+    <!-- Set the 'lib' path -->
+    <set var="orxLIBDIR">$(orxDIR)lib$(DIRSEP)$(LINK)</set>
+
+    <!-- Set the 'bin' path -->
+    <set var="orxBINDIR">$(orxDIR)bin</set>
+
+    <!-- Set path where will be stored temporary compilation files -->
+    <set var="BUILDDIR">.$(DIRSEP)$(orxBUILDDIR)</set>
 
 
-  <set var="BUILDDIR">.$(DIRSEP)$(orxBUILDDIR)</set>
+    <!-- **************** COMMON TEMPLATE ****************** -->
 
-    <set var="orxLINKDEPEND">
-        <if cond="LINK=='static'">orxLIB</if>
-        <if cond="LINK=='dynamic'">orxDLL</if>
-    </set>
-
-    <!-- Set a template (common properties) to use with all orx target. -->
     <template id="orxBASE">
+    
         <!-- Optimization and debug infos. -->
         <optimize>$(orxOPTIMIZEFLAG)</optimize>
         <debug-info>$(orxDEBUGFLAG)</debug-info>
-        <cflags>-Wno-unused-parameter</cflags>
+        
         <!-- Preprocessor definitions. -->
         <define>$(orxDEBUG)</define>
         <define>$(orxPLATFORM)</define>
         <define>$(orxTEST)</define>
-<!--        <define>orxDLL</define> -->
-        <!-- Warning level. -->
+        <define>$(orxCOMPILER)</define>
+        
+        <!-- Warnings. -->
         <warnings>$(orxWARNINGFLAG)</warnings>
+        <cflags>$(orxDISABLE_WARNING)</cflags>
         
         <!-- Global include directory. -->
-        <include>include</include>
+        <include>$(orxDIR)include</include>
+        
     </template>
     
-    <!-- Set a template to define lib link -->
-    <template id="orxLINK">
-        <lib-path>$(orxLIBDIR)</lib-path>
-        <depends>$(orxLINKDEPEND)</depends>
-    </template>
-
-    <!-- Set module link lib -->
-    <set var="orxEXTRALINK">
-     <if cond="LINK=='dynamic'">orx$(orxSUFFIX)</if>
-    </set>
-     
-     <!-- Under window, DLL application have to be linked with a small static lib too -->
-    <set var="orxEXTRAFLAGS">
-      <if cond="LINK=='static' and FORMAT=='mingw'">lib\orx.a</if>
-    </set>
-
-    <!-- Define the module template -->
-    <template id="orxMODULELINK">
-	    <sys-lib>$(orxEXTRALINK)</sys-lib>
-      <ldflags>$(orxEXTRAFLAGS)</ldflags>
-    </template>
-
-    <!-- Template for orx libraries. -->
-    <template id="orxLibBase" template="orxBASE">
-        <libname>orx$(orxSUFFIX)</libname>
-        
-        <!-- Set source files -->
-        <sources>
-            src/anim/orxAnim.c
-            src/anim/orxAnimPointer.c
-            src/anim/orxAnimSet.c
-        </sources>
-        <sources>
-            src/base/orxModule.c
-        </sources>
-        <sources>
-            src/camera/orxCamera.c
-            src/camera/orxRender.c
-            src/camera/orxViewport.c
-        </sources>
-        <sources>
-            src/core/orxClock.c
-            src/core/orxEvent.c
-            src/core/orxTime.c
-        </sources>
-        <sources>
-            src/debug/orxDebug.c
-            src/debug/orxFPS.c
-            src/debug/orxTest.c
-        </sources>
-        <sources>
-            src/display/graphic.c
-            src/display/orxDisplay.c
-            src/display/orxTexture.c
-        </sources>
-        <sources>
-            src/io/orxFile.c
-            src/io/orxJoystick.c
-            src/io/orxKeyboard.c
-            src/io/orxMouse.c
-            src/io/orxPackage.c
-            src/io/orxTextIO.c
-        </sources>
-        <sources>
-            src/main/orxParam.c
-        </sources>
-        <sources>
-            src/math/orxMathSet.c
-            src/math/orxVec.c
-        </sources>
-        <sources>
-            src/memory/orxBank.c
-            src/memory/orxMemory.c
-        </sources>
-        <sources>
-            src/object/orxFrame.c
-            src/object/orxObject.c
-            src/object/orxStructure.c
-        </sources>
-        <sources>
-            src/plugin/orxPlugin.c
-        </sources>
-        <sources>
-            src/script/orxScript.c
-        </sources>
-        <sources>
-            src/sound/orxSound.c
-        </sources>
-        <sources>
-            src/utils/orxBayes.c
-            src/utils/orxFSM.c
-            src/utils/orxHashTable.c
-            src/utils/orxLinkList.c
-            src/utils/orxQueue.c
-            src/utils/orxScreenshot.c
-            src/utils/orxString.c
-            src/utils/orxTree.c
-            src/utils/pathfinder.c
-        </sources>
-    </template>
-
 </bakefile>
