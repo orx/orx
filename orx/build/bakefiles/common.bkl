@@ -100,7 +100,7 @@
     <!-- ****************** PATH ****************** -->
 
     <!-- Set the relative path where is the orx directory -->
-    <set var="orxDIR">..$(DIRSEP)..$(DIRSEP)..$(DIRSEP)</set>
+    <set var="orxDIR">..$(DIRSEP)..$(DIRSEP)..</set>
     
     <!-- Set the relative path of source Sirectory -->
     <set var="SRCDIR">$(orxDIR)</set>
