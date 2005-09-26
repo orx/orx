@@ -80,12 +80,16 @@ struct __orxEVENT_MANAGER_t
  */
 orxEVENT_MANAGER *orxFASTCALL orxEvent_CreateManager(orxU16 _u16Number, orxU16 _u16HandlerNumber, orxU32 _u32Flags)
 {
+  orxEVENT_MANAGER* pstManager;
+  orxQUEUE* pstMessageQueue;
+  orxHASHTABLE* pstCallbackTable;
+
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
 
-	orxEVENT_MANAGER *pstManager   = orxMemory_Allocate(sizeof(orxEVENT_MANAGER), orxMEMORY_TYPE_MAIN);
-	orxQUEUE *pstMessageQueue      = orxQueue_Create(_u16Number);
-	orxHASHTABLE *pstCallbackTable = orxHashTable_Create(_u16HandlerNumber, orxHASHTABLE_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+	pstManager       = orxMemory_Allocate(sizeof(orxEVENT_MANAGER), orxMEMORY_TYPE_MAIN);
+	pstMessageQueue  = orxQueue_Create(_u16Number);
+	pstCallbackTable = orxHashTable_Create(_u16HandlerNumber, orxHASHTABLE_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
 	
 	if((pstManager == orxNULL)
   || (pstMessageQueue == orxNULL)
@@ -193,17 +197,22 @@ orxVOID orxFASTCALL orxEvent_Add(orxEVENT_MANAGER *_pstEventManager, orxEVENT_ME
  */
 orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, orxS16 _s16Ticks)
 {
+  orxQUEUE_ITEM *pstCurrentItem;
+  orxBOOL bRemoveNegative;
+  orxBOOL bRemoveUnprocessed;
+  orxBOOL bPartialProcess;
+  orxQUEUE_ITEM *pstItem = orxNULL;
+
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
   /** Assert the Event manager is ok.*/
   orxASSERT(_pstEventManager != orxNULL);
   
-  orxBOOL bRemoveNegative = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT);
-  orxBOOL bRemoveUnprocessed = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED);
-  orxBOOL bPartialProcess = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS);
+  bRemoveNegative    = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT);
+  bRemoveUnprocessed = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED);
+  bPartialProcess    = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS);
   
-  orxQUEUE_ITEM* pstCurrentItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);
-  orxQUEUE_ITEM* pstItem;
+  pstCurrentItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);
   
   while(pstCurrentItem != orxNULL)
   {
@@ -216,7 +225,7 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
   	/** Decrement lifetime.*/
   	if(s16Life != orxEVENT_KS16_MESSAGE_LIFETIME_CONSTANT)
   	{
-    	s16Life -= _s16Ticks;
+    	s16Life = s16Life - _s16Ticks;
   	}
   	
   	/** Intend to process it if lifetime is correct.*/

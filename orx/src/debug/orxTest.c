@@ -97,6 +97,12 @@ static orxTEST_STATIC sstTest;
  */
 orxVOID orxTest_Load(orxSTRING _zDirName)
 {
+  #ifdef __orxLINUX__
+  
+  DIR *pstDir;                                /* Pointer on directory structure */
+  struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
+  void *pHandle;                              /* Dynamic Library handle */
+
   /* Module initialized ? */
   orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
 
@@ -104,12 +110,6 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
   orxASSERT(_zDirName != orxNULL);
 
   printf("Loading Test modules : \n");
-
-  #ifdef __orxLINUX__
-  
-  DIR *pstDir;                                /* Pointer on directory structure */
-  struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
-  void *pHandle;                              /* Dynamic Library handle */
 
   /* Open the current directory */
   pstDir = opendir(_zDirName);
@@ -158,6 +158,14 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
   orxCHAR zLibName[512];      /* Create the library name (dll*/
   HINSTANCE hLibrary;         /* Handle on the loaded library */
   
+  /* Module initialized ? */
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+
+  /* Correct parameters ? */
+  orxASSERT(_zDirName != orxNULL);
+
+  printf("Loading Test modules : \n");
+
   /* Initialize Pattern*/
   memset(zPattern, 0, 512 * sizeof(orxCHAR));
  
