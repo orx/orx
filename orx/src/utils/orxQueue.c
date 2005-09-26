@@ -256,13 +256,15 @@ orxVOID orxQueueItem_SetExtraData(orxQUEUE_ITEM* _pstItem, orxVOID* _pData)
  */
 orxQUEUE *orxQueue_Create(orxU16 _u16Number)
 {
+  orxQUEUE* pstQueue;
+
   /* Module initialized ? */
   orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
 
 	/** Assert the number of items is superior to 0.*/
 	orxASSERT(_u16Number>0);
 	
-	orxQUEUE* pstQueue = (orxQUEUE*) orxMemory_Allocate(sizeof(orxQUEUE), orxMEMORY_TYPE_MAIN);
+	pstQueue = (orxQUEUE*) orxMemory_Allocate(sizeof(orxQUEUE), orxMEMORY_TYPE_MAIN);
 	pstQueue->pastItems = (orxQUEUE_ITEM*) orxMemory_Allocate(sizeof(orxQUEUE_ITEM)*_u16Number, orxMEMORY_TYPE_MAIN);
 	pstQueue->u16Alloc = _u16Number;
 	pstQueue->u16Used = 0;
@@ -338,8 +340,10 @@ orxU16 orxQueue_GetAllocatedNumber(orxQUEUE* _pstQueue)
  */
 orxVOID	orxQueue_Resize(orxQUEUE* _pstQueue, orxU16 _u16Size)
 {
-    /* Module initialized ? */
-    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+  orxQUEUE_ITEM* pstItem;
+
+  /* Module initialized ? */
+  orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
 
 	/** Assert the queue is exists.*/
 	orxASSERT(_pstQueue != orxNULL);
@@ -347,7 +351,7 @@ orxVOID	orxQueue_Resize(orxQUEUE* _pstQueue, orxU16 _u16Size)
 	/** Assert the number of items is superior to 0.*/
 	orxASSERT(_u16Size>0);
 	
-	orxQUEUE_ITEM* pstItem = (orxQUEUE_ITEM*) orxMemory_Allocate(sizeof(orxQUEUE_ITEM)*_u16Size, orxMEMORY_TYPE_MAIN);
+	pstItem = (orxQUEUE_ITEM*) orxMemory_Allocate(sizeof(orxQUEUE_ITEM)*_u16Size, orxMEMORY_TYPE_MAIN);
 	orxMemory_Set(pstItem, 0, sizeof(pstItem));
 	_pstQueue->u16Alloc = _u16Size;
 	
@@ -409,20 +413,23 @@ orxQUEUE_ITEM* orxQueue_AddItem(orxQUEUE* _pstQueue, orxU32 _u32ID, orxVOID* _pD
  */
 void orxQueue_RemoveItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem)
 {
-    /* Module initialized ? */
-    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+  orxQUEUE_ITEM *pLastItem;
+
+  /* Module initialized ? */
+  orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
 
 	/** Assert the queue is exists.*/
 	orxASSERT(_pstQueue != orxNULL);
 	/** Assert the item to remove is in queue array bounds.*/
 	orxASSERT((_pstItem>=_pstQueue->pastItems)&&(_pstItem<_pstQueue->pastItems+(_pstQueue->u16Used*sizeof(orxQUEUE_ITEM))));
 	
-	orxQUEUE_ITEM* pLastItem = orxQueue_GetLastItem(_pstQueue);
+	pLastItem = orxQueue_GetLastItem(_pstQueue);
 	while(_pstItem < pLastItem)
 	{
 		orxQueueItem_Copy(orxQueue_GetNextItem(_pstQueue, _pstItem), _pstItem);
 		_pstItem = orxQueue_GetNextItem(_pstQueue, _pstItem);
 	}
+
 	orxQueueItem_Clear(pLastItem);
 	_pstQueue->u16Used--;
 }
@@ -432,18 +439,21 @@ void orxQueue_RemoveItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem)
  */
 orxQUEUE_ITEM* orxQueue_FindItem(orxQUEUE* _pstQueue, orxU32 _u32ID)
 {
-    /* Module initialized ? */
-    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+  orxQUEUE_ITEM* pCurrentItem;
+  orxQUEUE_ITEM* pLastItem;
+
+  /* Module initialized ? */
+  orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
 
 	/** Assert the queue is exists.*/
 	orxASSERT(_pstQueue != orxNULL);
 
-	orxQUEUE_ITEM* pCurrentItem = orxQueue_GetFirstItem(_pstQueue);
+	pCurrentItem = orxQueue_GetFirstItem(_pstQueue);
 	if(pCurrentItem==orxNULL)
-    {
-        return orxNULL;
-    }
-	orxQUEUE_ITEM* pLastItem = orxQueue_GetLastItem(_pstQueue);
+  {
+    return orxNULL;
+  }
+	pLastItem = orxQueue_GetLastItem(_pstQueue);
 	
 	while(pCurrentItem<=pLastItem)
 	{
@@ -462,15 +472,20 @@ orxQUEUE_ITEM* orxQueue_FindItem(orxQUEUE* _pstQueue, orxU32 _u32ID)
  */
 orxQUEUE_ITEM* orxQueue_GetFirstItem(orxQUEUE* _pstQueue)
 {
-    /* Module initialized ? */
-    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+  /* Module initialized ? */
+  orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
 
 	/** Assert the queue is exists.*/
 	orxASSERT(_pstQueue != orxNULL);
-	if(_pstQueue->u16Used==0)
+
+	if(_pstQueue->u16Used == 0)
+  {
 		return orxNULL;
+  }
 	else
+  {
 		return _pstQueue->pastItems;
+  }
 }
 
 /**
@@ -478,15 +493,21 @@ orxQUEUE_ITEM* orxQueue_GetFirstItem(orxQUEUE* _pstQueue)
  */
 orxQUEUE_ITEM* orxQueue_GetLastItem(orxQUEUE* _pstQueue)
 {
-    /* Module initialized ? */
-    orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
+  /* Module initialized ? */
+  orxASSERT((sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY) == orxQUEUE_KU32_FLAG_READY);
 
 	/** Assert the queue is exists.*/
 	orxASSERT(_pstQueue != orxNULL);
-	if(_pstQueue->u16Used==0)
+
+	if(_pstQueue->u16Used == 0)
+  {
 		return orxNULL;
+  }
 	else
-		return _pstQueue->pastItems + ((_pstQueue->u16Used-1)*sizeof(orxQUEUE_ITEM));}
+  {
+		return _pstQueue->pastItems + ((_pstQueue->u16Used-1)*sizeof(orxQUEUE_ITEM));
+  }
+}
 
 /**
  *  Return the next item in a queue.

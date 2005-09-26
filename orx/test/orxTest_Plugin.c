@@ -114,16 +114,15 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
   orxU32 u32Index;
   orxCHAR zDirName[32];
   
-  u32Index = 0;
-
-  /* Create the selected directory name */  
-  orxTextIO_Printf(zDirName, "plugins"DIRSEP"core"DIRSEP"%s", sstTest_Plugin.astPlugins[u32Type].zType);
-  orxTextIO_PrintLn(zDirName);
   /* Traverse the selected directory and store the dynamic library in the array */
   #ifdef __orxLINUX__
   
   DIR *pstDir;                                /* Pointer on directory structure */
   struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
+
+  /* Create the selected directory name */  
+  orxTextIO_Printf(zDirName, "plugins"DIRSEP"core"DIRSEP"%s", sstTest_Plugin.astPlugins[u32Type].zType);
+  orxTextIO_PrintLn(zDirName);
 
   /* Open the current directory */
   pstDir = opendir(zDirName);
@@ -165,7 +164,13 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
   long lFile;                 /* File handle */
   orxCHAR zPattern[512];      /* Create the lookup pattern (_zDirName\*.dll) */
   orxCHAR zLibName[512];      /* Create the library name (dll*/
+
+  u32Index = 0;
   
+  /* Create the selected directory name */  
+  orxTextIO_Printf(zDirName, "plugins"DIRSEP"core"DIRSEP"%s", sstTest_Plugin.astPlugins[u32Type].zType);
+  orxTextIO_PrintLn(zDirName);
+
   /* Initialize Pattern*/
   orxMemory_Set(zPattern, 0, sizeof(zPattern));
  

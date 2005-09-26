@@ -51,20 +51,25 @@ orxVOID orxTest_Queue_Infos()
  */
 orxVOID orxTest_Queue_DisplayContent()
 {
-	if(spstQueue==orxNULL)
-	    orxTextIO_PrintLn("Queue not created.");
-	else
-	{
-		orxTextIO_PrintLn("Queue of %hu / %hu", orxQueue_GetItemNumber(spstQueue), orxQueue_GetAllocatedNumber(spstQueue));
-		orxQUEUE_ITEM* pstItem = orxQueue_GetFirstItem(spstQueue);
-	    orxQUEUE_ITEM* pstLastItem = orxQueue_GetLastItem(spstQueue);
-	    while(pstItem<=pstLastItem)
-	    {
-	    	orxTextIO_PrintLn("  [0x%08lx : %p]", orxQueueItem_GetID(pstItem),
-	    										  orxQueueItem_GetExtraData(pstItem));
-	    	pstItem = orxQueue_GetNextItem(spstQueue, pstItem);
-	    }
-	}
+  if(spstQueue==orxNULL)
+  {
+    orxTextIO_PrintLn("Queue not created.");
+  }
+  else
+  {
+    orxQUEUE_ITEM* pstItem;
+    orxQUEUE_ITEM* pstLastItem;
+
+    orxTextIO_PrintLn("Queue of %hu / %hu", orxQueue_GetItemNumber(spstQueue), orxQueue_GetAllocatedNumber(spstQueue));
+    pstItem = orxQueue_GetFirstItem(spstQueue);
+    pstLastItem = orxQueue_GetLastItem(spstQueue);
+    while(pstItem<=pstLastItem)
+    {
+      orxTextIO_PrintLn("  [0x%08lx : %p]", orxQueueItem_GetID(pstItem),
+	    							      orxQueueItem_GetExtraData(pstItem));
+      pstItem = orxQueue_GetNextItem(spstQueue, pstItem);
+    }
+  }
 }
 
 /** Create the queue.
@@ -147,8 +152,10 @@ orxVOID orxTest_Queue_RemoveItem()
 	else
 	{
 		orxS32 s32Number;
+    orxQUEUE_ITEM* pstItem;
+
 		orxTextIO_ReadS32(&s32Number, 16, "Item identifier ? 0x", orxTRUE);
-		orxQUEUE_ITEM* pstItem = orxQueue_FindItem(spstQueue, (orxU32)s32Number);
+		pstItem = orxQueue_FindItem(spstQueue, (orxU32)s32Number);
 		if(pstItem==orxNULL)
 			orxTextIO_PrintLn("Item not found in the queue.");
 		else
