@@ -102,7 +102,7 @@ orxSTATUS orxParamHelp(orxU32 _u32NbParam, orxSTRING _azParams[])
     orxPARAM_INFOS *pstParamInfos = orxNULL;
 
     /* No => display the full list of registered option with short description */
-    while ((pstParamInfos = orxBank_GetNext(sstParam.pstBank, pstParamInfos)))
+    while ((pstParamInfos = orxBank_GetNext(sstParam.pstBank, pstParamInfos)) != orxNULL)
     {
       orxTextIO_PrintLn("%s%s (%s%s) : %s",
                         orxPARAM_KZ_MODULE_SHORT_PREFIX,
@@ -285,7 +285,7 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
     /* Check if options with the same name don't have already been registered */
     if (orxParam_Get(u32ShortName) == orxNULL)
     {
-      orxU32 u32LongName;
+      orxU32 u32LongName = 0;
       orxBOOL bStoreParam = orxTRUE; /* No problem at the moment, we can store the parameter */
       
       /* Check if the long name has not already been registered too */
@@ -334,7 +334,7 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
         }
         else
         {
-          orxDEBUG_LOG(orxDEBUG_LEVEL_PARAM,
+          orxDEBUG_LOG2(orxDEBUG_LEVEL_PARAM,
                        "A parameter with the same long name (%s%s) has already been registered",
                        orxPARAM_KZ_MODULE_LONG_PREFIX,
                        _pstParam->zLongName);
@@ -342,7 +342,7 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
     }
     else
     {
-      orxDEBUG_LOG(orxDEBUG_LEVEL_PARAM,
+      orxDEBUG_LOG2(orxDEBUG_LEVEL_PARAM,
                    "A parameter with the same short name (%s%s) has already been registered",
                    orxPARAM_KZ_MODULE_SHORT_PREFIX,
                    _pstParam->zShortName);
@@ -364,11 +364,12 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
  */
 orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _azParams[])
 {
+  orxU32 u32Index;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
   
-  orxU32 u32Index;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
     
   /* Loop on Extra parameters */
   for (u32Index = 0; (eResult == orxSTATUS_SUCCESS) && (u32Index < _u32NbParams); u32Index++)
