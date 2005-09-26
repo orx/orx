@@ -53,7 +53,9 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_SOUND,
   orxMODULE_ID_SCREENSHOT,
   orxMODULE_ID_STRUCTURE,
+#ifdef __orxTEST__ /* Only define it if compiled with __orxTEST__, else functions are not defined */
   orxMODULE_ID_TEST,
+#endif /* __orxTEST__ */
   orxMODULE_ID_TEXTIO,
   orxMODULE_ID_TEXTURE,
   orxMODULE_ID_TIME,
