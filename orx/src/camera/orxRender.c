@@ -50,7 +50,7 @@ typedef struct __orxRENDER_VIEWPORT_LIST_t
   orxFLOAT fZSort;
 
   /* Padding */
-  orxPAD(8);
+  orxPAD(8)
 
 } orxRENDER_VIEWPORT_LIST;
 

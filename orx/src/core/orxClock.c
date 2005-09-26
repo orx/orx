@@ -56,7 +56,7 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
   orxMODULE_ID      eModuleID;
 
   /* Padding */
-  orxPAD(12);
+  orxPAD(12)
 
 } orxCLOCK_FUNCTION_STORAGE;
 
@@ -75,7 +75,7 @@ struct __orxCLOCK_t
   orxU32 u32Flags;
 
   /* Padding */
-  orxPAD(40);
+  orxPAD(40)
 };
 
 /*
