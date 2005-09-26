@@ -73,12 +73,15 @@ orxVOID orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SOUND, orxSound);
   orxMODULE_REGISTER(orxMODULE_ID_SCREENSHOT, orxScreenshot);
   orxMODULE_REGISTER(orxMODULE_ID_STRUCTURE, orxStructure);
-  orxMODULE_REGISTER(orxMODULE_ID_TEST, orxTest);
   orxMODULE_REGISTER(orxMODULE_ID_TEXTIO, orxTextIO);
   orxMODULE_REGISTER(orxMODULE_ID_TEXTURE, orxTexture);
   orxMODULE_REGISTER(orxMODULE_ID_TIME, orxTime);
   orxMODULE_REGISTER(orxMODULE_ID_TREE, orxTree);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
+
+#ifdef __orxTEST__ /* Only define it if compiled with __orxTEST__, else functions are not defined */
+  orxMODULE_REGISTER(orxMODULE_ID_TEST, orxTest);
+#endif /* __orxTEST__ */
 
   /* Computes all dependencies */
   orxModule_UpdateDependencies();
@@ -130,7 +133,7 @@ typedef struct __orxMODULE_INFO_t
   orxU32                    u32StatusFlags;
 
   /* Padding */
-  orxPAD(24);
+  orxPAD(24)
 
 } orxMODULE_INFO;
 
@@ -420,7 +423,9 @@ orxVOID orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
 
   /* Calls internal exit */
-  return(_orxModule_Exit(_eModuleID));
+  _orxModule_Exit(_eModuleID);
+
+  return;
 }
 
 /** Exits from all modules
