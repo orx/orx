@@ -99,20 +99,6 @@ static orxTEST_STATIC sstTest;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Set Test flags (the test parameter has been given)
- * @param[in] _u32NbParam Number of extra parameters read for this option
- * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
- * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
- */
-orxSTATUS orxTest_ParamTest(orxU32 _u32NbParam, orxSTRING _azParams[])
-{
-  /* Set Test Flag */
-  sstTest.u32Flags |= orxTEST_KU32_FLAG_IN_USE;
-
-  /* Done */
-  return orxSTATUS_SUCCESS;
-}
-
 /** Read dynamic library of a directory and load them
  * @param _zDirName (IN)  Name of the directory
  */
@@ -360,6 +346,26 @@ orxVOID orxTest_DisplayMenu()
   orxTest_ResetVisibility();
 }
 
+/** Set Test flags (the test parameter has been given)
+ * @param[in] _u32NbParam Number of extra parameters read for this option
+ * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
+ * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
+ */
+orxSTATUS orxTest_ParamTest(orxU32 _u32NbParam, orxSTRING _azParams[])
+{
+  /* Set Test Flag */
+  sstTest.u32Flags |= orxTEST_KU32_FLAG_IN_USE;
+
+  /* Load dynamic library */
+  orxTest_Load("."DIRSEP"modules");
+
+  /* Starts the test program if needed */
+  orxTest_Start();
+
+  /* Done */
+  return orxSTATUS_SUCCESS;
+}
+
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
@@ -410,9 +416,6 @@ orxSTATUS orxTest_Init()
     /* Registers the parameter to start the test program */
     orxParam_Register(&stParam);
 
-    /* Load dynamic library */
-    orxTest_Load("."DIRSEP"modules");
-    
     /* Success */
     eResult = orxSTATUS_SUCCESS;
   }

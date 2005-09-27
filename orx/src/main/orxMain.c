@@ -160,13 +160,6 @@ int main(int argc, char **argv)
       /* Parse the command line for the second time (now all modules have registered their options) */
       if(orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
       {
-#ifdef __orxTEST__
-        
-        /* Starts the test program if needed */
-        orxTest_Start();
-
-#endif /* __orxTEST */
-
         /* Runs the engine */
         orxMain_Run();
 
