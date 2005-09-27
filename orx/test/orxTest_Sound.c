@@ -343,8 +343,6 @@ orxVOID orxTest_Sound_ChannelSetVolume()
  ******************************************************/
 orxVOID orxTest_Sound_Init()
 {
-  orxModule_Init(orxMODULE_ID_SOUND);  /* Initialize Plugin module */
-  
   /* Register test functions */
   orxTest_Register("Sound", "Display module informations", orxTest_Sound_Infos);
   orxTest_Register("Sound", "Load a sample from a file", orxTest_Sound_SampleLoadFromFile);
