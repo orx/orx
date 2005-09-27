@@ -152,7 +152,7 @@ orxSTATUS orxParamHelp(orxU32 _u32NbParam, orxSTRING _azParams[])
 /*  orxEvent_Add() */
   
   /* Help request always fail => Show help instead of starting the engine */
-  return orxSTATUS_SUCCESS;
+  return orxSTATUS_FAILED;
 }
 
 /***************************************************************************
