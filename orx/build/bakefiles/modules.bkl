@@ -58,11 +58,6 @@
     <sources>test/orxTest_Plugin.c</sources>
   </module>
 
-  <module id="MathSet" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_MathSet.c</sources>
-  </module>
-
   <module id="Queue" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
     <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
     <sources>test/orxTest_Queue.c</sources>

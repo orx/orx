@@ -22,7 +22,6 @@
  * Includes all the utils modules of the engine.
  */
 
-#include "utils/orxBayes.h"
 #include "utils/orxFSM.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxLinkList.h"

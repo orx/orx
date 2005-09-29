@@ -52,8 +52,9 @@
 #include "main/orxParam.h"
 
 #include "math/orxMath.h"
-#include "math/orxMathSet.h"
 #include "math/orxVec.h"
+
+#include "memory/orxBank.h"
 
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
@@ -68,4 +69,4 @@
 #include "sound/orxSound.h"
 
 
-#endif /* _orxUTILS_H_*/
+#endif /* _orxKERNEL_H_ */

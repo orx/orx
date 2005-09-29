@@ -55,7 +55,6 @@
             src/main/orxParam.c
         </sources>
         <sources>
-            src/math/orxMathSet.c
             src/math/orxVec.c
         </sources>
         <sources>
@@ -77,7 +76,6 @@
             src/sound/orxSound.c
         </sources>
         <sources>
-            src/utils/orxBayes.c
             src/utils/orxFSM.c
             src/utils/orxHashTable.c
             src/utils/orxLinkList.c
