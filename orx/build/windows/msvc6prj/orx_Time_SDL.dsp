@@ -900,7 +900,7 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\\plugins\Time\SDL\orxTime.c
+SOURCE=..\..\..\plugins\Time\SDL\orxTime.c
 # End Source File
 # End Group
 # End Target

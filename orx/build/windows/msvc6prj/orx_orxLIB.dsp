@@ -1635,171 +1635,163 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\\src\display\graphic.c
+SOURCE=..\..\..\src\display\graphic.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\anim\orxAnim.c
+SOURCE=..\..\..\src\anim\orxAnim.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\anim\orxAnimPointer.c
+SOURCE=..\..\..\src\anim\orxAnimPointer.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\anim\orxAnimSet.c
+SOURCE=..\..\..\src\anim\orxAnimSet.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\memory\orxBank.c
+SOURCE=..\..\..\src\memory\orxBank.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\utils\orxBayes.c
+SOURCE=..\..\..\src\camera\orxCamera.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\camera\orxCamera.c
+SOURCE=..\..\..\src\core\orxClock.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\core\orxClock.c
+SOURCE=..\..\..\src\debug\orxDebug.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\debug\orxDebug.c
+SOURCE=..\..\..\src\display\orxDisplay.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\display\orxDisplay.c
+SOURCE=..\..\..\src\core\orxEvent.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\core\orxEvent.c
+SOURCE=..\..\..\src\debug\orxFPS.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\debug\orxFPS.c
+SOURCE=..\..\..\src\utils\orxFSM.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\utils\orxFSM.c
+SOURCE=..\..\..\src\io\orxFile.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\io\orxFile.c
+SOURCE=..\..\..\src\object\orxFrame.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\object\orxFrame.c
+SOURCE=..\..\..\src\utils\orxHashTable.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\utils\orxHashTable.c
+SOURCE=..\..\..\src\io\orxJoystick.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\io\orxJoystick.c
+SOURCE=..\..\..\src\io\orxKeyboard.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\io\orxKeyboard.c
+SOURCE=..\..\..\src\utils\orxLinkList.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\utils\orxLinkList.c
+SOURCE=..\..\..\src\memory\orxMemory.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\math\orxMathSet.c
+SOURCE=..\..\..\src\base\orxModule.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\memory\orxMemory.c
+SOURCE=..\..\..\src\io\orxMouse.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\base\orxModule.c
+SOURCE=..\..\..\src\object\orxObject.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\io\orxMouse.c
+SOURCE=..\..\..\src\io\orxPackage.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\object\orxObject.c
+SOURCE=..\..\..\src\main\orxParam.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\io\orxPackage.c
+SOURCE=..\..\..\src\plugin\orxPlugin.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\main\orxParam.c
+SOURCE=..\..\..\src\utils\orxQueue.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\plugin\orxPlugin.c
+SOURCE=..\..\..\src\camera\orxRender.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\utils\orxQueue.c
+SOURCE=..\..\..\src\utils\orxScreenshot.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\camera\orxRender.c
+SOURCE=..\..\..\src\script\orxScript.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\utils\orxScreenshot.c
+SOURCE=..\..\..\src\sound\orxSound.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\script\orxScript.c
+SOURCE=..\..\..\src\utils\orxString.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\sound\orxSound.c
+SOURCE=..\..\..\src\object\orxStructure.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\utils\orxString.c
+SOURCE=..\..\..\src\debug\orxTest.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\object\orxStructure.c
+SOURCE=..\..\..\src\io\orxTextIO.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\debug\orxTest.c
+SOURCE=..\..\..\src\display\orxTexture.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\io\orxTextIO.c
+SOURCE=..\..\..\src\core\orxTime.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\display\orxTexture.c
+SOURCE=..\..\..\src\utils\orxTree.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\core\orxTime.c
+SOURCE=..\..\..\src\math\orxVec.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\utils\orxTree.c
+SOURCE=..\..\..\src\camera\orxViewport.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\\src\math\orxVec.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\\src\camera\orxViewport.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\\src\utils\pathfinder.c
+SOURCE=..\..\..\src\utils\pathfinder.c
 # End Source File
 # End Group
 # End Target

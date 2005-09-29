@@ -1764,7 +1764,7 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\\test\orxTest_Plugin.c
+SOURCE=..\..\..\test\orxTest_Plugin.c
 # End Source File
 # End Group
 # End Target

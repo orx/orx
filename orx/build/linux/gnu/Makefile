@@ -57,7 +57,7 @@ USE_PLUGINS = 1
 
 ### Variables: ###
 
-CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD
+CPPDEPS = -MT$@ -MD
 orxPLATFORM = __orxLINUX__
 orxCOMPILER = __orxGCC__
 ORXDLL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
@@ -88,7 +88,6 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxPackage.o \
 	./build/$(BUILD)/orxDLL_orxTextIO.o \
 	./build/$(BUILD)/orxDLL_orxParam.o \
-	./build/$(BUILD)/orxDLL_orxMathSet.o \
 	./build/$(BUILD)/orxDLL_orxVec.o \
 	./build/$(BUILD)/orxDLL_orxBank.o \
 	./build/$(BUILD)/orxDLL_orxMemory.o \
@@ -98,7 +97,6 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxPlugin.o \
 	./build/$(BUILD)/orxDLL_orxScript.o \
 	./build/$(BUILD)/orxDLL_orxSound.o \
-	./build/$(BUILD)/orxDLL_orxBayes.o \
 	./build/$(BUILD)/orxDLL_orxFSM.o \
 	./build/$(BUILD)/orxDLL_orxHashTable.o \
 	./build/$(BUILD)/orxDLL_orxLinkList.o \
@@ -135,7 +133,6 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxPackage.o \
 	./build/$(BUILD)/orxLIB_orxTextIO.o \
 	./build/$(BUILD)/orxLIB_orxParam.o \
-	./build/$(BUILD)/orxLIB_orxMathSet.o \
 	./build/$(BUILD)/orxLIB_orxVec.o \
 	./build/$(BUILD)/orxLIB_orxBank.o \
 	./build/$(BUILD)/orxLIB_orxMemory.o \
@@ -145,7 +142,6 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxPlugin.o \
 	./build/$(BUILD)/orxLIB_orxScript.o \
 	./build/$(BUILD)/orxLIB_orxSound.o \
-	./build/$(BUILD)/orxLIB_orxBayes.o \
 	./build/$(BUILD)/orxLIB_orxFSM.o \
 	./build/$(BUILD)/orxLIB_orxHashTable.o \
 	./build/$(BUILD)/orxLIB_orxLinkList.o \
@@ -189,12 +185,6 @@ PLUGIN_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 PLUGIN_OBJECTS =  \
 	./build/$(BUILD)/Plugin_orxTest_Plugin.o
-MATHSET_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
-	$(CFLAGS)
-MATHSET_OBJECTS =  \
-	./build/$(BUILD)/MathSet_orxTest_MathSet.o
 QUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
@@ -278,9 +268,6 @@ ifeq ($(USE_TEST),1)
 __Plugin___depname = ../../../bin/modules/Plugin.so
 endif
 ifeq ($(USE_TEST),1)
-__MathSet___depname = ../../../bin/modules/MathSet.so
-endif
-ifeq ($(USE_TEST),1)
 __Queue___depname = ../../../bin/modules/Queue.so
 endif
 ifeq ($(USE_TEST),1)
@@ -355,7 +342,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__MathSet___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
 
 install: all
 
@@ -373,7 +360,6 @@ clean:
 	rm -f ../../../bin/modules/HashTable.so
 	rm -f ../../../bin/modules/Sound.so
 	rm -f ../../../bin/modules/Plugin.so
-	rm -f ../../../bin/modules/MathSet.so
 	rm -f ../../../bin/modules/Queue.so
 	rm -f ../../../bin/modules/FSM.so
 	rm -f ../../../bin/modules/Clock.so
@@ -421,11 +407,6 @@ endif
 ifeq ($(USE_TEST),1)
 ../../../bin/modules/Plugin.so: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
 	$(CC) -shared -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
-endif
-
-ifeq ($(USE_TEST),1)
-../../../bin/modules/MathSet.so: $(MATHSET_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
-	$(CC) -shared -fPIC -o $@ $(MATHSET_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
@@ -545,9 +526,6 @@ endif
 ./build/$(BUILD)/orxDLL_orxParam.o: ../../../src/main/orxParam.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_orxMathSet.o: ../../../src/math/orxMathSet.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
 ./build/$(BUILD)/orxDLL_orxVec.o: ../../../src/math/orxVec.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -573,9 +551,6 @@ endif
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxSound.o: ../../../src/sound/orxSound.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxDLL_orxBayes.o: ../../../src/utils/orxBayes.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxFSM.o: ../../../src/utils/orxFSM.c
@@ -671,9 +646,6 @@ endif
 ./build/$(BUILD)/orxLIB_orxParam.o: ../../../src/main/orxParam.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_orxMathSet.o: ../../../src/math/orxMathSet.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
 ./build/$(BUILD)/orxLIB_orxVec.o: ../../../src/math/orxVec.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -699,9 +671,6 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxSound.o: ../../../src/sound/orxSound.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/orxLIB_orxBayes.o: ../../../src/utils/orxBayes.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxFSM.o: ../../../src/utils/orxFSM.c
@@ -745,9 +714,6 @@ endif
 
 ./build/$(BUILD)/Plugin_orxTest_Plugin.o: ../../../test/orxTest_Plugin.c
 	$(CC) -c -o $@ $(PLUGIN_CFLAGS) $(CPPDEPS) $<
-
-./build/$(BUILD)/MathSet_orxTest_MathSet.o: ../../../test/orxTest_MathSet.c
-	$(CC) -c -o $@ $(MATHSET_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Queue_orxTest_Queue.o: ../../../test/orxTest_Queue.c
 	$(CC) -c -o $@ $(QUEUE_CFLAGS) $(CPPDEPS) $<

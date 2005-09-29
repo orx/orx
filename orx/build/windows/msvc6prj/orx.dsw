@@ -149,7 +149,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "MathSet"=orx_MathSet.dsp - Package Owner=<4>
+Project: "Queue"=orx_Queue.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -170,7 +170,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Queue"=orx_Queue.dsp - Package Owner=<4>
+Project: "FSM"=orx_FSM.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -191,7 +191,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "FSM"=orx_FSM.dsp - Package Owner=<4>
+Project: "Clock"=orx_Clock.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -212,7 +212,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Clock"=orx_Clock.dsp - Package Owner=<4>
+Project: "Sound_Fmod"=orx_Sound_Fmod.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -233,7 +233,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Sound_Fmod"=orx_Sound_Fmod.dsp - Package Owner=<4>
+Project: "Mouse_Allegro"=orx_Mouse_Allegro.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -254,7 +254,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Mouse_Allegro"=orx_Mouse_Allegro.dsp - Package Owner=<4>
+Project: "Keyboard_Allegro"=orx_Keyboard_Allegro.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -275,7 +275,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Keyboard_Allegro"=orx_Keyboard_Allegro.dsp - Package Owner=<4>
+Project: "Joystick_NONE"=orx_Joystick_NONE.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -296,27 +296,6 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Joystick_NONE"=orx_Joystick_NONE.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-Begin Project Dependency
-Project_Dep_Name $(orxLINKDEPEND)
-End Project Dependency
-Begin Project Dependency
-Project_Dep_Name orx
-End Project Dependency
-Begin Project Dependency
-Project_Dep_Name $(__orxMSVCLINK_DEP_12)
-End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "Time_SDL"=orx_Time_SDL.dsp - Package Owner=<4>
 
 Package=<5>
@@ -332,7 +311,7 @@ Begin Project Dependency
 Project_Dep_Name orx
 End Project Dependency
 Begin Project Dependency
-Project_Dep_Name $(__orxMSVCLINK_DEP_13)
+Project_Dep_Name $(__orxMSVCLINK_DEP_12)
 End Project Dependency
 }}}
 

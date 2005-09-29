@@ -3235,7 +3235,7 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\\src\main\orxMain.c
+SOURCE=..\..\..\src\main\orxMain.c
 # End Source File
 # End Group
 # End Target

@@ -900,7 +900,7 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\\plugins\Keyboard\Allegro\orxKeyboard.c
+SOURCE=..\..\..\plugins\Keyboard\Allegro\orxKeyboard.c
 # End Source File
 # End Group
 # End Target

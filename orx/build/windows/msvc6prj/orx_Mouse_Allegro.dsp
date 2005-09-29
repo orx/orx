@@ -900,7 +900,7 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\\plugins\Mouse\Allegro\orxMouse.c
+SOURCE=..\..\..\plugins\Mouse\Allegro\orxMouse.c
 # End Source File
 # End Group
 # End Target

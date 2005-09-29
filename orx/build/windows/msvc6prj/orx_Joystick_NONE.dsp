@@ -1764,7 +1764,7 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\\plugins\Joystick\NONE\orxJoystick.c
+SOURCE=..\..\..\plugins\Joystick\NONE\orxJoystick.c
 # End Source File
 # End Group
 # End Target

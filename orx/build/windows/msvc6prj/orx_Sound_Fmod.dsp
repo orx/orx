@@ -900,7 +900,7 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\..\\plugins\Sound\Fmod\orxSound.c
+SOURCE=..\..\..\plugins\Sound\Fmod\orxSound.c
 # End Source File
 # End Group
 # End Target

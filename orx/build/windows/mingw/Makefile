@@ -51,6 +51,7 @@ USE_PLUGINS = 1
 
 ### Variables: ###
 
+CPPDEPS = -MT$@ -MF$@.d -MD
 orxPLATFORM = __orxWINDOWS__
 orxCOMPILER = __orxGCC__
 ORXDLL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
@@ -81,7 +82,6 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxPackage.o \
 	.\build\$(BUILD)\orxDLL_orxTextIO.o \
 	.\build\$(BUILD)\orxDLL_orxParam.o \
-	.\build\$(BUILD)\orxDLL_orxMathSet.o \
 	.\build\$(BUILD)\orxDLL_orxVec.o \
 	.\build\$(BUILD)\orxDLL_orxBank.o \
 	.\build\$(BUILD)\orxDLL_orxMemory.o \
@@ -91,7 +91,6 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxPlugin.o \
 	.\build\$(BUILD)\orxDLL_orxScript.o \
 	.\build\$(BUILD)\orxDLL_orxSound.o \
-	.\build\$(BUILD)\orxDLL_orxBayes.o \
 	.\build\$(BUILD)\orxDLL_orxFSM.o \
 	.\build\$(BUILD)\orxDLL_orxHashTable.o \
 	.\build\$(BUILD)\orxDLL_orxLinkList.o \
@@ -128,7 +127,6 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxPackage.o \
 	.\build\$(BUILD)\orxLIB_orxTextIO.o \
 	.\build\$(BUILD)\orxLIB_orxParam.o \
-	.\build\$(BUILD)\orxLIB_orxMathSet.o \
 	.\build\$(BUILD)\orxLIB_orxVec.o \
 	.\build\$(BUILD)\orxLIB_orxBank.o \
 	.\build\$(BUILD)\orxLIB_orxMemory.o \
@@ -138,7 +136,6 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxPlugin.o \
 	.\build\$(BUILD)\orxLIB_orxScript.o \
 	.\build\$(BUILD)\orxLIB_orxSound.o \
-	.\build\$(BUILD)\orxLIB_orxBayes.o \
 	.\build\$(BUILD)\orxLIB_orxFSM.o \
 	.\build\$(BUILD)\orxLIB_orxHashTable.o \
 	.\build\$(BUILD)\orxLIB_orxLinkList.o \
@@ -177,11 +174,6 @@ PLUGIN_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 PLUGIN_OBJECTS =  \
 	.\build\$(BUILD)\Plugin_orxTest_Plugin.o
-MATHSET_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-MATHSET_OBJECTS =  \
-	.\build\$(BUILD)\MathSet_orxTest_MathSet.o
 QUEUE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
@@ -265,9 +257,6 @@ ifeq ($(USE_TEST),1)
 __Plugin___depname = ..\..\..\bin\modules\Plugin.dll
 endif
 ifeq ($(USE_TEST),1)
-__MathSet___depname = ..\..\..\bin\modules\MathSet.dll
-endif
-ifeq ($(USE_TEST),1)
 __Queue___depname = ..\..\..\bin\modules\Queue.dll
 endif
 ifeq ($(USE_TEST),1)
@@ -349,10 +338,11 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__MathSet___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
 
 clean: 
 	-if exist .\build\$(BUILD)\*.o del .\build\$(BUILD)\*.o
+	-if exist .\build\$(BUILD)\*.d del .\build\$(BUILD)\*.d
 	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll del ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll
 	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a del ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a
 	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a del ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a
@@ -362,7 +352,6 @@ clean:
 	-if exist ..\..\..\bin\modules\HashTable.dll del ..\..\..\bin\modules\HashTable.dll
 	-if exist ..\..\..\bin\modules\Sound.dll del ..\..\..\bin\modules\Sound.dll
 	-if exist ..\..\..\bin\modules\Plugin.dll del ..\..\..\bin\modules\Plugin.dll
-	-if exist ..\..\..\bin\modules\MathSet.dll del ..\..\..\bin\modules\MathSet.dll
 	-if exist ..\..\..\bin\modules\Queue.dll del ..\..\..\bin\modules\Queue.dll
 	-if exist ..\..\..\bin\modules\FSM.dll del ..\..\..\bin\modules\FSM.dll
 	-if exist ..\..\..\bin\modules\Clock.dll del ..\..\..\bin\modules\Clock.dll
@@ -410,11 +399,6 @@ endif
 ifeq ($(USE_TEST),1)
 ..\..\..\bin\modules\Plugin.dll: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
 	$(CC) -shared -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
-endif
-
-ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\MathSet.dll: $(MATHSET_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(MATHSET_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
@@ -466,302 +450,289 @@ endif
 endif
 
 .\build\$(BUILD)\orxDLL_orxAnim.o: ../../../src/anim/orxAnim.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxAnimPointer.o: ../../../src/anim/orxAnimPointer.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxAnimSet.o: ../../../src/anim/orxAnimSet.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxModule.o: ../../../src/base/orxModule.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxCamera.o: ../../../src/camera/orxCamera.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxRender.o: ../../../src/camera/orxRender.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxViewport.o: ../../../src/camera/orxViewport.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxClock.o: ../../../src/core/orxClock.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxEvent.o: ../../../src/core/orxEvent.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxTime.o: ../../../src/core/orxTime.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxDebug.o: ../../../src/debug/orxDebug.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxFPS.o: ../../../src/debug/orxFPS.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxTest.o: ../../../src/debug/orxTest.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_graphic.o: ../../../src/display/graphic.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxDisplay.o: ../../../src/display/orxDisplay.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxTexture.o: ../../../src/display/orxTexture.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxFile.o: ../../../src/io/orxFile.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxJoystick.o: ../../../src/io/orxJoystick.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxKeyboard.o: ../../../src/io/orxKeyboard.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxMouse.o: ../../../src/io/orxMouse.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxPackage.o: ../../../src/io/orxPackage.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxTextIO.o: ../../../src/io/orxTextIO.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxParam.o: ../../../src/main/orxParam.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
-
-.\build\$(BUILD)\orxDLL_orxMathSet.o: ../../../src/math/orxMathSet.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxVec.o: ../../../src/math/orxVec.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxBank.o: ../../../src/memory/orxBank.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxMemory.o: ../../../src/memory/orxMemory.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxFrame.o: ../../../src/object/orxFrame.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxObject.o: ../../../src/object/orxObject.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxStructure.o: ../../../src/object/orxStructure.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxPlugin.o: ../../../src/plugin/orxPlugin.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxScript.o: ../../../src/script/orxScript.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxSound.o: ../../../src/sound/orxSound.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
-
-.\build\$(BUILD)\orxDLL_orxBayes.o: ../../../src/utils/orxBayes.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxFSM.o: ../../../src/utils/orxFSM.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxHashTable.o: ../../../src/utils/orxHashTable.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxLinkList.o: ../../../src/utils/orxLinkList.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxQueue.o: ../../../src/utils/orxQueue.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxScreenshot.o: ../../../src/utils/orxScreenshot.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxString.o: ../../../src/utils/orxString.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxTree.o: ../../../src/utils/orxTree.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_pathfinder.o: ../../../src/utils/pathfinder.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxAnim.o: ../../../src/anim/orxAnim.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxAnimPointer.o: ../../../src/anim/orxAnimPointer.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxAnimSet.o: ../../../src/anim/orxAnimSet.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxModule.o: ../../../src/base/orxModule.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxCamera.o: ../../../src/camera/orxCamera.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxRender.o: ../../../src/camera/orxRender.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxViewport.o: ../../../src/camera/orxViewport.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxClock.o: ../../../src/core/orxClock.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxEvent.o: ../../../src/core/orxEvent.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxTime.o: ../../../src/core/orxTime.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxDebug.o: ../../../src/debug/orxDebug.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxFPS.o: ../../../src/debug/orxFPS.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxTest.o: ../../../src/debug/orxTest.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_graphic.o: ../../../src/display/graphic.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxDisplay.o: ../../../src/display/orxDisplay.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxTexture.o: ../../../src/display/orxTexture.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxFile.o: ../../../src/io/orxFile.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxJoystick.o: ../../../src/io/orxJoystick.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxKeyboard.o: ../../../src/io/orxKeyboard.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxMouse.o: ../../../src/io/orxMouse.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxPackage.o: ../../../src/io/orxPackage.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxTextIO.o: ../../../src/io/orxTextIO.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxParam.o: ../../../src/main/orxParam.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
-
-.\build\$(BUILD)\orxLIB_orxMathSet.o: ../../../src/math/orxMathSet.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxVec.o: ../../../src/math/orxVec.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxBank.o: ../../../src/memory/orxBank.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxMemory.o: ../../../src/memory/orxMemory.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxFrame.o: ../../../src/object/orxFrame.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxObject.o: ../../../src/object/orxObject.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxStructure.o: ../../../src/object/orxStructure.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxPlugin.o: ../../../src/plugin/orxPlugin.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxScript.o: ../../../src/script/orxScript.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxSound.o: ../../../src/sound/orxSound.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
-
-.\build\$(BUILD)\orxLIB_orxBayes.o: ../../../src/utils/orxBayes.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxFSM.o: ../../../src/utils/orxFSM.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxHashTable.o: ../../../src/utils/orxHashTable.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxLinkList.o: ../../../src/utils/orxLinkList.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxQueue.o: ../../../src/utils/orxQueue.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxScreenshot.o: ../../../src/utils/orxScreenshot.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxString.o: ../../../src/utils/orxString.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxTree.o: ../../../src/utils/orxTree.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_pathfinder.o: ../../../src/utils/pathfinder.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $<
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orx_orxMain.o: ../../../src/main/orxMain.c
-	$(CC) -c -o $@ $(ORX_CFLAGS) $<
+	$(CC) -c -o $@ $(ORX_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Memory_orxTest_Memory.o: ../../../test/orxTest_Memory.c
-	$(CC) -c -o $@ $(MEMORY_CFLAGS) $<
+	$(CC) -c -o $@ $(MEMORY_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Bank_orxTest_Bank.o: ../../../test/orxTest_Bank.c
-	$(CC) -c -o $@ $(BANK_CFLAGS) $<
+	$(CC) -c -o $@ $(BANK_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\HashTable_orxTest_HashTable.o: ../../../test/orxTest_HashTable.c
-	$(CC) -c -o $@ $(HASHTABLE_CFLAGS) $<
+	$(CC) -c -o $@ $(HASHTABLE_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Sound_orxTest_Sound.o: ../../../test/orxTest_Sound.c
-	$(CC) -c -o $@ $(SOUND_CFLAGS) $<
+	$(CC) -c -o $@ $(SOUND_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Plugin_orxTest_Plugin.o: ../../../test/orxTest_Plugin.c
-	$(CC) -c -o $@ $(PLUGIN_CFLAGS) $<
-
-.\build\$(BUILD)\MathSet_orxTest_MathSet.o: ../../../test/orxTest_MathSet.c
-	$(CC) -c -o $@ $(MATHSET_CFLAGS) $<
+	$(CC) -c -o $@ $(PLUGIN_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Queue_orxTest_Queue.o: ../../../test/orxTest_Queue.c
-	$(CC) -c -o $@ $(QUEUE_CFLAGS) $<
+	$(CC) -c -o $@ $(QUEUE_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\FSM_orxTest_FSM.o: ../../../test/orxTest_FSM.c
-	$(CC) -c -o $@ $(FSM_CFLAGS) $<
+	$(CC) -c -o $@ $(FSM_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Clock_orxTest_Clock.o: ../../../test/orxTest_Clock.c
-	$(CC) -c -o $@ $(CLOCK_CFLAGS) $<
+	$(CC) -c -o $@ $(CLOCK_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Sound_Fmod_orxSound.o: ../../../plugins/Sound/Fmod/orxSound.c
-	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $<
+	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Mouse_Allegro_orxMouse.o: ../../../plugins/Mouse/Allegro/orxMouse.c
-	$(CC) -c -o $@ $(MOUSE_ALLEGRO_CFLAGS) $<
+	$(CC) -c -o $@ $(MOUSE_ALLEGRO_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Keyboard_Allegro_orxKeyboard.o: ../../../plugins/Keyboard/Allegro/orxKeyboard.c
-	$(CC) -c -o $@ $(KEYBOARD_ALLEGRO_CFLAGS) $<
+	$(CC) -c -o $@ $(KEYBOARD_ALLEGRO_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Joystick_NONE_orxJoystick.o: ../../../plugins/Joystick/NONE/orxJoystick.c
-	$(CC) -c -o $@ $(JOYSTICK_NONE_CFLAGS) $<
+	$(CC) -c -o $@ $(JOYSTICK_NONE_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Time_SDL_orxTime.o: ../../../plugins/Time/SDL/orxTime.c
-	$(CC) -c -o $@ $(TIME_SDL_CFLAGS) $<
+	$(CC) -c -o $@ $(TIME_SDL_CFLAGS) $(CPPDEPS) $<
 
 .PHONY: all clean
 
 
+# Dependencies tracking:
+-include .\build\$(BUILD)/*.d
