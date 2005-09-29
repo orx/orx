@@ -1,6 +1,0 @@
-################################################################################
-# DO NOT REMOVE THIS FILE                                                      #
-# IT IS USED TO PROTECT THE DIRECTORY AGAIN CVS PRUNE DIRECTORY OPTION         #
-################################################################################
-
-build/debug : directory which stores temporary compiled files for debug compilations.
