@@ -112,26 +112,26 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_ComputeTexture(orxANIM *_p
  * @param[in]   _u32Index       Index of desired atom
  * @return      Desired orxTEXTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_GetTexture(orxANIM *_pstAnim, orxU32 _u32Index);
+extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_GetTexture(orxCONST orxANIM *_pstAnim, orxU32 _u32Index);
 
 /** Animation atom storage size accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation storage size
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureStorageSize(orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureStorageSize(orxCONST orxANIM *_pstAnim);
 
 /** Animation atom counter accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation atom counter
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureCounter(orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureCounter(orxCONST orxANIM *_pstAnim);
 
 
 /** Animation time length accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation time length
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetLength(orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetLength(orxCONST orxANIM *_pstAnim);
 
 
 /** Animation flag test accessor
@@ -139,7 +139,7 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetLength(orxANIM *_pstAni
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxAnim_TestFlags(orxANIM *_pstAnim, orxU32 _u32Flags);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxAnim_TestFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags);
 
 /** Animation flag set accessor
  * @param[in]   _pstAnim        Concerned animation

@@ -90,7 +90,7 @@ orxSTATIC orxANIM_STATIC sstAnim;
  * @param[in]   _u32TimeStamp   Desired timestamp
  * @return      Texture index / orxU32_Undefined
  */
-orxSTATIC orxU32 orxAnim_FindTextureIndex(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
+orxSTATIC orxU32 orxAnim_FindTextureIndex(orxCONST orxANIM *_pstAnim, orxU32 _u32TimeStamp)
 {
   orxU32 u32Counter, u32MaxIndex, u32MinIndex, u32Index;
 
@@ -586,7 +586,7 @@ orxTEXTURE *orxFASTCALL orxAnim_ComputeTexture(orxANIM *_pstAnim, orxU32 _u32Tim
  * @param[in]   _u32Index       Index of desired atom
  * @return      Desired orxTEXTURE / orxNULL
  */
-orxTEXTURE *orxFASTCALL orxAnim_GetTexture(orxANIM *_pstAnim, orxU32 _u32Index)
+orxTEXTURE *orxFASTCALL orxAnim_GetTexture(orxCONST orxANIM *_pstAnim, orxU32 _u32Index)
 {
   orxU32 u32Counter;
   orxTEXTURE *pstTexture = orxNULL;
@@ -618,7 +618,7 @@ orxTEXTURE *orxFASTCALL orxAnim_GetTexture(orxANIM *_pstAnim, orxU32 _u32Index)
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation storage size
  */
-orxU32 orxFASTCALL orxAnim_GetTextureStorageSize(orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetTextureStorageSize(orxCONST orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
@@ -633,7 +633,7 @@ orxU32 orxFASTCALL orxAnim_GetTextureStorageSize(orxANIM *_pstAnim)
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation atom counter
  */
-orxU32 orxFASTCALL orxAnim_GetTextureCounter(orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetTextureCounter(orxCONST orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
@@ -648,7 +648,7 @@ orxU32 orxFASTCALL orxAnim_GetTextureCounter(orxANIM *_pstAnim)
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation time length
  */
-orxU32 orxFASTCALL orxAnim_GetLength(orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
 {
   orxU32 u32Counter, u32Length = 0;
 
@@ -684,7 +684,7 @@ orxU32 orxFASTCALL orxAnim_GetLength(orxANIM *_pstAnim)
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxAnim_TestFlags(orxANIM *_pstAnim, orxU32 _u32Flags)
+orxBOOL orxFASTCALL orxAnim_TestFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
