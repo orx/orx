@@ -57,7 +57,7 @@ USE_PLUGINS = 1
 
 ### Variables: ###
 
-CPPDEPS = -MT$@ -MD
+CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD
 orxPLATFORM = __orxLINUX__
 orxCOMPILER = __orxGCC__
 ORXDLL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \

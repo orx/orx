@@ -1,39 +1,38 @@
+/***************************************************************************
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by the Free Software Foundation; either version 2.1      *
+ *   of the License, or (at your option) any later version.                *
+ *                                                                         *
+ ***************************************************************************/
+
 /**
- * \file orxAnim.h
+ * @file orxAnim.h
+ * @date 11/02/2004
+ * @author (C) Arcallians
+ * 
+ * @todo 
+ * Rewrite with new Graphic/Anim system
+ */
+
+/**
+ * @addtogroup Anim
  * 
  * Animation (Data) Module.
  * Allows to creates and handle Animations data.
  * It consists of a structure containing data for a single animation
  * and functions for handling and accessing them.
  * Animations are structures.
- * They thus can be referenced by Animation Sets (animset) Module.
- * 
- * \todo
- * Optimizations
+ * They thus can be referenced by Animation Sets (orxAnimSet) Module.
+ *
+ * @{
  */
-
-
-/***************************************************************************
- orxAnim.h
- Animation Data module
  
- begin                : 11/02/2004
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
 
 #ifndef _orxANIM_H_
 #define _orxANIM_H_
+
 
 #include "orxInclude.h"
 
@@ -41,58 +40,116 @@
 #include "object/orxStructure.h"
 
 
-/** Animation ID Flags. */
+/** Animation ID Flags
+ */
 #define orxANIM_KU32_ID_FLAG_2D               0x00010000  /**< 2D type animation ID flag */
 
-/** Animation defines. */
-#define orxANIM_KS32_TEXTURE_MAX_NUMBER       256         /**< Maximum number of texture for an animation structure */
+/** Animation defines
+ */
+#define orxANIM_KU32_ATOM_MAX_NUMBER          256         /**< Maximum number of atoms for an animation structure */
 
 
-/** Internal Animation structure. */
-typedef struct __orxANIM_t  orxANIM;
+/** Internal Animation structure
+ */
+typedef struct __orxANIM_t                    orxANIM;
 
-/** Animation system setup. */
+/** Animation module setup
+ */
 extern orxDLLAPI orxVOID                      orxAnim_Setup();
-/** Inits the Animation system. */
+
+/** Inits the Animation system
+ */
 extern orxDLLAPI orxSTATUS                    orxAnim_Init();
-/** Exits from the Animation system. */
+
+/** Exits from the Animation system
+ */
 extern orxDLLAPI orxVOID                      orxAnim_Exit();
 
-/** Creates an empty Animation, given its id type and storage size (<= orxANIM_KS32_TEXTURE_MAX_NUMBER). */
-extern orxDLLAPI orxANIM *                    orxAnim_Create(orxU32 _u32IDFlag, orxU32 _u32Size);
-/** Deletes an Animation. */
-extern orxDLLAPI orxSTATUS                    orxAnim_Delete(orxANIM *_pstAnim);
 
-/** Adds a texture to a 2D Animation. */
-extern orxDLLAPI orxSTATUS                    orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstTexture, orxU32 _u32Time);
-/** Removes last added texture from a 2D Animation.*/
-extern orxDLLAPI orxSTATUS                    orxAnim_RemoveTexture(orxANIM *_pstAnim);
+/** Creates an empty animation
+ * @param[in]   _u32IDFLags     ID flags for created animation
+ * @param[in]   _u32Size        Number of atoms for this animation
+ * @return      Created orxANIM / orxVOID
+ */
+extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size);
 
-/** Removes all referenced textures from a 2D Animation. */
-extern orxDLLAPI orxVOID                      orxAnim_RemoveAllTextures(orxANIM *_pstAnim);
-
-/** Computes active 2D texture given a timestamp. */
-extern orxDLLAPI orxTEXTURE *                 orxAnim_ComputeTexture(orxANIM *_pstAnim, orxU32 _u32Timestamp);
+/** Deletes an animation
+ * @param[in]   _pstAnim        Animation to delete
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Delete(orxANIM *_pstAnim);
 
 
-/** !!! Warning : Animation accessors don't test parameter validity !!! */
+/** Adds an atom to an animation
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _pstTexture     Texture to add
+ * @param[in]   _u32TimeStamp   Timestamp for this atom
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstTexture, orxU32 _u32TimeStamp);
+
+/** Removes last added atom from an animation
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastTexture(orxANIM *_pstAnim);
+
+/** Removes all atoms from an animation
+ * @param[in]   _pstAnim        Concerned animation
+ */
+extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_RemoveAllTextures(orxANIM *_pstAnim);
 
 
-/** Animation 2D texture get accessor, given its index. */
-extern orxDLLAPI orxTEXTURE *                 orxAnim_GetTexture(orxANIM *_pstAnim, orxU32 _u32Index);
+/** Computes active atom
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _u32TimeStamp   TimeStamp for animation update
+ * @return      Current orxTEXTURE / orxNULL
+ */
+extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_ComputeTexture(orxANIM *_pstAnim, orxU32 _u32TimeStamp);
 
-/** Animation 2D texture storage size get accessor. */
-extern orxDLLAPI orxU32                       orxAnim_GetTextureStorageSize(orxANIM *_pstAnim);
-/** Animation 2D texture counter get accessor. */
-extern orxDLLAPI orxU32                       orxAnim_GetTextureCounter(orxANIM *_pstAnim);
 
-/** Animation length get accessor. */
-extern orxDLLAPI orxU32                       orxAnim_GetLength(orxANIM *_pstAnim);
+/** Animation atom accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _u32Index       Index of desired atom
+ * @return      Desired orxTEXTURE / orxNULL
+ */
+extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_GetTexture(orxANIM *_pstAnim, orxU32 _u32Index);
 
-/** Animation flag test accessor. */
-extern orxDLLAPI orxBOOL                      orxAnim_TestFlags(orxANIM *_pstAnim, orxU32 _u32Flag);
-/** Animation flag get/set accessor. */
-extern orxDLLAPI orxVOID                      orxAnim_SetFlags(orxANIM *_pstAnim, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
+/** Animation atom storage size accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Animation storage size
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureStorageSize(orxANIM *_pstAnim);
+
+/** Animation atom counter accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Animation atom counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureCounter(orxANIM *_pstAnim);
+
+
+/** Animation time length accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Animation time length
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetLength(orxANIM *_pstAnim);
+
+
+/** Animation flag test accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxAnim_TestFlags(orxANIM *_pstAnim, orxU32 _u32Flags);
+
+/** Animation flag set accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _u32AddFlags    Flags to add
+ * @param[in]   _u32RemoveFlags Flags to remove
+ */
+extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_SetFlags(orxANIM *_pstAnim, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
 
 
 #endif /* _orxANIM_H_ */
+
+
+/** @} */
