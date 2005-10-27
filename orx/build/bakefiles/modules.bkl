@@ -73,4 +73,9 @@
     <sources>test/orxTest_Clock.c</sources>
   </module>
 
+  <module id="Event" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
+    <sources>test/orxTest_Event.c</sources>
+  </module>
+
 </bakefile>

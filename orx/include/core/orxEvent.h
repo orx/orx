@@ -27,6 +27,9 @@
 
 #include "orxInclude.h"
 #include "core/orxClock.h"
+#include "utils/orxHashTable.h"
+#include "utils/orxQueue.h"
+
 
 /**
  *  Event message manipulation :
@@ -75,7 +78,17 @@ typedef orxVOID (*orxEVENT_FUNCTION)(orxEVENT_MESSAGE_TYPE, orxEVENT_MESSAGE_LIF
 
 
 /** Event manager.*/
-typedef struct __orxEVENT_MANAGER_t             orxEVENT_MANAGER;
+typedef struct __orxEVENT_MANAGER_t
+{
+	/** Manipulation flags of queue.*/
+	orxU32 u32ManipFlags;
+
+	/** Message queue.*/
+	orxQUEUE *pstMessageQueue;
+
+	/** Callback hash table.*/
+	orxHASHTABLE *pstCallbackTable;
+} orxEVENT_MANAGER;
 
 
 /** Event module setup

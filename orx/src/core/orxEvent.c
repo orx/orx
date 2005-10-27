@@ -21,8 +21,6 @@
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
-#include "utils/orxHashTable.h"
-#include "utils/orxQueue.h"
 
 
 /***************************************************************************
@@ -55,20 +53,6 @@ typedef struct __orxEVENT_STATIC_t
 orxSTATIC orxEVENT_STATIC sstEvent;
 
 
-/***************************************************************************
- * Private definitions                                                     *
- ***************************************************************************/
-struct __orxEVENT_MANAGER_t
-{
-	/** Manipulation flags of queue.*/
-	orxU32 u32ManipFlags;
-
-	/** Message queue.*/
-	orxQUEUE *pstMessageQueue;
-
-	/** Callback hash table.*/
-	orxHASHTABLE *pstCallbackTable;
-};
 
 
 /***************************************************************************
