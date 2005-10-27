@@ -458,6 +458,68 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
 }
 
 /*******************************************************************************
+ * Search functions
+ ******************************************************************************/
+
+// Find a the first item of the hashtable and return the iterator corresponding to the search.
+orxVOID *orxFASTCALL orxHashMap_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, orxVOID **_ppData)
+{
+	/* Module initialized ? */
+	orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY) == orxHASHTABLE_KU32_FLAG_READY);
+	/* Correct parameters ? */
+	orxASSERT(_pstHashTable != orxNULL);
+
+	orxU16 u16Cell = 0;
+	for(u16Cell=0; u16Cell<orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
+	{
+		if(_pstHashTable->apstCell[u16Cell]!=orxNULL)
+		{
+			if(_pu32Key!=orxNULL)
+				*_pu32Key = _pstHashTable->apstCell[u16Cell]->u32Key;
+			if(_ppData!=orxNULL)
+				*_ppData = _pstHashTable->apstCell[u16Cell]->pData;
+			return (orxVOID*)_pstHashTable->apstCell[u16Cell];
+		}
+	}
+	return orxNULL;
+}
+
+// Find a the next item of the hashtable and return the iterator corresponding to the search.
+orxVOID *orxFASTCALL orxHashMap_FindNext(orxHASHTABLE *_pstHashTable, orxVOID *_pIterator, orxU32 *_pu32Key, orxVOID **_ppData)
+{
+	/* Module initialized ? */
+	orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY) == orxHASHTABLE_KU32_FLAG_READY);
+	/* Correct parameters ? */
+	orxASSERT(_pstHashTable != orxNULL && _pIterator != orxNULL);
+	
+	
+	orxHASHTABLE_CELL *pIter = (orxHASHTABLE_CELL*)_pIterator;
+	orxU16 u16Cell;
+
+	if(pIter->pstNext!=NULL)
+	{
+		if(_pu32Key!=orxNULL)
+			*_pu32Key = pIter->pstNext->u32Key;
+		if(_ppData!=orxNULL)
+			*_ppData = pIter->pstNext->pData;
+		return (orxVOID*)pIter->pstNext;		
+	}
+	
+	for(u16Cell=orxHashTable_FindIndex(_pstHashTable, pIter->u32Key)+1; u16Cell<orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
+	{
+		if(_pstHashTable->apstCell[u16Cell]!=orxNULL)
+		{
+			if(_pu32Key!=orxNULL)
+				*_pu32Key = _pstHashTable->apstCell[u16Cell]->u32Key;
+			if(_ppData!=orxNULL)
+				*_ppData = _pstHashTable->apstCell[u16Cell]->pData;
+			return (orxVOID*)_pstHashTable->apstCell[u16Cell];
+		}
+	}
+	return orxNULL;
+}
+
+/*******************************************************************************
  * DEBUG FUNCTION
  ******************************************************************************/
 

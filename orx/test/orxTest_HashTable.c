@@ -365,6 +365,49 @@ orxVOID orxTest_HashTable_PrintAll()
   }
 }
 
+/** Print content of a hash table
+ */
+orxVOID orxTest_HashTable_PrintAllWithSearch()
+{
+  orxS32 s32ID;
+  
+  /* Are there allocated hash table ? */
+  if (sstTest_HashTable.u32NbUsedHash == 0)
+  {
+    orxTextIO_PrintLn("No hash table have been created. you can't print it");
+    return;
+  }
+  
+  /* Display the list of allocated hash table */
+  orxTest_HashTable_PrintUsedID();
+
+  /* Get the ID to use */
+  orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
+
+  /* not used ID ? */
+  if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+  {
+    orxTextIO_PrintLn("This ID is not used");
+  }
+  else
+  {
+  	orxU32 u32Key;
+  	orxVOID* pData;
+  	orxVOID* pIter;
+  	pIter = orxHashMap_FindFirst(sstTest_HashTable.apstHashTable[s32ID], &u32Key, &pData);
+  	if(pIter==NULL)
+	    orxTextIO_PrintLn("The HashTable is empty.");
+	else
+	{
+		while(pIter!=NULL)
+		{
+	      orxTextIO_PrintLn("[%u : %p]", u32Key, pData);
+		  pIter = orxHashMap_FindNext(sstTest_HashTable.apstHashTable[s32ID], pIter, &u32Key, &pData);
+		}
+	}
+  }
+}
+
 /******************************************************
  * DYNAMIC LIBRARY ENTRY POINTS
  ******************************************************/
@@ -382,6 +425,7 @@ orxVOID orxTest_HashTable_Init()
   orxTest_Register("Hash", "Print the value associated to a key in a hash table", orxTest_HashTable_Get);
   orxTest_Register("Hash", "Remove all stored keys/value from a hash table", orxTest_HashTable_Clear);
   orxTest_Register("Hash", "Print the internal content of a hash table", orxTest_HashTable_PrintAll);
+  orxTest_Register("Hash", "Print the content of a hash table", orxTest_HashTable_PrintAllWithSearch);
   
   /* Initialize static datas */
   orxMemory_Set(&sstTest_HashTable, 0, sizeof(orxTEST_HASHTABLE));
