@@ -110,8 +110,8 @@ orxVOID orxFASTCALL orxEvent_DeleteManager(orxEVENT_MANAGER *_pstEventManager)
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
-  /** Assert the Event manager is ok.*/
-  orxASSERT(_pstEventManager != orxNULL);
+	/** Assert the Event manager is ok.*/
+ 	orxASSERT(_pstEventManager != orxNULL);
     
 	orxQueue_Delete(_pstEventManager->pstMessageQueue);
 	orxHashTable_Delete(_pstEventManager->pstCallbackTable);

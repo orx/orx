@@ -203,6 +203,12 @@ CLOCK_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 CLOCK_OBJECTS =  \
 	./build/$(BUILD)/Clock_orxTest_Clock.o
+EVENT_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	$(CFLAGS)
+EVENT_OBJECTS =  \
+	./build/$(BUILD)/Event_orxTest_Event.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
@@ -276,6 +282,9 @@ endif
 ifeq ($(USE_TEST),1)
 __Clock___depname = ../../../bin/modules/Clock.so
 endif
+ifeq ($(USE_TEST),1)
+__Event___depname = ../../../bin/modules/Event.so
+endif
 ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
 __Sound_Fmod___depname = ../../../bin/plugins/core/sound/Sound_Fmod.so
@@ -342,7 +351,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
 
 install: all
 
@@ -363,6 +372,7 @@ clean:
 	rm -f ../../../bin/modules/Queue.so
 	rm -f ../../../bin/modules/FSM.so
 	rm -f ../../../bin/modules/Clock.so
+	rm -f ../../../bin/modules/Event.so
 	rm -f ../../../bin/plugins/core/sound/Sound_Fmod.so
 	rm -f ../../../bin/plugins/core/mouse/Mouse_Allegro.so
 	rm -f ../../../bin/plugins/core/keyboard/Keyboard_Allegro.so
@@ -422,6 +432,11 @@ endif
 ifeq ($(USE_TEST),1)
 ../../../bin/modules/Clock.so: $(CLOCK_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
 	$(CC) -shared -fPIC -o $@ $(CLOCK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
+endif
+
+ifeq ($(USE_TEST),1)
+../../../bin/modules/Event.so: $(EVENT_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) -shared -fPIC -o $@ $(EVENT_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_FMOD),1)
@@ -723,6 +738,9 @@ endif
 
 ./build/$(BUILD)/Clock_orxTest_Clock.o: ../../../test/orxTest_Clock.c
 	$(CC) -c -o $@ $(CLOCK_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/Event_orxTest_Event.o: ../../../test/orxTest_Event.c
+	$(CC) -c -o $@ $(EVENT_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Sound_Fmod_orxSound.o: ../../../plugins/Sound/Fmod/orxSound.c
 	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<

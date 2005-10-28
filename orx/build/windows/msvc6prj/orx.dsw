@@ -212,7 +212,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Sound_Fmod"=orx_Sound_Fmod.dsp - Package Owner=<4>
+Project: "Event"=orx_Event.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -233,7 +233,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Mouse_Allegro"=orx_Mouse_Allegro.dsp - Package Owner=<4>
+Project: "Sound_Fmod"=orx_Sound_Fmod.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -254,7 +254,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Keyboard_Allegro"=orx_Keyboard_Allegro.dsp - Package Owner=<4>
+Project: "Mouse_Allegro"=orx_Mouse_Allegro.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -275,7 +275,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Joystick_NONE"=orx_Joystick_NONE.dsp - Package Owner=<4>
+Project: "Keyboard_Allegro"=orx_Keyboard_Allegro.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -296,7 +296,7 @@ End Project Dependency
 
 ###############################################################################
 
-Project: "Time_SDL"=orx_Time_SDL.dsp - Package Owner=<4>
+Project: "Joystick_NONE"=orx_Joystick_NONE.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -312,6 +312,27 @@ Project_Dep_Name orx
 End Project Dependency
 Begin Project Dependency
 Project_Dep_Name $(__orxMSVCLINK_DEP_12)
+End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Time_SDL"=orx_Time_SDL.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+Begin Project Dependency
+Project_Dep_Name $(orxLINKDEPEND)
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name orx
+End Project Dependency
+Begin Project Dependency
+Project_Dep_Name $(__orxMSVCLINK_DEP_13)
 End Project Dependency
 }}}
 
