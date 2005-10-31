@@ -40,28 +40,29 @@
 #include "object/orxStructure.h"
 
 
-/** Animation ID Flags
+/** Anim ID Flags
  */
 #define orxANIM_KU32_ID_FLAG_2D               0x00010000  /**< 2D type animation ID flag */
 
-/** Animation defines
+/** Anim defines
  */
 #define orxANIM_KU32_ATOM_MAX_NUMBER          256         /**< Maximum number of atoms for an animation structure */
 
 
-/** Internal Animation structure
+/** Internal Anim structure
  */
 typedef struct __orxANIM_t                    orxANIM;
 
-/** Animation module setup
+
+/** Anim module setup
  */
 extern orxDLLAPI orxVOID                      orxAnim_Setup();
 
-/** Inits the Animation module
+/** Inits the Anim module
  */
 extern orxDLLAPI orxSTATUS                    orxAnim_Init();
 
-/** Exits from the Animation module
+/** Exits from the Anim module
  */
 extern orxDLLAPI orxVOID                      orxAnim_Exit();
 
@@ -74,7 +75,7 @@ extern orxDLLAPI orxVOID                      orxAnim_Exit();
 extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size);
 
 /** Deletes an animation
- * @param[in]   _pstAnim        Animation to delete
+ * @param[in]   _pstAnim        Anim to delete
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Delete(orxANIM *_pstAnim);
 
@@ -107,41 +108,41 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_RemoveAllTextures(orxANIM 
 extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_ComputeTexture(orxANIM *_pstAnim, orxU32 _u32TimeStamp);
 
 
-/** Animation atom accessor
+/** Anim atom accessor
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32Index       Index of desired atom
  * @return      Desired orxTEXTURE / orxNULL
  */
 extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_GetTexture(orxCONST orxANIM *_pstAnim, orxU32 _u32Index);
 
-/** Animation atom storage size accessor
+/** Anim atom storage size accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Animation storage size
+ * @return      Anim storage size
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureStorageSize(orxCONST orxANIM *_pstAnim);
 
-/** Animation atom counter accessor
+/** Anim atom counter accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Animation atom counter
+ * @return      Anim atom counter
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureCounter(orxCONST orxANIM *_pstAnim);
 
 
-/** Animation time length accessor
+/** Anim time length accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Animation time length
+ * @return      Anim time length
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetLength(orxCONST orxANIM *_pstAnim);
 
 
-/** Animation flag test accessor
+/** Anim flag test accessor
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxAnim_TestFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags);
 
-/** Animation flag set accessor
+/** Anim flag set accessor
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32AddFlags    Flags to add
  * @param[in]   _u32RemoveFlags Flags to remove
