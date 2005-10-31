@@ -1,26 +1,30 @@
+/***************************************************************************
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by the Free Software Foundation; either version 2.1      *
+ *   of the License, or (at your option) any later version.                *
+ *                                                                         *
+ ***************************************************************************/
+
 /**
- * \file orxClock.h
+ * @file orxClock.h
+ * @date 28/01/2004
+ * @author (C) Arcallians
  * 
- * \todo
+ * @todo 
  * Add internal/external dependency system
  * Optimize dependencies storage
  * Add freezing behaviour
  */
 
-/***************************************************************************
- begin                : 28/01/2004
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/**
+ * @addtogroup Clock
+ * 
+ * Clock module
+ * Module that handles clocks which is the low level kernel part of orx execution.
+ * @{
+ */
 
 #ifndef _orxCLOCK_H_
 #define _orxCLOCK_H_
@@ -130,3 +134,5 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(orxCONST 
 
 
 #endif /* _orxCLOCK_H_ */
+
+/** @} */

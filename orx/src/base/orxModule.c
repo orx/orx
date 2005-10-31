@@ -5,7 +5,7 @@
  * 
  * @todo
  * - Add optimizations (space/time) for dependencies storage/computation
- * - Add reference counters for explicitely initialized modules to avoid removing needed ones
+ * - Add extra non-core modules registering + dependencies declaration
  */
  
  /***************************************************************************

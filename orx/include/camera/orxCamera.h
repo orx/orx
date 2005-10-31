@@ -120,7 +120,7 @@ extern orxDLLAPI orxVOID                orxCamera_GetLimits(orxCAMERA *_pstCamer
 extern orxDLLAPI orxVOID                orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition);
 
 /** Camera flag test accessor. */
-extern orxDLLAPI orxBOOL                orxCamera_TestFlags(orxCAMERA *_pstCamera, orxU32 _u32Flag);
+extern orxDLLAPI orxBOOL                orxCamera_TestFlags(orxCAMERA *_pstCamera, orxU32 _u32Flags);
 /** Camera flag get/set accessor. */
 extern orxDLLAPI orxVOID                orxCamera_SetFlags(orxCAMERA *_pstCamera, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
 

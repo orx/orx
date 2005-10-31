@@ -286,7 +286,7 @@ orxVOID graphic_struct_link(graphic_st_graphic *_pstGraphic, orxSTRUCTURE *_pstS
       /* Animpointer */
       case orxSTRUCTURE_ID_ANIMPOINTER:
         /* Checks current anim */
-        if(orxAnim_TestFlags(orxAnimPointer_GetAnim((orxANIMPOINTER *)_pstStructure), orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
+        if(orxAnim_TestFlags(orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet((orxANIMPOINTER *)_pstStructure), orxAnimPointer_GetAnim((orxANIMPOINTER *)_pstStructure)), orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
         {
           /* Updates flag */
           graphic_flag_set(_pstGraphic, GRAPHIC_KU32_ID_FLAG_2D | GRAPHIC_KU32_ID_FLAG_ANIM, GRAPHIC_KU32_ID_FLAG_NONE);
@@ -435,14 +435,14 @@ orxTEXTURE *graphic_2d_data_get(graphic_st_graphic *_pstGraphic)
   /* Use an animation? */
   if(_pstGraphic->u32LinkedStructures & orxSTRUCTURE_ID_ANIMPOINTER)
   {
-    orxANIMPOINTER *pstAnimpointer;
+    orxANIMPOINTER *pstAnimPointer;
     orxANIM *pstAnim;
 
     /* Gets animpointer */
-    pstAnimpointer = (orxANIMPOINTER *)graphic_struct_get(_pstGraphic, orxSTRUCTURE_ID_ANIMPOINTER);
+    pstAnimPointer = (orxANIMPOINTER *)graphic_struct_get(_pstGraphic, orxSTRUCTURE_ID_ANIMPOINTER);
 
     /* Gets current animation */
-    pstAnim = orxAnimPointer_GetAnim(pstAnimpointer);
+    pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(pstAnimPointer), orxAnimPointer_GetAnim(pstAnimPointer));
 
     /* Is animation 2D? */
     if(orxAnim_TestFlags(pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
@@ -450,7 +450,7 @@ orxTEXTURE *graphic_2d_data_get(graphic_st_graphic *_pstGraphic)
       orxU32 u32Time;
 
       /* Gets timestamp */
-      u32Time = orxAnimPointer_GetTime(pstAnimpointer);
+      u32Time = orxAnimPointer_GetTime(pstAnimPointer);
 
       /* returns texture */
       return(orxAnim_ComputeTexture(pstAnim, u32Time));
@@ -564,9 +564,9 @@ orxVOID graphic_2d_max_size_get(graphic_st_graphic *_pstGraphic, orxVEC *_pst_co
 
  returns: orxBOOL
  ***************************************************************************/
-orxBOOL graphic_flag_test(graphic_st_graphic *_pstGraphic, orxU32 _u32Flag)
+orxBOOL graphic_flag_test(graphic_st_graphic *_pstGraphic, orxU32 _u32Flags)
 {
-  if(_pstGraphic->u32IDFlags & _u32Flag)
+  if(_pstGraphic->u32IDFlags & _u32Flags)
   {
     return orxTRUE;
   }

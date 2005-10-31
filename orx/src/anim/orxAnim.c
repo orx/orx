@@ -39,7 +39,7 @@
 
 /** orxANIM ID flags/masks/shifts
  */
-#define orxANIM_KU32_ID_FLAG_NONE           0x00000000  /**< No ID flag */
+#define orxANIM_KU32_ID_FLAG_NONE           0x00000000  /**< No ID flags */
 
 #define orxANIM_KU32_ID_MASK_SIZE           0x000000FF  /**< Size ID mask */
 #define orxANIM_KU32_ID_MASK_COUNTER        0x0000FF00  /**< Counter ID mask */
@@ -74,15 +74,17 @@ typedef struct __orxANIM_STATIC_t
 } orxANIM_STATIC;
 
 
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
 /** Static data
  */
 orxSTATIC orxANIM_STATIC sstAnim;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
 /** Finds a texture index given a timestamp
@@ -235,9 +237,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_DeleteAll()
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
 /** Animation module setup
@@ -577,10 +577,6 @@ orxTEXTURE *orxFASTCALL orxAnim_ComputeTexture(orxANIM *_pstAnim, orxU32 _u32Tim
   return pstTexture;
 }
 
-
-/* *** Structure accessors *** */
-
-
 /** Animation atom accessor
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32Index       Index of desired atom
@@ -608,7 +604,6 @@ orxTEXTURE *orxFASTCALL orxAnim_GetTexture(orxCONST orxANIM *_pstAnim, orxU32 _u
   else
   {
     /* !!! MSG !!! */
-
   }
 
   return pstTexture;

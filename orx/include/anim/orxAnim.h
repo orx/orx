@@ -57,11 +57,11 @@ typedef struct __orxANIM_t                    orxANIM;
  */
 extern orxDLLAPI orxVOID                      orxAnim_Setup();
 
-/** Inits the Animation system
+/** Inits the Animation module
  */
 extern orxDLLAPI orxSTATUS                    orxAnim_Init();
 
-/** Exits from the Animation system
+/** Exits from the Animation module
  */
 extern orxDLLAPI orxVOID                      orxAnim_Exit();
 
@@ -69,7 +69,7 @@ extern orxDLLAPI orxVOID                      orxAnim_Exit();
 /** Creates an empty animation
  * @param[in]   _u32IDFLags     ID flags for created animation
  * @param[in]   _u32Size        Number of atoms for this animation
- * @return      Created orxANIM / orxVOID
+ * @return      Created orxANIM / orxNULL
  */
 extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size);
 

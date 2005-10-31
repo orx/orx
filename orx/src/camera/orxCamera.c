@@ -1588,14 +1588,14 @@ orxVOID orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition
 
  returns: orxBOOL
  ***************************************************************************/
-orxBOOL orxCamera_TestFlags(orxCAMERA *_pstCamera, orxU32 _u32Flag)
+orxBOOL orxCamera_TestFlags(orxCAMERA *_pstCamera, orxU32 _u32Flags)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Tests */
-  return((_pstCamera->u32IDFlags & _u32Flag) == _u32Flag);
+  return((_pstCamera->u32IDFlags & _u32Flags) == _u32Flags);
 }
 
 /***************************************************************************

@@ -90,7 +90,7 @@ extern orxVOID                     graphic_2d_ref_coord_get(graphic_st_graphic *
 extern orxVOID                     graphic_2d_max_size_get(graphic_st_graphic *_pst_graphic, orxVEC *_pst_coord);
 
 /** Graphic flag test accessor. */
-extern orxBOOL                     graphic_flag_test(graphic_st_graphic *_pst_graphic, orxU32 _u32Flag);
+extern orxBOOL                     graphic_flag_test(graphic_st_graphic *_pst_graphic, orxU32 _u32Flags);
 /** Graphic flag get/set accessor. */
 extern orxVOID                     graphic_flag_set(graphic_st_graphic *_pst_graphic, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
 
