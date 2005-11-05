@@ -22,6 +22,8 @@
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 
+#include "io/orxTextIO.h"
+
 
 /***************************************************************************
  * Static data and definitions                                             *
@@ -32,6 +34,9 @@
  */
 #define orxEVENT_KU32_FLAG_NONE                 0x00000000
 #define orxEVENT_KU32_FLAG_READY                0x00000001
+
+
+#define orxEVENT_KU32_FLAG_EVENT_DELETED		0xFFFFFFFF
 
 /** Define to minimize code writing for module initialization test.*/
 #define orxEVENT_ASSERT_MODULE_NOT_INITIALIZED  orxASSERT((sstEvent.u32Flags & orxEVENT_KU32_FLAG_READY)  ==  orxEVENT_KU32_FLAG_READY)
@@ -186,6 +191,7 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
   orxBOOL bRemoveUnprocessed;
   orxBOOL bPartialProcess;
   orxQUEUE_ITEM *pstItem = orxNULL;
+  orxQUEUE_ITEM *pstFirstItem = orxNULL;
 
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
@@ -196,15 +202,15 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
   bRemoveUnprocessed = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED);
   bPartialProcess    = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS);
   
+  /** Process all message.*/
   pstCurrentItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);
-  
   while(pstCurrentItem != orxNULL)
   {
-  	orxU16 u16Type = orxEVENT_MESSAGE_GET_TYPE(orxQueueItem_GetID(pstItem));
-  	orxS16 s16Life = orxEVENT_MESSAGE_GET_LIFETIME(orxQueueItem_GetID(pstItem));
-  	orxVOID* pData = orxQueueItem_GetExtraData(pstItem);
+  	orxU16 u16Type = orxEVENT_MESSAGE_GET_TYPE(orxQueueItem_GetID(pstCurrentItem));
+  	orxS16 s16Life = orxEVENT_MESSAGE_GET_LIFETIME(orxQueueItem_GetID(pstCurrentItem));
+  	orxVOID* pData = orxQueueItem_GetExtraData(pstCurrentItem);
   	
-  	orxBOOL bProcessed = orxFALSE;
+  	orxTextIO_PrintLn("Process event %04u (%04d - %p)", u16Type, s16Life, pData);
   	
   	/** Decrement lifetime.*/
   	if(s16Life != orxEVENT_KS16_MESSAGE_LIFETIME_CONSTANT)
@@ -212,28 +218,41 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
     	s16Life = s16Life - _s16Ticks;
   	}
   	
-  	/** Intend to process it if lifetime is correct.*/
-  	if(!bRemoveNegative || (bRemoveNegative && s16Life >= 0))
+  	if(bRemoveNegative && (s16Life<0))
   	{
+  		/** Mark event as removed.*/
+		orxQueueItem_SetID(pstCurrentItem, orxEVENT_KU32_FLAG_EVENT_DELETED);  		
+  	}
+  	if(!bRemoveNegative || (s16Life>=0))
+  	{
+	  	/** Intend to process it.*/
+
     	/** Find handler and process event if any.*/
     	orxEVENT_FUNCTION pfnEventHandler = (orxEVENT_FUNCTION)orxHashTable_Get(_pstEventManager->pstCallbackTable, u16Type);
     	if(pfnEventHandler  !=  orxNULL)
     	{
     		pfnEventHandler(u16Type, s16Life, pData);
-    		bProcessed = orxTRUE;
-    	}
-    	
-    	/** If not processed, restore new lifetime.*/
-    	if(!bProcessed && !bRemoveUnprocessed)
+	  		/** Mark event as removed.*/
+			orxQueueItem_SetID(pstCurrentItem, orxEVENT_KU32_FLAG_EVENT_DELETED);  		
+    	}    	
+    	else	/** If not processed.*/
     	{
-    		orxQueueItem_SetID(pstItem, orxEVENT_MESSAGE_GET_ID(u16Type, s16Life));
+    		if(!bRemoveUnprocessed)
+    		{
+    			/** set the new lifetime.*/
+	    		orxQueueItem_SetID(pstCurrentItem, orxEVENT_MESSAGE_GET_ID(u16Type, s16Life));
+    		}
+    		else
+    		{
+		  		/** Mark event as removed.*/
+				orxQueueItem_SetID(pstCurrentItem, orxEVENT_KU32_FLAG_EVENT_DELETED);  		
+    		}
     	}
   	}
   	
-  	
   	/** Find next item to process according to total/partial process config.*/
-  	pstItem = pstCurrentItem;
-  	if(bPartialProcess)
+	pstCurrentItem = orxQueue_GetNextItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+  	if(bPartialProcess && (pstCurrentItem!=orxNULL))
   	{
   		/** the next item with a different type.*/
   		while(orxEVENT_MESSAGE_GET_TYPE(orxQueueItem_GetID(pstCurrentItem)) == u16Type)
@@ -243,21 +262,26 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
 	    		break;
   		}
   	}
-  	else
-  	{
-    	pstCurrentItem = orxQueue_GetNextItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
-    	/** Suppress if processed, unused or if olded.*/
-    	if(bProcessed || (bRemoveNegative && (s16Life < 0)))
-    	{
-	    	orxQueue_RemoveItem(_pstEventManager->pstMessageQueue, pstItem);
-    	}
-  	}
   }
   
   /** Clear the queue if not saving no processed events.*/
   if(bRemoveUnprocessed)
   {
-  	orxQueue_Clean(_pstEventManager->pstMessageQueue);
+	orxQueue_Clean(_pstEventManager->pstMessageQueue);
+  }
+  else
+  {
+	  pstCurrentItem = orxQueue_GetLastItem(_pstEventManager->pstMessageQueue);
+	  pstFirstItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);
+	  while(pstCurrentItem >= pstFirstItem)
+	  {
+	  	pstItem = orxQueue_GetPreviousItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+	  	if(orxQueueItem_GetID(pstCurrentItem)==orxEVENT_KU32_FLAG_EVENT_DELETED)
+		{
+			orxQueue_RemoveItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+  		}
+		pstCurrentItem = pstItem;
+	  }
   }
 }
 

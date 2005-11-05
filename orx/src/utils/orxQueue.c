@@ -303,7 +303,7 @@ orxVOID	orxQueue_Clean(orxQUEUE* _pstQueue)
 	/** Assert the queue is exists.*/
 	orxASSERT(_pstQueue != orxNULL);
 
-	orxMemory_Set(_pstQueue->pastItems, 0, sizeof(_pstQueue->pastItems));
+	orxMemory_Set(_pstQueue->pastItems, 0, sizeof(orxQUEUE_ITEM)*_pstQueue->u16Alloc);
 	_pstQueue->u16Used = 0;
 }
 
@@ -523,9 +523,9 @@ orxQUEUE_ITEM* orxQueue_GetNextItem(orxQUEUE* _pstQueue, orxQUEUE_ITEM* _pstItem
 
 	/** Correct current item bound.*/
 	orxASSERT(_pstItem >= _pstQueue->pastItems);
-	orxASSERT(_pstItem <= (_pstQueue->pastItems + (_pstQueue->u16Used * sizeof(orxQUEUE_ITEM))));
+	orxASSERT(_pstItem <= (_pstQueue->pastItems + (_pstQueue->u16Alloc * sizeof(orxQUEUE_ITEM))));
 
-	if(_pstItem == (_pstQueue->pastItems + (_pstQueue->u16Used * sizeof(orxQUEUE_ITEM))))
+	if(_pstItem >= (_pstQueue->pastItems + (_pstQueue->u16Used * sizeof(orxQUEUE_ITEM))))
   {
     return orxNULL;
   }

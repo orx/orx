@@ -81,10 +81,73 @@ orxVOID orxTest_Event_Infos()
 	orxTextIO_PrintLn("You can use %d handlers for %d messages (maximum).", sstTest_Event.u32MaxHandler, sstTest_Event.u32MaxEvent);
 }
 
+/** Display module event manager state.*/
+orxVOID orxTest_Event_DisplayFlagState()
+{
+	orxU32 u32Flag = orxEvent_GetManagerFlags(sstTest_Event.pstEventManager);
+
+	/** Remove negative lifetime event.*/
+	if(orxFLAG32_TEST(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT))
+	{
+		orxTextIO_PrintLn("* Remove unprocessed event with negative lifetime");
+	}
+	else
+	{
+		orxTextIO_PrintLn("* Dont remove unprocessed event with negative lifetime");
+	}
+	
+	/** Remove unprocessed event.*/
+	if(orxFLAG32_TEST(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED))
+	{
+		orxTextIO_PrintLn("* Remove unprocessed event");
+	}
+	else
+	{
+		orxTextIO_PrintLn("* Dont remove unprocessed event");
+	}
+
+	/** Do a partial or a complete process.*/
+	if(orxFLAG32_TEST(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS))
+	{
+		orxTextIO_PrintLn("* Partial event processing");
+	}
+	else
+	{
+		orxTextIO_PrintLn("* Complete event processing");
+	}
+}
+
+/** Modify module event manager state.*/
+orxVOID orxTest_Event_ModifyFlagState()
+{
+	orxS32 s32;
+	orxU32 u32Flag = orxEVENT_KU32_FLAG_MANIPULATION_STANDARD;
+	
+	/** Remove negative lifetime event.*/
+	orxTextIO_ReadS32InRange(&s32, 10, 0, 1, "Remove unprocessed event with negative lifetime ? (0=no,1=yes) : ", orxTRUE);
+	if(s32==1)
+		u32Flag |= orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT;
+
+	/** Remove unprocessed event.*/
+	orxTextIO_ReadS32InRange(&s32, 10, 0, 1, "Remove unprocessed event ? (0=no,1=yes) : ", orxTRUE);
+	if(s32==1)
+		u32Flag |= orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED;
+
+	/** Do a partial or a complete process.*/
+	orxTextIO_ReadS32InRange(&s32, 10, 0, 1, "Do a partial process ? (0=complete,1=partial) : ", orxTRUE);
+	if(s32==1)
+		u32Flag |= orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS;
+
+	orxEvent_SetManagerFlags(sstTest_Event.pstEventManager, u32Flag);
+}
+
 /** Display module state
  */
 orxVOID orxTest_Event_DisplayState()
 {
+	/** Log event manager state.*/
+	orxTest_Event_DisplayFlagState();
+	
 	/** Log message queue content : .*/	
     orxQUEUE_ITEM* pstItem;
     orxQUEUE_ITEM* pstLastItem;
@@ -93,9 +156,9 @@ orxVOID orxTest_Event_DisplayState()
     pstLastItem = orxQueue_GetLastItem(sstTest_Event.pstEventManager->pstMessageQueue);
     while(pstItem!=orxNULL && pstItem<=pstLastItem)
     {
-    	orxTextIO_PrintLn("%p", pstItem);
       orxU32 u32ID = orxQueueItem_GetID(pstItem);
-      orxTextIO_PrintLn("  [0x%04x - %d : %p]", orxEVENT_MESSAGE_GET_TYPE(u32ID),
+      orxTextIO_PrintLn(" %p :  [%04u - %04d : %p]", pstItem,
+      										orxEVENT_MESSAGE_GET_TYPE(u32ID),
       										orxEVENT_MESSAGE_GET_LIFETIME(u32ID),
 	    							      orxQueueItem_GetExtraData(pstItem));
       pstItem = orxQueue_GetNextItem(sstTest_Event.pstEventManager->pstMessageQueue, pstItem);
@@ -174,6 +237,21 @@ orxVOID orxTest_Event_AddEvent()
 	orxEvent_Add(sstTest_Event.pstEventManager, u16ID, s16Time, (orxVOID*)s_u32Count);
 }
 
+/** Process events.
+ */
+orxVOID orxTest_Event_ProcessEvents()
+{
+	orxS32 s32;
+	orxS16 s16Time;
+	
+    /* Get the rebound time. */
+    orxTextIO_ReadS32InRange(&s32, 10, -32000, 32000, "Choose the decount time : ", orxTRUE);
+    s16Time = (orxU16) s32;
+	
+	orxEvent_UpdateManager(sstTest_Event.pstEventManager, s16Time);
+}
+
+
 /******************************************************
  * DYNAMIC LIBRARY ENTRY POINTS
  ******************************************************/
@@ -184,10 +262,13 @@ orxVOID orxTest_Event_Init()
   
   /* Register test functions */
   orxTest_Register("Event", "Display module informations", orxTest_Event_Infos);
+  orxTest_Register("Event", "Display event manager flag state", orxTest_Event_DisplayFlagState);
+  orxTest_Register("Event", "Modify event manager flag state", orxTest_Event_ModifyFlagState);  
   orxTest_Register("Event", "Display module state", orxTest_Event_DisplayState);
   orxTest_Register("Event", "(Un)Register event handler", orxTest_Event_RegisterHandler);
   orxTest_Register("Event", "Add an event", orxTest_Event_AddEvent);
-  
+  orxTest_Register("Event", "Process events", orxTest_Event_ProcessEvents);
+    
   /* Initialize static datas */
   sstTest_Event.u32MaxEvent = orxTEST_EVENT_KU32_EVENT_MAX_NUMBER;
   sstTest_Event.u32MaxHandler = orxTEST_EVENT_KU32_EVENT_MAX_HANDLER;
