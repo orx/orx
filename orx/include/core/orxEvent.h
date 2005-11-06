@@ -18,6 +18,46 @@
  ***************************************************************************/
 
 /**
+ * @page Event
+ * @section event_intro Introduction.
+ * The event module goal is to provide a simple and generalist interface to manipulate event messages.
+ * 
+ * The general idea is to register many handler functions to event IDs, register events and - at the process time - each event are handled by the corrresponding function.
+ * 
+ * @section event_api API.
+ * 
+ * @subsection event_api_createdelete Create and delete an event manager.
+ * In order to use the event capabilities, you must create an event manager (You must destroy it after use).
+ * to create it, use the function orxEvent_CreateManager precising the maximum number of event you want to store, the size of handler hash key (256 is good, see orxHashTable),
+ * and the flags qualifying the event manager.
+ * To destroy, you have to call orxEvent_DeleteManager with the address of the orxEVENT_MANAGER create.
+ * @code
+ * orxEVENT_MANAGER *pstEventManager;	// The event manager.
+ * pstEventManager = orxEvent_CreateManager(200, 256, orxEVENT_KU32_FLAG_MANIPULATION_STANDARD);
+ * ...
+ * orxEvent_DeleteManager(pstEventManager);
+ * @endcode
+ * 
+ * @subsection event_api_handler Register an handler.
+ * In order to use events, you must register some handling functions.
+ * Each function can be associate to one (or more) ID.
+ * All events corresponding to the ID will be parsed by these functions.
+ * To register a function, use orxEvent_RegisterHandler with the address of your function an d the corresponding ID.
+ * Only one function can be associated to an ID, if you attach a new function to an ID, the old one is unregistered.
+ * If you want to unregister a function, pass orxNULL to orxEvent_RegisterHandler with your ID.
+ * @code
+ * orxVOID orxTest_Event_Handler_1(orxEVENT_MESSAGE_TYPE u16Type, orxEVENT_MESSAGE_LIFETIME s16Time, orxVOID *pData)
+ * {
+ *   // Process an event...
+ * };
+ * orxEvent_RegisterHandler(pstEventManager, u16ID, orxTest_Event_Handler_1);
+ * ...
+ * orxEvent_RegisterHandler(pstEventManager, u16ID, NULL);
+ * @endcode
+ * 
+ * @subsection event_api_registerfunction Register functions.
+ * To register a function, you just have to call a 
+ * 
  * @addtogroup Event
  * @{
  */
