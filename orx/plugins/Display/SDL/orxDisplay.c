@@ -25,8 +25,8 @@
 #include "msg/msg_graph.h"
 
 
-#include <Sdl/SDL.h>
-#include <Sdl/sge.h>
+#include <SDL/SDL.h>
+#include <SDL/sge.h>
 
 #define KI_BPP 16
 #define KI_WIDTH 800

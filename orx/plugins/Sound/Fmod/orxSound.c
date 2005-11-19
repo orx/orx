@@ -28,7 +28,7 @@
 #include "debug/orxDebug.h"
 #include "sound/orxSound.h"
 
-#include <fmod.h>
+#include <fmod/fmod.h>
 
 #define orxSOUND_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxSOUND_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
