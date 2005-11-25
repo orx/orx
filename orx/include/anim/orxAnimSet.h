@@ -82,19 +82,36 @@ extern orxDLLAPI orxSTATUS                          orxAnimSet_Init();
 extern orxDLLAPI orxVOID                            orxAnimSet_Exit();
 
 
-/** Creates an empty AnimSet, given a storage size (<= orxANIMSET_KU32_MAX_ANIM_NUMBER). */
+/** Creates an empty AnimSet
+ * @param[in]		_u32Size														Storage size
+ * return 			Created orxANIMSET / orxNULL
+ */
 extern orxDLLAPI orxANIMSET *orxFASTCALL            orxAnimSet_Create(orxU32 _u32Size);
-/** Deletes an AnimSet. */
+
+/** Deletes an AnimSet
+ * @param[in]		_pstAnimSet													AnimSet to delete
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_Delete(orxANIMSET *_pstAnimSet);
 
-/** Adds a reference on an AnimSet. */
+/** Adds a reference to an AnimSet
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ */
 extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_AddReference(orxANIMSET *_pstAnimSet);
-/** Removes a reference from an AnimSet. */
+
+/** Removes a reference from an AnimSet
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ */
 extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet);
 
-/** Creates a copy of an AnimSet Link Table. */
-extern orxDLLAPI orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_DuplicateLinkTable(orxCONST orxANIMSET *_pstAnimSet);
-/** Deletes a Link Table. */
+/** Clones an AnimSet Link Table
+ * @param[in]		_pstAnimSet													AnimSet to clone
+ * @return An internally allocated clone of the AnimSet
+ */
+extern orxDLLAPI orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(orxCONST orxANIMSET *_pstAnimSet);
+
+/** Deletes a Link Table
+ * @param[in]		_pstAnimSet													AnimSet to delete (should have been created using the clone function)
+ */
 extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable);
 
 /** Adds an Animation to an AnimSet. */

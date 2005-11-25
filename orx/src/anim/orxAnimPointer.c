@@ -319,7 +319,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
     if(orxAnimSet_TestFlags(_pstAnimSet, orxANIMSET_KU32_ID_FLAG_LINK_STATIC) == orxFALSE)
     {
       /* Stores link table */
-      pstAnimPointer->pstLinkTable = orxAnimSet_DuplicateLinkTable(_pstAnimSet);
+      pstAnimPointer->pstLinkTable = orxAnimSet_CloneLinkTable(_pstAnimSet);
 
       /* Updates flags */
       orxAnimPointer_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_LINK_TABLE, orxANIMPOINTER_KU32_ID_FLAG_NONE);

@@ -2105,12 +2105,12 @@ orxVOID orxFASTCALL orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTa
 }
 
 /***************************************************************************
- orxAnimSet_DuplicateLinkTable
+ orxAnimSet_CloneLinkTable
  Duplicates an Animset link table.
 
  returns: orxANIMSET_LINK_TABLE *
  ***************************************************************************/
-orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_DuplicateLinkTable(orxCONST orxANIMSET *_pstAnimSet)
+orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(orxCONST orxANIMSET *_pstAnimSet)
 {
   orxANIMSET_LINK_TABLE *pstLinkTable = orxNULL;
 
