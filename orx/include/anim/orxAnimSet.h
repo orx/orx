@@ -114,20 +114,55 @@ extern orxDLLAPI orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(or
  */
 extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable);
 
-/** Adds an Animation to an AnimSet. */
+
+/** Adds an Animation to an AnimSet
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_pstAnim														Anim to add
+ * @return Anim handle in the specified AnimSet
+ */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim);
-/** Removes an Animation from an AnimSet, given its handle.*/
+
+/** Removes an Animation from an AnimSet
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_hAnimHandle												Handle of the anim to remove
+ * @return 			orxSTATUS_SUCESS / orxSTATUS_FAILED
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle);
-/** Remove  all referenced animations from an AnimSet. */
+
+/** Removes all animations from the AnimSet
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet);
 
-/** Adds a link between 2 Animations. */
+
+/** Adds a link between two Animations of the AnimSet
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_hSrcAnim														Source Anim of the link
+ * @param[in]		_hDstAnim														Destination Anim of the link
+ * @return 			Handle of the created link / orxHANDLE_Undefined
+ */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
-/** Removes a link given its handle. */
+
+/** Removes a link from the AnimSet
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_hLinkHandle												Handle of the link
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle);
-/** Gets a direct link between two animations (if none, result is orxU32_Undefined). */
+
+/** Gets a direct link between two animations, if exists
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_hSrcAnim														Handle of the source Anim
+ * @param[in]		_hDstAnim														Handle of the destination Anim
+ * @return			Handle of the direct link, orxHANDLE_Undefined if none
+ */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
-/** Computes all link relations. */
+
+/** Computes all link relations
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimSet);
 
 /** Sets a link property at the given value. */
