@@ -7,7 +7,7 @@
 
  /***************************************************************************
  orxAnimPointer.c
- Animation (Data) module
+ Animation (Pointer) module
  
  begin                : 03/03/2004
  author               : (C) Arcallians
@@ -49,6 +49,7 @@
 
 #define orxANIMPOINTER_KU32_ID_MASK_FLAGS             0xFFFF0000  /**< Flags ID mask */
 
+
 /** Module constants
  */
 #define orxANIMPOINTER_KF_FREQUENCY_DEFAULT           1.0         /**< Default animation frequency */
@@ -58,7 +59,7 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
-/** AnimationPointer structure
+/** AnimPointer structure
  */
 struct __orxANIMPOINTER_t
 {

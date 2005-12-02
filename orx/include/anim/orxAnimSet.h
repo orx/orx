@@ -14,7 +14,7 @@
  * 
  * @todo 
  * - Rewrite with new Graphic/Anim system
- * - Optimize the link animation graph handling & structures.
+ * - Optimize the link Anim graph handling & structures.
  * - Clean & simplify internal structures.
  */
 
@@ -22,11 +22,11 @@
  * @addtogroup AnimSet
  * 
  * Animation (Set) Module.
- * Allows to creates and handle Sets of Animations.
- * It consists of a structure containing animations and their relations.
+ * Allows to creates and handle Sets of Anims.
+ * It consists of a structure containing Anims and their relations.
  * It also contains functions for handling and accessing them.
- * Animation Sets are structures.
- * They thus can be referenced by Animation Pointers.
+ * AnimSets are structures.
+ * They thus can be referenced by Anim Pointers.
  *
  * @{
  */
@@ -52,12 +52,12 @@
  */
 #define orxANIMSET_KU32_LINK_FLAG_NONE              0x00000000  /**< No flags. */
 
-#define orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER      0x10000000  /**< Animation link uses a counter */
-#define orxANIMSET_KU32_LINK_FLAG_PRIORITY          0x20000000  /**< Animation link has priority */
+#define orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER      0x10000000  /**< Anim link uses a counter */
+#define orxANIMSET_KU32_LINK_FLAG_PRIORITY          0x20000000  /**< Anim link has priority */
 
 /** AnimSet defines
  */
-#define orxANIMSET_KU32_MAX_ANIM_NUMBER             128         /**< Maximum number of animations for an animation set structure */
+#define orxANIMSET_KU32_MAX_ANIM_NUMBER             128         /**< Maximum number of Anims for an Anim set structure */
 
 
 /** Internal AnimSet structure
@@ -115,28 +115,28 @@ extern orxDLLAPI orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(or
 extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable);
 
 
-/** Adds an Animation to an AnimSet
+/** Adds an Anim to an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_pstAnim														Anim to add
  * @return Anim handle in the specified AnimSet
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstAnim);
 
-/** Removes an Animation from an AnimSet
+/** Removes an Anim from an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hAnimHandle												Handle of the anim to remove
  * @return 			orxSTATUS_SUCESS / orxSTATUS_FAILED
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle);
 
-/** Removes all animations from the AnimSet
+/** Removes all Anim from the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILED
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet);
 
 
-/** Adds a link between two Animations of the AnimSet
+/** Adds a link between two Anims of the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hSrcAnim														Source Anim of the link
  * @param[in]		_hDstAnim														Destination Anim of the link
@@ -151,7 +151,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddLink(orxANIMSE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle);
 
-/** Gets a direct link between two animations, if exists
+/** Gets a direct link between two Anims, if exists
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hSrcAnim														Handle of the source Anim
  * @param[in]		_hDstAnim														Handle of the destination Anim
@@ -165,32 +165,64 @@ extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(orxCONST 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimSet);
 
-/** Sets a link property at the given value. */
+/** Sets a link property
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_hLinkHandle												Handle of the concerned link
+ * @param[in]		_u32Property												ID of the property to set
+ * @param[in]		_32Value														Value of the property to set
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property, orxU32 _u32Value);
-/** Gets a link property (orxU32_Undefined if something's wrong). */
+
+/** Gets a link property
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_hLinkHandle 												Handle of the concerned link
+ * @param[in]		_u32Property												ID of the property to get
+ * @return			Property value / orx32_Undefined
+ */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property);
 
-/** Computes active animation given current and destination Animation handle & a relative timestamp.
- * \param   _pstAnimSet    AnimSet container.
- * \param   _hSrcAnim Source animation (current) handle.
- * \param   _hDstAnim Destination animation handle. If none (auto mode), set to undefined.
- * \param   _pu32Time  Pointer to the current timestamp relative to the source animation (time elapsed since the beginning of this anim) : writable.
- * \param   _pstLinkTable Animation Pointer link table. (Updated if AnimSet link table isn't static, when using loop counters for example.)
- * \return Current animation handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new animation.
+/** Computes active Anim given current and destination Anim handles & a relative timestamp.
+ * @param[in]		_pstAnimSet    											Concerned AnimSet
+ * @param[in]   _hSrcAnim 													Source (current) Anim handle
+ * @param[in]   _hDstAnim 													Destination Anim handle, if none (auto mode) set it to orxHANDLE_Undefined
+ * @param[in,out] _pu32Time  												Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
+ * @param[out]  _pstLinkTable 											Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
+ * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxU32 *_pu32Time, orxANIMSET_LINK_TABLE *_pstLinkTable);
 
-/** AnimSet Animation get accessor, given its handle. */
+/** AnimSet Anim get accessor
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_hAnimHandle												Anim handle
+ * @return Anim pointer / orxNULL
+ */
 extern orxDLLAPI orxANIM *orxFASTCALL               orxAnimSet_GetAnim(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle);
 
-/** AnimSet Animation storage size get accessor. */
+/** AnimSet Anim storage size get accessor
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @return			AnimSet Storage size / orxU32_Undefined
+ */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimStorageSize(orxCONST orxANIMSET *_pstAnimSet);
-/** AnimSet Animation counter get accessor. */
+
+/** AnimSet Anim counter get accessor
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @return			Anim counter / orxU32_Undefined
+ */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet);
 
-/** AnimSet flag test accessor. */
+/** AnimSet flag test accessor
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_u32Flags														Flags to test
+ * @return			orxTRUE / orxFALSE
+ */
 extern orxDLLAPI orxBOOL orxFASTCALL                orxAnimSet_TestFlags(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32Flags);
-/** AnimSet flag get/set accessor. */
+
+/** AnimSet flag get/set accessor
+ * @param[in]		_pstAnimSet													Concerned AnimSet
+ * @param[in]		_u32AddFlags												Flags to add
+ * @param[in]		_u32RemoveFlags											Flags to remove
+ */
 extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_SetFlags(orxANIMSET *_pstAnimSet, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
 
 
