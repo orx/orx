@@ -39,43 +39,43 @@
 
 /** orxANIMSET ID flags
  */
-#define orxANIMSET_KU32_ID_FLAG_NONE          				0x00000000
+#define orxANIMSET_KU32_ID_FLAG_NONE          				0x00000000	/**< ID flag none */
 
-#define orxANIMSET_KU32_ID_MASK_SIZE          				0x000000FF
-#define orxANIMSET_KU32_ID_MASK_COUNTER       				0x0000FF00
-#define orxANIMSET_KU32_ID_MASK_FLAGS         				0xFFFF0000
+#define orxANIMSET_KU32_ID_MASK_SIZE          				0x000000FF	/**< ID mask for size */
+#define orxANIMSET_KU32_ID_MASK_COUNTER       				0x0000FF00	/**< ID mask for counter */
+#define orxANIMSET_KU32_ID_MASK_FLAGS         				0xFFFF0000	/**< ID mask for flags */
 
-#define orxANIMSET_KU32_ID_SHIFT_SIZE         				0
-#define orxANIMSET_KU32_ID_SHIFT_COUNTER      				8
+#define orxANIMSET_KU32_ID_SHIFT_SIZE         				0						/**< ID shift for size */
+#define orxANIMSET_KU32_ID_SHIFT_COUNTER      				8						/**< ID shift for counter */
 
 
 /* Link table link flags */
-#define orxANIMSET_KU32_LINK_FLAG_NONE        				0x00000000
+#define orxANIMSET_KU32_LINK_FLAG_NONE        				0x00000000	/**< Link flag none */
 
-#define orxANIMSET_KU32_LINK_FLAG_PATH        				0x01000000
-#define orxANIMSET_KU32_LINK_FLAG_LINK        				0x02000000
+#define orxANIMSET_KU32_LINK_FLAG_PATH        				0x01000000	/**< Link flag for path */
+#define orxANIMSET_KU32_LINK_FLAG_LINK        				0x02000000	/**< Link flag for link */
 
-#define orxANIMSET_KU32_LINK_MASK_ANIM        				0x000000FF
-#define orxANIMSET_KU32_LINK_MASK_LENGTH      				0x0000FF00
-#define orxANIMSET_KU32_LINK_MASK_PRIORITY    				0x000F0000
-#define orxANIMSET_KU32_LINK_MASK_FLAGS       				0xFF000000
+#define orxANIMSET_KU32_LINK_MASK_ANIM        				0x000000FF	/**< Link mask for anim */
+#define orxANIMSET_KU32_LINK_MASK_LENGTH      				0x0000FF00	/**< Link mask for length */
+#define orxANIMSET_KU32_LINK_MASK_PRIORITY    				0x000F0000	/**< Link mask for priority */
+#define orxANIMSET_KU32_LINK_MASK_FLAGS       				0xFF000000	/**< Link mask for flags */
 
-#define orxANIMSET_KU32_LINK_SHIFT_ANIM       				0
-#define orxANIMSET_KU32_LINK_SHIFT_LENGTH     				8
-#define orxANIMSET_KU32_LINK_SHIFT_PRIORITY   				16
+#define orxANIMSET_KU32_LINK_SHIFT_ANIM       				0						/**< Link shift for anim */
+#define orxANIMSET_KU32_LINK_SHIFT_LENGTH     				8						/**< Link shift for length */
+#define orxANIMSET_KU32_LINK_SHIFT_PRIORITY   				16					/**< Link shift for priority */
 
-#define orxANIMSET_KU32_LINK_DEFAULT_NONE     				0x00000000
+#define orxANIMSET_KU32_LINK_DEFAULT_NONE     				0x00000000	/**< Link default : none */
 
-#define orxANIMSET_KU32_LINK_DEFAULT_PRIORITY 				0x00000008
+#define orxANIMSET_KU32_LINK_DEFAULT_PRIORITY 				0x00000008	/**< Link default priority */
 
 
 /* Link table (status) flags */
-#define orxANIMSET_KU32_LINK_TABLE_FLAG_NONE  				0x00000000
+#define orxANIMSET_KU32_LINK_TABLE_FLAG_NONE  				0x00000000	/**< Link table flag none */
 
-#define orxANIMSET_KU32_LINK_TABLE_FLAG_READY 				0x01000000
-#define orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY 				0x02000000
+#define orxANIMSET_KU32_LINK_TABLE_FLAG_READY 				0x01000000	/**< Link table flag ready */
+#define orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY 				0x02000000	/**< Link table flag dirty */
 
-#define orxANIMSET_KU32_LINK_TABLE_MASK_FLAGS 				0xFFFF0000
+#define orxANIMSET_KU32_LINK_TABLE_MASK_FLAGS 				0xFFFF0000	/**< Link table mask flags */
 
 
 /***************************************************************************
@@ -86,16 +86,10 @@
  */
 typedef struct __orxLINK_UPDATE_INFO_t
 {
-  /* Link Table : 4 */
-  orxANIMSET_LINK_TABLE *pstLinkTable;
+  orxANIMSET_LINK_TABLE	 *pstLinkTable;								/**< Link table pointer : 4 */
+  orxU8 								 *au8LinkInfo;								/**< Link update info : 8 */
+  orxU32 									u32ByteNumber;							/**< Byte number per animation : 12 */
 
-  /* Link update info : 8 */
-  orxU8 *au8LinkInfo;
-
-  /* Byte number per animation : 12 */
-  orxU32 u32ByteNumber;
-
-  /* Padding */
   orxPAD(12)
 
 } orxLINK_UPDATE_INFO;
@@ -104,39 +98,22 @@ typedef struct __orxLINK_UPDATE_INFO_t
  */
 struct __orxANIMSET_LINK_TABLE_t
 {
-  /* Link array : 4 */
-  orxU32 *au32LinkArray;
-
-  /* Loop array : 8 */
-  orxU8 *au8LoopArray;
-
-  /* Link Counter : 10 */
-  orxU16 u16LinkCounter;
-
-  /* Table size : 12 */
-  orxU16 u16TableSize;
-
-  /* Flags : 16 */
-  orxU32 u32Flags;
+  orxU32 								 *au32LinkArray;							/**< Link array : 4 */
+  orxU8 								 *au8LoopArray;								/**< Loop array : 8 */
+  orxU16 									u16LinkCounter;							/** Link counter : 10 */
+  orxU16 									u16TableSize;								/** Table size : 12 */
+  orxU32 									u32Flags;										/** Flags : 16 */
 };
 
 /** AnimSet structure
  */
 struct __orxANIMSET_t
 {
-  /* Public structure, first structure member : 16 */
-  orxSTRUCTURE stStructure;
-
-  /* Id flags : 20 */
-  orxU32 u32IDFlags;
-
-  /* Used Animation pointer array : 24 */
-  orxANIM **pastAnim;
-
-  /* Link table pointer : 28 */
-  orxANIMSET_LINK_TABLE *pstLinkTable;
-
-  /* Padding */
+  orxSTRUCTURE 						stStructure;								/**< Public structure, first structure member : 16 */
+  orxU32 									u32IDFlags;									/**< ID flags : 20 */
+  orxANIM 							**pastAnim;										/**< Used animation pointer array : 24 */
+  orxANIMSET_LINK_TABLE  *pstLinkTable;								/**< Link table pointer : 28 */
+s
   orxPAD(28)
 };
 
@@ -1222,9 +1199,7 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
 /** AnimSet module setup
