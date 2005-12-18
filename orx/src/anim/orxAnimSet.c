@@ -113,7 +113,7 @@ struct __orxANIMSET_t
   orxU32 									u32IDFlags;									/**< ID flags : 20 */
   orxANIM 							**pastAnim;										/**< Used animation pointer array : 24 */
   orxANIMSET_LINK_TABLE  *pstLinkTable;								/**< Link table pointer : 28 */
-s
+
   orxPAD(28)
 };
 
@@ -142,12 +142,11 @@ orxSTATIC orxANIMSET_STATIC sstAnimSet;
  * Private functions                                                       *
  ***************************************************************************/
 
-/***************************************************************************
- orxAnimSet_TestLinkTableFlag
- Link table set flag test accessor.
-
- returns: orxBOOL
- ***************************************************************************/
+/** Link table set flag test accessor
+ * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _u32Flags                     Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
 orxBOOL orxAnimSet_TestLinkTableFlag(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32Flags)
 {
   /* Checks */
