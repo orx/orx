@@ -166,7 +166,7 @@ orxSTATIC orxINLINE orxVEC                        *orxVec_Inv(orxVEC *_pvRes, or
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp  != orxNULL);
 
-  /* Negates all */
+  /* Reverts all */
   _pvRes->fX = orxFLOAT_1 / _pvOp->fX;
   _pvRes->fY = orxFLOAT_1 / _pvOp->fY;
   _pvRes->fZ = orxFLOAT_1 / _pvOp->fZ;
