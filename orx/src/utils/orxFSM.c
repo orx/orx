@@ -174,7 +174,7 @@ orxVOID orxFSM_Setup()
  */
 orxSTATUS orxFSM_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstFSM.u32Flags & orxFSM_KU32_FLAG_READY))
@@ -450,7 +450,7 @@ orxFSM_STATE *orxFASTCALL orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16I
 orxSTATUS orxFASTCALL orxFSM_SetInitState(orxFSM *_pstStateMachine, orxFSM_STATE *_pstInitialState)
 {
   orxFSM_STATE *pstState;                  /* The explored state. */
-  orxSTATUS eStatus = orxSTATUS_FAILED;     /* Status to return. */
+  orxSTATUS eStatus = orxSTATUS_FAILURE;     /* Status to return. */
   
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_FLAG_READY) == orxFSM_KU32_FLAG_READY);
@@ -461,7 +461,7 @@ orxSTATUS orxFASTCALL orxFSM_SetInitState(orxFSM *_pstStateMachine, orxFSM_STATE
   
   /* Verify that the proposed initial state is part of the FSM. */
   pstState = orxBank_GetNext(_pstStateMachine->pstStatesBank, orxNULL);
-  while (pstState != orxNULL && eStatus == orxSTATUS_FAILED)
+  while (pstState != orxNULL && eStatus == orxSTATUS_FAILURE)
   {
     if (pstState == _pstInitialState)
     {
@@ -551,13 +551,13 @@ orxSTATUS orxFASTCALL orxFSM_RemoveState(orxFSM *_pstStateMachine, orxFSM_STATE 
         else
         {
           /* The state is not properly referenced in the hash table. */
-          eStatus = orxSTATUS_FAILED;
+          eStatus = orxSTATUS_FAILURE;
         }
       }
       else
       {
         /* Not allowed to remove links, but one is associated... don't remove the state. */
-        eStatus = orxSTATUS_FAILED;
+        eStatus = orxSTATUS_FAILURE;
       }
     }
     
@@ -576,7 +576,7 @@ orxSTATUS orxFASTCALL orxFSM_RemoveState(orxFSM *_pstStateMachine, orxFSM_STATE 
     else
     {
       /* Can't remove state from hash table... problem. */
-      eStatus = orxSTATUS_FAILED;
+      eStatus = orxSTATUS_FAILURE;
     }
   }
   
@@ -655,7 +655,7 @@ orxFSM_LINK *orxFASTCALL orxFSM_GetLink(orxCONST orxFSM *_pstStateMachine, orxCO
  */
 orxSTATUS orxFASTCALL orxFSM_RemoveLink(orxFSM *_pstStateMachine, orxFSM_LINK *_pstLink)
 {
-  orxSTATUS eStatus = orxSTATUS_FAILED;   /* Status to return. */
+  orxSTATUS eStatus = orxSTATUS_FAILURE;   /* Status to return. */
   
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_FLAG_READY) == orxFSM_KU32_FLAG_READY);
@@ -780,7 +780,7 @@ orxFSM_STATE *orxFASTCALL orxFSM_GetInstanceState(orxCONST orxFSM_INSTANCE *_pst
  */
 orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
 {
-  orxSTATUS eStatus = orxSTATUS_FAILED;     /* Status to return. */
+  orxSTATUS eStatus = orxSTATUS_FAILURE;     /* Status to return. */
   
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_FLAG_READY) == orxFSM_KU32_FLAG_READY);
@@ -876,7 +876,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
       default:
       {
         /* No position defined: problem! */
-        eStatus = orxSTATUS_FAILED;
+        eStatus = orxSTATUS_FAILURE;
       }
     }
   }

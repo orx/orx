@@ -56,7 +56,7 @@ orxSTATIC orxTREE_STATIC sstTree;
  orxTree_PrivateRemove
  Removes a node from its tree.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeepRef)
 {
@@ -103,7 +103,7 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
       /* !!! MSG !!! */
 
       /* Can't process */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   /* Remove completely from tree */
@@ -129,7 +129,7 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
         /* !!! MSG !!! */
 
         /* Can't process */
-        eResult = orxSTATUS_FAILED;
+        eResult = orxSTATUS_FAILURE;
       }
     }
     else
@@ -221,13 +221,13 @@ orxVOID orxTree_Setup()
  orxTree_Init
  Inits the tree system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTree_Init()
 {
   orxSTATUS eResult;
   
-  eResult = orxSTATUS_FAILED;
+  eResult = orxSTATUS_FAILURE;
   
   /* Already Initialized? */
   if(!(sstTree.u32Flags & orxTREE_KU32_FLAG_READY))
@@ -279,7 +279,7 @@ orxVOID orxTree_Exit()
  orxTree_Clean
  Cleans a tree.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTree_Clean(orxTREE *_pstTree)
 {
@@ -311,7 +311,7 @@ orxSTATUS orxTree_Clean(orxTREE *_pstTree)
  orxTree_AddRoot
  Adds a new node at the root of the corresponding tree.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
 {
@@ -354,7 +354,7 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
     /* !!! MSG !!! */
 
     /* Already in a tree */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -365,7 +365,7 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
  orxTree_AddParent
  Adds a new node as parent of another one.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
@@ -435,7 +435,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
       /* !!! MSG !!! */
   
       /* No tree found */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -443,7 +443,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     /* !!! MSG !!! */
     
     /* Already in a tree */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -454,7 +454,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  orxTree_AddChild
  Adds a new node as a child of another one.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
@@ -492,7 +492,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
       /* !!! MSG !!! */
   
       /* No tree found */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -500,7 +500,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     /* !!! MSG !!! */
     
     /* Already in a tree */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -511,7 +511,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  orxTree_MoveAsChild
  Moves as a child of another node of the same tree.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
@@ -562,7 +562,7 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
       /* !!! MSG !!! */
 
       /* Can't process */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -570,7 +570,7 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     /* !!! MSG !!! */
     
     /* Not already in the tree */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -581,7 +581,7 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  orxTree_Remove
  Removes a node from its tree.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
 {
@@ -609,7 +609,7 @@ orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
     /* !!! MSG !!! */
 
     /* Not in a tree */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

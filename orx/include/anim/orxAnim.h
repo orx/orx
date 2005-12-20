@@ -84,13 +84,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Delete(orxANIM *_pstAnim);
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _pstTexture     Texture to add
  * @param[in]   _u32TimeStamp   Timestamp for this atom
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstTexture, orxU32 _u32TimeStamp);
 
 /** Removes last added atom from an animation
  * @param[in]   _pstAnim        Concerned animation
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastTexture(orxANIM *_pstAnim);
 

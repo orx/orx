@@ -328,7 +328,7 @@ orxVOID orxEvent_Setup()
  **/
 orxSTATUS orxEvent_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already initialized ? */
   if(!(sstEvent.u32Flags & orxEVENT_KU32_FLAG_READY))

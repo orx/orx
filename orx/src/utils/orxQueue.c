@@ -147,7 +147,7 @@ orxVOID orxQueue_Setup()
  **/
 orxSTATUS orxQueue_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already initialized ? */
   if(!(sstQueue.u32Flags & orxQUEUE_KU32_FLAG_READY))

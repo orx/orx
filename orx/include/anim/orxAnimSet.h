@@ -125,13 +125,13 @@ extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddAnim(orxANIMSE
 /** Removes an Anim from an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hAnimHandle												Handle of the anim to remove
- * @return 			orxSTATUS_SUCESS / orxSTATUS_FAILED
+ * @return 			orxSTATUS_SUCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle);
 
 /** Removes all Anim from the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet);
 
@@ -147,7 +147,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddLink(orxANIMSE
 /** Removes a link from the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hLinkHandle												Handle of the link
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle);
 
@@ -161,7 +161,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(orxCONST 
 
 /** Computes all link relations
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimSet);
 
@@ -170,7 +170,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_ComputeLinks(orxA
  * @param[in]		_hLinkHandle												Handle of the concerned link
  * @param[in]		_u32Property												ID of the property to set
  * @param[in]		_32Value														Value of the property to set
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property, orxU32 _u32Value);
 

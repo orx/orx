@@ -46,7 +46,7 @@
  */
 extern orxDLLAPI orxVOID                        orxPlugin_Setup();
 /** Initializes the plugin management engine.
- * \return orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ * \return orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS                      orxPlugin_Init();
 
@@ -71,7 +71,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_LoadUsingExt(orxCONST 
 
 /** Unloads a plugin.
  * \param _hPluginHandle The handle of the plugin to unload.
- * \return orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ * \return orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxPlugin_Unload(orxHANDLE _hPluginHandle);
 

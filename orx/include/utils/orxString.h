@@ -136,7 +136,7 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxS32 *_ps32OutValue, orxCONST or
   }
   else
   {
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 }
 

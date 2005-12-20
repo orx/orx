@@ -215,11 +215,11 @@ orxVOID orxTexture_Setup()
  orxTexture_Init
  Inits texture system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTexture_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY))
@@ -405,7 +405,7 @@ orxSTATUS orxTexture_Delete(orxTEXTURE *_pstTexture)
       /* !!! MSG !!! */
 
       /* Referenced by others */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -470,14 +470,14 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
     orxDisplay_GetBitmapSize(_pstBitmap, &vSize);
 
     /* Copy bitmap size (Z size is null) */
-    orxVec_Set3(&(_pstTexture->vSize), vSize.fX, vSize.fY, orx2F(0.0f));
+    orxVec_Set3(&(_pstTexture->vSize), vSize.fX, vSize.fY, orxFLOAT_0);
   }
   else
   {
     /* !!! MSG !!! */
 
     /* Already linked */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -490,7 +490,7 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
  Unlinks a bitmap from a texture.
  !!! Warning : it deletes it. !!!
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
 {
@@ -533,7 +533,7 @@ orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
     /* !!! MSG !!! */
 
     /* No bitmap to unlink from */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -601,7 +601,7 @@ orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
  orxTexture_GetRefPoint
  Gets reference coordinates (used for rendering purpose).
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
 {
@@ -623,8 +623,8 @@ orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
     /* !!! MSG !!! */
 
     /* No refpoint */
-    orxVec_Set3(_pvRefPoint, orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
-    eResult = orxSTATUS_FAILED;
+    orxVec_Set3(_pvRefPoint, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -635,7 +635,7 @@ orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
  orxTexture_GetSize
  Gets size.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize)
 {
@@ -657,8 +657,8 @@ orxSTATUS orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize)
     /* !!! MSG !!! */
 
     /* No size */
-    orxVec_Set3(_pvSize, orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
-    eResult = orxSTATUS_FAILED;
+    orxVec_Set3(_pvSize, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

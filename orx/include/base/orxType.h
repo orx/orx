@@ -44,7 +44,7 @@
 
   typedef void                  orxVOID;
   
-  typedef orxVOID              *orxHANDLE;
+  typedef orxVOID *							orxHANDLE;
   
   typedef unsigned  long        orxU32;
   typedef unsigned  short       orxU16;
@@ -59,7 +59,7 @@
   typedef float                 orxFLOAT;
 
   typedef char                  orxCHAR;
-  typedef orxCHAR              *orxSTRING;
+  typedef orxCHAR *							orxSTRING;
 
   #define orx2F(V)              (orxFLOAT)(V)
 
@@ -84,7 +84,7 @@
 
     typedef void                orxVOID;
   
-    typedef orxVOID            *orxHANDLE;
+    typedef orxVOID *						orxHANDLE;
   
     typedef unsigned  long long orxU64;
     typedef unsigned  long      orxU32;
@@ -101,7 +101,7 @@
     typedef float               orxFLOAT;
 
     typedef char                orxCHAR;
-    typedef orxCHAR            *orxSTRING;
+    typedef orxCHAR *						orxSTRING;
 
     #define orx2F(V)            (orxFLOAT)(V)
 
@@ -126,13 +126,13 @@ orxSTATIC orxCONST  orxHANDLE   orxHANDLE_Undefined = (orxHANDLE)(-1);
 orxSTATIC orxCONST  orxSTRING   orxSTRING_Empty     = "";
 
 /* *** Float defines *** */
-orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(orx2F(0.0f));
-orxSTATIC orxCONST  orxFLOAT    orxFLOAT_1          = orx2F(orx2F(1.0f));
+orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(0.0f);
+orxSTATIC orxCONST  orxFLOAT    orxFLOAT_1          = orx2F(1.0f);
 
 /* *** Status defines *** */
 typedef enum __orxSTATUS_t
 {
-  orxSTATUS_FAILED = 0,         /**< Failed operation */
+  orxSTATUS_FAILURE = 0,        /**< Failure status, the operation has failed */
   orxSTATUS_SUCCESS,            /**< Success status, the operation has worked has expected */
 
   orxSTATUS_NUMBER,             /**< Sentinel : Number of status */

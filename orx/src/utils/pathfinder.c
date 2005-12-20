@@ -187,19 +187,19 @@
 //
 //  spst_mask[4].fX = -1;
 //  spst_mask[4].fY = -1;
-//  spst_mask[4].fCost = KF_MATH_SQRT2;
+//  spst_mask[4].fCost = orxMATH_KF_SQRT;
 //
 //  spst_mask[5].fX = 1;
 //  spst_mask[5].fY = -1;
-//  spst_mask[5].fCost = KF_MATH_SQRT2;
+//  spst_mask[5].fCost = orxMATH_KF_SQRT;
 //
 //  spst_mask[6].fX = 1;
 //  spst_mask[6].fY = 1;
-//  spst_mask[6].fCost = KF_MATH_SQRT2;
+//  spst_mask[6].fCost = orxMATH_KF_SQRT;
 //
 //  spst_mask[7].fX = -1;
 //  spst_mask[7].fY = 1;
-//  spst_mask[7].fCost = KF_MATH_SQRT2;
+//  spst_mask[7].fCost = orxMATH_KF_SQRT;
 //
 //  return;
 //}

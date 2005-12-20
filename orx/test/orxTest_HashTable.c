@@ -205,7 +205,7 @@ orxVOID orxTest_HashTable_Add()
     orxTextIO_ReadS32(&s32Data, 10, "Data to Add : ", orxTRUE);
     
     orxTextIO_PrintLn("Trying to add the pair key/value (%u/%d)...", (orxU32)s32Key, s32Data);
-    if (orxHashTable_Add(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key, (orxVOID *)s32Data) == orxSTATUS_FAILED)
+    if (orxHashTable_Add(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key, (orxVOID *)s32Data) == orxSTATUS_FAILURE)
     {
       /* Insertion failed */
       orxTextIO_PrintLn("Insertion failed...");
@@ -246,7 +246,7 @@ orxVOID orxTest_HashTable_Remove()
     orxTextIO_ReadS32(&s32Key, 10, "Key to remove : ", orxTRUE);
 
     /* Try to remove it */    
-    if (orxHashTable_Remove(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key) == orxSTATUS_FAILED)
+    if (orxHashTable_Remove(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key) == orxSTATUS_FAILURE)
     {
       /* Failed to remove */
       orxTextIO_PrintLn("Remove failed...");

@@ -132,11 +132,11 @@ orxSTATIC orxVOID graphic_list_delete()
  graphic_init
  Inits graphic system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxU32 graphic_init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
 //  /* Init Dependencies */
 //  if ((orxDEPEND_INIT(Depend) &

@@ -83,7 +83,7 @@ orxSTATIC orxINLINE orxVEC                       *orxVec_Set4(orxVEC *_pvVec, or
 orxSTATIC orxINLINE orxVEC                        *orxVec_Set3(orxVEC *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
 {
   /* Done ! */
-  return(orxVec_Set4(_pvVec, _fX, _fY, _fZ, orx2F(0.0f)));
+  return(orxVec_Set4(_pvVec, _fX, _fY, _fZ, orxFLOAT_0));
 }
 
 /** Sets value in all vector fields. */
@@ -167,10 +167,10 @@ orxSTATIC orxINLINE orxVEC                        *orxVec_Inv(orxVEC *_pvRes, or
   orxASSERT(_pvOp  != orxNULL);
 
   /* Negates all */
-  _pvRes->fX = orx2F(1.0f) / _pvOp->fX;
-  _pvRes->fY = orx2F(1.0f) / _pvOp->fY;
-  _pvRes->fZ = orx2F(1.0f) / _pvOp->fZ;
-  _pvRes->fW = orx2F(1.0f) / _pvOp->fW;
+  _pvRes->fX = orxFLOAT_1 / _pvOp->fX;
+  _pvRes->fY = orxFLOAT_1 / _pvOp->fY;
+  _pvRes->fZ = orxFLOAT_1 / _pvOp->fZ;
+  _pvRes->fW = orxFLOAT_1 / _pvOp->fW;
 
   /* Done! */
   return _pvRes;

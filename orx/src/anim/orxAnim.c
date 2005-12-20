@@ -257,7 +257,7 @@ orxVOID orxAnim_Setup()
  */
 orxSTATUS orxAnim_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
   if(!(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY))
@@ -439,7 +439,7 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
     /* !!! MSG !!! */
     
     /* Referenced by others */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -450,7 +450,7 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
  * @param[in]   _pstAnim        Animation concerned
  * @param[in]   _pstTexture     Texture to add
  * @param[in]   _u32TimeStamp   Timestamp for this atom
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstTexture, orxU32 _u32TimeStamp)
 {
@@ -483,7 +483,7 @@ orxSTATUS orxFASTCALL orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstText
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -492,7 +492,7 @@ orxSTATUS orxFASTCALL orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstText
 
 /** Removes last added atom from an animation
  * @param[in]   _pstAnim        Concerned animation
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnim_RemoveLastTexture(orxANIM *_pstAnim)
 {
@@ -526,7 +526,7 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastTexture(orxANIM *_pstAnim)
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -544,7 +544,7 @@ orxVOID orxFASTCALL orxAnim_RemoveAllTextures(orxANIM *_pstAnim)
   orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Until there are no texture left */
-  while(orxAnim_RemoveLastTexture(_pstAnim) != orxSTATUS_FAILED);
+  while(orxAnim_RemoveLastTexture(_pstAnim) != orxSTATUS_FAILURE);
 
   /* Done! */
   return;

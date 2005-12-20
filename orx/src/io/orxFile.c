@@ -99,12 +99,12 @@ orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_DeleteDir, orxSTATUS, orxSTRING);
 
 /** Delete recursively a direcory and all its subfolders.
  * \param _zDirectory     (IN)     Name of the directory directory to remove (with subfolders)
- * \return status of the operation (orxSTATUS_FAILED or orxSTATUS_SUCCESS)
+ * \return status of the operation (orxSTATUS_FAILURE or orxSTATUS_SUCCESS)
  */
 orxSTATUS orxFASTCALL orxFile_Deltree(orxCONST orxSTRING _zDirectory)
 {
   /* TODO */
-  return orxSTATUS_FAILED;
+  return orxSTATUS_FAILURE;
 }
 
 /** Returns orxTRUE if a file exists, else orxFALSE.
@@ -161,5 +161,5 @@ orxU32 orxFASTCALL orxFile_Write(orxCONST orxVOID *_pDataToWrite, orxU32 _u32Ele
 orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
 {
   /* TODO */
-  return orxSTATUS_FAILED;
+  return orxSTATUS_FAILURE;
 }

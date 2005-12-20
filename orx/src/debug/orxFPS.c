@@ -111,11 +111,11 @@ orxVOID orxFPS_Setup()
  orxFPS_Init
  Inits FPS system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFPS_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY))
@@ -154,7 +154,7 @@ orxSTATUS orxFPS_Init()
       /* !!! MSG !!! */
 
       /* Not initialized */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else

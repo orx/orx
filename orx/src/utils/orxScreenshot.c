@@ -91,13 +91,13 @@ orxVOID orxScreenshot_Setup()
  orxScreenshot_Init
  Inits the screenshot system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxScreenshot_Init()
 {
   orxCHAR zFileName[256];
   orxFILE_INFO stFileInfos;
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))
@@ -137,7 +137,7 @@ orxSTATUS orxScreenshot_Init()
       /* !!! MSG !!! */
 
       /* Can't find folder */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -156,7 +156,7 @@ orxSTATUS orxScreenshot_Init()
  orxScreenshot_Exit
  Exits from the screenshot system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxVOID orxScreenshot_Exit()
 {
@@ -178,7 +178,7 @@ orxVOID orxScreenshot_Exit()
  orxScreenshot_Take
  Takes a screenshot.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxVOID orxScreenshot_Take()
 {

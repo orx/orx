@@ -258,11 +258,11 @@ orxVOID orxClock_Setup()
  orxClock_Init
  Inits the clock module.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxClock_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
   if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY))
@@ -293,7 +293,7 @@ orxSTATUS orxClock_Init()
       /* !!! MSG !!! */
 
       /* Clock bank not created */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -345,7 +345,7 @@ orxVOID orxClock_Exit()
  orxorxClock_Update
  Udpates all clocks.
 
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxClock_Update()
 {
@@ -618,7 +618,7 @@ orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClo
  orxClock_Register
  Registers a callback function to a clock.
 
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID)
 {
@@ -650,7 +650,7 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
     /* !!! MSG !!! */
     
     /* Not successful */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -661,7 +661,7 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
  orxClock_Unregister
  Unregisters a callback function from a clock.
 
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
 {
@@ -687,7 +687,7 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK
     /* !!! MSG !!! */
 
     /* Not found */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -732,7 +732,7 @@ orxVOID *orxFASTCALL orxClock_GetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_
  orxClock_SetContext
  Sets a callback function context.
 
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
 {
@@ -758,7 +758,7 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK
     /* !!! MSG !!! */
     
     /* Not found */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

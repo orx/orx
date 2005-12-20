@@ -69,7 +69,7 @@ orxVOID orxTextIO_Setup()
  */
 orxSTATUS orxTextIO_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Module not already registered ? */
   if(!(sstTextIO.u32Flags & orxTEXTIO_KU32_FLAG_READY))
@@ -148,7 +148,7 @@ orxSTATUS orxFASTCALL orxTextIO_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32
   }
   else
   {
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 }
 
@@ -177,19 +177,19 @@ orxSTATUS orxFASTCALL orxTextIO_ReadS32(orxS32 *_ps32OutValue, orxU32 _u32Base, 
     eStatus = orxTextIO_ReadString(zUserValue, 63, _zMessage);
     
     /* Valid value ? */
-    if (eStatus != orxSTATUS_FAILED)
+    if (eStatus != orxSTATUS_FAILURE)
     {
       /* Try to convert */
       eStatus = orxString_ToS32(_ps32OutValue, zUserValue, _u32Base);
       
       /* Valid conversion ? */
-      if (eStatus == orxSTATUS_FAILED)
+      if (eStatus == orxSTATUS_FAILURE)
       {
         /* Print error message */
         orxTextIO_PrintLn("Invalid number");
       }
     }
-  } while ((eStatus == orxSTATUS_FAILED) && _bLoop);
+  } while ((eStatus == orxSTATUS_FAILURE) && _bLoop);
   
   /* Returns exit status */
   return eStatus;
@@ -229,11 +229,11 @@ orxSTATUS orxFASTCALL orxTextIO_ReadS32InRange(orxS32 *_ps32OutValue, orxU32 _u3
       {
         /* Print error message */
         orxTextIO_PrintLn("Value not in range");
-        eStatus = orxSTATUS_FAILED;
+        eStatus = orxSTATUS_FAILURE;
       }
     }
   } 
-  while ((eStatus == orxSTATUS_FAILED) && _bLoop);
+  while ((eStatus == orxSTATUS_FAILURE) && _bLoop);
   
   /* Returns exit status */
   return eStatus;
@@ -262,19 +262,19 @@ orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxFLOAT *_pfOutValue, orxCONST orxSTR
     eStatus = orxTextIO_ReadString(zUserValue, 63, _zMessage);
     
     /* Valid value ? */
-    if (eStatus != orxSTATUS_FAILED)
+    if (eStatus != orxSTATUS_FAILURE)
     {
       /* Try to convert */
       eStatus = orxString_ToFloat(_pfOutValue, zUserValue);
       
       /* Valid conversion ? */
-      if (eStatus == orxSTATUS_FAILED)
+      if (eStatus == orxSTATUS_FAILURE)
       {
         /* Print error message */
         orxTextIO_PrintLn("Invalid number");
       }
     }
-  } while ((eStatus == orxSTATUS_FAILED) && _bLoop);
+  } while ((eStatus == orxSTATUS_FAILURE) && _bLoop);
   
   /* Returns exit status */
   return eStatus;
@@ -312,11 +312,11 @@ orxSTATUS orxFASTCALL orxTextIO_ReadFloatInRange(orxFLOAT *_pfOutValue, orxFLOAT
       {
         /* Print error message */
         orxTextIO_PrintLn("Value not in range");
-        eStatus = orxSTATUS_FAILED;
+        eStatus = orxSTATUS_FAILURE;
       }
     }
   } 
-  while ((eStatus == orxSTATUS_FAILED) && _bLoop);
+  while ((eStatus == orxSTATUS_FAILURE) && _bLoop);
   
   /* Returns exit status */
   return eStatus;

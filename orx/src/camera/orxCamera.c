@@ -222,7 +222,7 @@ orxSTATIC orxINLINE orxVOID orxCamera_CleanViewList(orxCAMERA *_pstCamera)
  orxCamera_CreateViewList
  Creates a camera view list.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATIC orxSTATUS orxCamera_CreateViewList(orxCAMERA *_pstCamera)
 {
@@ -250,7 +250,7 @@ orxSTATIC orxSTATUS orxCamera_CreateViewList(orxCAMERA *_pstCamera)
       }
  
       /* Updates result */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
       break;
     }
     else
@@ -415,7 +415,7 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
       orxVec_Add(pvUL, pvBR, orxVec_Neg(pvSize, pvSize));
 
       /* Applies scale & rotation if needed */
-      if(fRot != orx2F(0.0f))
+      if(fRot != orxFLOAT_0)
       {
         orxFLOAT fMax;
 
@@ -428,11 +428,11 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
         /* Gets corner maximum absolute value between X & Y values */
         if(orxFABS(pvUL->fX) > orxFABS(pvUL->fY))
         {
-          fMax = orxFABS(pvUL->fX) + orx2F(1.0f);
+          fMax = orxFABS(pvUL->fX) + orxFLOAT_1;
         }
         else
         {
-          fMax = orxFABS(pvUL->fY) + orx2F(1.0f);
+          fMax = orxFABS(pvUL->fY) + orxFLOAT_1;
         }
 
         /* Applies it to both corners */
@@ -443,7 +443,7 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
       }
       
       /* Non neutral scale? */
-      if(fScale != orx2F(1.0f))
+      if(fScale != orxFLOAT_1)
       {
         /* Applies it */
         orxVec_Mul(pvUL, pvUL, fScale);
@@ -625,7 +625,7 @@ orxSTATIC orxINLINE orxCAMERA_VIEW_LIST *orxCamera_FindFreeViewListCell(orxCAMER
  If not :
  - removes view_list cell from sorted list.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED (list full)
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE (list full)
  ***************************************************************************/
 orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 {
@@ -695,7 +695,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
             /* No cell left? */
             if(pstCell == orxNULL)
             {
-              return orxSTATUS_FAILED;
+              return orxSTATUS_FAILURE;
             }
           }
 
@@ -714,13 +714,13 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
           orxVec_Add(&vTextureUL, &vTextureUL, orxVec_Neg(&vTemp, &vCamPos));
 
           /* Applies rotation & scale if needed */
-          if(fCamRot != orx2F(0.0f))
+          if(fCamRot != orxFLOAT_0)
           {
             orxVec_Rot(&vTextureUL, &vTextureUL, &orxVEC_Z, -fCamRot);
           }
-          if(fCamScale != orx2F(1.0f))
+          if(fCamScale != orxFLOAT_1)
           {
-            orxVec_Mul(&vTextureUL, &vTextureUL, orx2F(1.0f) / fCamScale);
+            orxVec_Mul(&vTextureUL, &vTextureUL, orxFLOAT_1 / fCamScale);
           }
 
           /* Uses differential scrolling? */
@@ -730,13 +730,13 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
             orxFrame_GetDifferentialScrolling(pstFrame, &vScroll);
 
             /* X axis scrolling? */
-            if(vScroll.fX != orx2F(0.0f))
+            if(vScroll.fX != orxFLOAT_0)
             {
               vScroll.fX *= vTextureUL.fX;
             }
 
             /* Y axis scrolling? */
-            if(vScroll.fY != orx2F(0.0f))
+            if(vScroll.fY != orxFLOAT_0)
             {
               vScroll.fY *= vTextureUL.fY;
             }
@@ -855,11 +855,11 @@ orxVOID orxCamera_Setup()
  orxCamera_Init
  Inits camera system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxCamera_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
   if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
@@ -962,7 +962,7 @@ orxCAMERA *orxCamera_Create()
         pstCamera->u32IDFlags = orxCAMERA_KU32_ID_FLAG_MOVED;
         pstCamera->pstFrame   = pstFrame;
         pstCamera->pstLink    = orxNULL;
-        orxVec_Set3(&(pstCamera->vOnScreenPosition), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f));
+        orxVec_Set3(&(pstCamera->vOnScreenPosition), orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
 
         /* 2D? */
         if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_DATA_2D)
@@ -1037,7 +1037,7 @@ orxCAMERA *orxCamera_Create()
  orxCamera_Delete
  Deletes a camera.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxCamera_Delete(orxCAMERA *_pstCamera)
 {
@@ -1073,7 +1073,7 @@ orxSTATUS orxCamera_Delete(orxCAMERA *_pstCamera)
     /* !!! MSG !!! */
     
     /* Referenced by others */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -1107,7 +1107,7 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
         pstObject = (orxOBJECT *)orxStructure_GetNext((orxSTRUCTURE *)pstObject))
     {
       /* Computes object */
-      if(orxCamera_ComputeObject(_pstCamera, pstObject) == orxSTATUS_FAILED)
+      if(orxCamera_ComputeObject(_pstCamera, pstObject) == orxSTATUS_FAILURE)
       {
         /* No room left in camera view list */
         /* !!! MSG !!! */
@@ -1131,7 +1131,7 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
       if(orxObject_IsRenderStatusClean(pstObject) == orxFALSE)
       {
         /* Computes object */
-        if(orxCamera_ComputeObject(_pstCamera, pstObject) == orxSTATUS_FAILED)
+        if(orxCamera_ComputeObject(_pstCamera, pstObject) == orxSTATUS_FAILURE)
         {
           /* No room left in camera view list */
           /* !!! MSG !!! */
@@ -1331,7 +1331,7 @@ orxVOID orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
   orxASSERT(_pstCamera != orxNULL);
 
    /* Sets camera zoom */
-  orxFrame_SetScale(_pstCamera->pstFrame, orx2F(1.0f) / _fZoom);
+  orxFrame_SetScale(_pstCamera->pstFrame, orxFLOAT_1 / _fZoom);
 
   /* Updates camera flags */
   _pstCamera->u32IDFlags |= orxCAMERA_KU32_ID_FLAG_MOVED;
@@ -1469,7 +1469,7 @@ orxFLOAT orxCamera_GetZoom(orxCAMERA *_pstCamera)
   orxASSERT(_pstCamera != orxNULL);
 
   /* Gets camera position */
-  return(orx2F(1.0f) / orxFrame_GetScale(_pstCamera->pstFrame, orxTRUE));
+  return(orxFLOAT_1 / orxFrame_GetScale(_pstCamera->pstFrame, orxTRUE));
 }
 
 /***************************************************************************

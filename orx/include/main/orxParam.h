@@ -39,7 +39,7 @@
 /** Callback definition (called when a parameter has been found
  * @param[in] _u32NbParam Number of extra parameters read for this option
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
- * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
+ * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
 typedef orxSTATUS (*orxPARAM_INFO_FUNCTION)(orxU32 _u32NbParam, orxSTRING _azParams[]);
  

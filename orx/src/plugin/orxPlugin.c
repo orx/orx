@@ -580,7 +580,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
  orxPlugin_RegisterPlugin
  
  This function registers a plugin.
- Returns orxSTATUS_SUCCESS / orxSTATUS_FAILED.
+ Returns orxSTATUS_SUCCESS / orxSTATUS_FAILURE.
  ***************************************************************************/
 orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_pstPluginInfo)
 {
@@ -642,7 +642,7 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
     /* !!! MSG !!! */
 
     /* Can't load plugin */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -727,11 +727,11 @@ orxVOID orxPlugin_Setup()
  orxPlugin_Init
  Inits plugin system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxPlugin_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
@@ -759,7 +759,7 @@ orxSTATUS orxPlugin_Init()
       /* !!! MSG !!! */
 
       /* Bank not created */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -933,7 +933,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName
  orxPlugin_Unload
  Unloads the shared object designated by its handle
  
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
 {
@@ -959,7 +959,7 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
     orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_FOUND);
 
     /* Not found */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

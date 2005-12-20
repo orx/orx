@@ -125,13 +125,13 @@ orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
  _orxDebug_Init
  Inits module.
 
- returns: orxSTATUS_FAILED/orxSTATUS_SUCCESS
+ returns: orxSTATUS_FAILURE/orxSTATUS_SUCCESS
  ***************************************************************************/
 orxSTATUS _orxDebug_Init()
 {
   orxU32 i;
   orxU8 *pu8;
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Init dependencies */
   
@@ -140,7 +140,7 @@ orxSTATUS _orxDebug_Init()
   {
     /* !!! MSG !!! */
 
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
   else if (sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY)
   {

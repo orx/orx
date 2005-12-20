@@ -122,9 +122,7 @@ struct __orxANIMSET_t
  */
 typedef struct __orxANIMSET_STATIC_t
 {
-
-  /* Control flags */
-  orxU32 u32Flags;
+  orxU32 u32Flags;																		/**< Control flags : 4 */
 
 } orxANIMSET_STATIC;
 
@@ -155,12 +153,11 @@ orxBOOL orxAnimSet_TestLinkTableFlag(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU3
   return((_pstLinkTable->u32Flags & _u32Flags) == _u32Flags);
 }
 
-/***************************************************************************
- orxAnimSet_SetLinkTableFlag
- Link table set flag get/set accessor.
-
- returns: orxVOID
- ***************************************************************************/
+/** Link table set flag set accessor
+ * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _u32AddFlags                  Flags to add
+ * @param[in]   _u32RemoveFlags               Flags to remove
+ */
 orxVOID orxAnimSet_SetLinkTableFlag(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
 {
   /* Checks */
@@ -172,12 +169,11 @@ orxVOID orxAnimSet_SetLinkTableFlag(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32
   return;
 }
 
-/***************************************************************************
- orxAnimSet_GetLinkTableLink
- Gets a link value from link table.
-
- returns: orxU32 link value
- ***************************************************************************/
+/** Gets a link value from a link table
+ * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _u32Index                     Link index
+ * @return      Link value / orxU32_Undefined
+ */
 orxU32 orxAnimSet_GetLinkTableLink(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32Index)
 {
   /* Checks */
@@ -187,12 +183,12 @@ orxU32 orxAnimSet_GetLinkTableLink(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 
   return _pstLinkTable->au32LinkArray[_u32Index];
 }
 
-/***************************************************************************
- orxAnimSet_SetLinkTableLink
- Sets a link value in a link table.
-
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
- ***************************************************************************/
+/** Sets a link value in a link table
+ * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _u32Index                     Link index
+ * @param[in]		_u32LinkValue									Value to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxAnimSet_SetLinkTableLink(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32Index, orxU32 _u32LinkValue)
 {
   /* Checks */
@@ -205,12 +201,13 @@ orxSTATUS orxAnimSet_SetLinkTableLink(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU
   return orxSTATUS_SUCCESS;
 }
 
-/***************************************************************************
- orxAnimSet_SetLinkTableLinkProperty
- Sets a link property at the given value.
-
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
- ***************************************************************************/
+/** Sets a link property
+ * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _u32LinkIndex                 Link index
+ * @param[in]		_u32Property									Property ID
+ * @param[in]		_u32Value											Value to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32LinkIndex, orxU32 _u32Property, orxU32 _u32Value)
 {
   /* Checks */
@@ -262,7 +259,7 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTab
 
         /* !!! MSG !!! */
   
-        return orxSTATUS_FAILED;
+        return orxSTATUS_FAILURE;
     }
   
     /* Animset has to be computed again */
@@ -272,19 +269,19 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTab
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 
   /* Done */
   return orxSTATUS_SUCCESS;
 }
 
-/***************************************************************************
- orxAnimSet_GetLinkTableLinkProperty
- Gets a link property.
-
- returns: orxU32 Property value / orxU32_Undefined
- ***************************************************************************/
+/** Gets a link property
+ * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _u32LinkIndex									Link index
+ * @param[in]		_u32Property									Link property ID
+ * @return      Link property value / orxU32_Undefined;
+ */
 orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32LinkIndex, orxU32 _u32Property)
 {
   orxU32 u32Value;
@@ -355,12 +352,11 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
   return u32Value;
 }
 
-/***************************************************************************
- orxAnimSet_SetLinkInfo
- Sets a link info.
-
- returns: Nothing
- ***************************************************************************/
+/** Sets a link info between 2 Anims
+ * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex									Source Anim index
+ * @param[in]		_u32DstIndex									Destination Anim index
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
   orxREGISTER orxU32 u32Index;
@@ -381,12 +377,11 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo
   return;
 }
 
-/***************************************************************************
- orxAnimSet_ResetLinkInfo
- Resets a link info.
-
- returns: Nothing
- ***************************************************************************/
+/** Resets a link info between 2 Anims
+ * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex									Source Anim index
+ * @param[in]		_u32DstIndex									Destination Anim index
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
   orxREGISTER orxU32 u32Index;
@@ -409,12 +404,10 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstIn
   return;
 }
 
-/***************************************************************************
- orxAnimSet_CleanLinkInfo
- Cleans a link info.
-
- returns: Nothing
- ***************************************************************************/
+/** Cleans all link info from an Anim
+ * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex									Source Anim index
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex)
 {
   orxU32 u32Index, i;
@@ -435,12 +428,12 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstIn
   return;
 }
 
-/***************************************************************************
- orxAnimSet_GetLinkInfo
- Gets a link info.
-
- returns: orxTRUE on success / orxFALSE on failure
- ***************************************************************************/
+/** Gets a link info between 2 Anims
+ * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex									Source Anim index
+ * @param[in]		_u32DstIndex									Destination Anim index
+ * @return			orxTRUE / orxFALSE
+ */
 orxSTATIC orxINLINE orxBOOL orxAnimSet_GetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
   orxREGISTER orxU32 u32Index;
@@ -461,12 +454,11 @@ orxSTATIC orxINLINE orxBOOL orxAnimSet_GetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo
   return((_pstInfo->au8LinkInfo[u32Index] & u8Mask) ? orxTRUE : orxFALSE);
 }
 
-/***************************************************************************
- orxAnimSet_UpdateLinkInfo
- Updates links information from one animation to another.
-
- returns: orxTRUE if there are changes / orxFALSE otherwise
- ***************************************************************************/
+/** Updates links information from one Anim to another
+ * @param[in]   _pstInfo			                Concerned LinkUpdateInfo
+ * @param[in]   _u32SrcIndex									Source Anim index
+ * @param[in]		_u32DstIndex									Destination Anim index
+ */
 orxSTATIC orxBOOL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU32 _u32SrcIndex, orxU32 _u32DstIndex)
 {
   orxBOOL bChange = orxFALSE;
@@ -555,8 +547,8 @@ orxSTATIC orxBOOL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU3
 
         /* Computes new path */
         u32DstLink = orxANIMSET_KU32_LINK_FLAG_PATH
-          + ((u32SrcLength + 1) << orxANIMSET_KU32_LINK_SHIFT_LENGTH)
-          + (_u32SrcIndex << orxANIMSET_KU32_LINK_SHIFT_ANIM);
+          				 + ((u32SrcLength + 1) << orxANIMSET_KU32_LINK_SHIFT_LENGTH)
+          				 + (_u32SrcIndex << orxANIMSET_KU32_LINK_SHIFT_ANIM);
 
         /* Stores it */
         pstLinkTable->au32LinkArray[u32DstBaseIndex + i] = u32DstLink;
@@ -570,12 +562,10 @@ orxSTATIC orxBOOL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU3
   return bChange;
 }
 
-/***************************************************************************
- orxAnimSet_UpdateLink
- Updates link for the given animation.
-
- returns: Nothing
- ***************************************************************************/
+ /** Updates all links for an Anim
+ * @param[in]   _u32Index			                Anim index
+ * @param[in]   _pstInfo											Associated LinkUpdateInfo
+ */
 orxVOID orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
 {
   orxU32 u32BaseIndex;
@@ -633,12 +623,10 @@ orxVOID orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
   return;
 }
 
-/***************************************************************************
- orxAnimSet_CreateLinkUpdateInfo
- Creates and init the Link Update Info.
-
- returns: orxLINK_UPDATE_INFO pointer / orxNULL on failure
- ***************************************************************************/
+/** Creates and inits a LinkUpdateInfo
+ * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @return			Created & up to date LinkUpdateInfo / orxNULL
+ */
 orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
   orxLINK_UPDATE_INFO *pstInfo = orxNULL;
@@ -697,12 +685,9 @@ orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_T
   return pstInfo;
 }
 
-/***************************************************************************
- orxAnimSet_DeleteLinkUpdateInfo
- Deletes the Link Update Info.
-
- returns: Nothing
- ***************************************************************************/
+/** Deletes a LinkUpdateInfo
+ * @param[in]   _pstLinkUpdateInfo            Concerned LinkUpdateInfo
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_DeleteLinkUpdateInfo(orxLINK_UPDATE_INFO *_pstLinkUpdateInfo)
 {
   /* Checks */
@@ -715,12 +700,10 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_DeleteLinkUpdateInfo(orxLINK_UPDATE_INFO 
   return;
 }
 
-/***************************************************************************
- orxAnimSet_CleanLinkTable
- Cleans a Link Table for a given animation.
-
- returns: orxVOID
- ***************************************************************************/
+/** Cleans a LinkTable for a given Anim
+ * @param[in]   _pstLinkTable	                Concerned LinkTable
+ * @param[in]   _u32AnimIndex									Anim index
+ */
 orxSTATIC orxVOID orxAnimSet_CleanLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32AnimIndex)
 {
   orxU32 u32Size, u32AnimBaseIndex, i;
@@ -757,12 +740,10 @@ orxSTATIC orxVOID orxAnimSet_CleanLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable
   return;
 }
 
-/***************************************************************************
- orxAnimSet_CreateLinkTable
- Creates and init the Link Table.
-
- returns: orxANIMSET_LINK_TABLE *
- ***************************************************************************/
+/** Creates a LinkTable
+ * @param[in]   _u32Size											Size of the desired LinkTable
+ * @return 			Created LinkTable / orxNULL
+ */
 orxSTATIC orxANIMSET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
 {
   orxANIMSET_LINK_TABLE *pstLinkTable = orxNULL;
@@ -837,12 +818,10 @@ orxSTATIC orxANIMSET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
   return pstLinkTable;
 }
 
-/***************************************************************************
- orxAnimSet_CopyLinkTable
- Copies an Animset link table info into another one.
-
- returns: Nothing
- ***************************************************************************/
+/** Copies an AnimSet LinkTable into another one
+ * @param[in]   _pstDstLinkTable	            Destination LinkTable
+ * @param[in]   _pstSrcLinkTable							Source LinkTable
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_CopyLinkTable(orxANIMSET_LINK_TABLE *_pstDstLinkTable, orxCONST orxANIMSET_LINK_TABLE *_pstSrcLinkTable)
 {
   /* Checks */
@@ -861,12 +840,10 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_CopyLinkTable(orxANIMSET_LINK_TABLE *_pst
   return;
 }
 
-/***************************************************************************
- orxAnimSet_SetAnimStorageSize
- Sets an animation set anim storage size.
-
- returns: orxVOID
- ***************************************************************************/
+/** Sets an AnimSet storage size
+ * @param[in]   _pstAnimSet										Concerned AnimSet
+ * @param[in]   _u32Size											Desired size
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_SetAnimStorageSize(orxANIMSET *_pstAnimSet, orxU32 _u32Size)
 {
   /* Checks */
@@ -880,12 +857,10 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_SetAnimStorageSize(orxANIMSET *_pstAnimSe
   return;
 }  
 
-/***************************************************************************
- orxAnimSet_SetAnimCounter
- Sets an animation set internal anim counter.
-
- returns: orxVOID
- ***************************************************************************/
+/** Sets an AnimSet internal Anim counter
+ * @param[in]   _pstAnimSet										Concerned AnimSet
+ * @param[in]   _u32AnimCounter								Counter value
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_SetAnimCounter(orxANIMSET *_pstAnimSet, orxU32 _u32AnimCounter)
 {
   /* Checks */
@@ -898,12 +873,9 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_SetAnimCounter(orxANIMSET *_pstAnimSet, o
   return;
 }
 
-/***************************************************************************
- orxAnimSet_IncreaseAnimCounter
- Increases an animation set internal anim counter.
-
- returns: orxVOID
- ***************************************************************************/
+/** Increases an AnimSet internal Anim counter
+ * @param[in]   _pstAnimSet										Concerned AnimSet
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_IncreaseAnimCounter(orxANIMSET *_pstAnimSet)
 {
   orxREGISTER orxU32 u32AnimCounter;
@@ -920,12 +892,9 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_IncreaseAnimCounter(orxANIMSET *_pstAnimS
   return;
 }  
 
-/***************************************************************************
- orxAnimSet_DecreaseAnimCounter
- Decreases an animation set internal anim counter.
-
- returns: orxVOID
- ***************************************************************************/
+/** Decreases an AnimSet internal Anim counter
+ * @param[in]   _pstAnimSet										Concerned AnimSet
+ */
 orxSTATIC orxINLINE orxVOID orxAnimSet_DecreaseAnimCounter(orxANIMSET *_pstAnimSet)
 {
   orxREGISTER orxU32 u32AnimCounter;
@@ -942,12 +911,8 @@ orxSTATIC orxINLINE orxVOID orxAnimSet_DecreaseAnimCounter(orxANIMSET *_pstAnimS
   return;
 }  
 
-/***************************************************************************
- orxAnimSet_DeleteAll
- Deletes all Animation Sets.
-
- returns: orxVOID
- ***************************************************************************/
+/** Deletes all AnimSet
+ */
 orxSTATIC orxVOID orxAnimSet_DeleteAll()
 {
   orxANIMSET *pstAnimSet;
@@ -968,12 +933,11 @@ orxSTATIC orxVOID orxAnimSet_DeleteAll()
   return;
 }
 
-/***************************************************************************
- orxAnimSet_ComputeNextAnim
- Gets next animation, updating link status.
-
- returns: orxU32 animation index / orxU32_Undefined if none found
- ***************************************************************************/
+/** Gets next Anim, updating LinkTable link status
+ * @param[in]   _pstLinkTable									Concerned LinkTable
+ * @param[in]   _u32AnimIndex									Source Anim index
+ * @return 			Next Anim index / orxU32_Undefined
+ */
 orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32AnimIndex)
 {
   orxU32 u32Size, u32BaseIndex;
@@ -1059,12 +1023,12 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable
   return u32ResAnim;
 }
 
-/***************************************************************************
- orxAnimSet_ComputeNextAnimUsingDest
- Gets next animation using destination one, updating link status.
-
- returns: orxU32 animation index / orxU32_Undefined if none found
- ***************************************************************************/
+/** Gets next Anim, using destination Anim, updating LinkTable link status
+ * @param[in]   _pstLinkTable									Concerned LinkTable
+ * @param[in]   _u32SrcAnim										Source Anim index
+ * @param[in]   _u32DstAnim										Destination Anim index
+ * @return 			Next Anim index / orxU32_Undefined
+ */
 orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32SrcAnim, orxU32 _u32DstAnim)
 {
   orxU32 u32BaseIndex, u32Size, u32Loop;
@@ -1116,12 +1080,10 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIMSET_LINK_TABLE *_pst
   return u32Anim;
 }
 
-/***************************************************************************
- orxAnimSet_ComputeLinkTable
- Computes all link relations.
-
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILED
- ***************************************************************************/
+/** Computes all link relations
+ * @param[in]   _pstLinkTable									Concerned LinkTable
+ * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
   orxLINK_UPDATE_INFO *pstUpdateInfo;
@@ -1180,7 +1142,7 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
         /* !!! MSG !!! */
 
         /* Failed */
-        eResult = orxSTATUS_FAILED;
+        eResult = orxSTATUS_FAILURE;
       }
     }
     else
@@ -1188,7 +1150,7 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
       /* !!! MSG !!! */
   
       /* Failed */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
 
@@ -1217,7 +1179,7 @@ orxVOID orxAnimSet_Setup()
  */
 orxSTATUS orxAnimSet_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY))
@@ -1381,7 +1343,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
     /* !!! MSG !!! */
     
     /* Referenced by others */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   return eResult;
@@ -1549,7 +1511,7 @@ orxHANDLE orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstA
 /** Removes an Anim from an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hAnimHandle												Handle of the anim to remove
- * @return 			orxSTATUS_SUCESS / orxSTATUS_FAILED
+ * @return 			orxSTATUS_SUCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle)
 {
@@ -1587,7 +1549,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _
       /* !!! MSG !!! */
 
       /* Failed */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -1595,7 +1557,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _
     /* !!! MSG !!! */
 
     /* Failed */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -1604,7 +1566,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _
 
 /** Removes all Anim from the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return 			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
 {
@@ -1620,7 +1582,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 
   /* Gets animation counter */
@@ -1715,7 +1677,7 @@ orxHANDLE orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSr
 /** Removes a link from the AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hLinkHandle												Handle of the link
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle)
 {
@@ -1754,7 +1716,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _
       /* !!! MSG !!! */
 
       /* Can't process */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -1762,7 +1724,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _
     /* !!! MSG !!! */
 
     /* Can't process */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -1816,7 +1778,7 @@ orxHANDLE orxFASTCALL orxAnimSet_GetLink(orxCONST orxANIMSET *_pstAnimSet, orxHA
 
 /** Computes all link relations
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimSet)
 {
@@ -1829,7 +1791,7 @@ orxSTATUS orxFASTCALL orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimSet)
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 
   /* Gets work done */
@@ -1841,7 +1803,7 @@ orxSTATUS orxFASTCALL orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimSet)
  * @param[in]		_hLinkHandle												Handle of the concerned link
  * @param[in]		_u32Property												ID of the property to set
  * @param[in]		_32Value														Value of the property to set
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property, orxU32 _u32Value)
 {
@@ -1874,7 +1836,7 @@ orxSTATUS orxFASTCALL orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxHAN
     /* !!! MSG !!! */
 
     /* Can't process */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

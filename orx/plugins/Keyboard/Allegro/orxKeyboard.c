@@ -74,7 +74,7 @@ orxSTATUS orxKeyboard_Init()
   }
   else
   {
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 }
 

@@ -55,7 +55,7 @@ orxSTATIC orxMAIN_STATIC sstMain;
  */
 orxSTATUS orxMain_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Don't call twice the init function */
   if(!(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY))

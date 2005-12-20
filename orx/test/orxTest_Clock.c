@@ -105,7 +105,7 @@ orxSTATUS orxTest_Clock_Depend()
   else
   {
     orxTextIO_PrintLn("Time plugin not loaded");
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 }
  

@@ -63,7 +63,7 @@ extern orxDLLAPI orxVOID                orxFile_Setup();
 
 /** Delete recursively a direcory and all its subfolders.
  * @param _zDirectory     (IN)     Name of the directory directory to remove (with subfolders)
- * @return status of the operation (orxSTATUS_FAILED or orxSTATUS_SUCCESS)
+ * @return status of the operation (orxSTATUS_FAILURE or orxSTATUS_SUCCESS)
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxFile_Deltree(orxCONST orxSTRING _zDirectory);
 

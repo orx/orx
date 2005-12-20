@@ -110,7 +110,7 @@ orxVOID orxHashTable_Setup()
  */
 orxSTATUS orxHashTable_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY))
@@ -355,7 +355,7 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
 {
   orxU32 u32Index;                      /* Hash index */
   orxHASHTABLE_CELL *pstCell;             /* New cell to add */
-  orxSTATUS eStatus = orxSTATUS_FAILED; /* Status to return */
+  orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
   
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY) == orxHASHTABLE_KU32_FLAG_READY);
@@ -404,7 +404,7 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
   orxU32 u32Index;                          /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL;       /* Cell used to traverse */
   orxHASHTABLE_CELL *pstRemoveCell = orxNULL; /* Cell to remove */
-  orxSTATUS eStatus = orxSTATUS_FAILED; /* Status to return */
+  orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
   
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_FLAG_READY) == orxHASHTABLE_KU32_FLAG_READY);

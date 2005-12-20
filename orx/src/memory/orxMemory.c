@@ -73,7 +73,7 @@ orxVOID orxMemory_Setup()
  */
 orxSTATUS orxMemory_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* No dependencies for this module */
 

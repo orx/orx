@@ -250,7 +250,7 @@ orxSTATUS orxFASTCALL _orxModule_Init(orxMODULE_ID _eModuleID, orxBOOL _bExternC
   else
   {
     /* Not initialized */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Was external call? */
@@ -416,7 +416,7 @@ orxSTATUS orxModule_InitAll()
   if(u32InitCounter == 0)
   {
     /* Failed */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
 
     /* !!! MSG !!! */
   }

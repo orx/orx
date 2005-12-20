@@ -128,7 +128,7 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
       if(pstObject->pastStructure[i] != NULL)
       {
         /* Updates it */
-        if(orxStructure_Update(pstObject->pastStructure[i], (orxSTRUCTURE *)pstObject, _pstClockInfo) == orxSTATUS_FAILED)
+        if(orxStructure_Update(pstObject->pastStructure[i], (orxSTRUCTURE *)pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
         {
           /* !!! MSG !!! */
         }
@@ -166,11 +166,11 @@ orxVOID orxObject_Setup()
  orxObject_Init
  Inits object system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxObject_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
@@ -274,7 +274,7 @@ orxOBJECT *orxObject_Create()
  orxObject_Delete
  Deletes an object.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
 {
@@ -306,7 +306,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
     /* !!! MSG !!! */
 
     /* Referenced by others */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -317,7 +317,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
  orxObject_LinkStructure
  Links a structure to an object given.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure)
 {
@@ -349,7 +349,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
     /* !!! MSG !!! */
 
     /* Wrong structure ID */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

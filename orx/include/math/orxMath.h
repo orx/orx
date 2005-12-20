@@ -48,7 +48,7 @@
 #define orxCLAMP(V, MIN, MAX)     orxMAX(orxMIN(V, MAX), MIN)
 
 #define orxABS(V)                 (((V) < 0) ? -(V) : (V))
-#define orxFABS(V)                (((V) < orx2F(0.0f)) ? -(V) : (V))
+#define orxFABS(V)                (((V) < orxFLOAT_0) ? -(V) : (V))
 
 
 #define orxF2U(V)                 ((orxU32)  (V))
@@ -59,7 +59,7 @@
 
 /*** Math Definitions ***/
 
-#define KF_MATH_SQRT2             orx2F(1.414213562f)
+#define orxMATH_KF_SQRT          	orx2F(1.414213562f)
 
 
 #endif /* _orxMATH_H_ */

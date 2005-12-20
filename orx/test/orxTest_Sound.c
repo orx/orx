@@ -83,7 +83,7 @@ orxVOID orxTest_Sound_SampleLoadFromFile()
   orxTextIO_PrintLn("Display the list of loaded Sample and address");
   
   /* Request sample file name */
-  while ((orxTextIO_ReadString(stSampleInfos.zFileName, orxTEST_SOUND_SAMPLE_NAME_MAX, "Enter the sample file name to load : ") == orxSTATUS_FAILED))
+  while ((orxTextIO_ReadString(stSampleInfos.zFileName, orxTEST_SOUND_SAMPLE_NAME_MAX, "Enter the sample file name to load : ") == orxSTATUS_FAILURE))
   {}
   
   /* Try to load the sample */
@@ -203,7 +203,7 @@ orxVOID orxTest_Sound_ChannelStop()
   orxTextIO_PrintLn("%d is a special number that will stop all the channels", orxSOUND_CHANNEL_KU32_SELECT_ALL);
   orxTextIO_ReadS32InRange(&s32Channel, 10, 0, orxSOUND_CHANNEL_KU32_SELECT_ALL, "Channel : ", orxTRUE);
   
-  if (orxSound_ChannelStop(s32Channel) != orxSTATUS_FAILED)
+  if (orxSound_ChannelStop(s32Channel) != orxSTATUS_FAILURE)
   {
     /* Operation succeded */
     orxTextIO_PrintLn("Channel(s) stopped");

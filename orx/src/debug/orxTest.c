@@ -316,7 +316,7 @@ orxSTATUS orxFASTCALL orxTest_Execute(orxHANDLE _hRegisteredFunc)
     return orxSTATUS_SUCCESS;
   }
   
-  return orxSTATUS_FAILED;
+  return orxSTATUS_FAILURE;
 }
 
 /** Display a Menu with registered function list
@@ -349,7 +349,7 @@ orxVOID orxTest_DisplayMenu()
 /** Set Test flags (the test parameter has been given)
  * @param[in] _u32NbParam Number of extra parameters read for this option
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
- * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILED if a problem has occured
+ * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
 orxSTATUS orxTest_ParamTest(orxU32 _u32NbParam, orxSTRING _azParams[])
 {
@@ -391,7 +391,7 @@ orxVOID orxTest_Setup()
  */
 orxSTATUS orxTest_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstTest.u32Flags & orxTEST_KU32_FLAG_READY))
@@ -526,14 +526,14 @@ orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *
   if(orxString_Compare(zChoice, "quit") != 0)
   {
     /* No, so parse its choice */
-    if((orxString_ToS32(&s32Val, zChoice, 10) == orxSTATUS_FAILED))
+    if((orxString_ToS32(&s32Val, zChoice, 10) == orxSTATUS_FAILURE))
     {
       /* The value is not a digit */
       orxTextIO_PrintLn("The Value is not a digit");
     }
     else
     {
-      if(orxTest_Execute((orxHANDLE)s32Val) == orxSTATUS_FAILED)
+      if(orxTest_Execute((orxHANDLE)s32Val) == orxSTATUS_FAILURE)
       {
         /* Invalid choice was used */
         orxTextIO_PrintLn("Unknown command");

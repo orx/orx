@@ -154,7 +154,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
   orxVEC *pvPos, *pvSize;
   orxVEC vResult;
   orxU32 u32Flags;
-  orxFLOAT fX = orx2F(0.0f), fY = orx2F(0.0f);
+  orxFLOAT fX = orxFLOAT_0, fY = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(_pstViewport != orxNULL);
@@ -211,7 +211,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
       }
 
       /* Stores it in a coord structure */
-      orxVec_Set3(&vResult, fX, fY, orx2F(0.0f));
+      orxVec_Set3(&vResult, fX, fY, orxFLOAT_0);
 
       /* Updates camera screen position */
       orxCamera_SetOnScreenPosition(_pstViewport->pstCamera, &vResult);
@@ -282,11 +282,11 @@ orxVOID orxViewport_Setup()
  orxViewport_Init
  Inits viewport system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxViewport_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
@@ -397,7 +397,7 @@ orxVIEWPORT *orxViewport_Create()
  orxViewport_Delete
  Deletes a viewport.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxViewport_Delete(orxVIEWPORT *_pstViewport)
 {
@@ -430,7 +430,7 @@ orxSTATUS orxViewport_Delete(orxVIEWPORT *_pstViewport)
     /* !!! MSG !!! */
     
     /* Referenced by others */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

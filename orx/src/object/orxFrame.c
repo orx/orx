@@ -287,7 +287,7 @@ orxSTATIC orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxCONST orxFRAME *_p
  ***************************************************************************/
 orxSTATIC orxINLINE orxFLOAT _orxFrame_GetAngle(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
-  orxFLOAT fAngle = orx2F(0.0f);
+  orxFLOAT fAngle = orxFLOAT_0;
 
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -327,7 +327,7 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetAngle(orxCONST orxFRAME *_pstFrame, or
  ***************************************************************************/
 orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
-  orxFLOAT fScale = orx2F(1.0f);
+  orxFLOAT fScale = orxFLOAT_1;
  
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -555,11 +555,11 @@ orxVOID orxFrame_Setup()
  orxFrame_Init
  Inits frame system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFrame_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
   if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
@@ -599,7 +599,7 @@ orxSTATUS orxFrame_Init()
         sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
   
         /* Can't process */
-        eResult = orxSTATUS_FAILED;
+        eResult = orxSTATUS_FAILURE;
       }
       else
       {
@@ -685,8 +685,8 @@ orxFRAME *orxFrame_Create()
         orxMemory_Set(pstData, 0, sizeof(orxFRAME_DATA_2D));
 
         /* Inits values */
-        pstData->fGlobalScale = orx2F(1.0f);
-        pstData->fLocalScale = orx2F(1.0f);
+        pstData->fGlobalScale = orxFLOAT_1;
+        pstData->fLocalScale = orxFLOAT_1;
 
         /* Links data to frame */
         pstFrame->pstData = pstData;
@@ -717,7 +717,7 @@ orxFRAME *orxFrame_Create()
  orxFrame_Delete
  Deletes a frame.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
 {
@@ -745,7 +745,7 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
     /* !!! MSG !!! */
 
     /* Referenced by others */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -825,7 +825,7 @@ orxVOID orxFASTCALL orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFr
     else
     {
       /* Stores value */
-      _pvScroll->fX = orx2F(0.0f);
+      _pvScroll->fX = orxFLOAT_0;
     }
 
     /* Uses Y scroll? */
@@ -837,7 +837,7 @@ orxVOID orxFASTCALL orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFr
     else
     {
       /* Stores value */
-      _pvScroll->fY = orx2F(0.0f);
+      _pvScroll->fY = orxFLOAT_0;
     }
   }
   else
@@ -867,7 +867,7 @@ orxVOID orxFASTCALL orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxC
   if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
   {
     /* Enables X axis differential scrolling? */
-    if(_pvScroll->fX != orx2F(0.0f))
+    if(_pvScroll->fX != orxFLOAT_0)
     {
       u32AddFlags     |= orxFRAME_KU32_ID_FLAG_SCROLL_X;
     }
@@ -1028,7 +1028,7 @@ orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, or
   else
   {
     /* Resets coord structure */
-    orxVec_SetAll(_pvPos, orx2F(orx2F(0.0f)));
+    orxVec_SetAll(_pvPos, orxFLOAT_0);
   }
 
   return;
@@ -1042,7 +1042,7 @@ orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, or
  ***************************************************************************/
 orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal)
 {
-  orxFLOAT fAngle = orx2F(0.0f);
+  orxFLOAT fAngle = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -1077,7 +1077,7 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal)
  ***************************************************************************/
 orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxBOOL _bLocal)
 {
-  orxFLOAT fScale = orx2F(1.0f);
+  orxFLOAT fScale = orxFLOAT_1;
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);

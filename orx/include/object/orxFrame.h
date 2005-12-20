@@ -61,9 +61,9 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxFrame_IsRenderStatusClean(orxCONST or
 
 /** Does frame has differential scrolling? */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxFrame_HasDifferentialScrolling(orxCONST orxFRAME *_pstFrame);
-/** Sets frame differential scrolling values (X & Y axis / orx2F(0.0f) : none) */
+/** Sets frame differential scrolling values (X & Y axis / orxFLOAT_0 : none) */
 extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxCONST orxVEC *_pvScroll);
-/** Gets frame differential scrolling values (X & Y axis / orx2F(0.0f) : none) */
+/** Gets frame differential scrolling values (X & Y axis / orxFLOAT_0 : none) */
 extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFrame, orxVEC *_pvScroll);
 
 /** Sets a frame parent. */

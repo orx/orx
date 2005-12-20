@@ -124,7 +124,7 @@ orxSTATIC orxVOID orxAnimPointer_DeleteAll()
 /** Computes current Anim for the given time
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _u32Time                      Time to use for current Anim computation
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32Time)
 {
@@ -171,7 +171,7 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
       /* !!! MSG !!! */
 
       /* Can't process */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
 
@@ -183,7 +183,7 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
  * @param[in]   _pstStructure                 Generic Structure or the concerned AnimPointer
  * @param[in]   _pstCaller                    Structure of the caller
  * @param[in]   _pstClockInfo                 Clock info used for time updates
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
@@ -220,7 +220,7 @@ orxVOID orxAnimPointer_Setup()
  */
 orxSTATUS orxAnimPointer_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
   if(!(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY))
@@ -374,7 +374,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
     /* !!! MSG !!! */
     
     /* Referenced by others */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -478,7 +478,7 @@ orxFLOAT orxFASTCALL orxAnimPointer_GetFrequency(orxCONST orxANIMPOINTER *_pstAn
 /** AnimPointer current Animation set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _hAnimHandle                  Animation handle to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle)
 {
@@ -511,7 +511,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimPointer, or
       /* !!! MSG !!! */
 
       /* Can't process */
-      eResult = orxSTATUS_FAILED;
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
@@ -519,7 +519,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimPointer, or
     /* !!! MSG !!! */
 
     /* Can't process */
-    eResult = orxSTATUS_FAILED;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -529,7 +529,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimPointer, or
 /** AnimPointer current Time accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _u32Time                      Time to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32Time)
 {
@@ -555,7 +555,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimPointer, or
 /** AnimPointer Frequency set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _fFrequency                   Frequency to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILED
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fFrequency)
 {

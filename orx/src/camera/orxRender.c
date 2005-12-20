@@ -82,7 +82,7 @@ orxSTATIC orxRENDER_STATIC sstRender;
  orxRender_RenderObject
  Renders given object
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pstObject, orxFRAME *_pstFrame)
 {
@@ -119,7 +119,7 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
     orxFrame_GetPosition(_pstFrame, &vPos, orxFALSE);
 
     /* Blit bitmap onto surface */
-    if((fRotation == orx2F(0.0f)) && (fScale == orx2F(1.0f)))
+    if((fRotation == orxFLOAT_0) && (fScale == orxFLOAT_1))
     {
       orxVEC vSize;
 
@@ -252,11 +252,11 @@ orxVOID orxRender_Setup()
  orxRender_Init
  Inits render system.
 
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILED
+ returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxRender_Init()
 {
-	orxSTATUS eResult = orxSTATUS_FAILED;
+	orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Already Initialized? */
   if(!(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY))

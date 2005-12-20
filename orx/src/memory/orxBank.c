@@ -213,7 +213,7 @@ orxSTATUS orxBank_Init()
   orxU8 u8Test;    /* Bitfield used to do the test (bit 1 set on u8Bit) */
   orxBOOL bFound;  /* set to orxTRUE when the bit has been found */
 
-  orxSTATUS eResult = orxSTATUS_FAILED;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
   if(!(sstBank.u32Flags & orxBANK_KU32_FLAG_READY))

@@ -81,7 +81,7 @@ orxSTATUS orxSound_Fmod_Init()
   }
   else
   {
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 }
 
@@ -201,7 +201,7 @@ orxSTATUS orxSound_Fmod_ChannelStop(orxU32 _u32Channel)
   }
   else
   {
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 }
 
@@ -227,7 +227,7 @@ orxSTATUS orxSound_Fmod_ChannelPause(orxU32 _u32Channel, orxBOOL _bPause)
   }
   else
   {
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 }
 
@@ -326,7 +326,7 @@ orxSTATUS orxSound_Fmod_ChannelSetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
   }
   else
   {
-    return orxSTATUS_FAILED;
+    return orxSTATUS_FAILURE;
   }
 }
 
