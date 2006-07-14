@@ -506,18 +506,15 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
-  /* Locked? */
-  if(sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK)
+  /* Not locked? */
+  if((sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
   {
-    /* Can't process */
-    return;
+	  /* Deletes function bank */
+	  orxBank_Delete(_pstClock->pstFunctionBank);
+
+	  /* Frees clock memory */
+	  orxBank_Free(sstClock.pstClockBank, _pstClock);
   }
-
-  /* Deletes function bank */
-  orxBank_Delete(_pstClock->pstFunctionBank);
-
-  /* Frees clock memory */
-  orxBank_Free(sstClock.pstClockBank, _pstClock);
 
   return;
 }
@@ -528,15 +525,12 @@ orxVOID orxClock_Resync()
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
 
-  /* Locked? */
-  if(sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK)
+  /* Not locked? */
+  if((sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
   {
-    /* Can't process */
-    return;
+	  /* Resync with current time */
+  	sstClock.u32Time = orxTime_GetTime();
   }
-
-  /* Resync with current time */
-  sstClock.u32Time = orxTime_GetTime();
 
   return;
 }
