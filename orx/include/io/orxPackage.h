@@ -27,7 +27,8 @@
 #define _orxPACKAGE_H_
  
 #include "orxInclude.h"
-#include "io/orxFile.h"
+#include "io/orxFileSystem.h"
+#include "io/orxPackage.h"
 
 #define orxPACKAGE_KU32_FLAGS_LOCATION_INTERN  0x00000001 /**< file inside the compiled archive */
 #define orxPACKAGE_KU32_FLAGS_LOCATION_EXTERN  0x00000002 /**< file outside the compiled archive */
@@ -38,7 +39,7 @@
 /** Store datas about the current file. */
 typedef struct __orxPACKAGE_INFOS_t
 {
-  orxFILE_INFO stFileInfos;    /**< File's information */
+  orxFILESYSTEM_INFO stFileInfos;     /**< File's information */
   orxU32 u32ExtraPackageFlags;  /**< Extra informations specific to package (location) */
   orxHANDLE hInternal;          /**< Internal use, do not modify */
 } orxPACKAGE_INFOS;

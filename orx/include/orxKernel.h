@@ -43,6 +43,7 @@
 #include "display/orxTexture.h"
 
 #include "io/orxFile.h"
+#include "io/orxFileSystem.h"
 #include "io/orxJoystick.h"
 #include "io/orxKeyboard.h"
 #include "io/orxMouse.h"

@@ -25,6 +25,7 @@
 #include "debug/orxDebug.h"
 #include "display/orxDisplay.h"
 #include "io/orxFile.h"
+#include "io/orxFileSystem.h"
 #include "io/orxTextIO.h"
 #include "memory/orxMemory.h"
 #include "msg/msg_screenshot.h"
@@ -96,7 +97,7 @@ orxVOID orxScreenshot_Setup()
 orxSTATUS orxScreenshot_Init()
 {
   orxCHAR zFileName[256];
-  orxFILE_INFO stFileInfos;
+  orxFILESYSTEM_INFO stFileInfos;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
@@ -106,13 +107,13 @@ orxSTATUS orxScreenshot_Init()
     orxMemory_Set(&sstScreenshot, 0, sizeof(orxSCREENSHOT_STATIC));
 
     /* Valid? */
-    if(orxFile_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
+    if(orxFileSystem_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
     {
       /* Gets file to find name */
       orxTextIO_Printf(zFileName, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
 
       /* Finds first screenshot file */
-      if(orxFile_FindFirst(zFileName, &stFileInfos) != orxFALSE)
+      if(orxFileSystem_FindFirst(zFileName, &stFileInfos) != orxFALSE)
       {
         do
         {
@@ -120,10 +121,10 @@ orxSTATUS orxScreenshot_Init()
           sstScreenshot.u32Counter++;
         }
         /* Till all screenshots have been found */
-        while(orxFile_FindNext(&stFileInfos) != orxFALSE);
+        while(orxFileSystem_FindNext(&stFileInfos) != orxFALSE);
         
         /* Ends the search */
-        orxFile_FindClose(&stFileInfos);
+        orxFileSystem_FindClose(&stFileInfos);
       }
 
       /* Inits Flags */

@@ -45,6 +45,7 @@
         </sources>
         <sources>
             src/io/orxFile.c
+            src/io/orxFileSystem.c
             src/io/orxJoystick.c
             src/io/orxKeyboard.c
             src/io/orxMouse.c

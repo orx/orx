@@ -1687,6 +1687,10 @@ SOURCE=..\..\..\src\io\orxFile.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\io\orxFileSystem.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\object\orxFrame.c
 # End Source File
 # Begin Source File

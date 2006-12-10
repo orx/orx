@@ -57,15 +57,10 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(FILE)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, INIT, orxFile_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, EXIT, orxFile_Exit)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_FIRST, orxFile_FindFirst)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_NEXT, orxFile_FindNext)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, FIND_CLOSE, orxFile_FindClose)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, INFO, orxFile_Info)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, COPY, orxFile_Copy)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, RENAME, orxFile_Rename)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE, orxFile_Delete)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, CREATE_DIR, orxFile_CreateDir)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, DELETE_DIR, orxFile_DeleteDir)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, OPEN, orxFile_Open)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, READ, orxFile_Read)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, WRITE, orxFile_Write)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILE, CLOSE, orxFile_Close)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(FILE)
 
@@ -74,15 +69,10 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(FILE)
 
 orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxFile_Init, orxSTATUS);
 orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxFile_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_FindFirst, orxBOOL, orxSTRING, orxFILE_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_FindNext, orxBOOL, orxFILE_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_FindClose, orxVOID, orxFILE_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_Info, orxSTATUS, orxSTRING, orxFILE_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_Copy, orxSTATUS, orxSTRING, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_Rename, orxSTATUS, orxSTRING, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_Delete, orxSTATUS, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_CreateDir, orxSTATUS, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_DeleteDir, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_Open, orxFILE*, orxCONST orxSTRING, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION_4(orxFile_Read, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
+orxPLUGIN_DEFINE_CORE_FUNCTION_4(orxFile_Write, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
+orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_Close, orxSTATUS, orxFILE*);
 
 
 /***************************************************************************
@@ -96,70 +86,3 @@ orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_DeleteDir, orxSTATUS, orxSTRING);
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
-
-/** Delete recursively a direcory and all its subfolders.
- * \param _zDirectory     (IN)     Name of the directory directory to remove (with subfolders)
- * \return status of the operation (orxSTATUS_FAILURE or orxSTATUS_SUCCESS)
- */
-orxSTATUS orxFASTCALL orxFile_Deltree(orxCONST orxSTRING _zDirectory)
-{
-  /* TODO */
-  return orxSTATUS_FAILURE;
-}
-
-/** Returns orxTRUE if a file exists, else orxFALSE.
- * \param _zFileName     (IN)      Full File's name to test
- * \return orxFALSE if _zFileName doesn't exist, else orxTRUE
- */
-orxBOOL orxFASTCALL orxFile_Exists(orxCONST orxSTRING _zFileName)
-{
-  /* TODO */
-  return orxFALSE;
-}
-
-/** Open a file for later read or write operation.
- * @param _zPath         (IN)      Full file's path to open
- * @param _u32OpenFlags  (IN)      List of used flags when opened
- * @return a File pointer (or orxNULL if an error has occured)
- */
-orxFILE *orxFASTCALL orxFile_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
-{
-  /* TODO */
-  return orxNULL;   
-}
-
-/** Read datas from a file
- * @param _pReadData     (OUT)     Pointer where will be stored datas
- * @param _u32ElemSize   (IN)      Size of 1 element
- * @param _u32NbElem     (IN)      Number of elements
- * @param _pstFile       (IN)      Pointer on the file descriptor
- * @return Returns the number of read elements (not bytes)
- */
-orxU32 orxFASTCALL orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
-{
-  /* TODO */
-  return 0;
-}
-
-/** write datas to a file
- * @param _pDataToWrite  (IN)      Pointer where will be stored datas
- * @param _u32ElemSize   (IN)      Size of 1 element
- * @param _u32NbElem     (IN)      Number of elements
- * @param _pstFile       (IN)      Pointer on the file descriptor
- * @return Returns the number of written elements (not bytes)
- */
-orxU32 orxFASTCALL orxFile_Write(orxCONST orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
-{
-  /* TODO */
-  return 0;
-}
-
-/** Close an oppened file
- * @param _pstFile       (IN)      File's pointer to close
- * @return Returns the status of the operation
- */
-orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
-{
-  /* TODO */
-  return orxSTATUS_FAILURE;
-}
