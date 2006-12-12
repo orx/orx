@@ -78,4 +78,9 @@
     <sources>test/orxTest_Event.c</sources>
   </module>
 
+  <module id="File" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
+    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
+    <sources>test/orxTest_File.c</sources>
+  </module>
+
 </bakefile>

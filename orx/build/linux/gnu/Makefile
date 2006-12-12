@@ -196,6 +196,11 @@ EVENT_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 EVENT_OBJECTS =  \
 	.\build\$(BUILD)\Event_orxTest_Event.o
+FILE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+FILE_OBJECTS =  \
+	.\build\$(BUILD)\File_orxTest_File.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
@@ -217,6 +222,11 @@ JOYSTICK_NONE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 JOYSTICK_NONE_OBJECTS =  \
 	.\build\$(BUILD)\Joystick_NONE_orxJoystick.o
+FILE_LIBC_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+FILE_LIBC_OBJECTS =  \
+	.\build\$(BUILD)\File_LibC_orxFile.o
 TIME_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
@@ -275,6 +285,9 @@ endif
 ifeq ($(USE_TEST),1)
 __Event___depname = ..\..\..\bin\modules\Event.dll
 endif
+ifeq ($(USE_TEST),1)
+__File___depname = ..\..\..\bin\modules\File.dll
+endif
 ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
 __Sound_Fmod___depname = ..\..\..\bin\plugins\core\sound\Sound_Fmod.dll
@@ -295,6 +308,9 @@ endif
 ifeq ($(USE_PLUGINS),1)
 __Joystick_NONE___depname = \
 	..\..\..\bin\plugins\core\joystick\Joystick_NONE.dll
+endif
+ifeq ($(USE_PLUGINS),1)
+__File_LibC___depname = ..\..\..\bin\plugins\core\file\File_LibC.dll
 endif
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
@@ -348,7 +364,7 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname)
 
 clean: 
 	-if exist .\build\$(BUILD)\*.o del .\build\$(BUILD)\*.o
@@ -366,10 +382,12 @@ clean:
 	-if exist ..\..\..\bin\modules\FSM.dll del ..\..\..\bin\modules\FSM.dll
 	-if exist ..\..\..\bin\modules\Clock.dll del ..\..\..\bin\modules\Clock.dll
 	-if exist ..\..\..\bin\modules\Event.dll del ..\..\..\bin\modules\Event.dll
+	-if exist ..\..\..\bin\modules\File.dll del ..\..\..\bin\modules\File.dll
 	-if exist ..\..\..\bin\plugins\core\sound\Sound_Fmod.dll del ..\..\..\bin\plugins\core\sound\Sound_Fmod.dll
 	-if exist ..\..\..\bin\plugins\core\mouse\Mouse_Allegro.dll del ..\..\..\bin\plugins\core\mouse\Mouse_Allegro.dll
 	-if exist ..\..\..\bin\plugins\core\keyboard\Keyboard_Allegro.dll del ..\..\..\bin\plugins\core\keyboard\Keyboard_Allegro.dll
 	-if exist ..\..\..\bin\plugins\core\joystick\Joystick_NONE.dll del ..\..\..\bin\plugins\core\joystick\Joystick_NONE.dll
+	-if exist ..\..\..\bin\plugins\core\file\File_LibC.dll del ..\..\..\bin\plugins\core\file\File_LibC.dll
 	-if exist ..\..\..\bin\plugins\core\time\Time_SDL.dll del ..\..\..\bin\plugins\core\time\Time_SDL.dll
 
 ifeq ($(LINK),dynamic)
@@ -432,6 +450,11 @@ ifeq ($(USE_TEST),1)
 	$(CC) -shared -fPIC -o $@ $(EVENT_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
 endif
 
+ifeq ($(USE_TEST),1)
+..\..\..\bin\modules\File.dll: $(FILE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+	$(CC) -shared -fPIC -o $@ $(FILE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+endif
+
 ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\core\sound\Sound_Fmod.dll: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
@@ -456,6 +479,11 @@ endif
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
 	$(CC) -shared -fPIC -o $@ $(JOYSTICK_NONE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+endif
+
+ifeq ($(USE_PLUGINS),1)
+..\..\..\bin\plugins\core\file\File_LibC.dll: $(FILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+	$(CC) -shared -fPIC -o $@ $(FILE_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_PLUGINS),1)
@@ -741,6 +769,9 @@ endif
 .\build\$(BUILD)\Event_orxTest_Event.o: ../../../test/orxTest_Event.c
 	$(CC) -c -o $@ $(EVENT_CFLAGS) $(CPPDEPS) $<
 
+.\build\$(BUILD)\File_orxTest_File.o: ../../../test/orxTest_File.c
+	$(CC) -c -o $@ $(FILE_CFLAGS) $(CPPDEPS) $<
+
 .\build\$(BUILD)\Sound_Fmod_orxSound.o: ../../../plugins/Sound/Fmod/orxSound.c
 	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<
 
@@ -752,6 +783,9 @@ endif
 
 .\build\$(BUILD)\Joystick_NONE_orxJoystick.o: ../../../plugins/Joystick/NONE/orxJoystick.c
 	$(CC) -c -o $@ $(JOYSTICK_NONE_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\File_LibC_orxFile.o: ../../../plugins/File/LibC/orxFile.c
+	$(CC) -c -o $@ $(FILE_LIBC_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Time_SDL_orxTime.o: ../../../plugins/Time/SDL/orxTime.c
 	$(CC) -c -o $@ $(TIME_SDL_CFLAGS) $(CPPDEPS) $<

@@ -118,6 +118,11 @@
 	  </module>
   
   <!-- FILE -->
+	  <!-- Depends on nothing -->
+	  <module id="File_LibC" cond="USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK">
+	    <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/file</dirname>
+	    <sources>plugins/File/LibC/orxFile.c</sources>
+	  </module>
   
   <!-- FILE_SYSTEM -->
 
