@@ -100,9 +100,6 @@ orxVOID orxFile_LibC_Exit()
  */
 orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
 {
-  /* Default return value */
-  orxFILE *pstFile = orxNULL;
-  
   /* Convert the open flags into a string */
   orxCHAR zMode[3];
   
