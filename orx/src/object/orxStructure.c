@@ -42,16 +42,16 @@
  */
 typedef struct __orxSTRUCTURE_STORAGE_t
 {
-  /* Storage type */
+  /* Storage type : 4 */
   orxSTRUCTURE_STORAGE_TYPE eType;
 
-  /* Associated node bank */
+  /* Associated node bank : 8 */
   orxBANK *pstNodeBank;
 
-  /* Associated structure bank */
+  /* Associated structure bank : 12 */
   orxBANK *pstStructureBank;
 
-  /* Storage union */
+  /* Storage union : 24 */
   union
   {
     /* Link List */
@@ -64,11 +64,30 @@ typedef struct __orxSTRUCTURE_STORAGE_t
 } orxSTRUCTURE_STORAGE;
 
 /*
+ * Internal registration info
+ */
+typedef struct __orxSTRUCTURE_REGISTER_INFO_t
+{
+  /* Structure storage type : 4 */
+  orxSTRUCTURE_STORAGE_TYPE eStorageType;
+
+  /* Structure storage size : 8 */
+  orxU32 u32Size;
+
+  /* Structure storage memory type : 12 */
+  orxMEMORY_TYPE eMemoryType;
+
+  /* Structure update callbacks : 16 */
+  orxSTRUCTURE_UPDATE_FUNCTION pfnUpdate;
+
+} orxSTRUCTURE_REGISTER_INFO;
+
+/*
  * Internal storage node
  */
 typedef struct __orxSTRUCTURE_STORAGE_NODE_t
 {
-  /* Storage node union */
+  /* Storage node union : 16 */
   union
   {    
     /* Link list node */
@@ -78,10 +97,10 @@ typedef struct __orxSTRUCTURE_STORAGE_NODE_t
     orxTREE_NODE stTreeNode;
   };
 
-  /* Pointer to structure */
+  /* Pointer to structure : 20 */
   orxSTRUCTURE *pstStructure;
 
-  /* Storage type */
+  /* Storage type : 24 */
   orxSTRUCTURE_STORAGE_TYPE eType;
 
 } orxSTRUCTURE_STORAGE_NODE;
@@ -263,29 +282,33 @@ orxVOID orxStructure_Exit()
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCONST orxSTRUCTURE_REGISTER_INFO *_pstRegisterInfo)
+orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxCONST orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
-  orxASSERT(_pstRegisterInfo->u32Size != 0);
-  orxASSERT(_pstRegisterInfo->eStorageType < orxSTRUCTURE_STORAGE_TYPE_NUMBER);
-  orxASSERT(_pstRegisterInfo->eMemoryType < orxMEMORY_TYPE_NUMBER);
+  orxASSERT(_u32Size != 0);
+  orxASSERT(_eStorageType < orxSTRUCTURE_STORAGE_TYPE_NUMBER);
+  orxASSERT(_eMemoryType < orxMEMORY_TYPE_NUMBER);
 
   /* Not already registered? */
   if(sstStructure.astInfo[_eStructureID].u32Size == 0)
   {
     /* Creates bank for structure storage */
-    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE, _pstRegisterInfo->u32Size, orxBANK_KU32_FLAGS_NONE, _pstRegisterInfo->eMemoryType);
+    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE, _u32Size, orxBANK_KU32_FLAGS_NONE, _eMemoryType);
 
     /* Valid? */
     if(sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL)
     {
       /* Registers it */
-      orxMemory_Copy(&(sstStructure.astInfo[_eStructureID]), _pstRegisterInfo, sizeof(orxSTRUCTURE_REGISTER_INFO));
-      sstStructure.astStorage[_eStructureID].eType = _pstRegisterInfo->eStorageType;
+      sstStructure.astInfo[_eStructureID].eStorageType  = _eStorageType;
+      sstStructure.astInfo[_eStructureID].eMemoryType   = _eMemoryType;
+      sstStructure.astInfo[_eStructureID].u32Size       = _u32Size;
+      sstStructure.astInfo[_eStructureID].pfnUpdate     = _pfnUpdate;
+
+      sstStructure.astStorage[_eStructureID].eType      = _eStorageType;
     }
     else
     {

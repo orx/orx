@@ -44,6 +44,9 @@
 #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE)               \
   (((orxSTRUCTURE *)STRUCTURE)->eID == orxSTRUCTURE_ID_##TYPE) ? (orx##TYPE *)STRUCTURE : orxNULL;
 
+/** Structure register macro. */
+#define orxSTRUCTURE_REGISTER(STRUCTURE_ID, STORAGE_TYPE, MEMORY_TYPE, UPDATE_FUNCTION) \
+  orxStructure_Register(STRUCTURE_ID, STORAGE_TYPE, MEMORY_TYPE, sizeof(STRUCTURE_ID), UPDATE_FUNCTION);
 
 /** Structure IDs. */
 typedef enum __orxSTRUCTURE_ID_t
@@ -104,23 +107,6 @@ typedef struct __orxSTRUCTURE_t
 /** Structure update callback function type. */
 typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
-/** Structure registration info. */
-typedef struct __orxSTRUCTURE_REGISTER_INFO_t
-{
-  /* Structure storage type : 4 */
-  orxSTRUCTURE_STORAGE_TYPE eStorageType;
-
-  /* Structure storage size : 8 */
-  orxU32 u32Size;
-
-  /* Structure storage memory type : 12 */
-  orxMEMORY_TYPE eMemoryType;
-
-  /* Structure update callbacks : 16 */
-  orxSTRUCTURE_UPDATE_FUNCTION pfnUpdate;
-
-} orxSTRUCTURE_REGISTER_INFO;
-
 
 /** Structure module setup. */
 extern orxDLLAPI orxVOID                        orxStructure_Setup();
@@ -130,7 +116,7 @@ extern orxDLLAPI orxSTATUS                      orxStructure_Init();
 extern orxDLLAPI orxVOID                        orxStructure_Exit();
 
 /** Registers a given ID. */
-extern orxDLLAPI orxSTATUS  orxFASTCALL         orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxCONST orxSTRUCTURE_REGISTER_INFO *_pstRegisterInfo);
+extern orxDLLAPI orxSTATUS  orxFASTCALL         orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxCONST orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate);
 /** Unregisters a given ID. */
 extern orxDLLAPI orxVOID    orxFASTCALL         orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
 

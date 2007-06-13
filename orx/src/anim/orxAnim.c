@@ -262,18 +262,11 @@ orxSTATUS orxAnim_Init()
   /* Not already Initialized? */
   if(!(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY))
   {
-    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-  
     /* Cleans static controller */
     orxMemory_Set(&sstAnim, 0, sizeof(orxANIM_STATIC));
 
     /* Registers structure type */
-    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-    stRegisterInfo.u32Size      = sizeof(orxANIM);
-    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-    stRegisterInfo.pfnUpdate    = orxNULL;
-
-    eResult = orxStructure_Register(orxSTRUCTURE_ID_ANIM, &stRegisterInfo);
+    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_ANIM, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
   }
   else
   {

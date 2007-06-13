@@ -59,7 +59,7 @@ struct __orxTREE_t
   /* Tree cell pointer : 4 */
   struct __orxTREE_NODE_t *pstRoot;
 
-  /* Counter : 12 */
+  /* Counter : 8 */
   orxU32 u32Counter;
 };
 

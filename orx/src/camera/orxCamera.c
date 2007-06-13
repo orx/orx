@@ -864,19 +864,11 @@ orxSTATUS orxCamera_Init()
   /* Not already Initialized? */
   if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
   {
-    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-  
-    /* Cleans static controller */
+    /* Cleans control structure */
     orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
 
     /* Registers structure type */
-    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-    stRegisterInfo.u32Size      = sizeof(orxCAMERA);
-    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-    stRegisterInfo.pfnUpdate    = orxNULL;
-
-    /* Registers structure */
-    eResult = orxStructure_Register(orxSTRUCTURE_ID_CAMERA, &stRegisterInfo);
+    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_CAMERA, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)

@@ -224,18 +224,11 @@ orxSTATUS orxTexture_Init()
   /* Not already Initialized? */
   if(!(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY))
   {
-    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-
     /* Cleans static controller */
     orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE_STATIC));
 
     /* Registers structure type */
-    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_LINKLIST;
-    stRegisterInfo.u32Size      = sizeof(orxTEXTURE);
-    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-    stRegisterInfo.pfnUpdate    = orxNULL;
-
-    eResult = orxStructure_Register(orxSTRUCTURE_ID_TEXTURE, &stRegisterInfo);
+    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
     if (eResult == orxSTATUS_SUCCESS)
     {

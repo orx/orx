@@ -564,11 +564,6 @@ orxSTATUS orxFrame_Init()
   /* Not already Initialized? */
   if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
   {
-    orxSTRUCTURE_REGISTER_INFO stRegisterInfo;
-
-    /* Cleans static controller */
-    orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
-
     /* Cleans control structure */
     orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
 
@@ -576,12 +571,7 @@ orxSTATUS orxFrame_Init()
     sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
 
     /* Registers structure type */
-    stRegisterInfo.eStorageType = orxSTRUCTURE_STORAGE_TYPE_TREE;
-    stRegisterInfo.u32Size      = sizeof(orxFRAME);
-    stRegisterInfo.eMemoryType  = orxMEMORY_TYPE_MAIN;
-    stRegisterInfo.pfnUpdate    = orxNULL;
-
-    eResult = orxStructure_Register(orxSTRUCTURE_ID_FRAME, &stRegisterInfo);
+    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE, orxMEMORY_TYPE_MAIN, orxNULL);
 
     /* Successful? */
     if(eResult == orxSTATUS_SUCCESS)
