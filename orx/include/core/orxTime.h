@@ -39,12 +39,12 @@ extern orxDLLAPI orxVOID            orxTime_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Exit, orxVOID);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_GetTime, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxTime_GetDate, orxDATE);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxTime_Delay, orxVOID, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_GetTime, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_GetDate, orxDATE);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Delay, orxVOID, orxU32);
 
 
 /** Inits the time module.

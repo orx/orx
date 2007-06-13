@@ -59,8 +59,8 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(KEYBOARD)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_Hit, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_Read, orxS32);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxKeyboard_ClearBuffer, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Read, orxS32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, orxVOID);

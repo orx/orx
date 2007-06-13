@@ -48,12 +48,12 @@ extern orxDLLAPI orxVOID                orxFile_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxFile_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxFile_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxFile_Open, orxFILE*, orxSTRING, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxFile_Read, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
-orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxFile_Write, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxFile_Close, orxSTATUS, orxFILE*);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Open, orxFILE*, orxSTRING, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Read, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Write, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Close, orxSTATUS, orxFILE*);
 
 
 /** Initialize the File Module

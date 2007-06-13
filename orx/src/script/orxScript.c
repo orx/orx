@@ -64,13 +64,13 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(SCRIPT)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxScript_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxScript_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxScript_Create, orxSCRIPT *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxScript_Delete, orxVOID, orxSCRIPT *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxScript_LoadFile, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
-//orxPLUGIN_DEFINE_CORE_FUNCTION_4(orxScript_CallFunc, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING, orxSTRING, ...);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxScript_Execute, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Create, orxSCRIPT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Delete, orxVOID, orxSCRIPT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_LoadFile, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
+//orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_CallFunc, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING, orxSTRING, ...);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_Execute, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
 
 
 /***************************************************************************

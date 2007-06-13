@@ -56,5 +56,5 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(JOYSTICK)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxJoystick_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);

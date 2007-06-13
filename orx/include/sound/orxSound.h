@@ -57,19 +57,19 @@ extern orxDLLAPI orxVOID                              orxSound_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxSound_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxSound_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxSound_SampleLoadFromFile, orxSOUND_SAMPLE*, orxCONST orxSTRING);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxSound_SampleLoadFromMemory, orxSOUND_SAMPLE*, orxCONST orxVOID *, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxSound_SampleUnload, orxVOID, orxSOUND_SAMPLE *);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxSound_SamplePlay, orxU32, orxU32, orxSOUND_SAMPLE *);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxSound_SampleTestFlags, orxBOOL, orxSOUND_SAMPLE *, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxSound_SampleSetFlags, orxVOID, orxSOUND_SAMPLE *, orxU32, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxSound_ChannelStop, orxSTATUS, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxSound_ChannelPause, orxSTATUS, orxU32, orxBOOL);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxSound_ChannelTestFlags, orxBOOL, orxU32, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxSound_ChannelSetFlags, orxVOID, orxU32, orxU32, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxSound_ChannelSetVolume, orxSTATUS, orxU32, orxU8);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_SampleLoadFromFile, orxSOUND_SAMPLE*, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_SampleLoadFromMemory, orxSOUND_SAMPLE*, orxCONST orxVOID *, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_SampleUnload, orxVOID, orxSOUND_SAMPLE *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_SamplePlay, orxU32, orxU32, orxSOUND_SAMPLE *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_SampleTestFlags, orxBOOL, orxSOUND_SAMPLE *, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_SampleSetFlags, orxVOID, orxSOUND_SAMPLE *, orxU32, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_ChannelStop, orxSTATUS, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_ChannelPause, orxSTATUS, orxU32, orxBOOL);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_ChannelTestFlags, orxBOOL, orxU32, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_ChannelSetFlags, orxVOID, orxU32, orxU32, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSound_ChannelSetVolume, orxSTATUS, orxU32, orxU8);
 
 /** Initialize the Sound Module
  * @return Returns the status of the module initialization

@@ -57,30 +57,30 @@ extern orxDLLAPI orxVOID            orxDisplay_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_Exit, orxVOID);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_Swap, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_Swap, orxSTATUS);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxDisplay_DrawText, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxVEC *, orxARGB, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_DrawText, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxVEC *, orxARGB, orxCONST orxSTRING);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_CreateBitmap, orxBITMAP *, orxCONST orxVEC *, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxDisplay_DeleteBitmap, orxVOID, orxBITMAP *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_CreateBitmap, orxBITMAP *, orxCONST orxVEC *, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_DeleteBitmap, orxVOID, orxBITMAP *);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxDisplay_GetScreenBitmap, orxBITMAP *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetScreenBitmap, orxBITMAP *);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxARGB);
-orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxDisplay_TransformBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxBITMAP_TRANSFORM *, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxARGB);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxBITMAP_TRANSFORM *, orxU32);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxARGB, orxBOOL);
-orxPLUGIN_DECLARE_CORE_FUNCTION_3(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxCONST orxVEC *, orxCONST orxVEC *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxARGB, orxBOOL);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxCONST orxVEC *, orxCONST orxVEC *);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_5(orxDisplay_BlitBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxVEC *, orxCONST orxVEC *, orxCONST orxVEC *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_BlitBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxVEC *, orxCONST orxVEC *, orxCONST orxVEC *);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_SaveBitmap, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxSTRING);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxDisplay_LoadBitmap, orxBITMAP *, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, orxCONST orxSTRING);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxVEC *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxVEC *);
 
 
 

@@ -36,9 +36,9 @@ extern orxDLLAPI orxVOID                              orxMouse_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxMouse_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxMouse_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxMouse_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 *);
 
 
 /** Init the mouse module

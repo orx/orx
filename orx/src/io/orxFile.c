@@ -64,12 +64,12 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(FILE)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxFile_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxFile_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFile_Open, orxFILE*, orxCONST orxSTRING, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION_4(orxFile_Read, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
-orxPLUGIN_DEFINE_CORE_FUNCTION_4(orxFile_Write, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFile_Close, orxSTATUS, orxFILE*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Open, orxFILE*, orxCONST orxSTRING, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Read, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Write, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Close, orxSTATUS, orxFILE*);
 
 
 /***************************************************************************

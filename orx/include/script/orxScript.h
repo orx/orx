@@ -45,13 +45,13 @@ extern orxDLLAPI orxVOID                              orxScript_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxScript_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxScript_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxScript_Create, orxSCRIPT *);
-orxPLUGIN_DECLARE_CORE_FUNCTION_1(orxScript_Delete, orxVOID, orxSCRIPT *);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxScript_LoadFile, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
-//orxPLUGIN_DECLARE_CORE_FUNCTION_4(orxScript_CallFunc, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING, orxSTRING, ...);
-orxPLUGIN_DECLARE_CORE_FUNCTION_2(orxScript_Execute, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_Create, orxSCRIPT *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_Delete, orxVOID, orxSCRIPT *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_LoadFile, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
+//orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_CallFunc, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING, orxSTRING, ...);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_Execute, orxSTATUS, orxSCRIPT *, orxCONST orxSTRING);
 
 /** Initialize the Script Module
  * @return Returns the status of the operation

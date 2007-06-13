@@ -82,17 +82,17 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(FILESYSTEM)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxFileSystem_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION_0(orxFileSystem_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFileSystem_FindFirst, orxBOOL, orxSTRING, orxFILESYSTEM_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFileSystem_FindNext, orxBOOL, orxFILESYSTEM_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFileSystem_FindClose, orxVOID, orxFILESYSTEM_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFileSystem_Info, orxSTATUS, orxSTRING, orxFILESYSTEM_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFileSystem_Copy, orxSTATUS, orxSTRING, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION_2(orxFileSystem_Rename, orxSTATUS, orxSTRING, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFileSystem_Delete, orxSTATUS, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFileSystem_CreateDir, orxSTATUS, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION_1(orxFileSystem_DeleteDir, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindFirst, orxBOOL, orxSTRING, orxFILESYSTEM_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindNext, orxBOOL, orxFILESYSTEM_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindClose, orxVOID, orxFILESYSTEM_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Info, orxSTATUS, orxSTRING, orxFILESYSTEM_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Copy, orxSTATUS, orxSTRING, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Rename, orxSTATUS, orxSTRING, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Delete, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_CreateDir, orxSTATUS, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_DeleteDir, orxSTATUS, orxSTRING);
 
 
 /***************************************************************************

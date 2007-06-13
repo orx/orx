@@ -36,8 +36,8 @@ extern orxDLLAPI orxVOID                              orxJoystick_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION_0(orxJoystick_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);
 
 
 /** Inits the joystick module.
