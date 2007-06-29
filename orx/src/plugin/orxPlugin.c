@@ -213,9 +213,9 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
           j++)
       {
         /* Tests if function is loaded */
-        bLoaded = (sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction != sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction) ?
-                  orxTRUE :
-                  orxFALSE;
+        bLoaded = (sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction != sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction)
+                  ? orxTRUE
+                  : orxFALSE;
       }
 
       /* Was not already loaded */

@@ -2002,12 +2002,27 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet)
 }
 
 
-/** AnimSet flag test accessor
+/** AnimSet flags test accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_u32Flags														Flags to test
  * @return			orxTRUE / orxFALSE
  */
 orxBOOL orxFASTCALL orxAnimSet_TestFlags(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32Flags)
+{
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);
+  orxASSERT(_pstAnimSet != orxNULL);
+
+  /* Tests flags */
+  return((_pstAnimSet->u32IDFlags & _u32Flags) != orxANIMSET_KU32_FLAG_NONE);
+}
+
+/** AnimSet alls flags test accessor
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32Flags                           Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxAnimSet_TestAllFlags(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32Flags)
 {
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_FLAG_READY);

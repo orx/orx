@@ -135,12 +135,19 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureCounter(orxCONST
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetLength(orxCONST orxANIM *_pstAnim);
 
 
-/** Anim flag test accessor
+/** Anim flags test accessor
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxAnim_TestFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags);
+
+/** Anim all flags test accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxAnim_TestAllFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags);
 
 /** Anim flag set accessor
  * @param[in]   _pstAnim        Concerned animation

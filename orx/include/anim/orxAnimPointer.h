@@ -130,12 +130,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTime(orxANIMPOIN
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fFrequency);
 
 
-/** AnimPointer flag test accessor
+/** AnimPointer flags test accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _u32Flags                     Flags to test
  * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxAnimPointer_TestFlags(orxCONST orxANIMPOINTER *_pstAnimPointer, orxU32 _u32Flags);
+
+/** AnimPointer all flags test accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _u32Flags                     Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxAnimPointer_TestAllFlags(orxCONST orxANIMPOINTER *_pstAnimPointer, orxU32 _u32Flags);
 
 /** AnimPointer flag set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer

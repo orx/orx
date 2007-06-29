@@ -667,12 +667,26 @@ orxU32 orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
   return u32Length;
 }
 
-/** Animation flag test accessor
+/** Animation flags test accessor
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
  */
 orxBOOL orxFASTCALL orxAnim_TestFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags)
+{
+  /* Checks */
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(_pstAnim != orxNULL);
+
+  return((_pstAnim->u32IDFlags & _u32Flags) != orxANIM_KU32_FLAG_NONE);
+}
+
+/** Animation all flags test accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxAnim_TestAllFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);

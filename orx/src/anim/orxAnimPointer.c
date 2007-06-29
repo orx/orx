@@ -573,12 +573,27 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimPointe
   return eResult;
 }
 
-/** AnimPointer flag test accessor
+/** AnimPointer flags test accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _u32Flags                     Flags to test
  * @return      orxTRUE / orxFALSE
  */
 orxBOOL orxFASTCALL orxAnimPointer_TestFlags(orxCONST orxANIMPOINTER *_pstAnimPointer, orxU32 _u32Flags)
+{
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(_pstAnimPointer != orxNULL);
+
+  /* Tests flag */
+  return((_pstAnimPointer->u32IDFlags & _u32Flags) != orxANIMPOINTER_KU32_FLAG_NONE);
+}
+
+/** AnimPointer all flags test accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _u32Flags                     Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxAnimPointer_TestAllFlags(orxCONST orxANIMPOINTER *_pstAnimPointer, orxU32 _u32Flags)
 {
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
