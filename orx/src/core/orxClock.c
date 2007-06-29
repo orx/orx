@@ -378,53 +378,50 @@ orxSTATUS orxClock_Update()
     {
       orxU32 u32Time, u32TickCounterBackup, u32ClockDT;
   
-      /* Is clock paused? */
-      if(orxClock_IsPaused(pstClock) != orxFALSE)
+      /* Is clock not paused? */
+      if(orxClock_IsPaused(pstClock) == orxFALSE)
       {
-        /* Gets to the next one */
-        continue;
-      }
-  
-      /* Gets clock modified DT */
-      u32ClockDT = orxClock_ComputeDT(u32DT, &(pstClock->stClockInfo));
-  
-      /* Backups clock tick counter */
-      u32TickCounterBackup = pstClock->stClockInfo.u32TickCounter;
-  
-      /* Gets cumulated time */
-      u32Time = u32ClockDT + pstClock->stClockInfo.u32TickValue;
-  
-      /* Updates new ticks if needed */
-      while(u32Time >= pstClock->stClockInfo.u32TickSize)
-      {
-        /* Updates tick counter */
-        pstClock->stClockInfo.u32TickCounter++;
-  
-        /* Updates remaining cumulated time */
-        u32Time -= pstClock->stClockInfo.u32TickSize;
-      }
-  
-      /* Updates tick value */
-      pstClock->stClockInfo.u32TickValue = u32Time;
-  
-      /* Computes global time */
-      pstClock->stClockInfo.u32Time += u32ClockDT;
-  
-      /* New tick happened? */
-      if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
-      {
-        orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-  
-        /* Updates clock DT for these calls */
-        pstClock->stClockInfo.u32StableDT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.u32TickSize;
-  
-        /* For all registered callbacks */
-        for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
-            pstFunctionStorage != orxNULL;
-            pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, pstFunctionStorage))
+        /* Gets clock modified DT */
+        u32ClockDT            = orxClock_ComputeDT(u32DT, &(pstClock->stClockInfo));
+    
+        /* Backups clock tick counter */
+        u32TickCounterBackup  = pstClock->stClockInfo.u32TickCounter;
+    
+        /* Gets cumulated time */
+        u32Time               = u32ClockDT + pstClock->stClockInfo.u32TickValue;
+    
+        /* Updates new ticks if needed */
+        while(u32Time >= pstClock->stClockInfo.u32TickSize)
         {
-          /* Calls it */
-          pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
+          /* Updates tick counter */
+          pstClock->stClockInfo.u32TickCounter++;
+    
+          /* Updates remaining cumulated time */
+          u32Time -= pstClock->stClockInfo.u32TickSize;
+        }
+    
+        /* Updates tick value */
+        pstClock->stClockInfo.u32TickValue  = u32Time;
+    
+        /* Computes global time */
+        pstClock->stClockInfo.u32Time      += u32ClockDT;
+    
+        /* New tick happened? */
+        if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
+        {
+          orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
+    
+          /* Updates clock DT for these calls */
+          pstClock->stClockInfo.u32StableDT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.u32TickSize;
+    
+          /* For all registered callbacks */
+          for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
+              pstFunctionStorage != orxNULL;
+              pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, pstFunctionStorage))
+          {
+            /* Calls it */
+            pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
+          }
         }
       }
     }
@@ -577,7 +574,7 @@ orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
 
  returns: orxTRUE / orxFALSE
  ***************************************************************************/
-orxBOOL orxFASTCALL orxClock_IsPaused(orxCLOCK *_pstClock)
+orxBOOL orxFASTCALL orxClock_IsPaused(orxCONST orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
@@ -694,7 +691,7 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK
 
  returns: orxVOID *
  ***************************************************************************/
-orxVOID *orxFASTCALL orxClock_GetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
+orxVOID *orxFASTCALL orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxVOID *pstContext = orxNULL;

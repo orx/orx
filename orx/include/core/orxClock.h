@@ -110,7 +110,7 @@ extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Pause(orxCLOCK *_
 /** Unpauses a Clock. */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Unpause(orxCLOCK *_pstClock);
 /** Is a Clock paused? */
-extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(orxCLOCK *_pstClock);
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(orxCONST orxCLOCK *_pstClock);
 
 /** Gets informations about a Clock. */
 extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock);
@@ -120,7 +120,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK
 /** Unregisters a callback function from a clock. */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
 /** Gets a callback function context. */
-extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
+extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
 /** Sets a callback function context. */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
 
