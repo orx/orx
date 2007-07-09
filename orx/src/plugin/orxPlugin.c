@@ -819,7 +819,7 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
                    |orxDEBUG_KU32_FLAG_TIMESTAMP
                    |orxDEBUG_KU32_FLAG_TYPE,
                     orxDEBUG_KU32_FLAG_ALL);
-  orxDEBUG_LOG3(orxDEBUG_LEVEL_ALL, MSG_PLUGIN_KZ_DEFAULT_NOT_LOADED_ZZI, _zFunctionName, _zFileName, _u32Line);
+  orxDEBUG_LOG(orxDEBUG_LEVEL_ALL, MSG_PLUGIN_KZ_DEFAULT_NOT_LOADED_ZZI, _zFunctionName, _zFileName, _u32Line);
   orxDEBUG_FLAG_RESTORE();
 
   return orxNULL;
@@ -897,7 +897,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
   else
   {
     /* Logs an error */
-    orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_LOAD_FAILED);
+    orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_LOAD_FAILED_Z, _zPluginFileName);
   }
 
   /* Returns its handle */

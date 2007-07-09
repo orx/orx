@@ -56,17 +56,17 @@
   #define orxREGISTER           register
 
   /** The null adress. */
-  #define orxNULL               NULL
+  #define orxNULL               ((void *)0)
 
   /* *** Compiler specific *** */
   /** The function intend to be inlined. */
   #ifdef __orxGCC__
     #define orxINLINE           inline
-  #endif
-  #ifdef __orxMSVC__
-    #define orxINLINE         __inline
-  #endif
-  
+  #else /* __orxGCC__ */
+    #ifdef __orxMSVC__
+      #define orxINLINE         __inline
+    #endif /* __orxMSVC__ */
+  #endif /* __orxGCC__ */
 
 #else /* __orxWINDOWS__ */
 
@@ -95,7 +95,7 @@
     #define orxREGISTER         register
 
     /** The null adress. */
-    #define orxNULL             NULL
+    #define orxNULL             ((void *)0)
 
   #endif /* __orxLINUX__ */
   
@@ -160,22 +160,31 @@ do                                                            \
 } while(orxFALSE);
 
 
-/** Test a flag. 
- * Tool macro for testing a bit-set in a 32-bits object.
- * @param I Integer to test.
- * @param F Flag to test.
- * @return true if flag is completely found.
+/** Tests all flags. 
+ * @param X Flag container.
+ * @param F Flags to test.
+ * @return true if flags are all presents.
  */
-#define orxFLAG32_TEST(I, F) (((I)&(F))==(F))
+#define orxFLAG_TEST_ALL(X, F) (((X) & (F)) == (F))
 
-
-/** Set a flag
- * Tool macro for set bit-set in a 32-bits object.
- * Add S into T juste where F bits are 1.
- * @param T Target
- * @param F Filter
- * @param S Source
+/** Tests flags. 
+ * @param X Flag container.
+ * @param F Flags to test.
+ * @return true if at least one flag is present.
  */
-#define orxFLAG32_SET(T, F, S) ((T)=((T)&!(F))|((F)&(S)))
+#define orxFLAG_TEST(X, F) (((X) & (F)) != 0)
+
+/** Sets / unsets flags.
+ * @param X Flag container.
+ * @param A Flags to add.
+ * @param R Flags to remove.
+ */
+#define orxFLAG_SET(X, A, R)  \
+do                            \
+{                             \
+  (X) &= ~(R);                \
+  (X) |= (A);                 \
+} while(orxFALSE);
+
 
 #endif /*_orxDECL_H_*/

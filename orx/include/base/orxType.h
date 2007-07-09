@@ -32,7 +32,7 @@
 #define _orxTYPE_H_
 
 /* *** Uses standard defines *** */
-#include <stddef.h>
+//#include <stddef.h>
 
 /* *** Uses orx declarations *** */
 #include "base/orxDecl.h"

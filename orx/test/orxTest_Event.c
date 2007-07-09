@@ -87,7 +87,7 @@ orxVOID orxTest_Event_DisplayFlagState()
 	orxU32 u32Flag = orxEvent_GetManagerFlags(sstTest_Event.pstEventManager);
 
 	/** Remove negative lifetime event.*/
-	if(orxFLAG32_TEST(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT))
+	if(orxFLAG_TEST_ALL(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT))
 	{
 		orxTextIO_PrintLn("* Remove unprocessed event with negative lifetime");
 	}
@@ -97,7 +97,7 @@ orxVOID orxTest_Event_DisplayFlagState()
 	}
 	
 	/** Remove unprocessed event.*/
-	if(orxFLAG32_TEST(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED))
+	if(orxFLAG_TEST_ALL(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED))
 	{
 		orxTextIO_PrintLn("* Remove unprocessed event");
 	}
@@ -107,7 +107,7 @@ orxVOID orxTest_Event_DisplayFlagState()
 	}
 
 	/** Do a partial or a complete process.*/
-	if(orxFLAG32_TEST(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS))
+	if(orxFLAG_TEST_ALL(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS))
 	{
 		orxTextIO_PrintLn("* Partial event processing");
 	}

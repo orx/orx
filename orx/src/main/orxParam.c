@@ -335,7 +335,7 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
         }
         else
         {
-          orxDEBUG_LOG2(orxDEBUG_LEVEL_PARAM,
+          orxDEBUG_LOG(orxDEBUG_LEVEL_PARAM,
                        "A parameter with the same long name (%s%s) has already been registered",
                        orxPARAM_KZ_MODULE_LONG_PREFIX,
                        _pstParam->zLongName);
@@ -343,7 +343,7 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
     }
     else
     {
-      orxDEBUG_LOG2(orxDEBUG_LEVEL_PARAM,
+      orxDEBUG_LOG(orxDEBUG_LEVEL_PARAM,
                    "A parameter with the same short name (%s%s) has already been registered",
                    orxPARAM_KZ_MODULE_SHORT_PREFIX,
                    _pstParam->zShortName);

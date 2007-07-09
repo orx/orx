@@ -62,17 +62,14 @@
 
 #ifdef __orxDEBUG__
 
-  /* Log message */
-  #define orxDEBUG_LOG(LEVEL, STRING)         _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING)
-  #define orxDEBUG_LOG1(LEVEL, STRING, ARG1)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1)
-  #define orxDEBUG_LOG2(LEVEL, STRING, ARG1, ARG2)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2)
-  #define orxDEBUG_LOG3(LEVEL, STRING, ARG1, ARG2, ARG3)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3)
-  #define orxDEBUG_LOG4(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4)
-  #define orxDEBUG_LOG5(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5)
-  #define orxDEBUG_LOG6(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6)
-  #define orxDEBUG_LOG7(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7)
-  #define orxDEBUG_LOG8(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8)
-  #define orxDEBUG_LOG9(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9)        _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9)
+  /* Log message, compiler specific */
+  #ifdef __orxGCC__
+    #define orxDEBUG_LOG(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
+  #else /* __orxGCC__ */
+    #ifdef __orxMSVC__
+      #define orxDEBUG_LOG(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
+    #endif /* __orxMSVC__ */
+  #endif /* __orcGCC__ */
   
   /* End platform specific */
 
@@ -97,15 +94,6 @@
 
   /* Log message */
   #define orxDEBUG_LOG(LEVEL, STRING)
-  #define orxDEBUG_LOG1(LEVEL, STRING, ARG1)
-  #define orxDEBUG_LOG2(LEVEL, STRING, ARG1, ARG2)
-  #define orxDEBUG_LOG3(LEVEL, STRING, ARG1, ARG2, ARG3)
-  #define orxDEBUG_LOG4(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4)
-  #define orxDEBUG_LOG5(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5)
-  #define orxDEBUG_LOG6(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6)
-  #define orxDEBUG_LOG7(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7)
-  #define orxDEBUG_LOG8(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8)
-  #define orxDEBUG_LOG9(LEVEL, STRING, ARG1, ARG2, ARG3, ARG4, ARG5, ARG6, ARG7, ARG8, ARG9)
 
   #define orxBREAK()
 

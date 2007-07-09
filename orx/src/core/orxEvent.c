@@ -198,9 +198,9 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
   /** Assert the Event manager is ok.*/
   orxASSERT(_pstEventManager != orxNULL);
   
-  bRemoveNegative    = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT);
-  bRemoveUnprocessed = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED);
-  bPartialProcess    = orxFLAG32_TEST(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS);
+  bRemoveNegative    = orxFLAG_TEST_ALL(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT);
+  bRemoveUnprocessed = orxFLAG_TEST_ALL(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED);
+  bPartialProcess    = orxFLAG_TEST_ALL(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS);
   
   /** Process all message.*/
   pstCurrentItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);

@@ -1,6 +1,6 @@
 #define MSG_PLUGIN_KZ_INVALID_FILENAME "Le nom de fichier donné est invalide.\n"
 #define MSG_PLUGIN_KZ_INVALID_NAME "Le nom de plugin donné est invalide.\n"
-#define MSG_PLUGIN_KZ_LOAD_FAILED "Le chargement du plugin a échoué!\n"
+#define MSG_PLUGIN_KZ_LOAD_FAILED_Z "Le chargement du plugin <%s> a échoué!\n"
 #define MSG_PLUGIN_KZ_MALLOC_FAILED "La tentative d'allocation de la mémoire a échoué!\n"
 #define MSG_PLUGIN_KZ_NOT_FOUND "Le plugin demandé n'est pas chargé.\n"
 #define MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND "La fonction demandée n'a pas été trouvée.\n"

@@ -507,7 +507,7 @@
 //    }
 //  }
 //
-//  orxDEBUG_LOG2(orxDEBUG_LEVEL_PATHFINDER, "Largeur : %d. Hauteur : %d.\n", _i_horizontal_size, _i_vertical_size);
+//  orxDEBUG_LOG(orxDEBUG_LEVEL_PATHFINDER, "Largeur : %d. Hauteur : %d.\n", _i_horizontal_size, _i_vertical_size);
 //
 //  return;
 //}
