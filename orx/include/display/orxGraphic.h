@@ -1,0 +1,121 @@
+/***************************************************************************
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by the Free Software Foundation; either version 2.1      *
+ *   of the License, or (at your option) any later version.                *
+ *                                                                         *
+ ***************************************************************************/
+
+/**
+ * @file orxGraphic.h
+ * @date 08/12/2003
+ * @author (C) Arcallians
+ * 
+ * @todo 
+ * Later on, add a texture cache system for rotated/scaled texture.
+ * This cache system should be activated or not by user.
+ * Adds 3D system (Not planned yet).
+ */
+
+/**
+ * @addtogroup Displat
+ * 
+ * Graphic Module.
+ * Allows to creates and handle 2D/3D Graphics.
+ * They are used as texture/animation container, with associated properties.
+ * 2D Graphics are used by objects.
+ * They thus can be referenced by objects as structures.
+ *
+ * @{
+ */
+
+
+#ifndef _orxGRAPHIC_H_
+#define _orxGRAPHIC_H_
+
+#include "orxInclude.h"
+
+#include "display/orxTexture.h"
+#include "object/orxStructure.h"
+
+
+/** Graphic ID Flags
+ */
+#define orxGRAPHIC_KU32_ID_FLAG_NONE          0x00000000  /**< No flags */
+
+#define orxGRAPHIC_KU32_ID_FLAG_2D            0x00000001  /**< 2D type graphic ID flag  */
+
+#define orxGRAPHIC_KU32_ID_MASK_ALL           0xFFFFFFFF  /**< All flags */
+
+
+/** Internal Graphic structure
+ */
+typedef struct __orxGRAPHIC_t                 orxGRAPHIC;
+
+
+/** Graphic module setup
+ */
+extern orxDLLAPI orxVOID                      orxGraphic_Setup();
+
+/** Inits the Graphic module
+ */
+extern orxDLLAPI orxSTATUS                    orxGraphic_Init();
+
+/** Exits from the Graphic module
+ */
+extern orxDLLAPI orxVOID                      orxGraphic_Exit();
+
+
+/** Creates an empty graphic
+ * @return      Created orxGRAPHIC / orxNULL
+ */
+extern orxDLLAPI orxGRAPHIC *                 orxGraphic_Create();
+
+/** Deletes a graphic
+ * @param[in]   _pstGraphic       Graphic to delete
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_Delete(orxGRAPHIC *_pstGraphic);
+
+
+/** Sets graphic data
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _pstData        Data structure to set / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *_pstData);
+
+/** Gets graphic data
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      OrxSTRUCTURE / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxGraphic_GetData(orxCONST orxGRAPHIC *_pstGraphic);
+
+
+/** Graphic flags test accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_TestFlags(orxCONST orxGRAPHIC *_pstGraphic, orxU32 _u32Flags);
+
+/** Graphic all flags test accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_TestAllFlags(orxCONST orxGRAPHIC *_pstGraphic, orxU32 _u32Flags);
+
+/** Graphic flag set accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _u32AddFlags    Flags to add
+ * @param[in]   _u32RemoveFlags Flags to remove
+ */
+extern orxDLLAPI orxVOID orxFASTCALL          orxGraphic_SetFlags(orxGRAPHIC *_pstGraphic, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
+
+
+#endif /* _orxGRAPHIC_H_ */
+
+
+/** @} */

@@ -23,7 +23,7 @@
 #include "camera/orxCamera.h"
 #include "debug/orxDebug.h"
 #include "display/orxDisplay.h"
-#include "display/graphic.h"
+#include "display/orxGraphic.h"
 #include "memory/orxMemory.h"
 
 
@@ -86,12 +86,12 @@ orxSTATIC orxRENDER_STATIC sstRender;
  ***************************************************************************/
 orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pstObject, orxFRAME *_pstFrame)
 {
-  graphic_st_graphic *pstGraphic;
+  orxGRAPHIC *pstGraphic;
   orxTEXTURE *pstTexture;
   orxBITMAP *pstBitmap;
   orxVEC vPos;
   orxFLOAT fRotation, fScale;
-  orxBOOL bAntialias = orxFALSE;
+//  orxBOOL bAntialias = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstSurface != orxNULL);
@@ -99,19 +99,19 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
   orxASSERT(_pstFrame != orxNULL);
 
   /* Gets object's graphic */
-  pstGraphic = (graphic_st_graphic *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
 
   /* 2D? */
-  if(graphic_flag_test(pstGraphic, GRAPHIC_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxGraphic_TestFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D) != orxFALSE)
   {
     /* Gets graphic's texture */
-    pstTexture  = graphic_2d_data_get(pstGraphic);
+    pstTexture  = (orxTEXTURE *)orxGraphic_GetData(pstGraphic);
 
     /* Gets texture's bitmap */
     pstBitmap   = (orxBITMAP *)orxTexture_GetBitmap(pstTexture);
 
-    /* Gets antialiasing info */
-    bAntialias  = graphic_flag_test(pstGraphic, GRAPHIC_KU32_ID_FLAG_ANTIALIAS);
+//    /* Gets antialiasing info */
+//    bAntialias  = graphic_flag_test(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_ANTIALIAS);
 
     /* Gets frame's position, rotation & zoom */
     fRotation   = orxFrame_GetRotation(_pstFrame, orxFALSE);

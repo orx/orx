@@ -93,10 +93,10 @@ typedef struct __orxSTRUCTURE_t
   orxSTRUCTURE_ID eID;
 
   /* Reference counter. : 8 */
-  orxU32 u32RefCounter;
+  orxU32          u32RefCounter;
 
   /* Handle of internal storage node. : 12 */
-  orxHANDLE hStorageNode;
+  orxHANDLE       hStorageNode;
 
   /* Padding */
   orxPAD(12)

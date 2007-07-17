@@ -39,7 +39,7 @@
             src/debug/orxTest.c
         </sources>
         <sources>
-            src/display/graphic.c
+            src/display/orxGraphic.c
             src/display/orxDisplay.c
             src/display/orxTexture.c
         </sources>

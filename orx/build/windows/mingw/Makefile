@@ -72,7 +72,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxDebug.o \
 	.\build\$(BUILD)\orxDLL_orxFPS.o \
 	.\build\$(BUILD)\orxDLL_orxTest.o \
-	.\build\$(BUILD)\orxDLL_graphic.o \
+	.\build\$(BUILD)\orxDLL_orxGraphic.o \
 	.\build\$(BUILD)\orxDLL_orxDisplay.o \
 	.\build\$(BUILD)\orxDLL_orxTexture.o \
 	.\build\$(BUILD)\orxDLL_orxFile.o \
@@ -118,7 +118,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxDebug.o \
 	.\build\$(BUILD)\orxLIB_orxFPS.o \
 	.\build\$(BUILD)\orxLIB_orxTest.o \
-	.\build\$(BUILD)\orxLIB_graphic.o \
+	.\build\$(BUILD)\orxLIB_orxGraphic.o \
 	.\build\$(BUILD)\orxLIB_orxDisplay.o \
 	.\build\$(BUILD)\orxLIB_orxTexture.o \
 	.\build\$(BUILD)\orxLIB_orxFile.o \
@@ -532,7 +532,7 @@ endif
 .\build\$(BUILD)\orxDLL_orxTest.o: ../../../src/debug/orxTest.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxDLL_graphic.o: ../../../src/display/graphic.c
+.\build\$(BUILD)\orxDLL_orxGraphic.o: ../../../src/display/orxGraphic.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxDLL_orxDisplay.o: ../../../src/display/orxDisplay.c
@@ -655,7 +655,7 @@ endif
 .\build\$(BUILD)\orxLIB_orxTest.o: ../../../src/debug/orxTest.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-.\build\$(BUILD)\orxLIB_graphic.o: ../../../src/display/graphic.c
+.\build\$(BUILD)\orxLIB_orxGraphic.o: ../../../src/display/orxGraphic.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\orxLIB_orxDisplay.o: ../../../src/display/orxDisplay.c

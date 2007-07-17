@@ -22,7 +22,7 @@
 #include "anim/orxAnimPointer.h"
 #include "core/orxTime.h"
 #include "debug/orxDebug.h"
-#include "display/graphic.h"
+#include "display/orxGraphic.h"
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
 
@@ -630,7 +630,7 @@ orxSTATIC orxINLINE orxCAMERA_VIEW_LIST *orxCamera_FindFreeViewListCell(orxCAMER
 orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 {
   orxFRAME *pstFrame;
-  graphic_st_graphic *pstGraphic;
+  orxGRAPHIC *pstGraphic;
   orxCAMERA_VIEW_LIST *pstCell = orxNULL;
   orxVEC *pvCamUL, *pvCamBR, *pvCamSize, vCamPos;
   orxVEC vTextureUL, vTextureBR, vTextureRef, vTexturePos, vTemp;
@@ -642,151 +642,160 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
   orxASSERT(_pstObject != orxNULL);
 
   /* Has graphic? */
-  pstGraphic = (graphic_st_graphic *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
   
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
     /* 2D? */
-    if(graphic_flag_test(pstGraphic, GRAPHIC_KU32_ID_FLAG_2D) != orxFALSE)
+    if(orxGraphic_TestFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D) != orxFALSE)
     {
-      /* Has frame? */
-      pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+      orxTEXTURE *pstTexture;
+      
+      /* Gets texture */
+      pstTexture = (orxTEXTURE *)orxGraphic_GetData(pstGraphic);
       
       /* Valid? */
-      if(pstFrame != orxNULL)
+      if(pstTexture != orxNULL)
       {
-        /* Gets camera clip corners pointers */
-        pvCamUL = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipUL);
-        pvCamBR = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipBR);
-
-        /* Gets texture infos */
-        orxFrame_GetPosition(pstFrame, &vTexturePos, orxFALSE);
-        fTextureRot   = orxFrame_GetRotation(pstFrame, orxFALSE);
-        fTextureScale = orxFrame_GetScale(pstFrame, orxFALSE);
-
-        /* Computes texture global corners */
-        graphic_2d_ref_coord_get(pstGraphic, &vTextureRef);
-        orxVec_Add(&vTextureUL, &vTexturePos, orxVec_Neg(&vTemp, &vTextureRef));
-
-        graphic_2d_size_get(pstGraphic, &vTextureRef);
-        orxVec_Add(&vTextureBR, &vTextureUL, &vTextureRef);
-
-        /* Intersection? */
-        if(orxVec_TestAABoxIntersection(pvCamUL, pvCamBR, &vTextureUL, &vTextureBR) != orxFALSE)
+        /* Has frame? */
+        pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+        
+        /* Valid? */
+        if(pstFrame != orxNULL)
         {
-          /* Search for object cell in list*/
-          pstCell = orxCamera_SearchViewList(_pstCamera, _pstObject);
-
-          /* Already in list */
-          if(pstCell != orxNULL)
+          /* Gets camera clip corners pointers */
+          pvCamUL = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipUL);
+          pvCamBR = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipBR);
+  
+          /* Gets texture infos */
+          orxFrame_GetPosition(pstFrame, &vTexturePos, orxFALSE);
+          fTextureRot   = orxFrame_GetRotation(pstFrame, orxFALSE);
+          fTextureScale = orxFrame_GetScale(pstFrame, orxFALSE);
+  
+          /* Computes texture global corners */
+          orxTexture_GetRefPoint(pstTexture, &vTextureRef);
+          orxVec_Add(&vTextureUL, &vTexturePos, orxVec_Neg(&vTemp, &vTextureRef));
+  
+          orxTexture_GetSize(pstTexture, &vTextureRef);
+          orxVec_Add(&vTextureBR, &vTextureUL, &vTextureRef);
+  
+          /* Intersection? */
+          if(orxVec_TestAABoxIntersection(pvCamUL, pvCamBR, &vTextureUL, &vTextureBR) != orxFALSE)
           {
-            /* Removes it from list */
-            orxCamera_RemoveViewListCell(_pstCamera, pstCell);
-
-            /* Cleans view list cell */
-            orxCamera_CleanViewListCell(pstCell);
+            /* Search for object cell in list*/
+            pstCell = orxCamera_SearchViewList(_pstCamera, _pstObject);
+  
+            /* Already in list */
+            if(pstCell != orxNULL)
+            {
+              /* Removes it from list */
+              orxCamera_RemoveViewListCell(_pstCamera, pstCell);
+  
+              /* Cleans view list cell */
+              orxCamera_CleanViewListCell(pstCell);
+            }
+            else
+            {
+              /* Find first free cell */
+              pstCell = orxCamera_FindFreeViewListCell(_pstCamera);
+  
+              /* No cell left? */
+              if(pstCell == orxNULL)
+              {
+                return orxSTATUS_FAILURE;
+              }
+            }
+  
+            /* Stores the object */
+            pstCell->pstObject = _pstObject;
+  
+            /* Gets camera infos */
+            orxFrame_GetPosition(_pstCamera->pstFrame, &vCamPos, orxFALSE);
+            pvCamSize = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vSize);
+            fCamRot   = orxFrame_GetRotation(_pstCamera->pstFrame, orxFALSE);
+            fCamScale = orxFrame_GetScale(_pstCamera->pstFrame, orxFALSE);
+  
+            /* Computes texture screen frame, using viewport coordinates */
+  
+            /* Gets into camera space */
+            orxVec_Add(&vTextureUL, &vTextureUL, orxVec_Neg(&vTemp, &vCamPos));
+  
+            /* Applies rotation & scale if needed */
+            if(fCamRot != orxFLOAT_0)
+            {
+              orxVec_Rot(&vTextureUL, &vTextureUL, &orxVEC_Z, -fCamRot);
+            }
+            if(fCamScale != orxFLOAT_1)
+            {
+              orxVec_Mul(&vTextureUL, &vTextureUL, orxFLOAT_1 / fCamScale);
+            }
+  
+            /* Uses differential scrolling? */
+            if(orxFrame_HasDifferentialScrolling(pstFrame) != orxFALSE)
+            {
+              /* Gets scrolling coefficients */
+              orxFrame_GetDifferentialScrolling(pstFrame, &vScroll);
+  
+              /* X axis scrolling? */
+              if(vScroll.fX != orxFLOAT_0)
+              {
+                vScroll.fX *= vTextureUL.fX;
+              }
+  
+              /* Y axis scrolling? */
+              if(vScroll.fY != orxFLOAT_0)
+              {
+                vScroll.fY *= vTextureUL.fY;
+              }
+  
+              /* Updates texture coordinates */
+              orxVec_Set3(&vTextureUL, (orxFLOAT)floor(vScroll.fX), (orxFLOAT)floor(vScroll.fY), vTextureUL.fZ); /* MSVC doesn't recognize floorf for x86) */
+            }
+  
+            /* Gets into viewport coordinates */
+            orxVec_Mul(&vCamPos, pvCamSize, 0.5);
+            orxVec_Add(&vTextureUL, &vTextureUL, &vCamPos);
+  
+            /* Gets into screen coordinates */
+            orxVec_Add(&vTextureUL, &vTextureUL, &(_pstCamera->vOnScreenPosition));
+  
+            /* Stores screen coordinates */
+            pstFrame = pstCell->pstScreenFrame;
+            orxFrame_SetPosition(pstFrame, &vTextureUL);
+            orxFrame_SetRotation(pstFrame, fTextureRot - fCamRot);
+            orxFrame_SetScale(pstFrame, fTextureScale / fCamScale);
+  
+            /* Updates view list sort value */
+            pstCell->fZSort = vTextureUL.fZ;
+  
+            /* Updates view list used status */
+            pstCell->bUsed = orxTRUE;
+  
+            /* Insert it into sorted list */
+            orxCamera_InsertViewListCell(_pstCamera, pstCell);
+  
+            /* !!! TODO : Updates graphic status !!! */
+  //          graphic_flag_set(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_RENDERED, orxGRAPHIC_KU32_ID_FLAG_NONE);
           }
           else
           {
-            /* Find first free cell */
-            pstCell = orxCamera_FindFreeViewListCell(_pstCamera);
-
-            /* No cell left? */
-            if(pstCell == orxNULL)
+            /* Search for object position in list*/
+            pstCell = orxCamera_SearchViewList(_pstCamera, _pstObject);
+  
+            /* Already in list */
+            if(pstCell != orxNULL)
             {
-              return orxSTATUS_FAILURE;
+              /* Removes it from list */
+              orxCamera_RemoveViewListCell(_pstCamera, pstCell);
+  
+              /* Cleans view list cell */
+              orxCamera_CleanViewListCell(pstCell);
             }
+  
+            /* !!! TODO : Updates graphic status !!! */
+  //          graphic_flag_set(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_NONE, orxGRAPHIC_KU32_ID_FLAG_RENDERED);
           }
-
-          /* Stores the object */
-          pstCell->pstObject = _pstObject;
-
-          /* Gets camera infos */
-          orxFrame_GetPosition(_pstCamera->pstFrame, &vCamPos, orxFALSE);
-          pvCamSize = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vSize);
-          fCamRot   = orxFrame_GetRotation(_pstCamera->pstFrame, orxFALSE);
-          fCamScale = orxFrame_GetScale(_pstCamera->pstFrame, orxFALSE);
-
-          /* Computes texture screen frame, using viewport coordinates */
-
-          /* Gets into camera space */
-          orxVec_Add(&vTextureUL, &vTextureUL, orxVec_Neg(&vTemp, &vCamPos));
-
-          /* Applies rotation & scale if needed */
-          if(fCamRot != orxFLOAT_0)
-          {
-            orxVec_Rot(&vTextureUL, &vTextureUL, &orxVEC_Z, -fCamRot);
-          }
-          if(fCamScale != orxFLOAT_1)
-          {
-            orxVec_Mul(&vTextureUL, &vTextureUL, orxFLOAT_1 / fCamScale);
-          }
-
-          /* Uses differential scrolling? */
-          if(orxFrame_HasDifferentialScrolling(pstFrame) != orxFALSE)
-          {
-            /* Gets scrolling coefficients */
-            orxFrame_GetDifferentialScrolling(pstFrame, &vScroll);
-
-            /* X axis scrolling? */
-            if(vScroll.fX != orxFLOAT_0)
-            {
-              vScroll.fX *= vTextureUL.fX;
-            }
-
-            /* Y axis scrolling? */
-            if(vScroll.fY != orxFLOAT_0)
-            {
-              vScroll.fY *= vTextureUL.fY;
-            }
-
-            /* Updates texture coordinates */
-            orxVec_Set3(&vTextureUL, (orxFLOAT)floor(vScroll.fX), (orxFLOAT)floor(vScroll.fY), vTextureUL.fZ); /* MSVC doesn't recognize floorf for x86) */
-          }
-
-          /* Gets into viewport coordinates */
-          orxVec_Mul(&vCamPos, pvCamSize, 0.5);
-          orxVec_Add(&vTextureUL, &vTextureUL, &vCamPos);
-
-          /* Gets into screen coordinates */
-          orxVec_Add(&vTextureUL, &vTextureUL, &(_pstCamera->vOnScreenPosition));
-
-          /* Stores screen coordinates */
-          pstFrame = pstCell->pstScreenFrame;
-          orxFrame_SetPosition(pstFrame, &vTextureUL);
-          orxFrame_SetRotation(pstFrame, fTextureRot - fCamRot);
-          orxFrame_SetScale(pstFrame, fTextureScale / fCamScale);
-
-          /* Updates view list sort value */
-          pstCell->fZSort = vTextureUL.fZ;
-
-          /* Updates view list used status */
-          pstCell->bUsed = orxTRUE;
-
-          /* Insert it into sorted list */
-          orxCamera_InsertViewListCell(_pstCamera, pstCell);
-
-          /* Updates graphic status */
-          graphic_flag_set(pstGraphic, GRAPHIC_KU32_ID_FLAG_RENDERED, GRAPHIC_KU32_ID_FLAG_NONE);
-        }
-        else
-        {
-          /* Search for object position in list*/
-          pstCell = orxCamera_SearchViewList(_pstCamera, _pstObject);
-
-          /* Already in list */
-          if(pstCell != orxNULL)
-          {
-            /* Removes it from list */
-            orxCamera_RemoveViewListCell(_pstCamera, pstCell);
-
-            /* Cleans view list cell */
-            orxCamera_CleanViewListCell(pstCell);
-          }
-
-          /* Updates graphic status */
-          graphic_flag_set(pstGraphic, GRAPHIC_KU32_ID_FLAG_NONE, GRAPHIC_KU32_ID_FLAG_RENDERED);
         }
       }
     }

@@ -42,6 +42,8 @@
 
 /** Anim ID Flags
  */
+#define orxANIM_KU32_ID_FLAG_NONE             0x00000000  /**< No flags */
+
 #define orxANIM_KU32_ID_FLAG_2D               0x00010000  /**< 2D type animation ID flag */
 
 /** Anim defines
@@ -76,6 +78,7 @@ extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32IDFlags,
 
 /** Deletes an animation
  * @param[in]   _pstAnim        Anim to delete
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Delete(orxANIM *_pstAnim);
 

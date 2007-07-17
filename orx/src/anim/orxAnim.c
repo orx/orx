@@ -39,7 +39,6 @@
 
 /** orxANIM ID flags/masks/shifts
  */
-#define orxANIM_KU32_ID_FLAG_NONE           0x00000000  /**< No ID flags */
 
 #define orxANIM_KU32_ID_MASK_SIZE           0x000000FF  /**< Size ID mask */
 #define orxANIM_KU32_ID_MASK_COUNTER        0x0000FF00  /**< Counter ID mask */
@@ -253,7 +252,7 @@ orxVOID orxAnim_Setup()
   return;
 }
 
-/** Inits the Animation system
+/** Inits the Animation module
  */
 orxSTATUS orxAnim_Init()
 {
@@ -291,7 +290,7 @@ orxSTATUS orxAnim_Init()
   return eResult;
 }
 
-/** Exits from the Animation system
+/** Exits from the Animation module
  */
 orxVOID orxAnim_Exit()
 {
@@ -318,7 +317,7 @@ orxVOID orxAnim_Exit()
 /** Creates an empty animation
  * @param[in]   _u32IDFLags     ID flags for created animation
  * @param[in]   _u32Size        Number of atoms for this animation
- * @return      Created orxANIM / orxVOID
+ * @return      Created orxANIM / orxNULL
  */
 orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size)
 {

@@ -20,7 +20,7 @@
 #include "object/orxObject.h"
 
 #include "debug/orxDebug.h"
-#include "display/graphic.h"
+#include "display/orxGraphic.h"
 #include "object/orxFrame.h"
 #include "memory/orxMemory.h"
 
@@ -125,7 +125,7 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
     for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
     {
       /* Is structure linked? */
-      if(pstObject->pastStructure[i] != NULL)
+      if(pstObject->pastStructure[i] != orxNULL)
       {
         /* Updates it */
         if(orxStructure_Update(pstObject->pastStructure[i], (orxSTRUCTURE *)pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
@@ -421,7 +421,7 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetStructure(orxCONST orxOBJECT *_pstObject,
 orxBOOL orxFASTCALL orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject)
 {
   orxFRAME *pstFrame;
-  graphic_st_graphic *pstGraphic;
+//  orxGRAPHIC *pstGraphic;
   orxBOOL bResult = orxTRUE;
 
   /* Checks */
@@ -440,22 +440,22 @@ orxBOOL orxFASTCALL orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject
       /* Not clean */
       bResult = orxFALSE;
     }
-    else
-    {
-      /* Gets graphic */
-      pstGraphic = (graphic_st_graphic *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
-
-      /* Valid? */
-      if(pstGraphic != orxNULL)
-      {
-        /* Is graphic not clean? */
-        if(graphic_render_status_ok(pstGraphic) == orxFALSE)
-        {
-          /* Not clean */
-          bResult = orxFALSE;
-        }
-      }
-    }
+//    else
+//    {
+//      /* Gets graphic */
+//      pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+//
+//      /* Valid? */
+//      if(pstGraphic != orxNULL)
+//      {
+//        /* !!! TODO : polls the anim status */
+//        if(graphic_render_status_ok(pstGraphic) == orxFALSE)
+//        {
+//          /* Not clean */
+//          bResult = orxFALSE;
+//        }
+//      }
+//    }
   }
 
   /* Done! */

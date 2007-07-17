@@ -38,7 +38,7 @@
 #include "debug/orxFPS.h"
 #include "debug/orxTest.h"
 
-#include "display/graphic.h"
+#include "display/orxGraphic.h"
 #include "display/orxDisplay.h"
 #include "display/orxTexture.h"
 

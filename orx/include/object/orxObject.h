@@ -6,6 +6,7 @@
  * Objects are structures containers that can refer to many other structures such as frames, graphics, etc...
  * 
  * \todo
+ * Call the anim IsRenderStatusClean when it has been created.
  * Add the required structures when needed.
  * Add Sweep & Prune and specialized storages depending on purposes.
  */
