@@ -44,39 +44,57 @@
     <!-- ******************** PREPROCESSORS ******************** -->
 
     <!-- Set the preprocessor definition for plateform. -->
-    <set var="orxPLATFORM" make_var="1" cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</set> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
-    <set var="orxPLATFORM" make_var="1" cond="PLATFORM_UNIX=='1'">__orxLINUX__</set>    <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+    <set var="orxPLATFORM" make_var="1">
+      <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
+      <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>    <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+    </set>
     
     <!-- Set the orx compiler var -->
-    <set var="orxCOMPILER" make_var="1" cond="COMPILER=='gcc'">__orxGCC__</set>
-    <set var="orxCOMPILER" make_var="1" cond="COMPILER=='vc'">__orxMSVC__</set>
+    <set var="orxCOMPILER" make_var="1">
+      <if cond="COMPILER=='gcc'">__orxGCC__</if>
+      <if cond="COMPILER=='vc'">__orxMSVC__</if>
+    </set>
 
     <!-- Set the preprocessor definition for debug mode. -->
-    <set var="orxDEBUG" cond="BUILD=='debug'">__orxDEBUG__</set>
+    <set var="orxDEBUG">
+      <if cond="BUILD=='debug'">__orxDEBUG__</if>
+    </set>
 
     <!-- Set the preprocessor definition for test mode. -->
-    <set var="orxTEST" cond="USE_TEST=='1'">__orxTEST__</set>
+    <set var="orxTEST">
+      <if cond="USE_TEST=='1'">__orxTEST__</if>
+    </set>
 
     <!-- ****************** COMPILATIONS FLAGS ****************** -->
 
     <!-- Set the debug flag content. -->
-    <set var="orxDEBUGFLAG" cond="BUILD=='debug'">on</set>
-    <set var="orxDEBUGFLAG" cond="BUILD=='release'">off</set>
+    <set var="orxDEBUGFLAG">
+      <if cond="BUILD=='debug'">on</if>
+      <if cond="BUILD=='release'">off</if>
+    </set>
     <!-- Set the optimization flag content. -->
-    <set var="orxOPTIMIZEFLAG" cond="BUILD=='debug'">off</set>
-    <set var="orxOPTIMIZEFLAG" cond="BUILD=='release'">speed</set>
+    <set var="orxOPTIMIZEFLAG">
+      <if cond="BUILD=='debug'">off</if>
+      <if cond="BUILD=='release'">speed</if>
+    </set>
     <!-- Set the warning level. Max if debug and normal if release. -->
-    <set var="orxWARNINGFLAG" cond="BUILD=='debug'">max</set>
-    <set var="orxWARNINGFLAG" cond="BUILD=='release'">default</set>
+    <set var="orxWARNINGFLAG">
+      <if cond="BUILD=='debug'">max</if>
+      <if cond="BUILD=='release'">default</if>
+    </set>
     
     <!-- Set the suffix for target name. -->
-    <set var="orxSUFFIX" cond="BUILD=='debug'">d</set>
+    <set var="orxSUFFIX">
+      <if cond="BUILD=='debug'">d</if>
+    </set>
     
     <!-- Disable specifics warnings -->
-    <set var="orxDISABLE_WARNING" cond="FORMAT=='mingw' or FORMAT=='gnu'">-Wno-unused-parameter</set>
-      
-    <!-- 4100 = unreferenced formal parameter, 4206 = translation unit is empty (empty file), C4201 = nonstandard extension used : nameless struct/union -->
-    <set var="orxDISABLE_WARNING" cond="FORMAT=='msvs2005prj'">/wd4100 /wd4206 /wd4201</set>
+    <set var="orxDISABLE_WARNING">
+      <if cond="FORMAT=='mingw' or FORMAT=='gnu'">-Wno-unused-parameter</if>
+
+      <!-- 4100 = unreferenced formal parameter, 4206 = translation unit is empty (empty file), C4201 = nonstandard extension used : nameless struct/union -->
+      <if cond="FORMAT=='msvs2005prj'">/wd4100 /wd4206 /wd4201</if>
+    </set>
 
 
     <!-- ****************** PATH ****************** -->

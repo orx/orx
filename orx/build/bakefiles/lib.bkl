@@ -91,7 +91,9 @@
     <!-- ***************** DYNAMIC LIBRARY ************** -->
 		
 		<!-- Link with math library on linux -->
-		<set var="orxMATHLIB" cond="FORMAT=='gnu'">m</set>
+		<set var="orxMATHLIB">
+		  <if cond="FORMAT=='gnu'">m</if>
+		</set>
 
     <!--- Create orx static library -->
     <dll id="orxDLL" template="orxLIB_BASE" cond="LINK=='dynamic'">
@@ -109,8 +111,10 @@
     
     
     <!-- *********************** TEMPLATE TO LINK TO THE LIBRARY ***************** -->
-    <set var="orxLINKDEPEND" cond="LINK=='static'">orxLIB</set>
-    <set var="orxLINKDEPEND" cond="LINK=='dynamic'">orxDLL</set>
+    <set var="orxLINKDEPEND">
+      <if cond="LINK=='static'">orxLIB</if>
+      <if cond="LINK=='dynamic'">orxDLL</if>
+    </set>
 
     <!-- Set a template to define lib link -->
     <template id="orxLINK">

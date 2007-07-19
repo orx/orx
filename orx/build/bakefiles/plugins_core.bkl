@@ -4,11 +4,17 @@
   <!-- ******************** FMOD LINK ********************** -->
 
   <!-- Since on linux, FMOD packaging is not good, we are obliged to use this trick :/ -->
-  <set var="orxFMODLIB_MINGW" cond="FORMAT=='mingw'">fmod</set>
+  <set var="orxFMODLIB_MINGW">
+    <if cond="FORMAT=='mingw'">fmod</if>
+  </set>
 
-  <set var="orxFMODLIB_MSVC" cond="COMPILER=='vc'">fmodvc.lib</set>
+  <set var="orxFMODLIB_MSVC">
+    <if cond="COMPILER=='vc'">fmodvc.lib</if>
+  </set>
 
-  <set var="orxFMODLIB_UNIX" cond="PLATFORM_UNIX=='1'">/usr/lib/libfmod.so</set>
+  <set var="orxFMODLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">/usr/lib/libfmod.so</if>
+  </set>
 
   <!-- Define the module template -->
   <template id="orxFMOD">
@@ -20,13 +26,21 @@
   <!-- ******************** SDL LINK ********************** -->
   
   <!-- On windows, sdl-config is not available, so we have to specify the option manually -->
-  <set var="orxSDLLIB_MINGW" cond="FORMAT=='mingw'">SDL</set>
+  <set var="orxSDLLIB_MINGW">
+    <if cond="FORMAT=='mingw'">SDL</if>
+  </set>
 
-  <set var="orxSDLLIB_MSVC" cond="COMPILER=='vc'">SDL.lib</set>
+  <set var="orxSDLLIB_MSVC">
+    <if cond="COMPILER=='vc'">SDL.lib</if>
+  </set>
 
-  <set var="orxSDLCFLAGS_UNIX" cond="PLATFORM_UNIX=='1'">`sdl-config --cflags`</set>
+  <set var="orxSDLCFLAGS_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">`sdl-config --cflags`</if>
+  </set>
   
-  <set var="orxSDLLIB_UNIX" cond="PLATFORM_UNIX=='1'">`sdl-config --libs`</set>
+  <set var="orxSDLLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">`sdl-config --libs`</if>
+  </set>
 
   <!-- Define the module template -->
   <template id="orxSDL">
@@ -40,12 +54,20 @@
   <!-- ******************** ALLEGRO LINK ********************** -->
   
   <!-- On windows, allegro-config is not available, so we have to specify the option manually -->
-  <set var="orxALLEGROLIB_MINGW" cond="FORMAT=='mingw'">alleg</set>
+  <set var="orxALLEGROLIB_MINGW">
+    <if cond="FORMAT=='mingw'">alleg</if>
+  </set>
 
-  <set var="orxALLEGROLIB_MSVC" cond="COMPILER=='vc'">alleg.lib</set>
+  <set var="orxALLEGROLIB_MSVC">
+    <if cond="COMPILER=='vc'">alleg.lib</if>
+  </set>
 
-  <set var="orxALLEGROCFLAGS_UNIX" cond="PLATFORM_UNIX=='1'">`allegro-config --cflags`</set>
-  <set var="orxALLEGROLIB_UNIX" cond="PLATFORM_UNIX=='1'">`allegro-config --libs`</set>
+  <set var="orxALLEGROCFLAGS_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">`allegro-config --cflags`</if>
+  </set>
+  <set var="orxALLEGROLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">`allegro-config --libs`</if>
+  </set>
 
   <!-- Define the module template -->
   <template id="orxALLEGRO">
