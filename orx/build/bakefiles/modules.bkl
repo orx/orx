@@ -2,23 +2,15 @@
 <bakefile>
 
     <!-- Set module link lib -->
-    <set var="orxEXTRALINK">
-     <if cond="LINK=='dynamic' and COMPILER=='gcc'">orx$(orxSUFFIX)</if>
-    </set>
+    <set var="orxEXTRALINK" cond="LINK=='dynamic' and COMPILER=='gcc'">orx$(orxSUFFIX)</set>
     
-    <set var="orxMSVCLINK">
-      <if cond="LINK=='dynamic' and COMPILER=='vc'">$(orxLINKDEPEND)</if>
-    </set>
+    <set var="orxMSVCLINK" cond="LINK=='dynamic' and COMPILER=='vc'">$(orxLINKDEPEND)</set>
     
-    <set var="orxMSVC_STATIC_LINK">
-        <if cond="LINK=='static' and COMPILER=='vc'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
-    </set>
+    <set var="orxMSVC_STATIC_LINK" cond="LINK=='static' and COMPILER=='vc'">$(orxBINDIR)$(DIRSEP)orx.lib</set>
 
      
      <!-- Under window, DLL application have to be linked with a small static lib too -->
-    <set var="orxEXTRAFLAGS">
-      <if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)\orx$(orxSUFFIX).a</if>
-    </set>
+    <set var="orxEXTRAFLAGS" cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)\orx$(orxSUFFIX).a</set>
 
     <!-- Define the module template -->
     <template id="orxMODULELINK">

@@ -6,7 +6,7 @@
 	</input>
 
     <add-formats>
-        gnu,mingw,msvc6prj
+        gnu,mingw,msvs2005prj
     </add-formats>
 
 
@@ -16,8 +16,8 @@
     <add-flags files="orx.bkl" formats="mingw">
         -o./build/windows/mingw/Makefile
     </add-flags>
-    <add-flags files="orx.bkl" formats="msvc6prj">
-        -o./build/windows/msvc6prj/orx.dsw
+    <add-flags files="orx.bkl" formats="msvs2005prj">
+        -o./build/windows/msvs2005prj/orx.sln
     </add-flags>
 
 

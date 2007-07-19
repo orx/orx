@@ -6,32 +6,22 @@
     <!-- *********** BAKEFILE SHOULD BE PATHCHED TO IMPORVE THIS MANAGEMENT !!! ******** -->
     <!-- ******************************************************************************* -->
 
-  <!-- LINK TO ORX LIBRARY (deffirent behaviour for each compiler) -->
+  <!-- LINK TO ORX LIBRARY (different behaviour for each compiler) -->
   
   <!-- GCC : link on orx. If statically linked, import all symbols -->
-  <set var="orxLDFLAGS">
-    <if cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm -Wl,--no-whole-archive</if>
-    <if cond="LINK=='dynamic' and COMPILER=='gcc'">-lorx$(orxSUFFIX)</if>
-  </set>
+  <set var="orxLDFLAGS" cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm -Wl,--no-whole-archive</set>
+  <set var="orxLDFLAGS" cond="LINK=='dynamic' and COMPILER=='gcc'">-lorx$(orxSUFFIX)</set>
   
-  <set var="orxLINK_LIBRARY">
-    <if cond="COMPILER=='vc'">$(orxLINKDEPEND)</if>
-  </set>
+  <set var="orxLINK_LIBRARY" cond="COMPILER=='vc'">$(orxLINKDEPEND)</set>
   
-  <set var="orxLINK_IMPORT_DEFINE">
-    <if cond="LINK=='dynamic' and COMPILER=='vc'">__orxDLL__</if>
-  </set>
+  <set var="orxLINK_IMPORT_DEFINE" cond="LINK=='dynamic' and COMPILER=='vc'">__orxDLL__</set>
 
   <!-- GENERATE A .a FROM THE MAIN PROGRAM (That include all symbols from orx static library + Main program) -->
-  <set var="orxLDFLAGS_IMPLIB">
-    <if cond="LINK=='static' and FORMAT=='mingw'">-Wl,--export-all-symbols -Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)orx$(orxSUFFIX).a</if>
-  </set>
+  <set var="orxLDFLAGS_IMPLIB" cond="LINK=='static' and FORMAT=='mingw'">-Wl,--export-all-symbols -Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)orx$(orxSUFFIX).a</set>
 
 
   <!-- on linux, dlopen, etc.. are inside 'dl' library -->
-  <set var="orxLINKLIB">
-    <if cond="FORMAT=='gnu'">dl</if>
-  </set>
+  <set var="orxLINKLIB" cond="FORMAT=='gnu'">dl</set>
 
   <!-- ************************ MAIN PROGRAMM *********************** -->
 
