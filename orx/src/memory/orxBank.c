@@ -435,7 +435,7 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
       pstCurrentSegment->u32NbFree--;
     
       /* Set the bit as used */
-      ((orxU32)pstCurrentSegment->pu32FreeElemBits[u32FieldResultIndex]) |= 1 << u32BitResultIndex;
+      ((orxU32*)(pstCurrentSegment->pu32FreeElemBits))[u32FieldResultIndex] |= 1 << u32BitResultIndex;
     }
   }
 
@@ -577,7 +577,7 @@ orxVOID *orxFASTCALL orxBank_GetNext(orxCONST orxBANK *_pstBank, orxCONST orxVOI
   /* Compute adress of the cell if found, and returns it */
   if (bFound)
   {
-    /* The cell is on pSegment, on the bitfield n° u32Index32Bits and on the bit u32IndexBit */
+    /* The cell is on pSegment, on the bitfield nï¿½ u32Index32Bits and on the bit u32IndexBit */
     pCell = (orxVOID *)(((orxU8 *)pstSegment->pSegmentDatas) + (((32 * u32Index32Bits) + s32IndexBit) * _pstBank->u32ElemSize));
   }
   
