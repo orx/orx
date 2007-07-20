@@ -1,6 +1,15 @@
 <?xml version="1.0"?>
 <bakefile>
 
+	<define-rule name="orx-plugin" extends="module">
+      <template template="orxBASE,orxLINK,orxMODULELINK">
+        <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
+      </template>
+      <define-tag name="category">
+      	<dirname>$(orxDIR)$(DIRSEP)bin/plugins/$(value)</dirname>
+      </define-tag>
+	</define-rule>
+
   <!-- ******************** FMOD LINK ********************** -->
 
   <!-- Since on linux, FMOD packaging is not good, we are obliged to use this trick :/ -->
@@ -9,7 +18,7 @@
   </set>
 
   <set var="orxFMODLIB_MSVC">
-    <if cond="COMPILER=='vc'">fmodvc.lib</if>
+    <if cond="orxCOMPILER=='__orxMSVC__'">fmodvc.lib</if>
   </set>
 
   <set var="orxFMODLIB_UNIX">
@@ -31,7 +40,7 @@
   </set>
 
   <set var="orxSDLLIB_MSVC">
-    <if cond="COMPILER=='vc'">SDL.lib</if>
+    <if cond="orxCOMPILER=='__orxMSVC__'">SDL.lib</if>
   </set>
 
   <set var="orxSDLCFLAGS_UNIX">
@@ -59,7 +68,7 @@
   </set>
 
   <set var="orxALLEGROLIB_MSVC">
-    <if cond="COMPILER=='vc'">alleg.lib</if>
+    <if cond="orxCOMPILER=='__orxMSVC__'">alleg.lib</if>
   </set>
 
   <set var="orxALLEGROCFLAGS_UNIX">
@@ -78,69 +87,67 @@
     <ldflags>$(orxALLEGROLIB_MSVC)</ldflags>
   </template>
 
-
-
   <!-- ******************* ORX CORE PLUGINS ******************** -->
 
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->
 
     <!-- Depends on SDL -->
-    <module id="Display_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK,orxSDL">
-      <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/display</dirname>
+	<orx-plugin id="Display_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxSDL">
+	  <category>core/display</category>
       <sources>plugins/Display/SDL/orxDisplay.c</sources>
-    </module>
+    </orx-plugin>
 
   <!-- SOUND -->
 
-	  <!-- Depends on fmod -->
-	  <module id="Sound_Fmod" cond="USE_FMOD=='1' and USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK,orxFMOD">
-	    <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/sound</dirname>
-	    <sources>plugins/Sound/Fmod/orxSound.c</sources>
-	  </module>
-
+	<!-- Depends on fmod -->
+	<orx-plugin id="Sound_Fmod" cond="USE_FMOD=='1' and USE_PLUGINS=='1'" template="orxFMOD">
+	  <category>core/sound</category>
+      <sources>plugins/Sound/Fmod/orxSound.c</sources>
+    </orx-plugin>
 
   <!-- MOUSE -->
 
-	  <!-- Depends on allegro -->
-	  <module id="Mouse_Allegro" cond="USE_ALLEGRO=='1' and USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK,orxALLEGRO">
-	    <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/mouse</dirname>
-	    <sources>plugins/Mouse/Allegro/orxMouse.c</sources>
-	  </module>
+	<!-- Depends on allegro -->
+	<orx-plugin id="Mouse_Allegro" cond="USE_ALLEGRO=='1' and USE_PLUGINS=='1'" template="orxALLEGRO">
+	  <category>core/mouse</category>
+      <sources>plugins/Mouse/Allegro/orxMouse.c</sources>
+    </orx-plugin>
 
   <!-- KEYBOARD -->
 
-	  <!-- Depends on allegro -->
-	  <module id="Keyboard_Allegro" cond="USE_ALLEGRO=='1' and USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK,orxALLEGRO">
-	    <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/keyboard</dirname>
-	    <sources>plugins/Keyboard/Allegro/orxKeyboard.c</sources>
-	  </module>
+	<!-- Depends on allegro -->
+	<orx-plugin id="Keyboard_Allegro" cond="USE_ALLEGRO=='1' and USE_PLUGINS=='1'" template="orxALLEGRO">
+	  <category>core/keyboard</category>
+      <sources>plugins/Keyboard/Allegro/orxKeyboard.c</sources>
+    </orx-plugin>
 
   <!-- JOYSTICK -->
 
-	  <!-- Depends on nothing -->
-	  <module id="Joystick_NONE" cond="USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK">
-	    <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/joystick</dirname>
-	    <sources>plugins/Joystick/NONE/orxJoystick.c</sources>
-	  </module>
-  
+	<!-- Depends on nothing -->
+	<orx-plugin id="Joystick_NONE" cond="USE_PLUGINS=='1'">
+	  <category>core/joystick</category>
+      <sources>plugins/Joystick/NONE/orxJoystick.c</sources>
+    </orx-plugin>
+
   <!-- FILE -->
-	  <!-- Depends on nothing -->
-	  <module id="File_LibC" cond="USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK">
-	    <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/file</dirname>
-	    <sources>plugins/File/LibC/orxFile.c</sources>
-	  </module>
-  
+	<!-- Depends on nothing -->
+	<orx-plugin id="File_LibC" cond="USE_PLUGINS=='1'">
+	  <category>core/file</category>
+      <sources>plugins/File/LibC/orxFile.c</sources>
+    </orx-plugin>
+
   <!-- FILE_SYSTEM -->
 
   <!-- PACKAGE -->
 
   <!-- TIME -->
 
-	  <!-- Depends on SDL -->
-	  <module id="Time_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK,orxSDL">
-	    <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/time</dirname>
-	    <sources>plugins/Time/SDL/orxTime.c</sources>
-	  </module>
+	<!-- Depends on SDL -->
+	<orx-plugin id="Time_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxSDL">
+	  <category>core/time</category>
+      <sources>plugins/Time/SDL/orxTime.c</sources>
+    </orx-plugin>
+
 
 </bakefile>

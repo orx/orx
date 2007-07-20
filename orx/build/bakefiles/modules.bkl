@@ -1,17 +1,22 @@
 <?xml version="1.0"?>
+<!--
+  -
+  - This bakefile is used to compile orx modules.
+  -
+  -->
 <bakefile>
 
     <!-- Set module link lib -->
     <set var="orxEXTRALINK">
-      <if cond="LINK=='dynamic' and COMPILER=='gcc'">orx$(orxSUFFIX)</if>
+     <if cond="LINK=='dynamic' and orxCOMPILER=='__orxGCC__'">orx$(orxSUFFIX)</if>
     </set>
     
     <set var="orxMSVCLINK">
-      <if cond="LINK=='dynamic' and COMPILER=='vc'">$(orxLINKDEPEND)</if>
+      <if cond="LINK=='dynamic' and orxCOMPILER=='__orxMSVC__'">$(orxLINKDEPEND)</if>
     </set>
     
     <set var="orxMSVC_STATIC_LINK">
-      <if cond="LINK=='static' and COMPILER=='vc'">$(orxBINDIR)$(DIRSEP)orx.lib</if>
+        <if cond="LINK=='static' and orxCOMPILER=='__orxMSVC__'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
     </set>
 
      
@@ -22,65 +27,64 @@
 
     <!-- Define the module template -->
     <template id="orxMODULELINK">
-      <depends>orx</depends>
+      <depends>$(orxLINKDEPEND)</depends>
+      
       <sys-lib>$(orxEXTRALINK)</sys-lib>
       <ldflags>$(orxEXTRAFLAGS)</ldflags>
       <ldflags>$(orxMSVC_STATIC_LINK)</ldflags>
-      <library>$(orxMSVCLINK)</library>
+<!--      <library>$(orxMSVCLINK)</library> -->
       <define>__orxDLL__</define>
     </template>
+
+	<define-rule name="orx-module-test" extends="module">
+      <template template="orxBASE,orxLINK,orxMODULELINK">
+        <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
+      </template>
+	</define-rule>
+
 
 
 
   <!--- Create orx test module -->
-  <module id="Memory" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_Memory.c</sources>
-  </module>
 
-  <module id="Bank" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_Bank.c</sources>
-  </module>
+	<orx-module-test id="Memory" cond="USE_TEST=='1'">
+      <sources>test/orxTest_Memory.c</sources>
+	</orx-module-test>
 
-  <module id="HashTable" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_HashTable.c</sources>
-  </module>
+	<orx-module-test id="Bank" cond="USE_TEST=='1'">
+      <sources>test/orxTest_Bank.c</sources>
+	</orx-module-test>
 
-  <module id="Sound" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_Sound.c</sources>
-  </module>
+	<orx-module-test id="HashTable" cond="USE_TEST=='1'">
+      <sources>test/orxTest_HashTable.c</sources>
+	</orx-module-test>
 
-  <module id="Plugin" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_Plugin.c</sources>
-  </module>
+	<orx-module-test id="Sound" cond="USE_TEST=='1'">
+      <sources>test/orxTest_Sound.c</sources>
+	</orx-module-test>
 
-  <module id="Queue" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_Queue.c</sources>
-  </module>
+	<orx-module-test id="Plugin" cond="USE_TEST=='1'">
+      <sources>test/orxTest_Plugin.c</sources>
+	</orx-module-test>
 
-  <module id="FSM" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_FSM.c</sources>
-  </module>
+	<orx-module-test id="Queue" cond="USE_TEST=='1'">
+      <sources>test/orxTest_Queue.c</sources>
+	</orx-module-test>
 
-  <module id="Clock" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_Clock.c</sources>
-  </module>
+	<orx-module-test id="FSM" cond="USE_TEST=='1'">
+      <sources>test/orxTest_FSM.c</sources>
+	</orx-module-test>
 
-  <module id="Event" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_Event.c</sources>
-  </module>
+	<orx-module-test id="Clock" cond="USE_TEST=='1'">
+      <sources>test/orxTest_Clock.c</sources>
+	</orx-module-test>
 
-  <module id="File" template="orxBASE,orxLINK,orxMODULELINK" cond="USE_TEST=='1'">
-    <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
-    <sources>test/orxTest_File.c</sources>
-  </module>
+	<orx-module-test id="Event" cond="USE_TEST=='1'">
+      <sources>test/orxTest_Event.c</sources>
+	</orx-module-test>
+
+	<orx-module-test id="File" cond="USE_TEST=='1'">
+      <sources>test/orxTest_File.c</sources>
+	</orx-module-test>
 
 </bakefile>

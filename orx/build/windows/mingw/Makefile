@@ -243,22 +243,27 @@ TIME_SDL_OBJECTS =  \
 ifeq ($(BUILD),debug)
 orxSUFFIX = d
 endif
+ifeq ($(BUILD),debug)
+orxLIBNAME = orxd
+endif
+ifeq ($(BUILD),release)
+orxLIBNAME = orx
+endif
 ifeq ($(LINK),dynamic)
 __orxDLL___depname = ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),static)
-__orxLIB___depname = ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a
-endif
-ifeq ($(LINK),dynamic)
-orxLDFLAGS = -lorx$(orxSUFFIX)
-endif
-ifeq ($(LINK),static)
-orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -lorx$(orxSUFFIX) -lm \
-	-Wl,--no-whole-archive
+__orxLIB___depname = ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 ifeq ($(LINK),static)
 orxLDFLAGS_IMPLIB = -Wl,--export-all-symbols \
 	-Wl,--out-implib,..\..\..\lib\$(LINK)\orx$(orxSUFFIX).a
+endif
+ifeq ($(LINK),dynamic)
+__orxLINKDEPEND_LIBR = ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
+endif
+ifeq ($(LINK),static)
+__orxLINKDEPEND_LIBR = ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 ifeq ($(LINK),static)
 orxEXTRAFLAGS = ..\..\..\lib\$(LINK)\orx$(orxSUFFIX).a
@@ -357,9 +362,6 @@ endif
 ifeq ($(LINK),static)
 __orxLINKDEPEND_DEP = $(__orxLIB___depname)
 endif
-ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p = -lorx$(orxSUFFIX)
-endif
 ifeq ($(BUILD),debug)
 __orxDEBUGFLAG = -g
 endif
@@ -380,8 +382,8 @@ clean:
 	-if exist .\build\$(BUILD)\*.o del .\build\$(BUILD)\*.o
 	-if exist .\build\$(BUILD)\*.d del .\build\$(BUILD)\*.d
 	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll del ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll
-	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a del ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a
-	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a del ..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a
+	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a del ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
+	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a del ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 	-if exist ..\..\..\bin\orx.exe del ..\..\..\bin\orx.exe
 	-if exist ..\..\..\bin\modules\Memory.dll del ..\..\..\bin\modules\Memory.dll
 	-if exist ..\..\..\bin\modules\Bank.dll del ..\..\..\bin\modules\Bank.dll
@@ -403,111 +405,111 @@ clean:
 
 ifeq ($(LINK),dynamic)
 ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll: $(ORXDLL_OBJECTS)
-	$(CC) -shared -fPIC -o $@ $(ORXDLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Wl,--out-implib=..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a
+	$(CC) -shared -fPIC -o $@ $(ORXDLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -Wl,--out-implib=..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(LINK),static)
-..\..\..\lib\$(__LINK_FILENAMES)\liborx$(orxSUFFIX).a: $(ORXLIB_OBJECTS)
+..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a: $(ORXLIB_OBJECTS)
 	if exist $@ del $@
 	ar rcu $@ $(ORXLIB_OBJECTS)
 	ranlib $@
 endif
 
-..\..\..\bin\orx.exe: $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
-	$(CC) -o $@ $(ORX_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES)  $(orxLDFLAGS) $(orxLDFLAGS_IMPLIB)
+..\..\..\bin\orx.exe: $(ORX_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -o $@ $(ORX_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES)   $(orxLDFLAGS_IMPLIB)  ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a $(__orxLINKDEPEND_LIBR)
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\Memory.dll: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\Memory.dll: $(MEMORY_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\Bank.dll: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\Bank.dll: $(BANK_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(HASHTABLE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\HashTable.dll: $(HASHTABLE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(HASHTABLE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\Sound.dll: $(SOUND_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(SOUND_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\Sound.dll: $(SOUND_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(SOUND_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\Plugin.dll: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\Plugin.dll: $(PLUGIN_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\Queue.dll: $(QUEUE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(QUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\Queue.dll: $(QUEUE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(QUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\FSM.dll: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\FSM.dll: $(FSM_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\Clock.dll: $(CLOCK_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(CLOCK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\Clock.dll: $(CLOCK_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(CLOCK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\Event.dll: $(EVENT_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(EVENT_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\Event.dll: $(EVENT_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(EVENT_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_TEST),1)
-..\..\..\bin\modules\File.dll: $(FILE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(FILE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\modules\File.dll: $(FILE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(FILE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
-..\..\..\bin\plugins\core\display\Display_SDL.dll: $(DISPLAY_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(DISPLAY_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     $(__orxEXTRALINK_p)  -lSDL
+..\..\..\bin\plugins\core\display\Display_SDL.dll: $(DISPLAY_SDL_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(DISPLAY_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a  -lSDL
 endif
 endif
 
 ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\core\sound\Sound_Fmod.dll: $(SOUND_FMOD_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     $(__orxEXTRALINK_p)  -lfmod
+..\..\..\bin\plugins\core\sound\Sound_Fmod.dll: $(SOUND_FMOD_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a  -lfmod
 endif
 endif
 
 ifeq ($(USE_ALLEGRO),1)
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\core\mouse\Mouse_Allegro.dll: $(MOUSE_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(MOUSE_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     $(__orxEXTRALINK_p)  -lalleg
+..\..\..\bin\plugins\core\mouse\Mouse_Allegro.dll: $(MOUSE_ALLEGRO_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(MOUSE_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a  -lalleg
 endif
 endif
 
 ifeq ($(USE_ALLEGRO),1)
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\core\keyboard\Keyboard_Allegro.dll: $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(KEYBOARD_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     $(__orxEXTRALINK_p)  -lalleg
+..\..\..\bin\plugins\core\keyboard\Keyboard_Allegro.dll: $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(KEYBOARD_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a  -lalleg
 endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(JOYSTICK_NONE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\plugins\core\joystick\Joystick_NONE.dll: $(JOYSTICK_NONE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(JOYSTICK_NONE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\core\file\File_LibC.dll: $(FILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(FILE_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   $(__orxEXTRALINK_p)
+..\..\..\bin\plugins\core\file\File_LibC.dll: $(FILE_LIBC_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(FILE_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
-..\..\..\bin\plugins\core\time\Time_SDL.dll: $(TIME_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     $(__orxEXTRALINK_p)  -lSDL
+..\..\..\bin\plugins\core\time\Time_SDL.dll: $(TIME_SDL_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a  -lSDL
 endif
 endif
 

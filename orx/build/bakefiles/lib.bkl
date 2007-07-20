@@ -1,12 +1,16 @@
 <?xml version="1.0"?>
+<!--
+  -
+  - This bakefile is used to compile the liborx.
+  -
+  -->
 <bakefile>
-
 
     <!-- ******************** FILES ********************** -->
     
     <!-- Template for orx libraries. -->
     <template id="orxLIB_BASE" template="orxBASE">
-        <libname>orx$(orxSUFFIX)</libname>
+        <libname>$(orxLIBNAME)</libname>
         
         <define>__orxDLL__</define>
         <define>__orxDLLEXPORT__</define>
@@ -89,18 +93,10 @@
     </template>
     
     <!-- ***************** DYNAMIC LIBRARY ************** -->
-		
-		<!-- Link with math library on linux -->
-		<set var="orxMATHLIB">
-		  <if cond="FORMAT=='gnu'">m</if>
-		</set>
-
     <!--- Create orx static library -->
     <dll id="orxDLL" template="orxLIB_BASE" cond="LINK=='dynamic'">
-
         <!-- Set the name of the library (will be different in debug and release mode -->
         <dllname>orx$(orxSUFFIX)</dllname>
-        <sys-lib>$(orxMATHLIB)</sys-lib> <!-- math library is still needed at the moment... It would be better to remove this dependency -->
     </dll>
 
     <!-- **************** STATIC LIBRARY ************** -->
@@ -119,7 +115,15 @@
     <!-- Set a template to define lib link -->
     <template id="orxLINK">
       <lib-path>$(orxLIBDIR)</lib-path>
-      <depends>$(orxLINKDEPEND)</depends>
+      <library>orxLIB</library>
+      <library>orxDLL</library>
+<!--      <library>$(orxLINKDEPEND)</library> -->
+<!--      <depends>$(orxLINKDEPEND)</depends> -->
+
+      <if cond="FORMAT in ['gnu', 'autoconf']">
+      	<sys-lib>m</sys-lib>
+      	<sys-lib>dl</sys-lib>
+      </if>
     </template>
 
 </bakefile>
