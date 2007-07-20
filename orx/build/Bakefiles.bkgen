@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<bakefile-gen>
+
+	<input>
+		bakefiles/orx.bkl
+	</input>
+
+    <add-formats>
+        gnu,mingw,msvc,autoconf <!-- ,msvs2005prj -->
+    </add-formats>
+
+    <add-flags files="bakefiles/orx.bkl" formats="autoconf">
+        -o./linux/autoconf/Makefile.in
+    </add-flags>
+    <add-flags files="bakefiles/orx.bkl" formats="gnu">
+        -o./linux/gnu/Makefile
+    </add-flags>
+    <add-flags files="bakefiles/orx.bkl" formats="mingw">
+        -o./windows/mingw/Makefile
+    </add-flags>
+    <add-flags files="bakefiles/orx.bkl" formats="msvc">
+        -o./windows/msvc/Makefile
+    </add-flags>
+    <add-flags files="bakefiles/orx.bkl" formats="msvs2005prj">
+        -o./windows/msvs2005prj/orx.sln
+    </add-flags>
+
+
+</bakefile-gen>

@@ -1,0 +1,20 @@
+ Orx build infos.
+==================
+
+Data to produce makefiles are stores in bakefiles in the corresponding sub-directory:
+  - bakefiles/orx.bkl is the global bakefile which imports all other bakefiles in correct order.
+  - bakefiles/common.bkl manages all configuration options.
+  - bakefiles/lib.bkl produces the liborx and defines all common rules to use it.
+  - bakefiles/main.bkl produces the orx program.
+  - bakefiles/modules.bkl produces test modules.
+  - bakefiles/plugins_core.bkl produces all core plugins.
+
+The Bakefiles.bkgen is the descriptor which allows to produce some makefiles or project-files.
+
+The autogen.sh is a bash script which generates all allowed makefiles and project-files according to Bakefiles.bkgen rules.
+To product them, juste type in a shell :
+ orx       > cd build
+ orx/build > ./autogen.sh
+
+Make sure you have bakefile-0.2.2 or newer installed.
+You can download bakefile at http://bakefile.sf.net or find a debian package at http://www.emilienkia.fr/public/packages/bakefile/
