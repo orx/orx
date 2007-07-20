@@ -71,8 +71,8 @@ orxSTATUS orxMain_Init()
       /* Valid? */
       if(sstMain.hTimePlugin != orxHANDLE_Undefined)
       {
-        /* Inits run module */
-        if(orxModule_Init(orxMODULE_ID_RUN) == orxSTATUS_SUCCESS)
+        /* Inits main module */
+        if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
         {
           /* Sets module as initialized */
           sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;

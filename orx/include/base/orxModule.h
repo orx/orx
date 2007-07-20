@@ -68,9 +68,9 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_MAX_NUMBER = 64,
 
 #ifdef __orxTEST__
-  orxMODULE_ID_RUN = orxMODULE_ID_TEST,
+  orxMODULE_ID_MAIN = orxMODULE_ID_TEST,
 #else /* __orxTEST__ */
-  orxMODULE_ID_RUN = orxMODULE_ID_CLOCK,
+  orxMODULE_ID_MAIN = orxMODULE_ID_CLOCK,
 #endif /* __orxTEST__ */
 
   orxMODULE_ID_NONE = orxENUM_NONE
