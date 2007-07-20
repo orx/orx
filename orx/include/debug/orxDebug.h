@@ -93,7 +93,7 @@
 #else /* __orxDEBUG__ */
 
   /* Log message */
-  #define orxDEBUG_LOG(LEVEL, STRING)
+  #define orxDEBUG_LOG(LEVEL, STRING, ...)
 
   #define orxBREAK()
 
