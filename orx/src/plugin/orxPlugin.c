@@ -209,11 +209,11 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
 
       /* Checks all functions */
       for(j = 0, bLoaded = orxTRUE;
-          (j < sstPlugin.astCoreInfo[i].u32CoreFunctionCounter) && (bLoaded == orxTRUE);
+          (j < sstPlugin.astCoreInfo[i].u32CoreFunctionCounter) && (bLoaded != orxFALSE);
           j++)
       {
         /* Tests if function is loaded */
-        bLoaded = (sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction != sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction)
+        bLoaded = (sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction != sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnDefaultFunction)
                   ? orxTRUE
                   : orxFALSE;
       }

@@ -79,7 +79,7 @@ orxVOID orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_TREE, orxTree);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
 
-#ifdef __orxTEST__ /* Only define it if compiled with __orxTEST__, else functions are not defined */
+#ifdef __orxTEST__
   orxMODULE_REGISTER(orxMODULE_ID_TEST, orxTest);
 #endif /* __orxTEST__ */
 

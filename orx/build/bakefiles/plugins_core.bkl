@@ -85,6 +85,12 @@
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->
 
+    <!-- Depends on SDL -->
+    <module id="Display_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxBASE,orxLINK,orxMODULELINK,orxSDL">
+      <dirname>$(orxDIR)$(DIRSEP)bin/plugins/core/display</dirname>
+      <sources>plugins/Display/SDL/orxDisplay.c</sources>
+    </module>
+
   <!-- SOUND -->
 
 	  <!-- Depends on fmod -->

@@ -107,12 +107,12 @@ orxVOID orxMouse_GetMove(orxS32 *_ps32x, orxS32 *_ps32y)
 
 orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sastMouse_Function[orxPLUGIN_FUNCTION_BASE_ID_MOUSE_NUMBER];
 
-extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfos)
+extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
 {
   orxPLUGIN_USER_FUNCTION_START(sastMouse_Function);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Init, MOUSE, INIT);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Exit, MOUSE, EXIT);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_GetMove, MOUSE, GET_MOVE);
-  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfos);
+  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo);
   return;
 }

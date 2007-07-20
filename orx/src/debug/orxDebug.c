@@ -92,7 +92,7 @@ orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
     case orxDEBUG_LEVEL_KEYBOARD:           return "KEYBOARD";
     case orxDEBUG_LEVEL_JOYSTICK:           return "JOYSTICK";
     case orxDEBUG_LEVEL_INTERACTION:        return "INTERACTION";
-    case orxDEBUG_LEVEL_GRAPH:              return "GRAPH";
+    case orxDEBUG_LEVEL_DISPLAY:            return "DISPLAY";
     case orxDEBUG_LEVEL_SOUND:              return "SOUND";
     case orxDEBUG_LEVEL_TIMER:              return "TIMER";
     case orxDEBUG_LEVEL_MEMORY:             return "MEMORY";

@@ -340,7 +340,7 @@ orxSTATUS orxSound_Fmod_ChannelSetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
  ***************************************************************************/
 orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sastSound_Function[orxPLUGIN_FUNCTION_BASE_ID_SOUND_NUMBER];
 
-extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfos)
+extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
 {
   orxPLUGIN_USER_FUNCTION_START(sastSound_Function);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_Init, SOUND, INIT);
@@ -354,6 +354,6 @@ extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_F
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelTestFlags, SOUND, CHANNEL_TEST_FLAGS);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelSetFlags, SOUND, CHANNEL_SET_FLAGS);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelSetVolume, SOUND, CHANNEL_SET_VOLUME);
-  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfos);
+  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo);
   return;
 }

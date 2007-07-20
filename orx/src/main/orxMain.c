@@ -66,12 +66,13 @@ orxSTATUS orxMain_Init()
       /* Loads time plugin */
       /* !!! TEMP : Will be replaced by config file !!! */
       sstMain.hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/time/Time_SDL", "time");
+      sstMain.hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/file/File_LibC", "file");
 
       /* Valid? */
       if(sstMain.hTimePlugin != orxHANDLE_Undefined)
       {
-        /* Inits all remaining modules */
-        if(orxModule_InitAll() == orxSTATUS_SUCCESS)
+        /* Inits run module */
+        if(orxModule_Init(orxMODULE_ID_RUN) == orxSTATUS_SUCCESS)
         {
           /* Sets module as initialized */
           sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;

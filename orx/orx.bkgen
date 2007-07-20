@@ -6,7 +6,7 @@
 	</input>
 
     <add-formats>
-        gnu,mingw,msvs2005prj
+        gnu,mingw
     </add-formats>
 
 

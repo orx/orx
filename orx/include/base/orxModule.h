@@ -54,7 +54,7 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_SOUND,
   orxMODULE_ID_SCREENSHOT,
   orxMODULE_ID_STRUCTURE,
-#ifdef __orxTEST__ /* Only define it if compiled with __orxTEST__, else functions are not defined */
+#ifdef __orxTEST__
   orxMODULE_ID_TEST,
 #endif /* __orxTEST__ */
   orxMODULE_ID_TEXTIO,
@@ -67,6 +67,12 @@ typedef enum __orxMODULE_ID_t
 
   orxMODULE_ID_MAX_NUMBER = 64,
 
+#ifdef __orxTEST__
+  orxMODULE_ID_RUN = orxMODULE_ID_TEST,
+#else /* __orxTEST__ */
+  orxMODULE_ID_RUN = orxMODULE_ID_CLOCK,
+#endif /* __orxTEST__ */
+
   orxMODULE_ID_NONE = orxENUM_NONE
 
 } orxMODULE_ID;
@@ -74,7 +80,7 @@ typedef enum __orxMODULE_ID_t
 
 /* *** init/exit function prototypes *** */
 typedef orxSTATUS                         (*orxMODULE_INIT_FUNCTION)  ();
-typedef orxVOID                           (*orxMODULE_EXIT_FUNCTION)   ();
+typedef orxVOID                           (*orxMODULE_EXIT_FUNCTION)  ();
 typedef orxVOID                           (*orxMODULE_SETUP_FUNCTION) ();
 
 

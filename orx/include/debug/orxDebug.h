@@ -128,7 +128,7 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_KEYBOARD,                    /**< Keyboard Debug */
   orxDEBUG_LEVEL_JOYSTICK,                    /**< Joystick Debug */
   orxDEBUG_LEVEL_INTERACTION,                 /**< Interaction Debug */
-  orxDEBUG_LEVEL_GRAPH,                       /**< Graph Debug */
+  orxDEBUG_LEVEL_DISPLAY,                     /**< Display Debug */
   orxDEBUG_LEVEL_SOUND,                       /**< Sound Debug */
   orxDEBUG_LEVEL_TIMER,                       /**< Timer Debug */
   orxDEBUG_LEVEL_MEMORY,                      /**< Memory Debug */

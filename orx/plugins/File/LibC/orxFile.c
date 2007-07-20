@@ -247,7 +247,7 @@ orxSTATUS orxFile_LibC_Close(orxFILE *_pstFile)
  ***************************************************************************/
 orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sastFile_Function[orxPLUGIN_FUNCTION_BASE_ID_FILE_NUMBER];
 
-extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfos)
+extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
 {
   orxPLUGIN_USER_FUNCTION_START(sastFile_Function);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Init, FILE, INIT);
@@ -256,6 +256,6 @@ extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_F
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Read, FILE, READ);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Write, FILE, WRITE);
   orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Close, FILE, CLOSE);
-  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfos);
+  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo);
   return;
 }
