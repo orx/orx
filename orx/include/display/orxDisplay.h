@@ -37,7 +37,7 @@ typedef orxU32                          orxARGB;
 typedef struct __orxBITMAP_TRANSFORM_t
 {
   orxVEC    vSrcCoord;
-  orxVEC    vDstCoorf;
+  orxVEC    vDstCoord;
 
   orxVEC    vScale;
   orxFLOAT  fRotation;

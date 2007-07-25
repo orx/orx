@@ -27,6 +27,7 @@
 #include "anim/orxAnimPointer.h"
 
 #include "debug/orxDebug.h"
+#include "math/orxMath.h"
 #include "memory/orxMemory.h"
 #include "core/orxClock.h"
 
@@ -220,6 +221,7 @@ orxVOID orxAnimPointer_Setup()
 }
 
 /** Inits the AnimPointer module
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxAnimPointer_Init()
 {
@@ -342,6 +344,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet, orxCL
 
 /** Deletes an AnimPointer
  * @param[in]   _pstAnimPointer               AnimPointer to delete
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
 {

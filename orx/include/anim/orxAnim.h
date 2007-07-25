@@ -36,7 +36,6 @@
 
 #include "orxInclude.h"
 
-#include "display/orxTexture.h"
 #include "object/orxStructure.h"
 
 
@@ -46,9 +45,11 @@
 
 #define orxANIM_KU32_ID_FLAG_2D               0x00010000  /**< 2D type animation ID flag */
 
+#define orxANIM_KU32_ID_MASK_USER_ALL         0x00FF0000  /**< User all ID mask */
+
 /** Anim defines
  */
-#define orxANIM_KU32_ATOM_MAX_NUMBER          256         /**< Maximum number of atoms for an animation structure */
+#define orxANIM_KU32_KEY_MAX_NUMBER           256         /**< Maximum number of keys for an animation structure */
 
 
 /** Internal Anim structure
@@ -71,7 +72,7 @@ extern orxDLLAPI orxVOID                      orxAnim_Exit();
 
 /** Creates an empty animation
  * @param[in]   _u32IDFLags     ID flags for created animation
- * @param[in]   _u32Size        Number of atoms for this animation
+ * @param[in]   _u32Size        Number of keys for this animation
  * @return      Created orxANIM / orxNULL
  */
 extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size);
@@ -83,52 +84,59 @@ extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32IDFlags,
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Delete(orxANIM *_pstAnim);
 
 
-/** Adds an atom to an animation
+/** Adds a key to an animation
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _pstTexture     Texture to add
- * @param[in]   _u32TimeStamp   Timestamp for this atom
+ * @param[in]   _pstData        Key data to add
+ * @param[in]   _u32TimeStamp   Timestamp for this key
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstTexture, orxU32 _u32TimeStamp);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, orxU32 _u32TimeStamp);
 
-/** Removes last added atom from an animation
+/** Removes last added key from an animation
  * @param[in]   _pstAnim        Concerned animation
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastTexture(orxANIM *_pstAnim);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastKey(orxANIM *_pstAnim);
 
-/** Removes all atoms from an animation
+/** Removes all keys from an animation
  * @param[in]   _pstAnim        Concerned animation
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_RemoveAllTextures(orxANIM *_pstAnim);
+extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_RemoveAllKeys(orxANIM *_pstAnim);
 
 
-/** Computes active atom
+/** Updates anim given a timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32TimeStamp   TimeStamp for animation update
- * @return      Current orxTEXTURE / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_ComputeTexture(orxANIM *_pstAnim, orxU32 _u32TimeStamp);
+extern orxDLLAPI orxSTATUS orxFASTCALL        or_xAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp);
 
-
-/** Anim atom accessor
+/** Anim current key data accessor
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32Index       Index of desired atom
- * @return      Desired orxTEXTURE / orxNULL
+ * @return      Desired orxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxAnim_GetTexture(orxCONST orxANIM *_pstAnim, orxU32 _u32Index);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnim_GetCurrentKeyData(orxCONST orxANIM *_pstAnim);
 
-/** Anim atom storage size accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Anim storage size
- */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureStorageSize(orxCONST orxANIM *_pstAnim);
 
-/** Anim atom counter accessor
+/** Anim key data accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Anim atom counter
+ * @param[in]   _u32Index       Index of desired key data
+ * @return      Desired orxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetTextureCounter(orxCONST orxANIM *_pstAnim);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnim_GetKeyData(orxCONST orxANIM *_pstAnim, orxU32 _u32Index);
+
+
+/** Anim key storage size accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Anim key storage size
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyStorageSize(orxCONST orxANIM *_pstAnim);
+
+/** Anim key counter accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Anim key counter
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(orxCONST orxANIM *_pstAnim);
 
 
 /** Anim time length accessor

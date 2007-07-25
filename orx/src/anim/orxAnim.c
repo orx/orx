@@ -44,6 +44,8 @@
 #define orxANIM_KU32_ID_MASK_COUNTER        0x0000FF00  /**< Counter ID mask */
 #define orxANIM_KU32_ID_MASK_FLAGS          0xFFFF0000  /**< Flags ID mask */
 
+#define orxANIM_KU32_ID_FLAG_CURRENT_KEY    0x10000000  /**< Has current key? */
+
 #define orxANIM_KS32_ID_SHIFT_SIZE          0           /**< Size ID shift */
 #define orxANIM_KS32_ID_SHIFT_COUNTER       8           /**< Counter ID shift */
 
@@ -52,17 +54,27 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Animation key structure
+ */
+typedef struct __orxANIM_KEY_t
+{
+  orxSTRUCTURE *pstData;                    /**< Data key : 4 */
+  orxU32        u32TimeStamp;               /**< Data timestamp : 8 */
+
+} orxANIM_KEY;
+
 /** Animation structure
  */
 struct __orxANIM_t
 {
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
   orxU32        u32IDFlags;                 /**< ID flags : 20 */
-  orxTEXTURE  **pastTexture;                /**< Used atom pointer array : 24*/
-  orxU32       *au32TimeStamp;              /**< TimeStamp array : 28 */
+  orxANIM_KEY  *astKeyList;                 /**< Key array : 24 */
+  orxU8         u8CurrentKey;               /**< Current key : 25 */
 
-  orxPAD(28)
+  orxPAD(25)
 };
+
 
 /** Static structure
  */
@@ -86,12 +98,12 @@ orxSTATIC orxANIM_STATIC sstAnim;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Finds a texture index given a timestamp
+/** Finds a key index given a timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32TimeStamp   Desired timestamp
- * @return      Texture index / orxU32_Undefined
+ * @return      Key index / orxU32_Undefined
  */
-orxSTATIC orxU32 orxAnim_FindTextureIndex(orxCONST orxANIM *_pstAnim, orxU32 _u32TimeStamp)
+orxSTATIC orxU32 orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, orxU32 _u32TimeStamp)
 {
   orxU32 u32Counter, u32MaxIndex, u32MinIndex, u32Index;
 
@@ -99,7 +111,7 @@ orxSTATIC orxU32 orxAnim_FindTextureIndex(orxCONST orxANIM *_pstAnim, orxU32 _u3
   orxASSERT(_pstAnim != orxNULL);
 
   /* Gets counter */
-  u32Counter = orxAnim_GetTextureCounter(_pstAnim);
+  u32Counter = orxAnim_GetKeyCounter(_pstAnim);
 
   /* Is animation not empty? */
   if(u32Counter != 0)
@@ -110,7 +122,7 @@ orxSTATIC orxU32 orxAnim_FindTextureIndex(orxCONST orxANIM *_pstAnim, orxU32 _u3
         u32Index = (u32MinIndex + u32MaxIndex) >> 1)
     {
       /* Updates search range */
-      if(_u32TimeStamp > _pstAnim->au32TimeStamp[u32Index])
+      if(_u32TimeStamp > _pstAnim->astKeyList[u32Index].u32TimeStamp)
       {
         u32MinIndex = u32Index + 1;
       }
@@ -121,7 +133,7 @@ orxSTATIC orxU32 orxAnim_FindTextureIndex(orxCONST orxANIM *_pstAnim, orxU32 _u3
     }
 
     /* Not found? */
-    if(_pstAnim->au32TimeStamp[u32Index] < _u32TimeStamp)
+    if(_pstAnim->astKeyList[u32Index].u32TimeStamp < _u32TimeStamp)
     {
       /* !!! MSG !!! */
 
@@ -150,7 +162,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_SetStorageSize(orxANIM *_pstAnim, orxU32 _u3
 {
   /* Checks */
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(_u32Size <= orxANIM_KU32_ATOM_MAX_NUMBER);
+  orxASSERT(_u32Size <= orxANIM_KU32_KEY_MAX_NUMBER);
 
   /* Updates storage size */
   orxAnim_SetFlags(_pstAnim, _u32Size << orxANIM_KS32_ID_SHIFT_SIZE, orxANIM_KU32_ID_MASK_SIZE);
@@ -158,56 +170,56 @@ orxSTATIC orxINLINE orxVOID orxAnim_SetStorageSize(orxANIM *_pstAnim, orxU32 _u3
   return;
 }  
 
-/** Sets an animation internal atom counter
+/** Sets an animation internal key counter
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32AtomCounter Desired atom counter
+ * @param[in]   _u32KeyCounter  Desired key counter
  */
-orxSTATIC orxINLINE orxVOID orxAnim_SetAtomCounter(orxANIM *_pstAnim, orxU32 _u32AtomCounter)
+orxSTATIC orxINLINE orxVOID orxAnim_SetKeyCounter(orxANIM *_pstAnim, orxU32 _u32KeyCounter)
 {
   /* Checks */
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(_u32AtomCounter <= orxAnim_GetTextureStorageSize(_pstAnim));
+  orxASSERT(_u32KeyCounter <= orxAnim_GetKeyStorageSize(_pstAnim));
 
   /* Updates counter */
-  orxAnim_SetFlags(_pstAnim, _u32AtomCounter << orxANIM_KS32_ID_SHIFT_COUNTER, orxANIM_KU32_ID_MASK_COUNTER);
+  orxAnim_SetFlags(_pstAnim, _u32KeyCounter << orxANIM_KS32_ID_SHIFT_COUNTER, orxANIM_KU32_ID_MASK_COUNTER);
 
   return;
 }
 
-/** Increases an animation internal atom counter
+/** Increases an animation internal key counter
  * @param[in]   _pstAnim        Concerned animation
  */
-orxSTATIC orxINLINE orxVOID orxAnim_IncreaseAtomCounter(orxANIM *_pstAnim)
+orxSTATIC orxINLINE orxVOID orxAnim_IncreaseKeyCounter(orxANIM *_pstAnim)
 {
-  orxREGISTER orxU32 u32AtomCounter;
+  orxREGISTER orxU32 u32KeyCounter;
 
   /* Checks */
   orxASSERT(_pstAnim != orxNULL);
 
-  /* Gets texture counter */
-  u32AtomCounter = orxAnim_GetTextureCounter(_pstAnim);
+  /* Gets key counter */
+  u32KeyCounter = orxAnim_GetKeyCounter(_pstAnim);
 
-  /* Updates texture counter*/
-  orxAnim_SetAtomCounter(_pstAnim, u32AtomCounter + 1);
+  /* Updates key counter */
+  orxAnim_SetKeyCounter(_pstAnim, u32KeyCounter + 1);
 
   return;
 }  
 
-/** Increases an animation internal atom counter
+/** Increases an animation internal key counter
  * @param[in]   _pstAnim        Concerned animation
  */
-orxSTATIC orxINLINE orxVOID orxAnim_DecreaseAtomCounter(orxANIM *_pstAnim)
+orxSTATIC orxINLINE orxVOID orxAnim_DecreaseKeyCounter(orxANIM *_pstAnim)
 {
-  orxREGISTER orxU32 u32AtomCounter;
+  orxREGISTER orxU32 u32KeyCounter;
 
   /* Checks */
   orxASSERT(_pstAnim != orxNULL);
 
-  /* Gets texture counter */
-  u32AtomCounter = orxAnim_GetTextureCounter(_pstAnim);
+  /* Gets key counter */
+  u32KeyCounter = orxAnim_GetKeyCounter(_pstAnim);
 
-  /* Updates texture counter*/
-  orxAnim_SetAtomCounter(_pstAnim, u32AtomCounter - 1);
+  /* Updates key counter*/
+  orxAnim_SetKeyCounter(_pstAnim, u32KeyCounter - 1);
 
   return;
 }  
@@ -247,17 +259,17 @@ orxVOID orxAnim_Setup()
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_TIME);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_STRUCTURE);
-  orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_TEXTURE);
 
   return;
 }
 
 /** Inits the Animation module
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxAnim_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-  
+
   /* Not already Initialized? */
   if(!(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY))
   {
@@ -274,7 +286,7 @@ orxSTATUS orxAnim_Init()
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
   }
-  
+
   /* Initialized? */
   if(eResult == orxSTATUS_SUCCESS)
   {
@@ -316,7 +328,7 @@ orxVOID orxAnim_Exit()
 
 /** Creates an empty animation
  * @param[in]   _u32IDFLags     ID flags for created animation
- * @param[in]   _u32Size        Number of atoms for this animation
+ * @param[in]   _u32Size        Number of keys for this animation
  * @return      Created orxANIM / orxNULL
  */
 orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size)
@@ -325,7 +337,8 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size)
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
-  orxASSERT(_u32Size <= orxANIM_KU32_ATOM_MAX_NUMBER);
+  orxASSERT((_u32IDFlags & orxANIM_KU32_ID_MASK_USER_ALL) == _u32IDFlags); 
+  orxASSERT(_u32Size <= orxANIM_KU32_KEY_MAX_NUMBER);
 
   /* Creates anim */
   pstAnim = (orxANIM *)orxStructure_Create(orxSTRUCTURE_ID_ANIM);
@@ -334,60 +347,45 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size)
   if(pstAnim != orxNULL)
   {
     /* Inits flags */
-    orxAnim_SetFlags(pstAnim, _u32IDFlags & orxANIM_KU32_ID_MASK_FLAGS, orxANIM_KU32_ID_MASK_FLAGS);
+    orxAnim_SetFlags(pstAnim, _u32IDFlags & orxANIM_KU32_ID_MASK_USER_ALL, orxANIM_KU32_ID_MASK_FLAGS);
 
     /* 2D Animation? */
     if(_u32IDFlags & orxANIM_KU32_ID_FLAG_2D)
     {
-      /* Allocates texture pointer array */
-      pstAnim->pastTexture = (orxTEXTURE **)orxMemory_Allocate(_u32Size * sizeof(orxTEXTURE *), orxMEMORY_TYPE_MAIN);
+      /* Allocates key array */
+      pstAnim->astKeyList = (orxANIM_KEY *)orxMemory_Allocate(_u32Size * sizeof(orxANIM_KEY), orxMEMORY_TYPE_MAIN);
 
-      /* Not allocated? */
-      if(pstAnim->pastTexture == orxNULL)
+      /* Valid? */
+      if(pstAnim->astKeyList == orxNULL)
+      {
+        /* Cleans key array */
+        orxMemory_Set(pstAnim->astKeyList, 0, _u32Size * sizeof(orxANIM_KEY));
+
+        /* Sets storage size & counter */
+        orxAnim_SetStorageSize(pstAnim, _u32Size);
+        orxAnim_SetKeyCounter(pstAnim, 0);
+      }
+      else
       {
         /* !!! MSG !!! */
 
-        /* Frees partially allocated texture */
+        /* Frees partially allocated anim */
         orxMemory_Free(pstAnim);
 
-        /* Returns nothing */
-        return orxNULL;
+        /* Updates result */
+        pstAnim = orxNULL;
       }
-
-      /* Allocates timestamp array */
-      pstAnim->au32TimeStamp = (orxU32 *)orxMemory_Allocate(_u32Size * sizeof(orxU32), orxMEMORY_TYPE_MAIN);
-
-      /* Not allocated? */
-      if(pstAnim->au32TimeStamp == orxNULL)
-      {
-        /* !!! MSG !!! */
-
-        /* Frees partially allocated texture */
-        orxMemory_Free(pstAnim->pastTexture);
-        orxMemory_Free(pstAnim);
-
-        /* Returns nothing */
-        return orxNULL;
-      }
-
-      /* Cleans structure pointers */
-      orxMemory_Set(pstAnim->pastTexture, 0, _u32Size * sizeof(orxTEXTURE *));
-      orxMemory_Set(pstAnim->au32TimeStamp, 0, _u32Size * sizeof(orxU32)); 
-
-      /* Sets storage size & counter */
-      orxAnim_SetStorageSize(pstAnim, _u32Size);
-      orxAnim_SetAtomCounter(pstAnim, 0);
     }
     /* Other Animation Type? */
     else
     {
       /* !!! MSG !!! */
 
-      /* Frees partially allocated texture */
+      /* Frees partially allocated anim */
       orxMemory_Free(pstAnim);
 
-      /* Returns nothing */
-      return orxNULL;
+      /* Updates result */
+      pstAnim = orxNULL;
     }
   }
 
@@ -397,6 +395,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size)
 
 /** Deletes an animation
  * @param[in]   _pstAnim        Animation to delete
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
 {
@@ -414,8 +413,8 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
     /* 2D Animation? */
     if(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D))
     {
-      /* Removes all textures */
-      orxAnim_RemoveAllTextures(_pstAnim);
+      /* Removes all keys */
+      orxAnim_RemoveAllKeys(_pstAnim);
     }
     /* Other Animation Type? */
     else
@@ -438,57 +437,69 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   return eResult;
 }
 
-/** Adds an atom to an animation
+/** Adds a key to an animation
  * @param[in]   _pstAnim        Animation concerned
- * @param[in]   _pstTexture     Texture to add
- * @param[in]   _u32TimeStamp   Timestamp for this atom
+ * @param[in]   _pstData        Key data to add
+ * @param[in]   _u32TimeStamp   Timestamp for this key
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnim_AddTexture(orxANIM *_pstAnim, orxTEXTURE *_pstTexture, orxU32 _u32TimeStamp)
+orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, orxU32 _u32TimeStamp)
 {
-  orxU32 u32Counter, u32Size;
+  orxU32    u32Counter, u32Size;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(_pstTexture != orxNULL);
+  orxASSERT(_pstData != orxNULL);
   orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT((orxAnim_GetKeyCounter(_pstAnim) == 0) || (_u32TimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCounter(_pstAnim) - 1].u32TimeStamp)); 
 
   /* Gets storage size & counter */
-  u32Size     = orxAnim_GetTextureStorageSize(_pstAnim);
-  u32Counter  = orxAnim_GetTextureCounter(_pstAnim);
+  u32Size     = orxAnim_GetKeyStorageSize(_pstAnim);
+  u32Counter  = orxAnim_GetKeyCounter(_pstAnim);
 
   /* Is there free room? */
   if(u32Counter < u32Size)
   {
-    /* Adds the extra texture */
-    _pstAnim->pastTexture[u32Counter] = _pstTexture;
-    _pstAnim->au32TimeStamp[u32Counter] = _u32TimeStamp;
+    orxANIM_KEY *pstKey;
 
-    /* Updates texture reference counter */
-    orxStructure_IncreaseCounter((orxSTRUCTURE *)_pstTexture);
+    /* Gets key pointer */
+    pstKey                = &(_pstAnim->astKeyList[u32Counter]);
 
-    /* Updates texture counter */
-    orxAnim_IncreaseAtomCounter(_pstAnim);
+    /* Stores key info */
+    pstKey->pstData       = _pstData;
+    pstKey->u32TimeStamp  = _u32TimeStamp;
+
+    /* Updates structure reference counter */
+    orxStructure_IncreaseCounter((orxSTRUCTURE *)_pstData);
+
+    /* Updates key counter */
+    orxAnim_IncreaseKeyCounter(_pstAnim);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILURE;
+    /* Updates status */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
-/** Removes last added atom from an animation
+/** Removes last added key from an animation
  * @param[in]   _pstAnim        Concerned animation
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnim_RemoveLastTexture(orxANIM *_pstAnim)
+orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
 {
-  orxU32 u32Counter;
+  orxU32    u32Counter;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
@@ -496,88 +507,148 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastTexture(orxANIM *_pstAnim)
   orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Gets counter */
-  u32Counter = orxAnim_GetTextureCounter(_pstAnim);
+  u32Counter = orxAnim_GetKeyCounter(_pstAnim);
 
-  /* Has texture? */
+  /* Has key? */
   if(u32Counter != 0)
   {
+    orxANIM_KEY *pstKey;
+
     /* Gets real index */
     u32Counter--;
 
-    /* Updates counter */
-    orxAnim_DecreaseAtomCounter(_pstAnim);
+    /* Gets key pointer */
+    pstKey = &(_pstAnim->astKeyList[u32Counter]);
 
-    /* Updates texture reference counter */
-    orxStructure_DecreaseCounter((orxSTRUCTURE *)_pstAnim->pastTexture[u32Counter]);
+    /* Updates key counter */
+    orxAnim_DecreaseKeyCounter(_pstAnim);
 
-    /* Removes the texture & cleans info */
-    _pstAnim->pastTexture[u32Counter]   = orxNULL;
-    _pstAnim->au32TimeStamp[u32Counter] = 0;
+    /* Updates structure reference counter */
+    orxStructure_DecreaseCounter(pstKey->pstData);
+
+    /* Cleans the key info */
+    orxMemory_Set(pstKey, 0, sizeof(orxANIM_KEY));
+    
+    /* Had a current key? */
+    if(_pstAnim->u32IDFlags & orxANIM_KU32_ID_FLAG_CURRENT_KEY)
+    {
+      /* Was the removed one? */
+      if(_pstAnim->u8CurrentKey == u32Counter)
+      {
+        /* Removes current key */
+        _pstAnim->u8CurrentKey  = 0;
+        
+        /* Updates flags */
+        _pstAnim->u32IDFlags   &= ~orxANIM_KU32_ID_FLAG_CURRENT_KEY;
+      }
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
     /* !!! MSG !!! */
 
-    return orxSTATUS_FAILURE;
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
-  return orxSTATUS_SUCCESS;
+  return eResult;
 }
 
-/** Removes all atoms from an animation
+/** Removes all keys from an animation
  * @param[in]   _pstAnim        Concerned animation
  */
-orxVOID orxFASTCALL orxAnim_RemoveAllTextures(orxANIM *_pstAnim)
+orxVOID orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
   orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
-  /* Until there are no texture left */
-  while(orxAnim_RemoveLastTexture(_pstAnim) != orxSTATUS_FAILURE);
+  /* Until there are no key left */
+  while(orxAnim_RemoveLastKey(_pstAnim) != orxSTATUS_FAILURE);
 
   /* Done! */
   return;
 }
 
-/** Computes active atom
+/** Updates animation given a timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32TimeStamp   TimeStamp for animation update
- * @return      Current orxTEXTURE / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxTEXTURE *orxFASTCALL orxAnim_ComputeTexture(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
+orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
 {
-  orxTEXTURE *pstTexture = orxNULL;
-  orxU32 u32Index;
+  orxU32    u32Index;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
   orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
-  /* Finds corresponding texture index */
-  u32Index = orxAnim_FindTextureIndex(_pstAnim, _u32TimeStamp);
+  /* Finds corresponding key index */
+  u32Index = orxAnim_FindKeyIndex(_pstAnim, _u32TimeStamp);
 
   /* Found? */
   if(u32Index != orxU32_Undefined)
   {
-    pstTexture = _pstAnim->pastTexture[u32Index];
+    /* Updates current key */
+    _pstAnim->u8CurrentKey = u32Index;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
-  return pstTexture;
+  /* Done! */
+  return eResult;
 }
 
-/** Animation atom accessor
+/** Anim current key data accessor
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32Index       Index of desired atom
- * @return      Desired orxTEXTURE / orxNULL
+ * @return      Desired orxSTRUCTURE / orxNULL
  */
-orxTEXTURE *orxFASTCALL orxAnim_GetTexture(orxCONST orxANIM *_pstAnim, orxU32 _u32Index)
+orxSTRUCTURE *orxFASTCALL orxAnim_GetCurrentKeyData(orxCONST orxANIM *_pstAnim)
 {
-  orxU32 u32Counter;
-  orxTEXTURE *pstTexture = orxNULL;
+  orxSTRUCTURE *pstResult;
+
+  /* Has current key? */
+  if(_pstAnim->u32IDFlags & orxANIM_KU32_ID_FLAG_CURRENT_KEY)
+  {
+    /* Updates result */
+    pstResult = _pstAnim->astKeyList[_pstAnim->u8CurrentKey].pstData;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Animation key data accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _u32Index       Index of desired key
+ * @return      Desired orxSTRUCTURE / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(orxCONST orxANIM *_pstAnim, orxU32 _u32Index)
+{
+  orxU32        u32Counter;
+  orxSTRUCTURE *pstResult;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
@@ -585,27 +656,31 @@ orxTEXTURE *orxFASTCALL orxAnim_GetTexture(orxCONST orxANIM *_pstAnim, orxU32 _u
   orxASSERT(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
 
   /* Gets counter */
-  u32Counter = orxAnim_GetTextureCounter(_pstAnim);
+  u32Counter = orxAnim_GetKeyCounter(_pstAnim);
 
   /* Is index valid? */
   if(_u32Index < u32Counter)
   {
-    /* Gets texture */
-    pstTexture = _pstAnim->pastTexture[_u32Index];
+    /* Updates result */
+    pstResult = _pstAnim->astKeyList[_u32Index].pstData;
   }
   else
   {
     /* !!! MSG !!! */
+
+    /* Updates result */
+    pstResult = orxNULL;
   }
 
-  return pstTexture;
+  /* Done! */
+  return pstResult;
 }
 
-/** Animation atom storage size accessor
+/** Animation key storage size accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Animation storage size
+ * @return      Animation key storage size
  */
-orxU32 orxFASTCALL orxAnim_GetTextureStorageSize(orxCONST orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(orxCONST orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
@@ -616,11 +691,11 @@ orxU32 orxFASTCALL orxAnim_GetTextureStorageSize(orxCONST orxANIM *_pstAnim)
   return((_pstAnim->u32IDFlags & orxANIM_KU32_ID_MASK_SIZE) >> orxANIM_KS32_ID_SHIFT_SIZE);
 }  
 
-/** Animation atom counter accessor
+/** Animation key counter accessor
  * @param[in]   _pstAnim        Concerned animation
- * @return      Animation atom counter
+ * @return      Animation key counter
  */
-orxU32 orxFASTCALL orxAnim_GetTextureCounter(orxCONST orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetKeyCounter(orxCONST orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
@@ -646,23 +721,25 @@ orxU32 orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
   /* 2D? */
   if(orxAnim_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
   {
-    /* Gets texture counter */
-    u32Counter = orxAnim_GetTextureCounter(_pstAnim);
+    /* Gets key counter */
+    u32Counter = orxAnim_GetKeyCounter(_pstAnim);
 
     /* Is animation non empty? */
     if(u32Counter != 0)
     {
       /* Gets length */
-      u32Length = _pstAnim->au32TimeStamp[u32Counter - 1];
+      u32Length = _pstAnim->astKeyList[u32Counter - 1].u32TimeStamp;
     }
   }
   else
   {
     /* !!! MSG !!! */
 
-    return orxU32_Undefined;
+    /* Updates result */
+    u32Length = orxU32_Undefined;
   }
 
+  /* Done! */
   return u32Length;
 }
 
@@ -677,6 +754,7 @@ orxBOOL orxFASTCALL orxAnim_TestFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Fla
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
 
+  /* Done! */
   return((_pstAnim->u32IDFlags & _u32Flags) != orxANIM_KU32_FLAG_NONE);
 }
 
@@ -691,6 +769,7 @@ orxBOOL orxFASTCALL orxAnim_TestAllFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
 
+  /* Done! */
   return((_pstAnim->u32IDFlags & _u32Flags) == _u32Flags);
 }
 

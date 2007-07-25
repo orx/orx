@@ -101,13 +101,13 @@ typedef struct __orxPLUGIN_FUNCTION_INFO_t
   orxPLUGIN_FUNCTION_ID eFunctionID;                        /**< Function ID : 8 */
 
   /* Function pointer */
-  orxPLUGIN_FUNCTION pfnFunction;                           /**< Function Address : 4 */
+  orxPLUGIN_FUNCTION    pfnFunction;                        /**< Function Address : 4 */
 
   /* Funtion name */
-  orxSTRING zFunctionName;                                  /**< Function Name : 12 */
+  orxSTRING             zFunctionName;                      /**< Function Name : 12 */
 
   /* Function argument types */
-  orxSTRING zFunctionArgs;                                  /**< Function Argument Types : 16 */
+  orxSTRING             zFunctionArgs;                      /**< Function Argument Types : 16 */
 
 } orxPLUGIN_FUNCTION_INFO;
 
@@ -118,19 +118,19 @@ typedef struct __orxPLUGIN_FUNCTION_INFO_t
 typedef struct __orxPLUGIN_INFO_t
 {
   /* System plugin access */
-  orxSYSPLUGIN pstSysPlugin;                                /**< Plugin system pointer : 4 */
+  orxSYSPLUGIN  pstSysPlugin;                               /**< Plugin system pointer : 4 */
 
   /* Plugin handle */
-  orxHANDLE hPluginHandle;                                  /**< Plugin handle : 8 */
+  orxHANDLE     hPluginHandle;                              /**< Plugin handle : 8 */
 
   /* Function bank */
-  orxBANK *pstFunctionBank;                                 /**< Function bank : 12 */
+  orxBANK      *pstFunctionBank;                            /**< Function bank : 12 */
 
   /* Function hash table */
   orxHASHTABLE *pstFunctionTable;                           /**< Function hash table : 16 */
 
   /* Plugin name */
-  orxSTRING zPluginName;                                    /**< Plugin name : 20 */
+  orxSTRING     zPluginName;                                /**< Plugin name : 20 */
 
   /* Padding */
   orxPAD(20)
@@ -213,7 +213,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
           j++)
       {
         /* Tests if function is loaded */
-        bLoaded = (sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction != sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnDefaultFunction)
+        bLoaded = (*(sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnFunction) != sstPlugin.astCoreInfo[i].pstCoreFunctionTable[j].pfnDefaultFunction)
                   ? orxTRUE
                   : orxFALSE;
       }
