@@ -53,7 +53,7 @@
 #include "main/orxParam.h"
 
 #include "math/orxMath.h"
-#include "math/orxVec.h"
+#include "math/orxVector.h"
 
 #include "memory/orxBank.h"
 

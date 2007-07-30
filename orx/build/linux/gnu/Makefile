@@ -89,7 +89,7 @@ ORXDLL_OBJECTS =  \
 	./build/$(BUILD)/orxDLL_orxPackage.o \
 	./build/$(BUILD)/orxDLL_orxTextIO.o \
 	./build/$(BUILD)/orxDLL_orxParam.o \
-	./build/$(BUILD)/orxDLL_orxVec.o \
+	./build/$(BUILD)/orxDLL_orxVector.o \
 	./build/$(BUILD)/orxDLL_orxBank.o \
 	./build/$(BUILD)/orxDLL_orxMemory.o \
 	./build/$(BUILD)/orxDLL_orxFrame.o \
@@ -135,7 +135,7 @@ ORXLIB_OBJECTS =  \
 	./build/$(BUILD)/orxLIB_orxPackage.o \
 	./build/$(BUILD)/orxLIB_orxTextIO.o \
 	./build/$(BUILD)/orxLIB_orxParam.o \
-	./build/$(BUILD)/orxLIB_orxVec.o \
+	./build/$(BUILD)/orxLIB_orxVector.o \
 	./build/$(BUILD)/orxLIB_orxBank.o \
 	./build/$(BUILD)/orxLIB_orxMemory.o \
 	./build/$(BUILD)/orxLIB_orxFrame.o \
@@ -594,7 +594,7 @@ endif
 ./build/$(BUILD)/orxDLL_orxParam.o: ../../../src/main/orxParam.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_orxVec.o: ../../../src/math/orxVec.c
+./build/$(BUILD)/orxDLL_orxVector.o: ../../../src/math/orxVector.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxBank.o: ../../../src/memory/orxBank.c
@@ -717,7 +717,7 @@ endif
 ./build/$(BUILD)/orxLIB_orxParam.o: ../../../src/main/orxParam.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_orxVec.o: ../../../src/math/orxVec.c
+./build/$(BUILD)/orxLIB_orxVector.o: ../../../src/math/orxVector.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxBank.o: ../../../src/memory/orxBank.c

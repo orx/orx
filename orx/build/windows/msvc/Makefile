@@ -83,7 +83,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxPackage.obj \
 	.\build\$(BUILD)\orxDLL_orxTextIO.obj \
 	.\build\$(BUILD)\orxDLL_orxParam.obj \
-	.\build\$(BUILD)\orxDLL_orxVec.obj \
+	.\build\$(BUILD)\orxDLL_orxVector.obj \
 	.\build\$(BUILD)\orxDLL_orxBank.obj \
 	.\build\$(BUILD)\orxDLL_orxMemory.obj \
 	.\build\$(BUILD)\orxDLL_orxFrame.obj \
@@ -130,7 +130,7 @@ ORXLIB_OBJECTS =  \
 	.\build\$(BUILD)\orxLIB_orxPackage.obj \
 	.\build\$(BUILD)\orxLIB_orxTextIO.obj \
 	.\build\$(BUILD)\orxLIB_orxParam.obj \
-	.\build\$(BUILD)\orxLIB_orxVec.obj \
+	.\build\$(BUILD)\orxLIB_orxVector.obj \
 	.\build\$(BUILD)\orxLIB_orxBank.obj \
 	.\build\$(BUILD)\orxLIB_orxMemory.obj \
 	.\build\$(BUILD)\orxLIB_orxFrame.obj \
@@ -680,7 +680,7 @@ clean:
 .\build\$(BUILD)\orxDLL_orxParam.obj: ..\..\..\src\main\orxParam.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxVec.obj: ..\..\..\src\math\orxVec.c
+.\build\$(BUILD)\orxDLL_orxVector.obj: ..\..\..\src\math\orxVector.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
 .\build\$(BUILD)\orxDLL_orxBank.obj: ..\..\..\src\memory\orxBank.c
@@ -803,7 +803,7 @@ clean:
 .\build\$(BUILD)\orxLIB_orxParam.obj: ..\..\..\src\main\orxParam.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
 
-.\build\$(BUILD)\orxLIB_orxVec.obj: ..\..\..\src\math\orxVec.c
+.\build\$(BUILD)\orxLIB_orxVector.obj: ..\..\..\src\math\orxVector.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) $**
 
 .\build\$(BUILD)\orxLIB_orxBank.obj: ..\..\..\src\memory\orxBank.c

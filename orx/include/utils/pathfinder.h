@@ -92,7 +92,7 @@
 // * \param _b_smooth Tells if found path must be smoothed/stripped.
 // * \return Returns the size of the found path (number of locations). 0 is no path found.
 // */
-//extern orxS32  orxPathfinder_path_get(orxVEC *_pst_src, orxVEC *_pst_dest, orxVEC **_ppst_result, orxBOOL _b_smooth);
+//extern orxS32  orxPathfinder_path_get(orxVECTOR *pv_result, orxBOOL _b_smooth);
 //
 //
 //#endif /* _orxPATHFINDER_H_ */

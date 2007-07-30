@@ -31,9 +31,9 @@
 //orxSTATIC pathfinder_st_tile **sppst_matrix = orxNULL;
 //orxSTATIC pathfinder_st_mask *spst_mask = orxNULL;
 //orxSTATIC orxS32 si_mask_size = 0;
-//orxSTATIC orxVEC sst_source;
-//orxSTATIC orxVEC sst_destination;
-//orxSTATIC orxVEC sst_null;
+//orxSTATIC orxVECTOR sst_source;
+//orxSTATIC orxVECTOR sst_destination;
+//orxSTATIC orxVECTOR sst_null;
 //orxSTATIC orxBOOL *spb_touched = orxNULL;
 //orxSTATIC orxS32 si_touched_size = 0;
 //
@@ -42,7 +42,7 @@
 //  orxFLOAT f_gcost, f_fcost;
 //  orxS32 i_num;
 //  
-//  orxVEC st_parent, st_previous, st_next;
+//  orxVECTOR v_parent, st_previous, st_next;
 //
 //  orxBOOL b_open;
 //  orxBOOL b_blocked;
@@ -187,19 +187,19 @@
 //
 //  spst_mask[4].fX = -1;
 //  spst_mask[4].fY = -1;
-//  spst_mask[4].fCost = orxMATH_KF_SQRT;
+//  spst_mask[4].fCost = orxMATH_KF_SQRT_2;
 //
 //  spst_mask[5].fX = 1;
 //  spst_mask[5].fY = -1;
-//  spst_mask[5].fCost = orxMATH_KF_SQRT;
+//  spst_mask[5].fCost = orxMATH_KF_SQRT_2;
 //
 //  spst_mask[6].fX = 1;
 //  spst_mask[6].fY = 1;
-//  spst_mask[6].fCost = orxMATH_KF_SQRT;
+//  spst_mask[6].fCost = orxMATH_KF_SQRT_2;
 //
 //  spst_mask[7].fX = -1;
 //  spst_mask[7].fY = 1;
-//  spst_mask[7].fCost = orxMATH_KF_SQRT;
+//  spst_mask[7].fCost = orxMATH_KF_SQRT_2;
 //
 //  return;
 //}
@@ -299,7 +299,7 @@
 //
 //orxVOID pathfinder_map_init(orxS32 _i_horizontal_size, orxS32 _i_vertical_size)
 //{
-////  orxVec_Load(&sst_null);
+////  orxVector_Load(&sst_null);
 //
 //  pathfinder_gi_map_h_size = _i_horizontal_size;
 //  pathfinder_gi_map_v_size = _i_vertical_size;
@@ -323,21 +323,21 @@
 //  return;
 //}
 //
-//orxVOID pathfinder_source_set(orxVEC *_pst_coord)
+//orxVOID pathfinder_source_set(orxVECTOR *_pv_coord)
 //{
-//  orxVec_Copy(&sst_source, _pst_coord);
+//  orxVector_Copy(&sst_source, _pst_coord);
 //
 //  return;
 //}
 //
-//orxVOID pathfinder_destination_set(orxVEC *_pst_coord)
+//orxVOID pathfinder_destination_set(orxVECTOR *_pv_coord)
 //{
-//  orxVec_Copy(&sst_destination, _pst_coord);
+//  orxVector_Copy(&sst_destination, _pst_coord);
 //
 //  return;
 //}
 //
-//orxFLOAT pathfinder_cost(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
+//orxFLOAT pathfinder_cost(orxVECTOR *_pv_coord2)
 //{
 //  orxFLOAT fX, fY;
 //
@@ -347,12 +347,12 @@
 //  return(sqrtf((fX * fX) + (fY * fY)));
 //}
 //
-//orxFLOAT pathfinder_goal_distance_estimate(orxVEC *_pst_coord)
+//orxFLOAT pathfinder_goal_distance_estimate(orxVECTOR *_pv_coord)
 //{
 //  return(pathfinder_cost(_pst_coord, &sst_destination));
 //}
 //
-//orxVOID pathfinder_tile_set(orxVEC *_pst_coord, orxFLOAT _f_gcost, orxFLOAT _f_fcost, orxS32 _i_num, orxVEC *_pstParent, orxVEC *_pstPrevious, orxVEC *_pstNext, orxBOOL _b_status)
+//orxVOID pathfinder_tile_set(orxVECTOR *_pvNext, orxBOOL _b_status)
 //{
 //  pathfinder_st_tile *tile = &sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY];
 //
@@ -361,9 +361,9 @@
 //  
 //  tile->i_num = _i_num;
 //
-//  orxVec_Copy(&tile->st_parent, _pstParent);
-//  orxVec_Copy(&tile->st_previous, _pstPrevious);
-//  orxVec_Copy(&tile->st_next, _pstNext);
+//  orxVector_Copy(&tile->st_parent, _pstParent);
+//  orxVector_Copy(&tile->st_previous, _pstPrevious);
+//  orxVector_Copy(&tile->st_next, _pstNext);
 //
 //  tile->b_open = _b_status;
 //
@@ -372,7 +372,7 @@
 //  return;
 //}
 //
-//pathfinder_st_tile *pathfinder_tile_get(orxVEC *_pst_coord)
+//pathfinder_st_tile *pathfinder_tile_get(orxVECTOR *_pv_coord)
 //{
 //  if((_pst_coord->fX < 0)
 //     || (_pst_coord->fX >= pathfinder_gi_map_h_size)
@@ -387,31 +387,31 @@
 //  }
 //}
 //
-//orxBOOL pathfinder_is_walkable(orxVEC *_pst_coord1, orxVEC *_pst_coord2)
+//orxBOOL pathfinder_is_walkable(orxVECTOR *_pv_coord2)
 //{
-//  orxVEC st_start, st_end;
+//  orxVECTOR v_start, st_end;
 //  orxFLOAT f_a, f_sampling, f_dx, f_dy, fX, fY;
 //  orxBOOL b_res;
 //
 //  if(_pst_coord2->fX > _pst_coord1->fX)
 //  {
-//    orxVec_Copy(&st_start, _pst_coord1);
-//    orxVec_Copy(&st_end, _pst_coord2);
+//    orxVector_Copy(&st_start, _pst_coord1);
+//    orxVector_Copy(&st_end, _pst_coord2);
 //  }
 //  else if(_pst_coord2->fX < _pst_coord1->fX)
 //  {
-//    orxVec_Copy(&st_start, _pst_coord2);
-//    orxVec_Copy(&st_end, _pst_coord1);
+//    orxVector_Copy(&st_start, _pst_coord2);
+//    orxVector_Copy(&st_end, _pst_coord1);
 //  }
 //  else if(_pst_coord2->fY > _pst_coord1->fY)
 //  {
-//    orxVec_Copy(&st_start, _pst_coord1);
-//    orxVec_Copy(&st_end, _pst_coord2);
+//    orxVector_Copy(&st_start, _pst_coord1);
+//    orxVector_Copy(&st_end, _pst_coord2);
 //  }
 //  else
 //  {
-//    orxVec_Copy(&st_start, _pst_coord2);
-//    orxVec_Copy(&st_end, _pst_coord1);
+//    orxVector_Copy(&st_start, _pst_coord2);
+//    orxVector_Copy(&st_end, _pst_coord1);
 //  }
 //
 //  b_res = orxTRUE;
@@ -449,37 +449,37 @@
 //  return b_res;
 //}
 //
-//orxBOOL pathfinder_is_goal(orxVEC *_pst_coord)
+//orxBOOL pathfinder_is_goal(orxVECTOR *_pv_coord)
 //{
 //  return((_pst_coord->fX == sst_destination.fX) && (_pst_coord->fY == sst_destination.fY));
 //}
 //
-//orxVEC* pathfinder_coord_previous(orxVEC *_pst_coord)
+//orxVECTOR* pathfinder_coord_previous(orxVECTOR *_pv_coord)
 //{
 //  return(&sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].st_previous);
 //}
 //
-//orxVEC* pathfinder_coord_next(orxVEC *_pst_coord)
+//orxVECTOR* pathfinder_coord_next(orxVECTOR *_pv_coord)
 //{
 //  return(&sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].st_next);
 //}
 //
-//orxVEC* pathfinder_coord_parent(orxVEC *_pst_coord)
+//orxVECTOR* pathfinder_coord_parent(orxVECTOR *_pv_coord)
 //{
 //  return(&sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].st_parent);
 //}
 //
-//orxBOOL pathfinder_is_touched(orxVEC *_pst_coord)
+//orxBOOL pathfinder_is_touched(orxVECTOR *_pv_coord)
 //{
 //  return(spb_touched[(orxU32)(_pst_coord->fX+(_pst_coord->fY * pathfinder_gi_map_h_size))]);
 //}
 //
-//orxFLOAT pathfinder_gcost(orxVEC *_pst_coord)
+//orxFLOAT pathfinder_gcost(orxVECTOR *_pv_coord)
 //{
 //  return(sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].f_gcost);
 //}
 //
-//orxFLOAT pathfinder_fcost(orxVEC *_pst_coord)
+//orxFLOAT pathfinder_fcost(orxVECTOR *_pv_coord)
 //{
 //  return(sppst_matrix[(orxU32)_pst_coord->fX][(orxU32)_pst_coord->fY].f_fcost);
 //}
@@ -512,13 +512,13 @@
 //  return;
 //}
 //
-//orxS32 pathfinder_path_get(orxVEC *_pst_src, orxVEC *_pst_dest, orxVEC **_ppst_result, orxBOOL _b_smooth)
+//orxS32 pathfinder_path_get(orxVECTOR *pv_result, orxBOOL _b_smooth)
 //{
 //  orxS32 i_current_point, i_check_point, i_newnum;
 //  orxS32 i, j;
 //  orxFLOAT f_newg, f_newf;
-//  orxVEC st_act, st_parent, st_prev, st_next, st_temp;
-//  orxVEC *pst_result, *pst_temp, *pstParent;
+//  orxVECTOR v_act, st_parent, st_prev, st_next, st_temp;
+//  orxVECTOR *pvParent;
 //  pathfinder_st_tile *pst_tile;
 //
 //  pathfinder_touched_clean();
@@ -529,9 +529,9 @@
 //  pathfinder_tile_set(_pst_src, 0.0, pathfinder_goal_distance_estimate(_pst_src), 1, orxNULL, orxNULL, orxNULL, orxTRUE);
 //
 //
-//  orxVec_Copy(&st_parent, _pst_src);
-//  orxVec_Copy(&st_prev, &st_parent);
-//  orxVec_Copy(&st_next, &sst_null);
+//  orxVector_Copy(&st_parent, _pst_src);
+//  orxVector_Copy(&st_prev, &st_parent);
+//  orxVector_Copy(&st_next, &sst_null);
 //
 //  pst_tile = pathfinder_tile_get(&st_parent);
 //
@@ -539,13 +539,13 @@
 //  {
 //    if(pathfinder_is_goal(&st_parent) != orxFALSE)
 //    {
-//      pst_result = (orxVEC *) orxMemory_Allocate(pst_tile->i_num * sizeof(orxVEC), orxMEMORY_TYPE_MAIN);
+//      pst_result = (orxVECTOR *pv_tile->i_num * sizeof(orxVECTOR), orxMEMORY_TYPE_MAIN);
 //
-//      for(i = pst_tile->i_num - 1, orxVec_Copy(&st_temp, &st_parent); i >= 0; i--)
+//      for(i = pst_tile->i_num - 1, orxVector_Copy(&st_temp, &st_parent); i >= 0; i--)
 //      {
-//        orxVec_Copy(&pst_result[i], &st_temp);
+//        orxVector_Copy(&pst_result[i], &st_temp);
 //        pstParent = pathfinder_coord_parent(&st_temp);
-//        orxVec_Copy(&st_temp, pstParent);
+//        orxVector_Copy(&st_temp, pstParent);
 //      }
 //
 //      pathfinder_gf_goal_distance = pst_tile->f_gcost;
@@ -564,20 +564,20 @@
 //       * Or smooth it before returning it
 //       */
 //
-//      pst_temp = (orxVEC *) orxMemory_Allocate(pst_tile->i_num * sizeof(orxVEC), orxMEMORY_TYPE_MAIN);
+//      pst_temp = (orxVECTOR *pv_tile->i_num * sizeof(orxVECTOR), orxMEMORY_TYPE_MAIN);
 //
 //      for(i = 0, i_check_point = 0, i_current_point = 1; i_current_point + 1 < pst_tile->i_num; i_current_point++)
 //      {
 //        if(pathfinder_is_walkable(&pst_result[i_check_point], &pst_result[i_current_point + 1]) == orxFALSE)
 //        {
-//          orxVec_Copy(&pst_temp[i++], &pst_result[i_current_point]);
+//          orxVector_Copy(&pst_temp[i++], &pst_result[i_current_point]);
 //          i_check_point = i_current_point;
 //        }
 //      }
 //
 //      if((pst_temp[i-1].fX != pst_result[i_current_point].fX) || (pst_temp[i-1].fY != pst_result[i_current_point].fY))
 //      {
-//        orxVec_Copy(&pst_temp[i++], &pst_result[i_current_point]);
+//        orxVector_Copy(&pst_temp[i++], &pst_result[i_current_point]);
 //      }
 //
 //      orxMemory_Free(pst_result);
@@ -612,17 +612,17 @@
 //               * Then we delete it!
 //               */
 //
-//              orxVec_Copy(&st_next, pathfinder_coord_next(&st_act));
-//              orxVec_Copy(&st_prev, pathfinder_coord_previous(&st_act));
+//              orxVector_Copy(&st_next, pathfinder_coord_next(&st_act));
+//              orxVector_Copy(&st_prev, pathfinder_coord_previous(&st_act));
 //
 ////              if(coord_is_null(&st_next) == orxFALSE)
 ////              {
-////                orxVec_Copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
+////                orxVector_Copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
 ////              }
 ////
 ////              if(coord_is_null(&st_prev) == orxFALSE)
 ////              {
-////                orxVec_Copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
+////                orxVector_Copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
 ////              }
 //            }
 //          }
@@ -635,20 +635,20 @@
 //           */
 //
 //          pst_temp = pathfinder_coord_next(&st_parent);
-//          orxVec_Copy(&st_next, pst_temp);
-//          orxVec_Copy(&st_prev, &st_parent);
+//          orxVector_Copy(&st_next, pst_temp);
+//          orxVector_Copy(&st_prev, &st_parent);
 ////          while((coord_is_null(&st_next) == orxFALSE) && (f_newf >= pathfinder_fcost(&st_next)))
 ////          {
-////            orxVec_Copy(&st_prev, &st_next);
+////            orxVector_Copy(&st_prev, &st_next);
 ////            pst_temp = pathfinder_coord_next(&st_next);
-////            orxVec_Copy(&st_next, pst_temp);
+////            orxVector_Copy(&st_next, pst_temp);
 ////          }
 //          pathfinder_tile_set(&st_act, f_newg, f_newf, i_newnum, &st_parent, &st_prev, &st_next, orxTRUE);
 //
-//          orxVec_Copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_act);
+//          orxVector_Copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_act);
 ////          if(coord_is_null(&st_next) == orxFALSE)
 ////          {
-////            orxVec_Copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_act);
+////            orxVector_Copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_act);
 ////          }
 //        }
 //      }
@@ -657,22 +657,22 @@
 //    pst_tile->b_open = orxFALSE;
 //
 //    pst_temp = pathfinder_coord_previous(&st_parent);
-//    orxVec_Copy(&st_prev, pst_temp);
+//    orxVector_Copy(&st_prev, pst_temp);
 //
 //    pst_temp = pathfinder_coord_next(&st_parent);
-//    orxVec_Copy(&st_next, pst_temp);
+//    orxVector_Copy(&st_next, pst_temp);
 //
 ////    if(coord_is_null(&st_next) == orxFALSE)
 ////    {
-////      orxVec_Copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
+////      orxVector_Copy(&sppst_matrix[(orxU32)st_next.fX][(orxU32)st_next.fY].st_previous, &st_prev);
 ////    }
 ////
 ////    if(coord_is_null(&st_prev) == orxFALSE)
 ////    {
-////      orxVec_Copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
+////      orxVector_Copy(&sppst_matrix[(orxU32)st_prev.fX][(orxU32)st_prev.fY].st_next, &st_next);
 ////    }
 //
-//    orxVec_Copy(&st_parent, &pst_tile->st_next);
+//    orxVector_Copy(&st_parent, &pst_tile->st_next);
 ////    if(coord_is_null(&st_parent) != orxFALSE)
 ////    {
 ////      break;

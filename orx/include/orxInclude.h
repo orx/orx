@@ -19,7 +19,7 @@
  * - Add animation format, expendable for 3D (with anim_key/anim_channel structures)
  * - Add multi animation interpreter (for blends, transitions, etc...)
  * C Add fixed point floats + ops + converts (replace (orxFLOAT) casts by a convert function)
- * V Change coord in orxVEC with all new functions
+ * V Change coord in orxVECTOR with all new functions
  * - Add Matrix type + functions
  * - Update camera to use matrix + vector
  * - Update camera to use 3D-like computation

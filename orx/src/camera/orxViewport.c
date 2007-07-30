@@ -54,13 +54,13 @@ struct __orxVIEWPORT_t
   orxSTRUCTURE stStructure;
 
   /* Position coord : 32 */
-  orxVEC vPosition;
+  orxVECTOR vPosition;
 
   /* Size coord : 48 */
-  orxVEC vSize;
+  orxVECTOR vSize;
 
   /* Clip coords : 80 */
-  orxVEC vClipPosition, vClipSize;
+  orxVECTOR vClipPosition, vClipSize;
 
   /* Internal id flags : 84 */
   orxU32 u32IDFlags;
@@ -108,8 +108,8 @@ orxSTATIC orxVIEWPORT_STATIC sstViewport;
  ***************************************************************************/
 orxSTATIC orxVOID orxViewport_ComputeClipCorners(orxVIEWPORT *_pstViewport)
 {
-  orxVEC *pvPos, *pvSize, *pvClipPosition, *pvClipSize;
-  orxVEC vCamPos, vCamSize;
+  orxVECTOR *pvPos, *pvSize, *pvClipPosition, *pvClipSize;
+  orxVECTOR vCamPos, vCamSize;
 
   /* Checks */
   orxASSERT(_pstViewport != orxNULL);
@@ -151,8 +151,8 @@ orxSTATIC orxVOID orxViewport_ComputeClipCorners(orxVIEWPORT *_pstViewport)
  ***************************************************************************/
 orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstViewport)
 {
-  orxVEC *pvPos, *pvSize;
-  orxVEC vResult;
+  orxVECTOR *pvPos, *pvSize;
+  orxVECTOR vResult;
   orxU32 u32Flags;
   orxFLOAT fX = orxFLOAT_0, fY = orxFLOAT_0;
 
@@ -168,7 +168,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
     /* 2D? */
     if(orxCamera_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
     {
-      orxVEC vCamSize;
+      orxVECTOR vCamSize;
 
       /* Gets internal pointer */
       pvPos = &(_pstViewport->vPosition);
@@ -211,7 +211,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
       }
 
       /* Stores it in a coord structure */
-      orxVec_Set3(&vResult, fX, fY, orxFLOAT_0);
+      orxVector_Set3(&vResult, fX, fY, orxFLOAT_0);
 
       /* Updates camera screen position */
       orxCamera_SetOnScreenPosition(_pstViewport->pstCamera, &vResult);
@@ -480,7 +480,7 @@ orxVOID orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition)
+orxVOID orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -488,7 +488,7 @@ orxVOID orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition)
   orxASSERT(_pvPosition != orxNULL);
 
   /* Updates position */
-  orxVec_Copy(&(_pstViewport->vPosition), _pvPosition);
+  orxVector_Copy(&(_pstViewport->vPosition), _pvPosition);
 
   /* Updates camera on screen position */
   orxViewport_UpdateCameraOnScreenPosition(_pstViewport);
@@ -502,7 +502,7 @@ orxVOID orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize)
+orxVOID orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxVECTOR *_pvSize)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -510,7 +510,7 @@ orxVOID orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize)
   orxASSERT(_pvSize != orxNULL);
 
   /* Updates position */
-  orxVec_Copy(&(_pstViewport->vSize), _pvSize);
+  orxVector_Copy(&(_pstViewport->vSize), _pvSize);
 
   /* Updates camera on screen position */
   orxViewport_UpdateCameraOnScreenPosition(_pstViewport);
@@ -547,7 +547,7 @@ orxCAMERA *orxViewport_GetCamera(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition)
+orxVOID orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -555,7 +555,7 @@ orxVOID orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition)
   orxASSERT(_pvPosition != orxNULL);
 
   /* Gets position */
-  orxVec_Copy(_pvPosition, &(_pstViewport->vPosition));
+  orxVector_Copy(_pvPosition, &(_pstViewport->vPosition));
 
   return;
 }
@@ -566,7 +566,7 @@ orxVOID orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVEC *_pvPosition)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_GetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize)
+orxVOID orxViewport_GetSize(orxVIEWPORT *_pstViewport, orxVECTOR *_pvSize)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -574,7 +574,7 @@ orxVOID orxViewport_GetSize(orxVIEWPORT *_pstViewport, orxVEC *_pvSize)
   orxASSERT(_pvSize != orxNULL);
 
   /* Gets size */
-  orxVec_Copy(_pvSize, &(_pstViewport->vSize));
+  orxVector_Copy(_pvSize, &(_pstViewport->vSize));
 
   return;
 }
@@ -714,7 +714,7 @@ orxBOOL orxViewport_IsEnabled(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVEC *_pvPosition, orxVEC *_pvSize)
+orxVOID orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVECTOR *_pvPosition, orxVECTOR *_pvSize)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -723,8 +723,8 @@ orxVOID orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVEC *_pvPosition, orx
   orxASSERT(_pvSize != orxNULL);
 
   /* Gets clip infos */
-  orxVec_Copy(_pvPosition, &(_pstViewport->vClipPosition));
-  orxVec_Copy(_pvSize, &(_pstViewport->vClipSize));
+  orxVector_Copy(_pvPosition, &(_pstViewport->vClipPosition));
+  orxVector_Copy(_pvSize, &(_pstViewport->vClipSize));
 
   return;
 }

@@ -60,7 +60,7 @@
             src/main/orxParam.c
         </sources>
         <sources>
-            src/math/orxVec.c
+            src/math/orxVector.c
         </sources>
         <sources>
             src/memory/orxBank.c

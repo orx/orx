@@ -53,10 +53,10 @@ struct __orxTEXTURE_t
   orxSTRING zDataName;
 
   /* Reference point : 40 */
-  orxVEC vRefPoint;
+  orxVECTOR vRefPoint;
 
   /* Size coord : 56 */
-  orxVEC vSize;
+  orxVECTOR vSize;
 
   /* Internal id flags : 60 */
   orxU32 u32IDFlags;
@@ -433,7 +433,7 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
   if(!(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_BITMAP))
   {
     orxTEXTURE *pstTexture;
-    orxVEC vSize;
+    orxVECTOR vSize;
 
     /* Search for a texture using this bitmap */
     pstTexture = orxTexture_FindByData(_pstBitmap);
@@ -463,7 +463,7 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
     orxDisplay_GetBitmapSize(_pstBitmap, &vSize);
 
     /* Copy bitmap size (Z size is null) */
-    orxVec_Set3(&(_pstTexture->vSize), vSize.fX, vSize.fY, orxFLOAT_0);
+    orxVector_Set3(&(_pstTexture->vSize), vSize.fX, vSize.fY, orxFLOAT_0);
   }
   else
   {
@@ -576,7 +576,7 @@ orxCONST orxBITMAP *orxTexture_GetBitmap(orxTEXTURE *_pstTexture)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
+orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVECTOR *_pvRefPoint)
 {
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
@@ -585,7 +585,7 @@ orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
 
   /* Updates */
   _pstTexture->u32IDFlags |= orxTEXTURE_KU32_ID_FLAG_REF_COORD;
-  orxVec_Copy(&(_pstTexture->vRefPoint), _pvRefPoint);
+  orxVector_Copy(&(_pstTexture->vRefPoint), _pvRefPoint);
 
   return;
 }
@@ -596,7 +596,7 @@ orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
+orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVECTOR *_pvRefPoint)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -609,14 +609,14 @@ orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
   if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_REF_COORD)
   {
     /* Copy coord */
-    orxVec_Copy(_pvRefPoint, &(_pstTexture->vRefPoint));
+    orxVector_Copy(_pvRefPoint, &(_pstTexture->vRefPoint));
   }
   else
   {
     /* !!! MSG !!! */
 
     /* No refpoint */
-    orxVec_Set3(_pvRefPoint, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
+    orxVector_Set3(_pvRefPoint, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
     eResult = orxSTATUS_FAILURE;
   }
 
@@ -630,7 +630,7 @@ orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATUS orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize)
+orxSTATUS orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVECTOR *_pvSize)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -643,14 +643,14 @@ orxSTATUS orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize)
   if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_SIZE)
   {
     /* Gets it */
-    orxVec_Copy(_pvSize, &(_pstTexture->vSize));
+    orxVector_Copy(_pvSize, &(_pstTexture->vSize));
   }
   else
   {
     /* !!! MSG !!! */
 
     /* No size */
-    orxVec_Set3(_pvSize, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
+    orxVector_Set3(_pvSize, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
     eResult = orxSTATUS_FAILURE;
   }
 

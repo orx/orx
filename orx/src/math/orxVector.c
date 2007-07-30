@@ -1,5 +1,5 @@
 /***************************************************************************
- orxVec.c
+ orxVector.c
  Vector module
  
  begin                : 27/04/2005
@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 
-#include "math/orxVec.h"
+#include "math/orxVector.h"
 
 
 /***************************************************************************
@@ -34,12 +34,12 @@
  ***************************************************************************/
 
 /***************************************************************************
- orxVec_Rot
+ orxVector_Rot
  Rotates a coord using a orxFLOAT angle (RAD), an axis and stores result in another one.
 
  returns: Rotated vector
  ***************************************************************************/
-orxVEC *orxFASTCALL orxVec_Rot(orxVEC *_pvRes, orxCONST orxVEC *_pvOp, orxCONST orxVEC *_pvAxis, orxFLOAT _fAngle)
+orxVECTOR *orxFASTCALL orxVector_Rot(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxCONST orxVECTOR *_pvAxis, orxFLOAT _fAngle)
 {
   /* Checks */
   orxASSERT(_pvRes  != orxNULL);
@@ -51,12 +51,12 @@ orxVEC *orxFASTCALL orxVec_Rot(orxVEC *_pvRes, orxCONST orxVEC *_pvOp, orxCONST 
 }
 
 /***************************************************************************
- orxVec_ReorderAABox
+ orxVector_ReorderAABox
  Reorders axis aligned box corners (result is real upper left & bottom right corners).
 
  returns: Nothing
  ***************************************************************************/
-orxVOID orxFASTCALL orxVec_ReorderAABox(orxVEC *_pvULBox, orxVEC *_pvBRBox)
+orxVOID orxFASTCALL orxVector_ReorderAABox(orxVECTOR *_pvULBox, orxVECTOR *_pvBRBox)
 {
   /* Checks */
   orxASSERT(_pvULBox != orxNULL);
@@ -90,12 +90,12 @@ orxVOID orxFASTCALL orxVec_ReorderAABox(orxVEC *_pvULBox, orxVEC *_pvBRBox)
 }
 
 /***************************************************************************
- orxVec_TestAABoxIntersection
+ orxVector_TestAABoxIntersection
  Tests axis aligned box intersection given corners (if corners are not sorted, test won't work).
 
  returns: Nothing
  ***************************************************************************/
-orxBOOL orxFASTCALL orxVec_TestAABoxIntersection(orxCONST orxVEC *_pvULBox1, orxCONST orxVEC *_pvBRBox1, orxCONST orxVEC *_pvULBox2, orxCONST orxVEC *_pvBRBox2)
+orxBOOL orxFASTCALL orxVector_TestAABoxIntersection(orxCONST orxVECTOR *_pvULBox1, orxCONST orxVECTOR *_pvBRBox1, orxCONST orxVECTOR *_pvULBox2, orxCONST orxVECTOR *_pvBRBox2)
 {
   orxREGISTER orxBOOL bResult = orxFALSE;
 

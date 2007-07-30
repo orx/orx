@@ -74,13 +74,13 @@ struct __orxCAMERA_VIEW_LIST_t
 typedef struct __orxCAMERA_DATA_2D_t
 {
   /* Clip corners coords : 32 */
-  orxVEC vClipUL, vClipBR;
+  orxVECTOR vClipUL, vClipBR;
 
   /* Limit corners coords : 64 */
-  orxVEC vLimitUL, vLimitBR;
+  orxVECTOR vLimitUL, vLimitBR;
 
   /* Size coord : 80 */
-  orxVEC vSize;
+  orxVECTOR vSize;
 
 } orxCAMERA_DATA_2D;
 
@@ -106,7 +106,7 @@ struct __orxCAMERA_t
   orxVOID *pstData;
 
   /* On screen position coord : 48 */
-  orxVEC vOnScreenPosition;
+  orxVECTOR vOnScreenPosition;
 
    /* View list current pointer : 52 */
   orxCAMERA_VIEW_LIST *pstViewListCurrent;
@@ -301,8 +301,8 @@ orxSTATIC orxVOID orxCamera_DeleteViewList(orxCAMERA *_pstCamera)
  ***************************************************************************/
 orxSTATIC orxVOID orxCamera_UpdatePosition(orxCAMERA *_pstCamera, orxBOOL _bForce)
 {
-  orxVEC vPos;
-  orxVEC *pvUL, *pvBR;
+  orxVECTOR vPos;
+  orxVECTOR *pvUL, *pvBR;
 
   /* Checks */
   orxASSERT(_pstCamera != orxNULL);
@@ -384,8 +384,8 @@ orxSTATIC orxVOID orxCamera_UpdatePosition(orxCAMERA *_pstCamera, orxBOOL _bForc
  ***************************************************************************/
 orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
 {
-  orxVEC vPos;
-  orxVEC *pvUL, *pvBR, *pvSize;
+  orxVECTOR vPos;
+  orxVECTOR *pvUL, *pvBR, *pvSize;
   orxFLOAT fRot, fScale;
 
   /* Checks */
@@ -411,8 +411,8 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
       fScale  = orxFrame_GetScale(_pstCamera->pstFrame, orxFALSE);
 
       /* Computes relative camera upper left & bottom right corners */
-      orxVec_Mul(pvBR, pvSize, 0.5f);
-      orxVec_Add(pvUL, pvBR, orxVec_Neg(pvSize, pvSize));
+      orxVector_Mul(pvBR, pvSize, 0.5f);
+      orxVector_Add(pvUL, pvBR, orxVector_Neg(pvSize, pvSize));
 
       /* Applies scale & rotation if needed */
       if(fRot != orxFLOAT_0)
@@ -423,7 +423,7 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
         /* We thus compute axis aligned smallest box that contains real rotated camera box */
 
         /* Rotates one corner */
-        orxVec_Rot(pvUL, pvUL, &orxVEC_Z, fRot);
+        orxVector_Rot(pvUL, pvUL, &orxVector_Z, fRot);
 
         /* Gets corner maximum absolute value between X & Y values */
         if(orxFABS(pvUL->fX) > orxFABS(pvUL->fY))
@@ -446,14 +446,14 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
       if(fScale != orxFLOAT_1)
       {
         /* Applies it */
-        orxVec_Mul(pvUL, pvUL, fScale);
-        orxVec_Mul(pvBR, pvBR, fScale);
+        orxVector_Mul(pvUL, pvUL, fScale);
+        orxVector_Mul(pvBR, pvBR, fScale);
       }
 
       /* Computes global corners */
-      orxVec_Add(pvUL, pvUL, &vPos);
-      orxVec_Add(pvBR, pvBR, &vPos);
-      orxVec_ReorderAABox(pvUL, pvBR);
+      orxVector_Add(pvUL, pvUL, &vPos);
+      orxVector_Add(pvBR, pvBR, &vPos);
+      orxVector_ReorderAABox(pvUL, pvBR);
     }
   }
 
@@ -632,10 +632,10 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
   orxFRAME *pstFrame;
   orxGRAPHIC *pstGraphic;
   orxCAMERA_VIEW_LIST *pstCell = orxNULL;
-  orxVEC *pvCamUL, *pvCamBR, *pvCamSize, vCamPos;
-  orxVEC vTextureUL, vTextureBR, vTextureRef, vTexturePos, vTemp;
+  orxVECTOR *pvCamUL, *pvCamBR, *pvCamSize, vCamPos;
+  orxVECTOR vTextureUL, vTextureBR, vTextureRef, vTexturePos, vTemp;
   orxFLOAT fCamRot, fCamScale, fTextureRot, fTextureScale;
-  orxVEC vScroll;
+  orxVECTOR vScroll;
 
   /* Checks */
   orxASSERT(_pstCamera != orxNULL);
@@ -675,13 +675,13 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
   
           /* Computes texture global corners */
           orxTexture_GetRefPoint(pstTexture, &vTextureRef);
-          orxVec_Add(&vTextureUL, &vTexturePos, orxVec_Neg(&vTemp, &vTextureRef));
+          orxVector_Add(&vTextureUL, &vTexturePos, orxVector_Neg(&vTemp, &vTextureRef));
   
           orxTexture_GetSize(pstTexture, &vTextureRef);
-          orxVec_Add(&vTextureBR, &vTextureUL, &vTextureRef);
+          orxVector_Add(&vTextureBR, &vTextureUL, &vTextureRef);
   
           /* Intersection? */
-          if(orxVec_TestAABoxIntersection(pvCamUL, pvCamBR, &vTextureUL, &vTextureBR) != orxFALSE)
+          if(orxVector_TestAABoxIntersection(pvCamUL, pvCamBR, &vTextureUL, &vTextureBR) != orxFALSE)
           {
             /* Search for object cell in list*/
             pstCell = orxCamera_SearchViewList(_pstCamera, _pstObject);
@@ -719,16 +719,16 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
             /* Computes texture screen frame, using viewport coordinates */
   
             /* Gets into camera space */
-            orxVec_Add(&vTextureUL, &vTextureUL, orxVec_Neg(&vTemp, &vCamPos));
+            orxVector_Add(&vTextureUL, &vTextureUL, orxVector_Neg(&vTemp, &vCamPos));
   
             /* Applies rotation & scale if needed */
             if(fCamRot != orxFLOAT_0)
             {
-              orxVec_Rot(&vTextureUL, &vTextureUL, &orxVEC_Z, -fCamRot);
+              orxVector_Rot(&vTextureUL, &vTextureUL, &orxVector_Z, -fCamRot);
             }
             if(fCamScale != orxFLOAT_1)
             {
-              orxVec_Mul(&vTextureUL, &vTextureUL, orxFLOAT_1 / fCamScale);
+              orxVector_Mul(&vTextureUL, &vTextureUL, orxFLOAT_1 / fCamScale);
             }
   
             /* Uses differential scrolling? */
@@ -750,15 +750,15 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
               }
   
               /* Updates texture coordinates */
-              orxVec_Set3(&vTextureUL, (orxFLOAT)floor(vScroll.fX), (orxFLOAT)floor(vScroll.fY), vTextureUL.fZ); /* MSVC doesn't recognize floorf for x86) */
+              orxVector_Set3(&vTextureUL, (orxFLOAT)floor(vScroll.fX), (orxFLOAT)floor(vScroll.fY), vTextureUL.fZ); /* MSVC doesn't recognize floorf for x86) */
             }
   
             /* Gets into viewport coordinates */
-            orxVec_Mul(&vCamPos, pvCamSize, 0.5);
-            orxVec_Add(&vTextureUL, &vTextureUL, &vCamPos);
+            orxVector_Mul(&vCamPos, pvCamSize, 0.5);
+            orxVector_Add(&vTextureUL, &vTextureUL, &vCamPos);
   
             /* Gets into screen coordinates */
-            orxVec_Add(&vTextureUL, &vTextureUL, &(_pstCamera->vOnScreenPosition));
+            orxVector_Add(&vTextureUL, &vTextureUL, &(_pstCamera->vOnScreenPosition));
   
             /* Stores screen coordinates */
             pstFrame = pstCell->pstScreenFrame;
@@ -963,7 +963,7 @@ orxCAMERA *orxCamera_Create()
         pstCamera->u32IDFlags = orxCAMERA_KU32_ID_FLAG_MOVED;
         pstCamera->pstFrame   = pstFrame;
         pstCamera->pstLink    = orxNULL;
-        orxVec_Set3(&(pstCamera->vOnScreenPosition), orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
+        orxVector_Set3(&(pstCamera->vOnScreenPosition), orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
 
         /* 2D? */
         if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_DATA_2D)
@@ -1252,7 +1252,7 @@ orxS32 orxCamera_GetViewListSize(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
+orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVECTOR *_pvSize)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1263,7 +1263,7 @@ orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
   if(orxCamera_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
   {
     /* Updates */
-    orxVec_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vSize), _pvSize);
+    orxVector_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vSize), _pvSize);
   
     /* Updates camera flags */
     _pstCamera->u32IDFlags |= orxCAMERA_KU32_ID_FLAG_MOVED;
@@ -1282,7 +1282,7 @@ orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
+orxVOID orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1389,7 +1389,7 @@ orxVOID orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
+orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1397,7 +1397,7 @@ orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition
   orxASSERT(_pvPosition != orxNULL);
 
   /* Copy on screen camera position coords */
-  orxVec_Copy(&(_pstCamera->vOnScreenPosition), _pvPosition);
+  orxVector_Copy(&(_pstCamera->vOnScreenPosition), _pvPosition);
 
   return;
 }
@@ -1409,7 +1409,7 @@ orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
+orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVECTOR *_pvSize)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1417,7 +1417,7 @@ orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
   orxASSERT(_pvSize != orxNULL);
 
   /* Copy coord */
-  orxVec_Copy(_pvSize, &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vSize));
+  orxVector_Copy(_pvSize, &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vSize));
 
   return;
 }
@@ -1428,7 +1428,7 @@ orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVEC *_pvSize)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
+orxVOID orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1495,7 +1495,7 @@ orxOBJECT *orxCamera_GetTarget(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
+orxVOID orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVECTOR *_pvUL, orxVECTOR *_pvBR)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1507,8 +1507,8 @@ orxVOID orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
   if(orxCamera_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
   {
     /* Sets camera limits position */
-    orxVec_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitUL), _pvUL);
-    orxVec_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitBR), _pvBR);
+    orxVector_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitUL), _pvUL);
+    orxVector_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitBR), _pvBR);
 
     /* Updates camera flags */
     _pstCamera->u32IDFlags |= orxCAMERA_KU32_ID_FLAG_LIMITED;
@@ -1545,7 +1545,7 @@ orxVOID orxCamera_RemoveLimits(orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
+orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVECTOR *_pvUL, orxVECTOR *_pvBR)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1557,8 +1557,8 @@ orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
   if(orxCamera_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
   {
     /* Gets camera limits position */
-    orxVec_Copy(_pvUL, &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitUL));
-    orxVec_Copy(_pvBR, &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitBR));
+    orxVector_Copy(_pvUL, &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitUL));
+    orxVector_Copy(_pvBR, &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitBR));
   }
 
   return;
@@ -1570,7 +1570,7 @@ orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVEC *_pvUL, orxVEC *_pvBR)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition)
+orxVOID orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
@@ -1578,7 +1578,7 @@ orxVOID orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVEC *_pvPosition
   orxASSERT(_pvPosition != orxNULL);
 
   /* Copy on screen camera position coords */
-  orxVec_Copy(_pvPosition, &(_pstCamera->vOnScreenPosition));
+  orxVector_Copy(_pvPosition, &(_pstCamera->vOnScreenPosition));
 
   return;
 }

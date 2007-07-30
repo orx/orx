@@ -89,9 +89,8 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
   orxGRAPHIC *pstGraphic;
   orxTEXTURE *pstTexture;
   orxBITMAP *pstBitmap;
-  orxVEC vPos;
+  orxVECTOR vPos;
   orxFLOAT fRotation, fScale;
-//  orxBOOL bAntialias = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstSurface != orxNULL);
@@ -110,9 +109,6 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
     /* Gets texture's bitmap */
     pstBitmap   = (orxBITMAP *)orxTexture_GetBitmap(pstTexture);
 
-//    /* Gets antialiasing info */
-//    bAntialias  = graphic_flag_test(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_ANTIALIAS);
-
     /* Gets frame's position, rotation & zoom */
     fRotation   = orxFrame_GetRotation(_pstFrame, orxFALSE);
     fScale      = orxFrame_GetScale(_pstFrame, orxFALSE);
@@ -121,25 +117,28 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
     /* Blit bitmap onto surface */
     if((fRotation == orxFLOAT_0) && (fScale == orxFLOAT_1))
     {
-      orxVEC vSize;
+      orxVECTOR vSize;
 
       /* Gets bitmap's size */
       orxDisplay_GetBitmapSize(pstBitmap, &vSize);
 
       /* Blit it */
-      orxDisplay_BlitBitmap(_pstSurface, pstBitmap, &vPos, &orxVEC_NULL, &vSize);
+      orxDisplay_BlitBitmap(_pstSurface, pstBitmap, &vPos, &orxVector_0, &vSize);
     }
     /* Blit transformed bitmap onto surface */
     else
     {
-      orxVEC vSize;
+      orxBITMAP_TRANSFORM stTransform;
 
-      /* Gets bitmap's size */
-      orxDisplay_GetBitmapSize(pstBitmap, &vSize);
+      /* Sets transformation values */
+      stTransform.vDstCoord = vPos;
+      stTransform.vScale.fX = fScale;
+      stTransform.vScale.fY = fScale;
+      stTransform.fRotation = fRotation;
 
       /* Blit it */
-/*      orxDisplay_TransformBitmap(_pstSurface, pstBitmap, fRotation, fScale, fScale, 0, 0, vPos.fX, vPos.fY, bAntialias);
-*/    }
+      orxDisplay_TransformBitmap(_pstSurface, pstBitmap, &stTransform, 0);
+    }
   }
   else
   {
@@ -321,10 +320,10 @@ orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
     /* Is viewport active? */
     if(orxViewport_IsEnabled(_pstViewport) != orxFALSE)
     {
-      orxCAMERA *pstCamera;
+      orxCAMERA  *pstCamera;
       orxTEXTURE *pstSurface;
-      orxBITMAP *pstSurfaceBitmap;
-      orxVEC vTL, vBR;
+      orxBITMAP  *pstSurfaceBitmap;
+      orxVECTOR  vTL, vBR;
 
       /* Gets viewport surface */
       pstSurface = orxViewport_GetSurface(_pstViewport);
@@ -406,7 +405,7 @@ orxVOID orxRender_RenderAllViewports()
 {
   orxRENDER_VIEWPORT_LIST *pstViewportList;
   orxVIEWPORT *pstViewport;
-  orxVEC vPosition;
+  orxVECTOR vPosition;
   orxU32 u32ViewportNumber;
 
   /* Checks */

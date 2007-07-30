@@ -64,9 +64,9 @@ typedef enum __orxFRAME_SPACE_t
 typedef struct __orxFRAME_DATA_2D_t
 {
   /* Global 2D coordinates : 16 */
-  orxVEC vGlobalPos;
+  orxVECTOR vGlobalPos;
   /* Local 2D coordinates : 32 */
-  orxVEC vLocalCoord;
+  orxVECTOR vLocalCoord;
 
   /* Global 2D rotation angle : 36 */
   orxFLOAT fGlobalAngle;
@@ -78,7 +78,7 @@ typedef struct __orxFRAME_DATA_2D_t
   orxFLOAT fLocalScale;
 
   /* Scroll coefficients used for differential scrolling : 64 */
-  orxVEC vScroll;
+  orxVECTOR vScroll;
 
 } orxFRAME_DATA_2D;
 
@@ -133,7 +133,7 @@ orxSTATIC orxFRAME_STATIC sstFrame;
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVEC *_pvPos, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos, orxFRAME_SPACE eSpace)
 {
   /* Checks */
   orxASSERT(_pstFrame != orxNULL);
@@ -144,13 +144,13 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST 
   {
     case orxFRAME_SPACE_GLOBAL:
 
-      orxVec_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos), _pvPos);
+      orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos), _pvPos);
 
       break;
 
     case orxFRAME_SPACE_LOCAL:
 
-      orxVec_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalCoord), _pvPos);
+      orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalCoord), _pvPos);
 
       break;
 
@@ -245,9 +245,9 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fS
 
  returns: Internal coord data pointer
  ***************************************************************************/
-orxSTATIC orxINLINE orxCONST orxVEC *_orxFrame_GetPosition(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
 {
-  orxVEC *pvPos = orxNULL;
+  orxVECTOR *pvPos = orxNULL;
 
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -369,8 +369,8 @@ orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME 
   /* 2D data? */
   if(_pstSrcFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
   {
-    orxVEC vTempPos;
-    orxCONST orxVEC *pvParentPos, *pvPos;
+    orxVECTOR vTempPos;
+    orxCONST orxVECTOR *pvParentPos, *pvPos;
     orxFLOAT fParentAngle, fParentScale, fAngle, fScale;
     orxFLOAT fX, fY, fLocalX, fLocalY, fCos, fSin;
 
@@ -392,16 +392,16 @@ orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME 
     /* Gets needed orxFLOAT values for rotation & scale applying */
     fLocalX       = pvPos->fX;
     fLocalY       = pvPos->fY;
-    fCos          = (orxFLOAT)cos(fParentAngle); /* MSVC doesn't recognize cosf for X86 */
-    fSin          = (orxFLOAT)sin(fParentAngle); /* MSVC doesn't recognize sinf for X86 */
+    fCos          = cosf(fParentAngle);
+    fSin          = sinf(fParentAngle);
 
     /* Applies rotation & scale on X & Y coordinates*/
     fX            = fParentScale * ((fLocalX * fCos) - (fLocalY * fSin));
     fY            = fParentScale * ((fLocalX * fSin) + (fLocalY * fCos));
 
     /* Computes final global coordinates */
-    vTempPos.fX   = (orxFLOAT)floor(fX) + pvParentPos->fX; /* MSVC doesn't recognize floorf or rintf for X86 */
-    vTempPos.fY   = (orxFLOAT)floor(fY) + pvParentPos->fY; /* MSVC doesn't recognize floorf or rintf for X86 */
+    vTempPos.fX   = floorf(fX) + pvParentPos->fX;
+    vTempPos.fY   = floorf(fY) + pvParentPos->fY;
 
     /* Z coordinate is not affected by rotation nor scale in 2D */
     vTempPos.fZ   = pvParentPos->fZ + pvPos->fZ;
@@ -796,7 +796,7 @@ orxBOOL orxFASTCALL orxFrame_HasDifferentialScrolling(orxCONST orxFRAME *_pstFra
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFASTCALL orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFrame, orxVEC *_pvScroll)
+orxVOID orxFASTCALL orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFrame, orxVECTOR *_pvScroll)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -844,7 +844,7 @@ orxVOID orxFASTCALL orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFr
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFASTCALL orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxCONST orxVEC *_pvScroll)
+orxVOID orxFASTCALL orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxCONST orxVECTOR *_pvScroll)
 {
   orxU32 u32AddFlags = orxFRAME_KU32_ID_FLAG_NONE, u32RemoveFlags = orxFRAME_KU32_ID_FLAG_NONE;
 
@@ -877,7 +877,7 @@ orxVOID orxFASTCALL orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxC
     }
 
     /* Updates scroll values */
-    orxVec_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vScroll), _pvScroll);
+    orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vScroll), _pvScroll);
 
     /* Updates flags on frame and its heirs */
     orxFrame_SetFlagRecursively(_pstFrame, u32AddFlags, u32RemoveFlags, orxFALSE);
@@ -922,7 +922,7 @@ orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVEC *_pvPos)
+orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -986,7 +986,7 @@ orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLocal)
+orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvPos, orxBOOL _bLocal)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
@@ -996,7 +996,7 @@ orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, or
   /* Is Frame 2D? */
   if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
   {
-    orxCONST orxVEC *pvIntern = orxNULL;
+    orxCONST orxVECTOR *pvIntern = orxNULL;
 
     /* Local coordinates? */
     if(_bLocal != orxFALSE)
@@ -1013,12 +1013,12 @@ orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, or
     }
 
     /* Makes a copy */
-    orxVec_Copy(_pvPos, (orxVEC *)pvIntern);
+    orxVector_Copy(_pvPos, (orxVECTOR *)pvIntern);
   }
   else
   {
     /* Resets coord structure */
-    orxVec_SetAll(_pvPos, orxFLOAT_0);
+    orxVector_SetAll(_pvPos, orxFLOAT_0);
   }
 
   return;

@@ -37,7 +37,15 @@
 /* *** Maths related includes *** */
 #include <math.h>                   /* Common maths / should be removed later */
 
-#include "math/orxVec.h"            /* Vectors */
+#include "math/orxVector.h"         /* Vectors */
+
+
+// !!! TEMP : Till own functions are defined !!!
+#ifdef __orxMSVC__
+  #define sinf(X)                 (orxFLOAT)sin((orxFLOAT)(X))
+  #define cosf(X)                 (orxFLOAT)cos((orxFLOAT)(X))
+  #define floorf(X)               (orxFLOAT)floor((orxFLOAT)(X))
+#endif /* __orxMSVC__ */
 
 
 /* *** Public macro definition. *** */
@@ -59,7 +67,7 @@
 
 /*** Math Definitions ***/
 
-#define orxMATH_KF_SQRT          	orx2F(1.414213562f)
+#define orxMATH_KF_SQRT_2         orx2F(1.414213562f)
 
 
 #endif /* _orxMATH_H_ */

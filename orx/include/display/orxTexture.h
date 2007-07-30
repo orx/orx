@@ -71,12 +71,12 @@ extern orxDLLAPI orxSTATUS              orxTexture_UnlinkBitmap(orxTEXTURE *_pst
 extern orxDLLAPI orxCONST orxBITMAP *   orxTexture_GetBitmap(orxTEXTURE *_pstTexture);
 
 /** Texture size get accessor. */
-extern orxDLLAPI orxSTATUS              orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVEC *_pvSize);
+extern orxDLLAPI orxSTATUS              orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVECTOR *_pvSize);
 
 /** Reference coordinates set accessor (used for rendering purpose). */
-extern orxDLLAPI orxVOID                orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
+extern orxDLLAPI orxVOID                orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVECTOR *_pvRefPoint);
 /** Reference coordinates get accessor (used for rendering purpose). */
-extern orxDLLAPI orxSTATUS              orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVEC *_pvRefPoint);
+extern orxDLLAPI orxSTATUS              orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVECTOR *_pvRefPoint);
 
 
 #endif /* _orxTEXTURE_H_ */

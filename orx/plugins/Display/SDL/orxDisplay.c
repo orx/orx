@@ -24,11 +24,14 @@
 
 #include "msg/msg_graph.h"
 
+#include "display/orxDisplay.h"
+
+
 
 #include <SDL/SDL.h>
 //#include <SDL/sge.h>
 
-#define KI_BPP    16
+#define KI_BPP    32
 #define KI_WIDTH  800
 #define KI_HEIGHT 600
 
@@ -39,33 +42,29 @@
 
 static SDL_Surface *spstScreen = NULL;
 
-SDL_Surface *orxDisplay_SDL_GetScreen()
+orxBITMAP *orxDisplay_SDL_GetScreen()
 {
-  return(SDL_GetVideoSurface());
+  return((orxBITMAP *)SDL_GetVideoSurface());
 }
 
-void orxDisplay_SDL_DrawText(SDL_Surface *_pst_bmp, orxS32 _s32X, orxS32 _s32Y, orxU32 _u32Color, const orxCHAR *_zFormat, ...)
+orxVOID orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvPos, orxARGB _stColor, orxCONST orxSTRING _zFormat)
 {
-  char acBuffer[1024];
-  va_list stArgs;
-
-  va_start(stArgs, _zFormat);
-  vsprintf(acBuffer, _zFormat, stArgs);
-  va_end(stArgs);
-
 /* TODO :
  * Write the string onto screen, using char per char pixel writing
  */
+
+  orxASSERT(orxFALSE && "Not implemented yet!");
+  
   return;
 }
 
-void orxDisplay_SDL_DeleteBitmap(SDL_Surface *_pstBitmap)
+orxVOID orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
-  SDL_FreeSurface(_pstBitmap);
+  SDL_FreeSurface((SDL_Surface *)_pstBitmap);
   return;
 }
 
-SDL_Surface *orxDisplay_SDL_CreateBitmap(orxS32 _s32W, orxS32 _s32H)
+orxBITMAP *orxDisplay_SDL_CreateBitmap(orxCONST orxVECTOR *_pvSize, orxU32 _u32Flags)
 {
   orxU32 u32RMask, u32GMask, u32BMask, u32AMask;
 
@@ -83,55 +82,55 @@ SDL_Surface *orxDisplay_SDL_CreateBitmap(orxS32 _s32W, orxS32 _s32H)
   u32AMask = 0xFF000000;
 #endif
 
-  return SDL_CreateRGBSurface(SDL_HWSURFACE, _s32W, _s32H, KI_BPP,
-                              u32RMask, u32GMask, u32BMask, u32AMask);
+  return((orxBITMAP *)SDL_CreateRGBSurface(SDL_HWSURFACE, _pvSize->fX, _pvSize->fY, KI_BPP,
+                                          u32RMask, u32GMask, u32BMask, u32AMask));
 }
 
-void orxDisplay_SDL_ClearBitmap(SDL_Surface *_pstBitmap)
+orxVOID orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxARGB _stColor)
 {
-  SDL_FillRect(_pstBitmap, NULL, 0x00000000);
+  SDL_FillRect((SDL_Surface *)_pstBitmap, NULL, _stColor);
 
   return;
 }
 
-void orxDisplay_SDL_Swap()
+orxVOID orxDisplay_SDL_Swap()
 {
   SDL_Flip(spstScreen);
 
   return;
 }
 
-void orxDisplay_SDL_SetBitmapColorKey(SDL_Surface *_pstSrc, orxU32 _u32Red, orxU32 _u32Green, orxU32 _u32Blue, orxBOOL _bEnable)
+orxVOID orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxARGB _stColor, orxBOOL _bEnable)
 {
   if(_bEnable != orxFALSE)
   {
-    SDL_SetColorKey(_pstSrc, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(_pstSrc->format, _u32Red, _u32Green, _u32Blue));
+    SDL_SetColorKey((SDL_Surface *)_pstSrc, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstSrc)->format, orxARGB_R(_stColor), orxARGB_G(_stColor), orxARGB_B(_stColor)));
   }
   else
   {
-    SDL_SetColorKey(_pstSrc, 0, 0);
+    SDL_SetColorKey((SDL_Surface *)_pstSrc, 0, 0);
   }
   
   return;
 }
 
-void orxDisplay_SDL_BlitBitmap(SDL_Surface *_pstSrc, SDL_Surface *_pstDst, orxS32 _s32SrcX, orxS32 _s32SrcY, orxS32 _s32DstX, orxS32 _s32DstY, orxS32 _s32W, orxS32 _s32H)
+orxVOID orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVECTOR *_pvDstCoord, orxCONST orxVECTOR *_pvSrcCoord, orxCONST orxVECTOR *_pvSize)
 {
   SDL_Rect stSrcRect, stDstRect;
 
-  stSrcRect.x = _s32SrcX;
-  stSrcRect.y = _s32SrcY;
-  stSrcRect.w = _s32W;
-  stSrcRect.h = _s32H;
-  stDstRect.x = _s32DstX;
-  stDstRect.y = _s32DstY;
+  stSrcRect.x = _pvSrcCoord->fX;
+  stSrcRect.y = _pvSrcCoord->fY;
+  stSrcRect.w = _pvSize->fX;
+  stSrcRect.h = _pvSize->fY;
+  stDstRect.x = _pvDstCoord->fX;
+  stDstRect.y = _pvDstCoord->fY;
 
-  SDL_BlitSurface(_pstSrc, &stSrcRect, _pstDst, &stDstRect);
+  SDL_BlitSurface((SDL_Surface *)_pstSrc, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect);
 
   return;
 }
 
-void orxDisplay_SDL_TransformBitmap(SDL_Surface *_pstSrc, SDL_Surface *_pstDst, orxFLOAT _fRotation, orxFLOAT _fScaleX, orxFLOAT _fScaleY, orxS32 _s32SrcX, orxS32 _s32SrcY, orxS32 _s32DstX, orxS32 _s32DstY, orxBOOL _bAntialiased)
+orxVOID orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
 {
 //  orxU32 u32Flags;
 
@@ -148,23 +147,29 @@ void orxDisplay_SDL_TransformBitmap(SDL_Surface *_pstSrc, SDL_Surface *_pstDst, 
   return;
 }
 
-void orxDisplay_SDL_SaveBitmap(const orxCHAR *_zFilename, SDL_Surface *_pstBitmap)
+orxVOID orxDisplay_SDL_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFilename)
 {
-  SDL_SaveBMP(_pstBitmap, _zFilename);
+  SDL_SaveBMP((SDL_Surface *)_pstBitmap, _zFilename);
 
   return;
 }
 
-void orxDisplay_SDL_SetBitmapClipping(SDL_Surface *_pstBitmap, orxS32 _s32X, orxS32 _s32Y, orxS32 _s32W, orxS32 _s32H)
+orxVOID orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvTL, orxCONST orxVECTOR *_pvBR)
 {
-  SDL_Rect stClipRect;
+  SDL_Rect  stClipRect;
+  orxVECTOR vSize;
 
-  stClipRect.x = _s32X;
-  stClipRect.y = _s32Y;
-  stClipRect.w = _s32W;
-  stClipRect.h = _s32H;
+  /* Gets size vector */
+  orxVector_Sub(&vSize, _pvBR, _pvTL);
 
-  SDL_SetClipRect(_pstBitmap, &stClipRect);
+  /* Gets SDL clip rectangle */
+  stClipRect.x = _pvTL->fX;
+  stClipRect.y = _pvTL->fY;
+  stClipRect.w = vSize.fX;
+  stClipRect.h = vSize.fY;
+
+  /* Applies it */
+  SDL_SetClipRect((SDL_Surface *)_pstBitmap, &stClipRect);
 
   return;
 }
@@ -199,7 +204,7 @@ orxU32 orxDisplay_SDL_Init()
   return EXIT_SUCCESS;  
 }
 
-void orxDisplay_SDL_Exit()
+orxVOID orxDisplay_SDL_Exit()
 {
   if(SDL_WasInit(SDL_INIT_EVERYTHING) == SDL_INIT_VIDEO)
   {
@@ -213,35 +218,46 @@ void orxDisplay_SDL_Exit()
   return;
 }
 
-SDL_Surface *orxDisplay_SDL_LoadBitmap(const orxCHAR *_zFilename)
+orxBITMAP *orxDisplay_SDL_LoadBitmap(orxCONST orxSTRING _zFilename)
 {
   /* !!! TODO !!!
    * Needs to add a test on requested format.
    * Needs to work with other format than BMP. */
 
-  return(SDL_LoadBMP(_zFilename));
+  return((orxBITMAP *)SDL_LoadBMP(_zFilename));
 }
 
-void orxDisplay_SDL_GetBitmapSize(SDL_Surface *_pstBitmap, orxS32 *_ps32Width, orxS32 *_ps32Height)
+orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxVECTOR *_pvSize)
 {
+  orxSTATUS eResult;
+
+  orxASSERT(_pvSize != orxNULL);
+  
   /* Non null? */
   if(_pstBitmap != NULL)
   {
     /* Gets size info */
-    *_ps32Height = _pstBitmap->h;
-    *_ps32Width = _pstBitmap->w;
+    _pvSize->fX = ((SDL_Surface *)_pstBitmap)->h;
+    _pvSize->fY = ((SDL_Surface *)_pstBitmap)->w;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
-    /* Null pointer -> cleans size values */
     /* !!! MSG !!! */
-    *_ps32Height = -1;
-    *_ps32Width = -1;
+
+    /* Null pointer -> cleans size values */
+    _pvSize->fX = -1;
+    _pvSize->fY = -1;
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
-  return;
+  /* Done! */
+  return eResult;
 }
-
 
 
 /********************

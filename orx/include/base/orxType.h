@@ -31,9 +31,6 @@
 #ifndef _orxTYPE_H_
 #define _orxTYPE_H_
 
-/* *** Uses standard defines *** */
-//#include <stddef.h>
-
 /* *** Uses orx declarations *** */
 #include "base/orxDecl.h"
 
@@ -60,6 +57,8 @@
 
   typedef char                  orxCHAR;
   typedef orxCHAR *							orxSTRING;
+
+  typedef orxU32                orxARGB;
 
   #define orx2F(V)              (orxFLOAT)(V)
 

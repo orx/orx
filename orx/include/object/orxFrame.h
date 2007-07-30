@@ -62,22 +62,22 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxFrame_IsRenderStatusClean(orxCONST or
 /** Does frame has differential scrolling? */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxFrame_HasDifferentialScrolling(orxCONST orxFRAME *_pstFrame);
 /** Sets frame differential scrolling values (X & Y axis / orxFLOAT_0 : none) */
-extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxCONST orxVEC *_pvScroll);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxCONST orxVECTOR *_pvScroll);
 /** Gets frame differential scrolling values (X & Y axis / orxFLOAT_0 : none) */
-extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFrame, orxVEC *_pvScroll);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFrame, orxVECTOR *_pvScroll);
 
 /** Sets a frame parent. */
 extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME * _pstParent);
 
 /** Sets 2D local position */
-extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVEC *_pvPos);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos);
 /** Sets 2D local rotation */
 extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle);
 /** Sets 2D local scale */
 extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale);
 
 /** Gets 2D position global/local according to param */
-extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_GetPosition(orxFRAME *_pstFrame, orxVEC *_pvPos, orxBOOL _bLocal);
+extern orxDLLAPI orxVOID orxFASTCALL    orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvPos, orxBOOL _bLocal);
 /** Gets 2D global rotation global/local according to param */
 extern orxDLLAPI orxFLOAT orxFASTCALL   orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal);
 /** Gets 2D scale global/local according to param */
