@@ -47,15 +47,17 @@ orxBITMAP *orxDisplay_SDL_GetScreen()
   return((orxBITMAP *)SDL_GetVideoSurface());
 }
 
-orxVOID orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvPos, orxARGB _stColor, orxCONST orxSTRING _zFormat)
+orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvPos, orxARGB _stColor, orxCONST orxSTRING _zFormat)
 {
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
 /* TODO :
  * Write the string onto screen, using char per char pixel writing
  */
 
   orxASSERT(orxFALSE && "Not implemented yet!");
   
-  return;
+  return eResult;
 }
 
 orxVOID orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
@@ -86,37 +88,52 @@ orxBITMAP *orxDisplay_SDL_CreateBitmap(orxCONST orxVECTOR *_pvSize, orxU32 _u32F
                                           u32RMask, u32GMask, u32BMask, u32AMask));
 }
 
-orxVOID orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxARGB _stColor)
+orxSTATUS orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxARGB _stColor)
 {
-  SDL_FillRect((SDL_Surface *)_pstBitmap, NULL, _stColor);
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  return;
+  eResult = (SDL_FillRect((SDL_Surface *)_pstBitmap, NULL, _stColor) == 0)
+            ? orxSTATUS_SUCCESS
+            : orxSTATUS_FAILURE;
+
+  return eResult;
 }
 
-orxVOID orxDisplay_SDL_Swap()
+orxSTATUS orxDisplay_SDL_Swap()
 {
-  SDL_Flip(spstScreen);
+  orxSTATUS eResult;
 
-  return;
+  eResult = (SDL_Flip(spstScreen) == 0)
+            ? orxSTATUS_SUCCESS
+            : orxSTATUS_FAILURE;
+
+  return eResult;
 }
 
-orxVOID orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxARGB _stColor, orxBOOL _bEnable)
+orxSTATUS orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxARGB _stColor, orxBOOL _bEnable)
 {
+  orxSTATUS eResult;
+
   if(_bEnable != orxFALSE)
   {
-    SDL_SetColorKey((SDL_Surface *)_pstSrc, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstSrc)->format, orxARGB_R(_stColor), orxARGB_G(_stColor), orxARGB_B(_stColor)));
+    eResult = (SDL_SetColorKey((SDL_Surface *)_pstSrc, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstSrc)->format, orxARGB_R(_stColor), orxARGB_G(_stColor), orxARGB_B(_stColor))) == 0)
+              ? orxSTATUS_SUCCESS
+              : orxSTATUS_FAILURE;
   }
   else
   {
-    SDL_SetColorKey((SDL_Surface *)_pstSrc, 0, 0);
+    eResult = (SDL_SetColorKey((SDL_Surface *)_pstSrc, 0, 0) == 0)
+              ? orxSTATUS_SUCCESS
+              : orxSTATUS_FAILURE;
   }
   
-  return;
+  return eResult;
 }
 
-orxVOID orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVECTOR *_pvDstCoord, orxCONST orxVECTOR *_pvSrcCoord, orxCONST orxVECTOR *_pvSize)
+orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVECTOR *_pvDstCoord, orxCONST orxVECTOR *_pvSrcCoord, orxCONST orxVECTOR *_pvSize)
 {
-  SDL_Rect stSrcRect, stDstRect;
+  SDL_Rect  stSrcRect, stDstRect;
+  orxSTATUS eResult;
 
   stSrcRect.x = _pvSrcCoord->fX;
   stSrcRect.y = _pvSrcCoord->fY;
@@ -125,13 +142,16 @@ orxVOID orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSr
   stDstRect.x = _pvDstCoord->fX;
   stDstRect.y = _pvDstCoord->fY;
 
-  SDL_BlitSurface((SDL_Surface *)_pstSrc, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect);
+  eResult = (SDL_BlitSurface((SDL_Surface *)_pstSrc, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect) == 0)
+            ? orxSTATUS_SUCCESS
+            : orxSTATUS_FAILURE;
 
-  return;
+  return eResult;
 }
 
-orxVOID orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
+orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
 {
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 //  orxU32 u32Flags;
 
   orxASSERT(orxFALSE && "Not implemented yet");
@@ -144,20 +164,25 @@ orxVOID orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_
   /* Transforms surface */
 //    sge_transform(_pstSrc, _pstDst, _fRotation * (180.0 / orxPI), _fScaleX, _fScaleY, _s32SrcX, _s32SrcY, _s32DstX, _s32DstY, u32Flags);
 
-  return;
+  return eResult;
 }
 
-orxVOID orxDisplay_SDL_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFilename)
+orxSTATUS orxDisplay_SDL_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFilename)
 {
-  SDL_SaveBMP((SDL_Surface *)_pstBitmap, _zFilename);
+  orxSTATUS eResult;
 
-  return;
+  eResult = (SDL_SaveBMP((SDL_Surface *)_pstBitmap, _zFilename) == 0)
+            ? orxSTATUS_SUCCESS
+            : orxSTATUS_FAILURE;
+
+  return eResult;
 }
 
-orxVOID orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvTL, orxCONST orxVECTOR *_pvBR)
+orxSTATUS orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvTL, orxCONST orxVECTOR *_pvBR)
 {
   SDL_Rect  stClipRect;
   orxVECTOR vSize;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Gets size vector */
   orxVector_Sub(&vSize, _pvBR, _pvTL);
@@ -171,11 +196,13 @@ orxVOID orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxCONST orxVECT
   /* Applies it */
   SDL_SetClipRect((SDL_Surface *)_pstBitmap, &stClipRect);
 
-  return;
+  return eResult;
 }
 
-orxU32 orxDisplay_SDL_Init()
+orxSTATUS orxDisplay_SDL_Init()
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   if(SDL_WasInit(SDL_INIT_EVERYTHING) != 0)
   {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
@@ -194,14 +221,14 @@ orxU32 orxDisplay_SDL_Init()
   {
     orxDEBUG_LOG(orxDEBUG_LEVEL_DISPLAY, KZ_MSG_MODE_INIT_FAILED_III, KI_WIDTH, KI_HEIGHT, KI_BPP);
 
-    return EXIT_FAILURE;
+    eResult = orxSTATUS_FAILURE;
   }
   else
   {
     orxDEBUG_LOG(orxDEBUG_LEVEL_DISPLAY, KZ_MSG_MODE_INIT_SUCCESS_III, KI_WIDTH, KI_HEIGHT, KI_BPP);
   }
 
-  return EXIT_SUCCESS;  
+  return eResult;  
 }
 
 orxVOID orxDisplay_SDL_Exit()

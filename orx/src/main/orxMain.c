@@ -67,7 +67,7 @@ orxSTATUS orxMain_Init()
       /* !!! TEMP : Will be replaced by config file !!! */
       sstMain.hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/time/Time_SDL", "time");
       sstMain.hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/file/File_LibC", "file");
-
+      
       /* Valid? */
       if(sstMain.hTimePlugin != orxHANDLE_Undefined)
       {
@@ -104,10 +104,10 @@ orxVOID orxMain_Exit()
   {
     /* Set module as not ready */
     sstMain.u32Flags &= ~orxMAIN_KU32_FLAG_READY;
-    
+
     /* !!! TEMP : untill exit triggered by events !!! */
     sstMain.u32Flags |= orxMAIN_KU32_FLAG_EXIT;
-    
+
 //    /* Exits from all modules */
 //    orxModule_ExitAll();
   }
