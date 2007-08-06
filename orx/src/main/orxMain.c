@@ -36,8 +36,6 @@
  ***************************************************************************/
 typedef struct __orxMAIN_STATIC_t
 {
-  orxHANDLE hTimePlugin;
-
   orxU32 u32Flags; /**< Flags set by the main module */
 
 } orxMAIN_STATIC;
@@ -63,13 +61,16 @@ orxSTATUS orxMain_Init()
     /* Inits plugin module */
     if(orxModule_Init(orxMODULE_ID_PLUGIN) == orxSTATUS_SUCCESS)
     {
-      /* Loads time plugin */
+      orxHANDLE hTimePlugin, hFilePlugin;
+
+      /* Loads time & file plugin */
       /* !!! TEMP : Will be replaced by config file !!! */
-      sstMain.hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/time/Time_SDL", "time");
-      sstMain.hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/file/File_LibC", "file");
+      hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/time/Time_SDL", "time");
+      hFilePlugin = orxPlugin_LoadUsingExt("plugins/core/file/File_LibC", "file");
       
       /* Valid? */
-      if(sstMain.hTimePlugin != orxHANDLE_Undefined)
+      if((hTimePlugin != orxHANDLE_Undefined)
+      && (hFilePlugin != orxHANDLE_Undefined))
       {
         /* Inits main module */
         if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
