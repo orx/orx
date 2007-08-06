@@ -22,6 +22,7 @@
 #include "debug/orxDebug.h"
 #include "display/orxGraphic.h"
 #include "object/orxFrame.h"
+#include "core/orxClock.h"
 #include "memory/orxMemory.h"
 
 
@@ -30,7 +31,11 @@
  */
 
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000
+
 #define orxOBJECT_KU32_FLAG_READY               0x00000001
+#define orxOBJECT_KU32_FLAG_CLOCK               0x00000002
+
+#define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF
 
 #define orxOBJECT_KU32_PROPERTY_FLAG_NONE       0x00000000
 
@@ -43,14 +48,14 @@ struct __orxOBJECT_t
   /* Public structure, first structure member : 16 */
   orxSTRUCTURE stStructure;
 
-  /* Used structures : 20 */
+  /* Used structures : 28 */
   orxSTRUCTURE *pastStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER];
 
-  /* Property flags : 24*/
+  /* Property flags : 32 */
   orxU32 u32Flags;
 
   /* Padding */
-  orxPAD(24)
+  orxPAD(32)
 };
 
 /*
@@ -58,6 +63,9 @@ struct __orxOBJECT_t
  */
 typedef struct __orxOBJECT_STATIC_t
 {
+  /* Clock */
+  orxCLOCK *pstClock;
+
   /* Control flags */
   orxU32 u32Flags;
 
@@ -158,6 +166,9 @@ orxVOID orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FRAME);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CLOCK);
 
   return;
 }
@@ -179,13 +190,35 @@ orxSTATUS orxObject_Init()
     orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_OBJECT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(OBJECT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
     {
-      /* Inits Flags */
-      sstObject.u32Flags = orxOBJECT_KU32_FLAG_READY;
+      /* Creates objects clock */
+      sstObject.pstClock = orxClock_Create(20, orxCLOCK_TYPE_CORE);
+
+      /* Valid? */
+      if(sstObject.pstClock != orxNULL)
+      {
+        /* Registers object update function to clock */
+        eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT);
+
+        /* Success? */
+        if(eResult ==orxSTATUS_SUCCESS)
+        {
+          /* Increases reference counter */
+          orxStructure_IncreaseCounter((orxSTRUCTURE *)sstObject.pstClock);
+
+          /* Inits Flags */
+          sstObject.u32Flags = orxOBJECT_KU32_FLAG_READY | orxOBJECT_KU32_FLAG_CLOCK;
+        }
+        else
+        {
+          /* Deletes clock */
+          orxClock_Delete(sstObject.pstClock);
+        }
+      }
     }
     else
     {
@@ -217,6 +250,25 @@ orxVOID orxObject_Exit()
   {
     /* Deletes object list */
     orxObject_DeleteAll();
+
+    /* Has clock? */
+    if(sstObject.u32Flags & orxOBJECT_KU32_FLAG_CLOCK)
+    {
+      /* Unregisters object update all function */
+      orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+
+      /* Updates clock reference counter */
+      orxStructure_DecreaseCounter((orxSTRUCTURE *)sstObject.pstClock);
+
+      /* Deletes clock */
+      orxClock_Delete(sstObject.pstClock);
+
+      /* Removes reference */
+      sstObject.pstClock = orxNULL;
+
+      /* Updates flags */
+      sstObject.u32Flags &= ~orxOBJECT_KU32_FLAG_CLOCK;
+    }
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -289,9 +341,6 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
 
     /* Deletes structure */
     orxStructure_Delete((orxSTRUCTURE *)_pstObject);
-
-    /* Frees object memory */
-    orxMemory_Free(_pstObject);
   }
   else
   {

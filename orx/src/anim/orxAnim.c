@@ -36,6 +36,8 @@
 
 #define orxANIM_KU32_FLAG_READY             0x00000001  /**< Ready flag */
 
+#define orxANIM_KU32_MASK_ALL               0xFFFFFFFF  /**< All flags */
+
 
 /** orxANIM ID flags/masks/shifts
  */
@@ -103,7 +105,7 @@ orxSTATIC orxANIM_STATIC sstAnim;
  * @param[in]   _u32TimeStamp   Desired timestamp
  * @return      Key index / orxU32_Undefined
  */
-orxSTATIC orxU32 orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, orxU32 _u32TimeStamp)
+orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, orxU32 _u32TimeStamp)
 {
   orxU32 u32Counter, u32MaxIndex, u32MinIndex, u32Index;
 
@@ -277,7 +279,7 @@ orxSTATUS orxAnim_Init()
     orxMemory_Set(&sstAnim, 0, sizeof(orxANIM_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_ANIM, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(ANIM, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
   }
   else
   {

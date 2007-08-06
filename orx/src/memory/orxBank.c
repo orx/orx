@@ -400,7 +400,7 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
       for (u32Index8Bits = 0; !bFound && (u32Index8Bits < 4); u32Index8Bits++)
       {
         /* Get the 8 bits to check */
-        orxU32 u328BitsValue = (pstCurrentSegment->pu32FreeElemBits[u32Index32Bits]) >> (u32Index8Bits * 4);
+        orxU32 u328BitsValue = (pstCurrentSegment->pu32FreeElemBits[u32Index32Bits]) >> (u32Index8Bits << 3);
         u328BitsValue &= 0xFF;
         
         /* Get the array index value (take 8 bits from the segment) */
@@ -411,7 +411,7 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
           u32BitResultIndex = sstBank.au8Index0[u328BitsValue];
           
           /* Compute the global position index the segment */
-          u32BitResultIndex  += (u32Index8Bits * 4);
+          u32BitResultIndex  += (u32Index8Bits << 3);
           u32FieldResultIndex = u32Index32Bits;
           
           /* Found ! */
@@ -629,7 +629,7 @@ orxVOID orxFASTCALL orxBank_DebugPrint(orxCONST orxBANK *_pstBank)
         orxTextIO_Print("[");
         for (u32Index3 = 0; u32Index3 < 8; u32Index3++)
         {
-          if ((pstSegment->pu32FreeElemBits[u32Index1] & (orxU32)(1 << ((8 * u32Index2) + u32Index3)) ) == (orxU32)(1 << ((8 * u32Index2) + u32Index3)) )
+          if ((pstSegment->pu32FreeElemBits[u32Index1] & (orxU32)(1 << ((u32Index2 << 3) + u32Index3)) ) == (orxU32)(1 << ((u32Index2 << 3) + u32Index3)) )
           {
             orxTextIO_Print("1");
           }

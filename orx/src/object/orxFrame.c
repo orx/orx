@@ -571,7 +571,7 @@ orxSTATUS orxFrame_Init()
     sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE, orxMEMORY_TYPE_MAIN, orxNULL);
 
     /* Successful? */
     if(eResult == orxSTATUS_SUCCESS)

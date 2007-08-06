@@ -84,7 +84,7 @@ orxSTATIC orxRENDER_STATIC sstRender;
 
  returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pstObject, orxFRAME *_pstFrame)
+orxSTATIC orxVOID orxFASTCALL orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pstObject, orxFRAME *_pstFrame)
 {
   orxGRAPHIC *pstGraphic;
   orxTEXTURE *pstTexture;
@@ -155,7 +155,7 @@ orxSTATIC orxVOID orxRender_RenderObject(orxBITMAP *_pstSurface, orxOBJECT *_pst
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxRender_SortViewportList(orxRENDER_VIEWPORT_LIST *_pstViewportList, orxU32 _u32Number)
+orxSTATIC orxVOID orxFASTCALL orxRender_SortViewportList(orxRENDER_VIEWPORT_LIST *_pstViewportList, orxU32 _u32Number)
 {
   orxU32 u32Low, u32High, u32Min, u32Max;
 
@@ -308,7 +308,7 @@ orxVOID orxRender_Exit()
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
+orxVOID orxFASTCALL orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY);
@@ -323,7 +323,7 @@ orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
       orxCAMERA  *pstCamera;
       orxTEXTURE *pstSurface;
       orxBITMAP  *pstSurfaceBitmap;
-      orxVECTOR  vTL, vBR;
+      orxVECTOR   vTL, vBR;
 
       /* Gets viewport surface */
       pstSurface = orxViewport_GetSurface(_pstViewport);
@@ -401,7 +401,7 @@ orxVOID orxRender_RenderViewport(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxRender_RenderAllViewports()
+orxVOID orxFASTCALL orxRender_RenderAllViewports(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   orxRENDER_VIEWPORT_LIST *pstViewportList;
   orxVIEWPORT *pstViewport;
@@ -450,7 +450,10 @@ orxVOID orxRender_RenderAllViewports()
     {
       orxRender_RenderViewport(pstViewportList[i].pstViewport);
     }
-  
+
+    /* Swap buffers */
+    orxDisplay_Swap();
+
     /* Deletes local viewport list */
     orxMemory_Free(pstViewportList);
   }

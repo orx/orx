@@ -1205,7 +1205,7 @@ orxSTATUS orxAnimSet_Init()
     orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIMSET_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_ANIMSET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(ANIMSET, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
   }
   else
   {

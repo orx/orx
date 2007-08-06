@@ -207,6 +207,7 @@ orxVOID orxTexture_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_DISPLAY);
 
   return;
 }
@@ -228,7 +229,7 @@ orxSTATUS orxTexture_Init()
     orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
     if (eResult == orxSTATUS_SUCCESS)
     {
@@ -382,7 +383,7 @@ orxSTATUS orxTexture_Delete(orxTEXTURE *_pstTexture)
   orxASSERT(_pstTexture != orxNULL);
 
   /* Is the last self reference? */
-  if(_pstTexture->u32Counter == 1)
+  if(_pstTexture->u32Counter == 0)
   {
     /* Not referenced from outside? */
     if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstTexture) == 0)
@@ -506,8 +507,7 @@ orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
       ((orxTEXTURE *)(_pstTexture->pstData))->u32Counter--;
 
       /* Cleans data */
-      _pstTexture->pstData = orxNULL;
-      
+      _pstTexture->pstData = orxNULL;      
     }
     else
     {

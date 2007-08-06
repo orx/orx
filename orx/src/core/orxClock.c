@@ -456,9 +456,6 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
   /* Valid? */
   if(pstClock != orxNULL)
   {
-    /* Cleans it */
-    orxMemory_Set(pstClock, 0, sizeof(orxCLOCK));
-
     /* Creates function bank */
     pstClock->pstFunctionBank = orxBank_Create(orxCLOCK_KU32_FUNCTION_BANK_SIZE, sizeof(orxCLOCK_FUNCTION_STORAGE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
 

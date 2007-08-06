@@ -264,8 +264,8 @@ orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxVECTOR
   if(_pstBitmap != NULL)
   {
     /* Gets size info */
-    _pvSize->fX = ((SDL_Surface *)_pstBitmap)->h;
-    _pvSize->fY = ((SDL_Surface *)_pstBitmap)->w;
+    _pvSize->fX = ((SDL_Surface *)_pstBitmap)->w;
+    _pvSize->fY = ((SDL_Surface *)_pstBitmap)->h;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;

@@ -45,9 +45,9 @@ extern orxDLLAPI orxSTATUS                orxRender_Init();
 extern orxDLLAPI orxVOID                  orxRender_Exit();
 
 /** Renders all viewports. */
-extern orxDLLAPI orxVOID                  orxRender_RenderAllViewports();
+extern orxDLLAPI orxVOID orxFASTCALL      orxRender_RenderAllViewports(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext);
 /** Rendres given viewport. */
-extern orxDLLAPI orxVOID                  orxRender_RenderViewport(orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxVOID orxFASTCALL      orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstViewport);
 
 
 #endif /* _orxRENDER_H_ */

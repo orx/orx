@@ -34,6 +34,8 @@
 
 #define orxVIEWPORT_KU32_FLAG_READY               0x00000001
 
+#define orxVIEWPORT_KU32_MASK_ALL                 0xFFFFFFFF
+
 /* ID flags */
 #define orxVIEWPORT_KU32_ID_FLAG_NONE             0x00000000
 #define orxVIEWPORT_KU32_ID_FLAG_ACTIVE           0x00000100
@@ -43,6 +45,7 @@
 #define orxVIEWPORT_KU32_ID_FLAG_SURFACE          0x00100000
 
 #define orxVIEWPORT_KU32_ID_MASK_ALIGN            0xF0000000
+#define orxVIEWPORT_KU32_ID_MASK_ALL              0xFFFFFFFF
 
 
 /*
@@ -106,7 +109,7 @@ orxSTATIC orxVIEWPORT_STATIC sstViewport;
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxVOID orxViewport_ComputeClipCorners(orxVIEWPORT *_pstViewport)
+orxSTATIC orxVOID orxFASTCALL orxViewport_ComputeClipCorners(orxVIEWPORT *_pstViewport)
 {
   orxVECTOR *pvPos, *pvSize, *pvClipPosition, *pvClipSize;
   orxVECTOR vCamPos, vCamSize;
@@ -149,7 +152,7 @@ orxSTATIC orxVOID orxViewport_ComputeClipCorners(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstViewport)
+orxSTATIC orxVOID orxFASTCALL orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstViewport)
 {
   orxVECTOR *pvPos, *pvSize;
   orxVECTOR vResult;
@@ -234,7 +237,7 @@ orxSTATIC orxVOID orxViewport_UpdateCameraOnScreenPosition(orxVIEWPORT *_pstView
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_DeleteAll()
+orxSTATIC orxINLINE orxVOID orxViewport_DeleteAll()
 {
   orxVIEWPORT *pstViewport;
 
@@ -295,7 +298,7 @@ orxSTATUS orxViewport_Init()
     orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
     /* Initialized? */
     if(eResult == orxSTATUS_SUCCESS)
@@ -391,7 +394,7 @@ orxVIEWPORT *orxViewport_Create()
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATUS orxViewport_Delete(orxVIEWPORT *_pstViewport)
+orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -439,7 +442,7 @@ orxSTATUS orxViewport_Delete(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera)
+orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -480,7 +483,7 @@ orxVOID orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVECTOR *_pvPosition)
+orxVOID orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxCONST orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -502,7 +505,7 @@ orxVOID orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxVECTOR *_pvPositio
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxVECTOR *_pvSize)
+orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxCONST orxVECTOR *_pvSize)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -524,7 +527,7 @@ orxVOID orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxVECTOR *_pvSize)
 
  returns: orxVOID
  ***************************************************************************/
-orxCAMERA *orxViewport_GetCamera(orxVIEWPORT *_pstViewport)
+orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -547,7 +550,7 @@ orxCAMERA *orxViewport_GetCamera(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVECTOR *_pvPosition)
+orxVOID orxFASTCALL orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -566,7 +569,7 @@ orxVOID orxViewport_GetPosition(orxVIEWPORT *_pstViewport, orxVECTOR *_pvPositio
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_GetSize(orxVIEWPORT *_pstViewport, orxVECTOR *_pvSize)
+orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxVECTOR *_pvSize)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -586,7 +589,7 @@ orxVOID orxViewport_GetSize(orxVIEWPORT *_pstViewport, orxVECTOR *_pvSize)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)
+orxVOID orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -607,7 +610,7 @@ orxVOID orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlag
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstSurface)
+orxVOID orxFASTCALL orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstSurface)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -650,8 +653,10 @@ orxVOID orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstSurfac
 
  returns: orxVOID
  ***************************************************************************/
-orxTEXTURE *orxViewport_GetSurface(orxVIEWPORT *_pstViewport)
+orxTEXTURE *orxFASTCALL orxViewport_GetSurface(orxCONST orxVIEWPORT *_pstViewport)
 {
+  orxTEXTURE *pstResult = orxNULL;
+
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
@@ -659,12 +664,12 @@ orxTEXTURE *orxViewport_GetSurface(orxVIEWPORT *_pstViewport)
   /* Has surface? */
   if(_pstViewport->u32IDFlags & orxVIEWPORT_KU32_ID_FLAG_SURFACE)
   {
-    return _pstViewport->pstSurface;
+    /* Updates result */
+    pstResult = _pstViewport->pstSurface;
   }
-  else
-  {
-    return orxNULL;
-  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /***************************************************************************
@@ -673,7 +678,7 @@ orxTEXTURE *orxViewport_GetSurface(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
+orxVOID orxFASTCALL orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -698,7 +703,7 @@ orxVOID orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
 
  returns: orxTRUE/FALSE
  ***************************************************************************/
-orxBOOL orxViewport_IsEnabled(orxVIEWPORT *_pstViewport)
+orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
@@ -714,7 +719,7 @@ orxBOOL orxViewport_IsEnabled(orxVIEWPORT *_pstViewport)
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxViewport_GetClip(orxVIEWPORT * _pstViewport, orxVECTOR *_pvPosition, orxVECTOR *_pvSize)
+orxVOID orxFASTCALL orxViewport_GetClip(orxCONST orxVIEWPORT * _pstViewport, orxVECTOR *_pvPosition, orxVECTOR *_pvSize)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);

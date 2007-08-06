@@ -42,11 +42,11 @@
 
 /** Structure pointer get macro. */
 #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE)               \
-  (((orxSTRUCTURE *)STRUCTURE)->eID == orxSTRUCTURE_ID_##TYPE) ? (orx##TYPE *)STRUCTURE : orxNULL;
+  (((orxSTRUCTURE *)STRUCTURE)->eID == orxSTRUCTURE_ID_##TYPE) ? (orx##TYPE *)STRUCTURE : orxNULL
 
 /** Structure register macro. */
-#define orxSTRUCTURE_REGISTER(STRUCTURE_ID, STORAGE_TYPE, MEMORY_TYPE, UPDATE_FUNCTION) \
-  orxStructure_Register(STRUCTURE_ID, STORAGE_TYPE, MEMORY_TYPE, sizeof(STRUCTURE_ID), UPDATE_FUNCTION);
+#define orxSTRUCTURE_REGISTER(TYPE, STORAGE_TYPE, MEMORY_TYPE, UPDATE_FUNCTION) \
+  orxStructure_Register(orxSTRUCTURE_ID_##TYPE, STORAGE_TYPE, MEMORY_TYPE, sizeof(orx##TYPE), UPDATE_FUNCTION)
 
 /** Structure IDs. */
 typedef enum __orxSTRUCTURE_ID_t

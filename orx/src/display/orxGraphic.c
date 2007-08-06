@@ -109,6 +109,7 @@ orxVOID orxGraphic_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_TEXTURE);
 
   return;
 }
@@ -126,7 +127,7 @@ orxSTATUS orxGraphic_Init()
     orxMemory_Set(&sstGraphic, 0, sizeof(orxGRAPHIC_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(orxSTRUCTURE_ID_GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
   }
   else
   {
@@ -191,9 +192,6 @@ orxGRAPHIC *orxGraphic_Create()
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
-    /* Cleans it */
-    orxMemory_Set(pstGraphic, 0, sizeof(orxGRAPHIC));
-    
     /* Inits flags */
     orxGraphic_SetFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_NONE, orxGRAPHIC_KU32_ID_MASK_ALL);
   }
@@ -267,7 +265,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     orxStructure_IncreaseCounter(_pstData);
 
     /* Is data a texture? */
-    if(_pstData->eID == orxSTRUCTURE_ID_TEXTURE)
+    if(orxSTRUCTURE_GET_POINTER(_pstData, TEXTURE) != orxNULL)
     {
       /* Updates ID flags */
       orxGraphic_SetFlags(_pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);

@@ -199,7 +199,12 @@ orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NO
     {
       _pstList->pstFirst->pstPrevious = _pstNode;
     }
-  
+    else
+    {
+      /* Updates last node */
+      _pstList->pstLast   = _pstNode;
+    }
+
     /* Stores node at the start of the list */
     _pstList->pstFirst    = _pstNode;
 
@@ -246,7 +251,12 @@ orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE
     {
       _pstList->pstLast->pstNext = _pstNode;
     }
-  
+    else
+    {
+      /* Updates first node */
+      _pstList->pstFirst  = _pstNode;
+    }
+
     /* Stores node at the end of the list */
     _pstList->pstLast     = _pstNode;
 

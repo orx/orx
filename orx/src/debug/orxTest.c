@@ -383,6 +383,7 @@ orxVOID orxTest_Setup()
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_TEXTIO);
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_PARAM);
+  orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_OBJECT);
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_CLOCK);
 
   return;
