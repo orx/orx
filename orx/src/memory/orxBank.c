@@ -429,7 +429,7 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
     if (bFound)
     {
       /* Get the pointer on the cell according to index value and cells size */
-      pCell = (orxVOID *)(((orxU8 *)pstCurrentSegment->pSegmentDatas) + (_pstBank->u32ElemSize * u32FieldResultIndex) + (_pstBank->u32ElemSize * u32BitResultIndex));
+      pCell = (orxVOID *)(((orxU8 *)pstCurrentSegment->pSegmentDatas) + (_pstBank->u32ElemSize * u32FieldResultIndex << 5) + (_pstBank->u32ElemSize * u32BitResultIndex));
     
       /* Decrease the number of free elements */
       pstCurrentSegment->u32NbFree--;

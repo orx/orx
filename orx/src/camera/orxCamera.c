@@ -41,7 +41,7 @@
 #define orxCAMERA_KU32_ID_FLAG_LINKED     0x00100000
 #define orxCAMERA_KU32_ID_FLAG_LIMITED    0x00200000
 
-#define orxCAMERA_KU32_VIEW_LIST_NUMBER   91 // Infinite loop on exit with 92???
+#define orxCAMERA_KU32_VIEW_LIST_NUMBER   128
 
 
 /*
