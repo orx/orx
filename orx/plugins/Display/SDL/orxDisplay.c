@@ -141,6 +141,8 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
   stSrcRect.h = _pvSize->fY;
   stDstRect.x = _pvDstCoord->fX;
   stDstRect.y = _pvDstCoord->fY;
+  stDstRect.w = 0.0f;
+  stDstRect.h = 0.0f;
 
   eResult = (SDL_BlitSurface((SDL_Surface *)_pstSrc, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect) == 0)
             ? orxSTATUS_SUCCESS
@@ -266,6 +268,8 @@ orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxVECTOR
     /* Gets size info */
     _pvSize->fX = ((SDL_Surface *)_pstBitmap)->w;
     _pvSize->fY = ((SDL_Surface *)_pstBitmap)->h;
+    _pvSize->fZ = 0.0f;
+    _pvSize->fW = 0.0f;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
