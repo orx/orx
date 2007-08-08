@@ -92,6 +92,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetData(orxGRAPHIC *_ps
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxGraphic_GetData(orxCONST orxGRAPHIC *_pstGraphic);
 
+/** Sets graphic pivot
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _pvPivot        Pivot to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxVECTOR *_pvPivot);
+
+/** Gets graphic pivot
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[out]  _pvPivot        Graphic pivot
+ * @return      orxPIVOT / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvPivot);
+
 
 /** Graphic flags test accessor
  * @param[in]   _pstGraphic     Concerned graphic

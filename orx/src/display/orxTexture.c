@@ -22,6 +22,7 @@
 #include "display/orxDisplay.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
+#include "utils/orxHashtable.h"
 
 
 /*
@@ -37,6 +38,7 @@
 #define orxTEXTURE_KU32_ID_FLAG_REF_COORD       0x00000100
 #define orxTEXTURE_KU32_ID_FLAG_SIZE            0x00000200
 
+#define orxTEXTURE_KU32_TABLE_SIZE              128
 
 /*
  * Texture structure
@@ -44,25 +46,28 @@
 struct __orxTEXTURE_t
 {
   /* Public structure, first structure member : 16 */
-  orxSTRUCTURE stStructure;
+  orxSTRUCTURE  stStructure;
 
   /* Self reference counter : 20 */
-  orxU32 u32Counter;
+  orxU32        u32Counter;
 
   /* Associated bitmap name : 24 */
-  orxSTRING zDataName;
+  orxSTRING     zDataName;
 
-  /* Reference point : 40 */
-  orxVECTOR vRefPoint;
+  /* Width : 28 */
+  orxU32        u32Width;
 
-  /* Size coord : 56 */
-  orxVECTOR vSize;
+  /* Height : 32 */
+  orxU32        u32Height;
 
-  /* Internal id flags : 60 */
-  orxU32 u32IDFlags;
+  /* Internal id flags : 36 */
+  orxU32        u32IDFlags;
 
-  /* Data : 64 */
-  orxVOID *pstData;
+  /* Data : 40 */
+  orxHANDLE     hData;
+
+  /* Padding */
+  orxPAD(40)
 };
 
 /*
@@ -70,8 +75,11 @@ struct __orxTEXTURE_t
  */
 typedef struct __orxTEXTURE_STATIC_t
 {
+  /* Texture hash table */
+  orxHASHTABLE *pstTable;
+
   /* Control flags */
-  orxU32 u32Flags;
+  orxU32        u32Flags;
 
 } orxTEXTURE_STATIC;
 
@@ -93,7 +101,7 @@ orxSTATIC orxTEXTURE_STATIC sstTexture;
 
  returns: orxVOID
  ***************************************************************************/
-orxVOID orxTexture_DeleteAll()
+orxSTATIC orxINLINE orxVOID orxTexture_DeleteAll()
 {
   orxTEXTURE *pstTexture;
   
@@ -123,67 +131,8 @@ orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByName(orxCONST orxSTRING _zDataN
 {
   orxREGISTER orxTEXTURE *pstTexture;
 
-  /* Gets first texture */
-  pstTexture = (orxTEXTURE *)orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE);
-
-  /* Non empty? */
-  while(pstTexture != orxNULL)
-  {
-    /* Has bitmap? */
-    if(pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_BITMAP)
-    {
-        /* Non external? */
-        if(!(pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_EXTERNAL))
-        {
-            /* Is the specified data? */
-            if(pstTexture->zDataName == _zDataName)
-            {
-                break;
-            }
-        }
-    }
-
-    /* Gets next texture */
-    pstTexture = (orxTEXTURE *)orxStructure_GetNext((orxSTRUCTURE *)pstTexture);
-  }
-
-  /* Done! */
-  return pstTexture;
-}
-
-/***************************************************************************
- orxTexture_FindByData
- Finds a texture linked to a specified data.
-
- returns: orxVOID
- ***************************************************************************/
-orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByData(orxVOID *_pstData)
-{
-  orxREGISTER orxTEXTURE *pstTexture;
-
-  /* Gets first texture */
-  pstTexture = (orxTEXTURE *)orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE);
-
-  /* Non empty? */
-  while(pstTexture != orxNULL)
-  {
-    /* Has bitmap? */
-    if(pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_BITMAP)
-    {
-        /* Non external? */
-        if(!(pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_EXTERNAL))
-        {
-            /* Is the specified data? */
-            if(pstTexture->pstData == _pstData)
-            {
-                break;
-            }
-        }
-    }
-
-    /* Gets next texture */
-    pstTexture = (orxTEXTURE *)orxStructure_GetNext((orxSTRUCTURE *)pstTexture);
-  }
+  /* Gets texture from hash table */
+  pstTexture = orxHashTable_Get(sstTexture.pstTable, orxString_ToCRC(_zDataName));
 
   /* Done! */
   return pstTexture;
@@ -207,6 +156,7 @@ orxVOID orxTexture_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_HASHTABLE);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_DISPLAY);
 
   return;
@@ -233,8 +183,15 @@ orxSTATUS orxTexture_Init()
 
     if (eResult == orxSTATUS_SUCCESS)
     {
-      /* Inits Flags */
-      sstTexture.u32Flags = orxTEXTURE_KU32_FLAG_READY;
+      /* Creates hash table */
+      sstTexture.pstTable = orxHashTable_Create(orxTEXTURE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Success? */
+      if(sstTexture.pstTable != orxNULL)
+      {
+        /* Inits Flags */
+        sstTexture.u32Flags = orxTEXTURE_KU32_FLAG_READY;
+      }
     }
   }
   else
@@ -262,6 +219,10 @@ orxVOID orxTexture_Exit()
   {
     /* Deletes texture list */
     orxTexture_DeleteAll();
+
+    /* Deletes hash table */
+    orxHashTable_Delete(sstTexture.pstTable);
+    sstTexture.pstTable = orxNULL;
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_TEXTURE);
@@ -307,12 +268,12 @@ orxTEXTURE *orxTexture_Create()
 }
 
 /***************************************************************************
- orxTexture_CreateFromBitmap
- Creates a texture from a bitmap.
+ orxTexture_CreateFromFile
+ Creates a texture from a bitmap file.
 
  returns: Created texture.
  ***************************************************************************/
-orxTEXTURE *orxTexture_CreateFromBitmap(orxCONST orxSTRING _zBitmapFileName)
+orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFileName)
 {
   orxTEXTURE *pstTexture;
 
@@ -344,7 +305,7 @@ orxTEXTURE *orxTexture_CreateFromBitmap(orxCONST orxSTRING _zBitmapFileName)
 
       /* Assigns given bitmap to it */
       if((pstBitmap != orxNULL)
-      && (orxTexture_LinkBitmap(pstTexture, pstBitmap) == orxSTATUS_SUCCESS))
+      && (orxTexture_LinkBitmap(pstTexture, pstBitmap, _zBitmapFileName) == orxSTATUS_SUCCESS))
       {
           /* Inits it */
       }
@@ -374,7 +335,7 @@ orxTEXTURE *orxTexture_CreateFromBitmap(orxCONST orxSTRING _zBitmapFileName)
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATUS orxTexture_Delete(orxTEXTURE *_pstTexture)
+orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -418,7 +379,7 @@ orxSTATUS orxTexture_Delete(orxTEXTURE *_pstTexture)
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
+orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zDataName)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -434,37 +395,46 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
   if(!(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_BITMAP))
   {
     orxTEXTURE *pstTexture;
-    orxVECTOR vSize;
 
     /* Search for a texture using this bitmap */
-    pstTexture = orxTexture_FindByData(_pstBitmap);
+    pstTexture = orxTexture_FindByName(_zDataName);
 
     /* Found? */
     if(pstTexture != orxNULL)
     {
+      /* Checks */
+      orxASSERT(_pstBitmap == (orxBITMAP *)pstTexture->hData);
+
       /* Updates flags */
-      _pstTexture->u32IDFlags |= orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_EXTERNAL | orxTEXTURE_KU32_ID_FLAG_SIZE;
+      _pstTexture->u32IDFlags |= pstTexture->u32IDFlags | orxTEXTURE_KU32_ID_FLAG_EXTERNAL;
  
       /* References external texture */
-      _pstTexture->pstData = pstTexture;
+      _pstTexture->hData      = (orxHANDLE)pstTexture;
+
+      /* Copies size */
+      _pstTexture->u32Width   = pstTexture->u32Width;
+      _pstTexture->u32Height  = pstTexture->u32Height;
 
       /* Updates external texture self referenced counter */
       pstTexture->u32Counter++;
     }
     else
     {
-      /* Updates flags */
+       /* Updates flags */
       _pstTexture->u32IDFlags |= orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_SIZE;
  
       /* References bitmap */
-      _pstTexture->pstData = _pstBitmap;
+      _pstTexture->hData = (orxHANDLE)_pstBitmap;
+
+      /* Gets bitmap size */
+      orxDisplay_GetBitmapSize(_pstBitmap, &_pstTexture->u32Width, &_pstTexture->u32Height);
     }
 
-    /* Gets bitmap size */
-    orxDisplay_GetBitmapSize(_pstBitmap, &vSize);
+    /* Updates texture name */
+    _pstTexture->zDataName = _zDataName;
 
-    /* Copy bitmap size (Z size is null) */
-    orxVector_Set3(&(_pstTexture->vSize), vSize.fX, vSize.fY, orxFLOAT_0);
+    /* Adds it to hash table */
+    orxHashTable_Add(sstTexture.pstTable, orxString_ToCRC(_zDataName), _pstTexture);
   }
   else
   {
@@ -478,7 +448,6 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
   return eResult;
 }
 
-
 /***************************************************************************
  orxTexture_UnlinkBitmap
  Unlinks a bitmap from a texture.
@@ -486,7 +455,7 @@ orxSTATUS orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxBITMAP *_pstBitmap)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
+orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -504,10 +473,10 @@ orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
       _pstTexture->u32IDFlags &= ~(orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_EXTERNAL | orxTEXTURE_KU32_ID_FLAG_SIZE);
 
       /* Decreases external texture self reference counter */
-      ((orxTEXTURE *)(_pstTexture->pstData))->u32Counter--;
+      ((orxTEXTURE *)(_pstTexture->hData))->u32Counter--;
 
       /* Cleans data */
-      _pstTexture->pstData = orxNULL;      
+      _pstTexture->hData = orxHANDLE_Undefined;      
     }
     else
     {
@@ -515,11 +484,14 @@ orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
       _pstTexture->u32IDFlags &= ~(orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_SIZE);
 
       /* Deletes bitmap */
-      orxDisplay_DeleteBitmap((orxBITMAP *)(_pstTexture->pstData));
+      orxDisplay_DeleteBitmap((orxBITMAP *)(_pstTexture->hData));
 
       /* Cleans data */
-      _pstTexture->pstData = orxNULL;
+      _pstTexture->hData = orxHANDLE_Undefined;
     }
+
+    /* Removes from hash table */
+    orxHashTable_Remove(sstTexture.pstTable, orxString_ToCRC(_pstTexture->zDataName));
   }
   else
   {
@@ -543,7 +515,7 @@ orxSTATUS orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
 
  returns: bitmap
  ***************************************************************************/
-orxCONST orxBITMAP *orxTexture_GetBitmap(orxTEXTURE *_pstTexture)
+orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
 {
   orxREGISTER orxBITMAP *pstBitmap = orxNULL;
 
@@ -557,12 +529,12 @@ orxCONST orxBITMAP *orxTexture_GetBitmap(orxTEXTURE *_pstTexture)
     /* External bitmap? */
     if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_EXTERNAL)
     {
-        pstBitmap = (orxBITMAP *)(((orxTEXTURE *)_pstTexture->pstData)->pstData);
+        pstBitmap = (orxBITMAP *)(((orxTEXTURE *)_pstTexture->hData)->hData);
     }
     /* Internal bitmap */
     else
     {
-        pstBitmap = (orxBITMAP *)_pstTexture->pstData;
+        pstBitmap = (orxBITMAP *)_pstTexture->hData;
     }
   }
 
@@ -571,86 +543,37 @@ orxCONST orxBITMAP *orxTexture_GetBitmap(orxTEXTURE *_pstTexture)
 }
 
 /***************************************************************************
- orxTexture_SetRefPoint
- Sets reference coordinates (used for rendering purpose).
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxTexture_SetRefPoint(orxTEXTURE *_pstTexture, orxVECTOR *_pvRefPoint)
-{
-  /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
-  orxASSERT(_pstTexture != orxNULL);
-  orxASSERT(_pvRefPoint!= orxNULL);
-
-  /* Updates */
-  _pstTexture->u32IDFlags |= orxTEXTURE_KU32_ID_FLAG_REF_COORD;
-  orxVector_Copy(&(_pstTexture->vRefPoint), _pvRefPoint);
-
-  return;
-}
-
-/***************************************************************************
- orxTexture_GetRefPoint
- Gets reference coordinates (used for rendering purpose).
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
-orxSTATUS orxTexture_GetRefPoint(orxTEXTURE *_pstTexture, orxVECTOR *_pvRefPoint)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
-  orxASSERT(_pstTexture != orxNULL);
-  orxASSERT(_pvRefPoint!= orxNULL);
-
-  /* Has reference coordinates? */
-  if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_REF_COORD)
-  {
-    /* Copy coord */
-    orxVector_Copy(_pvRefPoint, &(_pstTexture->vRefPoint));
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* No refpoint */
-    orxVector_Set3(_pvRefPoint, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/***************************************************************************
  orxTexture_GetSize
  Gets size.
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATUS orxTexture_GetSize(orxTEXTURE *_pstTexture, orxVECTOR *_pvSize)
+orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxU32 *_pu32Width, orxU32 *_pu32Height)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
   orxASSERT(_pstTexture != orxNULL);
-  orxASSERT(_pvSize!= orxNULL);
+  orxASSERT(_pu32Width != orxNULL);
+  orxASSERT(_pu32Height != orxNULL);
 
   /* Has size? */
   if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_SIZE)
   {
-    /* Gets it */
-    orxVector_Copy(_pvSize, &(_pstTexture->vSize));
+    /* Gets size */
+    *_pu32Width  = _pstTexture->u32Width;
+    *_pu32Height = _pstTexture->u32Height;
   }
   else
   {
     /* !!! MSG !!! */
 
     /* No size */
-    orxVector_Set3(_pvSize, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
+    *_pu32Width  = 0;
+    *_pu32Height = 0;
+
+    /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
 

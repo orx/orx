@@ -130,15 +130,15 @@ orxSTATUS orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxARGB _stColor,
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVECTOR *_pvDstCoord, orxCONST orxVECTOR *_pvSrcCoord, orxCONST orxVECTOR *_pvSize)
+orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVECTOR *_pvDstCoord)
 {
   SDL_Rect  stSrcRect, stDstRect;
   orxSTATUS eResult;
 
-  stSrcRect.x = _pvSrcCoord->fX;
-  stSrcRect.y = _pvSrcCoord->fY;
-  stSrcRect.w = _pvSize->fX;
-  stSrcRect.h = _pvSize->fY;
+  stSrcRect.x = 0;
+  stSrcRect.y = 0;
+  stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
+  stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
   stDstRect.x = _pvDstCoord->fX;
   stDstRect.y = _pvDstCoord->fY;
   stDstRect.w = 0.0f;
@@ -256,20 +256,19 @@ orxBITMAP *orxDisplay_SDL_LoadBitmap(orxCONST orxSTRING _zFilename)
   return((orxBITMAP *)SDL_LoadBMP(_zFilename));
 }
 
-orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxVECTOR *_pvSize)
+orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxU32 *_pu32Width, orxU32 *_pu32Height)
 {
   orxSTATUS eResult;
 
-  orxASSERT(_pvSize != orxNULL);
+  orxASSERT(_pu32Width != orxNULL);
+  orxASSERT(_pu32Height != orxNULL);
   
   /* Non null? */
   if(_pstBitmap != NULL)
   {
     /* Gets size info */
-    _pvSize->fX = ((SDL_Surface *)_pstBitmap)->w;
-    _pvSize->fY = ((SDL_Surface *)_pstBitmap)->h;
-    _pvSize->fZ = 0.0f;
-    _pvSize->fW = 0.0f;
+    *_pu32Width  = ((SDL_Surface *)_pstBitmap)->w;
+    *_pu32Height = ((SDL_Surface *)_pstBitmap)->h;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -279,8 +278,8 @@ orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxVECTOR
     /* !!! MSG !!! */
 
     /* Null pointer -> cleans size values */
-    _pvSize->fX = -1;
-    _pvSize->fY = -1;
+    *_pu32Width  = 0;
+    *_pu32Height = 0;
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

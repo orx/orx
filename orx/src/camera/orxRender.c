@@ -107,7 +107,7 @@ orxSTATIC orxVOID orxFASTCALL orxRender_RenderObject(orxBITMAP *_pstSurface, orx
     pstTexture  = (orxTEXTURE *)orxGraphic_GetData(pstGraphic);
 
     /* Gets texture's bitmap */
-    pstBitmap   = (orxBITMAP *)orxTexture_GetBitmap(pstTexture);
+    pstBitmap   = orxTexture_GetBitmap(pstTexture);
 
     /* Gets frame's position, rotation & zoom */
     fRotation   = orxFrame_GetRotation(_pstFrame, orxFALSE);
@@ -117,13 +117,8 @@ orxSTATIC orxVOID orxFASTCALL orxRender_RenderObject(orxBITMAP *_pstSurface, orx
     /* Blit bitmap onto surface */
     if((fRotation == orxFLOAT_0) && (fScale == orxFLOAT_1))
     {
-      orxVECTOR vSize;
-
-      /* Gets bitmap's size */
-      orxDisplay_GetBitmapSize(pstBitmap, &vSize);
-
       /* Blit it */
-      orxDisplay_BlitBitmap(_pstSurface, pstBitmap, &vPos, &orxVector_0, &vSize);
+      orxDisplay_BlitBitmap(_pstSurface, pstBitmap, &vPos);
     }
     /* Blit transformed bitmap onto surface */
     else

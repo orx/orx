@@ -49,8 +49,9 @@ struct __orxGRAPHIC_t
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
   orxU32        u32IDFlags;                 /**< ID flags : 20 */
   orxSTRUCTURE *pstData;                    /**< Data structure : 24 */
+  orxVECTOR     vPivot;                     /**< Pivot : 40 */
 
-  orxPAD(24)
+  orxPAD(40)
 };
 
 /** Static structure
@@ -284,6 +285,10 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
   return eResult;
 }
 
+/** Gets graphic data
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      OrxSTRUCTURE / orxNULL
+ */
 orxSTRUCTURE *orxFASTCALL orxGraphic_GetData(orxCONST orxGRAPHIC *_pstGraphic)
 {
   orxSTRUCTURE *pstStructure;
@@ -297,6 +302,46 @@ orxSTRUCTURE *orxFASTCALL orxGraphic_GetData(orxCONST orxGRAPHIC *_pstGraphic)
 
   /* Done! */
   return pstStructure;
+}
+
+/** Sets graphic pivot
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _pvPivot        Pivot to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxVECTOR *_pvPivot)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
+  orxASSERT(_pstGraphic != orxNULL);
+  orxASSERT(_pvPivot != orxNULL);
+
+  /* Stores pivot */
+  orxVector_Copy(&(_pstGraphic->vPivot), _pvPivot);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets graphic pivot
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[out]  _pvPivot        Graphic pivot
+ * @return      orxPIVOT / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvPivot)
+{
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
+  orxASSERT(_pstGraphic != orxNULL);
+  orxASSERT(_pvPivot != orxNULL);
+
+  /* Copies pivot */
+  orxVector_Copy(_pvPivot, &(_pstGraphic->vPivot));
+
+  /* Done! */
+  return _pvPivot;  
 }
 
 /** Graphic flags test accessor

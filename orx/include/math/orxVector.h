@@ -220,11 +220,11 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Inv(orxVECTOR *_pvRes, o
 /* *** Vector constants *** */
 
 
-orxSTATIC orxCONST  orxVECTOR      orxVector_X    = {orx2F(1.0f), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
-orxSTATIC orxCONST  orxVECTOR      orxVector_Y    = {orx2F(0.0f), orx2F(1.0f), orx2F(0.0f), orx2F(0.0f)};
-orxSTATIC orxCONST  orxVECTOR      orxVector_Z    = {orx2F(0.0f), orx2F(0.0f), orx2F(1.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_X    = {orx2F(1.0f), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Y    = {orx2F(0.0f), orx2F(1.0f), orx2F(0.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {orx2F(0.0f), orx2F(0.0f), orx2F(1.0f), orx2F(0.0f)};
 
-orxSTATIC orxCONST  orxVECTOR      orxVector_0    = {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
 
 
 #endif /* _orxVECTOR_H_ */

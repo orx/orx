@@ -423,7 +423,7 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
         /* We thus compute axis aligned smallest box that contains real rotated camera box */
 
         /* Rotates one corner */
-        orxVector_Rot(pvUL, pvUL, &orxVector_Z, fRot);
+        orxVector_Rot(pvUL, pvUL, &orxVECTOR_Z, fRot);
 
         /* Gets corner maximum absolute value between X & Y values */
         if(orxFABS(pvUL->fX) > orxFABS(pvUL->fY))
@@ -633,7 +633,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
   orxGRAPHIC           *pstGraphic;
   orxCAMERA_VIEW_LIST  *pstCell = orxNULL;
   orxVECTOR            *pvCamUL, *pvCamBR, *pvCamSize, vCamPos;
-  orxVECTOR             vTextureUL, vTextureBR, vTextureRef, vTexturePos, vTemp;
+  orxVECTOR             vTextureUL, vTextureBR, vGraphicPivot, vTexturePos, vTemp;
   orxFLOAT              fCamRot, fCamScale, fTextureRot, fTextureScale;
   orxVECTOR             vScroll;
   orxSTATUS             eResult = orxSTATUS_SUCCESS;
@@ -665,6 +665,8 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
         /* Valid? */
         if(pstFrame != orxNULL)
         {
+          orxU32 u32Width, u32Height;
+
           /* Gets camera clip corners pointers */
           pvCamUL = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipUL);
           pvCamBR = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipBR);
@@ -675,11 +677,12 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
           fTextureScale = orxFrame_GetScale(pstFrame, orxFALSE);
   
           /* Computes texture global corners */
-          orxTexture_GetRefPoint(pstTexture, &vTextureRef);
-          orxVector_Add(&vTextureUL, &vTexturePos, orxVector_Neg(&vTemp, &vTextureRef));
+          orxGraphic_GetPivot(pstGraphic, &vGraphicPivot);
+          orxVector_Add(&vTextureUL, &vTexturePos, orxVector_Neg(&vTemp, &vGraphicPivot));
   
-          orxTexture_GetSize(pstTexture, &vTextureRef);
-          orxVector_Add(&vTextureBR, &vTextureUL, &vTextureRef);
+          orxTexture_GetSize(pstTexture, &u32Width, &u32Height);
+          orxVector_Set3(&vGraphicPivot, orxU2F(u32Width), orxU2F(u32Height), 0.0f);
+          orxVector_Add(&vTextureBR, &vTextureUL, &vGraphicPivot);
   
           /* Intersection? */
           if(orxVector_TestAABoxIntersection(pvCamUL, pvCamBR, &vTextureUL, &vTextureBR) != orxFALSE)
@@ -729,7 +732,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
               /* Applies rotation & scale if needed */
               if(fCamRot != orxFLOAT_0)
               {
-                orxVector_Rot(&vTextureUL, &vTextureUL, &orxVector_Z, -fCamRot);
+                orxVector_Rot(&vTextureUL, &vTextureUL, &orxVECTOR_Z, -fCamRot);
               }
               if(fCamScale != orxFLOAT_1)
               {
