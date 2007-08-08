@@ -81,8 +81,8 @@ orxSTATIC orxCONST orxU32 sau32CRCTable[256] =
  */
 orxU32 orxFASTCALL orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC)
 {
-  orxREGISTER orxU32 u32CRC;
-  orxREGISTER orxCHAR *pc;
+  orxREGISTER orxU32    u32CRC;
+  orxREGISTER orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);

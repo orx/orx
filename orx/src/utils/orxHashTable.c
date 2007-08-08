@@ -81,7 +81,7 @@ orxSTATIC orxINLINE orxU32 orxHashTable_FindIndex(orxCONST orxHASHTABLE *_pstHas
   orxASSERT(_pstHashTable != orxNULL);
   
   /* Compute the hash index */
-  return (_u32Key %  orxHASHTABLE_KU32_INDEX_SIZE);
+  return(_u32Key & (orxHASHTABLE_KU32_INDEX_SIZE - 1));
 }
 
 /***************************************************************************
