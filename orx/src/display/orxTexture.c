@@ -55,10 +55,10 @@ struct __orxTEXTURE_t
   orxSTRING     zDataName;
 
   /* Width : 28 */
-  orxU32        u32Width;
+  orxFLOAT      fWidth;
 
   /* Height : 32 */
-  orxU32        u32Height;
+  orxFLOAT      fHeight;
 
   /* Internal id flags : 36 */
   orxU32        u32IDFlags;
@@ -412,14 +412,16 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       _pstTexture->hData      = (orxHANDLE)pstTexture;
 
       /* Copies size */
-      _pstTexture->u32Width   = pstTexture->u32Width;
-      _pstTexture->u32Height  = pstTexture->u32Height;
+      _pstTexture->fWidth   = pstTexture->fWidth;
+      _pstTexture->fHeight  = pstTexture->fHeight;
 
       /* Updates external texture self referenced counter */
       pstTexture->u32Counter++;
     }
     else
     {
+      orxU32 u32Width, u32Height;
+
        /* Updates flags */
       _pstTexture->u32IDFlags |= orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_SIZE;
  
@@ -427,7 +429,11 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       _pstTexture->hData = (orxHANDLE)_pstBitmap;
 
       /* Gets bitmap size */
-      orxDisplay_GetBitmapSize(_pstBitmap, &_pstTexture->u32Width, &_pstTexture->u32Height);
+      orxDisplay_GetBitmapSize(_pstBitmap, &u32Width, &u32Height);
+
+      /* Stores it */
+      _pstTexture->fWidth   = orxU2F(u32Width);
+      _pstTexture->fHeight  = orxU2F(u32Height);
     }
 
     /* Updates texture name */
@@ -548,30 +554,30 @@ orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
 
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
-orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxU32 *_pu32Width, orxU32 *_pu32Height)
+orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
   orxASSERT(_pstTexture != orxNULL);
-  orxASSERT(_pu32Width != orxNULL);
-  orxASSERT(_pu32Height != orxNULL);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
 
   /* Has size? */
   if(_pstTexture->u32IDFlags & orxTEXTURE_KU32_ID_FLAG_SIZE)
   {
     /* Gets size */
-    *_pu32Width  = _pstTexture->u32Width;
-    *_pu32Height = _pstTexture->u32Height;
+    *_pfWidth  = _pstTexture->fWidth;
+    *_pfHeight = _pstTexture->fHeight;
   }
   else
   {
     /* !!! MSG !!! */
 
     /* No size */
-    *_pu32Width  = 0;
-    *_pu32Height = 0;
+    *_pfWidth  = -1.0f;
+    *_pfHeight = -1.0f;
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

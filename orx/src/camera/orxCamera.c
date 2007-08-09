@@ -665,8 +665,6 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
         /* Valid? */
         if(pstFrame != orxNULL)
         {
-          orxU32 u32Width, u32Height;
-
           /* Gets camera clip corners pointers */
           pvCamUL = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipUL);
           pvCamBR = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipBR);
@@ -680,8 +678,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
           orxGraphic_GetPivot(pstGraphic, &vGraphicPivot);
           orxVector_Add(&vTextureUL, &vTexturePos, orxVector_Neg(&vTemp, &vGraphicPivot));
   
-          orxTexture_GetSize(pstTexture, &u32Width, &u32Height);
-          orxVector_Set3(&vGraphicPivot, orxU2F(u32Width), orxU2F(u32Height), 0.0f);
+          orxTexture_GetSize(pstTexture, &(vGraphicPivot.fX), &(vGraphicPivot.fY));
           orxVector_Add(&vTextureBR, &vTextureUL, &vGraphicPivot);
   
           /* Intersection? */
