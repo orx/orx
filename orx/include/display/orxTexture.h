@@ -71,7 +71,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_UnlinkBitmap(orxTEXTURE *_p
 extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture);
 
 /** Texture size get accessor. */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxU32 *_pu32Width, orxU32 *_puHeight);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 
 #endif /* _orxTEXTURE_H_ */
