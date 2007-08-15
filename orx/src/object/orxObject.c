@@ -37,7 +37,9 @@
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF
 
-#define orxOBJECT_KU32_PROPERTY_FLAG_NONE       0x00000000
+#define orxOBJECT_KU32_ID_FLAG_NONE             0x00000000
+
+#define orxOBJECT_KU32_ID_MASK_ALL              0xFFFFFFFF
 
 
 /*
@@ -51,11 +53,8 @@ struct __orxOBJECT_t
   /* Used structures : 28 */
   orxSTRUCTURE *pastStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER];
 
-  /* Property flags : 32 */
-  orxU32 u32Flags;
-
   /* Padding */
-  orxPAD(32)
+  orxPAD(28)
 };
 
 /*
@@ -122,7 +121,7 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   /* For all objects */
   for(pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
       pstObject != orxNULL;
-      pstObject = (orxOBJECT *)orxStructure_GetNext((orxSTRUCTURE *)pstObject))
+      pstObject = (orxOBJECT *)orxStructure_GetNext(pstObject))
   {
     orxU32 i;
 
@@ -136,7 +135,7 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
       if(pstObject->pastStructure[i] != orxNULL)
       {
         /* Updates it */
-        if(orxStructure_Update(pstObject->pastStructure[i], (orxSTRUCTURE *)pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
+        if(orxStructure_Update(pstObject->pastStructure[i], pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
         {
           /* !!! MSG !!! */
         }
@@ -207,9 +206,6 @@ orxSTATUS orxObject_Init()
         /* Success? */
         if(eResult ==orxSTATUS_SUCCESS)
         {
-          /* Increases reference counter */
-          orxStructure_IncreaseCounter((orxSTRUCTURE *)sstObject.pstClock);
-
           /* Inits Flags */
           sstObject.u32Flags = orxOBJECT_KU32_FLAG_READY | orxOBJECT_KU32_FLAG_CLOCK;
         }
@@ -257,9 +253,6 @@ orxVOID orxObject_Exit()
       /* Unregisters object update all function */
       orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
 
-      /* Updates clock reference counter */
-      orxStructure_DecreaseCounter((orxSTRUCTURE *)sstObject.pstClock);
-
       /* Deletes clock */
       orxClock_Delete(sstObject.pstClock);
 
@@ -303,8 +296,8 @@ orxOBJECT *orxObject_Create()
   /* Created? */
   if(pstObject != orxNULL)
   {
-    /* Inits property flags */
-    pstObject->u32Flags = orxOBJECT_KU32_PROPERTY_FLAG_NONE;
+    /* Inits flags */
+    orxStructure_SetFlags(pstObject, orxOBJECT_KU32_ID_FLAG_NONE, orxOBJECT_KU32_ID_MASK_ALL);
   }
   else
   {
@@ -329,7 +322,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   orxASSERT(_pstObject != orxNULL);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstObject) == 0)
+  if(orxStructure_GetRefCounter(_pstObject) == 0)
   {
     orxU32 i;
 
@@ -340,7 +333,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
     }
 
     /* Deletes structure */
-    orxStructure_Delete((orxSTRUCTURE *)_pstObject);
+    orxStructure_Delete(_pstObject);
   }
   else
   {

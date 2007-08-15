@@ -160,24 +160,31 @@ do                                                            \
 } while(orxFALSE);
 
 
-/** Tests all flags. 
- * @param X Flag container.
- * @param F Flags to test.
- * @return true if flags are all presents.
+/** Tests all flags 
+ * @param[in] X Flag container
+ * @param[in] F Flags to test
+ * @return true if flags are all presents
  */
 #define orxFLAG_TEST_ALL(X, F) (((X) & (F)) == (F))
 
-/** Tests flags. 
- * @param X Flag container.
- * @param F Flags to test.
- * @return true if at least one flag is present.
+/** Tests flags 
+ * @param[in] X Flag container
+ * @param[in] F Flags to test
+ * @return true if at least one flag is present
  */
 #define orxFLAG_TEST(X, F) (((X) & (F)) != 0)
 
-/** Sets / unsets flags.
- * @param X Flag container.
- * @param A Flags to add.
- * @param R Flags to remove.
+/** Gets flags 
+ * @param[in] X Flag container
+ * @param[in] F Flags to test
+ * @return Masked flags
+ */
+#define orxFLAG_GET(X, M) ((X) & (M))
+
+/** Sets / unsets flags
+ * @param[in] X Flag container
+ * @param[in] A Flags to add
+ * @param[in] R Flags to remove
  */
 #define orxFLAG_SET(X, A, R)  \
 do                            \

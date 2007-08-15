@@ -101,7 +101,7 @@ orxSTATIC orxVOID orxFASTCALL orxRender_RenderObject(orxBITMAP *_pstSurface, orx
   pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
 
   /* 2D? */
-  if(orxGraphic_TestFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D) != orxFALSE)
   {
     /* Gets graphic's texture */
     pstTexture  = (orxTEXTURE *)orxGraphic_GetData(pstGraphic);
@@ -434,7 +434,7 @@ orxVOID orxFASTCALL orxRender_RenderAllViewports(orxCONST orxCLOCK_INFO *_pstClo
       pstViewportList[i].fZSort = vPosition.fZ;
   
       /* Gets next viewport */
-      pstViewport = (orxVIEWPORT *)orxStructure_GetNext((orxSTRUCTURE *)pstViewport);
+      pstViewport = (orxVIEWPORT *)orxStructure_GetNext(pstViewport);
     }
 
     /* Sorts viewport list */

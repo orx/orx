@@ -156,28 +156,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxFrame_GetRotation(orxFRAME *_ps
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace);
 
 
-/** Frame flags test accessor
- * @param[in]   _pstFrame       Concerned Frameation
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_TestFlags(orxCONST orxFRAME *_pstFrame, orxU32 _u32Flags);
-
-/** Frame all flags test accessor
- * @param[in]   _pstFrame       Concerned Frameation
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_TestAllFlags(orxCONST orxFRAME *_pstFrame, orxU32 _u32Flags);
-
-/** Frame flag set accessor
- * @param[in]   _pstFrame       Concerned Frameation
- * @param[in]   _u32AddFlags    Flags to add
- * @param[in]   _u32RemoveFlags Flags to remove
- */
-extern orxDLLAPI orxVOID orxFASTCALL          orxFrame_SetFlags(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
-
-
 #endif /* _orxFRAME_H_ */
+
 
 /** @} */

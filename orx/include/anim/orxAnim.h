@@ -146,28 +146,6 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(orxCONST orx
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetLength(orxCONST orxANIM *_pstAnim);
 
 
-/** Anim flags test accessor
- * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxAnim_TestFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags);
-
-/** Anim all flags test accessor
- * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxAnim_TestAllFlags(orxCONST orxANIM *_pstAnim, orxU32 _u32Flags);
-
-/** Anim flag set accessor
- * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32AddFlags    Flags to add
- * @param[in]   _u32RemoveFlags Flags to remove
- */
-extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_SetFlags(orxANIM *_pstAnim, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
-
-
 #endif /* _orxANIM_H_ */
 
 

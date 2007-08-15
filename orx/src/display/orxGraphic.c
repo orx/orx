@@ -47,11 +47,10 @@
 struct __orxGRAPHIC_t
 {
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
-  orxU32        u32IDFlags;                 /**< ID flags : 20 */
-  orxSTRUCTURE *pstData;                    /**< Data structure : 24 */
-  orxVECTOR     vPivot;                     /**< Pivot : 40 */
+  orxSTRUCTURE *pstData;                    /**< Data structure : 20 */
+  orxVECTOR     vPivot;                     /**< Pivot : 36 */
 
-  orxPAD(40)
+  orxPAD(36)
 };
 
 /** Static structure
@@ -194,7 +193,7 @@ orxGRAPHIC *orxGraphic_Create()
   if(pstGraphic != orxNULL)
   {
     /* Inits flags */
-    orxGraphic_SetFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_NONE, orxGRAPHIC_KU32_ID_MASK_ALL);
+    orxStructure_SetFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_NONE, orxGRAPHIC_KU32_ID_MASK_ALL);
   }
 
   /* Done! */
@@ -213,13 +212,13 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   orxASSERT(_pstGraphic != orxNULL);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstGraphic) == 0)
+  if(orxStructure_GetRefCounter(_pstGraphic) == 0)
   {
     /* Cleans data */
     orxGraphic_SetData(_pstGraphic, orxNULL);
 
     /* Deletes structure */
-    orxStructure_Delete((orxSTRUCTURE *)_pstGraphic);
+    orxStructure_Delete(_pstGraphic);
   }
   else
   {
@@ -269,7 +268,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     if(orxSTRUCTURE_GET_POINTER(_pstData, TEXTURE) != orxNULL)
     {
       /* Updates ID flags */
-      orxGraphic_SetFlags(_pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
     }
     {
       /* !!! MSG !!! */
@@ -342,50 +341,4 @@ orxVECTOR *orxFASTCALL orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orx
 
   /* Done! */
   return _pvPivot;  
-}
-
-/** Graphic flags test accessor
- * @param[in]   _pstGraphic     Concerned graphic
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxGraphic_TestFlags(orxCONST orxGRAPHIC *_pstGraphic, orxU32 _u32Flags)
-{
-  /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
-  orxASSERT(_pstGraphic != orxNULL);
-
-  return((_pstGraphic->u32IDFlags & _u32Flags) != orxGRAPHIC_KU32_FLAG_NONE);
-}
-
-/** Graphic all flags test accessor
- * @param[in]   _pstGraphic     Concerned graphic
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxGraphic_TestAllFlags(orxCONST orxGRAPHIC *_pstGraphic, orxU32 _u32Flags)
-{
-  /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
-  orxASSERT(_pstGraphic != orxNULL);
-
-  return((_pstGraphic->u32IDFlags & _u32Flags) == _u32Flags);
-}
-
-/** Graphic flag set accessor
- * @param[in]   _pstGraphic     Concerned graphic
- * @param[in]   _u32AddFlags    Flags to add
- * @param[in]   _u32RemoveFlags Flags to remove
- */
-orxVOID orxFASTCALL orxGraphic_SetFlags(orxGRAPHIC *_pstGraphic, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
-{
-  /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
-  orxASSERT(_pstGraphic != orxNULL);
-
-  /* Updates flags */
-  _pstGraphic->u32IDFlags &= ~_u32RemoveFlags;
-  _pstGraphic->u32IDFlags |= _u32AddFlags;
-
-  return;
 }

@@ -211,27 +211,6 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimStorageSiz
  */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet);
 
-/** AnimSet flags test accessor
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32Flags														Flags to test
- * @return			orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL                orxAnimSet_TestFlags(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32Flags);
-
-/** AnimSet all flags test accessor
- * @param[in]   _pstAnimSet                         Concerned AnimSet
- * @param[in]   _u32Flags                           Flags to test
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL                orxAnimSet_TestAllFlags(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32Flags);
-
-/** AnimSet flag get/set accessor
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @param[in]		_u32AddFlags												Flags to add
- * @param[in]		_u32RemoveFlags											Flags to remove
- */
-extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_SetFlags(orxANIMSET *_pstAnimSet, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
-
 
 #endif /* _orxANIMSET_H_ */
 

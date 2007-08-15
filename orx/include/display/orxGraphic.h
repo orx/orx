@@ -107,28 +107,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetPivot(orxGRAPHIC *_p
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvPivot);
 
 
-/** Graphic flags test accessor
- * @param[in]   _pstGraphic     Concerned graphic
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_TestFlags(orxCONST orxGRAPHIC *_pstGraphic, orxU32 _u32Flags);
-
-/** Graphic all flags test accessor
- * @param[in]   _pstGraphic     Concerned graphic
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_TestAllFlags(orxCONST orxGRAPHIC *_pstGraphic, orxU32 _u32Flags);
-
-/** Graphic flag set accessor
- * @param[in]   _pstGraphic     Concerned graphic
- * @param[in]   _u32AddFlags    Flags to add
- * @param[in]   _u32RemoveFlags Flags to remove
- */
-extern orxDLLAPI orxVOID orxFASTCALL          orxGraphic_SetFlags(orxGRAPHIC *_pstGraphic, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags);
-
-
 #endif /* _orxGRAPHIC_H_ */
 
 

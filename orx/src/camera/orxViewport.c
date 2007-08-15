@@ -64,17 +64,14 @@ struct __orxVIEWPORT_t
   /* Clip coords : 80 */
   orxVECTOR vClipPosition, vClipSize;
 
-  /* Internal id flags : 84 */
-  orxU32 u32IDFlags;
-
-  /* Associated camera : 88 */
+  /* Associated camera : 84 */
   orxCAMERA *pstCamera;
 
-  /* Associated surface : 92 */
+  /* Associated surface : 88 */
   orxTEXTURE *pstSurface;
 
   /* Padding */
-  orxPAD(92)
+  orxPAD(88)
 };
 
 
@@ -123,7 +120,7 @@ orxSTATIC orxVOID orxFASTCALL orxViewport_ComputeClipCorners(orxVIEWPORT *_pstVi
   pvClipSize      = &(_pstViewport->vClipSize);
 
   /* 2D? */
-  if(orxCamera_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
   {
     /* Gets camera infos */
     orxCamera_GetOnScreenPosition(_pstViewport->pstCamera, &vCamPos);
@@ -155,20 +152,16 @@ orxSTATIC orxVOID orxFASTCALL orxViewport_UpdateCameraOnScreenPosition(orxVIEWPO
 {
   orxVECTOR *pvPos, *pvSize;
   orxVECTOR vResult;
-  orxU32 u32Flags;
   orxFLOAT fX = orxFLOAT_0, fY = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(_pstViewport != orxNULL);
 
-  /* Gets viewport flags */
-  u32Flags = _pstViewport->u32IDFlags;
-
   /* Is virtual & has camera? */
-  if((u32Flags & orxVIEWPORT_KU32_ID_FLAG_VIRTUAL) && (u32Flags & orxVIEWPORT_KU32_ID_FLAG_CAMERA))
+  if(orxStructure_TestAllFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_VIRTUAL | orxVIEWPORT_KU32_ID_FLAG_CAMERA) != orxFALSE)
   {
     /* 2D? */
-    if(orxCamera_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+    if(orxStructure_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
     {
       orxVECTOR vCamSize;
 
@@ -180,12 +173,12 @@ orxSTATIC orxVOID orxFASTCALL orxViewport_UpdateCameraOnScreenPosition(orxVIEWPO
       orxCamera_GetSize(_pstViewport->pstCamera, &vCamSize);
 
       /* X alignment */
-      if(u32Flags & orxVIEWPORT_KU32_FLAG_ALIGN_LEFT)
+      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_LEFT) != orxFALSE)
       {
         /* Left aligned */
         fX = pvPos->fX;
       }
-      else if(u32Flags & orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT)
+      else if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT) != orxFALSE)
       {
         /* Right aligned */
         fX = pvPos->fX + pvSize->fX - vCamSize.fX;
@@ -196,12 +189,12 @@ orxSTATIC orxVOID orxFASTCALL orxViewport_UpdateCameraOnScreenPosition(orxVIEWPO
         fX = pvPos->fX + (orxFLOAT)floor(0.5 * (pvSize->fX - vCamSize.fX)); /* floorf() or rintf() is not recognized by MSVC :/ */
       }
       /* Y alignment */
-      if(u32Flags & orxVIEWPORT_KU32_FLAG_ALIGN_TOP)
+      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_TOP) != orxFALSE)
       {
         /* Left aligned */
         fY = pvPos->fY;
       }
-      else if(u32Flags & orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM)
+      else if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM) != orxFALSE)
       {
         /* Right aligned */
         fY = pvPos->fY + pvSize->fY - vCamSize.fY;
@@ -370,10 +363,7 @@ orxVIEWPORT *orxViewport_Create()
   if(pstViewport != orxNULL)
   {
     /* Inits viewport flags */
-    pstViewport->u32IDFlags = orxVIEWPORT_KU32_ID_FLAG_VIRTUAL   |
-                              orxVIEWPORT_KU32_ID_FLAG_ACTIVE    |
-                              orxVIEWPORT_KU32_FLAG_ALIGN_CENTER |
-                              orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
+    orxStructure_SetFlags(pstViewport, orxVIEWPORT_KU32_ID_FLAG_VIRTUAL | orxVIEWPORT_KU32_ID_FLAG_ACTIVE | orxVIEWPORT_KU32_FLAG_ALIGN_CENTER | orxVIEWPORT_KU32_FLAG_ALIGN_CENTER, orxVIEWPORT_KU32_ID_FLAG_NONE);
   }
   else
   {
@@ -402,22 +392,22 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
   orxASSERT(_pstViewport != orxNULL);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstViewport) == 0)
+  if(orxStructure_GetRefCounter(_pstViewport) == 0)
   {
     /* Was linked to a camera? */
     if(_pstViewport->pstCamera != orxNULL)
     {
-      orxStructure_DecreaseCounter((orxSTRUCTURE *)(_pstViewport->pstCamera));
+      orxStructure_DecreaseCounter((_pstViewport->pstCamera));
     }
 
     /* Was linked to a surface? */
     if(_pstViewport->pstSurface != orxNULL)
     {
-      orxStructure_DecreaseCounter((orxSTRUCTURE *)(_pstViewport->pstSurface));
+      orxStructure_DecreaseCounter((_pstViewport->pstSurface));
     }
 
     /* Deletes structure */
-    orxStructure_Delete((orxSTRUCTURE *)_pstViewport);
+    orxStructure_Delete(_pstViewport);
   }
   else
   {
@@ -448,13 +438,13 @@ orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *
   orxASSERT(_pstViewport != orxNULL);
 
   /* Has already a camera? */
-  if(_pstViewport->u32IDFlags & orxVIEWPORT_KU32_ID_FLAG_CAMERA)
+  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_CAMERA) != orxFALSE)
   {
     /* Updates reference counter */
-    orxStructure_DecreaseCounter((orxSTRUCTURE *)(_pstViewport->pstCamera));
+    orxStructure_DecreaseCounter((_pstViewport->pstCamera));
 
     /* Updates flags */
-    _pstViewport->u32IDFlags &= ~orxVIEWPORT_KU32_ID_FLAG_CAMERA;
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_NONE, orxVIEWPORT_KU32_ID_FLAG_CAMERA);
   }
 
   /* Updates pointer */
@@ -464,10 +454,10 @@ orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *
   if(_pstCamera != orxNULL)
   {
     /* Updates reference counter */
-    orxStructure_IncreaseCounter((orxSTRUCTURE *)_pstCamera);
+    orxStructure_IncreaseCounter(_pstCamera);
 
     /* Updates flags */
-    _pstViewport->u32IDFlags |= orxVIEWPORT_KU32_ID_FLAG_CAMERA;
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_CAMERA, orxVIEWPORT_KU32_ID_FLAG_NONE);
   }
 
   /* Updates camera on screen position */
@@ -533,7 +523,7 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
   orxASSERT(_pstViewport != orxNULL);
 
   /* Has a camera? */
-  if(_pstViewport->u32IDFlags & orxVIEWPORT_KU32_ID_FLAG_CAMERA)
+  if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_ID_FLAG_CAMERA) != orxFALSE)
   {
     return _pstViewport->pstCamera;
   }
@@ -593,12 +583,10 @@ orxVOID orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
-
-  /* Cleans current alignment */
-  _pstViewport->u32IDFlags &= ~orxVIEWPORT_KU32_ID_MASK_ALIGN;
+  orxASSERT((_u32AlignFlags & orxVIEWPORT_KU32_ID_MASK_ALIGN) == _u32AlignFlags)
 
   /* Updates alignement */
-  _pstViewport->u32IDFlags |= (_u32AlignFlags & orxVIEWPORT_KU32_ID_MASK_ALIGN);
+  orxStructure_SetFlags(_pstViewport, _u32AlignFlags & orxVIEWPORT_KU32_ID_MASK_ALIGN, orxVIEWPORT_KU32_ID_MASK_ALIGN);
 
   return;
 }
@@ -616,13 +604,13 @@ orxVOID orxFASTCALL orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE
   orxASSERT(_pstViewport != orxNULL);
 
   /* Has already a surface? */
-  if(_pstViewport->u32IDFlags & orxVIEWPORT_KU32_ID_FLAG_SURFACE)
+  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_SURFACE) != orxFALSE)
   {
     /* Updates surface reference counter */
-    orxStructure_DecreaseCounter((orxSTRUCTURE *)(_pstViewport->pstSurface));
+    orxStructure_DecreaseCounter((_pstViewport->pstSurface));
 
     /* Updates flags */
-    _pstViewport->u32IDFlags &= ~orxVIEWPORT_KU32_ID_FLAG_SURFACE;
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_NONE, orxVIEWPORT_KU32_ID_FLAG_SURFACE);
   }
 
   /* Updates surface pointer */
@@ -632,15 +620,15 @@ orxVOID orxFASTCALL orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE
   if(_pstSurface != orxNULL)
   {
     /* Updates surface reference counter */
-    orxStructure_IncreaseCounter((orxSTRUCTURE *)_pstSurface);
+    orxStructure_IncreaseCounter(_pstSurface);
 
     /* Updates flags */
-    _pstViewport->u32IDFlags |= orxVIEWPORT_KU32_ID_FLAG_SURFACE;
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_SURFACE, orxVIEWPORT_KU32_ID_FLAG_NONE);
   }
   else
   {
     /* Deactivates viewport */
-    _pstViewport->u32IDFlags &= ~orxVIEWPORT_KU32_ID_FLAG_ACTIVE;
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_NONE, orxVIEWPORT_KU32_ID_FLAG_ACTIVE);
   }
 
   return;
@@ -661,7 +649,7 @@ orxTEXTURE *orxFASTCALL orxViewport_GetSurface(orxCONST orxVIEWPORT *_pstViewpor
   orxASSERT(_pstViewport != orxNULL);
 
   /* Has surface? */
-  if(_pstViewport->u32IDFlags & orxVIEWPORT_KU32_ID_FLAG_SURFACE)
+  if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_ID_FLAG_SURFACE) != orxFALSE)
   {
     /* Updates result */
     pstResult = _pstViewport->pstSurface;
@@ -684,13 +672,13 @@ orxVOID orxFASTCALL orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnab
   orxASSERT(_pstViewport != orxNULL);
 
   /* Updates activation flag */
-  if(_bEnable == orxFALSE)
+  if(_bEnable != orxFALSE)
   {
-    _pstViewport->u32IDFlags &= ~orxVIEWPORT_KU32_ID_FLAG_ACTIVE;
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_ACTIVE, orxVIEWPORT_KU32_ID_FLAG_NONE);
   }
   else
   {
-    _pstViewport->u32IDFlags |= orxVIEWPORT_KU32_ID_FLAG_ACTIVE;
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_NONE, orxVIEWPORT_KU32_ID_FLAG_ACTIVE);
   }
 
   return;
@@ -709,7 +697,7 @@ orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
   orxASSERT(_pstViewport != orxNULL);
 
   /* Tests */
-  return((_pstViewport->u32IDFlags & orxVIEWPORT_KU32_ID_FLAG_ACTIVE) ? orxTRUE : orxFALSE);
+  return(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_ID_FLAG_ACTIVE));
 }
 
 /***************************************************************************

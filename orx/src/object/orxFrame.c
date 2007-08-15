@@ -79,10 +79,9 @@ typedef struct __orxFRAME_DATA_2D_t
 struct __orxFRAME_t
 {
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
-  orxU32        u32IDFlags;                 /**< ID flags : 20 */
-  orxVOID      *pstData;                    /**< Frame data : 24 */
+  orxVOID      *pstData;                    /**< Frame data : 20 */
 
-  orxPAD(24)
+  orxPAD(20)
 };
 
 /** Static structure
@@ -367,7 +366,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
   orxASSERT((_pstSrcFrame != orxNULL));
 
   /* 2D data? */
-  if(_pstSrcFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
+  if(orxStructure_TestFlags((orxFRAME *)_pstSrcFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
   {
     orxVECTOR           vTempPos;
     orxCONST orxVECTOR *pvParentPos, *pvPos;
@@ -376,8 +375,8 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
     orxFRAME            *pstParentFrame;
 
     /* gets parent frame */
-    pstParentFrame = (orxFRAME *)orxStructure_GetParent((orxSTRUCTURE *)_pstSrcFrame);
-    
+    pstParentFrame = (orxFRAME *)orxStructure_GetParent((orxFRAME *)_pstSrcFrame);
+
     /* Gets parent's global data */
     pvParentPos   = _orxFrame_GetPosition(pstParentFrame, orxFRAME_SPACE_GLOBAL);
     fParentAngle  = _orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL);
@@ -434,10 +433,10 @@ orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   orxASSERT(_pstFrame != orxNULL);
 
   /* gets parent frame */
-  pstParentFrame = (orxFRAME *)orxStructure_GetParent((orxSTRUCTURE *)_pstFrame);
+  pstParentFrame = (orxFRAME *)orxStructure_GetParent(_pstFrame);
 
   /* Is cell dirty & has parent? */
-  if((_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_VALUE_DIRTY)
+  if((orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_VALUE_DIRTY) != orxFALSE)
   && (pstParentFrame != orxNULL))
   {
     /* Updates parent status */
@@ -448,7 +447,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   }
 
   /* Updates dirty status */
-  _pstFrame->u32IDFlags &= ~orxFRAME_KU32_ID_FLAG_VALUE_DIRTY;
+  orxStructure_SetFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_NONE, orxFRAME_KU32_ID_FLAG_VALUE_DIRTY);
 
   return;
 }
@@ -465,18 +464,17 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, o
   if(_pstFrame != orxNULL)
   {
     /* Updates child status */
-    orxFrame_SetFlagRecursively((orxFRAME *)orxStructure_GetChild((orxSTRUCTURE *)_pstFrame), _u32AddFlags, _u32RemoveFlags, orxTRUE);
+    orxFrame_SetFlagRecursively((orxFRAME *)orxStructure_GetChild(_pstFrame), _u32AddFlags, _u32RemoveFlags, orxTRUE);
 
     /* Recursed? */
     if(_bRecursed)
     {
       /* Updates siblings status */
-      orxFrame_SetFlagRecursively((orxFRAME *)orxStructure_GetSibling((orxSTRUCTURE *)_pstFrame), _u32AddFlags, _u32RemoveFlags, orxTRUE);
+      orxFrame_SetFlagRecursively((orxFRAME *)orxStructure_GetSibling(_pstFrame), _u32AddFlags, _u32RemoveFlags, orxTRUE);
     }
 
     /* Updates cell flags */
-    _pstFrame->u32IDFlags &= ~(_u32RemoveFlags);
-    _pstFrame->u32IDFlags |= _u32AddFlags;
+    orxStructure_SetFlags(_pstFrame, _u32AddFlags, _u32RemoveFlags);
   }
 
   return;
@@ -503,7 +501,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_DeleteAll()
   orxREGISTER orxFRAME *pstFrame;
   
   /* Gets first frame */
-  pstFrame = (orxFRAME *)orxStructure_GetChild((orxSTRUCTURE *)sstFrame.pstRoot);
+  pstFrame = (orxFRAME *)orxStructure_GetChild(sstFrame.pstRoot);
 
   /* Untill only root remains */
   while(pstFrame != orxNULL)
@@ -512,7 +510,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_DeleteAll()
     orxFrame_Delete(pstFrame);
 
     /* Gets root new child */
-    pstFrame = (orxFRAME *)orxStructure_GetChild((orxSTRUCTURE *)sstFrame.pstRoot);
+    pstFrame = (orxFRAME *)orxStructure_GetChild(sstFrame.pstRoot);
   }
 
   /* Removes root */
@@ -637,7 +635,7 @@ orxFRAME *orxFrame_Create(orxU32 _u32IDFlags)
   if(pstFrame != orxNULL)
   {
     /* Inits flags */
-    orxFrame_SetFlags(pstFrame, _u32IDFlags & orxFRAME_KU32_ID_MASK_USER_ALL, orxFRAME_KU32_ID_MASK_ALL);
+    orxStructure_SetFlags(pstFrame, _u32IDFlags & orxFRAME_KU32_ID_MASK_USER_ALL, orxFRAME_KU32_ID_MASK_ALL);
 
     /* Inits members */
     if(sstFrame.u32Flags & orxFRAME_KU32_FLAG_DATA_2D)
@@ -645,7 +643,7 @@ orxFRAME *orxFrame_Create(orxU32 _u32IDFlags)
       orxFRAME_DATA_2D *pstData;
 
       /* Updates flags */
-      pstFrame->u32IDFlags = orxFRAME_KU32_ID_FLAG_DATA_2D;
+      orxStructure_SetFlags(pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D, orxFRAME_KU32_ID_FLAG_NONE);
 
       /* Allocates data memory */
       pstData = (orxFRAME_DATA_2D *) orxMemory_Allocate(sizeof(orxFRAME_DATA_2D), orxMEMORY_TYPE_MAIN);
@@ -666,7 +664,7 @@ orxFRAME *orxFrame_Create(orxU32 _u32IDFlags)
       else
       {
         /* Deletes partially created frame */
-        orxStructure_Delete((orxSTRUCTURE *)pstFrame);
+        orxStructure_Delete(pstFrame);
 
         /* Not created */
         pstFrame = orxNULL;
@@ -699,17 +697,17 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   orxASSERT(_pstFrame != orxNULL);
 
   /* Not referenced? */
-  if(orxStructure_GetRefCounter((orxSTRUCTURE *)_pstFrame) == 0)
+  if(orxStructure_GetRefCounter(_pstFrame) == 0)
   {
     /* Cleans data */
-    if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
+    if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
     {
       /* Frees frame data memory */
       orxMemory_Free(_pstFrame->pstData);
     }
 
     /* Deletes structure */
-    orxStructure_Delete((orxSTRUCTURE *)_pstFrame);
+    orxStructure_Delete(_pstFrame);
   }
   else
   {
@@ -747,7 +745,7 @@ orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
   orxASSERT(_pstFrame != orxNULL);
 
   /* Test render dirty flag */
-  return((_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_RENDER_DIRTY) ? orxTRUE : orxFALSE);
+  return(orxStructure_TestFlags((orxFRAME *)_pstFrame, orxFRAME_KU32_ID_FLAG_RENDER_DIRTY));
 }
 
 /** Sets a frame parent
@@ -764,12 +762,12 @@ orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent
   if(_pstParent == orxNULL)
   {
     /* Root is parent */
-    orxStructure_SetParent((orxSTRUCTURE *)_pstFrame, (orxSTRUCTURE *)sstFrame.pstRoot);
+    orxStructure_SetParent(_pstFrame, sstFrame.pstRoot);
   }
   else
   {
     /* Sets parent */
-    orxStructure_SetParent((orxSTRUCTURE *)_pstFrame, (orxSTRUCTURE *)_pstParent);
+    orxStructure_SetParent(_pstFrame, _pstParent);
   }
 
   /* Tags as dirty */
@@ -856,7 +854,7 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvP
   pvResult = _pvPos;
 
   /* Is a 2D Frame? */
-  if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
+  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
   {
     orxCONST orxVECTOR *pvIntern = orxNULL;
 
@@ -911,7 +909,7 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
  
   /* Is Frame 2D? */
-  if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
+  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
   {
     /* Depending on space */
     switch(_eSpace)
@@ -957,7 +955,7 @@ orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpa
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
  
   /* Is Frame 2D? */
-  if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
+  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
   {
     /* Depending on space */
     switch(_eSpace)
@@ -986,52 +984,4 @@ orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpa
 
   /* Done! */
   return fScale;
-}
-
-/** Frame flags test accessor
- * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxFrame_TestFlags(orxCONST orxFRAME *_pstFrame, orxU32 _u32Flags)
-{
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
-
-  /* Done! */
-  return((_pstFrame->u32IDFlags & _u32Flags) != orxFRAME_KU32_FLAG_NONE);
-}
-
-/** Frame all flags test accessor
- * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _u32Flags       Flags to test
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxFrame_TestAllFlags(orxCONST orxFRAME *_pstFrame, orxU32 _u32Flags)
-{
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
-
-  /* Done! */
-  return((_pstFrame->u32IDFlags & _u32Flags) == _u32Flags);
-}
-
-/** Frame flag set accessor
- * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _u32AddFlags    Flags to add
- * @param[in]   _u32RemoveFlags Flags to remove
- */
-orxVOID orxFASTCALL orxFrame_SetFlags(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
-{
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
-
-  /* Updates flags */
-  _pstFrame->u32IDFlags &= ~_u32RemoveFlags;
-  _pstFrame->u32IDFlags |= _u32AddFlags;
-
-  return;
 }
