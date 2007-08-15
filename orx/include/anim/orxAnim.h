@@ -49,7 +49,7 @@
 
 /** Anim defines
  */
-#define orxANIM_KU32_KEY_MAX_NUMBER           256         /**< Maximum number of keys for an animation structure */
+#define orxANIM_KU32_KEY_MAX_NUMBER           65535       /**< Maximum number of keys for an animation structure */
 
 
 /** Internal Anim structure

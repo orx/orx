@@ -1,7 +1,14 @@
-/***************************************************************************
- orxFrame.c
- Frame module
+/**
+ * @file orxFrame.c
+ * 
+ * Frame (scene node) module
+ * 
+ */
 
+ /***************************************************************************
+ orxFrame.c
+ Frame (scene node) module
+ 
  begin                : 02/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -9,10 +16,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by the Free Software Foundation; either version 2.1      *
+ *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
 
@@ -22,199 +29,177 @@
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
+#include "math/orxMath.h"
 
 
-/*
- * Platform independant defines
+/** Module flags
  */
+#define orxFRAME_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
-#define orxFRAME_KU32_FLAG_NONE             0x00000000
-#define orxFRAME_KU32_FLAG_READY            0x00000001
-#define orxFRAME_KU32_FLAG_DATA_2D          0x00000010
+#define orxFRAME_KU32_FLAG_READY            0x00000001  /**< Ready flag */
+#define orxFRAME_KU32_FLAG_DATA_2D          0x00000010  /**< 2D flag */
 
-#define orxFRAME_KU32_FLAG_DEFAULT          0x00000010
+#define orxFRAME_KU32_FLAG_DEFAULT          0x00000010  /**< Default flag */
+
+#define orxFRAME_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
 
-#define orxFRAME_KU32_ID_FLAG_NONE          0x00000000
-#define orxFRAME_KU32_ID_FLAG_DATA_2D       0x00000010
-#define orxFRAME_KU32_ID_FLAG_VALUE_DIRTY   0x10000000
-#define orxFRAME_KU32_ID_FLAG_RENDER_DIRTY  0x20000000
-#define orxFRAME_KU32_ID_FLAG_DIRTY         0x30000000
-#define orxFRAME_KU32_ID_FLAG_SCROLL_X      0x01000000
-#define orxFRAME_KU32_ID_FLAG_SCROLL_Y      0x02000000
-#define orxFRAME_KU32_ID_FLAG_SCROLL_BOTH   0x03000000
-
-/*
- * Frame space
+/** orxFRAME ID flags
  */
-typedef enum __orxFRAME_SPACE_t
-{
-  orxFRAME_SPACE_GLOBAL = 0,
-  orxFRAME_SPACE_LOCAL,
-  
-  orxFRAME_SPACE_NUMBER,
-  
-  orxFRAME_SPACE_NONE = orxENUM_NONE
-  
-} orxFRAME_SPACE;
+#define orxFRAME_KU32_ID_FLAG_NONE          0x00000000  /**< No flags */
 
-/*
- * Internal 2D Frame Data structure
+#define orxFRAME_KU32_ID_FLAG_DATA_2D       0x10000000  /**< 2D ID flag */
+#define orxFRAME_KU32_ID_FLAG_VALUE_DIRTY   0x01000000  /**< Value dirty ID flag */
+#define orxFRAME_KU32_ID_FLAG_RENDER_DIRTY  0x02000000  /**< Render dirty ID flag */
+#define orxFRAME_KU32_ID_FLAG_DIRTY         0x03000000  /**< Dirty ID flag */
+
+#define orxFRAME_KU32_ID_MASK_ALL           0xFFFFFFFF  /**< Dirty ID flag */
+
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Internal 2D Frame Data structure
  */
 typedef struct __orxFRAME_DATA_2D_t
 {
-  /* Global 2D coordinates : 16 */
-  orxVECTOR vGlobalPos;
-  /* Local 2D coordinates : 32 */
-  orxVECTOR vLocalCoord;
-
-  /* Global 2D rotation angle : 36 */
-  orxFLOAT fGlobalAngle;
-  /* Global 2D isometric scale : 40 */
-  orxFLOAT fGlobalScale;
-  /* Local 2D rotation angle : 44 */
-  orxFLOAT fLocalAngle;
-  /* Local 2D isometric scale : 48 */
-  orxFLOAT fLocalScale;
-
-  /* Scroll coefficients used for differential scrolling : 64 */
-  orxVECTOR vScroll;
+  orxVECTOR vGlobalPos;                     /**< Global 2D coordinates : 16 */
+  orxVECTOR vLocalPos;                      /**< Local 2D coordinates : 32 */
+  orxFLOAT  fGlobalAngle;                   /**< Global 2D rotation angle : 36 */
+  orxFLOAT  fGlobalScale;                   /**< Global 2D isometric scale : 40 */
+  orxFLOAT  fLocalAngle;                    /**< Local 2D rotation angle : 44 */
+  orxFLOAT  fLocalScale;                    /**< Local 2D isometric scale : 48 */
 
 } orxFRAME_DATA_2D;
 
 
-/*
- * Frame structure
+/** Frame structure
  */
 struct __orxFRAME_t
 {
-  /* Public structure, first structure member : 16 */
-  orxSTRUCTURE stStructure;
+  orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
+  orxU32        u32IDFlags;                 /**< ID flags : 20 */
+  orxVOID      *pstData;                    /**< Frame data : 24 */
 
-  /* Internal id flags : 20 */
-  orxU32 u32IDFlags;
-
-  /* Data : 24 */
-  orxVOID *pstData;
-
-  /* Padding */
   orxPAD(24)
 };
 
-/*
- * Static structure
+/** Static structure
  */
 typedef struct __orxFRAME_STATIC_t
 {
-  /* Control flags */
-  orxU32 u32Flags;
+  orxU32 u32Flags;                          /**< Control flags : 4 */
 
-  /* Frames root */
-  orxFRAME *pstRoot;
+  orxFRAME *pstRoot;                        /**< Frame root */
 
 } orxFRAME_STATIC;
 
 
-/*
- * Static data
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
  */
 orxSTATIC orxFRAME_STATIC sstFrame;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
-/***************************************************************************
- _orxFrame_SetPosition
- Sets a 2D frame local coord
-
- returns: orxVOID
- ***************************************************************************/
-orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos, orxFRAME_SPACE eSpace)
+/** Sets a frame position
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[int]  _pvPos          Position to set
+ * @param[in]   _eSpace         Coordinate space system to use
+ */
+orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos, orxFRAME_SPACE _eSpace)
 {
   /* Checks */
   orxASSERT(_pstFrame != orxNULL);
   orxASSERT(_pvPos != orxNULL);
 
   /* According to space */
-  switch(eSpace)
+  switch(_eSpace)
   {
     case orxFRAME_SPACE_GLOBAL:
-
+    {
       orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos), _pvPos);
 
       break;
+    }
 
     case orxFRAME_SPACE_LOCAL:
-
-      orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalCoord), _pvPos);
+    {
+      orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalPos), _pvPos);
 
       break;
+    }
 
     default:
-
+    {
       /* Wrong space */
       /* !!! MSG !!! */
 
       break;
+    }
   }
 
   return;
 }
 
-/***************************************************************************
- _orxFrame_SetAngle
- Sets a 2D frame local angle
-
- returns: orxVOID
- ***************************************************************************/
-orxSTATIC orxINLINE orxVOID _orxFrame_SetAngle(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxFRAME_SPACE eSpace)
+/** Sets a frame rotation
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[int]  _fAngle         Rotation angle to set
+ * @param[in]   _eSpace         Coordinate space system to use
+ */
+orxSTATIC orxINLINE orxVOID _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxFRAME_SPACE _eSpace)
 {
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
 
   /* According to coord type */
-  switch(eSpace)
+  switch(_eSpace)
   {
     case orxFRAME_SPACE_GLOBAL:
-
+    {
       ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalAngle  = _fAngle;
 
       break;
+    }
 
     case orxFRAME_SPACE_LOCAL:
-
+    {
       ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalAngle   = _fAngle;
 
       break;
+    }
 
     default:
-
+    {
       /* Wrong coord type */
       /* !!! MSG !!! */
 
       break;
+    }
   }
 
   return;
 }
 
-/***************************************************************************
- _orxFrame_SetScale
- Sets a 2D frame local scale
-
- returns: orxVOID
- ***************************************************************************/
-orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale, orxFRAME_SPACE eSpace)
+/** Sets a frame scale
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[int]  _fScale         Scale to set
+ * @param[in]   _eSpace         Coordinate space system to use
+ */
+orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale, orxFRAME_SPACE _eSpace)
 {
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
 
   /* According to coord type */
-  switch(eSpace)
+  switch(_eSpace)
   {
     case orxFRAME_SPACE_GLOBAL:
 
@@ -239,53 +224,56 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fS
   return;
 }
 
-/***************************************************************************
- _orxFrame_GetPosition
- Gets a 2D frame local/global coord
-
- returns: Internal coord data pointer
- ***************************************************************************/
-orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+/** Gets a frame position
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Coordinate space system to use
+ * @return orxVECTOR / orxNULL
+ */
+orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
-  orxVECTOR *pvPos = orxNULL;
+  orxVECTOR *pvResult = orxNULL;
 
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
 
   /* According to coord type */
-  switch(eSpace)
+  switch(_eSpace)
   {
     case orxFRAME_SPACE_GLOBAL:
-
-      pvPos = &(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos);
+    {
+      /* Updates result */
+      pvResult = &(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos);
 
       break;
+    }
 
     case orxFRAME_SPACE_LOCAL:
-
-      pvPos = &(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalCoord);
+    {  
+      /* Updates result */
+      pvResult = &(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalPos);
 
       break;
+    }
 
     default:
-
+    {
       /* Wrong coord type */
       /* !!! MSG !!! */
 
       break;
+    }
   }
 
   /* Done */
-  return pvPos;
+  return pvResult;
 }
 
-/***************************************************************************
- _orxFrame_GetAngle
- Gets a 2D frame local/global angle
-
- returns: Requested angle value
- ***************************************************************************/
-orxSTATIC orxINLINE orxFLOAT _orxFrame_GetAngle(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+/** Gets a frame rotation
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Coordinate space system to use
+ * @return orxFLOAT / orxNULL
+ */
+orxSTATIC orxINLINE orxFLOAT _orxFrame_GetRotation(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
   orxFLOAT fAngle = orxFLOAT_0;
 
@@ -293,39 +281,41 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetAngle(orxCONST orxFRAME *_pstFrame, or
   orxASSERT((_pstFrame != orxNULL));
 
   /* According to coord type */
-  switch(eSpace)
+  switch(_eSpace)
   {
     case orxFRAME_SPACE_GLOBAL:
-
+    {
       fAngle = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalAngle;
 
       break;
+    }
 
     case orxFRAME_SPACE_LOCAL:
-
+    {
       fAngle = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalAngle;
 
       break;
+    }
 
     default:
-
+    {
       /* Wrong coord type */
       /* !!! MSG !!! */
 
       break;
+    }
   }
 
   /* Done */
   return fAngle;
 }
 
-/***************************************************************************
- _orxFrame_GetScale
- Gets a 2D frame local/global scale
-
- returns: Requested scale value
- ***************************************************************************/
-orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE eSpace)
+/** Gets a frame scale
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Coordinate space system to use
+ * @return orxFLOAT / orxNULL
+ */
+orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
   orxFLOAT fScale = orxFLOAT_1;
  
@@ -333,20 +323,26 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, or
   orxASSERT((_pstFrame != orxNULL));
 
   /* According to coord type */
-  switch(eSpace)
+  switch(_eSpace)
   {
     case orxFRAME_SPACE_GLOBAL:
+    {
       fScale = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScale;
       break;
+    }
 
     case orxFRAME_SPACE_LOCAL:
+    {
       fScale = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScale;
       break;
+    }
 
     default:
+    {
       /* Wrong coord type */
       /* !!! MSG !!! */
       break;
+    }
   }
 
   /* Done */
@@ -360,30 +356,38 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, or
 
  returns: orxVOID
  ***************************************************************************/
-orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME *_pstSrcFrame, orxCONST orxFRAME *_pstParentFrame)
+/** Gets a frame position
+ * @param[out]  _pstDstFrame    Destination frame, will contain up-to-date frame
+ * @param[IN]   _pstSrcFrame    Source frame, which needs update
+ */
+orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME *_pstSrcFrame)
 {
   /* Checks */
+  orxASSERT((_pstDstFrame != orxNULL));
   orxASSERT((_pstSrcFrame != orxNULL));
-  orxASSERT((_pstParentFrame != orxNULL));
 
   /* 2D data? */
   if(_pstSrcFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
   {
-    orxVECTOR vTempPos;
+    orxVECTOR           vTempPos;
     orxCONST orxVECTOR *pvParentPos, *pvPos;
-    orxFLOAT fParentAngle, fParentScale, fAngle, fScale;
-    orxFLOAT fX, fY, fLocalX, fLocalY, fCos, fSin;
+    orxFLOAT            fParentAngle, fParentScale, fAngle, fScale;
+    orxFLOAT            fX, fY, fLocalX, fLocalY, fCos, fSin;
+    orxFRAME            *pstParentFrame;
 
+    /* gets parent frame */
+    pstParentFrame = (orxFRAME *)orxStructure_GetParent((orxSTRUCTURE *)_pstSrcFrame);
+    
     /* Gets parent's global data */
-    pvParentPos   = _orxFrame_GetPosition(_pstParentFrame, orxFRAME_SPACE_GLOBAL);
-    fParentAngle  = _orxFrame_GetAngle(_pstParentFrame, orxFRAME_SPACE_GLOBAL);
-    fParentScale  = _orxFrame_GetScale(_pstParentFrame, orxFRAME_SPACE_GLOBAL);
+    pvParentPos   = _orxFrame_GetPosition(pstParentFrame, orxFRAME_SPACE_GLOBAL);
+    fParentAngle  = _orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL);
+    fParentScale  = _orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL);
 
     /* Gets frame's local coord */
     pvPos         = _orxFrame_GetPosition(_pstSrcFrame, orxFRAME_SPACE_LOCAL);
 
     /* Updates angle */
-    fAngle        = _orxFrame_GetAngle(_pstSrcFrame, orxFRAME_SPACE_LOCAL) + fParentAngle;
+    fAngle        = _orxFrame_GetRotation(_pstSrcFrame, orxFRAME_SPACE_LOCAL) + fParentAngle;
 
     /* Updates scale */
     fScale        = _orxFrame_GetScale(_pstSrcFrame, orxFRAME_SPACE_LOCAL) * fParentScale;
@@ -407,7 +411,7 @@ orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME 
     vTempPos.fZ   = pvParentPos->fZ + pvPos->fZ;
 
     /* Stores them */
-    _orxFrame_SetAngle(_pstDstFrame, fAngle, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_SetRotation(_pstDstFrame, fAngle, orxFRAME_SPACE_GLOBAL);
     _orxFrame_SetScale(_pstDstFrame, fScale, orxFRAME_SPACE_GLOBAL);
     _orxFrame_SetPosition(_pstDstFrame, &vTempPos, orxFRAME_SPACE_GLOBAL);
   }
@@ -416,16 +420,13 @@ orxSTATIC orxVOID orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME 
     /* !!! MSG !!! */
   }
 
- return;
+  return;
 }
 
-/***************************************************************************
- orxFrame_ProcessDirty
- Process a dirty frame and all its dirty ancestors.
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
+/** Processes frame dirty state
+ * @param[in]   _pstFrame       Concerned frame
+ */
+orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
 {
   orxFRAME *pstParentFrame;
 
@@ -443,22 +444,22 @@ orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
     orxFrame_ProcessDirty(pstParentFrame);
 
     /* Updates frame global data */
-    orxFrame_UpdateData(_pstFrame, _pstFrame, pstParentFrame);
+    orxFrame_UpdateData(_pstFrame, _pstFrame);
   }
 
-  /* Updates cell dirty status */
+  /* Updates dirty status */
   _pstFrame->u32IDFlags &= ~orxFRAME_KU32_ID_FLAG_VALUE_DIRTY;
 
- return;
+  return;
 }
 
-/***************************************************************************
- orxFrame_SetFlagRecursively
- Sets a frame and all its heirs as requested.
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags, orxBOOL _bRecursed)
+/** Sets a frame flag recursively
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _u32AddFlags    Flags to add
+ * @param[in]   _u32RemoveFlags Flags to remove
+ * @param[in]   _bRecursed      Recursive?
+ */
+orxSTATIC orxVOID orxFASTCALL orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags, orxBOOL _bRecursed)
 {
   /* Non null? */
   if(_pstFrame != orxNULL)
@@ -478,17 +479,13 @@ orxVOID orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, or
     _pstFrame->u32IDFlags |= _u32AddFlags;
   }
 
- return;
+  return;
 }
 
-
-/***************************************************************************
- orxFrame_SetDirty
- Sets a frame and all its heirs as dirty.
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxFrame_SetDirty(orxFRAME *_pstFrame)
+/** Tags a frame as dirty
+ * @param[in]   _pstFrame       Concerned frame
+ */
+orxSTATIC orxINLINE orxVOID orxFrame_SetDirty(orxFRAME *_pstFrame)
 {
   /* Checks */
   orxASSERT(_pstFrame != orxNULL);
@@ -496,18 +493,14 @@ orxVOID orxFrame_SetDirty(orxFRAME *_pstFrame)
   /* Adds dirty flags (render + value) to all frame's heirs */
   orxFrame_SetFlagRecursively(_pstFrame, orxFRAME_KU32_ID_FLAG_DIRTY, orxFRAME_KU32_ID_FLAG_NONE, orxFALSE);
 
- return;
+  return;
 }
 
-/***************************************************************************
- orxFrame_DeleteAll
- Deletes all the frames stored in the tree and cleans it.
-
- returns: orxVOID
- ***************************************************************************/
-orxSTATIC orxVOID orxFrame_DeleteAll()
+/** Deletes all frames
+ */
+orxSTATIC orxINLINE orxVOID orxFrame_DeleteAll()
 {
-  orxFRAME *pstFrame;
+  orxREGISTER orxFRAME *pstFrame;
   
   /* Gets first frame */
   pstFrame = (orxFRAME *)orxStructure_GetChild((orxSTRUCTURE *)sstFrame.pstRoot);
@@ -531,17 +524,11 @@ orxSTATIC orxVOID orxFrame_DeleteAll()
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxFrame_Setup
- Frame module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Animation module setup
+ */
 orxVOID orxFrame_Setup()
 {
   /* Adds module dependencies */
@@ -551,12 +538,9 @@ orxVOID orxFrame_Setup()
   return;
 }
 
-/***************************************************************************
- orxFrame_Init
- Inits frame system.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Inits the Frame module
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFrame_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -577,7 +561,7 @@ orxSTATUS orxFrame_Init()
     if(eResult == orxSTATUS_SUCCESS)
     {
       /* Inits frame tree */
-      sstFrame.pstRoot = orxFrame_Create();
+      sstFrame.pstRoot = orxFrame_Create(orxFRAME_KU32_ID_FLAG_NONE);
 
       /* Not created? */
       if(sstFrame.pstRoot == orxNULL)
@@ -610,12 +594,8 @@ orxSTATUS orxFrame_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxFrame_Exit
- Exits from frame system.
-
- returns: orxVOID
- ***************************************************************************/
+/** Exits from the Frame module
+ */
 orxVOID orxFrame_Exit()
 {
   /* Initialized? */
@@ -638,25 +618,27 @@ orxVOID orxFrame_Exit()
   return;
 }
 
-/***************************************************************************
- orxFrame_Create
- Creates a new frame.
-
- returns: Created frame.
- ***************************************************************************/
-orxFRAME *orxFrame_Create()
+/** Creates a frame
+ * @param[in]   _u32IDFLags     ID flags for created animation
+ * @return      Created orxFRAME / orxNULL
+ */
+orxFRAME *orxFrame_Create(orxU32 _u32IDFlags)
 {
   orxFRAME *pstFrame;
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT((_u32IDFlags & orxFRAME_KU32_ID_MASK_USER_ALL) == _u32IDFlags); 
 
   /* Creates frame */
   pstFrame = (orxFRAME *)orxStructure_Create(orxSTRUCTURE_ID_FRAME);
 
-  /* Non null? */
+  /* Valid? */
   if(pstFrame != orxNULL)
   {
+    /* Inits flags */
+    orxFrame_SetFlags(pstFrame, _u32IDFlags & orxFRAME_KU32_ID_MASK_USER_ALL, orxFRAME_KU32_ID_MASK_ALL);
+
     /* Inits members */
     if(sstFrame.u32Flags & orxFRAME_KU32_FLAG_DATA_2D)
     {
@@ -676,7 +658,7 @@ orxFRAME *orxFrame_Create()
 
         /* Inits values */
         pstData->fGlobalScale = orxFLOAT_1;
-        pstData->fLocalScale = orxFLOAT_1;
+        pstData->fLocalScale  = orxFLOAT_1;
 
         /* Links data to frame */
         pstFrame->pstData = pstData;
@@ -700,15 +682,14 @@ orxFRAME *orxFrame_Create()
     /* !!! MSG !!! */
   }
 
+  /* Done! */
   return pstFrame;
 }
 
-/***************************************************************************
- orxFrame_Delete
- Deletes a frame.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Deletes a frame
+ * @param[in]   _pstFrame       Frame to delete
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -742,28 +723,8 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   return eResult;
 }
 
-/***************************************************************************
- orxFrame_IsRenderStatusClean
- Test frame render status (TRUE : clean / orxFALSE : dirty)
-
- returns: orxTRUE (clean) / orxFALSE (dirty)
- ***************************************************************************/
-orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
-{
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
-
-  /* Test render dirty flag */
-  return((_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_RENDER_DIRTY) ? orxTRUE : orxFALSE);
-}
-
-/***************************************************************************
- orxFrame_CleanAllRenderStatus
- Cleans all frames render status
-
- returns: orxVOID
- ***************************************************************************/
+/** Cleans all frames render status
+ */
 orxVOID orxFrame_CleanAllRenderStatus()
 {
   /* Checks */
@@ -775,123 +736,24 @@ orxVOID orxFrame_CleanAllRenderStatus()
   return;
 }
 
-/***************************************************************************
- orxFrame_HasDifferentialScrolling
- Does frame use differential scrolling?
-
- returns: orxTRUE/FALSE
- ***************************************************************************/
-orxBOOL orxFASTCALL orxFrame_HasDifferentialScrolling(orxCONST orxFRAME *_pstFrame)
+/** Test frame render status
+ * @param[in]   _pstFrame       Frame to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
 
-  return((_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_SCROLL_BOTH) ? orxTRUE : orxFALSE);
+  /* Test render dirty flag */
+  return((_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_RENDER_DIRTY) ? orxTRUE : orxFALSE);
 }
 
-/***************************************************************************
- orxFrame_GetDifferentialScrolling
- Gets frame differential scrolling (X & Y axis)
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxFASTCALL orxFrame_GetDifferentialScrolling(orxCONST orxFRAME * _pstFrame, orxVECTOR *_pvScroll)
-{
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
-  orxASSERT(_pvScroll != orxNULL);
-
-  /* Use 2D data? */
-  if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
-  {
-    /* Uses X scroll? */
-    if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_SCROLL_X)
-    {
-      /* Stores value */
-      _pvScroll->fX = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vScroll.fX;
-    }
-    else
-    {
-      /* Stores value */
-      _pvScroll->fX = orxFLOAT_0;
-    }
-
-    /* Uses Y scroll? */
-    if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_SCROLL_Y)
-    {
-      /* Stores value */
-      _pvScroll->fY = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vScroll.fY;
-    }
-    else
-    {
-      /* Stores value */
-      _pvScroll->fY = orxFLOAT_0;
-    }
-  }
-  else
-  {
-    /* !!! MSG !!! */
-  }
-
-  return;
-}
-
-/***************************************************************************
- orxFrame_SetDifferentialScrolling
- Sets frame differential scrolling (X & Y axis)
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxFASTCALL orxFrame_SetDifferentialScrolling(orxFRAME * _pstFrame, orxCONST orxVECTOR *_pvScroll)
-{
-  orxU32 u32AddFlags = orxFRAME_KU32_ID_FLAG_NONE, u32RemoveFlags = orxFRAME_KU32_ID_FLAG_NONE;
-
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
-  orxASSERT(_pvScroll != orxNULL);
-
-  /* Use 2D data? */
-  if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
-  {
-    /* Enables X axis differential scrolling? */
-    if(_pvScroll->fX != orxFLOAT_0)
-    {
-      u32AddFlags     |= orxFRAME_KU32_ID_FLAG_SCROLL_X;
-    }
-    else
-    {
-      u32RemoveFlags  |= orxFRAME_KU32_ID_FLAG_SCROLL_X;
-    }
-
-    /* Enables Y axis differential scrolling? */
-    if(_pvScroll->fY != 0.0)
-    {
-      u32AddFlags     |= orxFRAME_KU32_ID_FLAG_SCROLL_Y;
-    }
-    else
-    {
-      u32RemoveFlags  |= orxFRAME_KU32_ID_FLAG_SCROLL_Y;
-    }
-
-    /* Updates scroll values */
-    orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vScroll), _pvScroll);
-
-    /* Updates flags on frame and its heirs */
-    orxFrame_SetFlagRecursively(_pstFrame, u32AddFlags, u32RemoveFlags, orxFALSE);
-  }
-
-  return;
-}
-
-/***************************************************************************
- orxFrame_SetParent
- Sets a frame parent & updates links.
-
- returns: orxVOID
- ***************************************************************************/
+/** Sets a frame parent
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _pstParent      Parent frame to set
+ */
 orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
 {
   /* Checks */
@@ -916,12 +778,10 @@ orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent
   return;
 }
 
-/***************************************************************************
- orxFrame_SetPosition
- Sets a 2D frame local position
-
- returns: orxVOID
- ***************************************************************************/
+/** Sets a frame position
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _pvPos          Position to set
+ */
 orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos)
 {
   /* Checks */
@@ -938,12 +798,10 @@ orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR
   return;
 }
 
-/***************************************************************************
- orxFrame_SetRotation
- Sets a 2D frame local rotation
-
- returns: orxVOID
- ***************************************************************************/
+/** Sets a frame rotation
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _fAngle         Angle to set
+ */
 orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 {
   /* Checks */
@@ -951,7 +809,7 @@ orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
   orxASSERT(_pstFrame != orxNULL);
 
   /* Updates angle value */
-  _orxFrame_SetAngle(_pstFrame, _fAngle, orxFRAME_SPACE_LOCAL);
+  _orxFrame_SetRotation(_pstFrame, _fAngle, orxFRAME_SPACE_LOCAL);
 
   /* Tags as dirty */
   orxFrame_SetDirty(_pstFrame);
@@ -959,12 +817,10 @@ orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
   return;
 }
 
-/***************************************************************************
- orxFrame_SetScale
- Sets a 2D frame local scale
-
- returns: orxVOID
- ***************************************************************************/
+/** Sets a frame scale
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _fScale         Scale to set
+ */
 orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
 {
   /* Checks */
@@ -980,36 +836,52 @@ orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
   return;
 }
 
-/***************************************************************************
- orxFrame_GetPosition
- Gets a 2D frame local/global position
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvPos, orxBOOL _bLocal)
+/** Gets a frame position
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[out]  _pvPos          Position of the given frame
+ * @param[in]   _eSpace         Coordinate space system to use
+ * @return orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvPos, orxFRAME_SPACE _eSpace)
 {
+  orxVECTOR *pvResult;
+
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
   orxASSERT(_pvPos != orxNULL);
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
 
-  /* Is Frame 2D? */
+  /* Updates result */
+  pvResult = _pvPos;
+
+  /* Is a 2D Frame? */
   if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
   {
     orxCONST orxVECTOR *pvIntern = orxNULL;
 
-    /* Local coordinates? */
-    if(_bLocal != orxFALSE)
+    /* Depending on space */
+    switch(_eSpace)
     {
-      pvIntern = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_LOCAL);
-    }
-    else
-    {
-      /* Process dirty cell */
-      orxFrame_ProcessDirty(_pstFrame);
+      case orxFRAME_SPACE_GLOBAL:
+      {
+        /* Process dirty cell */
+        orxFrame_ProcessDirty(_pstFrame);
 
-      /* Gets requested position */
-      pvIntern = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
+        /* Gets requested position */
+        pvIntern = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_GLOBAL);
+
+        break;
+      }
+
+      case orxFRAME_SPACE_LOCAL:
+      default:
+      {
+        /* Gets local position */
+        pvIntern = _orxFrame_GetPosition(_pstFrame, orxFRAME_SPACE_LOCAL);
+
+        break;
+      }
     }
 
     /* Makes a copy */
@@ -1021,103 +893,145 @@ orxVOID orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvPos,
     orxVector_SetAll(_pvPos, orxFLOAT_0);
   }
 
-  return;
+  /* Done! */
+  return pvResult;
 }
 
-/***************************************************************************
- orxFrame_GetRotation
- Gets a 2D frame local/global rotation
-
- returns: Requested rotation value
- ***************************************************************************/
-orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxBOOL _bLocal)
+/** Gets a frame rotation
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Coordinate space system to use
+ * @return Rotation of the given frame */
+orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
   orxFLOAT fAngle = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
  
   /* Is Frame 2D? */
   if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
   {
-    /* Local coordinates? */
-    if(_bLocal != orxFALSE)
+    /* Depending on space */
+    switch(_eSpace)
     {
-      fAngle = _orxFrame_GetAngle(_pstFrame, orxFRAME_SPACE_LOCAL);
-    }
-    else
-    {
-      /* Process dirty cell */
-      orxFrame_ProcessDirty(_pstFrame);
+      case orxFRAME_SPACE_GLOBAL:
+      {
+        /* Get rotation */
+        fAngle = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_LOCAL);
 
-      /* Gets requested rotation */
-      fAngle = _orxFrame_GetAngle(_pstFrame, orxFRAME_SPACE_GLOBAL);
+        break;
+      }
+
+      case orxFRAME_SPACE_LOCAL:
+      default:
+      {
+        /* Process dirty cell */
+        orxFrame_ProcessDirty(_pstFrame);
+
+        /* Gets requested rotation */
+        fAngle = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_GLOBAL);
+
+        break;
+      }
     }
   }
 
+  /* Done! */
   return fAngle;
 }
 
-/***************************************************************************
- orxFrame_GetScale
- Gets a 2D frame local/global scale
-
- returns: Requested scale value
- ***************************************************************************/
-orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxBOOL _bLocal)
+/** Gets a frame scale
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _eSpace         Coordinate space system to use
+ * @return Scale of the given frame
+ */
+orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
   orxFLOAT fScale = orxFLOAT_1;
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
+  orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
  
   /* Is Frame 2D? */
   if(_pstFrame->u32IDFlags & orxFRAME_KU32_ID_FLAG_DATA_2D)
   {
-    /* Local coordinates? */
-    if(_bLocal != orxFALSE)
+    /* Depending on space */
+    switch(_eSpace)
     {
-      fScale = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL);
-    }
-    else
-    {
-      /* Process dirty cell */
-      orxFrame_ProcessDirty(_pstFrame);
+      case orxFRAME_SPACE_GLOBAL:
+      {
+        /* Gets scale */
+        fScale = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL);
 
-      /* Gets requested scale */
-      fScale = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL);
+        break;
+      }
+
+      case orxFRAME_SPACE_LOCAL:
+      default:
+      {
+        /* Process dirty cell */
+        orxFrame_ProcessDirty(_pstFrame);
+
+        /* Gets requested scale */
+        fScale = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL);
+
+        break;
+      }
     }
   }
 
+  /* Done! */
   return fScale;
 }
 
-/***************************************************************************
- orxFrame_ComputeGlobalData
- Computes frame global data using parent's global and frame local ones.
- Result is stored in a third party frame.
-
- returns: orxVOID
- ***************************************************************************/
-orxVOID orxFASTCALL orxFrame_ComputeGlobalData(orxFRAME *_pstDstFrame, orxCONST orxFRAME *_pstSrcFrame, orxCONST orxFRAME *_pstParentFrame)
+/** Frame flags test accessor
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxFrame_TestFlags(orxCONST orxFRAME *_pstFrame, orxU32 _u32Flags)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
-  orxASSERT(_pstSrcFrame != orxNULL);
-  orxASSERT(_pstParentFrame != orxNULL);
+  orxASSERT(_pstFrame != orxNULL);
 
-  /* Not self updating? */
-  if(_pstDstFrame != _pstSrcFrame)
-  {
-    /* Computes frame global data */
-    orxFrame_UpdateData(_pstDstFrame, _pstSrcFrame, _pstParentFrame);
-  }
-  else
-  {
-    /* !!! MSG !!! */
-  }
+  /* Done! */
+  return((_pstFrame->u32IDFlags & _u32Flags) != orxFRAME_KU32_FLAG_NONE);
+}
+
+/** Frame all flags test accessor
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _u32Flags       Flags to test
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxFrame_TestAllFlags(orxCONST orxFRAME *_pstFrame, orxU32 _u32Flags)
+{
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(_pstFrame != orxNULL);
+
+  /* Done! */
+  return((_pstFrame->u32IDFlags & _u32Flags) == _u32Flags);
+}
+
+/** Frame flag set accessor
+ * @param[in]   _pstFrame       Concerned frame
+ * @param[in]   _u32AddFlags    Flags to add
+ * @param[in]   _u32RemoveFlags Flags to remove
+ */
+orxVOID orxFASTCALL orxFrame_SetFlags(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
+{
+  /* Checks */
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(_pstFrame != orxNULL);
+
+  /* Updates flags */
+  _pstFrame->u32IDFlags &= ~_u32RemoveFlags;
+  _pstFrame->u32IDFlags |= _u32AddFlags;
 
   return;
 }

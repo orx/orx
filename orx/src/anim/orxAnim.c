@@ -72,9 +72,9 @@ struct __orxANIM_t
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
   orxU32        u32IDFlags;                 /**< ID flags : 20 */
   orxANIM_KEY  *astKeyList;                 /**< Key array : 24 */
-  orxU8         u8CurrentKey;               /**< Current key : 25 */
+  orxU16        u16CurrentKey;              /**< Current key : 26 */
 
-  orxPAD(25)
+  orxPAD(26)
 };
 
 
@@ -535,11 +535,11 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
     if(_pstAnim->u32IDFlags & orxANIM_KU32_ID_FLAG_CURRENT_KEY)
     {
       /* Was the removed one? */
-      if(_pstAnim->u8CurrentKey == u32Counter)
+      if(_pstAnim->u16CurrentKey == u32Counter)
       {
         /* Removes current key */
-        _pstAnim->u8CurrentKey  = 0;
-        
+        _pstAnim->u16CurrentKey = 0;
+
         /* Updates flags */
         _pstAnim->u32IDFlags   &= ~orxANIM_KU32_ID_FLAG_CURRENT_KEY;
       }
@@ -599,7 +599,7 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
   if(u32Index != orxU32_Undefined)
   {
     /* Updates current key */
-    _pstAnim->u8CurrentKey = u32Index;
+    _pstAnim->u16CurrentKey = u32Index;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -628,7 +628,7 @@ orxSTRUCTURE *orxFASTCALL orxAnim_GetCurrentKeyData(orxCONST orxANIM *_pstAnim)
   if(_pstAnim->u32IDFlags & orxANIM_KU32_ID_FLAG_CURRENT_KEY)
   {
     /* Updates result */
-    pstResult = _pstAnim->astKeyList[_pstAnim->u8CurrentKey].pstData;
+    pstResult = _pstAnim->astKeyList[_pstAnim->u16CurrentKey].pstData;
   }
   else
   {

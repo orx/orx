@@ -236,7 +236,7 @@ orxSTATIC orxSTATUS orxCamera_CreateViewList(orxCAMERA *_pstCamera)
   for(i = 0; i < orxCAMERA_KU32_VIEW_LIST_NUMBER; i++)
   {
     /* Creates screen frame */
-    (_pstCamera->astViewList[i]).pstScreenFrame = orxFrame_Create();
+    (_pstCamera->astViewList[i]).pstScreenFrame = orxFrame_Create(orxFRAME_KU32_ID_FLAG_NONE);
 
     /* Failed? */
     if((_pstCamera->astViewList[i]).pstScreenFrame == orxNULL)
@@ -737,10 +737,10 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
               }
   
               /* Uses differential scrolling? */
-              if(orxFrame_HasDifferentialScrolling(pstFrame) != orxFALSE)
+//              if(orxFrame_HasDifferentialScrolling(pstFrame) != orxFALSE)
               {
                 /* Gets scrolling coefficients */
-                orxFrame_GetDifferentialScrolling(pstFrame, &vScroll);
+//                orxFrame_GetDifferentialScrolling(pstFrame, &vScroll);
   
                 /* X axis scrolling? */
                 if(vScroll.fX != orxFLOAT_0)
@@ -957,7 +957,7 @@ orxCAMERA *orxCamera_Create()
   if(pstCamera != orxNULL)
   {
     /* Creates frame */
-    pstFrame = orxFrame_Create();
+    pstFrame = orxFrame_Create(orxFRAME_KU32_ID_FLAG_NONE);
 
     /* Created? */  
     if(pstFrame != orxNULL)

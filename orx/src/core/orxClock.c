@@ -21,9 +21,9 @@
 #include "core/orxClock.h"
 
 #include "debug/orxDebug.h"
-#include "math/orxMath.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
+#include "math/orxMath.h"
 
 
 /*
@@ -205,26 +205,30 @@ orxSTATIC orxINLINE orxU32 orxClock_ComputeDT(orxU32 _u32DT, orxCLOCK_INFO *_pst
   /* Depending on modifier type */
   switch(*peModType)
   {
-  case orxCLOCK_MOD_TYPE_FIXED:
+    case orxCLOCK_MOD_TYPE_FIXED:
+    {
+      /* Fixed DT value */    
+      u32NewDT = orxF2U(*pfModValue);
+      break;
+    }
 
-    /* Fixed DT value */    
-    u32NewDT = orxF2U(*pfModValue);
-    break;
+    case orxCLOCK_MOD_TYPE_MULTIPLY:
+    {
+      /* Multiplied DT value */
+      u32NewDT = orxF2U(*pfModValue * orxU2F(_u32DT));
+      break;
+    }
 
-  case orxCLOCK_MOD_TYPE_MULTIPLY:
+    case orxCLOCK_MOD_TYPE_NONE:
+    {
+      break;
+    }
 
-    /* Multiplied DT value */
-    u32NewDT = orxF2U(*pfModValue * orxU2F(_u32DT));
-    break;
-
-  case orxCLOCK_MOD_TYPE_NONE:
-
-    break;
-
-  default:
-
-    /* !!! MSG !!! */
-    break;    
+    default:
+    {
+      /* !!! MSG !!! */
+      break;
+    }
   }
 
   /* Done! */  
