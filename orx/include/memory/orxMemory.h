@@ -15,6 +15,7 @@
  * @todo Optimizations
  * @todo Manage the memory instead of use the access to OS allocation
  * @todo manage memory alignment
+ * @todo Allows to specifiy memory starting address & maximum size for each memory type
  */
  
 /**
@@ -33,7 +34,12 @@
 typedef enum __orxMEMORY_TYPE_t
 {
   orxMEMORY_TYPE_MAIN = 0,              /**< Main memory type */
-  
+
+  orxMEMORY_TYPE_VIDEO,                 /**< Video memory type */
+  orxMEMORY_TYPE_SPRITE,                /**< Sprite memory type */
+  orxMEMORY_TYPE_BACKGROUND,            /**< Background memory type */
+  orxMEMORY_TYPE_PALETTE,               /**< Palette memory type */
+
   orxMEMORY_TYPE_NUMBER,                /**< Number of memory type */
   
   orxMEMORY_TYPE_NONE = orxENUM_NONE    /**< Invalid memory type */

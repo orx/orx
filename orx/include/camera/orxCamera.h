@@ -44,9 +44,9 @@
 
 /** Camera ID Flags. */
 
-#define orxCAMERA_KU32_ID_FLAG_NONE     0x00000000
+#define orxCAMERA_KU32_FLAG_NONE        0x00000000
 
-#define orxCAMERA_KU32_ID_FLAG_2D       0x00000010
+#define orxCAMERA_KU32_FLAG_2D          0x00000010
 
 
 /** Internal camera structure. */

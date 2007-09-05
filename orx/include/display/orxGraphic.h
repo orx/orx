@@ -42,11 +42,11 @@
 
 /** Graphic ID Flags
  */
-#define orxGRAPHIC_KU32_ID_FLAG_NONE          0x00000000  /**< No flags */
+#define orxGRAPHIC_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
-#define orxGRAPHIC_KU32_ID_FLAG_2D            0x00000001  /**< 2D type graphic ID flag  */
+#define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic ID flag  */
 
-#define orxGRAPHIC_KU32_ID_MASK_ALL           0xFFFFFFFF  /**< All flags */
+#define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
 
 
 /** Internal Graphic structure

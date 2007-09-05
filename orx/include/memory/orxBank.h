@@ -39,8 +39,8 @@
 typedef struct __orxBANK_t orxBANK;
 
 /* Define flags */
-#define orxBANK_KU32_FLAGS_NONE             0x00000000  /**< No flags (default behaviour) */
-#define orxBANK_KU32_FLAGS_NOT_EXPANDABLE   0x00000001  /**< The bank will not be expandable */
+#define orxBANK_KU32_FLAG_NONE              0x00000000  /**< No flags (default behaviour) */
+#define orxBANK_KU32_FLAG_NOT_EXPANDABLE    0x00000001  /**< The bank will not be expandable */
 
 /** Bank module setup
  */

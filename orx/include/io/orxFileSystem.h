@@ -31,14 +31,14 @@
 #include "plugin/orxPluginCore.h"
 
 
-#define orxFILESYSTEM_KU32_FLAGS_INFOS_NORMAL 0x00000001 /**< normal file */
-#define orxFILESYSTEM_KU32_FLAGS_INFOS_RDONLY 0x00000002 /**< read-only file */
-#define orxFILESYSTEM_KU32_FLAGS_INFOS_HIDDEN 0x00000004 /**< hidden file */
-#define orxFILESYSTEM_KU32_FLAGS_INFOS_DIR    0x00000008 /**< directory */
+#define orxFILESYSTEM_KU32_FLAG_INFO_NORMAL 0x00000001 /**< normal file */
+#define orxFILESYSTEM_KU32_FLAG_INFO_RDONLY 0x00000002 /**< read-only file */
+#define orxFILESYSTEM_KU32_FLAG_INFO_HIDDEN 0x00000004 /**< hidden file */
+#define orxFILESYSTEM_KU32_FLAG_INFO_DIR    0x00000008 /**< directory */
 
-#define orxFILESYSTEM_KU32_FLAGS_OPEN_READ    0x00000001 /**< opened for read */
-#define orxFILESYSTEM_KU32_FLAGS_OPEN_WRITE   0x00000002 /**< opened for write */
-#define orxFILESYSTEM_KU32_FLAGS_OPEN_APPEND  0x00000004 /**< descriptor positioned at the end of file */
+#define orxFILESYSTEM_KU32_FLAG_OPEN_READ   0x00000001 /**< opened for read */
+#define orxFILESYSTEM_KU32_FLAG_OPEN_WRITE  0x00000002 /**< opened for write */
+#define orxFILESYSTEM_KU32_FLAG_OPEN_APPEND 0x00000004 /**< descriptor positioned at the end of file */
 
 
 /** Store datas about the current file. */

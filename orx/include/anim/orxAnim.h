@@ -41,15 +41,15 @@
 
 /** Anim ID Flags
  */
-#define orxANIM_KU32_ID_FLAG_NONE             0x00000000  /**< No flags */
+#define orxANIM_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxANIM_KU32_ID_FLAG_2D               0x00010000  /**< 2D type animation ID flag */
+#define orxANIM_KU32_FLAG_2D                  0x00010000  /**< 2D type animation ID flag */
 
-#define orxANIM_KU32_ID_MASK_USER_ALL         0x00FF0000  /**< User all ID mask */
+#define orxANIM_KU32_MASK_USER_ALL            0x00FF0000  /**< User all ID mask */
 
 /** Anim defines
  */
-#define orxANIM_KU32_KEY_MAX_NUMBER           65535       /**< Maximum number of keys for an animation structure */
+#define orxANIM_KU32_KEY_MAX_NUMBER           65536       /**< Maximum number of keys for an animation structure */
 
 
 /** Internal Anim structure
@@ -71,11 +71,11 @@ extern orxDLLAPI orxVOID                      orxAnim_Exit();
 
 
 /** Creates an empty animation
- * @param[in]   _u32IDFLags     ID flags for created animation
+ * @param[in]   _u32Flags       ID flags for created animation
  * @param[in]   _u32Size        Number of keys for this animation
  * @return      Created orxANIM / orxNULL
  */
-extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size);
+extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size);
 
 /** Deletes an animation
  * @param[in]   _pstAnim        Anim to delete

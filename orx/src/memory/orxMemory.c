@@ -31,8 +31,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define orxMEMORY_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxMEMORY_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxMEMORY_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxMEMORY_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -79,13 +79,13 @@ orxSTATUS orxMemory_Init()
 
   /* Module not already initialized ? */
   /* Not already Initialized? */
-  if(!(sstMemory.u32Flags & orxMEMORY_KU32_FLAG_READY))
+  if(!(sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstMemory, 0, sizeof(orxMEMORY_STATIC));
 
     /* Module initialized */
-    sstMemory.u32Flags = orxMEMORY_KU32_FLAG_READY;
+    sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_READY;
 
     /* Success */
     eResult = orxSTATUS_SUCCESS;
@@ -107,10 +107,10 @@ orxSTATUS orxMemory_Init()
 orxVOID orxMemory_Exit()
 {
   /* Module initialized ? */
-  if ((sstMemory.u32Flags & orxMEMORY_KU32_FLAG_READY) == orxMEMORY_KU32_FLAG_READY)
+  if ((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY)
   {
     /* Module uninitialized */
-    sstMemory.u32Flags = orxMEMORY_KU32_FLAG_NONE;
+    sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_NONE;
   }
 
   return;
@@ -139,7 +139,7 @@ orxU32 orxFASTCALL orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32Align
 orxVOID *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
   /* Module initialized ? */
-  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_FLAG_READY) == orxMEMORY_KU32_FLAG_READY);
+  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
  
   /* Valid parameters ? */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
@@ -155,7 +155,7 @@ orxVOID *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemTyp
 orxVOID orxFASTCALL orxMemory_Free(orxVOID *_pMem)
 {
   /* Module initialized ? */
-  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_FLAG_READY) == orxMEMORY_KU32_FLAG_READY);
+  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
 
   /* Valid parameters ? */
   orxASSERT(_pMem != orxNULL);

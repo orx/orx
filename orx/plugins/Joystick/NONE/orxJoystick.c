@@ -23,8 +23,8 @@
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 
-#define orxJOYSTICK_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxJOYSTICK_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxJOYSTICK_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxJOYSTICK_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -54,13 +54,13 @@ orxSTATIC orxJOYSTICK_STATIC sstJoystick;
 orxSTATUS orxJoystick_Init()
 {
   /* Module not already initialized ? */
-  orxASSERT(!(sstJoystick.u32Flags & orxJOYSTICK_KU32_FLAG_READY));
+  orxASSERT(!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY));
 
   /* Cleans static controller */
   orxMemory_Set(&sstJoystick, 0, sizeof(orxJOYSTICK_STATIC));
   
   /* Set module has ready */
-  sstJoystick.u32Flags = orxJOYSTICK_KU32_FLAG_READY;
+  sstJoystick.u32Flags = orxJOYSTICK_KU32_STATIC_FLAG_READY;
   
   /* Module successfully initialized */
   return orxSTATUS_SUCCESS;
@@ -71,10 +71,10 @@ orxSTATUS orxJoystick_Init()
 orxVOID orxJoystick_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_FLAG_READY) == orxJOYSTICK_KU32_FLAG_READY);
+  orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
   
   /* Module not ready now */
-  sstJoystick.u32Flags = orxJOYSTICK_KU32_FLAG_NONE;
+  sstJoystick.u32Flags = orxJOYSTICK_KU32_STATIC_FLAG_NONE;
 }
 
 /***************************************************************************

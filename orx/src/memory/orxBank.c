@@ -29,8 +29,8 @@
 #include "debug/orxDebug.h"
 #include "io/orxTextIO.h"
 
-#define orxBANK_KU32_FLAG_NONE                0x00000000  /**< No flags have been set */
-#define orxBANK_KU32_FLAG_READY               0x00000001  /**< The module has been initialized */
+#define orxBANK_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
+#define orxBANK_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
 #define orxBANK_KU32_UNALLOCATION_HYSTERESIS  5           /**< The next segment will be unallocated when the current */
                                                           /**< segment will have orxBANK_KU32_UNALLOCATION_HYSTERESYS */
@@ -86,7 +86,7 @@ orxSTATIC orxINLINE orxBANK_SEGMENT *orxBank_SegmentCreate(orxCONST orxBANK *_ps
   orxU32 u32SegmentSize;        /* Size of segment allocation */
 
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
@@ -117,7 +117,7 @@ orxSTATIC orxINLINE orxBANK_SEGMENT *orxBank_SegmentCreate(orxCONST orxBANK *_ps
 orxSTATIC orxINLINE orxVOID orxBank_SegmentDelete(orxBANK_SEGMENT *_pstSegment)
 {
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstSegment != orxNULL);
@@ -146,7 +146,7 @@ orxSTATIC orxINLINE orxBANK_SEGMENT *orxBank_GetSegment(orxCONST orxBANK *_pstBa
   orxBOOL bFound;                     /* orxTRUE when segment found */
   
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
@@ -216,7 +216,7 @@ orxSTATUS orxBank_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
-  if(!(sstBank.u32Flags & orxBANK_KU32_FLAG_READY))
+  if(!(sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstBank, 0, sizeof(orxBANK_STATIC));
@@ -247,7 +247,7 @@ orxSTATUS orxBank_Init()
     }
     
     /* Set module has ready */
-    sstBank.u32Flags = orxBANK_KU32_FLAG_READY;
+    sstBank.u32Flags = orxBANK_KU32_STATIC_FLAG_READY;
     
     /* Success */
     eResult = orxSTATUS_SUCCESS;
@@ -269,10 +269,10 @@ orxSTATUS orxBank_Init()
 orxVOID orxBank_Exit()
 {
   /* Module initialized ? */
-  if ((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY)
+  if ((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY)
   {
     /* Module not ready now */
-    sstBank.u32Flags = orxBANK_KU32_FLAG_NONE;
+    sstBank.u32Flags = orxBANK_KU32_STATIC_FLAG_NONE;
   }
 
   return;
@@ -290,7 +290,7 @@ orxBANK *orxFASTCALL orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _
   orxBANK *pstBank = orxNULL; /* New bank */
 
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
@@ -334,7 +334,7 @@ orxBANK *orxFASTCALL orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _
 orxVOID orxFASTCALL orxBank_Delete(orxBANK *_pstBank)
 {
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
@@ -357,7 +357,7 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
   orxBANK_SEGMENT *pstCurrentSegment;
   
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
@@ -370,7 +370,7 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
   }
   
   /* Is there a free space in the current segment ? (If no, try to expand it if allowed) */
-  if ((pstCurrentSegment->u32NbFree == 0) && (!(_pstBank->u32Flags & orxBANK_KU32_FLAGS_NOT_EXPANDABLE)))
+  if ((pstCurrentSegment->u32NbFree == 0) && (!(_pstBank->u32Flags & orxBANK_KU32_FLAG_NOT_EXPANDABLE)))
   {
     /* No, Try to allocate a new segment */
     pstCurrentSegment->pstNext = orxBank_SegmentCreate(_pstBank);
@@ -421,9 +421,9 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
     }
     
     /* If bFound is false, It means that there are no more free segments that we can allocate.
-     * It can be volunteer (orxBANK_KU32_FLAGS_NOT_EXPANDABLE) or a problem in the code => assert
+     * It can be volunteer (orxBANK_KU32_FLAG_NOT_EXPANDABLE) or a problem in the code => assert
      */
-    orxASSERT(bFound || (!bFound && ((_pstBank->u32Flags & orxBANK_KU32_FLAGS_NOT_EXPANDABLE) == orxBANK_KU32_FLAGS_NOT_EXPANDABLE)));
+    orxASSERT(bFound || (!bFound && ((_pstBank->u32Flags & orxBANK_KU32_FLAG_NOT_EXPANDABLE) == orxBANK_KU32_FLAG_NOT_EXPANDABLE)));
     
     /* Found a free element ? */
     if (bFound)
@@ -455,7 +455,7 @@ orxVOID orxFASTCALL orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
   orxU32 u32CellIndex;          /* Difference in pointers adress */
   
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
@@ -488,7 +488,7 @@ orxVOID orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
   orxVOID *pstCell = orxNULL;
   
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
@@ -515,7 +515,7 @@ orxVOID *orxFASTCALL orxBank_GetNext(orxCONST orxBANK *_pstBank, orxCONST orxVOI
   orxBOOL bFound = orxFALSE;    /* orxTRUE when the cell will be found */
 
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
@@ -597,7 +597,7 @@ orxVOID orxFASTCALL orxBank_DebugPrint(orxCONST orxBANK *_pstBank)
   orxU32 u32Index1, u32Index2, u32Index3;
   
   /* Module initialized ? */
-  orxASSERT((sstBank.u32Flags & orxBANK_KU32_FLAG_READY) == orxBANK_KU32_FLAG_READY);
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);

@@ -31,23 +31,23 @@
  * Platform independant defines
  */
 
-#define orxCAMERA_KU32_FLAG_NONE          0x00000000
+#define orxCAMERA_KU32_STATIC_FLAG_NONE         0x00000000
 
-#define orxCAMERA_KU32_FLAG_READY         0x00000001
-#define orxCAMERA_KU32_FLAG_DATA_2D       0x00000010
-#define orxCAMERA_KU32_FLAG_DEFAULT       0x00000010
+#define orxCAMERA_KU32_STATIC_FLAG_READY        0x00000001
+#define orxCAMERA_KU32_STATIC_FLAG_DATA_2D      0x00000010
+#define orxCAMERA_KU32_STATIC_MASK_DEFAULT      0x00000010
 
-#define orxCAMERA_KU32_MASK_ALL           0xFFFFFFFF
+#define orxCAMERA_KU32_STATIC_MASK_ALL          0xFFFFFFFF
 
 
-#define orxCAMERA_KU32_ID_FLAG_NONE       0x00000000
-#define orxCAMERA_KU32_ID_FLAG_MOVED      0x00010000
-#define orxCAMERA_KU32_ID_FLAG_LINKED     0x00100000
-#define orxCAMERA_KU32_ID_FLAG_LIMITED    0x00200000
+#define orxCAMERA_KU32_FLAG_NONE                0x00000000
+#define orxCAMERA_KU32_FLAG_MOVED               0x00010000
+#define orxCAMERA_KU32_FLAG_LINKED              0x00100000
+#define orxCAMERA_KU32_FLAG_LIMITED             0x00200000
 
-#define orxCAMERA_KU32_ID_MASK_ALL        0xFFFFFFFF 
+#define orxCAMERA_KU32_MASK_ALL                 0xFFFFFFFF 
 
-#define orxCAMERA_KU32_VIEW_LIST_NUMBER   128
+#define orxCAMERA_KU32_VIEW_LIST_NUMBER         128
 
 
 /*
@@ -239,7 +239,7 @@ orxSTATIC orxSTATUS orxCamera_CreateViewList(orxCAMERA *_pstCamera)
   for(i = 0; i < orxCAMERA_KU32_VIEW_LIST_NUMBER; i++)
   {
     /* Creates screen frame */
-    (_pstCamera->astViewList[i]).pstScreenFrame = orxFrame_Create(orxFRAME_KU32_ID_FLAG_NONE);
+    (_pstCamera->astViewList[i]).pstScreenFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
 
     /* Failed? */
     if((_pstCamera->astViewList[i]).pstScreenFrame == orxNULL)
@@ -311,7 +311,7 @@ orxSTATIC orxVOID orxCamera_UpdatePosition(orxCAMERA *_pstCamera, orxBOOL _bForc
   orxASSERT(_pstCamera != orxNULL);
 
   /* Is camera linked? */
-  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_LINKED) != orxFALSE)
+  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_LINKED) != orxFALSE)
   {
     /* Gets linked object frame */
     orxFRAME *pstFrame = (orxFRAME *)orxObject_GetStructure(_pstCamera->pstLink, orxSTRUCTURE_ID_FRAME);
@@ -323,13 +323,13 @@ orxSTATIC orxVOID orxCamera_UpdatePosition(orxCAMERA *_pstCamera, orxBOOL _bForc
       if((orxFrame_IsRenderStatusClean(pstFrame) == orxFALSE) || (_bForce != orxFALSE))
       {
         /* 2D? */
-        if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+        if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE)
         {
           /* Gets linked object positions */
           orxFrame_GetPosition(pstFrame, &vPos, orxFALSE);
 
           /* Has camera limits? */
-          if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_LIMITED) != orxFALSE)
+          if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_LIMITED) != orxFALSE)
           {
             /* Gets limit coords */
             pvUL = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitUL);
@@ -345,17 +345,17 @@ orxSTATIC orxVOID orxCamera_UpdatePosition(orxCAMERA *_pstCamera, orxBOOL _bForc
           orxFrame_SetPosition(_pstCamera->pstFrame, &vPos);
 
           /* Updates camera flags */
-          orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED, orxCAMERA_KU32_ID_FLAG_NONE);
+          orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_MOVED, orxCAMERA_KU32_FLAG_NONE);
         }
       }
     }
     else
     {
       /* Has camera moved? */
-      if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED) != orxFALSE)
+      if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_MOVED) != orxFALSE)
       {
         /* Has camera limits? */
-        if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_LIMITED) != orxFALSE)
+        if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_LIMITED) != orxFALSE)
         {
           /* Gets camera position */
           orxFrame_GetPosition(_pstCamera->pstFrame, &vPos, orxTRUE);
@@ -398,10 +398,10 @@ orxSTATIC orxVOID orxCamera_ComputeClipCorners(orxCAMERA *_pstCamera)
   orxCamera_UpdatePosition(_pstCamera, orxFALSE);
 
   /* Has camera moved? */
-  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED) != orxFALSE)
+  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_MOVED) != orxFALSE)
   {
     /* 2D? */
-    if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+    if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE)
     {
       /* Gets coords pointers */
       pvUL    = &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vClipUL);
@@ -652,7 +652,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
   if(pstGraphic != orxNULL)
   {
     /* 2D? */
-    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D) != orxFALSE)
+    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
     {
       orxTEXTURE *pstTexture;
       
@@ -784,7 +784,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
               orxCamera_InsertViewListCell(_pstCamera, pstCell);
   
               /* !!! TODO : Updates graphic status !!! */
-    //          graphic_flag_set(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_RENDERED, orxGRAPHIC_KU32_ID_FLAG_NONE);
+    //          graphic_flag_set(pstGraphic, orxGRAPHIC_KU32_FLAG_RENDERED, orxGRAPHIC_KU32_FLAG_NONE);
             }
             else
             {
@@ -802,7 +802,7 @@ orxSTATIC orxSTATUS orxCamera_ComputeObject(orxCAMERA *_pstCamera, orxOBJECT *_p
               }
   
               /* !!! TODO : Updates graphic status !!! */
-    //          graphic_flag_set(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_NONE, orxGRAPHIC_KU32_ID_FLAG_RENDERED);
+    //          graphic_flag_set(pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_RENDERED);
             }
           }
         }
@@ -880,7 +880,7 @@ orxSTATUS orxCamera_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
-  if(!(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY))
+  if(!(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
     orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
@@ -892,7 +892,7 @@ orxSTATUS orxCamera_Init()
     if(eResult == orxSTATUS_SUCCESS)
     {
       /* Inits Flags */
-      sstCamera.u32Flags = orxCAMERA_KU32_FLAG_READY|orxCAMERA_KU32_FLAG_DEFAULT;
+      sstCamera.u32Flags = orxCAMERA_KU32_STATIC_FLAG_READY|orxCAMERA_KU32_STATIC_MASK_DEFAULT;
     }
     else
     {
@@ -920,7 +920,7 @@ orxSTATUS orxCamera_Init()
 orxVOID orxCamera_Exit()
 {
   /* Initialized? */
-  if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY)
+  if(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY)
   {
     /* Deletes camera list */
     orxCamera_DeleteAll();
@@ -929,7 +929,7 @@ orxVOID orxCamera_Exit()
     orxStructure_Unregister(orxSTRUCTURE_ID_CAMERA);
 
     /* Updates flags */
-    sstCamera.u32Flags &= ~orxCAMERA_KU32_FLAG_READY;
+    sstCamera.u32Flags &= ~orxCAMERA_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -951,7 +951,7 @@ orxCAMERA *orxCamera_Create()
   orxFRAME *pstFrame;
 
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
 
   /* Creates camera */
   pstCamera = (orxCAMERA *)orxStructure_Create(orxSTRUCTURE_ID_CAMERA);
@@ -960,7 +960,7 @@ orxCAMERA *orxCamera_Create()
   if(pstCamera != orxNULL)
   {
     /* Creates frame */
-    pstFrame = orxFrame_Create(orxFRAME_KU32_ID_FLAG_NONE);
+    pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
 
     /* Created? */  
     if(pstFrame != orxNULL)
@@ -972,15 +972,15 @@ orxCAMERA *orxCamera_Create()
         pstCamera->pstFrame   = pstFrame;
         pstCamera->pstLink    = orxNULL;
         orxVector_Set3(&(pstCamera->vOnScreenPosition), orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
-        orxStructure_SetFlags(pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED, orxCAMERA_KU32_ID_MASK_ALL);
+        orxStructure_SetFlags(pstCamera, orxCAMERA_KU32_FLAG_MOVED, orxCAMERA_KU32_MASK_ALL);
 
         /* 2D? */
-        if(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_DATA_2D)
+        if(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_DATA_2D)
         {
           orxCAMERA_DATA_2D *pstData;
 
           /* Updates ID flags */
-          orxStructure_SetFlags(pstCamera, orxCAMERA_KU32_ID_FLAG_2D, orxCAMERA_KU32_ID_FLAG_NONE);
+          orxStructure_SetFlags(pstCamera, orxCAMERA_KU32_FLAG_2D, orxCAMERA_KU32_FLAG_NONE);
 
           /* Allocates data memory */
           pstData = (orxCAMERA_DATA_2D *) orxMemory_Allocate(sizeof(orxCAMERA_DATA_2D), orxMEMORY_TYPE_MAIN);
@@ -1054,7 +1054,7 @@ orxSTATUS orxCamera_Delete(orxCAMERA *_pstCamera)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Not referenced? */
@@ -1102,14 +1102,14 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
   orxFRAME *pstFrame;
 
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Computes camera corners */
   orxCamera_ComputeClipCorners(_pstCamera);
 
   /* If camera moved, process all objects */
-  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED) != orxFALSE)
+  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_MOVED) != orxFALSE)
   {
     /* For all objects */
     for(pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
@@ -1153,7 +1153,7 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
   }
 
   /* Removes camera moved flag */
-  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_NONE, orxCAMERA_KU32_ID_FLAG_MOVED);
+  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_NONE, orxCAMERA_KU32_FLAG_MOVED);
 
   return;
 }
@@ -1171,7 +1171,7 @@ extern orxVOID orxCamera_UpdateViewList(orxCAMERA *_pstCamera)
 orxCAMERA_VIEW_LIST *orxCamera_GetViewListFirstCell(orxCAMERA *_pstCamera)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Stores first pointer */
@@ -1190,7 +1190,7 @@ orxCAMERA_VIEW_LIST *orxCamera_GetViewListFirstCell(orxCAMERA *_pstCamera)
 orxCAMERA_VIEW_LIST *orxCamera_GetViewListNextCell(orxCAMERA *_pstCamera)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Stores next pointer */
@@ -1219,7 +1219,7 @@ orxCAMERA_VIEW_LIST *orxCamera_GetViewListNextCell(orxCAMERA *_pstCamera)
 orxFRAME *orxCamera_GetViewListFrame(orxCAMERA_VIEW_LIST *_pstViewList)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewList != orxNULL);
 
   return _pstViewList->pstScreenFrame;
@@ -1234,7 +1234,7 @@ orxFRAME *orxCamera_GetViewListFrame(orxCAMERA_VIEW_LIST *_pstViewList)
 orxOBJECT *orxCamera_GetViewListObject(orxCAMERA_VIEW_LIST *_pstViewList)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewList != orxNULL);
 
   return(_pstViewList->pstObject);
@@ -1249,7 +1249,7 @@ orxOBJECT *orxCamera_GetViewListObject(orxCAMERA_VIEW_LIST *_pstViewList)
 orxS32 orxCamera_GetViewListSize(orxCAMERA *_pstCamera)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   return(_pstCamera->s32ViewListCounter);
@@ -1264,18 +1264,18 @@ orxS32 orxCamera_GetViewListSize(orxCAMERA *_pstCamera)
 orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVECTOR *_pvSize)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
   orxASSERT(_pvSize != orxNULL);
 
   /* Is camera 2D? */
-  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE)
   {
     /* Updates */
     orxVector_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vSize), _pvSize);
   
     /* Updates camera flags */
-    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED, orxCAMERA_KU32_ID_FLAG_NONE);
+    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_MOVED, orxCAMERA_KU32_FLAG_NONE);
   }
   else
   {
@@ -1294,7 +1294,7 @@ orxVOID orxCamera_SetSize(orxCAMERA *_pstCamera, orxVECTOR *_pvSize)
 orxVOID orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
@@ -1302,7 +1302,7 @@ orxVOID orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
   orxFrame_SetPosition(_pstCamera->pstFrame, _pvPosition);
 
   /* Updates camera flags */
-  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED, orxCAMERA_KU32_ID_FLAG_NONE);
+  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_MOVED, orxCAMERA_KU32_FLAG_NONE);
 
   return;
 }
@@ -1316,14 +1316,14 @@ orxVOID orxCamera_SetPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 orxVOID orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
    /* Sets camera rotation */
   orxFrame_SetRotation(_pstCamera->pstFrame, _fRotation);
 
   /* Updates camera flags */
-  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED, orxCAMERA_KU32_ID_FLAG_NONE);
+  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_MOVED, orxCAMERA_KU32_FLAG_NONE);
 
   return;
 }
@@ -1337,14 +1337,14 @@ orxVOID orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRotation)
 orxVOID orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
    /* Sets camera zoom */
   orxFrame_SetScale(_pstCamera->pstFrame, orxFLOAT_1 / _fZoom);
 
   /* Updates camera flags */
-  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_MOVED, orxCAMERA_KU32_ID_FLAG_NONE);
+  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_MOVED, orxCAMERA_KU32_FLAG_NONE);
 
   return;
 }
@@ -1358,7 +1358,7 @@ orxVOID orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 orxVOID orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Has already a linked object */
@@ -1375,7 +1375,7 @@ orxVOID orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
   if(_pstObject == orxNULL)
   {
     /* Updates id flags */
-    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_NONE, orxCAMERA_KU32_ID_FLAG_LINKED);
+    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_NONE, orxCAMERA_KU32_FLAG_LINKED);
   }
   else
   {
@@ -1383,7 +1383,7 @@ orxVOID orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
     orxStructure_IncreaseCounter(_pstObject);
 
     /* Updates id flags */
-    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_LINKED, orxCAMERA_KU32_ID_FLAG_NONE);
+    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_LINKED, orxCAMERA_KU32_FLAG_NONE);
 
     /* Updates camera position */
     orxCamera_UpdatePosition(_pstCamera, orxTRUE);
@@ -1401,7 +1401,7 @@ orxVOID orxCamera_SetTarget(orxCAMERA *_pstCamera, orxOBJECT *_pstObject)
 orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
@@ -1421,7 +1421,7 @@ orxVOID orxCamera_SetOnScreenPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosit
 orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVECTOR *_pvSize)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
   orxASSERT(_pvSize != orxNULL);
 
@@ -1440,7 +1440,7 @@ orxVOID orxCamera_GetSize(orxCAMERA *_pstCamera, orxVECTOR *_pvSize)
 orxVOID orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
@@ -1459,7 +1459,7 @@ orxVOID orxCamera_GetPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 orxFLOAT orxCamera_GetRotation(orxCAMERA *_pstCamera)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Gets camera position */
@@ -1475,7 +1475,7 @@ orxFLOAT orxCamera_GetRotation(orxCAMERA *_pstCamera)
 orxFLOAT orxCamera_GetZoom(orxCAMERA *_pstCamera)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Gets camera position */
@@ -1491,7 +1491,7 @@ orxFLOAT orxCamera_GetZoom(orxCAMERA *_pstCamera)
 orxOBJECT *orxCamera_GetTarget(orxCAMERA *_pstCamera)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Gets camera link object */
@@ -1507,20 +1507,20 @@ orxOBJECT *orxCamera_GetTarget(orxCAMERA *_pstCamera)
 orxVOID orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVECTOR *_pvUL, orxVECTOR *_pvBR)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
   orxASSERT(_pvUL != orxNULL);
   orxASSERT(_pvBR != orxNULL);
 
   /* 2D camera? */
-  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE)
   {
     /* Sets camera limits position */
     orxVector_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitUL), _pvUL);
     orxVector_Copy(&(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitBR), _pvBR);
 
     /* Updates camera flags */
-    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_LIMITED, orxCAMERA_KU32_ID_FLAG_NONE);
+    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_LIMITED, orxCAMERA_KU32_FLAG_NONE);
   }
   else
   {
@@ -1539,11 +1539,11 @@ orxVOID orxCamera_SetLimits(orxCAMERA *_pstCamera, orxVECTOR *_pvUL, orxVECTOR *
 orxVOID orxCamera_RemoveLimits(orxCAMERA *_pstCamera)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
 
   /* Updates camera flags */
-  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_NONE, orxCAMERA_KU32_ID_FLAG_LIMITED);
+  orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_NONE, orxCAMERA_KU32_FLAG_LIMITED);
 
   return;
 }
@@ -1557,13 +1557,13 @@ orxVOID orxCamera_RemoveLimits(orxCAMERA *_pstCamera)
 orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVECTOR *_pvUL, orxVECTOR *_pvBR)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
   orxASSERT(_pvUL != orxNULL);
   orxASSERT(_pvBR != orxNULL);
 
   /* 2D camera? */
-  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets camera limits position */
     orxVector_Copy(_pvUL, &(((orxCAMERA_DATA_2D *)(_pstCamera->pstData))->vLimitUL));
@@ -1582,7 +1582,7 @@ orxVOID orxCamera_GetLimits(orxCAMERA *_pstCamera, orxVECTOR *_pvUL, orxVECTOR *
 orxVOID orxCamera_GetOnScreenPosition(orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
-  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_FLAG_READY);
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCamera != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 

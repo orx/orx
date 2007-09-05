@@ -28,8 +28,8 @@
 #include <SDL/SDL.h>
 #include <time.h>
 
-#define orxTIME_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxTIME_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxTIME_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxTIME_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -61,7 +61,7 @@ orxSTATUS orxTimeSDL_Init()
   orxSTATUS eResult = orxSTATUS_SUCCESS; /* Init result */
 
   /* Module not already initialized ? */
-  if (!(sstTime.u32Flags & orxTIME_KU32_FLAG_READY))
+  if (!(sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstTime, 0, sizeof(orxTIME_STATIC));
@@ -76,7 +76,7 @@ orxSTATUS orxTimeSDL_Init()
         if (SDL_InitSubSystem(SDL_INIT_TIMER)==0)
         {
           /* Set module as ready */
-          sstTime.u32Flags = orxTIME_KU32_FLAG_READY;
+          sstTime.u32Flags = orxTIME_KU32_STATIC_FLAG_READY;
           
           /* Successfull init */
           eResult = orxSTATUS_SUCCESS;
@@ -94,7 +94,7 @@ orxSTATUS orxTimeSDL_Init()
 orxVOID orxTimeSDL_Exit()
 {
   /* Module initialized ? */
-  if ((sstTime.u32Flags & orxTIME_KU32_FLAG_READY) == orxTIME_KU32_FLAG_READY)
+  if ((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY)
   {
     /* Unitialize SDL Time */
     SDL_QuitSubSystem(SDL_INIT_TIMER);
@@ -107,7 +107,7 @@ orxVOID orxTimeSDL_Exit()
     }
     
     /* Module not ready now */
-    sstTime.u32Flags = orxTIME_KU32_FLAG_NONE;
+    sstTime.u32Flags = orxTIME_KU32_STATIC_FLAG_NONE;
   }
 }
 
@@ -117,7 +117,7 @@ orxVOID orxTimeSDL_Exit()
 orxU32 orxTimeSDL_GetTime()
 {
   /* Module initialized ? */
-  orxASSERT((sstTime.u32Flags & orxTIME_KU32_FLAG_READY) == orxTIME_KU32_FLAG_READY);
+  orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
 
   return((orxU32)SDL_GetTicks());
 }
@@ -128,7 +128,7 @@ orxU32 orxTimeSDL_GetTime()
 orxDATE orxTimeSDL_GetDate()
 {
   /* Module initialized ? */
-  orxASSERT((sstTime.u32Flags & orxTIME_KU32_FLAG_READY) == orxTIME_KU32_FLAG_READY);
+  orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
   
   return (orxDATE)time(NULL);
 }
@@ -139,7 +139,7 @@ orxDATE orxTimeSDL_GetDate()
 orxVOID orxTimeSDL_Delay(orxU32 _u32Time)
 {
   /* Module initialized ? */
-  orxASSERT((sstTime.u32Flags & orxTIME_KU32_FLAG_READY) == orxTIME_KU32_FLAG_READY);
+  orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
   
   SDL_Delay((Uint32)_u32Time);
 }

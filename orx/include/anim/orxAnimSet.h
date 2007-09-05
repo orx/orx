@@ -43,10 +43,10 @@
 
 /** AnimSet ID Flags
  */
-#define orxANIMSET_KU32_ID_FLAG_NONE                0x00000000  /**< No flags. */
+#define orxANIMSET_KU32_FLAG_NONE                   0x00000000  /**< No flags. */
 
-#define orxANIMSET_KU32_ID_FLAG_REFERENCE_LOCK      0x01000000  /**< If there's already a reference on it, the AnimSet is locked for changes. */
-#define orxANIMSET_KU32_ID_FLAG_LINK_STATIC         0x10000000  /**< If not static, animpointer should duplicate the link table upon linking/creation. */
+#define orxANIMSET_KU32_FLAG_REFERENCE_LOCK         0x01000000  /**< If there's already a reference on it, the AnimSet is locked for changes. */
+#define orxANIMSET_KU32_FLAG_LINK_STATIC            0x10000000  /**< If not static, animpointer should duplicate the link table upon linking/creation. */
 
 /** AnimSet Link Flags
  */

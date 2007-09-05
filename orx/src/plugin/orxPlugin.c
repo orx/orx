@@ -80,13 +80,13 @@
  * Platform independant defines
  */
 
-#define orxPLUGIN_KU32_FLAG_NONE                            0x00000000L
-#define orxPLUGIN_KU32_FLAG_READY                           0x00000001L
+#define orxPLUGIN_KU32_STATIC_FLAG_NONE                     0x00000000L
+#define orxPLUGIN_KU32_STATIC_FLAG_READY                    0x00000001L
 
 
-#define orxPLUGIN_KU32_CORE_INFO_FLAG_NONE                  0x00000000L
-#define orxPLUGIN_KU32_CORE_INFO_FLAG_LOADED                0x00000001L
-#define orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY                 0x10000000L
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_NONE             0x00000000L
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED           0x00000001L
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY            0x10000000L
 
 
 #define orxPLUGIN_KU32_FUNCTION_BANK_SIZE                   16
@@ -202,7 +202,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
   for(i = 0; i < orxPLUGIN_CORE_ID_NUMBER; i++)
   {
     /* Is plugin dirty? */
-    if(sstPlugin.astCoreInfo[i].u32Flags & orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY)
+    if(sstPlugin.astCoreInfo[i].u32Flags & orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY)
     {
       orxU32 j;
       orxBOOL bLoaded;
@@ -219,13 +219,13 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
       }
 
       /* Was not already loaded */
-      if(!(sstPlugin.astCoreInfo[i].u32Flags & orxPLUGIN_KU32_CORE_INFO_FLAG_LOADED))
+      if(!(sstPlugin.astCoreInfo[i].u32Flags & orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED))
       {
         /* Is now loaded? */
         if(bLoaded != orxFALSE)
         {
           /* Marks as loaded */
-          sstPlugin.astCoreInfo[i].u32Flags |= orxPLUGIN_KU32_CORE_INFO_FLAG_LOADED;
+          sstPlugin.astCoreInfo[i].u32Flags |= orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED;
           
           /* Tries to init associated module */
           orxModule_Init(sstPlugin.astCoreInfo[i].eModuleID);
@@ -238,7 +238,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
         if(bLoaded == orxFALSE)
         {
           /* Marks as not loaded */
-          sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_INFO_FLAG_LOADED;
+          sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED;
           
           /* Tries to exit from associated module */
           orxModule_Exit(sstPlugin.astCoreInfo[i].eModuleID);
@@ -246,7 +246,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
       }
 
       /* Removes dirty flag */
-      sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY;
+      sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY;
     }
   }
   
@@ -345,7 +345,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FU
       *(pstCoreFunction[u32FunctionIndex].pfnFunction) = _pfnFunctionInfo->pfnFunction;
 
       /* Updates plugin status */
-      sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY;
+      sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY;
     }
     else
     {
@@ -398,7 +398,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_
     *(pstCoreFunction[u32FunctionIndex].pfnFunction) = pstCoreFunction[u32FunctionIndex].pfnDefaultFunction;
 
     /* Marks plugin as dirty */
-    sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_INFO_FLAG_DIRTY;
+    sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY;
   }
   else
   {
@@ -432,13 +432,13 @@ orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
     pstPluginInfo->hPluginHandle      = orxHANDLE_Undefined;
 
     /* Creates function bank */
-    pstPluginInfo->pstFunctionBank    = orxBank_Create(orxPLUGIN_KU32_FUNCTION_BANK_SIZE, sizeof(orxPLUGIN_FUNCTION_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+    pstPluginInfo->pstFunctionBank    = orxBank_Create(orxPLUGIN_KU32_FUNCTION_BANK_SIZE, sizeof(orxPLUGIN_FUNCTION_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
     if(pstPluginInfo->pstFunctionBank != orxNULL)
     {
       /* Creates function hash table */
-      pstPluginInfo->pstFunctionTable = orxHashTable_Create(orxPLUGIN_KU32_FUNCTION_BANK_SIZE, orxHASHTABLE_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+      pstPluginInfo->pstFunctionTable = orxHashTable_Create(orxPLUGIN_KU32_FUNCTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
       
       /* Invalid? */
       if(pstPluginInfo->pstFunctionTable == orxNULL)
@@ -658,7 +658,7 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
 orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
 {
   /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
+  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(sstPlugin.astCoreInfo[_ePluginCoreID].pstCoreFunctionTable == orxNULL);
   orxASSERT(_ePluginCoreID < orxPLUGIN_CORE_ID_NUMBER);
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
@@ -668,7 +668,7 @@ orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxM
   sstPlugin.astCoreInfo[_ePluginCoreID].pstCoreFunctionTable    = _astCoreFunction;
   sstPlugin.astCoreInfo[_ePluginCoreID].u32CoreFunctionCounter  = _u32CoreFunctionNumber;
   sstPlugin.astCoreInfo[_ePluginCoreID].eModuleID               = _eModuleID;
-  sstPlugin.astCoreInfo[_ePluginCoreID].u32Flags                = orxPLUGIN_KU32_CORE_INFO_FLAG_NONE;
+  sstPlugin.astCoreInfo[_ePluginCoreID].u32Flags                = orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_NONE;
 
   return;
 }
@@ -734,19 +734,19 @@ orxSTATUS orxPlugin_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY))
+  if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
     orxMemory_Set(&sstPlugin, 0, sizeof(orxPLUGIN_STATIC));
 
     /* Creates an empty spst_plugin_list */
-    sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+    sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Is bank valid? */
     if(sstPlugin.pstPluginBank != orxNULL)
     {
       /* Updates status flags */
-      sstPlugin.u32Flags = orxPLUGIN_KU32_FLAG_READY;
+      sstPlugin.u32Flags = orxPLUGIN_KU32_STATIC_FLAG_READY;
 
       /* Registers all core plugins */
       orxPlugin_RegisterCorePlugins();
@@ -783,7 +783,7 @@ orxSTATUS orxPlugin_Init()
 orxVOID orxPlugin_Exit()
 {
   /* Initialized? */
-  if(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY)
+  if(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY)
   {
     /* Deletes plugin list */
     orxPlugin_DeleteAll();
@@ -793,7 +793,7 @@ orxVOID orxPlugin_Exit()
     sstPlugin.pstPluginBank = orxNULL;
 
     /* Updates flags */
-    sstPlugin.u32Flags &= ~orxPLUGIN_KU32_FLAG_READY;
+    sstPlugin.u32Flags &= ~orxPLUGIN_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -814,11 +814,11 @@ orxVOID orxPlugin_Exit()
 orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line)
 {
   orxDEBUG_FLAG_BACKUP();
-  orxDEBUG_FLAG_SET(orxDEBUG_KU32_FLAG_CONSOLE
-                   |orxDEBUG_KU32_FLAG_FILE
-                   |orxDEBUG_KU32_FLAG_TIMESTAMP
-                   |orxDEBUG_KU32_FLAG_TYPE,
-                    orxDEBUG_KU32_FLAG_ALL);
+  orxDEBUG_FLAG_SET(orxDEBUG_KU32_STATIC_FLAG_CONSOLE
+                   |orxDEBUG_KU32_STATIC_FLAG_FILE
+                   |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
+                   |orxDEBUG_KU32_STATIC_FLAG_TYPE,
+                    orxDEBUG_KU32_STATIC_MASK_USER_ALL);
   orxDEBUG_LOG(orxDEBUG_LEVEL_ALL, MSG_PLUGIN_KZ_DEFAULT_NOT_LOADED_ZZI, _zFunctionName, _zFileName, _u32Line);
   orxDEBUG_FLAG_RESTORE();
 
@@ -839,7 +839,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
   orxHANDLE hPluginHandle = orxHANDLE_Undefined;
 
   /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
+  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_zPluginFileName != orxNULL);
   orxASSERT(_zPluginName != orxNULL);
 
@@ -917,7 +917,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName
   orxCHAR zFileName[256];
 
   /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
+  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_zPluginFileName != orxNULL);
   orxASSERT(orxString_Length(_zPluginFileName) < 252);
   orxASSERT(_zPluginName != orxNULL);
@@ -941,7 +941,7 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
   orxPLUGIN_INFO *pstPluginInfo;
 
   /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
+  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_hPluginHandle != orxNULL);
 
   /* Gets plugin info */
@@ -978,7 +978,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
   orxPLUGIN_FUNCTION pfnFunction = orxNULL;
 
   /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
+  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_hPluginHandle != orxNULL);
   orxASSERT(_zFunctionName != orxNULL);
 
@@ -1021,7 +1021,7 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
   orxHANDLE hPluginHandle = orxHANDLE_Undefined;
 
   /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
+  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_zPluginName != orxNULL);
 
   /* Search all plugin info */
@@ -1055,7 +1055,7 @@ orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   orxSTRING zPluginName = orxSTRING_Empty;
 
   /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_FLAG_READY);
+  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_hPluginHandle != orxHANDLE_Undefined);
 
   /* Gets plugin info */

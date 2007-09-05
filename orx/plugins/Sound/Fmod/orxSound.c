@@ -30,8 +30,8 @@
 
 #include <fmod/fmod.h>
 
-#define orxSOUND_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxSOUND_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxSOUND_KU32_STATIC_FLAG_NONE  0x00000000  /**< No flags have been set */
+#define orxSOUND_KU32_STATIC_FLAG_READY 0x00000001  /**< The module has been initialized */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -62,7 +62,7 @@ orxSTATIC orxSOUND_STATIC sstSound;
 orxSTATUS orxSound_Fmod_Init()
 {
   /* Module not already initialized ? */
-  orxASSERT(!(sstSound.u32Flags & orxSOUND_KU32_FLAG_READY));
+  orxASSERT(!(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY));
 
   /* Cleans static controller */
   orxMemory_Set(&sstSound, 0, sizeof(orxSOUND_STATIC));
@@ -71,11 +71,11 @@ orxSTATUS orxSound_Fmod_Init()
   if (FSOUND_Init(44100, 32, 0))
   {
     /* Set module has ready */
-    sstSound.u32Flags = orxSOUND_KU32_FLAG_READY;
+    sstSound.u32Flags = orxSOUND_KU32_STATIC_FLAG_READY;
   }
 
   /* Module successfully initialized ? */
-  if (sstSound.u32Flags & orxSOUND_KU32_FLAG_READY)
+  if (sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }
@@ -90,13 +90,13 @@ orxSTATUS orxSound_Fmod_Init()
 orxVOID orxSound_Fmod_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
   
   /* Stop FMOD */
   FSOUND_Close();
   
   /* Module not ready now */
-  sstSound.u32Flags = orxSOUND_KU32_FLAG_NONE;
+  sstSound.u32Flags = orxSOUND_KU32_STATIC_FLAG_NONE;
 }
 
 /** Load a sample From a file
@@ -106,7 +106,7 @@ orxVOID orxSound_Fmod_Exit()
 orxSOUND_SAMPLE* orxSound_Fmod_SampleLoadFromFile(orxCONST orxSTRING _zFileName)
 {
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Load sample */
   return ((orxSOUND_SAMPLE *)FSOUND_Sample_Load(FSOUND_FREE, _zFileName, FSOUND_NORMAL, 0, 0));
@@ -120,7 +120,7 @@ orxSOUND_SAMPLE* orxSound_Fmod_SampleLoadFromFile(orxCONST orxSTRING _zFileName)
 orxSOUND_SAMPLE* orxSound_Fmod_SampleLoadFromMemory(orxCONST orxVOID *_pMem, orxU32 _u32Size)
 {
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Load sample */
   return ((orxSOUND_SAMPLE *)FSOUND_Sample_Load(FSOUND_FREE, _pMem, FSOUND_LOADMEMORY, 0, _u32Size));
@@ -132,7 +132,7 @@ orxSOUND_SAMPLE* orxSound_Fmod_SampleLoadFromMemory(orxCONST orxVOID *_pMem, orx
 orxVOID orxSound_Fmod_SampleUnload(orxSOUND_SAMPLE *_pstSample)
 {
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Unload sample */
   FSOUND_Sample_Free((FSOUND_SAMPLE *)_pstSample);
@@ -149,7 +149,7 @@ orxU32 orxSound_Fmod_SamplePlay(orxU32 _u32Channel, orxSOUND_SAMPLE *_pstSample)
   orxS32 s32ReturnedChannel;
   
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Select FMOD channel */
   switch (_u32Channel)
@@ -189,7 +189,7 @@ orxSTATUS orxSound_Fmod_ChannelStop(orxU32 _u32Channel)
    orxU32 u32Channel;
    
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Select channel */
   u32Channel = (_u32Channel == orxSOUND_CHANNEL_KU32_SELECT_ALL) ? (orxU32)FSOUND_ALL : _u32Channel;
@@ -215,7 +215,7 @@ orxSTATUS orxSound_Fmod_ChannelPause(orxU32 _u32Channel, orxBOOL _bPause)
    orxU32 u32Channel;
 
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
   
   /* Select channel */
   u32Channel = (_u32Channel == orxSOUND_CHANNEL_KU32_SELECT_ALL) ? (orxU32)FSOUND_ALL : _u32Channel;
@@ -241,7 +241,7 @@ orxBOOL orxSound_Fmod_ChannelTestFlags(orxU32 _u32Channel, orxU32 _u32FlagsToTes
   orxU32 u32FmodFlag = 0;
 
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Get required Fmod's flags on the channel and store them */
   if (FSOUND_IsPlaying(_u32Channel))
@@ -271,7 +271,7 @@ orxBOOL orxSound_Fmod_ChannelTestFlags(orxU32 _u32Channel, orxU32 _u32FlagsToTes
 orxVOID orxSound_Fmod_ChannelSetFlags(orxU32 _u32Channel, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
 {
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
   
   /* Play / Stop */
   /* Stop sound ? */
@@ -317,7 +317,7 @@ orxVOID orxSound_Fmod_ChannelSetFlags(orxU32 _u32Channel, orxU32 _u32FlagsToRemo
 orxSTATUS orxSound_Fmod_ChannelSetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
 {
   /* Module initialized ? */
-  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_FLAG_READY) == orxSOUND_KU32_FLAG_READY);
+  orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Set channel volume */
   if (FSOUND_SetVolume(_u32Channel, _u8Volume))

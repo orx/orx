@@ -35,8 +35,8 @@
  * Platform independant defines
  */
 
-#define orxSCREENSHOT_KU32_FLAG_NONE            0x00000000
-#define orxSCREENSHOT_KU32_FLAG_READY           0x00000001
+#define orxSCREENSHOT_KU32_STATIC_FLAG_NONE       0x00000000
+#define orxSCREENSHOT_KU32_STATIC_FLAG_READY      0x00000001
 
 /*
  * Static structure
@@ -101,7 +101,7 @@ orxSTATUS orxScreenshot_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY))
+  if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
     orxMemory_Set(&sstScreenshot, 0, sizeof(orxSCREENSHOT_STATIC));
@@ -128,7 +128,7 @@ orxSTATUS orxScreenshot_Init()
       }
 
       /* Inits Flags */
-      sstScreenshot.u32Flags = orxSCREENSHOT_KU32_FLAG_READY;
+      sstScreenshot.u32Flags = orxSCREENSHOT_KU32_STATIC_FLAG_READY;
       
       /* Success */
       eResult = orxSTATUS_SUCCESS;
@@ -162,10 +162,10 @@ orxSTATUS orxScreenshot_Init()
 orxVOID orxScreenshot_Exit()
 {
   /* Initialized? */
-  if(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY)
+  if(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
   {
     /* Updates flags */
-    sstScreenshot.u32Flags &= ~orxSCREENSHOT_KU32_FLAG_READY;
+    sstScreenshot.u32Flags &= ~orxSCREENSHOT_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -186,7 +186,7 @@ orxVOID orxScreenshot_Take()
   orxCHAR zName[256];
 
   /* Checks */
-  orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_FLAG_READY)
+  orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
 
   /* Computes screenshot name */
   orxTextIO_Printf(zName, "%s/%s-%04ld.%s", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX, sstScreenshot.u32Counter, orxSCREENSHOT_KZ_EXT);

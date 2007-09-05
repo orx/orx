@@ -31,8 +31,8 @@
 
 
 /*Define flags. */
-#define orxFSM_KU32_FLAGS_NONE                0x00000000  /**< No flags (default behaviour) */
-#define orxFSM_KU32_FLAGS_NOT_EXPANDABLE      0x00000001  /**< The state machine will not be expandable */
+#define orxFSM_KU32_FLAG_NONE                 0x00000000  /**< No flags (default behaviour) */
+#define orxFSM_KU32_FLAG_NOT_EXPANDABLE       0x00000001  /**< The state machine will not be expandable */
 
 
 /*Internal state structure. */

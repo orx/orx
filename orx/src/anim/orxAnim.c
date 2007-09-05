@@ -32,21 +32,21 @@
 
 /** Module flags
  */
-#define orxANIM_KU32_FLAG_NONE              0x00000000  /**< No flags */
+#define orxANIM_KU32_STATIC_FLAG_NONE       0x00000000  /**< No flags */
 
-#define orxANIM_KU32_FLAG_READY             0x00000001  /**< Ready flag */
+#define orxANIM_KU32_STATIC_FLAG_READY      0x00000001  /**< Ready flag */
 
-#define orxANIM_KU32_MASK_ALL               0xFFFFFFFF  /**< All flags */
+#define orxANIM_KU32_STATIC_MASK_ALL        0xFFFFFFFF  /**< All flags */
 
 
 /** orxANIM ID flags/masks/shifts
  */
 
-#define orxANIM_KU32_ID_MASK_SIZE           0x000000FF  /**< Size ID mask */
-#define orxANIM_KU32_ID_MASK_COUNTER        0x0000FF00  /**< Counter ID mask */
-#define orxANIM_KU32_ID_MASK_FLAGS          0xFFFF0000  /**< Flags ID mask */
+#define orxANIM_KU32_MASK_SIZE              0x000000FF  /**< Size ID mask */
+#define orxANIM_KU32_MASK_COUNTER           0x0000FF00  /**< Counter ID mask */
+#define orxANIM_KU32_MASK_FLAGS             0xFFFF0000  /**< Flags ID mask */
 
-#define orxANIM_KU32_ID_FLAG_CURRENT_KEY    0x10000000  /**< Has current key? */
+#define orxANIM_KU32_FLAG_CURRENT_KEY       0x10000000  /**< Has current key? */
 
 #define orxANIM_KS32_ID_SHIFT_SIZE          0           /**< Size ID shift */
 #define orxANIM_KS32_ID_SHIFT_COUNTER       8           /**< Counter ID shift */
@@ -166,7 +166,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_SetStorageSize(orxANIM *_pstAnim, orxU32 _u3
   orxASSERT(_u32Size <= orxANIM_KU32_KEY_MAX_NUMBER);
 
   /* Updates storage size */
-  orxStructure_SetFlags(_pstAnim, _u32Size << orxANIM_KS32_ID_SHIFT_SIZE, orxANIM_KU32_ID_MASK_SIZE);
+  orxStructure_SetFlags(_pstAnim, _u32Size << orxANIM_KS32_ID_SHIFT_SIZE, orxANIM_KU32_MASK_SIZE);
 
   return;
 }  
@@ -182,7 +182,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_SetKeyCounter(orxANIM *_pstAnim, orxU32 _u32
   orxASSERT(_u32KeyCounter <= orxAnim_GetKeyStorageSize(_pstAnim));
 
   /* Updates counter */
-  orxStructure_SetFlags(_pstAnim, _u32KeyCounter << orxANIM_KS32_ID_SHIFT_COUNTER, orxANIM_KU32_ID_MASK_COUNTER);
+  orxStructure_SetFlags(_pstAnim, _u32KeyCounter << orxANIM_KS32_ID_SHIFT_COUNTER, orxANIM_KU32_MASK_COUNTER);
 
   return;
 }
@@ -272,7 +272,7 @@ orxSTATUS orxAnim_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY))
+  if(!(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstAnim, 0, sizeof(orxANIM_STATIC));
@@ -292,7 +292,7 @@ orxSTATUS orxAnim_Init()
   if(eResult == orxSTATUS_SUCCESS)
   {
     /* Inits Flags */
-    sstAnim.u32Flags = orxANIM_KU32_FLAG_READY;
+    sstAnim.u32Flags = orxANIM_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -308,7 +308,7 @@ orxSTATUS orxAnim_Init()
 orxVOID orxAnim_Exit()
 {
   /* Initialized? */
-  if(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY)
+  if(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY)
   {
     /* Deletes anim list */
     orxAnim_DeleteAll();
@@ -317,7 +317,7 @@ orxVOID orxAnim_Exit()
     orxStructure_Unregister(orxSTRUCTURE_ID_ANIM);
 
     /* Updates flags */
-    sstAnim.u32Flags &= ~orxANIM_KU32_FLAG_READY;
+    sstAnim.u32Flags &= ~orxANIM_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -328,17 +328,17 @@ orxVOID orxAnim_Exit()
 }
 
 /** Creates an empty animation
- * @param[in]   _u32IDFLags     ID flags for created animation
+ * @param[in]   _u32Flags     ID flags for created animation
  * @param[in]   _u32Size        Number of keys for this animation
  * @return      Created orxANIM / orxNULL
  */
-orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size)
+orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
 {
   orxANIM *pstAnim;
 
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
-  orxASSERT((_u32IDFlags & orxANIM_KU32_ID_MASK_USER_ALL) == _u32IDFlags); 
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32Flags & orxANIM_KU32_MASK_USER_ALL) == _u32Flags); 
   orxASSERT(_u32Size <= orxANIM_KU32_KEY_MAX_NUMBER);
 
   /* Creates anim */
@@ -348,10 +348,10 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32IDFlags, orxU32 _u32Size)
   if(pstAnim != orxNULL)
   {
     /* Inits flags */
-    orxStructure_SetFlags(pstAnim, _u32IDFlags & orxANIM_KU32_ID_MASK_USER_ALL, orxANIM_KU32_ID_MASK_FLAGS);
+    orxStructure_SetFlags(pstAnim, _u32Flags & orxANIM_KU32_MASK_USER_ALL, orxANIM_KU32_MASK_FLAGS);
 
     /* 2D Animation? */
-    if(_u32IDFlags & orxANIM_KU32_ID_FLAG_2D)
+    if(_u32Flags & orxANIM_KU32_FLAG_2D)
     {
       /* Allocates key array */
       pstAnim->astKeyList = (orxANIM_KEY *)orxMemory_Allocate(_u32Size * sizeof(orxANIM_KEY), orxMEMORY_TYPE_MAIN);
@@ -403,7 +403,7 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
 
   /* Not referenced? */
@@ -412,7 +412,7 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
     /* Cleans members */
 
     /* 2D Animation? */
-    if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
+    if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE)
     {
       /* Removes all keys */
       orxAnim_RemoveAllKeys(_pstAnim);
@@ -450,10 +450,10 @@ orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, 
   orxSTATUS eResult;
 
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
   orxASSERT(_pstData != orxNULL);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
   orxASSERT((orxAnim_GetKeyCounter(_pstAnim) == 0) || (_u32TimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCounter(_pstAnim) - 1].u32TimeStamp)); 
 
   /* Gets storage size & counter */
@@ -503,9 +503,9 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
   orxSTATUS eResult;
 
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
   /* Gets counter */
   u32Counter = orxAnim_GetKeyCounter(_pstAnim);
@@ -531,7 +531,7 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
     orxMemory_Set(pstKey, 0, sizeof(orxANIM_KEY));
     
     /* Had a current key? */
-    if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_CURRENT_KEY) != orxFALSE)
+    if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_CURRENT_KEY) != orxFALSE)
     {
       /* Was the removed one? */
       if(_pstAnim->u16CurrentKey == u32Counter)
@@ -540,7 +540,7 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
         _pstAnim->u16CurrentKey = 0;
 
         /* Updates flags */
-        orxStructure_SetFlags(_pstAnim, orxANIM_KU32_ID_FLAG_NONE, orxANIM_KU32_ID_FLAG_CURRENT_KEY);
+        orxStructure_SetFlags(_pstAnim, orxANIM_KU32_FLAG_NONE, orxANIM_KU32_FLAG_CURRENT_KEY);
       }
     }
 
@@ -565,9 +565,9 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
 orxVOID orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
 {
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
   /* Until there are no key left */
   while(orxAnim_RemoveLastKey(_pstAnim) != orxSTATUS_FAILURE);
@@ -587,9 +587,9 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
   orxSTATUS eResult;
 
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
   /* Finds corresponding key index */
   u32Index = orxAnim_FindKeyIndex(_pstAnim, _u32TimeStamp);
@@ -624,7 +624,7 @@ orxSTRUCTURE *orxFASTCALL orxAnim_GetCurrentKeyData(orxCONST orxANIM *_pstAnim)
   orxSTRUCTURE *pstResult;
 
   /* Has current key? */
-  if(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_ID_FLAG_CURRENT_KEY) != orxFALSE)
+  if(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_FLAG_CURRENT_KEY) != orxFALSE)
   {
     /* Updates result */
     pstResult = _pstAnim->astKeyList[_pstAnim->u16CurrentKey].pstData;
@@ -652,9 +652,9 @@ orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(orxCONST orxANIM *_pstAnim, orxU32 
   orxSTRUCTURE *pstResult;
 
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
   /* Gets counter */
   u32Counter = orxAnim_GetKeyCounter(_pstAnim);
@@ -684,12 +684,12 @@ orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(orxCONST orxANIM *_pstAnim, orxU32 
 orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(orxCONST orxANIM *_pstAnim)
 {
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
   /* Gets storage size */
-  return(orxStructure_GetFlags((orxANIM *)_pstAnim, orxANIM_KU32_ID_MASK_SIZE) >> orxANIM_KS32_ID_SHIFT_SIZE);
+  return(orxStructure_GetFlags((orxANIM *)_pstAnim, orxANIM_KU32_MASK_SIZE) >> orxANIM_KS32_ID_SHIFT_SIZE);
 }  
 
 /** Animation key counter accessor
@@ -699,12 +699,12 @@ orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(orxCONST orxANIM *_pstAnim)
 orxU32 orxFASTCALL orxAnim_GetKeyCounter(orxCONST orxANIM *_pstAnim)
 {
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
-  orxASSERT(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE);
+  orxASSERT(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
   /* Gets counter */
-  return(orxStructure_GetFlags((orxANIM *)_pstAnim, orxANIM_KU32_ID_MASK_COUNTER) >> orxANIM_KS32_ID_SHIFT_COUNTER);
+  return(orxStructure_GetFlags((orxANIM *)_pstAnim, orxANIM_KU32_MASK_COUNTER) >> orxANIM_KS32_ID_SHIFT_COUNTER);
 }
 
 /** Animation time length accessor
@@ -716,11 +716,11 @@ orxU32 orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
   orxU32 u32Counter, u32Length = 0;
 
   /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_FLAG_READY);
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnim != orxNULL);
 
   /* 2D? */
-  if(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets key counter */
     u32Counter = orxAnim_GetKeyCounter(_pstAnim);

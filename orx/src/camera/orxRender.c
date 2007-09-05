@@ -32,10 +32,10 @@
  * Platform independant defines
  */
 
-#define orxRENDER_KU32_FLAG_NONE                0x00000000
+#define orxRENDER_KU32_STATIC_FLAG_NONE                 0x00000000
 
-#define orxRENDER_KU32_FLAG_READY               0x00000001
-#define orxRENDER_KU32_FLAG_DATA_2D             0x00000010
+#define orxRENDER_KU32_STATIC_FLAG_READY                0x00000001
+#define orxRENDER_KU32_STATIC_FLAG_DATA_2D              0x00000010
 
 
 /*
@@ -101,7 +101,7 @@ orxSTATIC orxVOID orxFASTCALL orxRender_RenderObject(orxBITMAP *_pstSurface, orx
   pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
 
   /* 2D? */
-  if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets graphic's texture */
     pstTexture  = (orxTEXTURE *)orxGraphic_GetData(pstGraphic);
@@ -253,13 +253,13 @@ orxSTATUS orxRender_Init()
 	orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Already Initialized? */
-  if(!(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY))
+  if(!(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstRender, 0, sizeof(orxRENDER_STATIC));
 
     /* Inits Flags */
-    sstRender.u32Flags = orxRENDER_KU32_FLAG_READY | orxRENDER_KU32_FLAG_DATA_2D;
+    sstRender.u32Flags = orxRENDER_KU32_STATIC_FLAG_READY | orxRENDER_KU32_STATIC_FLAG_DATA_2D;
 
     eResult = orxSTATUS_SUCCESS;
   }
@@ -284,10 +284,10 @@ orxSTATUS orxRender_Init()
 orxVOID orxRender_Exit()
 {
   /* Initialized? */
-  if((sstRender.u32Flags & orxRENDER_KU32_FLAG_READY) == orxRENDER_KU32_FLAG_NONE)
+  if((sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY) == orxRENDER_KU32_STATIC_FLAG_NONE)
   {
     /* Updates flags */
-    sstRender.u32Flags &= ~orxRENDER_KU32_FLAG_READY;
+    sstRender.u32Flags &= ~orxRENDER_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -306,11 +306,11 @@ orxVOID orxRender_Exit()
 orxVOID orxFASTCALL orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstViewport)
 {
   /* Checks */
-  orxASSERT(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY);
+  orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
   /* 2D rendering? */
-  if(sstRender.u32Flags & orxRENDER_KU32_FLAG_DATA_2D)
+  if(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_DATA_2D)
   {
     /* Is viewport active? */
     if(orxViewport_IsEnabled(_pstViewport) != orxFALSE)
@@ -404,7 +404,7 @@ orxVOID orxFASTCALL orxRender_RenderAllViewports(orxCONST orxCLOCK_INFO *_pstClo
   orxU32 u32ViewportNumber;
 
   /* Checks */
-  orxASSERT(sstRender.u32Flags & orxRENDER_KU32_FLAG_READY);
+  orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
 
   /* Gets viewports number */
   u32ViewportNumber = orxStructure_GetNumber(orxSTRUCTURE_ID_VIEWPORT);

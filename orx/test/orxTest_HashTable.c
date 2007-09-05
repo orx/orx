@@ -119,7 +119,7 @@ orxVOID orxTest_HashTable_Create()
     orxTextIO_ReadS32InRange(&s32NbElem, 10, 1, 0x7FFFFFFF, "Number of key to store : ", orxTRUE);
 
    /* Now, allocate s32NbElem elements in a new hash table at the index position s32ID */
-    sstTest_HashTable.apstHashTable[s32ID] = orxHashTable_Create(s32NbElem, orxHASHTABLE_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+    sstTest_HashTable.apstHashTable[s32ID] = orxHashTable_Create(s32NbElem, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
     if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
     {
       orxTextIO_PrintLn("Can't create the hash table. Not enough memory ?");

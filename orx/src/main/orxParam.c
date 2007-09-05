@@ -32,17 +32,17 @@
 #include "debug/orxDebug.h"
 #include "core/orxEvent.h"
 
-#define orxPARAM_KU32_MODULE_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxPARAM_KU32_MODULE_FLAG_READY  0x00000001  /**< The module has been initialized */
+#define orxPARAM_KU32_MODULE_FLAG_NONE    0x00000000  /**< No flags have been set */
+#define orxPARAM_KU32_MODULE_FLAG_READY   0x00000001  /**< The module has been initialized */
 
-#define orxPARAM_KU32_MODULE_BANK_SIZE 32      /**< Average max number of parameter that can be registered */
-#define orxPARAM_KZ_MODULE_SHORT_PREFIX   "-"  /**< Prefix for short parameters */
-#define orxPARAM_KZ_MODULE_LONG_PREFIX    "--" /**< Prefix for long parameters */
+#define orxPARAM_KU32_MODULE_BANK_SIZE    32          /**< Average max number of parameter that can be registered */
+#define orxPARAM_KZ_MODULE_SHORT_PREFIX   "-"         /**< Prefix for short parameters */
+#define orxPARAM_KZ_MODULE_LONG_PREFIX    "--"        /**< Prefix for long parameters */
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
-typedef struct __orxPARAM_INFOS_t
+typedef struct __orxPARAM_INFO_t
 {
   orxPARAM stParam; /* Param values */
   orxU32 u32Count;  /* Number of time that this param has been met in the command line */
@@ -193,7 +193,7 @@ orxSTATUS orxParam_Init()
     /* Create an empty bank to store parameters */
     sstParam.pstBank = orxBank_Create(orxPARAM_KU32_MODULE_BANK_SIZE,
                                       sizeof(orxPARAM_INFOS),
-                                      orxBANK_KU32_FLAGS_NONE,
+                                      orxBANK_KU32_FLAG_NONE,
                                       orxMEMORY_TYPE_MAIN);
 
     /* Bank successfully created ? */
@@ -201,7 +201,7 @@ orxSTATUS orxParam_Init()
     {
       /* Now create the hash table */
       sstParam.pstHashTable = orxHashTable_Create(orxPARAM_KU32_MODULE_BANK_SIZE * 2,
-                                                  orxHASHTABLE_KU32_FLAGS_NONE,
+                                                  orxHASHTABLE_KU32_FLAG_NONE,
                                                   orxMEMORY_TYPE_MAIN);
                                                   
       /* HashTable Created ? */
@@ -213,7 +213,7 @@ orxSTATUS orxParam_Init()
         sstParam.u32Flags   = orxPARAM_KU32_MODULE_FLAG_READY;
 
         /* Everything seems ok. Register the module help function */
-        stParam.u32Flags    = orxPARAM_KU32_FLAGS_STOP_ON_ERROR;
+        stParam.u32Flags    = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
         stParam.pfnParser   = orxParamHelp;
         stParam.zShortName  = "h";
         stParam.zLongName   = "help";
@@ -388,7 +388,7 @@ orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _az
       if ((pstParamInfos != orxNULL) &&
           ((pstParamInfos->u32Count == 0) ||
           ((pstParamInfos->u32Count > 0) &&
-          ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAGS_MULTIPLE_ALLOWED) == orxPARAM_KU32_FLAGS_MULTIPLE_ALLOWED))))
+          ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED) == orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED))))
       {
         /* Number of extra parameters */
         orxU32 u32NbExtra = 0;
@@ -411,7 +411,7 @@ orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _az
            * (It can't be orxNULL since only param with a registered callback can be stored)
            */
           if ((pstParamInfos->stParam.pfnParser(u32NbExtra + 1, (orxSTRING *)(&(_azParams[u32Index]))) == orxSTATUS_FAILURE) &&
-              ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAGS_STOP_ON_ERROR) == orxPARAM_KU32_FLAGS_STOP_ON_ERROR))
+              ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_STOP_ON_ERROR) == orxPARAM_KU32_FLAG_STOP_ON_ERROR))
           {
             eResult = orxSTATUS_FAILURE;
           }
@@ -426,7 +426,7 @@ orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _az
           pstParamInfos->u32Count++;
           
           /* No multiple instance are allowed. Stop the process ? */
-          if ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAGS_STOP_ON_ERROR) == orxPARAM_KU32_FLAGS_STOP_ON_ERROR)
+          if ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_STOP_ON_ERROR) == orxPARAM_KU32_FLAG_STOP_ON_ERROR)
           {
             eResult = orxSTATUS_FAILURE;
           }

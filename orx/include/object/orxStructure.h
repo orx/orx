@@ -111,7 +111,7 @@ typedef struct __orxSTRUCTURE_t
   orxU32          u32RefCounter;
 
   /* ID flags : 12 */
-  orxU32          u32IDFlags;
+  orxU32          u32Flags;
   
   /* Handle of internal storage node. : 16 */
   orxHANDLE       hStorageNode;
@@ -231,7 +231,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestFlags(o
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Done! */
-  return(orxFLAG_TEST(((orxSTRUCTURE *)_phStructure)->u32IDFlags, _u32Flags));
+  return(orxFLAG_TEST(((orxSTRUCTURE *)_phStructure)->u32Flags, _u32Flags));
 }
 
 /** Structure all flags test accessor
@@ -245,7 +245,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestAllFlag
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Done! */
-  return(orxFLAG_TEST_ALL(((orxSTRUCTURE *)_phStructure)->u32IDFlags, _u32Flags));
+  return(orxFLAG_TEST_ALL(((orxSTRUCTURE *)_phStructure)->u32Flags, _u32Flags));
 }
 
 /** Structure all flags get accessor
@@ -259,7 +259,7 @@ orxSTATIC orxINLINE orxU32                              orxStructure_GetFlags(or
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Done! */
-  return(orxFLAG_GET(((orxSTRUCTURE *)_phStructure)->u32IDFlags, _u32Mask));
+  return(orxFLAG_GET(((orxSTRUCTURE *)_phStructure)->u32Flags, _u32Mask));
 }
 
 /** Structure flag set accessor
@@ -272,7 +272,7 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_SetFlags(or
   /* Checks */
   orxSTRUCTURE_ASSERT(_phStructure);
 
-  orxFLAG_SET(((orxSTRUCTURE *)_phStructure)->u32IDFlags, _u32AddFlags, _u32RemoveFlags);
+  orxFLAG_SET(((orxSTRUCTURE *)_phStructure)->u32Flags, _u32AddFlags, _u32RemoveFlags);
 
   return;
 }

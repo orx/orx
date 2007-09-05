@@ -34,22 +34,22 @@
 
 /** Module flags
  */
-#define orxANIMPOINTER_KU32_FLAG_NONE                 0x00000000  /**< No flags */
+#define orxANIMPOINTER_KU32_STATIC_FLAG_NONE          0x00000000  /**< No flags */
 
-#define orxANIMPOINTER_KU32_FLAG_READY                0x00000001  /**< Ready flag */
+#define orxANIMPOINTER_KU32_STATIC_FLAG_READY         0x00000001  /**< Ready flag */
 
 
 /** orxANIMPOINTER ID flags
  */
-#define orxANIMPOINTER_KU32_ID_FLAG_NONE              0x00000000  /**< No ID flags */
+#define orxANIMPOINTER_KU32_FLAG_NONE                 0x00000000  /**< No ID flags */
 
-#define orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM  0x01000000  /**< Has current animation flag */
-#define orxANIMPOINTER_KU32_ID_FLAG_HAS_NEXT_ANIM     0x02000000  /**< Has next animation flag */
-#define orxANIMPOINTER_KU32_ID_FLAG_ANIMSET           0x10000000  /**< Has animset flag */
-#define orxANIMPOINTER_KU32_ID_FLAG_LINK_TABLE        0x20000000  /**< Has link table flag */
-#define orxANIMPOINTER_KU32_ID_FLAG_PAUSED            0x40000000  /**< Pause flag */
+#define orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM     0x01000000  /**< Has current animation flag */
+#define orxANIMPOINTER_KU32_FLAG_HAS_NEXT_ANIM        0x02000000  /**< Has next animation flag */
+#define orxANIMPOINTER_KU32_FLAG_ANIMSET              0x10000000  /**< Has animset flag */
+#define orxANIMPOINTER_KU32_FLAG_LINK_TABLE           0x20000000  /**< Has link table flag */
+#define orxANIMPOINTER_KU32_FLAG_PAUSED               0x40000000  /**< Pause flag */
 
-#define orxANIMPOINTER_KU32_ID_MASK_FLAGS             0xFFFF0000  /**< Flags ID mask */
+#define orxANIMPOINTER_KU32_MASK_FLAGS                0xFFFF0000  /**< Flags ID mask */
 
 
 /** Module constants
@@ -136,13 +136,13 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
 
   /* Checks */
   orxASSERT(_pstAnimPointer != orxNULL);
-  orxASSERT(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET) != orxFALSE);
+  orxASSERT(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE);
 
   /* Not Paused? */
-  if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_PAUSED) == orxFALSE)
+  if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_PAUSED) == orxFALSE)
   {
     /* Has current animation */
-    if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
+    if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
       /* Computes TimeDT */
       u32DT = orxF2U(orxU2F(_u32Time - _pstAnimPointer->u32Time) * _pstAnimPointer->fFrequency);
@@ -164,7 +164,7 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         if(hNewAnim == orxHANDLE_Undefined)
         {
           /* Updates flags */
-          orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_NONE, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM);
+          orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM);
         }
       }
     }
@@ -227,7 +227,7 @@ orxSTATUS orxAnimPointer_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
-  if(!(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY))
+  if(!(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstAnimPointer, 0, sizeof(orxANIMPOINTER_STATIC));
@@ -247,7 +247,7 @@ orxSTATUS orxAnimPointer_Init()
   if(eResult == orxSTATUS_SUCCESS)
   {
     /* Inits Flags */
-    sstAnimPointer.u32Flags = orxANIMPOINTER_KU32_FLAG_READY;
+    sstAnimPointer.u32Flags = orxANIMPOINTER_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -263,7 +263,7 @@ orxSTATUS orxAnimPointer_Init()
 orxVOID orxAnimPointer_Exit()
 {
   /* Initialized? */
-  if(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY)
+  if(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY)
   {
     /* Deletes animpointer list */
     orxAnimPointer_DeleteAll();
@@ -272,7 +272,7 @@ orxVOID orxAnimPointer_Exit()
     orxStructure_Unregister(orxSTRUCTURE_ID_ANIMPOINTER);
 
     /* Updates flags */
-    sstAnimPointer.u32Flags &= ~orxANIMPOINTER_KU32_FLAG_READY;
+    sstAnimPointer.u32Flags &= ~orxANIMPOINTER_KU32_STATIC_FLAG_READY;
 
   }
   
@@ -289,7 +289,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet, orxCL
   orxANIMPOINTER *pstAnimPointer = orxNULL;
 
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimSet != orxNULL);
   orxASSERT(_pstClock != orxNULL);
 
@@ -309,7 +309,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet, orxCL
     orxStructure_IncreaseCounter(_pstClock);
 
     /* Inits flags */
-    orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET | orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_ID_MASK_FLAGS);
+    orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET | orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_MASK_FLAGS);
 
     /* Inits value */
     pstAnimPointer->pstClock            = _pstClock;
@@ -320,13 +320,13 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet, orxCL
     pstAnimPointer->hDstAnim            = orxHANDLE_Undefined;
 
     /* Is animset link table non-static? */
-    if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_ID_FLAG_LINK_STATIC) == orxFALSE)
+    if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC) == orxFALSE)
     {
       /* Stores link table */
       pstAnimPointer->pstLinkTable = orxAnimSet_CloneLinkTable(_pstAnimSet);
 
       /* Updates flags */
-      orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_LINK_TABLE, orxANIMPOINTER_KU32_ID_FLAG_NONE);
+      orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_LINK_TABLE, orxANIMPOINTER_KU32_FLAG_NONE);
     }
   }
   else
@@ -350,14 +350,14 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimPointer != orxNULL);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstAnimPointer) == 0)
   {
     /* Has an animset? */
-    if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET) != orxFALSE)
+    if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
     {
       /* Removes the reference from the animset */
       orxAnimSet_RemoveReference(_pstAnimPointer->pstAnimSet);
@@ -367,7 +367,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
     orxStructure_DecreaseCounter(_pstAnimPointer->pstClock);
     
     /* Has a link table? */
-    if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_LINK_TABLE) != orxFALSE)
+    if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_LINK_TABLE) != orxFALSE)
     {
       /* Deletes it */
       orxAnimSet_DeleteLinkTable(_pstAnimPointer->pstLinkTable);
@@ -397,11 +397,11 @@ orxANIMSET *orxFASTCALL orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstA
   orxANIMSET *pstAnimSet = orxNULL;
 
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimPointer != orxNULL);
 
   /* Has an animset? */
-  if(orxStructure_TestFlags((orxANIMPOINTER *)_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET) != orxFALSE)
+  if(orxStructure_TestFlags((orxANIMPOINTER *)_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
   {
     pstAnimSet = _pstAnimPointer->pstAnimSet;
   }
@@ -423,12 +423,12 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetAnim(orxCONST orxANIMPOINTER *_pstAnimPo
   orxHANDLE hAnimHandle = orxHANDLE_Undefined;
 
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimPointer != orxNULL);
 
   /* Has anim? */
-  if((orxStructure_TestFlags((orxANIMPOINTER *)_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET) != orxFALSE)
-  && (orxStructure_TestFlags((orxANIMPOINTER *)_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
+  if((orxStructure_TestFlags((orxANIMPOINTER *)_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
+  && (orxStructure_TestFlags((orxANIMPOINTER *)_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
   {
     hAnimHandle = _pstAnimPointer->hCurrentAnim;
   }
@@ -450,11 +450,11 @@ orxU32 orxFASTCALL orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimPoint
   orxU32 u32Result = 0;
 
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimPointer != orxNULL);
 
   /* Has anim? */
-  if(orxStructure_TestFlags((orxANIMPOINTER *)_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
+  if(orxStructure_TestFlags((orxANIMPOINTER *)_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
   {
     /* Gets time */
     u32Result = _pstAnimPointer->u32CurrentAnimTime;
@@ -475,7 +475,7 @@ orxU32 orxFASTCALL orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimPoint
 orxFLOAT orxFASTCALL orxAnimPointer_GetFrequency(orxCONST orxANIMPOINTER *_pstAnimPointer)
 {
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimPointer != orxNULL);
 
   /* Gets frequency */
@@ -492,11 +492,11 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimPointer, or
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimPointer != orxNULL);
 
   /* Has Animset? */
-  if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_ANIMSET) != orxFALSE)
+  if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
   {
     /* In range? */
     if((orxU32)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
@@ -508,7 +508,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimPointer, or
       _pstAnimPointer->u32Time      = orxClock_GetInfo(_pstAnimPointer->pstClock)->u32Time;
 
       /* Updates flags */
-      orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_ID_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_ID_FLAG_NONE);
+      orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_FLAG_NONE);
 
       /* Computes animpointer */
       eResult = orxAnimPointer_Compute(_pstAnimPointer, _pstAnimPointer->u32Time);
@@ -543,7 +543,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimPointer, or
   orxSTATUS eResult;
 
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimPointer != orxNULL);
 
   /* Stores relative timestamp */
@@ -569,7 +569,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimPointe
   orxSTATUS eResult;
 
   /* Checks */
-  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_FLAG_READY);
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstAnimPointer != orxNULL);
   orxASSERT(_fFrequency >= 0.0);
 

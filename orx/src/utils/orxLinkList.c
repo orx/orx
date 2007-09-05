@@ -26,8 +26,8 @@
  * Platform independant defines
  */
 
-#define orxLINKLIST_KU32_FLAG_NONE                0x00000000
-#define orxLINKLIST_KU32_FLAG_READY               0x00000001
+#define orxLINKLIST_KU32_STATIC_FLAG_NONE         0x00000000
+#define orxLINKLIST_KU32_STATIC_FLAG_READY        0x00000001
 
 
 /*
@@ -85,13 +85,13 @@ orxSTATUS orxLinkList_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Already Initialized? */
-  if(!(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY))
+  if(!(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstLinkList, 0, sizeof(orxLINKLIST_STATIC));
   
     /* Inits ID Flags */
-    sstLinkList.u32Flags = orxLINKLIST_KU32_FLAG_READY;
+    sstLinkList.u32Flags = orxLINKLIST_KU32_STATIC_FLAG_READY;
     
     /* Success */ 
     eResult = orxSTATUS_SUCCESS;
@@ -117,10 +117,10 @@ orxSTATUS orxLinkList_Init()
 orxVOID orxLinkList_Exit()
 {
   /* Initialized? */
-  if(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY)
+  if(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY)
   {
     /* Updates flags */
-    sstLinkList.u32Flags &= ~orxLINKLIST_KU32_FLAG_READY;
+    sstLinkList.u32Flags &= ~orxLINKLIST_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -139,7 +139,7 @@ orxVOID orxLinkList_Exit()
 orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
 {
   /* Checks */
-  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
+  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstList != orxNULL);
 
   /* Non empty? */
@@ -182,7 +182,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NO
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
+  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstList != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -234,7 +234,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
+  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstList != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -287,7 +287,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
   orxREGISTER orxLINKLIST *pstList;
 
   /* Checks */
-  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
+  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -358,7 +358,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
   orxREGISTER orxLINKLIST *pstList;
 
   /* Checks */
-  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
+  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -430,7 +430,7 @@ orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_FLAG_READY);
+  orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstNode != orxNULL);
 
   /* Gets list */

@@ -23,8 +23,8 @@
 
 #include <allegro.h>
 
-#define orxMOUSE_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxMOUSE_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxMOUSE_KU32_STATIC_FLAG_NONE  0x00000000  /**< No flags have been set */
+#define orxMOUSE_KU32_STATIC_FLAG_READY 0x00000001  /**< The module has been initialized */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -54,7 +54,7 @@ orxSTATIC orxMOUSE_STATIC sstMouse;
 orxSTATUS orxMouse_Init()
 {
   /* Module not already initialized ? */
-  orxASSERT(!(sstMouse.u32Flags & orxMOUSE_KU32_FLAG_READY));
+  orxASSERT(!(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY));
 
   /* Cleans static controller */
   orxMemory_Set(&sstMouse, 0, sizeof(orxMOUSE_STATIC));
@@ -63,11 +63,11 @@ orxSTATUS orxMouse_Init()
   if (install_mouse() != -1)
   {
     /* Set module has ready */
-    sstMouse.u32Flags = orxMOUSE_KU32_FLAG_READY;
+    sstMouse.u32Flags = orxMOUSE_KU32_STATIC_FLAG_READY;
   }
   
   /* Module successfully initialized ? */
-  if (sstMouse.u32Flags & orxMOUSE_KU32_FLAG_READY == orxMOUSE_KU32_FLAG_READY)
+  if (sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY == orxMOUSE_KU32_STATIC_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }
@@ -82,10 +82,10 @@ orxSTATUS orxMouse_Init()
 orxVOID orxMouse_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_FLAG_READY) == orxMOUSE_KU32_FLAG_READY);
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
   
   /* Module not ready now */
-  sstMouse.u32Flags = orxMOUSE_KU32_FLAG_NONE;
+  sstMouse.u32Flags = orxMOUSE_KU32_STATIC_FLAG_NONE;
 }
 
 /** Get current mouse pointer screen coordinates
@@ -95,7 +95,7 @@ orxVOID orxMouse_Exit()
 orxVOID orxMouse_GetMove(orxS32 *_ps32x, orxS32 *_ps32y)
 {
   /* Module initialized ? */
-  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_FLAG_READY) == orxMOUSE_KU32_FLAG_READY);
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
   /* get move */
   get_mouse_mickeys((int *)_ps32x, (int *)_ps32y);

@@ -30,16 +30,16 @@
  * Platform independant defines
  */
 
+#define orxOBJECT_KU32_STATIC_FLAG_NONE         0x00000000
+
+#define orxOBJECT_KU32_STATIC_FLAG_READY        0x00000001
+#define orxOBJECT_KU32_STATIC_FLAG_CLOCK        0x00000002
+
+#define orxOBJECT_KU32_STATIC_MASK_ALL          0xFFFFFFFF
+
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000
 
-#define orxOBJECT_KU32_FLAG_READY               0x00000001
-#define orxOBJECT_KU32_FLAG_CLOCK               0x00000002
-
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF
-
-#define orxOBJECT_KU32_ID_FLAG_NONE             0x00000000
-
-#define orxOBJECT_KU32_ID_MASK_ALL              0xFFFFFFFF
 
 
 /*
@@ -183,7 +183,7 @@ orxSTATUS orxObject_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY))
+  if(!(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
@@ -207,7 +207,7 @@ orxSTATUS orxObject_Init()
         if(eResult ==orxSTATUS_SUCCESS)
         {
           /* Inits Flags */
-          sstObject.u32Flags = orxOBJECT_KU32_FLAG_READY | orxOBJECT_KU32_FLAG_CLOCK;
+          sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
         }
         else
         {
@@ -242,13 +242,13 @@ orxSTATUS orxObject_Init()
 orxVOID orxObject_Exit()
 {
   /* Initialized? */
-  if(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY)
+  if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY)
   {
     /* Deletes object list */
     orxObject_DeleteAll();
 
     /* Has clock? */
-    if(sstObject.u32Flags & orxOBJECT_KU32_FLAG_CLOCK)
+    if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_CLOCK)
     {
       /* Unregisters object update all function */
       orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
@@ -260,14 +260,14 @@ orxVOID orxObject_Exit()
       sstObject.pstClock = orxNULL;
 
       /* Updates flags */
-      sstObject.u32Flags &= ~orxOBJECT_KU32_FLAG_CLOCK;
+      sstObject.u32Flags &= ~orxOBJECT_KU32_STATIC_FLAG_CLOCK;
     }
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
 
     /* Updates flags */
-    sstObject.u32Flags &= ~orxOBJECT_KU32_FLAG_READY;
+    sstObject.u32Flags &= ~orxOBJECT_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -288,7 +288,7 @@ orxOBJECT *orxObject_Create()
   orxOBJECT *pstObject;
 
   /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
 
   /* Creates object */
   pstObject = (orxOBJECT *)orxStructure_Create(orxSTRUCTURE_ID_OBJECT);
@@ -297,7 +297,7 @@ orxOBJECT *orxObject_Create()
   if(pstObject != orxNULL)
   {
     /* Inits flags */
-    orxStructure_SetFlags(pstObject, orxOBJECT_KU32_ID_FLAG_NONE, orxOBJECT_KU32_ID_MASK_ALL);
+    orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_MASK_ALL);
   }
   else
   {
@@ -318,7 +318,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstObject != orxNULL);
 
   /* Not referenced? */
@@ -359,7 +359,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
   orxSTRUCTURE_ID eStructureID;
 
   /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstObject != orxNULL);
   orxASSERT(_pstStructure != orxNULL);
 
@@ -399,7 +399,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
 orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstObject != orxNULL);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_LINKABLE_NUMBER);
 
@@ -436,7 +436,7 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetStructure(orxCONST orxOBJECT *_pstObject,
   orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstObject != orxNULL);
 
   /* Offset is valid? */
@@ -467,7 +467,7 @@ orxBOOL orxFASTCALL orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject
   orxBOOL bResult = orxTRUE;
 
   /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_FLAG_READY);
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstObject != orxNULL);
 
   /* Gets frame */

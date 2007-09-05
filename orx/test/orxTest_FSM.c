@@ -165,7 +165,7 @@ orxVOID orxTest_FSM_Create()
     orxTextIO_ReadS32InRange(&s32NbInstances, 10, 1, 0x7FFFFFFF, "Number of instances: ", orxTRUE);
     
     /* Now, allocate s32NbStates states and s32NbLinks links in a new FSM at the index position s32ID. */
-    sstTest_FSM.apstFSM[s32ID] = orxFSM_Create(s32NbStates, s32NbLinks, s32NbInstances, orxFSM_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+    sstTest_FSM.apstFSM[s32ID] = orxFSM_Create(s32NbStates, s32NbLinks, s32NbInstances, orxFSM_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
     
     if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
     {

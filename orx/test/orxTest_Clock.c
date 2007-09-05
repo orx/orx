@@ -329,7 +329,7 @@ orxVOID orxTest_Clock_Init()
   orxClock_Register(sstTest_Clock.pstClock, orxTest_Clock_EndLoop, orxNULL, orxMODULE_ID_TEST);
 
   /* Create a bank to store clocks */
-  sstTest_Clock.pstBank = orxBank_Create(orxTEST_CLOCK_KU32_MAX_CLOCK, sizeof(orxTEST_CLOCK_INFO), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+  sstTest_Clock.pstBank = orxBank_Create(orxTEST_CLOCK_KU32_MAX_CLOCK, sizeof(orxTEST_CLOCK_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
   sstTest_Clock.bInit   = orxFALSE;
   sstTest_Clock.u32InitCounter = 0;
 }

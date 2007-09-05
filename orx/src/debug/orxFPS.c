@@ -28,8 +28,8 @@
  * Platform independant defines
  */
 
-#define orxFPS_KU32_FLAG_NONE               0x00000000
-#define orxFPS_KU32_FLAG_READY              0x00000001
+#define orxFPS_KU32_STATIC_FLAG_NONE        0x00000000
+#define orxFPS_KU32_STATIC_FLAG_READY       0x00000001
 
 #define orxFPS_KU32_CLOCK_TICKSIZE          1000
 
@@ -74,7 +74,7 @@ orxSTATIC volatile orxFPS_STATIC sstFPS;
 orxSTATIC orxVOID orxFASTCALL orxFPS_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   /* Checks */
-  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
+  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
   
   /* Gets FPS value */
   sstFPS.u32FPS = sstFPS.u32FrameCounter;
@@ -118,7 +118,7 @@ orxSTATUS orxFPS_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY))
+  if(!(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
     orxMemory_Set((orxFPS_STATIC *)&sstFPS, 0, sizeof(orxFPS_STATIC));
@@ -136,7 +136,7 @@ orxSTATUS orxFPS_Init()
       if(eResult == orxSTATUS_SUCCESS)
       {
         /* Inits Flags */
-        sstFPS.u32Flags = orxFPS_KU32_FLAG_READY;
+        sstFPS.u32Flags = orxFPS_KU32_STATIC_FLAG_READY;
         
         /* Success */
         eResult = orxSTATUS_SUCCESS;
@@ -178,7 +178,7 @@ orxSTATUS orxFPS_Init()
 orxVOID orxFPS_Exit()
 {
   /* Initialized? */
-  if(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY)
+  if(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY)
   {
     /* Removes callback */
     orxClock_Unregister(sstFPS.pstClock, orxFPS_Update);
@@ -187,7 +187,7 @@ orxVOID orxFPS_Exit()
     orxClock_Delete(sstFPS.pstClock);
 
     /* Updates flags */
-    sstFPS.u32Flags &= ~orxFPS_KU32_FLAG_READY;
+    sstFPS.u32Flags &= ~orxFPS_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -206,7 +206,7 @@ orxVOID orxFPS_Exit()
 orxVOID orxFPS_IncreaseFrameCounter()
 {
   /* Checks */
-  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
+  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
 
   /* Updates frame counter */
   sstFPS.u32FrameCounter++;
@@ -223,7 +223,7 @@ orxVOID orxFPS_IncreaseFrameCounter()
 orxU32 orxFPS_GetFPS()
 {
   /* Checks */
-  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_FLAG_READY);
+  orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
 
   /* Returns it */  
   return sstFPS.u32FPS;

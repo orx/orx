@@ -42,7 +42,7 @@
  * TYPES AND STRUCTURES
  ******************************************************/
 
-typedef struct __orxTEST_SOUND_SAMPLE_INFOS_t
+typedef struct __orxTEST_SOUND_SAMPLE_INFO_t
 {
     orxSOUND_SAMPLE *pstSample;                         /* Sample address */
     orxCHAR zFileName[orxTEST_SOUND_SAMPLE_NAME_MAX];   /* Sample file name */
@@ -358,7 +358,7 @@ orxVOID orxTest_Sound_Init()
   orxMemory_Set(&sstTest_Sound, 0, sizeof(orxTEST_SOUND));
   
   /* Create samples bank */
-  sstTest_Sound.pstSampleBank = orxBank_Create(orxTEST_SOUND_SAMPLE_MAX, sizeof(orxTEST_SOUND_SAMPLE_INFOS), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+  sstTest_Sound.pstSampleBank = orxBank_Create(orxTEST_SOUND_SAMPLE_MAX, sizeof(orxTEST_SOUND_SAMPLE_INFOS), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 }
 
 orxVOID orxTest_Sound_Exit()

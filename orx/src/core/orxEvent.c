@@ -32,14 +32,14 @@
 /*
  * Event module status flag definition.
  */
-#define orxEVENT_KU32_FLAG_NONE                 0x00000000
-#define orxEVENT_KU32_FLAG_READY                0x00000001
+#define orxEVENT_KU32_STATIC_FLAG_NONE          0x00000000
+#define orxEVENT_KU32_STATIC_FLAG_READY         0x00000001
 
 
-#define orxEVENT_KU32_FLAG_EVENT_DELETED		0xFFFFFFFF
+#define orxEVENT_KU32_FLAG_EVENT_DELETED		    0xFFFFFFFF
 
 /** Define to minimize code writing for module initialization test.*/
-#define orxEVENT_ASSERT_MODULE_NOT_INITIALIZED  orxASSERT((sstEvent.u32Flags & orxEVENT_KU32_FLAG_READY)  ==  orxEVENT_KU32_FLAG_READY)
+#define orxEVENT_ASSERT_MODULE_NOT_INITIALIZED  orxASSERT((sstEvent.u32Flags & orxEVENT_KU32_STATIC_FLAG_READY)  ==  orxEVENT_KU32_STATIC_FLAG_READY)
 
 /*
  * Event module state structure.
@@ -78,7 +78,7 @@ orxEVENT_MANAGER *orxFASTCALL orxEvent_CreateManager(orxU16 _u16Number, orxU16 _
 
 	pstManager       = orxMemory_Allocate(sizeof(orxEVENT_MANAGER), orxMEMORY_TYPE_MAIN);
 	pstMessageQueue  = orxQueue_Create(_u16Number);
-	pstCallbackTable = orxHashTable_Create(_u16HandlerNumber, orxHASHTABLE_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+	pstCallbackTable = orxHashTable_Create(_u16HandlerNumber, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 	
 	if((pstManager == orxNULL)
   || (pstMessageQueue == orxNULL)
@@ -331,13 +331,13 @@ orxSTATUS orxEvent_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already initialized ? */
-  if(!(sstEvent.u32Flags & orxEVENT_KU32_FLAG_READY))
+  if(!(sstEvent.u32Flags & orxEVENT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
     orxMemory_Set(&sstEvent, 0, sizeof(orxEVENT_STATIC));
   
     /* Inits Flags */
-    sstEvent.u32Flags = orxEVENT_KU32_FLAG_READY;
+    sstEvent.u32Flags = orxEVENT_KU32_STATIC_FLAG_READY;
     
     /* Successfull Init */
     eResult = orxSTATUS_SUCCESS;
@@ -360,10 +360,10 @@ orxSTATUS orxEvent_Init()
 orxVOID orxEvent_Exit()
 {
   /* Initialized? */
-  if(sstEvent.u32Flags & orxEVENT_KU32_FLAG_READY)
+  if(sstEvent.u32Flags & orxEVENT_KU32_STATIC_FLAG_READY)
   {
     /* Updates flags */
-    sstEvent.u32Flags &= ~orxEVENT_KU32_FLAG_READY;
+    sstEvent.u32Flags &= ~orxEVENT_KU32_STATIC_FLAG_READY;
   }
   else
   {

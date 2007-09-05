@@ -33,8 +33,8 @@
 typedef struct __orxHASHTABLE_t orxHASHTABLE;
 
 /* Define flags */
-#define orxHASHTABLE_KU32_FLAGS_NONE            0x00000000  /**< No flags (default behaviour) */
-#define orxHASHTABLE_KU32_FLAGS_NOT_EXPANDABLE  0x00000001  /**< The Hash table will not be expandable */
+#define orxHASHTABLE_KU32_FLAG_NONE             0x00000000  /**< No flags (default behaviour) */
+#define orxHASHTABLE_KU32_FLAG_NOT_EXPANDABLE   0x00000001  /**< The Hash table will not be expandable */
 
 
 /** @name Module management.

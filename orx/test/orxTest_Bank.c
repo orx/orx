@@ -123,7 +123,7 @@ orxVOID orxTest_Bank_Create()
 
     /* Now, allocate s32NbElem elements in a new bank at the index position s32ID */
     /* We will use an arbitrary size of 1 bytes for each elements */
-    sstTest_Bank.apstBank[s32ID] = orxBank_Create(s32NbElem, orxTEST_BANK_KU32_CELLS_SIZE * sizeof(orxU8), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+    sstTest_Bank.apstBank[s32ID] = orxBank_Create(s32NbElem, orxTEST_BANK_KU32_CELLS_SIZE * sizeof(orxU8), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
     if (sstTest_Bank.apstBank[s32ID] == orxNULL)
     {
       orxTextIO_PrintLn("Can't create the new bank. Not enough memory ?");

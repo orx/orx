@@ -30,15 +30,15 @@
  * Platform independant defines
  */
 
-#define orxCLOCK_KU32_FLAG_NONE             0x00000000
+#define orxCLOCK_KU32_STATIC_FLAG_NONE          0x00000000
 
-#define orxCLOCK_KU32_FLAG_READY            0x00000001
-#define orxCLOCK_KU32_FLAG_UPDATE_LOCK      0x10000000
+#define orxCLOCK_KU32_STATIC_FLAG_READY         0x00000001
+#define orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK   0x10000000
 
 
 /** Clock ID flags */
-#define orxCLOCK_KU32_CLOCK_FLAG_NONE       0x00000000  /**< No flags */
-#define orxCLOCK_KU32_CLOCK_FLAG_PAUSED     0x10000000  /**< Clock is paused */
+#define orxCLOCK_KU32_CLOCK_FLAG_NONE           0x00000000  /**< No flags */
+#define orxCLOCK_KU32_CLOCK_FLAG_PAUSED         0x10000000  /**< Clock is paused */
 
 
 /*
@@ -124,7 +124,7 @@ orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxC
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
   orxASSERT(_pfnCallback != orxNULL);
 
@@ -156,7 +156,7 @@ orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxU32 _u32TickSize, orxCLOCK_T
   orxCLOCK *pstClock;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
 
   /* Finds matching clock */
@@ -269,13 +269,13 @@ orxSTATUS orxClock_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
-  if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY))
+  if(!(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
     orxMemory_Set(&sstClock, 0, sizeof(orxCLOCK_STATIC));
 
     /* Creates clock bank */
-    sstClock.pstClockBank = orxBank_Create(orxCLOCK_KU32_CLOCK_BANK_SIZE, sizeof(orxCLOCK), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+    sstClock.pstClockBank = orxBank_Create(orxCLOCK_KU32_CLOCK_BANK_SIZE, sizeof(orxCLOCK), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
     if(sstClock.pstClockBank != orxNULL)
@@ -287,7 +287,7 @@ orxSTATUS orxClock_Init()
       sstClock.u32Time  = orxTime_GetTime();
 
       /* Inits Flags */
-      sstClock.u32Flags = orxCLOCK_KU32_FLAG_READY;
+      sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
 
       /* Success */
       eResult = orxSTATUS_SUCCESS;
@@ -321,7 +321,7 @@ orxSTATUS orxClock_Init()
 orxVOID orxClock_Exit()
 {
   /* Initialized? */
-  if(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY)
+  if(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY)
   {
     orxCLOCK *pstClock;
 
@@ -339,7 +339,7 @@ orxVOID orxClock_Exit()
     sstClock.pstClockBank = orxNULL;
 
     /* Updates flags */
-    sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_READY;
+    sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_READY;
   }
 
   return;
@@ -358,13 +358,13 @@ orxSTATUS orxClock_Update()
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
 
   /* Not already locked? */
-  if(!(sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK))
+  if(!(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
   {
     /* Lock clocks */
-    sstClock.u32Flags |= orxCLOCK_KU32_FLAG_UPDATE_LOCK;
+    sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
     /* Gets new time */
     u32NewTime  = orxTime_GetTime();
@@ -434,7 +434,7 @@ orxSTATUS orxClock_Update()
     sstClock.u32Time = u32NewTime;
     
     /* Unlocks clocks */
-    sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_UPDATE_LOCK;
+    sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
   }
 
   /* Done! */
@@ -452,7 +452,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
   orxCLOCK *pstClock;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
 
   /* Creates clock */
   pstClock = (orxCLOCK *)orxBank_Allocate(sstClock.pstClockBank);
@@ -461,7 +461,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
   if(pstClock != orxNULL)
   {
     /* Creates function bank */
-    pstClock->pstFunctionBank = orxBank_Create(orxCLOCK_KU32_FUNCTION_BANK_SIZE, sizeof(orxCLOCK_FUNCTION_STORAGE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+    pstClock->pstFunctionBank = orxBank_Create(orxCLOCK_KU32_FUNCTION_BANK_SIZE, sizeof(orxCLOCK_FUNCTION_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
     if(pstClock->pstFunctionBank != orxNULL)
@@ -501,11 +501,11 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
 orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 {
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
   /* Not locked? */
-  if((sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
+  if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
   {
 	  /* Deletes function bank */
 	  orxBank_Delete(_pstClock->pstFunctionBank);
@@ -521,10 +521,10 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 orxVOID orxClock_Resync()
 {
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
 
   /* Not locked? */
-  if((sstClock.u32Flags & orxCLOCK_KU32_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
+  if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
   {
 	  /* Resync with current time */
   	sstClock.u32Time = orxTime_GetTime();
@@ -542,7 +542,7 @@ orxVOID orxClock_Resync()
 orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
 {
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
   /* Updates clock flags */
@@ -560,7 +560,7 @@ orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
 orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
 {
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
   /* Updates clock flags */
@@ -578,7 +578,7 @@ orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
 orxBOOL orxFASTCALL orxClock_IsPaused(orxCONST orxCLOCK *_pstClock)
 {
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
   /* Tests flags */
@@ -596,7 +596,7 @@ orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClo
   orxCONST orxCLOCK_INFO *pstClockInfo = orxNULL;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
   /* Gets the clock info structure pointer */
@@ -618,7 +618,7 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
   orxASSERT(_pfnCallback != orxNULL);
 
@@ -661,7 +661,7 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
   orxASSERT(_pfnCallback != orxNULL);
 
@@ -698,7 +698,7 @@ orxVOID *orxFASTCALL orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST 
   orxVOID *pstContext = orxNULL;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
   orxASSERT(_pfnCallback != orxNULL);
 
@@ -732,7 +732,7 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
   orxASSERT(_pfnCallback != orxNULL);
 
@@ -768,7 +768,7 @@ orxCLOCK *orxFASTCALL orxClock_FindFirst(orxU32 _u32TickSize, orxCLOCK_TYPE _eTy
   orxCLOCK *pstClock;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
 
   /* Finds first matching clock */
@@ -789,7 +789,7 @@ orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
   orxCLOCK *pstClock;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
   /* Finds next matching clock */
@@ -808,7 +808,7 @@ orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
 orxCLOCK *orxFASTCALL orxClock_GetNext(orxCONST orxCLOCK *_pstClock)
 {
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_FLAG_READY);
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
 
   /* Returns next stored clock */
   return((orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, _pstClock));

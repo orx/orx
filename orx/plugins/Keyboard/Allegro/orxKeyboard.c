@@ -24,8 +24,8 @@
 
 #include <allegro.h>
 
-#define orxKEYBOARD_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxKEYBOARD_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxKEYBOARD_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxKEYBOARD_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -55,7 +55,7 @@ orxSTATIC orxKEYBOARD_STATIC sstKeyboard;
 orxSTATUS orxKeyboard_Init()
 {
   /* Module not already initialized ? */
-  orxASSERT(!(sstKeyboard.u32Flags & orxKEYBOARD_KU32_FLAG_READY));
+  orxASSERT(!(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY));
 
   /* Cleans static controller */
   orxMemory_Set(&sstKeyboard, 0, sizeof(orxKEYBOARD_STATIC));
@@ -64,11 +64,11 @@ orxSTATUS orxKeyboard_Init()
   if (install_keyboard() != -1)
   {
     /* Set module has ready */
-    sstKeyboard.u32Flags = orxKEYBOARD_KU32_FLAG_READY;
+    sstKeyboard.u32Flags = orxKEYBOARD_KU32_STATIC_FLAG_READY;
   }
   
   /* Module successfully initialized ? */
-  if (sstKeyboard.u32Flags & orxKEYBOARD_KU32_FLAG_READY == orxKEYBOARD_KU32_FLAG_READY)
+  if (sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY == orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }
@@ -83,10 +83,10 @@ orxSTATUS orxKeyboard_Init()
 orxVOID orxKeyboard_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_FLAG_READY) == orxKEYBOARD_KU32_FLAG_READY);
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
   
   /* Module not ready now */
-  sstKeyboard.u32Flags = orxKEYBOARD_KU32_FLAG_NONE;
+  sstKeyboard.u32Flags = orxKEYBOARD_KU32_STATIC_FLAG_NONE;
 }
 
 /** Returns orxTRUE if there are keypresses waiting in the input buffer.
@@ -95,7 +95,7 @@ orxVOID orxKeyboard_Exit()
 orxBOOL orxKeyboard_Hit()
 {
   /* Module initialized ? */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_FLAG_READY) == orxKEYBOARD_KU32_FLAG_READY);
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
   return (orxS32)keypressed();
 }
@@ -109,7 +109,7 @@ orxBOOL orxKeyboard_Hit()
 orxS32 orxKeyboard_Read()
 {
   /* Module initialized ? */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_FLAG_READY) == orxKEYBOARD_KU32_FLAG_READY);
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
   
   return (orxS32)readkey();
 }
@@ -119,7 +119,7 @@ orxS32 orxKeyboard_Read()
 orxVOID orxKeyboard_ClearBuffer()
 {
   /* Module initialized ? */
-  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_FLAG_READY) == orxKEYBOARD_KU32_FLAG_READY);
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
   
   /* Clear buffer */
   clear_keybuf();

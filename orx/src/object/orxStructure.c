@@ -28,8 +28,8 @@
  * Platform independant defines
  */
 
-#define orxSTRUCTURE_KU32_FLAG_NONE           0x00000000
-#define orxSTRUCTURE_KU32_FLAG_READY          0x00000001
+#define orxSTRUCTURE_KU32_STATIC_FLAG_NONE    0x00000000
+#define orxSTRUCTURE_KU32_STATIC_FLAG_READY   0x00000001
 
 /* *** Misc *** */
 #define orxSTRUCTURE_KU32_STORAGE_BANK_SIZE   256
@@ -169,7 +169,7 @@ orxSTATUS orxStructure_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY))
+  if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
@@ -178,7 +178,7 @@ orxSTATUS orxStructure_Init()
     for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
     {
       /* Creates a bank */
-      sstStructure.astStorage[i].pstNodeBank  = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTRUCTURE_STORAGE_NODE), orxBANK_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+      sstStructure.astStorage[i].pstNodeBank  = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTRUCTURE_STORAGE_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Cleans storage type */
       sstStructure.astStorage[i].eType    = orxSTRUCTURE_STORAGE_TYPE_NONE;
@@ -188,7 +188,7 @@ orxSTATUS orxStructure_Init()
     if(i == orxSTRUCTURE_ID_NUMBER)
     {
       /* Inits Flags */
-      sstStructure.u32Flags = orxSTRUCTURE_KU32_FLAG_READY;
+      sstStructure.u32Flags = orxSTRUCTURE_KU32_STATIC_FLAG_READY;
 
       /* Everything's ok */
       eResult = orxSTATUS_SUCCESS;
@@ -228,7 +228,7 @@ orxSTATUS orxStructure_Init()
 orxVOID orxStructure_Exit()
 {
   /* Initialized? */
-  if(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY)
+  if(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY)
   {
     orxU32 i;
 
@@ -266,7 +266,7 @@ orxVOID orxStructure_Exit()
     }
 
     /* Updates flags */
-    sstStructure.u32Flags &= ~orxSTRUCTURE_KU32_FLAG_READY;
+    sstStructure.u32Flags &= ~orxSTRUCTURE_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -287,7 +287,7 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
   orxASSERT(_u32Size != 0);
   orxASSERT(_eStorageType < orxSTRUCTURE_STORAGE_TYPE_NUMBER);
@@ -297,7 +297,7 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
   if(sstStructure.astInfo[_eStructureID].u32Size == 0)
   {
     /* Creates bank for structure storage */
-    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE, _u32Size, orxBANK_KU32_FLAGS_NONE, _eMemoryType);
+    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
 
     /* Valid? */
     if(sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL)
@@ -336,7 +336,7 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
 orxVOID orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
   /* Registered? */
@@ -367,7 +367,7 @@ orxVOID orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
 orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
   /* Returns it */
@@ -385,7 +385,7 @@ orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
   orxREGISTER orxU32 u32Result = orxU32_Undefined;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
   /* Dependig on type */
@@ -428,7 +428,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
   /* Is structure type registered? */
@@ -548,7 +548,7 @@ orxVOID orxFASTCALL orxStructure_Delete(orxHANDLE _phStructure)
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Gets storage node */
@@ -607,7 +607,7 @@ orxSTATUS orxFASTCALL orxStructure_Update(orxHANDLE _phStructure, orxCONST orxHA
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_phStructure);
   orxASSERT(_pstClockInfo != orxNULL);
 
@@ -650,7 +650,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
   /* Depending on type */
@@ -703,7 +703,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxHANDLE _phStructure
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Gets node */
@@ -751,7 +751,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxHANDLE _phStructure)
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Gets node */
@@ -799,7 +799,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxHANDLE _phStructur
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Gets node */
@@ -847,7 +847,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxHANDLE _phStructu
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Gets node */
@@ -895,7 +895,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxHANDLE _phStructure)
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Gets node */
@@ -943,7 +943,7 @@ orxSTATUS orxFASTCALL orxStructure_SetParent(orxHANDLE _phStructure, orxHANDLE _
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_FLAG_READY);
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_phStructure);
   orxSTRUCTURE_ASSERT(_phParent);
 

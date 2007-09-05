@@ -25,10 +25,10 @@
 
 #include "orx.h"
 
-#define orxMAIN_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxMAIN_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxMAIN_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxMAIN_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
-#define orxMAIN_KU32_FLAG_EXIT  0x00000002  /**< an Exit Event has been received */
+#define orxMAIN_KU32_STATIC_FLAG_EXIT   0x00000002  /**< an Exit Event has been received */
 
 
 /***************************************************************************
@@ -56,7 +56,7 @@ orxSTATUS orxMain_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Don't call twice the init function */
-  if(!(sstMain.u32Flags & orxMAIN_KU32_FLAG_READY))
+  if(!(sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY))
   {
     /* Inits plugin module */
     if(orxModule_Init(orxMODULE_ID_PLUGIN) == orxSTATUS_SUCCESS)
@@ -67,7 +67,7 @@ orxSTATUS orxMain_Init()
       /* !!! TEMP : Will be replaced by config file !!! */
       hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/time/Time_SDL", "time");
       hFilePlugin = orxPlugin_LoadUsingExt("plugins/core/file/File_LibC", "file");
-      
+
       /* Valid? */
       if((hTimePlugin != orxHANDLE_Undefined)
       && (hFilePlugin != orxHANDLE_Undefined))
@@ -76,7 +76,7 @@ orxSTATUS orxMain_Init()
         if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
         {
           /* Sets module as initialized */
-          sstMain.u32Flags |= orxMAIN_KU32_FLAG_READY;
+          sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_READY;
 
           /* Success */
           eResult = orxSTATUS_SUCCESS;
@@ -101,13 +101,13 @@ orxSTATUS orxMain_Init()
 orxVOID orxMain_Exit()
 {
   /* Module initialized ? */
-  if((sstMain.u32Flags & orxMAIN_KU32_FLAG_READY) == orxMAIN_KU32_FLAG_READY)
+  if((sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY) == orxMAIN_KU32_STATIC_FLAG_READY)
   {
     /* Set module as not ready */
-    sstMain.u32Flags &= ~orxMAIN_KU32_FLAG_READY;
+    sstMain.u32Flags &= ~orxMAIN_KU32_STATIC_FLAG_READY;
 
     /* !!! TEMP : untill exit triggered by events !!! */
-    sstMain.u32Flags |= orxMAIN_KU32_FLAG_EXIT;
+    sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_EXIT;
 
 //    /* Exits from all modules */
 //    orxModule_ExitAll();
@@ -124,11 +124,11 @@ orxVOID orxMain_Exit()
 orxVOID orxMain_Run()
 {
   /* Main Loop (Until Exit event received) */
-  while((sstMain.u32Flags & orxMAIN_KU32_FLAG_EXIT) != orxMAIN_KU32_FLAG_EXIT)
+  while((sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_EXIT) != orxMAIN_KU32_STATIC_FLAG_EXIT)
   {
     /* Update clocks */
     orxClock_Update();
-
+    
     /* Sleep the program for 1ms (to help the scheduler) */
     orxTime_Delay(1);
   }
@@ -165,12 +165,8 @@ int main(int argc, char **argv)
         /* Runs the engine */
         orxMain_Run();
 
-#ifdef __orxTEST__
-        
         /* Exits from test module */
-        orxModule_Exit(orxMODULE_ID_TEST);
-
-#endif /* __orxTEST */
+        orxModule_Exit(orxMODULE_ID_MAIN);
       }
 
       /* Exits from the engine */

@@ -34,26 +34,26 @@
 
 /** Module flags
  */
-#define orxFRAME_KU32_FLAG_NONE             0x00000000  /**< No flags */
+#define orxFRAME_KU32_STATIC_FLAG_NONE      0x00000000  /**< No flags */
 
-#define orxFRAME_KU32_FLAG_READY            0x00000001  /**< Ready flag */
-#define orxFRAME_KU32_FLAG_DATA_2D          0x00000010  /**< 2D flag */
+#define orxFRAME_KU32_STATIC_FLAG_READY     0x00000001  /**< Ready flag */
+#define orxFRAME_KU32_STATIC_FLAG_DATA_2D   0x00000010  /**< 2D flag */
 
-#define orxFRAME_KU32_FLAG_DEFAULT          0x00000010  /**< Default flag */
+#define orxFRAME_KU32_STATIC_MASK_DEFAULT   0x00000010  /**< Default flag */
 
-#define orxFRAME_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
+#define orxFRAME_KU32_STATIC_MASK_ALL       0xFFFFFFFF  /**< All mask */
 
 
 /** orxFRAME ID flags
  */
-#define orxFRAME_KU32_ID_FLAG_NONE          0x00000000  /**< No flags */
+#define orxFRAME_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
-#define orxFRAME_KU32_ID_FLAG_DATA_2D       0x10000000  /**< 2D ID flag */
-#define orxFRAME_KU32_ID_FLAG_VALUE_DIRTY   0x01000000  /**< Value dirty ID flag */
-#define orxFRAME_KU32_ID_FLAG_RENDER_DIRTY  0x02000000  /**< Render dirty ID flag */
-#define orxFRAME_KU32_ID_FLAG_DIRTY         0x03000000  /**< Dirty ID flag */
+#define orxFRAME_KU32_FLAG_DATA_2D          0x10000000  /**< 2D ID flag */
+#define orxFRAME_KU32_FLAG_VALUE_DIRTY      0x01000000  /**< Value dirty ID flag */
+#define orxFRAME_KU32_FLAG_RENDER_DIRTY     0x02000000  /**< Render dirty ID flag */
+#define orxFRAME_KU32_FLAG_DIRTY            0x03000000  /**< Dirty ID flag */
 
-#define orxFRAME_KU32_ID_MASK_ALL           0xFFFFFFFF  /**< Dirty ID flag */
+#define orxFRAME_KU32_MASK_ALL              0xFFFFFFFF  /**< Dirty ID flag */
 
 
 /***************************************************************************
@@ -366,7 +366,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
   orxASSERT((_pstSrcFrame != orxNULL));
 
   /* 2D data? */
-  if(orxStructure_TestFlags((orxFRAME *)_pstSrcFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
+  if(orxStructure_TestFlags((orxFRAME *)_pstSrcFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
     orxVECTOR           vTempPos;
     orxCONST orxVECTOR *pvParentPos, *pvPos;
@@ -436,7 +436,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   pstParentFrame = (orxFRAME *)orxStructure_GetParent(_pstFrame);
 
   /* Is cell dirty & has parent? */
-  if((orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_VALUE_DIRTY) != orxFALSE)
+  if((orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_VALUE_DIRTY) != orxFALSE)
   && (pstParentFrame != orxNULL))
   {
     /* Updates parent status */
@@ -447,7 +447,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   }
 
   /* Updates dirty status */
-  orxStructure_SetFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_NONE, orxFRAME_KU32_ID_FLAG_VALUE_DIRTY);
+  orxStructure_SetFlags(_pstFrame, orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_VALUE_DIRTY);
 
   return;
 }
@@ -489,7 +489,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_SetDirty(orxFRAME *_pstFrame)
   orxASSERT(_pstFrame != orxNULL);
 
   /* Adds dirty flags (render + value) to all frame's heirs */
-  orxFrame_SetFlagRecursively(_pstFrame, orxFRAME_KU32_ID_FLAG_DIRTY, orxFRAME_KU32_ID_FLAG_NONE, orxFALSE);
+  orxFrame_SetFlagRecursively(_pstFrame, orxFRAME_KU32_FLAG_DIRTY, orxFRAME_KU32_FLAG_NONE, orxFALSE);
 
   return;
 }
@@ -544,13 +544,13 @@ orxSTATUS orxFrame_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY))
+  if(!(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
     orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
 
     /* Inits ID Flags */
-    sstFrame.u32Flags = orxFRAME_KU32_FLAG_DEFAULT|orxFRAME_KU32_FLAG_READY;
+    sstFrame.u32Flags = orxFRAME_KU32_STATIC_MASK_DEFAULT|orxFRAME_KU32_STATIC_FLAG_READY;
 
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(FRAME, orxSTRUCTURE_STORAGE_TYPE_TREE, orxMEMORY_TYPE_MAIN, orxNULL);
@@ -559,7 +559,7 @@ orxSTATUS orxFrame_Init()
     if(eResult == orxSTATUS_SUCCESS)
     {
       /* Inits frame tree */
-      sstFrame.pstRoot = orxFrame_Create(orxFRAME_KU32_ID_FLAG_NONE);
+      sstFrame.pstRoot = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
 
       /* Not created? */
       if(sstFrame.pstRoot == orxNULL)
@@ -568,7 +568,7 @@ orxSTATUS orxFrame_Init()
         orxStructure_Unregister(orxSTRUCTURE_ID_FRAME);
 
         /* Cleans flags */
-        sstFrame.u32Flags = orxFRAME_KU32_FLAG_NONE;
+        sstFrame.u32Flags = orxFRAME_KU32_STATIC_FLAG_NONE;
   
         /* Can't process */
         eResult = orxSTATUS_FAILURE;
@@ -597,7 +597,7 @@ orxSTATUS orxFrame_Init()
 orxVOID orxFrame_Exit()
 {
   /* Initialized? */
-  if(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY)
+  if(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY)
   {
     /* Deletes frame tree */
     orxFrame_DeleteAll();
@@ -606,7 +606,7 @@ orxVOID orxFrame_Exit()
     orxStructure_Unregister(orxSTRUCTURE_ID_FRAME);
 
     /* Updates flags */
-    sstFrame.u32Flags &= ~orxFRAME_KU32_FLAG_READY;
+    sstFrame.u32Flags &= ~orxFRAME_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -617,16 +617,16 @@ orxVOID orxFrame_Exit()
 }
 
 /** Creates a frame
- * @param[in]   _u32IDFLags     ID flags for created animation
+ * @param[in]   _u32Flags     ID flags for created animation
  * @return      Created orxFRAME / orxNULL
  */
-orxFRAME *orxFrame_Create(orxU32 _u32IDFlags)
+orxFRAME *orxFrame_Create(orxU32 _u32Flags)
 {
   orxFRAME *pstFrame;
 
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
-  orxASSERT((_u32IDFlags & orxFRAME_KU32_ID_MASK_USER_ALL) == _u32IDFlags); 
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32Flags & orxFRAME_KU32_MASK_USER_ALL) == _u32Flags); 
 
   /* Creates frame */
   pstFrame = (orxFRAME *)orxStructure_Create(orxSTRUCTURE_ID_FRAME);
@@ -635,15 +635,15 @@ orxFRAME *orxFrame_Create(orxU32 _u32IDFlags)
   if(pstFrame != orxNULL)
   {
     /* Inits flags */
-    orxStructure_SetFlags(pstFrame, _u32IDFlags & orxFRAME_KU32_ID_MASK_USER_ALL, orxFRAME_KU32_ID_MASK_ALL);
+    orxStructure_SetFlags(pstFrame, _u32Flags & orxFRAME_KU32_MASK_USER_ALL, orxFRAME_KU32_MASK_ALL);
 
     /* Inits members */
-    if(sstFrame.u32Flags & orxFRAME_KU32_FLAG_DATA_2D)
+    if(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_DATA_2D)
     {
       orxFRAME_DATA_2D *pstData;
 
       /* Updates flags */
-      orxStructure_SetFlags(pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D, orxFRAME_KU32_ID_FLAG_NONE);
+      orxStructure_SetFlags(pstFrame, orxFRAME_KU32_FLAG_DATA_2D, orxFRAME_KU32_FLAG_NONE);
 
       /* Allocates data memory */
       pstData = (orxFRAME_DATA_2D *) orxMemory_Allocate(sizeof(orxFRAME_DATA_2D), orxMEMORY_TYPE_MAIN);
@@ -693,14 +693,14 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstFrame) == 0)
   {
     /* Cleans data */
-    if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
+    if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
     {
       /* Frees frame data memory */
       orxMemory_Free(_pstFrame->pstData);
@@ -726,10 +726,10 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
 orxVOID orxFrame_CleanAllRenderStatus()
 {
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
 
   /* Removes render dirty flag from all frames */
-  orxFrame_SetFlagRecursively(sstFrame.pstRoot, orxFRAME_KU32_ID_FLAG_NONE, orxFRAME_KU32_ID_FLAG_RENDER_DIRTY, orxFALSE);
+  orxFrame_SetFlagRecursively(sstFrame.pstRoot, orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_RENDER_DIRTY, orxFALSE);
 
   return;
 }
@@ -741,11 +741,11 @@ orxVOID orxFrame_CleanAllRenderStatus()
 orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
 {
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
 
   /* Test render dirty flag */
-  return(orxStructure_TestFlags((orxFRAME *)_pstFrame, orxFRAME_KU32_ID_FLAG_RENDER_DIRTY));
+  return(orxStructure_TestFlags((orxFRAME *)_pstFrame, orxFRAME_KU32_FLAG_RENDER_DIRTY));
 }
 
 /** Sets a frame parent
@@ -755,7 +755,7 @@ orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
 orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
 {
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
 
   /* Has no parent? */
@@ -783,7 +783,7 @@ orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent
 orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos)
 {
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
   orxASSERT(_pvPos != orxNULL);
 
@@ -803,7 +803,7 @@ orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR
 orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 {
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
 
   /* Updates angle value */
@@ -822,7 +822,7 @@ orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
 {
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
 
   /* Updates scale value */
@@ -845,7 +845,7 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvP
   orxVECTOR *pvResult;
 
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
   orxASSERT(_pvPos != orxNULL);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
@@ -854,7 +854,7 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvP
   pvResult = _pvPos;
 
   /* Is a 2D Frame? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
     orxCONST orxVECTOR *pvIntern = orxNULL;
 
@@ -904,12 +904,12 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
   orxFLOAT fAngle = orxFLOAT_0;
 
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
  
   /* Is Frame 2D? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
     /* Depending on space */
     switch(_eSpace)
@@ -950,12 +950,12 @@ orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpa
   orxFLOAT fScale = orxFLOAT_1;
 
   /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_FLAG_READY);
+  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
  
   /* Is Frame 2D? */
-  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_ID_FLAG_DATA_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
     /* Depending on space */
     switch(_eSpace)

@@ -43,13 +43,13 @@
 
 /** Frame ID Flags
  */
-#define orxFRAME_KU32_ID_FLAG_NONE            0x00000000  /**< No flags */
+#define orxFRAME_KU32_FLAG_NONE               0x00000000  /**< No flags */
 
-#define orxFRAME_KU32_ID_FLAG_SCROLL_X        0x00000001  /**< X axis differential scrolling ID flag */
-#define orxFRAME_KU32_ID_FLAG_SCROLL_Y        0x00000002  /**< Y axis differential scrolling ID flag */
-#define orxFRAME_KU32_ID_MASK_SCROLL_BOTH     0x00000003  /**< Both axis differential scrolling ID mask */
+#define orxFRAME_KU32_FLAG_SCROLL_X           0x00000001  /**< X axis differential scrolling ID flag */
+#define orxFRAME_KU32_FLAG_SCROLL_Y           0x00000002  /**< Y axis differential scrolling ID flag */
+#define orxFRAME_KU32_MASK_SCROLL_BOTH        0x00000003  /**< Both axis differential scrolling ID mask */
 
-#define orxFRAME_KU32_ID_MASK_USER_ALL        0x000000FF  /**< User all ID mask */
+#define orxFRAME_KU32_MASK_USER_ALL           0x000000FF  /**< User all ID mask */
 
 
 /** Frame space enum
@@ -85,10 +85,10 @@ extern orxDLLAPI orxVOID                      orxFrame_Exit();
 
 
 /** Creates a frame
- * @param[in]   _u32IDFLags     ID flags for created animation
+ * @param[in]   _u32Flags     ID flags for created animation
  * @return      Created orxFRAME / orxNULL
  */
-extern orxDLLAPI orxFRAME *                   orxFrame_Create(orxU32 _u32IDFlags);
+extern orxDLLAPI orxFRAME *                   orxFrame_Create(orxU32 _u32Flags);
 
 /** Deletes a frame
  * @param[in]   _pstFrame       Frame to delete

@@ -32,8 +32,11 @@
  * Platform independant defines
  */
 
-#define orxDEBUG_KU32_CONTROL_FLAG_NONE         0x00000000
-#define orxDEBUG_KU32_CONTROL_FLAG_READY        0x00000001
+#define orxDEBUG_KU32_STATIC_FLAG_NONE          0x00000000
+
+#define orxDEBUG_KU32_STATIC_FLAG_READY         0x10000000
+
+#define orxDEBUG_KU32_STATIC_MASK_ALL           0xFFFFFFFF
 
 
 /*
@@ -142,7 +145,7 @@ orxSTATUS _orxDebug_Init()
 
     eResult = orxSTATUS_FAILURE;
   }
-  else if (sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY)
+  else if (sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
     /* Already Initialized? */
     /* !!! MSG !!! */
@@ -162,10 +165,10 @@ orxSTATUS _orxDebug_Init()
     sstDebug.zLogFile       = orxDEBUG_KZ_DEFAULT_LOG_FILE;
   
     /* Inits default debug flags */
-    sstDebug.u32DebugFlags  = orxDEBUG_KU32_FLAG_DEFAULT;
+    sstDebug.u32DebugFlags  = orxDEBUG_KU32_STATIC_MASK_DEFAULT;
     
     /* Set module as initialized */
-    sstDebug.u32Flags       = orxDEBUG_KU32_CONTROL_FLAG_READY;
+    sstDebug.u32Flags       = orxDEBUG_KU32_STATIC_FLAG_READY;
     
     /* Success */
     eResult = orxSTATUS_SUCCESS;
@@ -184,10 +187,10 @@ orxSTATUS _orxDebug_Init()
 orxVOID _orxDebug_Exit()
 {
   /* Initialized? */
-  if(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY)
+  if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
     /* Updates flags */
-    sstDebug.u32Flags &= ~orxDEBUG_KU32_CONTROL_FLAG_READY;
+    sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -232,7 +235,7 @@ orxVOID _orxDebug_Break()
 orxVOID _orxDebug_BackupFlags()
 {
   /* Checks */
-  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY);
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
 
   /* Backups flags */
   sstDebug.u32BackupDebugFlags = sstDebug.u32DebugFlags;
@@ -249,7 +252,7 @@ orxVOID _orxDebug_BackupFlags()
 orxVOID _orxDebug_RestoreFlags()
 {
   /* Checks */
-  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY);
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
 
   /* Restores flags */
   sstDebug.u32DebugFlags = sstDebug.u32BackupDebugFlags;
@@ -266,7 +269,7 @@ orxVOID _orxDebug_RestoreFlags()
 orxVOID orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 {
   /* Checks */
-  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_CONTROL_FLAG_READY);
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
 
   /* Updates flags */
   sstDebug.u32DebugFlags &= ~_u32Remove;
@@ -292,7 +295,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   sstDebug.zBuffer[0] = '\0';
 
   /* Time Stamp? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_FLAG_TIMESTAMP)
+  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
   {
     time_t u32Time;
 
@@ -303,13 +306,13 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   }
 
   /* Log Type? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_FLAG_TYPE)
+  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TYPE)
   {
     sprintf(sstDebug.zBuffer, "%s <%s>", sstDebug.zBuffer, orxDebug_GetLevelString(_eLevel));
   }
 
   /* Log FUNCTION, FILE & LINE? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_FLAG_TAGGED)
+  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TAGGED)
   {
     sprintf(sstDebug.zBuffer, "%s (%s() - %s:%ld)", sstDebug.zBuffer, _zFunction, _zFile, _u32Line);
   }
@@ -322,7 +325,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   sprintf(sstDebug.zBuffer, "%s %s\n", sstDebug.zBuffer, sstDebug.zLog);
 
   /* Use file? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_FLAG_FILE)
+  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
   {
     if(_eLevel == orxDEBUG_LEVEL_LOG)
     {
@@ -343,7 +346,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
    }
 
   /* Console Display? */
-  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_FLAG_CONSOLE)  
+  if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)  
   {
     if(_eLevel == orxDEBUG_LEVEL_LOG)
     {

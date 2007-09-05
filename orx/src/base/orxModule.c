@@ -99,7 +99,7 @@ orxVOID orxModule_RegisterAll()
 /*
  * Module flags
  */
-#define orxMODULE_KU32_FLAG_NONE                0x00000000L
+#define orxMODULE_KU32_STATIC_FLAG_NONE         0x00000000L
 
 
 /*

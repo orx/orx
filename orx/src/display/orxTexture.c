@@ -29,21 +29,21 @@
  * Platform independant defines
  */
 
+#define orxTEXTURE_KU32_STATIC_FLAG_NONE        0x00000000
+
+#define orxTEXTURE_KU32_STATIC_FLAG_READY       0x00000001
+
+#define orxTEXTURE_KU32_STATIC_MASK_ALL         0xFFFFFFFF
+
+
 #define orxTEXTURE_KU32_FLAG_NONE               0x00000000
 
-#define orxTEXTURE_KU32_FLAG_READY              0x00000001
+#define orxTEXTURE_KU32_FLAG_BITMAP             0x00000010
+#define orxTEXTURE_KU32_FLAG_EXTERNAL           0x00000020
+#define orxTEXTURE_KU32_FLAG_REF_COORD          0x00000100
+#define orxTEXTURE_KU32_FLAG_SIZE               0x00000200
 
 #define orxTEXTURE_KU32_MASK_ALL                0xFFFFFFFF
-
-
-#define orxTEXTURE_KU32_ID_FLAG_NONE            0x00000000
-
-#define orxTEXTURE_KU32_ID_FLAG_BITMAP          0x00000010
-#define orxTEXTURE_KU32_ID_FLAG_EXTERNAL        0x00000020
-#define orxTEXTURE_KU32_ID_FLAG_REF_COORD       0x00000100
-#define orxTEXTURE_KU32_ID_FLAG_SIZE            0x00000200
-
-#define orxTEXTURE_KU32_ID_MASK_ALL             0xFFFFFFFF
 
 #define orxTEXTURE_KU32_TABLE_SIZE              128
 
@@ -177,7 +177,7 @@ orxSTATUS orxTexture_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY))
+  if(!(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE_STATIC));
@@ -188,13 +188,13 @@ orxSTATUS orxTexture_Init()
     if (eResult == orxSTATUS_SUCCESS)
     {
       /* Creates hash table */
-      sstTexture.pstTable = orxHashTable_Create(orxTEXTURE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAGS_NONE, orxMEMORY_TYPE_MAIN);
+      sstTexture.pstTable = orxHashTable_Create(orxTEXTURE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Success? */
       if(sstTexture.pstTable != orxNULL)
       {
         /* Inits Flags */
-        sstTexture.u32Flags = orxTEXTURE_KU32_FLAG_READY;
+        sstTexture.u32Flags = orxTEXTURE_KU32_STATIC_FLAG_READY;
       }
     }
   }
@@ -219,7 +219,7 @@ orxSTATUS orxTexture_Init()
 orxVOID orxTexture_Exit()
 {
   /* Initialized? */
-  if(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY)
+  if(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY)
   {
     /* Deletes texture list */
     orxTexture_DeleteAll();
@@ -232,7 +232,7 @@ orxVOID orxTexture_Exit()
     orxStructure_Unregister(orxSTRUCTURE_ID_TEXTURE);
 
     /* Updates flags */
-    sstTexture.u32Flags &= ~orxTEXTURE_KU32_FLAG_READY;
+    sstTexture.u32Flags &= ~orxTEXTURE_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -253,7 +253,7 @@ orxTEXTURE *orxTexture_Create()
   orxTEXTURE *pstTexture;
 
   /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
 
   /* Creates texture */
   pstTexture = (orxTEXTURE *)orxStructure_Create(orxSTRUCTURE_ID_TEXTURE);
@@ -282,7 +282,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFil
   orxTEXTURE *pstTexture;
 
   /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_zBitmapFileName != orxNULL);
 
   /* Search for a texture using this bitmap */
@@ -344,7 +344,7 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTexture != orxNULL);
 
   /* Is the last self reference? */
@@ -388,7 +388,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTexture != orxNULL);
   orxASSERT(_pstBitmap != orxNULL);
 
@@ -396,7 +396,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
   orxTexture_UnlinkBitmap(_pstTexture);
 
   /* Has no texture now? */
-  if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_ID_FLAG_BITMAP) == orxFALSE)
+  if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) == orxFALSE)
   {
     orxTEXTURE *pstTexture;
 
@@ -410,7 +410,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       orxASSERT(_pstBitmap == (orxBITMAP *)pstTexture->hData);
 
       /* Updates flags */
-      orxStructure_SetFlags(_pstTexture, orxStructure_GetFlags(pstTexture, orxTEXTURE_KU32_ID_MASK_ALL) | orxTEXTURE_KU32_ID_FLAG_EXTERNAL, orxTEXTURE_KU32_ID_FLAG_NONE);
+      orxStructure_SetFlags(_pstTexture, orxStructure_GetFlags(pstTexture, orxTEXTURE_KU32_MASK_ALL) | orxTEXTURE_KU32_FLAG_EXTERNAL, orxTEXTURE_KU32_FLAG_NONE);
  
       /* References external texture */
       _pstTexture->hData      = (orxHANDLE)pstTexture;
@@ -427,7 +427,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       orxU32 u32Width, u32Height;
 
        /* Updates flags */
-      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_SIZE, orxTEXTURE_KU32_ID_FLAG_NONE);
+      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE, orxTEXTURE_KU32_FLAG_NONE);
  
       /* References bitmap */
       _pstTexture->hData = (orxHANDLE)_pstBitmap;
@@ -470,17 +470,17 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTexture != orxNULL);
 
   /* Has bitmap */
-  if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_ID_FLAG_BITMAP) != orxFALSE)
+  if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) != orxFALSE)
   {
     /* External bitmap? */
-    if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_ID_FLAG_EXTERNAL) != orxFALSE)
+    if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_EXTERNAL) != orxFALSE)
     {
       /* Updates flags */
-      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_ID_FLAG_NONE, (orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_EXTERNAL | orxTEXTURE_KU32_ID_FLAG_SIZE));
+      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_NONE, (orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_EXTERNAL | orxTEXTURE_KU32_FLAG_SIZE));
 
       /* Decreases external texture self reference counter */
       ((orxTEXTURE *)(_pstTexture->hData))->u32Counter--;
@@ -491,7 +491,7 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
     else
     {
       /* Updates flags */
-      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_ID_FLAG_NONE, (orxTEXTURE_KU32_ID_FLAG_BITMAP | orxTEXTURE_KU32_ID_FLAG_SIZE));
+      orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_NONE, (orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE));
 
       /* Deletes bitmap */
       orxDisplay_DeleteBitmap((orxBITMAP *)(_pstTexture->hData));
@@ -530,14 +530,14 @@ orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
   orxREGISTER orxBITMAP *pstBitmap = orxNULL;
 
   /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTexture != orxNULL);
 
   /* Has bitmap? */
-  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_ID_FLAG_BITMAP) != orxFALSE)
+  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) != orxFALSE)
   {
     /* External bitmap? */
-    if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_ID_FLAG_EXTERNAL) != orxFALSE)
+    if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_EXTERNAL) != orxFALSE)
     {
         pstBitmap = (orxBITMAP *)(((orxTEXTURE *)_pstTexture->hData)->hData);
     }
@@ -563,13 +563,13 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFL
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_FLAG_READY);
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTexture != orxNULL);
   orxASSERT(_pfWidth != orxNULL);
   orxASSERT(_pfHeight != orxNULL);
 
   /* Has size? */
-  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_ID_FLAG_SIZE) != orxFALSE)
+  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
   {
     /* Gets size */
     *_pfWidth  = _pstTexture->fWidth;

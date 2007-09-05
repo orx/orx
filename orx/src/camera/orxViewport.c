@@ -30,21 +30,21 @@
  */
 
 /* Control flags */
-#define orxVIEWPORT_KU32_FLAG_NONE                0x00000000
+#define orxVIEWPORT_KU32_STATIC_FLAG_NONE       0x00000000
 
-#define orxVIEWPORT_KU32_FLAG_READY               0x00000001
+#define orxVIEWPORT_KU32_STATIC_FLAG_READY      0x00000001
 
-#define orxVIEWPORT_KU32_MASK_ALL                 0xFFFFFFFF
+#define orxVIEWPORT_KU32_STATIC_MASK_ALL        0xFFFFFFFF
 
 /* ID flags */
-#define orxVIEWPORT_KU32_ID_FLAG_NONE             0x00000000
-#define orxVIEWPORT_KU32_ID_FLAG_ACTIVE           0x00000100
-#define orxVIEWPORT_KU32_ID_FLAG_VIRTUAL          0x00001000
-#define orxVIEWPORT_KU32_ID_FLAG_CAMERA           0x00010000
-#define orxVIEWPORT_KU32_ID_FLAG_SURFACE          0x00100000
+#define orxVIEWPORT_KU32_FLAG_NONE              0x00000000
+#define orxVIEWPORT_KU32_FLAG_ACTIVE            0x00000100
+#define orxVIEWPORT_KU32_FLAG_VIRTUAL           0x00001000
+#define orxVIEWPORT_KU32_FLAG_CAMERA            0x00010000
+#define orxVIEWPORT_KU32_FLAG_SURFACE           0x00100000
 
-#define orxVIEWPORT_KU32_ID_MASK_ALIGN            0xF0000000
-#define orxVIEWPORT_KU32_ID_MASK_ALL              0xFFFFFFFF
+#define orxVIEWPORT_KU32_MASK_ALIGN             0xF0000000
+#define orxVIEWPORT_KU32_MASK_ALL               0xFFFFFFFF
 
 
 /*
@@ -120,7 +120,7 @@ orxSTATIC orxVOID orxFASTCALL orxViewport_ComputeClipCorners(orxVIEWPORT *_pstVi
   pvClipSize      = &(_pstViewport->vClipSize);
 
   /* 2D? */
-  if(orxStructure_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets camera infos */
     orxCamera_GetOnScreenPosition(_pstViewport->pstCamera, &vCamPos);
@@ -158,10 +158,10 @@ orxSTATIC orxVOID orxFASTCALL orxViewport_UpdateCameraOnScreenPosition(orxVIEWPO
   orxASSERT(_pstViewport != orxNULL);
 
   /* Is virtual & has camera? */
-  if(orxStructure_TestAllFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_VIRTUAL | orxVIEWPORT_KU32_ID_FLAG_CAMERA) != orxFALSE)
+  if(orxStructure_TestAllFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_VIRTUAL | orxVIEWPORT_KU32_FLAG_CAMERA) != orxFALSE)
   {
     /* 2D? */
-    if(orxStructure_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_ID_FLAG_2D) != orxFALSE)
+    if(orxStructure_TestFlags(_pstViewport->pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE)
     {
       orxVECTOR vCamSize;
 
@@ -173,12 +173,12 @@ orxSTATIC orxVOID orxFASTCALL orxViewport_UpdateCameraOnScreenPosition(orxVIEWPO
       orxCamera_GetSize(_pstViewport->pstCamera, &vCamSize);
 
       /* X alignment */
-      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_LEFT) != orxFALSE)
+      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_STATIC_FLAG_ALIGN_LEFT) != orxFALSE)
       {
         /* Left aligned */
         fX = pvPos->fX;
       }
-      else if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT) != orxFALSE)
+      else if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_STATIC_FLAG_ALIGN_RIGHT) != orxFALSE)
       {
         /* Right aligned */
         fX = pvPos->fX + pvSize->fX - vCamSize.fX;
@@ -189,12 +189,12 @@ orxSTATIC orxVOID orxFASTCALL orxViewport_UpdateCameraOnScreenPosition(orxVIEWPO
         fX = pvPos->fX + (orxFLOAT)floor(0.5 * (pvSize->fX - vCamSize.fX)); /* floorf() or rintf() is not recognized by MSVC :/ */
       }
       /* Y alignment */
-      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_TOP) != orxFALSE)
+      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_STATIC_FLAG_ALIGN_TOP) != orxFALSE)
       {
         /* Left aligned */
         fY = pvPos->fY;
       }
-      else if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM) != orxFALSE)
+      else if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_STATIC_FLAG_ALIGN_BOTTOM) != orxFALSE)
       {
         /* Right aligned */
         fY = pvPos->fY + pvSize->fY - vCamSize.fY;
@@ -284,7 +284,7 @@ orxSTATUS orxViewport_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY))
+  if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
@@ -296,7 +296,7 @@ orxSTATUS orxViewport_Init()
     if(eResult == orxSTATUS_SUCCESS)
     {
       /* Inits Flags */
-      sstViewport.u32Flags = orxVIEWPORT_KU32_FLAG_READY;
+      sstViewport.u32Flags = orxVIEWPORT_KU32_STATIC_FLAG_READY;
     }
     else
     {
@@ -324,7 +324,7 @@ orxSTATUS orxViewport_Init()
 orxVOID orxViewport_Exit()
 {
   /* Initialized? */
-  if(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY)
+  if(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY)
   {
     /* Deletes viewport list */
     orxViewport_DeleteAll();
@@ -333,7 +333,7 @@ orxVOID orxViewport_Exit()
     orxStructure_Unregister(orxSTRUCTURE_ID_VIEWPORT);
 
     /* Updates flags */
-    sstViewport.u32Flags &= ~orxVIEWPORT_KU32_FLAG_READY;
+    sstViewport.u32Flags &= ~orxVIEWPORT_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -354,7 +354,7 @@ orxVIEWPORT *orxViewport_Create()
   orxVIEWPORT *pstViewport = orxNULL;
 
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
 
   /* Creates viewport */
   pstViewport = (orxVIEWPORT *)orxStructure_Create(orxSTRUCTURE_ID_VIEWPORT);
@@ -363,7 +363,7 @@ orxVIEWPORT *orxViewport_Create()
   if(pstViewport != orxNULL)
   {
     /* Inits viewport flags */
-    orxStructure_SetFlags(pstViewport, orxVIEWPORT_KU32_ID_FLAG_VIRTUAL | orxVIEWPORT_KU32_ID_FLAG_ACTIVE | orxVIEWPORT_KU32_FLAG_ALIGN_CENTER | orxVIEWPORT_KU32_FLAG_ALIGN_CENTER, orxVIEWPORT_KU32_ID_FLAG_NONE);
+    orxStructure_SetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_VIRTUAL | orxVIEWPORT_KU32_FLAG_ACTIVE | orxVIEWPORT_KU32_STATIC_FLAG_ALIGN_CENTER | orxVIEWPORT_KU32_STATIC_FLAG_ALIGN_CENTER, orxVIEWPORT_KU32_FLAG_NONE);
   }
   else
   {
@@ -388,7 +388,7 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
   /* Not referenced? */
@@ -434,17 +434,17 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
 orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
   /* Has already a camera? */
-  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_CAMERA) != orxFALSE)
+  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA) != orxFALSE)
   {
     /* Updates reference counter */
     orxStructure_DecreaseCounter((_pstViewport->pstCamera));
 
     /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_NONE, orxVIEWPORT_KU32_ID_FLAG_CAMERA);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_CAMERA);
   }
 
   /* Updates pointer */
@@ -457,7 +457,7 @@ orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *
     orxStructure_IncreaseCounter(_pstCamera);
 
     /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_CAMERA, orxVIEWPORT_KU32_ID_FLAG_NONE);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA, orxVIEWPORT_KU32_FLAG_NONE);
   }
 
   /* Updates camera on screen position */
@@ -475,7 +475,7 @@ orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *
 orxVOID orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxCONST orxVECTOR *_pvPosition)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
@@ -497,7 +497,7 @@ orxVOID orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxCONST 
 orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxCONST orxVECTOR *_pvSize)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
   orxASSERT(_pvSize != orxNULL);
 
@@ -519,11 +519,11 @@ orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxCONST orxV
 orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
   /* Has a camera? */
-  if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_ID_FLAG_CAMERA) != orxFALSE)
+  if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA) != orxFALSE)
   {
     return _pstViewport->pstCamera;
   }
@@ -542,7 +542,7 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
 orxVOID orxFASTCALL orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, orxVECTOR *_pvPosition)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
@@ -561,7 +561,7 @@ orxVOID orxFASTCALL orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, 
 orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxVECTOR *_pvSize)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
   orxASSERT(_pvSize != orxNULL);
 
@@ -581,12 +581,12 @@ orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxV
 orxVOID orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
-  orxASSERT((_u32AlignFlags & orxVIEWPORT_KU32_ID_MASK_ALIGN) == _u32AlignFlags)
+  orxASSERT((_u32AlignFlags & orxVIEWPORT_KU32_MASK_ALIGN) == _u32AlignFlags)
 
   /* Updates alignement */
-  orxStructure_SetFlags(_pstViewport, _u32AlignFlags & orxVIEWPORT_KU32_ID_MASK_ALIGN, orxVIEWPORT_KU32_ID_MASK_ALIGN);
+  orxStructure_SetFlags(_pstViewport, _u32AlignFlags & orxVIEWPORT_KU32_MASK_ALIGN, orxVIEWPORT_KU32_MASK_ALIGN);
 
   return;
 }
@@ -600,17 +600,17 @@ orxVOID orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _
 orxVOID orxFASTCALL orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstSurface)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
   /* Has already a surface? */
-  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_SURFACE) != orxFALSE)
+  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_SURFACE) != orxFALSE)
   {
     /* Updates surface reference counter */
     orxStructure_DecreaseCounter((_pstViewport->pstSurface));
 
     /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_NONE, orxVIEWPORT_KU32_ID_FLAG_SURFACE);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_SURFACE);
   }
 
   /* Updates surface pointer */
@@ -623,12 +623,12 @@ orxVOID orxFASTCALL orxViewport_SetSurface(orxVIEWPORT *_pstViewport, orxTEXTURE
     orxStructure_IncreaseCounter(_pstSurface);
 
     /* Updates flags */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_SURFACE, orxVIEWPORT_KU32_ID_FLAG_NONE);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_SURFACE, orxVIEWPORT_KU32_FLAG_NONE);
   }
   else
   {
     /* Deactivates viewport */
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_NONE, orxVIEWPORT_KU32_ID_FLAG_ACTIVE);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_ACTIVE);
   }
 
   return;
@@ -645,11 +645,11 @@ orxTEXTURE *orxFASTCALL orxViewport_GetSurface(orxCONST orxVIEWPORT *_pstViewpor
   orxTEXTURE *pstResult = orxNULL;
 
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
   /* Has surface? */
-  if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_ID_FLAG_SURFACE) != orxFALSE)
+  if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_SURFACE) != orxFALSE)
   {
     /* Updates result */
     pstResult = _pstViewport->pstSurface;
@@ -668,17 +668,17 @@ orxTEXTURE *orxFASTCALL orxViewport_GetSurface(orxCONST orxVIEWPORT *_pstViewpor
 orxVOID orxFASTCALL orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
   /* Updates activation flag */
   if(_bEnable != orxFALSE)
   {
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_ACTIVE, orxVIEWPORT_KU32_ID_FLAG_NONE);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ACTIVE, orxVIEWPORT_KU32_FLAG_NONE);
   }
   else
   {
-    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_ID_FLAG_NONE, orxVIEWPORT_KU32_ID_FLAG_ACTIVE);
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_ACTIVE);
   }
 
   return;
@@ -693,11 +693,11 @@ orxVOID orxFASTCALL orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnab
 orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
 
   /* Tests */
-  return(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_ID_FLAG_ACTIVE));
+  return(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_ACTIVE));
 }
 
 /***************************************************************************
@@ -709,7 +709,7 @@ orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
 orxVOID orxFASTCALL orxViewport_GetClip(orxCONST orxVIEWPORT * _pstViewport, orxVECTOR *_pvPosition, orxVECTOR *_pvSize)
 {
   /* Checks */
-  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_FLAG_READY);
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstViewport != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
   orxASSERT(_pvSize != orxNULL);

@@ -33,9 +33,9 @@
 /** Module flags
  */
 
-#define orxGRAPHIC_KU32_FLAG_NONE           0x00000000
+#define orxGRAPHIC_KU32_STATIC_FLAG_NONE    0x00000000
 
-#define orxGRAPHIC_KU32_FLAG_READY          0x00000001
+#define orxGRAPHIC_KU32_STATIC_FLAG_READY   0x00000001
 
 
 /***************************************************************************
@@ -121,7 +121,7 @@ orxSTATUS orxGraphic_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
   
   /* Not already Initialized? */
-  if((sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY) == orxGRAPHIC_KU32_FLAG_NONE)
+  if((sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY) == orxGRAPHIC_KU32_STATIC_FLAG_NONE)
   {
     /* Cleans static controller */
     orxMemory_Set(&sstGraphic, 0, sizeof(orxGRAPHIC_STATIC));
@@ -141,7 +141,7 @@ orxSTATUS orxGraphic_Init()
   if(eResult == orxSTATUS_SUCCESS)
   {
     /* Inits Flags */
-    sstGraphic.u32Flags = orxGRAPHIC_KU32_FLAG_READY;
+    sstGraphic.u32Flags = orxGRAPHIC_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -157,7 +157,7 @@ orxSTATUS orxGraphic_Init()
 orxVOID orxGraphic_Exit()
 {
   /* Initialized? */
-  if(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY)
+  if(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY)
   {
     /* Deletes graphic list */
     orxGraphic_DeleteAll();
@@ -166,7 +166,7 @@ orxVOID orxGraphic_Exit()
     orxStructure_Unregister(orxSTRUCTURE_ID_GRAPHIC);
 
     /* Updates flags */
-    sstGraphic.u32Flags &= ~orxGRAPHIC_KU32_FLAG_READY;
+    sstGraphic.u32Flags &= ~orxGRAPHIC_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -184,7 +184,7 @@ orxGRAPHIC *orxGraphic_Create()
   orxGRAPHIC *pstGraphic;
 
   /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
 
   /* Creates graphic */
   pstGraphic = (orxGRAPHIC *)orxStructure_Create(orxSTRUCTURE_ID_GRAPHIC);
@@ -193,7 +193,7 @@ orxGRAPHIC *orxGraphic_Create()
   if(pstGraphic != orxNULL)
   {
     /* Inits flags */
-    orxStructure_SetFlags(pstGraphic, orxGRAPHIC_KU32_ID_FLAG_NONE, orxGRAPHIC_KU32_ID_MASK_ALL);
+    orxStructure_SetFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_ALL);
   }
 
   /* Done! */
@@ -208,7 +208,7 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstGraphic != orxNULL);
 
   /* Not referenced? */
@@ -242,7 +242,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   
   /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstGraphic != orxNULL);
 
   /* Had previously data? */
@@ -268,7 +268,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     if(orxSTRUCTURE_GET_POINTER(_pstData, TEXTURE) != orxNULL)
     {
       /* Updates ID flags */
-      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_ID_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_STATIC_FLAG_NONE);
     }
     {
       /* !!! MSG !!! */
@@ -293,7 +293,7 @@ orxSTRUCTURE *orxFASTCALL orxGraphic_GetData(orxCONST orxGRAPHIC *_pstGraphic)
   orxSTRUCTURE *pstStructure;
 
   /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstGraphic != orxNULL);
 
   /* Updates result */
@@ -313,7 +313,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxV
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstGraphic != orxNULL);
   orxASSERT(_pvPivot != orxNULL);
 
@@ -332,7 +332,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxV
 orxVECTOR *orxFASTCALL orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvPivot)
 {
   /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_FLAG_READY);
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstGraphic != orxNULL);
   orxASSERT(_pvPivot != orxNULL);
 

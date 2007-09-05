@@ -30,8 +30,8 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
-#define orxFILE_KU32_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxFILE_KU32_FLAG_READY 0x00000001  /**< The module has been initialized */
+#define orxFILE_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxFILE_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
 typedef struct __orxFILE_STATIC_t
 {
@@ -63,16 +63,16 @@ orxSTATIC orxFILE_STATIC sstFile;
 orxSTATUS orxFile_LibC_Init()
 {
   /* Module not already initialized ? */
-  orxASSERT(!(sstFile.u32Flags & orxFILE_KU32_FLAG_READY));
+  orxASSERT(!(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY));
 
   /* Cleans static controller */
   orxMemory_Set(&sstFile, 0, sizeof(orxFILE_STATIC));
 
 	/* Set module has ready */
-	sstFile.u32Flags = orxFILE_KU32_FLAG_READY;
+	sstFile.u32Flags = orxFILE_KU32_STATIC_FLAG_READY;
 
   /* Module successfully initialized ? */
-  if (sstFile.u32Flags & orxFILE_KU32_FLAG_READY)
+  if (sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }
@@ -87,10 +87,10 @@ orxSTATUS orxFile_LibC_Init()
 orxVOID orxFile_LibC_Exit()
 {
   /* Module initialized ? */
-  orxASSERT((sstFile.u32Flags & orxFILE_KU32_FLAG_READY) == orxFILE_KU32_FLAG_READY);
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
   
   /* Module not ready now */
-  sstFile.u32Flags = orxFILE_KU32_FLAG_NONE;
+  sstFile.u32Flags = orxFILE_KU32_STATIC_FLAG_NONE;
 }
 
 /** Open a file for later read or write operation.
@@ -135,31 +135,31 @@ orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
    */
    
   /* Read only ? */
-  if(_u32OpenFlags == orxFILE_KU32_FLAGS_OPEN_READ)
+  if(_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_READ)
   {
     /* Copy the mode in the string */
     orxMemory_Copy(&zMode, "r", sizeof(orxCHAR));
   }
   /* Write only ?*/
-  else if(_u32OpenFlags == orxFILE_KU32_FLAGS_OPEN_WRITE)
+  else if(_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_WRITE)
   {
     /* Copy the mode in the string */
     orxMemory_Copy(&zMode, "w", sizeof(orxCHAR));
   }
   /* Appen only ? */
-  else if((_u32OpenFlags == orxFILE_KU32_FLAGS_OPEN_APPEND)
-       || (_u32OpenFlags == (orxFILE_KU32_FLAGS_OPEN_WRITE | orxFILE_KU32_FLAGS_OPEN_APPEND)))
+  else if((_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_APPEND)
+       || (_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND)))
   {
     /* Copy the mode in the string */
     orxMemory_Copy(&zMode, "a", sizeof(orxCHAR));
   }
-  else if(_u32OpenFlags == (orxFILE_KU32_FLAGS_OPEN_READ | orxFILE_KU32_FLAGS_OPEN_WRITE))
+  else if(_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE))
   {
     /* Copy the mode in the string */
     orxMemory_Copy(&zMode, "w+", 2 * sizeof(orxCHAR));
   }
-  else if((_u32OpenFlags == (orxFILE_KU32_FLAGS_OPEN_READ | orxFILE_KU32_FLAGS_OPEN_APPEND))
-       || (_u32OpenFlags == (orxFILE_KU32_FLAGS_OPEN_READ | orxFILE_KU32_FLAGS_OPEN_WRITE | orxFILE_KU32_FLAGS_OPEN_APPEND)))
+  else if((_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_APPEND))
+       || (_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND)))
   {
     /* Copy the mode in the string */
     orxMemory_Copy(&zMode, "a+", 2 * sizeof(orxCHAR));

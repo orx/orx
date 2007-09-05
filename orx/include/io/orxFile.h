@@ -30,9 +30,9 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
-#define orxFILE_KU32_FLAGS_OPEN_READ    0x00000001 /**< opened for read */
-#define orxFILE_KU32_FLAGS_OPEN_WRITE   0x00000002 /**< opened for write */
-#define orxFILE_KU32_FLAGS_OPEN_APPEND  0x00000004 /**< descriptor positioned at the end of file */
+#define orxFILE_KU32_FLAG_OPEN_READ   0x00000001 /**< opened for read */
+#define orxFILE_KU32_FLAG_OPEN_WRITE  0x00000002 /**< opened for write */
+#define orxFILE_KU32_FLAG_OPEN_APPEND 0x00000004 /**< descriptor positioned at the end of file */
 
 typedef struct __orxFILE_t orxFILE;
 

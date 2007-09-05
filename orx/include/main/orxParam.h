@@ -32,16 +32,16 @@
 /* Macro definition */
 
 /* Flags definitions */
-#define orxPARAM_KU32_FLAGS_NONE             0x00000000 /**< No flags (default behaviour) */
-#define orxPARAM_KU32_FLAGS_MULTIPLE_ALLOWED 0x00000001 /**< It's possible to have multiple instance of the same param */
-#define orxPARAM_KU32_FLAGS_STOP_ON_ERROR    0x00000002 /**< If the param extra flag parsing fails, stop the engine */
+#define orxPARAM_KU32_FLAG_NONE             0x00000000 /**< No flags (default behaviour) */
+#define orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED 0x00000001 /**< It's possible to have multiple instance of the same param */
+#define orxPARAM_KU32_FLAG_STOP_ON_ERROR    0x00000002 /**< If the param extra flag parsing fails, stop the engine */
 
 /** Callback definition (called when a parameter has been found
  * @param[in] _u32NbParam Number of extra parameters read for this option
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-typedef orxSTATUS (*orxPARAM_INFO_FUNCTION)(orxU32 _u32NbParam, orxSTRING _azParams[]);
+typedef orxSTATUS (*orxPARAM_KU32_FLAG_FUNCTION)(orxU32 _u32NbParam, orxSTRING _azParams[]);
  
 /* Parameter's infos */
 typedef struct __orxPARAM_t
@@ -63,7 +63,7 @@ typedef struct __orxPARAM_t
   orxSTRING               zLongDesc;
   
   /* Function called when the parameter is detected in the command line */
-  orxPARAM_INFO_FUNCTION pfnParser;
+  orxPARAM_KU32_FLAG_FUNCTION pfnParser;
   
 } orxPARAM;
 

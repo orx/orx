@@ -58,11 +58,11 @@
   #endif /* __orxWINDOWS__ */
 #endif /* __orxLINUX__ */
 
-#define orxTEST_KU32_FLAG_NONE                0x00000000L /**< No flags have been set */
-#define orxTEST_KU32_FLAG_READY               0x00000001L /**< The module has been initialized */
+#define orxTEST_KU32_STATIC_FLAG_NONE         0x00000000L /**< No flags have been set */
+#define orxTEST_KU32_STATIC_FLAG_READY        0x00000001L /**< The module has been initialized */
 
-#define orxTEST_KU32_FLAG_IN_USE              0x00000002L /**< orx runs in test mode */
-#define orxTEST_KU32_FLAG_FREEZE              0x00000004L /**< Display menu freeze flag */
+#define orxTEST_KU32_STATIC_FLAG_IN_USE       0x00000002L /**< orx runs in test mode */
+#define orxTEST_KU32_STATIC_FLAG_FREEZE       0x00000004L /**< Display menu freeze flag */
 
 
 #define orxTEST_KU32_MAX_REGISTERED_FUNCTIONS 256
@@ -111,7 +111,7 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
   void *pHandle;                              /* Dynamic Library handle */
 
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_zDirName != orxNULL);
@@ -166,7 +166,7 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
   HINSTANCE hLibrary;         /* Handle on the loaded library */
   
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_zDirName != orxNULL);
@@ -233,7 +233,7 @@ orxVOID orxTest_Release()
   orxU32 u32Index;  /* Index used to traverse lib array */
   
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
   
   /* Traverse and free loaded library for each platform */
   for (u32Index = 0; u32Index < sstTest.u32NbLibrary; u32Index++)
@@ -264,7 +264,7 @@ orxSTATIC orxINLINE orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleN
   orxU32 u32Index;  /* Index used to traverse the function array */
 
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_zModuleName != orxNULL);
@@ -290,7 +290,7 @@ orxSTATIC orxINLINE orxVOID orxTest_ResetVisibility()
   orxU32 u32Index;  /* Index used to traverse the function array */
   
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
   
   for (u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
   {
@@ -305,7 +305,7 @@ orxSTATIC orxINLINE orxVOID orxTest_ResetVisibility()
 orxSTATUS orxFASTCALL orxTest_Execute(orxHANDLE _hRegisteredFunc)
 {
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   if ((_hRegisteredFunc != orxHANDLE_Undefined) && ((orxU32)_hRegisteredFunc < sstTest.u32NbRegisteredFunc))
@@ -326,7 +326,7 @@ orxVOID orxTest_DisplayMenu()
   orxU32 u32Index;  /* Index used to traverse the function array */
   
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
   
   /* Display menu header */
   printf("\n\n*************************************\n");
@@ -354,7 +354,7 @@ orxVOID orxTest_DisplayMenu()
 orxSTATUS orxTest_ParamTest(orxU32 _u32NbParam, orxSTRING _azParams[])
 {
   /* Set Test Flag */
-  sstTest.u32Flags |= orxTEST_KU32_FLAG_IN_USE;
+  sstTest.u32Flags |= orxTEST_KU32_STATIC_FLAG_IN_USE;
 
   /* Load dynamic library */
   orxTest_Load("."DIRSEP"modules");
@@ -383,7 +383,6 @@ orxVOID orxTest_Setup()
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_TEXTIO);
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_PARAM);
-  orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_OBJECT);
   orxModule_AddDependency(orxMODULE_ID_TEST, orxMODULE_ID_CLOCK);
 
   return;
@@ -396,7 +395,7 @@ orxSTATUS orxTest_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
-  if(!(sstTest.u32Flags & orxTEST_KU32_FLAG_READY))
+  if(!(sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY))
   {
     orxPARAM stParam;
 
@@ -405,10 +404,10 @@ orxSTATUS orxTest_Init()
     sstTest.u32NbRegisteredFunc = 0;
   
     /* Module ready */
-    sstTest.u32Flags |= orxTEST_KU32_FLAG_READY;
+    sstTest.u32Flags |= orxTEST_KU32_STATIC_FLAG_READY;
     
     /* Sets the param structure up */    
-    stParam.u32Flags    = orxPARAM_KU32_FLAGS_NONE;
+    stParam.u32Flags    = orxPARAM_KU32_FLAG_NONE;
     stParam.pfnParser   = orxTest_ParamTest;
     stParam.zShortName  = "T";
     stParam.zLongName   = "test";
@@ -437,13 +436,13 @@ orxSTATUS orxTest_Init()
 orxVOID orxTest_Exit()
 {
   /* Module initialized ? */
-  if ((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY)
+  if ((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY)
   {
     /* Release library */
     orxTest_Release();
 
     /* Module becomes not ready */
-    sstTest.u32Flags &= ~orxTEST_KU32_FLAG_READY;
+    sstTest.u32Flags &= ~orxTEST_KU32_STATIC_FLAG_READY;
   }
 
   return;
@@ -461,7 +460,7 @@ orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST
   orxHANDLE hRet;   /* Returnd handle value */
   
   /* Module initialized ? */
-  orxASSERT((sstTest.u32Flags & orxTEST_KU32_FLAG_READY) == orxTEST_KU32_FLAG_READY);
+  orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
     
   /* Correct parameters ? */
   orxASSERT(_zModuleName != orxNULL);
@@ -506,7 +505,7 @@ orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *
   orxS32 s32Val;                                          /* value of entry */
 
   /* Frozen? */
-  if(sstTest.u32Flags & orxTEST_KU32_FLAG_FREEZE)
+  if(sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_FREEZE)
   {
     return;
   }
@@ -542,7 +541,7 @@ orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *
       }
 
       /* Freeze? */
-      if(sstTest.u32Flags & orxTEST_KU32_FLAG_FREEZE)
+      if(sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_FREEZE)
       {
         return;
       }
@@ -572,7 +571,7 @@ orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *
 orxVOID orxFASTCALL orxTest_Start()
 {
   /* In use? */
-  if(sstTest.u32Flags & orxTEST_KU32_FLAG_IN_USE)
+  if(sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_IN_USE)
   {
     /* Try to create the clock */
     sstTest.pstClock = orxClock_Create(100, orxCLOCK_TYPE_CORE);
@@ -607,13 +606,13 @@ orxVOID orxFASTCALL orxTest_Freeze(orxBOOL _bFreeze)
   if(_bFreeze != orxFALSE)
   {
     /* Updates flags */
-    sstTest.u32Flags |= orxTEST_KU32_FLAG_FREEZE;
+    sstTest.u32Flags |= orxTEST_KU32_STATIC_FLAG_FREEZE;
   }
   /* Unfreezes */
   else
   {
     /* Updates flags */
-    sstTest.u32Flags &= ~orxTEST_KU32_FLAG_FREEZE;
+    sstTest.u32Flags &= ~orxTEST_KU32_STATIC_FLAG_FREEZE;
   }
 }
 

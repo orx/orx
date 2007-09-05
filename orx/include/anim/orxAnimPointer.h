@@ -49,9 +49,9 @@
 
 /** AnimPointer ID Flags
  */
-#define orxANIMPOINTER_KU32_ID_FLAG_NONE      0x00000000  /**< No flags */
+#define orxANIMPOINTER_KU32_FLAG_NONE         0x00000000  /**< No flags */
 
-#define orxANIMPOINTER_KU32_ID_FLAG_PAUSE     0x00010000  /**< Animation id pause flag */
+#define orxANIMPOINTER_KU32_FLAG_PAUSE        0x00010000  /**< Animation id pause flag */
 
 
 /** Internal AnimPointer structure

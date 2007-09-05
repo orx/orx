@@ -30,14 +30,14 @@
 #include "io/orxFileSystem.h"
 #include "io/orxPackage.h"
 
-#define orxPACKAGE_KU32_FLAGS_LOCATION_INTERN  0x00000001 /**< file inside the compiled archive */
-#define orxPACKAGE_KU32_FLAGS_LOCATION_EXTERN  0x00000002 /**< file outside the compiled archive */
+#define orxPACKAGE_KU32_FLAG_LOCATION_INTERN  0x00000001 /**< file inside the compiled archive */
+#define orxPACKAGE_KU32_FLAG_LOCATION_EXTERN  0x00000002 /**< file outside the compiled archive */
 
-#define orxPACKAGE_KU32_FLAGS_OPEN_READ        0x00000004 /**< package opened in read mode */
-#define orxPACKAGE_KU32_FLAGS_OPEN_WRITE       0x00000008 /**< package opened in write mode */
+#define orxPACKAGE_KU32_FLAG_OPEN_READ        0x00000004 /**< package opened in read mode */
+#define orxPACKAGE_KU32_FLAG_OPEN_WRITE       0x00000008 /**< package opened in write mode */
 
 /** Store datas about the current file. */
-typedef struct __orxPACKAGE_INFOS_t
+typedef struct __orxPACKAGE_INFO_t
 {
   orxFILESYSTEM_INFO stFileInfos;     /**< File's information */
   orxU32 u32ExtraPackageFlags;  /**< Extra informations specific to package (location) */

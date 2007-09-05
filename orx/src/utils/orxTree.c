@@ -26,8 +26,8 @@
  * Platform independant defines
  */
 
-#define orxTREE_KU32_FLAG_NONE                    0x00000000
-#define orxTREE_KU32_FLAG_READY                   0x00000001
+#define orxTREE_KU32_STATIC_FLAG_NONE             0x00000000
+#define orxTREE_KU32_STATIC_FLAG_READY            0x00000001
 
 
 /*
@@ -230,13 +230,13 @@ orxSTATUS orxTree_Init()
   eResult = orxSTATUS_FAILURE;
   
   /* Already Initialized? */
-  if(!(sstTree.u32Flags & orxTREE_KU32_FLAG_READY))
+  if(!(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstTree, 0, sizeof(orxTREE_STATIC));
   
     /* Inits ID Flags */
-    sstTree.u32Flags = orxTREE_KU32_FLAG_READY;
+    sstTree.u32Flags = orxTREE_KU32_STATIC_FLAG_READY;
     
     /* Success */
     eResult = orxSTATUS_SUCCESS;
@@ -262,10 +262,10 @@ orxSTATUS orxTree_Init()
 orxVOID orxTree_Exit()
 {
   /* Initialized? */
-  if(sstTree.u32Flags & orxTREE_KU32_FLAG_READY)
+  if(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY)
   {
     /* Updates flags */
-    sstTree.u32Flags &= ~orxTREE_KU32_FLAG_READY;
+    sstTree.u32Flags &= ~orxTREE_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -286,7 +286,7 @@ orxSTATUS orxTree_Clean(orxTREE *_pstTree)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
     
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_FLAG_READY);
+  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTree != orxNULL);
 
   /* Non empty? */
@@ -318,7 +318,7 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_FLAG_READY);
+  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTree != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -373,7 +373,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   orxREGISTER orxTREE *pstTree;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_FLAG_READY);
+  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -462,7 +462,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   orxREGISTER orxTREE *pstTree;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_FLAG_READY);
+  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -519,7 +519,7 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   orxREGISTER orxTREE *pstTree;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_FLAG_READY);
+  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -589,7 +589,7 @@ orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_FLAG_READY);
+  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstNode != orxNULL);
 
   /* Gets tree */

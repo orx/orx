@@ -38,18 +38,19 @@
 
 /* *** orxDEBUG flags *** */
 
-#define orxDEBUG_KU32_FLAG_NONE               0x00000000
-#define orxDEBUG_KU32_FLAG_ALL                0x0FFFFFFF
+#define orxDEBUG_KU32_STATIC_FLAG_NONE                0x00000000
 
-#define orxDEBUG_KU32_FLAG_TIMESTAMP          0x00000001
-#define orxDEBUG_KU32_FLAG_TYPE               0x00000002
-#define orxDEBUG_KU32_FLAG_TAGGED             0x00000004
+#define orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP           0x00000001
+#define orxDEBUG_KU32_STATIC_FLAG_TYPE                0x00000002
+#define orxDEBUG_KU32_STATIC_FLAG_TAGGED              0x00000004
 
-#define orxDEBUG_KU32_FLAG_FILE               0x00000010
-#define orxDEBUG_KU32_FLAG_CONSOLE            0x00000020
-#define orxDEBUG_KU32_FLAG_GRAPHIC            0x00000040
+#define orxDEBUG_KU32_STATIC_FLAG_FILE                0x00000010
+#define orxDEBUG_KU32_STATIC_FLAG_CONSOLE             0x00000020
+#define orxDEBUG_KU32_STATIC_FLAG_GRAPHIC             0x00000040
 
-#define orxDEBUG_KU32_FLAG_DEFAULT            0x00000037
+#define orxDEBUG_KU32_STATIC_MASK_DEFAULT             0x00000037
+
+#define orxDEBUG_KU32_STATIC_MASK_USER_ALL            0x0FFFFFFF
 
 
 /* *** Misc *** */
@@ -114,7 +115,7 @@
 /* *** Debug defines. *** */
 
 #define orxDEBUG_KS32_BUFFER_MAX_NUMBER       32
-#define orxDEBUG_KS32_BUFFER_OUTPUT_SIZE      512
+#define orxDEBUG_KS32_BUFFER_OUTPUT_SIZE      1024
 
 #define orxDEBUG_KZ_DATE_FORMAT               "[%Y-%m-%d %H:%M:%S]"
 
