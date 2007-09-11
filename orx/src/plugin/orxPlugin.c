@@ -748,6 +748,7 @@ orxVOID orxPlugin_Setup()
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_HASHTABLE);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_TEXTIO);
+  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_PARAM);
 
   return;
 }
