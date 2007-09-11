@@ -20,6 +20,7 @@
 #include "plugin/orxPlugin.h"
 
 #include "debug/orxDebug.h"
+#include "main/orxParam.h"
 #include "io/orxTextIO.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
@@ -311,10 +312,11 @@ orxVOID orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo,
  This function registers a core function.
  Returns orxVOID.
  ***************************************************************************/
-orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
+orxSTATIC orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
   orxCONST orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
-  orxU32 u32PluginIndex, u32FunctionIndex;
+  orxU32                            u32PluginIndex, u32FunctionIndex;
+  orxSTATUS                         eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(_pfnFunctionInfo != orxNULL);
@@ -346,6 +348,9 @@ orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FU
 
       /* Updates plugin status */
       sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY;
+      
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
@@ -358,7 +363,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FU
   }
 
   /* Done! */
-  return;
+  return eResult;
 }
 
 /***************************************************************************
@@ -605,7 +610,7 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
     pfnInit(&u32UserFunctionNumber, &astUserFunctionInfo);
 
     /* Adds all functions to plugin info */
-    for(i = 0; i < u32UserFunctionNumber; i++)
+    for(i = 0; (eResult == orxSTATUS_SUCCESS) && (i < u32UserFunctionNumber); i++)
     {
       /* Is function valid? */
       if(astUserFunctionInfo[i].pfnFunction != orxNULL)
@@ -628,12 +633,15 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
         if(pstFunctionInfo->eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID)
         {
           /* Registers core function */
-          orxPlugin_RegisterCoreFunction(pstFunctionInfo);
+          eResult = orxPlugin_RegisterCoreFunction(pstFunctionInfo);
         }
       }
       else
       {
         /* !!! MSG !!! */
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
       }
     }
   }
@@ -699,6 +707,27 @@ orxSTATIC orxINLINE orxVOID orxPlugin_DeleteAll()
   return;
 }
 
+/** Processes command line parameters
+ * @param[in] _u32ParamCount  Number of extra parameters read for this option
+ * @param[in] _azParams       Array of extra parameters (the first one is always the option name)
+ * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
+ */
+orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, orxCONST orxSTRING _azParams[])
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxU32    i;
+
+  /* For all specified plugin names */
+  for(i = 1; (eResult == orxSTATUS_SUCCESS) && (i < _u32ParamCount); i++)
+  {
+    /* Loads plugin */
+    eResult = (orxPlugin_Load(_azParams[i], _azParams[i]) != orxHANDLE_Undefined);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  ***************************************************************************
@@ -745,12 +774,25 @@ orxSTATUS orxPlugin_Init()
     /* Is bank valid? */
     if(sstPlugin.pstPluginBank != orxNULL)
     {
+      orxPARAM stParams;
+
       /* Updates status flags */
       sstPlugin.u32Flags = orxPLUGIN_KU32_STATIC_FLAG_READY;
 
       /* Registers all core plugins */
       orxPlugin_RegisterCorePlugins();
 
+      /* Inits the param structure */
+      orxMemory_Set(&stParams, 0, sizeof(orxPARAM));
+      stParams.pfnParser  = orxPlugin_ProcessParams;
+      stParams.zShortName = "P";
+      stParams.zLongName  = "plugin";
+      stParams.zShortDesc = "Loads the specified plugins.";
+      stParams.zLongDesc  = "Loads the specified plugins from the current execution folder. More than one plugin can be specified. They can be core or user plugins.";
+
+      /* Registers it */
+      orxParam_Register(&stParams);
+      
       /* Successful */
       eResult = orxSTATUS_SUCCESS;
     }

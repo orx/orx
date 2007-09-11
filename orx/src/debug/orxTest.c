@@ -351,7 +351,7 @@ orxVOID orxTest_DisplayMenu()
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-orxSTATUS orxTest_ParamTest(orxU32 _u32NbParam, orxSTRING _azParams[])
+orxSTATUS orxFASTCALL orxTest_ParamTest(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[])
 {
   /* Set Test Flag */
   sstTest.u32Flags |= orxTEST_KU32_STATIC_FLAG_IN_USE;

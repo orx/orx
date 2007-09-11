@@ -89,7 +89,7 @@ orxPARAM_INFOS *orxParam_Get(orxU32 _u32ParamName)
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-orxSTATUS orxParamHelp(orxU32 _u32NbParam, orxSTRING _azParams[])
+orxSTATUS orxFASTCALL orxParamHelp(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[])
 {
   /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
@@ -310,36 +310,37 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
       /* Can we store the parameter ? */
       if (bStoreParam)
       {
-          /* Allocate a new cell in the bank */
-          pstParamInfos = (orxPARAM_INFOS *)orxBank_Allocate(sstParam.pstBank);
-        
-          /* Allocation success ? */
-          if (pstParamInfos != orxNULL)
+        /* Allocate a new cell in the bank */
+        pstParamInfos = (orxPARAM_INFOS *)orxBank_Allocate(sstParam.pstBank);
+
+        /* Allocation success ? */
+        if (pstParamInfos != orxNULL)
+        {
+          /* Copy input values */
+          pstParamInfos->stParam  = *_pstParam;
+          pstParamInfos->u32Count = 0;
+
+          /* Store Params in the hash Table (with short name as key) */
+          orxHashTable_Add(sstParam.pstHashTable, u32ShortName, pstParamInfos);
+
+          /* Store Param with long name as key if it exists */
+          if (_pstParam->zLongName != orxNULL)
           {
-            /* Copy input values */
-            pstParamInfos->stParam  = *_pstParam;
-            pstParamInfos->u32Count = 0;
-            
-            /* Store Params in the hash Table (with short name as key) */
-            orxHashTable_Add(sstParam.pstHashTable, u32ShortName, pstParamInfos);
-            
-            /* Store Param with long name as key if it exists */
-            if (_pstParam->zLongName != orxNULL)
-            {
-              orxHashTable_Add(sstParam.pstHashTable, u32LongName, pstParamInfos);
-              
-              /* Success */
-              eResult = orxSTATUS_SUCCESS;
-            }
+            /* Adds it to table */
+            orxHashTable_Add(sstParam.pstHashTable, u32LongName, pstParamInfos);
+
+            /* Success */
+            eResult = orxSTATUS_SUCCESS;
           }
         }
-        else
-        {
-          orxDEBUG_LOG(orxDEBUG_LEVEL_PARAM,
-                       "A parameter with the same long name (%s%s) has already been registered",
-                       orxPARAM_KZ_MODULE_LONG_PREFIX,
-                       _pstParam->zLongName);
-        }
+      }
+      else
+      {
+        orxDEBUG_LOG(orxDEBUG_LEVEL_PARAM,
+                     "A parameter with the same long name (%s%s) has already been registered",
+                     orxPARAM_KZ_MODULE_LONG_PREFIX,
+                     _pstParam->zLongName);
+      }
     }
     else
     {
