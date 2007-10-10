@@ -235,7 +235,7 @@ orxSTATUS orxTree_Init()
     /* Cleans static controller */
     orxMemory_Set(&sstTree, 0, sizeof(orxTREE_STATIC));
   
-    /* Inits ID Flags */
+    /* Inits flags */
     sstTree.u32Flags = orxTREE_KU32_STATIC_FLAG_READY;
     
     /* Success */

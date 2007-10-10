@@ -434,7 +434,7 @@ orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
     orxMemory_Set(pstPluginInfo, 0, sizeof(orxPLUGIN_INFO));
 
     /* Undefines plugin handle */
-    pstPluginInfo->hPluginHandle      = orxHANDLE_Undefined;
+    pstPluginInfo->hPluginHandle      = orxHANDLE_UNDEFINED;
 
     /* Creates function bank */
     pstPluginInfo->pstFunctionBank    = orxBank_Create(orxPLUGIN_KU32_FUNCTION_BANK_SIZE, sizeof(orxPLUGIN_FUNCTION_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -541,7 +541,7 @@ orxSTATIC orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHa
   orxPLUGIN_INFO *pstPluginInfo = orxNULL;
 
   /* Checks */
-  orxASSERT(_hPluginHandle != orxHANDLE_Undefined);
+  orxASSERT(_hPluginHandle != orxHANDLE_UNDEFINED);
 
   /* Gets plugin info */
   pstPluginInfo = (orxPLUGIN_INFO *)_hPluginHandle;
@@ -564,7 +564,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
   orxPLUGIN_FUNCTION pfnFunction = orxNULL;
 
   /* Checks */
-  orxASSERT(_pstSysPlugin != orxHANDLE_Undefined);
+  orxASSERT(_pstSysPlugin != orxHANDLE_UNDEFINED);
   orxASSERT(_zFunctionName != orxNULL);
   
   /* Gets function */
@@ -574,7 +574,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
   if(pfnFunction == orxNULL)
   {
     /* Logs an error */
-    orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
   }
 
   /* Done! */
@@ -721,7 +721,7 @@ orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, orxCONST or
   for(i = 1; (eResult == orxSTATUS_SUCCESS) && (i < _u32ParamCount); i++)
   {
     /* Loads plugin */
-    eResult = (orxPlugin_Load(_azParams[i], _azParams[i]) != orxHANDLE_Undefined);
+    eResult = (orxPlugin_Load(_azParams[i], _azParams[i]) != orxHANDLE_UNDEFINED);
   }
 
   /* Done! */
@@ -862,7 +862,7 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
                    |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                    |orxDEBUG_KU32_STATIC_FLAG_TYPE,
                     orxDEBUG_KU32_STATIC_MASK_USER_ALL);
-  orxDEBUG_LOG(orxDEBUG_LEVEL_ALL, MSG_PLUGIN_KZ_DEFAULT_NOT_LOADED_ZZI, _zFunctionName, _zFileName, _u32Line);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, MSG_PLUGIN_KZ_DEFAULT_NOT_LOADED_ZZI, _zFunctionName, _zFileName, _u32Line);
   orxDEBUG_FLAG_RESTORE();
 
   return orxNULL;
@@ -873,13 +873,13 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
  Loads the shared object specified as a null terminated string, and makes
  it subsequently available under the name in the 2nd param.
  
- returns: plugin handle on success, orxHANDLE_Undefined if load error
+ returns: plugin handle on success, orxHANDLE_UNDEFINED if load error
  ***************************************************************************/
 orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName)
 {
   orxSYSPLUGIN pstSysPlugin;
   orxPLUGIN_INFO *pstPluginInfo;
-  orxHANDLE hPluginHandle = orxHANDLE_Undefined;
+  orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
@@ -925,7 +925,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
         orxPlugin_DeletePluginInfo(pstPluginInfo);
 
         /* Empty plugin */
-        hPluginHandle = orxHANDLE_Undefined;
+        hPluginHandle = orxHANDLE_UNDEFINED;
       }
     }
     else
@@ -934,13 +934,13 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
       orxPLUGIN_CLOSE(pstSysPlugin);
 
       /* Logs an error */
-      orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_MALLOC_FAILED);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_MALLOC_FAILED);
     }
   }
   else
   {
     /* Logs an error */
-    orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_LOAD_FAILED_Z, _zPluginFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_LOAD_FAILED_Z, _zPluginFileName);
   }
 
   /* Returns its handle */
@@ -953,7 +953,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
  Loads the shared object specified as a null terminated string using OS library extension,
  and makes it subsequently available under the name in the 2nd param.
 
- returns: plugin handle on success, orxHANDLE_Undefined if load error
+ returns: plugin handle on success, orxHANDLE_UNDEFINED if load error
  ***************************************************************************/
 orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName)
 {
@@ -999,7 +999,7 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
   else
   {
     /* Logs error */
-    orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_FOUND);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_FOUND);
 
     /* Not found */
     eResult = orxSTATUS_FAILURE;
@@ -1038,13 +1038,13 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
     if(pfnFunction == orxNULL)
     {
       /* Logs an error */
-      orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
     }
   }
   else
   {
     /* Logs an error */
-    orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
   }
 
   /* Done! */
@@ -1056,12 +1056,12 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
  
  This function returns the handle of the given plugin.
  
- returns plugin handle on success, orxHANDLE_Undefined otherwise
+ returns plugin handle on success, orxHANDLE_UNDEFINED otherwise
  ***************************************************************************/
 orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
 {
   orxPLUGIN_INFO *pstPluginInfo;
-  orxHANDLE hPluginHandle = orxHANDLE_Undefined;
+  orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
@@ -1090,16 +1090,16 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
  
  This function returns the name of the given plugin.
  
- returns Name/orxSTRING_Empty
+ returns Name/orxSTRING_EMPTY
  ***************************************************************************/
 orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
 {
   orxPLUGIN_INFO *pstPluginInfo;
-  orxSTRING zPluginName = orxSTRING_Empty;
+  orxSTRING zPluginName = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
-  orxASSERT(_hPluginHandle != orxHANDLE_Undefined);
+  orxASSERT(_hPluginHandle != orxHANDLE_UNDEFINED);
 
   /* Gets plugin info */
   pstPluginInfo = orxPlugin_GetPluginInfo(_hPluginHandle);
@@ -1113,7 +1113,7 @@ orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   else
   {
     /* Logs an error */
-    orxDEBUG_LOG(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_FOUND);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_FOUND);
   }
 
   /* Done! */

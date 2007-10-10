@@ -226,7 +226,7 @@ orxSTATUS orxBank_Init()
     for (u32Index = 0; u32Index < 256; u32Index++)
     {
       /* Set the initial value of the index (not defined yet) */
-      sstBank.au8Index0[u32Index] = orxU8_Undefined;
+      sstBank.au8Index0[u32Index] = orxU8_UNDEFINED;
       bFound = orxFALSE;
       u8Test = 1;
       
@@ -646,7 +646,7 @@ orxVOID orxFASTCALL orxBank_DebugPrint(orxCONST orxBANK *_pstBank)
         orxTextIO_Print("]");
       }
       
-      orxTextIO_PrintLn(orxSTRING_Empty);
+      orxTextIO_PrintLn(orxSTRING_EMPTY);
     }
     
     /* Go to next segment */

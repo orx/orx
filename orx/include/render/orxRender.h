@@ -33,21 +33,35 @@
 
 
 #include "orxInclude.h"
+#include "plugin/orxPluginCore.h"
 
-#include "camera/orxViewport.h"
+#include "object/orxObject.h"
+
+/***************************************************************************
+ * Functions directly implemented by orx core
+ ***************************************************************************/
+
+/** Render module setup */
+extern orxDLLAPI orxVOID            orxRender_Setup();
 
 
-/** Render system setup */
-extern orxDLLAPI orxVOID                  orxRender_Setup();
-/** Inits the render system. */
-extern orxDLLAPI orxSTATUS                orxRender_Init();
-/** Ends the render system. */
-extern orxDLLAPI orxVOID                  orxRender_Exit();
+/***************************************************************************
+ * Functions extended by plugins
+ ***************************************************************************/
 
-/** Renders all viewports. */
-extern orxDLLAPI orxVOID orxFASTCALL      orxRender_RenderAllViewports(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext);
-/** Rendres given viewport. */
-extern orxDLLAPI orxVOID orxFASTCALL      orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstViewport);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_Exit, orxVOID);
+
+
+orxSTATIC orxINLINE orxSTATUS orxRender_Init()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Init)();
+}
+
+orxSTATIC orxINLINE orxVOID orxRender_Exit()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Exit)();
+}
 
 
 #endif /* _orxRENDER_H_ */

@@ -58,14 +58,14 @@ extern orxDLLAPI orxVOID                        orxPlugin_Exit();
 /** Loads a plugin.
  * \param _zPluginFileName  The complete path of the plugin file, including its extension.
  * \param _zPluginName      The name that the plugin will be given in the plugin list.
- * \return The plugin handle on success, orxHANDLE_Undefined on failure.
+ * \return The plugin handle on success, orxHANDLE_UNDEFINED on failure.
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName);
 
 /** Loads a plugin using OS common library extension.
  * \param _zPluginFileName  The complete path of the plugin file, without its library extension.
  * \param _zPluginName      The name that the plugin will be given in the plugin list.
- * \return The plugin handle on success, orxHANDLE_Undefined on failure.
+ * \return The plugin handle on success, orxHANDLE_UNDEFINED on failure.
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName);
 
@@ -84,7 +84,7 @@ extern orxDLLAPI orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE 
 
 /** Gets the handle of a plugin given its name.
  * \param _zPluginName The plugin name.
- * \return Its orxHANDLE / orxHANDLE_Undefined
+ * \return Its orxHANDLE / orxHANDLE_UNDEFINED
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName);
 

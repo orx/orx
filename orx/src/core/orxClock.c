@@ -36,7 +36,7 @@
 #define orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK   0x10000000
 
 
-/** Clock ID flags */
+/** Clock flags */
 #define orxCLOCK_KU32_CLOCK_FLAG_NONE           0x00000000  /**< No flags */
 #define orxCLOCK_KU32_CLOCK_FLAG_PAUSED         0x10000000  /**< Clock is paused */
 

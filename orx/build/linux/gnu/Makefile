@@ -44,6 +44,9 @@ USE_FMOD := 0
 USE_SDL := 0
 
 #  [0,1]
+USE_SGE := 0
+
+#  [0,1]
 USE_TEST := 1
 
 #  [0,1]
@@ -217,12 +220,18 @@ FILE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 FILE_OBJECTS =  \
 	./build/$(BUILD)/File_orxTest_File.o
-DISPLAY_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+DISPLAY_SGE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter `sdl-config \
-	--cflags` $(CPPFLAGS) $(CFLAGS)
-DISPLAY_SDL_OBJECTS =  \
-	./build/$(BUILD)/Display_SDL_orxDisplay.o
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	$(CFLAGS)
+DISPLAY_SGE_OBJECTS =  \
+	./build/$(BUILD)/Display_SGE_orxDisplay.o
+RENDER_HOME_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	$(CFLAGS)
+RENDER_HOME_OBJECTS =  \
+	./build/$(BUILD)/Render_Home_orxRender.o
 SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
@@ -312,8 +321,13 @@ __File___depname = ../../../bin/modules/File.so
 endif
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
-__Display_SDL___depname = ../../../bin/plugins/core/display/Display_SDL.so
+ifeq ($(USE_SGE),1)
+__Display_SGE___depname = ../../../bin/plugins/core/display/Display_SGE.so
 endif
+endif
+endif
+ifeq ($(USE_PLUGINS),1)
+__Render_Home___depname = ../../../bin/plugins/core/render/Render_Home.so
 endif
 ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
@@ -381,7 +395,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SDL___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname)
 
 install: all
 
@@ -404,7 +418,8 @@ clean:
 	rm -f ../../../bin/modules/Clock.so
 	rm -f ../../../bin/modules/Event.so
 	rm -f ../../../bin/modules/File.so
-	rm -f ../../../bin/plugins/core/display/Display_SDL.so
+	rm -f ../../../bin/plugins/core/display/Display_SGE.so
+	rm -f ../../../bin/plugins/core/render/Render_Home.so
 	rm -f ../../../bin/plugins/core/sound/Sound_Fmod.so
 	rm -f ../../../bin/plugins/core/mouse/Mouse_Allegro.so
 	rm -f ../../../bin/plugins/core/keyboard/Keyboard_Allegro.so
@@ -479,9 +494,16 @@ endif
 
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
-../../../bin/plugins/core/display/Display_SDL.so: $(DISPLAY_SDL_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(DISPLAY_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   `sdl-config --libs`   ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
+ifeq ($(USE_SGE),1)
+../../../bin/plugins/core/display/Display_SGE.so: $(DISPLAY_SGE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(DISPLAY_SGE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)     /usr/lib/libsge.so `sdl-config --libs`  ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl  -l-l
 endif
+endif
+endif
+
+ifeq ($(USE_PLUGINS),1)
+../../../bin/plugins/core/render/Render_Home.so: $(RENDER_HOME_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(RENDER_HOME_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
 endif
 
 ifeq ($(USE_FMOD),1)
@@ -534,13 +556,13 @@ endif
 ./build/$(BUILD)/orxDLL_orxModule.o: ../../../src/base/orxModule.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_orxCamera.o: ../../../src/camera/orxCamera.c
+./build/$(BUILD)/orxDLL_orxCamera.o: ../../../src/render/orxCamera.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_orxRender.o: ../../../src/camera/orxRender.c
+./build/$(BUILD)/orxDLL_orxRender.o: ../../../src/render/orxRender.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxDLL_orxViewport.o: ../../../src/camera/orxViewport.c
+./build/$(BUILD)/orxDLL_orxViewport.o: ../../../src/render/orxViewport.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxDLL_orxClock.o: ../../../src/core/orxClock.c
@@ -657,13 +679,13 @@ endif
 ./build/$(BUILD)/orxLIB_orxModule.o: ../../../src/base/orxModule.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_orxCamera.o: ../../../src/camera/orxCamera.c
+./build/$(BUILD)/orxLIB_orxCamera.o: ../../../src/render/orxCamera.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_orxRender.o: ../../../src/camera/orxRender.c
+./build/$(BUILD)/orxLIB_orxRender.o: ../../../src/render/orxRender.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/orxLIB_orxViewport.o: ../../../src/camera/orxViewport.c
+./build/$(BUILD)/orxLIB_orxViewport.o: ../../../src/render/orxViewport.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/orxLIB_orxClock.o: ../../../src/core/orxClock.c
@@ -801,8 +823,11 @@ endif
 ./build/$(BUILD)/File_orxTest_File.o: ../../../test/orxTest_File.c
 	$(CC) -c -o $@ $(FILE_CFLAGS) $(CPPDEPS) $<
 
-./build/$(BUILD)/Display_SDL_orxDisplay.o: ../../../plugins/Display/SDL/orxDisplay.c
-	$(CC) -c -o $@ $(DISPLAY_SDL_CFLAGS) $(CPPDEPS) $<
+./build/$(BUILD)/Display_SGE_orxDisplay.o: ../../../plugins/Display/SDL/orxDisplay.c
+	$(CC) -c -o $@ $(DISPLAY_SGE_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/Render_Home_orxRender.o: ../../../plugins/Render/Home/orxRender.c
+	$(CC) -c -o $@ $(RENDER_HOME_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Sound_Fmod_orxSound.o: ../../../plugins/Sound/Fmod/orxSound.c
 	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<

@@ -60,6 +60,27 @@
     <ldflags>$(orxSDLLIB_MSVC)</ldflags>
   </template>
   
+  <!-- ******************** SGE LINK ********************** -->
+
+  <set var="orxSGELIB_MINGW">
+    <if cond="FORMAT=='mingw'">sge</if>
+  </set>
+
+  <set var="orxSGELIB_MSVC">
+    <if cond="orxCOMPILER=='__orxMSVC__'">sge.lib</if>
+  </set>
+
+  <set var="orxSGELIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">/usr/lib/libsge.so</if>
+  </set>
+
+  <!-- Define the module template -->
+  <template id="orxSGE">
+    <sys-lib>$(orxSGELIB_MINGW) -l$(orxSDLLIB_MINGW)</sys-lib>
+    <ldflags>$(orxSGELIB_MSVC) $(orxSDLLIB_MSVC)</ldflags>
+    <ldflags>$(orxSGELIB_UNIX) $(orxSDLLIB_UNIX)</ldflags>
+  </template>
+
   <!-- ******************** ALLEGRO LINK ********************** -->
   
   <!-- On windows, allegro-config is not available, so we have to specify the option manually -->
@@ -92,10 +113,24 @@
   <!--- Create orx core plugins -->
   <!-- DISPLAY -->
 
-    <!-- Depends on SDL -->
-	<orx-plugin id="Display_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxSDL">
+  <!-- Depends on SGE -->
+	<orx-plugin id="Display_SGE" cond="USE_SDL=='1' and USE_SGE=='1' and USE_PLUGINS=='1'" template="orxSGE">
 	  <category>core/display</category>
       <sources>plugins/Display/SDL/orxDisplay.c</sources>
+  </orx-plugin>
+
+  <!-- Depends on SDL
+  <orx-plugin id="Display_SDL" cond="USE_SDL=='1' and USE_SGE=='0' and USE_PLUGINS=='1'" template="orxSDL">
+    <category>core/display</category>
+      <sources>plugins/Display/SDL/orxDisplay.c</sources>
+  </orx-plugin> -->
+
+  <!-- RENDER -->
+
+  <!-- Depends on nothing -->
+  <orx-plugin id="Render_Home" cond="USE_PLUGINS=='1'">
+    <category>core/render</category>
+      <sources>plugins/Render/Home/orxRender.c</sources>
     </orx-plugin>
 
   <!-- SOUND -->

@@ -88,33 +88,33 @@ orxSTATIC orxDEBUG_STATIC sstDebug;
  ***************************************************************************/
 orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
+  orxSTRING zResult;
+
   /* Depending on level */
   switch(_eLevel)
   {
-    case orxDEBUG_LEVEL_MOUSE:              return "MOUSE";
-    case orxDEBUG_LEVEL_KEYBOARD:           return "KEYBOARD";
-    case orxDEBUG_LEVEL_JOYSTICK:           return "JOYSTICK";
-    case orxDEBUG_LEVEL_INTERACTION:        return "INTERACTION";
-    case orxDEBUG_LEVEL_DISPLAY:            return "DISPLAY";
-    case orxDEBUG_LEVEL_SOUND:              return "SOUND";
-    case orxDEBUG_LEVEL_TIMER:              return "TIMER";
-    case orxDEBUG_LEVEL_MEMORY:             return "MEMORY";
-    case orxDEBUG_LEVEL_SCREENSHOT:         return "SCREENSHOT";
-    case orxDEBUG_LEVEL_FILE:               return "FILE";
-    case orxDEBUG_LEVEL_PATHFINDER:         return "PATHFINDER";
-    case orxDEBUG_LEVEL_PLUGIN:             return "PLUGIN";
-    case orxDEBUG_LEVEL_LOG:                return "LOG";
-    case orxDEBUG_LEVEL_ALL:                return "ALL";
-    case orxDEBUG_LEVEL_ASSERT:             return "ASSERT";
-    case orxDEBUG_LEVEL_CRITICAL_ASSERT:    return "CRITICAL ASSERT";
+    case orxDEBUG_LEVEL_MOUSE:              zResult = "MOUSE"; break;
+    case orxDEBUG_LEVEL_KEYBOARD:           zResult = "KEYBOARD"; break;
+    case orxDEBUG_LEVEL_JOYSTICK:           zResult = "JOYSTICK"; break;
+    case orxDEBUG_LEVEL_INTERACTION:        zResult = "INTERACTION"; break;
+    case orxDEBUG_LEVEL_DISPLAY:            zResult = "DISPLAY"; break;
+    case orxDEBUG_LEVEL_SOUND:              zResult = "SOUND"; break;
+    case orxDEBUG_LEVEL_TIMER:              zResult = "TIMER"; break;
+    case orxDEBUG_LEVEL_MEMORY:             zResult = "MEMORY"; break;
+    case orxDEBUG_LEVEL_SCREENSHOT:         zResult = "SCREENSHOT"; break;
+    case orxDEBUG_LEVEL_FILE:               zResult = "FILE"; break;
+    case orxDEBUG_LEVEL_PATHFINDER:         zResult = "PATHFINDER"; break;
+    case orxDEBUG_LEVEL_PLUGIN:             zResult = "PLUGIN"; break;
+    case orxDEBUG_LEVEL_LOG:                zResult = "LOG"; break;
+    case orxDEBUG_LEVEL_ALL:                zResult = "ALL"; break;
+    case orxDEBUG_LEVEL_ASSERT:             zResult = "ASSERT"; break;
+    case orxDEBUG_LEVEL_CRITICAL_ASSERT:    zResult = "CRITICAL ASSERT"; break;
     
-    default:
-      return "INVALID DEBUG!";
+    default:                                zResult = "INVALID DEBUG!"; break;
   }
 
-  /* Unreachable code
-   * return orxSTRING_Empty;
-   */
+  /* Done! */
+  return zResult;
 }
 
 

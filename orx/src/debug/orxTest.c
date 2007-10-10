@@ -308,7 +308,7 @@ orxSTATUS orxFASTCALL orxTest_Execute(orxHANDLE _hRegisteredFunc)
   orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
-  if ((_hRegisteredFunc != orxHANDLE_Undefined) && ((orxU32)_hRegisteredFunc < sstTest.u32NbRegisteredFunc))
+  if ((_hRegisteredFunc != orxHANDLE_UNDEFINED) && ((orxU32)_hRegisteredFunc < sstTest.u32NbRegisteredFunc))
   {
     /* Execute the function */
     sstTest.astTestFunctions[(orxU32)_hRegisteredFunc].pfnFunction();
@@ -486,7 +486,7 @@ orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST
   else
   {
     /* No space left for new function, return an undefined handle */
-    hRet = orxHANDLE_Undefined;
+    hRet = orxHANDLE_UNDEFINED;
   }
   
   return hRet;

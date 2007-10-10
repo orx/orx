@@ -26,9 +26,9 @@
 #include "anim/orxAnimPointer.h"
 #include "anim/orxAnimSet.h"
 
-#include "camera/orxCamera.h"
-#include "camera/orxRender.h"
-#include "camera/orxViewport.h"
+#include "render/orxCamera.h"
+#include "render/orxRender.h"
+#include "render/orxViewport.h"
 
 #include "core/orxClock.h"
 #include "core/orxEvent.h"

@@ -116,13 +116,13 @@ orxSTATIC orxCONST  orxBOOL     orxFALSE            = (orxBOOL)(1 != 1);
 orxSTATIC orxCONST  orxBOOL     orxTRUE             = (orxBOOL)(1 == 1);
 
 /* *** Undefined defines *** */
-orxSTATIC orxCONST  orxU64      orxU64_Undefined    = (orxU64)(-1);
-orxSTATIC orxCONST  orxU32      orxU32_Undefined    = (orxU32)(-1);
-orxSTATIC orxCONST  orxU16      orxU16_Undefined    = (orxU16)(-1);
-orxSTATIC orxCONST  orxU8       orxU8_Undefined     = (orxU8)(-1);
-orxSTATIC orxCONST  orxHANDLE   orxHANDLE_Undefined = (orxHANDLE)(-1);
+orxSTATIC orxCONST  orxU64      orxU64_UNDEFINED    = (orxU64)(-1);
+orxSTATIC orxCONST  orxU32      orxU32_UNDEFINED    = (orxU32)(-1);
+orxSTATIC orxCONST  orxU16      orxU16_UNDEFINED    = (orxU16)(-1);
+orxSTATIC orxCONST  orxU8       orxU8_UNDEFINED     = (orxU8)(-1);
+orxSTATIC orxCONST  orxHANDLE   orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
 
-orxSTATIC orxCONST  orxSTRING   orxSTRING_Empty     = "";
+orxSTATIC orxCONST  orxSTRING   orxSTRING_EMPTY     = "";
 
 /* *** Float defines *** */
 orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(0.0f);

@@ -39,7 +39,7 @@
 #include "object/orxStructure.h"
 
 
-/** Anim ID Flags
+/** Anim flags
  */
 #define orxANIM_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
@@ -71,7 +71,7 @@ extern orxDLLAPI orxVOID                      orxAnim_Exit();
 
 
 /** Creates an empty animation
- * @param[in]   _u32Flags       ID flags for created animation
+ * @param[in]   _u32Flags       flags for created animation
  * @param[in]   _u32Size        Number of keys for this animation
  * @return      Created orxANIM / orxNULL
  */

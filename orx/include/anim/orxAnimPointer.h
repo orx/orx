@@ -47,7 +47,7 @@
 #include "anim/orxAnimSet.h"
 
 
-/** AnimPointer ID Flags
+/** AnimPointer flags
  */
 #define orxANIMPOINTER_KU32_FLAG_NONE         0x00000000  /**< No flags */
 
@@ -95,13 +95,13 @@ extern orxDLLAPI orxANIMSET *orxFASTCALL      orxAnimPointer_GetAnimSet(orxCONST
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation handle
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetAnim(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer current Time get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current time
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetCurrentTime(orxCONST orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer Frequency get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer

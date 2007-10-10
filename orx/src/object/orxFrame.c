@@ -28,6 +28,7 @@
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
+#include "memory/orxBank.h"
 #include "object/orxStructure.h"
 #include "math/orxMath.h"
 
@@ -44,7 +45,7 @@
 #define orxFRAME_KU32_STATIC_MASK_ALL       0xFFFFFFFF  /**< All mask */
 
 
-/** orxFRAME ID flags
+/** orxFRAME flags
  */
 #define orxFRAME_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
@@ -67,9 +68,11 @@ typedef struct __orxFRAME_DATA_2D_t
   orxVECTOR vGlobalPos;                     /**< Global 2D coordinates : 16 */
   orxVECTOR vLocalPos;                      /**< Local 2D coordinates : 32 */
   orxFLOAT  fGlobalAngle;                   /**< Global 2D rotation angle : 36 */
-  orxFLOAT  fGlobalScale;                   /**< Global 2D isometric scale : 40 */
-  orxFLOAT  fLocalAngle;                    /**< Local 2D rotation angle : 44 */
-  orxFLOAT  fLocalScale;                    /**< Local 2D isometric scale : 48 */
+  orxFLOAT  fGlobalScaleX;                  /**< Global 2D isometric X scale : 40 */
+  orxFLOAT  fGlobalScaleY;                  /**< Global 2D isometric Y scale : 44 */
+  orxFLOAT  fLocalAngle;                    /**< Local 2D rotation angle : 48 */
+  orxFLOAT  fLocalScaleX;                   /**< Local 2D isometric X scale : 52 */
+  orxFLOAT  fLocalScaleY;                   /**< Local 2D isometric Y scale : 56 */
 
 } orxFRAME_DATA_2D;
 
@@ -88,9 +91,9 @@ struct __orxFRAME_t
  */
 typedef struct __orxFRAME_STATIC_t
 {
-  orxU32 u32Flags;                          /**< Control flags : 4 */
-
-  orxFRAME *pstRoot;                        /**< Frame root */
+  orxU32    u32Flags;                       /**< Control flags : 4 */
+  orxFRAME *pstRoot;                        /**< Frame root : 8 */
+  orxBANK  *pst2DDataBank;                  /**< 2D Data bank : 12 */
 
 } orxFRAME_STATIC;
 
@@ -189,10 +192,11 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT 
 
 /** Sets a frame scale
  * @param[in]   _pstFrame       Concerned frame
- * @param[int]  _fScale         Scale to set
+ * @param[in]   _fScaleX        Scale (X) to set
+ * @param[in]   _fScaleY        Scale (Y) to set
  * @param[in]   _eSpace         Coordinate space system to use
  */
-orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale, orxFRAME_SPACE _eSpace)
+orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScaleX, orxFLOAT _fScaleY, orxFRAME_SPACE _eSpace)
 {
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -202,13 +206,15 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fS
   {
     case orxFRAME_SPACE_GLOBAL:
 
-      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScale = _fScale;
+      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScaleX = _fScaleX;
+      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScaleY = _fScaleY;
 
       break;
 
     case orxFRAME_SPACE_LOCAL:
 
-      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScale = _fScale;
+      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScaleX = _fScaleX;
+      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScaleY = _fScaleY;
 
       break;
 
@@ -312,27 +318,33 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetRotation(orxCONST orxFRAME *_pstFrame,
 /** Gets a frame scale
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
- * @return orxFLOAT / orxNULL
+ * @param[out]  _pfScaleX       Scale (X)
+ * @param[out]  _pfScaleY       Scale (Y)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
+orxSTATIC orxINLINE orxSTATUS _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY)
 {
-  orxFLOAT fScale = orxFLOAT_1;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
  
   /* Checks */
-  orxASSERT((_pstFrame != orxNULL));
+  orxASSERT(_pstFrame != orxNULL);
+  orxASSERT(_pfScaleX != orxNULL);
+  orxASSERT(_pfScaleY != orxNULL);
 
   /* According to coord type */
   switch(_eSpace)
   {
     case orxFRAME_SPACE_GLOBAL:
     {
-      fScale = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScale;
+      *_pfScaleX = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScaleX;
+      *_pfScaleY = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScaleY;
       break;
     }
 
     case orxFRAME_SPACE_LOCAL:
     {
-      fScale = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScale;
+      *_pfScaleX = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScaleX;
+      *_pfScaleY = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScaleY;
       break;
     }
 
@@ -340,12 +352,15 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, or
     {
       /* Wrong coord type */
       /* !!! MSG !!! */
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
       break;
     }
   }
 
   /* Done */
-  return fScale;
+  return eResult;
 }
 
 /***************************************************************************
@@ -370,8 +385,8 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
   {
     orxVECTOR           vTempPos;
     orxCONST orxVECTOR *pvParentPos, *pvPos;
-    orxFLOAT            fParentAngle, fParentScale, fAngle, fScale;
-    orxFLOAT            fX, fY, fLocalX, fLocalY, fCos, fSin;
+    orxFLOAT            fParentAngle, fParentScaleX, fParentScaleY, fAngle, fScaleX, fScaleY;
+    orxFLOAT            fX, fY, fLocalX, fLocalY, fLocalScaleX, fLocalScaleY, fCos, fSin, fCoef;
     orxFRAME            *pstParentFrame;
 
     /* gets parent frame */
@@ -380,16 +395,27 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
     /* Gets parent's global data */
     pvParentPos   = _orxFrame_GetPosition(pstParentFrame, orxFRAME_SPACE_GLOBAL);
     fParentAngle  = _orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL);
-    fParentScale  = _orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &fParentScaleX, &fParentScaleY);
 
     /* Gets frame's local coord */
     pvPos         = _orxFrame_GetPosition(_pstSrcFrame, orxFRAME_SPACE_LOCAL);
 
+    /* Gets frame's local scales */
+
+    _orxFrame_GetScale(_pstSrcFrame, orxFRAME_SPACE_LOCAL, &fLocalScaleX, &fLocalScaleY);
+
     /* Updates angle */
     fAngle        = _orxFrame_GetRotation(_pstSrcFrame, orxFRAME_SPACE_LOCAL) + fParentAngle;
 
-    /* Updates scale */
-    fScale        = _orxFrame_GetScale(_pstSrcFrame, orxFRAME_SPACE_LOCAL) * fParentScale;
+    /* Gets angle coefficient */
+    fCoef         = fParentAngle;
+    orxCIRCULAR_CLAMP_INC_MIN(fCoef, orxFLOAT_0, orxMATH_KF_PI);
+    fCoef         = orxMATH_KF_PI_BY_2 - fCoef;
+    fCoef         = orxFABS(fCoef) * (orxFLOAT_1 / orxMATH_KF_PI_BY_2);
+
+    /* Updates scales */
+    fScaleX       = fLocalScaleX * fCoef * fParentScaleX;
+    fScaleY       = fLocalScaleY * (orxFLOAT_1 - fCoef) * fParentScaleY;
 
     /* Updates coord */
     /* Gets needed orxFLOAT values for rotation & scale applying */
@@ -398,9 +424,9 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
     fCos          = cosf(fParentAngle);
     fSin          = sinf(fParentAngle);
 
-    /* Applies rotation & scale on X & Y coordinates*/
-    fX            = fParentScale * ((fLocalX * fCos) - (fLocalY * fSin));
-    fY            = fParentScale * ((fLocalX * fSin) + (fLocalY * fCos));
+    /* Applies rotation & scale on X&Y coordinates*/
+    fX            = fParentScaleX * ((fLocalX * fCos) - (fLocalY * fSin));
+    fY            = fParentScaleY * ((fLocalX * fSin) + (fLocalY * fCos));
 
     /* Computes final global coordinates */
     vTempPos.fX   = floorf(fX) + pvParentPos->fX;
@@ -411,7 +437,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
 
     /* Stores them */
     _orxFrame_SetRotation(_pstDstFrame, fAngle, orxFRAME_SPACE_GLOBAL);
-    _orxFrame_SetScale(_pstDstFrame, fScale, orxFRAME_SPACE_GLOBAL);
+    _orxFrame_SetScale(_pstDstFrame, fScaleX, fScaleY, orxFRAME_SPACE_GLOBAL);
     _orxFrame_SetPosition(_pstDstFrame, &vTempPos, orxFRAME_SPACE_GLOBAL);
   }
   else
@@ -549,7 +575,7 @@ orxSTATUS orxFrame_Init()
     /* Cleans control structure */
     orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
 
-    /* Inits ID Flags */
+    /* Inits flags */
     sstFrame.u32Flags = orxFRAME_KU32_STATIC_MASK_DEFAULT|orxFRAME_KU32_STATIC_FLAG_READY;
 
     /* Registers structure type */
@@ -617,7 +643,7 @@ orxVOID orxFrame_Exit()
 }
 
 /** Creates a frame
- * @param[in]   _u32Flags     ID flags for created animation
+ * @param[in]   _u32Flags     flags for created animation
  * @return      Created orxFRAME / orxNULL
  */
 orxFRAME *orxFrame_Create(orxU32 _u32Flags)
@@ -655,11 +681,20 @@ orxFRAME *orxFrame_Create(orxU32 _u32Flags)
         orxMemory_Set(pstData, 0, sizeof(orxFRAME_DATA_2D));
 
         /* Inits values */
-        pstData->fGlobalScale = orxFLOAT_1;
-        pstData->fLocalScale  = orxFLOAT_1;
+        pstData->fGlobalScaleX  = orxFLOAT_1;
+        pstData->fGlobalScaleY  = orxFLOAT_1;
+        pstData->fLocalScaleX   = orxFLOAT_1;
+        pstData->fLocalScaleY   = orxFLOAT_1;
 
         /* Links data to frame */
         pstFrame->pstData = pstData;
+
+        /* Has already a root? */
+        if(sstFrame.pstRoot != orxNULL)
+        {
+          /* Sets frame to root */
+          orxFrame_SetParent(pstFrame, sstFrame.pstRoot);
+        }
       }
       else
       {
@@ -817,16 +852,17 @@ orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 
 /** Sets a frame scale
  * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _fScale         Scale to set
+ * @param[in]   _fScaleX        Scale (X) to set
+ * @param[in]   _fScaleY        Scale (Y) to set
  */
-orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
+orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScaleX, orxFLOAT _fScaleY)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFrame != orxNULL);
 
   /* Updates scale value */
-  _orxFrame_SetScale(_pstFrame, _fScale, orxFRAME_SPACE_LOCAL);
+  _orxFrame_SetScale(_pstFrame, _fScaleX, _fScaleY, orxFRAME_SPACE_LOCAL);
 
   /* Tags as dirty */
   orxFrame_SetDirty(_pstFrame);
@@ -836,11 +872,11 @@ orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale)
 
 /** Gets a frame position
  * @param[in]   _pstFrame       Concerned frame
- * @param[out]  _pvPos          Position of the given frame
  * @param[in]   _eSpace         Coordinate space system to use
+ * @param[out]  _pvPos          Position of the given frame
  * @return orxVECTOR / orxNULL
  */
-orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvPos, orxFRAME_SPACE _eSpace)
+orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvPos)
 {
   orxVECTOR *pvResult;
 
@@ -943,11 +979,13 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
 /** Gets a frame scale
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
- * @return Scale of the given frame
+ * @param[out]  _pfScaleX       Scale (X)
+ * @param[out]  _pfScaleY       Scale (Y)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
+orxSTATUS orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY)
 {
-  orxFLOAT fScale = orxFLOAT_1;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -963,25 +1001,37 @@ orxFLOAT orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpa
       case orxFRAME_SPACE_GLOBAL:
       {
         /* Gets scale */
-        fScale = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL);
+        _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL, _pfScaleX, _pfScaleY);
 
         break;
       }
 
       case orxFRAME_SPACE_LOCAL:
-      default:
       {
         /* Process dirty cell */
         orxFrame_ProcessDirty(_pstFrame);
 
         /* Gets requested scale */
-        fScale = _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL);
+        _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_GLOBAL, _pfScaleX, _pfScaleY);
+
+        break;
+      }
+
+      default:
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
 
         break;
       }
     }
   }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
-  return fScale;
+  return eResult;
 }

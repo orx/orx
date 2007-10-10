@@ -40,7 +40,7 @@
 #include "object/orxStructure.h"
 
 
-/** Graphic ID Flags
+/** Graphic flags
  */
 #define orxGRAPHIC_KU32_FLAG_NONE             0x00000000  /**< No flags */
 

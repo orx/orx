@@ -64,14 +64,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_LinkBitmap(orxTEXTURE *_pst
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture);
 
 
-/** !!! Texture accessors !!! */
-
-
 /** Corresponding bitmap get accessor. */
 extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture);
 
 /** Texture size get accessor. */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
+/** Gets screen texture
+ * @return      Screen texture / orxNULL
+ */
+extern orxDLLAPI orxTEXTURE *             orxTexture_GetScreenTexture();
 
 #endif /* _orxTEXTURE_H_ */

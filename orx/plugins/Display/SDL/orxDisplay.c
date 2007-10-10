@@ -20,6 +20,7 @@
 #include "orxInclude.h"
 
 #include "debug/orxDebug.h"
+#include "math/orxMath.h"
 #include "plugin/orxPluginUser.h"
 
 #include "msg/msg_graph.h"
@@ -29,7 +30,7 @@
 
 
 #include <SDL/SDL.h>
-//#include <SDL/sge.h>
+#include <SDL/sge.h>
 
 #define KI_BPP    32
 #define KI_WIDTH  800
@@ -56,7 +57,8 @@ orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVE
  */
 
   orxASSERT(orxFALSE && "Not implemented yet!");
-  
+
+  /* Done! */
   return eResult;
 }
 
@@ -153,19 +155,16 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
 
 orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-//  orxU32 u32Flags;
+  SDL_Rect  stRectangle;
+  orxSTATUS eResult;
 
-  orxASSERT(orxFALSE && "Not implemented yet");
-  
-  /* !!! TODO : Code this using hardware acceleration !!! */
-  
-  /* Updates flags */
-//  u32Flags = (_bAntialiased != orxFALSE) ? SGE_TAA : 0; 
+  /* Uses SGE for bitmap transformation */
+  stRectangle = sge_transform((SDL_Surface *)_pstSrc, (SDL_Surface *)_pstDst, _pstTransform->fRotation * orxMATH_KF_RAD_TO_DEG, _pstTransform->fScaleX, _pstTransform->fScaleY, orxF2U(_pstTransform->vSource.fX), orxF2U(_pstTransform->vSource.fY), orxF2U(_pstTransform->vDestination.fX), orxF2U(_pstTransform->vDestination.fY), _u32Flags);
 
-  /* Transforms surface */
-//    sge_transform(_pstSrc, _pstDst, _fRotation * (180.0 / orxPI), _fScaleX, _fScaleY, _s32SrcX, _s32SrcY, _s32DstX, _s32DstY, u32Flags);
+  /* Updates result */
+  eResult = ((stRectangle.x == 0) && (stRectangle.y == 0) && (stRectangle.w == 0) && (stRectangle.h == 0)) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
 
+  /* Done! */
   return eResult;
 }
 
@@ -180,20 +179,16 @@ orxSTATUS orxDisplay_SDL_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orx
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvTL, orxCONST orxVECTOR *_pvBR)
+orxSTATUS orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
 {
   SDL_Rect  stClipRect;
-  orxVECTOR vSize;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Gets size vector */
-  orxVector_Sub(&vSize, _pvBR, _pvTL);
-
   /* Gets SDL clip rectangle */
-  stClipRect.x = _pvTL->fX;
-  stClipRect.y = _pvTL->fY;
-  stClipRect.w = vSize.fX;
-  stClipRect.h = vSize.fY;
+  stClipRect.x = _u32TLX;
+  stClipRect.y = _u32TLY;
+  stClipRect.w = _u32BRX - _u32TLX;
+  stClipRect.h = _u32BRY - _u32TLY;
 
   /* Applies it */
   SDL_SetClipRect((SDL_Surface *)_pstBitmap, &stClipRect);
@@ -221,13 +216,13 @@ orxSTATUS orxDisplay_SDL_Init()
 
   if(spstScreen == NULL)
   {
-    orxDEBUG_LOG(orxDEBUG_LEVEL_DISPLAY, KZ_MSG_MODE_INIT_FAILED_III, KI_WIDTH, KI_HEIGHT, KI_BPP);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, KZ_MSG_MODE_INIT_FAILED_III, KI_WIDTH, KI_HEIGHT, KI_BPP);
 
     eResult = orxSTATUS_FAILURE;
   }
   else
   {
-    orxDEBUG_LOG(orxDEBUG_LEVEL_DISPLAY, KZ_MSG_MODE_INIT_SUCCESS_III, KI_WIDTH, KI_HEIGHT, KI_BPP);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, KZ_MSG_MODE_INIT_SUCCESS_III, KI_WIDTH, KI_HEIGHT, KI_BPP);
   }
 
   return eResult;  

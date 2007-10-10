@@ -69,8 +69,8 @@ orxSTATUS orxMain_Init()
       hFilePlugin = orxPlugin_LoadUsingExt("plugins/core/file/File_LibC", "file");
 
       /* Valid? */
-      if((hTimePlugin != orxHANDLE_Undefined)
-      && (hFilePlugin != orxHANDLE_Undefined))
+      if((hTimePlugin != orxHANDLE_UNDEFINED)
+      && (hFilePlugin != orxHANDLE_UNDEFINED))
       {
         /* Inits main module */
         if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
@@ -118,8 +118,6 @@ orxVOID orxMain_Exit()
 }
 
 /** Run the main engine
- * @param[in] _u32NbParam Number of parameters read
- * @param[in] _azParams   Array of parameters
  */
 orxVOID orxMain_Run()
 {
@@ -128,7 +126,7 @@ orxVOID orxMain_Run()
   {
     /* Update clocks */
     orxClock_Update();
-    
+
     /* Sleep the program for 1ms (to help the scheduler) */
     orxTime_Delay(1);
   }

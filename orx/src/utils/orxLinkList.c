@@ -90,7 +90,7 @@ orxSTATUS orxLinkList_Init()
     /* Cleans static controller */
     orxMemory_Set(&sstLinkList, 0, sizeof(orxLINKLIST_STATIC));
   
-    /* Inits ID Flags */
+    /* Inits flags */
     sstLinkList.u32Flags = orxLINKLIST_KU32_STATIC_FLAG_READY;
     
     /* Success */ 

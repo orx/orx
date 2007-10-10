@@ -269,7 +269,7 @@ orxVOID orxTest_Plugin_ShowList()
   {
     orxTextIO_Print("*");
   }
-  orxTextIO_PrintLn(orxSTRING_Empty);  
+  orxTextIO_PrintLn(orxSTRING_EMPTY);  
   
   /* Print list of loaded plugins */
   for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
@@ -290,14 +290,14 @@ orxVOID orxTest_Plugin_ShowList()
       orxTextIO_Print(" ");
     }
   }
-  orxTextIO_PrintLn(orxSTRING_Empty);
+  orxTextIO_PrintLn(orxSTRING_EMPTY);
   
   /* Print a line of stars */
   for (u32Index = 0; u32Index < orxTEST_PLUGINS_KU32_NB_COLS; u32Index++)
   {
     orxTextIO_Print("*");
   }
-  orxTextIO_PrintLn(orxSTRING_Empty);
+  orxTextIO_PrintLn(orxSTRING_EMPTY);
 
   /* Everythings done */
   orxTextIO_PrintLn("Done !");
@@ -330,7 +330,7 @@ orxVOID orxTest_Plugin_Load()
     orxTextIO_ReadS32InRange(&s32FileResult, 10, 0, u32Index - 1, "Choice : ", orxTRUE);
   
     /* Is there a plugin already loaded ? */
-    if (sstTest_Plugin.astPlugins[s32TypeResult].hPlugin != orxHANDLE_Undefined)
+    if (sstTest_Plugin.astPlugins[s32TypeResult].hPlugin != orxHANDLE_UNDEFINED)
     {
       /* Unload the plugin */
       orxTextIO_PrintLn("Unloading %s...", sstTest_Plugin.astPlugins[s32TypeResult].zFile);
@@ -343,7 +343,7 @@ orxVOID orxTest_Plugin_Load()
     orxTextIO_PrintLn("Loading %s...", sstTest_Plugin.azFileName[s32FileResult]);
     
     sstTest_Plugin.astPlugins[s32TypeResult].hPlugin = orxPlugin_Load(sstTest_Plugin.azFileName[s32FileResult], sstTest_Plugin.astPlugins[s32TypeResult].zType);
-    if (sstTest_Plugin.astPlugins[s32TypeResult].hPlugin == orxHANDLE_Undefined)
+    if (sstTest_Plugin.astPlugins[s32TypeResult].hPlugin == orxHANDLE_UNDEFINED)
     {
       orxTextIO_PrintLn("Can't load plugin...");
       
@@ -365,7 +365,7 @@ orxVOID orxTest_Plugin_Load()
         
         /* Unload the plugin */
         orxPlugin_Unload(sstTest_Plugin.astPlugins[s32TypeResult].hPlugin);
-        sstTest_Plugin.astPlugins[s32TypeResult].hPlugin = orxHANDLE_Undefined;
+        sstTest_Plugin.astPlugins[s32TypeResult].hPlugin = orxHANDLE_UNDEFINED;
       }
     }
   }
@@ -407,7 +407,7 @@ orxVOID orxTest_RegisterCorePlugin()
   /* Initialize plugins array content */
   for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
   {
-    sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_Undefined;
+    sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_UNDEFINED;
     sstTest_Plugin.astPlugins[u32Index].zType   = orxTEST_PLUGINS_KZ_UNKNOWN_NAME;
     sstTest_Plugin.astPlugins[u32Index].zFile   = orxTEST_PLUGINS_KZ_UNLOADED_NAME;
   }
@@ -450,11 +450,11 @@ orxVOID orxTest_Plugin_Exit()
 //  /* Unload all the loaded plugins before exit */
 //  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
 //  {
-//    if (sstTest_Plugin.astPlugins[u32Index].hPlugin != orxHANDLE_Undefined)
+//    if (sstTest_Plugin.astPlugins[u32Index].hPlugin != orxHANDLE_UNDEFINED)
 //    {
 //      /* Unload the selected plugin */
 //      orxPlugin_Unload(sstTest_Plugin.astPlugins[u32Index].hPlugin);
-//      sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_Undefined;
+//      sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_UNDEFINED;
 //    }
 //  }
 }

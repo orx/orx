@@ -110,7 +110,7 @@ typedef struct __orxSTRUCTURE_t
   /* Reference counter. : 8 */
   orxU32          u32RefCounter;
 
-  /* ID flags : 12 */
+  /* Flags : 12 */
   orxU32          u32Flags;
   
   /* Handle of internal storage node. : 16 */

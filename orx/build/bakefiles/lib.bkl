@@ -28,9 +28,9 @@
             src/base/orxModule.c
         </sources>
         <sources>
-            src/camera/orxCamera.c
-            src/camera/orxRender.c
-            src/camera/orxViewport.c
+            src/render/orxCamera.c
+            src/render/orxRender.c
+            src/render/orxViewport.c
         </sources>
         <sources>
             src/core/orxClock.c

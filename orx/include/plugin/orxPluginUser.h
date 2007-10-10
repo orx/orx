@@ -83,7 +83,7 @@
   _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(&FUNCTION, \
                                          orxPLUGIN_MAKE_CORE_FUNCTION_ID(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##NAME_SUFFIX), \
                                          PLUGIN_SUFFIX##_##NAME_SUFFIX, \
-                                         orxSTRING_Empty)
+                                         orxSTRING_EMPTY)
 
 
 /* Structure */

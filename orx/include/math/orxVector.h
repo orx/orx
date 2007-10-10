@@ -43,8 +43,8 @@
 /** Public structure definition. */
 typedef struct __orxVECTOR_t
 {
-  /** Coordinates : 16 */
-  orxFLOAT fX, fY, fZ, fW;
+  /** Coordinates : 12 */
+  orxFLOAT fX, fY, fZ;
 
 } orxVECTOR;
 
@@ -55,15 +55,47 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxVector_Rot(orxVECTOR *_pvRes, o
 /** Reorders axis aligned box corners (result is real upper left & bottom right corners). */
 extern orxDLLAPI orxVOID orxFASTCALL          orxVector_ReorderAABox(orxVECTOR *_pvULBox, orxVECTOR *_pvBRBox);
 
-/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxVector_TestAABoxIntersection(orxCONST orxVECTOR *_pvULBox1, orxCONST orxVECTOR *_pvBRBox1, orxCONST orxVECTOR *_pvULBox2, orxCONST orxVECTOR *_pvBRBox2);
-
 
 /* *** Vector inlined functions *** */
 
 
+/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
+orxSTATIC orxINLINE orxBOOL                   orxVector_TestAABoxIntersection(orxCONST orxVECTOR *_pvULBox1, orxCONST orxVECTOR *_pvBRBox1, orxCONST orxVECTOR *_pvULBox2, orxCONST orxVECTOR *_pvBRBox2)
+{
+  orxREGISTER orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(_pvULBox1 != orxNULL);
+  orxASSERT(_pvBRBox1 != orxNULL);
+  orxASSERT(_pvULBox2 != orxNULL);
+  orxASSERT(_pvBRBox2 != orxNULL);
+
+  /* Warning : Corners should be sorted otherwise test won't work! */
+
+  /* Z intersected? */
+  if((_pvBRBox2->fZ >= _pvULBox1->fZ)
+  && (_pvULBox2->fZ <= _pvBRBox1->fZ))
+  {
+    /* X intersected? */
+    if((_pvBRBox2->fX >= _pvULBox1->fX)
+    && (_pvULBox2->fX <= _pvBRBox1->fX))
+    {
+      /* Y intersected? */
+      if((_pvBRBox2->fY >= _pvULBox1->fY)
+      && (_pvULBox2->fY <= _pvBRBox1->fY))
+      {
+        /* Intersects */
+        bResult = orxTRUE;
+      }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Sets vector x / y / z / w values. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Set4(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ, orxFLOAT _fW)
+orxSTATIC orxINLINE orxVECTOR                *orxVector_Set(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
 {
   /* Checks */
   orxASSERT(_pvVec != orxNULL);
@@ -72,24 +104,16 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Set4(orxVECTOR *_pvVec, 
   _pvVec->fX = _fX;
   _pvVec->fY = _fY;
   _pvVec->fZ = _fZ;
-  _pvVec->fW = _fW;
 
   /* Done ! */
   return _pvVec;
-}
-
-/** Sets vector x / y / z values. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Set3(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
-{
-  /* Done ! */
-  return(orxVector_Set4(_pvVec, _fX, _fY, _fZ, orxFLOAT_0));
 }
 
 /** Sets value in all vector fields. */
 orxSTATIC orxINLINE orxVECTOR                *orxVector_SetAll(orxVECTOR *_pvVec, orxFLOAT _fValue)
 {
   /* Done ! */
-  return(orxVector_Set4(_pvVec, _fValue, _fValue, _fValue, _fValue));
+  return(orxVector_Set(_pvVec, _fValue, _fValue, _fValue));
 }
 
 /** Copies vector values into another one. */
@@ -118,7 +142,6 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Add(orxVECTOR *_pvRes, o
   _pvRes->fX = _pvOp1->fX + _pvOp2->fX;
   _pvRes->fY = _pvOp1->fY + _pvOp2->fY;
   _pvRes->fZ = _pvOp1->fZ + _pvOp2->fZ;
-  _pvRes->fW = _pvOp1->fW + _pvOp2->fW;
 
   /* Done! */
   return _pvRes;
@@ -136,7 +159,6 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Sub(orxVECTOR *_pvRes, o
   _pvRes->fX = _pvOp1->fX - _pvOp2->fX;
   _pvRes->fY = _pvOp1->fY - _pvOp2->fY;
   _pvRes->fZ = _pvOp1->fZ - _pvOp2->fZ;
-  _pvRes->fW = _pvOp1->fW - _pvOp2->fW;
 
   /* Done! */
   return _pvRes;
@@ -153,7 +175,6 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Mul(orxVECTOR *_pvRes, o
   _pvRes->fX = _pvOp1->fX * _fOp2;
   _pvRes->fY = _pvOp1->fY * _fOp2;
   _pvRes->fZ = _pvOp1->fZ * _fOp2;
-  _pvRes->fW = _pvOp1->fW * _fOp2;
 
   /* Done! */
   return _pvRes;
@@ -176,7 +197,6 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Div(orxVECTOR *_pvRes, o
   _pvRes->fX = _pvOp1->fX * fInvCoef;
   _pvRes->fY = _pvOp1->fY * fInvCoef;
   _pvRes->fZ = _pvOp1->fZ * fInvCoef;
-  _pvRes->fW = _pvOp1->fW * fInvCoef;
 
   /* Done! */
   return _pvRes;
@@ -193,7 +213,6 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Neg(orxVECTOR *_pvRes, o
   _pvRes->fX = -(_pvOp->fX);
   _pvRes->fY = -(_pvOp->fY);
   _pvRes->fZ = -(_pvOp->fZ);
-  _pvRes->fW = -(_pvOp->fW);
 
   /* Done! */
   return _pvRes;
@@ -210,7 +229,6 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Inv(orxVECTOR *_pvRes, o
   _pvRes->fX = orxFLOAT_1 / _pvOp->fX;
   _pvRes->fY = orxFLOAT_1 / _pvOp->fY;
   _pvRes->fZ = orxFLOAT_1 / _pvOp->fZ;
-  _pvRes->fW = orxFLOAT_1 / _pvOp->fW;
 
   /* Done! */
   return _pvRes;
@@ -220,11 +238,11 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Inv(orxVECTOR *_pvRes, o
 /* *** Vector constants *** */
 
 
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_X    = {orx2F(1.0f), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Y    = {orx2F(0.0f), orx2F(1.0f), orx2F(0.0f), orx2F(0.0f)};
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {orx2F(0.0f), orx2F(0.0f), orx2F(1.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_X    = {orx2F(1.0f), orx2F(0.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Y    = {orx2F(0.0f), orx2F(1.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {orx2F(0.0f), orx2F(0.0f), orx2F(1.0f)};
 
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
 
 
 #endif /* _orxVECTOR_H_ */

@@ -46,6 +46,7 @@ orxVECTOR *orxFASTCALL orxVector_Rot(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvO
   orxASSERT(_pvAxis != orxNULL);
 
   /* !!! TODO !!! */
+  orxASSERT(orxFALSE && "Not yet implmented!");
 
   return _pvRes;
 }
@@ -87,44 +88,4 @@ orxVOID orxFASTCALL orxVector_ReorderAABox(orxVECTOR *_pvULBox, orxVECTOR *_pvBR
 
   /* Done! */
   return;
-}
-
-/***************************************************************************
- orxVector_TestAABoxIntersection
- Tests axis aligned box intersection given corners (if corners are not sorted, test won't work).
-
- returns: Nothing
- ***************************************************************************/
-orxBOOL orxFASTCALL orxVector_TestAABoxIntersection(orxCONST orxVECTOR *_pvULBox1, orxCONST orxVECTOR *_pvBRBox1, orxCONST orxVECTOR *_pvULBox2, orxCONST orxVECTOR *_pvBRBox2)
-{
-  orxREGISTER orxBOOL bResult = orxFALSE;
-
-  /* Checks */
-  orxASSERT(_pvULBox1 != orxNULL);
-  orxASSERT(_pvBRBox1 != orxNULL);
-  orxASSERT(_pvULBox2 != orxNULL);
-  orxASSERT(_pvBRBox2 != orxNULL);
-
-  /* Warning : Corners should be sorted otherwise test won't work! */
-
-  /* Z intersected? */
-  if((_pvBRBox2->fZ >= _pvULBox1->fZ)
-  && (_pvULBox2->fZ <= _pvBRBox1->fZ))
-  {
-    /* X intersected? */
-    if((_pvBRBox2->fX >= _pvULBox1->fX)
-    && (_pvULBox2->fX <= _pvBRBox1->fX))
-    {
-      /* Y intersected? */
-      if((_pvBRBox2->fY >= _pvULBox1->fY)
-      && (_pvULBox2->fY <= _pvBRBox1->fY))
-      {
-        /* Intersects */
-        bResult = orxTRUE;
-      }
-    }
-  }
-
-  /* Done! */
-  return bResult;
 }

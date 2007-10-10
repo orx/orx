@@ -41,7 +41,7 @@
 #include "anim/orxAnim.h"
 
 
-/** AnimSet ID Flags
+/** AnimSet flags
  */
 #define orxANIMSET_KU32_FLAG_NONE                   0x00000000  /**< No flags. */
 
@@ -140,7 +140,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveAllAnims(or
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hSrcAnim														Source Anim of the link
  * @param[in]		_hDstAnim														Destination Anim of the link
- * @return 			Handle of the created link / orxHANDLE_Undefined
+ * @return 			Handle of the created link / orxHANDLE_UNDEFINED
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
 
@@ -155,7 +155,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveLink(orxANI
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hSrcAnim														Handle of the source Anim
  * @param[in]		_hDstAnim														Handle of the destination Anim
- * @return			Handle of the direct link, orxHANDLE_Undefined if none
+ * @return			Handle of the direct link, orxHANDLE_UNDEFINED if none
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
 
@@ -185,7 +185,7 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(o
 /** Computes active Anim given current and destination Anim handles & a relative timestamp.
  * @param[in]		_pstAnimSet    											Concerned AnimSet
  * @param[in]   _hSrcAnim 													Source (current) Anim handle
- * @param[in]   _hDstAnim 													Destination Anim handle, if none (auto mode) set it to orxHANDLE_Undefined
+ * @param[in]   _hDstAnim 													Destination Anim handle, if none (auto mode) set it to orxHANDLE_UNDEFINED
  * @param[in,out] _pu32Time  												Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
  * @param[out]  _pstLinkTable 											Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
  * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
@@ -201,13 +201,13 @@ extern orxDLLAPI orxANIM *orxFASTCALL               orxAnimSet_GetAnim(orxCONST 
 
 /** AnimSet Anim storage size get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return			AnimSet Storage size / orxU32_Undefined
+ * @return			AnimSet Storage size / orxU32_UNDEFINED
  */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimStorageSize(orxCONST orxANIMSET *_pstAnimSet);
 
 /** AnimSet Anim counter get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return			Anim counter / orxU32_Undefined
+ * @return			Anim counter / orxU32_UNDEFINED
  */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet);
 

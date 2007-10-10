@@ -41,13 +41,13 @@
 #include "math/orxVector.h"
 
 
-/** Frame ID Flags
+/** Frame flags
  */
 #define orxFRAME_KU32_FLAG_NONE               0x00000000  /**< No flags */
 
-#define orxFRAME_KU32_FLAG_SCROLL_X           0x00000001  /**< X axis differential scrolling ID flag */
-#define orxFRAME_KU32_FLAG_SCROLL_Y           0x00000002  /**< Y axis differential scrolling ID flag */
-#define orxFRAME_KU32_MASK_SCROLL_BOTH        0x00000003  /**< Both axis differential scrolling ID mask */
+#define orxFRAME_KU32_FLAG_SCROLL_X           0x00000001  /**< X axis differential scrolling flag */
+#define orxFRAME_KU32_FLAG_SCROLL_Y           0x00000002  /**< Y axis differential scrolling flag */
+#define orxFRAME_KU32_MASK_SCROLL_BOTH        0x00000003  /**< Both axis differential scrolling mask */
 
 #define orxFRAME_KU32_MASK_USER_ALL           0x000000FF  /**< User all ID mask */
 
@@ -85,7 +85,7 @@ extern orxDLLAPI orxVOID                      orxFrame_Exit();
 
 
 /** Creates a frame
- * @param[in]   _u32Flags     ID flags for created animation
+ * @param[in]   _u32Flags     flags for created animation
  * @return      Created orxFRAME / orxNULL
  */
 extern orxDLLAPI orxFRAME *                   orxFrame_Create(orxU32 _u32Flags);
@@ -129,18 +129,19 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxFrame_SetRotation(orxFRAME *_ps
 
 /** Sets a frame scale
  * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _fScale         Scale to set
+ * @param[in]   _fScaleX        Scale (X) to set
+ * @param[in]   _fScaleY        Scale (Y) to set
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScale);
+extern orxDLLAPI orxVOID orxFASTCALL          orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScaleX, orxFLOAT _fScaleY);
 
 
 /** Gets a frame position
  * @param[in]   _pstFrame       Concerned frame
- * @param[out]  _pvPos          Position of the given frame
  * @param[in]   _eSpace         Coordinate space system to use
+ * @param[out]  _pvPos          Position of the given frame
  * @return orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxFrame_GetPosition(orxFRAME *_pstFrame, orxVECTOR *_pvPos, orxFRAME_SPACE _eSpace);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvPos);
 
 /** Gets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
@@ -151,9 +152,11 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxFrame_GetRotation(orxFRAME *_ps
 /** Gets a frame scale
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
- * @return Scale of the given frame
+ * @param[out]  _pfScaleX       Scale (X)
+ * @param[out]  _pfScaleY       Scale (Y)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
 
 
 #endif /* _orxFRAME_H_ */

@@ -47,6 +47,9 @@
 
 #define orxTEXTURE_KU32_TABLE_SIZE              128
 
+#define orxTEXTURE_KZ_SCREEN_NAME               "-=SCREEN=-"
+
+
 /*
  * Texture structure
  */
@@ -79,11 +82,9 @@ struct __orxTEXTURE_t
  */
 typedef struct __orxTEXTURE_STATIC_t
 {
-  /* Texture hash table */
-  orxHASHTABLE *pstTable;
-
-  /* Control flags */
-  orxU32        u32Flags;
+  orxHASHTABLE *pstTable;                     /**< Bitmap hashtable : 4 */
+  orxTEXTURE   *pstScreen;                    /**< Screen texture : 8 */
+  orxU32        u32Flags;                     /**< Control flags : 12 */
 
 } orxTEXTURE_STATIC;
 
@@ -174,7 +175,7 @@ orxVOID orxTexture_Setup()
  ***************************************************************************/
 orxSTATUS orxTexture_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
   /* Not already Initialized? */
   if(!(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY))
@@ -185,16 +186,50 @@ orxSTATUS orxTexture_Init()
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
-    if (eResult == orxSTATUS_SUCCESS)
+    /* Success? */
+    if(eResult == orxSTATUS_SUCCESS)
     {
       /* Creates hash table */
       sstTexture.pstTable = orxHashTable_Create(orxTEXTURE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
+      
       /* Success? */
       if(sstTexture.pstTable != orxNULL)
       {
-        /* Inits Flags */
+        /* Updates flags for screen texture creation */
         sstTexture.u32Flags = orxTEXTURE_KU32_STATIC_FLAG_READY;
+
+        /* Creates screen texture */
+        sstTexture.pstScreen = orxTexture_Create();
+
+        /* Valid? */
+        if(sstTexture.pstScreen != orxNULL)
+        {
+          /* Links screen bitmap */
+          eResult = orxTexture_LinkBitmap(sstTexture.pstScreen, orxDisplay_GetScreenBitmap(), orxTEXTURE_KZ_SCREEN_NAME);
+
+          /* Failed? */
+          if(eResult != orxSTATUS_SUCCESS)
+          {
+            /* Deletes screen texture */
+            orxTexture_Delete(sstTexture.pstScreen);
+
+            /* Deletes hash table */
+            orxHashTable_Delete(sstTexture.pstTable);
+          }
+        }
+        else
+        {
+          /* Deletes hash table */
+          orxHashTable_Delete(sstTexture.pstTable);
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
+      }
+      else
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
       }
     }
   }
@@ -204,6 +239,15 @@ orxSTATUS orxTexture_Init()
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Not initialized? */
+  if(eResult != orxSTATUS_SUCCESS)
+  {
+    /* !!! MSG !!! */
+
+    /* Updates Flags */
+    sstTexture.u32Flags &= ~orxTEXTURE_KU32_STATIC_FLAG_READY;
   }
 
   /* Done! */
@@ -221,6 +265,12 @@ orxVOID orxTexture_Exit()
   /* Initialized? */
   if(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY)
   {
+    /* Unlinks screen texture */
+    orxTexture_UnlinkBitmap(sstTexture.pstScreen);
+    
+    /* Deletes screen texture */
+    orxTexture_Delete(sstTexture.pstScreen);
+
     /* Deletes texture list */
     orxTexture_DeleteAll();
 
@@ -486,7 +536,7 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
       ((orxTEXTURE *)(_pstTexture->hData))->u32Counter--;
 
       /* Cleans data */
-      _pstTexture->hData = orxHANDLE_Undefined;      
+      _pstTexture->hData = orxHANDLE_UNDEFINED;      
     }
     else
     {
@@ -497,7 +547,7 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
       orxDisplay_DeleteBitmap((orxBITMAP *)(_pstTexture->hData));
 
       /* Cleans data */
-      _pstTexture->hData = orxHANDLE_Undefined;
+      _pstTexture->hData = orxHANDLE_UNDEFINED;
     }
 
     /* Removes from hash table */
@@ -589,4 +639,16 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFL
 
   /* Done! */
   return eResult;
+}
+
+/** Gets screen texture
+ * @return      Screen texture / orxNULL
+ */
+orxTEXTURE *orxTexture_GetScreenTexture()
+{
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+  
+  /* Done! */
+  return(sstTexture.pstScreen);
 }

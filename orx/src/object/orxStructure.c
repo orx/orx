@@ -378,11 +378,11 @@ orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_I
  orxStructure_GetNumber
  Gets given type structure number.
 
- returns: number / orxU32_Undefined
+ returns: number / orxU32_UNDEFINED
  ***************************************************************************/
 orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 {
-  orxREGISTER orxU32 u32Result = orxU32_Undefined;
+  orxREGISTER orxU32 u32Result = orxU32_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
@@ -450,19 +450,22 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 
         /* Cleans it */
         orxMemory_Set(pstNode, 0, sizeof(orxSTRUCTURE_STORAGE_NODE));
-    
+
+        /* Stores its type */
+        pstNode->eType = sstStructure.astStorage[_eStructureID].eType;
+
         /* Dependig on type */
-        switch(sstStructure.astStorage[_eStructureID].eType)
+        switch(pstNode->eType)
         {
         case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
     
           /* Adds node to list */
           eResult = orxLinkList_AddStart(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
-    
+
           break;
-    
+
         case orxSTRUCTURE_STORAGE_TYPE_TREE:
-    
+
           /* No root yet? */
           if(orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree)) == orxNULL)
           {

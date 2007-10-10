@@ -36,12 +36,11 @@
 
 #define orxANIM_KU32_STATIC_FLAG_READY      0x00000001  /**< Ready flag */
 
-#define orxANIM_KU32_STATIC_MASK_ALL        0xFFFFFFFF  /**< All flags */
+#define orxANIM_KU32_STATIC_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
 
-/** orxANIM ID flags/masks/shifts
+/** orxANIM flags/masks/shifts
  */
-
 #define orxANIM_KU32_MASK_SIZE              0x000000FF  /**< Size ID mask */
 #define orxANIM_KU32_MASK_COUNTER           0x0000FF00  /**< Counter ID mask */
 #define orxANIM_KU32_MASK_FLAGS             0xFFFF0000  /**< Flags ID mask */
@@ -102,7 +101,7 @@ orxSTATIC orxANIM_STATIC sstAnim;
 /** Finds a key index given a timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32TimeStamp   Desired timestamp
- * @return      Key index / orxU32_Undefined
+ * @return      Key index / orxU32_UNDEFINED
  */
 orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, orxU32 _u32TimeStamp)
 {
@@ -139,7 +138,7 @@ orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, or
       /* !!! MSG !!! */
 
       /* Not defined */
-      u32Index = orxU32_Undefined;
+      u32Index = orxU32_UNDEFINED;
     }
   }
   /* Empty animation */
@@ -148,7 +147,7 @@ orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, or
     /* !!! MSG !!! */
 
     /* Not defined */
-    u32Index = orxU32_Undefined;
+    u32Index = orxU32_UNDEFINED;
   }
 
   /* Done! */
@@ -328,7 +327,7 @@ orxVOID orxAnim_Exit()
 }
 
 /** Creates an empty animation
- * @param[in]   _u32Flags     ID flags for created animation
+ * @param[in]   _u32Flags     flags for created animation
  * @param[in]   _u32Size        Number of keys for this animation
  * @return      Created orxANIM / orxNULL
  */
@@ -371,7 +370,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
         /* !!! MSG !!! */
 
         /* Frees partially allocated anim */
-        orxMemory_Free(pstAnim);
+        orxStructure_Delete(pstAnim);
 
         /* Updates result */
         pstAnim = orxNULL;
@@ -383,7 +382,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
       /* !!! MSG !!! */
 
       /* Frees partially allocated anim */
-      orxMemory_Free(pstAnim);
+      orxStructure_Delete(pstAnim);
 
       /* Updates result */
       pstAnim = orxNULL;
@@ -595,7 +594,7 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
   u32Index = orxAnim_FindKeyIndex(_pstAnim, _u32TimeStamp);
 
   /* Found? */
-  if(u32Index != orxU32_Undefined)
+  if(u32Index != orxU32_UNDEFINED)
   {
     /* Updates current key */
     _pstAnim->u16CurrentKey = u32Index;
@@ -737,7 +736,7 @@ orxU32 orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
     /* !!! MSG !!! */
 
     /* Updates result */
-    u32Length = orxU32_Undefined;
+    u32Length = orxU32_UNDEFINED;
   }
 
   /* Done! */

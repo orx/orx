@@ -267,7 +267,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     /* Is data a texture? */
     if(orxSTRUCTURE_GET_POINTER(_pstData, TEXTURE) != orxNULL)
     {
-      /* Updates ID flags */
+      /* Updates flags */
       orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_STATIC_FLAG_NONE);
     }
     {

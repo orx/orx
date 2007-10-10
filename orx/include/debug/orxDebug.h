@@ -55,20 +55,50 @@
 
 /* *** Misc *** */
 
-#define orxDEBUG_KZ_DEFAULT_DEBUG_FILE        "OrxDebug.log"
-#define orxDEBUG_KZ_DEFAULT_LOG_FILE          "OrxLog.log"
+#define orxDEBUG_KZ_DEFAULT_DEBUG_FILE                "OrxDebug.txt"
+#define orxDEBUG_KZ_DEFAULT_LOG_FILE                  "OrxLog.txt"
 
 
 /* *** Debug Macros *** */
 
+/* Log message, compiler specific */
+#ifdef __orxGCC__
+
+  #define orxLOG(STRING, ...)                                                                               \
+    orxDEBUG_FLAG_BACKUP();                                                                                 \
+    orxDEBUG_FLAG_SET(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                     \
+                     |orxDEBUG_KU32_STATIC_FLAG_FILE                                                        \
+                     |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                        \
+                     |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                  \
+                      orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                  \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+    orxDEBUG_FLAG_RESTORE();
+
+#else /* __orxGCC__ */                                                                              
+  #ifdef __orxMSVC__
+
+    #define orxLOG(STRING, ...)                                                                               \
+      orxDEBUG_FLAG_BACKUP();                                                                                 \
+      orxDEBUG_FLAG_SET(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                     \
+                       |orxDEBUG_KU32_STATIC_FLAG_FILE                                                        \
+                       |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                        \
+                       |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                  \
+                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                  \
+      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+      orxDEBUG_FLAG_RESTORE();
+
+  #endif /* __orxMSVC__ */
+#endif /* __orcGCC__ */
+
+
 #ifdef __orxDEBUG__
 
-  /* Log message, compiler specific */
+  /* Debug print, compiler specific */
   #ifdef __orxGCC__
-    #define orxDEBUG_LOG(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
+    #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
   #else /* __orxGCC__ */
     #ifdef __orxMSVC__
-      #define orxDEBUG_LOG(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
+      #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
     #endif /* __orxMSVC__ */
   #endif /* __orcGCC__ */
   
@@ -87,14 +117,14 @@
   #define orxASSERT(TEST)                     \
   if(!(TEST))                                 \
   {                                           \
-    orxDEBUG_LOG(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : !!!" #TEST "!!!"); \
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : !!!" #TEST "!!!"); \
     orxBREAK();                               \
   }
 
 #else /* __orxDEBUG__ */
 
   /* Log message */
-  #define orxDEBUG_LOG(LEVEL, STRING, ...)
+  #define orxDEBUG_PRINT(LEVEL, STRING, ...)
 
   #define orxBREAK()
 
@@ -138,6 +168,7 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_PATHFINDER,                  /**< Pathfinder Debug */
   orxDEBUG_LEVEL_PLUGIN,                      /**< Plug-in Debug */
   orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
+  orxDEBUG_LEVEL_RENDER,                      /**< Render Debug */
 
   orxDEBUG_LEVEL_LOG,                         /**< Log Debug */
 

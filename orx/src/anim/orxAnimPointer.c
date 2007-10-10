@@ -39,9 +39,9 @@
 #define orxANIMPOINTER_KU32_STATIC_FLAG_READY         0x00000001  /**< Ready flag */
 
 
-/** orxANIMPOINTER ID flags
+/** orxANIMPOINTER flags
  */
-#define orxANIMPOINTER_KU32_FLAG_NONE                 0x00000000  /**< No ID flags */
+#define orxANIMPOINTER_KU32_FLAG_NONE                 0x00000000  /**< No flags */
 
 #define orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM     0x01000000  /**< Has current animation flag */
 #define orxANIMPOINTER_KU32_FLAG_HAS_NEXT_ANIM        0x02000000  /**< Has next animation flag */
@@ -161,7 +161,7 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         _pstAnimPointer->hCurrentAnim = hNewAnim;
 
         /* No next anim? */
-        if(hNewAnim == orxHANDLE_Undefined)
+        if(hNewAnim == orxHANDLE_UNDEFINED)
         {
           /* Updates flags */
           orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM);
@@ -317,7 +317,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet, orxCL
     pstAnimPointer->u32CurrentAnimTime  = 0;
     pstAnimPointer->fFrequency          = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
     pstAnimPointer->u32Time             = orxClock_GetInfo(_pstClock)->u32Time;
-    pstAnimPointer->hDstAnim            = orxHANDLE_Undefined;
+    pstAnimPointer->hDstAnim            = orxHANDLE_UNDEFINED;
 
     /* Is animset link table non-static? */
     if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC) == orxFALSE)
@@ -418,9 +418,9 @@ orxANIMSET *orxFASTCALL orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstA
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation handle
  */
-orxHANDLE orxFASTCALL orxAnimPointer_GetAnim(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAnimPointer)
 {
-  orxHANDLE hAnimHandle = orxHANDLE_Undefined;
+  orxHANDLE hAnimHandle = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
@@ -445,7 +445,7 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetAnim(orxCONST orxANIMPOINTER *_pstAnimPo
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current time
  */
-orxU32 orxFASTCALL orxAnimPointer_GetTime(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxU32 orxFASTCALL orxAnimPointer_GetCurrentTime(orxCONST orxANIMPOINTER *_pstAnimPointer)
 {
   orxU32 u32Result = 0;
 
