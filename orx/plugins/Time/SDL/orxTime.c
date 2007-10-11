@@ -22,7 +22,6 @@
 #include "plugin/orxPluginUser.h"
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
-/* #include "plugin/orxPlugin.h" */
 #include "core/orxTime.h"
 
 #include <SDL/SDL.h>
@@ -61,19 +60,19 @@ orxSTATUS orxTimeSDL_Init()
   orxSTATUS eResult = orxSTATUS_SUCCESS; /* Init result */
 
   /* Module not already initialized ? */
-  if (!(sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY))
+  if(!(sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Set(&sstTime, 0, sizeof(orxTIME_STATIC));
 
-    /* Is SDL_Init has already been called ? */
-    if (SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
+    /* Hqs SDL_Init already been called ? */
+    if(SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
     {
       /* No, calls it */
-      if (SDL_Init(0)==0)
+      if(SDL_Init(0)==0)
       {
         /* Init time subsystem */
-        if (SDL_InitSubSystem(SDL_INIT_TIMER)==0)
+        if(SDL_InitSubSystem(SDL_INIT_TIMER)==0)
         {
           /* Set module as ready */
           sstTime.u32Flags = orxTIME_KU32_STATIC_FLAG_READY;
@@ -94,13 +93,13 @@ orxSTATUS orxTimeSDL_Init()
 orxVOID orxTimeSDL_Exit()
 {
   /* Module initialized ? */
-  if ((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY)
+  if((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY)
   {
     /* Unitialize SDL Time */
     SDL_QuitSubSystem(SDL_INIT_TIMER);
     
     /* All subsystem uninitialized ? */
-    if (SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
+    if(SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
     {
       /* Quit SDL */
       SDL_Quit();

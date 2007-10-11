@@ -62,10 +62,10 @@ orxVOID orxTest_Memory_Allocate()
   orxTextIO_PrintLn("Allocate %u elements of %u * 32 bits in the main memory...", orxTEST_MEMORY_KU32_ARRAY_NB_ELEM, orxTEST_MEMORY_KU32_ELEM_SIZE);
 
   /* Traverse the array and allocate memory for each elements */  
-  for (u32ElemIndex = 0; u32ElemIndex < orxTEST_MEMORY_KU32_ARRAY_NB_ELEM; u32ElemIndex++)
+  for(u32ElemIndex = 0; u32ElemIndex < orxTEST_MEMORY_KU32_ARRAY_NB_ELEM; u32ElemIndex++)
   {
     /* Memory already allocated ? */
-    if (sapMemory[u32ElemIndex] != orxNULL)
+    if(sapMemory[u32ElemIndex] != orxNULL)
     {
       orxTextIO_PrintLn("Elem %lu Has already been allocated, free it before", u32ElemIndex);
     }
@@ -75,7 +75,7 @@ orxVOID orxTest_Memory_Allocate()
       sapMemory[u32ElemIndex] = orxMemory_Allocate(1024 * sizeof(orxU32), orxMEMORY_TYPE_MAIN);
   
       /* Display success status */
-      if (sapMemory[u32ElemIndex] != orxNULL)
+      if(sapMemory[u32ElemIndex] != orxNULL)
       {
         orxTextIO_PrintLn("Elem %lu allocation : Ok", u32ElemIndex);
       }
@@ -99,9 +99,9 @@ orxVOID orxTest_Memory_Free()
   orxTextIO_PrintLn("Free allocated memory");
 
   /* Traverse the array and free memory for each allocated elements */  
-  for (u32ElemIndex = 0; u32ElemIndex < orxTEST_MEMORY_KU32_ARRAY_NB_ELEM; u32ElemIndex++)
+  for(u32ElemIndex = 0; u32ElemIndex < orxTEST_MEMORY_KU32_ARRAY_NB_ELEM; u32ElemIndex++)
   {
-    if (sapMemory[u32ElemIndex] != orxNULL)
+    if(sapMemory[u32ElemIndex] != orxNULL)
     {
       orxMemory_Free(sapMemory[u32ElemIndex]);
       sapMemory[u32ElemIndex] = orxNULL;
@@ -140,10 +140,10 @@ orxVOID orxTest_Memory_Exit()
   orxU32 u32ElemIndex;  /* Array's cursor */
  
   /* Cleans up everything before exit */
-  for (u32ElemIndex = 0; u32ElemIndex < orxTEST_MEMORY_KU32_ARRAY_NB_ELEM; u32ElemIndex++)
+  for(u32ElemIndex = 0; u32ElemIndex < orxTEST_MEMORY_KU32_ARRAY_NB_ELEM; u32ElemIndex++)
   {
     /* Memory allocated ? */
-    if (sapMemory[u32ElemIndex] != orxNULL)
+    if(sapMemory[u32ElemIndex] != orxNULL)
     {
       /* Free it */
       orxMemory_Free(sapMemory[u32ElemIndex]);

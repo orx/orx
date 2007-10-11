@@ -60,14 +60,14 @@ orxSTATUS orxMouse_Init()
   orxMemory_Set(&sstMouse, 0, sizeof(orxMOUSE_STATIC));
   
   /* Try to install allegro mouse */
-  if (install_mouse() != -1)
+  if(install_mouse() != -1)
   {
     /* Set module has ready */
     sstMouse.u32Flags = orxMOUSE_KU32_STATIC_FLAG_READY;
   }
   
   /* Module successfully initialized ? */
-  if (sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY == orxMOUSE_KU32_STATIC_FLAG_READY)
+  if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY == orxMOUSE_KU32_STATIC_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }

@@ -61,14 +61,14 @@ orxSTATUS orxKeyboard_Init()
   orxMemory_Set(&sstKeyboard, 0, sizeof(orxKEYBOARD_STATIC));
   
   /* Try to install allegro mouse */
-  if (install_keyboard() != -1)
+  if(install_keyboard() != -1)
   {
     /* Set module has ready */
     sstKeyboard.u32Flags = orxKEYBOARD_KU32_STATIC_FLAG_READY;
   }
   
   /* Module successfully initialized ? */
-  if (sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY == orxKEYBOARD_KU32_STATIC_FLAG_READY)
+  if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY == orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }

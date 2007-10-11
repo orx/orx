@@ -128,15 +128,15 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
   pstDir = opendir(zDirName);
   
   /* Is it a valid directory ? */
-  if (pstDir != NULL)
+  if(pstDir != NULL)
   {
     u32Index = 0;
     
     /* Traverse the directory */
-    while ((pstFile = readdir(pstDir)))
+    while((pstFile = readdir(pstDir)))
     {
       /* Check if the file name ends with .so */
-      if ((strlen(pstFile->d_name) > 3) &&
+      if((strlen(pstFile->d_name) > 3) &&
           (strcmp(pstFile->d_name + (strlen(pstFile->d_name) - 3), ".so") == 0)
          )
       {
@@ -175,13 +175,13 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
   orxMemory_Set(zPattern, 0, sizeof(zPattern));
  
   /* Check _directory name (overflow) */
-  if (strlen(zDirName) < 500)
+  if(strlen(zDirName) < 500)
   {
     /* Create pattern */
     orxTextIO_Printf(zPattern, "%s\\*.dll", zDirName);
       
     /* Find first .dll file in directory */
-    if ((lFile = _findfirst(zPattern, &stFile)) != -1L)
+    if((lFile = _findfirst(zPattern, &stFile)) != -1L)
     {
       /* Create full lib name */
       orxTextIO_Printf(zLibName, "%s\\%s", zDirName, stFile.name);
@@ -195,7 +195,7 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
       u32Index = 1;
 
       /* Find the rest of the .c files */
-      while (_findnext(lFile, &stFile) == 0)
+      while(_findnext(lFile, &stFile) == 0)
       {
         /* Create full lib name */
         orxTextIO_Printf(zLibName, "%s\\%s", zDirName, stFile.name);
@@ -243,7 +243,7 @@ orxVOID orxTest_Plugin_ShowList()
   orxCHAR zPluginInfos[64];
   
   /* Print a line of stars */
-  for (u32Index = 0; u32Index < orxTEST_PLUGINS_KU32_NB_COLS; u32Index++)
+  for(u32Index = 0; u32Index < orxTEST_PLUGINS_KU32_NB_COLS; u32Index++)
   {
     orxTextIO_Print("*");
   }
@@ -253,29 +253,29 @@ orxVOID orxTest_Plugin_ShowList()
    
   /* Print Title */
   orxTextIO_Print("\n*");  
-  for (u32Index = 0; u32Index < u32Cols; u32Index++)
+  for(u32Index = 0; u32Index < u32Cols; u32Index++)
   {
     orxTextIO_Print(" ");
   }
   orxTextIO_Print(orxTEST_PLUGINS_KZ_PLUGINS_TITLE);
-  for (u32Index = 0; u32Index < u32Cols; u32Index++)
+  for(u32Index = 0; u32Index < u32Cols; u32Index++)
   {
     orxTextIO_Print(" ");
   }
   orxTextIO_PrintLn("*");  
 
   /* Print a line of stars */
-  for (u32Index = 0; u32Index < orxTEST_PLUGINS_KU32_NB_COLS; u32Index++)
+  for(u32Index = 0; u32Index < orxTEST_PLUGINS_KU32_NB_COLS; u32Index++)
   {
     orxTextIO_Print("*");
   }
   orxTextIO_PrintLn(orxSTRING_EMPTY);  
   
   /* Print list of loaded plugins */
-  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
+  for(u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
   {
     /* carriage return if printing the second columns */
-    if (((u32Index % 2) == 0) && (u32Index != 0))
+    if(((u32Index % 2) == 0) && (u32Index != 0))
     {
       orxTextIO_PrintLn("*");
     }
@@ -285,7 +285,7 @@ orxVOID orxTest_Plugin_ShowList()
     orxTextIO_Print(zPluginInfos);
     
     /* Print spaces */
-    for (u32Cols = 0; u32Cols < (orxTEST_PLUGINS_KU32_NB_COLS / 2) - orxString_Length(zPluginInfos) - (u32Index % 2); u32Cols++)
+    for(u32Cols = 0; u32Cols < (orxTEST_PLUGINS_KU32_NB_COLS / 2) - orxString_Length(zPluginInfos) - (u32Index % 2); u32Cols++)
     {
       orxTextIO_Print(" ");
     }
@@ -293,7 +293,7 @@ orxVOID orxTest_Plugin_ShowList()
   orxTextIO_PrintLn(orxSTRING_EMPTY);
   
   /* Print a line of stars */
-  for (u32Index = 0; u32Index < orxTEST_PLUGINS_KU32_NB_COLS; u32Index++)
+  for(u32Index = 0; u32Index < orxTEST_PLUGINS_KU32_NB_COLS; u32Index++)
   {
     orxTextIO_Print("*");
   }
@@ -314,7 +314,7 @@ orxVOID orxTest_Plugin_Load()
   /* First, Display the list of available plugin type */
   orxTextIO_PrintLn("Select a plugin type to load from the list above");
   
-  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
+  for(u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
   {
     orxTextIO_PrintLn("%02d - %s", u32Index, sstTest_Plugin.astPlugins[u32Index].zType);
   } 
@@ -324,13 +324,13 @@ orxVOID orxTest_Plugin_Load()
   
   /* Now, show the list of available plugins of this type */
   u32Index = orxTest_Plugin_BrowseDirectory(s32TypeResult);
-  if (u32Index > 0)
+  if(u32Index > 0)
   {
     /* Get the user selection */
     orxTextIO_ReadS32InRange(&s32FileResult, 10, 0, u32Index - 1, "Choice : ", orxTRUE);
   
     /* Is there a plugin already loaded ? */
-    if (sstTest_Plugin.astPlugins[s32TypeResult].hPlugin != orxHANDLE_UNDEFINED)
+    if(sstTest_Plugin.astPlugins[s32TypeResult].hPlugin != orxHANDLE_UNDEFINED)
     {
       /* Unload the plugin */
       orxTextIO_PrintLn("Unloading %s...", sstTest_Plugin.astPlugins[s32TypeResult].zFile);
@@ -343,7 +343,7 @@ orxVOID orxTest_Plugin_Load()
     orxTextIO_PrintLn("Loading %s...", sstTest_Plugin.azFileName[s32FileResult]);
     
     sstTest_Plugin.astPlugins[s32TypeResult].hPlugin = orxPlugin_Load(sstTest_Plugin.azFileName[s32FileResult], sstTest_Plugin.astPlugins[s32TypeResult].zType);
-    if (sstTest_Plugin.astPlugins[s32TypeResult].hPlugin == orxHANDLE_UNDEFINED)
+    if(sstTest_Plugin.astPlugins[s32TypeResult].hPlugin == orxHANDLE_UNDEFINED)
     {
       orxTextIO_PrintLn("Can't load plugin...");
       
@@ -405,7 +405,7 @@ orxVOID orxTest_RegisterCorePlugin()
   orxTest_Register("Plugin", "Unload a plugin", orxTest_Plugin_Unload);
   
   /* Initialize plugins array content */
-  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
+  for(u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
   {
     sstTest_Plugin.astPlugins[u32Index].hPlugin = orxHANDLE_UNDEFINED;
     sstTest_Plugin.astPlugins[u32Index].zType   = orxTEST_PLUGINS_KZ_UNKNOWN_NAME;
@@ -448,9 +448,9 @@ orxVOID orxTest_Plugin_Exit()
 //  orxU32 u32Index;
 //  
 //  /* Unload all the loaded plugins before exit */
-//  for (u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
+//  for(u32Index = 0; u32Index < orxPLUGIN_CORE_ID_NUMBER; u32Index++)
 //  {
-//    if (sstTest_Plugin.astPlugins[u32Index].hPlugin != orxHANDLE_UNDEFINED)
+//    if(sstTest_Plugin.astPlugins[u32Index].hPlugin != orxHANDLE_UNDEFINED)
 //    {
 //      /* Unload the selected plugin */
 //      orxPlugin_Unload(sstTest_Plugin.astPlugins[u32Index].hPlugin);

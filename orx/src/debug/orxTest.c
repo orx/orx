@@ -122,20 +122,20 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
   pstDir = opendir(_zDirName);
   
   /* Is it a valid directory ? */
-  if (pstDir != NULL)
+  if(pstDir != NULL)
   {
     /* Traverse the directory */
-    while ((pstFile = readdir(pstDir)))
+    while((pstFile = readdir(pstDir)))
     {
       /* Check if the file name ends with .so */
-      if ((strlen(pstFile->d_name) > 3) &&
+      if((strlen(pstFile->d_name) > 3) &&
           (strcmp(pstFile->d_name + (strlen(pstFile->d_name) - 3), ".so") == 0)
          )
       {
         /* Load the library */
         fprintf(stderr, " --> %s\n", pstFile->d_name);
         pHandle = dlopen(pstFile->d_name, RTLD_NOW);
-        if (!pHandle)
+        if(!pHandle)
         {
           fprintf(stderr, "%s\n", dlerror());
         }
@@ -177,13 +177,13 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
   memset(zPattern, 0, 512 * sizeof(orxCHAR));
  
   /* Check _directory name (overflow) */
-  if (strlen(_zDirName) < 500)
+  if(strlen(_zDirName) < 500)
   {
     /* Create pattern */
     sprintf(zPattern, "%s\\*.dll", _zDirName);
       
     /* Find first .dll file in directory */
-    if ((lFile = _findfirst(zPattern, &stFile)) != -1L)
+    if((lFile = _findfirst(zPattern, &stFile)) != -1L)
     {
       /* Create full lib name */
       sprintf(zLibName, "%s\\%s", _zDirName, stFile.name);
@@ -198,7 +198,7 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
       sstTest.u32NbLibrary = 1;
 
       /* Find the rest of the .c files */
-      while (_findnext(lFile, &stFile) == 0)
+      while(_findnext(lFile, &stFile) == 0)
       {
         /* Create full lib name */
         sprintf(zLibName, "%s\\%s", _zDirName, stFile.name);
@@ -236,7 +236,7 @@ orxVOID orxTest_Release()
   orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
   
   /* Traverse and free loaded library for each platform */
-  for (u32Index = 0; u32Index < sstTest.u32NbLibrary; u32Index++)
+  for(u32Index = 0; u32Index < sstTest.u32NbLibrary; u32Index++)
   {
     /* Release loaded library */
 #ifdef __orxLINUX__
@@ -273,9 +273,9 @@ orxSTATIC orxINLINE orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleN
   orxTextIO_PrintLn("\n**** MODULE : %s ****", _zModuleName);
   
   /* Display all functions not already displayed and that have the same module name */
-  for (u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
+  for(u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
   {
-    if (!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, orxString_Length(_zModuleName) * sizeof(orxCHAR)) == 0))
+    if(!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, orxString_Length(_zModuleName) * sizeof(orxCHAR)) == 0))
     {
       sstTest.astTestFunctions[u32Index].bDisplayed = orxTRUE;
       orxTextIO_PrintLn("* %lu - %s", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
@@ -292,7 +292,7 @@ orxSTATIC orxINLINE orxVOID orxTest_ResetVisibility()
   /* Module initialized ? */
   orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
   
-  for (u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
+  for(u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
   {
     sstTest.astTestFunctions[u32Index].bDisplayed = orxFALSE;
   }
@@ -308,7 +308,7 @@ orxSTATUS orxFASTCALL orxTest_Execute(orxHANDLE _hRegisteredFunc)
   orxASSERT((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
-  if ((_hRegisteredFunc != orxHANDLE_UNDEFINED) && ((orxU32)_hRegisteredFunc < sstTest.u32NbRegisteredFunc))
+  if((_hRegisteredFunc != orxHANDLE_UNDEFINED) && ((orxU32)_hRegisteredFunc < sstTest.u32NbRegisteredFunc))
   {
     /* Execute the function */
     sstTest.astTestFunctions[(orxU32)_hRegisteredFunc].pfnFunction();
@@ -336,7 +336,7 @@ orxVOID orxTest_DisplayMenu()
   /* Display menu for each module */
   for(u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
   {
-    if (!sstTest.astTestFunctions[u32Index].bDisplayed)
+    if(!sstTest.astTestFunctions[u32Index].bDisplayed)
     {
       orxTest_PrintModuleFunc(sstTest.astTestFunctions[u32Index].zModule);
     }
@@ -436,7 +436,7 @@ orxSTATUS orxTest_Init()
 orxVOID orxTest_Exit()
 {
   /* Module initialized ? */
-  if ((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY)
+  if((sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_READY) == orxTEST_KU32_STATIC_FLAG_READY)
   {
     /* Release library */
     orxTest_Release();
@@ -468,7 +468,7 @@ orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST
   orxASSERT(_pfnFunction != orxNULL);
 
   /* Module full ? */
-  if (sstTest.u32NbRegisteredFunc < orxTEST_KU32_MAX_REGISTERED_FUNCTIONS)
+  if(sstTest.u32NbRegisteredFunc < orxTEST_KU32_MAX_REGISTERED_FUNCTIONS)
   {
     /* Copy datas in the registered function array */
     pstTest = &(sstTest.astTestFunctions[sstTest.u32NbRegisteredFunc]);

@@ -72,7 +72,7 @@ orxSTATUS orxFile_LibC_Init()
 	sstFile.u32Flags = orxFILE_KU32_STATIC_FLAG_READY;
 
   /* Module successfully initialized ? */
-  if (sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY)
+  if(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }

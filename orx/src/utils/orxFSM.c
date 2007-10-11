@@ -185,7 +185,7 @@ orxSTATUS orxFSM_Init()
     /* Allocate bank for state machines. */
     sstFSM.pstStateMachinesBank = orxBank_Create(orxFSM_ALLOC_NB, sizeof(orxFSM), orxFSM_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
     
-    if (sstFSM.pstStateMachinesBank != orxNULL)
+    if(sstFSM.pstStateMachinesBank != orxNULL)
     {
       /* Set module as ready. */
       sstFSM.u32Flags = orxFSM_KU32_STATIC_FLAG_READY;
@@ -214,7 +214,7 @@ orxVOID orxFSM_Exit()
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
   
   /* Free bank for state machines. */
-  if (sstFSM.pstStateMachinesBank != orxNULL)
+  if(sstFSM.pstStateMachinesBank != orxNULL)
   {
     orxBank_Delete(sstFSM.pstStateMachinesBank);
     sstFSM.pstStateMachinesBank = orxNULL;
@@ -255,13 +255,13 @@ orxFSM *orxFASTCALL orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU3
   pstStateMachine = (orxFSM *)orxBank_Allocate(sstFSM.pstStateMachinesBank);
 
   /* Allocation succeeded ? */
-  if (pstStateMachine != orxNULL)
+  if(pstStateMachine != orxNULL)
   { 
     /* Cleans it */
     orxMemory_Set(pstStateMachine, 0, sizeof(orxFSM));
 
     /* Set flags */
-    if (_u32Flags == orxFSM_KU32_FLAG_NOT_EXPANDABLE)
+    if(_u32Flags == orxFSM_KU32_FLAG_NOT_EXPANDABLE)
     {
       u32BankFlags = u32LinkFlags = u32InstanceFlags = orxBANK_KU32_FLAG_NOT_EXPANDABLE;
     }
@@ -274,7 +274,7 @@ orxFSM *orxFASTCALL orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU3
     pstStateMachine->pstStatesBank = orxBank_Create(_u16NbStates, sizeof(orxFSM_STATE), u32BankFlags, _eMemType);
     
     /* Correct bank allocations? */
-    if (pstStateMachine->pstStatesBank != orxNULL)
+    if(pstStateMachine->pstStatesBank != orxNULL)
     { 
       /* Allocate hash table for states. */
       pstStateMachine->pstStatesHashTable = orxHashTable_Create(_u16NbStates, u32BankFlags, _eMemType);
@@ -283,7 +283,7 @@ orxFSM *orxFASTCALL orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU3
       pstStateMachine->pstLinksBank = orxBank_Create(_u32NbLinks, sizeof(orxFSM_LINK), u32LinkFlags, _eMemType);
     
       /* Correct bank allocations? */
-      if (pstStateMachine->pstLinksBank != orxNULL)
+      if(pstStateMachine->pstLinksBank != orxNULL)
       {
         /* Allocate hash table for links. */
         pstStateMachine->pstLinksHashTable = orxHashTable_Create(_u32NbLinks, u32LinkFlags, _eMemType);
@@ -292,7 +292,7 @@ orxFSM *orxFASTCALL orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU3
         pstStateMachine->pstInstancesBank = orxBank_Create(_u32NbInstances, sizeof(orxFSM_INSTANCE), u32InstanceFlags, _eMemType);
         
         /* Correct bank allocations? */
-        if (pstStateMachine->pstInstancesBank == orxNULL)
+        if(pstStateMachine->pstInstancesBank == orxNULL)
         {
           /* Free bank for links. */
           orxBank_Delete(pstStateMachine->pstLinksBank);
@@ -413,12 +413,12 @@ orxFSM_STATE *orxFASTCALL orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16I
   pstState = (orxFSM_STATE *)orxBank_Allocate(_pstStateMachine->pstStatesBank);
   
   /* Define the new state. */
-  if (pstState != orxNULL)
+  if(pstState != orxNULL)
   {
     /* Cleans it */
     orxMemory_Set(pstState, 0, sizeof(orxFSM_STATE));
 
-    if (bFirst)
+    if(bFirst)
     {
       /* It is the first state: set it as the initial state. */
       _pstStateMachine->pstInitialState = pstState;
@@ -431,7 +431,7 @@ orxFSM_STATE *orxFASTCALL orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16I
     pstState->pfnExit     = _pfnExit;
     
     /* Try to add the state to the hash table. */
-    if (orxHashTable_Add(_pstStateMachine->pstStatesHashTable, _u16Id, pstState) != orxSTATUS_SUCCESS)
+    if(orxHashTable_Add(_pstStateMachine->pstStatesHashTable, _u16Id, pstState) != orxSTATUS_SUCCESS)
     {
       /* Couldn't insert the state in the hash table, so free it from the bank. */
       orxBank_Free(_pstStateMachine->pstStatesBank, pstState);
@@ -461,9 +461,9 @@ orxSTATUS orxFASTCALL orxFSM_SetInitState(orxFSM *_pstStateMachine, orxFSM_STATE
   
   /* Verify that the proposed initial state is part of the FSM. */
   pstState = orxBank_GetNext(_pstStateMachine->pstStatesBank, orxNULL);
-  while (pstState != orxNULL && eStatus == orxSTATUS_FAILURE)
+  while(pstState != orxNULL && eStatus == orxSTATUS_FAILURE)
   {
-    if (pstState == _pstInitialState)
+    if(pstState == _pstInitialState)
     {
       /* The initial state is part of the FSM. */
       eStatus = orxSTATUS_SUCCESS;
@@ -473,7 +473,7 @@ orxSTATUS orxFASTCALL orxFSM_SetInitState(orxFSM *_pstStateMachine, orxFSM_STATE
     pstState = orxBank_GetNext(_pstStateMachine->pstStatesBank, pstState);
   }
   
-  if (eStatus == orxSTATUS_SUCCESS)
+  if(eStatus == orxSTATUS_SUCCESS)
   {
     /* Set the initial state. */
     _pstStateMachine->pstInitialState = _pstInitialState;
@@ -535,15 +535,15 @@ orxSTATUS orxFASTCALL orxFSM_RemoveState(orxFSM *_pstStateMachine, orxFSM_STATE 
   
   /* Search and manage related links. */
   pstLink = orxBank_GetNext(_pstStateMachine->pstLinksBank, orxNULL);
-  while (pstLink != orxNULL && eStatus == orxSTATUS_SUCCESS)
+  while(pstLink != orxNULL && eStatus == orxSTATUS_SUCCESS)
   {
-    if (pstLink->pstBeginningState == _pstState || pstLink->pstEndingState == _pstState)
+    if(pstLink->pstBeginningState == _pstState || pstLink->pstEndingState == _pstState)
     {
       /* The link has a connection with this state. */
-      if (_bRemoveLinks)
+      if(_bRemoveLinks)
       {
         /* Remove the link. */
-        if (orxHashTable_Remove(_pstStateMachine->pstLinksHashTable, orxU32KeyGen(pstLink->pstBeginningState->u16Id, pstLink->pstEndingState->u16Id)) == orxSTATUS_SUCCESS)
+        if(orxHashTable_Remove(_pstStateMachine->pstLinksHashTable, orxU32KeyGen(pstLink->pstBeginningState->u16Id, pstLink->pstEndingState->u16Id)) == orxSTATUS_SUCCESS)
         {
           /* Remove the state from the bank. */
           orxBank_Free(_pstStateMachine->pstLinksBank, pstLink);
@@ -565,10 +565,10 @@ orxSTATUS orxFASTCALL orxFSM_RemoveState(orxFSM *_pstStateMachine, orxFSM_STATE 
     pstLink = orxBank_GetNext(_pstStateMachine->pstLinksBank, pstLink);
   }
   
-  if (eStatus == orxSTATUS_SUCCESS)
+  if(eStatus == orxSTATUS_SUCCESS)
   {
     /* Try to remove state from the hash table. */
-    if (orxHashTable_Remove(_pstStateMachine->pstStatesHashTable, _pstState->u16Id) == orxSTATUS_SUCCESS)
+    if(orxHashTable_Remove(_pstStateMachine->pstStatesHashTable, _pstState->u16Id) == orxSTATUS_SUCCESS)
     {
       /* Delete state from the bank. */
       orxBank_Free(_pstStateMachine->pstStatesBank, _pstState);
@@ -607,7 +607,7 @@ orxFSM_LINK *orxFASTCALL orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *
   pstLink = (orxFSM_LINK *)orxBank_Allocate(_pstStateMachine->pstLinksBank);
   
   /* Define the new link. */
-  if (pstLink != orxNULL)
+  if(pstLink != orxNULL)
   {
     /* Cleans it */
     orxMemory_Set(pstLink, 0, sizeof(orxFSM_LINK));
@@ -618,7 +618,7 @@ orxFSM_LINK *orxFASTCALL orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *
     pstLink->pstEndingState = _pstEndingState;
     
     /* Try to add the link to the hash table. */
-    if (orxHashTable_Add(_pstStateMachine->pstLinksHashTable, orxU32KeyGen(pstLink->pstBeginningState->u16Id, pstLink->pstEndingState->u16Id), pstLink) != orxSTATUS_SUCCESS)
+    if(orxHashTable_Add(_pstStateMachine->pstLinksHashTable, orxU32KeyGen(pstLink->pstBeginningState->u16Id, pstLink->pstEndingState->u16Id), pstLink) != orxSTATUS_SUCCESS)
     {
       /* Couldn't insert the link in the hash table, so free it from the bank. */
       orxBank_Free(_pstStateMachine->pstLinksBank, pstLink);
@@ -665,7 +665,7 @@ orxSTATUS orxFASTCALL orxFSM_RemoveLink(orxFSM *_pstStateMachine, orxFSM_LINK *_
   orxASSERT(_pstLink != orxNULL);
   
   /* Try to remove link from the hash table. */
-  if (orxHashTable_Remove(_pstStateMachine->pstLinksHashTable, orxU32KeyGen(_pstLink->pstBeginningState->u16Id, _pstLink->pstEndingState->u16Id)) == orxSTATUS_SUCCESS)
+  if(orxHashTable_Remove(_pstStateMachine->pstLinksHashTable, orxU32KeyGen(_pstLink->pstBeginningState->u16Id, _pstLink->pstEndingState->u16Id)) == orxSTATUS_SUCCESS)
   {
     /* Delete link from the bank. */
     orxBank_Free(_pstStateMachine->pstLinksBank, _pstLink);
@@ -710,7 +710,7 @@ orxFSM_INSTANCE *orxFASTCALL orxFSM_CreateInstance(orxFSM *_pstStateMachine)
   pstInstance = (orxFSM_INSTANCE *)orxBank_Allocate(_pstStateMachine->pstInstancesBank);
   
   /* Allocation succeeded? */
-  if (pstInstance != orxNULL)
+  if(pstInstance != orxNULL)
   {
     /* Cleans it */
     orxMemory_Set(pstInstance, 0, sizeof(orxFSM_INSTANCE));
@@ -788,7 +788,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
   /* Correct parameters? */
   orxASSERT(_pstInstance != orxNULL);
   
-  if (_pstInstance->pstCurrentState == orxNULL)
+  if(_pstInstance->pstCurrentState == orxNULL)
   {
     /* Enter the initial state. */
     _pstInstance->pstCurrentState = _pstInstance->pstStateMachine->pstInitialState;
@@ -836,10 +836,10 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
         
         /* Find an applicable link to follow. */
         pstTestedState = orxBank_GetNext(_pstInstance->pstStateMachine->pstStatesBank, orxNULL);
-        while (pstTestedState != orxNULL)
+        while(pstTestedState != orxNULL)
         {
           pstLink = orxFSM_GetLink(_pstInstance->pstStateMachine, _pstInstance->pstCurrentState, pstTestedState);
-          if (pstLink == orxNULL)
+          if(pstLink == orxNULL)
           {
             /* A link has not been found yet... continue the search. */
             pstTestedState = orxBank_GetNext(_pstInstance->pstStateMachine->pstStatesBank, pstTestedState);
@@ -847,7 +847,7 @@ orxSTATUS orxFASTCALL orxFSM_UpdateInstance(orxFSM_INSTANCE *_pstInstance)
           else
           {
             /* A link has been found... verify it. */
-            if (pstLink->pfnCondition())
+            if(pstLink->pfnCondition())
             {
               /* The link is valid... enter the new state. */
               _pstInstance->pstCurrentState = pstLink->pstEndingState;
@@ -901,7 +901,7 @@ orxSTATUS orxFASTCALL orxFSM_Update(orxFSM *_pstStateMachine)
   
   /* Loop while there are instances and no problem. */
   pstInstance = orxBank_GetNext(_pstStateMachine->pstInstancesBank, orxNULL);
-  while (pstInstance != orxNULL && eStatus == orxSTATUS_SUCCESS)
+  while(pstInstance != orxNULL && eStatus == orxSTATUS_SUCCESS)
   {
     eStatus = orxFSM_UpdateInstance(pstInstance);
   }

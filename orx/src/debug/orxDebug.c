@@ -139,13 +139,13 @@ orxSTATUS _orxDebug_Init()
   /* Init dependencies */
   
   /* Correct parameters ? */
-  if (orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
+  if(orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
   {
     /* !!! MSG !!! */
 
     eResult = orxSTATUS_FAILURE;
   }
-  else if (sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
+  else if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
     /* Already Initialized? */
     /* !!! MSG !!! */

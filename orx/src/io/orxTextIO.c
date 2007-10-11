@@ -99,7 +99,7 @@ orxSTATUS orxTextIO_Init()
 orxVOID orxTextIO_Exit()
 {
   /* Module initialized ? */
-  if ((sstTextIO.u32Flags & orxTEXTIO_KU32_STATIC_FLAG_READY) == orxTEXTIO_KU32_STATIC_FLAG_READY)
+  if((sstTextIO.u32Flags & orxTEXTIO_KU32_STATIC_FLAG_READY) == orxTEXTIO_KU32_STATIC_FLAG_READY)
   {
     /* Module becomes not ready */
     sstTextIO.u32Flags &= ~orxTEXTIO_KU32_STATIC_FLAG_READY;
@@ -136,13 +136,13 @@ orxSTATUS orxFASTCALL orxTextIO_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32
   
   /* Set \0 on the last character instead of \n (if present and if string length > 0) */
   u32StringLength = orxString_Length(_zReturnString);
-  if ((u32StringLength > 0) && (_zReturnString[u32StringLength - 1] == '\n'))
+  if((u32StringLength > 0) && (_zReturnString[u32StringLength - 1] == '\n'))
   {
     _zOutputBuffer[u32StringLength - 1] = '\0';
   }
   
   /* Read a valid value ? */
-  if (_zReturnString != orxNULL)
+  if(_zReturnString != orxNULL)
   {
     return orxSTATUS_SUCCESS;
   }
@@ -177,19 +177,19 @@ orxSTATUS orxFASTCALL orxTextIO_ReadS32(orxS32 *_ps32OutValue, orxU32 _u32Base, 
     eStatus = orxTextIO_ReadString(zUserValue, 63, _zMessage);
     
     /* Valid value ? */
-    if (eStatus != orxSTATUS_FAILURE)
+    if(eStatus != orxSTATUS_FAILURE)
     {
       /* Try to convert */
       eStatus = orxString_ToS32(_ps32OutValue, zUserValue, _u32Base);
       
       /* Valid conversion ? */
-      if (eStatus == orxSTATUS_FAILURE)
+      if(eStatus == orxSTATUS_FAILURE)
       {
         /* Print error message */
         orxTextIO_PrintLn("Invalid number");
       }
     }
-  } while ((eStatus == orxSTATUS_FAILURE) && _bLoop);
+  } while((eStatus == orxSTATUS_FAILURE) && _bLoop);
   
   /* Returns exit status */
   return eStatus;
@@ -222,10 +222,10 @@ orxSTATUS orxFASTCALL orxTextIO_ReadS32InRange(orxS32 *_ps32OutValue, orxU32 _u3
     eStatus = orxTextIO_ReadS32(_ps32OutValue, _u32Base, _zMessage, orxFALSE);
     
     /* Valid conversion ? */
-    if (eStatus == orxSTATUS_SUCCESS)
+    if(eStatus == orxSTATUS_SUCCESS)
     {
       /* Is it in range ? */
-      if ((*_ps32OutValue < _s32Min) || (*_ps32OutValue > _s32Max))
+      if((*_ps32OutValue < _s32Min) || (*_ps32OutValue > _s32Max))
       {
         /* Print error message */
         orxTextIO_PrintLn("Value not in range");
@@ -233,7 +233,7 @@ orxSTATUS orxFASTCALL orxTextIO_ReadS32InRange(orxS32 *_ps32OutValue, orxU32 _u3
       }
     }
   } 
-  while ((eStatus == orxSTATUS_FAILURE) && _bLoop);
+  while((eStatus == orxSTATUS_FAILURE) && _bLoop);
   
   /* Returns exit status */
   return eStatus;
@@ -262,19 +262,19 @@ orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxFLOAT *_pfOutValue, orxCONST orxSTR
     eStatus = orxTextIO_ReadString(zUserValue, 63, _zMessage);
     
     /* Valid value ? */
-    if (eStatus != orxSTATUS_FAILURE)
+    if(eStatus != orxSTATUS_FAILURE)
     {
       /* Try to convert */
       eStatus = orxString_ToFloat(_pfOutValue, zUserValue);
       
       /* Valid conversion ? */
-      if (eStatus == orxSTATUS_FAILURE)
+      if(eStatus == orxSTATUS_FAILURE)
       {
         /* Print error message */
         orxTextIO_PrintLn("Invalid number");
       }
     }
-  } while ((eStatus == orxSTATUS_FAILURE) && _bLoop);
+  } while((eStatus == orxSTATUS_FAILURE) && _bLoop);
   
   /* Returns exit status */
   return eStatus;
@@ -305,10 +305,10 @@ orxSTATUS orxFASTCALL orxTextIO_ReadFloatInRange(orxFLOAT *_pfOutValue, orxFLOAT
     eStatus = orxTextIO_ReadFloat(_pfOutValue, _zMessage, orxFALSE);
     
     /* Valid conversion ? */
-    if (eStatus == orxSTATUS_SUCCESS)
+    if(eStatus == orxSTATUS_SUCCESS)
     {
       /* Is it in range ? */
-      if ((*_pfOutValue < _fMin) || (*_pfOutValue > _fMax))
+      if((*_pfOutValue < _fMin) || (*_pfOutValue > _fMax))
       {
         /* Print error message */
         orxTextIO_PrintLn("Value not in range");
@@ -316,7 +316,7 @@ orxSTATUS orxFASTCALL orxTextIO_ReadFloatInRange(orxFLOAT *_pfOutValue, orxFLOAT
       }
     }
   } 
-  while ((eStatus == orxSTATUS_FAILURE) && _bLoop);
+  while((eStatus == orxSTATUS_FAILURE) && _bLoop);
   
   /* Returns exit status */
   return eStatus;

@@ -66,9 +66,9 @@ orxVOID orxTest_FSM_PrintUsedID()
   orxTextIO_PrintLn("List of used FSM ID:");
 
   /* Tranverse the array and get used ID. */
-  for (u32Index = 0; u32Index < orxTEST_FSM_KU32_ARRAY_NB_ELEM; u32Index++)
+  for(u32Index = 0; u32Index < orxTEST_FSM_KU32_ARRAY_NB_ELEM; u32Index++)
   {
-    if (sstTest_FSM.apstFSM[u32Index] != orxNULL)
+    if(sstTest_FSM.apstFSM[u32Index] != orxNULL)
     {
       orxTextIO_PrintLn("Used ID: %d", u32Index);
     }
@@ -82,9 +82,9 @@ orxVOID orxTest_FSM_Inst_PrintUsedIt()
   orxTextIO_PrintLn("List of used FSM instances ID:");
 
   /* Tranverse the array and get used ID. */
-  for (u32Index = 0; u32Index < orxTEST_FSM_KU32_ARRAY_NB_INST; u32Index++)
+  for(u32Index = 0; u32Index < orxTEST_FSM_KU32_ARRAY_NB_INST; u32Index++)
   {
-    if (sstTest_FSM_Inst.apstFSM_Inst[u32Index] != orxNULL)
+    if(sstTest_FSM_Inst.apstFSM_Inst[u32Index] != orxNULL)
     {
       orxTextIO_PrintLn("Used ID: %d", u32Index);
     }
@@ -132,14 +132,14 @@ orxVOID orxTest_FSM_Create()
   orxS32 s32NbStates, s32NbLinks, s32NbInstances;
   
   /* Is it possible to create a FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == orxTEST_FSM_KU32_ARRAY_NB_ELEM)
+  if(sstTest_FSM.u32NbUsedFSM == orxTEST_FSM_KU32_ARRAY_NB_ELEM)
   {
     orxTextIO_PrintLn("All ID have been used. Delete a FSM before create a new one.");
     return;
   }
   
   /* All ID available? */
-  if (sstTest_FSM.u32NbUsedFSM > 0)
+  if(sstTest_FSM.u32NbUsedFSM > 0)
   {
     /* Display the list of used ID. */
     orxTest_FSM_PrintUsedID();
@@ -149,7 +149,7 @@ orxVOID orxTest_FSM_Create()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
 
   /* Already used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] != orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] != orxNULL)
   {
     orxTextIO_PrintLn("This ID is already used.");
   }
@@ -167,7 +167,7 @@ orxVOID orxTest_FSM_Create()
     /* Now, allocate s32NbStates states and s32NbLinks links in a new FSM at the index position s32ID. */
     sstTest_FSM.apstFSM[s32ID] = orxFSM_Create(s32NbStates, s32NbLinks, s32NbInstances, orxFSM_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
     
-    if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+    if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
     {
       orxTextIO_PrintLn("Can't create the FSM. Not enough memory?");
     }
@@ -187,7 +187,7 @@ orxVOID orxTest_FSM_Destroy()
   orxS32 s32ID;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. Create a FSM before trying to delete it.");
     return;
@@ -200,7 +200,7 @@ orxVOID orxTest_FSM_Destroy()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used, can't destroy it");
   }
@@ -225,7 +225,7 @@ orxVOID orxTest_FSM_State_Add()
   orxS32 s32StateId;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. Create a FSM before trying to add states.");
     return;
@@ -238,7 +238,7 @@ orxVOID orxTest_FSM_State_Add()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used.");
   }
@@ -248,7 +248,7 @@ orxVOID orxTest_FSM_State_Add()
     orxTextIO_ReadS32(&s32StateId, 10, "Identifier for the state to add: ", orxTRUE);
     
     orxTextIO_PrintLn("Trying to add the state %u...", (orxU32)s32StateId);
-    if (orxFSM_AddState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32StateId, orxTest_FSM_InitAction, orxTest_FSM_ExecuteAction, orxTest_FSM_ExitAction) == orxNULL)
+    if(orxFSM_AddState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32StateId, orxTest_FSM_InitAction, orxTest_FSM_ExecuteAction, orxTest_FSM_ExitAction) == orxNULL)
     {
       /* Insertion failed. */
       orxTextIO_PrintLn("Insertion failed...");
@@ -266,7 +266,7 @@ orxVOID orxTest_FSM_State_Initial()
   orxFSM_STATE * pstInitialState;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. Create a FSM before trying to set initial state.");
     return;
@@ -279,7 +279,7 @@ orxVOID orxTest_FSM_State_Initial()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used.");
   }
@@ -290,7 +290,7 @@ orxVOID orxTest_FSM_State_Initial()
     
     orxTextIO_PrintLn("Trying to add the initial state %u...", (orxU32)s32InitialStateId);
     pstInitialState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32InitialStateId);
-    if (orxFSM_SetInitState(sstTest_FSM.apstFSM[s32ID], pstInitialState) == orxSTATUS_FAILURE)
+    if(orxFSM_SetInitState(sstTest_FSM.apstFSM[s32ID], pstInitialState) == orxSTATUS_FAILURE)
     {
       /* Insertion failed. */
       orxTextIO_PrintLn("Set of initial state failed...");
@@ -308,7 +308,7 @@ orxVOID orxTest_FSM_State_Remove()
   orxFSM_STATE * pstState;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. You can't remove states.");
     return;
@@ -321,7 +321,7 @@ orxVOID orxTest_FSM_State_Remove()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used.");
   }
@@ -332,7 +332,7 @@ orxVOID orxTest_FSM_State_Remove()
 
     /* Try to remove it. */
     pstState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32StateId);
-    if (orxFSM_RemoveState(sstTest_FSM.apstFSM[s32ID], pstState, orxTRUE) == orxSTATUS_FAILURE)
+    if(orxFSM_RemoveState(sstTest_FSM.apstFSM[s32ID], pstState, orxTRUE) == orxSTATUS_FAILURE)
     {
       /* Failed to remove. */
       orxTextIO_PrintLn("Remove failed...");
@@ -348,7 +348,7 @@ orxVOID orxTest_FSM_Link_Add()
   orxFSM_STATE * pstBeginningState, * pstEndingState;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. Create a FSM before trying to add links.");
     return;
@@ -361,7 +361,7 @@ orxVOID orxTest_FSM_Link_Add()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used.");
   }
@@ -376,7 +376,7 @@ orxVOID orxTest_FSM_Link_Add()
     orxTextIO_PrintLn("Trying to add the link...");
     pstBeginningState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32BeginningStateId);
     pstEndingState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32EndingStateId);
-    if (orxFSM_AddLink(sstTest_FSM.apstFSM[s32ID], pstBeginningState, pstEndingState, orxTest_FSM_Condition) == orxNULL)
+    if(orxFSM_AddLink(sstTest_FSM.apstFSM[s32ID], pstBeginningState, pstEndingState, orxTest_FSM_Condition) == orxNULL)
     {
       /* Insertion failed */
       orxTextIO_PrintLn("Insertion failed...");
@@ -395,7 +395,7 @@ orxVOID orxTest_FSM_Link_Remove()
   orxFSM_LINK * pstLink;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. You can't remove links.");
     return;
@@ -408,7 +408,7 @@ orxVOID orxTest_FSM_Link_Remove()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used.");
   }
@@ -425,7 +425,7 @@ orxVOID orxTest_FSM_Link_Remove()
     pstBeginningState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32BeginningStateId);
     pstEndingState = orxFSM_GetState(sstTest_FSM.apstFSM[s32ID], (orxU32)s32EndingStateId);
     pstLink = orxFSM_GetLink(sstTest_FSM.apstFSM[s32ID], pstBeginningState, pstEndingState);
-    if (orxFSM_RemoveLink(sstTest_FSM.apstFSM[s32ID], pstLink) == orxSTATUS_FAILURE)
+    if(orxFSM_RemoveLink(sstTest_FSM.apstFSM[s32ID], pstLink) == orxSTATUS_FAILURE)
     {
       /* Failed to remove. */
       orxTextIO_PrintLn("Remove failed...");
@@ -439,7 +439,7 @@ orxVOID orxTest_FSM_Link_Clear()
   orxS32 s32ID;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. You can't clear links.");
     return;
@@ -452,7 +452,7 @@ orxVOID orxTest_FSM_Link_Clear()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used.");
   }
@@ -470,7 +470,7 @@ orxVOID orxTest_FSM_Clear()
   orxS32 s32ID;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. you can't clear it.");
     return;
@@ -483,7 +483,7 @@ orxVOID orxTest_FSM_Clear()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used.");
   }
@@ -503,14 +503,14 @@ orxVOID orxTest_FSM_Instance_Create()
   orxFSM * pstFSM;
   
   /* Is it possible to create an instance? */
-  if (sstTest_FSM_Inst.u32NbUsedFSMInst == orxTEST_FSM_KU32_ARRAY_NB_INST)
+  if(sstTest_FSM_Inst.u32NbUsedFSMInst == orxTEST_FSM_KU32_ARRAY_NB_INST)
   {
     orxTextIO_PrintLn("All ID have been used. Delete an instance before create a new one.");
     return;
   }
   
   /* All ID available? */
-  if (sstTest_FSM_Inst.u32NbUsedFSMInst > 0)
+  if(sstTest_FSM_Inst.u32NbUsedFSMInst > 0)
   {
     /* Display the list of used ID. */
     orxTest_FSM_Inst_PrintUsedIt();
@@ -520,7 +520,7 @@ orxVOID orxTest_FSM_Instance_Create()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_INST - 1, "Choose the instance ID to use: ", orxTRUE);
 
   /* Already used ID? */
-  if (sstTest_FSM_Inst.apstFSM_Inst[s32ID] != orxNULL)
+  if(sstTest_FSM_Inst.apstFSM_Inst[s32ID] != orxNULL)
   {
     orxTextIO_PrintLn("This ID is already used.");
   }
@@ -531,12 +531,12 @@ orxVOID orxTest_FSM_Instance_Create()
 
     /* Already used ID? */
     pstFSM = sstTest_FSM.apstFSM[s32FSMId];
-    if (pstFSM != orxNULL)
+    if(pstFSM != orxNULL)
     {
       /* Now, allocate an instance of the FSM at the index position s32ID. */
       sstTest_FSM_Inst.apstFSM_Inst[s32ID] = orxFSM_CreateInstance(pstFSM);
     
-      if (sstTest_FSM_Inst.apstFSM_Inst[s32ID] == orxNULL)
+      if(sstTest_FSM_Inst.apstFSM_Inst[s32ID] == orxNULL)
       {
         orxTextIO_PrintLn("Can't create the instance. Not enough memory?");
       }
@@ -561,7 +561,7 @@ orxVOID orxTest_FSM_Instance_Destroy()
   orxS32 s32ID;
   
   /* Are there allocated instances? */
-  if (sstTest_FSM_Inst.u32NbUsedFSMInst == 0)
+  if(sstTest_FSM_Inst.u32NbUsedFSMInst == 0)
   {
     orxTextIO_PrintLn("No instances have been created. Create an instance before trying to delete it.");
     return;
@@ -574,7 +574,7 @@ orxVOID orxTest_FSM_Instance_Destroy()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_INST - 1, "Choose the instance ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM_Inst.apstFSM_Inst[s32ID] == orxNULL)
+  if(sstTest_FSM_Inst.apstFSM_Inst[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used, can't destroy it");
   }
@@ -598,7 +598,7 @@ orxVOID orxTest_FSM_Instance_Update()
   orxS32 s32ID;
   
   /* Are there allocated instances? */
-  if (sstTest_FSM_Inst.u32NbUsedFSMInst == 0)
+  if(sstTest_FSM_Inst.u32NbUsedFSMInst == 0)
   {
     orxTextIO_PrintLn("No instances have been created. Create an instance before trying to update it.");
     return;
@@ -611,17 +611,17 @@ orxVOID orxTest_FSM_Instance_Update()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_INST - 1, "Choose the instance ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM_Inst.apstFSM_Inst[s32ID] == orxNULL)
+  if(sstTest_FSM_Inst.apstFSM_Inst[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used, can't destroy it");
   }
   else
   {
-    if (orxFSM_GetInstanceState(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) != orxNULL)
+    if(orxFSM_GetInstanceState(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) != orxNULL)
       orxTextIO_PrintLn("Current state: %u", (orxU16)orxFSM_GetStateID(orxFSM_GetFSM(sstTest_FSM_Inst.apstFSM_Inst[s32ID]), orxFSM_GetInstanceState(sstTest_FSM_Inst.apstFSM_Inst[s32ID])));
     
     /* Update the instance. */
-    if (orxFSM_UpdateInstance(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) == orxSTATUS_FAILURE)
+    if(orxFSM_UpdateInstance(sstTest_FSM_Inst.apstFSM_Inst[s32ID]) == orxSTATUS_FAILURE)
     {
       orxTextIO_PrintLn("Update failed...");
     }
@@ -639,7 +639,7 @@ orxVOID orxTest_FSM_Update()
   orxS32 s32ID;
   
   /* Are there allocated FSM? */
-  if (sstTest_FSM.u32NbUsedFSM == 0)
+  if(sstTest_FSM.u32NbUsedFSM == 0)
   {
     orxTextIO_PrintLn("No FSM have been created. Create a FSM before trying to update its instances.");
     return;
@@ -652,14 +652,14 @@ orxVOID orxTest_FSM_Update()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_FSM_KU32_ARRAY_NB_ELEM - 1, "Choose the FSM ID to use: ", orxTRUE);
   
   /* Not used ID? */
-  if (sstTest_FSM.apstFSM[s32ID] == orxNULL)
+  if(sstTest_FSM.apstFSM[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used, can't update its instances.");
   }
   else
   {
     /* Update all instances of the FSM. */
-    if (orxFSM_Update(sstTest_FSM.apstFSM[s32ID]) == orxSTATUS_FAILURE)
+    if(orxFSM_Update(sstTest_FSM.apstFSM[s32ID]) == orxSTATUS_FAILURE)
     {
       orxTextIO_PrintLn("Update of all instances failed...");
     }
@@ -703,10 +703,10 @@ orxVOID orxTest_FSM_Exit()
   orxU32 u32FSMIndex; /* Index of the current FSM. */
   
   /* Traverse allocated FSM and free them. */
-  for (u32FSMIndex = 0; u32FSMIndex < orxTEST_FSM_KU32_ARRAY_NB_ELEM; u32FSMIndex++)
+  for(u32FSMIndex = 0; u32FSMIndex < orxTEST_FSM_KU32_ARRAY_NB_ELEM; u32FSMIndex++)
   {
     /* FSM allocated? */
-    if (sstTest_FSM.apstFSM[u32FSMIndex] != orxNULL)
+    if(sstTest_FSM.apstFSM[u32FSMIndex] != orxNULL)
     {
       /* Delete it. */
       orxFSM_Delete(sstTest_FSM.apstFSM[u32FSMIndex]);

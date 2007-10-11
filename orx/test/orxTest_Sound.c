@@ -83,14 +83,14 @@ orxVOID orxTest_Sound_SampleLoadFromFile()
   orxTextIO_PrintLn("Display the list of loaded Sample and address");
   
   /* Request sample file name */
-  while ((orxTextIO_ReadString(stSampleInfos.zFileName, orxTEST_SOUND_SAMPLE_NAME_MAX, "Enter the sample file name to load : ") == orxSTATUS_FAILURE))
+  while((orxTextIO_ReadString(stSampleInfos.zFileName, orxTEST_SOUND_SAMPLE_NAME_MAX, "Enter the sample file name to load : ") == orxSTATUS_FAILURE))
   {}
   
   /* Try to load the sample */
   stSampleInfos.pstSample = orxSound_SampleLoadFromFile(stSampleInfos.zFileName);
   
   /* Loaded ? */
-  if (stSampleInfos.pstSample != orxNULL)
+  if(stSampleInfos.pstSample != orxNULL)
   {
     /* Yes, store it */
     pstSampleInfos = (orxTEST_SOUND_SAMPLE_INFOS *)orxBank_Allocate(sstTest_Sound.pstSampleBank);
@@ -123,11 +123,11 @@ orxVOID orxTest_Sound_SampleUnload()
   pstSampleInfos = orxNULL;
   
   /* Traverse Bank and check if the entered address has really been allocated */
-  while ((pstSampleInfos = orxBank_GetNext(sstTest_Sound.pstSampleBank, pstSampleInfos)))
+  while((pstSampleInfos = orxBank_GetNext(sstTest_Sound.pstSampleBank, pstSampleInfos)))
   {}
   
   /* Retrieve sample information from read address */
-  if ((orxS32)pstSampleInfos == s32SampleID)
+  if((orxS32)pstSampleInfos == s32SampleID)
   {
     /* unload sample */
     orxSound_SampleUnload(pstSampleInfos->pstSample);
@@ -159,11 +159,11 @@ orxVOID orxTest_Sound_SamplePlay()
   pstSampleInfos = orxNULL;
   
   /* Traverse Bank and check if the entered address has really been allocated */
-  while ((pstSampleInfos = orxBank_GetNext(sstTest_Sound.pstSampleBank, pstSampleInfos)) && ((orxS32)pstSampleInfos != s32SampleID))
+  while((pstSampleInfos = orxBank_GetNext(sstTest_Sound.pstSampleBank, pstSampleInfos)) && ((orxS32)pstSampleInfos != s32SampleID))
   {}
   
   /* Retrieve sample information from read address */
-  if ((orxS32)pstSampleInfos == s32SampleID)
+  if((orxS32)pstSampleInfos == s32SampleID)
   {
     /* Sample has been found... Select the channel ID to use */
     orxTextIO_PrintLn("Enter the channel to use (between 0 and %d).", orxSOUND_CHANNEL_KU32_NUMBER - 1);
@@ -174,7 +174,7 @@ orxVOID orxTest_Sound_SamplePlay()
     orxTextIO_PrintLn("Trying to play %s...", pstSampleInfos->zFileName);
     s32Channel = orxSound_SamplePlay(s32Channel, pstSampleInfos->pstSample);
     
-    if (s32Channel != orxSOUND_CHANNEL_KU32_ERROR)
+    if(s32Channel != orxSOUND_CHANNEL_KU32_ERROR)
     {
       orxTextIO_PrintLn("Play %s on channel %d", pstSampleInfos->zFileName, s32Channel);
     }
@@ -203,7 +203,7 @@ orxVOID orxTest_Sound_ChannelStop()
   orxTextIO_PrintLn("%d is a special number that will stop all the channels", orxSOUND_CHANNEL_KU32_SELECT_ALL);
   orxTextIO_ReadS32InRange(&s32Channel, 10, 0, orxSOUND_CHANNEL_KU32_SELECT_ALL, "Channel : ", orxTRUE);
   
-  if (orxSound_ChannelStop(s32Channel) != orxSTATUS_FAILURE)
+  if(orxSound_ChannelStop(s32Channel) != orxSTATUS_FAILURE)
   {
     /* Operation succeded */
     orxTextIO_PrintLn("Channel(s) stopped");
@@ -231,7 +231,7 @@ orxVOID orxTest_Sound_ChannelPause()
   orxTextIO_ReadS32InRange(&s32Channel, 10, 0, orxSOUND_CHANNEL_KU32_SELECT_ALL, "Channel : ", orxTRUE);
 
   /* Is it already paused ? */
-  if (orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
+  if(orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
   {
     /* Yes, unpause it */
     orxSound_ChannelPause(s32Channel, orxFALSE);
@@ -260,7 +260,7 @@ orxVOID orxTest_Sound_ChannelShowFlags()
   
   /* Channel started ? */
   orxTextIO_Print("SAMPLE STARTED : ");
-  if (orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_STARTED) == orxSOUND_STATE_KU32_STARTED)
+  if(orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_STARTED) == orxSOUND_STATE_KU32_STARTED)
   {
     orxTextIO_PrintLn("YES");
   }
@@ -271,7 +271,7 @@ orxVOID orxTest_Sound_ChannelShowFlags()
   
   /* Channel paused ? */
   orxTextIO_Print("SAMPLE PAUSED : ");
-  if (orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
+  if(orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
   {
     orxTextIO_PrintLn("YES");
   }
@@ -282,7 +282,7 @@ orxVOID orxTest_Sound_ChannelShowFlags()
   
   /* Channel loop ? */
   orxTextIO_Print("SAMPLE LOOP : ");
-  if (orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_LOOP) == orxSOUND_STATE_KU32_LOOP)
+  if(orxSound_ChannelTestFlags(s32Channel, orxSOUND_STATE_KU32_LOOP) == orxSOUND_STATE_KU32_LOOP)
   {
     orxTextIO_PrintLn("YES");
   }
@@ -366,7 +366,7 @@ orxVOID orxTest_Sound_Exit()
 //  orxTEST_SOUND_SAMPLE_INFOS *pstSampleInfos;
 //
 //  /* Traverse bank and unload sample */
-//  while ((pstSampleInfos = (orxTEST_SOUND_SAMPLE_INFOS *)orxBank_GetNext(sstTest_Sound.pstSampleBank, NULL)))
+//  while((pstSampleInfos = (orxTEST_SOUND_SAMPLE_INFOS *)orxBank_GetNext(sstTest_Sound.pstSampleBank, NULL)))
 //  {
 //    /* Unload a loaded sample */
 //    orxSound_SampleUnload(pstSampleInfos->pstSample);

@@ -130,7 +130,7 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxS32 *_ps32OutValue, orxCONST or
   *_ps32OutValue = strtol(_zString, &pcEndPtr, _u32Base);
   
   /* Valid conversion ? */
-  if ((orxString_Length(_zString) > 0) && ((_zString[0] != '\0' && pcEndPtr[0] == '\0')))
+  if((orxString_Length(_zString) > 0) && ((_zString[0] != '\0' && pcEndPtr[0] == '\0')))
   {
     return orxSTATUS_SUCCESS;
   }

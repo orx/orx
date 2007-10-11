@@ -156,7 +156,7 @@ orxVOID orxTest_Clock_Create()
   orxCLOCK *pstClock;
   orxTEST_CLOCK_INFO *pstClockCell;
 
-  if (orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
+  if(orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
   {
     orxTextIO_PrintLn("This command allows you to create a Clock. To simplify");
     orxTextIO_PrintLn("the test module, you won't be able to chose the clock type.");
@@ -237,12 +237,12 @@ orxVOID orxTest_Clock_Delete()
     pstClock = (orxCLOCK *)s32Address;
     
     /* Loop on Cell until the clock has been found */
-    while ((pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, pstInfo)) &&
+    while((pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, pstInfo)) &&
            (pstInfo->pstClock != pstClock))
     {}
     
     /* Clock found ? */
-    if (pstInfo != orxNULL)
+    if(pstInfo != orxNULL)
     {
       /* Delete the clock */
       orxTextIO_PrintLn("Delete the clock...");
@@ -263,12 +263,12 @@ orxVOID orxTest_Clock_List()
 {
   orxTEST_CLOCK_INFO *pstInfo = orxNULL;
     
-  if (orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
+  if(orxTest_Clock_Depend() == orxSTATUS_SUCCESS)
   {
     orxTextIO_PrintLn("Print list or created clocks : ");
 
     /* Loop on allocated Cells */
-    while ((pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, pstInfo)))
+    while((pstInfo = orxBank_GetNext(sstTest_Clock.pstBank, pstInfo)))
     {
       /* Shows clock ID */
       orxTextIO_PrintLn("Clock Address = %x", pstInfo->pstClock);

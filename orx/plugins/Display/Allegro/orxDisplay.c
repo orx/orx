@@ -243,7 +243,7 @@
 //  /*
 //    graph_bitmap_delete(spst_page1);
 //  
-//    if (spst_page2)
+//    if(spst_page2)
 //    {
 //    graph_bitmap_delete(spst_page2);
 //    }

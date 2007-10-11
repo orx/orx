@@ -68,14 +68,14 @@ orxSTATUS orxSound_Fmod_Init()
   orxMemory_Set(&sstSound, 0, sizeof(orxSOUND_STATIC));
 
   /* Init FMOD */
-  if (FSOUND_Init(44100, 32, 0))
+  if(FSOUND_Init(44100, 32, 0))
   {
     /* Set module has ready */
     sstSound.u32Flags = orxSOUND_KU32_STATIC_FLAG_READY;
   }
 
   /* Module successfully initialized ? */
-  if (sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY)
+  if(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY)
   {
     return orxSTATUS_SUCCESS;
   }
@@ -169,7 +169,7 @@ orxU32 orxSound_Fmod_SamplePlay(orxU32 _u32Channel, orxSOUND_SAMPLE *_pstSample)
   s32ReturnedChannel = FSOUND_PlaySound(u32Channel, (FSOUND_SAMPLE *)_pstSample);
   
   /* Correct channel ? */
-  if (s32ReturnedChannel < 0)
+  if(s32ReturnedChannel < 0)
   {
     /* return error */
     return orxSOUND_CHANNEL_KU32_ERROR;
@@ -195,7 +195,7 @@ orxSTATUS orxSound_Fmod_ChannelStop(orxU32 _u32Channel)
   u32Channel = (_u32Channel == orxSOUND_CHANNEL_KU32_SELECT_ALL) ? (orxU32)FSOUND_ALL : _u32Channel;
   
   /* Stop channel */
-  if (FSOUND_StopSound(u32Channel))
+  if(FSOUND_StopSound(u32Channel))
   {
     return orxSTATUS_SUCCESS;
   }
@@ -221,7 +221,7 @@ orxSTATUS orxSound_Fmod_ChannelPause(orxU32 _u32Channel, orxBOOL _bPause)
   u32Channel = (_u32Channel == orxSOUND_CHANNEL_KU32_SELECT_ALL) ? (orxU32)FSOUND_ALL : _u32Channel;
   
   /* Pause channel */
-  if (FSOUND_SetPaused(u32Channel, _bPause))
+  if(FSOUND_SetPaused(u32Channel, _bPause))
   {
     return orxSTATUS_SUCCESS;
   }
@@ -244,17 +244,17 @@ orxBOOL orxSound_Fmod_ChannelTestFlags(orxU32 _u32Channel, orxU32 _u32FlagsToTes
   orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Get required Fmod's flags on the channel and store them */
-  if (FSOUND_IsPlaying(_u32Channel))
+  if(FSOUND_IsPlaying(_u32Channel))
   {
     u32FmodFlag |= orxSOUND_STATE_KU32_STARTED;
   }
   
-  if (FSOUND_GetPaused(_u32Channel))
+  if(FSOUND_GetPaused(_u32Channel))
   {
     u32FmodFlag |= orxSOUND_STATE_KU32_PAUSED;
   }
   
-  if (FSOUND_GetLoopMode(_u32Channel))
+  if(FSOUND_GetLoopMode(_u32Channel))
   {
     u32FmodFlag |= orxSOUND_STATE_KU32_LOOP;
   }
@@ -275,7 +275,7 @@ orxVOID orxSound_Fmod_ChannelSetFlags(orxU32 _u32Channel, orxU32 _u32FlagsToRemo
   
   /* Play / Stop */
   /* Stop sound ? */
-  if ((_u32FlagsToRemove & orxSOUND_STATE_KU32_STARTED) == orxSOUND_STATE_KU32_STARTED)
+  if((_u32FlagsToRemove & orxSOUND_STATE_KU32_STARTED) == orxSOUND_STATE_KU32_STARTED)
   {
     /* Stop sound */
     FSOUND_StopSound(_u32Channel);
@@ -283,26 +283,26 @@ orxVOID orxSound_Fmod_ChannelSetFlags(orxU32 _u32Channel, orxU32 _u32FlagsToRemo
   /* Start sound (not possible to start only a sound without giving sample pointer ? */
 
   /* Pause / UnPause ? */
-  if ((_u32FlagsToRemove & orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
+  if((_u32FlagsToRemove & orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
   {
     /* unpause sound */
     FSOUND_SetPaused(_u32Channel, orxFALSE);
   }
 
-  if ((_u32FlagsToAdd & orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
+  if((_u32FlagsToAdd & orxSOUND_STATE_KU32_PAUSED) == orxSOUND_STATE_KU32_PAUSED)
   {
     /* pause sound */
     FSOUND_SetPaused(_u32Channel, orxTRUE);
   }
 
   /* Loop / Normal ? */
-  if ((_u32FlagsToRemove & orxSOUND_STATE_KU32_LOOP) == orxSOUND_STATE_KU32_LOOP)
+  if((_u32FlagsToRemove & orxSOUND_STATE_KU32_LOOP) == orxSOUND_STATE_KU32_LOOP)
   {
     /* normal sound */
     FSOUND_SetLoopMode(_u32Channel, FSOUND_LOOP_OFF);
   }
 
-  if ((_u32FlagsToAdd & orxSOUND_STATE_KU32_LOOP) == orxSOUND_STATE_KU32_LOOP)
+  if((_u32FlagsToAdd & orxSOUND_STATE_KU32_LOOP) == orxSOUND_STATE_KU32_LOOP)
   {
     /* loop sound */
     FSOUND_SetLoopMode(_u32Channel, FSOUND_LOOP_NORMAL);
@@ -320,7 +320,7 @@ orxSTATUS orxSound_Fmod_ChannelSetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
   orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Set channel volume */
-  if (FSOUND_SetVolume(_u32Channel, _u8Volume))
+  if(FSOUND_SetVolume(_u32Channel, _u8Volume))
   {
     return orxSTATUS_SUCCESS;
   }

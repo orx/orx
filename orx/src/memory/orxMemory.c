@@ -107,7 +107,7 @@ orxSTATUS orxMemory_Init()
 orxVOID orxMemory_Exit()
 {
   /* Module initialized ? */
-  if ((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY)
+  if((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY)
   {
     /* Module uninitialized */
     sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_NONE;

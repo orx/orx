@@ -57,9 +57,9 @@ orxVOID orxTest_HashTable_PrintUsedID()
   orxTextIO_PrintLn("List of used Hash Table ID :");
 
   /* Tranverse the array and get used ID */
-  for (u32Index = 0; u32Index < orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM; u32Index++)
+  for(u32Index = 0; u32Index < orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM; u32Index++)
   {
-    if (sstTest_HashTable.apstHashTable[u32Index] != orxNULL)
+    if(sstTest_HashTable.apstHashTable[u32Index] != orxNULL)
     {
       orxTextIO_PrintLn("Used ID : %d", u32Index);
     }
@@ -88,7 +88,7 @@ orxVOID orxTest_HashTable_Create()
   orxS32 s32NbElem;
   
   /* Is it possible to create a Hash Table ? */
-  if (sstTest_HashTable.u32NbUsedHash == orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM)
+  if(sstTest_HashTable.u32NbUsedHash == orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM)
   {
     orxTextIO_PrintLn("All ID have been used. Delete a hash table before create a new one");
     return;
@@ -99,7 +99,7 @@ orxVOID orxTest_HashTable_Create()
   orxTextIO_PrintLn("between 0 and %d that has not already been used.", orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1);
 
   /* All ID available ? */
-  if (sstTest_HashTable.u32NbUsedHash > 0)
+  if(sstTest_HashTable.u32NbUsedHash > 0)
   {
     /* Display the list of used ID */
     orxTest_HashTable_PrintUsedID();
@@ -109,7 +109,7 @@ orxVOID orxTest_HashTable_Create()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
 
   /* Already used ID ? */
-  if (sstTest_HashTable.apstHashTable[s32ID] != orxNULL)
+  if(sstTest_HashTable.apstHashTable[s32ID] != orxNULL)
   {
     orxTextIO_PrintLn("This ID is already used");
   }
@@ -120,7 +120,7 @@ orxVOID orxTest_HashTable_Create()
 
    /* Now, allocate s32NbElem elements in a new hash table at the index position s32ID */
     sstTest_HashTable.apstHashTable[s32ID] = orxHashTable_Create(s32NbElem, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-    if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+    if(sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
     {
       orxTextIO_PrintLn("Can't create the hash table. Not enough memory ?");
     }
@@ -141,7 +141,7 @@ orxVOID orxTest_HashTable_Destroy()
   orxS32 s32ID;
   
   /* Are there allocated hash table ? */
-  if (sstTest_HashTable.u32NbUsedHash == 0)
+  if(sstTest_HashTable.u32NbUsedHash == 0)
   {
     orxTextIO_PrintLn("No hash table have been created. Create a hash table before trying to delete it");
     return;
@@ -154,7 +154,7 @@ orxVOID orxTest_HashTable_Destroy()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
 
   /* not used ID ? */
-  if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+  if(sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used, can't destroy it");
   }
@@ -181,7 +181,7 @@ orxVOID orxTest_HashTable_Add()
   orxS32 s32Data;
   
   /* Are there allocated hash table ? */
-  if (sstTest_HashTable.u32NbUsedHash == 0)
+  if(sstTest_HashTable.u32NbUsedHash == 0)
   {
     orxTextIO_PrintLn("No hash table have been created. Create a hash table before trying to add datas");
     return;
@@ -194,7 +194,7 @@ orxVOID orxTest_HashTable_Add()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
 
   /* not used ID ? */
-  if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+  if(sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used");
   }
@@ -205,7 +205,7 @@ orxVOID orxTest_HashTable_Add()
     orxTextIO_ReadS32(&s32Data, 10, "Data to Add : ", orxTRUE);
     
     orxTextIO_PrintLn("Trying to add the pair key/value (%u/%d)...", (orxU32)s32Key, s32Data);
-    if (orxHashTable_Add(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key, (orxVOID *)s32Data) == orxSTATUS_FAILURE)
+    if(orxHashTable_Add(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key, (orxVOID *)s32Data) == orxSTATUS_FAILURE)
     {
       /* Insertion failed */
       orxTextIO_PrintLn("Insertion failed...");
@@ -223,7 +223,7 @@ orxVOID orxTest_HashTable_Remove()
   orxS32 s32Key;
   
   /* Are there allocated hash table ? */
-  if (sstTest_HashTable.u32NbUsedHash == 0)
+  if(sstTest_HashTable.u32NbUsedHash == 0)
   {
     orxTextIO_PrintLn("No hash table have been created. you can't remove keys");
     return;
@@ -236,7 +236,7 @@ orxVOID orxTest_HashTable_Remove()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
 
   /* not used ID ? */
-  if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+  if(sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used");
   }
@@ -246,7 +246,7 @@ orxVOID orxTest_HashTable_Remove()
     orxTextIO_ReadS32(&s32Key, 10, "Key to remove : ", orxTRUE);
 
     /* Try to remove it */    
-    if (orxHashTable_Remove(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key) == orxSTATUS_FAILURE)
+    if(orxHashTable_Remove(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key) == orxSTATUS_FAILURE)
     {
       /* Failed to remove */
       orxTextIO_PrintLn("Remove failed...");
@@ -263,7 +263,7 @@ orxVOID orxTest_HashTable_Get()
   orxVOID *pData;
   
   /* Are there allocated hash table ? */
-  if (sstTest_HashTable.u32NbUsedHash == 0)
+  if(sstTest_HashTable.u32NbUsedHash == 0)
   {
     orxTextIO_PrintLn("No hash table have been created. you print key value");
     return;
@@ -276,7 +276,7 @@ orxVOID orxTest_HashTable_Get()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
 
   /* not used ID ? */
-  if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+  if(sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used");
   }
@@ -289,7 +289,7 @@ orxVOID orxTest_HashTable_Get()
     pData = orxHashTable_Get(sstTest_HashTable.apstHashTable[s32ID], (orxU32)s32Key);
 
     /* Key found ? */  
-    if (pData != orxNULL)
+    if(pData != orxNULL)
     {
       /* Key found, print value */
       orxTextIO_PrintLn("Key found. Associated value : %d", (orxS32)pData);
@@ -309,7 +309,7 @@ orxVOID orxTest_HashTable_Clear()
   orxS32 s32ID;
   
   /* Are there allocated hash table ? */
-  if (sstTest_HashTable.u32NbUsedHash == 0)
+  if(sstTest_HashTable.u32NbUsedHash == 0)
   {
     orxTextIO_PrintLn("No hash table have been created. you can't clear it");
     return;
@@ -322,7 +322,7 @@ orxVOID orxTest_HashTable_Clear()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
 
   /* not used ID ? */
-  if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+  if(sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used");
   }
@@ -341,7 +341,7 @@ orxVOID orxTest_HashTable_PrintAll()
   orxS32 s32ID;
   
   /* Are there allocated hash table ? */
-  if (sstTest_HashTable.u32NbUsedHash == 0)
+  if(sstTest_HashTable.u32NbUsedHash == 0)
   {
     orxTextIO_PrintLn("No hash table have been created. you can't print it");
     return;
@@ -354,7 +354,7 @@ orxVOID orxTest_HashTable_PrintAll()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
 
   /* not used ID ? */
-  if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+  if(sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used");
   }
@@ -372,7 +372,7 @@ orxVOID orxTest_HashTable_PrintAllWithSearch()
   orxS32 s32ID;
   
   /* Are there allocated hash table ? */
-  if (sstTest_HashTable.u32NbUsedHash == 0)
+  if(sstTest_HashTable.u32NbUsedHash == 0)
   {
     orxTextIO_PrintLn("No hash table have been created. you can't print it");
     return;
@@ -385,7 +385,7 @@ orxVOID orxTest_HashTable_PrintAllWithSearch()
   orxTextIO_ReadS32InRange(&s32ID, 10, 0, orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM - 1, "Choose the hast table ID to use : ", orxTRUE);
 
   /* not used ID ? */
-  if (sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
+  if(sstTest_HashTable.apstHashTable[s32ID] == orxNULL)
   {
     orxTextIO_PrintLn("This ID is not used");
   }
@@ -436,10 +436,10 @@ orxVOID orxTest_HashTable_Exit()
   orxU32 u32HashTableIndex; /* Index of the current hash table */
   
   /* Traverse allocated hash table and free them */
-  for (u32HashTableIndex = 0; u32HashTableIndex < orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM; u32HashTableIndex++)
+  for(u32HashTableIndex = 0; u32HashTableIndex < orxTEST_HASHTABLE_KU32_ARRAY_NB_ELEM; u32HashTableIndex++)
   {
     /* hash table allocated ? */
-    if (sstTest_HashTable.apstHashTable[u32HashTableIndex] != orxNULL)
+    if(sstTest_HashTable.apstHashTable[u32HashTableIndex] != orxNULL)
     {
       /* Delete it */
       orxHashTable_Delete(sstTest_HashTable.apstHashTable[u32HashTableIndex]);
