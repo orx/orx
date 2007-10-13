@@ -29,6 +29,7 @@
 #include "plugin/orxPluginUser.h"
 
 #include "render/orxViewport.h"
+#include "debug/orxFPS.h"
 #include "anim/orxAnimPointer.h"
 #include "display/orxDisplay.h"
 #include "display/orxGraphic.h"
@@ -287,6 +288,10 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 /* Gets object's scales */
                 orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &fObjectScaleX, &fObjectScaleY);
 
+                /* Updates pivot with scale */
+                vPivot.fX *= fObjectScaleX;
+                vPivot.fY *= fObjectScaleY;
+
                 /* Gets object's rotation */
                 fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
 
@@ -294,7 +299,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
                 orxVector_Sub(&vObjectUL, &vObjectPos, &vPivot);
                 orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
-                orxVector_Set(&vObjectBR, fWidth + vObjectUL.fX, fHeight + vObjectUL.fY, vObjectUL.fZ);
+                orxVector_Set(&vObjectBR, (fWidth * fObjectScaleX) + vObjectUL.fX, (fHeight * fObjectScaleY) + vObjectUL.fY, vObjectUL.fZ);
 
                 /* Is object in frustrum? */
                 if(orxVector_TestAABoxIntersection(&vCameraUL, &vCameraBR, &vObjectUL, &vObjectBR) != orxFALSE)
@@ -323,8 +328,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
 
                   /* Gets render position */
                   orxVector_Sub(&vRenderPos, &vObjectPos, &vCameraUL);
-                  vRenderPos.fX  *= fRenderScaleX * fObjectScaleX * fScrollX;
-                  vRenderPos.fY  *= fRenderScaleY * fObjectScaleY * fScrollY;
+                  vRenderPos.fX  *= fRenderScaleX * fScrollX;
+                  vRenderPos.fY  *= fRenderScaleY * fScrollY;
                   orxVector_Add(&vRenderPos, &vRenderPos, &vViewportUL);
 
                   /* Updates render frame */
@@ -389,6 +394,9 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
     /* Renders it */
     orxRender_RenderViewport(pstViewport);
   }
+
+  /* Increases FPS counter */
+  orxFPS_IncreaseFrameCounter();
 
   /* Swap buffers */
   orxDisplay_Swap();
