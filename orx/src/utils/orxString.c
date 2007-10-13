@@ -75,8 +75,8 @@ orxSTATIC orxCONST orxU32 sau32CRCTable[256] =
  ***************************************************************************/
 
 /** Continues a CRC with a string one
- * @param _zString        (IN)  String used to continue the given CRC
- * @param _u32CRC         (IN)  Base CRC.
+ * @param[in] _zString        String used to continue the given CRC
+ * @param[in] _u32CRC         Base CRC.
  * @return The resulting CRC.
  */
 orxU32 orxFASTCALL orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC)
@@ -91,7 +91,36 @@ orxU32 orxFASTCALL orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u3
   u32CRC = _u32CRC ^ 0xFFFFFFFFL;
 
   /* For the whole string */
-  for(pc = _zString; *pc != '\0'; pc++)
+  for(pc = _zString; *pc != orxCHAR_NULL; pc++)
+  {
+    /* Computes the CRC */
+    u32CRC = sau32CRCTable[(u32CRC ^ *pc) & 0xFF] ^ (u32CRC >> 8);
+  }
+
+  /* Done! */
+  return(u32CRC ^ 0xFFFFFFFFL);
+}
+
+/** Continues a CRC with a string one
+ * @param[in] _zString        String used to continue the given CRC
+ * @param[in] _u32CRC         Base CRC.
+ * @param[in] _u32CharNumber  Number of character to process
+ * @return The resulting CRC.
+ */
+orxU32 orxFASTCALL orxString_NContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
+{
+  orxREGISTER orxU32    u32CRC;
+  orxREGISTER orxU32    u32Counter;
+  orxREGISTER orxCHAR  *pc;
+
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+
+  /* Inits CRC */
+  u32CRC = _u32CRC ^ 0xFFFFFFFFL;
+
+  /* For the whole string */
+  for(pc = _zString, u32Counter = 0; (*pc != orxCHAR_NULL) && (u32Counter < _u32CharNumber); pc++, u32Counter++)
   {
     /* Computes the CRC */
     u32CRC = sau32CRCTable[(u32CRC ^ *pc) & 0xFF] ^ (u32CRC >> 8);

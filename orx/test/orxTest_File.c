@@ -57,7 +57,7 @@ orxVOID orxTest_File_Open()
   orxS32 s32Mode;
   
   /* clean buffer */
-  orxMemory_Set(zBufferFile, '\0', 256);
+  orxMemory_Set(zBufferFile, orxCHAR_NULL, 256);
 
   orxTextIO_PrintLn("Open a file...");
   orxTextIO_ReadString(zBufferFile, 256, "File name to open :");
@@ -119,13 +119,13 @@ orxVOID orxTest_File_Write()
   orxS32 s32Write;
   
   /* clean buffer */
-  orxMemory_Set(acBuffer, '\0', 1024);
+  orxMemory_Set(acBuffer, orxCHAR_NULL, 1024);
 
   orxTextIO_PrintLn("Write into a file...");
   orxTextIO_ReadString(acBuffer, 1024, "Data to write :");
 
   /* clean buffer */
-  orxMemory_Set(acBuffer, '\0', 256);
+  orxMemory_Set(acBuffer, orxCHAR_NULL, 256);
 
   orxTextIO_PrintLn("Read a file address...");
   orxTextIO_ReadS32(&s32Address, 16, "File address to use :", orxTRUE);

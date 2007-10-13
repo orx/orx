@@ -294,7 +294,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   /* TODO : Checks log mask if display is enable for this level */
 
   /* Empties current buffer */
-  sstDebug.zBuffer[0] = '\0';
+  sstDebug.zBuffer[0] = orxCHAR_NULL;
 
   /* Time Stamp? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)

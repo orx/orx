@@ -97,7 +97,7 @@ orxBOOL orxKeyboard_Hit()
   /* Module initialized ? */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
-  return (orxS32)keypressed();
+  return(orxS32)keypressed();
 }
 
 /** Returns the next character from the keyboard buffer, in ASCII format.
@@ -111,7 +111,7 @@ orxS32 orxKeyboard_Read()
   /* Module initialized ? */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
   
-  return (orxS32)readkey();
+  return(orxS32)readkey();
 }
 
 /**  Empties the keyboard buffer.

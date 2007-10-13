@@ -129,7 +129,7 @@ orxDATE orxTimeSDL_GetDate()
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
   
-  return (orxDATE)time(NULL);
+  return(orxDATE)time(NULL);
 }
 
 /** Delay the program for given number of milliseconds.

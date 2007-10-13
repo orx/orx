@@ -521,7 +521,7 @@ orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *
   /* Check overflow */
   if((orxString_Length(zChoice) > 0) && zChoice[orxString_Length(zChoice)-1] == '\n')
   {
-    zChoice[strlen(zChoice)-1] = '\0';
+    zChoice[strlen(zChoice)-1] = orxCHAR_NULL;
   }
 
   /* The user wants to quit ? */

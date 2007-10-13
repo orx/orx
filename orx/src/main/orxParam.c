@@ -208,15 +208,16 @@ orxSTATIC orxSTATUS orxParam_Process()
           /* Valid extra value ? */
           if((u32NbExtra + u32Index) < sstParam.u32ParamNumber)
           {
-            /* Call the callback function
-             * (It can't be orxNULL since only param with a registered callback can be stored)
-             */
-            if((pstParamInfos->stParam.pfnParser(u32NbExtra + 1, (orxSTRING *)(&(sstParam.azParams[u32Index]))) == orxSTATUS_FAILURE) &&
-                ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_STOP_ON_ERROR) == orxPARAM_KU32_FLAG_STOP_ON_ERROR))
+            /* Can process it? */
+            if(pstParamInfos->stParam.pfnParser(u32NbExtra + 1, sstParam.azParams + u32Index) != orxSTATUS_FAILURE)
             {
               /* Updates status */
               pstParamInfos->stParam.u32Flags |= orxPARAM_KU32_FLAG_PROCESSED;
-
+            }
+            /* Stop on error? */
+            else if((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_STOP_ON_ERROR) != orxPARAM_KU32_FLAG_NONE)
+            {
+              /* Updates result */
               eResult = orxSTATUS_FAILURE;
             }
           }

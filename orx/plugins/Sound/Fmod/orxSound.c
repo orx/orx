@@ -109,7 +109,7 @@ orxSOUND_SAMPLE* orxSound_Fmod_SampleLoadFromFile(orxCONST orxSTRING _zFileName)
   orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Load sample */
-  return ((orxSOUND_SAMPLE *)FSOUND_Sample_Load(FSOUND_FREE, _zFileName, FSOUND_NORMAL, 0, 0));
+  return((orxSOUND_SAMPLE *)FSOUND_Sample_Load(FSOUND_FREE, _zFileName, FSOUND_NORMAL, 0, 0));
 }
 
 /** Load a sample From memory
@@ -123,7 +123,7 @@ orxSOUND_SAMPLE* orxSound_Fmod_SampleLoadFromMemory(orxCONST orxVOID *_pMem, orx
   orxASSERT((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY);
 
   /* Load sample */
-  return ((orxSOUND_SAMPLE *)FSOUND_Sample_Load(FSOUND_FREE, _pMem, FSOUND_LOADMEMORY, 0, _u32Size));
+  return((orxSOUND_SAMPLE *)FSOUND_Sample_Load(FSOUND_FREE, _pMem, FSOUND_LOADMEMORY, 0, _u32Size));
 }
 
 /** Unload a sample
@@ -176,7 +176,7 @@ orxU32 orxSound_Fmod_SamplePlay(orxU32 _u32Channel, orxSOUND_SAMPLE *_pstSample)
   }
   else
   {
-    return (orxU32)s32ReturnedChannel;
+    return(orxU32)s32ReturnedChannel;
   }
 }
 
@@ -260,7 +260,7 @@ orxBOOL orxSound_Fmod_ChannelTestFlags(orxU32 _u32Channel, orxU32 _u32FlagsToTes
   }
   
   /* Return test result */
-  return ((u32FmodFlag & _u32FlagsToTest) == _u32FlagsToTest);
+  return((u32FmodFlag & _u32FlagsToTest) == _u32FlagsToTest);
 }
 
 /** Set Sample flags

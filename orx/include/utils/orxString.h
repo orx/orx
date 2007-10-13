@@ -40,11 +40,19 @@
 
 
 /** Continues a CRC with a string one
- * @param _zString        (IN)  String used to continue the given CRC
- * @param _u32CRC         (IN)  Base CRC.
+ * @param[in] _zString        String used to continue the given CRC
+ * @param[in] _u32CRC         Base CRC.
  * @return The resulting CRC.
  */
 extern orxDLLAPI orxU32 orxFASTCALL     orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC);
+
+/** Continues a CRC with a string one
+ * @param[in] _zString        String used to continue the given CRC
+ * @param[in] _u32CRC         Base CRC.
+ * @param[in] _u32CharNumber  Number of character to process
+ * @return The resulting CRC.
+ */
+extern orxDLLAPI orxU32 orxFASTCALL     orxString_NContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber);
 
 
 /* *** String inlined functions *** */
@@ -101,7 +109,7 @@ orxSTATIC orxINLINE orxS32 orxString_NCompare(orxCONST orxSTRING _zString1, orxC
 
 /** Returns the number of character in the string
  * @param _zString (IN) String used for length computation
- * @return Length of the string (doesn't count final '\0')
+ * @return Length of the string (doesn't count final orxCHAR_NULL)
  */
 orxSTATIC orxINLINE orxU32 orxString_Length(orxSTRING _zString)
 {
@@ -130,7 +138,7 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxS32 *_ps32OutValue, orxCONST or
   *_ps32OutValue = strtol(_zString, &pcEndPtr, _u32Base);
   
   /* Valid conversion ? */
-  if((orxString_Length(_zString) > 0) && ((_zString[0] != '\0' && pcEndPtr[0] == '\0')))
+  if((orxString_Length(_zString) > 0) && ((_zString[0] != orxCHAR_NULL && pcEndPtr[0] == orxCHAR_NULL)))
   {
     return orxSTATUS_SUCCESS;
   }
@@ -173,7 +181,7 @@ orxSTATIC orxINLINE orxSTRING orxString_LowerCase(orxSTRING _zString)
   orxASSERT(_zString != orxNULL);
 
   /* Converts the whole string */
-  for(pc = _zString; *pc != '\0'; pc++)
+  for(pc = _zString; *pc != orxCHAR_NULL; pc++)
   {
     /* Needs to be converted? */
     if(*pc >= 'A' && *pc <= 'Z')
@@ -198,7 +206,7 @@ orxSTATIC orxINLINE orxSTRING orxString_UpperCase(orxSTRING _zString)
   orxASSERT(_zString != orxNULL);
 
   /* Converts the whole string */
-  for(pc = _zString; *pc != '\0'; pc++)
+  for(pc = _zString; *pc != orxCHAR_NULL; pc++)
   {
     /* Needs to be converted? */
     if(*pc >= 'a' && *pc <= 'z')
@@ -219,9 +227,23 @@ orxSTATIC orxINLINE orxU32 orxString_ToCRC(orxCONST orxSTRING _zString)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
-  
+
   /* Computes the ID */
   return(orxString_ContinueCRC(_zString, 0));
+}
+
+/** Converts a string to a CRC
+ * @param[in] _zString        String To convert
+ * @param[in] _u32CharNumber  Number of characters to process
+ * @return The resulting CRC.
+ */
+orxSTATIC orxINLINE orxU32 orxString_NToCRC(orxCONST orxSTRING _zString, orxU32 _u32CharNumber)
+{
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+
+  /* Computes the ID */
+  return(orxString_NContinueCRC(_zString, 0, _u32CharNumber));
 }
 
 /** Returns the first occurence of _zString2 in _zString1
@@ -236,7 +258,7 @@ orxSTATIC orxINLINE orxSTRING orxString_SearchString(orxCONST orxSTRING _zString
   orxASSERT(_zString2 != orxNULL);
   
   /* Returns result */
-  return (strstr(_zString1, _zString2));
+  return(strstr(_zString1, _zString2));
 }
 
 /** Returns the first occurence of _cChar in _zString
@@ -250,7 +272,38 @@ orxSTATIC orxINLINE orxSTRING orxString_SearchChar(orxCONST orxSTRING _zString, 
   orxASSERT(_zString != orxNULL);
   
   /* Returns result */
-  return (strchr(_zString, _cChar));
+  return(strchr(_zString, _cChar));
+}
+
+/** Returns the first occurence of _cChar in _zString
+ * @param[in] _zString      String to analyze
+ * @param[in] _cChar        The character to find
+ * @param[in] _u32Position  Search begin position
+ * @return The index of the next occurence of requested character, starting at given position / -1 if not found
+ */
+orxSTATIC orxINLINE orxS32 orxString_SearchCharIndex(orxCONST orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
+{
+  orxREGISTER orxS32    s32Result = -1;
+  orxREGISTER orxS32    s32Index;
+  orxREGISTER orxCHAR  *pc;
+
+  /* Correct parameters ? */
+  orxASSERT(_zString != orxNULL);
+  orxASSERT(_u32Position < orxString_Length(_zString));
+
+  /* For all characters */
+  for(s32Index = _u32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)
+  {
+    /* Found? */
+    if(*pc == _cChar)
+    {
+      /* Updates result */
+      s32Result = s32Index;
+    }
+  }
+
+  /* Done! */
+  return s32Result;
 }
 
 #endif /* _orxSTRING_H_ */

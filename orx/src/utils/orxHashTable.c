@@ -478,7 +478,7 @@ orxVOID *orxFASTCALL orxHashMap_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_
 				*_pu32Key = _pstHashTable->apstCell[u16Cell]->u32Key;
 			if(_ppData!=orxNULL)
 				*_ppData = _pstHashTable->apstCell[u16Cell]->pData;
-			return (orxVOID*)_pstHashTable->apstCell[u16Cell];
+			return(orxVOID*)_pstHashTable->apstCell[u16Cell];
 		}
 	}
 	return orxNULL;
@@ -502,7 +502,7 @@ orxVOID *orxFASTCALL orxHashMap_FindNext(orxHASHTABLE *_pstHashTable, orxVOID *_
 			*_pu32Key = pIter->pstNext->u32Key;
 		if(_ppData!=orxNULL)
 			*_ppData = pIter->pstNext->pData;
-		return (orxVOID*)pIter->pstNext;		
+		return(orxVOID*)pIter->pstNext;		
 	}
 	
 	for(u16Cell=orxHashTable_FindIndex(_pstHashTable, pIter->u32Key)+1; u16Cell<orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
@@ -513,7 +513,7 @@ orxVOID *orxFASTCALL orxHashMap_FindNext(orxHASHTABLE *_pstHashTable, orxVOID *_
 				*_pu32Key = _pstHashTable->apstCell[u16Cell]->u32Key;
 			if(_ppData!=orxNULL)
 				*_ppData = _pstHashTable->apstCell[u16Cell]->pData;
-			return (orxVOID*)_pstHashTable->apstCell[u16Cell];
+			return(orxVOID*)_pstHashTable->apstCell[u16Cell];
 		}
 	}
 	return orxNULL;

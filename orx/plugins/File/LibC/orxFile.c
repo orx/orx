@@ -104,7 +104,7 @@ orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
   orxCHAR zMode[3];
   
   /* Fills with null terminated characters */
-  orxMemory_Set(&zMode, '\0', 3);
+  orxMemory_Set(&zMode, orxCHAR_NULL, 3);
   
   /*** LIB C MODES :
    * r   : Open text file for reading.
@@ -166,7 +166,7 @@ orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
   } 
   
   /* Open the file */
-  return (orxFILE*)fopen(_zPath, zMode);
+  return(orxFILE*)fopen(_zPath, zMode);
 }
 
 /** Read datas from a file

@@ -786,6 +786,7 @@ orxSTATUS orxPlugin_Init()
       /* Inits the param structure */
       orxMemory_Set(&stParams, 0, sizeof(orxPARAM));
       stParams.pfnParser  = orxPlugin_ProcessParams;
+      stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
       stParams.zShortName = "P";
       stParams.zLongName  = "plugin";
       stParams.zShortDesc = "Loads the specified plugins.";

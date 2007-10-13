@@ -57,7 +57,7 @@ orxVOID orxFileSystem_Setup()
 orxBOOL orxFASTCALL orxFileSystem_Exists(orxCONST orxSTRING _zFileName)
 {
 	orxFILESYSTEM_INFO stInfos;
-	return (orxFileSystem_Info(_zFileName, &stInfos) == orxSTATUS_SUCCESS);
+	return(orxFileSystem_Info(_zFileName, &stInfos) == orxSTATUS_SUCCESS);
 }
 
 
