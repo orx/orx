@@ -35,6 +35,8 @@
 #define orxPARAM_KU32_MODULE_FLAG_NONE    0x00000000  /**< No flags have been set */
 #define orxPARAM_KU32_MODULE_FLAG_READY   0x00000001  /**< The module has been initialized */
 
+#define orxPARAM_KU32_FLAG_PROCESSED      0x10000000 /**< Param has already been processed */
+
 #define orxPARAM_KU32_MODULE_BANK_SIZE    32          /**< Average max number of parameter that can be registered */
 #define orxPARAM_KZ_MODULE_SHORT_PREFIX   "-"         /**< Prefix for short parameters */
 #define orxPARAM_KZ_MODULE_LONG_PREFIX    "--"        /**< Prefix for long parameters */
@@ -53,6 +55,9 @@ typedef struct __orxPARAM_STATIC_t
   orxBANK      *pstBank;      /* Bank of registered parameters */
   orxHASHTABLE *pstHashTable; /* HashTable of registered Parameters */
 
+  orxU32        u32ParamNumber; /* Param counter */
+  orxSTRING    *azParams;       /* Params */
+  
   orxU32        u32Flags;     /* Module flags */
   
 } orxPARAM_STATIC;
@@ -154,6 +159,91 @@ orxSTATUS orxFASTCALL orxParamHelp(orxU32 _u32NbParam, orxCONST orxSTRING _azPar
   /* Help request always fail => Show help instead of starting the engine */
   return orxSTATUS_FAILURE;
 }
+
+/** Process registered params
+ * @return Returns the process status
+ */
+orxSTATIC orxSTATUS orxParam_Process()
+{
+  orxU32 u32Index;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Module initialized ? */
+  orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
+  
+  /* Loop on Extra parameters */
+  for(u32Index = 0; (eResult == orxSTATUS_SUCCESS) && (u32Index < sstParam.u32ParamNumber); u32Index++)
+  {
+    /* Is the short or long prefix is found on the first characters ? */
+    if((orxString_SearchString(sstParam.azParams[u32Index], orxPARAM_KZ_MODULE_SHORT_PREFIX) == sstParam.azParams[u32Index]) ||
+        (orxString_SearchString(sstParam.azParams[u32Index], orxPARAM_KZ_MODULE_LONG_PREFIX) == sstParam.azParams[u32Index]))
+    {
+      orxPARAM_INFOS *pstParamInfos;
+      
+      /* We found a candidate. Now get it's param value */
+      pstParamInfos = (orxPARAM_INFOS *)orxParam_Get(orxString_ToCRC(sstParam.azParams[u32Index]));
+
+      /* Not already processed? */
+      if((pstParamInfos != orxNULL) && !(pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_PROCESSED))
+      {
+        /* Look at the number of time that this parameter as been set on the command line, and if multiple instance are allowed */
+        if(((pstParamInfos->u32Count == 0) ||
+           ((pstParamInfos->u32Count > 0) &&
+           ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED) == orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED))))
+        {
+          /* Number of extra parameters */
+          orxU32 u32NbExtra = 0;
+
+          /* Increases ref counter */
+          pstParamInfos->u32Count++;
+        
+          /* Now, count the number of extra params */
+          while(((u32NbExtra + u32Index + 1) < sstParam.u32ParamNumber) &&
+                 (orxString_SearchString(sstParam.azParams[u32NbExtra + u32Index + 1], orxPARAM_KZ_MODULE_SHORT_PREFIX) != sstParam.azParams[u32NbExtra + u32Index + 1]) &&
+                 (orxString_SearchString(sstParam.azParams[u32NbExtra + u32Index + 1], orxPARAM_KZ_MODULE_SHORT_PREFIX) != sstParam.azParams[u32NbExtra + u32Index + 1]))
+          {
+            u32NbExtra++;
+          }
+        
+          /* Valid extra value ? */
+          if((u32NbExtra + u32Index) < sstParam.u32ParamNumber)
+          {
+            /* Call the callback function
+             * (It can't be orxNULL since only param with a registered callback can be stored)
+             */
+            if((pstParamInfos->stParam.pfnParser(u32NbExtra + 1, (orxSTRING *)(&(sstParam.azParams[u32Index]))) == orxSTATUS_FAILURE) &&
+                ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_STOP_ON_ERROR) == orxPARAM_KU32_FLAG_STOP_ON_ERROR))
+            {
+              /* Updates status */
+              pstParamInfos->stParam.u32Flags |= orxPARAM_KU32_FLAG_PROCESSED;
+
+              eResult = orxSTATUS_FAILURE;
+            }
+          }
+        }
+        else
+        {
+          /* Was it found ? */
+          if(pstParamInfos != orxNULL)
+          {
+            /* Increases ref counter */
+            pstParamInfos->u32Count++;
+            
+            /* No multiple instance are allowed. Stop the process ? */
+            if((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_STOP_ON_ERROR) == orxPARAM_KU32_FLAG_STOP_ON_ERROR)
+            {
+              eResult = orxSTATUS_FAILURE;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  /* Done */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -329,8 +419,8 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
             /* Adds it to table */
             orxHashTable_Add(sstParam.pstHashTable, u32LongName, pstParamInfos);
 
-            /* Success */
-            eResult = orxSTATUS_SUCCESS;
+            /* Process params */
+            eResult = orxParam_Process();
           }
         }
       }
@@ -364,78 +454,17 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
  * @param[in] _azParams   List of parameters
  * @return Returns the parsing status
  */
-orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _azParams[])
+orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxSTRING _azParams[])
 {
-  orxU32 u32Index;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
-  
-    
-  /* Loop on Extra parameters */
-  for(u32Index = 0; (eResult == orxSTATUS_SUCCESS) && (u32Index < _u32NbParams); u32Index++)
-  {
-    /* Is the short or long prefix is found on the first characters ? */
-    if((orxString_SearchString(_azParams[u32Index], orxPARAM_KZ_MODULE_SHORT_PREFIX) == _azParams[u32Index]) ||
-        (orxString_SearchString(_azParams[u32Index], orxPARAM_KZ_MODULE_LONG_PREFIX) == _azParams[u32Index]))
-    {
-      orxPARAM_INFOS *pstParamInfos;
-      
-      /* We found a candidate. Now get it's param value */
-      pstParamInfos = (orxPARAM_INFOS *)orxParam_Get(orxString_ToCRC(_azParams[u32Index]));
-      
-      /* Look at the number of time that this parameter as been set on the command line, and if multiple instance are allowed */
-      if((pstParamInfos != orxNULL) &&
-          ((pstParamInfos->u32Count == 0) ||
-          ((pstParamInfos->u32Count > 0) &&
-          ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED) == orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED))))
-      {
-        /* Number of extra parameters */
-        orxU32 u32NbExtra = 0;
 
-        /* Increases ref counter */
-        pstParamInfos->u32Count++;
-        
-        /* Now, count the number of extra params */
-        while(((u32NbExtra + u32Index + 1) < _u32NbParams) &&
-               (orxString_SearchString(_azParams[u32NbExtra + u32Index + 1], orxPARAM_KZ_MODULE_SHORT_PREFIX) != _azParams[u32NbExtra + u32Index + 1]) &&
-               (orxString_SearchString(_azParams[u32NbExtra + u32Index + 1], orxPARAM_KZ_MODULE_SHORT_PREFIX) != _azParams[u32NbExtra + u32Index + 1]))
-        {
-          u32NbExtra++;
-        }
-        
-        /* Valid extra value ? */
-        if((u32NbExtra + u32Index) < _u32NbParams)
-        {
-          /* Call the callback function
-           * (It can't be orxNULL since only param with a registered callback can be stored)
-           */
-          if((pstParamInfos->stParam.pfnParser(u32NbExtra + 1, (orxSTRING *)(&(_azParams[u32Index]))) == orxSTATUS_FAILURE) &&
-              ((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_STOP_ON_ERROR) == orxPARAM_KU32_FLAG_STOP_ON_ERROR))
-          {
-            eResult = orxSTATUS_FAILURE;
-          }
-        }
-      }
-      else
-      {
-        /* Was it found ? */
-        if(pstParamInfos != orxNULL)
-        {
-          /* Increases ref counter */
-          pstParamInfos->u32Count++;
-          
-          /* No multiple instance are allowed. Stop the process ? */
-          if((pstParamInfos->stParam.u32Flags & orxPARAM_KU32_FLAG_STOP_ON_ERROR) == orxPARAM_KU32_FLAG_STOP_ON_ERROR)
-          {
-            eResult = orxSTATUS_FAILURE;
-          }
-        }
-      }
-    }
-  }
-  
-  /* Done */
+  /* Stores info */
+  sstParam.u32ParamNumber = _u32NbParams;
+  sstParam.azParams       = _azParams;
+
+  /* Done! */
   return eResult;
 }

@@ -58,30 +58,14 @@ orxSTATUS orxMain_Init()
   /* Don't call twice the init function */
   if(!(sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY))
   {
-    /* Inits plugin module */
-    if(orxModule_Init(orxMODULE_ID_PLUGIN) == orxSTATUS_SUCCESS)
+    /* Inits main module */
+    if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
     {
-      orxHANDLE hTimePlugin, hFilePlugin;
+      /* Sets module as initialized */
+      sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_READY;
 
-      /* Loads time & file plugin */
-      /* !!! TEMP : Will be replaced by config file !!! */
-      hTimePlugin = orxPlugin_LoadUsingExt("plugins/core/time/Time_SDL", "time");
-      hFilePlugin = orxPlugin_LoadUsingExt("plugins/core/file/File_LibC", "file");
-
-      /* Valid? */
-      if((hTimePlugin != orxHANDLE_UNDEFINED)
-      && (hFilePlugin != orxHANDLE_UNDEFINED))
-      {
-        /* Inits main module */
-        if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
-        {
-          /* Sets module as initialized */
-          sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_READY;
-
-          /* Success */
-          eResult = orxSTATUS_SUCCESS;
-        }
-      }
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
   else
@@ -154,11 +138,11 @@ int main(int argc, char **argv)
   /* Inits the parser */
   if(orxModule_Init(orxMODULE_ID_PARAM) == orxSTATUS_SUCCESS)
   {
-    /* Init the Engine */
-    if(orxMain_Init() == orxSTATUS_SUCCESS)
+    /* Parse the command line for the second time (now all modules have registered their options) */
+    if(orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
     {
-      /* Parse the command line for the second time (now all modules have registered their options) */
-      if(orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
+      /* Init the Engine */
+      if(orxMain_Init() == orxSTATUS_SUCCESS)
       {
         /* Runs the engine */
         orxMain_Run();

@@ -90,8 +90,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Register(orxCONST orxPARAM *_ps
  * @param[in] _azParams   List of parameters
  * @return Returns the parsing status
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Parse(orxU32 _u32NbParams, orxCONST orxSTRING _azParams[]);
-
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Parse(orxU32 _u32NbParams, orxSTRING _azParams[]);
 
 #endif /* _orxPARAM_H_ */
 
