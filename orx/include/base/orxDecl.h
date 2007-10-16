@@ -38,7 +38,13 @@
 
   /** The function will be called fastly (use registers for parameters as far as possible).*/
   #define orxFASTCALL           __fastcall
-  
+
+  /** The function will be called using stdcall convention.*/
+  #define orxSTDCALL            __stdcall
+
+  /** The function will be called using cdecl convention.*/
+  #define orxCDECL              __cdecl
+
   /** The function will be exported (dll compilation) */
   #define orxDLLEXPORT          __declspec(dllexport)
   
@@ -76,7 +82,13 @@
     /** The function will be called fastly (use registers for parameters as far as possible).*/
     #define orxFASTCALL         __attribute__ ((fastcall))
     
-    /** The function will be exported (dll compilation) */
+    /** The function will be called using stdcall convention.*/
+    #define orxSTDCALL            __attribute__ ((stdcall))
+
+    /** The function will be called using cdecl convention.*/
+    #define orxCDECL              __attribute__ ((cdecl))
+
+  /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
   
     /** The function will be imported (exe comoilation) */
