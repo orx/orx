@@ -387,13 +387,13 @@ orxSTATUS orxClock_Update()
       {
         /* Gets clock modified DT */
         u32ClockDT            = orxClock_ComputeDT(u32DT, &(pstClock->stClockInfo));
-    
+
         /* Backups clock tick counter */
         u32TickCounterBackup  = pstClock->stClockInfo.u32TickCounter;
-    
+
         /* Gets cumulated time */
         u32Time               = u32ClockDT + pstClock->stClockInfo.u32TickValue;
-    
+
         /* Updates new ticks if needed */
         while(u32Time >= pstClock->stClockInfo.u32TickSize)
         {
@@ -409,7 +409,7 @@ orxSTATUS orxClock_Update()
     
         /* Computes global time */
         pstClock->stClockInfo.u32Time      += u32ClockDT;
-    
+
         /* New tick happened? */
         if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
         {

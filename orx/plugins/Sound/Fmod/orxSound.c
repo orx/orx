@@ -338,22 +338,16 @@ orxSTATUS orxSound_Fmod_ChannelSetVolume(orxU32 _u32Channel, orxU8 _u8Volume)
 /***************************************************************************
  * Plugin Related                                                          *
  ***************************************************************************/
-orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sastSound_Function[orxPLUGIN_FUNCTION_BASE_ID_SOUND_NUMBER];
-
-extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
-{
-  orxPLUGIN_USER_FUNCTION_START(sastSound_Function);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_Init, SOUND, INIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_Exit, SOUND, EXIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_SampleLoadFromFile, SOUND, SAMPLE_LOAD_FROM_FILE);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_SampleLoadFromMemory, SOUND, SAMPLE_LOAD_FROM_MEMORY);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_SampleUnload, SOUND, SAMPLE_UNLOAD);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_SamplePlay, SOUND, SAMPLE_PLAY);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelStop, SOUND, CHANNEL_STOP);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelPause, SOUND, CHANNEL_PAUSE);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelTestFlags, SOUND, CHANNEL_TEST_FLAGS);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelSetFlags, SOUND, CHANNEL_SET_FLAGS);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelSetVolume, SOUND, CHANNEL_SET_VOLUME);
-  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo);
-  return;
-}
+orxPLUGIN_USER_CORE_FUNCTION_START(SOUND);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_Init, SOUND, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_Exit, SOUND, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_SampleLoadFromFile, SOUND, SAMPLE_LOAD_FROM_FILE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_SampleLoadFromMemory, SOUND, SAMPLE_LOAD_FROM_MEMORY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_SampleUnload, SOUND, SAMPLE_UNLOAD);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_SamplePlay, SOUND, SAMPLE_PLAY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelStop, SOUND, CHANNEL_STOP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelPause, SOUND, CHANNEL_PAUSE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelTestFlags, SOUND, CHANNEL_TEST_FLAGS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelSetFlags, SOUND, CHANNEL_SET_FLAGS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSound_Fmod_ChannelSetVolume, SOUND, CHANNEL_SET_VOLUME);
+orxPLUGIN_USER_CORE_FUNCTION_END();

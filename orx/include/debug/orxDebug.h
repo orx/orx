@@ -65,14 +65,14 @@
 #ifdef __orxGCC__
 
   #define orxLOG(STRING, ...)                                                                               \
-    orxDEBUG_FLAG_BACKUP();                                                                                 \
-    orxDEBUG_FLAG_SET(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                     \
-                     |orxDEBUG_KU32_STATIC_FLAG_FILE                                                        \
-                     |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                        \
-                     |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                  \
-                      orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                  \
+    _orxDebug_BackupFlags();                                                                                \
+    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                    \
+                      |orxDEBUG_KU32_STATIC_FLAG_FILE                                                       \
+                      |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                       \
+                      |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                 \
+                       orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
-    orxDEBUG_FLAG_RESTORE();
+    _orxDebug_RestoreFlags();
 
 #else /* __orxGCC__ */                                                                              
   #ifdef __orxMSVC__
@@ -117,7 +117,7 @@
   #define orxASSERT(TEST)                     \
   if(!(TEST))                                 \
   {                                           \
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : !!!" #TEST "!!!"); \
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : <" #TEST ">"); \
     orxBREAK();                               \
   }
 

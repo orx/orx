@@ -37,7 +37,7 @@
  *********************************************/
 
 /* Defines plugin registration info constants */
-#define orxPLUGIN_KZ_INIT_FUNCTION_NAME         "orxPlugin_Init" /**< Plugin init function name */
+#define orxPLUGIN_K_INIT_FUNCTION_NAME          orxPlugin_Init  /**< Plugin init function name */
 
 #define orxPLUGIN_KU32_FUNCTION_ARG_SIZE        128
 
@@ -79,11 +79,23 @@
   *STRUCTURE_ADDRESS = pstUserPluginFunctionInfo; \
 }
 
+#define orxPLUGIN_USER_CORE_FUNCTION_START(PLUGIN_SUFFIX) \
+  orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
+  extern orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
+  { \
+    orxSTATUS eResult = orxSTATUS_SUCCESS; \
+    orxPLUGIN_USER_FUNCTION_START(sau32##PLUGIN_SUFFIX##_Function);
+
 #define orxPLUGIN_USER_CORE_FUNCTION_ADD(FUNCTION, PLUGIN_SUFFIX, NAME_SUFFIX) \
   _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(&FUNCTION, \
                                          orxPLUGIN_MAKE_CORE_FUNCTION_ID(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##NAME_SUFFIX), \
                                          PLUGIN_SUFFIX##_##NAME_SUFFIX, \
                                          orxSTRING_EMPTY)
+
+#define orxPLUGIN_USER_CORE_FUNCTION_END() \
+  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo); \
+  return eResult; \
+  }
 
 
 /* Structure */

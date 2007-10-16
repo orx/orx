@@ -395,7 +395,7 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstTexture != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstTexture);
 
   /* Is the last self reference? */
   if(_pstTexture->u32Counter == 0)
@@ -439,7 +439,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstTexture != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstTexture);
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Unlink previous bitmap if needed */
@@ -521,7 +521,7 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstTexture != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstTexture);
 
   /* Has bitmap */
   if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) != orxFALSE)
@@ -581,7 +581,7 @@ orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstTexture != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstTexture);
 
   /* Has bitmap? */
   if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) != orxFALSE)
@@ -614,7 +614,7 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFL
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstTexture != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstTexture);
   orxASSERT(_pfWidth != orxNULL);
   orxASSERT(_pfHeight != orxNULL);
 

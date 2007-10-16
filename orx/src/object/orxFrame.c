@@ -119,7 +119,7 @@ orxSTATIC orxFRAME_STATIC sstFrame;
 orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos, orxFRAME_SPACE _eSpace)
 {
   /* Checks */
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_pvPos != orxNULL);
 
   /* According to space */
@@ -327,7 +327,7 @@ orxSTATIC orxINLINE orxSTATUS _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, o
   orxSTATUS eResult = orxSTATUS_SUCCESS;
  
   /* Checks */
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_pfScaleX != orxNULL);
   orxASSERT(_pfScaleY != orxNULL);
 
@@ -456,7 +456,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   orxFRAME *pstParentFrame;
 
   /* Checks */
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* gets parent frame */
   pstParentFrame = (orxFRAME *)orxStructure_GetParent(_pstFrame);
@@ -512,7 +512,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, o
 orxSTATIC orxINLINE orxVOID orxFrame_SetDirty(orxFRAME *_pstFrame)
 {
   /* Checks */
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Adds dirty flags (render + value) to all frame's heirs */
   orxFrame_SetFlagRecursively(_pstFrame, orxFRAME_KU32_FLAG_DIRTY, orxFRAME_KU32_FLAG_NONE, orxFALSE);
@@ -729,7 +729,7 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstFrame) == 0)
@@ -777,7 +777,7 @@ orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Test render dirty flag */
   return(orxStructure_TestFlags((orxFRAME *)_pstFrame, orxFRAME_KU32_FLAG_RENDER_DIRTY));
@@ -791,7 +791,7 @@ orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Has no parent? */
   if(_pstParent == orxNULL)
@@ -819,7 +819,7 @@ orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_pvPos != orxNULL);
 
   /* Updates coord values */
@@ -839,7 +839,7 @@ orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Updates angle value */
   _orxFrame_SetRotation(_pstFrame, _fAngle, orxFRAME_SPACE_LOCAL);
@@ -859,7 +859,7 @@ orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScaleX, or
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Updates scale value */
   _orxFrame_SetScale(_pstFrame, _fScaleX, _fScaleY, orxFRAME_SPACE_LOCAL);
@@ -882,7 +882,7 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE 
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_pvPos != orxNULL);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
 
@@ -941,7 +941,7 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
  
   /* Is Frame 2D? */
@@ -989,7 +989,7 @@ orxSTATUS orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSp
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFrame != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
  
   /* Is Frame 2D? */

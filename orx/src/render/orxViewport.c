@@ -242,7 +242,7 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstViewport) == 0)
@@ -284,7 +284,7 @@ orxVOID orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
   orxASSERT((_u32AlignFlags & orxVIEWPORT_KU32_MASK_ALIGN) == _u32AlignFlags)
 
   /* Updates alignement flags */
@@ -301,7 +301,7 @@ orxVOID orxFASTCALL orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Has already a texture? */
   if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_TEXTURE) != orxFALSE)
@@ -344,7 +344,7 @@ orxTEXTURE *orxFASTCALL orxViewport_GetTexture(orxCONST orxVIEWPORT *_pstViewpor
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Has texture? */
   if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_TEXTURE) != orxFALSE)
@@ -370,7 +370,7 @@ orxVOID orxFASTCALL orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnab
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Enable? */
   if(_bEnable != orxFALSE)
@@ -395,7 +395,7 @@ orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Tests */
   return(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_ENABLED));
@@ -409,7 +409,7 @@ orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Has already a camera? */
   if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA) != orxFALSE)
@@ -447,7 +447,7 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Has a camera? */
   if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA) != orxFALSE)
@@ -469,7 +469,7 @@ orxVOID orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxU32 _u
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Updates position */
   _pstViewport->u32X = _u32X;
@@ -489,7 +489,7 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
   orxASSERT((_u32AlignFlags & orxVIEWPORT_KU32_MASK_ALIGN) == _u32AlignFlags);
   orxASSERT(_pstViewport->u32Width != orxU32_UNDEFINED);
   orxASSERT(_pstViewport->u32Height != orxU32_UNDEFINED);
@@ -567,7 +567,7 @@ orxVOID orxFASTCALL orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, 
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
   orxASSERT(_pu32X != orxNULL);
   orxASSERT(_pu32Y != orxNULL);
 
@@ -587,7 +587,7 @@ orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxU32 _u32W,
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Updates size */
   _pstViewport->u32Width  = _u32W;
@@ -610,7 +610,7 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
   orxASSERT((_fW >= 0.0f) && (_fW <= 1.0f))
   orxASSERT((_fH >= 0.0f) && (_fH <= 1.0f))
 
@@ -651,7 +651,7 @@ orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxU
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
   orxASSERT(_pu32W != orxNULL);
   orxASSERT(_pu32H != orxNULL);
 
@@ -673,7 +673,7 @@ orxVOID orxFASTCALL orxViewport_GetClipping(orxCONST orxVIEWPORT *_pstViewport, 
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
   orxASSERT(_pu32TLX != orxNULL);
   orxASSERT(_pu32TLY != orxNULL);
   orxASSERT(_pu32BRX != orxNULL);

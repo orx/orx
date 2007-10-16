@@ -81,13 +81,7 @@ orxVOID orxJoystick_Exit()
  * Plugin Related                                                          *
  ***************************************************************************/
 
-orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sastJoystick_Function[orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER];
-
-extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
-{
-  orxPLUGIN_USER_FUNCTION_START(sastJoystick_Function);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Init, JOYSTICK, INIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Exit, JOYSTICK, EXIT);
-  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo);
-  return;
-}
+orxPLUGIN_USER_CORE_FUNCTION_START(JOYSTICK);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Init, JOYSTICK, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_Exit, JOYSTICK, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_END();

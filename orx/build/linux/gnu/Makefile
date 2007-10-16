@@ -268,6 +268,12 @@ TIME_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	--cflags` $(CPPFLAGS) $(CFLAGS)
 TIME_SDL_OBJECTS =  \
 	./build/$(BUILD)/Time_SDL_orxTime.o
+BOUNCE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
+	$(CFLAGS)
+BOUNCE_OBJECTS =  \
+	./build/$(BUILD)/Bounce_orxBounce.o
 
 ### Conditionally set variables: ###
 
@@ -357,6 +363,9 @@ ifeq ($(USE_SDL),1)
 __Time_SDL___depname = ../../../bin/plugins/core/time/Time_SDL.so
 endif
 endif
+ifeq ($(USE_PLUGINS),1)
+__Bounce___depname = ../../../bin/plugins/demo//Bounce.so
+endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
 endif
@@ -395,7 +404,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Bounce___depname)
 
 install: all
 
@@ -426,6 +435,7 @@ clean:
 	rm -f ../../../bin/plugins/core/joystick/Joystick_NONE.so
 	rm -f ../../../bin/plugins/core/file/File_LibC.so
 	rm -f ../../../bin/plugins/core/time/Time_SDL.so
+	rm -f ../../../bin/plugins/demo//Bounce.so
 
 ifeq ($(LINK),dynamic)
 ../../../lib/$(LINK)/lib$(orxLIBNAME).so: $(ORXDLL_OBJECTS)
@@ -542,6 +552,11 @@ ifeq ($(USE_SDL),1)
 ../../../bin/plugins/core/time/Time_SDL.so: $(TIME_SDL_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   `sdl-config --libs`   ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
 endif
+endif
+
+ifeq ($(USE_PLUGINS),1)
+../../../bin/plugins/demo//Bounce.so: $(BOUNCE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
 endif
 
 ./build/$(BUILD)/orxDLL_orxAnim.o: ../../../src/anim/orxAnim.c
@@ -846,6 +861,9 @@ endif
 
 ./build/$(BUILD)/Time_SDL_orxTime.o: ../../../plugins/Time/SDL/orxTime.c
 	$(CC) -c -o $@ $(TIME_SDL_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/Bounce_orxBounce.o: ../../../plugins/Demo/orxBounce.c
+	$(CC) -c -o $@ $(BOUNCE_CFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean
 

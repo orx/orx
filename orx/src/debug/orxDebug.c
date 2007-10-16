@@ -17,9 +17,6 @@
  ***************************************************************************/
 
 
-#ifdef __orxDEBUG__
-
-
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -366,6 +363,3 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   /* Done */
   return;
 }
-
-
-#endif /* __orxDEBUG__ */

@@ -130,16 +130,10 @@ orxVOID orxKeyboard_ClearBuffer()
  * Plugin Related                                                          *
  ***************************************************************************/
 
-orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sastKeyboard_Function[orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER];
-
-extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
-{
-  orxPLUGIN_USER_FUNCTION_START(sastKeyboard_Function);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Init, KEYBOARD, INIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Exit, KEYBOARD, EXIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Hit, KEYBOARD, HIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Read, KEYBOARD, READ);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
-  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo);
-  return;
-}
+orxPLUGIN_USER_FUNCTION_START(KEYBOARD);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Init, KEYBOARD, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Exit, KEYBOARD, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Hit, KEYBOARD, HIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Read, KEYBOARD, READ);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_ClearBuffer, KEYBOARD, CLEAR_BUFFER);
+orxPLUGIN_USER_CORE_FUNCTION_END();

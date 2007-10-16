@@ -209,7 +209,7 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstGraphic != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstGraphic) == 0)
@@ -243,7 +243,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
   
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstGraphic != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Had previously data? */
   if(_pstGraphic->pstData != orxNULL)
@@ -294,7 +294,7 @@ orxSTRUCTURE *orxFASTCALL orxGraphic_GetData(orxCONST orxGRAPHIC *_pstGraphic)
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstGraphic != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Updates result */
   pstStructure = _pstGraphic->pstData;
@@ -314,7 +314,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxV
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstGraphic != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvPivot != orxNULL);
 
   /* Stores pivot */
@@ -333,7 +333,7 @@ orxVECTOR *orxFASTCALL orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orx
 {
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstGraphic != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvPivot != orxNULL);
 
   /* Copies pivot */

@@ -91,6 +91,7 @@
 
 
 #define orxPLUGIN_KU32_FUNCTION_BANK_SIZE                   16
+#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                     "orxPlugin_Init"  /**< Plugin init function name */
 
 
 /*
@@ -607,7 +608,7 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
     orxU32 i;
 
     /* Calls it */
-    pfnInit(&u32UserFunctionNumber, &astUserFunctionInfo);
+    eResult = pfnInit(&u32UserFunctionNumber, &astUserFunctionInfo);
 
     /* Adds all functions to plugin info */
     for(i = 0; (eResult == orxSTATUS_SUCCESS) && (i < u32UserFunctionNumber); i++)

@@ -319,7 +319,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstObject != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstObject) == 0)
@@ -360,8 +360,8 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstObject != orxNULL);
-  orxASSERT(_pstStructure != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxSTRUCTURE_ASSERT(_pstStructure);
 
   /* Gets structure id & offset */
   eStructureID = orxStructure_GetID(_pstStructure);
@@ -400,7 +400,7 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstObject != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_LINKABLE_NUMBER);
 
   /* Needs to be processed? */
@@ -437,7 +437,7 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetStructure(orxCONST orxOBJECT *_pstObject,
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstObject != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Offset is valid? */
   if(_eStructureID < orxSTRUCTURE_ID_LINKABLE_NUMBER)
@@ -468,7 +468,7 @@ orxBOOL orxFASTCALL orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstObject != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Gets frame */
   pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);

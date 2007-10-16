@@ -56,7 +56,7 @@ typedef enum __orxPLUGIN_FUNCTION_ID_t
 
 } orxPLUGIN_FUNCTION_ID;
 
-typedef orxVOID (*orxPLUGIN_FUNCTION)();
+typedef orxSTATUS (*orxPLUGIN_FUNCTION)();
 
 
 /*********************************************

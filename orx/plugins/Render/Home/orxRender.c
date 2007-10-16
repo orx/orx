@@ -91,7 +91,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
 
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstObject != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_pstRenderBitmap != orxNULL);
   orxASSERT(_pstRenderFrame != orxNULL);
 
@@ -182,7 +182,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
 {
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstViewport != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Is viewport enabled? */
   if(orxViewport_IsEnabled(_pstViewport) != orxFALSE)
@@ -489,16 +489,9 @@ orxVOID orxRender_Exit()
  *  Plugin Related  *
  ********************/
 
-orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sau32Render_Function[orxPLUGIN_FUNCTION_BASE_ID_RENDER_NUMBER];
+orxPLUGIN_USER_CORE_FUNCTION_START(RENDER);
 
-extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
-{
-  orxPLUGIN_USER_FUNCTION_START(sau32Render_Function);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Init, RENDER, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Exit, RENDER, EXIT);
 
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Init, RENDER, INIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Exit, RENDER, EXIT);
-
-  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo);
-
-  return;
-}
+orxPLUGIN_USER_CORE_FUNCTION_END();

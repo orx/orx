@@ -25,7 +25,6 @@
 #include "core/orxTime.h"
 
 #include <SDL/SDL.h>
-#include <time.h>
 
 #define orxTIME_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
 #define orxTIME_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
@@ -121,17 +120,6 @@ orxU32 orxTimeSDL_GetTime()
   return((orxU32)SDL_GetTicks());
 }
 
-/** Gets date.
- * @return Current date.
- */
-orxDATE orxTimeSDL_GetDate()
-{
-  /* Module initialized ? */
-  orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
-  
-  return(orxDATE)time(NULL);
-}
-
 /** Delay the program for given number of milliseconds.
  * @param[in] _u32Time Number of milliseconds to wait.
  */
@@ -148,16 +136,9 @@ orxVOID orxTimeSDL_Delay(orxU32 _u32Time)
  * Plugin Related                                                          *
  ***************************************************************************/
 
-orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sau32Time_Function[orxPLUGIN_FUNCTION_BASE_ID_TIME_NUMBER];
-
-extern orxDLLEXPORT orxVOID orxPlugin_Init(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
-{
-  orxPLUGIN_USER_FUNCTION_START(sau32Time_Function);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Init, TIME, INIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Exit, TIME, EXIT);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_GetTime, TIME, GET_TIME);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_GetDate, TIME, GET_DATE);
-  orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Delay, TIME, DELAY);
-  orxPLUGIN_USER_FUNCTION_END(_ps32Number, _ppstInfo);
-  return;
-}
+orxPLUGIN_USER_CORE_FUNCTION_START(TIME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Init, TIME, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Exit, TIME, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_GetTime, TIME, GET_TIME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Delay, TIME, DELAY);
+orxPLUGIN_USER_CORE_FUNCTION_END();
