@@ -48,7 +48,7 @@
 
 /** Defines
  */
-#define orxRENDER_KU32_TICK_SIZE              20
+#define orxRENDER_KU32_TICK_SIZE              1
 
 
 /***************************************************************************

@@ -33,8 +33,8 @@
 #include <SDL/sge.h>
 
 #define KI_BPP    24
-#define KI_WIDTH  320
-#define KI_HEIGHT 240
+#define KI_WIDTH  800
+#define KI_HEIGHT 600
 
 
 /********************
