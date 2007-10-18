@@ -188,7 +188,7 @@
 
   <!-- Depends on nothing -->
   <orx-plugin id="Bounce" cond="USE_PLUGINS=='1'">
-    <category>demo/</category>
+    <category>demo</category>
       <sources>plugins/Demo/orxBounce.c</sources>
     </orx-plugin>
 
