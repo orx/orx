@@ -273,7 +273,7 @@ COND_WINDOWS_IMPLIB_1___orxDLL___importlib = \
 @COND_PLATFORM_UNIX_1@orxFMODLIB_UNIX = /usr/lib/libfmod.so
 @COND_PLATFORM_UNIX_1@orxSDLCFLAGS_UNIX = `sdl-config --cflags`
 @COND_PLATFORM_UNIX_1@orxSDLLIB_UNIX = `sdl-config --libs`
-@COND_PLATFORM_UNIX_1@orxSGELIB_UNIX = /usr/lib/libsge.so
+@COND_PLATFORM_UNIX_1@orxSGELIB_UNIX = sge
 @COND_PLATFORM_UNIX_1@orxALLEGROCFLAGS_UNIX = `allegro-config --cflags`
 @COND_PLATFORM_UNIX_1@orxALLEGROLIB_UNIX = `allegro-config --libs`
 COND_USE_PLUGINS_1_USE_SDL_1_USE_SGE_1___Display_SGE___depname = \
@@ -301,7 +301,7 @@ COND_USE_PLUGINS_1_USE_SDL_1___Time_SDL___depname = \
 	../../../bin/plugins/core/time/$(DLLPREFIX_MODULE)Time_SDL.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SDL_1@__Time_SDL___depname = $(COND_USE_PLUGINS_1_USE_SDL_1___Time_SDL___depname)
 @COND_USE_PLUGINS_1@__Bounce___depname = \
-@COND_USE_PLUGINS_1@	../../../bin/plugins/demo//$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
+@COND_USE_PLUGINS_1@	../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
 @COND_BUILD_DEBUG@__orxDEBUG_p = -D__orxDEBUG__
 @COND_PLATFORM_UNIX_1@__orxPLATFORM_p = -D__orxLINUX__
 @COND_PLATFORM_WIN32_1@__orxPLATFORM_p = -D__orxWINDOWS__
@@ -344,7 +344,7 @@ clean:
 	rm -f ../../../bin/plugins/core/joystick/$(DLLPREFIX_MODULE)Joystick_NONE.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)File_LibC.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/core/time/$(DLLPREFIX_MODULE)Time_SDL.$(SO_SUFFIX_MODULE)
-	rm -f ../../../bin/plugins/demo//$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
+	rm -f ../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
 
 distclean: clean
 	rm -f config.cache config.log config.status bk-deps bk-make-pch shared-ld-sh Makefile
@@ -393,7 +393,7 @@ distclean: clean
 @COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(FILE_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)    $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
 
 @COND_USE_PLUGINS_1_USE_SDL_1_USE_SGE_1@../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)Display_SGE.$(SO_SUFFIX_MODULE): $(DISPLAY_SGE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
-@COND_USE_PLUGINS_1_USE_SDL_1_USE_SGE_1@	$(SHARED_LD_MODULE_CC) $@ $(DISPLAY_SGE_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)     $(orxSGELIB_UNIX) $(orxSDLLIB_UNIX)  $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl  -l-l
+@COND_USE_PLUGINS_1_USE_SDL_1_USE_SGE_1@	$(SHARED_LD_MODULE_CC) $@ $(DISPLAY_SGE_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)   $(orxSGELIB_UNIX) $(orxSDLLIB_UNIX)    $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl  -l-l
 
 @COND_USE_PLUGINS_1@../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)Render_Home.$(SO_SUFFIX_MODULE): $(RENDER_HOME_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(RENDER_HOME_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)    $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
@@ -416,7 +416,7 @@ distclean: clean
 @COND_USE_PLUGINS_1_USE_SDL_1@../../../bin/plugins/core/time/$(DLLPREFIX_MODULE)Time_SDL.$(SO_SUFFIX_MODULE): $(TIME_SDL_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 @COND_USE_PLUGINS_1_USE_SDL_1@	$(SHARED_LD_MODULE_CC) $@ $(TIME_SDL_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)   $(orxSDLLIB_UNIX)   $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
 
-@COND_USE_PLUGINS_1@../../../bin/plugins/demo//$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE): $(BOUNCE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+@COND_USE_PLUGINS_1@../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE): $(BOUNCE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(BOUNCE_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)    $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
 
 ./build/$(BUILD)/orxDLL_orxAnim.o: ../../../src/anim/orxAnim.c

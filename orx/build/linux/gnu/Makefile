@@ -47,7 +47,7 @@ USE_SDL := 0
 USE_SGE := 0
 
 #  [0,1]
-USE_TEST := 1
+USE_TEST := 0
 
 #  [0,1]
 USE_PLUGINS := 1
@@ -364,7 +364,7 @@ __Time_SDL___depname = ../../../bin/plugins/core/time/Time_SDL.so
 endif
 endif
 ifeq ($(USE_PLUGINS),1)
-__Bounce___depname = ../../../bin/plugins/demo//Bounce.so
+__Bounce___depname = ../../../bin/plugins/demo/Bounce.so
 endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
@@ -435,7 +435,7 @@ clean:
 	rm -f ../../../bin/plugins/core/joystick/Joystick_NONE.so
 	rm -f ../../../bin/plugins/core/file/File_LibC.so
 	rm -f ../../../bin/plugins/core/time/Time_SDL.so
-	rm -f ../../../bin/plugins/demo//Bounce.so
+	rm -f ../../../bin/plugins/demo/Bounce.so
 
 ifeq ($(LINK),dynamic)
 ../../../lib/$(LINK)/lib$(orxLIBNAME).so: $(ORXDLL_OBJECTS)
@@ -506,7 +506,7 @@ ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
 ifeq ($(USE_SGE),1)
 ../../../bin/plugins/core/display/Display_SGE.so: $(DISPLAY_SGE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
-	$(CC) -shared -fPIC -o $@ $(DISPLAY_SGE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)     /usr/lib/libsge.so `sdl-config --libs`  ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl  -l-l
+	$(CC) -shared -fPIC -o $@ $(DISPLAY_SGE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   sge `sdl-config --libs`    ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl  -l-l
 endif
 endif
 endif
@@ -555,7 +555,7 @@ endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/demo//Bounce.so: $(BOUNCE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+../../../bin/plugins/demo/Bounce.so: $(BOUNCE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
 endif
 

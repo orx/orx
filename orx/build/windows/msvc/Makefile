@@ -41,7 +41,7 @@ USE_SDL = 0
 USE_SGE = 0
 
 #  [0,1]
-USE_TEST = 1
+USE_TEST = 0
 
 #  [0,1]
 USE_PLUGINS = 1
@@ -275,7 +275,7 @@ TIME_SDL_OBJECTS =  \
 	.\build\$(BUILD)\Time_SDL_orxTime.obj
 BOUNCE_CFLAGS = /MD$(__orxDEBUGFLAG_57) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\demo\\Bounce.pdb $(__orxDEBUG_p) /D$(orxPLATFORM) \
+	/Fd..\..\..\bin\plugins\demo\Bounce.pdb $(__orxDEBUG_p) /D$(orxPLATFORM) \
 	$(__orxTEST_p) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ $(CPPFLAGS) $(CFLAGS)
 BOUNCE_OBJECTS =  \
@@ -362,7 +362,7 @@ __File_LibC___depname = ..\..\..\bin\plugins\core\file\File_LibC.dll
 __Time_SDL___depname = ..\..\..\bin\plugins\core\time\Time_SDL.dll
 !endif
 !if "$(USE_PLUGINS)" == "1"
-__Bounce___depname = ..\..\..\bin\plugins\demo\\Bounce.dll
+__Bounce___depname = ..\..\..\bin\plugins\demo\Bounce.dll
 !endif
 !if "$(BUILD)" == "debug"
 __orxOPTIMIZEFLAG = /Od
@@ -494,9 +494,9 @@ clean:
 	-if exist ..\..\..\bin\plugins\core\time\Time_SDL.dll del ..\..\..\bin\plugins\core\time\Time_SDL.dll
 	-if exist ..\..\..\bin\plugins\core\time\Time_SDL.ilk del ..\..\..\bin\plugins\core\time\Time_SDL.ilk
 	-if exist ..\..\..\bin\plugins\core\time\Time_SDL.pdb del ..\..\..\bin\plugins\core\time\Time_SDL.pdb
-	-if exist ..\..\..\bin\plugins\demo\\Bounce.dll del ..\..\..\bin\plugins\demo\\Bounce.dll
-	-if exist ..\..\..\bin\plugins\demo\\Bounce.ilk del ..\..\..\bin\plugins\demo\\Bounce.ilk
-	-if exist ..\..\..\bin\plugins\demo\\Bounce.pdb del ..\..\..\bin\plugins\demo\\Bounce.pdb
+	-if exist ..\..\..\bin\plugins\demo\Bounce.dll del ..\..\..\bin\plugins\demo\Bounce.dll
+	-if exist ..\..\..\bin\plugins\demo\Bounce.ilk del ..\..\..\bin\plugins\demo\Bounce.ilk
+	-if exist ..\..\..\bin\plugins\demo\Bounce.pdb del ..\..\..\bin\plugins\demo\Bounce.pdb
 
 !if "$(LINK)" == "dynamic"
 ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll: $(ORXDLL_OBJECTS)
@@ -645,7 +645,7 @@ clean:
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\demo\\Bounce.dll: $(BOUNCE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+..\..\..\bin\plugins\demo\Bounce.dll: $(BOUNCE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_56) /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)   @<<
 	$(BOUNCE_OBJECTS)  ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
 <<

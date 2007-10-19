@@ -71,14 +71,39 @@
   </set>
 
   <set var="orxSGELIB_UNIX">
-    <if cond="PLATFORM_UNIX=='1'">/usr/lib/libsge.so</if>
+    <if cond="PLATFORM_UNIX=='1'">sge</if>
   </set>
 
   <!-- Define the module template -->
   <template id="orxSGE">
+    <cflags></cflags>
+    <ldflags>$(orxSGELIB_UNIX) $(orxSDLLIB_UNIX)</ldflags>
+
     <sys-lib>$(orxSGELIB_MINGW) -l$(orxSDLLIB_MINGW)</sys-lib>
     <ldflags>$(orxSGELIB_MSVC) $(orxSDLLIB_MSVC)</ldflags>
-    <ldflags>$(orxSGELIB_UNIX) $(orxSDLLIB_UNIX)</ldflags>
+  </template>
+
+  <!-- ******************** SFML LINK ********************** -->
+
+  <set var="orxSFMLLIB_MINGW">
+    <if cond="FORMAT=='mingw'">sfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
+  </set>
+
+  <set var="orxSFMLLIB_MSVC">
+    <if cond="orxCOMPILER=='__orxMSVC__'">sfml-graphics.lib sfml-audio.lib sfml-window.lib sfml-system.lib</if>
+  </set>
+
+  <set var="orxSFMLLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">-lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
+  </set>
+
+  <!-- Define the module template -->
+  <template id="orxSFML">
+    <cflags></cflags>
+    <ldflags>$(orxSFMLLIB_UNIX)</ldflags>
+
+    <sys-lib>$(orxSFMLLIB_MINGW)</sys-lib>
+    <ldflags>$(orxSFMLLIB_MSVC)</ldflags>
   </template>
 
   <!-- ******************** ALLEGRO LINK ********************** -->
