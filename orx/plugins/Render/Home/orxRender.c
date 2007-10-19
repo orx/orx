@@ -149,15 +149,17 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       orxVector_Sub(&vPosition, &vPosition, &vPivot);
 
       /* Blits bitmap */
-      eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, &vPosition);
+      eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, orxF2U(vPosition.fX), orxF2U(vPosition.fY));
     }
     else
     {
       orxBITMAP_TRANSFORM stTransform;
 
       /* Sets transformation values */
-      orxVector_Copy(&(stTransform.vDestination), &vPosition);
-      orxVector_Copy(&(stTransform.vSource), &vPivot);
+      stTransform.u32SrcX   = orxF2U(vPivot.fX);
+      stTransform.u32SrcY   = orxF2U(vPivot.fY);
+      stTransform.u32DstX   = orxF2U(vPosition.fX);
+      stTransform.u32DstY   = orxF2U(vPosition.fY);
       stTransform.fScaleX   = fScaleX;
       stTransform.fScaleY   = fScaleY;
       stTransform.fRotation = fRotation;
@@ -219,7 +221,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
       orxDisplay_SetBitmapClipping(pstBitmap, u32ULX, u32ULY, u32BRX, u32BRY);
 
       /* Clears bitmap */
-      orxDisplay_ClearBitmap(pstBitmap, orx2ARGB(0, 0, 0, 0));
+      orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
 
       /* Gets camera */
       pstCamera = orxViewport_GetCamera(_pstViewport);

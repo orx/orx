@@ -19,8 +19,14 @@ RANLIB := ranlib
 # C compiler 
 CC := gcc
 
+# C++ compiler 
+CXX := g++
+
 # Standard flags for CC 
 CFLAGS := 
+
+# Standard flags for C++ 
+CXXFLAGS := 
 
 # Standard preprocessor flags (common for CC and CXX) 
 CPPFLAGS := 
@@ -45,6 +51,9 @@ USE_SDL := 0
 
 #  [0,1]
 USE_SGE := 0
+
+#  [0,1]
+USE_SFML := 0
 
 #  [0,1]
 USE_TEST := 0
@@ -226,6 +235,11 @@ DISPLAY_SGE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 DISPLAY_SGE_OBJECTS =  \
 	./build/$(BUILD)/Display_SGE_orxDisplay.o
+DISPLAY_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I../../../include -D__orxDLL__ -fPIC -DPIC $(CPPFLAGS) $(CXXFLAGS)
+DISPLAY_SFML_OBJECTS =  \
+	./build/$(BUILD)/Display_SFML_orxDisplay.o
 RENDER_HOME_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
@@ -333,6 +347,11 @@ endif
 endif
 endif
 ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+__Display_SFML___depname = ../../../bin/plugins/core/display/Display_SFML.so
+endif
+endif
+ifeq ($(USE_PLUGINS),1)
 __Render_Home___depname = ../../../bin/plugins/core/render/Render_Home.so
 endif
 ifeq ($(USE_FMOD),1)
@@ -404,7 +423,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Bounce___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Bounce___depname)
 
 install: all
 
@@ -428,6 +447,7 @@ clean:
 	rm -f ../../../bin/modules/Event.so
 	rm -f ../../../bin/modules/File.so
 	rm -f ../../../bin/plugins/core/display/Display_SGE.so
+	rm -f ../../../bin/plugins/core/display/Display_SFML.so
 	rm -f ../../../bin/plugins/core/render/Render_Home.so
 	rm -f ../../../bin/plugins/core/sound/Sound_Fmod.so
 	rm -f ../../../bin/plugins/core/mouse/Mouse_Allegro.so
@@ -508,6 +528,13 @@ ifeq ($(USE_SGE),1)
 ../../../bin/plugins/core/display/Display_SGE.so: $(DISPLAY_SGE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(DISPLAY_SGE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   sge `sdl-config --libs`    ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl  -l-l
 endif
+endif
+endif
+
+ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+../../../bin/plugins/core/display/Display_SFML.so: $(DISPLAY_SFML_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CXX) -shared -fPIC -o $@ $(DISPLAY_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
 endif
 endif
 
@@ -840,6 +867,9 @@ endif
 
 ./build/$(BUILD)/Display_SGE_orxDisplay.o: ../../../plugins/Display/SDL/orxDisplay.c
 	$(CC) -c -o $@ $(DISPLAY_SGE_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/Display_SFML_orxDisplay.o: ../../../plugins/Display/SFML/orxDisplay.cpp
+	$(CXX) -c -o $@ $(DISPLAY_SFML_CXXFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Render_Home_orxRender.o: ../../../plugins/Render/Home/orxRender.c
 	$(CC) -c -o $@ $(RENDER_HOME_CFLAGS) $(CPPDEPS) $<

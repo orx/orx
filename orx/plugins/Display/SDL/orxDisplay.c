@@ -1,8 +1,14 @@
 /**
- * \file DISPLAY_plug.c
+ * @file orxDisplay.c
+ * 
+ * SDL display plugin
+ * 
  */
-
-/***************************************************************************
+ 
+ /***************************************************************************
+ orxDisplay.c
+ SDL display plugin
+ 
  begin                : 14/11/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -48,7 +54,7 @@ orxBITMAP *orxDisplay_SDL_GetScreen()
   return((orxBITMAP *)SDL_GetVideoSurface());
 }
 
-orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvPos, orxARGB _stColor, orxCONST orxSTRING _zFormat)
+orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvPos, orxRGBA _stColor, orxCONST orxSTRING _zFormat)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -68,7 +74,7 @@ orxVOID orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
   return;
 }
 
-orxBITMAP *orxDisplay_SDL_CreateBitmap(orxCONST orxVECTOR *_pvSize, orxU32 _u32Flags)
+orxBITMAP *orxDisplay_SDL_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
 {
   orxU32 u32RMask, u32GMask, u32BMask, u32AMask;
 
@@ -86,11 +92,11 @@ orxBITMAP *orxDisplay_SDL_CreateBitmap(orxCONST orxVECTOR *_pvSize, orxU32 _u32F
   u32AMask = 0xFF000000;
 #endif
 
-  return((orxBITMAP *)SDL_CreateRGBSurface(SDL_HWSURFACE, _pvSize->fX, _pvSize->fY, KI_BPP,
+  return((orxBITMAP *)SDL_CreateRGBSurface(SDL_HWSURFACE, _u32Width, _u32Height, KI_BPP,
                                           u32RMask, u32GMask, u32BMask, u32AMask));
 }
 
-orxSTATUS orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxARGB _stColor)
+orxSTATUS orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -112,13 +118,13 @@ orxSTATUS orxDisplay_SDL_Swap()
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxARGB _stColor, orxBOOL _bEnable)
+orxSTATUS orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxRGBA _stColor, orxBOOL _bEnable)
 {
   orxSTATUS eResult;
 
   if(_bEnable != orxFALSE)
   {
-    eResult = (SDL_SetColorKey((SDL_Surface *)_pstSrc, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstSrc)->format, orxARGB_R(_stColor), orxARGB_G(_stColor), orxARGB_B(_stColor))) == 0)
+    eResult = (SDL_SetColorKey((SDL_Surface *)_pstSrc, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstSrc)->format, orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor))) == 0)
               ? orxSTATUS_SUCCESS
               : orxSTATUS_FAILURE;
   }
@@ -132,7 +138,7 @@ orxSTATUS orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxARGB _stColor,
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVECTOR *_pvDstCoord)
+orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxU32 _u32PosX, orxU32 _u32PosY)
 {
   SDL_Rect  stSrcRect, stDstRect;
   orxSTATUS eResult;
@@ -141,8 +147,8 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
   stSrcRect.y = 0;
   stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
   stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-  stDstRect.x = _pvDstCoord->fX;
-  stDstRect.y = _pvDstCoord->fY;
+  stDstRect.x = _u32PosX;
+  stDstRect.y = _u32PosY;
   stDstRect.w = 0.0f;
   stDstRect.h = 0.0f;
 
@@ -159,7 +165,7 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
   orxSTATUS eResult;
 
   /* Uses SGE for bitmap transformation */
-  stRectangle = sge_transform((SDL_Surface *)_pstSrc, (SDL_Surface *)_pstDst, _pstTransform->fRotation * orxMATH_KF_RAD_TO_DEG, _pstTransform->fScaleX, _pstTransform->fScaleY, orxF2U(_pstTransform->vSource.fX), orxF2U(_pstTransform->vSource.fY), orxF2U(_pstTransform->vDestination.fX), orxF2U(_pstTransform->vDestination.fY), _u32Flags);
+  stRectangle = sge_transform((SDL_Surface *)_pstSrc, (SDL_Surface *)_pstDst, _pstTransform->fRotation * orxMATH_KF_RAD_TO_DEG, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->u32SrcX, _pstTransform->u32SrcY, _pstTransform->u32DstX, _pstTransform->u32DstY, _u32Flags);
 
   /* Updates result */
   eResult = ((stRectangle.x == 0) && (stRectangle.y == 0) && (stRectangle.w == 0) && (stRectangle.h == 0)) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;

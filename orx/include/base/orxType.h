@@ -58,7 +58,7 @@
   typedef char                  orxCHAR;
   typedef orxCHAR *							orxSTRING;
 
-  typedef orxU32                orxARGB;
+  typedef orxU32                orxRGBA;
 
   #define orx2F(V)              (orxFLOAT)(V)
 
