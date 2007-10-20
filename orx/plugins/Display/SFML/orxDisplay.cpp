@@ -47,9 +47,10 @@ extern "C"
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
-static const orxU32     su32ScreenWidth   = 800;
-static const orxU32     su32ScreenHeight  = 600;
-static const orxSTRING  szTitle           = "orxTestWindow";
+orxSTATIC orxCONST orxU32     su32ScreenWidth   = 800;
+orxSTATIC orxCONST orxU32     su32ScreenHeight  = 600;
+orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
+orxSTATIC orxCONST orxSTRING  szTitle           = "orxTestWindow";
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -79,14 +80,17 @@ orxSTATIC orxDISPLAY_STATIC sstDisplay;
 
 extern "C" orxBITMAP *orxDisplay_SFML_GetScreen()
 {
-  return (orxBITMAP *)orxNULL;
+  return const_cast<orxBITMAP *>(spoScreen);
 }
 
 extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvPos, orxRGBA _stColor, orxCONST orxSTRING _zFormat)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-/* TODO :
+  /* Checks */
+  orxASSERT((_pstBitmap == spoScreen) && "Can only draw on screen with this version!");
+
+  /* TODO :
  * Write the string onto screen, using char per char pixel writing
  */
 
@@ -101,7 +105,7 @@ extern "C" orxVOID orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
   sf::Image *poImage;
 
   /* Checks */
-  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != spoScreen));
 
   /* Gets image */
   poImage = (sf::Image *)_pstBitmap;
@@ -128,28 +132,31 @@ extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   sf::Image  *poImage;
-  orxU32      i, j, iNumber, jNumber;
-  sf::Color   oColor(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor));   
+  orxU32     *pu32Cursor, *pu32End;
+  orxU32      u32Color;   
 
   /* Checks */
   orxASSERT(_pstBitmap != orxNULL);
 
-  /* Gets image */
-  poImage = (sf::Image *)_pstBitmap;
-
-  /* For all rows */
-  for(j = 0, jNumber = poImage->GetHeight(); j < jNumber; j++)
+  /* Is not screen? */
+  if(_pstBitmap != spoScreen)
   {
-    /* For all columns */
-    for(i = 0, iNumber = poImage->GetWidth(); i < iNumber; i++)
+    /* Gets image */
+    poImage = (sf::Image *)_pstBitmap;
+
+    /* Gets color */
+    u32Color = sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)).ToRGBA();
+    /* For all pixels */
+    for(pu32Cursor = (orxU32 *)poImage->GetPixelsPtr(), pu32End = pu32Cursor + (poImage->GetWidth() * poImage->GetHeight());
+        pu32Cursor < pu32End; pu32Cursor++)
     {
       /* Updates pixel */
-      poImage->SetPixel(i, j, oColor);
+      *pu32Cursor = u32Color;
     }
-  }
 
-  /* Updates whole image */
-  poImage->Update();
+    /* Updates whole image */
+    poImage->Update();
+  }
 
   /* Done! */
   return eResult;
@@ -157,26 +164,37 @@ extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
 
 extern "C" orxSTATUS orxDisplay_SFML_Swap()
 {
+  sf::Event oEvent;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Displays render window */
   sstDisplay.poRenderWindow->Display();
 
+  /* Polls all the event */
+  while(sstDisplay.poRenderWindow->GetEvent(oEvent))
+  {
+    //! TEMP
+    if(oEvent.Type == sf::Event::Close)
+    {
+      exit(EXIT_SUCCESS);
+    }
+  }
+
   /* Done! */
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstSrc, orxRGBA _stColor, orxBOOL _bEnable)
+extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   sf::Image *poImage;
 
   /* Checks */
-  orxASSERT(_pstSrc != orxNULL);
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != spoScreen));
 
   /* Gets image */
-  poImage = (sf::Image *)_pstSrc;
+  poImage = (sf::Image *)_pstBitmap;
 
   /* Enable? */
   if(_bEnable != orxFALSE)
@@ -197,6 +215,12 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstSrc, orxRG
 extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxVECTOR *_pvDstCoord)
 {
   orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != spoScreen));
+  orxASSERT((_pstDst == spoScreen) && "Can only draw on screen with this version!");
+
+  //! TODO
   eResult = orxSTATUS_FAILURE;
   return eResult;
 }
@@ -204,6 +228,12 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
 extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
 {
   orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != spoScreen));
+  orxASSERT((_pstDst == spoScreen) && "Can only draw on screen with this version!");
+
+  //! TODO
   eResult = orxSTATUS_FAILURE;
   return eResult;
 }
@@ -291,7 +321,12 @@ extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(orxCONST orxBITMAP *_pstBitma
 extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  return eResult;
+
+  /* Checks */
+  orxASSERT((_pstBitmap == spoScreen) && "Can only draw on screen with this version!");
+
+  //! TODO
+return eResult;
 }
 
 extern "C" orxSTATUS orxDisplay_SFML_Init()
@@ -307,7 +342,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     /* Inits rendering window */
     sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fixed);
 
-    orxLOG("Video mode (%d x %d) was initialized succesfully!", su32ScreenWidth, su32ScreenWidth);
+    orxLOG("Video mode (%d x %d) was initialized succesfully!", su32ScreenWidth, su32ScreenHeight);
 
     /* Updates status */
     sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY;
