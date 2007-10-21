@@ -54,7 +54,7 @@ orxBITMAP *orxDisplay_SDL_GetScreen()
   return((orxBITMAP *)SDL_GetVideoSurface());
 }
 
-orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxVECTOR *_pvPos, orxRGBA _stColor, orxCONST orxSTRING _zFormat)
+orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTranform, orxRGBA _stColor, orxCONST orxSTRING _zFormat)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 

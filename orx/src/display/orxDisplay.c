@@ -82,7 +82,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Exit, orxVOID);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Swap, orxSTATUS);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawText, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxVECTOR *, orxRGBA, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawText, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxBITMAP_TRANSFORM *, orxRGBA, orxCONST orxSTRING);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateBitmap, orxBITMAP *, orxU32, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteBitmap, orxVOID, orxBITMAP *);
