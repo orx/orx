@@ -27,7 +27,6 @@ extern "C"
 {
 #include "orxInclude.h"
 
-#include "debug/orxDebug.h"
 #include "math/orxMath.h"
 #include "plugin/orxPluginUser.h"
 
@@ -439,8 +438,6 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
 
     /* Waits for vertical sync */
     sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);
-
-    orxLOG("Video mode (%d x %d) was initialized succesfully!", su32ScreenWidth, su32ScreenHeight);
 
     /* Updates status */
     sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY;
