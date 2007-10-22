@@ -33,6 +33,7 @@
 #include "anim/orxAnimPointer.h"
 #include "display/orxDisplay.h"
 #include "display/orxGraphic.h"
+#include "io/orxTextIO.h"
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
 #include "math/orxVector.h"
@@ -156,10 +157,10 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       orxBITMAP_TRANSFORM stTransform;
 
       /* Sets transformation values */
-      stTransform.u32SrcX   = orxF2U(vPivot.fX);
-      stTransform.u32SrcY   = orxF2U(vPivot.fY);
-      stTransform.u32DstX   = orxF2U(vPosition.fX);
-      stTransform.u32DstY   = orxF2U(vPosition.fY);
+      stTransform.s32SrcX   = orxF2S(vPivot.fX);
+      stTransform.s32SrcY   = orxF2S(vPivot.fY);
+      stTransform.s32DstX   = orxF2S(vPosition.fX);
+      stTransform.s32DstY   = orxF2S(vPosition.fY);
       stTransform.fScaleX   = fScaleX;
       stTransform.fScaleY   = fScaleY;
       stTransform.fRotation = fRotation;
@@ -386,8 +387,11 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
-  orxVIEWPORT *pstViewport;
-  
+  orxSTATIC orxCHAR     szFPSOutput[16]; 
+
+  orxVIEWPORT          *pstViewport;
+  orxBITMAP_TRANSFORM   stTransform;
+
   /* For all viewports */
   for(pstViewport = (orxVIEWPORT *)orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT);
       pstViewport != orxNULL;
@@ -400,6 +404,21 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   /* Increases FPS counter */
   orxFPS_IncreaseFrameCounter();
 
+  /* Updates FPS transform */
+  /* Sets transformation values */
+  stTransform.s32SrcX   = 0;
+  stTransform.s32SrcY   = 0;
+  stTransform.s32DstX   = 10;
+  stTransform.s32DstY   = 10;
+  stTransform.fScaleX   = orx2F(0.8f);
+  stTransform.fScaleY   = orx2F(0.8f);
+  stTransform.fRotation = orxFLOAT_0;
+
+  orxTextIO_Printf(szFPSOutput, "FPS : %d", orxFPS_GetFPS());
+
+  /* Displays FPS */
+  orxDisplay_DrawText(orxDisplay_GetScreenBitmap(), &stTransform, orx2RGBA(0xFF, 0, 0, 0xFF), szFPSOutput);
+  
   /* Swap buffers */
   orxDisplay_Swap();
 

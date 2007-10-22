@@ -99,7 +99,7 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
   oText.SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
 
   /* Sets its center */
-  oText.SetRotationCenter(_pstTransform->u32SrcX, _pstTransform->u32SrcY);
+  oText.SetRotationCenter(_pstTransform->s32SrcX, _pstTransform->s32SrcY);
 
   /* Sets its rotation */
   oText.SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
@@ -108,8 +108,8 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
   oText.SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
 
   /* Sets its position */
-  oText.SetLeft(_pstTransform->u32DstX - _pstTransform->u32SrcX);
-  oText.SetTop(_pstTransform->u32DstY - _pstTransform->u32SrcY);
+  oText.SetLeft(_pstTransform->s32DstX - _pstTransform->s32SrcX);
+  oText.SetTop(_pstTransform->s32DstY - _pstTransform->s32SrcY);
 
   /* Draws it */
   sstDisplay.poRenderWindow->Draw(oText);
@@ -251,7 +251,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, or
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc,  orxCONST orxU32 _u32PosX, orxU32 _u32PosY)
+extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc,  orxCONST orxS32 _s32PosX, orxS32 _s32PosY)
 {
   sf::Sprite *poSprite;
   sf::IntRect oClippingRectangle;
@@ -265,8 +265,8 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   poSprite = (sf::Sprite *)_pstSrc;
 
   /* Updates its position */
-  poSprite->SetLeft(_u32PosX);
-  poSprite->SetTop(_u32PosY);
+  poSprite->SetLeft(orxS2F(_s32PosX));
+  poSprite->SetTop(orxS2F(_s32PosY));
 
   /* Gets clipping coordinates */
   if(sstDisplay.oScreenRectangle.Intersects(poSprite->GetSubRect(), &oClippingRectangle) != orxFALSE)
@@ -299,7 +299,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   poSprite = (sf::Sprite *)_pstSrc;
 
   /* Updates its center */
-  poSprite->SetRotationCenter(_pstTransform->u32SrcX, _pstTransform->u32SrcY);
+  poSprite->SetRotationCenter(_pstTransform->s32SrcX, _pstTransform->s32SrcY);
 
   /* Updates its rotation */
   poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
@@ -308,7 +308,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   poSprite->SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
 
   /* Blits it */
-  eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->u32DstX - _pstTransform->u32SrcX, _pstTransform->u32DstY - _pstTransform->u32SrcY);
+  eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->s32DstX - _pstTransform->s32SrcX, _pstTransform->s32DstY - _pstTransform->s32SrcY);
 
   /* Done! */
   return eResult;
@@ -355,7 +355,7 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
   {
     sf::Sprite *poSprite;
 
-    // Creates a sprite from it */
+    /* Creates a sprite from it */
     poSprite = new sf::Sprite(*poImage);
 
     /* Updates result */
@@ -433,6 +433,9 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
 
     /* Inits rendering window */
     sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fixed);
+
+    /* Waits for vertical sync */
+    sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);
 
     orxLOG("Video mode (%d x %d) was initialized succesfully!", su32ScreenWidth, su32ScreenHeight);
 

@@ -138,7 +138,7 @@ orxSTATUS orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxRGBA _stColor,
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxU32 _u32PosX, orxU32 _u32PosY)
+orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxS32 _s32PosX, orxS32 _s32PosY)
 {
   SDL_Rect  stSrcRect, stDstRect;
   orxSTATUS eResult;
@@ -147,8 +147,8 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
   stSrcRect.y = 0;
   stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
   stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-  stDstRect.x = _u32PosX;
-  stDstRect.y = _u32PosY;
+  stDstRect.x = _s32PosX;
+  stDstRect.y = _s32PosY;
   stDstRect.w = 0.0f;
   stDstRect.h = 0.0f;
 
@@ -165,7 +165,7 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
   orxSTATUS eResult;
 
   /* Uses SGE for bitmap transformation */
-  stRectangle = sge_transform((SDL_Surface *)_pstSrc, (SDL_Surface *)_pstDst, _pstTransform->fRotation * orxMATH_KF_RAD_TO_DEG, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->u32SrcX, _pstTransform->u32SrcY, _pstTransform->u32DstX, _pstTransform->u32DstY, _u32Flags);
+  stRectangle = sge_transform((SDL_Surface *)_pstSrc, (SDL_Surface *)_pstDst, _pstTransform->fRotation * orxMATH_KF_RAD_TO_DEG, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->s32SrcX, _pstTransform->s32SrcY, _pstTransform->s32DstX, _pstTransform->s32DstY, _u32Flags);
 
   /* Updates result */
   eResult = ((stRectangle.x == 0) && (stRectangle.y == 0) && (stRectangle.w == 0) && (stRectangle.h == 0)) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
