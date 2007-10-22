@@ -239,13 +239,16 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, or
   if(_bEnable != orxFALSE)
   {
     /* Creates transparency mask */
-    poImage->CreateMaskFromColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
+    poImage->CreateMaskFromColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), 0xFF));
   }
   else
   {
     /* Clears transparency mask */
-    poImage->CreateMaskFromColor(sf::Color(0), 0xFF);
+    poImage->CreateMaskFromColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), 0xFF), 0xFF);
   }
+
+  /* Updates it */
+  poImage->Update();
 
   /* Done! */
   return eResult;

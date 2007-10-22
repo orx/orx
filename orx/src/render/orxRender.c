@@ -40,6 +40,7 @@ orxVOID orxRender_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_FPS);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_STRUCTURE);

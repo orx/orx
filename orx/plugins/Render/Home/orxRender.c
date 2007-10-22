@@ -30,6 +30,8 @@
 
 #include "render/orxViewport.h"
 #include "debug/orxFPS.h"
+#include "memory/orxBank.h"
+#include "utils/orxLinkList.h"
 #include "anim/orxAnimPointer.h"
 #include "display/orxDisplay.h"
 #include "display/orxGraphic.h"
@@ -50,19 +52,30 @@
 /** Defines
  */
 #define orxRENDER_KU32_TICK_SIZE              1
+#define orxRENDER_KU32_ORDER_BANK_SIZE        128
 
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
+typedef struct __orxRENDER_RENDER_NODE_t
+{
+  orxLINKLIST_NODE  stNode;                       /**< Linklist node : 12 */
+  orxOBJECT        *pstObject;                    /**< Object pointer : 16 */
+  orxVECTOR         vPosition;                    /**< Object position : 32 */
+
+} orxRENDER_NODE;
+
 /** Static structure
  */
 typedef struct __orxRENDER_STATIC_t
 {
-  orxU32    u32Flags;                         /**< Control flags : 4 */
-  orxCLOCK *pstClock;                         /**< Rendering clock pointer : 8 */
-  
+  orxU32        u32Flags;                         /**< Control flags : 4 */
+  orxCLOCK     *pstClock;                         /**< Rendering clock pointer : 8 */
+  orxBANK      *pstRenderBank;                    /**< Rendering bank : 12 */
+  orxLINKLIST   stRenderList;                     /**< Rendering list : 16 */
+
 } orxRENDER_STATIC;
 
 
@@ -239,9 +252,10 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
         /* Valid? */
         if(pstRenderFrame != orxNULL)
         {
-          orxOBJECT  *pstObject;
-          orxVECTOR   vCameraUL, vCameraBR;
-          orxFLOAT    fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation;
+          orxOBJECT      *pstObject;
+          orxRENDER_NODE *pstRenderNode;
+          orxVECTOR       vCameraUL, vCameraBR;
+          orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation;
 
           /* Gets camera frustrum */
           orxCamera_GetFrustrum(pstCamera, &vCameraUL, &vCameraBR);
@@ -307,49 +321,115 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 /* Is object in frustrum? */
                 if(orxVector_TestAABoxIntersection(&vCameraUL, &vCameraBR, &vObjectUL, &vObjectBR) != orxFALSE)
                 {
-                  orxVECTOR vRenderPos;
-                  orxFLOAT  fScrollX, fScrollY;
+                  orxLINKLIST_NODE *pstNode;
 
-                  /* Uses differential scrolling? */
-                  if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
-                  && (vObjectPos.fZ > vCameraUL.fZ))
+                  /* Creates a render node */
+                  pstRenderNode = orxBank_Allocate(sstRender.pstRenderBank);
+
+                  /* Cleans its internal node */
+                  orxMemory_Set(pstRenderNode, 0, sizeof(orxLINKLIST_NODE));
+
+                  /* Stores object */
+                  pstRenderNode->pstObject = pstObject;
+
+                  /* Stores its position */
+                  orxVector_Copy(&(pstRenderNode->vPosition), &vObjectPos);
+
+                  /* Empty list? */
+                  if(orxLinkList_GetCounter(&(sstRender.stRenderList)) == 0)
                   {
-                    orxREGISTER orxFLOAT fScroll;
-
-                    /* Gets scroll coefficient */
-                    fScroll = (vCameraBR.fZ - vCameraUL.fZ) / (vObjectPos.fZ - vCameraUL.fZ);
-
-                    /* Gets differential scrolling values */
-                    fScrollX = (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE) ? fScroll : orxFLOAT_1;
-                    fScrollY = (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE) ? fScroll : orxFLOAT_1;
+                    /* Adds node at beginning */
+                    orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
                   }
                   else
                   {
-                    /* No differential scrolling */
-                    fScrollX = fScrollY = orxFLOAT_1;
-                  }
+                    /* Finds correct node */
+                    for(pstNode = orxLinkList_GetFirst(&(sstRender.stRenderList));
+                        (pstNode != orxNULL);
+                        pstNode = orxLinkList_GetNext(pstNode))
+                    {
+                      /* Is current object further? */
+                      if(vObjectPos.fZ > ((orxRENDER_NODE *)pstNode)->vPosition.fZ)
+                      {
+                        break;
+                      }
+                    }
 
-                  /* Gets render position */
-                  orxVector_Sub(&vRenderPos, &vObjectPos, &vCameraUL);
-                  vRenderPos.fX  *= fRenderScaleX * fScrollX;
-                  vRenderPos.fY  *= fRenderScaleY * fScrollY;
-                  orxVector_Add(&vRenderPos, &vRenderPos, &vViewportUL);
-
-                  /* Updates render frame */
-                  orxFrame_SetPosition(pstRenderFrame, &vRenderPos);
-                  orxFrame_SetRotation(pstRenderFrame, fObjectRotation - fRenderRotation);
-                  orxFrame_SetScale(pstRenderFrame, fRenderScaleX * fObjectScaleX, fRenderScaleY * fObjectScaleY);
-
-                  /* Renders it */
-                  if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame) != orxSTATUS_SUCCESS)
-                  {
-                    /* Prints error message */
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / orxBITMAP %p] couldn't be rendered.", pstObject, pstBitmap);
+                    /* Adds it before found node */
+                    orxLinkList_AddBefore(pstNode, (orxLINKLIST_NODE *)pstRenderNode);
                   }
                 }
               }
             }
           }
+
+          /* For all render nodes */
+          for(pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
+          pstRenderNode != orxNULL;
+          pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstRenderNode))
+          {
+            orxFRAME *pstFrame;
+            orxVECTOR vObjectPos, vRenderPos;
+            orxFLOAT  fObjectScaleX, fObjectScaleY, fObjectRotation, fScrollX, fScrollY;
+
+            /* Gets object */
+            pstObject = pstRenderNode->pstObject;
+
+            /* Gets object's position */
+            orxVector_Copy(&vObjectPos, &(pstRenderNode->vPosition));
+            
+            /* Gets object's frame */
+            pstFrame = (orxFRAME *)orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_FRAME);
+
+            /* Gets object's scales */
+            orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &fObjectScaleX, &fObjectScaleY);
+
+            /* Gets object's rotation */
+            fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
+
+            /* Uses differential scrolling? */
+            if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
+            && (vObjectPos.fZ > vCameraUL.fZ))
+            {
+              orxREGISTER orxFLOAT fScroll;
+
+              /* Gets scroll coefficient */
+              fScroll = (vCameraBR.fZ - vCameraUL.fZ) / (vObjectPos.fZ - vCameraUL.fZ);
+
+              /* Gets differential scrolling values */
+              fScrollX = (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE) ? fScroll : orxFLOAT_1;
+              fScrollY = (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_Y) != orxFALSE) ? fScroll : orxFLOAT_1;
+            }
+            else
+            {
+              /* No differential scrolling */
+              fScrollX = fScrollY = orxFLOAT_1;
+            }
+
+            /* Gets render position */
+            orxVector_Sub(&vRenderPos, &vObjectPos, &vCameraUL);
+            vRenderPos.fX  *= fRenderScaleX * fScrollX;
+            vRenderPos.fY  *= fRenderScaleY * fScrollY;
+            orxVector_Add(&vRenderPos, &vRenderPos, &vViewportUL);
+
+            /* Updates render frame */
+            orxFrame_SetPosition(pstRenderFrame, &vRenderPos);
+            orxFrame_SetRotation(pstRenderFrame, fObjectRotation - fRenderRotation);
+            orxFrame_SetScale(pstRenderFrame, fRenderScaleX * fObjectScaleX, fRenderScaleY * fObjectScaleY);
+
+            /* Renders it */
+            if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame) != orxSTATUS_SUCCESS)
+            {
+              /* Prints error message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p / orxBITMAP %p] couldn't be rendered.", pstObject, pstBitmap);
+            }
+          }
+
+          /* Cleans rendering bank */
+          orxBank_Clear(sstRender.pstRenderBank);
+
+          /* Cleans rendering list */
+          orxMemory_Set(&(sstRender.stRenderList), 0, sizeof(orxLINKLIST));
 
           /* Deletes rendering frame */
           orxFrame_Delete(pstRenderFrame);
@@ -443,14 +523,29 @@ orxSTATUS orxRender_Init()
     /* Cleans static controller */
     orxMemory_Set(&sstRender, 0, sizeof(orxRENDER_STATIC));
 
-    /* Creates rendering clock */
-    sstRender.pstClock = orxClock_Create(orxRENDER_KU32_TICK_SIZE, orxCLOCK_TYPE_CORE);
+    /* Creates rendering bank */
+    sstRender.pstRenderBank = orxBank_Create(orxRENDER_KU32_ORDER_BANK_SIZE, sizeof(orxRENDER_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
-    if(sstRender.pstClock != orxNULL)
-    {  
-      /* Registers rendering function */
-      eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER);
+    if(sstRender.pstRenderBank != orxNULL)
+    {
+      /* Creates rendering clock */
+      sstRender.pstClock = orxClock_Create(orxRENDER_KU32_TICK_SIZE, orxCLOCK_TYPE_CORE);
+
+      /* Valid? */
+      if(sstRender.pstClock != orxNULL)
+      {
+        /* Registers rendering function */
+        eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER);
+      }
+      else
+      {
+        /* Deletes bank */
+        orxBank_Delete(sstRender.pstRenderBank);
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
     else
     {
@@ -493,6 +588,9 @@ orxVOID orxRender_Exit()
 
     /* Deletes rendering clock */
     orxClock_Delete(sstRender.pstClock);
+
+    /* Deletes rendering bank */
+    orxBank_Delete(sstRender.pstRenderBank);
 
     /* Updates flags */
     sstRender.u32Flags &= ~orxRENDER_KU32_STATIC_FLAG_READY;
