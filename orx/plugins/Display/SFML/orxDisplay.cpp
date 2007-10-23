@@ -295,8 +295,9 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
     fBottom                     = orxS2F(oClippingRectangle.Bottom) / poSprite->GetScaleY();
     oClippingRectangle.Bottom   = orxF2S(fBottom);
 
+    //! TODO : Fixme : acceleration when scrolling out on left!!!
     /* Updates sprite sub-rectangle */
-    poSprite->SetSubRect(oClippingRectangle);
+//    poSprite->SetSubRect(oClippingRectangle);
   }
 
   /* Draws it */
@@ -456,10 +457,10 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     orxMemory_Set(&sstDisplay, 0, sizeof(orxDISPLAY_STATIC));
 
     /* Inits rendering window */
-    sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fixed);
+    sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fullscreen);
 
     /* Waits for vertical sync */
-    sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);
+    sstDisplay.poRenderWindow->UseVerticalSync(orxFALSE);
 
     /* Updates status */
     sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY;

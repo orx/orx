@@ -386,7 +386,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
 
             /* Gets object's position */
             orxVector_Copy(&vObjectPos, &(pstRenderNode->vPosition));
-            
+
             /* Gets object's frame */
             pstFrame = (orxFRAME *)orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_FRAME);
 

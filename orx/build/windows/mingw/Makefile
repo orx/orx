@@ -264,6 +264,11 @@ BOUNCE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 BOUNCE_OBJECTS =  \
 	.\build\$(BUILD)\Bounce_orxBounce.o
+SCROLL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+SCROLL_OBJECTS =  \
+	.\build\$(BUILD)\Scroll_orxScroll.o
 
 ### Conditionally set variables: ###
 
@@ -373,6 +378,9 @@ endif
 ifeq ($(USE_PLUGINS),1)
 __Bounce___depname = ..\..\..\bin\plugins\demo\Bounce.dll
 endif
+ifeq ($(USE_PLUGINS),1)
+__Scroll___depname = ..\..\..\bin\plugins\demo\Scroll.dll
+endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
 endif
@@ -417,7 +425,7 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Bounce___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Bounce___depname) $(__Scroll___depname)
 
 clean: 
 	-if exist .\build\$(BUILD)\*.o del .\build\$(BUILD)\*.o
@@ -446,6 +454,7 @@ clean:
 	-if exist ..\..\..\bin\plugins\core\file\File_LibC.dll del ..\..\..\bin\plugins\core\file\File_LibC.dll
 	-if exist ..\..\..\bin\plugins\core\time\Time_SDL.dll del ..\..\..\bin\plugins\core\time\Time_SDL.dll
 	-if exist ..\..\..\bin\plugins\demo\Bounce.dll del ..\..\..\bin\plugins\demo\Bounce.dll
+	-if exist ..\..\..\bin\plugins\demo\Scroll.dll del ..\..\..\bin\plugins\demo\Scroll.dll
 
 ifeq ($(LINK),dynamic)
 ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll: $(ORXDLL_OBJECTS)
@@ -574,6 +583,11 @@ endif
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\demo\Bounce.dll: $(BOUNCE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
+endif
+
+ifeq ($(USE_PLUGINS),1)
+..\..\..\bin\plugins\demo\Scroll.dll: $(SCROLL_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)   ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a
 endif
 
 .\build\$(BUILD)\orxDLL_orxAnim.o: ../../../src/anim/orxAnim.c
@@ -884,6 +898,9 @@ endif
 
 .\build\$(BUILD)\Bounce_orxBounce.o: ../../../plugins/Demo/orxBounce.c
 	$(CC) -c -o $@ $(BOUNCE_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\Scroll_orxScroll.o: ../../../plugins/Demo/orxScroll.c
+	$(CC) -c -o $@ $(SCROLL_CFLAGS) $(CPPDEPS) $<
 
 .PHONY: all clean
 
