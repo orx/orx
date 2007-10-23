@@ -256,7 +256,8 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, or
 extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc,  orxCONST orxS32 _s32PosX, orxS32 _s32PosY)
 {
   sf::Sprite *poSprite;
-  sf::IntRect oClippingRectangle;
+  sf::IntRect oClippingRectangle, oSpriteRectangle;
+  orxFLOAT    fRight, fBottom;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -270,9 +271,30 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   poSprite->SetLeft(orxS2F(_s32PosX));
   poSprite->SetTop(orxS2F(_s32PosY));
 
+  /* Gets sprite rectangle */
+  oSpriteRectangle = poSprite->GetSubRect();
+
+  /* Updates it */
+  oSpriteRectangle.Left    += _s32PosX;
+  oSpriteRectangle.Top     += _s32PosY;
+  fRight                    = orxS2F(oSpriteRectangle.Right) * poSprite->GetScaleX();
+  oSpriteRectangle.Right    = orxF2S(fRight) + _s32PosX;
+  fBottom                   = orxS2F(oSpriteRectangle.Bottom) * poSprite->GetScaleY();
+  oSpriteRectangle.Bottom   = orxF2S(fBottom) + _s32PosY;
+
   /* Gets clipping coordinates */
-  if(sstDisplay.oScreenRectangle.Intersects(poSprite->GetSubRect(), &oClippingRectangle) != orxFALSE)
+  if(sstDisplay.oScreenRectangle.Intersects(oSpriteRectangle, &oClippingRectangle) != orxFALSE)
   {
+    /* Updates clipping rectangle */
+    oClippingRectangle.Left    -= _s32PosX;
+    oClippingRectangle.Top     -= _s32PosY;
+    oClippingRectangle.Right   -= _s32PosX;
+    fRight                      = orxS2F(oClippingRectangle.Right) / poSprite->GetScaleX();
+    oClippingRectangle.Right    = orxF2S(fRight);
+    oClippingRectangle.Bottom  -= _s32PosY;
+    fBottom                     = orxS2F(oClippingRectangle.Bottom) / poSprite->GetScaleY();
+    oClippingRectangle.Bottom   = orxF2S(fBottom);
+
     /* Updates sprite sub-rectangle */
     poSprite->SetSubRect(oClippingRectangle);
   }
@@ -310,7 +332,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   poSprite->SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
 
   /* Blits it */
-  eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->s32DstX - _pstTransform->s32SrcX, _pstTransform->s32DstY - _pstTransform->s32SrcY);
+  eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->s32DstX - orxF2S(_pstTransform->fScaleX * orxS2F(_pstTransform->s32SrcX)), _pstTransform->s32DstY - orxF2S(_pstTransform->fScaleY * orxS2F(_pstTransform->s32SrcY)));
 
   /* Done! */
   return eResult;
