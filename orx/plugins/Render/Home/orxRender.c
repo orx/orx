@@ -170,8 +170,8 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       orxBITMAP_TRANSFORM stTransform;
 
       /* Sets transformation values */
-      stTransform.s32SrcX   = orxF2S(vPivot.fX);
-      stTransform.s32SrcY   = orxF2S(vPivot.fY);
+      stTransform.s32SrcX   = fScaleX * orxF2S(vPivot.fX);
+      stTransform.s32SrcY   = fScaleY * orxF2S(vPivot.fY);
       stTransform.s32DstX   = orxF2S(vPosition.fX);
       stTransform.s32DstY   = orxF2S(vPosition.fY);
       stTransform.fScaleX   = fScaleX;
@@ -355,8 +355,17 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                       }
                     }
 
-                    /* Adds it before found node */
-                    orxLinkList_AddBefore(pstNode, (orxLINKLIST_NODE *)pstRenderNode);
+                    /* End of list reached? */
+                    if(pstNode == orxNULL)
+                    {
+                      /* Adds it at end */
+                      orxLinkList_AddEnd(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
+                    }
+                    else
+                    {
+                      /* Adds it before found node */
+                      orxLinkList_AddBefore(pstNode, (orxLINKLIST_NODE *)pstRenderNode);
+                    }
                   }
                 }
               }
