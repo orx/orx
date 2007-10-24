@@ -35,6 +35,7 @@
 #define orxSCROLL_KZ_BACKGROUND_NAME          "background.png"
 #define orxSCROLL_KU32_WAVE_FRAME_NUMBER      4
 #define orxSCROLL_KF_WAVE_ANGULAR_VELOCITY    (orx2F(0.0004f) * orxMATH_KF_PI)
+#define orxSCROLL_KF_WAVE_PHASIS              (orx2F(2.0f) * orxMATH_KF_PI / orx2F(orxSCROLL_KU32_WAVE_FRAME_NUMBER))
 
 
 /***************************************************************************
@@ -107,21 +108,21 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
 {
     {
         "fuji.png",
-        {orx2F(0.0f), orx2F(1.0f), orx2F(0.9f)},
+        {orx2F(0.0f), orx2F(1.1f), orx2F(0.9f)},
         {orx2F(11.0f), orx2F(1.3f), orx2F(1.0f)},
         80
     },
     {
-        "canyon1.png",
+        "boat1.png",
         {orx2F(0.0f), orx2F(1.0f), orx2F(0.6f)},
-        {orx2F(11.0f), orx2F(1.3f), orx2F(0.8f)},
+        {orx2F(11.0f), orx2F(1.25f), orx2F(0.8f)},
         15
     },
     {
-        "canyon2.png",
+        "boat2.png",
         {orx2F(0.0f), orx2F(1.0f), orx2F(0.2f)},
-        {orx2F(11.0f), orx2F(1.4f), orx2F(0.5f)},
-        30
+        {orx2F(11.0f), orx2F(1.15f), orx2F(0.5f)},
+        20
     },
     {
         "cloud.png",
@@ -148,7 +149,7 @@ orxSTATIC orxINLINE orxFLOAT orxScroll_Random(orxFLOAT _fMin, orxFLOAT _fMax)
 
   /* Gets random number */
   fResult = orx2F(rand()) * (orx2F(1.0f) / orx2F(RAND_MAX));
-  fResult = _fMin + fResult * (_fMax - _fMin);
+  fResult = (fResult * (_fMax - _fMin)) + _fMin;
 
   /* Done! */
   return fResult;
@@ -209,7 +210,7 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     orxFrame_GetPosition(sstScroll.apstWaveFrame[i], orxFRAME_SPACE_LOCAL, &vPos);
 
     /* Updates its Y coordinate along a sine with initial phasis */
-    vPos.fY = sstScroll.fWaveAmplitude * sinf((orxU2F(i) * orxMATH_KF_PI / orx2F(orxSCROLL_KU32_WAVE_FRAME_NUMBER)) + (orxSCROLL_KF_WAVE_ANGULAR_VELOCITY * orxU2F(_pstClockInfo->u32Time)));
+    vPos.fY = sstScroll.fWaveAmplitude * sinf((orxU2F(i) * orxSCROLL_KF_WAVE_PHASIS) + (orxSCROLL_KF_WAVE_ANGULAR_VELOCITY * orxU2F(_pstClockInfo->u32Time)));
 
     /* Applies it */
     orxFrame_SetPosition(sstScroll.apstWaveFrame[i], &vPos);
@@ -268,9 +269,6 @@ orxSTATIC orxSTATUS orxScroll_Init()
 
       /* Inits pivot */
       orxVector_Set(&vPivot, orxFLOAT_0, fHeight, orxFLOAT_0); 
-
-      /* Sets it transparent color */
-      orxDisplay_SetBitmapColorKey(orxTexture_GetBitmap(sstScroll.astData[i].pstTexture), orx2RGBA(0xFF, 0x40, 0xFF, 0x00), orxTRUE);
 
       /* Creates & inits 2D graphic objet from texture */
       sstScroll.astData[i].pstGraphic = orxGraphic_Create();
