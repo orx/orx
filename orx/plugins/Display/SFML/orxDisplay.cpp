@@ -150,6 +150,9 @@ extern "C" orxBITMAP *orxDisplay_SFML_CreateBitmap(orxU32 _u32Width, orxU32 _u32
   /* Creates image */
   poImage = new sf::Image(_u32Width, _u32Height);
 
+  /* Deactivates smoothing */
+  poImage->SetSmooth(orxFALSE);
+
   /* Creates sprite using the new image */
   poSprite = new sf::Sprite(*poImage);
 
@@ -431,6 +434,9 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
   if(poImage->LoadFromFile(_zFilename) != orxFALSE)
   {
     sf::Sprite *poSprite;
+
+    /* Deactivates smoothing */
+    poImage->SetSmooth(orxFALSE);
 
     /* Creates a sprite from it */
     poSprite = new sf::Sprite(*poImage);
