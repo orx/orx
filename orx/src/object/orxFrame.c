@@ -414,8 +414,8 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
     fCoef         = orxFABS(fCoef) * (orxFLOAT_1 / orxMATH_KF_PI_BY_2);
 
     /* Updates scales */
-    fScaleX       = fLocalScaleX * fCoef * fParentScaleX;
-    fScaleY       = fLocalScaleY * (orxFLOAT_1 - fCoef) * fParentScaleY;
+    fScaleX       = fLocalScaleX * ((fCoef * fParentScaleX) + ((orxFLOAT_1 - fCoef) * fParentScaleY));
+    fScaleY       = fLocalScaleY * ((fCoef * fParentScaleY) + ((orxFLOAT_1 - fCoef) * fParentScaleX));
 
     /* Updates coord */
     /* Gets needed orxFLOAT values for rotation & scale applying */

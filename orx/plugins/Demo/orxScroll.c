@@ -29,7 +29,12 @@
 
 /** Defines
  */
-#define orxSCROLL_KU32_TICK_SIZE              10
+#define orxSCROLL_KU32_TICK_SIZE              1
+#define orxSCROLL_KF_MAX_Z                    orx2F(10000.0f)
+#define orxSCROLL_KF_SPEED                    orx2F(100.0f)
+#define orxSCROLL_KZ_BACKGROUND_NAME          "background.png"
+#define orxSCROLL_KU32_WAVE_FRAME_NUMBER      4
+#define orxSCROLL_KF_WAVE_ANGULAR_VELOCITY    (orx2F(0.0004f) * orxMATH_KF_PI)
 
 
 /***************************************************************************
@@ -58,6 +63,7 @@ typedef struct __orxSCROLL_RESOURCE_INFO_t
 {
   orxSTRING zFileName;
   orxVECTOR vMin, vMax;
+  orxU32    u32Number;
 
 } orxSCROLL_RESOURCE_INFO;
 
@@ -76,11 +82,13 @@ typedef struct __orxSCROLL_STATIC_t
 {
   orxCLOCK                 *pstClock;
   orxCAMERA                *pstCamera;
+  orxOBJECT                *pstBackgroundObject;
   orxVIEWPORT              *pstViewport;
+  orxFRAME                 *apstWaveFrame[orxSCROLL_KU32_WAVE_FRAME_NUMBER];
 
   orxSCROLL_RESOURCE_DATA   astData[orxSCROLL_RESOURCE_NUMBER];
 
-  orxFLOAT                  fScreenWidth, fScreenHeight, fScrollSpeed;
+  orxFLOAT                  fScreenWidth, fScreenHeight, fScrollSpeed, fViewportSize, fWaveAmplitude;
 
 } orxSCROLL_STATIC;
 
@@ -99,28 +107,33 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
 {
     {
         "fuji.png",
-        {orx2F(0.0f), orx2F(600.0f), orx2F(100.0f)},
-        {orx2F(10000.0f), orx2F(900.0f), orx2F(200.0f)}
+        {orx2F(0.0f), orx2F(1.0f), orx2F(0.9f)},
+        {orx2F(11.0f), orx2F(1.3f), orx2F(1.0f)},
+        80
     },
     {
         "canyon1.png",
-        {orx2F(0.0f), orx2F(600.0f), orx2F(100.0f)},
-        {orx2F(10000.0f), orx2F(650.0f), orx2F(200.0f)}
+        {orx2F(0.0f), orx2F(1.0f), orx2F(0.6f)},
+        {orx2F(11.0f), orx2F(1.3f), orx2F(0.8f)},
+        15
     },
     {
         "canyon2.png",
-        {orx2F(0.0f), orx2F(600.0f), orx2F(100.0f)},
-        {orx2F(10000.0f), orx2F(750.0f), orx2F(200.0f)}
+        {orx2F(0.0f), orx2F(1.0f), orx2F(0.2f)},
+        {orx2F(11.0f), orx2F(1.4f), orx2F(0.5f)},
+        30
     },
     {
         "cloud.png",
-        {orx2F(0.0f), orx2F(50.0f), orx2F(100.0f)},
-        {orx2F(10000.0f), orx2F(300.0f), orx2F(200.0f)}
+        {orx2F(0.0f), orx2F(0.1f), orx2F(0.2f)},
+        {orx2F(11.0f), orx2F(0.7f), orx2F(0.7f)},
+        70
     },
     {
         "wave.png",
-        {orx2F(0.0f), orx2F(600.0f), orx2F(100.0f)},
-        {orx2F(10000.0f), orx2F(800.0f), orx2F(200.0f)}
+        {orx2F(0.0f), orx2F(1.3f), orx2F(0.2f)},
+        {orx2F(11.0f), orx2F(1.6f), orx2F(0.8f)},
+        300
     }
 };
 
@@ -129,18 +142,78 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
  * Private functions                                                       *
  ***************************************************************************/
 
+orxSTATIC orxINLINE orxFLOAT orxScroll_Random(orxFLOAT _fMin, orxFLOAT _fMax)
+{
+  orxREGISTER orxFLOAT fResult;
+
+  /* Gets random number */
+  fResult = orx2F(rand()) * (orx2F(1.0f) / orx2F(RAND_MAX));
+  fResult = _fMin + fResult * (_fMax - _fMin);
+
+  /* Done! */
+  return fResult;
+}
+
 orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
-  orxFRAME *pstFrame;
   orxVECTOR vPos;
+  orxFLOAT  fDT;
+  orxU32    i;
 
-  pstFrame = orxCamera_GetFrame(sstScroll.pstCamera);
+  /* Gets DT */
+  fDT = orx2F(0.001f) * orxU2F(_pstClockInfo->u32StableDT);
 
-  orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPos);
+  /*** Viewport update ***/
 
-  vPos.fX += orx2F(.1f) * orxU2F(_pstClockInfo->u32StableDT);
-  
-  orxFrame_SetPosition(pstFrame, &vPos);
+  /* Not at full size? */
+  if(sstScroll.fViewportSize < orxFLOAT_1)
+  {
+    /* Updates it */
+    sstScroll.fViewportSize += fDT;
+
+    /* Clamps it */
+    sstScroll.fViewportSize = orxMIN(sstScroll.fViewportSize, orxFLOAT_1);
+
+    /* Applies it */
+    orxViewport_SetRelativeSize(sstScroll.pstViewport, sstScroll.fViewportSize, sstScroll.fViewportSize);
+
+    /* Maintains viewport alignment */
+    orxViewport_SetRelativePosition(sstScroll.pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_CENTER);
+  }
+
+  /*** Camera update ***/
+
+  /* Gets camera position */
+  orxCamera_GetPosition(sstScroll.pstCamera, &vPos);
+
+  /* Should reverse? */
+  if(((vPos.fX < sstScroll.fScreenWidth) && (sstScroll.fScrollSpeed < orxFLOAT_0))
+  || ((vPos.fX > orx2F(10.0f) * sstScroll.fScreenWidth) && (sstScroll.fScrollSpeed > orxFLOAT_0)))
+  {
+    /* Negates speed */
+    sstScroll.fScrollSpeed *= orx2F(-1.0f);
+  }
+
+  /* Updates position vector */
+  vPos.fX += sstScroll.fScrollSpeed * fDT;
+
+  /* Updates camera position */
+  orxCamera_SetPosition(sstScroll.pstCamera, &vPos);
+
+  /*** Updates waves ***/
+
+  /* For all main wave frames */
+  for(i = 0; i < orxSCROLL_KU32_WAVE_FRAME_NUMBER; i++)
+  {
+    /* Gets frame local position */
+    orxFrame_GetPosition(sstScroll.apstWaveFrame[i], orxFRAME_SPACE_LOCAL, &vPos);
+
+    /* Updates its Y coordinate along a sine with initial phasis */
+    vPos.fY = sstScroll.fWaveAmplitude * sinf((orxU2F(i) * orxMATH_KF_PI / orx2F(orxSCROLL_KU32_WAVE_FRAME_NUMBER)) + (orxSCROLL_KF_WAVE_ANGULAR_VELOCITY * orxU2F(_pstClockInfo->u32Time)));
+
+    /* Applies it */
+    orxFrame_SetPosition(sstScroll.apstWaveFrame[i], &vPos);
+  }
 
   return;
 }
@@ -158,6 +231,24 @@ orxSTATIC orxSTATUS orxScroll_Init()
   sstScroll.fScreenWidth  = orxU2F(u32ScreenWidth);
   sstScroll.fScreenHeight = orxU2F(u32ScreenHeight);
 
+  /* Inits wave amplitude */
+  sstScroll.fWaveAmplitude = orx2F(0.8f) * sstScroll.fScreenHeight * (sastInfo[orxSCROLL_RESOURCE_WAVE].vMax.fY - sastInfo[orxSCROLL_RESOURCE_WAVE].vMin.fY);
+
+  /* Creates main wave frame */
+  for(i = 0; i < orxSCROLL_KU32_WAVE_FRAME_NUMBER; i++)
+  {
+    orxVECTOR vPos;
+
+    /* Creates frame */
+    sstScroll.apstWaveFrame[i] = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+    /* Inits position vector */
+    orxVector_Set(&vPos, orxFLOAT_0, (orx2F(i) / orx2F(orxSCROLL_KU32_WAVE_FRAME_NUMBER)) * sstScroll.fWaveAmplitude, orxFLOAT_0);
+
+    /* Updates its position */
+    orxFrame_SetPosition(sstScroll.apstWaveFrame[i], &vPos);
+  }
+  
   /* For all resources */
   for(i = 0; i < orxSCROLL_RESOURCE_NUMBER; i++)
   {
@@ -187,17 +278,30 @@ orxSTATIC orxSTATUS orxScroll_Init()
       orxGraphic_SetPivot(sstScroll.astData[i].pstGraphic, &vPivot);
     }
 
-    for(j = 0; j < 10; j++)
+    /* For all requested instances */
+    for(j = 0; j < sastInfo[i].u32Number; j++)
     {
       orxVECTOR   vPos;
       orxOBJECT  *pstObject;
       orxFRAME   *pstFrame;
 
       /* Inits position */
-      orxVector_Set(&vPos, orxU2F(j) * orx2F(1000.0f), sstScroll.fScreenHeight, orx2F(10.0f) - orxU2F(i << 1));
+      orxVector_Set(&vPos,
+                    sstScroll.fScreenWidth * orxScroll_Random(sastInfo[i].vMin.fX, sastInfo[i].vMax.fX),
+                    sstScroll.fScreenHeight * orxScroll_Random(sastInfo[i].vMin.fY, sastInfo[i].vMax.fY),
+                    orxSCROLL_KF_MAX_Z * orxScroll_Random(sastInfo[i].vMin.fZ, sastInfo[i].vMax.fZ));
 
-      /* Creates & inits frame  with X differential scrolling */
+      /* Creates frame with X differential scrolling */
       pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_SCROLL_X);
+
+      /* Are we creating waves? */
+      if(i == orxSCROLL_RESOURCE_WAVE)
+      {
+        /* Sets one of the main wave frame as parent */
+        orxFrame_SetParent(pstFrame, sstScroll.apstWaveFrame[j % orxSCROLL_KU32_WAVE_FRAME_NUMBER]);
+      }
+
+      /* Updates frame position */
       orxFrame_SetPosition(pstFrame, &vPos);
 
       /* Creates & inits object */
@@ -210,20 +314,24 @@ orxSTATIC orxSTATUS orxScroll_Init()
   /* Success? */
   if(i == orxSCROLL_RESOURCE_NUMBER)
   {
-    orxVECTOR vCameraUL, vCameraBR;
+    orxVECTOR   vCameraUL, vCameraBR;
+    orxTEXTURE *pstBackgroundTexture;
 
     /* Inits camera vectors */
     orxVector_Set(&vCameraUL, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
-    orxVector_Set(&vCameraBR, sstScroll.fScreenWidth, sstScroll.fScreenHeight, orx2F(10.0f));
+    orxVector_Set(&vCameraBR, sstScroll.fScreenWidth, sstScroll.fScreenHeight, orxSCROLL_KF_MAX_Z);
 
     /* Creates & inits camera */
     sstScroll.pstCamera = orxCamera_Create();
     orxCamera_SetFrustrum(sstScroll.pstCamera, &vCameraUL, &vCameraBR);
 
+    /* Sets camera speed */
+    sstScroll.fScrollSpeed = orxSCROLL_KF_SPEED;
+    
     /* Creates & inits viewport on screen */
     sstScroll.pstViewport = orxViewport_Create();
     orxViewport_SetCamera(sstScroll.pstViewport, sstScroll.pstCamera);
-    orxViewport_SetRelativeSize(sstScroll.pstViewport, 1.0f, 1.0f);
+    orxViewport_SetRelativeSize(sstScroll.pstViewport, 0.01f, 0.01f);
     orxViewport_SetRelativePosition(sstScroll.pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_CENTER);
 
     /* Creates rendering clock */
@@ -231,6 +339,43 @@ orxSTATIC orxSTATUS orxScroll_Init()
 
     /* Registers update function */
     eResult = orxClock_Register(sstScroll.pstClock, orxScroll_Update, orxNULL, orxMODULE_ID_MAIN);
+
+    /* Loads background texture */
+    pstBackgroundTexture = orxTexture_CreateFromFile(orxSCROLL_KZ_BACKGROUND_NAME);
+
+    /* Valid? */
+    if(pstBackgroundTexture != orxNULL)
+    {
+      orxVECTOR   vBackgroundPos;
+      orxFRAME   *pstBackgroundFrame;
+      orxGRAPHIC *pstBackgroundGraphic;
+      orxFLOAT    fBackgroundWidth, fBackgroundHeight;
+
+      /* Gets texture size */
+      orxTexture_GetSize(pstBackgroundTexture, &fBackgroundWidth, &fBackgroundHeight);
+
+      /* Creates & inits 2D graphic objet from texture */
+      pstBackgroundGraphic = orxGraphic_Create();
+      orxGraphic_SetData(pstBackgroundGraphic, (orxSTRUCTURE *)pstBackgroundTexture);
+
+      /* Creates background frame */
+      pstBackgroundFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+      /* Links it to camera frame */
+      orxFrame_SetParent(pstBackgroundFrame, orxCamera_GetFrame(sstScroll.pstCamera));
+
+      /* Sets its local position */
+      orxVector_Set(&vBackgroundPos, orxFLOAT_0, orxFLOAT_0, orxSCROLL_KF_MAX_Z);
+      orxFrame_SetPosition(pstBackgroundFrame, &vBackgroundPos);
+
+      /* Sets its scale */
+      orxFrame_SetScale(pstBackgroundFrame, sstScroll.fScreenWidth / fBackgroundWidth, sstScroll.fScreenHeight / fBackgroundHeight);
+
+      /* Creates & inits object */
+      sstScroll.pstBackgroundObject = orxObject_Create();
+      orxObject_LinkStructure(sstScroll.pstBackgroundObject, (orxSTRUCTURE *)pstBackgroundGraphic);
+      orxObject_LinkStructure(sstScroll.pstBackgroundObject, (orxSTRUCTURE *)pstBackgroundFrame);
+    }
   }
 
   /* Done! */

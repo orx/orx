@@ -662,6 +662,48 @@ orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxU
   return;
 }
 
+/** Gets a viewport relative size
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[out]  _f32W           Relative width
+ * @param[out]  _f32H           Relative height
+ */
+orxVOID orxFASTCALL orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH)
+{
+  orxTEXTURE *pstTexture;
+  orxFLOAT    fTextureWidth, fTextureHeight;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+  orxASSERT(_pfW != orxNULL);
+  orxASSERT(_pfH != orxNULL);
+
+  /* Gets viewport texture */
+  pstTexture = orxViewport_GetTexture(_pstViewport);
+
+  /* Valid? */
+  if(pstTexture != orxNULL)
+  {
+    /* Gets texture size */
+    orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
+
+    /* Gets relative size */
+    *_pfW = orxU2F(_pstViewport->u32Width) / fTextureWidth;
+    *_pfH = orxU2F(_pstViewport->u32Height) / fTextureHeight;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Empties result */
+    *_pfW = orxFLOAT_0;
+    *_pfH = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Gets a viewport clipping
  * @param[in]   _pstViewport    Concerned viewport
  * @param[out]  _pu32TLX        X coordinate of top left corner

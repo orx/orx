@@ -164,6 +164,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetRelativeSize(orxVIE
  */
 extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxU32 *_pu32W, orxU32 *_pu32H);
 
+/** Gets a viewport relative size
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[out]  _f32W           Relative width
+ * @param[out]  _f32H           Relative height
+ */
+extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH);
+
 /** Gets a viewport clipping
  * @param[in]   _pstViewport    Concerned viewport
  * @param[out]  _pu32TLX        X coordinate of top left corner

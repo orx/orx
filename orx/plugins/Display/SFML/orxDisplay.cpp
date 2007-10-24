@@ -43,6 +43,7 @@ extern "C"
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000 /**< No flags */
 
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001 /**< Ready flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC       0x00000002 /**< Ready flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
@@ -211,10 +212,54 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
   //! TEMP : Until orx events are ready
   while(sstDisplay.poRenderWindow->GetEvent(oEvent))
   {
-    // Should close?
-    if(oEvent.Type == sf::Event::Close)
+    /* Depending on type */
+    switch(oEvent.Type)
     {
-      exit(EXIT_SUCCESS);
+      case sf::Event::Close:
+      {
+        /* Exits */
+        exit(EXIT_SUCCESS);
+
+        break;
+      }
+
+      case sf::Event::KeyPressed:
+      {
+        /* Depending on key */
+        switch(oEvent.Key.Code)
+        {
+          case sf::Key::Escape:
+          {
+            /* Exits */
+            exit(EXIT_SUCCESS);
+
+            break;
+          }
+
+          case sf::Key::V:
+          {
+            /* Updates VSync flag */
+            sstDisplay.u32Flags ^= orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
+
+            /* Updates VSync use */
+            sstDisplay.poRenderWindow->UseVerticalSync((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? orxTRUE : orxFALSE);
+
+            break;
+          }
+
+          default:
+          {
+            break;
+          }
+        }
+
+        break;
+      }
+
+      default:
+      {
+        break;
+      }
     }
   }
 
@@ -257,7 +302,7 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
 {
   sf::Sprite *poSprite;
   sf::IntRect oClippingRectangle, oSpriteRectangle;
-  orxFLOAT    fRight, fBottom;
+  orxFLOAT    fLeft, fTop, fRight, fBottom, fInvScaleX, fInvScaleY;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -267,44 +312,51 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   /* Gets sprite */
   poSprite = (sf::Sprite *)_pstSrc;
 
-  /* Updates its position */
-  poSprite->SetLeft(orxS2F(_s32PosX));
-  poSprite->SetTop(orxS2F(_s32PosY));
-
   /* Gets sprite rectangle */
   oSpriteRectangle = poSprite->GetSubRect();
 
   /* Updates it */
   oSpriteRectangle.Left    += _s32PosX;
   oSpriteRectangle.Top     += _s32PosY;
-  fRight                    = orxS2F(oSpriteRectangle.Right) * poSprite->GetScaleX();
+  fRight                    = orxS2F(oSpriteRectangle.Right) * orx2F(poSprite->GetScaleX());
   oSpriteRectangle.Right    = orxF2S(fRight) + _s32PosX;
-  fBottom                   = orxS2F(oSpriteRectangle.Bottom) * poSprite->GetScaleY();
+  fBottom                   = orxS2F(oSpriteRectangle.Bottom) * orx2F(poSprite->GetScaleY());
   oSpriteRectangle.Bottom   = orxF2S(fBottom) + _s32PosY;
 
   /* Gets clipping coordinates */
   if(sstDisplay.oScreenRectangle.Intersects(oSpriteRectangle, &oClippingRectangle) != orxFALSE)
   {
+    /* Gets scale inv */
+    fInvScaleX = orxFLOAT_1 / orx2F(poSprite->GetScaleX());
+    fInvScaleY = orxFLOAT_1 / orx2F(poSprite->GetScaleY());
+
+    /* Updates its position */
+    poSprite->SetLeft(orxS2F(oClippingRectangle.Left));
+    poSprite->SetTop(orxS2F(oClippingRectangle.Top));
+
     /* Updates clipping rectangle */
     oClippingRectangle.Left    -= _s32PosX;
+    fLeft                       = orxS2F(oClippingRectangle.Left) * fInvScaleX;
+    oClippingRectangle.Left     = orxF2S(fLeft);
     oClippingRectangle.Top     -= _s32PosY;
+    fTop                        = orxS2F(oClippingRectangle.Top) * fInvScaleY;
+    oClippingRectangle.Top      = orxF2S(fTop);
     oClippingRectangle.Right   -= _s32PosX;
-    fRight                      = orxS2F(oClippingRectangle.Right) / poSprite->GetScaleX();
+    fRight                      = orxS2F(oClippingRectangle.Right) * fInvScaleX;
     oClippingRectangle.Right    = orxF2S(fRight);
     oClippingRectangle.Bottom  -= _s32PosY;
-    fBottom                     = orxS2F(oClippingRectangle.Bottom) / poSprite->GetScaleY();
+    fBottom                     = orxS2F(oClippingRectangle.Bottom) * fInvScaleY;
     oClippingRectangle.Bottom   = orxF2S(fBottom);
 
-    //! TODO : Fixme : acceleration when scrolling out on left!!!
     /* Updates sprite sub-rectangle */
-//    poSprite->SetSubRect(oClippingRectangle);
+    poSprite->SetSubRect(oClippingRectangle);
+
+    /* Draws it */
+    sstDisplay.poRenderWindow->Draw(*poSprite);
+
+    /* Resets sprite sub-rectangle */
+    poSprite->SetSubRect(sf::IntRect(0, 0, poSprite->GetImage()->GetWidth(), poSprite->GetImage()->GetHeight()));
   }
-
-  /* Draws it */
-  sstDisplay.poRenderWindow->Draw(*poSprite);
-
-  /* Resets sprite sub-rectangle */
-  poSprite->SetSubRect(sf::IntRect(0, 0, poSprite->GetImage()->GetWidth(), poSprite->GetImage()->GetHeight()));
 
   /* Done! */
   return eResult;
@@ -457,13 +509,13 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     orxMemory_Set(&sstDisplay, 0, sizeof(orxDISPLAY_STATIC));
 
     /* Inits rendering window */
-    sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fullscreen);
+    sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fixed);
 
     /* Waits for vertical sync */
-    sstDisplay.poRenderWindow->UseVerticalSync(orxFALSE);
+    sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);
 
     /* Updates status */
-    sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY;
+    sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY | orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
   }
 
   /* Done! */
