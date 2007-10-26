@@ -30,8 +30,6 @@ extern "C"
 #include "math/orxMath.h"
 #include "plugin/orxPluginUser.h"
 
-#include "msg/msg_graph.h"
-
 #include "display/orxDisplay.h"
 }
 

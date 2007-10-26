@@ -143,18 +143,6 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATIC orxINLINE orxFLOAT orxScroll_Random(orxFLOAT _fMin, orxFLOAT _fMax)
-{
-  orxREGISTER orxFLOAT fResult;
-
-  /* Gets random number */
-  fResult = orx2F(rand()) * (orx2F(1.0f) / orx2F(RAND_MAX));
-  fResult = (fResult * (_fMax - _fMin)) + _fMin;
-
-  /* Done! */
-  return fResult;
-}
-
 orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   orxVECTOR vPos;
@@ -285,9 +273,9 @@ orxSTATIC orxSTATUS orxScroll_Init()
 
       /* Inits position */
       orxVector_Set(&vPos,
-                    sstScroll.fScreenWidth * orxScroll_Random(sastInfo[i].vMin.fX, sastInfo[i].vMax.fX),
-                    sstScroll.fScreenHeight * orxScroll_Random(sastInfo[i].vMin.fY, sastInfo[i].vMax.fY),
-                    orxSCROLL_KF_MAX_Z * orxScroll_Random(sastInfo[i].vMin.fZ, sastInfo[i].vMax.fZ));
+                    sstScroll.fScreenWidth * orxFRAND(sastInfo[i].vMin.fX, sastInfo[i].vMax.fX),
+                    sstScroll.fScreenHeight * orxFRAND(sastInfo[i].vMin.fY, sastInfo[i].vMax.fY),
+                    orxSCROLL_KF_MAX_Z * orxFRAND(sastInfo[i].vMin.fZ, sastInfo[i].vMax.fZ));
 
       /* Creates frame with X differential scrolling */
       pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_SCROLL_X);

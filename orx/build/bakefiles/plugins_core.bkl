@@ -215,6 +215,12 @@
       <sources>plugins/Time/SDL/orxTime.c</sources>
     </orx-plugin>
 
+  <!-- Depends on SFML -->
+  <orx-plugin id="Time_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+    <category>core/time</category>
+      <sources>plugins/Time/SFML/orxTime.cpp</sources>
+  </orx-plugin> -->
+
   <!-- BOUNCE DEMO -->
 
   <!-- Depends on nothing -->
