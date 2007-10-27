@@ -172,6 +172,12 @@
       <sources>plugins/Sound/Fmod/orxSound.c</sources>
     </orx-plugin>
 
+  <!-- Depends on SFML -->
+  <orx-plugin id="Sound_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+    <category>core/sound</category>
+      <sources>plugins/Sound/SFML/orxSound.cpp</sources>
+  </orx-plugin> -->
+
   <!-- MOUSE -->
 
 	<!-- Depends on allegro -->

@@ -233,6 +233,11 @@ SOUND_FMOD_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 SOUND_FMOD_OBJECTS =  \
 	.\build\$(BUILD)\Sound_Fmod_orxSound.o
+SOUND_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
+	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I..\..\..\include -D__orxDLL__ $(CPPFLAGS) $(CXXFLAGS)
+SOUND_SFML_OBJECTS =  \
+	.\build\$(BUILD)\Sound_SFML_orxSound.o
 MOUSE_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
@@ -356,6 +361,11 @@ ifeq ($(USE_PLUGINS),1)
 __Sound_Fmod___depname = ..\..\..\bin\plugins\core\sound\Sound_Fmod.dll
 endif
 endif
+ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+__Sound_SFML___depname = ..\..\..\bin\plugins\core\sound\Sound_SFML.dll
+endif
+endif
 ifeq ($(USE_ALLEGRO),1)
 ifeq ($(USE_PLUGINS),1)
 __Mouse_Allegro___depname = \
@@ -435,7 +445,7 @@ all: .\build\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname)
 
 clean: 
 	-if exist .\build\$(BUILD)\*.o del .\build\$(BUILD)\*.o
@@ -458,6 +468,7 @@ clean:
 	-if exist ..\..\..\bin\plugins\core\display\Display_SFML.dll del ..\..\..\bin\plugins\core\display\Display_SFML.dll
 	-if exist ..\..\..\bin\plugins\core\render\Render_Home.dll del ..\..\..\bin\plugins\core\render\Render_Home.dll
 	-if exist ..\..\..\bin\plugins\core\sound\Sound_Fmod.dll del ..\..\..\bin\plugins\core\sound\Sound_Fmod.dll
+	-if exist ..\..\..\bin\plugins\core\sound\Sound_SFML.dll del ..\..\..\bin\plugins\core\sound\Sound_SFML.dll
 	-if exist ..\..\..\bin\plugins\core\mouse\Mouse_Allegro.dll del ..\..\..\bin\plugins\core\mouse\Mouse_Allegro.dll
 	-if exist ..\..\..\bin\plugins\core\keyboard\Keyboard_Allegro.dll del ..\..\..\bin\plugins\core\keyboard\Keyboard_Allegro.dll
 	-if exist ..\..\..\bin\plugins\core\joystick\Joystick_NONE.dll del ..\..\..\bin\plugins\core\joystick\Joystick_NONE.dll
@@ -557,6 +568,13 @@ ifeq ($(USE_FMOD),1)
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\core\sound\Sound_Fmod.dll: $(SOUND_FMOD_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(SOUND_FMOD_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a  -lfmod
+endif
+endif
+
+ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+..\..\..\bin\plugins\core\sound\Sound_SFML.dll: $(SOUND_SFML_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CXX) -shared -fPIC -o $@ $(SOUND_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxEXTRAFLAGS)     ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a ..\..\..\lib\$(__LINK_FILENAMES)\lib$(orxLIBNAME).a  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
 endif
 endif
 
@@ -898,6 +916,9 @@ endif
 
 .\build\$(BUILD)\Sound_Fmod_orxSound.o: ../../../plugins/Sound/Fmod/orxSound.c
 	$(CC) -c -o $@ $(SOUND_FMOD_CFLAGS) $(CPPDEPS) $<
+
+.\build\$(BUILD)\Sound_SFML_orxSound.o: ../../../plugins/Sound/SFML/orxSound.cpp
+	$(CXX) -c -o $@ $(SOUND_SFML_CXXFLAGS) $(CPPDEPS) $<
 
 .\build\$(BUILD)\Mouse_Allegro_orxMouse.o: ../../../plugins/Mouse/Allegro/orxMouse.c
 	$(CC) -c -o $@ $(MOUSE_ALLEGRO_CFLAGS) $(CPPDEPS) $<
