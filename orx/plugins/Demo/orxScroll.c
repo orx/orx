@@ -31,7 +31,7 @@
  */
 #define orxSCROLL_KU32_TICK_SIZE              1
 #define orxSCROLL_KF_MAX_Z                    orx2F(10000.0f)
-#define orxSCROLL_KF_SPEED                    orx2F(100.0f)
+#define orxSCROLL_KF_SPEED                    orx2F(150.0f)
 #define orxSCROLL_KZ_BACKGROUND_NAME          "background.png"
 #define orxSCROLL_KU32_WAVE_FRAME_NUMBER      4
 #define orxSCROLL_KF_WAVE_ANGULAR_VELOCITY    (orx2F(0.0004f) * orxMATH_KF_PI)
