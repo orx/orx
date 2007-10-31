@@ -516,10 +516,10 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fixed);
 
     /* Waits for vertical sync */
-    sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);
+    sstDisplay.poRenderWindow->UseVerticalSync(orxFALSE);
 
     /* Updates status */
-    sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY | orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
+    sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY;
   }
 
   /* Done! */
