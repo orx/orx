@@ -575,7 +575,7 @@ orxVOID orxFASTCALL orxTest_Start()
   if(sstTest.u32Flags & orxTEST_KU32_STATIC_FLAG_IN_USE)
   {
     /* Try to create the clock */
-    sstTest.pstClock = orxClock_Create(100, orxCLOCK_TYPE_CORE);
+    sstTest.pstClock = orxClock_Create(orx2F(0.1f), orxCLOCK_TYPE_CORE);
 
     /* Succesful? */
     if(sstTest.pstClock != orxNULL)

@@ -1892,20 +1892,21 @@ orxU32 orxFASTCALL orxAnimSet_GetLinkProperty(orxCONST orxANIMSET *_pstAnimSet, 
  * @param[in]		_pstAnimSet    											Concerned AnimSet
  * @param[in]   _hSrcAnim 													Source (current) Anim handle
  * @param[in]   _hDstAnim 													Destination Anim handle, if none (auto mode) set it to orxHANDLE_UNDEFINED
- * @param[in,out] _pu32Time  												Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
+ * @param[in,out] _pfTime  												  Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
  * @param[out]  _pstLinkTable 											Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
  * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
-orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxU32 *_pu32Time, orxANIMSET_LINK_TABLE *_pstLinkTable)
+orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
-  orxU32 u32Length, u32Anim;
-  orxHANDLE hResult = orxHANDLE_UNDEFINED;
-  orxANIMSET_LINK_TABLE *pstWorkTable;
+  orxU32                  u32Anim;
+  orxFLOAT                fLength;
+  orxHANDLE               hResult = orxHANDLE_UNDEFINED;
+  orxANIMSET_LINK_TABLE  *pstWorkTable;
 
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
-  orxASSERT(_pu32Time != orxNULL);
+  orxASSERT(_pfTime != orxNULL);
   orxASSERT((orxU32)_hSrcAnim < orxAnimSet_GetAnimCounter(_pstAnimSet));
   orxASSERT(((orxU32)_hDstAnim < orxAnimSet_GetAnimCounter(_pstAnimSet)) || (_hDstAnim == orxHANDLE_UNDEFINED));
 
@@ -1928,13 +1929,13 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
   if(orxAnimSet_ComputeLinkTable(pstWorkTable) == orxSTATUS_SUCCESS)
   {
     /* Gets current animation */
-    u32Anim   = (orxU32)_hSrcAnim;
+    u32Anim = (orxU32)_hSrcAnim;
   
     /* Gets current animation duration */
-    u32Length = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
+    fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
 
     /* Next animation? */
-    while(*_pu32Time > u32Length)
+    while(*_pfTime > fLength)
     {
       /* Auto mode? */
       if(_hDstAnim == orxHANDLE_UNDEFINED)
@@ -1950,16 +1951,16 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
       }
   
       /* Updates timestamp */
-      *_pu32Time -= u32Length;
+      *_pfTime -= fLength;
   
       /* Has next animation? */
       if(u32Anim != orxU32_UNDEFINED)
       {
         /* Gets new duration */
-        u32Length = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
+        fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
         
         /* Stores current result handle */
-        hResult   = (orxHANDLE)u32Anim;
+        hResult = (orxHANDLE)u32Anim;
       }
       else
       {

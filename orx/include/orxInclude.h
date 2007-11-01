@@ -5,7 +5,7 @@
  * C Rewrite utils module : adds storages structures (chunk bank) AND organizing structures (list, tree, graph, hash table)
  * - Rewrite include hierarchy / group includes/init/exit by module
  * - Add new type of memory / replace them at need / add init for each memory type with heap size
- * - Replace simple mallocs in written modules with banks
+ * V Replace simple mallocs in written modules with banks
  * - Simplify structure module (everything controlled from there / no cross references?)
  * - Add BV/box module + extract AABox code from vector module
  * C Rewrite sound module/plugin + timer module/plugin
@@ -13,10 +13,10 @@
  * - Add unicode support (all to unicode)
  * - Add string handling (using CRC + hash)
  * V Add texture referencing with duplication check -> reference increase
- * - Remove ref point from texture to a higher graph object (not created yet)
- * - Rewrite graph system using modulable architecture (2D data => sprite / 3D => mesh/skel...)
- * - Rewrite anim system using packed format (indexing + key) + data type separation at a lower level
- * - Add animation format, expendable for 3D (with anim_key/anim_channel structures)
+ * V Remove ref point from texture to a higher graph object (not created yet)
+ * V Rewrite graph system using modulable architecture (2D data => sprite / 3D => mesh/skel...)
+ * C Rewrite anim system using packed format (indexing + key) + data type separation at a lower level
+ * C Add animation format, expendable for 3D (with anim_key/anim_channel structures)
  * - Add multi animation interpreter (for blends, transitions, etc...)
  * C Add fixed point floats + ops + converts (replace (orxFLOAT) casts by a convert function)
  * V Change coord in orxVECTOR with all new functions
@@ -24,7 +24,7 @@
  * - Update camera to use matrix + vector
  * - Update camera to use 3D-like computation
  * - Adds rendering context to camera
- * - Modify timer plugin to make plugin side simpler
+ * V Modify timer plugin to make plugin side simpler
  * - Add timer IDs, make game/real (=>IDs) time accessors generic
  * - Animation shouldn't use directly textures but wrapping anim_atomic
  * C Simplify plugin declaration with macros/enums instead of flag IDs

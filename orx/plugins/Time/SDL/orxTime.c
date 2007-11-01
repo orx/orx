@@ -110,25 +110,25 @@ orxVOID orxTimeSDL_Exit()
 }
 
 /** Gets App Elapsed time.
- * @return Returns the amount of milliseconds elapsed from the application start.
+ * @return Returns the amount of seconds elapsed from the application start.
  */
-orxU32 orxTimeSDL_GetTime()
+orxFLOAT orxTimeSDL_GetTime()
 {
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
 
-  return((orxU32)SDL_GetTicks());
+  return(orx2F(0.001f) * orxU2F(SDL_GetTicks()));
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _u32Time Number of milliseconds to wait.
+ * @param[in] _fTime Number of seconds to wait.
  */
-orxVOID orxTimeSDL_Delay(orxU32 _u32Time)
+orxVOID orxTimeSDL_Delay(orxFLOAT _fTime)
 {
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
   
-  SDL_Delay((Uint32)_u32Time);
+  SDL_Delay(orxF2U(orx2F(1000.0f) * _fTime));
 }
 
 

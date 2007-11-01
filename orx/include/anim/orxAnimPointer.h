@@ -101,7 +101,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetCurrentAnim(orxC
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current time
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetCurrentTime(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnimPointer_GetCurrentTime(orxCONST orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer Frequency get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
@@ -118,10 +118,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetAnim(orxANIMPOIN
 
 /** AnimPointer current Time accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _u32Time                      Time to set
+ * @param[in]   _fTime                        Time to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32Time);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fTime);
 
 /** AnimPointer Frequency set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer

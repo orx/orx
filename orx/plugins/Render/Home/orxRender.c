@@ -51,7 +51,7 @@
 
 /** Defines
  */
-#define orxRENDER_KU32_TICK_SIZE              1
+#define orxRENDER_KU32_TICK_SIZE              orxFLOAT_0
 #define orxRENDER_KU32_ORDER_BANK_SIZE        128
 
 
@@ -319,7 +319,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 orxVector_Set(&vObjectBR, (fWidth * fObjectScaleX) + vObjectUL.fX, (fHeight * fObjectScaleY) + vObjectUL.fY, vObjectUL.fZ);
 
                 /* Is object in frustrum? */
-                if(orxVector_TestAABoxIntersection(&vCameraUL, &vCameraBR, &vObjectUL, &vObjectBR) != orxFALSE)
+                if(1)//orxVector_TestAABoxIntersection(&vCameraUL, &vCameraBR, &vObjectUL, &vObjectBR) != orxFALSE)
                 {
                   orxLINKLIST_NODE *pstNode;
 
@@ -476,7 +476,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
-  orxSTATIC orxCHAR     szFPSOutput[16]; 
+  orxSTATIC orxCHAR     szFPSOutput[32]; 
 
   orxVIEWPORT          *pstViewport;
   orxBITMAP_TRANSFORM   stTransform;
@@ -503,7 +503,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   stTransform.fScaleY   = orx2F(0.8f);
   stTransform.fRotation = orxFLOAT_0;
 
-  orxTextIO_Printf(szFPSOutput, "FPS : %d", orxFPS_GetFPS());
+  orxTextIO_Printf(szFPSOutput, "FPS : %d / %fs", orxFPS_GetFPS(), _pstClockInfo->fDT);
 
   /* Displays FPS */
   orxDisplay_DrawText(orxDisplay_GetScreenBitmap(), &stTransform, orx2RGBA(0xFF, 0, 0, 0xFF), szFPSOutput);

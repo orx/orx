@@ -1,8 +1,14 @@
 /**
- * \file orxClock.c
+ * @file orxClock.c
+ * 
+ * Clock module
+ * 
  */
 
-/***************************************************************************
+ /***************************************************************************
+ orxClock.c
+ Clock module
+ 
  begin                : 04/02/2004
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -10,10 +16,10 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by the Free Software Foundation; either version 2.1      *
+ *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
 
@@ -26,83 +32,72 @@
 #include "math/orxMath.h"
 
 
-/*
- * Platform independant defines
+/** Module flags
  */
+#define orxCLOCK_KU32_STATIC_FLAG_NONE          0x00000000  /**< No flags */
 
-#define orxCLOCK_KU32_STATIC_FLAG_NONE          0x00000000
+#define orxCLOCK_KU32_STATIC_FLAG_READY         0x00000001  /**< Ready flag */
 
-#define orxCLOCK_KU32_STATIC_FLAG_READY         0x00000001
-#define orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK   0x10000000
+#define orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK   0x10000000  /**< Lock update flag */
+
+#define orxCLOCK_KU32_STATIC_FLAG_ALL           0xFFFFFFFF  /**< All flags */
 
 
-/** Clock flags */
+/** orxCLOCK flags
+ */
 #define orxCLOCK_KU32_CLOCK_FLAG_NONE           0x00000000  /**< No flags */
+
 #define orxCLOCK_KU32_CLOCK_FLAG_PAUSED         0x10000000  /**< Clock is paused */
 
+#define orxCLOCK_KU32_CLOCK_FLAG_ALL            0xFFFFFFFF  /**< All flags */
 
-/*
- * Internal clock function storage structure.
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Clock function storage structure
  */
 typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 {
-  /* Clock function pointer : 4 */
-  orxCLOCK_FUNCTION pfnCallback;
+  orxCLOCK_FUNCTION pfnCallback;                /**< Clock function pointer : 4 */
+  orxVOID          *pstContext;                 /**< Clock function context : 8 */
+  orxMODULE_ID      eModuleID;                  /**< Clock function module ID : 12 */
 
-  /* Clock function context : 8 */
-  orxVOID          *pstContext;
-
-  /* Clock function module ID : 12 */
-  orxMODULE_ID      eModuleID;
-
-  /* Padding */
   orxPAD(12)
 
 } orxCLOCK_FUNCTION_STORAGE;
 
-/*
- * Internal clock structure.
+/** Clock structure
  */
 struct __orxCLOCK_t
 {
-  /* Clock Info Structure : 32 */
-  orxCLOCK_INFO stClockInfo;
+  orxCLOCK_INFO stClockInfo;                    /**< Clock Info Structure : 28 */
+  orxBANK *pstFunctionBank;                     /**< Callback bank : 32 */
+  orxU32 u32Flags;                              /**< Clock flags : 36 */
 
-  /* Callback bank : 36 */
-  orxBANK *pstFunctionBank;
-
-  /* Clock flags : 40 */
-  orxU32 u32Flags;
-
-  /* Padding */
-  orxPAD(40)
+  orxPAD(36)
 };
 
-/*
- * Static structure
+
+/** Static structure
  */
 typedef struct __orxCLOCK_STATIC_t
 {
-  /* Clock banks */
-  orxBANK          *pstClockBank;
-
-  /* Clock mod type */
-  orxCLOCK_MOD_TYPE eModType;
-
-  /* Clock mod value */
-  orxFLOAT          fModValue;
-
-  /* Current time */
-  orxU32            u32Time;
-
-  /* Control flags */
-  orxU32            u32Flags;
+  orxBANK          *pstClockBank;               /**< Clock banks : 4 */
+  orxCLOCK_MOD_TYPE eModType;                   /**< Clock mod type : 8 */
+  orxFLOAT          fModValue;                  /**< Clock mod value : 12 */
+  orxFLOAT          fTime;                      /**< Current time : 16 */
+  orxU32            u32Flags;                   /**< Control flags : 20 */
 
 } orxCLOCK_STATIC;
 
 
-/*
- * Static data
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
  */
 orxSTATIC orxCLOCK_STATIC sstClock;
 
@@ -151,7 +146,7 @@ orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxC
 
  returns: orxCLOCK * / orxNULL
  ***************************************************************************/
-orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxU32 _u32TickSize, orxCLOCK_TYPE _eType, orxCONST orxCLOCK *_pstStartClock)
+orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType, orxCONST orxCLOCK *_pstStartClock)
 {
   orxCLOCK *pstClock;
 
@@ -166,7 +161,8 @@ orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxU32 _u32TickSize, orxCLOCK_T
   {
     /* Match? */
     if((pstClock->stClockInfo.eType == _eType)
-    && (pstClock->stClockInfo.u32TickSize == _u32TickSize))
+    && ((_fTickSize < orxFLOAT_0)
+     || (pstClock->stClockInfo.fTickSize == _fTickSize)))
     {
       /* Found */
       break;
@@ -183,11 +179,11 @@ orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxU32 _u32TickSize, orxCLOCK_T
 
  returns: Computed DT.
  ***************************************************************************/
-orxSTATIC orxINLINE orxU32 orxClock_ComputeDT(orxU32 _u32DT, orxCLOCK_INFO *_pstClockInfo)
+orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_pstClockInfo)
 {
   orxREGISTER orxCLOCK_MOD_TYPE  *peModType;
   orxREGISTER orxFLOAT           *pfModValue;
-  orxREGISTER orxU32              u32NewDT = _u32DT;
+  orxREGISTER orxFLOAT            fNewDT = _fDT;
 
   /* Using global one? */
   if(_pstClockInfo == orxNULL)
@@ -208,14 +204,14 @@ orxSTATIC orxINLINE orxU32 orxClock_ComputeDT(orxU32 _u32DT, orxCLOCK_INFO *_pst
     case orxCLOCK_MOD_TYPE_FIXED:
     {
       /* Fixed DT value */    
-      u32NewDT = orxF2U(*pfModValue);
+      fNewDT = *pfModValue;
       break;
     }
 
     case orxCLOCK_MOD_TYPE_MULTIPLY:
     {
       /* Multiplied DT value */
-      u32NewDT = orxF2U(*pfModValue * orxU2F(_u32DT));
+      fNewDT = *pfModValue * _fDT;
       break;
     }
 
@@ -232,7 +228,7 @@ orxSTATIC orxINLINE orxU32 orxClock_ComputeDT(orxU32 _u32DT, orxCLOCK_INFO *_pst
   }
 
   /* Done! */  
-  return u32NewDT;
+  return fNewDT;
 }
 
 
@@ -284,7 +280,7 @@ orxSTATUS orxClock_Init()
       sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
 
       /* Gets init time */
-      sstClock.u32Time  = orxTime_GetTime();
+      sstClock.fTime  = orxTime_GetTime();
 
       /* Inits Flags */
       sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
@@ -353,7 +349,7 @@ orxVOID orxClock_Exit()
  ***************************************************************************/
 orxSTATUS orxClock_Update()
 {
-  orxU32    u32NewTime, u32DT;
+  orxFLOAT  fNewTime, fDT;
   orxCLOCK *pstClock;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -367,57 +363,41 @@ orxSTATUS orxClock_Update()
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
     /* Gets new time */
-    u32NewTime  = orxTime_GetTime();
+    fNewTime  = orxTime_GetTime();
 
     /* Computes natural DT */
-    u32DT        = u32NewTime - sstClock.u32Time;
+    fDT       = fNewTime - sstClock.fTime;
 
     /* Gets modified DT */
-    u32DT        = orxClock_ComputeDT(u32DT, orxNULL);
+    fDT       = orxClock_ComputeDT(fDT, orxNULL);
 
     /* For all clocks */
     for(pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, orxNULL);
         pstClock != orxNULL;
         pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
     {
-      orxU32 u32Time, u32TickCounterBackup, u32ClockDT;
+      orxFLOAT fClockDT, fDiff;
   
       /* Is clock not paused? */
       if(orxClock_IsPaused(pstClock) == orxFALSE)
       {
         /* Gets clock modified DT */
-        u32ClockDT            = orxClock_ComputeDT(u32DT, &(pstClock->stClockInfo));
+        fClockDT  = orxClock_ComputeDT(fDT, &(pstClock->stClockInfo));
 
-        /* Backups clock tick counter */
-        u32TickCounterBackup  = pstClock->stClockInfo.u32TickCounter;
+        /* Updates clock total time */
+        pstClock->stClockInfo.fTime += fClockDT;
 
-        /* Gets cumulated time */
-        u32Time               = u32ClockDT + pstClock->stClockInfo.u32TickValue;
+        /* Gets time diff since last tick */
+        fDiff = pstClock->stClockInfo.fTime - pstClock->stClockInfo.fLastTick;
 
-        /* Updates new ticks if needed */
-        while(u32Time >= pstClock->stClockInfo.u32TickSize)
-        {
-          /* Updates tick counter */
-          pstClock->stClockInfo.u32TickCounter++;
-    
-          /* Updates remaining cumulated time */
-          u32Time -= pstClock->stClockInfo.u32TickSize;
-        }
-    
-        /* Updates tick value */
-        pstClock->stClockInfo.u32TickValue  = u32Time;
-    
-        /* Computes global time */
-        pstClock->stClockInfo.u32Time      += u32ClockDT;
-
-        /* New tick happened? */
-        if(pstClock->stClockInfo.u32TickCounter != u32TickCounterBackup)
+        /* New tick happens? */
+        if(fDiff >= pstClock->stClockInfo.fTickSize)
         {
           orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-    
-          /* Updates clock DT for these calls */
-          pstClock->stClockInfo.u32StableDT = (pstClock->stClockInfo.u32TickCounter - u32TickCounterBackup) * pstClock->stClockInfo.u32TickSize;
-    
+
+          /* Updates clock DT */
+          pstClock->stClockInfo.fDT = fDiff;
+
           /* For all registered callbacks */
           for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
               pstFunctionStorage != orxNULL;
@@ -426,12 +406,15 @@ orxSTATUS orxClock_Update()
             /* Calls it */
             pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
           }
+
+          /* Updates last tick time stamp */
+          pstClock->stClockInfo.fLastTick = pstClock->stClockInfo.fTime;
         }
       }
     }
   
     /* Updates time */
-    sstClock.u32Time = u32NewTime;
+    sstClock.fTime = fNewTime;
     
     /* Unlocks clocks */
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
@@ -447,12 +430,13 @@ orxSTATUS orxClock_Update()
 
  returns: orxCLOCK * on success / NULL otherwise
  ***************************************************************************/
-orxCLOCK *orxFASTCALL orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
+orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 {
   orxCLOCK *pstClock;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_fTickSize >= orxFLOAT_0);
 
   /* Creates clock */
   pstClock = (orxCLOCK *)orxBank_Allocate(sstClock.pstClockBank);
@@ -467,7 +451,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
     if(pstClock->pstFunctionBank != orxNULL)
     {
       /* Inits clock */
-      pstClock->stClockInfo.u32TickSize = _u32TickSize;
+      pstClock->stClockInfo.fTickSize   = _fTickSize;
       pstClock->stClockInfo.eType       = _eType;
       pstClock->stClockInfo.eModType    = orxCLOCK_MOD_TYPE_NONE;
       pstClock->u32Flags                = orxCLOCK_KU32_CLOCK_FLAG_NONE;
@@ -517,7 +501,7 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   return;
 }
 
-/** Resync a clock (accumulated DT => 0) */
+/** Resync a clock with main one */
 orxVOID orxClock_Resync()
 {
   /* Checks */
@@ -526,8 +510,8 @@ orxVOID orxClock_Resync()
   /* Not locked? */
   if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
   {
-	  /* Resync with current time */
-  	sstClock.u32Time = orxTime_GetTime();
+	  /* Resyncs with current time */
+  	sstClock.fTime = sstClock.fTime;
   }
 
   return;
@@ -763,7 +747,7 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK
 
  returns: orxCLOCK * / orxNULL
  ***************************************************************************/
-orxCLOCK *orxFASTCALL orxClock_FindFirst(orxU32 _u32TickSize, orxCLOCK_TYPE _eType)
+orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 {
   orxCLOCK *pstClock;
 
@@ -772,7 +756,7 @@ orxCLOCK *orxFASTCALL orxClock_FindFirst(orxU32 _u32TickSize, orxCLOCK_TYPE _eTy
   orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
 
   /* Finds first matching clock */
-  pstClock = orxClock_FindClock(_u32TickSize, _eType, orxNULL);
+  pstClock = orxClock_FindClock(_fTickSize, _eType, orxNULL);
 
   /* Done! */
   return pstClock;
@@ -793,12 +777,12 @@ orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
   orxASSERT(_pstClock != orxNULL);
 
   /* Finds next matching clock */
-  pstClock = orxClock_FindClock(_pstClock->stClockInfo.u32TickSize, _pstClock->stClockInfo.eType, _pstClock);
+  pstClock = orxClock_FindClock(_pstClock->stClockInfo.fTickSize, _pstClock->stClockInfo.eType, _pstClock);
   
   /* Done! */
   return pstClock;
 }
-
+ 
 /***************************************************************************
  orxClock_GetNext
  Gets next existing clock (can be used to parse all existing clocks).

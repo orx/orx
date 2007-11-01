@@ -119,26 +119,26 @@ extern "C" orxVOID orxTimeSDL_Exit()
 }
 
 /** Gets App Elapsed time.
- * @return Returns the amount of milliseconds elapsed from the application start.
+ * @return Returns the amount of seconds elapsed from the application start.
  */
-extern "C" orxU32 orxTimeSDL_GetTime()
+extern "C" orxFLOAT orxTimeSDL_GetTime()
 {
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
 
-  return(orxF2U(sstTime.poClock->GetElapsedTime() * 1000.0f));
+  return(orx2F(sstTime.poClock->GetElapsedTime()));
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _u32Time Number of milliseconds to wait.
+ * @param[in] _fTime Number of seconds to wait.
  */
-extern "C" orxVOID orxTimeSDL_Delay(orxU32 _u32Time)
+extern "C" orxVOID orxTimeSDL_Delay(orxFLOAT _fTime)
 {
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
 
   /* Sleeps */
-  sf::Sleep(orxU2F(_u32Time) * 0.001f);
+  sf::Sleep(_fTime);
 }
 
 

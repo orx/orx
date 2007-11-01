@@ -42,9 +42,9 @@ extern orxDLLAPI orxVOID            orxTime_Setup();
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Exit, orxVOID);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_GetTime, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_GetTime, orxFLOAT);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_GetDate, orxDATE);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Delay, orxVOID, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Delay, orxVOID, orxFLOAT);
 
 
 /** Inits the time module.
@@ -66,7 +66,7 @@ orxSTATIC orxINLINE orxVOID orxTime_Exit()
 /** Gets time.
  * @return Current time.
  */
-orxSTATIC orxINLINE orxU32 orxTime_GetTime()
+orxSTATIC orxINLINE orxFLOAT orxTime_GetTime()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_GetTime)();
 }
@@ -80,11 +80,11 @@ orxSTATIC orxINLINE orxDATE orxTime_GetDate()
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _u32Time Number of milliseconds to wait.
+ * @param[in] _fTime  Number of seconds to wait.
  */
-orxSTATIC orxINLINE orxVOID orxTime_Delay(orxU32 _u32Time)
+orxSTATIC orxINLINE orxVOID orxTime_Delay(orxFLOAT _fTime)
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Delay)(_u32Time);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Delay)(_fTime);
 }
 
 #endif /* _orxTIME_H_ */

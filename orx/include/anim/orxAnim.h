@@ -87,10 +87,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Delete(orxANIM *_pstAnim);
 /** Adds a key to an animation
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _pstData        Key data to add
- * @param[in]   _u32TimeStamp   Timestamp for this key
+ * @param[in]   _fTimeStamp     Timestamp for this key
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, orxU32 _u32TimeStamp);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, orxFLOAT _fTimeStamp);
 
 /** Removes last added key from an animation
  * @param[in]   _pstAnim        Concerned animation
@@ -106,10 +106,10 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_RemoveAllKeys(orxANIM *_ps
 
 /** Updates anim given a timestamp
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32TimeStamp   TimeStamp for animation update
+ * @param[in]   _fTimeStamp     TimeStamp for animation update
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        or_xAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp);
+extern orxDLLAPI orxSTATUS orxFASTCALL        or_xAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 /** Anim current key data accessor
  * @param[in]   _pstAnim        Concerned animation
@@ -143,7 +143,7 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(orxCONST orx
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim time length
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetLength(orxCONST orxANIM *_pstAnim);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnim_GetLength(orxCONST orxANIM *_pstAnim);
 
 
 #endif /* _orxANIM_H_ */

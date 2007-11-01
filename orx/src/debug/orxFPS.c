@@ -31,7 +31,7 @@
 #define orxFPS_KU32_STATIC_FLAG_NONE        0x00000000
 #define orxFPS_KU32_STATIC_FLAG_READY       0x00000001
 
-#define orxFPS_KU32_CLOCK_TICKSIZE          1000
+#define orxFPS_KU32_CLOCK_TICKSIZE          orxFLOAT_1
 
 /*
  * Static structure
@@ -124,7 +124,7 @@ orxSTATUS orxFPS_Init()
     orxMemory_Set((orxFPS_STATIC *)&sstFPS, 0, sizeof(orxFPS_STATIC));
 
     /* Creates clock */
-    sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_FPS);
+    sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_SECOND);
 
     /* Valid? */
     if(sstFPS.pstClock != orxNULL)

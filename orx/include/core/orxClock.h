@@ -29,6 +29,7 @@
 #ifndef _orxCLOCK_H_
 #define _orxCLOCK_H_
 
+
 #include "orxInclude.h"
 #include "core/orxTime.h"
 
@@ -38,13 +39,14 @@
 #define orxCLOCK_KU32_FUNCTION_BANK_SIZE              16          /**< Function bank size */
 
 
-/** Clock type enum */
+/** Clock type enum
+ */
 typedef enum __orxCLOCK_TYPE_t
 {
   orxCLOCK_TYPE_CORE = 0,
   orxCLOCK_TYPE_USER,
 
-  orxCLOCK_TYPE_FPS,
+  orxCLOCK_TYPE_SECOND,
 
   orxCLOCK_TYPE_NUMBER,
 
@@ -52,7 +54,9 @@ typedef enum __orxCLOCK_TYPE_t
 
 } orxCLOCK_TYPE;
 
-/** Clock mod type enum */
+
+/** Clock mod type enum
+ */
 typedef enum __orxCLOCK_MOD_TYPE_t
 {
   orxCLOCK_MOD_TYPE_FIXED = 0,
@@ -64,18 +68,19 @@ typedef enum __orxCLOCK_MOD_TYPE_t
     
 } orxCLOCK_MOD_TYPE;
 
-/** Clock info structure. */
+
+/** Clock info structure
+ */
 typedef struct __orxCLOCK_INFO_t
 {
   orxCLOCK_TYPE     eType;                            /**< Clock type : 4 */
-  orxU32            u32TickCounter;                   /**< Clock tick counter : 8 */
-  orxU32            u32TickSize;                      /**< Clock tick size (in milliseconds) : 12 */
-  orxU32            u32TickValue;                     /**< Clock current tick value (in milliseconds) ellapsed after last tick 0.0 - tick size : 16 */
-  orxCLOCK_MOD_TYPE eModType;                         /**> Clock mod type : 20 */
-  orxFLOAT          fModValue;                        /**> Clock mod value : 24 */
-  orxU32            u32StableDT;                      /**> Clock DT (time ellapsed between 2 clock calls in milliseconds) : 28 */
+  orxFLOAT          fTickSize;                        /**< Clock tick size (in seconds) : 8 */
+  orxCLOCK_MOD_TYPE eModType;                         /**> Clock mod type : 12 */
+  orxFLOAT          fModValue;                        /**> Clock mod value : 16 */
+  orxFLOAT          fLastTick;                        /**< Clock last tick time stamp : 20 */
+  orxFLOAT          fDT;                              /**> Clock DT (time ellapsed between 2 clock calls in seconds) : 24 */
 
-  orxU32            u32Time;                          /**> Clock time (= (tick counter * tick size) + tick value : 32 */ 
+  orxFLOAT          fTime;                            /**> Clock time : 28 */ 
 
 } orxCLOCK_INFO;
 
@@ -101,7 +106,7 @@ extern orxDLLAPI orxSTATUS                            orxClock_Update();
 extern orxDLLAPI orxVOID                              orxClock_Resync();
 
 /** Creates a Clock. */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxU32 _u32TickSize, orxCLOCK_TYPE _eType);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
 /** Deletes a Clock. */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Delete(orxCLOCK *_pstClock);
 
@@ -125,7 +130,7 @@ extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCON
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
 
 /** Finds a clock according to its tick size and its type. */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxU32 _u32TickSize, orxCLOCK_TYPE _eType);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
 /** Finds next clock of same type/tick size. */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(orxCONST orxCLOCK *_pstClock);
 

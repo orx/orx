@@ -28,7 +28,7 @@
 
 /** Defines
  */
-#define orxBOUNCE_KU32_TICK_SIZE              1
+#define orxBOUNCE_KU32_TICK_SIZE              orxFLOAT_0
 
 
 /***************************************************************************

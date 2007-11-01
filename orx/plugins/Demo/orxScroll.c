@@ -29,12 +29,12 @@
 
 /** Defines
  */
-#define orxSCROLL_KU32_TICK_SIZE              1
+#define orxSCROLL_KU32_TICK_SIZE              orxFLOAT_0
 #define orxSCROLL_KF_MAX_Z                    orx2F(10000.0f)
-#define orxSCROLL_KF_SPEED                    orx2F(150.0f)
+#define orxSCROLL_KF_SPEED                    orx2F(180.0f)
 #define orxSCROLL_KZ_BACKGROUND_NAME          "background.png"
 #define orxSCROLL_KU32_WAVE_FRAME_NUMBER      4
-#define orxSCROLL_KF_WAVE_ANGULAR_VELOCITY    (orx2F(0.0004f) * orxMATH_KF_PI)
+#define orxSCROLL_KF_WAVE_ANGULAR_VELOCITY    (orx2F(0.5f) * orxMATH_KF_PI)
 #define orxSCROLL_KF_WAVE_PHASIS              (orx2F(2.0f) * orxMATH_KF_PI / orx2F(orxSCROLL_KU32_WAVE_FRAME_NUMBER))
 
 
@@ -108,7 +108,7 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
 {
     {
         "fuji.png",
-        {orx2F(0.0f), orx2F(1.1f), orx2F(0.9f)},
+        {orx2F(0.0f), orx2F(1.1f), orx2F(1.0f)},
         {orx2F(11.0f), orx2F(1.3f), orx2F(1.0f)},
         80
     },
@@ -146,11 +146,7 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
 orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   orxVECTOR vPos;
-  orxFLOAT  fDT;
   orxU32    i;
-
-  /* Gets DT */
-  fDT = orx2F(0.001f) * orxU2F(_pstClockInfo->u32StableDT);
 
   /*** Viewport update ***/
 
@@ -158,7 +154,7 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   if(sstScroll.fViewportSize < orxFLOAT_1)
   {
     /* Updates it */
-    sstScroll.fViewportSize += fDT;
+    sstScroll.fViewportSize += _pstClockInfo->fDT;
 
     /* Clamps it */
     sstScroll.fViewportSize = orxMIN(sstScroll.fViewportSize, orxFLOAT_1);
@@ -184,7 +180,7 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   }
 
   /* Updates position vector */
-  vPos.fX += sstScroll.fScrollSpeed * fDT;
+  vPos.fX += sstScroll.fScrollSpeed * _pstClockInfo->fDT;
 
   /* Updates camera position */
   orxCamera_SetPosition(sstScroll.pstCamera, &vPos);
@@ -198,7 +194,7 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     orxFrame_GetPosition(sstScroll.apstWaveFrame[i], orxFRAME_SPACE_LOCAL, &vPos);
 
     /* Updates its Y coordinate along a sine with initial phasis */
-    vPos.fY = sstScroll.fWaveAmplitude * sinf((orxU2F(i) * orxSCROLL_KF_WAVE_PHASIS) + (orxSCROLL_KF_WAVE_ANGULAR_VELOCITY * orxU2F(_pstClockInfo->u32Time)));
+    vPos.fY = sstScroll.fWaveAmplitude * sinf((orxU2F(i) * orxSCROLL_KF_WAVE_PHASIS) + (orxSCROLL_KF_WAVE_ANGULAR_VELOCITY * orxU2F(_pstClockInfo->fTime)));
 
     /* Applies it */
     orxFrame_SetPosition(sstScroll.apstWaveFrame[i], &vPos);

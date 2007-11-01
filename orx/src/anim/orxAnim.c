@@ -60,7 +60,7 @@
 typedef struct __orxANIM_KEY_t
 {
   orxSTRUCTURE *pstData;                    /**< Data key : 4 */
-  orxU32        u32TimeStamp;               /**< Data timestamp : 8 */
+  orxFLOAT      fTimeStamp;                 /**< Data timestamp : 8 */
 
 } orxANIM_KEY;
 
@@ -100,10 +100,10 @@ orxSTATIC orxANIM_STATIC sstAnim;
 
 /** Finds a key index given a timestamp
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32TimeStamp   Desired timestamp
+ * @param[in]   _fTimeStamp     Desired timestamp
  * @return      Key index / orxU32_UNDEFINED
  */
-orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, orxU32 _u32TimeStamp)
+orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 {
   orxU32 u32Counter, u32MaxIndex, u32MinIndex, u32Index;
 
@@ -122,7 +122,7 @@ orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, or
         u32Index = (u32MinIndex + u32MaxIndex) >> 1)
     {
       /* Updates search range */
-      if(_u32TimeStamp > _pstAnim->astKeyList[u32Index].u32TimeStamp)
+      if(_fTimeStamp > _pstAnim->astKeyList[u32Index].fTimeStamp)
       {
         u32MinIndex = u32Index + 1;
       }
@@ -133,7 +133,7 @@ orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, or
     }
 
     /* Not found? */
-    if(_pstAnim->astKeyList[u32Index].u32TimeStamp < _u32TimeStamp)
+    if(_pstAnim->astKeyList[u32Index].fTimeStamp < _fTimeStamp)
     {
       /* !!! MSG !!! */
 
@@ -440,10 +440,10 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
 /** Adds a key to an animation
  * @param[in]   _pstAnim        Animation concerned
  * @param[in]   _pstData        Key data to add
- * @param[in]   _u32TimeStamp   Timestamp for this key
+ * @param[in]   _fTimeStamp     Timestamp for this key
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, orxU32 _u32TimeStamp)
+orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, orxFLOAT _fTimeStamp)
 {
   orxU32    u32Counter, u32Size;
   orxSTATUS eResult;
@@ -453,7 +453,7 @@ orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, 
   orxSTRUCTURE_ASSERT(_pstAnim);
   orxASSERT(_pstData != orxNULL);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
-  orxASSERT((orxAnim_GetKeyCounter(_pstAnim) == 0) || (_u32TimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCounter(_pstAnim) - 1].u32TimeStamp)); 
+  orxASSERT((orxAnim_GetKeyCounter(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCounter(_pstAnim) - 1].fTimeStamp)); 
 
   /* Gets storage size & counter */
   u32Size     = orxAnim_GetKeyStorageSize(_pstAnim);
@@ -465,11 +465,11 @@ orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, 
     orxANIM_KEY *pstKey;
 
     /* Gets key pointer */
-    pstKey                = &(_pstAnim->astKeyList[u32Counter]);
+    pstKey              = &(_pstAnim->astKeyList[u32Counter]);
 
     /* Stores key info */
-    pstKey->pstData       = _pstData;
-    pstKey->u32TimeStamp  = _u32TimeStamp;
+    pstKey->pstData     = _pstData;
+    pstKey->fTimeStamp  = _fTimeStamp;
 
     /* Updates structure reference counter */
     orxStructure_IncreaseCounter(_pstData);
@@ -710,9 +710,10 @@ orxU32 orxFASTCALL orxAnim_GetKeyCounter(orxCONST orxANIM *_pstAnim)
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation time length
  */
-orxU32 orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
+orxFLOAT orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
 {
-  orxU32 u32Counter, u32Length = 0;
+  orxU32    u32Counter;
+  orxFLOAT  fLength = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
@@ -728,7 +729,7 @@ orxU32 orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
     if(u32Counter != 0)
     {
       /* Gets length */
-      u32Length = _pstAnim->astKeyList[u32Counter - 1].u32TimeStamp;
+      fLength = _pstAnim->astKeyList[u32Counter - 1].fTimeStamp;
     }
   }
   else
@@ -736,9 +737,9 @@ orxU32 orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
     /* !!! MSG !!! */
 
     /* Updates result */
-    u32Length = orxU32_UNDEFINED;
+    fLength = orx2F(-1.0f);
   }
 
   /* Done! */
-  return u32Length;
+  return fLength;
 }

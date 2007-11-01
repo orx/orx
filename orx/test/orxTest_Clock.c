@@ -115,14 +115,12 @@ orxVOID orxTest_Clock_DisplayInfo(orxCONST orxCLOCK_INFO *_pstClockInfo)
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Display informations */
-  orxTextIO_PrintLn("* eType          = %d",    _pstClockInfo->eType);
-  orxTextIO_PrintLn("* u32TickCounter = %lu",   _pstClockInfo->u32TickCounter);
-  orxTextIO_PrintLn("* u32TickSize    = %lu",   _pstClockInfo->u32TickSize);
-  orxTextIO_PrintLn("* u32TickValue   = %lu",   _pstClockInfo->u32TickValue);
-  orxTextIO_PrintLn("* eModType       = %d",    _pstClockInfo->eModType);
-  orxTextIO_PrintLn("* fModValue      = %f",    _pstClockInfo->fModValue);
-  orxTextIO_PrintLn("* u32DT          = %lu",   _pstClockInfo->u32StableDT);
-  orxTextIO_PrintLn("* Time           = %lu\n", _pstClockInfo->u32Time);
+  orxTextIO_PrintLn("* eType          = %d",      _pstClockInfo->eType);
+  orxTextIO_PrintLn("* u32TickSize    = %.2f",    _pstClockInfo->fTickSize);
+  orxTextIO_PrintLn("* eModType       = %d",      _pstClockInfo->eModType);
+  orxTextIO_PrintLn("* fModValue      = %f",      _pstClockInfo->fModValue);
+  orxTextIO_PrintLn("* fDT            = %.2f",    _pstClockInfo->fDT);
+  orxTextIO_PrintLn("* Time           = %.2f\n",  _pstClockInfo->fTime);
 }
 
 orxVOID orxFASTCALL orxTest_Clock_ShowInfo(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
@@ -152,7 +150,7 @@ orxVOID orxTest_Clock_Infos()
 
 orxVOID orxTest_Clock_Create()
 {
-  orxU32 u32TickSize;
+  orxFLOAT fTickSize;
   orxCLOCK *pstClock;
   orxTEST_CLOCK_INFO *pstClockCell;
 
@@ -163,10 +161,10 @@ orxVOID orxTest_Clock_Create()
     orxTextIO_PrintLn("Only the tick size.");
 
     /* Read tick size */
-    orxTextIO_ReadS32InRange(&u32TickSize, 10, 1, 0x7FFFFFFF, "Choose a tick size", orxTRUE);
+    orxTextIO_ReadFloatInRange(&fTickSize, orxFLOAT_0, orx2F(10.0f), "Choose a tick size", orxTRUE);
 
     /* Try to create the clock */
-    pstClock = orxClock_Create(u32TickSize, orxCLOCK_TYPE_USER);
+    pstClock = orxClock_Create(fTickSize, orxCLOCK_TYPE_USER);
 
     /* Clock created ? */
     if(pstClock != orxNULL)
@@ -320,7 +318,7 @@ orxVOID orxTest_Clock_Init()
   orxMemory_Set(&sstTest_Clock, 0, sizeof(orxTEST_CLOCK_STATIC));
   
   /* Create a clock of 10 seconds */
-  sstTest_Clock.pstClock = orxClock_Create(10000, orxCLOCK_TYPE_USER);
+  sstTest_Clock.pstClock = orxClock_Create(orx2F(10.0f), orxCLOCK_TYPE_USER);
 
   /* Pauses it */
   orxClock_Pause(sstTest_Clock.pstClock);

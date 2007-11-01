@@ -17,6 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "core/orxTime.h"
 #include "plugin/orxPluginCore.h"
 
@@ -62,5 +63,5 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(TIME)
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxTime_Init, orxSTATUS);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxTime_Exit, orxVOID);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxTime_GetTime, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxTime_Delay, orxVOID, orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxTime_GetTime, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxTime_Delay, orxVOID, orxFLOAT);
