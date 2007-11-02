@@ -60,7 +60,6 @@ typedef struct __orxDISPLAY_STATIC_t
 {
   orxU32            u32Flags;
   sf::RenderWindow *poRenderWindow;
-  sf::IntRect       oScreenRectangle;
 } orxDISPLAY_STATIC;
 
 
@@ -302,8 +301,6 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, or
 extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc,  orxCONST orxS32 _s32PosX, orxS32 _s32PosY)
 {
   sf::Sprite *poSprite;
-  sf::IntRect oClippingRectangle, oSpriteRectangle;
-  orxFLOAT    fLeft, fTop, fRight, fBottom, fInvScaleX, fInvScaleY;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -313,51 +310,18 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   /* Gets sprite */
   poSprite = (sf::Sprite *)_pstSrc;
 
-  /* Gets sprite rectangle */
-  oSpriteRectangle = poSprite->GetSubRect();
+  /* Updates its position */
+  poSprite->SetLeft(_s32PosX);
+  poSprite->SetTop(_s32PosY);
 
-  /* Updates it */
-  oSpriteRectangle.Left    += _s32PosX;
-  oSpriteRectangle.Top     += _s32PosY;
-  fRight                    = orxS2F(oSpriteRectangle.Right) * orx2F(poSprite->GetScaleX());
-  oSpriteRectangle.Right    = orxF2S(fRight) + _s32PosX;
-  fBottom                   = orxS2F(oSpriteRectangle.Bottom) * orx2F(poSprite->GetScaleY());
-  oSpriteRectangle.Bottom   = orxF2S(fBottom) + _s32PosY;
+  /* Enables clipping */
+  glEnable(GL_SCISSOR_TEST);
 
-  /* Gets clipping coordinates */
-  if(sstDisplay.oScreenRectangle.Intersects(oSpriteRectangle, &oClippingRectangle) != orxFALSE)
-  {
-    /* Gets scale inv */
-    fInvScaleX = orxFLOAT_1 / orx2F(poSprite->GetScaleX());
-    fInvScaleY = orxFLOAT_1 / orx2F(poSprite->GetScaleY());
+  /* Draws it */
+  sstDisplay.poRenderWindow->Draw(*poSprite);
 
-    /* Updates its position */
-    poSprite->SetLeft(orxS2F(oClippingRectangle.Left));
-    poSprite->SetTop(orxS2F(oClippingRectangle.Top));
-
-    /* Updates clipping rectangle */
-    oClippingRectangle.Left    -= _s32PosX;
-    fLeft                       = orxS2F(oClippingRectangle.Left) * fInvScaleX;
-    oClippingRectangle.Left     = orxF2S(fLeft);
-    oClippingRectangle.Top     -= _s32PosY;
-    fTop                        = orxS2F(oClippingRectangle.Top) * fInvScaleY;
-    oClippingRectangle.Top      = orxF2S(fTop);
-    oClippingRectangle.Right   -= _s32PosX;
-    fRight                      = orxS2F(oClippingRectangle.Right) * fInvScaleX;
-    oClippingRectangle.Right    = orxF2S(fRight);
-    oClippingRectangle.Bottom  -= _s32PosY;
-    fBottom                     = orxS2F(oClippingRectangle.Bottom) * fInvScaleY;
-    oClippingRectangle.Bottom   = orxF2S(fBottom);
-
-    /* Updates sprite sub-rectangle */
-    poSprite->SetSubRect(oClippingRectangle);
-
-    /* Draws it */
-    sstDisplay.poRenderWindow->Draw(*poSprite);
-
-    /* Resets sprite sub-rectangle */
-    poSprite->SetSubRect(sf::IntRect(0, 0, poSprite->GetImage()->GetWidth(), poSprite->GetImage()->GetHeight()));
-  }
+  /* Disables clipping */
+  glDisable(GL_SCISSOR_TEST);
 
   /* Done! */
   return eResult;
@@ -493,10 +457,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   orxASSERT((_pstBitmap == spoScreen) && "Can only draw on screen with this version!");
 
   /* Stores screen clipping */
-  sstDisplay.oScreenRectangle.Left    = _u32TLX;
-  sstDisplay.oScreenRectangle.Top     = _u32TLY;
-  sstDisplay.oScreenRectangle.Right   = _u32BRX;
-  sstDisplay.oScreenRectangle.Bottom  = _u32BRY;
+  glScissor(_u32TLX, _u32TLY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
 
   /* Done! */
   return eResult;

@@ -21,6 +21,7 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginUser.h"
 #include "debug/orxDebug.h"
+#include "math/orxMath.h"
 #include "memory/orxMemory.h"
 #include "core/orxTime.h"
 

@@ -148,24 +148,6 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   orxVECTOR vPos;
   orxU32    i;
 
-  /*** Viewport update ***/
-
-  /* Not at full size? */
-  if(sstScroll.fViewportSize < orxFLOAT_1)
-  {
-    /* Updates it */
-    sstScroll.fViewportSize += _pstClockInfo->fDT;
-
-    /* Clamps it */
-    sstScroll.fViewportSize = orxMIN(sstScroll.fViewportSize, orxFLOAT_1);
-
-    /* Applies it */
-    orxViewport_SetRelativeSize(sstScroll.pstViewport, sstScroll.fViewportSize, sstScroll.fViewportSize);
-
-    /* Maintains viewport alignment */
-    orxViewport_SetRelativePosition(sstScroll.pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_CENTER);
-  }
-
   /*** Camera update ***/
 
   /* Gets camera position */
@@ -311,9 +293,10 @@ orxSTATIC orxSTATUS orxScroll_Init()
     sstScroll.fScrollSpeed = orxSCROLL_KF_SPEED;
     
     /* Creates & inits viewport on screen */
-    sstScroll.pstViewport = orxViewport_Create();
+    sstScroll.fViewportSize = orxFLOAT_1;
+    sstScroll.pstViewport   = orxViewport_Create();
     orxViewport_SetCamera(sstScroll.pstViewport, sstScroll.pstCamera);
-    orxViewport_SetRelativeSize(sstScroll.pstViewport, 0.01f, 0.01f);
+    orxViewport_SetRelativeSize(sstScroll.pstViewport, sstScroll.fViewportSize, sstScroll.fViewportSize);
     orxViewport_SetRelativePosition(sstScroll.pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_CENTER);
 
     /* Creates rendering clock */
