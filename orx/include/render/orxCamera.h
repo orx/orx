@@ -76,13 +76,15 @@ extern orxDLLAPI orxCAMERA *            orxCamera_Create();
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_Delete(orxCAMERA *_pstCamera);
 
 
-/** Sets camera frustrum (3D rectangle for 2D camera)
+/** Sets camera frustrum
  * @param[in]   _pstCamera      Concerned camera
- * @param[in]   _pvUL           Upper left corner position
- * @param[in]   _pvBR           Bottom right corner position
+ * @param[in]   _fWidth         Width of frustrum
+ * @param[in]   _fHeight        Height of frustrum
+ * @param[in]   _fNear          Near distance of frustrum
+ * @param[in]   _fFar           Far distance of frustrum
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxCONST orxVECTOR *_pvUL, orxCONST orxVECTOR *_pvBR);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar);
 
 /** Sets camera position
  * @param[in]   _pstCamera      Concerned camera

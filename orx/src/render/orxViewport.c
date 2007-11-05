@@ -62,10 +62,10 @@
 struct __orxVIEWPORT_t
 {
   orxSTRUCTURE  stStructure;                  /**< Public structure, first structure member : 16 */
-  orxU32        u32X;                         /**< X position (top left corner) : 20 */
-  orxU32        u32Y;                         /**< Y position (top left corner) : 24 */
-  orxU32        u32Width;                     /**< Width : 28 */
-  orxU32        u32Height;                    /**< Height : 32 */
+  orxFLOAT      fX;                           /**< X position (top left corner) : 20 */
+  orxFLOAT      fY;                           /**< Y position (top left corner) : 24 */
+  orxFLOAT      fWidth;                       /**< Width : 28 */
+  orxFLOAT      fHeight;                      /**< Height : 32 */
   orxCAMERA    *pstCamera;                    /**< Associated camera : 36 */
   orxTEXTURE   *pstTexture;                   /**< Associated texture : 40 */
 
@@ -218,7 +218,7 @@ orxVIEWPORT *orxViewport_Create()
     orxStructure_SetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_ENABLED, orxVIEWPORT_KU32_FLAG_NONE);
 
     /* Inits vars */
-    pstViewport->u32X = pstViewport->u32Y = pstViewport->u32Width = pstViewport->u32Height = orxU32_UNDEFINED;
+    pstViewport->fX = pstViewport->fY = pstViewport->fWidth = pstViewport->fHeight = orxFLOAT_0;
   }
   else
   {
@@ -462,18 +462,18 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
 
 /** Sets a viewport position
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _u32X           X axis position (top left corner)
- * @param[in]   _u32Y           Y axis position (top left corner)
+ * @param[in]   _fX             X axis position (top left corner)
+ * @param[in]   _fY             Y axis position (top left corner)
  */
-orxVOID orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxU32 _u32X, orxU32 _u32Y)
+orxVOID orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT _fX, orxFLOAT _fY)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Updates position */
-  _pstViewport->u32X = _u32X;
-  _pstViewport->u32Y = _u32Y;
+  _pstViewport->fX = _fX;
+  _pstViewport->fY = _fY;
 
   return;
 }
@@ -491,8 +491,8 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
   orxASSERT((_u32AlignFlags & orxVIEWPORT_KU32_MASK_ALIGN) == _u32AlignFlags);
-  orxASSERT(_pstViewport->u32Width != orxU32_UNDEFINED);
-  orxASSERT(_pstViewport->u32Height != orxU32_UNDEFINED);
+  orxASSERT(_pstViewport->fWidth > orxFLOAT_0);
+  orxASSERT(_pstViewport->fHeight > orxFLOAT_0);
 
   /* Gets associated texture */
   pstTexture = orxViewport_GetTexture(_pstViewport);
@@ -509,38 +509,38 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
     if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_LEFT)
     {
       /* Updates x position */
-      _pstViewport->u32X = 0;
+      _pstViewport->fX = orxFLOAT_0;
     }
     /* Align right? */
     else if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT)
     {
       /* Updates x position */
-      _pstViewport->u32X = orxF2U(fWidth) - _pstViewport->u32Width;
+      _pstViewport->fX = fWidth - _pstViewport->fWidth;
     }
     /* Align center */
     else
     {
       /* Updates x position */
-      _pstViewport->u32X = (orxF2U(fWidth) - _pstViewport->u32Width) >> 1;
+      _pstViewport->fX = orx2F(0.5f) * (fWidth - _pstViewport->fWidth);
     }
 
     /* Align top? */
     if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_TOP)
     {
       /* Updates y position */
-      _pstViewport->u32Y = 0;
+      _pstViewport->fY = orxFLOAT_0;
     }
     /* Align bottom? */
     else if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM)
     {
       /* Updates y position */
-      _pstViewport->u32Y = orxF2U(fHeight) - _pstViewport->u32Height;
+      _pstViewport->fY = fHeight - _pstViewport->fHeight;
     }
     /* Align center */
     else
     {
       /* Updates y position */
-      _pstViewport->u32Y = (orxF2U(fHeight) - _pstViewport->u32Height) >> 1;
+      _pstViewport->fY = orx2F(0.5f) * (fHeight - _pstViewport->fHeight);
     }
 
     /* Updates result */
@@ -560,38 +560,38 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
 
 /** Gets a viewport position
  * @param[in]   _pstViewport    Concerned viewport
- * @param[out]  _pu32X          X axis position (top left corner)
- * @param[out]  _pu32Y          Y axis position (top left corner)
+ * @param[out]  _pfX            X axis position (top left corner)
+ * @param[out]  _pfY            Y axis position (top left corner)
  */
-orxVOID orxFASTCALL orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, orxU32 *_pu32X, orxU32 *_pu32Y)
+orxVOID orxFASTCALL orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfX, orxFLOAT *_pfY)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
-  orxASSERT(_pu32X != orxNULL);
-  orxASSERT(_pu32Y != orxNULL);
+  orxASSERT(_pfX != orxNULL);
+  orxASSERT(_pfY != orxNULL);
 
   /* Gets position */
-  *_pu32X = _pstViewport->u32X;
-  *_pu32Y = _pstViewport->u32Y;
+  *_pfX = _pstViewport->fX;
+  *_pfY = _pstViewport->fY;
 
   return;
 }
 
 /** Sets a viewport size
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _u32W           Width
- * @param[in]   _u32H           Height
+ * @param[in]   _fW             Width
+ * @param[in]   _fH             Height
  */
-orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxU32 _u32W, orxU32 _u32H)
+orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW, orxFLOAT _fH)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Updates size */
-  _pstViewport->u32Width  = _u32W;
-  _pstViewport->u32Height = _u32H;
+  _pstViewport->fWidth  = _fW;
+  _pstViewport->fHeight = _fH;
 
   return;
 }
@@ -624,8 +624,8 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
     orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
 
     /* Updates viewport size */
-    _pstViewport->u32Width  = orxF2U(fTextureWidth * _fW);
-    _pstViewport->u32Height = orxF2U(fTextureHeight * _fH);
+    _pstViewport->fWidth  = fTextureWidth * _fW;
+    _pstViewport->fHeight = fTextureHeight * _fH;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -644,20 +644,20 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
 
 /** Gets a viewport size
  * @param[in]   _pstViewport    Concerned viewport
- * @param[out]  _pu32W          Width
- * @param[out]  _pu32H          Height
+ * @param[out]  _pfW            Width
+ * @param[out]  _pfH            Height
  */
-orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxU32 *_pu32W, orxU32 *_pu32H)
+orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
-  orxASSERT(_pu32W != orxNULL);
-  orxASSERT(_pu32H != orxNULL);
+  orxASSERT(_pfW != orxNULL);
+  orxASSERT(_pfH != orxNULL);
 
   /* Gets size */
-  *_pu32W = _pstViewport->u32Width;
-  *_pu32H = _pstViewport->u32Height;
+  *_pfW = _pstViewport->fWidth;
+  *_pfH = _pstViewport->fHeight;
 
   return;
 }
@@ -688,8 +688,8 @@ orxVOID orxFASTCALL orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewpo
     orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
 
     /* Gets relative size */
-    *_pfW = orxU2F(_pstViewport->u32Width) / fTextureWidth;
-    *_pfH = orxU2F(_pstViewport->u32Height) / fTextureHeight;
+    *_pfW = _pstViewport->fWidth / fTextureWidth;
+    *_pfH = _pstViewport->fHeight / fTextureHeight;
   }
   else
   {
@@ -721,13 +721,11 @@ orxVOID orxFASTCALL orxViewport_GetClipping(orxCONST orxVIEWPORT *_pstViewport, 
   orxASSERT(_pu32BRX != orxNULL);
   orxASSERT(_pu32BRY != orxNULL);
 
-  /* Gets top left corner coordinates */
-  orxViewport_GetPosition(_pstViewport, _pu32TLX, _pu32TLY);
-
-  /* Gets bottom right corner coordinates */
-  orxViewport_GetSize(_pstViewport, _pu32BRX, _pu32BRY);
-  (*_pu32BRX) += *_pu32TLX;
-  (*_pu32BRY) += *_pu32TLY;
+  /* Gets corners coordinates */
+  *_pu32TLX = orxF2U(_pstViewport->fX);
+  *_pu32TLY = orxF2U(_pstViewport->fY);
+  *_pu32BRX = orxF2U(_pstViewport->fX + _pstViewport->fWidth);
+  *_pu32BRY = orxF2U(_pstViewport->fY + _pstViewport->fHeight);
 
   return;
 }

@@ -165,7 +165,7 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Sub(orxVECTOR *_pvRes, o
 }
 
 /** Muls a vector by an orxFLOAT and stores result in another one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Mul(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
+orxSTATIC orxINLINE orxVECTOR                *orxVector_Mulf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -180,15 +180,32 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Mul(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
+/** Muls a vector by another vector and stores result in a third one. */
+orxSTATIC orxINLINE orxVECTOR                *orxVector_Mul(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2 != orxNULL);
+
+  /* Muls all */
+  _pvRes->fX = _pvOp1->fX * _pvOp2->fX;
+  _pvRes->fY = _pvOp1->fY * _pvOp2->fY;
+  _pvRes->fZ = _pvOp1->fZ * _pvOp2->fZ;
+
+  /* Done! */
+  return _pvRes;
+}
+
 /** Divs a vector by an orxFLOAT and stores result in another one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Div(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
+orxSTATIC orxINLINE orxVECTOR                *orxVector_Divf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
   orxREGISTER orxFLOAT fInvCoef;
 
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp1 != orxNULL);
-  orxASSERT(_fOp2 != 0.0f);
+  orxASSERT(_fOp2 != orxFLOAT_0);
 
   /* Gets coef */
   fInvCoef = orxFLOAT_1 / _fOp2;
@@ -197,6 +214,26 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Div(orxVECTOR *_pvRes, o
   _pvRes->fX = _pvOp1->fX * fInvCoef;
   _pvRes->fY = _pvOp1->fY * fInvCoef;
   _pvRes->fZ = _pvOp1->fZ * fInvCoef;
+
+  /* Done! */
+  return _pvRes;
+}
+
+/** Divs a vector by another vector and stores result in a third one. */
+orxSTATIC orxINLINE orxVECTOR                *orxVector_Div(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2 != orxNULL);
+  orxASSERT(_pvOp2->fX != orxFLOAT_0);
+  orxASSERT(_pvOp2->fY != orxFLOAT_0);
+  orxASSERT(_pvOp2->fZ != orxFLOAT_0);
+
+  /* Divs all */
+  _pvRes->fX = _pvOp1->fX / _pvOp2->fX;
+  _pvRes->fY = _pvOp1->fY / _pvOp2->fY;
+  _pvRes->fZ = _pvOp1->fZ / _pvOp2->fZ;
 
   /* Done! */
   return _pvRes;

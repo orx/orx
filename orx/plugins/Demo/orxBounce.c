@@ -89,7 +89,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   }
 
   fRot += sstBounce.vSpeed.fX * 0.01f;
-  orxVector_Mul(&vDiff, &sstBounce.vSpeed, 1.0f);
+  orxVector_Mulf(&vDiff, &sstBounce.vSpeed, 1.0f);
   orxVector_Add(&vPos, &vPos, &vDiff);
 
   orxFrame_SetPosition(sstBounce.pstFrame, &vPos);
@@ -100,7 +100,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
 
 orxSTATIC orxSTATUS orxBounce_Init()
 {
-  orxVECTOR vUL, vBR, vPos, vPivot;
+  orxVECTOR vPos, vPivot;
   orxSTATUS eResult;
 
   /* Cleans static controller */
@@ -112,7 +112,8 @@ orxSTATIC orxSTATUS orxBounce_Init()
   /* Valid? */
   if(sstBounce.pstTexture != orxNULL)
   {
-    orxU32 u32ScreenWidth, u32ScreenHeight;
+    orxVECTOR vPosition;
+    orxU32    u32ScreenWidth, u32ScreenHeight;
 
     /* Gets dimensions */
     orxTexture_GetSize(sstBounce.pstTexture, &sstBounce.fBallSide, &sstBounce.fBallSide);
@@ -121,15 +122,17 @@ orxSTATIC orxSTATUS orxBounce_Init()
     sstBounce.fScreenHeight = orxU2F(u32ScreenHeight);
 
     /* Sets all vectors */
-    orxVector_Set(&vUL, 0.0f, 0.0f, 0.0f);
-    orxVector_Set(&vBR, sstBounce.fScreenWidth, sstBounce.fScreenHeight, 100.0f);
     orxVector_Set(&vPos, 0.5f * sstBounce.fScreenWidth, 0.5f * sstBounce.fScreenHeight, 2.0f);
     orxVector_Set(&vPivot, 0.5f * sstBounce.fBallSide, 0.5f * sstBounce.fBallSide, 0.0f);
     orxVector_Set(&sstBounce.vSpeed, 10.0f, 0.0f, 0.0f);
 
+    /* Sets camera position */
+    orxVector_Set(&vPosition, orx2F(0.5f) * sstBounce.fScreenWidth, orx2F(0.5f) * sstBounce.fScreenHeight, orxFLOAT_0); 
+
     /* Creates & inits camera */
     sstBounce.pstCamera = orxCamera_Create();
-    orxCamera_SetFrustrum(sstBounce.pstCamera, &vUL, &vBR);
+    orxCamera_SetFrustrum(sstBounce.pstCamera, sstBounce.fScreenWidth, sstBounce.fScreenHeight, 2.0f, 100.0f);
+    orxCamera_SetPosition(sstBounce.pstCamera, &vPosition);
 
     /* Creates & inits viewport on screen */
     sstBounce.pstViewport = orxViewport_Create();

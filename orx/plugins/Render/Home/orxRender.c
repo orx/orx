@@ -254,8 +254,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
         {
           orxOBJECT      *pstObject;
           orxRENDER_NODE *pstRenderNode;
-          orxVECTOR       vCameraUL, vCameraBR;
-          orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation;
+          orxVECTOR       vCameraUL, vCameraBR, vCameraCenter;
+          orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraWidth, fCameraHeight, fCameraSqrBoundingRadius;
 
           /* Gets camera frustrum */
           orxCamera_GetFrustrum(pstCamera, &vCameraUL, &vCameraBR);
@@ -263,9 +263,20 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
           /* Gets camera zoom */
           fZoom = orxCamera_GetZoom(pstCamera);
 
+          /* Gets camera size */
+          fCameraWidth  = vCameraBR.fX - vCameraUL.fX;
+          fCameraHeight = vCameraBR.fY - vCameraUL.fY;
+
+          /* Gets camera center */
+          orxVector_Add(&vCameraCenter, &vCameraUL, &vCameraBR);
+          orxVector_Mulf(&vCameraCenter, &vCameraCenter, orx2F(0.5f));
+
+          /* Gets camera square bounding radius */
+          fCameraSqrBoundingRadius = orx2F(0.5f) * ((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight));
+
           /* Gets rendering scales */
-          fRenderScaleX = fZoom * (vViewportBR.fX - vViewportUL.fX) / (vCameraBR.fX - vCameraUL.fX); 
-          fRenderScaleY = fZoom * (vViewportBR.fY - vViewportUL.fY) / (vCameraBR.fY - vCameraUL.fY); 
+          fRenderScaleX = fZoom * (vViewportBR.fX - vViewportUL.fX) / fCameraWidth; 
+          fRenderScaleY = fZoom * (vViewportBR.fY - vViewportUL.fY) / fCameraHeight; 
 
           /* Gets camera rotation */
           fRenderRotation = orxCamera_GetRotation(pstCamera);
@@ -296,75 +307,83 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
               /* Valid? */
               if((pstFrame != orxNULL) && (pstTexture != orxNULL))
               {
-                orxVECTOR vObjectPos, vObjectUL, vObjectBR, vPivot;
-                orxFLOAT  fWidth, fHeight, fObjectScaleX, fObjectScaleY, fObjectRotation;
+                orxVECTOR vObjectPos;
 
-                /* Gets graphic's pivot */
-                orxGraphic_GetPivot(pstGraphic, &vPivot);
-
-                /* Gets object's scales */
-                orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &fObjectScaleX, &fObjectScaleY);
-
-                /* Updates pivot with scale */
-                vPivot.fX *= fObjectScaleX;
-                vPivot.fY *= fObjectScaleY;
-
-                /* Gets object's rotation */
-                fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
-
-                /* Gets its bounding volume & position */
+                /* Gets its position */
                 orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
-                orxVector_Sub(&vObjectUL, &vObjectPos, &vPivot);
-                orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
-                orxVector_Set(&vObjectBR, (fWidth * fObjectScaleX) + vObjectUL.fX, (fHeight * fObjectScaleY) + vObjectUL.fY, vObjectUL.fZ);
 
-                /* Is object in frustrum? */
-                if(1)//orxVector_TestAABoxIntersection(&vCameraUL, &vCameraBR, &vObjectUL, &vObjectBR) != orxFALSE)
+                /* Is object in Z frustrum? */
+                if((vObjectPos.fZ >= vCameraUL.fZ) && (vObjectPos.fZ <= vCameraBR.fZ))
                 {
-                  orxLINKLIST_NODE *pstNode;
+                  orxVECTOR vSqrDist;
+                  orxFLOAT  fWidth, fHeight, fObjectScaleX, fObjectScaleY, fObjectSqrBoundingRadius;
 
-                  /* Creates a render node */
-                  pstRenderNode = orxBank_Allocate(sstRender.pstRenderBank);
+                  /* Gets its texture size */
+                  orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
 
-                  /* Cleans its internal node */
-                  orxMemory_Set(pstRenderNode, 0, sizeof(orxLINKLIST_NODE));
+                  /* Gets object's scales */
+                  orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &fObjectScaleX, &fObjectScaleY);
 
-                  /* Stores object */
-                  pstRenderNode->pstObject = pstObject;
+                  /* Updates it with object scale */
+                  fWidth  *= fObjectScaleX;
+                  fHeight *= fObjectScaleY;
 
-                  /* Stores its position */
-                  orxVector_Copy(&(pstRenderNode->vPosition), &vObjectPos);
+                  /* Gets object square bounding radius */
+                  fObjectSqrBoundingRadius = orx2F(1.5f) * ((fWidth * fWidth) + (fHeight * fHeight));
 
-                  /* Empty list? */
-                  if(orxLinkList_GetCounter(&(sstRender.stRenderList)) == 0)
+                  /* Gets 2D square distance to camera */
+                  orxVector_Sub(&vSqrDist, &vObjectPos, &vCameraCenter);
+                  orxVector_Mul(&vSqrDist, &vSqrDist, &vSqrDist); 
+
+                  /* Circle test between object & camera */
+                  if((vSqrDist.fX <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius))
+                  || (vSqrDist.fY <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius)))
                   {
-                    /* Adds node at beginning */
-                    orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
-                  }
-                  else
-                  {
-                    /* Finds correct node */
-                    for(pstNode = orxLinkList_GetFirst(&(sstRender.stRenderList));
-                        (pstNode != orxNULL);
-                        pstNode = orxLinkList_GetNext(pstNode))
-                    {
-                      /* Is current object further? */
-                      if(vObjectPos.fZ > ((orxRENDER_NODE *)pstNode)->vPosition.fZ)
-                      {
-                        break;
-                      }
-                    }
+                    orxLINKLIST_NODE *pstNode;
 
-                    /* End of list reached? */
-                    if(pstNode == orxNULL)
+                    /* Creates a render node */
+                    pstRenderNode = orxBank_Allocate(sstRender.pstRenderBank);
+
+                    /* Cleans its internal node */
+                    orxMemory_Set(pstRenderNode, 0, sizeof(orxLINKLIST_NODE));
+
+                    /* Stores object */
+                    pstRenderNode->pstObject = pstObject;
+
+                    /* Stores its position */
+                    orxVector_Copy(&(pstRenderNode->vPosition), &vObjectPos);
+
+                    /* Empty list? */
+                    if(orxLinkList_GetCounter(&(sstRender.stRenderList)) == 0)
                     {
-                      /* Adds it at end */
-                      orxLinkList_AddEnd(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
+                      /* Adds node at beginning */
+                      orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
                     }
                     else
                     {
-                      /* Adds it before found node */
-                      orxLinkList_AddBefore(pstNode, (orxLINKLIST_NODE *)pstRenderNode);
+                      /* Finds correct node */
+                      for(pstNode = orxLinkList_GetFirst(&(sstRender.stRenderList));
+                          (pstNode != orxNULL);
+                          pstNode = orxLinkList_GetNext(pstNode))
+                      {
+                        /* Is current object further? */
+                        if(vObjectPos.fZ > ((orxRENDER_NODE *)pstNode)->vPosition.fZ)
+                        {
+                          break;
+                        }
+                      }
+
+                      /* End of list reached? */
+                      if(pstNode == orxNULL)
+                      {
+                        /* Adds it at end */
+                        orxLinkList_AddEnd(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
+                      }
+                      else
+                      {
+                        /* Adds it before found node */
+                        orxLinkList_AddBefore(pstNode, (orxLINKLIST_NODE *)pstRenderNode);
+                      }
                     }
                   }
                 }

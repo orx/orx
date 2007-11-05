@@ -306,19 +306,19 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
  * @param[in]   _pvBR           Bottom right corner position
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxCONST orxVECTOR *_pvUL, orxCONST orxVECTOR *_pvBR)
+orxSTATUS orxFASTCALL orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar)
 {
+  orxVECTOR vPos;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
-  orxASSERT(_pvUL != orxNULL);
-  orxASSERT(_pvBR != orxNULL);
+  orxASSERT(_fFar > _fNear);
 
-  /* Updates frustrum */
-  orxVector_Copy(&_pstCamera->stFrustrum.vUL, _pvUL);
-  orxVector_Copy(&_pstCamera->stFrustrum.vBR, _pvBR);
+  /* Updates internal frustrum */
+  orxVector_Set(&_pstCamera->stFrustrum.vUL, orx2F(-0.5f) * _fWidth, orx2F(-0.5f) * _fHeight, _fNear);
+  orxVector_Set(&_pstCamera->stFrustrum.vBR, orx2F(0.5f) * _fWidth, orx2F(0.5f) * _fHeight, _fFar);
 
   /* Done! */
   return eResult;

@@ -122,10 +122,10 @@ extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(orxCONST orx
 
 /** Sets a viewport position
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _u32X           X axis position (top left corner)
- * @param[in]   _u32Y           Y axis position (top left corner)
+ * @param[in]   _fX             X axis position (top left corner)
+ * @param[in]   _fY             Y axis position (top left corner)
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxU32 _u32X, orxU32 _u32Y);
+extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT _fX, orxFLOAT _fY);
 
 /** Sets a viewport relative position
  * @param[in]   _pstViewport    Concerned viewport
@@ -136,40 +136,40 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetRelativePosition(or
 
 /** Gets a viewport position
  * @param[in]   _pstViewport    Concerned viewport
- * @param[out]  _pu32X          X axis position (top left corner)
- * @param[out]  _pu32Y          Y axis position (top left corner)
+ * @param[out]  _pfX            X axis position (top left corner)
+ * @param[out]  _pfY            Y axis position (top left corner)
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, orxU32 *_pu32X, orxU32 *_pu32Y);
+extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfX, orxFLOAT *_pfY);
 
 
 /** Sets a viewport size
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _u32W           Width
- * @param[in]   _u32H           Height
+ * @param[in]   _fWidth         Width
+ * @param[in]   _fHeight        Height
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxU32 _u32W, orxU32 _u32H);
+extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fWidth, orxFLOAT _fHeight);
 
 /** Sets a viewport relative size
  * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _fW             Width (0.0f - 1.0f)
- * @param[in]   _fH             Height (0.0f - 1.0f)
+ * @param[in]   _fWidth         Relative width (0.0f - 1.0f)
+ * @param[in]   _fHeight        Relative height (0.0f - 1.0f)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW, orxFLOAT _fH);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orxFLOAT _fWidth, orxFLOAT _fHeight);
 
 /** Gets a viewport size
  * @param[in]   _pstViewport    Concerned viewport
- * @param[out]  _pu32W          Width
- * @param[out]  _pu32H          Height
+ * @param[out]  _pfWidth        Width
+ * @param[out]  _pfHeight       Height
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxU32 *_pu32W, orxU32 *_pu32H);
+extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets a viewport relative size
  * @param[in]   _pstViewport    Concerned viewport
- * @param[out]  _f32W           Relative width
- * @param[out]  _f32H           Relative height
+ * @param[out]  _fWidth         Relative width
+ * @param[out]  _fHeight        Relative height
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH);
+extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets a viewport clipping
  * @param[in]   _pstViewport    Concerned viewport

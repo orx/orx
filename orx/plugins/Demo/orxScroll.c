@@ -278,16 +278,16 @@ orxSTATIC orxSTATUS orxScroll_Init()
   /* Success? */
   if(i == orxSCROLL_RESOURCE_NUMBER)
   {
-    orxVECTOR   vCameraUL, vCameraBR;
+    orxVECTOR   vPosition;
     orxTEXTURE *pstBackgroundTexture;
 
-    /* Inits camera vectors */
-    orxVector_Set(&vCameraUL, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0);
-    orxVector_Set(&vCameraBR, sstScroll.fScreenWidth, sstScroll.fScreenHeight, orxSCROLL_KF_MAX_Z);
+    /* Sets camera position */
+    orxVector_Set(&vPosition, orx2F(0.5f) * sstScroll.fScreenWidth, orx2F(0.5f) * sstScroll.fScreenHeight, orxFLOAT_0); 
 
     /* Creates & inits camera */
     sstScroll.pstCamera = orxCamera_Create();
-    orxCamera_SetFrustrum(sstScroll.pstCamera, &vCameraUL, &vCameraBR);
+    orxCamera_SetFrustrum(sstScroll.pstCamera, sstScroll.fScreenWidth, sstScroll.fScreenHeight, orxFLOAT_0, orxSCROLL_KF_MAX_Z);
+    orxCamera_SetPosition(sstScroll.pstCamera, &vPosition);
 
     /* Sets camera speed */
     sstScroll.fScrollSpeed = orxSCROLL_KF_SPEED;
@@ -330,7 +330,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
       orxFrame_SetParent(pstBackgroundFrame, orxCamera_GetFrame(sstScroll.pstCamera));
 
       /* Sets its local position */
-      orxVector_Set(&vBackgroundPos, orxFLOAT_0, orxFLOAT_0, orxSCROLL_KF_MAX_Z);
+      orxVector_Set(&vBackgroundPos, orx2F(-0.5f) * sstScroll.fScreenWidth, orx2F(-0.5f) * sstScroll.fScreenHeight, orxSCROLL_KF_MAX_Z);
       orxFrame_SetPosition(pstBackgroundFrame, &vBackgroundPos);
 
       /* Sets its scale */
