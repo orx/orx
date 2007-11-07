@@ -243,4 +243,12 @@
     <sources>plugins/Demo/orxScroll.c</sources>
   </orx-plugin>
 
+  <!-- CAVE DEMO -->
+
+  <!-- Depends on nothing -->
+  <orx-plugin id="Cave" cond="USE_PLUGINS=='1'">
+    <category>demo</category>
+    <sources>plugins/Demo/orxCave.c</sources>
+  </orx-plugin>
+
 </bakefile>

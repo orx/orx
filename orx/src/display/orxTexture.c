@@ -641,6 +641,25 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFL
   return eResult;
 }
 
+/** Gets texture name
+ * @param[in]   _pstTexture   Concerned texture
+ * @return      Texture name / orxNULL
+ */
+orxSTRING orxFASTCALL orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture)
+{
+  orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTexture);
+
+  /* Updates result */
+  zResult = _pstTexture->zDataName;
+
+  /* Done! */
+  return zResult;
+}
+
 /** Gets screen texture
  * @return      Screen texture / orxNULL
  */

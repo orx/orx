@@ -236,16 +236,16 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
             break;
           }
 
-//          case sf::Key::V:
-//          {
-//            /* Updates VSync flag */
-//            sstDisplay.u32Flags ^= orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
-//
-//            /* Updates VSync use */
-//            sstDisplay.poRenderWindow->UseVerticalSync((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? orxTRUE : orxFALSE);
-//
-//            break;
-//          }
+          case sf::Key::V:
+          {
+            /* Updates VSync flag */
+            sstDisplay.u32Flags ^= orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
+
+            /* Updates VSync use */
+            sstDisplay.poRenderWindow->UseVerticalSync((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? orxTRUE : orxFALSE);
+
+            break;
+          }
 
           default:
           {

@@ -393,8 +393,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
 
           /* For all render nodes */
           for(pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetFirst(&(sstRender.stRenderList));
-          pstRenderNode != orxNULL;
-          pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstRenderNode))
+              pstRenderNode != orxNULL;
+              pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstRenderNode))
           {
             orxFRAME *pstFrame;
             orxVECTOR vObjectPos, vRenderPos;

@@ -70,6 +70,9 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(orxCONST orxTEXTU
 /** Texture size get accessor. */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
+/** Texture name accessor. */
+extern orxDLLAPI orxSTRING orxFASTCALL    orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture);
+
 /** Gets screen texture
  * @return      Screen texture / orxNULL
  */

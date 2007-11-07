@@ -250,6 +250,11 @@ SCROLL_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
 	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 SCROLL_OBJECTS =  \
 	./build/$(BUILD)/Scroll_orxScroll.o
+CAVE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
+	-D$(orxCOMPILER) -I../../../include -D__orxDLL__ $(PIC_FLAG) \
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+CAVE_OBJECTS =  \
+	./build/$(BUILD)/Cave_orxCave.o
 
 ### Conditionally set variables: ###
 
@@ -341,6 +346,8 @@ COND_USE_PLUGINS_1_USE_SFML_1___Time_SFML___depname = \
 @COND_USE_PLUGINS_1@	../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Scroll___depname = \
 @COND_USE_PLUGINS_1@	../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE)
+@COND_USE_PLUGINS_1@__Cave___depname = \
+@COND_USE_PLUGINS_1@	../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE)
 @COND_BUILD_DEBUG@__orxDEBUG_p = -D__orxDEBUG__
 @COND_PLATFORM_UNIX_1@__orxPLATFORM_p = -D__orxLINUX__
 @COND_PLATFORM_WIN32_1@__orxPLATFORM_p = -D__orxWINDOWS__
@@ -350,7 +357,7 @@ COND_USE_PLUGINS_1_USE_SFML_1___Time_SFML___depname = \
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx$(EXEEXT) $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx$(EXEEXT) $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -388,6 +395,7 @@ clean:
 	rm -f ../../../bin/plugins/core/time/$(DLLPREFIX_MODULE)Time_SFML.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE)
+	rm -f ../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE)
 
 distclean: clean
 	rm -f config.cache config.log config.status bk-deps bk-make-pch shared-ld-sh Makefile
@@ -473,6 +481,9 @@ distclean: clean
 
 @COND_USE_PLUGINS_1@../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE): $(SCROLL_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(SCROLL_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)    $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
+
+@COND_USE_PLUGINS_1@../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE): $(CAVE_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(CAVE_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)    $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
 
 ./build/$(BUILD)/orxDLL_orxAnim.o: ../../../src/anim/orxAnim.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) ../../../src/anim/orxAnim.c
@@ -791,6 +802,9 @@ distclean: clean
 
 ./build/$(BUILD)/Scroll_orxScroll.o: ../../../plugins/Demo/orxScroll.c
 	$(CCC) -c -o $@ $(SCROLL_CFLAGS) ../../../plugins/Demo/orxScroll.c
+
+./build/$(BUILD)/Cave_orxCave.o: ../../../plugins/Demo/orxCave.c
+	$(CCC) -c -o $@ $(CAVE_CFLAGS) ../../../plugins/Demo/orxCave.c
 
 
 # Include dependency info, if present:
