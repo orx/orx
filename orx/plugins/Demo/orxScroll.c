@@ -29,10 +29,12 @@
 
 /** Defines
  */
-#define orxSCROLL_KU32_TICK_SIZE              orxFLOAT_0
+#define orxSCROLL_KZ_DATA_FOLDER              "data\\scroll\\"
+#define orxSCROLL_KF_TICK_SIZE                orx2F(0.0f)
+#define orxSCROLL_KF_DT_SIZE                  orx2F(0.01666f)
 #define orxSCROLL_KF_MAX_Z                    orx2F(10000.0f)
 #define orxSCROLL_KF_SPEED                    orx2F(180.0f)
-#define orxSCROLL_KZ_BACKGROUND_NAME          "background.png"
+#define orxSCROLL_KZ_BACKGROUND_NAME          orxSCROLL_KZ_DATA_FOLDER"background.png"
 #define orxSCROLL_KU32_WAVE_FRAME_NUMBER      4
 #define orxSCROLL_KF_WAVE_ANGULAR_VELOCITY    (orx2F(0.5f) * orxMATH_KF_PI)
 #define orxSCROLL_KF_WAVE_PHASIS              (orx2F(2.0f) * orxMATH_KF_PI / orx2F(orxSCROLL_KU32_WAVE_FRAME_NUMBER))
@@ -107,31 +109,31 @@ orxSTATIC orxSCROLL_STATIC sstScroll;
 orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
 {
     {
-        "fuji.png",
+      orxSCROLL_KZ_DATA_FOLDER"fuji.png",
         {orx2F(0.0f), orx2F(1.1f), orx2F(1.0f)},
         {orx2F(11.0f), orx2F(1.3f), orx2F(1.0f)},
         80
     },
     {
-        "boat1.png",
+      orxSCROLL_KZ_DATA_FOLDER"boat1.png",
         {orx2F(0.0f), orx2F(1.0f), orx2F(0.6f)},
         {orx2F(11.0f), orx2F(1.25f), orx2F(0.8f)},
         15
     },
     {
-        "boat2.png",
+      orxSCROLL_KZ_DATA_FOLDER"boat2.png",
         {orx2F(0.0f), orx2F(1.0f), orx2F(0.2f)},
         {orx2F(11.0f), orx2F(1.15f), orx2F(0.5f)},
         20
     },
     {
-        "cloud.png",
+      orxSCROLL_KZ_DATA_FOLDER"cloud.png",
         {orx2F(0.0f), orx2F(0.1f), orx2F(0.2f)},
         {orx2F(11.0f), orx2F(0.7f), orx2F(0.7f)},
         70
     },
     {
-        "wave.png",
+      orxSCROLL_KZ_DATA_FOLDER"wave.png",
         {orx2F(0.0f), orx2F(1.3f), orx2F(0.2f)},
         {orx2F(11.0f), orx2F(1.6f), orx2F(0.8f)},
         300
@@ -300,7 +302,8 @@ orxSTATIC orxSTATUS orxScroll_Init()
     orxViewport_SetRelativePosition(sstScroll.pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_CENTER);
 
     /* Creates rendering clock */
-    sstScroll.pstClock = orxClock_Create(orxSCROLL_KU32_TICK_SIZE, orxCLOCK_TYPE_USER);
+    sstScroll.pstClock = orxClock_Create(orxSCROLL_KF_TICK_SIZE, orxCLOCK_TYPE_USER);
+    orxClock_SetModifier(sstScroll.pstClock, orxCLOCK_MOD_TYPE_FIXED, orxSCROLL_KF_DT_SIZE);
 
     /* Registers update function */
     eResult = orxClock_Register(sstScroll.pstClock, orxScroll_Update, orxNULL, orxMODULE_ID_MAIN);

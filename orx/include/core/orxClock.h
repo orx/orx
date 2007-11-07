@@ -44,6 +44,7 @@
 typedef enum __orxCLOCK_TYPE_t
 {
   orxCLOCK_TYPE_CORE = 0,
+  orxCLOCK_TYPE_RENDER,
   orxCLOCK_TYPE_USER,
 
   orxCLOCK_TYPE_SECOND,
@@ -77,10 +78,8 @@ typedef struct __orxCLOCK_INFO_t
   orxFLOAT          fTickSize;                        /**< Clock tick size (in seconds) : 8 */
   orxCLOCK_MOD_TYPE eModType;                         /**> Clock mod type : 12 */
   orxFLOAT          fModValue;                        /**> Clock mod value : 16 */
-  orxFLOAT          fLastTick;                        /**< Clock last tick time stamp : 20 */
-  orxFLOAT          fDT;                              /**> Clock DT (time ellapsed between 2 clock calls in seconds) : 24 */
-
-  orxFLOAT          fTime;                            /**> Clock time : 28 */ 
+  orxFLOAT          fDT;                              /**> Clock DT (time ellapsed between 2 clock calls in seconds) : 20 */
+  orxFLOAT          fTime;                            /**> Clock time : 24 */ 
 
 } orxCLOCK_INFO;
 
@@ -119,6 +118,9 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(orxCONST
 
 /** Gets informations about a Clock. */
 extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock);
+
+/** Sets a clock modifier */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue);
 
 /** Registers a callback function to a clock. */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID);

@@ -558,7 +558,7 @@ orxSTATUS orxRender_Init()
     if(sstRender.pstRenderBank != orxNULL)
     {
       /* Creates rendering clock */
-      sstRender.pstClock = orxClock_Create(orxRENDER_KU32_TICK_SIZE, orxCLOCK_TYPE_CORE);
+      sstRender.pstClock = orxClock_Create(orxRENDER_KU32_TICK_SIZE, orxCLOCK_TYPE_RENDER);
 
       /* Valid? */
       if(sstRender.pstClock != orxNULL)
