@@ -22,7 +22,7 @@
 #include "display/orxDisplay.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
-#include "utils/orxHashtable.h"
+#include "utils/orxHashTable.h"
 
 
 /*
