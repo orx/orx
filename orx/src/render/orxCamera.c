@@ -308,7 +308,6 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
  */
 orxSTATUS orxFASTCALL orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar)
 {
-  orxVECTOR vPos;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */

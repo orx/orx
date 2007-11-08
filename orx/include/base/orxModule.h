@@ -42,6 +42,7 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_JOYSTICK,
   orxMODULE_ID_KEYBOARD,
   orxMODULE_ID_LINKLIST,
+  orxMODULE_ID_MAIN,
   orxMODULE_ID_MEMORY,
   orxMODULE_ID_MOUSE,
   orxMODULE_ID_OBJECT,
@@ -66,12 +67,6 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_NUMBER,
 
   orxMODULE_ID_MAX_NUMBER = 64,
-
-#ifdef __orxTEST__
-  orxMODULE_ID_MAIN = orxMODULE_ID_TEST,
-#else /* __orxTEST__ */
-  orxMODULE_ID_MAIN = orxMODULE_ID_CLOCK,
-#endif /* __orxTEST__ */
 
   orxMODULE_ID_NONE = orxENUM_NONE
 

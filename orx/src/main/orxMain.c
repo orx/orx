@@ -49,6 +49,20 @@ orxSTATIC orxMAIN_STATIC sstMain;
  * Functions                                                               *
  ***************************************************************************/
 
+/** Main module setup
+ */
+orxVOID orxMain_Setup()
+{
+  /* Adds module dependencies */
+#ifdef __orxTEST__
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_TEST);
+#else /* __orxTEST__ */
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
+#endif /* __orxTEST__ */
+
+  return;
+}
+
 /** Initialize the main module (will initialize all needed modules)
  */
 orxSTATUS orxMain_Init()
@@ -58,15 +72,11 @@ orxSTATUS orxMain_Init()
   /* Don't call twice the init function */
   if(!(sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY))
   {
-    /* Inits main module */
-    if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
-    {
-      /* Sets module as initialized */
-      sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_READY;
+    /* Sets module as initialized */
+    sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_READY;
 
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
-    }
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -126,6 +136,9 @@ int main(int argc, char **argv)
   /* Inits the Debug System */
   orxDEBUG_INIT();
 
+  /* Registers main module */
+  orxModule_Register(orxMODULE_ID_MAIN, orxMain_Setup, orxMain_Init, orxMain_Exit);
+
   /* Registers all modules */
   orxModule_RegisterAll();
 
@@ -139,7 +152,7 @@ int main(int argc, char **argv)
     if(orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
     {
       /* Init the Engine */
-      if(orxMain_Init() == orxSTATUS_SUCCESS)
+      if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
       {
         /* Runs the engine */
         orxMain_Run();
