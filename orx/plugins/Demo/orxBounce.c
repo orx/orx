@@ -107,7 +107,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
   orxMemory_Set(&sstBounce, 0, sizeof(orxBOUNCE_STATIC));
 
   /* Creates texture */
-  sstBounce.pstTexture = orxTexture_CreateFromFile("bounce.bmp");
+  sstBounce.pstTexture = orxTexture_CreateFromFile("data\\bounce\\ball.bmp");
 
   /* Valid? */
   if(sstBounce.pstTexture != orxNULL)
