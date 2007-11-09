@@ -108,6 +108,9 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
   oText.SetLeft(_pstTransform->s32DstX - _pstTransform->s32SrcX);
   oText.SetTop(_pstTransform->s32DstY - _pstTransform->s32SrcY);
 
+  /* Disables clipping */
+  glDisable(GL_SCISSOR_TEST);
+
   /* Draws it */
   sstDisplay.poRenderWindow->Draw(oText);
 
