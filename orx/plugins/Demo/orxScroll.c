@@ -110,8 +110,8 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
 {
     {
       orxSCROLL_KZ_DATA_FOLDER"fuji.png",
-        {orx2F(0.0f), orx2F(1.1f), orx2F(1.0f)},
-        {orx2F(11.0f), orx2F(1.3f), orx2F(1.0f)},
+        {orx2F(0.0f), orx2F(1.1f), orx2F(0.9f)},
+        {orx2F(11.0f), orx2F(1.3f), orx2F(0.9f)},
         80
     },
     {
