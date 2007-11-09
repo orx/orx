@@ -30,11 +30,10 @@
 /** Defines
  */
 #define orxCAVE_KZ_DATA_FOLDER              "data\\cave\\"
-#define orxCAVE_KF_SPEED                    orx2F(180.0f)
-#define orxCAVE_KZ_BACKGROUND               orxCAVE_KZ_DATA_FOLDER"background.png"
-#define orxCAVE_KZ_BACKGROUND_SHADOW        orxCAVE_KZ_DATA_FOLDER"background-shadow.png"
-#define orxCAVE_KZ_BALL                     orxCAVE_KZ_DATA_FOLDER"ball.png"
-#define orxCAVE_KZ_BALL_REFLECT             orxCAVE_KZ_DATA_FOLDER"ball-reflect.png"
+#define orxCAVE_KF_CAMERA_SPEED             orx2F(120.0f)
+#define orxCAVE_KF_BALL_SPEED               orx2F(180.0f)
+#define orxCAVE_KF_BALL_ANGULAR_VELOCITY    orx2F(-5.0f)
+#define orxCAVE_KF_FADE_IN_SPEED            orx2F(1.0f)
 
 
 /***************************************************************************
@@ -56,12 +55,28 @@ typedef enum __orxCAVE_RESOURCE_t
 
 } orxCAVE_RESOURCE;
 
+/** Execution step
+ */
+typedef enum __orxCAVE_STEP_t
+{
+  orxCAVE_STEP_FADE_IN = 0,
+  orxCAVE_STEP_CAMERA_SCROLLING,
+  orxCAVE_STEP_TRIGGER_TV,
+  orxCAVE_STEP_BALL_SCROLLING,
+
+  orxCAVE_STEP_NUMBER,
+
+  orxCAVE_STEP_NONE = orxENUM_NONE
+
+} orxCAVE_STEP;
+
 /** Resource info structure 
  */
 typedef struct __orxCAVE_RESOURCE_INFO_t
 {
   orxSTRING zFileName;
-  orxFLOAT  fZ;
+  orxVECTOR vInitialPos;
+  orxVECTOR vRelativePivot;
 
 } orxCAVE_RESOURCE_INFO;
 
@@ -81,11 +96,13 @@ typedef struct __orxCAVE_STATIC_t
 {
   orxCAMERA                *pstMainCamera, *pstTVCamera;
   orxVIEWPORT              *pstMainViewport, *pstTVViewport;
-  orxFRAME                 *pstBallFrame;
+  orxCLOCK                 *pstClock;
 
   orxCAVE_RESOURCE_DATA     astData[orxCAVE_RESOURCE_NUMBER];
 
-  orxFLOAT                  fScreenWidth, fScreenHeight, fBackgroundWidth, fBackgroundHeight;
+  orxFLOAT                  fScreenWidth, fScreenHeight, fBackgroundWidth, fBackgroundHeight, fStepDelay;
+
+  orxCAVE_STEP              eStep;
 
 } orxCAVE_STATIC;
 
@@ -104,42 +121,203 @@ orxSTATIC orxCAVE_RESOURCE_INFO sastInfo[orxCAVE_RESOURCE_NUMBER] =
 {
     {
       orxCAVE_KZ_DATA_FOLDER"background.png",
-      orx2F(1.0f)
+      {orx2F(0.0f), orx2F(0.0f), orx2F(1.0f)},
+      {orx2F(0.0f), orx2F(0.85f), orx2F(0.0f)}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"background-shadow.png",
-      orx2F(0.0f)
+      {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)},
+      {orx2F(0.0f), orx2F(0.85f), orx2F(0.0f)}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"ball.png",
-      orx2F(0.5f)
+      {orx2F(0.0f), orx2F(0.0f), orx2F(0.2f)},
+      {orx2F(0.5f), orx2F(0.5f), orx2F(0.0f)}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"ball-reflect.png",
-      orx2F(0.1f)
+      {orx2F(0.0f), orx2F(0.0f), orx2F(0.1f)},
+      {orx2F(0.5f), orx2F(0.5f), orx2F(0.0f)}
     }
 };
 
+/** Step delays
+ */
+orxSTATIC orxFLOAT sastStepDelay[orxCAVE_STEP_NUMBER] =
+{
+    orx2F(0.0f),
+    orx2F(0.5f),
+    orx2F(1.0f),
+    orx2F(1.0f)
+};
 
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
 
-orxVOID orxFASTCALL orxCave_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+orxSTATIC orxINLINE orxSTATUS orxCave_UpdateMainCamera(orxFLOAT _fDT)
 {
   orxVECTOR vPos;
-  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Gets camera position */
+  orxCamera_GetPosition(sstCave.pstMainCamera, &vPos);
+
+  /* Updates its scrolling */
+  vPos.fX -= orxCAVE_KF_CAMERA_SPEED * _fDT;
+  
+  /* Stop? */
+  if(vPos.fX <= orx2F(0.5f) * sstCave.fScreenWidth)
+  {
+    /* Resets position */
+    vPos.fX = orx2F(0.5f) * sstCave.fScreenWidth;
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Updates camera position */
+  orxCamera_SetPosition(sstCave.pstMainCamera, &vPos);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATIC orxINLINE orxSTATUS orxCave_UpdateFadeIn(orxFLOAT _fDT)
+{
+  orxFLOAT  fRelativeSize;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Enables main viewport */
+  orxViewport_Enable(sstCave.pstMainViewport, orxTRUE);
+
+  /* Gets viewport relative size */
+  orxViewport_GetRelativeSize(sstCave.pstMainViewport, &fRelativeSize, &fRelativeSize);
+
+  /* Updates size */
+  fRelativeSize += orxCAVE_KF_FADE_IN_SPEED * _fDT;
+
+  /* Full size? */
+  if(fRelativeSize >= orxFLOAT_1)
+  {
+    /* Updates size */
+    fRelativeSize = orxFLOAT_1;
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Refreshs viewport */
+  orxViewport_SetRelativeSize(sstCave.pstMainViewport, fRelativeSize, fRelativeSize);
+  orxViewport_SetRelativePosition(sstCave.pstMainViewport, orxVIEWPORT_KU32_FLAG_ALIGN_CENTER);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATIC orxINLINE orxSTATUS orxCave_UpdateBall(orxFLOAT _fDT)
+{
+  orxVECTOR   vPos;
+  orxFLOAT    fRotation;
+  orxFRAME   *pstFrame;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Gets ball texture frame */
   pstFrame = (orxFRAME *)orxObject_GetStructure(sstCave.astData[orxCAVE_RESOURCE_BALL].pstObject, orxSTRUCTURE_ID_FRAME);
 
-  /* Updates its rotation */
-  orxFrame_SetRotation(pstFrame, orx2F(4.0f) * _pstClockInfo->fTime);
+  /* Gets its rotation */
+  fRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL);
 
-  /* Updates main ball frame */
-  orxFrame_GetPosition(sstCave.pstBallFrame, orxFRAME_SPACE_LOCAL, &vPos);
-  vPos.fX += 100.0f * _pstClockInfo->fDT;
-  orxFrame_SetPosition(sstCave.pstBallFrame, &vPos);
+  /* Updates it */
+  fRotation += orxCAVE_KF_BALL_ANGULAR_VELOCITY * _fDT;
+
+  /* Updates ball texture frame */
+  orxFrame_SetRotation(pstFrame, fRotation);
+
+  /* Gets TV camera frame position */
+  orxCamera_GetPosition(sstCave.pstTVCamera, &vPos);
+
+  /* Updates it */
+  vPos.fX -= orxCAVE_KF_BALL_SPEED * _fDT;
+
+  /* Arrived? */
+  if(vPos.fX <= orx2F(648.0f))
+  {
+    /* Updates position */
+    vPos.fX = orx2F(648.0f);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Updates TV camera */
+  orxCamera_SetPosition(sstCave.pstTVCamera, &vPos);
+
+  /* Done! */
+  return eResult;
+}
+
+orxVOID orxFASTCALL orxCave_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+{
+  orxBOOL bNextStep;
+
+  /* Has to wait? */
+  if(sstCave.fStepDelay > orxFLOAT_0)
+  {
+    /* Updates delay */
+    sstCave.fStepDelay -= _pstClockInfo->fDT;
+  }
+  else
+  {
+    /* Depending on execution step */
+    switch(sstCave.eStep)
+    {
+      case orxCAVE_STEP_FADE_IN:
+      {
+        /* Updates camera */
+        bNextStep = (orxCave_UpdateFadeIn(_pstClockInfo->fDT) != orxSTATUS_SUCCESS);
+
+        break;
+      }
+
+      case orxCAVE_STEP_CAMERA_SCROLLING:
+      {
+        /* Updates camera */
+        bNextStep = (orxCave_UpdateMainCamera(_pstClockInfo->fDT) != orxSTATUS_SUCCESS);
+  
+        break;
+      }
+
+      case orxCAVE_STEP_TRIGGER_TV:
+      {
+        /* Enables TV viewport */
+        orxViewport_Enable(sstCave.pstTVViewport, orxTRUE);
+  
+        /* Goes to next step */
+        bNextStep = orxTRUE;
+  
+        break;
+      }
+
+      case orxCAVE_STEP_BALL_SCROLLING:
+      {
+        /* Updates camera */
+        bNextStep = (orxCave_UpdateBall(_pstClockInfo->fDT) != orxSTATUS_SUCCESS);
+  
+        break;
+      }
+    }
+
+    /* Updates step? */
+    if(bNextStep != orxFALSE)
+    {
+      /* Increases step */
+      sstCave.eStep++;
+
+      /* Updates step delay */
+      sstCave.fStepDelay = sastStepDelay[sstCave.eStep];
+    }
+  }
 
   return;
 }
@@ -159,9 +337,6 @@ orxSTATIC orxSTATUS orxCave_Init()
   sstCave.fScreenWidth  = orxU2F(u32ScreenWidth);
   sstCave.fScreenHeight = orxU2F(u32ScreenHeight);
 
-  /* Creates ball frame */
-  sstCave.pstBallFrame  = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
-
   /* For all resources */
   for(i = 0; i < orxCAVE_RESOURCE_NUMBER; i++)
   {
@@ -180,20 +355,9 @@ orxSTATIC orxSTATUS orxCave_Init()
       /* Creates its frame */
       pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
 
-      /* Is it a ball? */
-      if(i >= orxCAVE_RESOURCE_BALL)
-      {
-        /* Sets the ball frame as parent */
-        orxFrame_SetParent(pstFrame, sstCave.pstBallFrame);
-
-        /* Inits pivot */
-        orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
-      }
-      else
-      {
-        /* Inits pivot */
-        orxVector_Copy(&vPivot, &orxVECTOR_0);
-      }
+      /* Inits pivot */
+      orxVector_Set(&vPivot, fWidth, fHeight, orxFLOAT_0);
+      orxVector_Mul(&vPivot, &vPivot, &(sastInfo[i].vRelativePivot));
 
       /* Creates & inits 2D graphic objet from texture */
       sstCave.astData[i].pstGraphic = orxGraphic_Create();
@@ -201,8 +365,7 @@ orxSTATIC orxSTATUS orxCave_Init()
       orxGraphic_SetPivot(sstCave.astData[i].pstGraphic, &vPivot);
 
       /* Updates frame position */
-      orxVector_Set(&vPos, orxFLOAT_0, orxFLOAT_0, sastInfo[i].fZ);
-      orxFrame_SetPosition(pstFrame, &vPos);
+      orxFrame_SetPosition(pstFrame, &(sastInfo[i].vInitialPos));
 
       /* Creates & inits object */
       sstCave.astData[i].pstObject = orxObject_Create();
@@ -211,33 +374,47 @@ orxSTATIC orxSTATUS orxCave_Init()
     }
   }
 
-  /* Creates main camera */
+  /* Creates main & TV cameras */
   sstCave.pstMainCamera = orxCamera_Create();
+  sstCave.pstTVCamera = orxCamera_Create();
 
-  /* Sets camera frustrum */
+  /* Sets cameras frustrum */
   orxCamera_SetFrustrum(sstCave.pstMainCamera, sstCave.fScreenWidth, sstCave.fScreenHeight, orxFLOAT_0, orxFLOAT_1);
+  orxCamera_SetFrustrum(sstCave.pstTVCamera, orx2F(256.0f), orx2F(160.0f), orxFLOAT_0, orxFLOAT_1);
 
   /* Gets background size */
   orxTexture_GetSize(sstCave.astData[orxCAVE_RESOURCE_BACKGROUND].pstTexture, &(sstCave.fBackgroundWidth), &(sstCave.fBackgroundHeight));
 
-  /* Sets camera position */
-  orxVector_Set(&vPos, orx2F(0.5f) * sstCave.fScreenWidth, orx2F(0.5f) * sstCave.fBackgroundHeight, orxFLOAT_0);
+  /* Sets cameras position */
+  orxVector_Set(&vPos, orx2F(sstCave.fBackgroundWidth - (0.5f * sstCave.fScreenWidth)), orx2F(0.5f - sastInfo[orxCAVE_RESOURCE_BACKGROUND].vRelativePivot.fY) * sstCave.fBackgroundHeight, orxFLOAT_0);
   orxCamera_SetPosition(sstCave.pstMainCamera, &vPos);
-  
+  orxVector_Set(&vPos, orx2F(1400.0f), orx2F(-32.0f), orxFLOAT_0);
+  orxCamera_SetPosition(sstCave.pstTVCamera, &vPos);
+
   /* Creates & inits main viewport */
   sstCave.pstMainViewport = orxViewport_Create();
   orxViewport_SetCamera(sstCave.pstMainViewport, sstCave.pstMainCamera);
-  orxViewport_SetRelativeSize(sstCave.pstMainViewport, orxFLOAT_1, orxFLOAT_1);
+  orxViewport_SetRelativeSize(sstCave.pstMainViewport, orx2F(0.001f), orx2F(0.001f));
   orxViewport_SetRelativePosition(sstCave.pstMainViewport, orxVIEWPORT_KU32_FLAG_ALIGN_CENTER);
+  orxViewport_Enable(sstCave.pstMainViewport, orxFALSE);
 
   /* Creates & inits TV viewport */
   sstCave.pstTVViewport = orxViewport_Create();
-//  orxViewport_SetCamera(sstCave.pstTVViewport, sstCave.pstMainCamera);
-  orxViewport_SetSize(sstCave.pstTVViewport, 132.0f, 80.0f);
-  orxViewport_SetPosition(sstCave.pstTVViewport, orx2F(442.0f) + (orx2F(0.5f) * (sstCave.fScreenHeight - sstCave.fBackgroundHeight)), orx2F(266.0f));
+  orxViewport_SetCamera(sstCave.pstTVViewport, sstCave.pstTVCamera);
+  orxViewport_SetSize(sstCave.pstTVViewport, orx2F(128.0f), orx2F(80.0f));
+  orxViewport_SetPosition(sstCave.pstTVViewport, orx2F(445.0f), orx2F(315.0f));
+  orxViewport_Enable(sstCave.pstTVViewport, orxFALSE);
+
+  /* Links balls to TV camera */
+  orxFrame_SetParent((orxFRAME *)orxObject_GetStructure(sstCave.astData[orxCAVE_RESOURCE_BALL].pstObject, orxSTRUCTURE_ID_FRAME), orxCamera_GetFrame(sstCave.pstTVCamera));
+  orxFrame_SetParent((orxFRAME *)orxObject_GetStructure(sstCave.astData[orxCAVE_RESOURCE_BALL_REFLECT].pstObject, orxSTRUCTURE_ID_FRAME), orxCamera_GetFrame(sstCave.pstTVCamera));
+
+  /* Gets render clock */
+  sstCave.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);
+  orxClock_SetModifier(sstCave.pstClock, orxCLOCK_MOD_TYPE_FIXED, orx2F(0.01666f));
 
   /* Registers update function on render clock */
-  eResult = orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER), orxCave_Update, orxNULL, orxMODULE_ID_MAIN);
+  eResult = orxClock_Register(sstCave.pstClock, orxCave_Update, orxNULL, orxMODULE_ID_MAIN);
 
   /* Done! */
   return eResult;
