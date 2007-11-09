@@ -314,14 +314,8 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   poSprite->SetLeft(_s32PosX);
   poSprite->SetTop(_s32PosY);
 
-  /* Enables clipping */
-  glEnable(GL_SCISSOR_TEST);
-
   /* Draws it */
   sstDisplay.poRenderWindow->Draw(*poSprite);
-
-  /* Disables clipping */
-  glDisable(GL_SCISSOR_TEST);
 
   /* Done! */
   return eResult;
@@ -341,7 +335,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   poSprite = (sf::Sprite *)_pstSrc;
 
   /* Updates its center */
-  poSprite->SetRotationCenter(_pstTransform->s32SrcX, _pstTransform->s32SrcY);
+  poSprite->SetRotationCenter(_pstTransform->fScaleX * _pstTransform->s32SrcX, _pstTransform->fScaleY * _pstTransform->s32SrcY);
 
   /* Updates its rotation */
   poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
@@ -351,6 +345,15 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
 
   /* Blits it */
   eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->s32DstX - orxF2S(_pstTransform->fScaleX * orxS2F(_pstTransform->s32SrcX)), _pstTransform->s32DstY - orxF2S(_pstTransform->fScaleY * orxS2F(_pstTransform->s32SrcY)));
+
+  /* Updates its center */
+  poSprite->SetRotationCenter(_pstTransform->fScaleX * _pstTransform->s32SrcX, _pstTransform->fScaleY * _pstTransform->s32SrcY);
+
+  /* Resets its rotation */
+  poSprite->SetRotation(0.0f);
+
+  /* Resets its scale */
+  poSprite->SetScale(1.0f, 1.0f);
 
   /* Done! */
   return eResult;
@@ -457,7 +460,10 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   orxASSERT((_pstBitmap == spoScreen) && "Can only draw on screen with this version!");
 
   /* Stores screen clipping */
-  glScissor(_u32TLX, _u32TLY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
+  glScissor(_u32TLX, su32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
+
+  /* Enables clipping */
+  glEnable(GL_SCISSOR_TEST);
 
   /* Done! */
   return eResult;

@@ -460,7 +460,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
     
           /* Adds node to list */
-          eResult = orxLinkList_AddStart(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
+          eResult = orxLinkList_AddEnd(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
 
           break;
 
