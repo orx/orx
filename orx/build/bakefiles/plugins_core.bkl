@@ -145,7 +145,7 @@
   </orx-plugin>
 
   <!-- Depends on SDL
-  <orx-plugin id="Display_SDL" cond="USE_SDL=='1' and USE_SG=='0' and USE_PLUGINS=='1'" template="orxSDL">
+  <orx-plugin id="Display_SDL" cond="USE_SDL=='1' and USE_SGE=='0' and USE_PLUGINS=='1'" template="orxSDL">
     <category>core/display</category>
       <sources>plugins/Display/SDL/orxDisplay.c</sources>
   </orx-plugin> -->
