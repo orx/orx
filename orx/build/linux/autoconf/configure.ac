@@ -19,8 +19,8 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
 AC_PROG_CC
-# AC_PROG_CXX
-# AC_PROG_CXXCPP
+AC_PROG_CXX
+AC_PROG_CXXCPP
 
 # Checks for std lib
 AC_CHECK_LIB(m, cos)
@@ -89,7 +89,10 @@ fi
 #
 if test "$with_plugins" = "yes" ; then
 
+#
 # Check for SDL
+#
+
 PKG_CHECK_MODULES(LIBSDL, [sdl], 
             [ HAVE_SDL="yes" ],
             [ HAVE_SDL="no" ] )
@@ -109,7 +112,34 @@ fi
 AC_SUBST(USE_SDL)
 
 
+#
+# Check for SGE
+#
+
+AC_CHECK_LIB(SGE, [sge_transform], [HAVE_SGE="yes"], [HAVE_SGE="no"])
+if test "$HAVE_SGE"="yes" ; then
+  AC_CHECK_HEADER([SDL/sge.h], [HAVE_SGE="yes"], [HAVE_SGE="no"])
+fi
+
+AC_ARG_WITH(sge, 
+	AC_HELP_STRING([--without-sge],[Disable SGE plugin]),
+	[case "${withval}" in
+	  yes) with_sge="yes" ;;
+	  no)  with_sge="no" ;;
+	  *)   with_sge="yes" ;;
+	esac],[with_sge="yes"])
+if test "$with_sge" = "yes" -a "$HAVE_SGE" = "yes" ; then
+  USE_SGE="1"
+else
+  USE_SGE="0"
+fi
+AC_SUBST(USE_SGE)
+
+
+#
 # Check for Allegro
+#
+
 if allegro-config --version ; then
  	HAVE_ALLEGRO="yes"
 else
@@ -131,7 +161,10 @@ fi
 AC_SUBST(USE_ALLEGRO)
 
 
+#
 # Check for FMod
+#
+
 AC_CHECK_LIB(fmod, [FSOUND_Init FSOUND_IsPlaying], [HAVE_FMOD="yes"], [HAVE_FMOD="no"])
 if test "$HAVE_FMOD"="yes" ; then
   AC_CHECK_HEADER([fmod.h], [HAVE_FMOD="yes"], [HAVE_FMOD="no"])
@@ -150,6 +183,33 @@ else
   USE_FMOD="0"
 fi
 AC_SUBST(USE_FMOD)
+
+
+#
+# Check for SFML
+#
+
+AC_LANG_PUSH(C++)
+OLDLIBS=$LIBS
+LIBS="$LIBS -lsfml-system"
+AC_TRY_LINK([#include <SFML/System.hpp>], [sf::Clock Clock;], [HAVE_SFML="yes"], [HAVE_SFML="no"])
+LIBS=$OLDLIBS
+AC_LANG_POP(C++)
+
+AC_ARG_WITH(sfml, 
+	AC_HELP_STRING([--without-sfml],[Disable SFML plugin]),
+	[case "${withval}" in
+	  yes) with_sfml="yes" ;;
+	  no)  with_sfml="no" ;;
+	  *)   with_sfml="yes" ;;
+	esac],[with_sfml="yes"])
+if test "$with_sfml" = "yes" -a "$HAVE_SFML" = "yes" ; then
+  USE_SFML="1"
+else
+  USE_SFML="0"
+fi
+AC_SUBST(USE_SFML)
+
 
 
 fi
@@ -172,7 +232,9 @@ echo "Compile tests        " $USE_TEST
 echo "Compile plugins      " $USE_PLUGINS
 if test "$USE_PLUGINS" = "1" ; then
 	echo "  - SDL              " $USE_SDL
+	echo "  - SGE              " $USE_SGE
 	echo "  - ALLEGRO          " $USE_ALLEGRO
 	echo "  - FMOD             " $USE_FMOD
+	echo "  - SFML             " $USE_SFML
 fi
 
