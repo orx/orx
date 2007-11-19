@@ -15,7 +15,7 @@
  * @todo 
  * C Rewrite with new Graphic/Anim system
  * V Remove dependency to orxTime and use only orxCLOCK_INFO time (for *_set and _create funtions)
- * X Add/Remove "update-all function" clock registering in orxAnimPointer_Init / orxAnimPointer_Exit.
+ * V Add/Remove "update-all function" clock registering in orxAnimPointer_Init / orxAnimPointer_Exit.
  * V Add current anim, timestamp, dest anim, animset ref, link_table ref in structure.
  * V Duplicate link table on creation if animset is non link-static.
  * V Lock animset & update ref counter upon creation, unlock it upon destruction if updated ref counter is 0.
@@ -74,10 +74,9 @@ extern orxDLLAPI orxVOID                      orxAnimPointer_Exit();
 
 /** Creates an empty AnimPointer
  * @param[in]   _pstAnimSet                   AnimSet reference
- * @param[in]   _pstClock                     Associated clock
  * @return      Created orxANIMPOINTER / orxNULL
  */
-extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_Create(orxANIMSET *_pstAnimSet, orxCLOCK *_pstClock);
+extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_Create(orxANIMSET *_pstAnimSet);
 
 /** Deletes an AnimPointer
  * @param[in]   _pstAnimPointer               AnimPointer to delete

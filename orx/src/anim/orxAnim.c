@@ -356,7 +356,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
       pstAnim->astKeyList = (orxANIM_KEY *)orxMemory_Allocate(_u32Size * sizeof(orxANIM_KEY), orxMEMORY_TYPE_MAIN);
 
       /* Valid? */
-      if(pstAnim->astKeyList == orxNULL)
+      if(pstAnim->astKeyList != orxNULL)
       {
         /* Cleans key array */
         orxMemory_Set(pstAnim->astKeyList, 0, _u32Size * sizeof(orxANIM_KEY));
@@ -577,10 +577,10 @@ orxVOID orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
 
 /** Updates animation given a timestamp
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _u32TimeStamp   TimeStamp for animation update
+ * @param[in]   _fTimeStamp     TimeStamp for animation update
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
+orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 {
   orxU32    u32Index;
   orxSTATUS eResult;
@@ -591,7 +591,7 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
   /* Finds corresponding key index */
-  u32Index = orxAnim_FindKeyIndex(_pstAnim, _u32TimeStamp);
+  u32Index = orxAnim_FindKeyIndex(_pstAnim, _fTimeStamp);
 
   /* Found? */
   if(u32Index != orxU32_UNDEFINED)
@@ -599,12 +599,18 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxU32 _u32TimeStamp)
     /* Updates current key */
     _pstAnim->u16CurrentKey = u32Index;
 
+    /* Updates flags */
+    orxStructure_SetFlags(_pstAnim, orxANIM_KU32_FLAG_CURRENT_KEY, orxANIM_KU32_FLAG_NONE);
+
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
   else
   {
     /* !!! MSG !!! */
+
+    /* Updates flags */
+    orxStructure_SetFlags(_pstAnim, orxANIM_KU32_FLAG_NONE, orxANIM_KU32_FLAG_CURRENT_KEY);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

@@ -109,7 +109,7 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_RemoveAllKeys(orxANIM *_ps
  * @param[in]   _fTimeStamp     TimeStamp for animation update
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        or_xAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 /** Anim current key data accessor
  * @param[in]   _pstAnim        Concerned animation

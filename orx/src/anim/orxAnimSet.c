@@ -672,7 +672,7 @@ orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_T
     pstInfo->au8LinkInfo = (orxU8 *)orxMemory_Allocate(u32Number * (orxU32)(_pstLinkTable->u16LinkCounter) * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
   
     /* Was allocated? */
-    if(pstInfo->au8LinkInfo == orxNULL)
+    if(pstInfo->au8LinkInfo != orxNULL)
     {
       /* Cleans it */
       orxMemory_Set(pstInfo->au8LinkInfo, 0, (orxU32)(_pstLinkTable->u16LinkCounter) * u32Number * sizeof(orxU8));
@@ -984,27 +984,21 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable
       /* Gets link loop counter */
       u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER);
 
-      /* Has an empty loop counter (if no loop, value is orxU32_UNDEFINED)? */
-      if(u32Loop == 0)
+      /* Has no empty loop counter (if no loop, value is orxU32_UNDEFINED)? */
+      if(u32Loop != 0)
       {
-        /* Checks next link */
-        continue;
+        /* Gets path priority */
+        u32LinkPriority = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_PRIORITY);
+
+        /* Is priority higher than previous one? */
+        if(u32LinkPriority > u32ResLinkPriority)
+        {
+          /* Stores new link info */
+          u32ResAnim          = i;
+          u32ResLink          = u32Link;
+          u32ResLinkPriority  = u32LinkPriority;
+        }
       }
-
-      /* Gets path priority */
-      u32LinkPriority = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_PRIORITY);
-
-      /* Is priority lower or equal than previous one? */
-      if(u32LinkPriority <= u32ResLinkPriority)
-      {
-        /* Checks next link */
-        continue;
-      }
-
-      /* Stores new link info */
-      u32ResAnim          = i;
-      u32ResLink          = u32Link;
-      u32ResLinkPriority  = u32LinkPriority;
     }
   }
 
@@ -1143,10 +1137,10 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
         {
           orxAnimSet_UpdateLink(i, pstUpdateInfo);
         }
-      
+
         /* Updates flags */
         orxAnimSet_SetLinkTableFlag(_pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE, orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY);
-      
+
         /* Deletes the link update info */
         orxAnimSet_DeleteLinkUpdateInfo(pstUpdateInfo);
       }
@@ -1900,7 +1894,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
 {
   orxU32                  u32Anim;
   orxFLOAT                fLength;
-  orxHANDLE               hResult = orxHANDLE_UNDEFINED;
+  orxHANDLE               hResult = _hSrcAnim;
   orxANIMSET_LINK_TABLE  *pstWorkTable;
 
   /* Checks */
@@ -1949,16 +1943,16 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
         /* Get next animation according to destination aim */
         u32Anim = orxAnimSet_ComputeNextAnimUsingDest(pstWorkTable, u32Anim, (orxU32)_hDstAnim);
       }
-  
+
       /* Updates timestamp */
       *_pfTime -= fLength;
-  
+
       /* Has next animation? */
       if(u32Anim != orxU32_UNDEFINED)
       {
         /* Gets new duration */
         fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
-        
+
         /* Stores current result handle */
         hResult = (orxHANDLE)u32Anim;
       }

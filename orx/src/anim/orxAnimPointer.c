@@ -68,14 +68,13 @@ struct __orxANIMPOINTER_t
   orxSTRUCTURE            stStructure;                /**< Public structure, first structure member : 16 */
   orxANIMSET             *pstAnimSet;                 /**< Referenced AnimationSet : 20 */
   orxANIMSET_LINK_TABLE  *pstLinkTable;               /**< Link table pointer : 24 */
-  orxCLOCK               *pstClock;                   /**< Associated clock : 28 */
-  orxHANDLE               hCurrentAnim;               /**< Current animation ID : 32 */
-  orxHANDLE               hDstAnim;                   /**< Destination animation ID : 36 */
-  orxFLOAT                fCurrentAnimTime;           /**< Current Time (Relative to current animation) : 40 */
-  orxFLOAT                fTime;                      /**< Current Time (Absolute) : 44 */
-  orxFLOAT                fFrequency;                 /**< Current animation frequency : 48 */
+  orxHANDLE               hCurrentAnim;               /**< Current animation ID : 28 */
+  orxHANDLE               hDstAnim;                   /**< Destination animation ID : 32 */
+  orxFLOAT                fCurrentAnimTime;           /**< Current Time (Relative to current animation) : 26 */
+  orxFLOAT                fTime;                      /**< Current Time (Absolute) : 40 */
+  orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
 
-  orxPAD(48)
+  orxPAD(44)
 };
 
 
@@ -125,10 +124,10 @@ orxSTATIC orxVOID orxAnimPointer_DeleteAll()
 
 /** Computes current Anim for the given time
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _fTime                        Time to use for current Anim computation
+ * @param[in]   _fDT                          Delta time
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fTime)
+orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fDT)
 {
   orxHANDLE hNewAnim;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -143,18 +142,13 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
     /* Has current animation */
     if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
-      orxFLOAT fDT;
-
-      /* Computes TimeDT */
-      fDT = (_fTime - _pstAnimPointer->fTime) * _pstAnimPointer->fFrequency;
-
       /* Updates Times */
-      _pstAnimPointer->fTime = _fTime;
-      _pstAnimPointer->fCurrentAnimTime += fDT;
+      _pstAnimPointer->fTime += _fDT;
+      _pstAnimPointer->fCurrentAnimTime += _fDT;
 
       /* Computes & updates anim*/
       hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hDstAnim, &(_pstAnimPointer->fCurrentAnimTime), _pstAnimPointer->pstLinkTable);
-    
+
       /* Change happened? */
       if(hNewAnim != _pstAnimPointer->hCurrentAnim)
       {
@@ -167,6 +161,13 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
           /* Updates flags */
           orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM);
         }
+      }
+
+      /* Has current anim? */
+      if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
+      {
+        /* Updates current anim */
+        eResult = orxAnim_Update(orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim), _pstAnimPointer->fCurrentAnimTime);
       }
     }
     else
@@ -199,7 +200,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructur
   orxASSERT(pstAnimPointer != orxNULL);
 
   /* Computes animation pointer */
-  return(orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->fTime));
+  return(orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->fDT));
 }
 
 
@@ -282,17 +283,15 @@ orxVOID orxAnimPointer_Exit()
 
 /** Creates an empty AnimPointer
  * @param[in]   _pstAnimSet                   AnimationSet reference
- * @param[in]   _pstClock                     Associated clock
  * @return      Created orxANIMPOINTER / orxNULL
  */
-orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet, orxCLOCK *_pstClock)
+orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
 {
   orxANIMPOINTER *pstAnimPointer = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
-  orxASSERT(_pstClock != orxNULL);
 
   /* Creates animpointer */
   pstAnimPointer = (orxANIMPOINTER *)orxStructure_Create(orxSTRUCTURE_ID_ANIMPOINTER);
@@ -306,19 +305,15 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet, orxCL
     /* Adds a reference on the animset */
     orxAnimSet_AddReference(_pstAnimSet);
 
-    /* Updates clock reference counter */
-    orxStructure_IncreaseCounter(_pstClock);
-
     /* Inits flags */
     orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET | orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_MASK_FLAGS);
 
     /* Inits value */
-    pstAnimPointer->pstClock            = _pstClock;
-    pstAnimPointer->hCurrentAnim        = (orxHANDLE)orxNULL;
-    pstAnimPointer->fCurrentAnimTime    = orxFLOAT_0;
-    pstAnimPointer->fFrequency          = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
-    pstAnimPointer->fTime               = orxClock_GetInfo(_pstClock)->fTime;
-    pstAnimPointer->hDstAnim            = orxHANDLE_UNDEFINED;
+    pstAnimPointer->hCurrentAnim      = (orxHANDLE)orxNULL;
+    pstAnimPointer->fCurrentAnimTime  = orxFLOAT_0;
+    pstAnimPointer->fFrequency        = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
+    pstAnimPointer->fTime             = orxFLOAT_0;
+    pstAnimPointer->hDstAnim          = orxHANDLE_UNDEFINED;
 
     /* Is animset link table non-static? */
     if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC) == orxFALSE)
@@ -364,9 +359,6 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
       orxAnimSet_RemoveReference(_pstAnimPointer->pstAnimSet);
     }
 
-    /* Updates clock reference */
-    orxStructure_DecreaseCounter(_pstAnimPointer->pstClock);
-    
     /* Has a link table? */
     if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_LINK_TABLE) != orxFALSE)
     {
@@ -505,14 +497,11 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimPointer, or
       /* Stores ID */
       _pstAnimPointer->hCurrentAnim = _hAnimHandle;
 
-      /* Updates absolute timestamp */
-      _pstAnimPointer->fTime = orxClock_GetInfo(_pstAnimPointer->pstClock)->fTime;
-
       /* Updates flags */
       orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_FLAG_NONE);
 
       /* Computes animpointer */
-      eResult = orxAnimPointer_Compute(_pstAnimPointer, _pstAnimPointer->fTime);
+      eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
     }
     else
     {
@@ -549,12 +538,9 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTime(orxANIMPOINTER *_pstAnimPointer, or
 
   /* Stores relative timestamp */
   _pstAnimPointer->fCurrentAnimTime = _fTime;
-  
-  /* Updates absolute timestamp */
-  _pstAnimPointer->fTime = orxClock_GetInfo(_pstAnimPointer->pstClock)->fTime;
 
   /* Computes animpointer */
-  eResult = orxAnimPointer_Compute(_pstAnimPointer, _pstAnimPointer->fTime);
+  eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
 
   /* Done! */
   return eResult;
@@ -574,15 +560,11 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimPointe
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
   orxASSERT(_fFrequency >= 0.0);
 
-  /* Computes animpointer */
-  eResult = orxAnimPointer_Compute(_pstAnimPointer, orxClock_GetInfo(_pstAnimPointer->pstClock)->fTime);
+  /* Stores frequency */
+  _pstAnimPointer->fFrequency = _fFrequency; 
 
-  /* Succeeded? */
-  if(eResult == orxSTATUS_SUCCESS)
-  {
-    /* Stores frequency */
-    _pstAnimPointer->fFrequency = _fFrequency; 
-  }
+  /* Computes animpointer */
+  eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
 
   /* Done! */
   return eResult;

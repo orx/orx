@@ -130,17 +130,35 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     /* Valid? */
     if(pstAnimPointer != orxNULL)
     {
-      orxANIM *pstAnim;
+      orxHANDLE hAnim;
 
-      /* Gets current anim */
-      pstAnim = orxAnimPointer_GetCurrentAnim(pstAnimPointer);
+      /* Gets current anim handle */
+      hAnim = orxAnimPointer_GetCurrentAnim(pstAnimPointer);
 
-      /* Valid 2D anim? */
-      if((pstAnim != orxNULL)
-      && (orxStructure_TestFlags(pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE))
+      /* Valid? */
+      if(hAnim != orxHANDLE_UNDEFINED)
       {
-        /* Gets its bitmap */
-        pstBitmap = orxTexture_GetBitmap((orxTEXTURE *)orxAnim_GetCurrentKeyData(pstAnim));
+        orxANIM *pstAnim;
+
+        /* Gets current anim */
+        pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(pstAnimPointer), hAnim);
+
+        /* Valid 2D anim? */
+        if((pstAnim != orxNULL)
+        && (orxStructure_TestFlags(pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE))
+        {
+          orxTEXTURE *pstTexture;
+
+          /* Gets anim texture */
+          pstTexture = (orxTEXTURE *)orxAnim_GetCurrentKeyData(pstAnim);
+
+          /* Valid? */
+          if(pstTexture != orxNULL)
+          {
+            /* Gets its bitmap */
+            pstBitmap = orxTexture_GetBitmap(pstTexture);
+          }
+        }
       }
     }
 
