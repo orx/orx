@@ -160,17 +160,17 @@ orxSTATIC orxCAVE_RESOURCE_INFO sastInfo[orxCAVE_RESOURCE_NUMBER] =
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb1.png",
-      {orx2F(325.0f), orx2F(-400.0f), orx2F(0.4f)},
+      {orx2F(388.0f), orx2F(-388.0f), orx2F(0.4f)},
       {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb2.png",
-      {orx2F(325.0f), orx2F(-400.0f), orx2F(0.4f)},
+      {orx2F(388.0f), orx2F(-388.0f), orx2F(0.4f)},
       {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb3.png",
-      {orx2F(325.0f), orx2F(-400.0f), orx2F(0.4f)},
+      {orx2F(388.0f), orx2F(-388.0f), orx2F(0.4f)},
       {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
     }
 };
@@ -201,7 +201,7 @@ orxSTATIC orxINLINE orxSTATUS orxCave_UpdateMainCamera(orxFLOAT _fDT)
   vPos.fX -= orxCAVE_KF_CAMERA_SPEED * _fDT;
   
   /* Stop? */
-  if(1 || vPos.fX <= orx2F(0.5f) * sstCave.fScreenWidth)
+  if(vPos.fX <= orx2F(0.5f) * sstCave.fScreenWidth)
   {
     /* Resets position */
     vPos.fX = orx2F(0.5f) * sstCave.fScreenWidth;
