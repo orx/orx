@@ -135,7 +135,7 @@ orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';
 
   #ifdef __orxLINUX__
 
-  orxSTATIc orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR = '/';
+  orxSTATIC orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR = '/';
 
   #endif /* __orxLINUX__ */
 
