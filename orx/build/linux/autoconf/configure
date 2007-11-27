@@ -5256,8 +5256,7 @@ else
 fi
 
 
-echo "OLDLIBS : " $OLDLIBS
-echo "LIBS : " $LIBS
+
 
 fi
 #
