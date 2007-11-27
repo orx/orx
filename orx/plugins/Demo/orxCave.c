@@ -29,7 +29,7 @@
 
 /** Defines
  */
-#define orxCAVE_KZ_DATA_FOLDER              "data\\cave\\"
+#define orxCAVE_KZ_DATA_FOLDER              "data" orxKZ_DIRECTORY_SEPARATOR "cave" orxKZ_DIRECTORY_SEPARATOR
 #define orxCAVE_KF_CAMERA_SPEED             orx2F(120.0f)
 #define orxCAVE_KF_BALL_SPEED               orx2F(180.0f)
 #define orxCAVE_KF_BALL_ANGULAR_VELOCITY    orx2F(-5.0f)

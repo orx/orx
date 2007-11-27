@@ -129,13 +129,15 @@ orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';
 
 #ifdef __orxWINDOWS__
 
-  orxSTATIC orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR = '\\';
+  orxSTATIC orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR   = '\\';
+  #define orxKZ_DIRECTORY_SEPARATOR "\\"
 
 #else /* __orxWINDOWS__ */
 
   #ifdef __orxLINUX__
 
-  orxSTATIC orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR = '/';
+  orxSTATIC orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR   = '/';
+  #define orxKZ_DIRECTORY_SEPARATOR "/"
 
   #endif /* __orxLINUX__ */
 

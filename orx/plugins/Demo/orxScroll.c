@@ -29,7 +29,7 @@
 
 /** Defines
  */
-#define orxSCROLL_KZ_DATA_FOLDER              "data\\scroll\\"
+#define orxSCROLL_KZ_DATA_FOLDER              "data" orxKZ_DIRECTORY_SEPARATOR "scroll" orxKZ_DIRECTORY_SEPARATOR
 #define orxSCROLL_KF_TICK_SIZE                orx2F(0.0f)
 #define orxSCROLL_KF_DT_SIZE                  orx2F(0.01666f)
 #define orxSCROLL_KF_MAX_Z                    orx2F(10000.0f)
