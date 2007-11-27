@@ -127,6 +127,20 @@ orxSTATIC orxCONST  orxHANDLE   orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
 orxSTATIC orxCONST  orxSTRING   orxSTRING_EMPTY     = "";
 orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';     
 
+#ifdef __orxWINDOWS__
+
+  orxSTATIC orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR = '\\';
+
+#else /* __orxWINDOWS__ */
+
+  #ifdef __orxLINUX__
+
+  orxSTATIc orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR = '/';
+
+  #endif /* __orxLINUX__ */
+
+#endif /* __orxWINDOWS__ */
+
 /* *** Float defines *** */
 orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(0.0f);
 orxSTATIC orxCONST  orxFLOAT    orxFLOAT_1          = orx2F(1.0f);

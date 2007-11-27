@@ -186,6 +186,12 @@
       <sources>plugins/Mouse/Allegro/orxMouse.c</sources>
     </orx-plugin>
 
+  <!-- Depends on SFML -->
+  <orx-plugin id="Mouse_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+    <category>core/mouse</category>
+      <sources>plugins/Mouse/SFML/orxMouse.cpp</sources>
+  </orx-plugin> -->
+
   <!-- KEYBOARD -->
 
 	<!-- Depends on allegro -->

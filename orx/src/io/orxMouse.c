@@ -17,6 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "io/orxMouse.h"
 #include "plugin/orxPluginCore.h"
 
@@ -32,9 +33,7 @@ orxVOID orxMouse_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_LINKLIST);
-  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_TREE);
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_DISPLAY);
 
   return;
 }
@@ -50,7 +49,8 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(MOUSE)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, INIT, orxMouse_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, EXIT, orxMouse_Exit)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_MOVE, orxMouse_GetMove)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_POSITION, orxMouse_GetPosition)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, IS_BUTTON_PRESSED, orxMouse_IsButtonPressed)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
 
@@ -59,4 +59,5 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Init, orxSTATUS);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetMove, orxSTATUS, orxS32 *, orxS32 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxSTATUS, orxS32 *, orxS32 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);

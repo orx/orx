@@ -91,7 +91,9 @@
 
 
 #define orxPLUGIN_KU32_FUNCTION_BANK_SIZE                   16
-#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                     "orxPlugin_Init"  /**< Plugin init function name */
+#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                     "orxPlugin_MainInit"  /**< Plugin init function name */
+
+#define orxPLUGIN_KC_DIRECTORY_SEPARATOR                    '/'
 
 
 /*
@@ -721,8 +723,19 @@ orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, orxCONST or
   /* For all specified plugin names */
   for(i = 1; (eResult == orxSTATUS_SUCCESS) && (i < _u32ParamCount); i++)
   {
+    orxSTRING zPluginName;
+    orxS32    s32LastSeparatorIndex, s32SeparatorIndex;
+
+    /* Gets last separator index */
+    for(s32LastSeparatorIndex = 0, s32SeparatorIndex = orxString_SearchCharIndex(_azParams[i], orxPLUGIN_KC_DIRECTORY_SEPARATOR, 1);
+        s32SeparatorIndex >= s32LastSeparatorIndex;
+        s32LastSeparatorIndex = s32SeparatorIndex + 1, s32SeparatorIndex = orxString_SearchCharIndex(_azParams[i], orxPLUGIN_KC_DIRECTORY_SEPARATOR, s32LastSeparatorIndex));
+
+    /* Gets plugin base name */
+    zPluginName = _azParams[i] + s32LastSeparatorIndex;
+
     /* Loads plugin */
-    eResult = (orxPlugin_Load(_azParams[i], _azParams[i]) != orxHANDLE_UNDEFINED);
+    eResult = (orxPlugin_Load(_azParams[i], zPluginName) != orxHANDLE_UNDEFINED);
   }
 
   /* Done! */

@@ -511,6 +511,11 @@ extern "C" orxVOID orxDisplay_SFML_Exit()
   return;
 }
 
+extern "C" orxHANDLE orxDisplay_SFML_GetApplicationInput()
+{
+  return((orxHANDLE)&(sstDisplay.poRenderWindow->GetInput()));
+}
+
 
 /********************
  *  Plugin Related  *
@@ -532,4 +537,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapClipping, DISPLAY, SET
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_BlitBitmap, DISPLAY, BLIT_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawText, DISPLAY, DRAW_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_END();

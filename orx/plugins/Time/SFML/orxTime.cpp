@@ -81,6 +81,7 @@ extern "C" orxSTATUS orxTimeSDL_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  
   /* Was already initialized. */
   if(!(sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY))
   {

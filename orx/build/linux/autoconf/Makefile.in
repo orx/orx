@@ -215,6 +215,11 @@ MOUSE_ALLEGRO_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
 	-Wno-unused-parameter $(orxALLEGROCFLAGS_UNIX) $(CPPFLAGS) $(CFLAGS)
 MOUSE_ALLEGRO_OBJECTS =  \
 	./build/$(BUILD)/Mouse_Allegro_orxMouse.o
+MOUSE_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
+	-D$(orxCOMPILER) -I../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
+	$(CXXFLAGS)
+MOUSE_SFML_OBJECTS =  \
+	./build/$(BUILD)/Mouse_SFML_orxMouse.o
 KEYBOARD_ALLEGRO_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
 	-D$(orxCOMPILER) -I../../../include -D__orxDLL__ $(PIC_FLAG) \
 	-Wno-unused-parameter $(orxALLEGROCFLAGS_UNIX) $(CPPFLAGS) $(CFLAGS)
@@ -327,6 +332,9 @@ COND_USE_PLUGINS_1_USE_SFML_1___Sound_SFML___depname = \
 COND_USE_ALLEGRO_1_USE_PLUGINS_1___Mouse_Allegro___depname = \
 	../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)Mouse_Allegro.$(SO_SUFFIX_MODULE)
 @COND_USE_ALLEGRO_1_USE_PLUGINS_1@__Mouse_Allegro___depname = $(COND_USE_ALLEGRO_1_USE_PLUGINS_1___Mouse_Allegro___depname)
+COND_USE_PLUGINS_1_USE_SFML_1___Mouse_SFML___depname = \
+	../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)Mouse_SFML.$(SO_SUFFIX_MODULE)
+@COND_USE_PLUGINS_1_USE_SFML_1@__Mouse_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___Mouse_SFML___depname)
 COND_USE_ALLEGRO_1_USE_PLUGINS_1___Keyboard_Allegro___depname = \
 	../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)Keyboard_Allegro.$(SO_SUFFIX_MODULE)
 @COND_USE_ALLEGRO_1_USE_PLUGINS_1@__Keyboard_Allegro___depname = $(COND_USE_ALLEGRO_1_USE_PLUGINS_1___Keyboard_Allegro___depname)
@@ -357,7 +365,7 @@ COND_USE_PLUGINS_1_USE_SFML_1___Time_SFML___depname = \
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx$(EXEEXT) $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx$(EXEEXT) $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Mouse_SFML___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -388,6 +396,7 @@ clean:
 	rm -f ../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)Sound_Fmod.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)Sound_SFML.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)Mouse_Allegro.$(SO_SUFFIX_MODULE)
+	rm -f ../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)Mouse_SFML.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)Keyboard_Allegro.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/core/joystick/$(DLLPREFIX_MODULE)Joystick_NONE.$(SO_SUFFIX_MODULE)
 	rm -f ../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)File_LibC.$(SO_SUFFIX_MODULE)
@@ -460,6 +469,9 @@ distclean: clean
 
 @COND_USE_ALLEGRO_1_USE_PLUGINS_1@../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)Mouse_Allegro.$(SO_SUFFIX_MODULE): $(MOUSE_ALLEGRO_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 @COND_USE_ALLEGRO_1_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(MOUSE_ALLEGRO_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)   $(orxALLEGROLIB_UNIX)   $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
+
+@COND_USE_PLUGINS_1_USE_SFML_1@../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)Mouse_SFML.$(SO_SUFFIX_MODULE): $(MOUSE_SFML_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(MOUSE_SFML_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)   $(orxSFMLLIB_UNIX)   $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
 
 @COND_USE_ALLEGRO_1_USE_PLUGINS_1@../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)Keyboard_Allegro.$(SO_SUFFIX_MODULE): $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 @COND_USE_ALLEGRO_1_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(KEYBOARD_ALLEGRO_OBJECTS) -L../../../lib/$(LINK) -L../../../lib/$(LINK) $(LDFLAGS)  -L../../../lib/$(LINK)   $(orxALLEGROLIB_UNIX)   $(LIBS) -l$(orxLIBNAME) -l$(orxLIBNAME) -lm -ldl
@@ -781,6 +793,9 @@ distclean: clean
 
 ./build/$(BUILD)/Mouse_Allegro_orxMouse.o: ../../../plugins/Mouse/Allegro/orxMouse.c
 	$(CCC) -c -o $@ $(MOUSE_ALLEGRO_CFLAGS) ../../../plugins/Mouse/Allegro/orxMouse.c
+
+./build/$(BUILD)/Mouse_SFML_orxMouse.o: ../../../plugins/Mouse/SFML/orxMouse.cpp
+	$(CXXC) -c -o $@ $(MOUSE_SFML_CXXFLAGS) ../../../plugins/Mouse/SFML/orxMouse.cpp
 
 ./build/$(BUILD)/Keyboard_Allegro_orxKeyboard.o: ../../../plugins/Keyboard/Allegro/orxKeyboard.c
 	$(CCC) -c -o $@ $(KEYBOARD_ALLEGRO_CFLAGS) ../../../plugins/Keyboard/Allegro/orxKeyboard.c

@@ -290,6 +290,16 @@ orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxU32 *_
   return eResult;
 }
 
+orxHANDLE orxDisplay_SDL_GetApplicationInput()
+{
+  orxHANDLE hResult = orxHANDLE_UNDEFINED;
+
+  /* Not implemented yet */
+  orxASSERT(orxFALSE && "Not implemented yet!");
+
+  /* Done! */
+  return hResult;
+}
 
 /********************
  *  Plugin Related  *
@@ -311,4 +321,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapClipping, DISPLAY, SET_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_BlitBitmap, DISPLAY, BLIT_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawText, DISPLAY, DRAW_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_END();
