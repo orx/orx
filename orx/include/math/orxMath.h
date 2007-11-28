@@ -97,6 +97,7 @@ do                                              \
 #define orxMATH_KF_SQRT_2         orx2F(1.414213562f)
 #define orxMATH_KF_PI             orx2F(3.141592654f)
 #define orxMATH_KF_PI_BY_2        orx2F(1.570796327f)
+#define orxMATH_KF_PI_BY_4        orx2F(0.785398163f)
 #define orxMATH_KF_DEG_TO_RAD     orx2F(orxMATH_KF_PI / 180.0f)
 #define orxMATH_KF_RAD_TO_DEG     orx2F(180.0f / orxMATH_KF_PI)
 
