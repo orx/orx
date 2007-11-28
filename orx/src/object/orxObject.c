@@ -39,6 +39,8 @@
 
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000
 
+#define orxOBJECT_KU32_FLAG_ENABLED             0x00000001
+
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF
 
 
@@ -123,21 +125,25 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
       pstObject != orxNULL;
       pstObject = (orxOBJECT *)orxStructure_GetNext(pstObject))
   {
-    orxU32 i;
-
-    /* !!! TODO !!! */
-    /* Updates culling infos before calling update subfunctions */
-
-    /* For all linked structures */
-    for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
+    /* Is object enabled? */
+    if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
-      /* Is structure linked? */
-      if(pstObject->pastStructure[i] != orxNULL)
+      orxU32 i;
+
+      /* !!! TODO !!! */
+      /* Updates culling infos before calling update subfunctions */
+
+      /* For all linked structures */
+      for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
       {
-        /* Updates it */
-        if(orxStructure_Update(pstObject->pastStructure[i], pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
+        /* Is structure linked? */
+        if(pstObject->pastStructure[i] != orxNULL)
         {
-          /* !!! MSG !!! */
+          /* Updates it */
+          if(orxStructure_Update(pstObject->pastStructure[i], pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
+          {
+            /* !!! MSG !!! */
+          }
         }
       }
     }
@@ -297,7 +303,7 @@ orxOBJECT *orxObject_Create()
   if(pstObject != orxNULL)
   {
     /* Inits flags */
-    orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_MASK_ALL);
+    orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
   }
   else
   {
@@ -450,56 +456,41 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetStructure(orxCONST orxOBJECT *_pstObject,
   return pstStructure;
 }    
 
-
-/* *** render handling *** */
-
-
-/***************************************************************************
- orxObject_IsRenderStatusClean
- Test object render status (TRUE : clean / orxFALSE : dirty)
-
- returns: orxTRUE (clean) / orxFALSE (dirty)
- ***************************************************************************/
-orxBOOL orxFASTCALL orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject)
+/** Enables/disables an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _bEnable      enable / disable
+ */
+orxVOID orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 {
-  orxFRAME *pstFrame;
-//  orxGRAPHIC *pstGraphic;
-  orxBOOL bResult = orxTRUE;
-
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
-
-  /* Valid? */
-  if(pstFrame != orxNULL)
+  /* Enable? */
+  if(_bEnable != orxFALSE)
   {
-    /* Is frame not clean? */
-    if(orxFrame_IsRenderStatusClean(pstFrame) == orxFALSE)
-    {
-      /* Not clean */
-      bResult = orxFALSE;
-    }
-//    else
-//    {
-//      /* Gets graphic */
-//      pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
-//
-//      /* Valid? */
-//      if(pstGraphic != orxNULL)
-//      {
-//        /* !!! TODO : polls the anim status */
-//        if(graphic_render_status_ok(pstGraphic) == orxFALSE)
-//        {
-//          /* Not clean */
-//          bResult = orxFALSE;
-//        }
-//      }
-//    }
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
   }
 
+  return;
+}
+
+/** Is object enabled?
+ * @param[in]   _pstObject    Concerned object
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject)
+{
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
   /* Done! */
-  return bResult;
+  return(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_ENABLED));
 }

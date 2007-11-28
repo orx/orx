@@ -56,8 +56,17 @@ extern orxDLLAPI orxOBJECT *                orxObject_Create();
 /** Deletes an object. */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObject);
 
-/** Test object render status (TRUE : clean / orxFALSE : dirty)*/
-extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsRenderStatusClean(orxCONST orxOBJECT *_pstObject);
+/** Enables/disables an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _bEnable      enable / disable
+ */
+extern orxDLLAPI orxVOID orxFASTCALL        orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable);
+
+/** Is object enabled?
+ * @param[in]   _pstObject    Concerned object
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject);
 
 /** Links a structure to an object. */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure);

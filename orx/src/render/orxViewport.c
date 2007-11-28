@@ -68,8 +68,9 @@ struct __orxVIEWPORT_t
   orxFLOAT      fHeight;                      /**< Height : 32 */
   orxCAMERA    *pstCamera;                    /**< Associated camera : 36 */
   orxTEXTURE   *pstTexture;                   /**< Associated texture : 40 */
+  orxRGBA       stBackgroundColor;            /**< Background color : 48 */
 
-  orxPAD(40)
+  orxPAD(48)
 };
 
 
@@ -360,6 +361,36 @@ orxTEXTURE *orxFASTCALL orxViewport_GetTexture(orxCONST orxVIEWPORT *_pstViewpor
 
   /* Done! */
   return pstResult;
+}
+
+/** Sets a viewport background color
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[in]   _stColor        Color to use for background
+ */
+orxVOID orxFASTCALL orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, orxRGBA _stColor)
+{
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Updates background color */
+  _pstViewport->stBackgroundColor = _stColor;
+
+  return;
+}
+
+/** Gets a viewport texture
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      Current background color
+ */
+orxRGBA orxFASTCALL orxViewport_GetBackgroundColor(orxCONST orxVIEWPORT *_pstViewport)
+{
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Done! */
+  return(_pstViewport->stBackgroundColor);
 }
 
 /** Enables / disables a viewport
