@@ -271,6 +271,39 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Inv(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
+orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareSize(orxCONST orxVECTOR *_pvOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(_pvOp  != orxNULL);
+
+  /* Updates result */
+  fResult = (_pvOp->fX * _pvOp->fX) + (_pvOp->fY * _pvOp->fY) + (_pvOp->fZ * _pvOp->fZ);
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+{
+  orxVECTOR   vTemp;
+  orxREGISTER orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2  != orxNULL);
+
+  /* Gets distance vector */
+  orxVector_Sub(&vTemp, _pvOp2, _pvOp1);
+
+  /* Updates result */
+  fResult = orxVector_GetSquareSize(&vTemp);
+
+  /* Done! */
+  return fResult;
+}
+
 
 /* *** Vector constants *** */
 
