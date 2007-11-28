@@ -83,6 +83,7 @@ do                                              \
 #define orxABS(V)                 (((V) < 0) ? -(V) : (V))
 #define orxFABS(V)                (((V) < orxFLOAT_0) ? -(V) : (V))
 
+#define orxFRAND_INIT(SEED)       (srand(orxF2U(SEED)));
 #define orxFRAND(MIN, MAX)        ((orx2F(rand()) * (orxFLOAT_1 / orx2F(RAND_MAX)) * (MAX - MIN)) + MIN)
 
 #define orxF2U(V)                 ((orxU32)  (V))
