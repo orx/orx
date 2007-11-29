@@ -353,6 +353,212 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   return eResult;
 }
 
+/** Creates a 2D object
+ * @return  orxOBJECT / orxNULL
+ */
+orxOBJECT *orxObject_Create2DObject()
+{
+  orxTEXTURE *pstTexture;
+  orxOBJECT  *pstObject = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+
+  /* Loads textures */
+  pstTexture = orxTexture_Create();
+
+  /* Valid? */
+  if(pstTexture != orxNULL)
+  {
+    orxGRAPHIC *pstGraphic;
+
+    /* Creates & inits 2D graphic object from texture */
+    pstGraphic = orxGraphic_Create();
+
+    /* Valid? */
+    if(pstGraphic != orxNULL)
+    {
+      /* Sets graphic 2D data */
+      if(orxGraphic_SetData(pstGraphic, (orxSTRUCTURE *)pstTexture) == orxSTATUS_SUCCESS)
+      {
+        orxFRAME *pstFrame;
+
+        /* Creates its frame */
+        pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+        /* Valid? */
+        if(pstFrame != orxNULL)
+        {
+          /* Creates & inits object */
+          pstObject = orxObject_Create();
+
+          /* Valid? */
+          if(pstObject != orxNULL)
+          {
+            /* Links all structures */
+            if((orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) == orxSTATUS_FAILURE)
+            || (orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) == orxSTATUS_FAILURE))
+            {
+              /* !!! MSG !!! */
+
+              /* Deletes all structures */
+              orxTexture_Delete(pstTexture);
+              orxGraphic_Delete(pstGraphic);
+              orxFrame_Delete(pstFrame);
+
+              /* Updates result */
+              pstObject = orxNULL;
+            }
+          }
+          else
+          {
+            /* !!! MSG !!! */
+
+            /* Deletes all structures */
+            orxTexture_Delete(pstTexture);
+            orxGraphic_Delete(pstGraphic);
+            orxFrame_Delete(pstFrame);
+          }
+        }
+        else
+        {
+          /* !!! MSG !!! */
+
+          /* Deletes all structures */
+          orxTexture_Delete(pstTexture);
+          orxGraphic_Delete(pstGraphic);
+        }
+      }
+      else
+      {
+        /* !!! MSG !!! */
+
+        /* Deletes all structures */
+        orxTexture_Delete(pstTexture);
+        orxGraphic_Delete(pstGraphic);
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Deletes all structures */
+      orxTexture_Delete(pstTexture);
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return pstObject;
+}
+
+/** Creates a 2D object from bitmap file
+ * @param[in]   _zBitmapFileName      Bitmap file name to associate with the 2D object
+ * @ return orxOBJECT / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBitmapFileName)
+{
+  orxTEXTURE *pstTexture;
+  orxOBJECT  *pstObject = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zBitmapFileName != orxNULL);
+
+  /* Loads textures */
+  pstTexture = orxTexture_CreateFromFile(_zBitmapFileName);
+
+  /* Valid? */
+  if(pstTexture != orxNULL)
+  {
+    orxGRAPHIC *pstGraphic;
+
+    /* Creates & inits 2D graphic object from texture */
+    pstGraphic = orxGraphic_Create();
+
+    /* Valid? */
+    if(pstGraphic != orxNULL)
+    {
+      /* Sets graphic 2D data */
+      if(orxGraphic_SetData(pstGraphic, (orxSTRUCTURE *)pstTexture) == orxSTATUS_SUCCESS)
+      {
+        orxFRAME *pstFrame;
+
+        /* Creates its frame */
+        pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+        /* Valid? */
+        if(pstFrame != orxNULL)
+        {
+          /* Creates & inits object */
+          pstObject = orxObject_Create();
+
+          /* Valid? */
+          if(pstObject != orxNULL)
+          {
+            /* Links all structures */
+            if((orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) == orxSTATUS_FAILURE)
+            || (orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) == orxSTATUS_FAILURE))
+            {
+              /* !!! MSG !!! */
+
+              /* Deletes all structures */
+              orxTexture_Delete(pstTexture);
+              orxGraphic_Delete(pstGraphic);
+              orxFrame_Delete(pstFrame);
+
+              /* Updates result */
+              pstObject = orxNULL;
+            }
+          }
+          else
+          {
+            /* !!! MSG !!! */
+
+            /* Deletes all structures */
+            orxTexture_Delete(pstTexture);
+            orxGraphic_Delete(pstGraphic);
+            orxFrame_Delete(pstFrame);
+          }
+        }
+        else
+        {
+          /* !!! MSG !!! */
+
+          /* Deletes all structures */
+          orxTexture_Delete(pstTexture);
+          orxGraphic_Delete(pstGraphic);
+        }
+      }
+      else
+      {
+        /* !!! MSG !!! */
+
+        /* Deletes all structures */
+        orxTexture_Delete(pstTexture);
+        orxGraphic_Delete(pstGraphic);
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Deletes all structures */
+      orxTexture_Delete(pstTexture);
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return pstObject;
+}
+
 /***************************************************************************
  orxObject_LinkStructure
  Links a structure to an object given.
@@ -493,4 +699,219 @@ orxBOOL orxFASTCALL orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject)
 
   /* Done! */
   return(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_ENABLED));
+}
+
+/** Sets object position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvPosition     Object position
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPosition)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets frame */
+  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Sets object position */
+    orxFrame_SetPosition(pstFrame, _pvPosition);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets object rotation
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fRotation      Object rotation
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Sets Object rotation */
+    orxFrame_SetRotation(pstFrame, _fRotation);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets Object zoom
+ * @param[in]   _pstObject      Concerned Object
+ * @param[in]   _fScaleX        Object X scale
+ * @param[in]   _fScaleY        Object Y scale
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScaleX, orxFLOAT _fScaleY)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Sets Object zoom */
+    orxFrame_SetScale(pstFrame, _fScaleX, _fScaleY);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Get object position
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvPosition     Object position
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition)
+{
+  orxFRAME  *pstFrame;
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets frame */
+  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Gets object position */
+     pvResult = orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Get object rotation
+ * @param[in]   _pstObject      Concerned object
+ * @return      Rotation value
+ */
+orxFLOAT orxFASTCALL orxObject_GetRotation(orxCONST orxOBJECT *_pstObject)
+{
+  orxFRAME *pstFrame;
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Gets object rotation */
+    fResult = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets object scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pfScaleX       Object X scale
+ * @param[out]  _pfScaleY       Object Y scale
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pfScaleX != orxNULL);
+  orxASSERT(_pfScaleY != orxNULL);
+
+  /* Gets frame */
+  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Gets object scale */
+    eResult = orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pfScaleX, _pfScaleY);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
 }

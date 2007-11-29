@@ -378,7 +378,7 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
   orxSTRUCTURE_ASSERT(_pstCamera);
 
    /* Sets camera zoom */
-  orxFrame_SetScale(_pstCamera->pstFrame, orxFLOAT_1 / _fZoom, orxFLOAT_1);
+  orxFrame_SetScale(_pstCamera->pstFrame, orxFLOAT_1 / _fZoom, orxFLOAT_1 / _fZoom);
 
   /* Done! */
   return eResult;
@@ -412,8 +412,9 @@ orxVOID orxFASTCALL orxCamera_GetFrustrum(orxCONST orxCAMERA *_pstCamera, orxVEC
 /** Get camera position
  * @param[in]   _pstCamera      Concerned camera
  * @param[out]  _pvPosition     Camera position
+ * @return      orxVECTOR
  */
-orxVOID orxFASTCALL orxCamera_GetPosition(orxCONST orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxCamera_GetPosition(orxCONST orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
@@ -421,9 +422,7 @@ orxVOID orxFASTCALL orxCamera_GetPosition(orxCONST orxCAMERA *_pstCamera, orxVEC
   orxASSERT(_pvPosition != orxNULL);
 
   /* Gets camera position */
-  orxFrame_GetPosition(_pstCamera->pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
-
-  return;
+  return(orxFrame_GetPosition(_pstCamera->pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition));
 }
 
 /** Get camera rotation

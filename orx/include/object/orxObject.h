@@ -38,6 +38,7 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "math/orxVector.h"
 
 
 /** Internal object structure. */
@@ -53,6 +54,18 @@ extern orxDLLAPI orxVOID                    orxObject_Exit();
 
 /** Creates an empty object. */
 extern orxDLLAPI orxOBJECT *                orxObject_Create();
+
+/** Creates a 2D object
+ * @return  orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *                orxObject_Create2DObject();
+
+/** Creates a 2D object from bitmap file
+ * @param[in]   _zBitmapFileName      Bitmap file name to associate with the 2D object
+ * @ return orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBitmapFileName);
+
 /** Deletes an object. */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObject);
 
@@ -80,5 +93,48 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxObject_UnlinkStructure(orxOBJECT 
 /** Structure used by an object get accessor, given its structure ID. Structure must be cast correctly. */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
+
+/** Sets object position
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvPosition     Object position
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetPosition(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPosition);
+
+/** Sets object rotation
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fRotation      Object rotation
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation);
+
+/** Sets object scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fScaleX        Object X scale
+ * @param[in]   _fScaleY        Object Y scale
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScaleX, orxFLOAT _fScaleY);
+
+/** Get object position
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvPosition     Object position
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition);
+
+/** Get object rotation
+ * @param[in]   _pstObject      Concerned object
+ * @return      Rotation value
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL   orxObject_GetRotation(orxCONST orxOBJECT *_pstObject);
+
+/** Get object scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pfScaleX       Object X scale
+ * @param[out]  _pfScaleY       Object Y scale
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
 
 #endif /* _orxOBJECT_H_ */

@@ -117,8 +117,9 @@ extern orxDLLAPI orxVOID orxFASTCALL    orxCamera_GetFrustrum(orxCONST orxCAMERA
 /** Get camera position
  * @param[in]   _pstCamera      Concerned camera
  * @param[out]  _pvPosition     Camera position
+ * @return      orxVECTOR
  */
-extern orxDLLAPI orxVOID orxFASTCALL    orxCamera_GetPosition(orxCONST orxCAMERA *_pstCamera, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxCamera_GetPosition(orxCONST orxCAMERA *_pstCamera, orxVECTOR *_pvPosition);
 
 /** Get camera rotation
  * @param[in]   _pstCamera      Concerned camera
