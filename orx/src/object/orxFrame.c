@@ -950,7 +950,7 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
     /* Depending on space */
     switch(_eSpace)
     {
-      case orxFRAME_SPACE_GLOBAL:
+      case orxFRAME_SPACE_LOCAL:
       {
         /* Get rotation */
         fAngle = _orxFrame_GetRotation(_pstFrame, orxFRAME_SPACE_LOCAL);
@@ -958,7 +958,7 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
         break;
       }
 
-      case orxFRAME_SPACE_LOCAL:
+      case orxFRAME_SPACE_GLOBAL:
       default:
       {
         /* Process dirty cell */
@@ -998,7 +998,7 @@ orxSTATUS orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSp
     /* Depending on space */
     switch(_eSpace)
     {
-      case orxFRAME_SPACE_GLOBAL:
+      case orxFRAME_SPACE_LOCAL:
       {
         /* Gets scale */
         _orxFrame_GetScale(_pstFrame, orxFRAME_SPACE_LOCAL, _pfScaleX, _pfScaleY);
@@ -1006,7 +1006,7 @@ orxSTATUS orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSp
         break;
       }
 
-      case orxFRAME_SPACE_LOCAL:
+      case orxFRAME_SPACE_GLOBAL:
       {
         /* Process dirty cell */
         orxFrame_ProcessDirty(_pstFrame);
