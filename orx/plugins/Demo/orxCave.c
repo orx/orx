@@ -160,17 +160,17 @@ orxSTATIC orxCAVE_RESOURCE_INFO sastInfo[orxCAVE_RESOURCE_NUMBER] =
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb1.png",
-      {orx2F(388.0f), orx2F(-388.0f), orx2F(0.4f)},
+      {orx2F(324.0f), orx2F(-400.0f), orx2F(0.4f)},
       {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb2.png",
-      {orx2F(388.0f), orx2F(-388.0f), orx2F(0.4f)},
+      {orx2F(324.0f), orx2F(-400.0f), orx2F(0.4f)},
       {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb3.png",
-      {orx2F(388.0f), orx2F(-388.0f), orx2F(0.4f)},
+      {orx2F(324.0f), orx2F(-400.0f), orx2F(0.4f)},
       {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
     }
 };
@@ -509,7 +509,7 @@ orxSTATIC orxSTATUS orxCave_Init()
   sstCave.pstTVViewport = orxViewport_Create();
   orxViewport_SetCamera(sstCave.pstTVViewport, sstCave.pstTVCamera);
   orxViewport_SetSize(sstCave.pstTVViewport, orx2F(128.0f), orx2F(80.0f));
-  orxViewport_SetPosition(sstCave.pstTVViewport, orx2F(445.0f), orx2F(315.0f));
+  orxViewport_SetPosition(sstCave.pstTVViewport, orx2F(445.0f), orx2F(400.0f));
   orxViewport_Enable(sstCave.pstTVViewport, orxFALSE);
 
   /* Creates & inits main viewport */
