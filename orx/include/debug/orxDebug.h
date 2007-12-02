@@ -90,6 +90,8 @@
   #endif /* __orxMSVC__ */
 #endif /* __orcGCC__ */
 
+#define orxDEBUG_INIT()                     _orxDebug_Init()
+#define orxDEBUG_EXIT()                     _orxDebug_Exit()
 
 #ifdef __orxDEBUG__
 
@@ -104,8 +106,6 @@
   
   /* End platform specific */
 
-  #define orxDEBUG_INIT()                     _orxDebug_Init()
-  #define orxDEBUG_EXIT()                     _orxDebug_Exit()
   #define orxDEBUG_FLAG_SET(SET, UNSET)       _orxDebug_SetFlags(SET, UNSET)
   #define orxDEBUG_FLAG_BACKUP()              _orxDebug_BackupFlags()
   #define orxDEBUG_FLAG_RESTORE()             _orxDebug_RestoreFlags()
@@ -130,8 +130,6 @@
 
   #define orxASSERT(TEST)
 
-  #define orxDEBUG_INIT()
-  #define orxDEBUG_EXIT()
   #define orxDEBUG_FLAG_SET(SET, UNSET)
   #define orxDEBUG_FLAG_BACKUP()
   #define orxDEBUG_FLAG_RESTORE()
