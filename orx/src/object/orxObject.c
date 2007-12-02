@@ -915,3 +915,62 @@ orxSTATUS orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOA
   /* Done! */
   return eResult;
 }
+
+/** Sets an object parent
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstParent      Parent object to set / orxNULL
+ */
+orxVOID orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+
+  /* Updates its parent */
+  return(orxFrame_SetParent(pstFrame, (_pstParent != orxNULL) ? (orxFRAME *)orxObject_GetStructure(_pstParent, orxSTRUCTURE_ID_FRAME) : orxNULL));
+}
+
+/** Gets object size
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pfWidth        Object's width
+ * @param[out]  _pfHeight       Object's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets its size */
+    eResult = orxGraphic_GetSize(pstGraphic, _pfWidth, _pfHeight);
+  }
+  else
+  {
+    /* No size */
+    *_pfWidth  = *_pfHeight = orx2F(-1.0f);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}

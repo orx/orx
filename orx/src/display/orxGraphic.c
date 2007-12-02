@@ -343,3 +343,38 @@ orxVECTOR *orxFASTCALL orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orx
   /* Done! */
   return _pvPivot;  
 }
+
+/** Gets graphic size
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[out]  _pfWidth        Object's width
+ * @param[out]  _pfHeight       Object's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
+
+  /* Valid 2D data? */
+  if(orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
+  {
+    /* Gets its size */
+    eResult = orxTexture_GetSize((orxTEXTURE *)_pstGraphic->pstData, _pfWidth, _pfHeight);
+  }
+  else
+  {
+    /* No size */
+    *_pfWidth  = *_pfHeight = orx2F(-1.0f);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}

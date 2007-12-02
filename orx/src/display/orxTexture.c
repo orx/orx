@@ -630,8 +630,7 @@ orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFL
     /* !!! MSG !!! */
 
     /* No size */
-    *_pfWidth  = -1.0f;
-    *_pfHeight = -1.0f;
+    *_pfWidth  = *_pfHeight = orx2F(-1.0f);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

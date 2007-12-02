@@ -137,4 +137,20 @@ extern orxDLLAPI orxFLOAT orxFASTCALL   orxObject_GetRotation(orxCONST orxOBJECT
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
 
+
+/** Sets an object parent
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstParent      Parent object to set / orxNULL
+ */
+extern orxDLLAPI orxVOID orxFASTCALL    orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent);
+
+
+/** Gets object size
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pfWidth        Object's width
+ * @param[out]  _pfHeight       Object's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+
 #endif /* _orxOBJECT_H_ */
