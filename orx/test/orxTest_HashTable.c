@@ -394,7 +394,7 @@ orxVOID orxTest_HashTable_PrintAllWithSearch()
   	orxU32 u32Key;
   	orxVOID* pData;
   	orxVOID* pIter;
-  	pIter = orxHashMap_FindFirst(sstTest_HashTable.apstHashTable[s32ID], &u32Key, &pData);
+  	pIter = orxHashTable_FindFirst(sstTest_HashTable.apstHashTable[s32ID], &u32Key, &pData);
   	if(pIter==NULL)
 	    orxTextIO_PrintLn("The HashTable is empty.");
 	else
@@ -402,7 +402,7 @@ orxVOID orxTest_HashTable_PrintAllWithSearch()
 		while(pIter!=NULL)
 		{
 	      orxTextIO_PrintLn("[%u : %p]", u32Key, pData);
-		  pIter = orxHashMap_FindNext(sstTest_HashTable.apstHashTable[s32ID], pIter, &u32Key, &pData);
+		  pIter = orxHashTable_FindNext(sstTest_HashTable.apstHashTable[s32ID], pIter, &u32Key, &pData);
 		}
 	}
   }

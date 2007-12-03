@@ -45,8 +45,8 @@ extern "C"
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
-orxSTATIC orxCONST orxU32     su32ScreenWidth   = 800;
-orxSTATIC orxCONST orxU32     su32ScreenHeight  = 600;
+orxSTATIC orxCONST orxU32     su32ScreenWidth   = 1024;
+orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
 orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
 orxSTATIC orxCONST orxSTRING  szTitle           = "orxTestWindow";
 
@@ -150,8 +150,8 @@ extern "C" orxBITMAP *orxDisplay_SFML_CreateBitmap(orxU32 _u32Width, orxU32 _u32
   /* Creates image */
   poImage = new sf::Image(_u32Width, _u32Height);
 
-  /* Deactivates smoothing */
-  poImage->SetSmooth(orxFALSE);
+  /* Activates smoothing */
+  poImage->SetSmooth(orxTRUE);
 
   /* Creates sprite using the new image */
   poSprite = new sf::Sprite(*poImage);
@@ -403,8 +403,8 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
   {
     sf::Sprite *poSprite;
 
-    /* Deactivates smoothing */
-    poImage->SetSmooth(orxFALSE);
+    /* Activates smoothing */
+    poImage->SetSmooth(orxTRUE);
 
     /* Creates a sprite from it */
     poSprite = new sf::Sprite(*poImage);

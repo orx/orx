@@ -32,7 +32,7 @@
  * - Adds events
  * C Adds LUA integration
  * V Complete orxBANK implementation
- * V Complete orxHashMap module (refactor to orxHash and complete test module)
+ * V Complete orxHashTable module (refactor to orxHash and complete test module)
  * V Rewrite File and Package module to use plugins system
  * C Write plugins implementation for file and package management
  * V Complete test module and add a generic makefile to compile each test file as an automatically loaded dynamic library

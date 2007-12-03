@@ -168,7 +168,7 @@ orxVOID orxTest_Event_DisplayState()
   	orxU32 u32Key;
   	orxVOID* pData;
   	orxVOID* pIter;  	
-  	pIter = orxHashMap_FindFirst(sstTest_Event.pstEventManager->pstCallbackTable, &u32Key, &pData);
+  	pIter = orxHashTable_FindFirst(sstTest_Event.pstEventManager->pstCallbackTable, &u32Key, &pData);
   	if(pIter==NULL)
 	    orxTextIO_PrintLn("No handler registered.");
 	else
@@ -177,7 +177,7 @@ orxVOID orxTest_Event_DisplayState()
 		while(pIter!=NULL)
 		{
 	      orxTextIO_PrintLn("  [%u : %p]", u32Key, pData);
-		  pIter = orxHashMap_FindNext(sstTest_Event.pstEventManager->pstCallbackTable, pIter, &u32Key, &pData);
+		  pIter = orxHashTable_FindNext(sstTest_Event.pstEventManager->pstCallbackTable, pIter, &u32Key, &pData);
 		}
 	}
 	
