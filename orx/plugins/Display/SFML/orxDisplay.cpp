@@ -29,6 +29,7 @@ extern "C"
 
 #include "math/orxMath.h"
 #include "plugin/orxPluginUser.h"
+#include "memory/orxBank.h"
 
 #include "display/orxDisplay.h"
 }
@@ -49,10 +50,20 @@ orxSTATIC orxCONST orxU32     su32ScreenWidth   = 1024;
 orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
 orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
 orxSTATIC orxCONST orxSTRING  szTitle           = "orxTestWindow";
+orxSTATIC orxCONST orxU32     su32TextBankSize  = 8;
+
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Text structure
+ */
+typedef struct __orxDISPLAY_TEXT_t
+{
+  sf::String *poString;
+
+} orxDISPLAY_TEXT;
 
 /** Static structure
  */
@@ -60,6 +71,9 @@ typedef struct __orxDISPLAY_STATIC_t
 {
   orxU32            u32Flags;
   sf::RenderWindow *poRenderWindow;
+
+  orxBANK          *pstTextBank;
+  
 } orxDISPLAY_STATIC;
 
 
@@ -83,36 +97,37 @@ extern "C" orxBITMAP *orxDisplay_SFML_GetScreen()
 
 extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxCONST orxSTRING _zString)
 {
-  sf::String  oText;
-  orxSTATUS   eResult = orxSTATUS_FAILURE;
+  orxDISPLAY_TEXT  *pstText;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((_pstBitmap == spoScreen) && "Can only draw on screen with this version!");
 
-  /* Sets text content */
-  oText.SetText(_zString);
+  /* Gets a new text from bank */
+  pstText = (orxDISPLAY_TEXT *)orxBank_Allocate(sstDisplay.pstTextBank);
 
-  /* Sets its color */
-  oText.SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
+  /* Valid? */
+  if(pstText != orxNULL)
+  {
+    /* Allocates text */
+    pstText->poString = new sf::String(_zString);
 
-  /* Sets its center */
-  oText.SetRotationCenter(_pstTransform->s32SrcX, _pstTransform->s32SrcY);
+    /* Sets its color */
+    pstText->poString->SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
 
-  /* Sets its rotation */
-  oText.SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
+    /* Sets its center */
+    pstText->poString->SetRotationCenter(_pstTransform->s32SrcX, _pstTransform->s32SrcY);
 
-  /* Sets its scale */
-  oText.SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
+    /* Sets its rotation */
+    pstText->poString->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
 
-  /* Sets its position */
-  oText.SetLeft(_pstTransform->s32DstX - _pstTransform->s32SrcX);
-  oText.SetTop(_pstTransform->s32DstY - _pstTransform->s32SrcY);
+    /* Sets its scale */
+    pstText->poString->SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
 
-  /* Disables clipping */
-  glDisable(GL_SCISSOR_TEST);
-
-  /* Draws it */
-  sstDisplay.poRenderWindow->Draw(oText);
+    /* Sets its position */
+    pstText->poString->SetLeft(_pstTransform->s32DstX - _pstTransform->s32SrcX);
+    pstText->poString->SetTop(_pstTransform->s32DstY - _pstTransform->s32SrcY);
+  }
 
   /* Done! */
   return eResult;
@@ -206,8 +221,27 @@ extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
 
 extern "C" orxSTATUS orxDisplay_SFML_Swap()
 {
-  sf::Event oEvent;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  sf::Event         oEvent;
+  orxDISPLAY_TEXT  *pstText;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
+
+  /* For all texts */
+  for(pstText = (orxDISPLAY_TEXT *)orxBank_GetNext(sstDisplay.pstTextBank, orxNULL);
+      pstText != orxNULL;
+      pstText = (orxDISPLAY_TEXT *)orxBank_GetNext(sstDisplay.pstTextBank, pstText))
+  {
+    /* Disables clipping */
+    glDisable(GL_SCISSOR_TEST);
+
+    /* Draws it */
+    sstDisplay.poRenderWindow->Draw(*(pstText->poString));
+
+    /* Deletes it */
+    delete(pstText->poString);
+  }
+
+  /* Clears text bank */
+  orxBank_Clear(sstDisplay.pstTextBank);
 
   /* Displays render window */
   sstDisplay.poRenderWindow->Display();
@@ -482,14 +516,26 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     /* Cleans static controller */
     orxMemory_Set(&sstDisplay, 0, sizeof(orxDISPLAY_STATIC));
 
-    /* Inits rendering window */
-    sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fixed);
+    /* Creates text bank */
+    sstDisplay.pstTextBank = orxBank_Create(su32TextBankSize, sizeof(orxDISPLAY_TEXT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN); 
 
-    /* Waits for vertical sync */
-    sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);
+    /* Valid? */
+    if(sstDisplay.pstTextBank != orxNULL)
+    {
+      /* Inits rendering window */
+      sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fixed);
 
-    /* Updates status */
-    sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY | orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
+      /* Waits for vertical sync */
+      sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);
+
+      /* Updates status */
+      sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY | orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
 
   /* Done! */
