@@ -34,19 +34,22 @@
 
 /** Module flags
  */
-#define orxVIEWPORT_KU32_STATIC_FLAG_NONE     0x00000000 /**< No flags */
+#define orxVIEWPORT_KU32_STATIC_FLAG_NONE     0x00000000  /**< No flags */
 
-#define orxVIEWPORT_KU32_STATIC_FLAG_READY    0x00000001 /**< Ready flag */
+#define orxVIEWPORT_KU32_STATIC_FLAG_READY    0x00000001  /**< Ready flag */
 
-#define orxVIEWPORT_KU32_STATIC_MASK_ALL      0xFFFFFFFF /**< All mask */
+#define orxVIEWPORT_KU32_STATIC_MASK_ALL      0xFFFFFFFF  /**< All mask */
 
 /** orxVIEWPORT flags / masks
  */
-#define orxVIEWPORT_KU32_FLAG_NONE            0x00000000 /**< No flags */
+#define orxVIEWPORT_KU32_FLAG_NONE            0x00000000  /**< No flags */
 
-#define orxVIEWPORT_KU32_FLAG_ENABLED         0x00000001 /**< Enabled flag */
-#define orxVIEWPORT_KU32_FLAG_CAMERA          0x00000002 /**< Has camera flag */
-#define orxVIEWPORT_KU32_FLAG_TEXTURE         0x00000004 /**< Has texture flag */
+#define orxVIEWPORT_KU32_FLAG_ENABLED         0x00000001  /**< Enabled flag */
+#define orxVIEWPORT_KU32_FLAG_CAMERA          0x00000002  /**< Has camera flag */
+#define orxVIEWPORT_KU32_FLAG_TEXTURE         0x00000004  /**< Has texture flag */
+#define orxVIEWPORT_KU32_FLAG_CLEAR           0x00000008  /**< Clear background before render flag */
+
+#define orxVIEWPORT_KU32_FLAG_DEFAULT         0x00000009  /**< Default flags */
 
 #define orxVIEWPORT_KU32_MASK_ALIGN           0xF0000000  /**< Alignment mask */
 
@@ -216,7 +219,7 @@ orxVIEWPORT *orxViewport_Create()
   if(pstViewport != orxNULL)
   {
     /* Inits viewport flags */
-    orxStructure_SetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_ENABLED, orxVIEWPORT_KU32_FLAG_NONE);
+    orxStructure_SetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_DEFAULT, orxVIEWPORT_KU32_FLAG_NONE);
 
     /* Inits vars */
     pstViewport->fX = pstViewport->fY = pstViewport->fWidth = pstViewport->fHeight = orxFLOAT_0;
@@ -430,6 +433,45 @@ orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
 
   /* Tests */
   return(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_ENABLED));
+}
+
+/** Enables / disables background clearing for a viewport
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[in]   _bEnable        Enable / disable
+ */
+orxVOID orxFASTCALL orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Enable? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates flags */
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CLEAR, orxVIEWPORT_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates flags */
+    orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_CLEAR);
+  }
+
+  return;
+}
+
+/** Has a viewport background clearing enabled?
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxViewport_IsBackgroundClearingEnabled(orxCONST orxVIEWPORT *_pstViewport)
+{
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Tests */
+  return(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_CLEAR));
 }
 
 /** Sets a viewport camera

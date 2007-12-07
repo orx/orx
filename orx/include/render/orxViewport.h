@@ -120,6 +120,19 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_Enable(orxVIEWPORT *_p
 extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport);
 
 
+/** Enables / disables background clearing for a viewport
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[in]   _bEnable        Enable / disable
+ */
+extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
+
+/** Has a viewport background clearing enabled?
+ * @param[in]   _pstViewport    Concerned viewport
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsBackgroundClearingEnabled(orxCONST orxVIEWPORT *_pstViewport);
+
+
 /** Sets a viewport camera
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _pstCamera      Associated camera

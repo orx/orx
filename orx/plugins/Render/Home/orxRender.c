@@ -264,8 +264,12 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
         /* Sets bitmap clipping */
         orxDisplay_SetBitmapClipping(pstBitmap, u32ULX, u32ULY, u32BRX, u32BRY);
 
-        /* Clears bitmap */
-        orxDisplay_ClearBitmap(pstBitmap, orxViewport_GetBackgroundColor(_pstViewport));
+        /* Should clear bitmap? */
+        if(orxViewport_IsBackgroundClearingEnabled(_pstViewport) != orxFALSE)
+        {
+          /* Clears it */
+          orxDisplay_ClearBitmap(pstBitmap, orxViewport_GetBackgroundColor(_pstViewport));
+        }
 
         /* Gets camera */
         pstCamera = orxViewport_GetCamera(_pstViewport);
