@@ -977,7 +977,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_zPluginFileName != orxNULL);
-  orxASSERT(orxString_Length(_zPluginFileName) < 252);
+  orxASSERT(orxString_GetLength(_zPluginFileName) < 252);
   orxASSERT(_zPluginName != orxNULL);
 
   /* Gets complete name */

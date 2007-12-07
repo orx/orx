@@ -31,6 +31,7 @@ orxVOID orxDisplay_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_PARAM);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_LINKLIST);

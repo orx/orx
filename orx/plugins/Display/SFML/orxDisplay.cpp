@@ -476,7 +476,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Was already initialized. */
+  /* Was not already initialized? */
   if(!(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */

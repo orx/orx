@@ -32,6 +32,7 @@
 #include "orxInclude.h"
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -111,7 +112,7 @@ orxSTATIC orxINLINE orxS32 orxString_NCompare(orxCONST orxSTRING _zString1, orxC
  * @param _zString (IN) String used for length computation
  * @return Length of the string (doesn't count final orxCHAR_NULL)
  */
-orxSTATIC orxINLINE orxU32 orxString_Length(orxSTRING _zString)
+orxSTATIC orxINLINE orxU32 orxString_GetLength(orxSTRING _zString)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -138,7 +139,7 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxS32 *_ps32OutValue, orxCONST or
   *_ps32OutValue = strtol(_zString, &pcEndPtr, _u32Base);
   
   /* Valid conversion ? */
-  if((orxString_Length(_zString) > 0) && ((_zString[0] != orxCHAR_NULL && pcEndPtr[0] == orxCHAR_NULL)))
+  if((orxString_GetLength(_zString) > 0) && ((_zString[0] != orxCHAR_NULL && pcEndPtr[0] == orxCHAR_NULL)))
   {
     return orxSTATUS_SUCCESS;
   }
@@ -289,7 +290,7 @@ orxSTATIC orxINLINE orxS32 orxString_SearchCharIndex(orxCONST orxSTRING _zString
 
   /* Correct parameters ? */
   orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32Position < orxString_Length(_zString));
+  orxASSERT(_u32Position < orxString_GetLength(_zString));
 
   /* For all characters */
   for(s32Index = _u32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)
@@ -301,6 +302,29 @@ orxSTATIC orxINLINE orxS32 orxString_SearchCharIndex(orxCONST orxSTRING _zString
       s32Result = s32Index;
     }
   }
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Prints a formated string to a memory buffer
+ * @param[out] _zDstString  Destination string
+ * @param[int] _zSrcString  Source formated string
+ * @return The number of written characters
+ */
+orxSTATIC orxINLINE orxS32 orxString_Print(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
+{
+  va_list stArgs;
+  orxS32  s32Result;
+
+  /* Checks */
+  orxASSERT(_zDstString != orxNULL);
+  orxASSERT(_zSrcString != orxNULL);
+
+  /* Gets variable arguments & print the string */
+  va_start(stArgs, _zSrcString);
+  s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
+  va_end(stArgs);
 
   /* Done! */
   return s32Result;
