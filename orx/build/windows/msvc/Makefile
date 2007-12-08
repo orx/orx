@@ -112,6 +112,7 @@ ORXDLL_OBJECTS =  \
 	.\build\$(BUILD)\orxDLL_orxString.obj \
 	.\build\$(BUILD)\orxDLL_orxTree.obj \
 	.\build\$(BUILD)\orxDLL_pathfinder.obj
+ORXDLL_ODEP =  build\$(__BUILD_FILENAMES)
 ORXLIB_CFLAGS = /MD$(__orxDEBUGFLAG_75) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
 	/Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).pdb $(__orxDEBUG_p) \
@@ -342,6 +343,12 @@ orxLIBNAME = orxd
 !endif
 !if "$(BUILD)" == "release"
 orxLIBNAME = orx
+!endif
+!if "$(BUILD)" == "debug"
+__BUILD_FILENAMES = debug
+!endif
+!if "$(BUILD)" == "release"
+__BUILD_FILENAMES = release
 !endif
 !if "$(LINK)" == "dynamic"
 __orxDLL___depname = ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll
@@ -586,6 +593,9 @@ clean:
 	-if exist ..\..\..\bin\plugins\demo\Cave.ilk del ..\..\..\bin\plugins\demo\Cave.ilk
 	-if exist ..\..\..\bin\plugins\demo\Cave.pdb del ..\..\..\bin\plugins\demo\Cave.pdb
 
+build\$(__BUILD_FILENAMES): 
+	if not exist build\$(__BUILD_FILENAMES) mkdir build\$(__BUILD_FILENAMES)
+
 !if "$(LINK)" == "dynamic"
 ..\..\..\lib\$(__LINK_FILENAMES)\orx$(orxSUFFIX).dll: $(ORXDLL_OBJECTS)
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_74) @<<
@@ -594,7 +604,7 @@ clean:
 !endif
 
 !if "$(LINK)" == "static"
-..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib: $(ORXLIB_OBJECTS)
+..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib: $(ORXLIB_OBJECTS) build\$(__BUILD_FILENAMES)
 	if exist $@ del $@
 	link /LIB /NOLOGO /OUT:$@ @<<
 	$(ORXLIB_OBJECTS)
@@ -781,127 +791,127 @@ clean:
 <<
 !endif
 
-.\build\$(BUILD)\orxDLL_orxAnim.obj: ..\..\..\src\anim\orxAnim.c
+.\build\$(BUILD)\orxDLL_orxAnim.obj: ..\..\..\src\anim\orxAnim.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxAnimPointer.obj: ..\..\..\src\anim\orxAnimPointer.c
+.\build\$(BUILD)\orxDLL_orxAnimPointer.obj: ..\..\..\src\anim\orxAnimPointer.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxAnimSet.obj: ..\..\..\src\anim\orxAnimSet.c
+.\build\$(BUILD)\orxDLL_orxAnimSet.obj: ..\..\..\src\anim\orxAnimSet.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxModule.obj: ..\..\..\src\base\orxModule.c
+.\build\$(BUILD)\orxDLL_orxModule.obj: ..\..\..\src\base\orxModule.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxCamera.obj: ..\..\..\src\render\orxCamera.c
+.\build\$(BUILD)\orxDLL_orxCamera.obj: ..\..\..\src\render\orxCamera.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxRender.obj: ..\..\..\src\render\orxRender.c
+.\build\$(BUILD)\orxDLL_orxRender.obj: ..\..\..\src\render\orxRender.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxViewport.obj: ..\..\..\src\render\orxViewport.c
+.\build\$(BUILD)\orxDLL_orxViewport.obj: ..\..\..\src\render\orxViewport.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxClock.obj: ..\..\..\src\core\orxClock.c
+.\build\$(BUILD)\orxDLL_orxClock.obj: ..\..\..\src\core\orxClock.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxEvent.obj: ..\..\..\src\core\orxEvent.c
+.\build\$(BUILD)\orxDLL_orxEvent.obj: ..\..\..\src\core\orxEvent.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxTime.obj: ..\..\..\src\core\orxTime.c
+.\build\$(BUILD)\orxDLL_orxTime.obj: ..\..\..\src\core\orxTime.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxDebug.obj: ..\..\..\src\debug\orxDebug.c
+.\build\$(BUILD)\orxDLL_orxDebug.obj: ..\..\..\src\debug\orxDebug.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxFPS.obj: ..\..\..\src\debug\orxFPS.c
+.\build\$(BUILD)\orxDLL_orxFPS.obj: ..\..\..\src\debug\orxFPS.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxTest.obj: ..\..\..\src\debug\orxTest.c
+.\build\$(BUILD)\orxDLL_orxTest.obj: ..\..\..\src\debug\orxTest.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxGraphic.obj: ..\..\..\src\display\orxGraphic.c
+.\build\$(BUILD)\orxDLL_orxGraphic.obj: ..\..\..\src\display\orxGraphic.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxDisplay.obj: ..\..\..\src\display\orxDisplay.c
+.\build\$(BUILD)\orxDLL_orxDisplay.obj: ..\..\..\src\display\orxDisplay.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxTexture.obj: ..\..\..\src\display\orxTexture.c
+.\build\$(BUILD)\orxDLL_orxTexture.obj: ..\..\..\src\display\orxTexture.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxFile.obj: ..\..\..\src\io\orxFile.c
+.\build\$(BUILD)\orxDLL_orxFile.obj: ..\..\..\src\io\orxFile.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxFileSystem.obj: ..\..\..\src\io\orxFileSystem.c
+.\build\$(BUILD)\orxDLL_orxFileSystem.obj: ..\..\..\src\io\orxFileSystem.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxJoystick.obj: ..\..\..\src\io\orxJoystick.c
+.\build\$(BUILD)\orxDLL_orxJoystick.obj: ..\..\..\src\io\orxJoystick.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxKeyboard.obj: ..\..\..\src\io\orxKeyboard.c
+.\build\$(BUILD)\orxDLL_orxKeyboard.obj: ..\..\..\src\io\orxKeyboard.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxMouse.obj: ..\..\..\src\io\orxMouse.c
+.\build\$(BUILD)\orxDLL_orxMouse.obj: ..\..\..\src\io\orxMouse.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxPackage.obj: ..\..\..\src\io\orxPackage.c
+.\build\$(BUILD)\orxDLL_orxPackage.obj: ..\..\..\src\io\orxPackage.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxTextIO.obj: ..\..\..\src\io\orxTextIO.c
+.\build\$(BUILD)\orxDLL_orxTextIO.obj: ..\..\..\src\io\orxTextIO.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxParam.obj: ..\..\..\src\main\orxParam.c
+.\build\$(BUILD)\orxDLL_orxParam.obj: ..\..\..\src\main\orxParam.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxVector.obj: ..\..\..\src\math\orxVector.c
+.\build\$(BUILD)\orxDLL_orxVector.obj: ..\..\..\src\math\orxVector.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxBank.obj: ..\..\..\src\memory\orxBank.c
+.\build\$(BUILD)\orxDLL_orxBank.obj: ..\..\..\src\memory\orxBank.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxMemory.obj: ..\..\..\src\memory\orxMemory.c
+.\build\$(BUILD)\orxDLL_orxMemory.obj: ..\..\..\src\memory\orxMemory.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxFrame.obj: ..\..\..\src\object\orxFrame.c
+.\build\$(BUILD)\orxDLL_orxFrame.obj: ..\..\..\src\object\orxFrame.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxObject.obj: ..\..\..\src\object\orxObject.c
+.\build\$(BUILD)\orxDLL_orxObject.obj: ..\..\..\src\object\orxObject.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxStructure.obj: ..\..\..\src\object\orxStructure.c
+.\build\$(BUILD)\orxDLL_orxStructure.obj: ..\..\..\src\object\orxStructure.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxPlugin.obj: ..\..\..\src\plugin\orxPlugin.c
+.\build\$(BUILD)\orxDLL_orxPlugin.obj: ..\..\..\src\plugin\orxPlugin.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxScript.obj: ..\..\..\src\script\orxScript.c
+.\build\$(BUILD)\orxDLL_orxScript.obj: ..\..\..\src\script\orxScript.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxSound.obj: ..\..\..\src\sound\orxSound.c
+.\build\$(BUILD)\orxDLL_orxSound.obj: ..\..\..\src\sound\orxSound.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxFSM.obj: ..\..\..\src\utils\orxFSM.c
+.\build\$(BUILD)\orxDLL_orxFSM.obj: ..\..\..\src\utils\orxFSM.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxHashTable.obj: ..\..\..\src\utils\orxHashTable.c
+.\build\$(BUILD)\orxDLL_orxHashTable.obj: ..\..\..\src\utils\orxHashTable.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxLinkList.obj: ..\..\..\src\utils\orxLinkList.c
+.\build\$(BUILD)\orxDLL_orxLinkList.obj: ..\..\..\src\utils\orxLinkList.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxQueue.obj: ..\..\..\src\utils\orxQueue.c
+.\build\$(BUILD)\orxDLL_orxQueue.obj: ..\..\..\src\utils\orxQueue.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxScreenshot.obj: ..\..\..\src\utils\orxScreenshot.c
+.\build\$(BUILD)\orxDLL_orxScreenshot.obj: ..\..\..\src\utils\orxScreenshot.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxString.obj: ..\..\..\src\utils\orxString.c
+.\build\$(BUILD)\orxDLL_orxString.obj: ..\..\..\src\utils\orxString.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_orxTree.obj: ..\..\..\src\utils\orxTree.c
+.\build\$(BUILD)\orxDLL_orxTree.obj: ..\..\..\src\utils\orxTree.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
-.\build\$(BUILD)\orxDLL_pathfinder.obj: ..\..\..\src\utils\pathfinder.c
+.\build\$(BUILD)\orxDLL_pathfinder.obj: ..\..\..\src\utils\pathfinder.c $(ORXDLL_ODEP)
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) $**
 
 .\build\$(BUILD)\orxLIB_orxAnim.obj: ..\..\..\src\anim\orxAnim.c
