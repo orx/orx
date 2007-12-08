@@ -117,20 +117,6 @@ typedef orxVOID (*orxEVENT_FUNCTION)(orxEVENT_MESSAGE_TYPE, orxEVENT_MESSAGE_LIF
 #define orxEVENT_KU32_FLAG_MANIPULATION_ERROR                           0x00001000  /**< Invalid Manipulation flag. */
 
 
-/** Event manager.*/
-typedef struct __orxEVENT_MANAGER_t
-{
-	/** Manipulation flags of queue.*/
-	orxU32 u32ManipFlags;
-
-	/** Message queue.*/
-	orxQUEUE *pstMessageQueue;
-
-	/** Callback hash table.*/
-	orxHASHTABLE *pstCallbackTable;
-} orxEVENT_MANAGER;
-
-
 /** Event module setup
  */
 extern orxDLLAPI orxVOID                        orxEvent_Setup();
@@ -141,53 +127,40 @@ extern orxDLLAPI orxSTATUS                      orxEvent_Init();
  */
 extern orxDLLAPI orxVOID                        orxEvent_Exit();
 
-/** Create an event manager.
- * @param _u16EventNumber Number of event the manager can store.
- * @param _u16HandlerNumber Number of handler the manager can store.
- * @param _u32Flags Flags of event manager.
- * @return Address of the manager structure, orxNULL if failed.
- */
-extern orxDLLAPI orxEVENT_MANAGER *orxFASTCALL  orxEvent_CreateManager(orxU16 _u16EventNumber, orxU16 _u16HandlerNumber, orxU32 _u32Flags);
-
-/** Delete an event manager.
- * @param _pstEventManager Event manager to destroy.
- */
-extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_DeleteManager(orxEVENT_MANAGER *_pstEventManager);
-
-/** Set the flags of event manager.
- * @param _pstEventManager Event manager.
+/** Set the manipulation flags of event manager.
  * @param _u32Flags Flags of event manager.
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_SetManagerFlags(orxEVENT_MANAGER *_pstEventManager, orxU32 _u32Flags);
+extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_SetManipulationFlags(orxU32 _u32Flags);
 
-/** Retrieve the flags of the event manager.
- * @param _pstEventManager Event manager.
+/** Retrieve the manipulation flags.
  * @return Flags.
  */
-extern orxDLLAPI orxU32 orxFASTCALL             orxEvent_GetManagerFlags(orxCONST orxEVENT_MANAGER *_pstEventManager);
+extern orxDLLAPI orxU32 orxFASTCALL             orxEvent_GetManipulationFlags();
 
 /** Register an event callback function.
  * Unregister previous handler and set the new instead.
- * @param _pstEventManager Event manager.
  * @param _u16Type Type of event to intercept.
  * @param _pfnHandler Event callback function, orxNULL to only unregister previous handler.
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_RegisterHandler(orxEVENT_MANAGER *_pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_FUNCTION _pfnHandler);
+extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_RegisterHandler(orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_FUNCTION _pfnHandler);
 
-/** Add an event to the manager.
- * @param _pstEventManager Event manager.
+/** Add an event.
  * @param _u16Type Type of event.
  * @param _s16Life Remaining lifetime.
  * @param _pExtraData Address of extra data.
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_Add(orxEVENT_MANAGER *_pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_MESSAGE_LIFETIME _s16Life, orxVOID *_pExtraData);
+extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_Add(orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_MESSAGE_LIFETIME _s16Life, orxVOID *_pExtraData);
 
-/** Process events of the manager.
- * Process the events.
+/** Retrieve event number.
+ * @return Event number.
+ */
+extern orxDLLAPI orxU16 orxFASTCALL				orxEvent_GetCount();
+
+/** Process events.
  * @param _pstEventManager Event manager.
  * @param _s16Ticks Number of ticks to remove from the lifetime.
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, orxS16 _s16Ticks);
+extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_Process(orxS16 _s16Ticks);
 
 /** Update the event manager.
  * Function to plug into clock system.

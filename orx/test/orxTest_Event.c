@@ -41,7 +41,6 @@
 
 typedef struct __orxTEST_EVENT_t
 {
-	orxEVENT_MANAGER *pstEventManager;	/** The event manager.*/
 	orxU32 u32MaxEvent;
 	orxU32 u32MaxHandler;
 } orxTEST_EVENT;
@@ -84,7 +83,7 @@ orxVOID orxTest_Event_Infos()
 /** Display module event manager state.*/
 orxVOID orxTest_Event_DisplayFlagState()
 {
-	orxU32 u32Flag = orxEvent_GetManagerFlags(sstTest_Event.pstEventManager);
+	orxU32 u32Flag = orxEvent_GetManipulationFlags();
 
 	/** Remove negative lifetime event.*/
 	if(orxFLAG_TEST_ALL(u32Flag, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT))
@@ -138,7 +137,7 @@ orxVOID orxTest_Event_ModifyFlagState()
 	if(s32==1)
 		u32Flag |= orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS;
 
-	orxEvent_SetManagerFlags(sstTest_Event.pstEventManager, u32Flag);
+	orxEvent_SetManipulationFlags(u32Flag);
 }
 
 /** Display module state
@@ -149,9 +148,9 @@ orxVOID orxTest_Event_DisplayState()
 	orxTest_Event_DisplayFlagState();
 	
 	/** Log message queue content : .*/	
-    orxQUEUE_ITEM* pstItem;
+/*    orxQUEUE_ITEM* pstItem;
     orxQUEUE_ITEM* pstLastItem;
-    orxTextIO_PrintLn("%hu messages :", orxQueue_GetItemNumber(sstTest_Event.pstEventManager->pstMessageQueue));
+    orxTextIO_PrintLn("%hu messages :", orxEvent_GetCount());
     pstItem = orxQueue_GetFirstItem(sstTest_Event.pstEventManager->pstMessageQueue);
     pstLastItem = orxQueue_GetLastItem(sstTest_Event.pstEventManager->pstMessageQueue);
     while(pstItem!=orxNULL && pstItem<=pstLastItem)
@@ -163,9 +162,10 @@ orxVOID orxTest_Event_DisplayState()
 	    							      orxQueueItem_GetExtraData(pstItem));
       pstItem = orxQueue_GetNextItem(sstTest_Event.pstEventManager->pstMessageQueue, pstItem);
     }
+*/
 
 	/** Log handler content : .*/
-  	orxU32 u32Key;
+/*  	orxU32 u32Key;
   	orxVOID* pData;
   	orxVOID* pIter;  	
   	pIter = orxHashTable_FindFirst(sstTest_Event.pstEventManager->pstCallbackTable, &u32Key, &pData);
@@ -180,7 +180,7 @@ orxVOID orxTest_Event_DisplayState()
 		  pIter = orxHashTable_FindNext(sstTest_Event.pstEventManager->pstCallbackTable, pIter, &u32Key, &pData);
 		}
 	}
-	
+*/
 }
 
 /** Register an handler.
@@ -200,16 +200,16 @@ orxVOID orxTest_Event_RegisterHandler()
 	switch(s32)
 	{
 	case 1:
-		orxEvent_RegisterHandler(sstTest_Event.pstEventManager, u16ID, orxTest_Event_Handler_1);
+		orxEvent_RegisterHandler(u16ID, orxTest_Event_Handler_1);
 		break;
 	case 2:
-		orxEvent_RegisterHandler(sstTest_Event.pstEventManager, u16ID, orxTest_Event_Handler_2);
+		orxEvent_RegisterHandler(u16ID, orxTest_Event_Handler_2);
 		break;
 	case 3:
-		orxEvent_RegisterHandler(sstTest_Event.pstEventManager, u16ID, orxTest_Event_Handler_3);
+		orxEvent_RegisterHandler(u16ID, orxTest_Event_Handler_3);
 		break;
 	default:
-		orxEvent_RegisterHandler(sstTest_Event.pstEventManager, u16ID, orxNULL);
+		orxEvent_RegisterHandler(u16ID, orxNULL);
 		break;
 	}
     orxTextIO_PrintLn("Handler registered.");
@@ -234,7 +234,7 @@ orxVOID orxTest_Event_AddEvent()
     orxTextIO_ReadS32InRange(&s32, 10, -32000, 32000, "Choose the message life time : ", orxTRUE);
     s16Time = (orxU16) s32;
 	
-	orxEvent_Add(sstTest_Event.pstEventManager, u16ID, s16Time, (orxVOID*)s_u32Count);
+	orxEvent_Add(u16ID, s16Time, (orxVOID*)s_u32Count);
 }
 
 /** Process events.
@@ -248,7 +248,7 @@ orxVOID orxTest_Event_ProcessEvents()
     orxTextIO_ReadS32InRange(&s32, 10, -32000, 32000, "Choose the decount time : ", orxTRUE);
     s16Time = (orxU16) s32;
 	
-	orxEvent_UpdateManager(sstTest_Event.pstEventManager, s16Time);
+	orxEvent_Process(s16Time);
 }
 
 
@@ -262,8 +262,8 @@ orxVOID orxTest_Event_Init()
   
   /* Register test functions */
   orxTest_Register("Event", "Display module informations", orxTest_Event_Infos);
-  orxTest_Register("Event", "Display event manager flag state", orxTest_Event_DisplayFlagState);
-  orxTest_Register("Event", "Modify event manager flag state", orxTest_Event_ModifyFlagState);  
+  orxTest_Register("Event", "Display event flag state", orxTest_Event_DisplayFlagState);
+  orxTest_Register("Event", "Modify event flag state", orxTest_Event_ModifyFlagState);  
   orxTest_Register("Event", "Display module state", orxTest_Event_DisplayState);
   orxTest_Register("Event", "(Un)Register event handler", orxTest_Event_RegisterHandler);
   orxTest_Register("Event", "Add an event", orxTest_Event_AddEvent);
@@ -272,15 +272,10 @@ orxVOID orxTest_Event_Init()
   /* Initialize static datas */
   sstTest_Event.u32MaxEvent = orxTEST_EVENT_KU32_EVENT_MAX_NUMBER;
   sstTest_Event.u32MaxHandler = orxTEST_EVENT_KU32_EVENT_MAX_HANDLER;
-  sstTest_Event.pstEventManager = orxEvent_CreateManager(orxTEST_EVENT_KU32_EVENT_MAX_NUMBER, orxTEST_EVENT_KU32_EVENT_MAX_HANDLER, orxEVENT_KU32_FLAG_MANIPULATION_STANDARD);
-
 }
 
 orxVOID orxTest_Event_Exit()
 {
-	/** Delete static data.*/
-	orxEvent_DeleteManager(sstTest_Event.pstEventManager);
-	sstTest_Event.pstEventManager = orxNULL;
 }
 
 orxTEST_DEFINE_ENTRY_POINT(orxTest_Event_Init, orxTest_Event_Exit)

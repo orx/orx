@@ -38,6 +38,10 @@
 
 #define orxEVENT_KU32_FLAG_EVENT_DELETED		    0xFFFFFFFF
 
+#define orxEVENT_KU32_EVENT_MESSAGE_QUEUE_SIZE	    0x00001000
+#define orxEVENT_KU32_EVENT_CALLBACK_TABLE_SIZE	    0x00000100
+
+
 /** Define to minimize code writing for module initialization test.*/
 #define orxEVENT_ASSERT_MODULE_NOT_INITIALIZED  orxASSERT((sstEvent.u32Flags & orxEVENT_KU32_STATIC_FLAG_READY)  ==  orxEVENT_KU32_STATIC_FLAG_READY)
 
@@ -48,7 +52,13 @@ typedef struct __orxEVENT_STATIC_t
 {
   /* Control flags */
   orxU32 u32Flags;
-
+  
+  /** Manipulation flags of queue.*/
+  orxU32 u32ManipFlags;
+  /** Message queue.*/
+  orxQUEUE *pstMessageQueue;
+  /** Callback hash table.*/
+  orxHASHTABLE *pstCallbackTable;
 } orxEVENT_STATIC;
 
 
@@ -58,133 +68,78 @@ typedef struct __orxEVENT_STATIC_t
 orxSTATIC orxEVENT_STATIC sstEvent;
 
 
-
-
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
 
 /**
- *  Create an event manager.
+ *  Set the manipulation flags
  */
-orxEVENT_MANAGER *orxFASTCALL orxEvent_CreateManager(orxU16 _u16Number, orxU16 _u16HandlerNumber, orxU32 _u32Flags)
+orxVOID orxFASTCALL orxEvent_SetManipulationFlags(orxU32 _u32Flags)
 {
-  orxEVENT_MANAGER* pstManager;
-  orxQUEUE* pstMessageQueue;
-  orxHASHTABLE* pstCallbackTable;
-
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
 
-	pstManager       = orxMemory_Allocate(sizeof(orxEVENT_MANAGER), orxMEMORY_TYPE_MAIN);
-	pstMessageQueue  = orxQueue_Create(_u16Number);
-	pstCallbackTable = orxHashTable_Create(_u16HandlerNumber, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-	
-	if((pstManager == orxNULL)
-  || (pstMessageQueue == orxNULL)
-  || (pstCallbackTable == orxNULL))
-	{
-		if(pstManager != orxNULL)
-		{
-			orxMemory_Free(pstManager);
-		}
-		if(pstMessageQueue != orxNULL)
-		{
-			orxQueue_Delete(pstMessageQueue);
-		}
-		if(pstCallbackTable != orxNULL)
-		{
-			orxHashTable_Delete(pstCallbackTable);
-		}
-		return orxNULL;
-	}
-
-	orxQueue_Clean(pstMessageQueue);
-	orxHashTable_Clear(pstCallbackTable);
-	
-	pstManager->pstMessageQueue  = pstMessageQueue;
-	pstManager->pstCallbackTable = pstCallbackTable;
-	pstManager->u32ManipFlags = _u32Flags;
-	return pstManager;
+	sstEvent.u32ManipFlags = _u32Flags;
 }
 
 /**
- *  Delete an event manager.
+ *  Retrieve the manipulation flags.
  */
-orxVOID orxFASTCALL orxEvent_DeleteManager(orxEVENT_MANAGER *_pstEventManager)
+orxU32  orxFASTCALL orxEvent_GetManipulationFlags()
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
-	/** Assert the Event manager is ok.*/
- 	orxASSERT(_pstEventManager != orxNULL);
-    
-	orxQueue_Delete(_pstEventManager->pstMessageQueue);
-	orxHashTable_Delete(_pstEventManager->pstCallbackTable);
-	orxMemory_Free(_pstEventManager);	
-}
 
-/**
- *  Set the flags of event manager.
- */
-orxVOID orxFASTCALL orxEvent_SetManagerFlags(orxEVENT_MANAGER *_pstEventManager, orxU32 _u32Flags)
-{
-	/** Assert the module is initialized.*/
-	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
-  /** Assert the Event manager is ok.*/
-  orxASSERT(_pstEventManager != orxNULL);
-  
-  _pstEventManager->u32ManipFlags = _u32Flags;
-}
-
-/**
- *  Retrieve the flags of the event manager.
- */
-orxU32  orxFASTCALL orxEvent_GetManagerFlags(orxCONST orxEVENT_MANAGER *_pstEventManager)
-{
-	/** Assert the module is initialized.*/
-	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
-  /** Assert the Event manager is ok.*/
-  orxASSERT(_pstEventManager != orxNULL);
-  
-  return _pstEventManager->u32ManipFlags;
+	return sstEvent.u32ManipFlags;
 }
 
 /** 
  * Register an event callback function.
  */
-orxVOID orxFASTCALL orxEvent_RegisterHandler(orxEVENT_MANAGER *_pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_FUNCTION _pfnHandler)
+orxVOID orxFASTCALL orxEvent_RegisterHandler(orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_FUNCTION _pfnHandler)
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
-  /** Assert the Event manager is ok.*/
-  orxASSERT(_pstEventManager != orxNULL);
-  /** Assert the other params.*/
-  orxASSERT(_u16Type != 0);
-  orxASSERT(_pfnHandler != orxNULL);
 
-	orxHashTable_Set(_pstEventManager->pstCallbackTable, _u16Type, (orxVOID *)_pfnHandler);
+	/** Assert the other params.*/
+	orxASSERT(_u16Type != 0);
+	orxASSERT(_pfnHandler != orxNULL);
+
+	orxHashTable_Set(sstEvent.pstCallbackTable, _u16Type, (orxVOID *)_pfnHandler);
 }
 
 /**
- *  Add an event to the manager.
+ *  Add an event.
  */
-orxVOID orxFASTCALL orxEvent_Add(orxEVENT_MANAGER *_pstEventManager, orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_MESSAGE_LIFETIME _s16Life, orxVOID* _pExtraData)
+orxVOID orxFASTCALL orxEvent_Add(orxEVENT_MESSAGE_TYPE _u16Type, orxEVENT_MESSAGE_LIFETIME _s16Life, orxVOID* _pExtraData)
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
-  /** Assert the Event manager is ok.*/
-  orxASSERT(_pstEventManager != orxNULL);
-  /** Assert the other params.*/
-  orxASSERT(_u16Type != 0);
-  orxASSERT(_s16Life > 0);
+	
+	/** Assert the other params.*/
+	orxASSERT(_u16Type != 0);
+	orxASSERT(_s16Life > 0);
   
-  orxQueue_AddItem(_pstEventManager->pstMessageQueue, orxEVENT_MESSAGE_GET_ID(_u16Type, _s16Life), _pExtraData);
+	orxQueue_AddItem(sstEvent.pstMessageQueue, orxEVENT_MESSAGE_GET_ID(_u16Type, _s16Life), _pExtraData);
+}
+
+
+/**
+ * Retrieve event number.
+ */
+orxU16 orxFASTCALL orxEvent_GetCount()
+{
+	/** Assert the module is initialized.*/
+	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
+
+	return orxQueue_GetItemNumber(sstEvent.pstMessageQueue);
 }
 
 /**
  *  Process the events.
  */
-orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, orxS16 _s16Ticks)
+orxVOID orxFASTCALL orxEvent_Process(orxS16 _s16Ticks)
 {
   orxQUEUE_ITEM *pstCurrentItem;
   orxBOOL bRemoveNegative;
@@ -193,17 +148,15 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
   orxQUEUE_ITEM *pstItem = orxNULL;
   orxQUEUE_ITEM *pstFirstItem = orxNULL;
 
-	/** Assert the module is initialized.*/
-	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
-  /** Assert the Event manager is ok.*/
-  orxASSERT(_pstEventManager != orxNULL);
+  /** Assert the module is initialized.*/
+  orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
   
-  bRemoveNegative    = orxFLAG_TEST_ALL(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT);
-  bRemoveUnprocessed = orxFLAG_TEST_ALL(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED);
-  bPartialProcess    = orxFLAG_TEST_ALL(_pstEventManager->u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS);
+  bRemoveNegative    = orxFLAG_TEST_ALL(sstEvent.u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT);
+  bRemoveUnprocessed = orxFLAG_TEST_ALL(sstEvent.u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_UNPROCESSED);
+  bPartialProcess    = orxFLAG_TEST_ALL(sstEvent.u32ManipFlags, orxEVENT_KU32_FLAG_MANIPULATION_PARTIAL_PROCESS);
   
   /** Process all message.*/
-  pstCurrentItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);
+  pstCurrentItem = orxQueue_GetFirstItem(sstEvent.pstMessageQueue);
   while(pstCurrentItem != orxNULL)
   {
   	orxU16 u16Type = orxEVENT_MESSAGE_GET_TYPE(orxQueueItem_GetID(pstCurrentItem));
@@ -228,7 +181,7 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
 	  	/** Intend to process it.*/
 
     	/** Find handler and process event if any.*/
-    	orxEVENT_FUNCTION pfnEventHandler = (orxEVENT_FUNCTION)orxHashTable_Get(_pstEventManager->pstCallbackTable, u16Type);
+    	orxEVENT_FUNCTION pfnEventHandler = (orxEVENT_FUNCTION)orxHashTable_Get(sstEvent.pstCallbackTable, u16Type);
     	if(pfnEventHandler  !=  orxNULL)
     	{
     		pfnEventHandler(u16Type, s16Life, pData);
@@ -251,13 +204,13 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
   	}
   	
   	/** Find next item to process according to total/partial process config.*/
-	pstCurrentItem = orxQueue_GetNextItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+	pstCurrentItem = orxQueue_GetNextItem(sstEvent.pstMessageQueue, pstCurrentItem);
   	if(bPartialProcess && (pstCurrentItem!=orxNULL))
   	{
   		/** the next item with a different type.*/
   		while(orxEVENT_MESSAGE_GET_TYPE(orxQueueItem_GetID(pstCurrentItem)) == u16Type)
   		{
-	    	pstCurrentItem = orxQueue_GetNextItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+	    	pstCurrentItem = orxQueue_GetNextItem(sstEvent.pstMessageQueue, pstCurrentItem);
 	    	if(pstCurrentItem == orxNULL)
 	    		break;
   		}
@@ -267,18 +220,18 @@ orxVOID orxFASTCALL orxEvent_UpdateManager(orxEVENT_MANAGER *_pstEventManager, o
   /** Clear the queue if not saving no processed events.*/
   if(bRemoveUnprocessed)
   {
-	orxQueue_Clean(_pstEventManager->pstMessageQueue);
+	orxQueue_Clean(sstEvent.pstMessageQueue);
   }
   else
   {
-	  pstCurrentItem = orxQueue_GetLastItem(_pstEventManager->pstMessageQueue);
-	  pstFirstItem = orxQueue_GetFirstItem(_pstEventManager->pstMessageQueue);
+	  pstCurrentItem = orxQueue_GetLastItem(sstEvent.pstMessageQueue);
+	  pstFirstItem = orxQueue_GetFirstItem(sstEvent.pstMessageQueue);
 	  while(pstCurrentItem >= pstFirstItem)
 	  {
-	  	pstItem = orxQueue_GetPreviousItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+	  	pstItem = orxQueue_GetPreviousItem(sstEvent.pstMessageQueue, pstCurrentItem);
 	  	if(orxQueueItem_GetID(pstCurrentItem)==orxEVENT_KU32_FLAG_EVENT_DELETED)
 		{
-			orxQueue_RemoveItem(_pstEventManager->pstMessageQueue, pstCurrentItem);
+			orxQueue_RemoveItem(sstEvent.pstMessageQueue, pstCurrentItem);
   		}
 		pstCurrentItem = pstItem;
 	  }
@@ -293,12 +246,11 @@ orxVOID orxFASTCALL orxEvent_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
 {
 	/** Assert the module is initialized.*/
 	orxEVENT_ASSERT_MODULE_NOT_INITIALIZED;
-  /** Assert the params is ok.*/
-  orxASSERT(_pstClockInfo != orxNULL);
-  orxASSERT(_pstContext != orxNULL);
+	/** Assert the params is ok.*/
+	orxASSERT(_pstClockInfo != orxNULL);
 
 	/** @todo More _pstClockInfo->u32DT asserts or live verifs.*/
-	orxEvent_UpdateManager((orxEVENT_MANAGER *)_pstContext, (orxS16)_pstClockInfo->fDT);
+	orxEvent_Process((orxS16)_pstClockInfo->fDT);
 }
 
 
@@ -338,9 +290,33 @@ orxSTATUS orxEvent_Init()
   
     /* Inits Flags */
     sstEvent.u32Flags = orxEVENT_KU32_STATIC_FLAG_READY;
-    
-    /* Successfull Init */
-    eResult = orxSTATUS_SUCCESS;
+
+    sstEvent.pstMessageQueue  = orxQueue_Create(orxEVENT_KU32_EVENT_MESSAGE_QUEUE_SIZE);
+    sstEvent.pstCallbackTable = orxHashTable_Create(orxEVENT_KU32_EVENT_CALLBACK_TABLE_SIZE,
+    									orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+	
+	if((sstEvent.pstMessageQueue == orxNULL) || (sstEvent.pstCallbackTable == orxNULL))
+	{
+		if(sstEvent.pstMessageQueue != orxNULL)
+		{
+			orxQueue_Delete(sstEvent.pstMessageQueue);
+		}
+		if(sstEvent.pstCallbackTable != orxNULL)
+		{
+			orxHashTable_Delete(sstEvent.pstCallbackTable);
+		}
+        /* Successfull Init */
+        eResult = orxSTATUS_FAILURE;
+    }
+    else
+    {
+      orxQueue_Clean(sstEvent.pstMessageQueue);
+      orxHashTable_Clear(sstEvent.pstCallbackTable);
+      sstEvent.u32ManipFlags = orxEVENT_KU32_FLAG_MANIPULATION_STANDARD;
+
+      /* Successfull Init */
+      eResult = orxSTATUS_SUCCESS;
+	}
   }
   else
   {
@@ -364,6 +340,21 @@ orxVOID orxEvent_Exit()
   {
     /* Updates flags */
     sstEvent.u32Flags &= ~orxEVENT_KU32_STATIC_FLAG_READY;
+    
+    /* Free message queue */
+    if(sstEvent.pstMessageQueue)
+    {
+    	orxQueue_Delete(sstEvent.pstMessageQueue);
+    	sstEvent.pstMessageQueue = orxNULL;
+    }
+    
+    /* Free callback table */
+    if(sstEvent.pstCallbackTable)
+    {
+    	
+    	orxHashTable_Delete(sstEvent.pstCallbackTable);
+    	sstEvent.pstCallbackTable = orxNULL;
+    }
   }
   else
   {
