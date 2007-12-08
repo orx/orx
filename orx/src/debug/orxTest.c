@@ -275,7 +275,7 @@ orxSTATIC orxINLINE orxVOID orxTest_PrintModuleFunc(orxCONST orxSTRING _zModuleN
   /* Display all functions not already displayed and that have the same module name */
   for(u32Index = 0; u32Index < sstTest.u32NbRegisteredFunc; u32Index++)
   {
-    if(!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, orxString_Length(_zModuleName) * sizeof(orxCHAR)) == 0))
+    if(!(sstTest.astTestFunctions[u32Index].bDisplayed) && (orxMemory_Compare(sstTest.astTestFunctions[u32Index].zModule, _zModuleName, orxString_GetLength(_zModuleName) * sizeof(orxCHAR)) == 0))
     {
       sstTest.astTestFunctions[u32Index].bDisplayed = orxTRUE;
       orxTextIO_PrintLn("* %lu - %s", u32Index, sstTest.astTestFunctions[u32Index].zMenuEntry);
@@ -519,7 +519,7 @@ orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *
   orxTextIO_ReadString(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, "Choice : ");
 
   /* Check overflow */
-  if((orxString_Length(zChoice) > 0) && zChoice[orxString_Length(zChoice)-1] == '\n')
+  if((orxString_GetLength(zChoice) > 0) && zChoice[orxString_GetLength(zChoice)-1] == '\n')
   {
     zChoice[strlen(zChoice)-1] = orxCHAR_NULL;
   }

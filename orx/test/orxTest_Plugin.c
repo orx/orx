@@ -249,7 +249,7 @@ orxVOID orxTest_Plugin_ShowList()
   }
   
   /* Compute the number of space to print */
-  u32Cols = (orxTEST_PLUGINS_KU32_NB_COLS - 2 - orxString_Length(orxTEST_PLUGINS_KZ_PLUGINS_TITLE)) / 2;
+  u32Cols = (orxTEST_PLUGINS_KU32_NB_COLS - 2 - orxString_GetLength(orxTEST_PLUGINS_KZ_PLUGINS_TITLE)) / 2;
    
   /* Print Title */
   orxTextIO_Print("\n*");  
@@ -285,7 +285,7 @@ orxVOID orxTest_Plugin_ShowList()
     orxTextIO_Print(zPluginInfos);
     
     /* Print spaces */
-    for(u32Cols = 0; u32Cols < (orxTEST_PLUGINS_KU32_NB_COLS / 2) - orxString_Length(zPluginInfos) - (u32Index % 2); u32Cols++)
+    for(u32Cols = 0; u32Cols < (orxTEST_PLUGINS_KU32_NB_COLS / 2) - orxString_GetLength(zPluginInfos) - (u32Index % 2); u32Cols++)
     {
       orxTextIO_Print(" ");
     }
