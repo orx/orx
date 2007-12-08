@@ -92,9 +92,14 @@
         </sources>
     </template>
     
+    <mkdir id="builddir">
+        <dir>$(orxBUILDDIR)</dir>
+    </mkdir>
+    
     <!-- ***************** DYNAMIC LIBRARY ************** -->
     <!--- Create orx static library -->
     <dll id="orxDLL" template="orxLIB_BASE" cond="LINK=='dynamic'">
+        <objects-depend>builddir</objects-depend>
         <!-- Set the name of the library (will be different in debug and release mode -->
         <dllname>orx$(orxSUFFIX)</dllname>
     </dll>
@@ -103,6 +108,7 @@
 
     <!--- Create orx static library -->
     <lib id="orxLIB" template="orxLIB_BASE" cond="LINK=='static'">
+        <depends>builddir</depends>
     </lib>
     
     

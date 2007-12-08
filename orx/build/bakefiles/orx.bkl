@@ -4,6 +4,8 @@
 
 <bakefile>
  
+    <using module="datafiles"/>
+ 
     <!-- Include common definitions. -->
     <include file="common.bkl"/>
     
