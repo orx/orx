@@ -53,7 +53,9 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Exit, orxVOID);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Open, orxFILE*, orxSTRING, orxU32);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Read, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Write, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Gets, orxSTATUS, orxSTRING, orxU32, orxFILE*);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Close, orxSTATUS, orxFILE*);
+
 
 
 /** Initialize the File Module
@@ -102,6 +104,17 @@ orxSTATIC orxINLINE orxU32 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize
 orxSTATIC orxINLINE orxU32 orxFile_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Write)(_pDataToWrite, _u32ElemSize, _u32NbElem, _pstFile);
+}
+
+/** get text line from a file
+ * @param _zBuffer  (OUT)     Pointer where will be stored datas
+ * @param _u32Size  (IN)      Size of buffer
+ * @param _pstFile  (IN)      Pointer on the file descriptor
+ * @return Returns if gets is ok.
+ */
+orxSTATIC orxINLINE orxSTATUS orxFile_Gets(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Gets)(_zBuffer, _u32Size, _pstFile);
 }
 
 /** Close an oppened file

@@ -213,6 +213,27 @@ orxU32 orxFile_LibC_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u
   return u32Ret;
 }
 
+/** get text line from a file
+ * @param _zBuffer  (OUT)     Pointer where will be stored datas
+ * @param _u32Size  (IN)      Size of buffer
+ * @param _pstFile  (IN)      Pointer on the file descriptor
+ * @return Returns if gets is ok.
+ */
+orxSTATUS orxFile_LibC_Gets(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
+{
+  /* Valid input ? */
+  if(_pstFile != orxNULL)
+  {
+    if(fgets(_zBuffer, _u32Size, (FILE*)_pstFile))
+  	  return orxSTATUS_SUCCESS;
+    else
+  	  return orxSTATUS_FAILURE;
+  }
+  else
+	  return orxSTATUS_FAILURE;
+}
+
+
 /** Close an oppened file
  * @param _pstFile       (IN)      File's pointer to close
  * @return Returns the status of the operation
@@ -251,5 +272,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Exit, FILE, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Open, FILE, OPEN);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Read, FILE, READ);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Write, FILE, WRITE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Gets, FILE, GETS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Close, FILE, CLOSE);
 orxPLUGIN_USER_CORE_FUNCTION_END();

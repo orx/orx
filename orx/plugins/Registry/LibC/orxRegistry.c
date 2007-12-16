@@ -24,6 +24,7 @@
 #include "debug/orxDebug.h"
 #include "io/orxRegistry.h"
 
+#include "io/orxFile.h"
 #include "memory/orxBank.h"
 #include "utils/orxString.h"
 
@@ -51,6 +52,8 @@ typedef struct __orxREGISTRY_STATIC_t
   orxREGISTRY_NODE  stRootNode;	    /**< Root node. */ 
 } orxREGISTRY_STATIC;
 
+
+orxVOID orxRegistry_LibC_SetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue);
 
 
 /***************************************************************************
@@ -253,6 +256,150 @@ orxSTATIC orxVOID orxRegistry_LibC_Dump(orxREGISTRY_NODE* pstNode, orxS32 _s32Of
         pstNode = pstNode->pstNext;
     }
 }
+
+/** Load registry content from file..
+ * @param _zFile File path.
+ */
+orxSTATIC orxVOID  orxRegistry_LibC_LoadFromFile(orxCONST orxSTRING _zFile)
+{
+    orxCHAR  zBuffer[1024], zSection[1024], zVar[1024];
+    orxCHAR *zName, *zValue;
+    orxS32   s32;
+    orxFILE* pstFile = orxFile_Open(_zFile, orxFILE_KU32_FLAG_OPEN_READ);
+    if(pstFile)
+    {
+        while(orxFile_Gets(zBuffer, 1024, pstFile))
+        {
+            orxSTRING zStr = zBuffer;
+            while(*zStr==' '||*zStr=='\t')
+            	zStr++;
+            if(*zStr==';')
+                continue; /* comment */
+            else if(*zStr=='[')
+            {
+                /* section name */
+            	zName = zStr+1;
+                zStr = orxString_SearchChar(zStr, ']');
+                if(!zStr)
+                    continue; /* section name not closed. */
+                *zStr = 0;
+                orxString_Copy(zSection, zName);
+            }
+            else if(*zStr!=0||*zStr!='\n')
+            {
+                /* Non empty line. */
+            	zValue = orxString_SearchChar(zBuffer, '=');
+                if(!zValue)
+                    continue; /* No equal character. */
+                s32 = orxString_GetLength(zValue);
+                if(zValue[s32-1]=='\n')
+                	zValue[--s32] = 0;
+                if(zValue==zStr+s32)
+                {
+                    /* Default section value. */
+                	orxRegistry_LibC_SetString(zSection, (orxCONST orxSTRING)zValue+1);
+                }
+                else
+                {
+                    /* Classic name=value. */
+                    *zValue = 0;
+                    sprintf(zVar, "%s/%s", zSection, zStr);
+                    orxRegistry_LibC_SetString(zVar, zValue+1);
+                }
+            }
+        }
+        orxFile_Close(pstFile);
+    }
+}
+
+/**
+ * Save registry node to file.
+ * @param _pstNode (IN) Node to save
+ * @param _zPrefix (IN) Prefix of node
+ * @param _pstFile (IN) File where save the node.
+ */
+orxSTATIC orxVOID  orxRegistry_LibC_SaveNodeToFile(orxREGISTRY_NODE* _pstNode, orxCONST orxSTRING _zPrefix, orxFILE* _pstFile)
+{
+	orxREGISTRY_NODE* pstChild;
+    if(_pstNode)
+    {
+        orxBOOL bSave = orxFALSE;
+        if(_pstNode->zValue)
+        	bSave = orxTRUE;
+        else
+        {
+            pstChild = _pstNode->pstChild;
+            while(pstChild)
+            {
+                if(pstChild->zValue && !pstChild->pstChild)
+                {
+                	bSave = orxTRUE;
+                    break;
+                }
+                pstChild = pstChild->pstNext;
+            }
+        }
+        orxCHAR zCateg[1024] = {0};
+        orxCHAR zBuffer[4096] = {0};
+        orxSTRING zName;
+        if(_zPrefix)
+        {
+        	orxString_Print(zCateg, "%s/%s", _zPrefix, _pstNode->zName);
+            zName = zCateg;
+        }
+        else
+        	zName = _pstNode->zName;
+        if(bSave)
+        {
+            orxString_Print(zBuffer, "\n[%s]\n", zName);
+            orxFile_Write(zBuffer, orxString_GetLength(zBuffer), 1, _pstFile);
+            
+            if(_pstNode->zValue)
+            {
+                orxString_Print(zBuffer, "=%s\n", _pstNode->zValue);
+                orxFile_Write(zBuffer, orxString_GetLength(zBuffer), 1, _pstFile);
+            }
+            pstChild = _pstNode->pstChild;
+            while(pstChild)
+            {
+                if(pstChild->zValue && !pstChild->pstChild)
+                {
+                    orxString_Print(zBuffer, "%s=%s\n", pstChild->zName, pstChild->zValue);
+                    orxFile_Write(zBuffer, orxString_GetLength(zBuffer), 1, _pstFile);
+                }
+                pstChild = pstChild->pstNext;
+            }
+        }
+        pstChild = _pstNode->pstChild;
+        while(pstChild)
+        {
+            if(pstChild->pstChild)
+            	orxRegistry_LibC_SaveNodeToFile(pstChild, zName, _pstFile);
+            pstChild = pstChild->pstNext;
+        }
+
+    }
+}
+
+/**
+ * Save registry node to file.
+ * @param _zFile (IN) File path where save the node.
+ */
+orxSTATIC orxVOID  orxRegistry_LibC_SaveToFile(orxCONST orxSTRING _zFile)
+{
+    orxFILE* pstFile = orxFile_Open(_zFile, orxFILE_KU32_FLAG_OPEN_WRITE);
+    if(pstFile)
+    {
+    	orxREGISTRY_NODE* pstNode = &sstRegistry.stRootNode;
+        while(pstNode)
+        {
+        	orxRegistry_LibC_SaveNodeToFile(pstNode, orxNULL, pstFile);
+            pstNode = pstNode->pstNext;
+        }
+        orxFile_Close(pstFile);
+    }
+}
+
 
 
 /***************************************************************************
