@@ -111,6 +111,13 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(orxCONST orxVOID *_pMe
  */
 extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size);
 
+/** Realloc a portion of memory if the already allocated memory is not suffisant.
+ * @param[in] _pMem	   Memory to reallocate.
+ * @param[in] _u32Size Wanted size.
+ * @return The pointer reallocated.
+ */
+extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Reallocate(orxVOID *_pMem, orxU32 _u32Size);
+
 
 #endif /* _orxMEMORY_H_ */
 

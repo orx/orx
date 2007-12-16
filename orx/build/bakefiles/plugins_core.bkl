@@ -217,6 +217,13 @@
 
   <!-- FILE_SYSTEM -->
 
+  <!-- REGISTRY -->
+    <!-- Depends on nothing -->
+    <orx-plugin id="Registry_LibC" cond="USE_PLUGINS=='1'">
+      <category>core/registry</category>
+      <sources>plugins/Registry/LibC/orxRegistry.c</sources>
+    </orx-plugin>
+
   <!-- PACKAGE -->
 
   <!-- TIME -->

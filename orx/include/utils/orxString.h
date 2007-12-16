@@ -74,6 +74,19 @@ orxSTATIC orxINLINE orxSTRING orxString_Copy(orxSTRING _zDstString, orxCONST orx
   return(strcpy(_zDstString, _zSrcString));
 }
 
+/** Duplicate a string.
+ * @param _zSrcString	(IN) String to duplicate.
+ * @return Duplicated string.
+ */
+orxSTATIC orxINLINE orxSTRING orxString_Duplicate(orxCONST orxSTRING _zSrcString)
+{
+	  /* Checks */
+	  orxASSERT(_zSrcString != orxNULL);
+
+	  /* Done! */
+	  return(strdup(_zSrcString));	
+}
+
 /** Compare two strings. If the first one is smaller than the second, it returns -1,
  * If the second one is bigger than the first, and 0 if they are equals
  * @param _zString1   (IN) First String to compare

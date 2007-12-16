@@ -54,6 +54,7 @@
             src/io/orxKeyboard.c
             src/io/orxMouse.c
             src/io/orxPackage.c
+            src/io/orxRegistry.c
             src/io/orxTextIO.c
         </sources>
         <sources>
