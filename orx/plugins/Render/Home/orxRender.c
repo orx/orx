@@ -116,13 +116,10 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE))
   {
-    orxBITMAP      *pstBitmap = orxNULL;
+    orxBITMAP      *pstBitmap;
     orxANIMPOINTER *pstAnimPointer;
     orxVECTOR       vPivot, vPosition;
     orxFLOAT        fRotation, fScaleX, fScaleY;
-
-    /* Gets its pivot */
-    orxGraphic_GetPivot(pstGraphic, &vPivot);
 
     /* Gets animation pointer */
     pstAnimPointer = (orxANIMPOINTER *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER);
@@ -147,27 +144,21 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
         if((pstAnim != orxNULL)
         && (orxStructure_TestFlags(pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE))
         {
-          orxTEXTURE *pstTexture;
-
-          /* Gets anim texture */
-          pstTexture = (orxTEXTURE *)orxAnim_GetCurrentKeyData(pstAnim);
-
           /* Valid? */
-          if(pstTexture != orxNULL)
+          if(orxAnim_GetCurrentKeyData(pstAnim) != orxNULL)
           {
-            /* Gets its bitmap */
-            pstBitmap = orxTexture_GetBitmap(pstTexture);
+            /* Updates graphic pointer */
+            pstGraphic = (orxGRAPHIC *)orxAnim_GetCurrentKeyData(pstAnim);
           }
         }
       }
     }
 
-    /* No valid bitmap found? */
-    if(pstBitmap == orxNULL)
-    {
-      /* Gets graphic's bitmap */
-      pstBitmap = orxTexture_GetBitmap((orxTEXTURE *)orxGraphic_GetData(pstGraphic));
-    }
+    /* Gets its pivot */
+    orxGraphic_GetPivot(pstGraphic, &vPivot);
+
+    /* Gets graphic's bitmap */
+    pstBitmap = orxTexture_GetBitmap((orxTEXTURE *)orxGraphic_GetData(pstGraphic));
 
     /* Gets rendering frame's position, rotation & scale */
     fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFALSE);

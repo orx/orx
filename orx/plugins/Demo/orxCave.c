@@ -379,31 +379,29 @@ orxSTATIC orxVOID orxCave_InitBulb()
   for(i = orxCAVE_RESOURCE_BULB_FIRST; i <= orxCAVE_RESOURCE_BULB_LAST; i++)
   {
     orxTEXTURE *pstTexture;
+    orxGRAPHIC *pstGraphic;  
+    orxFLOAT    fWidth, fHeight;
 
     /* Loads textures */
     pstTexture = orxTexture_CreateFromFile(sastInfo[i].zFileName);
 
+    /* Gets texture size */
+    orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
+
+    /* Creates & inits 2D graphic objet from texture */
+    pstGraphic = orxGraphic_Create();
+    orxGraphic_SetData(pstGraphic, (orxSTRUCTURE *)pstTexture);
+    orxGraphic_SetPivot(pstGraphic, &orxVECTOR_0);
+
     /* First resource? */
     if(i == orxCAVE_RESOURCE_BULB_FIRST)
     {
-      orxGRAPHIC *pstGraphic;  
-      orxVECTOR   vPivot;
-      orxFLOAT    fWidth, fHeight;
-
-      /* Gets texture size */
-      orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
-
-      /* Creates & inits 2D graphic objet from texture */
-      pstGraphic = orxGraphic_Create();
-      orxGraphic_SetData(pstGraphic, (orxSTRUCTURE *)pstTexture);
-      orxGraphic_SetPivot(pstGraphic, &vPivot);
-
       /* Links it to object */
       orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic);
     }
 
     /* Adds it to animation */
-    orxAnim_AddKey(pstAnim, (orxSTRUCTURE *)pstTexture, orx2F(i - orxCAVE_RESOURCE_BULB_FIRST + 1) * orxCAVE_KF_BULB_KEY_DURATION);
+    orxAnim_AddKey(pstAnim, (orxSTRUCTURE *)pstGraphic, orx2F(i - orxCAVE_RESOURCE_BULB_FIRST + 1) * orxCAVE_KF_BULB_KEY_DURATION);
   }
 
   /* Adds animation to animation set */
