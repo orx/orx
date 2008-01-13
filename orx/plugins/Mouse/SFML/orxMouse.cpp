@@ -55,7 +55,7 @@ extern "C"
 typedef struct __orxMOUSE_STATIC_t
 {
   orxU32            u32Flags;
-  sf::Input         *poInput;
+  sf::Input        *poInput;
 } orxMOUSE_STATIC;
 
 

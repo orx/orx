@@ -277,6 +277,12 @@ KEYBOARD_ALLEGRO_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	-Wno-unused-parameter `allegro-config --cflags` $(CPPFLAGS) $(CFLAGS)
 KEYBOARD_ALLEGRO_OBJECTS =  \
 	./build/$(BUILD)/Keyboard_Allegro_orxKeyboard.o
+KEYBOARD_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(__orxDEBUG_p) -D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) \
+	$(__orxWARNINGFLAG) -I../../../include -D__orxDLL__ -fPIC -DPIC $(CPPFLAGS) \
+	$(CXXFLAGS)
+KEYBOARD_SFML_OBJECTS =  \
+	./build/$(BUILD)/Keyboard_SFML_orxKeyboard.o
 JOYSTICK_NONE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
@@ -417,6 +423,12 @@ __Keyboard_Allegro___depname = \
 endif
 endif
 ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+__Keyboard_SFML___depname = \
+	../../../bin/plugins/core/keyboard/Keyboard_SFML.so
+endif
+endif
+ifeq ($(USE_PLUGINS),1)
 __Joystick_NONE___depname = \
 	../../../bin/plugins/core/joystick/Joystick_NONE.so
 endif
@@ -484,7 +496,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Mouse_SFML___depname) $(__Keyboard_Allegro___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Registry_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Mouse_SFML___depname) $(__Keyboard_Allegro___depname) $(__Keyboard_SFML___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Registry_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -515,6 +527,7 @@ clean:
 	rm -f ../../../bin/plugins/core/mouse/Mouse_Allegro.so
 	rm -f ../../../bin/plugins/core/mouse/Mouse_SFML.so
 	rm -f ../../../bin/plugins/core/keyboard/Keyboard_Allegro.so
+	rm -f ../../../bin/plugins/core/keyboard/Keyboard_SFML.so
 	rm -f ../../../bin/plugins/core/joystick/Joystick_NONE.so
 	rm -f ../../../bin/plugins/core/file/File_LibC.so
 	rm -f ../../../bin/plugins/core/registry/Registry_LibC.so
@@ -645,6 +658,13 @@ ifeq ($(USE_ALLEGRO),1)
 ifeq ($(USE_PLUGINS),1)
 ../../../bin/plugins/core/keyboard/Keyboard_Allegro.so: $(KEYBOARD_ALLEGRO_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(KEYBOARD_ALLEGRO_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   `allegro-config --libs`   ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
+endif
+endif
+
+ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+../../../bin/plugins/core/keyboard/Keyboard_SFML.so: $(KEYBOARD_SFML_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CXX) -shared -fPIC -o $@ $(KEYBOARD_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
 endif
 endif
 
@@ -1000,6 +1020,9 @@ endif
 
 ./build/$(BUILD)/Keyboard_Allegro_orxKeyboard.o: ../../../plugins/Keyboard/Allegro/orxKeyboard.c
 	$(CC) -c -o $@ $(KEYBOARD_ALLEGRO_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/Keyboard_SFML_orxKeyboard.o: ../../../plugins/Keyboard/SFML/orxKeyboard.cpp
+	$(CXX) -c -o $@ $(KEYBOARD_SFML_CXXFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Joystick_NONE_orxJoystick.o: ../../../plugins/Joystick/NONE/orxJoystick.c
 	$(CC) -c -o $@ $(JOYSTICK_NONE_CFLAGS) $(CPPDEPS) $<

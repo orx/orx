@@ -180,11 +180,11 @@
 
   <!-- MOUSE -->
 
-	<!-- Depends on allegro -->
-	<orx-plugin id="Mouse_Allegro" cond="USE_ALLEGRO=='1' and USE_PLUGINS=='1'" template="orxALLEGRO">
-	  <category>core/mouse</category>
-      <sources>plugins/Mouse/Allegro/orxMouse.c</sources>
-    </orx-plugin>
+  <!-- Depends on allegro -->
+  <orx-plugin id="Mouse_Allegro" cond="USE_ALLEGRO=='1' and USE_PLUGINS=='1'" template="orxALLEGRO">
+	<category>core/mouse</category>
+    <sources>plugins/Mouse/Allegro/orxMouse.c</sources>
+  </orx-plugin>
 
   <!-- Depends on SFML -->
   <orx-plugin id="Mouse_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
@@ -194,11 +194,17 @@
 
   <!-- KEYBOARD -->
 
-	<!-- Depends on allegro -->
-	<orx-plugin id="Keyboard_Allegro" cond="USE_ALLEGRO=='1' and USE_PLUGINS=='1'" template="orxALLEGRO">
-	  <category>core/keyboard</category>
-      <sources>plugins/Keyboard/Allegro/orxKeyboard.c</sources>
-    </orx-plugin>
+  <!-- Depends on allegro -->
+  <orx-plugin id="Keyboard_Allegro" cond="USE_ALLEGRO=='1' and USE_PLUGINS=='1'" template="orxALLEGRO">
+	<category>core/keyboard</category>
+    <sources>plugins/Keyboard/Allegro/orxKeyboard.c</sources>
+  </orx-plugin>
+
+  <!-- Depends on SFML -->
+  <orx-plugin id="Keyboard_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+    <category>core/keyboard</category>
+    <sources>plugins/Keyboard/SFML/orxKeyboard.cpp</sources>
+  </orx-plugin> -->
 
   <!-- JOYSTICK -->
 
