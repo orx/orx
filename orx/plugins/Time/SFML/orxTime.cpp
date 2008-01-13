@@ -77,7 +77,7 @@ orxSTATIC orxTIME_STATIC sstTime;
 /** Init the time module
  * @return Returns the status of the operation
  */
-extern "C" orxSTATUS orxTimeSDL_Init()
+extern "C" orxSTATUS orxTime_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -104,7 +104,7 @@ extern "C" orxSTATUS orxTimeSDL_Init()
 
 /** Exit the time module
  */
-extern "C" orxVOID orxTimeSDL_Exit()
+extern "C" orxVOID orxTime_SFML_Exit()
 {
   /* Module initialized ? */
   if((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY)
@@ -122,7 +122,7 @@ extern "C" orxVOID orxTimeSDL_Exit()
 /** Gets App Elapsed time.
  * @return Returns the amount of seconds elapsed from the application start.
  */
-extern "C" orxFLOAT orxTimeSDL_GetTime()
+extern "C" orxFLOAT orxTime_SFML_GetTime()
 {
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
@@ -133,7 +133,7 @@ extern "C" orxFLOAT orxTimeSDL_GetTime()
 /** Delay the program for given number of milliseconds.
  * @param[in] _fTime Number of seconds to wait.
  */
-extern "C" orxVOID orxTimeSDL_Delay(orxFLOAT _fTime)
+extern "C" orxVOID orxTime_SFML_Delay(orxFLOAT _fTime)
 {
   /* Module initialized ? */
   orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
@@ -148,8 +148,8 @@ extern "C" orxVOID orxTimeSDL_Delay(orxFLOAT _fTime)
  ********************/
 
 orxPLUGIN_USER_CORE_FUNCTION_CPP_START(DISPLAY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Init, TIME, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Exit, TIME, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_GetTime, TIME, GET_TIME);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Delay, TIME, DELAY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTime_SFML_Init, TIME, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTime_SFML_Exit, TIME, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTime_SFML_GetTime, TIME, GET_TIME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTime_SFML_Delay, TIME, DELAY);
 orxPLUGIN_USER_CORE_FUNCTION_END();

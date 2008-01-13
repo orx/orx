@@ -120,6 +120,9 @@ orxVOID orxMain_Run()
   {
     /* Update clocks */
     orxClock_Update();
+
+    /* Wait for next time slice */
+    orxTime_Delay(0.0f);
   }
 
   return;
