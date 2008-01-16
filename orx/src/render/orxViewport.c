@@ -222,7 +222,10 @@ orxVIEWPORT *orxViewport_Create()
     orxStructure_SetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_DEFAULT, orxVIEWPORT_KU32_FLAG_NONE);
 
     /* Inits vars */
-    pstViewport->fX = pstViewport->fY = pstViewport->fWidth = pstViewport->fHeight = orxFLOAT_0;
+    pstViewport->fX = pstViewport->fY = orxFLOAT_0;
+
+    /* Sets default size */
+    orxViewport_SetRelativeSize(pstViewport, orxFLOAT_1, orxFLOAT_1);
   }
   else
   {
@@ -328,6 +331,10 @@ orxVOID orxFASTCALL orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE
 
     /* Updates flags */
     orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_TEXTURE, orxVIEWPORT_KU32_FLAG_NONE);
+
+    /* Reinits relative size & position */
+    _pstViewport->fX = _pstViewport->fY = orxFLOAT_0;
+    orxViewport_SetRelativeSize(_pstViewport, orxFLOAT_1, orxFLOAT_1);
   }
   else
   {

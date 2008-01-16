@@ -217,24 +217,11 @@ extern "C" orxBOOL orxKeyboard_SFML_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 
   /* Gets SFML key enum */
   eSFMLKey = orxKeyboard_SFML_GetSFMLKey(_eKey);
-  
+
+  //!!! TODO : Handles missing keys (VK_ under windows, etc...) !!!
+
   /* Updates result */
   bResult = sstKeyboard.poInput->IsKeyDown(eSFMLKey) ? orxTRUE : orxFALSE;
-
-  if(bResult != orxFALSE)
-  {
-    orxLOG("%c", eSFMLKey);
-  }
-  /* Done! */
-  return bResult;
-}
-
-extern "C" orxBOOL orxKeyboard_SFML_Hit()
-{
-  orxBOOL bResult = orxFALSE;
-
-  /* Not implemented yet */
-  orxASSERT(orxFALSE && "Not implemented yet!");
 
   /* Done! */
   return bResult;
@@ -242,13 +229,35 @@ extern "C" orxBOOL orxKeyboard_SFML_Hit()
 
 extern "C" orxKEYBOARD_KEY orxKeyboard_SFML_Read()
 {
+  orxU32          i;
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
 
-  /* Not implemented yet */
-  orxASSERT(orxFALSE && "Not implemented yet!");
+  /* For all keys */
+  for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
+  {
+    /* Is pressed? */
+    if(orxKeyboard_SFML_IsKeyPressed((orxKEYBOARD_KEY)i) != orxFALSE)
+    {
+      /* Updates result */
+      eResult = (orxKEYBOARD_KEY)i;
+
+      break;
+    }
+  }
 
   /* Done! */
   return eResult;
+}
+
+extern "C" orxBOOL orxKeyboard_SFML_Hit()
+{
+  orxBOOL bResult;
+
+  /* Updates result */
+  bResult = (orxKeyboard_SFML_Read() != orxKEYBOARD_KEY_NONE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }
 
 extern "C" orxVOID orxKeyboard_SFML_ClearBuffer()

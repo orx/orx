@@ -94,6 +94,13 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxObject_UnlinkStructure(orxOBJECT 
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
+/** Sets object pivot
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvPivot        Object pivot
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetPivot(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPivot);
+
 /** Sets object position
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvPosition     Object position
@@ -115,6 +122,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetRotation(orxOBJECT *_pstObj
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScaleX, orxFLOAT _fScaleY);
+
+/** Get object pivot
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvPivot        Object pivot
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxObject_GetPivot(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPivot);
 
 /** Get object position
  * @param[in]   _pstObject      Concerned object

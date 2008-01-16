@@ -701,6 +701,42 @@ orxBOOL orxFASTCALL orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject)
   return(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_ENABLED));
 }
 
+/** Sets object pivot
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvPivot        Object pivot
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPivot)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvPivot != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Sets object pivot */
+    orxGraphic_SetPivot(pstGraphic, _pvPivot);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets object position
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvPosition     Object position
@@ -806,6 +842,42 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScale
 
   /* Done! */
   return eResult;
+}
+
+/** Get object pivot
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvPivot        Object pivot
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetPivot(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPivot)
+{
+  orxGRAPHIC  *pstGraphic;
+  orxVECTOR   *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvPivot != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets object pivot */
+     pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
 }
 
 /** Get object position
