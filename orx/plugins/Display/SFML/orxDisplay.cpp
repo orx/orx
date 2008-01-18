@@ -193,7 +193,7 @@ extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
     orxU32     *pu32Cursor, *pu32End, u32Color;
 
     /* Gets flat color */
-    u32Color = oColor.ToRGBA();
+    u32Color = orx2RGBA(oColor.r, oColor.g, oColor.b, oColor.a);
 
     /* Gets image */
     poImage = const_cast<sf::Image *>(((sf::Sprite *)_pstBitmap)->GetImage());
@@ -207,7 +207,7 @@ extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
     }
 
     /* Updates whole image */
-    poImage->Update();
+//    poImage->Update();
   }
   else
   {
@@ -252,7 +252,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
     /* Depending on type */
     switch(oEvent.Type)
     {
-      case sf::Event::Close:
+      case sf::Event::Closed:
       {
         /* Exits */
         exit(EXIT_SUCCESS);
@@ -329,7 +329,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, or
   }
 
   /* Updates it */
-  poImage->Update();
+//  poImage->Update();
 
   /* Done! */
   return eResult;
@@ -523,7 +523,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     if(sstDisplay.pstTextBank != orxNULL)
     {
       /* Inits rendering window */
-      sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::RenderWindow::Fixed);
+      sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::Style::Close);
 
       /* Waits for vertical sync */
       sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);

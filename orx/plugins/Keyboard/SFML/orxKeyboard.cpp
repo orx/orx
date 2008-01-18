@@ -72,6 +72,27 @@ orxSTATIC orxKEYBOARD_STATIC sstKeyboard;
  * Private functions                                                       *
  ***************************************************************************/
 
+#ifdef __orxWINDOWS__
+
+orxSTATIC orxFASTCALL orxU32 orxKeyboard_SFML_GetWindowsKey(orxKEYBOARD_KEY _eKey)
+{
+  orxU32 u32Result;
+
+  /* Depending on key */
+  switch(_eKey)
+  {
+    case orxKEYBOARD_KEY_CONTROL: {u32Result = VK_CONTROL; break;}
+    case orxKEYBOARD_KEY_ALT:     {u32Result = VK_LMENU; break;}
+    case orxKEYBOARD_KEY_SHIFT:   {u32Result = VK_SHIFT; break;}
+    default:                      {u32Result = 0; break;}
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+#endif /* __orxWINDOWS__ */
+
 orxSTATIC orxFASTCALL sf::Key::Code orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eKey)
 {
   sf::Key::Code eResult;
@@ -218,10 +239,25 @@ extern "C" orxBOOL orxKeyboard_SFML_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   /* Gets SFML key enum */
   eSFMLKey = orxKeyboard_SFML_GetSFMLKey(_eKey);
 
-  //!!! TODO : Handles missing keys (VK_ under windows, etc...) !!!
-
   /* Updates result */
   bResult = sstKeyboard.poInput->IsKeyDown(eSFMLKey) ? orxTRUE : orxFALSE;
+
+#ifdef __orxWINDOWS__
+
+  /* Higher code than pause? */
+  if(_eKey > orxKEYBOARD_KEY_PAUSE)
+  {
+    orxU32 u32WindowsKey;
+
+    /* Gets windows key code */
+    u32WindowsKey = orxKeyboard_SFML_GetWindowsKey(_eKey);
+
+    /* Updates result */
+    bResult = GetAsyncKeyState(u32WindowsKey);
+  }
+#endif /* __orxWINDOWS__ */
+
+  //! TODO : Handles missing keys in SFML for other operating systems that support this plugin
 
   /* Done! */
   return bResult;
