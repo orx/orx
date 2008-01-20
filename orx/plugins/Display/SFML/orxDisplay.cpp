@@ -25,13 +25,13 @@
 
 extern "C"
 {
-#include "orxInclude.h"
+  #include "orxInclude.h"
 
-#include "math/orxMath.h"
-#include "plugin/orxPluginUser.h"
-#include "memory/orxBank.h"
+  #include "math/orxMath.h"
+  #include "plugin/orxPluginUser.h"
+  #include "memory/orxBank.h"
 
-#include "display/orxDisplay.h"
+  #include "display/orxDisplay.h"
 }
 
 #include <SFML/Graphics.hpp>

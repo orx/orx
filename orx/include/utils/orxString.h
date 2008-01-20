@@ -59,6 +59,22 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxString_NContinueCRC(orxCONST orxSTRIN
 /* *** String inlined functions *** */
 
 
+/** Copies N characters from a string
+ * @param[in] _zDstString       Destination string
+ * @param[in] _zSrcString       Source string
+ * @param[in] _u32CharNumber    Number of characters to copy
+ * @return Copied string
+ */
+orxSTATIC orxINLINE orxSTRING orxString_NCopy(orxSTRING _zDstString, orxCONST orxSTRING _zSrcString, orxU32 _u32CharNumber)
+{
+  /* Checks */
+  orxASSERT(_zDstString != orxNULL);
+  orxASSERT(_zSrcString != orxNULL);
+
+  /* Done! */
+  return(strncpy(_zDstString, _zSrcString, _u32CharNumber));
+}
+
 /** Copies a string.
  * @param _zDstString     (IN) Destination string
  * @param _zSrcString     (IN) Source string
@@ -84,7 +100,7 @@ orxSTATIC orxINLINE orxSTRING orxString_Duplicate(orxCONST orxSTRING _zSrcString
 	  orxASSERT(_zSrcString != orxNULL);
 
 	  /* Done! */
-	  return(strdup(_zSrcString));	
+	  return(strdup(_zSrcString));
 }
 
 /** Compare two strings. If the first one is smaller than the second, it returns -1,
