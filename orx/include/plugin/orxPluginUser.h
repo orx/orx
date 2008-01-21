@@ -36,9 +36,27 @@
  Constants
  *********************************************/
 
-/* Defines plugin registration info constants */
+/* Defines plugin registration main function */
 #define orxPLUGIN_K_INIT_FUNCTION_NAME          orxPlugin_MainInit  /**< Plugin init function name */
 
+/* Defines a user plugin entry function (that takes no arguments and return an orxSTATUS value) */
+#define orxPLUGIN_K_DECLARE_ENTRY_POINT(ENTRY_FUNCTION) \
+extern orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
+{                                                       \
+  orxSTATUS eResult;                                    \
+                                                        \
+  /* Calls entry point function */                      \
+  eResult = ENTRY_FUNCTION();                           \
+                                                        \
+  /* Updates parameters */                              \
+  *_ps32Number  = 0;                                    \
+  *_ppstInfo    = orxNULL;                              \
+                                                        \
+  /* Done! */                                           \
+  return eResult;                                       \
+}
+
+/* Argument max size */
 #define orxPLUGIN_KU32_FUNCTION_ARG_SIZE        128
 
 
