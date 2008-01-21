@@ -484,7 +484,7 @@ orxS32 orxRegistry_LibC_GetInt32(orxCONST orxSTRING _zKey, orxS32 _s32DefaultVal
 
 /** Read a string value from registry.
  */
-orxCONST orxSTRING orxRegistry_LibC_GetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zDefaultValue)
+orxSTRING orxRegistry_LibC_GetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zDefaultValue)
 {
 	orxREGISTRY_NODE* pstNode = orxRegistry_LibC_FindNode(_zKey, orxFALSE);
     if(pstNode && pstNode->zValue)

@@ -21,9 +21,12 @@
 
 #include "debug/orxDebug.h"
 #include "display/orxGraphic.h"
+#include "io/orxFileSystem.h"
 #include "object/orxFrame.h"
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
+
+#include <io.h>
 
 
 /*
@@ -42,6 +45,11 @@
 #define orxOBJECT_KU32_FLAG_ENABLED             0x00000001
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF
+
+
+#define orxOBJECT_KC_MARKER_START               '$'
+#define orxOBJECT_KC_MARKER_WIDTH               'w'
+#define orxOBJECT_KC_MARKER_HEIGHT              'h'
 
 
 /*
@@ -461,15 +469,124 @@ orxOBJECT *orxObject_Create2DObject()
  */
 orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBitmapFileName)
 {
-  orxTEXTURE *pstTexture;
+  orxS32      s32FirstMarkerIndex, s32Width, s32Height;
+  orxTEXTURE *pstTexture = orxNULL;
   orxOBJECT  *pstObject = orxNULL;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_zBitmapFileName != orxNULL);
 
-  /* Loads textures */
-  pstTexture = orxTexture_CreateFromFile(_zBitmapFileName);
+  /* Gets marker index */
+  s32FirstMarkerIndex = orxString_SearchCharIndex(_zBitmapFileName, orxOBJECT_KC_MARKER_START, 0); 
+
+  /* Use marker? */
+  if(s32FirstMarkerIndex >= 0)
+  {
+    orxFILESYSTEM_INFO  stFileInfo;
+    orxBOOL             bDone;
+    orxCHAR             zBaseName[256];
+
+    /* Checks */
+    orxASSERT(s32FirstMarkerIndex < 255);
+
+    /* Clears buffer */
+    orxMemory_Set(zBaseName, 0, 256 * sizeof(orxCHAR));
+
+    /* Gets base name */
+    orxString_NCopy(zBaseName, _zBitmapFileName, s32FirstMarkerIndex);
+
+    /* Adds wildcard */
+    zBaseName[s32FirstMarkerIndex] = '*';
+
+    /* For all matching file */
+    for(bDone = (orxFileSystem_FindFirst(zBaseName, &stFileInfo) != orxSTATUS_FAILURE) ? orxFALSE : orxTRUE;
+        bDone == orxFALSE;
+        bDone = (orxFileSystem_FindNext(&stFileInfo) != orxSTATUS_FAILURE) ? orxFALSE : orxTRUE)
+    {
+      orxS32   *ps32Value;
+      orxSTRING zRemaining;
+
+      /* Height? */
+      if(_zBitmapFileName[s32FirstMarkerIndex + 1] == orxOBJECT_KC_MARKER_HEIGHT)
+      {
+        /* Updates value pointer */
+        ps32Value = &s32Height;
+      }
+      /* Width? */
+      else if(_zBitmapFileName[s32FirstMarkerIndex + 1] == orxOBJECT_KC_MARKER_WIDTH)
+      {
+        /* Updates value pointer */
+        ps32Value = &s32Width;
+      }
+      else
+      {
+        /* Updates value pointer */
+        ps32Value = orxNULL;
+      }
+
+      /* Valid? */
+      if(ps32Value != orxNULL)
+      {
+        /* Gets value */
+        if(orxString_ToS32(stFileInfo.zName + s32FirstMarkerIndex, 10, ps32Value, &zRemaining) != orxSTATUS_FAILURE)
+        {
+          orxS32 s32SecondMarkerIndex;
+
+          /* Gets second marker index */
+          s32SecondMarkerIndex = orxString_SearchCharIndex(_zBitmapFileName, orxOBJECT_KC_MARKER_START, s32FirstMarkerIndex + 1);
+
+          /* Valid? */
+          if(s32SecondMarkerIndex >= 0)
+          {
+            /* Height? */
+            if((_zBitmapFileName[s32SecondMarkerIndex + 1] == orxOBJECT_KC_MARKER_HEIGHT) && (ps32Value == &s32Width))
+            {
+              /* Updates value pointer */
+              ps32Value = &s32Height;
+            }
+            /* Width? */
+            else if((_zBitmapFileName[s32SecondMarkerIndex + 1] == orxOBJECT_KC_MARKER_WIDTH) && (ps32Value == &s32Height))
+            {
+              /* Updates value pointer */
+              ps32Value = &s32Width;
+            }
+            else
+            {
+              /* Updates value pointer */
+              ps32Value = orxNULL;
+            }
+
+            /* Valid? */
+            if(ps32Value != orxNULL)
+            {
+              /* Gets value */
+              if(orxString_ToS32(zRemaining + (s32SecondMarkerIndex - s32FirstMarkerIndex - 2), 10, ps32Value, &zRemaining) != orxSTATUS_FAILURE)
+              {
+                /* Loads texture */
+                pstTexture = orxTexture_CreateFromFile(stFileInfo.zName);
+
+                /* Valid? */
+                if(pstTexture != orxNULL)
+                {
+                  /* Done! */
+                  bDone = orxTRUE;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    /* Closes search */
+    orxFileSystem_FindClose(&stFileInfo);
+  }
+  else
+  {  
+    /* Loads textures */
+    pstTexture = orxTexture_CreateFromFile(_zBitmapFileName);
+  }
 
   /* Valid? */
   if(pstTexture != orxNULL)
@@ -512,6 +629,20 @@ orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBit
 
               /* Updates result */
               pstObject = orxNULL;
+            }
+            else
+            {
+              /* Uses a pivot? */
+              if(s32FirstMarkerIndex >= 0)
+              {
+                orxVECTOR vPivot;
+
+                /* Sets pivot vector */
+                orxVector_Set(&vPivot, orxS2F(s32Width), orxS2F(s32Height), orxFLOAT_0);
+
+                /* Updates graphic */
+                orxGraphic_SetPivot(pstGraphic, &vPivot);
+              }
             }
           }
           else

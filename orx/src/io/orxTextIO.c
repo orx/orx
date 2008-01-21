@@ -179,11 +179,13 @@ orxSTATUS orxFASTCALL orxTextIO_ReadS32(orxS32 *_ps32OutValue, orxU32 _u32Base, 
     /* Valid value ? */
     if(eStatus != orxSTATUS_FAILURE)
     {
+      orxSTRING zRemaining;
+
       /* Try to convert */
-      eStatus = orxString_ToS32(_ps32OutValue, zUserValue, _u32Base);
-      
+      eStatus = orxString_ToS32(zUserValue, _u32Base, _ps32OutValue, &zRemaining);
+
       /* Valid conversion ? */
-      if(eStatus == orxSTATUS_FAILURE)
+      if((eStatus == orxSTATUS_FAILURE) && (zRemaining[0] == orxCHAR_NULL))
       {
         /* Print error message */
         orxTextIO_PrintLn("Invalid number");
@@ -264,11 +266,13 @@ orxSTATUS orxFASTCALL orxTextIO_ReadFloat(orxFLOAT *_pfOutValue, orxCONST orxSTR
     /* Valid value ? */
     if(eStatus != orxSTATUS_FAILURE)
     {
+      orxSTRING zRemaining;
+
       /* Try to convert */
-      eStatus = orxString_ToFloat(_pfOutValue, zUserValue);
+      eStatus = orxString_ToFloat(zUserValue, _pfOutValue, &zRemaining);
       
       /* Valid conversion ? */
-      if(eStatus == orxSTATUS_FAILURE)
+      if((eStatus == orxSTATUS_FAILURE) && (zRemaining[0] == orxCHAR_NULL))
       {
         /* Print error message */
         orxTextIO_PrintLn("Invalid number");

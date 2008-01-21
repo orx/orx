@@ -151,44 +151,64 @@ orxSTATIC orxINLINE orxU32 orxString_GetLength(orxSTRING _zString)
 }
 
 /** Convert a String to a value
- * @param _ps32OutValue   (OUT) Converted value
- * @param _zString        (IN)  String To convert
- * @param _u32Base        (IN)  Base of the read value (generally 10, but can be 16 to read hexa)
- * @return  return the status of the conversion
+ * @param[in]   _zString        String To convert
+ * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
+ * @param[out]  _ps32OutValue   Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxS32 *_ps32OutValue, orxCONST orxSTRING _zString, orxU32 _u32Base)
+orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxCONST orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, orxSTRING *_pzRemaining)
 {
-  orxCHAR *pcEndPtr; /* Address of the first invalid character */
-  
+  orxCHAR    *pcEnd;
+  orxSTATUS   eResult;
+
   /* Correct parameters ? */
   orxASSERT(_ps32OutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
-  
+
   /* Convert */
-  *_ps32OutValue = strtol(_zString, &pcEndPtr, _u32Base);
-  
+  *_ps32OutValue = strtol(_zString, &pcEnd, _u32Base);
+
   /* Valid conversion ? */
-  if((orxString_GetLength(_zString) > 0) && ((_zString[0] != orxCHAR_NULL && pcEndPtr[0] == orxCHAR_NULL)))
+  if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
   {
-    return orxSTATUS_SUCCESS;
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
-    return orxSTATUS_FAILURE;
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
+
+  /* Asks for remaining string? */
+  if(_pzRemaining != orxNULL)
+  {
+    /* Stores it */
+    *_pzRemaining = pcEnd;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Convert a string to a value
- * @param _pfOutValue     (OUT) Converted value
- * @param _zString        (IN)  String To convert
- * @return  return the status of the conversion
+ * @param[in]   _zString        String To convert
+ * @param[out]  _pfOutValue     Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxFLOAT *_pfOutValue, orxCONST orxSTRING _zString)
+orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxCONST orxSTRING _zString, orxFLOAT *_pfOutValue, orxSTRING *_pzRemaining)
 {
+  orxSTATUS eResult;
+
   /* Correct parameters ? */
   orxASSERT(_pfOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
+  /* Linux? */
+#ifdef __orxLINUX__
+  
   /* Convert */
   /* Note : Here we should use strtot which detects errors.
    * This function is C99 compliant but it doesn't seems to be implemented in
@@ -196,7 +216,54 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxFLOAT *_pfOutValue, orxCONST 
    */
   *_pfOutValue = (orxFLOAT)atof(_zString);
 
-  return orxSTATUS_SUCCESS;
+  /* Valid? */
+  if(_zString[0] != orxCHAR_NULL)
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Asks for remaining string? */
+  if(_zRemaining != orxNULL)
+  {
+    _zRemaining = _zString + orxString_GetLength(_zString);
+  }
+
+#else /* __orxLINUX__ */
+
+  orxCHAR *pcEnd;
+
+  /* Converts it */
+  *_pfOutValue = strtof(_zString, &pcEnd);
+
+  /* Valid conversion ? */
+  if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Asks for remaining string? */
+  if(_pzRemaining != orxNULL)
+  {
+    /* Stores it */
+    *_pzRemaining = pcEnd;
+  }
+
+#endif /* __orxLINUX__ */
+
+  /* Done! */
+  return eResult;
 }
 
 /** Lowercase a string
@@ -329,6 +396,8 @@ orxSTATIC orxINLINE orxS32 orxString_SearchCharIndex(orxCONST orxSTRING _zString
     {
       /* Updates result */
       s32Result = s32Index;
+
+      break;
     }
   }
 

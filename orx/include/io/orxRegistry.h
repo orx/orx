@@ -46,7 +46,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_Fill, orxBOOL);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_Flush, orxBOOL);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_GetInt32, orxS32, orxCONST orxSTRING, orxS32);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_GetString, orxCONST orxSTRING, orxCONST orxSTRING, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_GetString, orxSTRING, orxCONST orxSTRING, orxCONST orxSTRING);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_GetBool, orxBOOL, orxCONST orxSTRING, orxBOOL);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_SetInt32, orxVOID, orxCONST orxSTRING, orxU32);
@@ -98,7 +98,7 @@ orxSTATIC orxINLINE orxS32 orxRegistry_GetInt32(orxCONST orxSTRING _zKey, orxS32
  * @param _zDefaultValue (IN) Default value if key is not found.
  * @return The value.
  */
-orxSTATIC orxINLINE orxCONST orxSTRING orxRegistry_GetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zDefaultValue)
+orxSTATIC orxINLINE orxSTRING orxRegistry_GetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zDefaultValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_GetString)(_zKey, _zDefaultValue);
 }
