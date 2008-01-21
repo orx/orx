@@ -181,17 +181,4 @@ orxSTATIC orxSTATUS orxBounce_Init()
  *  Plugin Related  *
  ********************/
 
-extern orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo)
-{
-  orxSTATUS eResult;
-
-  /* Inits bounce */
-  eResult = orxBounce_Init();
-
-  /* Updates parameters */
-  *_ps32Number  = 0;
-  *_ppstInfo    = orxNULL; 
-  
-  /* Done! */
-  return eResult;
-}
+orxPLUGIN_K_DECLARE_ENTRY_POINT(orxBounce_Init);
