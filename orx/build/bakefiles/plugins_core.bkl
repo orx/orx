@@ -215,13 +215,20 @@
     </orx-plugin>
 
   <!-- FILE -->
+
 	<!-- Depends on nothing -->
 	<orx-plugin id="File_LibC" cond="USE_PLUGINS=='1'">
 	  <category>core/file</category>
-      <sources>plugins/File/LibC/orxFile.c</sources>
-    </orx-plugin>
+    <sources>plugins/File/LibC/orxFile.c</sources>
+  </orx-plugin>
 
   <!-- FILE_SYSTEM -->
+
+  <!-- Depends on nothing -->
+  <orx-plugin id="FileSystem_LibC" cond="USE_PLUGINS=='1'">
+    <category>core/file</category>
+    <sources>plugins/File/LibC/orxFileSystem.c</sources>
+  </orx-plugin>
 
   <!-- REGISTRY -->
     <!-- Depends on nothing -->

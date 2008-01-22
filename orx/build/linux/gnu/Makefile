@@ -295,6 +295,12 @@ FILE_LIBC_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 FILE_LIBC_OBJECTS =  \
 	./build/$(BUILD)/File_LibC_orxFile.o
+FILESYSTEM_LIBC_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(__orxDEBUG_p) -D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) \
+	$(__orxWARNINGFLAG) -I../../../include -D__orxDLL__ -fPIC -DPIC \
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+FILESYSTEM_LIBC_OBJECTS =  \
+	./build/$(BUILD)/FileSystem_LibC_orxFileSystem.o
 REGISTRY_LIBC_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
@@ -436,6 +442,10 @@ ifeq ($(USE_PLUGINS),1)
 __File_LibC___depname = ../../../bin/plugins/core/file/File_LibC.so
 endif
 ifeq ($(USE_PLUGINS),1)
+__FileSystem_LibC___depname = \
+	../../../bin/plugins/core/file/FileSystem_LibC.so
+endif
+ifeq ($(USE_PLUGINS),1)
 __Registry_LibC___depname = \
 	../../../bin/plugins/core/registry/Registry_LibC.so
 endif
@@ -496,7 +506,7 @@ all: ./build/$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Mouse_SFML___depname) $(__Keyboard_Allegro___depname) $(__Keyboard_SFML___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__Registry_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_Fmod___depname) $(__Sound_SFML___depname) $(__Mouse_Allegro___depname) $(__Mouse_SFML___depname) $(__Keyboard_Allegro___depname) $(__Keyboard_SFML___depname) $(__Joystick_NONE___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Registry_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -530,6 +540,7 @@ clean:
 	rm -f ../../../bin/plugins/core/keyboard/Keyboard_SFML.so
 	rm -f ../../../bin/plugins/core/joystick/Joystick_NONE.so
 	rm -f ../../../bin/plugins/core/file/File_LibC.so
+	rm -f ../../../bin/plugins/core/file/FileSystem_LibC.so
 	rm -f ../../../bin/plugins/core/registry/Registry_LibC.so
 	rm -f ../../../bin/plugins/core/time/Time_SDL.so
 	rm -f ../../../bin/plugins/core/time/Time_SFML.so
@@ -676,6 +687,11 @@ endif
 ifeq ($(USE_PLUGINS),1)
 ../../../bin/plugins/core/file/File_LibC.so: $(FILE_LIBC_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
 	$(CC) -shared -fPIC -o $@ $(FILE_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
+endif
+
+ifeq ($(USE_PLUGINS),1)
+../../../bin/plugins/core/file/FileSystem_LibC.so: $(FILESYSTEM_LIBC_OBJECTS) $(__orxLIB___depname) $(__orxDLL___depname) $(__orxLINKDEPEND_DEP)
+	$(CC) -shared -fPIC -o $@ $(FILESYSTEM_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)    ../../../lib/$(LINK)/lib$(orxLIBNAME).a ../../../lib/$(LINK)/lib$(orxLIBNAME).so -lm -ldl
 endif
 
 ifeq ($(USE_PLUGINS),1)
@@ -1029,6 +1045,9 @@ endif
 
 ./build/$(BUILD)/File_LibC_orxFile.o: ../../../plugins/File/LibC/orxFile.c
 	$(CC) -c -o $@ $(FILE_LIBC_CFLAGS) $(CPPDEPS) $<
+
+./build/$(BUILD)/FileSystem_LibC_orxFileSystem.o: ../../../plugins/File/LibC/orxFileSystem.c
+	$(CC) -c -o $@ $(FILESYSTEM_LIBC_CFLAGS) $(CPPDEPS) $<
 
 ./build/$(BUILD)/Registry_LibC_orxRegistry.o: ../../../plugins/Registry/LibC/orxRegistry.c
 	$(CC) -c -o $@ $(REGISTRY_LIBC_CFLAGS) $(CPPDEPS) $<
