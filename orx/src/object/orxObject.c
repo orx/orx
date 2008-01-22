@@ -529,7 +529,7 @@ orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBit
       if(ps32Value != orxNULL)
       {
         /* Gets value */
-        if(orxString_ToS32(stFileInfo.zName + s32FirstMarkerIndex, 10, ps32Value, &zRemaining) != orxSTATUS_FAILURE)
+        if(orxString_ToS32(stFileInfo.zFullName + s32FirstMarkerIndex, 10, ps32Value, &zRemaining) != orxSTATUS_FAILURE)
         {
           orxS32 s32SecondMarkerIndex;
 
@@ -564,7 +564,7 @@ orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBit
               if(orxString_ToS32(zRemaining + (s32SecondMarkerIndex - s32FirstMarkerIndex - 2), 10, ps32Value, &zRemaining) != orxSTATUS_FAILURE)
               {
                 /* Loads texture */
-                pstTexture = orxTexture_CreateFromFile(stFileInfo.zName);
+                pstTexture = orxTexture_CreateFromFile(stFileInfo.zFullName);
 
                 /* Valid? */
                 if(pstTexture != orxNULL)
