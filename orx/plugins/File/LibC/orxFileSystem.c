@@ -150,10 +150,16 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
         i >= 0;
         s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR, i + 1));
 
-    /* Stores path & full name base */
+    /* Clears path */
     orxMemory_Set(_pstFileInfo->zPath, 0, 1024);
-    orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, (s32LastSeparator < 0) ? 1023 : orxMIN(s32LastSeparator + 1, 1023));
-    orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+    
+    /* Has directory? */
+    if(s32LastSeparator >= 0)
+    {
+      /* Updates path & full name base */
+      orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, orxMIN(s32LastSeparator + 1, 1023));
+      orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
+    }
 
     /* Tranfers file info */
     orxFileSystem_LibC_GetInfoFromData(&stData, _pstFileInfo);
