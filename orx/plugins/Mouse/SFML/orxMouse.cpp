@@ -117,6 +117,7 @@ extern "C" orxSTATUS orxMouse_SFML_GetPosition(orxS32 *_ps32X, orxS32 *_ps32Y)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
   orxASSERT(_ps32X != orxNULL);
   orxASSERT(_ps32Y != orxNULL);
 
@@ -133,6 +134,7 @@ extern "C" orxBOOL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eButton)
   orxBOOL bResult;
 
   /* Checks */
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
   orxASSERT(_eButton < orxMOUSE_BUTTON_NUMBER);
 
   /* Depending on button */

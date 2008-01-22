@@ -235,6 +235,7 @@ extern "C" orxBOOL orxKeyboard_SFML_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 
   /* Checks */
   orxASSERT(_eKey < orxKEYBOARD_KEY_NUMBER);
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
   /* Gets SFML key enum */
   eSFMLKey = orxKeyboard_SFML_GetSFMLKey(_eKey);
@@ -268,6 +269,9 @@ extern "C" orxKEYBOARD_KEY orxKeyboard_SFML_Read()
   orxU32          i;
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
 
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
   /* For all keys */
   for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
   {
@@ -289,6 +293,9 @@ extern "C" orxBOOL orxKeyboard_SFML_Hit()
 {
   orxBOOL bResult;
 
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
   /* Updates result */
   bResult = (orxKeyboard_SFML_Read() != orxKEYBOARD_KEY_NONE) ? orxTRUE : orxFALSE;
 
@@ -298,6 +305,9 @@ extern "C" orxBOOL orxKeyboard_SFML_Hit()
 
 extern "C" orxVOID orxKeyboard_SFML_ClearBuffer()
 {
+  /* Checks */
+  orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
+
   /* Not implemented yet */
   orxASSERT(orxFALSE && "Not implemented yet!");
 
