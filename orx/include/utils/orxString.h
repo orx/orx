@@ -229,9 +229,9 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxCONST orxSTRING _zString, orx
   }
 
   /* Asks for remaining string? */
-  if(_zRemaining != orxNULL)
+  if(_pzRemaining != orxNULL)
   {
-    _zRemaining = _zString + orxString_GetLength(_zString);
+    *_pzRemaining = _zString + orxString_GetLength(_zString);
   }
 
 #else /* __orxLINUX__ */

@@ -26,8 +26,6 @@
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
 
-#include <io.h>
-
 
 /*
  * Platform independant defines
