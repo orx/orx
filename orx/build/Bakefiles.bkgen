@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
-<bakefile-gen>
+<bakefile-gen xmlns="http://www.bakefile.org/schema/bakefile-gen">
 
 	<input>
 		bakefiles/orx.bkl
 	</input>
 
     <add-formats>
-        gnu,mingw,msvc,autoconf <!-- ,msvs2005prj -->
+        gnu,mingw,msvc,autoconf,msvs2005prj,xcode2
     </add-formats>
 
     <add-flags files="bakefiles/orx.bkl" formats="autoconf">
@@ -23,6 +23,9 @@
     </add-flags>
     <add-flags files="bakefiles/orx.bkl" formats="msvs2005prj">
         -o./windows/msvs2005prj/orx.sln
+    </add-flags>
+    <add-flags files="bakefiles/orx.bkl" formats="xcode2">
+        -o./mac/xcode
     </add-flags>
 
 

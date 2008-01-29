@@ -7,38 +7,30 @@
 <bakefile>
 
     <!-- Set module link lib -->
-    <set var="orxEXTRALINK">
-     <if cond="LINK=='dynamic' and orxCOMPILER=='__orxGCC__'">orx$(orxSUFFIX)</if>
-    </set>
-    
-    <set var="orxMSVCLINK">
-      <if cond="LINK=='dynamic' and orxCOMPILER=='__orxMSVC__'">$(orxLINKDEPEND)</if>
-    </set>
-    
-    <set var="orxMSVC_STATIC_LINK">
-        <if cond="LINK=='static' and orxCOMPILER=='__orxMSVC__'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
+    <set var="orxLDFLAGS">
+		<if cond="LINK=='static' and orxCOMPILER=='__orxMSVC__'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
+		<if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)$(DIRSEP)$(orxLIBNAME).a</if>
     </set>
 
-     
-     <!-- Under window, DLL application have to be linked with a small static lib too -->
-    <set var="orxEXTRAFLAGS">
-      <if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)\orx$(orxSUFFIX).a</if>
-    </set>
-
+	<set var="toto">
+		<if cond="LINK=='static'">orxLIB</if>      
+		<if cond="LINK=='dynamic'">orxDLL</if>      
+	</set>
+	
     <!-- Define the module template -->
     <template id="orxMODULELINK">
-      <depends>$(orxLINKDEPEND)</depends>
-      
-      <sys-lib>$(orxEXTRALINK)</sys-lib>
-      <ldflags>$(orxEXTRAFLAGS)</ldflags>
-      <ldflags>$(orxMSVC_STATIC_LINK)</ldflags>
-<!--      <library>$(orxMSVCLINK)</library> -->
-      <define>__orxDLL__</define>
+		<ldflags>$(orxLDFLAGS)</ldflags>
+		<define>__orxDLL__</define>
+		<library>orxLIB</library>
+		<if cond="FORMAT in ['gnu', 'autoconf']">
+			<sys-lib>m</sys-lib>
+			<sys-lib>dl</sys-lib>
+		</if>
     </template>
 
 	<define-rule name="orx-module-test" extends="module">
-      <template template="orxBASE,orxLINK,orxMODULELINK">
-        <dirname>$(orxDIR)$(DIRSEP)bin/modules</dirname>
+      <template template="orxBASE,orxMODULELINK">
+        <dirname>$(orxBINDIR)$(DIRSEP)modules</dirname>
       </template>
 	</define-rule>
 

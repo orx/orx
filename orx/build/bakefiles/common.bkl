@@ -6,12 +6,14 @@
   -->
 <bakefile>
 
+	<set-srcdir>..$(DIRSEP)..$(DIRSEP)..</set-srcdir>
+
     <!-- ********************** OPTIONS ********************** -->
 
     <!-- Creates two types of build : Release and Debug -->
     <option name="BUILD">
         <values>debug,release</values>
-        <default-value>release</default-value>
+        <default-value>debug</default-value>
     </option>
 
     <!-- Choose the type of building : static or dynamic. -->
@@ -21,20 +23,10 @@
     </option>
     
     <!-- Define plugins options -->
-	  <option name="USE_ALLEGRO">
-	    <values>0,1</values>
-	    <default-value>0</default-value>
-	  </option>
-	
-	  <option name="USE_FMOD">
-	    <values>0,1</values>
-	    <default-value>0</default-value>
-	  </option>
-	
-	  <option name="USE_SDL">
-	    <values>0,1</values>
-	    <default-value>0</default-value>
-	  </option>
+	<option name="USE_SDL">
+		<values>0,1</values>
+		<default-value>0</default-value>
+	</option>
 
     <option name="USE_SGE">
       <values>0,1</values>
@@ -46,28 +38,29 @@
       <default-value>0</default-value>
     </option>
 
-	  <option name="USE_TEST">
-	    <values>0,1</values>
-	    <default-value>0</default-value>
-	  </option>
+	<option name="USE_TEST">
+		<values>0,1</values>
+		<default-value>0</default-value>
+	</option>
 
-	  <option name="USE_PLUGINS">
-	    <values>0,1</values>
-	    <default-value>1</default-value>
-	  </option>
+	<option name="USE_PLUGINS">
+		<values>0,1</values>
+		<default-value>1</default-value>
+	</option>
     
     <!-- ******************** PREPROCESSORS ******************** -->
 
     <!-- Set the preprocessor definition for plateform. -->
     <set var="orxPLATFORM" make_var="1">
-        <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
-        <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>    <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+        <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> 	<!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
+        <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>    	<!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+        <if cond="PLATFORM_MAC=='1'">__orxMAC__</if>    	<!-- set MAC preprocessor definition if a Mac platform is detected -->
     </set>
-    
+
     <!-- Set the orx compiler var -->
     <set var="orxCOMPILER" make_var="1">
-        <if cond="FORMAT in ['autoconf','gnu','mingw']">__orxGCC__</if>
-        <if cond="FORMAT in ['msvc','msvc6prj','msvs2005prj']">__orxMSVC__</if>
+        <if cond="FORMAT in ['autoconf','gnu','mingw', 'xcode2']">__orxGCC__</if>
+        <if cond="FORMAT in ['msvc','msvs2005prj']">__orxMSVC__</if>
     </set>
 
     <!-- Set the preprocessor definition for debug mode. -->
@@ -97,56 +90,31 @@
         <if cond="BUILD=='debug'">max</if>
         <if cond="BUILD=='release'">default</if>
     </set>
-    
-    <!-- Set the suffix for target name. -->
-    <set var="orxSUFFIX">
-        <if cond="BUILD=='debug'">d</if>
-    </set>
-    
+
     <set var="orxLIBNAME">
         <if cond="BUILD=='debug'">orxd</if>
         <if cond="BUILD=='release'">orx</if>
     </set>
-    
-    <set var="orxLINKMODE">
-    	<if cond="LINK=='static'">static</if>
-    	<if cond="LINK=='dynamic'">dynamic</if>
+
+    <set var="orxWARNING_DEFINE">
+      <if cond="FORMAT in ['msvc','msvs2005prj']">_CRT_SECURE_NO_WARNINGS</if>
     </set>
-    
-    
+
     <!-- Disable specifics warnings -->
     <set var="orxDISABLE_WARNING">
-      <if cond="FORMAT in ['autoconf','gnu','mingw']">-Wno-unused-parameter</if>
-      
+      <if cond="FORMAT in ['autoconf','gnu','mingw','xcode2']">-Wno-unused-parameter</if>
       <!-- 4100 = unreferenced formal parameter, 4206 = translation unit is empty (empty file), C4201 = nonstandard extension used : nameless struct/union -->
-      <if cond="FORMAT=='msvs2005prj'">/wd4100 /wd4206 /wd4201</if>
+      <if cond="FORMAT in ['msvc','msvs2005prj']">/wd4100 /wd4206 /wd4201</if>
     </set>
 
-
-    <!-- ****************** PATH ****************** -->
-
-    <!-- Set the relative path where is the orx directory -->
-    <set var="orxDIR">..$(DIRSEP)..$(DIRSEP)..</set>
-    
-    <!-- Set the relative path of source Directory -->
-    <set var="SRCDIR">$(orxDIR)</set>
-
-    <!-- Set the build directory for each BUILD type. (Will be the same name as the build type) -->
-    <set var="orxBUILDDIR">build$(DIRSEP)$(BUILD)</set>
-
-    <!-- Set the 'lib' path -->
-    <set var="orxLIBDIR">$(orxDIR)$(DIRSEP)lib$(DIRSEP)$(LINK)</set>
-
-    <!-- Set the 'bin' path -->
-    <set var="orxBINDIR">$(orxDIR)$(DIRSEP)bin</set>
-
-    <!-- Set path where will be stored temporary compilation files -->
-    <set var="BUILDDIR">.$(DIRSEP)$(orxBUILDDIR)</set>
-
+	<set var="BUILDDIR">.$(DIRSEP)$(BUILD)</set>
+	<set var="orxLIBDIR">$(SRCDIR)$(DIRSEP)lib$(DIRSEP)$(LINK)</set>
+    <set var="orxBINDIR">$(SRCDIR)$(DIRSEP)bin</set>
 
     <!-- **************** COMMON TEMPLATE ****************** -->
 
     <template id="orxBASE">
+
         <!-- Optimization and debug infos. -->
         <optimize>$(orxOPTIMIZEFLAG)</optimize>
         <debug-info>$(orxDEBUGFLAG)</debug-info>
@@ -156,13 +124,14 @@
         <define>$(orxPLATFORM)</define>
         <define>$(orxTEST)</define>
         <define>$(orxCOMPILER)</define>
-        
+        <define>$(orxWARNING_DEFINE)</define>
+
         <!-- Warnings. -->
         <warnings>$(orxWARNINGFLAG)</warnings>
         <cflags>$(orxDISABLE_WARNING)</cflags>
         
         <!-- Global include directory. -->
-        <include>$(orxDIR)$(DIRSEP)include</include>
+        <include>$(SRCDIR)$(DIRSEP)include</include>
     </template>
     
 </bakefile>

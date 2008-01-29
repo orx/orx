@@ -498,13 +498,13 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
 orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, orxVOID **_ppData)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
+  orxU16 u16Cell;
 
 	/* Module initialized ? */
 	orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
 	/* Correct parameters ? */
 	orxASSERT(_pstHashTable != orxNULL);
 
-	orxU16 u16Cell = 0;
 	for(u16Cell=0; u16Cell<orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
 	{
 		if(_pstHashTable->apstCell[u16Cell]!=orxNULL)

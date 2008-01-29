@@ -4,14 +4,14 @@
 
 <bakefile>
  
-    <using module="datafiles"/>
+    <!--using module="datafiles"/-->
  
     <!-- Include common definitions. -->
     <include file="common.bkl"/>
-    
+
     <!-- Include Orx lib target definition. -->
     <include file="lib.bkl"/>
-    
+
     <!-- Include main program. -->
     <include file="main.bkl"/>
 

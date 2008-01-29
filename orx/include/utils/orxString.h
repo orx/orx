@@ -236,28 +236,39 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxCONST orxSTRING _zString, orx
 
 #else /* __orxLINUX__ */
 
-  orxCHAR *pcEnd;
-
-  /* Converts it */
-  *_pfOutValue = strtof(_zString, &pcEnd);
-
-  /* Valid conversion ? */
-  if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
   {
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
+    orxCHAR *pcEnd;
 
-  /* Asks for remaining string? */
-  if(_pzRemaining != orxNULL)
-  {
-    /* Stores it */
-    *_pzRemaining = pcEnd;
+#ifdef __orxMSVC__
+
+    /* Converts it */
+    *_pfOutValue = (orxFLOAT)strtod(_zString, &pcEnd);
+
+#else /* __orxMSVC__ */
+
+    /* Converts it */
+    *_pfOutValue = strtof(_zString, &pcEnd);
+
+#endif /* __orxMSVC__ */
+
+    /* Valid conversion ? */
+    if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
+    {
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+
+    /* Asks for remaining string? */
+    if(_pzRemaining != orxNULL)
+    {
+      /* Stores it */
+      *_pzRemaining = pcEnd;
+    }
   }
 
 #endif /* __orxLINUX__ */

@@ -37,7 +37,15 @@
 #ifdef __orxWINDOWS__
 
   /** The function will be called fastly (use registers for parameters as far as possible).*/
-  #define orxFASTCALL           __fastcall
+  #ifdef __orxMSVC__
+
+    #define orxFASTCALL
+
+  #else /* __orxMSVC__ */
+
+    #define orxFASTCALL           __fastcall
+
+  #endif /* __orxMSVC__ */
 
   /** The function will be called using stdcall convention.*/
   #define orxSTDCALL            __stdcall
