@@ -38,6 +38,7 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "anim/orxAnimSet.h"
 #include "math/orxVector.h"
 
 
@@ -81,9 +82,17 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxObject_Enable(orxOBJECT *_pstObje
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject);
 
-/** Links a structure to an object. */
+/** Links a structure to an object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstStructure   Structure to link
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure);
-/** Unlinks structure from an object, given its structure ID. */
+
+/** Unlinks structure from an object, given its structure ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eStructureID   ID of structure to unlink
+ */
 extern orxDLLAPI orxVOID orxFASTCALL        orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
@@ -155,8 +164,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_GetScale(orxCONST orxOBJECT *_
 /** Sets an object parent
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstParent      Parent object to set / orxNULL
+ * 
  */
-extern orxDLLAPI orxVOID orxFASTCALL    orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent);
 
 
 /** Gets object size
@@ -166,5 +176,12 @@ extern orxDLLAPI orxVOID orxFASTCALL    orxObject_SetParent(orxOBJECT *_pstObjec
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+
+/** Sets an object animset
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstAnimSet     Animation set to set / orxNULL
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_pstAnimSet);
 
 #endif /* _orxOBJECT_H_ */

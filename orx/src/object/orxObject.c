@@ -20,6 +20,7 @@
 #include "object/orxObject.h"
 
 #include "debug/orxDebug.h"
+#include "anim/orxAnimPointer.h"
 #include "display/orxGraphic.h"
 #include "io/orxFileSystem.h"
 #include "object/orxFrame.h"
@@ -38,11 +39,19 @@
 
 #define orxOBJECT_KU32_STATIC_MASK_ALL          0xFFFFFFFF
 
+
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000
 
 #define orxOBJECT_KU32_FLAG_ENABLED             0x00000001
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF
+
+
+#define orxOBJECT_KU32_STORAGE_FLAG_NONE        0x00000000
+
+#define orxOBJECT_KU32_STORAGE_FLAG_INTERNAL    0x00000001
+
+#define orxOBJECT_KU32_STORAGE_MASK_ALL         0xFFFFFFFF
 
 
 #define orxOBJECT_KC_MARKER_START               '$'
@@ -51,18 +60,31 @@
 
 
 /*
+ * Object storage structure
+ */
+typedef struct __orxOBJECT_STORAGE_t
+{
+  orxSTRUCTURE *pstStructure;                   /**< Structure pointer : 4 */
+  orxU32        u32Flags;                       /**< Flags : 8 */
+
+  /* Padding */
+  orxPAD(8)
+
+} orxOBJECT_STORAGE;
+
+/*
  * Object structure
  */
 struct __orxOBJECT_t
 {
   /* Public structure, first structure member : 16 */
-  orxSTRUCTURE stStructure;
+  orxSTRUCTURE      stStructure;
 
-  /* Used structures : 28 */
-  orxSTRUCTURE *pastStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER];
+  /* Used structures : 40 */
+  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER];
 
   /* Padding */
-  orxPAD(28)
+  orxPAD(40)
 };
 
 /*
@@ -143,10 +165,10 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
       for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
       {
         /* Is structure linked? */
-        if(pstObject->pastStructure[i] != orxNULL)
+        if(pstObject->astStructure[i].pstStructure != orxNULL)
         {
           /* Updates it */
-          if(orxStructure_Update(pstObject->pastStructure[i], pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
+          if(orxStructure_Update(pstObject->astStructure[i].pstStructure, pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
           {
             /* !!! MSG !!! */
           }
@@ -402,10 +424,20 @@ orxOBJECT *orxObject_Create2DObject()
           if(pstObject != orxNULL)
           {
             /* Links all structures */
-            if((orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) == orxSTATUS_FAILURE)
-            || (orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) == orxSTATUS_FAILURE))
+            if((orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
+            && (orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) != orxSTATUS_FAILURE))
+            {
+              /* Updates flags */
+              orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_FRAME].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+              orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+            }
+            else
             {
               /* !!! MSG !!! */
+
+              /* Unlinks structures */
+              orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_FRAME);
+              orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_GRAPHIC);
 
               /* Deletes all structures */
               orxTexture_Delete(pstTexture);
@@ -615,21 +647,13 @@ orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBit
           if(pstObject != orxNULL)
           {
             /* Links all structures */
-            if((orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) == orxSTATUS_FAILURE)
-            || (orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) == orxSTATUS_FAILURE))
+            if((orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
+            && (orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) != orxSTATUS_FAILURE))
             {
-              /* !!! MSG !!! */
+              /* Updates flags */
+              orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_FRAME].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+              orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
 
-              /* Deletes all structures */
-              orxTexture_Delete(pstTexture);
-              orxGraphic_Delete(pstGraphic);
-              orxFrame_Delete(pstFrame);
-
-              /* Updates result */
-              pstObject = orxNULL;
-            }
-            else
-            {
               /* Uses a pivot? */
               if(s32FirstMarkerIndex >= 0)
               {
@@ -641,6 +665,22 @@ orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBit
                 /* Updates graphic */
                 orxGraphic_SetPivot(pstGraphic, &vPivot);
               }
+            }
+            else
+            {
+              /* !!! MSG !!! */
+
+              /* Unlinks structures */
+              orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_FRAME);
+              orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_GRAPHIC);
+
+              /* Deletes all structures */
+              orxTexture_Delete(pstTexture);
+              orxGraphic_Delete(pstGraphic);
+              orxFrame_Delete(pstFrame);
+
+              /* Updates result */
+              pstObject = orxNULL;
             }
           }
           else
@@ -688,12 +728,11 @@ orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBit
   return pstObject;
 }
 
-/***************************************************************************
- orxObject_LinkStructure
- Links a structure to an object given.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Links a structure to an object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstStructure   Structure to link
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE *_pstStructure)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -717,7 +756,8 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
     orxStructure_IncreaseCounter(_pstStructure);
 
     /* Links new structure to object */
-    _pstObject->pastStructure[eStructureID] = _pstStructure;
+    _pstObject->astStructure[eStructureID].pstStructure = _pstStructure;
+    _pstObject->astStructure[eStructureID].u32Flags     = orxOBJECT_KU32_STORAGE_FLAG_NONE; 
   }
   else
   {
@@ -731,12 +771,10 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
   return eResult;
 }
 
-/***************************************************************************
- orxObject_UnlinkStructure
- Unlinks structure from an object given its ID.
-
- returns: orxVOID
- ***************************************************************************/
+/** Unlinks structure from an object, given its structure ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eStructureID   ID of structure to unlink
+ */
 orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
@@ -745,18 +783,52 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
   orxASSERT(_eStructureID < orxSTRUCTURE_ID_LINKABLE_NUMBER);
 
   /* Needs to be processed? */
-  if(_pstObject->pastStructure[_eStructureID] != orxNULL)
+  if(_pstObject->astStructure[_eStructureID].pstStructure != orxNULL)
   {
     orxSTRUCTURE *pstStructure;
 
     /* Gets referenced structure */
-    pstStructure = _pstObject->pastStructure[_eStructureID];
+    pstStructure = _pstObject->astStructure[_eStructureID].pstStructure;
 
     /* Decreases structure reference counter */
     orxStructure_DecreaseCounter(pstStructure);
 
-    /* Unlinks structure */
-    _pstObject->pastStructure[_eStructureID] = orxNULL;
+    /* Was internally handled? */
+    if(orxFLAG_TEST(_pstObject->astStructure[_eStructureID].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL))
+    {
+      /* Depending on structure ID */
+      switch(_eStructureID)
+      {
+        case orxSTRUCTURE_ID_FRAME:
+        {
+          orxFrame_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, FRAME));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_GRAPHIC:
+        {
+          orxGraphic_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, GRAPHIC));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_ANIMPOINTER:
+        {
+          orxAnimPointer_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, ANIMPOINTER));
+          break;
+        }
+
+        default:
+        {
+          orxASSERT(orxFALSE && "Can't destroy this structure type directly from an object.");
+
+          /* !!! MSG !!! */
+          break;
+        }
+      }
+    }
+
+    /* Cleans it */
+    orxMemory_Set(&(_pstObject->astStructure[_eStructureID]), 0, sizeof(orxOBJECT_STORAGE));
   }
 
   return;
@@ -784,7 +856,7 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetStructure(orxCONST orxOBJECT *_pstObject,
   if(_eStructureID < orxSTRUCTURE_ID_LINKABLE_NUMBER)
   {
     /* Gets requested structure */
-    pstStructure = _pstObject->pastStructure[_eStructureID];
+    pstStructure = _pstObject->astStructure[_eStructureID].pstStructure;
   }
 
   /* Done ! */
@@ -1120,10 +1192,12 @@ orxSTATUS orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOA
 /** Sets an object parent
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstParent      Parent object to set / orxNULL
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxVOID orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent)
+orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent)
 {
-  orxFRAME *pstFrame;
+  orxFRAME   *pstFrame;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1133,7 +1207,10 @@ orxVOID orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstPa
   pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
 
   /* Updates its parent */
-  return(orxFrame_SetParent(pstFrame, (_pstParent != orxNULL) ? (orxFRAME *)orxObject_GetStructure(_pstParent, orxSTRUCTURE_ID_FRAME) : orxNULL));
+  orxFrame_SetParent(pstFrame, (_pstParent != orxNULL) ? (orxFRAME *)orxObject_GetStructure(_pstParent, orxSTRUCTURE_ID_FRAME) : orxNULL);
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets object size
@@ -1167,6 +1244,50 @@ orxSTATUS orxFASTCALL orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT
     /* No size */
     *_pfWidth  = *_pfHeight = orx2F(-1.0f);
 
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets an object animset
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstAnimSet     Animation set to set / orxNULL
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_pstAnimSet)
+{
+  orxANIMPOINTER *pstAnimPointer;
+  orxSTATUS       eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxSTRUCTURE_ASSERT(_pstAnimSet);
+
+  /* Creates animation pointer from animation set */
+  pstAnimPointer = orxAnimPointer_Create(_pstAnimSet);
+
+  /* Valid? */
+  if(pstAnimPointer != NULL)
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+
+    /* Links it to the object */
+    eResult = orxObject_LinkStructure(_pstObject, (orxSTRUCTURE *)_pstAnimSet);
+    
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Updates internal flag */
+      orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_ANIMSET].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+    }
+  }
+  else
+  {
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
