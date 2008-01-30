@@ -44,7 +44,7 @@
  */
 #define orxGRAPHIC_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
-#define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic ID flag  */
+#define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic flag  */
 
 #define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
 
@@ -71,6 +71,12 @@ extern orxDLLAPI orxVOID                      orxGraphic_Exit();
  * @return      Created orxGRAPHIC / orxNULL
  */
 extern orxDLLAPI orxGRAPHIC *                 orxGraphic_Create();
+
+/** Creates a 2D graphic from bitmap files
+ * @param[in]   _zBitmapFileName              Bitmap to use as data
+ * @ return orxGRAPHIC / orxNULL
+ */
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Create2DGraphicFromFile(orxCONST orxSTRING _zBitmapFileName);
 
 /** Deletes a graphic
  * @param[in]   _pstGraphic       Graphic to delete

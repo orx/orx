@@ -73,8 +73,9 @@ struct __orxANIMPOINTER_t
   orxFLOAT                fCurrentAnimTime;           /**< Current Time (Relative to current animation) : 26 */
   orxFLOAT                fTime;                      /**< Current Time (Absolute) : 40 */
   orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
+  orxU32                  u32CurrentKey;              /**< Current animation key : 48 */
 
-  orxPAD(44)
+  orxPAD(48)
 };
 
 
@@ -167,7 +168,7 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
       if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
       {
         /* Updates current anim */
-        eResult = orxAnim_Update(orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim), _pstAnimPointer->fCurrentAnimTime);
+        eResult = orxAnim_Update(orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim), _pstAnimPointer->fCurrentAnimTime, &(_pstAnimPointer->u32CurrentKey));
       }
     }
     else
@@ -432,6 +433,42 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_ps
 
   /* Done! */
   return hAnimHandle;    
+}
+
+/** AnimPointer current anim data get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Current anim data / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(orxCONST orxANIMPOINTER *_pstAnimPointer)
+{
+  orxHANDLE     hAnimHandle;
+  orxSTRUCTURE *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Gets current anim handle */
+  hAnimHandle = orxAnimPointer_GetCurrentAnim(_pstAnimPointer);
+
+  /* Valid? */
+  if(hAnimHandle != orxHANDLE_UNDEFINED)
+  {
+    orxANIM *pstAnim;
+
+    /* Gets anim */
+    pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(_pstAnimPointer), hAnimHandle);
+
+    /* Valid? */
+    if(pstAnim != orxNULL)
+    {
+      /* Gets data */
+      pstResult = orxAnim_GetKeyData(pstAnim, _pstAnimPointer->u32CurrentKey);
+    }
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** AnimPointer current Time get accessor

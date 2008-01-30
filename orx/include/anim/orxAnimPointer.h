@@ -96,6 +96,12 @@ extern orxDLLAPI orxANIMSET *orxFASTCALL      orxAnimPointer_GetAnimSet(orxCONST
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAnimPointer);
 
+/** AnimPointer current anim data get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Current anim data / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnimPointer_GetCurrentAnimData(orxCONST orxANIMPOINTER *_pstAnimPointer);
+
 /** AnimPointer current Time get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current time

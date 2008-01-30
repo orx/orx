@@ -41,8 +41,16 @@
 
 
 /** Structure pointer get macro. */
-#define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE)               \
-  ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) == orxSTRUCTURE_ID_##TYPE) ? (orx##TYPE *)STRUCTURE : orxNULL
+#ifdef __orxDEBUG__
+
+  #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE)               \
+    ((STRUCTURE != orxNULL) && ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) == orxSTRUCTURE_ID_##TYPE)) ? (orx##TYPE *)STRUCTURE : orxNULL
+
+#else /* __orxDEBUG__ */
+
+  #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE) (orx##TYPE *)STRUCTURE
+
+#endif /* __orxDEBUG__ */
 
 /** Structure register macro. */
 #define orxSTRUCTURE_REGISTER(TYPE, STORAGE_TYPE, MEMORY_TYPE, UPDATE_FUNCTION) \

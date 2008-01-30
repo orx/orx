@@ -71,11 +71,17 @@ extern orxDLLAPI orxVOID                      orxAnim_Exit();
 
 
 /** Creates an empty animation
- * @param[in]   _u32Flags       flags for created animation
+ * @param[in]   _u32Flags       Flags for created animation
  * @param[in]   _u32Size        Number of keys for this animation
  * @return      Created orxANIM / orxNULL
  */
 extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size);
+
+/** Creates a 2D animation from bitmap files
+ * @param[in]   _zBitmapFilePattern         Bitmap file pattern relative to animation
+ * @ return orxANIM / orxNULL
+ */
+extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create2DAnimFromFile(orxCONST orxSTRING _zBitmapFilePattern);
 
 /** Deletes an animation
  * @param[in]   _pstAnim        Anim to delete
@@ -107,16 +113,10 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_RemoveAllKeys(orxANIM *_ps
 /** Updates anim given a timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _fTimeStamp     TimeStamp for animation update
+ * @param[out]  _pu32CurrentKey Current key as a result of update
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
-
-/** Anim current key data accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Desired orxSTRUCTURE / orxNULL
- */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnim_GetCurrentKeyData(orxCONST orxANIM *_pstAnim);
-
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey);
 
 /** Anim key data accessor
  * @param[in]   _pstAnim        Concerned animation

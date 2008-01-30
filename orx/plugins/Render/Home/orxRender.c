@@ -110,11 +110,11 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
   orxASSERT(_pstRenderFrame != orxNULL);
 
   /* Gets object's graphic */
-  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+  pstGraphic = orxSTRUCTURE_GET_POINTER(orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC), GRAPHIC);
 
   /* Valid? */
   if((pstGraphic != orxNULL)
-  && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE))
+  && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D)))
   {
     orxBITMAP      *pstBitmap;
     orxANIMPOINTER *pstAnimPointer;
@@ -122,36 +122,13 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     orxFLOAT        fRotation, fScaleX, fScaleY;
 
     /* Gets animation pointer */
-    pstAnimPointer = (orxANIMPOINTER *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER);
+    pstAnimPointer = orxSTRUCTURE_GET_POINTER(orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER), ANIMPOINTER);
 
     /* Valid? */
     if(pstAnimPointer != orxNULL)
     {
-      orxHANDLE hAnim;
-
-      /* Gets current anim handle */
-      hAnim = orxAnimPointer_GetCurrentAnim(pstAnimPointer);
-
-      /* Valid? */
-      if(hAnim != orxHANDLE_UNDEFINED)
-      {
-        orxANIM *pstAnim;
-
-        /* Gets current anim */
-        pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(pstAnimPointer), hAnim);
-
-        /* Valid 2D anim? */
-        if((pstAnim != orxNULL)
-        && (orxStructure_TestFlags(pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE))
-        {
-          /* Valid? */
-          if(orxAnim_GetCurrentKeyData(pstAnim) != orxNULL)
-          {
-            /* Updates graphic pointer */
-            pstGraphic = (orxGRAPHIC *)orxAnim_GetCurrentKeyData(pstAnim);
-          }
-        }
-      }
+      /* Gets current anim data */
+      pstGraphic = orxSTRUCTURE_GET_POINTER(orxAnimPointer_GetCurrentAnimData(pstAnimPointer), GRAPHIC);
     }
 
     /* Gets its pivot */

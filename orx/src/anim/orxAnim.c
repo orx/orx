@@ -45,8 +45,6 @@
 #define orxANIM_KU32_MASK_COUNTER           0x0000FF00  /**< Counter ID mask */
 #define orxANIM_KU32_MASK_FLAGS             0xFFFF0000  /**< Flags ID mask */
 
-#define orxANIM_KU32_FLAG_CURRENT_KEY       0x10000000  /**< Has current key? */
-
 #define orxANIM_KS32_ID_SHIFT_SIZE          0           /**< Size ID shift */
 #define orxANIM_KS32_ID_SHIFT_COUNTER       8           /**< Counter ID shift */
 
@@ -70,9 +68,8 @@ struct __orxANIM_t
 {
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
   orxANIM_KEY  *astKeyList;                 /**< Key array : 20 */
-  orxU16        u16CurrentKey;              /**< Current key : 22 */
 
-  orxPAD(22)
+  orxPAD(20)
 };
 
 
@@ -327,8 +324,8 @@ orxVOID orxAnim_Exit()
 }
 
 /** Creates an empty animation
- * @param[in]   _u32Flags     flags for created animation
- * @param[in]   _u32Size        Number of keys for this animation
+ * @param[in]   _u32Flags     Flags for created animation
+ * @param[in]   _u32Size      Number of keys for this animation
  * @return      Created orxANIM / orxNULL
  */
 orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
@@ -391,6 +388,22 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
 
   /* Done! */
   return pstAnim;
+}
+
+/** Creates a 2D animation from bitmap files
+ * @param[in]   _zBitmapFilePattern         Bitmap file pattern relative to animation
+ * @ return orxANIM / orxNULL
+ */
+orxANIM *orxFASTCALL orxAnim_Create2DAnimFromFile(orxCONST orxSTRING _zBitmapFilePattern)
+{
+  orxANIM *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_zBitmapFilePattern);
+
+  /* Done! */
+  return pstResult;  
 }
 
 /** Deletes an animation
@@ -529,20 +542,6 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
     /* Cleans the key info */
     orxMemory_Set(pstKey, 0, sizeof(orxANIM_KEY));
     
-    /* Had a current key? */
-    if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_CURRENT_KEY) != orxFALSE)
-    {
-      /* Was the removed one? */
-      if(_pstAnim->u16CurrentKey == u32Counter)
-      {
-        /* Removes current key */
-        _pstAnim->u16CurrentKey = 0;
-
-        /* Updates flags */
-        orxStructure_SetFlags(_pstAnim, orxANIM_KU32_FLAG_NONE, orxANIM_KU32_FLAG_CURRENT_KEY);
-      }
-    }
-
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
@@ -578,15 +577,17 @@ orxVOID orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
 /** Updates animation given a timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _fTimeStamp     TimeStamp for animation update
+ * @param[out]  _pu32CurrentKey Current key as a result of update
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
+orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey)
 {
   orxU32    u32Index;
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pu32CurrentKey != orxNULL);
   orxSTRUCTURE_ASSERT(_pstAnim);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
@@ -597,10 +598,7 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
   if(u32Index != orxU32_UNDEFINED)
   {
     /* Updates current key */
-    _pstAnim->u16CurrentKey = u32Index;
-
-    /* Updates flags */
-    orxStructure_SetFlags(_pstAnim, orxANIM_KU32_FLAG_CURRENT_KEY, orxANIM_KU32_FLAG_NONE);
+    *_pu32CurrentKey = u32Index;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -609,8 +607,8 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
   {
     /* !!! MSG !!! */
 
-    /* Updates flags */
-    orxStructure_SetFlags(_pstAnim, orxANIM_KU32_FLAG_NONE, orxANIM_KU32_FLAG_CURRENT_KEY);
+    /* Updates current key */
+    *_pu32CurrentKey = orxU32_UNDEFINED;
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -618,32 +616,6 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 
   /* Done! */
   return eResult;
-}
-
-/** Anim current key data accessor
- * @param[in]   _pstAnim        Concerned animation
- * @return      Desired orxSTRUCTURE / orxNULL
- */
-orxSTRUCTURE *orxFASTCALL orxAnim_GetCurrentKeyData(orxCONST orxANIM *_pstAnim)
-{
-  orxSTRUCTURE *pstResult;
-
-  /* Has current key? */
-  if(orxStructure_TestFlags((orxANIM *)_pstAnim, orxANIM_KU32_FLAG_CURRENT_KEY) != orxFALSE)
-  {
-    /* Updates result */
-    pstResult = _pstAnim->astKeyList[_pstAnim->u16CurrentKey].pstData;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Updates result */
-    pstResult = orxNULL;
-  }
-
-  /* Done! */
-  return pstResult;
 }
 
 /** Animation key data accessor
