@@ -329,7 +329,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create2DGraphicFromFile(orxCONST orxSTRING _z
     orxFileSystem_FindClose(&stFileInfo);
   }
   else
-  {  
+  {
     /* Loads textures */
     pstTexture = orxTexture_CreateFromFile(_zBitmapFileName);
   }

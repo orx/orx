@@ -127,8 +127,17 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     /* Valid? */
     if(pstAnimPointer != orxNULL)
     {
+      orxGRAPHIC *pstTemp;
+
       /* Gets current anim data */
-      pstGraphic = orxSTRUCTURE_GET_POINTER(orxAnimPointer_GetCurrentAnimData(pstAnimPointer), GRAPHIC);
+      pstTemp = orxSTRUCTURE_GET_POINTER(orxAnimPointer_GetCurrentAnimData(pstAnimPointer), GRAPHIC);
+
+      /* Valid? */
+      if(pstTemp != orxNULL)
+      {
+        /* Uses it */
+        pstGraphic = pstTemp;
+      }
     }
 
     /* Gets its pivot */

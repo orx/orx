@@ -79,9 +79,10 @@ extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32Flags, o
 
 /** Creates a 2D animation from bitmap files
  * @param[in]   _zBitmapFilePattern         Bitmap file pattern relative to animation
+ * @param[in]   _fKeyDuration             Duration of each key
  * @ return orxANIM / orxNULL
  */
-extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create2DAnimFromFile(orxCONST orxSTRING _zBitmapFilePattern);
+extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create2DAnimFromFile(orxCONST orxSTRING _zBitmapFilePattern, orxFLOAT _fKeyDuration);
 
 /** Deletes an animation
  * @param[in]   _pstAnim        Anim to delete

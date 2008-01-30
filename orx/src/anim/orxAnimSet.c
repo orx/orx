@@ -1093,19 +1093,10 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIMSET_LINK_TABLE *_pst
  */
 orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
 {
-  orxLINK_UPDATE_INFO *pstUpdateInfo;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxU32 u32Counter, u32Size;
-  orxU32 i;
 
   /* Checks */
   orxASSERT(_pstLinkTable != orxNULL);
-
-  /* Gets anim counter */
-  u32Counter = (orxU32)(_pstLinkTable->u16LinkCounter);
-
-  /* Checks it */
-  orxASSERT(u32Counter > 0);
 
   /* Is link table dirty? */
   if(orxAnimSet_TestLinkTableFlag(_pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY) != orxFALSE)
@@ -1113,6 +1104,9 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
     /* Has ready link structure */
     if(orxAnimSet_TestLinkTableFlag(_pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_READY) != orxFALSE)
     {
+      orxLINK_UPDATE_INFO  *pstUpdateInfo;
+      orxU32                u32Size, i;
+
       /* Gets storage size */
       u32Size = (orxU32)_pstLinkTable->u16TableSize;
     
@@ -1133,7 +1127,7 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
       if(pstUpdateInfo != orxNULL)
       {
         /* Updates all animations */
-        for(i = 0; i < u32Counter; i++)
+        for(i = 0; i < _pstLinkTable->u16LinkCounter; i++)
         {
           orxAnimSet_UpdateLink(i, pstUpdateInfo);
         }
