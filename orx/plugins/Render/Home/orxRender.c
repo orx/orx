@@ -511,14 +511,11 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
  */
 orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
+  orxVIEWPORT *pstViewport;
+
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
-
-  orxSTATIC orxCHAR     szFPSOutput[32]; 
-
-  orxVIEWPORT          *pstViewport;
-  orxBITMAP_TRANSFORM   stTransform;
 
   /* For all viewports */
   for(pstViewport = (orxVIEWPORT *)orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT);
@@ -531,21 +528,6 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 
   /* Increases FPS counter */
   orxFPS_IncreaseFrameCounter();
-
-  /* Updates FPS transform */
-  /* Sets transformation values */
-  stTransform.s32SrcX   = 0;
-  stTransform.s32SrcY   = 0;
-  stTransform.s32DstX   = 10;
-  stTransform.s32DstY   = 10;
-  stTransform.fScaleX   = orx2F(0.8f);
-  stTransform.fScaleY   = orx2F(0.8f);
-  stTransform.fRotation = orxFLOAT_0;
-
-  orxTextIO_Printf(szFPSOutput, "FPS : %d / %fs", orxFPS_GetFPS(), _pstClockInfo->fDT);
-
-  /* Displays FPS */
-  orxDisplay_DrawText(orxDisplay_GetScreenBitmap(), &stTransform, orx2RGBA(0xFF, 0, 0, 0xFF), szFPSOutput);
   
   /* Swap buffers */
   orxDisplay_Swap();
