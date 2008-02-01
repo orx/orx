@@ -54,6 +54,7 @@
 
 #define orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER      0x10000000  /**< Anim link uses a counter */
 #define orxANIMSET_KU32_LINK_FLAG_PRIORITY          0x20000000  /**< Anim link has priority */
+#define orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT     0x40000000  /**< Anim link should update with an immediate cut */
 
 /** AnimSet defines
  */

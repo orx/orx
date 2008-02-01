@@ -478,7 +478,7 @@ orxANIM *orxFASTCALL orxAnim_Create2DAnimFromFile(orxCONST orxSTRING _zBitmapFil
         orxFLOAT fTimeStamp;
 
         /* For all created graphics */
-        for(fTimeStamp = orxFLOAT_0, ppstGraphic = orxBank_GetNext(pstBank, orxNULL);
+        for(fTimeStamp = _fKeyDuration, ppstGraphic = orxBank_GetNext(pstBank, orxNULL);
             ppstGraphic != orxNULL;
             fTimeStamp += _fKeyDuration, ppstGraphic = orxBank_GetNext(pstBank, ppstGraphic))
         {

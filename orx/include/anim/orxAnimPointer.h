@@ -96,6 +96,12 @@ extern orxDLLAPI orxANIMSET *orxFASTCALL      orxAnimPointer_GetAnimSet(orxCONST
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAnimPointer);
 
+/** AnimPointer target Animation get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Target Animation handle
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetTargetAnim(orxCONST orxANIMPOINTER *_pstAnimPointer);
+
 /** AnimPointer current anim data get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current anim data / orxNULL
@@ -119,7 +125,14 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnimPointer_GetFrequency(orxCON
  * @param[in]   _hAnimHandle                  Animation handle to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetAnim(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle);
+
+/** AnimPointer target Animation set accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _hAnimHandle                  Animation handle to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle);
 
 /** AnimPointer current Time accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
