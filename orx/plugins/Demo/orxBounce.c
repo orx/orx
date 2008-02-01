@@ -181,4 +181,4 @@ orxSTATIC orxSTATUS orxBounce_Init()
  *  Plugin Related  *
  ********************/
 
-orxPLUGIN_K_DECLARE_ENTRY_POINT(orxBounce_Init);
+orxPLUGIN_DECLARE_ENTRY_POINT(orxBounce_Init);

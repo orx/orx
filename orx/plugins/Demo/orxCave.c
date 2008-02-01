@@ -542,4 +542,4 @@ orxSTATIC orxSTATUS orxCave_Init()
  * Plugin Related                                                          *
  ***************************************************************************/
 
-orxPLUGIN_K_DECLARE_ENTRY_POINT(orxCave_Init);
+orxPLUGIN_DECLARE_ENTRY_POINT(orxCave_Init);
