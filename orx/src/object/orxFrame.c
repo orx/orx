@@ -421,16 +421,16 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
     /* Gets needed orxFLOAT values for rotation & scale applying */
     fLocalX       = pvPos->fX;
     fLocalY       = pvPos->fY;
-    fCos          = cosf(fParentAngle);
-    fSin          = sinf(fParentAngle);
+    fCos          = orxMath_Cos(fParentAngle);
+    fSin          = orxMath_Sin(fParentAngle);
 
     /* Applies rotation & scale on X&Y coordinates*/
     fX            = fParentScaleX * ((fLocalX * fCos) - (fLocalY * fSin));
     fY            = fParentScaleY * ((fLocalX * fSin) + (fLocalY * fCos));
 
     /* Computes final global coordinates */
-    vTempPos.fX   = floorf(fX) + pvParentPos->fX;
-    vTempPos.fY   = floorf(fY) + pvParentPos->fY;
+    vTempPos.fX   = orxMath_Floor(fX) + pvParentPos->fX;
+    vTempPos.fY   = orxMath_Floor(fY) + pvParentPos->fY;
 
     /* Z coordinate is not affected by rotation nor scale in 2D */
     vTempPos.fZ   = pvParentPos->fZ + pvPos->fZ;

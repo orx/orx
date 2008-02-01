@@ -110,32 +110,32 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
 {
     {
       orxSCROLL_KZ_DATA_FOLDER"fuji.png",
-        {orx2F(0.0f), orx2F(1.1f), orx2F(0.9f)},
-        {orx2F(11.0f), orx2F(1.3f), orx2F(0.9f)},
+        {{orx2F(0.0f)}, {orx2F(1.1f)}, {orx2F(0.9f)}},
+        {{orx2F(11.0f)}, {orx2F(1.3f)}, {orx2F(0.9f)}},
         80
     },
     {
       orxSCROLL_KZ_DATA_FOLDER"boat1.png",
-        {orx2F(0.0f), orx2F(1.0f), orx2F(0.6f)},
-        {orx2F(11.0f), orx2F(1.25f), orx2F(0.8f)},
+        {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.6f)}},
+        {{orx2F(11.0f)}, {orx2F(1.25f)}, {orx2F(0.8f)}},
         15
     },
     {
       orxSCROLL_KZ_DATA_FOLDER"boat2.png",
-        {orx2F(0.0f), orx2F(1.0f), orx2F(0.2f)},
-        {orx2F(11.0f), orx2F(1.15f), orx2F(0.5f)},
+        {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.2f)}},
+        {{orx2F(11.0f)}, {orx2F(1.15f)}, {orx2F(0.5f)}},
         20
     },
     {
       orxSCROLL_KZ_DATA_FOLDER"cloud.png",
-        {orx2F(0.0f), orx2F(0.1f), orx2F(0.2f)},
-        {orx2F(11.0f), orx2F(0.7f), orx2F(0.7f)},
+        {{orx2F(0.0f)}, {orx2F(0.1f)}, {orx2F(0.2f)}},
+        {{orx2F(11.0f)}, {orx2F(0.7f)}, {orx2F(0.7f)}},
         70
     },
     {
       orxSCROLL_KZ_DATA_FOLDER"wave.png",
-        {orx2F(0.0f), orx2F(1.3f), orx2F(0.2f)},
-        {orx2F(11.0f), orx2F(1.6f), orx2F(0.8f)},
+        {{orx2F(0.0f)}, {orx2F(1.3f)}, {orx2F(0.2f)}},
+        {{orx2F(11.0f)}, {orx2F(1.6f)}, {orx2F(0.8f)}},
         300
     }
 };

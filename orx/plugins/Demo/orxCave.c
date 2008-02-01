@@ -130,48 +130,48 @@ orxSTATIC orxCAVE_RESOURCE_INFO sastInfo[orxCAVE_RESOURCE_NUMBER] =
 {
     {
       orxCAVE_KZ_DATA_FOLDER"background.png",
-      {orx2F(0.0f), orx2F(0.0f), orx2F(1.0f)},
-      {orx2F(0.0f), orx2F(0.85f), orx2F(0.0f)}
+      {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}},
+      {{orx2F(0.0f)}, {orx2F(0.85f)}, {orx2F(0.0f)}}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"background-shadow.png",
-      {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)},
-      {orx2F(0.0f), orx2F(0.85f), orx2F(0.0f)}
+      {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}},
+      {{orx2F(0.0f)}, {orx2F(0.85f)}, {orx2F(0.0f)}}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"box.png",
-      {orx2F(424.0f), orx2F(-171.0f), orx2F(0.1f)},
-      {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
+      {{orx2F(424.0f)}, {orx2F(-171.0f)}, {orx2F(0.1f)}},
+      {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"ball.png",
-      {orx2F(0.0f), orx2F(0.0f), orx2F(0.3f)},
-      {orx2F(0.5f), orx2F(0.5f), orx2F(0.0f)}
+      {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.3f)}},
+      {{orx2F(0.5f)}, {orx2F(0.5f)}, {orx2F(0.0f)}}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"ball-reflect.png",
-      {orx2F(0.0f), orx2F(0.0f), orx2F(0.2f)},
-      {orx2F(0.5f), orx2F(0.5f), orx2F(0.0f)}
+      {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.2f)}},
+      {{orx2F(0.5f)}, {orx2F(0.5f)}, {orx2F(0.0f)}}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"ball-shadow.png",
-      {orx2F(-35.0f), orx2F(32.0f), orx2F(1.0f)},
-      {orx2F(0.5f), orx2F(0.5f), orx2F(0.0f)}
+      {{orx2F(-35.0f)}, {orx2F(32.0f)}, {orx2F(1.0f)}},
+      {{orx2F(0.5f)}, {orx2F(0.5f)}, {orx2F(0.0f)}}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb1.png",
-      {orx2F(324.0f), orx2F(-400.0f), orx2F(0.4f)},
-      {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
+      {{orx2F(324.0f)}, {orx2F(-400.0f)}, {orx2F(0.4f)}},
+      {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb2.png",
-      {orx2F(324.0f), orx2F(-400.0f), orx2F(0.4f)},
-      {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
+      {{orx2F(324.0f)}, {orx2F(-400.0f)}, {orx2F(0.4f)}},
+      {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}}
     },
     {
       orxCAVE_KZ_DATA_FOLDER"bulb3.png",
-      {orx2F(324.0f), orx2F(-400.0f), orx2F(0.4f)},
-      {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)}
+      {{orx2F(324.0f)}, {orx2F(-400.0f)}, {orx2F(0.4f)}},
+      {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}}
     }
 };
 

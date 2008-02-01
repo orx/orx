@@ -37,16 +37,6 @@
 /* *** Maths related includes *** */
 #include <math.h>                   /* Common maths / should be removed later */
 
-#include "math/orxVector.h"         /* Vectors */
-
-
-// !!! TEMP : Till own functions are defined !!!
-#ifdef __orxMSVC__
-  #define sinf(X)                 (orxFLOAT)sin((orxFLOAT)(X))
-  #define cosf(X)                 (orxFLOAT)cos((orxFLOAT)(X))
-  #define floorf(X)               (orxFLOAT)floor((orxFLOAT)(X))
-#endif /* __orxMSVC__ */
-
 
 /* *** Public macro definition. *** */
 
@@ -100,5 +90,191 @@ do                                              \
 #define orxMATH_KF_PI_BY_4        orx2F(0.785398163f)
 #define orxMATH_KF_DEG_TO_RAD     orx2F(orxMATH_KF_PI / 180.0f)
 #define orxMATH_KF_RAD_TO_DEG     orx2F(180.0f / orxMATH_KF_PI)
+
+
+/*** Trigonometric function ***/
+
+orxSTATIC orxINLINE orxFLOAT orxMath_Cos(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = cos(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = cosf(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_Sin(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = sin(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = sinf(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_Tan(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = tan(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = tan(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_ACos(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = acos(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = acosf(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = atan2(_fOp1, _fOp2);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = atan2f(_fOp1, _fOp2);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+
+/*** Misc functions ***/
+
+orxSTATIC orxINLINE orxFLOAT orxMath_Sqrt(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = sqrt(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = sqrtf(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_Floor(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = floor(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = floorf(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_Ceil(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = ceil(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = ceilf(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = round(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = roundf(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
 
 #endif /* _orxMATH_H_ */

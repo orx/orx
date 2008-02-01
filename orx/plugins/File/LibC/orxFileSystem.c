@@ -69,6 +69,8 @@ orxSTATIC orxFILESYSTEM_STATIC sstFileSystem;
  * Private functions                                                       *
  ***************************************************************************/
 
+#ifdef __orxWINDOWS__
+
 orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST struct _finddata_t *_pstData, orxFILESYSTEM_INFO *_pstFileInfo)
 {
   /* Checks */
@@ -89,6 +91,17 @@ orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST struct _
   return;
 }
 
+#else /* __orxWINDOWS__ */
+
+orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST orxVOID *_pstData, orxFILESYSTEM_INFO *_pstFileInfo)
+{
+  //! TODO : For linux use opendir()/readdir() + fnmatch() or glob()?
+
+  /* Not implemented yet */
+  orxASSERT(orxFALSE && "Not implemented yet!");
+}
+
+#endif /* __orxWINDOWS__ */
 
 /***************************************************************************
  * Public functions                                                        *

@@ -38,13 +38,30 @@
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
+#include "math/orxMath.h"
 
 
 /** Public structure definition. */
 typedef struct __orxVECTOR_t
 {
   /** Coordinates : 12 */
-  orxFLOAT fX, fY, fZ;
+  union
+  {
+    orxFLOAT fX;
+    orxFLOAT fRho;
+  };
+
+  union
+  {
+    orxFLOAT fY;
+    orxFLOAT fTheta;
+  };
+
+  union
+  {
+    orxFLOAT fZ;
+    orxFLOAT fPhi;
+  };
 
 } orxVECTOR;
 
@@ -304,15 +321,132 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCON
   return fResult;
 }
 
+orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp  != orxNULL);
+
+  /* Is operand vector null? */
+  if((_pvOp->fX == orxFLOAT_0)
+  && (_pvOp->fY == orxFLOAT_0)
+  && (_pvOp->fZ == orxFLOAT_0))
+  {
+    /* Updates result vector */
+    _pvRes->fRho = _pvRes->fTheta = _pvRes->fPhi = orxFLOAT_0;
+  }
+  else
+  {
+    orxFLOAT fRho, fTheta, fPhi;
+
+    /* Z = 0? */
+    if(_pvOp->fZ == orxFLOAT_0)
+    {
+      /* X = 0? */
+      if(_pvOp->fX == orxFLOAT_0)
+      {
+        /* Sets rho */
+        fRho = _pvOp->fY;
+      }
+      /* X != 0 and Y = 0? */
+      else if(_pvOp->fY == orxFLOAT_0)
+      {
+        /* Sets rho */
+        fRho = _pvOp->fX;
+      }
+      /* X != 0 and Y != 0 */
+      else
+      {
+        /* Computes rho */
+        fRho = orxMath_Sqrt((_pvOp->fX * _pvOp->fX) + (_pvOp->fY * _pvOp->fY));
+      }
+
+      /* Sets phi */
+      fPhi = orxMATH_KF_PI_BY_2;
+    }
+    else
+    {
+      /* X = 0 and Y = 0? */
+      if((_pvOp->fX == orxFLOAT_0) && (_pvOp->fY == orxFLOAT_0))
+      {
+        /* Z < 0? */
+        if(*(orxU32 *)&(_pvOp->fZ) & (orxU32)0x80000000)
+        {
+          orxU32 u32Temp;
+
+          /* Gets absolute value */
+          u32Temp = *(orxU32 *)&(_pvOp->fZ) & (orxU32)0x7FFFFFFF;
+
+          /* Sets rho */
+          fRho = *(orxFLOAT *)&u32Temp;
+
+          /* Sets phi */
+          fPhi = orxMATH_KF_PI;
+        }
+        else
+        {
+          /* Sets rho */
+          fRho = _pvOp->fZ;
+
+          /* Sets phi */
+          fPhi = orxFLOAT_0;
+        }
+      }
+      else
+      {
+        /* Computes rho */
+        fRho = orxMath_Sqrt(orxVector_GetSquareSize(_pvOp));
+
+        /* Computes phi */
+        fPhi = orxMath_ACos(_pvOp->fZ / fRho);
+      }
+    }
+
+    /* Computes theta */
+    fTheta = orxMath_ATan(_pvOp->fY, _pvOp->fX);
+
+    /* Updates result */
+    _pvRes->fRho    = fRho;
+    _pvRes->fTheta  = fTheta;
+    _pvRes->fPhi    = fPhi;
+  }
+
+  /* Done! */
+  return _pvRes;
+}
+
+orxSTATIC orxINLINE orxVECTOR *               orxVector_FromSphericalToCartesian(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+{
+  orxFLOAT fSinPhi, fCosPhi, fSinTheta, fCosTheta;
+
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp  != orxNULL);
+
+  /* Gets sine & cosine */
+  fSinTheta = orxMath_Sin(_pvOp->fTheta);
+  fCosTheta = orxMath_Cos(_pvOp->fTheta);
+  fSinPhi   = orxMath_Sin(_pvOp->fPhi);
+  fCosPhi   = orxMath_Cos(_pvOp->fPhi);
+
+  /* Updates result */
+  _pvRes->fX = _pvOp->fRho * fCosTheta * fSinPhi;
+  _pvRes->fY = _pvOp->fRho * fSinTheta * fSinPhi;
+  _pvRes->fZ = _pvOp->fRho * fCosPhi;
+
+  /* Done! */
+  return _pvRes;
+}
+
 
 /* *** Vector constants *** */
 
 
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_X    = {orx2F(1.0f), orx2F(0.0f), orx2F(0.0f)};
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Y    = {orx2F(0.0f), orx2F(1.0f), orx2F(0.0f)};
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {orx2F(0.0f), orx2F(0.0f), orx2F(1.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_X    = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Y    = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
 
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
 
 
 #endif /* _orxVECTOR_H_ */
