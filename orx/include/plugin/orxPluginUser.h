@@ -39,9 +39,19 @@
 /* Defines plugin registration main function */
 #define orxPLUGIN_K_INIT_FUNCTION_NAME          orxPlugin_MainInit  /**< Plugin init function name */
 
+#ifdef __cplusplus
+
+  #define orxPLUGIN_K_IMPORT  "C"
+
+#else /* __cplusplus */
+
+  #define orxPLUGIN_K_IMPORT
+
+#endif /* __cplusplus */
+
 /* Defines a user plugin entry function (that takes no arguments and return an orxSTATUS value) */
 #define orxPLUGIN_K_DECLARE_ENTRY_POINT(ENTRY_FUNCTION) \
-extern orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
+extern orxPLUGIN_K_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
 {                                                       \
   orxSTATUS eResult;                                    \
                                                         \
@@ -99,14 +109,7 @@ extern orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number
 
 #define orxPLUGIN_USER_CORE_FUNCTION_START(PLUGIN_SUFFIX) \
   orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
-  extern orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
-  { \
-    orxSTATUS eResult = orxSTATUS_SUCCESS; \
-    orxPLUGIN_USER_FUNCTION_START(sau32##PLUGIN_SUFFIX##_Function);
-
-#define orxPLUGIN_USER_CORE_FUNCTION_CPP_START(PLUGIN_SUFFIX) \
-  orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
-  extern "C" orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
+  extern orxPLUGIN_K_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
   { \
     orxSTATUS eResult = orxSTATUS_SUCCESS; \
     orxPLUGIN_USER_FUNCTION_START(sau32##PLUGIN_SUFFIX##_Function);
