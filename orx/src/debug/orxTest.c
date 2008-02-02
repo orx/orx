@@ -502,7 +502,7 @@ orxHANDLE orxFASTCALL orxTest_Register(orxCONST orxSTRING _zModuleName, orxCONST
 }
 
 /* !!! TEMP : To remove when clean exit with events is done !!! */
-orxVOID orxMain_Exit();
+//orxVOID orxMain_Exit();
 
 /** Run the test engine
  * @param[in] _u32NbParam Number of parameters read
@@ -569,7 +569,7 @@ orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *
     /* Quits program */
     /* !!! TODO : use event !!! */
     /* !!! TEMP : dirty manual exit !!! */
-    orxMain_Exit();
+//    orxMain_Exit();
   }
 
   return;

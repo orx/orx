@@ -25,7 +25,6 @@
 
 
 #include "io/orxRegistry.h"
-#include "debug/orxDebug.h"
 #include "plugin/orxPluginCore.h"
 
 
@@ -36,7 +35,7 @@ orxVOID orxRegistry_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_REGISTRY, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_REGISTRY, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_REGISTRY, orxMODULE_ID_FILE);
+  orxModule_AddDependency(orxMODULE_ID_REGISTRY, orxMODULE_ID_TREE);
 
   return;
 }

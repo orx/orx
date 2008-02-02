@@ -25,25 +25,28 @@
 
 #include "orx.h"
 
-#define orxMAIN_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxMAIN_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
+#define orxMAIN_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags */
+#define orxMAIN_KU32_STATIC_FLAG_READY  0x00000001  /**< Ready flag */
 
-#define orxMAIN_KU32_STATIC_FLAG_EXIT   0x00000002  /**< an Exit Event has been received */
+#define orxMAIN_KU32_STATIC_FLAG_EXIT   0x00000002  /**< Exit flag */
 
+#define orxMAIN_KU32_STATIC_MASK_ALL    0xFFFFFFFF  /**< All mask */
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 typedef struct __orxMAIN_STATIC_t
 {
-  orxU32 u32Flags; /**< Flags set by the main module */
+  orxU32 u32Flags;       /**< Control flags */
 
 } orxMAIN_STATIC;
 
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
+
 orxSTATIC orxMAIN_STATIC sstMain;
+
 
 /***************************************************************************
  * Functions                                                               *
@@ -54,11 +57,8 @@ orxSTATIC orxMAIN_STATIC sstMain;
 orxVOID orxMain_Setup()
 {
   /* Adds module dependencies */
-#ifdef __orxTEST__
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_TEST);
-#else /* __orxTEST__ */
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
-#endif /* __orxTEST__ */
 
   return;
 }
@@ -73,7 +73,7 @@ orxSTATUS orxMain_Init()
   if(!(sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY))
   {
     /* Sets module as initialized */
-    sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_READY;
+    orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
 
     /* Success */
     eResult = orxSTATUS_SUCCESS;
@@ -97,14 +97,11 @@ orxVOID orxMain_Exit()
   /* Module initialized ? */
   if((sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY) == orxMAIN_KU32_STATIC_FLAG_READY)
   {
-    /* Set module as not ready */
-    sstMain.u32Flags &= ~orxMAIN_KU32_STATIC_FLAG_READY;
+    /* Sets module as not ready */
+    orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_NONE, orxMAIN_KU32_STATIC_FLAG_READY);
 
-    /* !!! TEMP : untill exit triggered by events !!! */
-    sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_EXIT;
-
-//    /* Exits from all modules */
-//    orxModule_ExitAll();
+    /* Exits from all modules */
+    orxModule_ExitAll();
   }
 
   /* Done */
@@ -115,7 +112,7 @@ orxVOID orxMain_Exit()
  */
 orxVOID orxMain_Run()
 {
-  /* Main Loop (Until Exit event received) */
+  /* Main Loop (Until exit event received) */
   while((sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_EXIT) != orxMAIN_KU32_STATIC_FLAG_EXIT)
   {
     /* Update clocks */
@@ -148,28 +145,17 @@ int main(int argc, char **argv)
   /* Calls all modules setup */
   orxModule_SetupAll();
 
-  /* Inits the parser */
-  if(orxModule_Init(orxMODULE_ID_PARAM) == orxSTATUS_SUCCESS)
+  /* Sends the command line arguments to orxParam module */
+  if(orxParam_SetArgs(argc, argv) == orxSTATUS_SUCCESS)
   {
-    /* Parse the command line for the second time (now all modules have registered their options) */
-    if(orxParam_Parse(argc, argv) == orxSTATUS_SUCCESS)
+    /* Inits the engine */
+    if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
     {
-      /* Init the Engine */
-      if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
-      {
-        /* Runs the engine */
-        orxMain_Run();
+      /* Runs the engine */
+      orxMain_Run();
 
-        /* Exits from test module */
-        orxModule_Exit(orxMODULE_ID_MAIN);
-      }
-
-      /* Exits from the engine */
-      orxMain_Exit();
-
-      /* !!! TEMP : till events are used !!! */
-      /* Exits from all modules */
-      orxModule_ExitAll();
+      /* Exits from engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
     }
   }
 

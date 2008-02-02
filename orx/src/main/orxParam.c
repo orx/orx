@@ -278,9 +278,20 @@ orxSTATUS orxParam_Init()
   /* Not already Initialized? */
   if(!(sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY))
   {
+    orxSTRING  *azParamBackup;
+    orxU32      u32ParamBackup;
+
+    /* Backups params */
+    azParamBackup   = sstParam.azParams;
+    u32ParamBackup  = sstParam.u32ParamNumber;
+
     /* Cleans static controller */
     orxMemory_Set(&sstParam, 0, sizeof(orxPARAM_STATIC));
-    
+
+    /* Restores parameters */
+    sstParam.azParams       = azParamBackup;
+    sstParam.u32ParamNumber = u32ParamBackup;
+
     /* Create an empty bank to store parameters */
     sstParam.pstBank = orxBank_Create(orxPARAM_KU32_MODULE_BANK_SIZE,
                                       sizeof(orxPARAM_INFOS),
@@ -450,17 +461,14 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
   return eResult;
 }
 
-/** Parse the command line
+/** Sets the command line arguments
  * @param[in] _u32NbParam Number of read parameters
  * @param[in] _azParams   List of parameters
- * @return Returns the parsing status
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxParam_Parse(orxU32 _u32NbParams, orxSTRING _azParams[])
+orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[])
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Module initialized ? */
-  orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
   /* Stores info */
   sstParam.u32ParamNumber = _u32NbParams;

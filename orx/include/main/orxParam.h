@@ -85,12 +85,12 @@ extern orxDLLAPI orxVOID                orxParam_Exit();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Register(orxCONST orxPARAM *_pstParam);
 
-/** Parse the command line
+/** Sets the command line arguments
  * @param[in] _u32NbParam Number of read parameters
  * @param[in] _azParams   List of parameters
- * @return Returns the parsing status
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Parse(orxU32 _u32NbParams, orxSTRING _azParams[]);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[]);
 
 #endif /* _orxPARAM_H_ */
 
