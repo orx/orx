@@ -75,21 +75,21 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   orxFrame_GetPosition(sstBounce.pstFrame, orxFRAME_SPACE_LOCAL, &vPos);
   fRot = orxFrame_GetRotation(sstBounce.pstFrame, orxFRAME_SPACE_LOCAL);
 
-  if(vPos.fY > sstBounce.fScreenHeight - (0.5f * sstBounce.fBallSide))
+  if(vPos.fY > sstBounce.fScreenHeight - (orx2F(0.5f) * sstBounce.fBallSide))
   {
-    sstBounce.vSpeed.fY *= -1.0f;
-    vPos.fY = sstBounce.fScreenHeight - (0.5f * sstBounce.fBallSide);
+    sstBounce.vSpeed.fY *= orx2F(-1.0f);
+    vPos.fY = sstBounce.fScreenHeight - (orx2F(0.5f) * sstBounce.fBallSide);
   }
 
-  sstBounce.vSpeed.fY += 1.0f;
+  sstBounce.vSpeed.fY += orx2F(1.0f);
 
-  if((vPos.fX > sstBounce.fScreenWidth - (0.5f * sstBounce.fBallSide)) || (vPos.fX < (0.5f * sstBounce.fBallSide)))
+  if((vPos.fX > sstBounce.fScreenWidth - (orx2F(0.5f) * sstBounce.fBallSide)) || (vPos.fX < (orx2F(0.5f) * sstBounce.fBallSide)))
   {
-    sstBounce.vSpeed.fX *= -1.0f;
+    sstBounce.vSpeed.fX *= orx2F(-1.0f);
   }
 
-  fRot += sstBounce.vSpeed.fX * 0.01f;
-  orxVector_Mulf(&vDiff, &sstBounce.vSpeed, 1.0f);
+  fRot += sstBounce.vSpeed.fX * orx2F(0.01f);
+  orxVector_Mulf(&vDiff, &sstBounce.vSpeed, orxFLOAT_1);
   orxVector_Add(&vPos, &vPos, &vDiff);
 
   orxFrame_SetPosition(sstBounce.pstFrame, &vPos);
@@ -122,22 +122,22 @@ orxSTATIC orxSTATUS orxBounce_Init()
     sstBounce.fScreenHeight = orxU2F(u32ScreenHeight);
 
     /* Sets all vectors */
-    orxVector_Set(&vPos, 0.5f * sstBounce.fScreenWidth, 0.5f * sstBounce.fScreenHeight, 2.0f);
-    orxVector_Set(&vPivot, 0.5f * sstBounce.fBallSide, 0.5f * sstBounce.fBallSide, 0.0f);
-    orxVector_Set(&sstBounce.vSpeed, 10.0f, 0.0f, 0.0f);
+    orxVector_Set(&vPos, orx2F(0.5f) * sstBounce.fScreenWidth, orx2F(0.5f) * sstBounce.fScreenHeight, orx2F(2.0f));
+    orxVector_Set(&vPivot, orx2F(0.5f) * sstBounce.fBallSide, orx2F(0.5f) * sstBounce.fBallSide, orxFLOAT_0);
+    orxVector_Set(&sstBounce.vSpeed, orx2F(10.0f), orxFLOAT_0, orxFLOAT_0);
 
     /* Sets camera position */
     orxVector_Set(&vPosition, orx2F(0.5f) * sstBounce.fScreenWidth, orx2F(0.5f) * sstBounce.fScreenHeight, orxFLOAT_0); 
 
     /* Creates & inits camera */
     sstBounce.pstCamera = orxCamera_Create();
-    orxCamera_SetFrustrum(sstBounce.pstCamera, sstBounce.fScreenWidth, sstBounce.fScreenHeight, 2.0f, 100.0f);
+    orxCamera_SetFrustrum(sstBounce.pstCamera, sstBounce.fScreenWidth, sstBounce.fScreenHeight, orx2F(2.0f), orx2F(100.0f));
     orxCamera_SetPosition(sstBounce.pstCamera, &vPosition);
 
     /* Creates & inits viewport on screen */
     sstBounce.pstViewport = orxViewport_Create();
     orxViewport_SetCamera(sstBounce.pstViewport, sstBounce.pstCamera);
-    orxViewport_SetRelativeSize(sstBounce.pstViewport, 1.0f, 1.0f);
+    orxViewport_SetRelativeSize(sstBounce.pstViewport, orxFLOAT_1, orxFLOAT_1);
     orxViewport_SetPosition(sstBounce.pstViewport, 0, 0);
 
     /* Creates & inits frame */
