@@ -66,20 +66,24 @@
 
   /* Platform specific */
   #ifdef __orxGCC__
+
     typedef unsigned  long long   orxU64;
     typedef signed    long long   orxS64;
-  #endif
+
+  #endif /* __orxGCC__ */
   #ifdef __orxMSVC__
+
     typedef unsigned  __int64     orxU64;
     typedef signed    __int64     orxS64;
-  #endif
+
+  #endif /* __orxMSVC__ */
     
   
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux */
-  #ifdef __orxLINUX__
+  /* Linux / Mac */
+  #if defined(__orxLINUX__) || defined(__orxMAC__)
 
     typedef void                orxVOID;
   
@@ -108,7 +112,7 @@
 
     #define orxENUM_NONE        0xFFFFFFFFL
 
-  #endif /* __orxLINUX__ */
+  #endif /* __orxLINUX__ || __orxMAC__ */
   
 #endif /* __orxWINDOWS__ */  
 
@@ -127,21 +131,29 @@ orxSTATIC orxCONST  orxHANDLE   orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
 orxSTATIC orxCONST  orxSTRING   orxSTRING_EMPTY     = "";
 orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';     
 
+/* *** Directory separators *** */
+#define orxCHAR_DIRECTORY_SEPARATOR_WINDOWS         '\\'
+#define orxCHAR_DIRECTORY_SEPARATOR_LINUX           '/'
+#define orxSTRING_DIRECTORY_SEPARATOR_WINDOWS       "\\"     
+#define orxSTRING_DIRECTORY_SEPARATOR_LINUX         "/"
+
 #ifdef __orxWINDOWS__
 
-  orxSTATIC orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR   = '\\';
-  #define orxKZ_DIRECTORY_SEPARATOR "\\"
+  #define orxCHAR_DIRECTORY_SEPARATOR               orxCHAR_DIRECTORY_SEPARATOR_WINDOWS
+  #define orxSTRING_DIRECTORY_SEPARATOR             orxSTRING_DIRECTORY_SEPARATOR_WINDOWS
 
 #else /* __orxWINDOWS__ */
 
-  #ifdef __orxLINUX__
+  /* Linux / Mac */
+  #if defined(__orxLINUX__) || defined(__orxMAC__)
 
-  orxSTATIC orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR   = '/';
-  #define orxKZ_DIRECTORY_SEPARATOR "/"
+    #define orxCHAR_DIRECTORY_SEPARATOR             orxCHAR_DIRECTORY_SEPARATOR_LINUX
+    #define orxSTRING_DIRECTORY_SEPARATOR           orxSTRING_DIRECTORY_SEPARATOR_LINUX
 
-  #endif /* __orxLINUX__ */
+  #endif /* __orxLINUX__ || __orxMAC__ */
 
 #endif /* __orxWINDOWS__ */
+
 
 /* *** Float defines *** */
 orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(0.0f);

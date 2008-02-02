@@ -208,7 +208,7 @@ orxVOID _orxDebug_Exit()
 orxVOID _orxDebug_Break()
 {
   /* Windows / Linux */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__)
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__)
 
   /* Compiler specific */
 
@@ -220,7 +220,7 @@ orxVOID _orxDebug_Break()
     __debugbreak();
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ */
 
   return;
 }

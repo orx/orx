@@ -72,26 +72,27 @@ extern orxDLLAPI orxVOID orxFASTCALL    orxTest_Freeze(orxBOOL _bFreeze);
 
 
 /* Define test module registration MACRO (entry point of dynamic library) */
-#ifdef __orxLINUX__
+#if defined(__orxLINUX__) || defined(__orxMAC__)
 
-#define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)    \
-void __attribute__ ((constructor)) module_init()  \
-{                                                 \
-  INIT();                                         \
-}                                                 \
-void __attribute__ ((destructor)) module_exit()   \
-{                                                 \
-  EXIT();                                         \
-}
+  #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)    \
+  void __attribute__ ((constructor)) module_init()  \
+  {                                                 \
+    INIT();                                         \
+  }                                                 \
+  void __attribute__ ((destructor)) module_exit()   \
+  {                                                 \
+    EXIT();                                         \
+  }
 
-#else
+#else /* __orxLINUX__ | __orxMAC__ */
+
   #ifdef __orxWINDOWS__
 
   #include <windows.h>
 
   #define orxTEST_DEFINE_ENTRY_POINT(INIT, EXIT)            \
                                                             \
-  BOOL WINAPI DllMain(                                      \
+    BOOL WINAPI DllMain(                                    \
     HINSTANCE hinstDLL,  /* handle to DLL module */         \
     DWORD dwReason,      /* reason for calling function */  \
     LPVOID lpReserved )  /* reserved */                     \

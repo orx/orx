@@ -42,98 +42,121 @@ extern orxDLLAPI orxVOID                orxRegistry_Setup();
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_Exit, orxVOID);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_Fill, orxBOOL);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_Flush, orxBOOL);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_Load, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_Save, orxSTATUS);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_GetInt32, orxS32, orxCONST orxSTRING, orxS32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_GetFloat, orxFLOAT, orxCONST orxSTRING, orxFLOAT);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_GetString, orxSTRING, orxCONST orxSTRING, orxCONST orxSTRING);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_GetBool, orxBOOL, orxCONST orxSTRING, orxBOOL);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_SetInt32, orxVOID, orxCONST orxSTRING, orxU32);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_SetFloat, orxVOID, orxCONST orxSTRING, orxFLOAT);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_SetString, orxVOID, orxCONST orxSTRING, orxCONST orxSTRING);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRegistry_SetBool, orxVOID, orxCONST orxSTRING, orxBOOL);
 
-/** Initialize the Registry Module
+
+/** Initializes the Registry Module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATIC orxINLINE orxSTATUS orxRegistry_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_Init)();
 }
 
-/** Uninitialize the Registry Module
+/** Exits from the Registry Module
  */
 orxSTATIC orxINLINE orxVOID orxRegistry_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_Exit)();
 }
 
-/** Read config registry from source.
- * @return orxFALSE if an error has occur.
+/** Loads config registry from source
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxBOOL orxRegistry_Fill()
+orxSTATIC orxINLINE orxSTATUS orxRegistry_Load()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_Fill)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_Load)();
 }
 
-/** Write config registry to source.
- * @return orxFALSE if an error has occur.
+/** Saves config registry to source
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxBOOL orxRegistry_Flush()
+orxSTATIC orxINLINE orxSTATUS orxRegistry_Save()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_Flush)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_Save)();
 }
 
-/** Read an integer value from registry.
- * @param _zKey            (IN) Key name
- * @param _s32DefaultValue (IN) Default value if key is not found.
- * @return The value.
+/** Reads an integer value from registry
+ * @param[in] _zKey             Key name
+ * @param[in] _s32DefaultValue  Default value if key is not found
+ * @return The value
  */
 orxSTATIC orxINLINE orxS32 orxRegistry_GetInt32(orxCONST orxSTRING _zKey, orxS32 _s32DefaultValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_GetInt32)(_zKey, _s32DefaultValue);
 }
 
-/** Read a string value from registry.
- * @param _zKey          (IN) Key name
- * @param _zDefaultValue (IN) Default value if key is not found.
- * @return The value.
+/** Reads a float value from registry
+ * @param[in] _zKey             Key name
+ * @param[in] _fDefaultValue    Default value if key is not found
+ * @return The value
+ */
+orxSTATIC orxINLINE orxFLOAT orxRegistry_GetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fDefaultValue)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_GetInt32)(_zKey, _fDefaultValue);
+}
+
+/** Reads a string value from registry
+ * @param[in] _zKey             Key name
+ * @param[in] _zDefaultValue    Default value if key is not found
+ * @return The value
  */
 orxSTATIC orxINLINE orxSTRING orxRegistry_GetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zDefaultValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_GetString)(_zKey, _zDefaultValue);
 }
 
-/** Read a boolean value from registry.
- * @param _zKey          (IN) Key name
- * @param _bDefaultValue (IN) Default value if key is not found.
- * @return The value.
+/** Reads a boolean value from registry
+ * @param[in] _zKey             Key name
+ * @param[in] _bDefaultValue    Default value if key is not found
+ * @return The value
  */
 orxSTATIC orxINLINE orxBOOL orxRegistry_GetBool(orxCONST orxSTRING _zKey, orxBOOL _bDefaultValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_GetBool)(_zKey, _bDefaultValue);
 }
 
-/** Write an integer value to registry.
- * @param _zKey     (IN) Key name
- * @param _s32Value (IN) Value.
+/** Writes an integer value to registry
+ * @param[in] _zKey             Key name
+ * @param[in] _s32Value         Value
  */
 orxSTATIC orxINLINE orxVOID orxRegistry_SetInt32(orxCONST orxSTRING _zKey, orxS32 _s32Value)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_SetInt32)(_zKey, _s32Value);
 }
 
-/** Write a string value to registry.
- * @param _zKey   (IN) Key name
- * @param _zValue (IN) Value.
+/** Writes a float value to registry
+ * @param[in] _zKey             Key name
+ * @param[in] _fValue           Value
+ */
+orxSTATIC orxINLINE orxVOID orxRegistry_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fValue)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_SetInt32)(_zKey, _fValue);
+}
+
+/** Writes a string value to registry
+ * @param[in] _zKey             Key name
+ * @param[in] _fValue           Value
  */
 orxSTATIC orxINLINE orxVOID orxRegistry_SetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRegistry_SetString)(_zKey, _zValue);
 }
 
-/** Write a boolean value from registry.
- * @param _zKey   (IN) Key name
- * @param _bValue (IN) Value.
+/** Writes a boolean value to registry
+ * @param[in] _zKey             Key name
+ * @param[in] _fValue           Value
  */
 orxSTATIC orxINLINE orxVOID orxRegistry_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValue)
 {

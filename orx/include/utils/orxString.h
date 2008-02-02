@@ -206,9 +206,9 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxCONST orxSTRING _zString, orx
   orxASSERT(_pfOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
-  /* Linux? */
-#ifdef __orxLINUX__
-  
+  /* Linux / Mac? */
+#if defined(__orxLINUX__) || defined(__orxMAC__)
+
   /* Convert */
   /* Note : Here we should use strtot which detects errors.
    * This function is C99 compliant but it doesn't seems to be implemented in
@@ -271,7 +271,7 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxCONST orxSTRING _zString, orx
     }
   }
 
-#endif /* __orxLINUX__ */
+#endif /* __orxLINUX__ || __orxMAC__ */
 
   /* Done! */
   return eResult;

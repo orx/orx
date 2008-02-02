@@ -31,11 +31,11 @@
 #include "msg/msg_plugin.h"
 
 
-#ifdef __orxLINUX__
+#if defined(__orxLINUX__) || defined (__orxMAC__)
 
   #include <dlfcn.h>
 
-#else /* __orxLINUX__ */
+#else /* __orxLINUX__ || __orxMAC__ */
 
   #ifdef __orxWINDOWS__
 
@@ -44,7 +44,7 @@
 
   #endif /* __orxWINDOWS__ */
 
-#endif /* __orxLINUX__ */
+#endif /* __orxLINUX__ || __orxMAC__ */
 
 
 /*

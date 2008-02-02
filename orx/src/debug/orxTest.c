@@ -40,7 +40,8 @@
 #include <string.h>
 
 /* Incude specific header files according to used platform */
-#ifdef __orxLINUX__
+#if defined(__orxLINUX__) || defined(__orxMAC__)
+
   #include <sys/types.h>
   #include <dirent.h>
   #include <dlfcn.h>
@@ -48,7 +49,8 @@
   /* Define the seperator character for directories */
   #define DIRSEP "/"
 
-#else
+#else /* __orxLINUX__ || __orxMAC__
+
   #ifdef __orxWINDOWS__
     #include <io.h>
 
@@ -56,7 +58,9 @@
     #define DIRSEP "\\"
 
   #endif /* __orxWINDOWS__ */
-#endif /* __orxLINUX__ */
+
+#endif /* __orxLINUX__ || __orxMAC__ */
+
 
 #define orxTEST_KU32_STATIC_FLAG_NONE         0x00000000L /**< No flags have been set */
 #define orxTEST_KU32_STATIC_FLAG_READY        0x00000001L /**< The module has been initialized */
@@ -104,8 +108,8 @@ static orxTEST_STATIC sstTest;
  */
 orxVOID orxTest_Load(orxSTRING _zDirName)
 {
-  #ifdef __orxLINUX__
-  
+  #if defined(__orxLINUX__) || (__orxMAC__)
+
   DIR *pstDir;                                /* Pointer on directory structure */
   struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
   void *pHandle;                              /* Dynamic Library handle */
@@ -155,7 +159,8 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
     fprintf(stderr, "Can't open directory %s\n", _zDirName);
   }
   
-  #else /* !LINUX */
+  #else /* __orxLINUX__ || __orxMAC__ */
+
     #ifdef __orxWINDOWS__
   
   
@@ -223,7 +228,8 @@ orxVOID orxTest_Load(orxSTRING _zDirName)
 
   
     #endif /* __orxWINDOWS__ */
-  #endif /* __orxLINUX__ */
+
+  #endif /* __orxLINUX__ || __orxMAC__ */
 }
 
 /** Release all loaded libraries
@@ -239,19 +245,21 @@ orxVOID orxTest_Release()
   for(u32Index = 0; u32Index < sstTest.u32NbLibrary; u32Index++)
   {
     /* Release loaded library */
-#ifdef __orxLINUX__
+#if defined(__orxLINUX__) || defined(__orxMACà
 
     dlclose((void*)sstTest.phLibrary[u32Index]);
 
-#else
+#else /* __orxLINUX__ || __orxMAC__
+
   #ifdef __orxWINDOWS__
 
     FreeLibrary((HINSTANCE)sstTest.phLibrary[u32Index]);
 
-  #endif
-#endif /* __orxLINUX__ */
+  #endif /* __orxWINDOWS__ */
+
+#endif /* __orxLINUX__ || __orxMAC__ */
   }
-  
+
   /* Free the allocated array */
   free(sstTest.phLibrary);
 }  

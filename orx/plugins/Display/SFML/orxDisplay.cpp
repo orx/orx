@@ -46,8 +46,8 @@ extern "C"
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
-orxSTATIC orxCONST orxU32     su32ScreenWidth   = 800;
-orxSTATIC orxCONST orxU32     su32ScreenHeight  = 600;
+orxSTATIC orxCONST orxU32     su32ScreenWidth   = 1024;
+orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
 orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
 orxSTATIC orxCONST orxSTRING  szTitle           = "orxTestWindow";
 orxSTATIC orxCONST orxU32     su32TextBankSize  = 8;

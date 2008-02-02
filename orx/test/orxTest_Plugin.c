@@ -48,23 +48,21 @@
 #include <string.h>
 
 /* Incude specific header files according to used platform */
-#ifdef __orxLINUX__
+#if defined(__orxLINUX__) || defined(__orxMAC__)
+
   #include <sys/types.h>
   #include <dirent.h>
   #include <dlfcn.h>
 
-  /* Define the seperator character for directories */
-  #define DIRSEP "/"
+#else /* __orxLINUX__ || __orxMAC__ */
 
-#else
   #ifdef __orxWINDOWS__
+
     #include <io.h>
 
-    /* Define the seperator character for directories */
-    #define DIRSEP "\\"
-
   #endif /* __orxWINDOWS__ */
-#endif /* __orxLINUX__ */
+
+#endif /* __orxLINUX__ || __orxMAC__ */
 
 
 /******************************************************
@@ -115,13 +113,13 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
   orxCHAR zDirName[32];
   
   /* Traverse the selected directory and store the dynamic library in the array */
-  #ifdef __orxLINUX__
-  
+  #if defined(__orxLINUX__) || defined(__orxMAC__)
+
   DIR *pstDir;                                /* Pointer on directory structure */
   struct dirent *pstFile;                     /* Pointer on a dir entry (file) */
 
   /* Create the selected directory name */  
-  orxTextIO_Printf(zDirName, "plugins"DIRSEP"core"DIRSEP"%s", sstTest_Plugin.astPlugins[u32Type].zType);
+  orxTextIO_Printf(zDirName, "plugins"orxSTRING_DIRECTORY_SEPARATOR"core"orxSTRING_DIRECTORY_SEPARATOR"%s", sstTest_Plugin.astPlugins[u32Type].zType);
   orxTextIO_PrintLn(zDirName);
 
   /* Open the current directory */
@@ -156,7 +154,8 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
     fprintf(stderr, "Can't open directory %s\n", zDirName);
   }
   
-  #else /* !LINUX */
+  #else /* __orxLINUX__ || __orxMAC__ */
+
     #ifdef __orxWINDOWS__
   
   
@@ -168,7 +167,7 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
   u32Index = 0;
   
   /* Create the selected directory name */  
-  orxTextIO_Printf(zDirName, "plugins"DIRSEP"core"DIRSEP"%s", sstTest_Plugin.astPlugins[u32Type].zType);
+  orxTextIO_Printf(zDirName, "plugins"orxSTRING_DIRECTORY_SEPARATOR"core"orxSTRING_DIRECTORY_SEPARATOR"%s", sstTest_Plugin.astPlugins[u32Type].zType);
   orxTextIO_PrintLn(zDirName);
 
   /* Initialize Pattern*/
@@ -219,8 +218,9 @@ orxBOOL orxTest_Plugin_BrowseDirectory(orxU32 u32Type)
 
   
     #endif /* __orxWINDOWS__ */
-  #endif /* __orxLINUX__ */
-  
+
+  #endif /* __orxLINUX__ || __orxMAC__ */
+
   return u32Index;
   
 }

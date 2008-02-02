@@ -84,8 +84,8 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux */
-  #ifdef __orxLINUX__
+  /* Linux / Mac */
+  #if defined(__orxLINUX__) || defined(__orxMAC__)
 
     /** The function will be called fastly (use registers for parameters as far as possible).*/
     #define orxFASTCALL         __attribute__ ((fastcall))
@@ -117,7 +117,7 @@
     /** The null adress. */
     #define orxNULL             ((void *)0)
 
-  #endif /* __orxLINUX__ */
+  #endif /* __orxLINUX__ || __orxMAC__ */
   
 #endif /* __orxWINDOWS__ */  
 

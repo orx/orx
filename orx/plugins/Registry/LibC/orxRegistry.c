@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "orxInclude.h"
 #include "plugin/orxPluginUser.h"
 #include "debug/orxDebug.h"
@@ -28,28 +29,44 @@
 #include "memory/orxBank.h"
 #include "utils/orxString.h"
 
-#include <stdio.h>
+
+/** Module flags
+ */
+#define orxREGISTRY_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags */
+
+#define orxREGISTRY_KU32_STATIC_FLAG_READY  0x00000001  /**< Ready flag */
+
+#define orxREGISTRY_KU32_STATIC_MASK_ALL    0xFFFFFFFF  /**< All mask */
+
+
+/* Defines
+ */
+#define orxREGISTRY_KU32_BANK_SIZE          256         /**< Default bank size */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
-#define orxREGISTRY_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxREGISTRY_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
-
+/** Registry node structure
+ */
 typedef struct __orxREGISTRY_NODE_t
 {
 	orxSTRING                    zName;	      /**< Name of the node. */
-	orxSTRING                    zValue;	  /**< Node value. */
+	orxSTRING                    zValue;	    /**< Node value. */
 	struct __orxREGISTRY_NODE_t* pstNext;     /**< Next node. */
 	struct __orxREGISTRY_NODE_t* pstChild;    /**< First child node. */
-}orxREGISTRY_NODE;
+	
+} orxREGISTRY_NODE;
 
+/** Static structure
+ */
 typedef struct __orxREGISTRY_STATIC_t
 {
-  orxU32            u32Flags;       /**< Flags set by the mouse plugin module */
-  orxBANK*          pstBank;		/**< Bank to allocate node. */
-  orxREGISTRY_NODE  stRootNode;	    /**< Root node. */ 
+  orxU32            u32Flags;               /**< Flags set by the mouse plugin module */
+  orxBANK*          pstBank;		            /**< Bank to allocate node. */
+  orxREGISTRY_NODE  stRootNode;	            /**< Root node. */
+
 } orxREGISTRY_STATIC;
 
 
@@ -419,7 +436,7 @@ orxSTATUS orxRegistry_LibC_Init()
 
   /** @todo Add orxBank and orxFile initialisation. */
   
-  sstRegistry.pstBank = orxBank_Create(0x100, sizeof(orxREGISTRY_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+  sstRegistry.pstBank = orxBank_Create(orxREGISTRY_KU32_BANK_SIZE, sizeof(orxREGISTRY_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
   
   if(sstRegistry.pstBank)
   {
@@ -460,16 +477,22 @@ orxVOID orxRegistry_LibC_Exit()
 
 /** Read config registry from source.
  */
-orxBOOL orxRegistry_LibC_Fill()
+orxSTATUS orxRegistry_LibC_Load()
 {
-  return orxFALSE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Write config registry to source.
  */
-orxBOOL orxRegistry_LibC_Flush()
+orxSTATUS orxRegistry_LibC_Save()
 {
-  return orxFALSE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Read an integer value from registry.
@@ -566,16 +589,19 @@ orxVOID orxRegistry_LibC_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValue)
 /***************************************************************************
  * Plugin Related                                                          *
  ***************************************************************************/
+
 orxPLUGIN_USER_CORE_FUNCTION_START(REGISTRY);
+
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_Init, REGISTRY, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_Exit, REGISTRY, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_Fill, REGISTRY, FILL);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_Flush, REGISTRY, FLUSH);
-
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_Load, REGISTRY, LOAD);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_Save, REGISTRY, SAVE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_GetInt32, REGISTRY, GET_INT32)
+//orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_GetFloat, REGISTRY, GET_FLOAT)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_GetString, REGISTRY, GET_STRING)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_GetBool, REGISTRY, GET_BOOL)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_SetInt32, REGISTRY, SET_INT32)
+//orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_SetFloat, REGISTRY, SET_FLOAT)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_SetString, REGISTRY, SET_STRING)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRegistry_LibC_SetBool, REGISTRY, SET_BOOL)
 
