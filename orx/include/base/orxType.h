@@ -156,8 +156,9 @@ orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';
 
 
 /* *** Float defines *** */
-orxSTATIC orxCONST  orxFLOAT    orxFLOAT_0          = orx2F(0.0f);
-orxSTATIC orxCONST  orxFLOAT    orxFLOAT_1          = orx2F(1.0f);
+#define orxFLOAT_0                                  orx2F(0.0f)
+#define orxFLOAT_1                                  orx2F(1.0f)
+
 
 /* *** Status defines *** */
 typedef enum __orxSTATUS_t

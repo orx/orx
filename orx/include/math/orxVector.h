@@ -442,11 +442,11 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_FromSphericalToCartesian
 /* *** Vector constants *** */
 
 
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_X    = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Y    = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_X    = {{orxFLOAT_1}, {orxFLOAT_0}, {orxFLOAT_0}};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Y    = {{orxFLOAT_0}, {orxFLOAT_1}, {orxFLOAT_0}};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {{orxFLOAT_0}, {orxFLOAT_0}, {orxFLOAT_1}};
 
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {{orxFLOAT_0}, {orxFLOAT_0}, {orxFLOAT_0}};
 
 
 #endif /* _orxVECTOR_H_ */

@@ -30,7 +30,7 @@
 /** Defines
  */
 #define orxSCROLL_KZ_DATA_FOLDER              "data" orxSTRING_DIRECTORY_SEPARATOR "scroll" orxSTRING_DIRECTORY_SEPARATOR
-#define orxSCROLL_KF_TICK_SIZE                orx2F(0.0f)
+#define orxSCROLL_KF_TICK_SIZE                orxFLOAT_0
 #define orxSCROLL_KF_DT_SIZE                  orx2F(0.01666f)
 #define orxSCROLL_KF_MAX_Z                    orx2F(10000.0f)
 #define orxSCROLL_KF_SPEED                    orx2F(180.0f)
@@ -110,31 +110,31 @@ orxSTATIC orxSCROLL_RESOURCE_INFO sastInfo[orxSCROLL_RESOURCE_NUMBER] =
 {
     {
       orxSCROLL_KZ_DATA_FOLDER"fuji.png",
-        {{orx2F(0.0f)}, {orx2F(1.1f)}, {orx2F(0.9f)}},
+        {{orxFLOAT_0}, {orx2F(1.1f)}, {orx2F(0.9f)}},
         {{orx2F(11.0f)}, {orx2F(1.3f)}, {orx2F(0.9f)}},
         80
     },
     {
       orxSCROLL_KZ_DATA_FOLDER"boat1.png",
-        {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.6f)}},
+        {{orxFLOAT_0}, {orxFLOAT_1}, {orx2F(0.6f)}},
         {{orx2F(11.0f)}, {orx2F(1.25f)}, {orx2F(0.8f)}},
         15
     },
     {
       orxSCROLL_KZ_DATA_FOLDER"boat2.png",
-        {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.2f)}},
+        {{orxFLOAT_0}, {orxFLOAT_1}, {orx2F(0.2f)}},
         {{orx2F(11.0f)}, {orx2F(1.15f)}, {orx2F(0.5f)}},
         20
     },
     {
       orxSCROLL_KZ_DATA_FOLDER"cloud.png",
-        {{orx2F(0.0f)}, {orx2F(0.1f)}, {orx2F(0.2f)}},
+        {{orxFLOAT_0}, {orx2F(0.1f)}, {orx2F(0.2f)}},
         {{orx2F(11.0f)}, {orx2F(0.7f)}, {orx2F(0.7f)}},
         70
     },
     {
       orxSCROLL_KZ_DATA_FOLDER"wave.png",
-        {{orx2F(0.0f)}, {orx2F(1.3f)}, {orx2F(0.2f)}},
+        {{orxFLOAT_0}, {orx2F(1.3f)}, {orx2F(0.2f)}},
         {{orx2F(11.0f)}, {orx2F(1.6f)}, {orx2F(0.8f)}},
         300
     }
