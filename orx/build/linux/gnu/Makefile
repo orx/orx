@@ -84,6 +84,7 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxCamera.o \
 	./$(BUILD)/orxDLL_orxRender.o \
 	./$(BUILD)/orxDLL_orxViewport.o \
+	./$(BUILD)/orxDLL_orxConfig.o \
 	./$(BUILD)/orxDLL_orxClock.o \
 	./$(BUILD)/orxDLL_orxEvent.o \
 	./$(BUILD)/orxDLL_orxTime.o \
@@ -98,7 +99,6 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxKeyboard.o \
 	./$(BUILD)/orxDLL_orxMouse.o \
 	./$(BUILD)/orxDLL_orxPackage.o \
-	./$(BUILD)/orxDLL_orxRegistry.o \
 	./$(BUILD)/orxDLL_orxTextIO.o \
 	./$(BUILD)/orxDLL_orxParam.o \
 	./$(BUILD)/orxDLL_orxVector.o \
@@ -129,6 +129,7 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxCamera.o \
 	./$(BUILD)/orxLIB_orxRender.o \
 	./$(BUILD)/orxLIB_orxViewport.o \
+	./$(BUILD)/orxLIB_orxConfig.o \
 	./$(BUILD)/orxLIB_orxClock.o \
 	./$(BUILD)/orxLIB_orxEvent.o \
 	./$(BUILD)/orxLIB_orxTime.o \
@@ -143,7 +144,6 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxKeyboard.o \
 	./$(BUILD)/orxLIB_orxMouse.o \
 	./$(BUILD)/orxLIB_orxPackage.o \
-	./$(BUILD)/orxLIB_orxRegistry.o \
 	./$(BUILD)/orxLIB_orxTextIO.o \
 	./$(BUILD)/orxLIB_orxParam.o \
 	./$(BUILD)/orxLIB_orxVector.o \
@@ -272,12 +272,6 @@ FILESYSTEM_LIBC_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 FILESYSTEM_LIBC_OBJECTS =  \
 	./$(BUILD)/FileSystem_LibC_orxFileSystem.o
-REGISTRY_LIBC_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) \
-	$(CFLAGS)
-REGISTRY_LIBC_OBJECTS =  \
-	./$(BUILD)/Registry_LibC_orxRegistry.o
 TIME_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter `sdl-config \
@@ -378,10 +372,6 @@ ifeq ($(USE_PLUGINS),1)
 __FileSystem_LibC___depname = \
 	../../../bin/plugins/core/file/FileSystem_LibC.so
 endif
-ifeq ($(USE_PLUGINS),1)
-__Registry_LibC___depname = \
-	../../../bin/plugins/core/registry/Registry_LibC.so
-endif
 ifeq ($(USE_SDL),1)
 __Time_SDL___depname = ../../../bin/plugins/core/time/Time_SDL.so
 endif
@@ -429,7 +419,7 @@ all: ./$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Registry_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -460,7 +450,6 @@ clean:
 	rm -f ../../../bin/plugins/core/keyboard/Keyboard_SFML.so
 	rm -f ../../../bin/plugins/core/file/File_LibC.so
 	rm -f ../../../bin/plugins/core/file/FileSystem_LibC.so
-	rm -f ../../../bin/plugins/core/registry/Registry_LibC.so
 	rm -f ../../../bin/plugins/core/time/Time_SDL.so
 	rm -f ../../../bin/plugins/core/time/Time_SFML.so
 	rm -f ../../../bin/plugins/demo/Bounce.so
@@ -572,11 +561,6 @@ ifeq ($(USE_PLUGINS),1)
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FILESYSTEM_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
 endif
 
-ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/core/registry/Registry_LibC.so: $(REGISTRY_LIBC_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(REGISTRY_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
-endif
-
 ifeq ($(USE_SDL),1)
 ../../../bin/plugins/core/time/Time_SDL.so: $(TIME_SDL_OBJECTS) $(__orxLIB___depname)
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(TIME_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  `sdl-config --libs`  ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
@@ -623,6 +607,9 @@ endif
 ./$(BUILD)/orxDLL_orxViewport.o: ../../../src/render/orxViewport.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./$(BUILD)/orxDLL_orxConfig.o: ../../../src/core/orxConfig.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./$(BUILD)/orxDLL_orxClock.o: ../../../src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -663,9 +650,6 @@ endif
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxDLL_orxPackage.o: ../../../src/io/orxPackage.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
-./$(BUILD)/orxDLL_orxRegistry.o: ../../../src/io/orxRegistry.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxDLL_orxTextIO.o: ../../../src/io/orxTextIO.c
@@ -743,6 +727,9 @@ endif
 ./$(BUILD)/orxLIB_orxViewport.o: ../../../src/render/orxViewport.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+./$(BUILD)/orxLIB_orxConfig.o: ../../../src/core/orxConfig.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 ./$(BUILD)/orxLIB_orxClock.o: ../../../src/core/orxClock.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -783,9 +770,6 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxLIB_orxPackage.o: ../../../src/io/orxPackage.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
-./$(BUILD)/orxLIB_orxRegistry.o: ../../../src/io/orxRegistry.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxLIB_orxTextIO.o: ../../../src/io/orxTextIO.c
@@ -898,9 +882,6 @@ endif
 
 ./$(BUILD)/FileSystem_LibC_orxFileSystem.o: ../../../plugins/File/LibC/orxFileSystem.c
 	$(CC) -c -o $@ $(FILESYSTEM_LIBC_CFLAGS) $(CPPDEPS) $<
-
-./$(BUILD)/Registry_LibC_orxRegistry.o: ../../../plugins/Registry/LibC/orxRegistry.c
-	$(CC) -c -o $@ $(REGISTRY_LIBC_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/Time_SDL_orxTime.o: ../../../plugins/Time/SDL/orxTime.c
 	$(CC) -c -o $@ $(TIME_SDL_CFLAGS) $(CPPDEPS) $<

@@ -382,6 +382,7 @@ orxVOID orxModule_SetupAll()
 orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
 {
   /* Checks */
+  orxASSERT(orxMODULE_ID_NUMBER <= orxMODULE_ID_MAX_NUMBER);
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
 
   /* Calls internal init */
