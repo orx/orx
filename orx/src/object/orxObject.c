@@ -681,12 +681,12 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
 
 
 /***************************************************************************
- orxObject_GetStructure
+ _orxObject_GetStructure
  Gets a structure used by an object, given its structure ID.
 
  returns: pointer to the requested structure (must be cast correctly)
  ***************************************************************************/
-orxSTRUCTURE *orxFASTCALL orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
+orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure = orxNULL;
 
@@ -760,7 +760,7 @@ orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, orxCONST orxVECT
   orxASSERT(_pvPivot != orxNULL);
 
   /* Gets graphic */
-  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
 
   /* Valid? */
   if(pstGraphic != orxNULL)
@@ -796,7 +796,7 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, orxCONST orxV
   orxASSERT(_pvPosition != orxNULL);
 
   /* Gets frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
   /* Valid? */
   if(pstFrame != orxNULL)
@@ -831,7 +831,7 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Gets frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
   /* Valid? */
   if(pstFrame != orxNULL)
@@ -867,7 +867,7 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScale
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Gets frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
   /* Valid? */
   if(pstFrame != orxNULL)
@@ -903,7 +903,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(orxCONST orxOBJECT *_pstObject, orxVEC
   orxASSERT(_pvPivot != orxNULL);
 
   /* Gets graphic */
-  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
 
   /* Valid? */
   if(pstGraphic != orxNULL)
@@ -939,7 +939,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orx
   orxASSERT(_pvPosition != orxNULL);
 
   /* Gets frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
   /* Valid? */
   if(pstFrame != orxNULL)
@@ -973,7 +973,7 @@ orxFLOAT orxFASTCALL orxObject_GetRotation(orxCONST orxOBJECT *_pstObject)
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Gets frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
   /* Valid? */
   if(pstFrame != orxNULL)
@@ -1011,7 +1011,7 @@ orxSTATUS orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOA
   orxASSERT(_pfScaleY != orxNULL);
 
   /* Gets frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
   /* Valid? */
   if(pstFrame != orxNULL)
@@ -1046,10 +1046,10 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pst
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Gets frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
   /* Updates its parent */
-  orxFrame_SetParent(pstFrame, (_pstParent != orxNULL) ? (orxFRAME *)orxObject_GetStructure(_pstParent, orxSTRUCTURE_ID_FRAME) : orxNULL);
+  orxFrame_SetParent(pstFrame, (_pstParent != orxNULL) ? orxOBJECT_GET_STRUCTURE(_pstParent, FRAME) : orxNULL);
 
   /* Done! */
   return eResult;
@@ -1073,7 +1073,7 @@ orxSTATUS orxFASTCALL orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT
   orxASSERT(_pfHeight != orxNULL);
 
   /* Gets graphic */
-  pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC);
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
 
   /* Valid? */
   if(pstGraphic != orxNULL)
@@ -1153,7 +1153,7 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxHANDLE 
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Gets animation pointer */
-  pstAnimPointer = orxSTRUCTURE_GET_POINTER(orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER), ANIMPOINTER);
+  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
   /* Valid? */
   if(pstAnimPointer != NULL)
@@ -1186,7 +1186,7 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Gets animation pointer */
-  pstAnimPointer = orxSTRUCTURE_GET_POINTER(orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER), ANIMPOINTER);
+  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
   /* Valid? */
   if(pstAnimPointer != NULL)

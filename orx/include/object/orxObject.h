@@ -42,6 +42,10 @@
 #include "math/orxVector.h"
 
 
+/** Defines */
+#define orxOBJECT_GET_STRUCTURE(OBJECT, TYPE) orxSTRUCTURE_GET_POINTER(_orxObject_GetStructure(OBJECT, orxSTRUCTURE_ID_##TYPE), TYPE)
+
+
 /** Internal object structure. */
 typedef struct __orxOBJECT_t                orxOBJECT;
 
@@ -100,7 +104,7 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxObject_UnlinkStructure(orxOBJECT 
 
 
 /** Structure used by an object get accessor, given its structure ID. Structure must be cast correctly. */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  _orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 
 /** Sets object pivot

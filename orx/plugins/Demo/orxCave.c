@@ -257,7 +257,7 @@ orxSTATIC orxINLINE orxSTATUS orxCave_UpdateBall(orxFLOAT _fDT)
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Gets ball texture frame */
-  pstFrame = (orxFRAME *)orxObject_GetStructure(sstCave.astData[orxCAVE_RESOURCE_BALL].pstObject, orxSTRUCTURE_ID_FRAME);
+  pstFrame = orxOBJECT_GET_STRUCTURE(sstCave.astData[orxCAVE_RESOURCE_BALL].pstObject, FRAME);
 
   /* Gets its rotation */
   fRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL);
@@ -518,9 +518,9 @@ orxSTATIC orxSTATUS orxCave_Init()
   orxViewport_Enable(sstCave.pstMainViewport, orxFALSE);
 
   /* Links balls to TV camera */
-  orxFrame_SetParent((orxFRAME *)orxObject_GetStructure(sstCave.astData[orxCAVE_RESOURCE_BALL].pstObject, orxSTRUCTURE_ID_FRAME), orxCamera_GetFrame(sstCave.pstTVCamera));
-  orxFrame_SetParent((orxFRAME *)orxObject_GetStructure(sstCave.astData[orxCAVE_RESOURCE_BALL_REFLECT].pstObject, orxSTRUCTURE_ID_FRAME), orxCamera_GetFrame(sstCave.pstTVCamera));
-  orxFrame_SetParent((orxFRAME *)orxObject_GetStructure(sstCave.astData[orxCAVE_RESOURCE_BALL_SHADOW].pstObject, orxSTRUCTURE_ID_FRAME), orxCamera_GetFrame(sstCave.pstTVCamera));
+  orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(sstCave.astData[orxCAVE_RESOURCE_BALL].pstObject, FRAME), orxCamera_GetFrame(sstCave.pstTVCamera));
+  orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(sstCave.astData[orxCAVE_RESOURCE_BALL_REFLECT].pstObject, FRAME), orxCamera_GetFrame(sstCave.pstTVCamera));
+  orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(sstCave.astData[orxCAVE_RESOURCE_BALL_SHADOW].pstObject, FRAME), orxCamera_GetFrame(sstCave.pstTVCamera));
 
   /* Gets render clock */
   sstCave.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);

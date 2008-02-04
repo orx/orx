@@ -110,7 +110,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
   orxASSERT(_pstRenderFrame != orxNULL);
 
   /* Gets object's graphic */
-  pstGraphic = orxSTRUCTURE_GET_POINTER(orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_GRAPHIC), GRAPHIC);
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
 
   /* Valid? */
   if((pstGraphic != orxNULL)
@@ -122,7 +122,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     orxFLOAT        fRotation, fScaleX, fScaleY;
 
     /* Gets animation pointer */
-    pstAnimPointer = orxSTRUCTURE_GET_POINTER(orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER), ANIMPOINTER);
+    pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
     /* Valid? */
     if(pstAnimPointer != orxNULL)
@@ -303,7 +303,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 orxGRAPHIC *pstGraphic;
 
                 /* Gets object's graphic */
-                pstGraphic = (orxGRAPHIC *)orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_GRAPHIC);
+                pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC);
 
                 /* Valid 2D graphic? */
                 if((pstGraphic != orxNULL)
@@ -313,7 +313,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                   orxTEXTURE *pstTexture;
 
                   /* Gets object's frame */
-                  pstFrame = (orxFRAME *)orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_FRAME);
+                  pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
 
                   /* Gets graphic's texture */
                   pstTexture = (orxTEXTURE *)orxGraphic_GetData(pstGraphic);
@@ -422,7 +422,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
               orxVector_Copy(&vObjectPos, &(pstRenderNode->vPosition));
 
               /* Gets object's frame */
-              pstFrame = (orxFRAME *)orxObject_GetStructure(pstObject, orxSTRUCTURE_ID_FRAME);
+              pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
 
               /* Gets object's scales */
               orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &fObjectScaleX, &fObjectScaleY);
