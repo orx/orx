@@ -1137,3 +1137,69 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
   /* Done! */
   return eResult;
 }
+
+/** Sets current animation for object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _hAnimHandle    Animation handle
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle)
+{
+  orxANIMPOINTER *pstAnimPointer;
+  orxSTATUS       eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets animation pointer */
+  pstAnimPointer = orxSTRUCTURE_GET_POINTER(orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER), ANIMPOINTER);
+
+  /* Valid? */
+  if(pstAnimPointer != NULL)
+  {
+    /* Sets current animation */
+    eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, _hAnimHandle);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets target animation for object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _hAnimHandle    Animation handle
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle)
+{
+  orxANIMPOINTER *pstAnimPointer;
+  orxSTATUS       eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets animation pointer */
+  pstAnimPointer = orxSTRUCTURE_GET_POINTER(orxObject_GetStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER), ANIMPOINTER);
+
+  /* Valid? */
+  if(pstAnimPointer != NULL)
+  {
+    /* Sets target animation */
+    eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, _hAnimHandle);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}

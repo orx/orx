@@ -108,21 +108,21 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetStructure(orxCONST orxO
  * @param[in]   _pvPivot        Object pivot
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetPivot(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPivot);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPivot(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPivot);
 
 /** Sets object position
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvPosition     Object position
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetPosition(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPosition(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPosition);
 
 /** Sets object rotation
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fRotation      Object rotation
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRotation);
 
 /** Sets object scale
  * @param[in]   _pstObject      Concerned object
@@ -130,27 +130,27 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetRotation(orxOBJECT *_pstObj
  * @param[in]   _fScaleY        Object Y scale
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScaleX, orxFLOAT _fScaleY);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScaleX, orxFLOAT _fScaleY);
 
 /** Get object pivot
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvPivot        Object pivot
  * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL orxObject_GetPivot(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPivot);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetPivot(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPivot);
 
 /** Get object position
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvPosition     Object position
  * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition);
 
 /** Get object rotation
  * @param[in]   _pstObject      Concerned object
  * @return      Rotation value
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL   orxObject_GetRotation(orxCONST orxOBJECT *_pstObject);
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetRotation(orxCONST orxOBJECT *_pstObject);
 
 /** Get object scale
  * @param[in]   _pstObject      Concerned object
@@ -158,15 +158,15 @@ extern orxDLLAPI orxFLOAT orxFASTCALL   orxObject_GetRotation(orxCONST orxOBJECT
  * @param[out]  _pfScaleY       Object Y scale
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
 
 
 /** Sets an object parent
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstParent      Parent object to set / orxNULL
- * 
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent);
 
 
 /** Gets object size
@@ -175,13 +175,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetParent(orxOBJECT *_pstObjec
  * @param[out]  _pfHeight       Object's height
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+
 
 /** Sets an object animset
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstAnimSet     Animation set to set / orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_pstAnimSet);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_pstAnimSet);
+
+
+/** Sets current animation for object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _hAnimHandle    Animation handle
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle);
+
+/** Sets target animation for object
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _hAnimHandle    Animation handle
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle);
 
 #endif /* _orxOBJECT_H_ */
