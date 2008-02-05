@@ -44,43 +44,53 @@ extern orxDLLAPI orxVOID                orxConfig_Exit();
 
 
 /** Loads config config from source
+ * @param[in] _zFileName        File name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxConfig_Load();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Load(orxCONST orxSTRING _zFileName);
 
 /** Saves config config to source
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS              orxConfig_Save();
 
+/** Gets config file name
+ * @return File name if loaded, orxSTRING_EMPTY otherwise
+ */
+extern orxDLLAPI orxSTRING              orxConfig_GetFileName();
+
+/** Selects current working section
+ * @param[in] _zSectionName     Section name to select
+ */
+extern orxDLLAPI orxVOID                orxConfig_SelectSection(orxCONST orxSTRING _zSectionName);
 
 /** Reads an integer value from config
  * @param[in] _zKey             Key name
  * @param[in] _s32DefaultValue  Default value if key is not found
  * @return The value
  */
-extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetInt32(orxCONST orxSTRING _zKey, orxS32 _s32DefaultValue);
+extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetInt32(orxCONST orxSTRING _zKey);
 
 /** Reads a float value from config
  * @param[in] _zKey             Key name
  * @param[in] _fDefaultValue    Default value if key is not found
  * @return The value
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL   orxConfig_GetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fDefaultValue);
+extern orxDLLAPI orxFLOAT orxFASTCALL   orxConfig_GetFloat(orxCONST orxSTRING _zKey);
 
 /** Reads a string value from config
  * @param[in] _zKey             Key name
  * @param[in] _zDefaultValue    Default value if key is not found
  * @return The value
  */
-extern orxDLLAPI orxSTRING orxFASTCALL  orxConfig_GetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zDefaultValue);
+extern orxDLLAPI orxSTRING orxFASTCALL  orxConfig_GetString(orxCONST orxSTRING _zKey);
 
 /** Reads a boolean value from config
  * @param[in] _zKey             Key name
  * @param[in] _bDefaultValue    Default value if key is not found
  * @return The value
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(orxCONST orxSTRING _zKey, orxBOOL _bDefaultValue);
+extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(orxCONST orxSTRING _zKey);
 
 
 /** Writes an integer value to config

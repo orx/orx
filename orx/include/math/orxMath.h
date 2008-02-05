@@ -269,7 +269,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
 #else /* __orxMSVC__ */
 
   /* Updates result */
-  fResult = roundf(_fOp);
+  fResult = rintf(_fOp);
 
 #endif /* __orxMSVC__ */
 
