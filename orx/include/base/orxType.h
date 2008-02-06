@@ -129,6 +129,8 @@ orxSTATIC orxCONST  orxU8       orxU8_UNDEFINED     = (orxU8)(-1);
 orxSTATIC orxCONST  orxHANDLE   orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
 
 orxSTATIC orxCONST  orxSTRING   orxSTRING_EMPTY     = "";
+orxSTATIC orxCONST  orxSTRING   orxSTRING_TRUE      = "true";
+orxSTATIC orxCONST  orxSTRING   orxSTRING_FALSE     = "false";
 orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';     
 
 /* *** Directory separators *** */

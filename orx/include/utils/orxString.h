@@ -30,6 +30,7 @@
 
 
 #include "orxInclude.h"
+#include "memory/orxMemory.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -59,13 +60,26 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxString_NContinueCRC(orxCONST orxSTRIN
 /* *** String inlined functions *** */
 
 
+/** Returns the number of character in the string
+ * @param _zString (IN) String used for length computation
+ * @return Length of the string (doesn't count final orxCHAR_NULL)
+ */
+orxSTATIC orxINLINE orxU32              orxString_GetLength(orxSTRING _zString)
+{
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+
+  /* Done! */
+  return(strlen(_zString));
+}
+
 /** Copies N characters from a string
  * @param[in] _zDstString       Destination string
  * @param[in] _zSrcString       Source string
  * @param[in] _u32CharNumber    Number of characters to copy
  * @return Copied string
  */
-orxSTATIC orxINLINE orxSTRING orxString_NCopy(orxSTRING _zDstString, orxCONST orxSTRING _zSrcString, orxU32 _u32CharNumber)
+orxSTATIC orxINLINE orxSTRING           orxString_NCopy(orxSTRING _zDstString, orxCONST orxSTRING _zSrcString, orxU32 _u32CharNumber)
 {
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
@@ -80,7 +94,7 @@ orxSTATIC orxINLINE orxSTRING orxString_NCopy(orxSTRING _zDstString, orxCONST or
  * @param _zSrcString     (IN) Source string
  * @return Copied string.
  */
-orxSTATIC orxINLINE orxSTRING orxString_Copy(orxSTRING _zDstString, orxCONST orxSTRING _zSrcString)
+orxSTATIC orxINLINE orxSTRING           orxString_Copy(orxSTRING _zDstString, orxCONST orxSTRING _zSrcString)
 {
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
@@ -91,16 +105,47 @@ orxSTATIC orxINLINE orxSTRING orxString_Copy(orxSTRING _zDstString, orxCONST orx
 }
 
 /** Duplicate a string.
- * @param _zSrcString	(IN) String to duplicate.
+ * @param _zSrcString (IN) String to duplicate.
  * @return Duplicated string.
  */
-orxSTATIC orxINLINE orxSTRING orxString_Duplicate(orxCONST orxSTRING _zSrcString)
+orxSTATIC orxINLINE orxSTRING           orxString_Duplicate(orxCONST orxSTRING _zSrcString)
 {
-	  /* Checks */
-	  orxASSERT(_zSrcString != orxNULL);
+  orxU32    u32Size;
+  orxSTRING zResult;
 
-	  /* Done! */
-	  return(strdup(_zSrcString));
+  /* Checks */
+  orxASSERT(_zSrcString != orxNULL);
+
+  /* Gets string size in bytes */
+  u32Size = (orxString_GetLength(_zSrcString) + 1) * sizeof(orxCHAR);
+
+  /* Allocates it */
+  zResult = (orxSTRING)orxMemory_Allocate(u32Size, orxMEMORY_TYPE_TEXT);
+
+  /* Valid? */
+  if(zResult != orxNULL)
+  {
+    /* Copies source to it */
+    orxMemory_Copy(zResult, _zSrcString, u32Size);
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Deletes a string
+ * @param[in] _zString                  String to delete
+ */
+orxSTATIC orxINLINE orxVOID             orxString_Delete(orxSTRING _zString)
+{
+  /* Checks */
+  orxASSERT(_zString != orxNULL);
+  orxASSERT(_zString != orxSTRING_EMPTY);
+
+  /* Frees its memory */
+  orxMemory_Free(_zString);
+
+  return;
 }
 
 /** Compare two strings. If the first one is smaller than the second, it returns -1,
@@ -109,7 +154,7 @@ orxSTATIC orxINLINE orxSTRING orxString_Duplicate(orxCONST orxSTRING _zSrcString
  * @param _zString2   (IN) Second string to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
-orxSTATIC orxINLINE orxS32 orxString_Compare(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2)
+orxSTATIC orxINLINE orxS32              orxString_Compare(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2)
 {
   /* Checks */
   orxASSERT(_zString1 != orxNULL);
@@ -127,7 +172,7 @@ orxSTATIC orxINLINE orxS32 orxString_Compare(orxCONST orxSTRING _zString1, orxCO
  * @param _u32NbChar  (IN) Number of character to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
-orxSTATIC orxINLINE orxS32 orxString_NCompare(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2, orxU32 _u32NbChar)
+orxSTATIC orxINLINE orxS32              orxString_NCompare(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2, orxU32 _u32NbChar)
 {
   /* Checks */
   orxASSERT(_zString1 != orxNULL);
@@ -137,19 +182,6 @@ orxSTATIC orxINLINE orxS32 orxString_NCompare(orxCONST orxSTRING _zString1, orxC
   return strncmp(_zString1, _zString2, _u32NbChar);
 }
 
-/** Returns the number of character in the string
- * @param _zString (IN) String used for length computation
- * @return Length of the string (doesn't count final orxCHAR_NULL)
- */
-orxSTATIC orxINLINE orxU32 orxString_GetLength(orxSTRING _zString)
-{
-  /* Checks */
-  orxASSERT(_zString != orxNULL);
-
-  /* Done! */
-  return(strlen(_zString));
-}
-
 /** Convert a String to a value
  * @param[in]   _zString        String To convert
  * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
@@ -157,7 +189,7 @@ orxSTATIC orxINLINE orxU32 orxString_GetLength(orxSTRING _zString)
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxCONST orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, orxSTRING *_pzRemaining)
+orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxCONST orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, orxSTRING *_pzRemaining)
 {
   orxCHAR    *pcEnd;
   orxSTATUS   eResult;
@@ -198,7 +230,7 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToS32(orxCONST orxSTRING _zString, orxU3
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxCONST orxSTRING _zString, orxFLOAT *_pfOutValue, orxSTRING *_pzRemaining)
+orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zString, orxFLOAT *_pfOutValue, orxSTRING *_pzRemaining)
 {
   orxSTATUS eResult;
 
@@ -277,11 +309,86 @@ orxSTATIC orxINLINE orxSTATUS orxString_ToFloat(orxCONST orxSTRING _zString, orx
   return eResult;
 }
 
+/** Convert a string to a boolean
+ * @param[in]   _zString        String To convert
+ * @param[out]  _pbOutValue     Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATIC orxINLINE orxSTATUS           orxString_ToBool(orxCONST orxSTRING _zString, orxBOOL *_pbOutValue, orxSTRING *_pzRemaining)
+{
+  orxS32    s32Value;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(_pbOutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Tries numeric value */
+  eResult = orxString_ToS32(_zString, 10, &s32Value, _pzRemaining);
+  
+  /* Valid? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates boolean */
+    *_pbOutValue = (s32Value != 0) ? orxTRUE : orxFALSE;
+  }
+  else
+  {
+    orxU32 u32Length;
+    
+    /* Gets length of false */
+    u32Length = orxString_GetLength(orxSTRING_FALSE);
+
+    /* Is false? */
+    if(orxString_NCompare(_zString, orxSTRING_FALSE, u32Length) == 0)
+    {
+      /* Updates boolean */
+      *_pbOutValue = orxFALSE;
+
+      /* Has remaining? */
+      if(_pzRemaining != orxNULL)
+      {
+        /* Updates it */
+        *_pzRemaining += u32Length;
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Gets length of true */
+      u32Length = orxString_GetLength(orxSTRING_TRUE);
+
+      /* Is true? */
+      if(orxString_NCompare(_zString, orxSTRING_TRUE, u32Length) == 0)
+      {
+        /* Updates boolean */
+        *_pbOutValue = orxTRUE;
+
+        /* Has remaining? */
+        if(_pzRemaining != orxNULL)
+        {
+          /* Updates it */
+          *_pzRemaining += u32Length;
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Lowercase a string
  * @param _zString        (IN)  String To convert
  * @return The converted string.
  */
-orxSTATIC orxINLINE orxSTRING orxString_LowerCase(orxSTRING _zString)
+orxSTATIC orxINLINE orxSTRING           orxString_LowerCase(orxSTRING _zString)
 {
   orxCHAR *pc;
 
@@ -306,7 +413,7 @@ orxSTATIC orxINLINE orxSTRING orxString_LowerCase(orxSTRING _zString)
  * @param _zString        (IN)  String To convert
  * @return The converted string.
  */
-orxSTATIC orxINLINE orxSTRING orxString_UpperCase(orxSTRING _zString)
+orxSTATIC orxINLINE orxSTRING           orxString_UpperCase(orxSTRING _zString)
 {
   orxCHAR *pc;
 
@@ -331,7 +438,7 @@ orxSTATIC orxINLINE orxSTRING orxString_UpperCase(orxSTRING _zString)
  * @param _zString        (IN)  String To convert
  * @return The resulting CRC.
  */
-orxSTATIC orxINLINE orxU32 orxString_ToCRC(orxCONST orxSTRING _zString)
+orxSTATIC orxINLINE orxU32              orxString_ToCRC(orxCONST orxSTRING _zString)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -345,7 +452,7 @@ orxSTATIC orxINLINE orxU32 orxString_ToCRC(orxCONST orxSTRING _zString)
  * @param[in] _u32CharNumber  Number of characters to process
  * @return The resulting CRC.
  */
-orxSTATIC orxINLINE orxU32 orxString_NToCRC(orxCONST orxSTRING _zString, orxU32 _u32CharNumber)
+orxSTATIC orxINLINE orxU32              orxString_NToCRC(orxCONST orxSTRING _zString, orxU32 _u32CharNumber)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -359,7 +466,7 @@ orxSTATIC orxINLINE orxU32 orxString_NToCRC(orxCONST orxSTRING _zString, orxU32 
  * @param[in] _zString2 String that must be inside _zString1
  * @return The pointer of the first occurence of _zString2, or orxNULL if not found
  */
-orxSTATIC orxINLINE orxSTRING orxString_SearchString(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2)
+orxSTATIC orxINLINE orxSTRING           orxString_SearchString(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2)
 {
   /* Correct parameters ? */
   orxASSERT(_zString1 != orxNULL);
@@ -374,7 +481,7 @@ orxSTATIC orxINLINE orxSTRING orxString_SearchString(orxCONST orxSTRING _zString
  * @param[in] _cChar   The character to find
  * @return The pointer of the first occurence of _cChar, or orxNULL if not found
  */
-orxSTATIC orxINLINE orxSTRING orxString_SearchChar(orxCONST orxSTRING _zString, orxCHAR _cChar)
+orxSTATIC orxINLINE orxSTRING           orxString_SearchChar(orxCONST orxSTRING _zString, orxCHAR _cChar)
 {
   /* Correct parameters ? */
   orxASSERT(_zString != orxNULL);
@@ -389,7 +496,7 @@ orxSTATIC orxINLINE orxSTRING orxString_SearchChar(orxCONST orxSTRING _zString, 
  * @param[in] _u32Position  Search begin position
  * @return The index of the next occurence of requested character, starting at given position / -1 if not found
  */
-orxSTATIC orxINLINE orxS32 orxString_SearchCharIndex(orxCONST orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
+orxSTATIC orxINLINE orxS32              orxString_SearchCharIndex(orxCONST orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
 {
   orxREGISTER orxS32    s32Result = -1;
   orxREGISTER orxS32    s32Index;
@@ -421,7 +528,7 @@ orxSTATIC orxINLINE orxS32 orxString_SearchCharIndex(orxCONST orxSTRING _zString
  * @param[int] _zSrcString  Source formated string
  * @return The number of written characters
  */
-orxSTATIC orxINLINE orxS32 orxString_Print(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
+orxSTATIC orxINLINE orxCDECL orxS32     orxString_Print(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
 {
   va_list stArgs;
   orxS32  s32Result;

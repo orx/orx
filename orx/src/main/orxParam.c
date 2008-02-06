@@ -25,12 +25,12 @@
 
 #include "main/orxParam.h"
 #include "memory/orxMemory.h"
-#include "utils/orxString.h"
-#include "io/orxTextIO.h"
 #include "memory/orxBank.h"
+#include "core/orxEvent.h"
+#include "core/orxConfig.h"
+#include "utils/orxString.h"
 #include "utils/orxHashTable.h"
 #include "debug/orxDebug.h"
-#include "core/orxEvent.h"
 
 #define orxPARAM_KU32_MODULE_FLAG_NONE    0x00000000  /**< No flags have been set */
 #define orxPARAM_KU32_MODULE_FLAG_READY   0x00000001  /**< The module has been initialized */
@@ -110,12 +110,12 @@ orxSTATUS orxFASTCALL orxParamHelp(orxU32 _u32NbParam, orxCONST orxSTRING _azPar
     /* No => display the full list of registered option with short description */
     while((pstParamInfos = orxBank_GetNext(sstParam.pstBank, pstParamInfos)) != orxNULL)
     {
-      orxTextIO_PrintLn("%s%s (%s%s) : %s",
-                        orxPARAM_KZ_MODULE_SHORT_PREFIX,
-                        pstParamInfos->stParam.zShortName,
-                        orxPARAM_KZ_MODULE_LONG_PREFIX,
-                        pstParamInfos->stParam.zLongName,
-                        pstParamInfos->stParam.zShortDesc);
+      orxString_Print("%s%s (%s%s) : %s",
+                      orxPARAM_KZ_MODULE_SHORT_PREFIX,
+                      pstParamInfos->stParam.zShortName,
+                      orxPARAM_KZ_MODULE_LONG_PREFIX,
+                      pstParamInfos->stParam.zLongName,
+                      pstParamInfos->stParam.zShortDesc);
     }
   }
   else
@@ -142,13 +142,13 @@ orxSTATUS orxFASTCALL orxParamHelp(orxU32 _u32NbParam, orxCONST orxSTRING _azPar
       if(pstParamInfos != orxNULL)
       {
         /* Display the full help */
-        orxTextIO_PrintLn("%s :\n%s\n",
-                          pstParamInfos->stParam.zLongName,
-                          pstParamInfos->stParam.zLongDesc);
+        orxString_Print("%s :\n%s\n",
+                        pstParamInfos->stParam.zLongName,
+                        pstParamInfos->stParam.zLongDesc);
       }
       else
       {
-        orxTextIO_PrintLn("%s : Unkown parameter\n", _azParams[u32Index]);
+        orxString_Print("%s : Unkown parameter\n", _azParams[u32Index]);
       }
     }
   }
@@ -204,7 +204,7 @@ orxSTATIC orxSTATUS orxParam_Process()
           {
             u32NbExtra++;
           }
-        
+
           /* Valid extra value ? */
           if((u32NbExtra + u32Index) < sstParam.u32ParamNumber)
           {
@@ -261,8 +261,8 @@ orxVOID orxParam_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_TEXTIO);
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_HASHTABLE);
+  orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_CONFIG);
 
   return;
 }

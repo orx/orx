@@ -31,6 +31,7 @@
 #include "render/orxViewport.h"
 
 #include "core/orxClock.h"
+#include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxTime.h"
 

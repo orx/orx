@@ -40,6 +40,9 @@ typedef enum __orxMEMORY_TYPE_t
   orxMEMORY_TYPE_BACKGROUND,            /**< Background memory type */
   orxMEMORY_TYPE_PALETTE,               /**< Palette memory type */
 
+  orxMEMORY_TYPE_CONFIG,                /**< Config memory */
+  orxMEMORY_TYPE_TEXT,                  /**< Text memory */
+
   orxMEMORY_TYPE_NUMBER,                /**< Number of memory type */
   
   orxMEMORY_TYPE_NONE = orxENUM_NONE    /**< Invalid memory type */

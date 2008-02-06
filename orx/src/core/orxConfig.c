@@ -25,7 +25,6 @@
 #include "core/orxConfig.h"
 #include "debug/orxDebug.h"
 #include "memory/orxBank.h"
-#include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
 
@@ -34,13 +33,16 @@
 #define orxCONFIG_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags */
 
 #define orxCONFIG_KU32_STATIC_FLAG_READY  0x00000001  /**< Ready flag */
+#define orxCONFIG_KU32_STATIC_FLAG_FILE   0x00000002  /**< Has associated file */
 
 #define orxCONFIG_KU32_STATIC_MASK_ALL    0xFFFFFFFF  /**< All mask */
 
 
 /** Defines
  */
-#define orxCONFIG_KU32_SECTION_BANK_SIZE  16         /**< Default section bank size */
+#define orxCONFIG_KU32_SECTION_BANK_SIZE  16          /**< Default section bank size */
+#define orxCONFIG_KU32_ENTRY_BANK_SIZE    16          /**< Default section bank size */
+#define orxCONFIG_KU32_FILENAME_SIZE      64          /**< File name size */          
 
 
 /***************************************************************************
@@ -49,23 +51,25 @@
 
 /** Config node structure
  */
-typedef struct __orxCONFIG_NODE_t
+typedef struct __orxCONFIG_ENTRY_t
 {
-  orxLINKLIST_NODE  stNode;                 /**< Link list node : 12 */
-  orxSTRING         zKey;                   /**< Key of node : 16 */
-  orxSTRING         zValue;                 /**< Value of data : 20 */
+  orxSTRING         zKey;                   /**< Entry key: 4 */
+  orxSTRING         zValue;                 /**< Entry value : 8 */
+  orxU32            u32CRC;                 /**< Key CRC : 12 */
 
-  orxPAD(20)
+  orxPAD(12)
 
-} orxCONFIG_DATA;
+} orxCONFIG_ENTRY;
 
 /** Config section structure
  */
 typedef struct __orxCONFIG_SECTION_t
 {
-  orxLINKLIST       stList;                 /**< List for nodes : 8 */
+  orxBANK    *pstBank;                      /**< Bank of entries : 4 */
+  orxSTRING   zName;                        /**< Section name : 8 */ 
+  orxU32      u32CRC;                       /**< Section CRC : 12 */
 
-  orxPAD(8)
+  orxPAD(12)
 
 } orxCONFIG_SECTION;
 
@@ -73,10 +77,10 @@ typedef struct __orxCONFIG_SECTION_t
  */
 typedef struct __orxCONFIG_STATIC_t
 {
-  orxBANK            *pstSectionBank;		/**< Bank of sections */
-  orxCONFIG_SECTION  *pstCurrentSection;    /**< Current working section */
-  orxSTRING           zFileName;            /**< Config file name */
-  orxU32              u32Flags;             /**< Control flags */
+  orxBANK            *pstSectionBank;                           /**< Bank of sections */
+  orxCONFIG_SECTION  *pstCurrentSection;                        /**< Current working section */
+  orxCHAR             zFileName[orxCONFIG_KU32_FILENAME_SIZE];  /**< Config file name */
+  orxU32              u32Flags;                                 /**< Control flags */
 
 } orxCONFIG_STATIC;
 
@@ -180,14 +184,205 @@ orxSTATIC orxCONFIG_STATIC sstConfig;
 //    }
 //}
 
+/** Gets an entry from the current section
+ * @param[in] _zKey             Entry key
+ * @return                      orxCONFIG_ENTRY / orxNULL
+ */
+orxSTATIC orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxCONST orxSTRING _zKey)
+{
+  orxU32            u32CRC;
+  orxCONFIG_ENTRY  *pstResult = orxNULL, *pstEntry;
+
+  /* Checks */
+  orxASSERT(sstConfig.pstCurrentSection != orxNULL);
+  orxASSERT(_zKey != orxNULL);
+
+  /* Gets key CRC */
+  u32CRC = orxString_ToCRC(_zKey);
+
+  /* For all entries */
+  for(pstEntry = orxBank_GetNext(sstConfig.pstCurrentSection->pstBank, orxNULL);
+      pstEntry != orxNULL;
+      pstEntry = orxBank_GetNext(sstConfig.pstCurrentSection->pstBank, pstEntry))
+  {
+    /* Found? */
+    if(u32CRC == pstEntry->u32CRC)
+    {
+      /* Updates result */
+      pstResult = pstEntry;
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Adds an entry in the current section
+ * @param[in] _zKey             Entry key
+ * @param[in] _zValue           Entry value
+ * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstConfig.pstCurrentSection != orxNULL);
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(_zValue != orxNULL);
+
+  /* Creates entry */
+  pstEntry = orxBank_Allocate(sstConfig.pstCurrentSection->pstBank);
+
+  /* Valid? */
+  if(pstEntry != orxNULL)
+  {
+    /* Stores value */
+    pstEntry->zValue = orxString_Duplicate(_zValue);
+
+    /* Valid? */
+    if(pstEntry->zValue != orxNULL)
+    {
+      /* Stores key */
+      pstEntry->zKey = orxString_Duplicate(_zKey);
+
+      /* Valid? */
+      if(pstEntry->zKey != orxNULL)
+      {
+        /* Sets its CRC */
+        pstEntry->u32CRC = orxString_ToCRC(pstEntry->zKey);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* !!! MSG !!! */
+
+        /* Deletes allocated string */
+        orxString_Delete(pstEntry->zValue);
+
+        /* Deletes entry */
+        orxBank_Free(sstConfig.pstCurrentSection->pstBank, pstEntry);
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Deletes entry */
+      orxBank_Free(sstConfig.pstCurrentSection->pstBank, pstEntry);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Deletes an entry
+ * @param[in] _pstSection       Concerned section
+ * @param[in] _pstEntry         Entry to delete
+ */
+orxSTATIC orxINLINE orxVOID orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection, orxCONFIG_ENTRY *_pstEntry)
+{
+  /* Checks */
+  orxASSERT(_pstEntry != orxNULL);
+
+  /* Deletes key & value */
+  orxString_Delete(_pstEntry->zKey);
+  orxString_Delete(_pstEntry->zValue);
+
+  /* Deletes the entry */
+  orxBank_Free(_pstSection->pstBank, _pstEntry);
+
+  return;
+}
+
+/** Creates a section
+ * @param[in] _zSectionName     Name of the section to create
+ */
+orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRING _zSectionName)
+{
+  orxCONFIG_SECTION *pstSection;
+
+  /* Checks */
+  orxASSERT(_zSectionName != orxNULL);
+  orxASSERT(_zSectionName != orxSTRING_EMPTY);
+
+  /* Allocates it */
+  pstSection = orxBank_Allocate(sstConfig.pstSectionBank);
+
+  /* Valid? */
+  if(pstSection != orxNULL)
+  {
+    /* Creates its bank */
+    pstSection->pstBank = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+
+    /* Valid? */
+    if(pstSection->pstBank != orxNULL)
+    {
+      /* Duplicates its name */
+      pstSection->zName = orxString_Duplicate(_zSectionName);
+
+      /* Valid? */
+      if(pstSection->zName != orxNULL)
+      {
+        /* Sets its CRC */
+        pstSection->u32CRC = orxString_ToCRC(pstSection->zName);
+      }
+      else
+      {
+        /* !!! MSG !!! */
+
+        /* Deletes its bank */
+        orxBank_Delete(pstSection->pstBank);
+
+        /* Deletes it */
+        orxBank_Free(sstConfig.pstSectionBank, pstSection);
+
+        /* Updates result */
+        pstSection = orxNULL;
+      }
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Deletes the section */
+      orxBank_Free(sstConfig.pstSectionBank, pstSection);
+
+      /* Updates result */
+      pstSection = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return pstSection;
+}
+
 /** Deletes a section
  * @param[in] _pstSection       Section to delete
  */
 orxSTATIC orxINLINE orxVOID orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
 {
+  orxCONFIG_ENTRY *pstEntry;
+
   /* Checks */
-  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_pstSection != orxNULL);
+
+  /* While there is still an entry */
+  while((pstEntry = (orxCONFIG_ENTRY *)orxBank_GetNext(_pstSection->pstBank, orxNULL)) != orxNULL)
+  {
+    /* Deletes entry */
+    orxConfig_DeleteEntry(_pstSection, pstEntry);
+  }
+
+  /* Removes section */
+  orxBank_Free(sstConfig.pstSectionBank, _pstSection);
 
   return;
 }
@@ -195,6 +390,17 @@ orxSTATIC orxINLINE orxVOID orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSecti
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
+
+/** Config module setup
+ */
+orxVOID orxConfig_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_BANK);
+
+  return;
+}
 
 /** Inits the config module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -210,7 +416,7 @@ orxSTATUS orxConfig_Init()
     orxMemory_Set(&sstConfig, 0, sizeof(orxCONFIG_STATIC));
 
     /* Creates section bank */
-    sstConfig.pstSectionBank = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstConfig.pstSectionBank = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
     /* Valid? */
     if(sstConfig.pstSectionBank != orxNULL)
@@ -250,10 +456,8 @@ orxVOID orxConfig_Exit()
   {
     orxCONFIG_SECTION *pstSection;
 
-    /* For all sections */
-    for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
-        pstSection != orxNULL;
-        pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+    /* While there's still a section */
+    while((pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL)) != orxNULL)
     {
       /* Deletes it */
       orxConfig_DeleteSection(pstSection);
@@ -264,7 +468,7 @@ orxVOID orxConfig_Exit()
     sstConfig.pstSectionBank = orxNULL;
 
     /* Updates flags */
-    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_READY);
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_MASK_ALL);
   }
 
   return;
@@ -285,15 +489,58 @@ orxSTRING orxConfig_GetFileName()
 /** Selects current working section
 * @param[in] _zSectionName     Section name to select
 */
-orxVOID orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
+orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
 {
+  orxCONFIG_SECTION  *pstSection;
+  orxU32              u32CRC;
+  orxSTATUS           eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zSectionName != orxNULL);
   orxASSERT(_zSectionName != orxSTRING_EMPTY);
 
+  /* Gets section name CRC */
+  u32CRC = orxString_ToCRC(_zSectionName);
+
+  /* For all the sections */
+  for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+      pstSection != orxNULL;
+      pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+  {
+    /* Found? */
+    if(u32CRC == pstSection->u32CRC)
+    {
+      /* Selects it */
+      sstConfig.pstCurrentSection = pstSection;
+
+      break;
+    }
+  }
+
+  /* Not found? */
+  if(pstSection == orxNULL)
+  {
+    /* Creates it */
+    pstSection = orxConfig_CreateSection(_zSectionName);
+
+    /* Success? */
+    if(pstSection != orxNULL)
+    {
+      /* Selects it */
+      sstConfig.pstCurrentSection = pstSection;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+
   /* Done! */
-  return;
+  return eResult;
 }
 
 /** Read config config from source.
@@ -303,6 +550,19 @@ orxVOID orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
 orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zFileName != orxNULL);
+  orxASSERT(_zFileName != orxSTRING_EMPTY);
+
+  /* !!! TODO !!! */
+
+  /* Stores file name */
+  orxString_NCopy(sstConfig.zFileName, _zFileName, orxCONFIG_KU32_FILENAME_SIZE);
+
+  /* Updates flags */
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_FILE, orxCONFIG_KU32_STATIC_FLAG_NONE);
 
   /* Done! */
   return eResult;
@@ -314,6 +574,35 @@ orxSTATUS orxConfig_Save()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Has a file name? */
+  if((sstConfig.zFileName != orxNULL) && (sstConfig.zFileName != orxSTRING_EMPTY))
+  {
+    orxCONFIG_SECTION *pstSection;
+
+    /* !!! TODO !!! */
+
+    /* For all sections */
+    for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+        pstSection != orxNULL;
+        pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+    {
+      orxCONFIG_ENTRY *pstEntry;
+
+//      orxLOG("[%s]", pstSection->zName);
+
+      /* For all entries */
+      for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
+          pstEntry != orxNULL;
+          pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
+      {
+//        orxLOG("%s=%s;", pstEntry->zKey, pstEntry->zValue);
+      }
+    }
+  }
+
   /* Done! */
   return eResult;
 }
@@ -323,9 +612,31 @@ orxSTATUS orxConfig_Save()
  * @param[in] _s32DefaultValue  Default value if key is not found
  * @return The value
  */
-orxS32 orxFASTCALL orxConfig_GetInt32(orxCONST orxSTRING _zKey)
+orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
 {
-  orxS32 s32Result = 0;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxS32            s32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    orxS32 s32Value;
+
+    /* Gets value */
+    if(orxString_ToS32(pstEntry->zValue, 10, &s32Value, orxNULL) != orxSTATUS_FAILURE)
+    {
+      /* Updates result */
+      s32Result = s32Value;
+    }
+  }
 
   /* Done! */
   return s32Result;
@@ -338,7 +649,29 @@ orxS32 orxFASTCALL orxConfig_GetInt32(orxCONST orxSTRING _zKey)
  */
 orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
 {
-  orxFLOAT fResult = orxFLOAT_0;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxFLOAT          fResult = orxFLOAT_0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    orxFLOAT fValue;
+
+    /* Gets value */
+    if(orxString_ToFloat(pstEntry->zValue, &fValue, orxNULL) != orxSTATUS_FAILURE)
+    {
+      /* Updates result */
+      fResult = fValue;
+    }
+  }
 
   /* Done! */
   return fResult;
@@ -351,7 +684,23 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
  */
 orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
 {
-  orxSTRING zResult = orxSTRING_EMPTY;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxSTRING         zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Updates result */
+    zResult = pstEntry->zValue;
+  }
 
   /* Done! */
   return zResult;
@@ -364,7 +713,29 @@ orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
  */
 orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
 {
-  orxBOOL bResult = orxFALSE;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxBOOL           bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    orxBOOL bValue;
+
+    /* Gets value */
+    if(orxString_ToBool(pstEntry->zValue, &bValue, orxNULL) != orxSTATUS_FAILURE)
+    {
+      /* Updates result */
+      bResult = bValue;
+    }
+  }
 
   /* Done! */
   return bResult;
@@ -373,35 +744,142 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
 /** Writes an integer value to config
  * @param[in] _zKey             Key name
  * @param[in] _s32Value         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxVOID orxFASTCALL orxConfig_SetInt32(orxCONST orxSTRING _zKey, orxS32 _s32Value)
+orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Value)
 {
-  return;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxCHAR           zValue[16];
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Clears buffer */
+  orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
+
+  /* Gets literal value */
+  orxString_Print(zValue, "%-15d", _s32Value); 
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, zValue);
+
+  /* Done! */
+  return eResult;
 }
 
 /** Writes a float value to config
  * @param[in] _zKey             Key name
  * @param[in] _fValue           Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxVOID orxFASTCALL orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fValue)
+orxSTATUS orxFASTCALL orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fValue)
 {
-    return;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxCHAR           zValue[16];
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Clears buffer */
+  orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
+
+  /* Gets literal value */
+  orxString_Print(zValue, "%g", _fValue); 
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, zValue);
+
+  /* Done! */
+  return eResult;
 }
 
 /** Writes a string value to config
  * @param[in] _zKey             Key name
  * @param[in] _fValue           Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxVOID orxFASTCALL orxConfig_SetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue)
+orxSTATUS orxFASTCALL orxConfig_SetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue)
 {
-  return;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(_zValue != orxNULL);
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, _zValue);
+
+  /* Done! */
+  return eResult;
 }
 
 /** Writes a boolean value to config
  * @param[in] _zKey             Key name
  * @param[in] _fValue           Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxVOID orxFASTCALL orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValue)
+orxSTATUS orxFASTCALL orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValue)
 {
-  return;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
+
+  /* Done! */
+  return eResult;
 }
