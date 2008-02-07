@@ -527,7 +527,7 @@ orxVOID orxFASTCALL orxTest_Run(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *
   orxTextIO_ReadString(zChoice, orxTEST_MAIN_KU32_CHOICE_BUFFER_SIZE, "Choice : ");
 
   /* Check overflow */
-  if((orxString_GetLength(zChoice) > 0) && zChoice[orxString_GetLength(zChoice)-1] == '\n')
+  if((orxString_GetLength(zChoice) > 0) && zChoice[orxString_GetLength(zChoice)-1] == orxCHAR_EOL)
   {
     zChoice[strlen(zChoice)-1] = orxCHAR_NULL;
   }

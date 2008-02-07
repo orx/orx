@@ -20,6 +20,9 @@
  ***************************************************************************/
 
 
+#include<stdio.h>
+
+
 #include "orxInclude.h"
 
 #include "core/orxConfig.h"
@@ -44,6 +47,12 @@
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE    16          /**< Default section bank size */
 #define orxCONFIG_KU32_FILENAME_SIZE      64          /**< File name size */          
 
+#define orxCONFIG_KU32_BUFFER_SIZE        4096        /**< Buffer size */
+
+#define orxCONFIG_KC_SECTION_START        '['         /**< Section start character */
+#define orxCONFIG_KC_SECTION_END          ']'         /**< Section end character */
+#define orxCONFIG_KC_ASSIGN               '='         /**< Assign character */
+#define orxCONFIG_KC_COMMENT              ';'         /**< Comment character */
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -556,7 +565,143 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
   orxASSERT(_zFileName != orxNULL);
   orxASSERT(_zFileName != orxSTRING_EMPTY);
 
-  /* !!! TODO !!! */
+  FILE *pstFile;
+
+  /* Opens file */
+  pstFile = fopen(_zFileName, "r");
+
+  /* Valid? */
+  if(pstFile != orxNULL)
+  {
+    orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
+    orxU32  u32Size, u32Offset;
+
+    /* While file isn't empty */
+    for(u32Size = fread(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0;
+        u32Size > 0;
+        u32Size = fread(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset)
+    {
+      orxCHAR *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
+
+      /* For all buffered characters */
+      for(pc = pcLineStart = acBuffer, pcKeyEnd = pcValueStart = orxNULL;
+          pc < acBuffer + u32Size;
+          pc++)
+      {
+        /* Comment character? */
+        if(*pc == orxCONFIG_KC_COMMENT)
+        {
+          /* Has key & value? */
+          if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
+          {
+            /* Cuts the strings */
+            *pcKeyEnd = *pc = orxCHAR_NULL;
+
+            /* Adds entry */
+            orxConfig_AddEntry(pcLineStart, pcValueStart);
+          }
+
+          /* Sets temporary line start */
+          pcLineStart = pc;
+
+          /* Skips the whole line */
+          while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+          {
+            pc++;
+          }
+
+          /* Updates line start pointer */
+          pcLineStart = pc + 1;
+        }
+        /* Beginning of line? */
+        else if(pc == pcLineStart)
+        {
+          /* Section start? */
+          if(*pc == orxCONFIG_KC_SECTION_START)
+          {
+            /* Finds section end */
+            while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_SECTION_END))
+            {
+              /* End of line? */
+              if(*pc == orxCHAR_EOL)
+              {
+                /* !!! MSG !!! */
+                orxLOG("Section name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_SECTION_END);
+
+                /* Updates new line start */
+                pcLineStart = pc + 1;
+
+                break;
+              }
+
+              /* Updates pointer */
+              pc++;
+            }
+
+            /* Valid? */
+            if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_SECTION_END))
+            {
+              /* Cuts string */
+              *pc = orxCHAR_NULL;
+
+              /* Selects section */
+              orxConfig_SelectSection(pcLineStart + 1);
+
+              /* Skips the whole line */
+              while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+              {
+                pc++;
+              }
+
+              /* Updates line start pointer */
+              pcLineStart = pc + 1;
+            }
+          }
+          else
+          {
+            /* Finds assign character */
+            while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_ASSIGN))
+            {
+              /* Updates pointer */
+              pc++;
+            }
+
+            /* Found? */
+            if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_ASSIGN))
+            {
+              /* Finds end of key position */
+              for(pcKeyEnd = pc;
+                  (pcKeyEnd > pcLineStart) && ((*pcKeyEnd == ' ') || (*pcKeyEnd == '\t'));
+                  pcKeyEnd--);
+
+              /* Checks */
+              orxASSERT(pcKeyEnd > pcLineStart);
+
+              /* Finds start of value position */
+              for(pcValueStart = pc + 1;
+                  (pcValueStart < acBuffer + u32Size) && ((*pcKeyEnd == ' ') || (*pcKeyEnd == '\t') || (*pcKeyEnd == '\n'));
+                  pcValueStart++);
+            }
+          }
+        }
+      }
+
+      /* Has remaining buffer? */
+      if((pcLineStart != acBuffer) && (pc > pcLineStart))
+      {
+        /* Updates offset */
+        u32Offset = pc - pcLineStart;
+
+        /* Copies it at the beginning of the buffer */
+        orxMemory_Copy(acBuffer, pcLineStart, u32Offset);
+      }
+      else
+      {
+        /* Clears offset */
+        u32Offset = 0;
+      }
+    }
+  }
 
   /* Stores file name */
   orxString_NCopy(sstConfig.zFileName, _zFileName, orxCONFIG_KU32_FILENAME_SIZE);
@@ -580,26 +725,45 @@ orxSTATUS orxConfig_Save()
   /* Has a file name? */
   if((sstConfig.zFileName != orxNULL) && (sstConfig.zFileName != orxSTRING_EMPTY))
   {
-    orxCONFIG_SECTION *pstSection;
+    FILE *pstFile;
 
-    /* !!! TODO !!! */
+    /* Opens file */
+    pstFile = fopen(sstConfig.zFileName, "wR");
 
-    /* For all sections */
-    for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
-        pstSection != orxNULL;
-        pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
-    {
-      orxCONFIG_ENTRY *pstEntry;
+    /* Valid? */
+    if(pstFile != orxNULL)
+    {    
+      orxCONFIG_SECTION *pstSection;
 
-//      orxLOG("[%s]", pstSection->zName);
-
-      /* For all entries */
-      for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
-          pstEntry != orxNULL;
-          pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
+      /* For all sections */
+      for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+          pstSection != orxNULL;
+          pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
       {
-//        orxLOG("%s=%s;", pstEntry->zKey, pstEntry->zValue);
+        orxCONFIG_ENTRY *pstEntry;
+
+        /* Writes section name */
+        fprintf(pstFile, "%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END);
+
+        /* For all entries */
+        for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
+            pstEntry != orxNULL;
+            pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
+        {
+          /* Writes it */
+          fprintf(pstFile, "%s%c%s%c\n", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->zValue, orxCONFIG_KC_COMMENT);
+        }
+
+        /* Adds a new line */
+        fprintf(pstFile, "\n");
       }
+
+      /* Flushes & closes the file */
+      fflush(pstFile);
+      fclose(pstFile);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -761,7 +925,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Valu
   orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
 
   /* Gets literal value */
-  orxString_Print(zValue, "%-15d", _s32Value); 
+  orxString_Print(zValue, "%d", _s32Value); 
 
   /* Gets entry */
   pstEntry = orxConfig_GetEntry(_zKey);

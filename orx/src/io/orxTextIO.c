@@ -136,7 +136,7 @@ orxSTATUS orxFASTCALL orxTextIO_ReadString(orxSTRING _zOutputBuffer, orxU32 _u32
   
   /* Set \0 on the last character instead of \n (if present and if string length > 0) */
   u32StringLength = orxString_GetLength(_zReturnString);
-  if((u32StringLength > 0) && (_zReturnString[u32StringLength - 1] == '\n'))
+  if((u32StringLength > 0) && (_zReturnString[u32StringLength - 1] == orxCHAR_EOL))
   {
     _zOutputBuffer[u32StringLength - 1] = orxCHAR_NULL;
   }
