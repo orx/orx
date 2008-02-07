@@ -245,6 +245,27 @@ orxSTATIC orxSTATUS orxParam_Process()
   return eResult;
 }
 
+/** Processes command line parameters
+ * @param[in] _u32ParamCount  Number of extra parameters read for this option
+ * @param[in] _azParams       Array of extra parameters (the first one is always the option name)
+ * @return Returns orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxParam_ProcessConfigParams(orxU32 _u32ParamCount, orxCONST orxSTRING _azParams[])
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxU32    i;
+
+  /* For all specified plugin names */
+  for(i = 1; (eResult == orxSTATUS_SUCCESS) && (i < _u32ParamCount); i++)
+  {
+    /* Loads config file */
+    eResult = orxConfig_Load(_azParams[i]);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -309,26 +330,40 @@ orxSTATUS orxParam_Init()
       /* HashTable Created ? */
       if(sstParam.pstHashTable != orxNULL)
       {
-        orxPARAM stParam;
+        orxPARAM stParams;
         
         /* Set module as ready */
         sstParam.u32Flags   = orxPARAM_KU32_MODULE_FLAG_READY;
 
         /* Everything seems ok. Register the module help function */
-        stParam.u32Flags    = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-        stParam.pfnParser   = orxParamHelp;
-        stParam.zShortName  = "h";
-        stParam.zLongName   = "help";
-        stParam.zShortDesc  = "Display this help. You can use extra parameter to display complete description (-h <param>)";
-        stParam.zLongDesc   = "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed";
+        stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
+        stParams.pfnParser  = orxParamHelp;
+        stParams.zShortName = "h";
+        stParams.zLongName  = "help";
+        stParams.zShortDesc = "Display this help. You can use extra parameter to display complete description (-h <param>)";
+        stParams.zLongDesc  = "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed";
         
         /* Register */          
-        eResult = orxParam_Register(&stParam);
-        
+        eResult = orxParam_Register(&stParams);
+
         /* If registration failed, module become unready */
         if(eResult == orxSTATUS_FAILURE)
         {
           sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
+        }
+        else
+        {
+          /* Inits the param structure */
+          orxMemory_Set(&stParams, 0, sizeof(orxPARAM));
+          stParams.pfnParser  = orxParam_ProcessConfigParams;
+          stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
+          stParams.zShortName = "C";
+          stParams.zLongName  = "config";
+          stParams.zShortDesc = "Loads the specified configuration file.";
+          stParams.zLongDesc  = "Loads the specified configuration file from the current execution folder. More than one file can be specified.";
+
+          /* Registers it */
+          orxParam_Register(&stParams);
         }
       }
     }

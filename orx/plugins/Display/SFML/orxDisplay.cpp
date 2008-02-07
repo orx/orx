@@ -27,6 +27,7 @@ extern "C"
 {
   #include "orxInclude.h"
 
+  #include "core/orxConfig.h"
   #include "math/orxMath.h"
   #include "plugin/orxPluginUser.h"
   #include "memory/orxBank.h"
@@ -51,6 +52,9 @@ orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
 orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
 orxSTATIC orxCONST orxSTRING  szTitle           = "orxTestWindow";
 orxSTATIC orxCONST orxU32     su32TextBankSize  = 8;
+orxSTATIC orxCONST orxSTRING  szConfigSection   = "SFML";
+orxSTATIC orxCONST orxSTRING  szConfigWidth     = "ScreenWidth";
+orxSTATIC orxCONST orxSTRING  szConfigHeight    = "ScreenHeight";
 
 
 /***************************************************************************
@@ -540,8 +544,20 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     /* Valid? */
     if(sstDisplay.pstTextBank != orxNULL)
     {
-      /* Inits rendering window */
-      sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::Style::Close);
+      orxS32 s32ConfigWidth, s32ConfigHeight;
+
+      /* Gets resolution from config */
+      orxConfig_SelectSection(szConfigSection);
+      s32ConfigWidth  = orxConfig_GetS32(szConfigWidth);
+      s32ConfigHeight = orxConfig_GetS32(szConfigHeight);
+
+      /* Not valid? */
+      if((s32ConfigWidth <= 0) || (s32ConfigHeight <= 0) || ((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(s32ConfigWidth, s32ConfigHeight), szTitle, sf::Style::Close)) == orxNULL))
+      {
+
+        /* Inits default rendering window */
+        sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::Style::Close);
+      }
 
       /* Waits for vertical sync */
       sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);

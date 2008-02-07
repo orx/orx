@@ -54,6 +54,9 @@
 #define orxCONFIG_KC_ASSIGN               '='         /**< Assign character */
 #define orxCONFIG_KC_COMMENT              ';'         /**< Comment character */
 
+#define orxCONFIG_KZ_DEFAULT_FILE         "orx.ini"   /**< Default config file name */
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -433,6 +436,9 @@ orxSTATUS orxConfig_Init()
       /* Inits Flags */
       orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY, orxCONFIG_KU32_STATIC_MASK_ALL);
 
+      /* Loads default config file */
+      orxConfig_Load(orxCONFIG_KZ_DEFAULT_FILE);
+
       /* Success */
       eResult = orxSTATUS_SUCCESS;
     }
@@ -594,11 +600,21 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
           /* Has key & value? */
           if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
           {
+            orxCONFIG_ENTRY *pstEntry;
+
             /* Cuts the strings */
             *pcKeyEnd = *pc = orxCHAR_NULL;
 
-            /* Adds entry */
-            orxConfig_AddEntry(pcLineStart, pcValueStart);
+            /* Already defined? */
+            if((pstEntry = orxConfig_GetEntry(pcLineStart)) != orxNULL)
+            {
+              orxLOG("Config entry [%s::%s] has already the value <%s>. Ignoring new value <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->zValue, pcValueStart);
+            }
+            else
+            {
+              /* Adds entry */
+              orxConfig_AddEntry(pcLineStart, pcValueStart);
+            }
           }
 
           /* Sets temporary line start */
@@ -616,6 +632,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
         /* Beginning of line? */
         else if(pc == pcLineStart)
         {
+          /* Skips all spaces */
+          while((pc < acBuffer + u32Size) && ((*pc == orxCHAR_EOL) || (*pc == orxCHAR_EOL) || (*pc == orxCHAR_EOL)))
+          {
+            /* Updates pointers */
+            pcLineStart++, pc++;
+          }
+
           /* Section start? */
           if(*pc == orxCONFIG_KC_SECTION_START)
           {
@@ -701,6 +724,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
         u32Offset = 0;
       }
     }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Stores file name */
