@@ -52,9 +52,10 @@ orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
 orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
 orxSTATIC orxCONST orxSTRING  szTitle           = "orxTestWindow";
 orxSTATIC orxCONST orxU32     su32TextBankSize  = 8;
-orxSTATIC orxCONST orxSTRING  szConfigSection   = "SFML";
+orxSTATIC orxCONST orxSTRING  szConfigSection   = "Display";
 orxSTATIC orxCONST orxSTRING  szConfigWidth     = "ScreenWidth";
 orxSTATIC orxCONST orxSTRING  szConfigHeight    = "ScreenHeight";
+orxSTATIC orxCONST orxSTRING  szConfigFont      = "Font";
 
 
 /***************************************************************************
@@ -114,8 +115,11 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
   /* Valid? */
   if(pstText != orxNULL)
   {
+    /* Sets config section */
+    orxConfig_SelectSection(szConfigSection);
+
     /* Allocates text */
-    pstText->poString = new sf::String(_zString);
+    pstText->poString = new sf::String(_zString, orxConfig_GetString(szConfigFont));
 
     /* Sets its color */
     pstText->poString->SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));

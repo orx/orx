@@ -244,7 +244,7 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
   /* Checks */
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
   orxASSERT(_zValue != orxNULL);
 
   /* Creates entry */
@@ -323,7 +323,7 @@ orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRIN
 
   /* Checks */
   orxASSERT(_zSectionName != orxNULL);
-  orxASSERT(_zSectionName != orxSTRING_EMPTY);
+  orxASSERT(*_zSectionName != *orxSTRING_EMPTY);
 
   /* Allocates it */
   pstSection = orxBank_Allocate(sstConfig.pstSectionBank);
@@ -513,7 +513,7 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zSectionName != orxNULL);
-  orxASSERT(_zSectionName != orxSTRING_EMPTY);
+  orxASSERT(*_zSectionName != *orxSTRING_EMPTY);
 
   /* Gets section name CRC */
   u32CRC = orxString_ToCRC(_zSectionName);
@@ -569,7 +569,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zFileName != orxNULL);
-  orxASSERT(_zFileName != orxSTRING_EMPTY);
+  orxASSERT(*_zFileName != *orxSTRING_EMPTY);
 
   FILE *pstFile;
 
@@ -614,6 +614,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             {
               /* Adds entry */
               orxConfig_AddEntry(pcLineStart, pcValueStart);
+
+              /* Updates pointers */
+              pcKeyEnd = pcValueStart = orxNULL;
             }
           }
 
@@ -749,7 +752,7 @@ orxSTATUS orxConfig_Save()
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Has a file name? */
-  if((sstConfig.zFileName != orxNULL) && (sstConfig.zFileName != orxSTRING_EMPTY))
+  if((sstConfig.zFileName != orxNULL) && (*sstConfig.zFileName != *orxSTRING_EMPTY))
   {
     FILE *pstFile;
 
@@ -810,7 +813,7 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(_zKey);
@@ -845,7 +848,7 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(_zKey);
@@ -880,7 +883,7 @@ orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(_zKey);
@@ -909,7 +912,7 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(_zKey);
@@ -945,7 +948,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Valu
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Clears buffer */
   orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
@@ -984,7 +987,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fVa
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Clears buffer */
   orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
@@ -1022,7 +1025,7 @@ orxSTATUS orxFASTCALL orxConfig_SetString(orxCONST orxSTRING _zKey, orxCONST orx
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
   orxASSERT(_zValue != orxNULL);
 
   /* Gets entry */
@@ -1055,7 +1058,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValu
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
-  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets entry */
   pstEntry = orxConfig_GetEntry(_zKey);
