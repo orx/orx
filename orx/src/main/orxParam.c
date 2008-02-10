@@ -219,7 +219,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
         zParamValue = orxConfig_GetString(_pstParamInfo->stParam.zLongName);
 
         /* Found? */
-        if(*zParamValue != orxCHAR_NULL)
+        if(*zParamValue != *orxSTRING_EMPTY)
         {
           orxU32    u32Length;
           orxSTRING zWorkString;

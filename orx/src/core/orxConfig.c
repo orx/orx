@@ -36,7 +36,6 @@
 #define orxCONFIG_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags */
 
 #define orxCONFIG_KU32_STATIC_FLAG_READY  0x00000001  /**< Ready flag */
-#define orxCONFIG_KU32_STATIC_FLAG_FILE   0x00000002  /**< Has associated file */
 
 #define orxCONFIG_KU32_STATIC_MASK_ALL    0xFFFFFFFF  /**< All mask */
 
@@ -45,7 +44,6 @@
  */
 #define orxCONFIG_KU32_SECTION_BANK_SIZE  16          /**< Default section bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE    16          /**< Default section bank size */
-#define orxCONFIG_KU32_FILENAME_SIZE      64          /**< File name size */          
 
 #define orxCONFIG_KU32_BUFFER_SIZE        4096        /**< Buffer size */
 
@@ -91,7 +89,6 @@ typedef struct __orxCONFIG_STATIC_t
 {
   orxBANK            *pstSectionBank;                           /**< Bank of sections */
   orxCONFIG_SECTION  *pstCurrentSection;                        /**< Current working section */
-  orxCHAR             zFileName[orxCONFIG_KU32_FILENAME_SIZE];  /**< Config file name */
   orxU32              u32Flags;                                 /**< Control flags */
 
 } orxCONFIG_STATIC;
@@ -107,94 +104,6 @@ orxSTATIC orxCONFIG_STATIC sstConfig;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-///**
-// * Save config node to file.
-// * @param _pstNode (IN) Node to save
-// * @param _zPrefix (IN) Prefix of node
-// * @param _pstFile (IN) File where save the node.
-// */
-//orxSTATIC orxVOID  orxConfig_SaveNodeToFile(orxCONFIG_NODE* _pstNode, orxCONST orxSTRING _zPrefix, orxFILE* _pstFile)
-//{
-//	orxCONFIG_NODE* pstChild;
-//    if(_pstNode)
-//    {
-//        orxBOOL bSave = orxFALSE;
-//        if(_pstNode->zValue)
-//        	bSave = orxTRUE;
-//        else
-//        {
-//            pstChild = _pstNode->pstChild;
-//            while(pstChild)
-//            {
-//                if(pstChild->zValue && !pstChild->pstChild)
-//                {
-//                	bSave = orxTRUE;
-//                    break;
-//                }
-//                pstChild = pstChild->pstNext;
-//            }
-//        }
-//        orxCHAR zCateg[1024] = {0};
-//        orxCHAR zBuffer[4096] = {0};
-//        orxSTRING zName;
-//        if(_zPrefix)
-//        {
-//        	orxString_Print(zCateg, "%s/%s", _zPrefix, _pstNode->zName);
-//            zName = zCateg;
-//        }
-//        else
-//        	zName = _pstNode->zName;
-//        if(bSave)
-//        {
-//            orxString_Print(zBuffer, "\n[%s]\n", zName);
-//            orxFile_Write(zBuffer, orxString_GetLength(zBuffer), 1, _pstFile);
-//            
-//            if(_pstNode->zValue)
-//            {
-//                orxString_Print(zBuffer, "=%s\n", _pstNode->zValue);
-//                orxFile_Write(zBuffer, orxString_GetLength(zBuffer), 1, _pstFile);
-//            }
-//            pstChild = _pstNode->pstChild;
-//            while(pstChild)
-//            {
-//                if(pstChild->zValue && !pstChild->pstChild)
-//                {
-//                    orxString_Print(zBuffer, "%s=%s\n", pstChild->zName, pstChild->zValue);
-//                    orxFile_Write(zBuffer, orxString_GetLength(zBuffer), 1, _pstFile);
-//                }
-//                pstChild = pstChild->pstNext;
-//            }
-//        }
-//        pstChild = _pstNode->pstChild;
-//        while(pstChild)
-//        {
-//            if(pstChild->pstChild)
-//            	orxConfig_SaveNodeToFile(pstChild, zName, _pstFile);
-//            pstChild = pstChild->pstNext;
-//        }
-//
-//    }
-//}
-//
-///**
-// * Save config node to file.
-// * @param _zFile (IN) File path where save the node.
-// */
-//orxSTATIC orxVOID  orxConfig_SaveToFile(orxCONST orxSTRING _zFile)
-//{
-//    orxFILE* pstFile = orxFile_Open(_zFile, orxFILE_KU32_FLAG_OPEN_WRITE);
-//    if(pstFile)
-//    {
-//    	orxCONFIG_NODE* pstNode = &sstConfig.stRootNode;
-//        while(pstNode)
-//        {
-//        	orxConfig_SaveNodeToFile(pstNode, orxNULL, pstFile);
-//            pstNode = pstNode->pstNext;
-//        }
-//        orxFile_Close(pstFile);
-//    }
-//}
 
 /** Gets an entry from the current section
  * @param[in] _zKey             Entry key
@@ -489,18 +398,6 @@ orxVOID orxConfig_Exit()
   return;
 }
 
-/** Gets config file name
- * @return File name if loaded, orxSTRING_EMPTY otherwise
- */
-orxSTRING orxConfig_GetFileName()
-{
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
-
-  /* Done! */
-  return sstConfig.zFileName;
-}
-
 /** Selects current working section
 * @param[in] _zSectionName     Section name to select
 */
@@ -732,65 +629,69 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
     eResult = orxSTATUS_SUCCESS;
   }
 
-  /* Stores file name */
-  orxString_NCopy(sstConfig.zFileName, _zFileName, orxCONFIG_KU32_FILENAME_SIZE);
-
-  /* Updates flags */
-  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_FILE, orxCONFIG_KU32_STATIC_FLAG_NONE);
-
   /* Done! */
   return eResult;
 }
 
-/** Write config config to source.
- */
-orxSTATUS orxConfig_Save()
+/** Writes config to given file. Will overwrite any existing file, including all comments.
+* @param[in] _zFileName        File name, if null or empty the default file name will be used
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
 {
+  FILE     *pstFile;
+  orxSTRING zFileName;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
-  /* Has a file name? */
-  if((sstConfig.zFileName != orxNULL) && (*sstConfig.zFileName != *orxSTRING_EMPTY))
+  /* Is given file name valid? */
+  if((_zFileName != orxNULL) && (*_zFileName != *orxSTRING_EMPTY))
   {
-    FILE *pstFile;
+    /* Uses it */
+    zFileName = _zFileName;
+  }
+  else
+  {
+    /* Uses default file */
+    zFileName = orxCONFIG_KZ_DEFAULT_FILE;
+  }
 
-    /* Opens file */
-    pstFile = fopen(sstConfig.zFileName, "wR");
+  /* Opens file */
+  pstFile = fopen(zFileName, "wR");
 
-    /* Valid? */
-    if(pstFile != orxNULL)
-    {    
-      orxCONFIG_SECTION *pstSection;
+  /* Valid? */
+  if(pstFile != orxNULL)
+  {    
+    orxCONFIG_SECTION *pstSection;
 
-      /* For all sections */
-      for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
-          pstSection != orxNULL;
-          pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+    /* For all sections */
+    for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+        pstSection != orxNULL;
+        pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+    {
+      orxCONFIG_ENTRY *pstEntry;
+
+      /* Writes section name */
+      fprintf(pstFile, "%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END);
+
+      /* For all entries */
+      for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
+          pstEntry != orxNULL;
+          pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
       {
-        orxCONFIG_ENTRY *pstEntry;
-
-        /* Writes section name */
-        fprintf(pstFile, "%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END);
-
-        /* For all entries */
-        for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
-            pstEntry != orxNULL;
-            pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
-        {
-          /* Writes it */
-          fprintf(pstFile, "%s%c%s%c\n", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->zValue, orxCONFIG_KC_COMMENT);
-        }
-
-        /* Adds a new line */
-        fprintf(pstFile, "\n");
+        /* Writes it */
+        fprintf(pstFile, "%s%c%s%c\n", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->zValue, orxCONFIG_KC_COMMENT);
       }
 
-      /* Flushes & closes the file */
-      fflush(pstFile);
-      fclose(pstFile);
+      /* Adds a new line */
+      fprintf(pstFile, "\n");
+    }
 
+    /* Flushes & closes the file */
+    if((fflush(pstFile) == 0) && (fclose(pstFile) == 0))
+    {
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
     }
