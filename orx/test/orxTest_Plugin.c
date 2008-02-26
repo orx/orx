@@ -40,7 +40,7 @@
 #include "io/orxPackage.h"
 #include "script/orxScript.h"
 #include "sound/orxSound.h"
-#include "core/orxTime.h"
+#include "core/orxSystem.h"
 
 /* Include commons libc header */
 #include <stdlib.h>
