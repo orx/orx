@@ -5670,13 +5670,13 @@
 				RelativePath="..\..\..\src\object\orxStructure.c"
 			/>
 			<File
+				RelativePath="..\..\..\src\core\orxSystem.c"
+			/>
+			<File
 				RelativePath="..\..\..\src\io\orxTextIO.c"
 			/>
 			<File
 				RelativePath="..\..\..\src\display\orxTexture.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\core\orxTime.c"
 			/>
 			<File
 				RelativePath="..\..\..\src\utils\orxTree.c"
@@ -5835,7 +5835,7 @@
 				RelativePath="..\..\..\include\plugin\define\orxPlugin_Sound.h"
 			/>
 			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Time.h"
+				RelativePath="..\..\..\include\plugin\define\orxPlugin_System.h"
 			/>
 			<File
 				RelativePath="..\..\..\include\utils\orxQueue.h"
@@ -5859,13 +5859,13 @@
 				RelativePath="..\..\..\include\object\orxStructure.h"
 			/>
 			<File
+				RelativePath="..\..\..\include\core\orxSystem.h"
+			/>
+			<File
 				RelativePath="..\..\..\include\io\orxTextIO.h"
 			/>
 			<File
 				RelativePath="..\..\..\include\display\orxTexture.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\core\orxTime.h"
 			/>
 			<File
 				RelativePath="..\..\..\include\utils\orxTree.h"

@@ -1,13 +1,13 @@
 /**
- * @file orxTime.cpp
+ * @file orxSystem.cpp
  * 
- * SFML time plugin
+ * SFML system plugin
  * 
  */
  
  /***************************************************************************
- orxTime.cpp
- SFML time plugin
+ orxSystem.cpp
+ SFML system plugin
  
  begin                : 25/10/2007
  author               : (C) Arcallians
@@ -31,15 +31,15 @@ extern "C"
 #include "math/orxMath.h"
 #include "plugin/orxPluginUser.h"
 
-#include "core/orxTime.h"
+#include "core/orxSystem.h"
 }
 
 #include <SFML/Window.hpp>
 
 /** Module flags
  */
-#define orxTIME_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxTIME_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
+#define orxSYSTEM_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxSYSTEM_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
 
 /***************************************************************************
@@ -48,12 +48,12 @@ extern "C"
 
 /** Static structure
  */
-typedef struct __orxTIME_STATIC_t
+typedef struct __orxSYSTEM_STATIC_t
 {
   orxU32      u32Flags;
   sf::Clock  *poClock;
 
-} orxTIME_STATIC;
+} orxSYSTEM_STATIC;
 
 
 /***************************************************************************
@@ -62,7 +62,7 @@ typedef struct __orxTIME_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxTIME_STATIC sstTime;
+orxSTATIC orxSYSTEM_STATIC sstSystem;
 
 
 /***************************************************************************
@@ -74,46 +74,46 @@ orxSTATIC orxTIME_STATIC sstTime;
  * Public functions                                                        *
  ***************************************************************************/
 
-/** Init the time module
+/** Init the system module
  * @return Returns the status of the operation
  */
-extern "C" orxSTATUS orxTime_SFML_Init()
+extern "C" orxSTATUS orxSystem_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   
   /* Was already initialized. */
-  if(!(sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY))
+  if(!(sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstTime, 0, sizeof(orxTIME_STATIC));
+    orxMemory_Set(&sstSystem, 0, sizeof(orxSYSTEM_STATIC));
 
-    /* Inits time clock */
-    sstTime.poClock = new sf::Clock();
+    /* Inits system clock */
+    sstSystem.poClock = new sf::Clock();
 
     /* Resets it */
-    sstTime.poClock->Reset();
+    sstSystem.poClock->Reset();
 
     /* Updates status */
-    sstTime.u32Flags |= orxTIME_KU32_STATIC_FLAG_READY;
+    sstSystem.u32Flags |= orxSYSTEM_KU32_STATIC_FLAG_READY;
   }
 
   /* Done! */
   return eResult;  
 }
 
-/** Exit the time module
+/** Exit the system module
  */
-extern "C" orxVOID orxTime_SFML_Exit()
+extern "C" orxVOID orxSystem_SFML_Exit()
 {
   /* Module initialized ? */
-  if((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY)
+  if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
   {
     /* Deletes clock */
-    delete sstTime.poClock;
+    delete sstSystem.poClock;
 
     /* Cleans static controller */
-    orxMemory_Set(&sstTime, 0, sizeof(orxTIME_STATIC));
+    orxMemory_Set(&sstSystem, 0, sizeof(orxSYSTEM_STATIC));
   }
 
   return;
@@ -122,24 +122,24 @@ extern "C" orxVOID orxTime_SFML_Exit()
 /** Gets App Elapsed time.
  * @return Returns the amount of seconds elapsed from the application start.
  */
-extern "C" orxFLOAT orxTime_SFML_GetTime()
+extern "C" orxFLOAT orxSystem_SFML_GetTime()
 {
   /* Module initialized ? */
-  orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
-  return(orx2F(sstTime.poClock->GetElapsedTime()));
+  return(orx2F(sstSystem.poClock->GetElapsedTime()));
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _fTime Number of seconds to wait.
+ * @param[in] _fSystem Number of seconds to wait.
  */
-extern "C" orxVOID orxTime_SFML_Delay(orxFLOAT _fTime)
+extern "C" orxVOID orxSystem_SFML_Delay(orxFLOAT _fSystem)
 {
   /* Module initialized ? */
-  orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Sleeps */
-  sf::Sleep(_fTime);
+  sf::Sleep(_fSystem);
 }
 
 
@@ -148,8 +148,8 @@ extern "C" orxVOID orxTime_SFML_Delay(orxFLOAT _fTime)
  ********************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTime_SFML_Init, TIME, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTime_SFML_Exit, TIME, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTime_SFML_GetTime, TIME, GET_TIME);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTime_SFML_Delay, TIME, DELAY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_Init, SYSTEM, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_Exit, SYSTEM, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_GetTime, SYSTEM, GET_TIME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_Delay, SYSTEM, DELAY);
 orxPLUGIN_USER_CORE_FUNCTION_END();

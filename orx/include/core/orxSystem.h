@@ -1,5 +1,5 @@
 /**
- * \file orxTime.h
+ * \file orxSystem.h
  */
 
 /***************************************************************************
@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _orxTIME_H_
-#define _orxTIME_H_
+#ifndef _orxSYSTEM_H_
+#define _orxSYSTEM_H_
 
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
@@ -31,60 +31,60 @@ typedef orxU32                      orxDATE;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Time module setup */
-extern orxDLLAPI orxVOID            orxTime_Setup();
+/** System module setup */
+extern orxDLLAPI orxVOID            orxSystem_Setup();
 
 
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Init, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Exit, orxVOID);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_GetTime, orxFLOAT);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_GetDate, orxDATE);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxTime_Delay, orxVOID, orxFLOAT);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_GetTime, orxFLOAT);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_GetDate, orxDATE);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Delay, orxVOID, orxFLOAT);
 
 
-/** Inits the time module.
+/** Inits the system module.
  * @return The status of the operation.
  */
-orxSTATIC orxINLINE orxSTATUS orxTime_Init()
+orxSTATIC orxINLINE orxSTATUS orxSystem_Init()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Init)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Init)();
 }
 
-/** Exits from the time module.
+/** Exits from the system module.
  * @return The status of the operation.
  */
-orxSTATIC orxINLINE orxVOID orxTime_Exit()
+orxSTATIC orxINLINE orxVOID orxSystem_Exit()
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Exit)();
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Exit)();
 }
 
 /** Gets time.
  * @return Current time.
  */
-orxSTATIC orxINLINE orxFLOAT orxTime_GetTime()
+orxSTATIC orxINLINE orxFLOAT orxSystem_GetTime()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_GetTime)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetTime)();
 }
 
 /** Gets date.
  * @return Current date.
  */
-orxSTATIC orxINLINE orxDATE orxTime_GetDate()
+orxSTATIC orxINLINE orxDATE orxSystem_GetDate()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_GetDate)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetDate)();
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _fTime  Number of seconds to wait.
+ * @param[in] _fSystem  Number of seconds to wait.
  */
-orxSTATIC orxINLINE orxVOID orxTime_Delay(orxFLOAT _fTime)
+orxSTATIC orxINLINE orxVOID orxSystem_Delay(orxFLOAT _fSystem)
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxTime_Delay)(_fTime);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Delay)(_fSystem);
 }
 
-#endif /* _orxTIME_H_ */
+#endif /* _orxSYSTEM_H_ */

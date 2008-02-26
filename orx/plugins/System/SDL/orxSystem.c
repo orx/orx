@@ -1,5 +1,5 @@
 /**
- * \file orxTime.c
+ * \file orxSystem.c
  */
 
 /***************************************************************************
@@ -23,26 +23,26 @@
 #include "debug/orxDebug.h"
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
-#include "core/orxTime.h"
+#include "core/orxSystem.h"
 
 #include <SDL/SDL.h>
 
-#define orxTIME_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxTIME_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
+#define orxSYSTEM_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
+#define orxSYSTEM_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
-typedef struct __orxTIME_STATIC_t
+typedef struct __orxSYSTEM_STATIC_t
 {
-  orxU32 u32Flags;         /**< Flags set by the time plugin module */
-} orxTIME_STATIC;
+  orxU32 u32Flags;         /**< Flags set by the system plugin module */
+} orxSYSTEM_STATIC;
 
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
-orxSTATIC orxTIME_STATIC sstTime;
+orxSTATIC orxSYSTEM_STATIC sstSystem;
 
 /***************************************************************************
  * Private functions                                                       *
@@ -52,18 +52,18 @@ orxSTATIC orxTIME_STATIC sstTime;
  * Public functions                                                        *
  ***************************************************************************/
 
-/** Init the time module
+/** Init the system module
  * @return Returns the status of the operation
  */
-orxSTATUS orxTimeSDL_Init()
+orxSTATUS orxSystemSDL_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS; /* Init result */
 
   /* Module not already initialized ? */
-  if(!(sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY))
+  if(!(sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstTime, 0, sizeof(orxTIME_STATIC));
+    orxMemory_Set(&sstSystem, 0, sizeof(orxSYSTEM_STATIC));
 
     /* Hqs SDL_Init already been called ? */
     if(SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
@@ -71,11 +71,11 @@ orxSTATUS orxTimeSDL_Init()
       /* No, calls it */
       if(SDL_Init(0)==0)
       {
-        /* Init time subsystem */
-        if(SDL_InitSubSystem(SDL_INIT_TIMER)==0)
+        /* Init system subsystem */
+        if(SDL_InitSubSystem(SDL_INIT_SYSTEMR)==0)
         {
           /* Set module as ready */
-          sstTime.u32Flags = orxTIME_KU32_STATIC_FLAG_READY;
+          sstSystem.u32Flags = orxSYSTEM_KU32_STATIC_FLAG_READY;
           
           /* Successfull init */
           eResult = orxSTATUS_SUCCESS;
@@ -88,15 +88,15 @@ orxSTATUS orxTimeSDL_Init()
   return eResult;
 }
 
-/** Exit the time module
+/** Exit the system module
  */
-orxVOID orxTimeSDL_Exit()
+orxVOID orxSystemSDL_Exit()
 {
   /* Module initialized ? */
-  if((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY)
+  if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
   {
-    /* Unitialize SDL Time */
-    SDL_QuitSubSystem(SDL_INIT_TIMER);
+    /* Unitialize SDL System */
+    SDL_QuitSubSystem(SDL_INIT_SYSTEMR);
     
     /* All subsystem uninitialized ? */
     if(SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
@@ -106,30 +106,30 @@ orxVOID orxTimeSDL_Exit()
     }
     
     /* Module not ready now */
-    sstTime.u32Flags = orxTIME_KU32_STATIC_FLAG_NONE;
+    sstSystem.u32Flags = orxSYSTEM_KU32_STATIC_FLAG_NONE;
   }
 }
 
 /** Gets App Elapsed time.
  * @return Returns the amount of seconds elapsed from the application start.
  */
-orxFLOAT orxTimeSDL_GetTime()
+orxFLOAT orxSystemSDL_GetTime()
 {
   /* Module initialized ? */
-  orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   return(orx2F(0.001f) * orxU2F(SDL_GetTicks()));
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _fTime Number of seconds to wait.
+ * @param[in] _fSystem Number of seconds to wait.
  */
-orxVOID orxTimeSDL_Delay(orxFLOAT _fTime)
+orxVOID orxSystemSDL_Delay(orxFLOAT _fSystem)
 {
   /* Module initialized ? */
-  orxASSERT((sstTime.u32Flags & orxTIME_KU32_STATIC_FLAG_READY) == orxTIME_KU32_STATIC_FLAG_READY);
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
   
-  SDL_Delay(orxF2U(orx2F(1000.0f) * _fTime));
+  SDL_Delay(orxF2U(orx2F(1000.0f) * _fSystem));
 }
 
 
@@ -137,9 +137,9 @@ orxVOID orxTimeSDL_Delay(orxFLOAT _fTime)
  * Plugin Related                                                          *
  ***************************************************************************/
 
-orxPLUGIN_USER_CORE_FUNCTION_START(TIME);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Init, TIME, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Exit, TIME, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_GetTime, TIME, GET_TIME);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxTimeSDL_Delay, TIME, DELAY);
+orxPLUGIN_USER_CORE_FUNCTION_START(SYSTEM);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_Init, SYSTEM, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_Exit, SYSTEM, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_GetTime, SYSTEM, GET_TIME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_Delay, SYSTEM, DELAY);
 orxPLUGIN_USER_CORE_FUNCTION_END();

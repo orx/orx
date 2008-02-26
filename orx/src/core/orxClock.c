@@ -251,7 +251,7 @@ orxVOID orxClock_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_TIME);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_SYSTEM);
 
   return;
 }
@@ -282,7 +282,7 @@ orxSTATUS orxClock_Init()
       sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
 
       /* Gets init time */
-      sstClock.fTime  = orxTime_GetTime();
+      sstClock.fTime  = orxSystem_GetTime();
 
       /* Inits Flags */
       sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
@@ -365,7 +365,7 @@ orxSTATUS orxClock_Update()
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
     /* Gets new time */
-    fNewTime  = orxTime_GetTime();
+    fNewTime  = orxSystem_GetTime();
 
     /* Computes natural DT */
     fDT       = fNewTime - sstClock.fTime;

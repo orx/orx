@@ -1,6 +1,6 @@
 /**
- * \file orxPlugin_Time.h
- * This header is used to define ID for timer plugin registration.
+ * \file orxPlugin_System.h
+ * This header is used to define ID for systemr plugin registration.
  */
 
 /*
@@ -19,8 +19,8 @@
  ***************************************************************************/
 
 
-#ifndef _orxPLUGIN_TIME_H_
-#define _orxPLUGIN_TIME_H_
+#ifndef _orxPLUGIN_SYSTEM_H_
+#define _orxPLUGIN_SYSTEM_H_
 
 #include "orxPlugin_CoreID.h"
 
@@ -29,18 +29,18 @@
  Constants
  *********************************************/
 
-typedef enum __orxPLUGIN_FUNCTION_BASE_ID_TIME_t
+typedef enum __orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_t
 {
-  orxPLUGIN_FUNCTION_BASE_ID_TIME_INIT = 0,
-  orxPLUGIN_FUNCTION_BASE_ID_TIME_EXIT,
-  orxPLUGIN_FUNCTION_BASE_ID_TIME_GET_TIME,
-  orxPLUGIN_FUNCTION_BASE_ID_TIME_DELAY,
+  orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_INIT = 0,
+  orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_EXIT,
+  orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_GET_TIME,
+  orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_DELAY,
 
-  orxPLUGIN_FUNCTION_BASE_ID_TIME_NUMBER,
+  orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_NUMBER,
 
-  orxPLUGIN_FUNCTION_BASE_ID_TIME_NONE = orxENUM_NONE
+  orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_NONE = orxENUM_NONE
     
-} orxPLUGIN_FUNCTION_BASE_ID_TIME;
+} orxPLUGIN_FUNCTION_BASE_ID_SYSTEM;
 
 
-#endif /* _orxPLUGIN_TIME_H_ */
+#endif /* _orxPLUGIN_SYSTEM_H_ */

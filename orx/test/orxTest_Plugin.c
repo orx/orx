@@ -437,8 +437,8 @@ orxVOID orxTest_RegisterCorePlugin()
   sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].zType        = "sound";
   sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SOUND].eModuleID    = orxMODULE_ID_SOUND;
   
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].zType         = "time";
-  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_TIME].eModuleID     = orxMODULE_ID_TIME;
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SYSTEM].zType       = "system";
+  sstTest_Plugin.astPlugins[orxPLUGIN_CORE_ID_SYSTEM].eModuleID   = orxMODULE_ID_SYSTEM;
 
   orxMemory_Set(&sstTest_Plugin.azFileName, 0, sizeof(sstTest_Plugin.azFileName));
 }

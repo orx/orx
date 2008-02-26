@@ -61,13 +61,13 @@
             include/core/orxConfig.h
             include/core/orxClock.h
             include/core/orxEvent.h
-            include/core/orxTime.h
+            include/core/orxSystem.h
         </headers>
         <sources>
             src/core/orxConfig.c
             src/core/orxClock.c
             src/core/orxEvent.c
-            src/core/orxTime.c
+            src/core/orxSystem.c
         </sources>
 
         <headers>
@@ -165,7 +165,7 @@
             include/plugin/define/orxPlugin_Render.h
             include/plugin/define/orxPlugin_Script.h
             include/plugin/define/orxPlugin_Sound.h
-            include/plugin/define/orxPlugin_Time.h
+            include/plugin/define/orxPlugin_System.h
         </headers>
         <sources>
             src/plugin/orxPlugin.c

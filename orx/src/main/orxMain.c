@@ -119,7 +119,7 @@ orxVOID orxMain_Run()
     orxClock_Update();
 
     /* Wait for next time slice */
-    orxTime_Delay(orxFLOAT_0);
+    orxSystem_Delay(orxFLOAT_0);
   }
 
   return;

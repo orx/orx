@@ -31,7 +31,7 @@
 
 
 #include "orxInclude.h"
-#include "core/orxTime.h"
+#include "core/orxSystem.h"
 
 
 #define orxCLOCK_KU32_CLOCK_BANK_SIZE                 16          /**< Clock bank size */

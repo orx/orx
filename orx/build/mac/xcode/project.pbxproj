@@ -824,7 +824,7 @@
 		};
 		0000000000000000000000e0 = {
 			isa = PBXFileReference;
-			path = orxTime.c;
+			path = orxSystem.c;
 			sourceTree = "<group>";
 		};
 		0000000000000000000000e3 = {
@@ -1211,24 +1211,24 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Time_SDL;
+			path = System_SDL;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		0000000000000000000007a0 = {
 			isa = PBXFileReference;
-			path = orxTime.c;
+			path = orxSystem.c;
 			sourceTree = "<group>";
 		};
 		0000000000000000000007e8 = {
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Time_SFML;
+			path = System_SFML;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		0000000000000000000007eb = {
 			isa = PBXFileReference;
-			path = orxTime.cpp;
+			path = orxSystem.cpp;
 			sourceTree = "<group>";
 		};
 		000000000000000000000833 = {
@@ -1562,7 +1562,7 @@
 			children = (
 				0000000000000000000007a0,
 			);
-			path = plugins/Time/SDL;
+			path = plugins/System/SDL;
 			sourceTree = "<group>";
 		};
 		0000000000000000000007ea = {
@@ -1570,7 +1570,7 @@
 			children = (
 				0000000000000000000007eb,
 			);
-			path = plugins/Time/SFML;
+			path = plugins/System/SFML;
 			sourceTree = "<group>";
 		};
 		000000000000000000000835 = {
@@ -1910,7 +1910,7 @@
 			dependencies = (
 				00000000000000000000075a,
 			);
-			name = Time_SDL;
+			name = System_SDL;
 			productReference = 00000000000000000000079d;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1925,7 +1925,7 @@
 			dependencies = (
 				0000000000000000000007a5,
 			);
-			name = Time_SFML;
+			name = System_SFML;
 			productReference = 0000000000000000000007e8;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -25143,14 +25143,14 @@
 		00000000000000000000075c = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25159,14 +25159,14 @@
 		00000000000000000000075d = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25175,14 +25175,14 @@
 		00000000000000000000075e = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25191,14 +25191,14 @@
 		00000000000000000000075f = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25207,14 +25207,14 @@
 		000000000000000000000760 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25223,14 +25223,14 @@
 		000000000000000000000761 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0";
@@ -25238,14 +25238,14 @@
 		000000000000000000000762 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1";
@@ -25253,14 +25253,14 @@
 		000000000000000000000763 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -25268,14 +25268,14 @@
 		000000000000000000000764 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25284,14 +25284,14 @@
 		000000000000000000000765 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25300,14 +25300,14 @@
 		000000000000000000000766 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25316,14 +25316,14 @@
 		000000000000000000000767 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25332,14 +25332,14 @@
 		000000000000000000000768 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25348,14 +25348,14 @@
 		000000000000000000000769 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25364,14 +25364,14 @@
 		00000000000000000000076a = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25380,14 +25380,14 @@
 		00000000000000000000076b = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -25395,14 +25395,14 @@
 		00000000000000000000076c = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -25410,14 +25410,14 @@
 		00000000000000000000076d = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0";
@@ -25425,14 +25425,14 @@
 		00000000000000000000076e = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1";
@@ -25440,14 +25440,14 @@
 		00000000000000000000076f = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -25455,14 +25455,14 @@
 		000000000000000000000770 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -25470,14 +25470,14 @@
 		000000000000000000000771 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25486,14 +25486,14 @@
 		000000000000000000000772 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25502,14 +25502,14 @@
 		000000000000000000000773 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25518,14 +25518,14 @@
 		000000000000000000000774 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25534,14 +25534,14 @@
 		000000000000000000000775 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0";
@@ -25549,14 +25549,14 @@
 		000000000000000000000776 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1";
@@ -25564,14 +25564,14 @@
 		000000000000000000000777 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25580,14 +25580,14 @@
 		000000000000000000000778 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25596,14 +25596,14 @@
 		000000000000000000000779 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1";
@@ -25611,14 +25611,14 @@
 		00000000000000000000077a = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0";
@@ -25626,14 +25626,14 @@
 		00000000000000000000077b = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -25641,14 +25641,14 @@
 		00000000000000000000077c = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -25656,14 +25656,14 @@
 		00000000000000000000077d = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -25671,14 +25671,14 @@
 		00000000000000000000077e = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25687,14 +25687,14 @@
 		00000000000000000000077f = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25703,14 +25703,14 @@
 		000000000000000000000780 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0";
@@ -25718,14 +25718,14 @@
 		000000000000000000000781 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -25733,14 +25733,14 @@
 		000000000000000000000782 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -25748,14 +25748,14 @@
 		000000000000000000000783 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1";
@@ -25763,14 +25763,14 @@
 		000000000000000000000784 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25779,14 +25779,14 @@
 		000000000000000000000785 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25795,14 +25795,14 @@
 		000000000000000000000786 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25811,14 +25811,14 @@
 		000000000000000000000787 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25827,14 +25827,14 @@
 		000000000000000000000788 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0";
@@ -25842,14 +25842,14 @@
 		000000000000000000000789 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -25857,14 +25857,14 @@
 		00000000000000000000078a = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25873,14 +25873,14 @@
 		00000000000000000000078b = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25889,14 +25889,14 @@
 		00000000000000000000078c = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25905,14 +25905,14 @@
 		00000000000000000000078d = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25921,14 +25921,14 @@
 		00000000000000000000078e = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1";
@@ -25936,14 +25936,14 @@
 		00000000000000000000078f = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0";
@@ -25951,14 +25951,14 @@
 		000000000000000000000790 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -25966,14 +25966,14 @@
 		000000000000000000000791 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -25981,14 +25981,14 @@
 		000000000000000000000792 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -25997,14 +25997,14 @@
 		000000000000000000000793 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26013,14 +26013,14 @@
 		000000000000000000000794 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26029,14 +26029,14 @@
 		000000000000000000000795 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26045,14 +26045,14 @@
 		000000000000000000000796 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -26060,14 +26060,14 @@
 		000000000000000000000797 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1";
@@ -26075,14 +26075,14 @@
 		000000000000000000000798 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1";
@@ -26090,14 +26090,14 @@
 		000000000000000000000799 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -26105,14 +26105,14 @@
 		00000000000000000000079a = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -26120,14 +26120,14 @@
 		00000000000000000000079b = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SDL;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SDL;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0";
@@ -26135,14 +26135,14 @@
 		0000000000000000000007a7 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -26150,14 +26150,14 @@
 		0000000000000000000007a8 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -26165,14 +26165,14 @@
 		0000000000000000000007a9 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -26180,14 +26180,14 @@
 		0000000000000000000007aa = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26196,14 +26196,14 @@
 		0000000000000000000007ab = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26212,14 +26212,14 @@
 		0000000000000000000007ac = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -26227,14 +26227,14 @@
 		0000000000000000000007ad = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26243,14 +26243,14 @@
 		0000000000000000000007ae = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26259,14 +26259,14 @@
 		0000000000000000000007af = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26275,14 +26275,14 @@
 		0000000000000000000007b0 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26291,14 +26291,14 @@
 		0000000000000000000007b1 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26307,14 +26307,14 @@
 		0000000000000000000007b2 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26323,14 +26323,14 @@
 		0000000000000000000007b3 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26339,14 +26339,14 @@
 		0000000000000000000007b4 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -26354,14 +26354,14 @@
 		0000000000000000000007b5 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26370,14 +26370,14 @@
 		0000000000000000000007b6 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26386,14 +26386,14 @@
 		0000000000000000000007b7 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -26401,14 +26401,14 @@
 		0000000000000000000007b8 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26417,14 +26417,14 @@
 		0000000000000000000007b9 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26433,14 +26433,14 @@
 		0000000000000000000007ba = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -26448,14 +26448,14 @@
 		0000000000000000000007bb = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -26463,14 +26463,14 @@
 		0000000000000000000007bc = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26479,14 +26479,14 @@
 		0000000000000000000007bd = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26495,14 +26495,14 @@
 		0000000000000000000007be = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26511,14 +26511,14 @@
 		0000000000000000000007bf = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26527,14 +26527,14 @@
 		0000000000000000000007c0 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26543,14 +26543,14 @@
 		0000000000000000000007c1 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26559,14 +26559,14 @@
 		0000000000000000000007c2 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -26574,14 +26574,14 @@
 		0000000000000000000007c3 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -26589,14 +26589,14 @@
 		0000000000000000000007c4 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -26604,14 +26604,14 @@
 		0000000000000000000007c5 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -26619,14 +26619,14 @@
 		0000000000000000000007c6 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -26634,14 +26634,14 @@
 		0000000000000000000007c7 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -26649,14 +26649,14 @@
 		0000000000000000000007c8 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26665,14 +26665,14 @@
 		0000000000000000000007c9 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26681,14 +26681,14 @@
 		0000000000000000000007ca = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -26696,14 +26696,14 @@
 		0000000000000000000007cb = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26712,14 +26712,14 @@
 		0000000000000000000007cc = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -26727,14 +26727,14 @@
 		0000000000000000000007cd = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -26742,14 +26742,14 @@
 		0000000000000000000007ce = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -26757,14 +26757,14 @@
 		0000000000000000000007cf = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -26772,14 +26772,14 @@
 		0000000000000000000007d0 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26788,14 +26788,14 @@
 		0000000000000000000007d1 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26804,14 +26804,14 @@
 		0000000000000000000007d2 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26820,14 +26820,14 @@
 		0000000000000000000007d3 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26836,14 +26836,14 @@
 		0000000000000000000007d4 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -26851,14 +26851,14 @@
 		0000000000000000000007d5 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -26866,14 +26866,14 @@
 		0000000000000000000007d6 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26882,14 +26882,14 @@
 		0000000000000000000007d7 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -26897,14 +26897,14 @@
 		0000000000000000000007d8 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26913,14 +26913,14 @@
 		0000000000000000000007d9 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26929,14 +26929,14 @@
 		0000000000000000000007da = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26945,14 +26945,14 @@
 		0000000000000000000007db = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -26960,14 +26960,14 @@
 		0000000000000000000007dc = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -26975,14 +26975,14 @@
 		0000000000000000000007dd = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -26991,14 +26991,14 @@
 		0000000000000000000007de = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
 			};
@@ -27007,14 +27007,14 @@
 		0000000000000000000007df = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";
@@ -27022,14 +27022,14 @@
 		0000000000000000000007e0 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -27037,14 +27037,14 @@
 		0000000000000000000007e1 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -27052,14 +27052,14 @@
 		0000000000000000000007e2 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -27067,14 +27067,14 @@
 		0000000000000000000007e3 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0";
@@ -27082,14 +27082,14 @@
 		0000000000000000000007e4 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxTEST__ __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1";
@@ -27097,14 +27097,14 @@
 		0000000000000000000007e5 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0";
@@ -27112,14 +27112,14 @@
 		0000000000000000000007e6 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/time;
+				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/core/system;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__  __orxGCC__  __orxDLL__";
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxLIB";
-				PRODUCT_NAME = Time_SFML;
-				SYMROOT = ../../../bin/plugins/core/time;
+				PRODUCT_NAME = System_SFML;
+				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
 			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1";

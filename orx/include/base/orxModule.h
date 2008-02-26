@@ -56,12 +56,12 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_SOUND,
   orxMODULE_ID_SCREENSHOT,
   orxMODULE_ID_STRUCTURE,
+  orxMODULE_ID_SYSTEM,
 #ifdef __orxTEST__
   orxMODULE_ID_TEST,
 #endif /* __orxTEST__ */
   orxMODULE_ID_TEXTIO,
   orxMODULE_ID_TEXTURE,
-  orxMODULE_ID_TIME,
   orxMODULE_ID_TREE,
   orxMODULE_ID_VIEWPORT,
 

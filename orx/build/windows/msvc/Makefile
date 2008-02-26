@@ -76,7 +76,7 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxConfig.obj \
 	.\$(BUILD)\orxDLL_orxClock.obj \
 	.\$(BUILD)\orxDLL_orxEvent.obj \
-	.\$(BUILD)\orxDLL_orxTime.obj \
+	.\$(BUILD)\orxDLL_orxSystem.obj \
 	.\$(BUILD)\orxDLL_orxDebug.obj \
 	.\$(BUILD)\orxDLL_orxFPS.obj \
 	.\$(BUILD)\orxDLL_orxGraphic.obj \
@@ -123,7 +123,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxConfig.obj \
 	.\$(BUILD)\orxLIB_orxClock.obj \
 	.\$(BUILD)\orxLIB_orxEvent.obj \
-	.\$(BUILD)\orxLIB_orxTime.obj \
+	.\$(BUILD)\orxLIB_orxSystem.obj \
 	.\$(BUILD)\orxLIB_orxDebug.obj \
 	.\$(BUILD)\orxLIB_orxFPS.obj \
 	.\$(BUILD)\orxLIB_orxGraphic.obj \
@@ -295,22 +295,22 @@ FILESYSTEM_LIBC_CFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(CPPFLAGS) $(CFLAGS)
 FILESYSTEM_LIBC_OBJECTS =  \
 	.\$(BUILD)\FileSystem_LibC_orxFileSystem.obj
-TIME_SDL_CFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
+SYSTEM_SDL_CFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\time\Time_SDL.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\system\System_SDL.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) $(__orxTEST_p) /D$(orxCOMPILER) /D_CRT_SECURE_NO_WARNINGS \
 	$(__orxWARNINGFLAG) /I..\..\..\include /D__orxDLL__ /wd4100 /wd4206 /wd4201 \
 	$(CPPFLAGS) $(CFLAGS)
-TIME_SDL_OBJECTS =  \
-	.\$(BUILD)\Time_SDL_orxTime.obj
-TIME_SFML_CXXFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
+SYSTEM_SDL_OBJECTS =  \
+	.\$(BUILD)\System_SDL_orxSystem.obj
+SYSTEM_SFML_CXXFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\time\Time_SFML.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\system\System_SFML.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) $(__orxTEST_p) /D$(orxCOMPILER) /D_CRT_SECURE_NO_WARNINGS \
 	$(__orxWARNINGFLAG) /I..\..\..\include /D__orxDLL__ /GR /EHsc $(CPPFLAGS) \
 	$(CXXFLAGS)
-TIME_SFML_OBJECTS =  \
-	.\$(BUILD)\Time_SFML_orxTime.obj
+SYSTEM_SFML_OBJECTS =  \
+	.\$(BUILD)\System_SFML_orxSystem.obj
 BOUNCE_CFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
 	/Fd..\..\..\bin\plugins\demo\Bounce.pdb $(__orxDEBUG_p) /D$(orxPLATFORM) \
@@ -408,10 +408,10 @@ __FileSystem_LibC___depname = \
 	..\..\..\bin\plugins\core\file\FileSystem_LibC.dll
 !endif
 !if "$(USE_SDL)" == "1"
-__Time_SDL___depname = ..\..\..\bin\plugins\core\time\Time_SDL.dll
+__System_SDL___depname = ..\..\..\bin\plugins\core\system\System_SDL.dll
 !endif
 !if "$(USE_SFML)" == "1"
-__Time_SFML___depname = ..\..\..\bin\plugins\core\time\Time_SFML.dll
+__System_SFML___depname = ..\..\..\bin\plugins\core\system\System_SFML.dll
 !endif
 !if "$(USE_PLUGINS)" == "1"
 __Bounce___depname = ..\..\..\bin\plugins\demo\Bounce.dll
@@ -478,7 +478,7 @@ all: .\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Time_SDL___depname) $(__Time_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__System_SDL___depname) $(__System_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 clean: 
 	-if exist .\$(BUILD)\*.obj del .\$(BUILD)\*.obj
@@ -546,12 +546,12 @@ clean:
 	-if exist ..\..\..\bin\plugins\core\file\FileSystem_LibC.dll del ..\..\..\bin\plugins\core\file\FileSystem_LibC.dll
 	-if exist ..\..\..\bin\plugins\core\file\FileSystem_LibC.ilk del ..\..\..\bin\plugins\core\file\FileSystem_LibC.ilk
 	-if exist ..\..\..\bin\plugins\core\file\FileSystem_LibC.pdb del ..\..\..\bin\plugins\core\file\FileSystem_LibC.pdb
-	-if exist ..\..\..\bin\plugins\core\time\Time_SDL.dll del ..\..\..\bin\plugins\core\time\Time_SDL.dll
-	-if exist ..\..\..\bin\plugins\core\time\Time_SDL.ilk del ..\..\..\bin\plugins\core\time\Time_SDL.ilk
-	-if exist ..\..\..\bin\plugins\core\time\Time_SDL.pdb del ..\..\..\bin\plugins\core\time\Time_SDL.pdb
-	-if exist ..\..\..\bin\plugins\core\time\Time_SFML.dll del ..\..\..\bin\plugins\core\time\Time_SFML.dll
-	-if exist ..\..\..\bin\plugins\core\time\Time_SFML.ilk del ..\..\..\bin\plugins\core\time\Time_SFML.ilk
-	-if exist ..\..\..\bin\plugins\core\time\Time_SFML.pdb del ..\..\..\bin\plugins\core\time\Time_SFML.pdb
+	-if exist ..\..\..\bin\plugins\core\system\System_SDL.dll del ..\..\..\bin\plugins\core\system\System_SDL.dll
+	-if exist ..\..\..\bin\plugins\core\system\System_SDL.ilk del ..\..\..\bin\plugins\core\system\System_SDL.ilk
+	-if exist ..\..\..\bin\plugins\core\system\System_SDL.pdb del ..\..\..\bin\plugins\core\system\System_SDL.pdb
+	-if exist ..\..\..\bin\plugins\core\system\System_SFML.dll del ..\..\..\bin\plugins\core\system\System_SFML.dll
+	-if exist ..\..\..\bin\plugins\core\system\System_SFML.ilk del ..\..\..\bin\plugins\core\system\System_SFML.ilk
+	-if exist ..\..\..\bin\plugins\core\system\System_SFML.pdb del ..\..\..\bin\plugins\core\system\System_SFML.pdb
 	-if exist ..\..\..\bin\plugins\demo\Bounce.dll del ..\..\..\bin\plugins\demo\Bounce.dll
 	-if exist ..\..\..\bin\plugins\demo\Bounce.ilk del ..\..\..\bin\plugins\demo\Bounce.ilk
 	-if exist ..\..\..\bin\plugins\demo\Bounce.pdb del ..\..\..\bin\plugins\demo\Bounce.pdb
@@ -709,16 +709,16 @@ clean:
 !endif
 
 !if "$(USE_SDL)" == "1"
-..\..\..\bin\plugins\core\time\Time_SDL.dll: $(TIME_SDL_OBJECTS) $(__orxLIB___depname)
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_69) /pdb:"..\..\..\bin\plugins\core\time\Time_SDL.pdb"   @<<
-	$(TIME_SDL_OBJECTS)  ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
+..\..\..\bin\plugins\core\system\System_SDL.dll: $(SYSTEM_SDL_OBJECTS) $(__orxLIB___depname)
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_69) /pdb:"..\..\..\bin\plugins\core\system\System_SDL.pdb"   @<<
+	$(SYSTEM_SDL_OBJECTS)  ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
 <<
 !endif
 
 !if "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\time\Time_SFML.dll: $(TIME_SFML_OBJECTS) $(__orxLIB___depname)
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_69) /pdb:"..\..\..\bin\plugins\core\time\Time_SFML.pdb"   @<<
-	$(TIME_SFML_OBJECTS)  ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
+..\..\..\bin\plugins\core\system\System_SFML.dll: $(SYSTEM_SFML_OBJECTS) $(__orxLIB___depname)
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_69) /pdb:"..\..\..\bin\plugins\core\system\System_SFML.pdb"   @<<
+	$(SYSTEM_SFML_OBJECTS)  ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
 <<
 !endif
 
@@ -773,8 +773,8 @@ clean:
 .\$(BUILD)\orxDLL_orxEvent.obj: ..\..\..\src\core\orxEvent.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\core\orxEvent.c
 
-.\$(BUILD)\orxDLL_orxTime.obj: ..\..\..\src\core\orxTime.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\core\orxTime.c
+.\$(BUILD)\orxDLL_orxSystem.obj: ..\..\..\src\core\orxSystem.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\core\orxSystem.c
 
 .\$(BUILD)\orxDLL_orxDebug.obj: ..\..\..\src\debug\orxDebug.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\debug\orxDebug.c
@@ -893,8 +893,8 @@ clean:
 .\$(BUILD)\orxLIB_orxEvent.obj: ..\..\..\src\core\orxEvent.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\core\orxEvent.c
 
-.\$(BUILD)\orxLIB_orxTime.obj: ..\..\..\src\core\orxTime.c
-	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\core\orxTime.c
+.\$(BUILD)\orxLIB_orxSystem.obj: ..\..\..\src\core\orxSystem.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\core\orxSystem.c
 
 .\$(BUILD)\orxLIB_orxDebug.obj: ..\..\..\src\debug\orxDebug.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\debug\orxDebug.c
@@ -1040,11 +1040,11 @@ clean:
 .\$(BUILD)\FileSystem_LibC_orxFileSystem.obj: ..\..\..\plugins\File\LibC\orxFileSystem.c
 	$(CC) /c /nologo /TC /Fo$@ $(FILESYSTEM_LIBC_CFLAGS) ..\..\..\plugins\File\LibC\orxFileSystem.c
 
-.\$(BUILD)\Time_SDL_orxTime.obj: ..\..\..\plugins\Time\SDL\orxTime.c
-	$(CC) /c /nologo /TC /Fo$@ $(TIME_SDL_CFLAGS) ..\..\..\plugins\Time\SDL\orxTime.c
+.\$(BUILD)\System_SDL_orxSystem.obj: ..\..\..\plugins\System\SDL\orxSystem.c
+	$(CC) /c /nologo /TC /Fo$@ $(SYSTEM_SDL_CFLAGS) ..\..\..\plugins\System\SDL\orxSystem.c
 
-.\$(BUILD)\Time_SFML_orxTime.obj: ..\..\..\plugins\Time\SFML\orxTime.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(TIME_SFML_CXXFLAGS) ..\..\..\plugins\Time\SFML\orxTime.cpp
+.\$(BUILD)\System_SFML_orxSystem.obj: ..\..\..\plugins\System\SFML\orxSystem.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(SYSTEM_SFML_CXXFLAGS) ..\..\..\plugins\System\SFML\orxSystem.cpp
 
 .\$(BUILD)\Bounce_orxBounce.obj: ..\..\..\plugins\Demo\orxBounce.c
 	$(CC) /c /nologo /TC /Fo$@ $(BOUNCE_CFLAGS) ..\..\..\plugins\Demo\orxBounce.c

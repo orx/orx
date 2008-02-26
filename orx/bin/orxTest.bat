@@ -1,2 +1,2 @@
-orx.exe -T -P plugins/core/time/Time_SFML plugins/core/file/File_LibC 
+orx.exe -T -P plugins/core/system/System_SFML plugins/core/file/File_LibC 
 

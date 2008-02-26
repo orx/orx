@@ -123,18 +123,18 @@
 
 	<!-- PACKAGE -->
 
-	<!-- TIME -->
+	<!-- SYSTEM -->
 
 	<!-- Depends on SDL -->
-	<orx-plugin id="Time_SDL" cond="USE_SDL=='1'" template="orxSDL">
-		<category>core/time</category>
-		<sources>plugins/Time/SDL/orxTime.c</sources>
+	<orx-plugin id="System_SDL" cond="USE_SDL=='1'" template="orxSDL">
+		<category>core/system</category>
+		<sources>plugins/System/SDL/orxSystem.c</sources>
     </orx-plugin>
 
 	<!-- Depends on SFML -->
-	<orx-plugin id="Time_SFML" cond="USE_SFML=='1'" template="orxSFML">
-		<category>core/time</category>
-		<sources>plugins/Time/SFML/orxTime.cpp</sources>
+	<orx-plugin id="System_SFML" cond="USE_SFML=='1'" template="orxSFML">
+		<category>core/system</category>
+		<sources>plugins/System/SFML/orxSystem.cpp</sources>
 	</orx-plugin> -->
 
 	<!-- BOUNCE DEMO -->
