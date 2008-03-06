@@ -5036,6 +5036,9 @@
 				RelativePath="..\..\..\src\memory\orxBank.c"
 			/>
 			<File
+				RelativePath="..\..\..\src\physics\orxBody.c"
+			/>
+			<File
 				RelativePath="..\..\..\src\render\orxCamera.c"
 			/>
 			<File
@@ -5163,6 +5166,9 @@
 			/>
 			<File
 				RelativePath="..\..\..\include\memory\orxBank.h"
+			/>
+			<File
+				RelativePath="..\..\..\include\physics\orxBody.h"
 			/>
 			<File
 				RelativePath="..\..\..\include\render\orxCamera.h"

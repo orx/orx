@@ -389,7 +389,7 @@ orxSTATIC orxVOID orxCave_InitBulb()
     orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
 
     /* Creates & inits 2D graphic objet from texture */
-    pstGraphic = orxGraphic_Create();
+    pstGraphic = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
     orxGraphic_SetData(pstGraphic, (orxSTRUCTURE *)pstTexture);
     orxGraphic_SetPivot(pstGraphic, &orxVECTOR_0);
 
@@ -468,7 +468,7 @@ orxSTATIC orxSTATUS orxCave_Init()
         orxVector_Mul(&vPivot, &vPivot, &(sastInfo[i].vRelativePivot));
 
         /* Creates & inits 2D graphic objet from texture */
-        sstCave.astData[i].pstGraphic = orxGraphic_Create();
+        sstCave.astData[i].pstGraphic = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
         orxGraphic_SetData(sstCave.astData[i].pstGraphic, (orxSTRUCTURE *)sstCave.astData[i].pstTexture);
         orxGraphic_SetPivot(sstCave.astData[i].pstGraphic, &vPivot);
 

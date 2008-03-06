@@ -148,7 +148,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
 //    orxDisplay_SetBitmapColorKey(orxTexture_GetBitmap(sstBounce.pstTexture), orx2ARGB(0, 0xFF, 0x00, 0xFF), orxTRUE);
 
     /* Creates & inits 2D graphic objet from texture */
-    sstBounce.pstGraphic = orxGraphic_Create();
+    sstBounce.pstGraphic = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
     orxGraphic_SetData(sstBounce.pstGraphic, (orxSTRUCTURE *)sstBounce.pstTexture);
     orxGraphic_SetPivot(sstBounce.pstGraphic, &vPivot);
 

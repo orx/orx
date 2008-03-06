@@ -39,9 +39,7 @@
 #define orxOBJECT_KU32_STATIC_MASK_ALL          0xFFFFFFFF
 
 
-#define orxOBJECT_KU32_FLAG_NONE                0x00000000
-
-#define orxOBJECT_KU32_FLAG_ENABLED             0x00000001
+#define orxOBJECT_KU32_FLAG_ENABLED             0x10000000
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF
 
@@ -375,70 +373,94 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   return eResult;
 }
 
-/** Creates a 2D object
+/** Creates a specific object
+ * @param[in]   _u32Flags             Object flags (2D / body / ...)
  * @return  orxOBJECT / orxNULL
  */
-orxOBJECT *orxObject_Create2DObject()
+orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
 {
-  orxTEXTURE *pstTexture;
-  orxOBJECT  *pstObject = orxNULL;
+  orxOBJECT *pstObject = orxNULL;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32Flags & orxOBJECT_KU32_MASK_USER_ALL) == _u32Flags);
 
-  /* Loads textures */
-  pstTexture = orxTexture_Create();
+  /* Creates object */
+  pstObject = orxObject_Create();
 
   /* Valid? */
-  if(pstTexture != orxNULL)
+  if(pstObject != orxNULL)
   {
-    orxGRAPHIC *pstGraphic;
+    orxFRAME *pstFrame;
 
-    /* Creates & inits 2D graphic object from texture */
-    pstGraphic = orxGraphic_Create();
+    /* Creates its frame */
+    pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
 
     /* Valid? */
-    if(pstGraphic != orxNULL)
+    if(pstFrame != orxNULL)
     {
-      /* Sets graphic 2D data */
-      if(orxGraphic_SetData(pstGraphic, (orxSTRUCTURE *)pstTexture) == orxSTATUS_SUCCESS)
+      /* Links it */
+      if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) != orxSTATUS_FAILURE)
       {
-        orxFRAME *pstFrame;
+        /* Updates flags */
+        orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_FRAME].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+      }
+      else
+      {
+        /* Deletes all structures */
+        orxFrame_Delete(pstFrame);
+        orxObject_Delete(pstObject);
+        pstObject = orxNULL;
+      }
+    }
+    else
+    {
+      /* Deletes all structures */
+      orxObject_Delete(pstObject);
+      pstObject = orxNULL;
+    }
+  }
 
-        /* Creates its frame */
-        pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+  /* Still valid? */
+  if(pstObject != orxNULL)
+  {
+    /* 2D? */
+    if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_2D))
+    {
+      orxTEXTURE *pstTexture;
+
+      /* Loads textures */
+      pstTexture = orxTexture_Create();
+
+      /* Valid? */
+      if(pstTexture != orxNULL)
+      {
+        orxGRAPHIC *pstGraphic;
+
+        /* Creates & inits 2D graphic object from texture */
+        pstGraphic = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
 
         /* Valid? */
-        if(pstFrame != orxNULL)
+        if(pstGraphic != orxNULL)
         {
-          /* Creates & inits object */
-          pstObject = orxObject_Create();
-
-          /* Valid? */
-          if(pstObject != orxNULL)
+          /* Sets graphic 2D data */
+          if(orxGraphic_SetData(pstGraphic, (orxSTRUCTURE *)pstTexture) == orxSTATUS_SUCCESS)
           {
-            /* Links all structures */
-            if((orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
-            && (orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) != orxSTATUS_FAILURE))
+            /* Links it structures */
+            if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
             {
               /* Updates flags */
-              orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_FRAME].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
               orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+              orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_2D, orxOBJECT_KU32_FLAG_NONE);
             }
             else
             {
               /* !!! MSG !!! */
 
-              /* Unlinks structures */
-              orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_FRAME);
-              orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_GRAPHIC);
-
               /* Deletes all structures */
-              orxTexture_Delete(pstTexture);
               orxGraphic_Delete(pstGraphic);
-              orxFrame_Delete(pstFrame);
-
-              /* Updates result */
+              orxTexture_Delete(pstTexture);
+              orxObject_Delete(pstObject);
               pstObject = orxNULL;
             }
           }
@@ -447,9 +469,10 @@ orxOBJECT *orxObject_Create2DObject()
             /* !!! MSG !!! */
 
             /* Deletes all structures */
-            orxTexture_Delete(pstTexture);
             orxGraphic_Delete(pstGraphic);
-            orxFrame_Delete(pstFrame);
+            orxTexture_Delete(pstTexture);
+            orxObject_Delete(pstObject);
+            pstObject = orxNULL;
           }
         }
         else
@@ -458,7 +481,8 @@ orxOBJECT *orxObject_Create2DObject()
 
           /* Deletes all structures */
           orxTexture_Delete(pstTexture);
-          orxGraphic_Delete(pstGraphic);
+          orxObject_Delete(pstObject);
+          pstObject = orxNULL;
         }
       }
       else
@@ -466,16 +490,13 @@ orxOBJECT *orxObject_Create2DObject()
         /* !!! MSG !!! */
 
         /* Deletes all structures */
-        orxTexture_Delete(pstTexture);
-        orxGraphic_Delete(pstGraphic);
+        orxObject_Delete(pstObject);
+        pstObject = orxNULL;
       }
     }
     else
     {
       /* !!! MSG !!! */
-
-      /* Deletes all structures */
-      orxTexture_Delete(pstTexture);
     }
   }
   else
@@ -487,60 +508,51 @@ orxOBJECT *orxObject_Create2DObject()
   return pstObject;
 }
 
-/** Creates a 2D object from bitmap file
+/** Creates a specific object from bitmap file
  * @param[in]   _zBitmapFileName      Bitmap file name to associate with the 2D object
+ * @param[in]   _u32Flags             Object flags (2D / body / ...)
  * @ return orxOBJECT / orxNULL
  */
-orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBitmapFileName)
+orxOBJECT *orxFASTCALL orxObject_CreateSpecificObjectFromFile(orxCONST orxSTRING _zBitmapFileName, orxU32 _u32Flags)
 {
-  orxGRAPHIC *pstGraphic;
-  orxOBJECT  *pstObject = orxNULL;
+  orxOBJECT *pstObject = orxNULL;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_zBitmapFileName != orxNULL);
+  orxASSERT((_u32Flags & orxOBJECT_KU32_MASK_USER_ALL) == _u32Flags);
 
-  /* Creates & inits 2D graphic object from texture */
-  pstGraphic = orxGraphic_Create2DGraphicFromFile(_zBitmapFileName);
-
-  /* Valid? */
-  if(pstGraphic != orxNULL)
+  /* 2D? */
+  if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_2D))
   {
-    orxFRAME *pstFrame;
-
-    /* Creates its frame */
-    pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+    /* Creates a non 2D-specific object */
+    pstObject = orxObject_CreateSpecificObject(_u32Flags & ~orxOBJECT_KU32_FLAG_2D);
 
     /* Valid? */
-    if(pstFrame != orxNULL)
+    if(pstObject != orxNULL)
     {
-      /* Creates & inits object */
-      pstObject = orxObject_Create();
+      orxGRAPHIC *pstGraphic;
+
+      /* Creates & inits 2D graphic object from texture */
+      pstGraphic = orxGraphic_CreateFromFile(_zBitmapFileName, orxGRAPHIC_KU32_FLAG_2D);
 
       /* Valid? */
-      if(pstObject != orxNULL)
+      if(pstGraphic != orxNULL)
       {
-        /* Links all structures */
-        if((orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
-        && (orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstFrame) != orxSTATUS_FAILURE))
+        /* Links it structures */
+        if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
         {
           /* Updates flags */
-          orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_FRAME].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
           orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+          orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_2D, orxOBJECT_KU32_FLAG_NONE);
         }
         else
         {
           /* !!! MSG !!! */
 
-          /* Unlinks structures */
-          orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_FRAME);
-          orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_GRAPHIC);
-
           /* Deletes all structures */
           orxGraphic_Delete(pstGraphic);
-          orxFrame_Delete(pstFrame);
-
-          /* Updates result */
+          orxObject_Delete(pstObject);
           pstObject = orxNULL;
         }
       }
@@ -549,16 +561,13 @@ orxOBJECT *orxFASTCALL orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBit
         /* !!! MSG !!! */
 
         /* Deletes all structures */
-        orxGraphic_Delete(pstGraphic);
-        orxFrame_Delete(pstFrame);
+        orxObject_Delete(pstObject);
+        pstObject = orxNULL;
       }
     }
     else
     {
       /* !!! MSG !!! */
-
-      /* Deletes all structures */
-      orxGraphic_Delete(pstGraphic);
     }
   }
   else

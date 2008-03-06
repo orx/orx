@@ -19,7 +19,7 @@
  */
 
 /**
- * @addtogroup Displat
+ * @addtogroup Display
  * 
  * Graphic Module.
  * Allows to creates and handle 2D/3D Graphics.
@@ -46,7 +46,7 @@
 
 #define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic flag  */
 
-#define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
+#define orxGRAPHIC_KU32_MASK_USER_ALL         0x000000FF  /**< User all ID mask */
 
 
 /** Internal Graphic structure
@@ -68,15 +68,17 @@ extern orxDLLAPI orxVOID                      orxGraphic_Exit();
 
 
 /** Creates an empty graphic
+ * @param[in]   _u32Flags                     Graphic flags (2D / ...)
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxGRAPHIC *                 orxGraphic_Create();
+extern orxDLLAPI orxGRAPHIC *                 orxGraphic_Create(orxU32 _u32Flags);
 
-/** Creates a 2D graphic from bitmap files
+/** Creates a graphic from a file
  * @param[in]   _zBitmapFileName              Bitmap to use as data
+ * @param[in]   _u32Flags                     Graphic flags (2D / ...)
  * @ return orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Create2DGraphicFromFile(orxCONST orxSTRING _zBitmapFileName);
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_CreateFromFile(orxCONST orxSTRING _zBitmapFileName, orxU32 _u32Flags);
 
 /** Deletes a graphic
  * @param[in]   _pstGraphic       Graphic to delete

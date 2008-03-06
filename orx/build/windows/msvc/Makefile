@@ -96,6 +96,7 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxFrame.obj \
 	.\$(BUILD)\orxDLL_orxObject.obj \
 	.\$(BUILD)\orxDLL_orxStructure.obj \
+	.\$(BUILD)\orxDLL_orxBody.obj \
 	.\$(BUILD)\orxDLL_orxPlugin.obj \
 	.\$(BUILD)\orxDLL_orxScript.obj \
 	.\$(BUILD)\orxDLL_orxSound.obj \
@@ -143,6 +144,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxFrame.obj \
 	.\$(BUILD)\orxLIB_orxObject.obj \
 	.\$(BUILD)\orxLIB_orxStructure.obj \
+	.\$(BUILD)\orxLIB_orxBody.obj \
 	.\$(BUILD)\orxLIB_orxPlugin.obj \
 	.\$(BUILD)\orxLIB_orxScript.obj \
 	.\$(BUILD)\orxLIB_orxSound.obj \
@@ -833,6 +835,9 @@ clean:
 .\$(BUILD)\orxDLL_orxStructure.obj: ..\..\..\src\object\orxStructure.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\object\orxStructure.c
 
+.\$(BUILD)\orxDLL_orxBody.obj: ..\..\..\src\physics\orxBody.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\physics\orxBody.c
+
 .\$(BUILD)\orxDLL_orxPlugin.obj: ..\..\..\src\plugin\orxPlugin.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\plugin\orxPlugin.c
 
@@ -952,6 +957,9 @@ clean:
 
 .\$(BUILD)\orxLIB_orxStructure.obj: ..\..\..\src\object\orxStructure.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\object\orxStructure.c
+
+.\$(BUILD)\orxLIB_orxBody.obj: ..\..\..\src\physics\orxBody.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\physics\orxBody.c
 
 .\$(BUILD)\orxLIB_orxPlugin.obj: ..\..\..\src\plugin\orxPlugin.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\plugin\orxPlugin.c

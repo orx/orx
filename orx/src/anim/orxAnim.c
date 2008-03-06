@@ -400,116 +400,136 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
   return pstAnim;
 }
 
-/** Creates a 2D animation from bitmap files
+/** Creates an animation from files
  * @param[in]   _zBitmapFilePattern         Bitmap file pattern relative to animation
- * @param[in]   _fKeyDuration             Duration of each key
+ * @param[in]   _u32Flags                   Anim flags (2D / ...)
+ * @param[in]   _fKeyDuration               Duration of each key
  * @ return orxANIM / orxNULL
  */
-orxANIM *orxFASTCALL orxAnim_Create2DAnimFromFile(orxCONST orxSTRING _zBitmapFilePattern, orxFLOAT _fKeyDuration)
+orxANIM *orxFASTCALL orxAnim_CreateFromFile(orxCONST orxSTRING _zBitmapFilePattern, orxU32 _u32Flags, orxFLOAT _fKeyDuration)
 {
-  orxS32    s32MarkerIndex;
   orxANIM  *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zBitmapFilePattern != orxNULL);
+  orxASSERT((_u32Flags & orxANIM_KU32_MASK_USER_ALL) == _u32Flags);
   orxASSERT(_fKeyDuration > orxFLOAT_0);
 
-  /* Gets marker index */
-  s32MarkerIndex = orxString_SearchCharIndex(_zBitmapFilePattern, orxANIM_KC_NUMBER_MARKER, 0);
-
-  /* Found? */
-  if(s32MarkerIndex >= 0)
+  /* 2D? */
+  if(orxFLAG_TEST(_u32Flags, orxANIM_KU32_FLAG_2D))
   {
-    orxBANK  *pstBank;
+    orxS32 s32MarkerIndex;
 
-    /* Creates temp bank */
-    pstBank = orxBank_Create(32, sizeof(orxGRAPHIC *), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    /* Gets marker index */
+    s32MarkerIndex = orxString_SearchCharIndex(_zBitmapFilePattern, orxANIM_KC_NUMBER_MARKER, 0);
 
-    /* Valid? */
-    if(pstBank != orxNULL)
+    /* Found? */
+    if(s32MarkerIndex >= 0)
     {
-      orxGRAPHIC   *pstGraphic;
-      orxGRAPHIC  **ppstGraphic;
-      orxU32        u32MarkerNumber, u32AnimSize;
-      orxCHAR       zBaseName[256];
+      orxBANK *pstBank;
 
-      /* Gets number of marker */
-      for(u32MarkerNumber = 1;
-          (*(_zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber) != orxCHAR_NULL) && (*(_zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber) == orxANIM_KC_NUMBER_MARKER);
-          u32MarkerNumber++);
+      /* Creates temp bank */
+      pstBank = orxBank_Create(32, sizeof(orxGRAPHIC *), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-      /* Checks */
-      orxASSERT(s32MarkerIndex + u32MarkerNumber < 255);
-
-      /* Clears buffer */
-      orxMemory_Set(zBaseName, 0, 256 * sizeof(orxCHAR));
-
-      /* Copies base name */
-      orxString_NCopy(zBaseName, _zBitmapFilePattern, 256);
-
-      /* For all matching files pattern */
-      for(u32AnimSize = 0, orxString_Print(zBaseName + s32MarkerIndex, "%0*d%s", u32MarkerNumber, u32AnimSize + 1, _zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber);
-          (pstGraphic = orxGraphic_Create2DGraphicFromFile(zBaseName)) != orxNULL;
-          orxString_Print(zBaseName + s32MarkerIndex, "%0*d%s", u32MarkerNumber, ++u32AnimSize + 1, _zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber))
+      /* Valid? */
+      if(pstBank != orxNULL)
       {
-        /* Allocates a cell */
-        ppstGraphic = orxBank_Allocate(pstBank);
+        orxGRAPHIC   *pstGraphic;
+        orxGRAPHIC  **ppstGraphic;
+        orxU32        u32MarkerNumber, u32AnimSize;
+        orxCHAR       zBaseName[256];
+
+        /* Gets number of marker */
+        for(u32MarkerNumber = 1;
+            (*(_zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber) != orxCHAR_NULL) && (*(_zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber) == orxANIM_KC_NUMBER_MARKER);
+            u32MarkerNumber++);
+
+        /* Checks */
+        orxASSERT(s32MarkerIndex + u32MarkerNumber < 255);
+
+        /* Clears buffer */
+        orxMemory_Set(zBaseName, 0, 256 * sizeof(orxCHAR));
+
+        /* Copies base name */
+        orxString_NCopy(zBaseName, _zBitmapFilePattern, 256);
+
+        /* For all matching files pattern */
+        for(u32AnimSize = 0, orxString_Print(zBaseName + s32MarkerIndex, "%0*d%s", u32MarkerNumber, u32AnimSize + 1, _zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber);
+            (pstGraphic = orxGraphic_CreateFromFile(zBaseName, orxGRAPHIC_KU32_FLAG_2D)) != orxNULL;
+            orxString_Print(zBaseName + s32MarkerIndex, "%0*d%s", u32MarkerNumber, ++u32AnimSize + 1, _zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber))
+        {
+        orxLOG("%s", zBaseName);
+          /* Allocates a cell */
+          ppstGraphic = orxBank_Allocate(pstBank);
+
+          /* Valid? */
+          if(ppstGraphic != orxNULL)
+          {            
+            /* Stores it */
+            *ppstGraphic = pstGraphic;
+          }
+          else
+          {
+            /* !!! MSG !!! */
+            break;
+          }
+        }
+
+        /* Creates anim */
+        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32AnimSize);
 
         /* Valid? */
-        if(ppstGraphic != orxNULL)
-        {            
-          /* Stores it */
-          *ppstGraphic = pstGraphic;
+        if(pstResult != orxNULL)
+        {
+          orxFLOAT fTimeStamp;
+
+          /* For all created graphics */
+          for(fTimeStamp = _fKeyDuration, ppstGraphic = orxBank_GetNext(pstBank, orxNULL);
+              ppstGraphic != orxNULL;
+              fTimeStamp += _fKeyDuration, ppstGraphic = orxBank_GetNext(pstBank, ppstGraphic))
+          {
+            /* Adds it */
+            if(orxAnim_AddKey(pstResult, (orxSTRUCTURE *)*ppstGraphic, fTimeStamp) == orxSTATUS_FAILURE)
+            {
+              /* !!! MSG !!! */
+
+              /* Deletes it */
+              orxGraphic_Delete(*ppstGraphic);
+            }
+          }
+
+          /* Updates internal flag */
+          orxStructure_SetFlags(pstResult, orxANIM_KU32_FLAG_INTERNAL, orxANIM_KU32_FLAG_NONE);
         }
         else
         {
-          /* !!! MSG !!! */
-          break;
-        }
-      }
-
-      /* Creates anim */
-      pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32AnimSize);
-
-      /* Valid? */
-      if(pstResult != orxNULL)
-      {
-        orxFLOAT fTimeStamp;
-
-        /* For all created graphics */
-        for(fTimeStamp = _fKeyDuration, ppstGraphic = orxBank_GetNext(pstBank, orxNULL);
-            ppstGraphic != orxNULL;
-            fTimeStamp += _fKeyDuration, ppstGraphic = orxBank_GetNext(pstBank, ppstGraphic))
-        {
-          /* Adds it */
-          if(orxAnim_AddKey(pstResult, (orxSTRUCTURE *)*ppstGraphic, fTimeStamp) == orxSTATUS_FAILURE)
+          /* For all created graphics */
+          for(ppstGraphic = orxBank_GetNext(pstBank, orxNULL);
+              ppstGraphic != orxNULL;
+              ppstGraphic = orxBank_GetNext(pstBank, ppstGraphic))
           {
-            /* !!! MSG !!! */
-
             /* Deletes it */
             orxGraphic_Delete(*ppstGraphic);
           }
         }
 
-        /* Updates internal flag */
-        orxStructure_SetFlags(pstResult, orxANIM_KU32_FLAG_INTERNAL, orxANIM_KU32_FLAG_NONE);
+        /* Deletes bank */
+        orxBank_Delete(pstBank);
       }
       else
       {
-        /* For all created graphics */
-        for(ppstGraphic = orxBank_GetNext(pstBank, orxNULL);
-            ppstGraphic != orxNULL;
-            ppstGraphic = orxBank_GetNext(pstBank, ppstGraphic))
-        {
-          /* Deletes it */
-          orxGraphic_Delete(*ppstGraphic);
-        }
+        /* !!! MSG !!! */
       }
-
-      /* Deletes bank */
-      orxBank_Delete(pstBank);
     }
+    else
+    {
+      /* !!! MSG !!! */
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
   }
 
   /* Done! */

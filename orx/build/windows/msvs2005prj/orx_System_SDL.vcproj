@@ -9,8 +9,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="orxDLL"
-	ProjectGUID="{67C13ED8-6B31-5C84-A96D-6CC9B17C929D}"
+	Name="System_SDL"
+	ProjectGUID="{E1289444-0932-5A4B-8EFE-79FFD3C1D4B1}"
 	>
 	<Platforms>
 		<Platform
@@ -23,8 +23,8 @@
 	<Configurations>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -53,14 +53,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -71,22 +71,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -97,7 +96,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -109,8 +108,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -139,14 +138,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -157,22 +156,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -183,7 +181,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -195,8 +193,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -225,14 +223,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -243,22 +241,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -269,7 +266,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -281,8 +278,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -311,14 +308,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -329,22 +326,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -355,7 +351,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -367,8 +363,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -397,14 +393,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -415,22 +411,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -441,7 +436,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -453,8 +448,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -483,14 +478,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -501,22 +496,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -527,7 +521,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -539,8 +533,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -569,14 +563,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -587,22 +581,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -613,7 +606,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -625,8 +618,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -655,14 +648,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -673,22 +666,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -699,7 +691,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -711,8 +703,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -741,14 +733,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -759,22 +751,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -785,7 +776,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -797,8 +788,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -827,14 +818,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -845,22 +836,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -871,7 +861,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -883,8 +873,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -913,14 +903,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -931,22 +921,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -957,7 +946,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -969,8 +958,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -999,14 +988,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1017,22 +1006,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1043,7 +1031,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1055,8 +1043,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1085,14 +1073,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1103,22 +1091,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1129,7 +1116,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1141,8 +1128,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1171,14 +1158,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1189,22 +1176,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1215,7 +1201,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1227,8 +1213,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1257,14 +1243,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1275,22 +1261,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1301,7 +1286,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1313,8 +1298,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1343,14 +1328,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1361,22 +1346,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orx.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1387,7 +1371,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1398,9 +1382,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1429,14 +1413,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1447,22 +1431,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1473,7 +1456,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1484,9 +1467,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1515,14 +1498,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1533,22 +1516,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1559,7 +1541,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1570,9 +1552,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1601,14 +1583,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1619,22 +1601,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1645,7 +1626,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1656,9 +1637,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1687,14 +1668,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1705,22 +1686,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1731,7 +1711,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1742,9 +1722,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1773,14 +1753,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1791,22 +1771,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1817,7 +1796,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1828,9 +1807,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1859,14 +1838,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1877,22 +1856,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1903,7 +1881,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -1914,9 +1892,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -1945,14 +1923,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -1963,22 +1941,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -1989,7 +1966,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2000,9 +1977,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2031,14 +2008,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2049,22 +2026,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2075,7 +2051,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2086,9 +2062,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2117,14 +2093,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2135,22 +2111,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2161,7 +2136,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2172,9 +2147,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2203,14 +2178,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2221,22 +2196,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2247,7 +2221,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2258,9 +2232,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2289,14 +2263,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2307,22 +2281,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2333,7 +2306,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2344,9 +2317,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2375,14 +2348,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2393,22 +2366,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2419,7 +2391,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2430,9 +2402,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2461,14 +2433,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2479,22 +2451,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2505,7 +2476,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2516,9 +2487,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2547,14 +2518,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2565,22 +2536,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2591,7 +2561,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2602,9 +2572,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2633,14 +2603,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2651,22 +2621,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2677,7 +2646,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2688,9 +2657,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\release\orxDLL"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\release\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2719,14 +2688,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxDLL\"
-				ObjectFile=".\release\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orx.pdb"
+				AssemblerListingLocation=".\release\System_SDL\"
+				ObjectFile=".\release\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="1"
 				SuppressStartupBanner="true"
 			/>
@@ -2737,22 +2706,21 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orx.dll"
+				AdditionalDependencies="..\..\..\lib\static\orx.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="1"
-				ImportLibrary="..\..\..\lib\dynamic\orx.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orx.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2763,7 +2731,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2775,8 +2743,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2805,14 +2773,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -2823,23 +2791,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2850,7 +2817,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2862,8 +2829,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2892,14 +2859,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -2910,23 +2877,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2937,7 +2903,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -2949,8 +2915,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -2979,14 +2945,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -2997,23 +2963,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3024,7 +2989,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3036,8 +3001,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3066,14 +3031,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3084,23 +3049,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3111,7 +3075,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3123,8 +3087,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3153,14 +3117,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3171,23 +3135,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3198,7 +3161,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3210,8 +3173,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3240,14 +3203,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3258,23 +3221,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3285,7 +3247,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3297,8 +3259,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3327,14 +3289,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3345,23 +3307,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3372,7 +3333,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3384,8 +3345,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3414,14 +3375,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3432,23 +3393,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3459,7 +3419,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3471,8 +3431,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3501,14 +3461,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3519,23 +3479,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3546,7 +3505,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3558,8 +3517,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3588,14 +3547,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3606,23 +3565,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3633,7 +3591,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3645,8 +3603,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3675,14 +3633,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3693,23 +3651,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3720,7 +3677,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3732,8 +3689,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3762,14 +3719,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3780,23 +3737,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3807,7 +3763,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3819,8 +3775,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3849,14 +3805,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3867,23 +3823,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3894,7 +3849,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3906,8 +3861,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -3936,14 +3891,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -3954,23 +3909,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -3981,7 +3935,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -3993,8 +3947,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4023,14 +3977,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4041,23 +3995,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4068,7 +4021,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4080,8 +4033,8 @@
 		</Configuration>
 		<Configuration
 			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4110,14 +4063,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4128,23 +4081,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\dynamic\orxd.lib"
+				AdditionalOptions="SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4155,7 +4107,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4166,9 +4118,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4197,14 +4149,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4215,23 +4167,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4242,7 +4193,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4253,9 +4204,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4284,14 +4235,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4302,23 +4253,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4329,7 +4279,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4340,9 +4290,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4371,14 +4321,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4389,23 +4339,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4416,7 +4365,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4427,9 +4376,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4458,14 +4407,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4476,23 +4425,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4503,7 +4451,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4514,9 +4462,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4545,14 +4493,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4563,23 +4511,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4590,7 +4537,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4601,9 +4548,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4632,14 +4579,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4650,23 +4597,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4677,7 +4623,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4688,9 +4634,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4719,14 +4665,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4737,23 +4683,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4764,7 +4709,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4775,9 +4720,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4806,14 +4751,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4824,23 +4769,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4851,7 +4795,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4862,9 +4806,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4893,14 +4837,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4911,23 +4855,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -4938,7 +4881,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -4949,9 +4892,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -4980,14 +4923,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -4998,23 +4941,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -5025,7 +4967,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -5036,9 +4978,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -5067,14 +5009,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -5085,23 +5027,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -5112,7 +5053,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -5123,9 +5064,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -5154,14 +5095,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -5172,23 +5113,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -5199,7 +5139,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -5210,9 +5150,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -5241,14 +5181,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -5259,23 +5199,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -5286,7 +5225,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -5297,9 +5236,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -5328,14 +5267,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -5346,23 +5285,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -5373,7 +5311,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -5384,9 +5322,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -5415,14 +5353,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -5433,23 +5371,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -5460,7 +5397,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -5471,9 +5408,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\dynamic"
-			IntermediateDirectory=".\debug\orxDLL"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\plugins\core\system"
+			IntermediateDirectory=".\debug\System_SDL"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -5502,14 +5439,14 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxDLL\"
-				ObjectFile=".\debug\orxDLL\"
-				ProgramDataBaseFileName="..\..\..\lib\dynamic\orxd.pdb"
+				AssemblerListingLocation=".\debug\System_SDL\"
+				ObjectFile=".\debug\System_SDL\"
+				ProgramDataBaseFileName="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -5520,23 +5457,22 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				AdditionalOptions=""
-				OutputFile="..\..\..\lib\dynamic\orxd.dll"
+				AdditionalDependencies="..\..\..\lib\static\orxd.lib"
+				AdditionalOptions="..\..\..\bin\orx.lib SDL.lib"
+				OutputFile="..\..\..\bin\plugins\core\system\System_SDL.dll"
 				LinkIncremental="2"
-				ImportLibrary="..\..\..\lib\dynamic\orxd.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\..\lib\dynamic\orxd.pdb"
+				ProgramDatabaseFile="..\..\..\bin\plugins\core\system\System_SDL.pdb"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -5547,7 +5483,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\dynamic\orx_orxDLL.bsc"
+				OutputFile="..\..\..\bin\plugins\core\system\orx_System_SDL.bsc"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -5568,325 +5504,7 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			>
 			<File
-				RelativePath="..\..\..\src\anim\orxAnim.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\anim\orxAnimPointer.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\anim\orxAnimSet.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\memory\orxBank.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\physics\orxBody.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\render\orxCamera.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\core\orxClock.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\core\orxConfig.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\debug\orxDebug.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\display\orxDisplay.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\core\orxEvent.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\debug\orxFPS.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\utils\orxFSM.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\io\orxFile.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\io\orxFileSystem.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\object\orxFrame.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\display\orxGraphic.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\utils\orxHashTable.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\io\orxJoystick.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\io\orxKeyboard.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\utils\orxLinkList.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\memory\orxMemory.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\base\orxModule.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\io\orxMouse.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\object\orxObject.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\io\orxPackage.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\main\orxParam.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\plugin\orxPlugin.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\utils\orxQueue.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\render\orxRender.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\utils\orxScreenshot.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\script\orxScript.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\sound\orxSound.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\utils\orxString.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\object\orxStructure.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\core\orxSystem.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\io\orxTextIO.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\display\orxTexture.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\utils\orxTree.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\math\orxVector.c"
-			/>
-			<File
-				RelativePath="..\..\..\src\render\orxViewport.c"
-			/>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			>
-			<File
-				RelativePath="..\..\..\include\orx.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\anim\orxAnim.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\anim\orxAnimPointer.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\anim\orxAnimSet.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\memory\orxBank.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\physics\orxBody.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\render\orxCamera.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\core\orxClock.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\core\orxConfig.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\debug\orxDebug.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\base\orxDecl.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\display\orxDisplay.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\core\orxEvent.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\debug\orxFPS.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\utils\orxFSM.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\io\orxFile.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\io\orxFileSystem.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\object\orxFrame.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\display\orxGraphic.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\utils\orxHashTable.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\orxInclude.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\io\orxJoystick.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\orxKernel.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\io\orxKeyboard.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\utils\orxLinkList.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\math\orxMath.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\memory\orxMemory.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\base\orxModule.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\io\orxMouse.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\object\orxObject.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\io\orxPackage.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\main\orxParam.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\orxPlugin.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\orxPluginCore.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\orxPluginType.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\orxPluginUser.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_CoreDefine.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_CoreID.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Display.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_File.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_FileSystem.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Joystick.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Keyboard.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Mouse.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Package.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Render.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Script.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_Sound.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\plugin\define\orxPlugin_System.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\utils\orxQueue.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\render\orxRender.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\utils\orxScreenshot.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\script\orxScript.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\sound\orxSound.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\utils\orxString.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\object\orxStructure.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\core\orxSystem.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\io\orxTextIO.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\display\orxTexture.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\utils\orxTree.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\base\orxType.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\orxUtils.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\math\orxVector.h"
-			/>
-			<File
-				RelativePath="..\..\..\include\render\orxViewport.h"
+				RelativePath="..\..\..\plugins\System\SDL\orxSystem.c"
 			/>
 		</Filter>
 	</Files>

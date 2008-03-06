@@ -26,10 +26,6 @@
 #include "anim/orxAnimPointer.h"
 #include "anim/orxAnimSet.h"
 
-#include "render/orxCamera.h"
-#include "render/orxRender.h"
-#include "render/orxViewport.h"
-
 #include "core/orxClock.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
@@ -65,6 +61,12 @@
 #include "plugin/orxPlugin.h"
 #include "plugin/orxPluginCore.h"
 #include "plugin/orxPluginUser.h"
+
+#include "physics/orxBody.h"
+
+#include "render/orxCamera.h"
+#include "render/orxRender.h"
+#include "render/orxViewport.h"
 
 #include "script/orxScript.h"
 

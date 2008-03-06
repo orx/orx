@@ -147,6 +147,13 @@
         </sources>
 
         <headers>
+            include/physics/orxBody.h
+        </headers>
+        <sources>
+            src/physics/orxBody.c
+        </sources>
+
+        <headers>
             include/plugin/orxPlugin.h
             include/plugin/orxPluginCore.h
             include/plugin/orxPluginType.h

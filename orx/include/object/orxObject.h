@@ -42,6 +42,16 @@
 #include "math/orxVector.h"
 
 
+/** Flags */
+
+#define orxOBJECT_KU32_FLAG_NONE            0x00000000  /**< No flags */
+
+#define orxOBJECT_KU32_FLAG_2D              0x00000001  /**< 2D flags */
+#define orxOBJECT_KU32_FLAG_BODY            0x00000002  /**< Body flags */
+
+#define orxOBJECT_KU32_MASK_USER_ALL        0x000000FF  /**< User all ID mask */
+
+
 /** Defines */
 #define orxOBJECT_GET_STRUCTURE(OBJECT, TYPE) orxSTRUCTURE_GET_POINTER(_orxObject_GetStructure(OBJECT, orxSTRUCTURE_ID_##TYPE), TYPE)
 
@@ -60,16 +70,18 @@ extern orxDLLAPI orxVOID                    orxObject_Exit();
 /** Creates an empty object. */
 extern orxDLLAPI orxOBJECT *                orxObject_Create();
 
-/** Creates a 2D object
+/** Creates a specific object
+ * @param[in]   _u32Flags             Object flags (2D / body / ...)
  * @return  orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *                orxObject_Create2DObject();
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateSpecificObject(orxU32 _u32Flags);
 
-/** Creates a 2D object from bitmap file
+/** Creates a specific object from bitmap file
  * @param[in]   _zBitmapFileName      Bitmap file name to associate with the 2D object
+ * @param[in]   _u32Flags             Object flags (2D / body / ...)
  * @ return orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create2DObjectFromFile(orxCONST orxSTRING _zBitmapFileName);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateSpecificObjectFromFile(orxCONST orxSTRING _zBitmapFileName, orxU32 _u32Flags);
 
 /** Deletes an object. */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObject);

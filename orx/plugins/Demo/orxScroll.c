@@ -239,7 +239,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
       orxVector_Set(&vPivot, orxFLOAT_0, fHeight, orxFLOAT_0); 
 
       /* Creates & inits 2D graphic objet from texture */
-      sstScroll.astData[i].pstGraphic = orxGraphic_Create();
+      sstScroll.astData[i].pstGraphic = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
       orxGraphic_SetData(sstScroll.astData[i].pstGraphic, (orxSTRUCTURE *)sstScroll.astData[i].pstTexture);
       orxGraphic_SetPivot(sstScroll.astData[i].pstGraphic, &vPivot);
     }
@@ -323,7 +323,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
       orxTexture_GetSize(pstBackgroundTexture, &fBackgroundWidth, &fBackgroundHeight);
 
       /* Creates & inits 2D graphic objet from texture */
-      pstBackgroundGraphic = orxGraphic_Create();
+      pstBackgroundGraphic = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
       orxGraphic_SetData(pstBackgroundGraphic, (orxSTRUCTURE *)pstBackgroundTexture);
 
       /* Creates background frame */
