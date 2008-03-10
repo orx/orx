@@ -38,8 +38,6 @@
 #define orxBODY_KU32_STATIC_FLAG_READY      0x00000001
 
 
-#define orxBODY_KU32_FLAG_INTERNAL          0x10000000  /**< Internal structure handling flag  */
-
 #define orxBODY_KU32_MASK_ALL               0xFFFFFFFF  /**< All flags */
 
 
@@ -52,21 +50,33 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Body part structure
+ */
+typedef struct __orxBODY_PART_t
+{
+  orxSTRUCTURE *pstData;                                    /**< Data structure : 4 */
+  orxU16        u16SelfFlags;                               /**< Self defining flags : 6 */
+  orxU16        u16CheckMask;                               /**< Check mask : 8 */
+
+  orxPAD(8);
+
+} orxBODY_PART;
+
 /** Body structure
  */
 struct __orxBODY_t
 {
-  orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
-  orxSTRUCTURE *pstData;                    /**< Data structure : 20 */
+  orxSTRUCTURE  stStructure;                                /**< Public structure, first structure member : 16 */
+  orxBODY_PART  astDataList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 48 */
 
-  orxPAD(20)
+  orxPAD(48)
 };
 
 /** Static structure
  */
 typedef struct __orxBODY_STATIC_t
 {
-  orxU32 u32Flags;                          /**< Control flags : 4 */
+  orxU32 u32Flags;                                          /**< Control flags : 4 */
 
 } orxBODY_STATIC;
 
@@ -188,7 +198,7 @@ orxVOID orxBody_Exit()
  * @param[in]   _u32Flags                     Body flags (2D / ...)
  * @return      Created orxBODY / orxNULL
  */
-orxBODY *orxBody_Create(orxU32 _u32Flags)
+orxBODY *orxFASTCALL orxBody_Create(orxU32 _u32Flags)
 {
   orxBODY *pstBody;
 
@@ -231,8 +241,14 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstBody) == 0)
   {
-    /* Cleans data */
-    orxBody_SetData(_pstBody, orxNULL);
+    orxU32 i;
+
+    /* For all data structure */
+    for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
+    {
+      /* Cleans it */
+      orxBody_SetPartData(_pstBody, i, orxNULL, 0, 0);
+    }
 
     /* Deletes structure */
     orxStructure_Delete(_pstBody);
@@ -249,51 +265,55 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
   return eResult;
 }
 
-/** Sets body data
- * @param[in]   _pstBody     Body concerned
+/** Sets body part data
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @param[in]   _pstData        Data structure to set / orxNULL
+ * @param[in]   _u16SelfFlags   Self defining flags
+ * @param[in]   _u16CheckMask   Mask to check against other body parts
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_SetData(orxBODY *_pstBody, orxSTRUCTURE *_pstData)
+orxSTATUS orxFASTCALL orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, orxSTRUCTURE *_pstData, orxU16 _u16SelfFlags, orxU16 _u16CheckMask)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  
+
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
   /* Had previously data? */
-  if(_pstBody->pstData != orxNULL)
+  if(_pstBody->astDataList[_u32Index].pstData != orxNULL)
   {
     /* Updates structure reference counter */
-    orxStructure_DecreaseCounter(_pstBody->pstData);
+    orxStructure_DecreaseCounter(_pstBody->astDataList[_u32Index].pstData);
 
-    /* Internally handled? */
-    if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_INTERNAL))
+    /* Stores flags & mask */
+    _pstBody->astDataList[_u32Index].u16SelfFlags = _u16SelfFlags;
+    _pstBody->astDataList[_u32Index].u16CheckMask = _u16CheckMask;
+
+    /* 2D data ? */
+    if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_2D))
     {
-      /* 2D data ? */
-      if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_2D))
-      {
-        /* !!! TODO !!! */
-      }
-      else
-      {
-        /* !!! MSG !!! */
+      /* !!! TODO !!! */
+    }
+    else
+    {
+      /* !!! MSG !!! */
 
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-      }
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
 
     /* Cleans reference */
-    _pstBody->pstData = orxNULL;
+    _pstBody->astDataList[_u32Index].pstData = orxNULL;
   }
 
   /* Valid & sets new data? */
   if((eResult != orxSTATUS_FAILURE) && (_pstData != orxNULL))
   {
     /* Stores it */
-    _pstBody->pstData = _pstData;
+    _pstBody->astDataList[_u32Index].pstData = _pstData;
 
     /* Updates structure reference counter */
     orxStructure_IncreaseCounter(_pstData);
@@ -305,21 +325,73 @@ orxSTATUS orxFASTCALL orxBody_SetData(orxBODY *_pstBody, orxSTRUCTURE *_pstData)
   return eResult;
 }
 
-/** Gets body data
- * @param[in]   _pstBody     Concerned body
+/** Gets body part data
+ * @param[in]   _pstBody      Concerned body
+ * @param[in]   _u32Index     Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @return      OrxSTRUCTURE / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxBody_GetData(orxCONST orxBODY *_pstBody)
+orxSTRUCTURE *orxFASTCALL orxBody_GetPartData(orxCONST orxBODY *_pstBody, orxU32 _u32Index)
 {
   orxSTRUCTURE *pstStructure;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
   /* Updates result */
-  pstStructure = _pstBody->pstData;
+  pstStructure = _pstBody->astDataList[_u32Index].pstData;
 
   /* Done! */
   return pstStructure;
+}
+
+/** Gets body part self flags
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @return      Body part self flags / orxU16_UNDEFINED
+ */
+orxU16 orxFASTCALL orxBody_GetPartSelfFlags(orxCONST orxBODY *_pstBody, orxU32 _u32Index)
+{
+  orxU16 u16Result = orxU16_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
+
+  /* Is a valid part? */
+  if(_pstBody->astDataList[_u32Index].pstData != orxNULL)
+  {
+    /* Updates result */
+    u16Result = _pstBody->astDataList[_u32Index].u16SelfFlags;
+  }
+
+  /* Done! */
+  return u16Result;
+}
+
+/** Gets body part self flags
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @return      Body part check mask / orxU16_UNDEFINED
+ */
+orxU16 orxFASTCALL orxBody_GetPartCheckMask(orxCONST orxBODY *_pstBody, orxU32 _u32Index)
+{
+  orxU16 u16Result = orxU16_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
+
+  /* Is a valid part? */
+  if(_pstBody->astDataList[_u32Index].pstData != orxNULL)
+  {
+    /* Updates result */
+    u16Result = _pstBody->astDataList[_u32Index].u16CheckMask;
+  }
+
+  /* Done! */
+  return u16Result;
 }

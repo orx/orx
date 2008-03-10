@@ -558,7 +558,6 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
       /* Not valid? */
       if((s32ConfigWidth <= 0) || (s32ConfigHeight <= 0) || ((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(s32ConfigWidth, s32ConfigHeight), szTitle, sf::Style::Close)) == orxNULL))
       {
-
         /* Inits default rendering window */
         sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::Style::Close);
       }

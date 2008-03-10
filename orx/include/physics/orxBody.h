@@ -45,6 +45,9 @@
 #define orxBODY_KU32_MASK_USER_ALL            0x000000FF  /**< User all ID mask */
 
 
+#define orxBODY_KU32_PART_MAX_NUMBER          4
+
+
 /** Internal Body structure
  */
 typedef struct __orxBODY_t                    orxBODY;
@@ -66,7 +69,7 @@ extern orxDLLAPI orxVOID                      orxBody_Exit();
 /** Creates an empty body
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxBODY *                    orxBody_Create();
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create();
 
 /** Deletes a body
  * @param[in]   _pstBody        Concerned body
@@ -74,18 +77,36 @@ extern orxDLLAPI orxBODY *                    orxBody_Create();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
 
-/** Sets body data
+/** Sets body part data
  * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @param[in]   _pstData        Data structure to set / orxNULL
+ * @param[in]   _u16SelfFlags   Self defining flags
+ * @param[in]   _u16CheckMask   Mask to check against other body parts
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetData(orxBODY *_pstBody, orxSTRUCTURE *_pstData);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, orxSTRUCTURE *_pstData, orxU16 _u16SelfFlags, orxU16 _u16CheckMask);
 
-/** Gets body data
- * @param[in]   _pstBody     Concerned body
+/** Gets body part data
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @return      OrxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetData(orxCONST orxBODY *_pstBody);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetPartData(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
+
+/** Gets body part self flags
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @return      Body part self flags / orxU16_UNDEFINED
+ */
+extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartSelfFlags(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
+
+/** Gets body part self flags
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @return      Body part check mask / orxU16_UNDEFINED
+ */
+extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartCheckMask(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
 
 
 #endif /* _orxGRAPHIC_H_ */

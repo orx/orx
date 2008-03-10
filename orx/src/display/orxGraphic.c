@@ -191,7 +191,7 @@ orxVOID orxGraphic_Exit()
  * @param[in]   _u32Flags                     Graphic flags (2D / ...)
  * @return      Created orxGRAPHIC / orxNULL
  */
-orxGRAPHIC *orxGraphic_Create(orxU32 _u32Flags)
+orxGRAPHIC *orxFASTCALL orxGraphic_Create(orxU32 _u32Flags)
 {
   orxGRAPHIC *pstGraphic;
 

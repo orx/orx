@@ -71,7 +71,7 @@ extern orxDLLAPI orxVOID                      orxGraphic_Exit();
  * @param[in]   _u32Flags                     Graphic flags (2D / ...)
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxGRAPHIC *                 orxGraphic_Create(orxU32 _u32Flags);
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Create(orxU32 _u32Flags);
 
 /** Creates a graphic from a file
  * @param[in]   _zBitmapFileName              Bitmap to use as data
