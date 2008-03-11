@@ -1384,7 +1384,7 @@ orxU32 orxFASTCALL orxObject_CreateProximityList(orxCONST orxAABOX *_pstCheckBox
 
   /* For all objects */
   for(u32Result = 0, pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT), OBJECT);
-      pstObject != orxNULL;
+      (u32Result < orxOBJECT_KU32_PROXIMITY_LIST_SIZE) && (pstObject != orxNULL);
       pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetNext(pstObject), OBJECT))
   {
     /* Gets its bounding box */
