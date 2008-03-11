@@ -40,7 +40,7 @@
  */
 #define orxBODY_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxBODY_KU32_FLAG_2D                  0x00000001  /**< 2D type graphic flag  */
+#define orxBODY_KU32_FLAG_2D                  0x00000001  /**< 2D type body flag */
 
 #define orxBODY_KU32_MASK_USER_ALL            0x000000FF  /**< User all ID mask */
 

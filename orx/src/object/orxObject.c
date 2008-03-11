@@ -52,6 +52,9 @@
 #define orxOBJECT_KU32_STORAGE_MASK_ALL         0xFFFFFFFF
 
 
+#define orxOBJECT_KU32_PROXIMITY_LIST_SIZE      128
+
+
 /*
  * Object storage structure
  */
@@ -72,6 +75,7 @@ struct __orxOBJECT_t
 {
   /* Public structure, first structure member : 16 */
   orxSTRUCTURE      stStructure;
+
 
   /* Used structures : 40 */
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER];
@@ -613,6 +617,48 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObjectFromFile(orxCONST orxSTRING
     {
       /* !!! MSG !!! */
     }
+
+    /* Valid? */
+    if(pstObject != orxNULL)
+    {
+      /* With body? */
+      if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY))
+      {
+        orxBODY *pstBody;
+
+        /* Creates body */
+        pstBody = orxBody_Create(orxBODY_KU32_FLAG_2D);
+
+        /* Valid? */
+        if(pstBody != orxNULL)
+        {
+          /* Links it structures */
+          if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
+          {
+            /* Updates flags */
+            orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+            orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_BODY, orxOBJECT_KU32_FLAG_NONE);
+          }
+          else
+          {
+            /* !!! MSG !!! */
+
+            /* Deletes all structures */
+            orxBody_Delete(pstBody);
+            orxObject_Delete(pstObject);
+            pstObject = orxNULL;
+          }
+        }
+        else
+        {
+          /* !!! MSG !!! */
+
+          /* Deletes all structures */
+          orxObject_Delete(pstObject);
+          pstObject = orxNULL;
+        }
+      }
+    }
   }
   else
   {
@@ -709,6 +755,12 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
         case orxSTRUCTURE_ID_ANIMPOINTER:
         {
           orxAnimPointer_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, ANIMPOINTER));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_BODY:
+        {
+          orxBody_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, BODY));
           break;
         }
 
@@ -1255,4 +1307,133 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _
 
   /* Done! */
   return eResult;
+}
+
+/** Gets object's bounding box
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstBoundingBox Bounding box result
+ * @return      Bounding box
+ */
+orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxAABOX *_pstBoundingBox)
+{
+  orxAABOX *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pstBoundingBox != orxNULL);
+
+  /* Cleans result */
+  orxMemory_Set(_pstBoundingBox, 0, sizeof(orxAABOX));
+
+  /* Is 2D ? */
+  if(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_2D))
+  {
+    orxGRAPHIC *pstGraphic;
+
+    /* Has graphic? */
+    if((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
+    {
+      orxTEXTURE *pstTexture;
+
+      /* Has Data? */
+      if((pstTexture = orxSTRUCTURE_GET_POINTER(orxGraphic_GetData(pstGraphic), TEXTURE)) != orxNULL)
+      {
+        orxFLOAT fWidth, fHeight;
+
+        /* Gets size */
+        if(orxTexture_GetSize(pstTexture, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+        {
+          orxVECTOR vPivot, vPosition;
+
+          /* Gets pivot & position */
+          orxObject_GetPivot(_pstObject, &vPivot);
+          orxObject_GetPosition(_pstObject, &vPosition);
+
+          /* Updates box */
+          orxVector_Sub(&(_pstBoundingBox->vTL), &vPosition, &vPivot);
+          orxVector_Set(&(_pstBoundingBox->vBR), _pstBoundingBox->vTL.fX + fWidth, _pstBoundingBox->vTL.fY + fHeight, _pstBoundingBox->vTL.fZ);
+
+          /* Updates result */
+          pstResult = _pstBoundingBox;
+        }        
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Creates a list of object at proximity of the given box (ie. whose bounding volume intersects this box)
+ * @param[in]   _pstCheckBox    Box to check intersection with
+ * @param[in]   _pastObjectList Created object list / orxNULL if none found
+ * @return      Number of objects contained in the list
+ */
+orxU32 orxFASTCALL orxObject_CreateProximityList(orxCONST orxAABOX *_pstCheckBox, orxOBJECT **_pastObjectList)
+{
+  orxOBJECT  *astList[orxOBJECT_KU32_PROXIMITY_LIST_SIZE];
+  orxAABOX    stObjectBox;
+  orxOBJECT  *pstObject;
+  orxU32      u32Result;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstCheckBox != orxNULL);
+  orxASSERT(_pastObjectList != orxNULL);
+
+  /* For all objects */
+  for(u32Result = 0, pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT), OBJECT);
+      pstObject != orxNULL;
+      pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetNext(pstObject), OBJECT))
+  {
+    /* Gets its bounding box */
+    if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+    {
+      /* Is intersecting? */
+      if(orxAABox_TestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
+      {
+        /* Adds it to list */
+        astList[u32Result++] = pstObject; 
+      }
+    }
+  }
+
+  /* Non empty? */
+  if(u32Result != 0)
+  {
+    /* Allocates list */
+    *_pastObjectList = orxMemory_Allocate(u32Result * sizeof(orxOBJECT *), orxMEMORY_TYPE_TEMP);
+
+    /* Success? */
+    if(*_pastObjectList != orxNULL)
+    {
+      /* Copies it */
+      orxMemory_Copy(*_pastObjectList, astList, u32Result * sizeof(orxOBJECT *));
+    }
+  }
+  else
+  {
+    /* Clears list */
+    *_pastObjectList = orxNULL;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Deletes an object list created with orxObject_CreateProximityList
+ * @param[in]   _astObjectList  Concerned object list
+ */
+orxVOID orxFASTCALL orxObject_DeleteProximityList(orxOBJECT *_astObjectList)
+{
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+
+  /* Non null? */
+  if(_astObjectList != orxNULL)
+  {
+    /* Deletes it */
+    orxMemory_Free(_astObjectList);
+  }
 }

@@ -27,7 +27,6 @@
 #include "physics/orxCollision.h"
 
 #include "debug/orxDebug.h"
-#include "memory/orxMemory.h"
 
 
 /** Module flags
@@ -47,7 +46,7 @@
 
 /** Collision structure
  */
-typedef struct __orxCOLLISION_t
+struct __orxCOLLISION_t
 {
   orxSTRUCTURE  stStructure;                                /**< Public structure, first structure member : 16 */
 
@@ -178,9 +177,11 @@ orxVOID orxCollision_Exit()
 
 /** Creates a collision
  * @param[in]   _u32Flags                     Collision flags (2D / shape / box / adaptive box / ...)
+ * @param[in]   _pvRelativeSize               Size of the collision relative to the object that will use it
+ * @param[in]   _pvRelativePosition           Position of the collicion relative to the pivot of the object that will use it
  * @return      Created orxCOLLISION / orxNULL
  */
-orxCOLLISION *orxFASTCALL orxCollision_Create(orxU32 _u32Flags)
+orxCOLLISION *orxFASTCALL orxCollision_Create(orxU32 _u32Flags, orxCONST orxVECTOR *_pvRelativeSize, orxCONST orxVECTOR *_pvRelativePosition)
 {
   orxCOLLISION *pstCollision;
 
@@ -200,7 +201,7 @@ orxCOLLISION *orxFASTCALL orxCollision_Create(orxU32 _u32Flags)
     /* 2D? */
     if(orxFLAG_TEST(_u32Flags, orxCOLLISION_KU32_FLAG_2D))
     {
-      /* !!! TODO !!! */
+      /* !!! TODO : depending on flags !!! */
 
       /* Updates flags */
       orxStructure_SetFlags(pstCollision, orxCOLLISION_KU32_FLAG_2D, orxCOLLISION_KU32_FLAG_NONE);

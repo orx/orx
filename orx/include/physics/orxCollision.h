@@ -32,13 +32,17 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "math/orxVector.h"
 
 
 /** Collision flags
  */
 #define orxCOLLISION_KU32_FLAG_NONE           0x00000000  /**< No flags */
 
-#define orxCOLLISION_KU32_FLAG_2D             0x00000001  /**< 2D type graphic flag  */
+#define orxCOLLISION_KU32_FLAG_2D             0x00000001  /**< 2D type collision flag  */
+#define orxCOLLISION_KU32_FLAG_SHAPE          0x00000002  /**< Shape perfect flag */
+#define orxCOLLISION_KU32_FLAG_BOX            0x00000004  /**< Box flag */
+#define orxCOLLISION_KU32_FLAG_ADAPTIVE_BOX   0x00000008  /**< Adpative box flag */
 
 #define orxCOLLISION_KU32_MASK_USER_ALL       0x000000FF  /**< User all ID mask */
 
@@ -63,9 +67,11 @@ extern orxDLLAPI orxVOID                      orxCollision_Exit();
 
 /** Creates an empty collision
  * @param[in]   _u32Flags                     Collision flags (2D / ...)
- * @return      Created orxGRAPHIC / orxNULL
+ * @param[in]   _pvRelativeSize               Size of the collision relative to the object that will use it
+ * @param[in]   _pvRelativePosition           Position of the collicion relative to the pivot of the object that will use it
+ * @return      Created orxCOLLISION / orxNULL
  */
-extern orxDLLAPI orxCOLLISION *orxFASTCALL    orxCollision_Create(orxU32 _u32Flags);
+extern orxDLLAPI orxCOLLISION *orxFASTCALL    orxCollision_Create(orxU32 _u32Flags, orxCONST orxVECTOR *_pvRelativeSize, orxCONST orxVECTOR *_pvRelativePosition);
 
 /** Deletes a collision
  * @param[in]   _pstCollision        Concerned collision

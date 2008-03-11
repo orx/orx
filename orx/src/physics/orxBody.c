@@ -122,9 +122,16 @@ orxSTATIC orxINLINE orxVOID orxBody_DeleteAll()
  */
 orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
+  orxU32    i;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* !!! TODO !!! */
+  /* For all objects */
+  
+  /* For all parts */
+  for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
+  {
+    /* !!! TODO !!! */
+  }
 
   /* Done! */
   return eResult;

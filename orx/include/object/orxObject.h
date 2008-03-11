@@ -48,7 +48,7 @@
 
 #define orxOBJECT_KU32_FLAG_2D              0x00000001  /**< 2D flags */
 #define orxOBJECT_KU32_FLAG_BODY            0x00000002  /**< Body flags */
-
+#define orxOBJECT_KU32_FLAG_NEIGHBOR_LIST   0x00000004  /**< Neighbor list flag */  
 #define orxOBJECT_KU32_MASK_USER_ALL        0x000000FF  /**< User all ID mask */
 
 
@@ -56,7 +56,7 @@
 #define orxOBJECT_GET_STRUCTURE(OBJECT, TYPE) orxSTRUCTURE_GET_POINTER(_orxObject_GetStructure(OBJECT, orxSTRUCTURE_ID_##TYPE), TYPE)
 
 
-/** Internal object structure. */
+/** Internal object structure */
 typedef struct __orxOBJECT_t                orxOBJECT;
 
 
@@ -215,5 +215,27 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetCurrentAnim(orxOBJECT *
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle);
+
+
+/** Gets object's bounding box
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pstBoundingBox Bounding box result
+ * @return      Bounding box
+ */
+extern orxDLLAPI orxAABOX *orxFASTCALL      orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxAABOX *_pstBoundingBox);
+
+
+/** Creates a list of object at proximity of the given box (ie. whose bounding volume intersects this box)
+ * @param[in]   _pstCheckBox    Box to check intersection with
+ * @param[in]   _pastObjectList Created object list / orxNULL if none found
+ * @return      Number of objects contained in the list
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_CreateProximityList(orxCONST orxAABOX *_pstCheckBox, orxOBJECT **_pastObjectList);
+
+/** Deletes an object list created with orxObject_CreateProximityList
+ * @param[in]   _astObjectList  Concerned object list
+ */
+extern orxDLLAPI orxVOID orxFASTCALL        orxObject_DeleteProximityList(orxOBJECT *_astObjectList);
+
 
 #endif /* _orxOBJECT_H_ */
