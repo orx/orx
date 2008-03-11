@@ -5045,6 +5045,9 @@
 				RelativePath="..\..\..\src\core\orxClock.c"
 			/>
 			<File
+				RelativePath="..\..\..\src\physics\orxCollision.c"
+			/>
+			<File
 				RelativePath="..\..\..\src\core\orxConfig.c"
 			/>
 			<File
@@ -5175,6 +5178,9 @@
 			/>
 			<File
 				RelativePath="..\..\..\include\core\orxClock.h"
+			/>
+			<File
+				RelativePath="..\..\..\include\physics\orxCollision.h"
 			/>
 			<File
 				RelativePath="..\..\..\include\core\orxConfig.h"

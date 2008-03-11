@@ -130,7 +130,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
     orxVector_Set(&vPosition, orx2F(0.5f) * sstBounce.fScreenWidth, orx2F(0.5f) * sstBounce.fScreenHeight, orxFLOAT_0); 
 
     /* Creates & inits camera */
-    sstBounce.pstCamera = orxCamera_Create();
+    sstBounce.pstCamera = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
     orxCamera_SetFrustrum(sstBounce.pstCamera, sstBounce.fScreenWidth, sstBounce.fScreenHeight, orx2F(2.0f), orx2F(100.0f));
     orxCamera_SetPosition(sstBounce.pstCamera, &vPosition);
 

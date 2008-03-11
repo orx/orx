@@ -36,8 +36,6 @@
 #define orxCAMERA_KU32_STATIC_FLAG_NONE       0x00000000  /**< No flags */
 
 #define orxCAMERA_KU32_STATIC_FLAG_READY      0x00000001  /**< Ready flag */
-#define orxCAMERA_KU32_STATIC_FLAG_DATA_2D    0x00000010  /**< 2D flag */
-#define orxCAMERA_KU32_STATIC_MASK_DEFAULT    0x00000010  /**< Default flag */
 
 #define orxCAMERA_KU32_STATIC_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
@@ -162,7 +160,7 @@ orxSTATUS orxCamera_Init()
   if(eResult == orxSTATUS_SUCCESS)
   {
     /* Inits Flags */
-    sstCamera.u32Flags = orxCAMERA_KU32_STATIC_FLAG_READY | orxCAMERA_KU32_STATIC_MASK_DEFAULT;
+    sstCamera.u32Flags = orxCAMERA_KU32_STATIC_FLAG_READY;
   }
   else
   {
@@ -198,15 +196,17 @@ orxVOID orxCamera_Exit()
 }
 
 /** Creates a camera
+ * @param[in]   _u32Flags               Camera flags (2D / ...)
  * @return      Created orxCAMERA / orxNULL
  */
-orxCAMERA *orxCamera_Create()
+orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
 {
   orxCAMERA *pstCamera = orxNULL;
   orxFRAME  *pstFrame;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxASSERT((_u32Flags & orxCAMERA_KU32_MASK_USER_ALL) == _u32Flags);
 
   /* Creates camera */
   pstCamera = (orxCAMERA *)orxStructure_Create(orxSTRUCTURE_ID_CAMERA);
@@ -221,7 +221,7 @@ orxCAMERA *orxCamera_Create()
     if(pstFrame != orxNULL)
     {
       /* 2D? */
-      if(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_DATA_2D)
+      if(orxFLAG_TEST(_u32Flags, orxCAMERA_KU32_FLAG_2D))
       {
         /* Stores frame */
         pstCamera->pstFrame = pstFrame;

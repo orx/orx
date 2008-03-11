@@ -41,7 +41,7 @@
  */
 #define orxCAMERA_KU32_FLAG_NONE              0x00000000 /**< No flags */
 
-#define orxCAMERA_KU32_FLAG_2D                0x00000010 /**< 2D flag */
+#define orxCAMERA_KU32_FLAG_2D                0x00000001 /**< 2D flag */
 
 #define orxCAMERA_KU32_MASK_USER_ALL          0x000000FF /**< User all mask */
 
@@ -65,9 +65,10 @@ extern orxDLLAPI orxVOID                orxCamera_Exit();
 
 
 /** Creates a camera
+ * @param[in]   _u32Flags               Camera flags (2D / ...)
  * @return      Created orxCAMERA / orxNULL
  */
-extern orxDLLAPI orxCAMERA *            orxCamera_Create();
+extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags);
 
 /** Deletes a camera
  * @param[in]   _pstCamera      Camera to delete

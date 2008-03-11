@@ -67,9 +67,10 @@ extern orxDLLAPI orxVOID                      orxBody_Exit();
 
 
 /** Creates an empty body
+ * @param[in]   _u32Flags                     Body flags (2D / ...)
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create();
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create(orxU32 _u32Flags);
 
 /** Deletes a body
  * @param[in]   _pstBody        Concerned body
@@ -89,27 +90,41 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartData(orxBODY *_pstB
 
 /** Gets body part data
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @return      OrxSTRUCTURE / orxNULL
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetPartData(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
 
 /** Gets body part self flags
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @return      Body part self flags / orxU16_UNDEFINED
  */
 extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartSelfFlags(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
 
 /** Gets body part self flags
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @return      Body part check mask / orxU16_UNDEFINED
  */
 extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartCheckMask(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
 
+/** Enables / disables a body part
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _bEnable        Enable / disable
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_EnablePart(orxBODY *_pstBody, orxU32 _u32Index, orxBOOL _bEnable);
 
-#endif /* _orxGRAPHIC_H_ */
+/** Part enabled get accessor
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsPartEnabled(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
+
+#endif /* _orxBODY_H_ */
 
 
 /** @} */

@@ -209,7 +209,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create(orxU32 _u32Flags)
     orxStructure_SetFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_ALL);
 
     /* 2D? */
-    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
+    if(orxFLAG_TEST(_u32Flags, orxGRAPHIC_KU32_FLAG_2D))
     {
       /* Updates flags */
       orxStructure_SetFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);

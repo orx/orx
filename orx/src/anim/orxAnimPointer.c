@@ -201,7 +201,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructur
   pstAnimPointer = orxSTRUCTURE_GET_POINTER(_pstStructure, ANIMPOINTER);
 
   /* Checks */
-  orxASSERT(pstAnimPointer != orxNULL);
+  orxSTRUCTURE_ASSERT(pstAnimPointer);
 
   /* Computes animation pointer */
   return(orxAnimPointer_Compute(pstAnimPointer, _pstClockInfo->fDT));

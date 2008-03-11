@@ -43,9 +43,9 @@
  */
 #define orxANIM_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxANIM_KU32_FLAG_2D                  0x00010000  /**< 2D type animation ID flag */
+#define orxANIM_KU32_FLAG_2D                  0x00000001  /**< 2D type animation ID flag */
 
-#define orxANIM_KU32_MASK_USER_ALL            0x00FF0000  /**< User all ID mask */
+#define orxANIM_KU32_MASK_USER_ALL            0x000000FF  /**< User all ID mask */
 
 /** Anim defines
  */

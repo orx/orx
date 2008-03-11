@@ -78,6 +78,7 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxObject.o \
 	./$(BUILD)/orxDLL_orxStructure.o \
 	./$(BUILD)/orxDLL_orxBody.o \
+	./$(BUILD)/orxDLL_orxCollision.o \
 	./$(BUILD)/orxDLL_orxPlugin.o \
 	./$(BUILD)/orxDLL_orxScript.o \
 	./$(BUILD)/orxDLL_orxSound.o \
@@ -123,6 +124,7 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxObject.o \
 	./$(BUILD)/orxLIB_orxStructure.o \
 	./$(BUILD)/orxLIB_orxBody.o \
+	./$(BUILD)/orxLIB_orxCollision.o \
 	./$(BUILD)/orxLIB_orxPlugin.o \
 	./$(BUILD)/orxLIB_orxScript.o \
 	./$(BUILD)/orxLIB_orxSound.o \
@@ -568,6 +570,9 @@ $(srcdir)/../../../bin/orx$(EXEEXT): $(ORX_OBJECTS) $(__orxLIB___depname)
 ./$(BUILD)/orxDLL_orxBody.o: $(srcdir)/../../../src/physics/orxBody.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/physics/orxBody.c
 
+./$(BUILD)/orxDLL_orxCollision.o: $(srcdir)/../../../src/physics/orxCollision.c
+	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/physics/orxCollision.c
+
 ./$(BUILD)/orxDLL_orxPlugin.o: $(srcdir)/../../../src/plugin/orxPlugin.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/plugin/orxPlugin.c
 
@@ -690,6 +695,9 @@ $(srcdir)/../../../bin/orx$(EXEEXT): $(ORX_OBJECTS) $(__orxLIB___depname)
 
 ./$(BUILD)/orxLIB_orxBody.o: $(srcdir)/../../../src/physics/orxBody.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/physics/orxBody.c
+
+./$(BUILD)/orxLIB_orxCollision.o: $(srcdir)/../../../src/physics/orxCollision.c
+	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/physics/orxCollision.c
 
 ./$(BUILD)/orxLIB_orxPlugin.o: $(srcdir)/../../../src/plugin/orxPlugin.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/plugin/orxPlugin.c

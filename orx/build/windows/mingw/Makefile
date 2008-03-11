@@ -102,6 +102,7 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxObject.o \
 	.\$(BUILD)\orxDLL_orxStructure.o \
 	.\$(BUILD)\orxDLL_orxBody.o \
+	.\$(BUILD)\orxDLL_orxCollision.o \
 	.\$(BUILD)\orxDLL_orxPlugin.o \
 	.\$(BUILD)\orxDLL_orxScript.o \
 	.\$(BUILD)\orxDLL_orxSound.o \
@@ -148,6 +149,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxObject.o \
 	.\$(BUILD)\orxLIB_orxStructure.o \
 	.\$(BUILD)\orxLIB_orxBody.o \
+	.\$(BUILD)\orxLIB_orxCollision.o \
 	.\$(BUILD)\orxLIB_orxPlugin.o \
 	.\$(BUILD)\orxLIB_orxScript.o \
 	.\$(BUILD)\orxLIB_orxSound.o \
@@ -667,6 +669,9 @@ endif
 .\$(BUILD)\orxDLL_orxBody.o: ../../../src/physics/orxBody.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+.\$(BUILD)\orxDLL_orxCollision.o: ../../../src/physics/orxCollision.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 .\$(BUILD)\orxDLL_orxPlugin.o: ../../../src/plugin/orxPlugin.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -788,6 +793,9 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxLIB_orxBody.o: ../../../src/physics/orxBody.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+.\$(BUILD)\orxLIB_orxCollision.o: ../../../src/physics/orxCollision.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxLIB_orxPlugin.o: ../../../src/plugin/orxPlugin.c

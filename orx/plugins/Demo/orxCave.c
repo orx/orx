@@ -487,8 +487,8 @@ orxSTATIC orxSTATUS orxCave_Init()
   orxCave_InitBulb();
 
   /* Creates main & TV cameras */
-  sstCave.pstMainCamera = orxCamera_Create();
-  sstCave.pstTVCamera = orxCamera_Create();
+  sstCave.pstMainCamera = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
+  sstCave.pstTVCamera = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
 
   /* Sets cameras frustrum */
   orxCamera_SetFrustrum(sstCave.pstMainCamera, sstCave.fScreenWidth, sstCave.fScreenHeight, orxFLOAT_0, orxFLOAT_1);

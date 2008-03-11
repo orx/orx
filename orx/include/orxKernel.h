@@ -53,6 +53,7 @@
 #include "math/orxVector.h"
 
 #include "memory/orxBank.h"
+#include "memory/orxMemory.h"
 
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
@@ -63,6 +64,7 @@
 #include "plugin/orxPluginUser.h"
 
 #include "physics/orxBody.h"
+#include "physics/orxCollision.h"
 
 #include "render/orxCamera.h"
 #include "render/orxRender.h"

@@ -44,14 +44,14 @@
 
 /** orxANIM flags/masks/shifts
  */
-#define orxANIM_KU32_MASK_SIZE              0x000000FF  /**< Size ID mask */
-#define orxANIM_KU32_MASK_COUNTER           0x0000FF00  /**< Counter ID mask */
-#define orxANIM_KU32_MASK_FLAGS             0xFFFF0000  /**< Flags ID mask */
+#define orxANIM_KU32_MASK_SIZE              0x00FF0000  /**< Size ID mask */
+#define orxANIM_KU32_MASK_COUNTER           0xFF000000  /**< Counter ID mask */
+#define orxANIM_KU32_MASK_FLAGS             0x0000FFFF  /**< Flags ID mask */
 
-#define orxANIM_KS32_ID_SHIFT_SIZE          0           /**< Size ID shift */
-#define orxANIM_KS32_ID_SHIFT_COUNTER       8           /**< Counter ID shift */
+#define orxANIM_KS32_ID_SHIFT_SIZE          16           /**< Size ID shift */
+#define orxANIM_KS32_ID_SHIFT_COUNTER       24           /**< Counter ID shift */
 
-#define orxANIM_KU32_FLAG_INTERNAL          0x10000000  /**< Internal structure handling flag  */
+#define orxANIM_KU32_FLAG_INTERNAL          0x00001000  /**< Internal structure handling flag  */
 
 
 #define orxANIM_KC_NUMBER_MARKER            '#'
@@ -357,7 +357,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
     orxStructure_SetFlags(pstAnim, _u32Flags & orxANIM_KU32_MASK_USER_ALL, orxANIM_KU32_MASK_FLAGS);
 
     /* 2D Animation? */
-    if(_u32Flags & orxANIM_KU32_FLAG_2D)
+    if(orxFLAG_TEST(_u32Flags, orxANIM_KU32_FLAG_2D))
     {
       /* Allocates key array */
       pstAnim->astKeyList = (orxANIM_KEY *)orxMemory_Allocate(_u32Size * sizeof(orxANIM_KEY), orxMEMORY_TYPE_MAIN);

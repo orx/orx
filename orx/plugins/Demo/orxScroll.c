@@ -287,7 +287,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
     orxVector_Set(&vPosition, orx2F(0.5f) * sstScroll.fScreenWidth, orx2F(0.5f) * sstScroll.fScreenHeight, orxFLOAT_0); 
 
     /* Creates & inits camera */
-    sstScroll.pstCamera = orxCamera_Create();
+    sstScroll.pstCamera = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
     orxCamera_SetFrustrum(sstScroll.pstCamera, sstScroll.fScreenWidth, sstScroll.fScreenHeight, orxFLOAT_0, orxSCROLL_KF_MAX_Z);
     orxCamera_SetPosition(sstScroll.pstCamera, &vPosition);
 

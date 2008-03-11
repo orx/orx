@@ -35,15 +35,13 @@
 
 #define orxBODY_KU32_STATIC_FLAG_NONE       0x00000000
 
-#define orxBODY_KU32_STATIC_FLAG_READY      0x00000001
+#define orxBODY_KU32_STATIC_FLAG_READY      0x10000000
 
+
+#define orxBODY_KU32_MASK_PARTS_ENABLE      0x0000000F  /** Parts activation mask */
+#define orxBODY_KU32_SHIFT_PARTS_ENABLE     0
 
 #define orxBODY_KU32_MASK_ALL               0xFFFFFFFF  /**< All flags */
-
-
-#define orxBODY_KC_MARKER_START             '$'
-#define orxBODY_KC_MARKER_WIDTH             'w'
-#define orxBODY_KC_MARKER_HEIGHT            'h'
 
 
 /***************************************************************************
@@ -94,7 +92,7 @@ orxSTATIC orxBODY_STATIC sstBody;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Deletes all bodys
+/** Deletes all bodies
  */
 orxSTATIC orxINLINE orxVOID orxBody_DeleteAll()
 {
@@ -116,6 +114,22 @@ orxSTATIC orxINLINE orxVOID orxBody_DeleteAll()
   return;
 }
 
+/** Updates the Body (Callback for generic structure update calling)
+ * @param[in]   _pstStructure                 Generic Structure or the concerned Body
+ * @param[in]   _pstCaller                    Structure of the caller
+ * @param[in]   _pstClockInfo                 Clock info used for time updates
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* !!! TODO !!! */
+
+  /* Done! */
+  return eResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -128,6 +142,7 @@ orxVOID orxBody_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_COLLISION);
 
   return;
 }
@@ -145,7 +160,7 @@ orxSTATUS orxBody_Init()
     orxMemory_Set(&sstBody, 0, sizeof(orxBODY_STATIC));
 
     /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(BODY, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    eResult = orxSTRUCTURE_REGISTER(BODY, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxBody_Update);
   }
   else
   {
@@ -216,7 +231,7 @@ orxBODY *orxFASTCALL orxBody_Create(orxU32 _u32Flags)
     orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_MASK_ALL);
 
     /* 2D? */
-    if(orxStructure_TestFlags(pstBody, orxBODY_KU32_FLAG_2D) != orxFALSE)
+    if(orxFLAG_TEST(_u32Flags, orxBODY_KU32_FLAG_2D))
     {
       /* Updates flags */
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_2D, orxBODY_KU32_FLAG_NONE);
@@ -292,19 +307,6 @@ orxSTATUS orxFASTCALL orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, o
     _pstBody->astDataList[_u32Index].u16SelfFlags = _u16SelfFlags;
     _pstBody->astDataList[_u32Index].u16CheckMask = _u16CheckMask;
 
-    /* 2D data ? */
-    if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_2D))
-    {
-      /* !!! TODO !!! */
-    }
-    else
-    {
-      /* !!! MSG !!! */
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
-
     /* Cleans reference */
     _pstBody->astDataList[_u32Index].pstData = orxNULL;
   }
@@ -318,7 +320,8 @@ orxSTATUS orxFASTCALL orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, o
     /* Updates structure reference counter */
     orxStructure_IncreaseCounter(_pstData);
 
-    /* !!! TODO : Update internal flags given data type */
+    /* Enables it */
+    orxBody_EnablePart(_pstBody, _u32Index, orxTRUE);
   }
 
   /* Done! */
@@ -394,4 +397,75 @@ orxU16 orxFASTCALL orxBody_GetPartCheckMask(orxCONST orxBODY *_pstBody, orxU32 _
 
   /* Done! */
   return u16Result;
+}
+
+/** Enables / disables a body part
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @param[in]   _bEnable        Enable / disable
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_EnablePart(orxBODY *_pstBody, orxU32 _u32Index, orxBOOL _bEnable)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
+
+  /* Is a valid part? */
+  if(_pstBody->astDataList[_u32Index].pstData != orxNULL)
+  {
+    /* Enable? */
+    if(_bEnable != orxFALSE)
+    {
+      /* Updates corresponding flag */
+      orxStructure_SetFlags(_pstBody, _u32Index << orxBODY_KU32_SHIFT_PARTS_ENABLE, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      /* Updates corresponding flag */
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_NONE, _u32Index << orxBODY_KU32_SHIFT_PARTS_ENABLE);
+    }    
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Part enabled get accessor
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxBody_IsPartEnabled(orxCONST orxBODY *_pstBody, orxU32 _u32Index)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
+
+  /* Is a valid part? */
+  if(_pstBody->astDataList[_u32Index].pstData != orxNULL)
+  {
+    /* Is enabled? */
+    if(orxStructure_TestFlags((orxBODY *)_pstBody, _u32Index << orxBODY_KU32_SHIFT_PARTS_ENABLE))
+    {
+      /* Updates result */
+      bResult = orxTRUE;
+    }    
+  }
+
+  /* Done! */
+  return bResult;
 }

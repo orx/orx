@@ -148,9 +148,11 @@
 
         <headers>
             include/physics/orxBody.h
+            include/physics/orxCollision.h
         </headers>
         <sources>
             src/physics/orxBody.c
+            src/physics/orxCollision.c
         </sources>
 
         <headers>
