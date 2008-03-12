@@ -34,56 +34,62 @@
  ***************************************************************************/
 
 /***************************************************************************
- orxVector_Rot
+ orxVector_2DRot
  Rotates a coord using a orxFLOAT angle (RAD), an axis and stores result in another one.
 
  returns: Rotated vector
  ***************************************************************************/
-orxVECTOR *orxFASTCALL orxVector_Rot(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxCONST orxVECTOR *_pvAxis, orxFLOAT _fAngle)
+orxVECTOR *orxFASTCALL orxVector_2DRot(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxFLOAT _fAngle)
 {
+  orxREGISTER orxFLOAT fSin, fCos;
+
   /* Checks */
   orxASSERT(_pvRes  != orxNULL);
-  orxASSERT(_pvAxis != orxNULL);
+  orxASSERT(_pvOp != orxNULL);
 
-  /* !!! TODO !!! */
-  orxASSERT(orxFALSE && "Not yet implmented!");
+  /* Gets cos & sin of angle */
+  fCos = orxMath_Cos(_fAngle);
+  fSin = orxMath_Sin(_fAngle);
 
+  /* Updates result */
+  orxVector_Set(_pvRes, (fCos * _pvOp->fX) - (fSin * _pvOp->fY), (fSin * _pvOp->fX) + (fCos * _pvOp->fY), _pvOp->fZ);
+
+  /* Done! */
   return _pvRes;
 }
 
 /***************************************************************************
- orxVector_ReorderAABox
+ orxAABox_Reorder
  Reorders axis aligned box corners (result is real upper left & bottom right corners).
 
  returns: Nothing
  ***************************************************************************/
-orxVOID orxFASTCALL orxVector_ReorderAABox(orxVECTOR *_pvULBox, orxVECTOR *_pvBRBox)
+orxVOID orxFASTCALL orxAABox_Reorder(orxAABOX *_pstBox)
 {
   /* Checks */
-  orxASSERT(_pvULBox != orxNULL);
-  orxASSERT(_pvBRBox != orxNULL);
+  orxASSERT(_pstBox != orxNULL);
 
 /* Reorders coordinates so as to have upper left & bottom right box corners */
 
   /* Z coord */
-  if(_pvULBox->fZ > _pvBRBox->fZ)
+  if(_pstBox->vTL.fZ > _pstBox->vBR.fZ)
   {
     /* Swaps */
-    orxSWAP32(_pvULBox->fZ, _pvBRBox->fZ);
+    orxSWAP32(_pstBox->vTL.fZ, _pstBox->vBR.fZ);
   }
 
   /* Y coord */
-  if(_pvULBox->fY > _pvBRBox->fY)
+  if(_pstBox->vTL.fY > _pstBox->vBR.fY)
   {
     /* Swaps */
-    orxSWAP32(_pvULBox->fY, _pvBRBox->fY);
+    orxSWAP32(_pstBox->vTL.fY, _pstBox->vBR.fY);
   }
 
   /* X coord */
-  if(_pvULBox->fX > _pvBRBox->fX)
+  if(_pstBox->vTL.fX > _pstBox->vBR.fX)
   {
     /* Swaps */
-    orxSWAP32(_pvULBox->fX, _pvBRBox->fX);
+    orxSWAP32(_pstBox->vTL.fX, _pstBox->vBR.fX);
   }
 
   /* Done! */

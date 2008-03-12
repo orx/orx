@@ -65,45 +65,77 @@ typedef struct __orxVECTOR_t
 
 } orxVECTOR;
 
+/** Public axis aligned box structure. */
+typedef struct __orxAABOX_t
+{
+  /* Corners : 24 */
+  orxVECTOR vTL, vBR;
+} orxAABOX;
 
-/** Rotates a coord using a orxFLOAT angle (RAD), an axis and stores result in another one. */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxVector_Rot(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxCONST orxVECTOR *_pvAxis, orxFLOAT _fAngle);
+/** Rotates a coord using a orxFLOAT angle (RAD) and stores result in another one. */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxVector_2DRot(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxFLOAT _fAngle);
 
 /** Reorders axis aligned box corners (result is real upper left & bottom right corners). */
-extern orxDLLAPI orxVOID orxFASTCALL          orxVector_ReorderAABox(orxVECTOR *_pvULBox, orxVECTOR *_pvBRBox);
+extern orxDLLAPI orxVOID orxFASTCALL          orxAABox_Reorder(orxAABOX *_pstBox);
 
 
 /* *** Vector inlined functions *** */
 
 
 /** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
-orxSTATIC orxINLINE orxBOOL                   orxVector_TestAABoxIntersection(orxCONST orxVECTOR *_pvULBox1, orxCONST orxVECTOR *_pvBRBox1, orxCONST orxVECTOR *_pvULBox2, orxCONST orxVECTOR *_pvBRBox2)
+orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
 {
   orxREGISTER orxBOOL bResult = orxFALSE;
 
   /* Checks */
-  orxASSERT(_pvULBox1 != orxNULL);
-  orxASSERT(_pvBRBox1 != orxNULL);
-  orxASSERT(_pvULBox2 != orxNULL);
-  orxASSERT(_pvBRBox2 != orxNULL);
+  orxASSERT(_pstBox1 != orxNULL);
+  orxASSERT(_pstBox2 != orxNULL);
 
-  /* Warning : Corners should be sorted otherwise test won't work! */
+  /* Warning : Corners should be sorted beforehand! */
 
   /* Z intersected? */
-  if((_pvBRBox2->fZ >= _pvULBox1->fZ)
-  && (_pvULBox2->fZ <= _pvBRBox1->fZ))
+  if((_pstBox2->vBR.fZ >= _pstBox1->vTL.fZ)
+  && (_pstBox2->vTL.fZ <= _pstBox1->vBR.fZ))
   {
     /* X intersected? */
-    if((_pvBRBox2->fX >= _pvULBox1->fX)
-    && (_pvULBox2->fX <= _pvBRBox1->fX))
+    if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
+    && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
     {
       /* Y intersected? */
-      if((_pvBRBox2->fY >= _pvULBox1->fY)
-      && (_pvULBox2->fY <= _pvBRBox1->fY))
+      if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
+      && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
       {
         /* Intersects */
         bResult = orxTRUE;
       }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
+orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
+{
+  orxREGISTER orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(_pstBox1 != orxNULL);
+  orxASSERT(_pstBox2 != orxNULL);
+
+  /* Warning : Corners should be sorted beforehand! */
+
+  /* X intersected? */
+  if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
+  && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
+  {
+    /* Y intersected? */
+    if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
+    && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
+    {
+      /* Intersects */
+      bResult = orxTRUE;
     }
   }
 

@@ -222,21 +222,24 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
       orxCAMERA  *pstCamera;
       orxU32      u32ULX, u32ULY, u32BRX, u32BRY;
       orxFLOAT    fTextureWidth, fTextureHeight;
-      orxVECTOR   vViewportUL, vViewportBR, vTextureSize;
+      orxAABOX    stViewportBox, stTextureBox;
 
       /* Gets texture size */
       orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
-      orxVector_Set(&vTextureSize, fTextureWidth, fTextureHeight, orxFLOAT_0);
+
+      /* Inits texture box */
+      orxVector_SetAll(&(stTextureBox.vTL), orxFLOAT_0);
+      orxVector_Set(&(stTextureBox.vBR), fTextureWidth, fTextureHeight, orxFLOAT_0);
 
       /* Gets viewport clipping */
       orxViewport_GetClipping(_pstViewport, &u32ULX, &u32ULY, &u32BRX, &u32BRY);
 
       /* Gets viewport's corners */
-      orxVector_Set(&vViewportUL, orxU2F(u32ULX), orxU2F(u32ULY), orxFLOAT_0);
-      orxVector_Set(&vViewportBR, orxU2F(u32BRX), orxU2F(u32BRY), orxFLOAT_0);
+      orxVector_Set(&(stViewportBox.vTL), orxU2F(u32ULX), orxU2F(u32ULY), orxFLOAT_0);
+      orxVector_Set(&(stViewportBox.vBR), orxU2F(u32BRX), orxU2F(u32BRY), orxFLOAT_0);
 
       /* Does it intersect with texture */
-      if(orxVector_TestAABoxIntersection(&orxVECTOR_0, &vTextureSize, &vViewportUL, &vViewportBR) != orxFALSE)
+      if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
       {
         /* Sets bitmap clipping */
         orxDisplay_SetBitmapClipping(pstBitmap, u32ULX, u32ULY, u32BRX, u32BRY);
@@ -286,8 +289,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
             fCameraSqrBoundingRadius = orx2F(0.5f) * ((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight));
 
             /* Gets rendering scales */
-            fRenderScaleX = fZoom * (vViewportBR.fX - vViewportUL.fX) / fCameraWidth; 
-            fRenderScaleY = fZoom * (vViewportBR.fY - vViewportUL.fY) / fCameraHeight; 
+            fRenderScaleX = fZoom * (stViewportBox.vBR.fX - stViewportBox.vTL.fX) / fCameraWidth; 
+            fRenderScaleY = fZoom * (stViewportBox.vBR.fY - stViewportBox.vTL.fY) / fCameraHeight; 
 
             /* Gets camera rotation */
             fRenderRotation = orxCamera_GetRotation(pstCamera);
@@ -453,7 +456,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
               orxVector_Sub(&vRenderPos, &vObjectPos, &vCameraUL);
               vRenderPos.fX  *= fRenderScaleX * fScrollX;
               vRenderPos.fY  *= fRenderScaleY * fScrollY;
-              orxVector_Add(&vRenderPos, &vRenderPos, &vViewportUL);
+              orxVector_Add(&vRenderPos, &vRenderPos, &stViewportBox.vTL);
 
               /* Updates render frame */
               orxFrame_SetPosition(pstRenderFrame, &vRenderPos);
