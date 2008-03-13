@@ -55,13 +55,13 @@ extern orxDLLAPI orxSTATUS                  orxBank_Init();
 extern orxDLLAPI orxVOID                    orxBank_Exit();
 
 /** Create a new bank in memory and returns a pointer on it
- * @param[in] _u32NbElem  Number of elements per segments
+ * @param[in] _u16NbElem  Number of elements per segments
  * @param[in] _u32Size    Size of an element
  * @param[in] _u32Flags   Flags set for this bank
  * @param[in] _eMemType   Memory type where the datas will be allocated
  * @return  returns a pointer on the memory bank
  */
-extern orxDLLAPI orxBANK *orxFASTCALL       orxBank_Create(orxU32 _u32NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
+extern orxDLLAPI orxBANK *orxFASTCALL       orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
 
 /** Free a portion of memory allocated with orxMemory_Allocate
  * @param[in] _pstBank    Pointer on the memory bank allocated by orx
