@@ -1061,7 +1061,7 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable
     if(u32Loop != orxU32_UNDEFINED)
     {
       /* Updates loop counter */
-      orxAnimSet_SetLinkTableLinkProperty(_pstLinkTable, u32ResAnim, orxANIMSET_KU32_LINK_FLAG_PRIORITY, u32Loop - 1);
+      orxAnimSet_SetLinkTableLinkProperty(_pstLinkTable, u32ResAnim, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER, u32Loop - 1);
 
       /* Is link table dirty again? */
       if(u32Loop <= 1)
@@ -1115,13 +1115,13 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIMSET_LINK_TABLE *_pst
     u32Link = _pstLinkTable->au32LinkArray[u32LinkIndex];
 
     /* Gets current loop counter */
-    u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_PRIORITY);
+    u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER);
 
     /* Is loop counter used? */
     if(u32Loop != orxU32_UNDEFINED)
     {
       /* Updates loop counter */
-      orxAnimSet_SetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_PRIORITY, u32Loop - 1);
+      orxAnimSet_SetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER, u32Loop - 1);
 
       /* Is link table dirty again? */
       if(u32Loop <= 1)
