@@ -29,7 +29,7 @@
 
 
 /*
- * Platform independant defines
+ * Platform independent defines
  */
 
 #define orxOBJECT_KU32_STATIC_FLAG_NONE         0x00000000
@@ -52,7 +52,7 @@
 #define orxOBJECT_KU32_STORAGE_MASK_ALL         0xFFFFFFFF
 
 
-#define orxOBJECT_KU32_PROXIMITY_LIST_SIZE      128
+#define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
 
 /*
@@ -194,6 +194,7 @@ orxVOID orxObject_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FRAME);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
@@ -1365,75 +1366,76 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
   return pstResult;
 }
 
-/** Creates a list of object at proximity of the given box (ie. whose bounding volume intersects this box)
+/** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
  * @param[in]   _pstCheckBox    Box to check intersection with
- * @param[in]   _pastObjectList Created object list / orxNULL if none found
- * @return      Number of objects contained in the list
+ * @return      orxBANK / orxNULL
  */
-orxU32 orxFASTCALL orxObject_CreateProximityList(orxCONST orxAABOX *_pstCheckBox, orxOBJECT **_pastObjectList)
+orxBANK *orxFASTCALL orxObject_CreateNeighborList(orxCONST orxAABOX *_pstCheckBox)
 {
-  orxOBJECT  *astList[orxOBJECT_KU32_PROXIMITY_LIST_SIZE];
   orxAABOX    stObjectBox;
   orxOBJECT  *pstObject;
-  orxU32      u32Result;
+  orxBANK    *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstCheckBox != orxNULL);
-  orxASSERT(_pastObjectList != orxNULL);
 
-  /* For all objects */
-  for(u32Result = 0, pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT), OBJECT);
-      (u32Result < orxOBJECT_KU32_PROXIMITY_LIST_SIZE) && (pstObject != orxNULL);
-      pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetNext(pstObject), OBJECT))
+  /* Creates bank */
+  pstResult = orxBank_Create(orxOBJECT_KU32_NEIGHBOR_LIST_SIZE, sizeof(orxOBJECT *), orxBANK_KU32_FLAG_NOT_EXPANDABLE, orxMEMORY_TYPE_TEMP);
+
+  /* Valid? */
+  if(pstResult != orxNULL)
   {
-    /* Gets its bounding box */
-    if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+    orxU32 u32Counter;
+
+    /* For all objects */
+    for(u32Counter = 0, pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT), OBJECT);
+        (u32Counter < orxOBJECT_KU32_NEIGHBOR_LIST_SIZE) && (pstObject != orxNULL);
+        pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetNext(pstObject), OBJECT), u32Counter++)
     {
-      /* Is intersecting? */
-      if(orxAABox_TestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
+      /* Gets its bounding box */
+      if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
       {
-        /* Adds it to list */
-        astList[u32Result++] = pstObject; 
+        /* Is intersecting? */
+        if(orxAABox_TestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
+        {
+          orxOBJECT **ppstObject;
+
+          /* Creates a new cell */
+          ppstObject = (orxOBJECT **)orxBank_Allocate(pstResult);
+
+          /* Valid? */
+          if(ppstObject != orxNULL)
+          {
+            /* Adds object */
+            *ppstObject = pstObject;
+          }
+          else
+          {
+            /* !!! MSG !!! */
+            break;
+          }
+        }
       }
     }
   }
 
-  /* Non empty? */
-  if(u32Result != 0)
-  {
-    /* Allocates list */
-    *_pastObjectList = orxMemory_Allocate(u32Result * sizeof(orxOBJECT *), orxMEMORY_TYPE_TEMP);
-
-    /* Success? */
-    if(*_pastObjectList != orxNULL)
-    {
-      /* Copies it */
-      orxMemory_Copy(*_pastObjectList, astList, u32Result * sizeof(orxOBJECT *));
-    }
-  }
-  else
-  {
-    /* Clears list */
-    *_pastObjectList = orxNULL;
-  }
-
   /* Done! */
-  return u32Result;
+  return pstResult;
 }
 
-/** Deletes an object list created with orxObject_CreateProximityList
+/** Deletes an object list created with orxObject_CreateNeigborList
  * @param[in]   _astObjectList  Concerned object list
  */
-orxVOID orxFASTCALL orxObject_DeleteProximityList(orxOBJECT *_astObjectList)
+orxVOID orxFASTCALL orxObject_DeleteNeighborList(orxBANK *_pstObjectList)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
 
   /* Non null? */
-  if(_astObjectList != orxNULL)
+  if(_pstObjectList != orxNULL)
   {
     /* Deletes it */
-    orxMemory_Free(_astObjectList);
+    orxBank_Delete(_pstObjectList);
   }
 }

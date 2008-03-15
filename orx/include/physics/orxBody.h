@@ -34,6 +34,7 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "physics/orxCollision.h"
 
 
 /** Body flags
@@ -81,19 +82,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
 /** Sets body part data
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @param[in]   _pstData        Data structure to set / orxNULL
+ * @param[in]   _pstData        Data collision to set / orxNULL
  * @param[in]   _u16SelfFlags   Self defining flags
  * @param[in]   _u16CheckMask   Mask to check against other body parts
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, orxSTRUCTURE *_pstData, orxU16 _u16SelfFlags, orxU16 _u16CheckMask);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, orxCOLLISION *_pstData, orxU16 _u16SelfFlags, orxU16 _u16CheckMask);
 
 /** Gets body part data
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @return      OrxSTRUCTURE / orxNULL
+ * @return      orxCOLLISION / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetPartData(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxCOLLISION *orxFASTCALL    orxBody_GetPartData(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
 
 /** Gets body part self flags
  * @param[in]   _pstBody        Concerned body

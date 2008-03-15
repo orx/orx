@@ -28,6 +28,7 @@
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
+#include "object/orxObject.h"
 
 
 /** Module flags
@@ -52,7 +53,7 @@
  */
 typedef struct __orxBODY_PART_t
 {
-  orxSTRUCTURE *pstData;                                    /**< Data structure : 4 */
+  orxCOLLISION *pstData;                                    /**< Data structure : 4 */
   orxU16        u16SelfFlags;                               /**< Self defining flags : 6 */
   orxU16        u16CheckMask;                               /**< Check mask : 8 */
 
@@ -122,16 +123,44 @@ orxSTATIC orxINLINE orxVOID orxBody_DeleteAll()
  */
 orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
-  orxU32    i;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxBANK    *pstObjectList;
+  orxOBJECT  *pstNeighborObject, *pstCallerObject;
+  orxAABOX    stBoundingBox;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
-  /* For all objects */
-  
-  /* For all parts */
-  for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
+  /* Gets caller object */
+  pstCallerObject = orxSTRUCTURE_GET_POINTER(_pstCaller, OBJECT);
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstCallerObject);
+
+  /* Gets neighbor objects */
+  pstObjectList = orxObject_CreateNeighborList(orxObject_GetBoundingBox(pstCallerObject, &stBoundingBox));
+
+  /* For all neighbors */
+  for(pstNeighborObject = (orxOBJECT *)orxBank_GetNext(pstObjectList, orxNULL);
+      pstNeighborObject != orxNULL;
+      pstNeighborObject = (orxOBJECT *)orxBank_GetNext(pstObjectList, pstNeighborObject))
   {
-    /* !!! TODO !!! */
+    orxBODY *pstNeighborBody;
+
+    /* Gets its body */
+    pstNeighborBody = orxOBJECT_GET_STRUCTURE(pstNeighborObject, BODY);
+
+    /* Valid? */
+    if(pstNeighborBody != orxNULL)
+    {
+      orxU32 j;
+
+      for(j = 0; j < orxBODY_KU32_PART_MAX_NUMBER; j++)
+      {
+          /* !!! TODO !!! */
+      }
+    }
   }
+
+  /* Deletes proximity list */
+  orxObject_DeleteNeighborList(pstObjectList);
 
   /* Done! */
   return eResult;
@@ -148,6 +177,7 @@ orxVOID orxBody_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_LINKLIST);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_COLLISION);
 
@@ -290,18 +320,19 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
 /** Sets body part data
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @param[in]   _pstData        Data structure to set / orxNULL
+ * @param[in]   _pstData        Collision structure to set / orxNULL
  * @param[in]   _u16SelfFlags   Self defining flags
  * @param[in]   _u16CheckMask   Mask to check against other body parts
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, orxSTRUCTURE *_pstData, orxU16 _u16SelfFlags, orxU16 _u16CheckMask)
+orxSTATUS orxFASTCALL orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, orxCOLLISION *_pstData, orxU16 _u16SelfFlags, orxU16 _u16CheckMask)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
+  orxSTRUCTURE_ASSERT(_pstData);
   orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
   /* Had previously data? */
@@ -338,11 +369,11 @@ orxSTATUS orxFASTCALL orxBody_SetPartData(orxBODY *_pstBody, orxU32 _u32Index, o
 /** Gets body part data
  * @param[in]   _pstBody      Concerned body
  * @param[in]   _u32Index     Data index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @return      OrxSTRUCTURE / orxNULL
+ * @return      orxCOLLISION / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxBody_GetPartData(orxCONST orxBODY *_pstBody, orxU32 _u32Index)
+orxCOLLISION *orxFASTCALL orxBody_GetPartData(orxCONST orxBODY *_pstBody, orxU32 _u32Index)
 {
-  orxSTRUCTURE *pstStructure;
+  orxCOLLISION *pstResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
@@ -350,10 +381,10 @@ orxSTRUCTURE *orxFASTCALL orxBody_GetPartData(orxCONST orxBODY *_pstBody, orxU32
   orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
   /* Updates result */
-  pstStructure = _pstBody->astDataList[_u32Index].pstData;
+  pstResult = _pstBody->astDataList[_u32Index].pstData;
 
   /* Done! */
-  return pstStructure;
+  return pstResult;
 }
 
 /** Gets body part self flags

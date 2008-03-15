@@ -38,6 +38,7 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
 #include "math/orxVector.h"
 
@@ -225,17 +226,16 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_
 extern orxDLLAPI orxAABOX *orxFASTCALL      orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxAABOX *_pstBoundingBox);
 
 
-/** Creates a list of object at proximity of the given box (ie. whose bounding volume intersects this box)
+/** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
  * @param[in]   _pstCheckBox    Box to check intersection with
- * @param[in]   _pastObjectList Created object list / orxNULL if none found
- * @return      Number of objects contained in the list
+ * @return      orxBANK / orxNULL
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxObject_CreateProximityList(orxCONST orxAABOX *_pstCheckBox, orxOBJECT **_pastObjectList);
+extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(orxCONST orxAABOX *_pstCheckBox);
 
-/** Deletes an object list created with orxObject_CreateProximityList
- * @param[in]   _astObjectList  Concerned object list
+/** Deletes an object list created with orxObject_CreateNeighborList
+ * @param[in]   _pstObjectList  Concerned object list
  */
-extern orxDLLAPI orxVOID orxFASTCALL        orxObject_DeleteProximityList(orxOBJECT *_astObjectList);
+extern orxDLLAPI orxVOID orxFASTCALL        orxObject_DeleteNeighborList(orxBANK *_pstObjectList);
 
 
 #endif /* _orxOBJECT_H_ */
