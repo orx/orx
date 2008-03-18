@@ -72,79 +72,12 @@ typedef struct __orxAABOX_t
   orxVECTOR vTL, vBR;
 } orxAABOX;
 
-/** Rotates a coord using a orxFLOAT angle (RAD) and stores result in another one. */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxVector_2DRot(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxFLOAT _fAngle);
-
-/** Reorders axis aligned box corners (result is real upper left & bottom right corners). */
-extern orxDLLAPI orxVOID orxFASTCALL          orxAABox_Reorder(orxAABOX *_pstBox);
-
 
 /* *** Vector inlined functions *** */
 
 
-/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
-orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
-{
-  orxREGISTER orxBOOL bResult = orxFALSE;
-
-  /* Checks */
-  orxASSERT(_pstBox1 != orxNULL);
-  orxASSERT(_pstBox2 != orxNULL);
-
-  /* Warning : Corners should be sorted beforehand! */
-
-  /* Z intersected? */
-  if((_pstBox2->vBR.fZ >= _pstBox1->vTL.fZ)
-  && (_pstBox2->vTL.fZ <= _pstBox1->vBR.fZ))
-  {
-    /* X intersected? */
-    if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
-    && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
-    {
-      /* Y intersected? */
-      if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
-      && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
-      {
-        /* Intersects */
-        bResult = orxTRUE;
-      }
-    }
-  }
-
-  /* Done! */
-  return bResult;
-}
-
-/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
-orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
-{
-  orxREGISTER orxBOOL bResult = orxFALSE;
-
-  /* Checks */
-  orxASSERT(_pstBox1 != orxNULL);
-  orxASSERT(_pstBox2 != orxNULL);
-
-  /* Warning : Corners should be sorted beforehand! */
-
-  /* X intersected? */
-  if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
-  && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
-  {
-    /* Y intersected? */
-    if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
-    && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
-    {
-      /* Intersects */
-      bResult = orxTRUE;
-    }
-  }
-
-  /* Done! */
-  return bResult;
-}
-
 /** Sets vector x / y / z / w values. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Set(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Set(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
 {
   /* Checks */
   orxASSERT(_pvVec != orxNULL);
@@ -159,14 +92,14 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Set(orxVECTOR *_pvVec, o
 }
 
 /** Sets value in all vector fields. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_SetAll(orxVECTOR *_pvVec, orxFLOAT _fValue)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_SetAll(orxVECTOR *_pvVec, orxFLOAT _fValue)
 {
   /* Done ! */
   return(orxVector_Set(_pvVec, _fValue, _fValue, _fValue));
 }
 
 /** Copies vector values into another one. */
-orxSTATIC orxINLINE orxVOID                   orxVector_Copy(orxVECTOR *_pvDst, orxCONST orxVECTOR *_pvSrc)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Copy(orxVECTOR *_pvDst, orxCONST orxVECTOR *_pvSrc)
 {
   /* Checks */
   orxASSERT(_pvDst != orxNULL);
@@ -176,11 +109,11 @@ orxSTATIC orxINLINE orxVOID                   orxVector_Copy(orxVECTOR *_pvDst, 
   orxMemory_Copy(_pvDst, _pvSrc, sizeof(orxVECTOR));
 
   /* Done! */
-  return;
+  return _pvDst;
 }
 
 /** Adds vectors and stores result in a third one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Add(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Add(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -197,7 +130,7 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Add(orxVECTOR *_pvRes, o
 }
 
 /** Subs vectors and stores result in a third one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Sub(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Sub(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -214,7 +147,7 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Sub(orxVECTOR *_pvRes, o
 }
 
 /** Muls a vector by an orxFLOAT and stores result in another one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Mulf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Mulf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -230,7 +163,7 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Mulf(orxVECTOR *_pvRes, 
 }
 
 /** Muls a vector by another vector and stores result in a third one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Mul(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Mul(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -247,7 +180,7 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Mul(orxVECTOR *_pvRes, o
 }
 
 /** Divs a vector by an orxFLOAT and stores result in another one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Divf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Divf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
   orxREGISTER orxFLOAT fInvCoef;
 
@@ -269,7 +202,7 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Divf(orxVECTOR *_pvRes, 
 }
 
 /** Divs a vector by another vector and stores result in a third one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Div(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Div(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -289,7 +222,7 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Div(orxVECTOR *_pvRes, o
 }
 
 /** Negates a vector and stores result in another one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Neg(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Neg(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -305,7 +238,7 @@ orxSTATIC orxINLINE orxVECTOR                *orxVector_Neg(orxVECTOR *_pvRes, o
 }
 
 /** Reverses a vector and stores result in another one. */
-orxSTATIC orxINLINE orxVECTOR                *orxVector_Inv(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Inv(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -351,6 +284,25 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCON
 
   /* Done! */
   return fResult;
+}
+
+orxSTATIC orxINLINE orxVECTOR *               orxVector_2DRotate(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxFLOAT _fAngle)
+{
+    orxREGISTER orxFLOAT fSin, fCos;
+
+    /* Checks */
+    orxASSERT(_pvRes  != orxNULL);
+    orxASSERT(_pvOp != orxNULL);
+
+    /* Gets cos & sin of angle */
+    fCos = orxMath_Cos(_fAngle);
+    fSin = orxMath_Sin(_fAngle);
+
+    /* Updates result */
+    orxVector_Set(_pvRes, (fCos * _pvOp->fX) - (fSin * _pvOp->fY), (fSin * _pvOp->fX) + (fCos * _pvOp->fY), _pvOp->fZ);
+
+    /* Done! */
+    return _pvRes;
 }
 
 orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
@@ -480,5 +432,122 @@ orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {{orxFLOAT_0}, {orxFLOAT_0},
 
 orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {{orxFLOAT_0}, {orxFLOAT_0}, {orxFLOAT_0}};
 
+
+/* *** AABox inlined functions */
+
+
+/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
+orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
+{
+    orxREGISTER orxBOOL bResult = orxFALSE;
+
+    /* Checks */
+    orxASSERT(_pstBox1 != orxNULL);
+    orxASSERT(_pstBox2 != orxNULL);
+
+    /* Warning : Corners should be sorted beforehand! */
+
+    /* Z intersected? */
+    if((_pstBox2->vBR.fZ >= _pstBox1->vTL.fZ)
+        && (_pstBox2->vTL.fZ <= _pstBox1->vBR.fZ))
+    {
+        /* X intersected? */
+        if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
+            && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
+        {
+            /* Y intersected? */
+            if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
+                && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
+            {
+                /* Intersects */
+                bResult = orxTRUE;
+            }
+        }
+    }
+
+    /* Done! */
+    return bResult;
+}
+
+/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
+orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
+{
+    orxREGISTER orxBOOL bResult = orxFALSE;
+
+    /* Checks */
+    orxASSERT(_pstBox1 != orxNULL);
+    orxASSERT(_pstBox2 != orxNULL);
+
+    /* Warning : Corners should be sorted beforehand! */
+
+    /* X intersected? */
+    if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
+        && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
+    {
+        /* Y intersected? */
+        if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
+            && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
+        {
+            /* Intersects */
+            bResult = orxTRUE;
+        }
+    }
+
+    /* Done! */
+    return bResult;
+}
+
+/** Reorders AABox corners */
+orxSTATIC orxINLINE orxVOID                   orxAABox_Reorder(orxAABOX *_pstBox)
+{
+    /* Checks */
+    orxASSERT(_pstBox != orxNULL);
+
+    /* Reorders coordinates so as to have upper left & bottom right box corners */
+
+    /* Z coord */
+    if(_pstBox->vTL.fZ > _pstBox->vBR.fZ)
+    {
+        /* Swaps */
+        orxSWAP32(_pstBox->vTL.fZ, _pstBox->vBR.fZ);
+    }
+
+    /* Y coord */
+    if(_pstBox->vTL.fY > _pstBox->vBR.fY)
+    {
+        /* Swaps */
+        orxSWAP32(_pstBox->vTL.fY, _pstBox->vBR.fY);
+    }
+
+    /* X coord */
+    if(_pstBox->vTL.fX > _pstBox->vBR.fX)
+    {
+        /* Swaps */
+        orxSWAP32(_pstBox->vTL.fX, _pstBox->vBR.fX);
+    }
+
+    /* Done! */
+    return;
+}
+
+orxSTATIC orxINLINE orxAABOX *                orxAABox_2DRotate(orxAABOX *_pstRes, orxCONST orxAABOX *_pstOp, orxFLOAT _fAngle)
+{
+    orxREGISTER orxFLOAT fSin, fCos;
+
+    /* Checks */
+    orxASSERT(_pstRes  != orxNULL);
+    orxASSERT(_pstOp != orxNULL);
+
+    /* Gets cos & sin of angle */
+    fCos = orxMath_Cos(_fAngle);
+    fSin = orxMath_Sin(_fAngle);
+
+    /* Updates result */
+    orxVector_Set(&(_pstRes->vTL), (fCos * _pstOp->vTL.fX) - (fSin * _pstOp->vTL.fY), (fSin * _pstOp->vTL.fX) + (fCos * _pstOp->vTL.fY), _pstOp->vTL.fZ);
+    orxVector_Set(&(_pstRes->vBR), (fCos * _pstOp->vBR.fX) - (fSin * _pstOp->vBR.fY), (fSin * _pstOp->vBR.fX) + (fCos * _pstOp->vBR.fY), _pstOp->vBR.fZ);
+
+    /* Done! */
+    return _pstRes;
+}
 
 #endif /* _orxVECTOR_H_ */
