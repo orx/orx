@@ -1,9 +1,4 @@
 <?xml version="1.0"?>
-<!--
-  -
-  - This bakefile is used to compile the orx main program.
-  -
-  -->
 <bakefile>
 
     <!-- ******************************************************************************* -->
@@ -11,16 +6,21 @@
     <!-- *********** BAKEFILE SHOULD BE PATHCHED TO IMPORVE THIS MANAGEMENT !!! ******** -->
     <!-- ******************************************************************************* -->
 
-  <!-- LINK TO ORX LIBRARY (different behaviour for each compiler) -->
-
+  <!-- LINK TO ORX LIBRARY (deffirent behaviour for each compiler) -->
+  
   <!-- GCC : link on orx. If statically linked, import all symbols -->
   <set var="orxLDFLAGS">
-    <if cond="LINK=='static' and orxCOMPILER=='__orxGCC__'">-Wl,--export-dynamic -Wl,--whole-archive -l$(orxLIBNAME) -Wl,--no-whole-archive</if>
-    <if cond="LINK=='dynamic' and orxCOMPILER=='__orxGCC__'">-l$(orxLIBNAME)</if>
+    <if cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--whole-archive -l$(orxLIBNAME) -lm -Wl,--no-whole-archive</if>
+    <if cond="LINK=='dynamic' and COMPILER=='gcc'">-l$(orxLIBNAME)</if>
   </set>
-
+<!--  <echo>The content of the X variable is: $(orxLDFLAGS)</echo> -->
+  
+  <set var="orxLINK_LIBRARY">
+    <if cond="COMPILER=='msvc'">$(orxLINKDEPEND)</if>
+  </set>
+  
   <set var="orxLINK_IMPORT_DEFINE">
-    <if cond="LINK=='dynamic' and orxCOMPILER=='__orxMSVC__'">__orxDLL__</if>
+    <if cond="LINK=='dynamic' and COMPILER=='msvc'">__orxDLL__</if>
   </set>
 
   <!-- GENERATE A .a FROM THE MAIN PROGRAM (That include all symbols from orx static library + Main program) -->
@@ -28,18 +28,22 @@
     <if cond="LINK=='static' and FORMAT=='mingw'">-Wl,--export-all-symbols -Wl,--out-implib,$(orxLIBDIR)$(DIRSEP)$(orxLIBNAME).a</if>
   </set>
 
-  <!-- ************************ MAIN PROGRAMM *********************** -->
-  <exe id="orx" template="orxBASE">
-  	<dirname>$(orxBINDIR)</dirname>
-    <app-type>console</app-type>
-    <ldflags>$(orxLDFLAGS) $(orxLDFLAGS_IMPLIB)</ldflags>
-    <define>$(orxLINK_IMPORT_DEFINE)</define>
 
-    <library>orxLIB</library>
-    <if cond="FORMAT in ['gnu', 'autoconf']">
-      <sys-lib>m</sys-lib>
-      <sys-lib>dl</sys-lib>
-    </if>
+  <!-- on linux, dlopen, etc.. are inside 'dl' library -->
+  <set var="orxLINKLIB">
+    <if cond="FORMAT in ['gnu', 'autoconf']">dl</if>
+  </set>
+
+  <!-- ************************ MAIN PROGRAMM *********************** -->
+
+  <!--- Create main program -->
+  <exe id="orx" template="orxBASE,orxLINK">
+    <dirname>$(orxBINDIR)</dirname>
+    <app-type>console</app-type> <!-- Windows specific : gui/console change the link behaviour -->
+    <ldflags>$(orxLDFLAGS) $(orxLDFLAGS_IMPLIB)</ldflags>
+    <sys-lib>$(orxLINKLIB)</sys-lib>
+    <library>$(orxLINK_LIBRARY)</library>
+    <define>$(orxLINK_IMPORT_DEFINE)</define>
 
     <headers>
       include/base/orxDecl.h

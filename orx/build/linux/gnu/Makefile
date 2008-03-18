@@ -50,9 +50,6 @@ LINK := static
 USE_SDL := 0
 
 #  [0,1]
-USE_SGE := 0
-
-#  [0,1]
 USE_SFML := 0
 
 #  [0,1]
@@ -231,12 +228,6 @@ FILE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	$(CFLAGS)
 FILE_OBJECTS =  \
 	./$(BUILD)/File_orxTest_File.o
-DISPLAY_SGE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I../../../include -D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter `sdl-config \
-	--cflags` $(CPPFLAGS) $(CFLAGS)
-DISPLAY_SGE_OBJECTS =  \
-	./$(BUILD)/Display_SGE_orxDisplay.o
 DISPLAY_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC $(CPPFLAGS) $(CXXFLAGS)
@@ -320,76 +311,158 @@ endif
 ifeq ($(LINK),static)
 __orxLIB___depname = ../../../lib/$(LINK)/lib$(orxLIBNAME).a
 endif
+ifeq ($(LINK),dynamic)
+orxLDFLAGS = -l$(orxLIBNAME)
+endif
+ifeq ($(LINK),static)
+orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -l$(orxLIBNAME) -lm \
+	-Wl,--no-whole-archive
+endif
 ifeq ($(USE_TEST),1)
 __Memory___depname = ../../../bin/modules/Memory.so
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p = $(__orxLIBNAME_p)
 endif
 ifeq ($(USE_TEST),1)
 __Bank___depname = ../../../bin/modules/Bank.so
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_1 = $(__orxLIBNAME_p)
+endif
 ifeq ($(USE_TEST),1)
 __HashTable___depname = ../../../bin/modules/HashTable.so
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_2 = $(__orxLIBNAME_p)
 endif
 ifeq ($(USE_TEST),1)
 __Sound___depname = ../../../bin/modules/Sound.so
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_3 = $(__orxLIBNAME_p)
+endif
 ifeq ($(USE_TEST),1)
 __Plugin___depname = ../../../bin/modules/Plugin.so
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_4 = $(__orxLIBNAME_p)
 endif
 ifeq ($(USE_TEST),1)
 __Queue___depname = ../../../bin/modules/Queue.so
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_5 = $(__orxLIBNAME_p)
+endif
 ifeq ($(USE_TEST),1)
 __FSM___depname = ../../../bin/modules/FSM.so
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_6 = $(__orxLIBNAME_p)
 endif
 ifeq ($(USE_TEST),1)
 __Clock___depname = ../../../bin/modules/Clock.so
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_7 = $(__orxLIBNAME_p)
+endif
 ifeq ($(USE_TEST),1)
 __Event___depname = ../../../bin/modules/Event.so
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_8 = $(__orxLIBNAME_p)
 endif
 ifeq ($(USE_TEST),1)
 __File___depname = ../../../bin/modules/File.so
 endif
-ifeq ($(USE_SGE),1)
-__Display_SGE___depname = ../../../bin/plugins/core/display/Display_SGE.so
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_9 = $(__orxLIBNAME_p)
 endif
+ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
 __Display_SFML___depname = ../../../bin/plugins/core/display/Display_SFML.so
+endif
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_10 = $(__orxLIBNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 __Render_Home___depname = ../../../bin/plugins/core/render/Render_Home.so
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_11 = $(__orxLIBNAME_p)
+endif
+ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
 __Sound_SFML___depname = ../../../bin/plugins/core/sound/Sound_SFML.so
 endif
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_12 = $(__orxLIBNAME_p)
+endif
+ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
 __Mouse_SFML___depname = ../../../bin/plugins/core/mouse/Mouse_SFML.so
 endif
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_13 = $(__orxLIBNAME_p)
+endif
+ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
 __Keyboard_SFML___depname = \
 	../../../bin/plugins/core/keyboard/Keyboard_SFML.so
 endif
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_14 = $(__orxLIBNAME_p)
+endif
 ifeq ($(USE_PLUGINS),1)
 __File_LibC___depname = ../../../bin/plugins/core/file/File_LibC.so
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_15 = $(__orxLIBNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 __FileSystem_LibC___depname = \
 	../../../bin/plugins/core/file/FileSystem_LibC.so
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_16 = $(__orxLIBNAME_p)
+endif
+ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
 __System_SDL___depname = ../../../bin/plugins/core/system/System_SDL.so
 endif
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_17 = $(__orxLIBNAME_p)
+endif
+ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
 __System_SFML___depname = ../../../bin/plugins/core/system/System_SFML.so
+endif
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_18 = $(__orxLIBNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 __Bounce___depname = ../../../bin/plugins/demo/Bounce.so
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_19 = $(__orxLIBNAME_p)
+endif
 ifeq ($(USE_PLUGINS),1)
 __Scroll___depname = ../../../bin/plugins/demo/Scroll.so
 endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_20 = $(__orxLIBNAME_p)
+endif
 ifeq ($(USE_PLUGINS),1)
 __Cave___depname = ../../../bin/plugins/demo/Cave.so
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_21 = $(__orxLIBNAME_p)
 endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
@@ -409,6 +482,18 @@ endif
 ifeq ($(BUILD),release)
 __orxWARNINGFLAG = 
 endif
+ifeq ($(LINK),dynamic)
+__orxLINKDEPEND_DEP = $(__orxDLL___depname)
+endif
+ifeq ($(LINK),static)
+__orxLINKDEPEND_DEP = $(__orxLIB___depname)
+endif
+ifeq ($(BUILD),debug)
+__orxLIBNAME_p = -lorxd
+endif
+ifeq ($(BUILD),release)
+__orxLIBNAME_p = -lorx
+endif
 ifeq ($(BUILD),debug)
 __orxDEBUGFLAG = -g
 endif
@@ -423,7 +508,7 @@ all: ./$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SGE___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__System_SDL___depname) $(__System_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/orx $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__System_SDL___depname) $(__System_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -446,7 +531,6 @@ clean:
 	rm -f ../../../bin/modules/Clock.so
 	rm -f ../../../bin/modules/Event.so
 	rm -f ../../../bin/modules/File.so
-	rm -f ../../../bin/plugins/core/display/Display_SGE.so
 	rm -f ../../../bin/plugins/core/display/Display_SFML.so
 	rm -f ../../../bin/plugins/core/render/Render_Home.so
 	rm -f ../../../bin/plugins/core/sound/Sound_SFML.so
@@ -462,7 +546,7 @@ clean:
 
 ifeq ($(LINK),dynamic)
 ../../../lib/$(LINK)/lib$(orxLIBNAME).so: $(ORXDLL_OBJECTS)
-	$(CC) $(LINK_DLL_FLAGS) -fPIC -o $@ $(ORXDLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)
+	$(CC) $(LINK_DLL_FLAGS) -fPIC -o $@ $(ORXDLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  -lm
 endif
 
 ifeq ($(LINK),static)
@@ -472,122 +556,129 @@ ifeq ($(LINK),static)
 	$(RANLIB) $@
 endif
 
-../../../bin/orx: $(ORX_OBJECTS) $(__orxLIB___depname)
-	$(CC) -o $@ $(ORX_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)     ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/orx: $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
+	$(CC) -o $@ $(ORX_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  $(orxLDFLAGS)   -ldl
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/Memory.so: $(MEMORY_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
-endif
-
-ifeq ($(USE_TEST),1)
-../../../bin/modules/Bank.so: $(BANK_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/Memory.so: $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(MEMORY_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p)
 endif
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(HASHTABLE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/Bank.so: $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BANK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_1)
 endif
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/Sound.so: $(SOUND_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SOUND_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/HashTable.so: $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(HASHTABLE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_2)
 endif
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/Plugin.so: $(PLUGIN_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/Sound.so: $(SOUND_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SOUND_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_3)
 endif
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/Queue.so: $(QUEUE_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(QUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/Plugin.so: $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(PLUGIN_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_4)
 endif
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/FSM.so: $(FSM_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/Queue.so: $(QUEUE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(QUEUE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_5)
 endif
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/Clock.so: $(CLOCK_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CLOCK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/FSM.so: $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FSM_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_6)
 endif
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/Event.so: $(EVENT_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(EVENT_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/Clock.so: $(CLOCK_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CLOCK_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_7)
 endif
 
 ifeq ($(USE_TEST),1)
-../../../bin/modules/File.so: $(FILE_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FILE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/modules/Event.so: $(EVENT_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(EVENT_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_8)
 endif
 
-ifeq ($(USE_SGE),1)
-../../../bin/plugins/core/display/Display_SGE.so: $(DISPLAY_SGE_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(DISPLAY_SGE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  `sdl-config --libs` sge  ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
-endif
-
-ifeq ($(USE_SFML),1)
-../../../bin/plugins/core/display/Display_SFML.so: $(DISPLAY_SFML_OBJECTS) $(__orxLIB___depname)
-	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(DISPLAY_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system  ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+ifeq ($(USE_TEST),1)
+../../../bin/modules/File.so: $(FILE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FILE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_9)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/core/render/Render_Home.so: $(RENDER_HOME_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(RENDER_HOME_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
-endif
-
 ifeq ($(USE_SFML),1)
-../../../bin/plugins/core/sound/Sound_SFML.so: $(SOUND_SFML_OBJECTS) $(__orxLIB___depname)
-	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SOUND_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system  ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/plugins/core/display/Display_SFML.so: $(DISPLAY_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(DISPLAY_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   $(__orxEXTRALINK_p_10)
 endif
-
-ifeq ($(USE_SFML),1)
-../../../bin/plugins/core/mouse/Mouse_SFML.so: $(MOUSE_SFML_OBJECTS) $(__orxLIB___depname)
-	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(MOUSE_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system  ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
-endif
-
-ifeq ($(USE_SFML),1)
-../../../bin/plugins/core/keyboard/Keyboard_SFML.so: $(KEYBOARD_SFML_OBJECTS) $(__orxLIB___depname)
-	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(KEYBOARD_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system  ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/core/file/File_LibC.so: $(FILE_LIBC_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FILE_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/plugins/core/render/Render_Home.so: $(RENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(RENDER_HOME_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_11)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/core/file/FileSystem_LibC.so: $(FILESYSTEM_LIBC_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FILESYSTEM_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+ifeq ($(USE_SFML),1)
+../../../bin/plugins/core/sound/Sound_SFML.so: $(SOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SOUND_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   $(__orxEXTRALINK_p_12)
+endif
 endif
 
+ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+../../../bin/plugins/core/mouse/Mouse_SFML.so: $(MOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(MOUSE_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   $(__orxEXTRALINK_p_13)
+endif
+endif
+
+ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+../../../bin/plugins/core/keyboard/Keyboard_SFML.so: $(KEYBOARD_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(KEYBOARD_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   $(__orxEXTRALINK_p_14)
+endif
+endif
+
+ifeq ($(USE_PLUGINS),1)
+../../../bin/plugins/core/file/File_LibC.so: $(FILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FILE_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_15)
+endif
+
+ifeq ($(USE_PLUGINS),1)
+../../../bin/plugins/core/file/FileSystem_LibC.so: $(FILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(FILESYSTEM_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_16)
+endif
+
+ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
-../../../bin/plugins/core/system/System_SDL.so: $(SYSTEM_SDL_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SYSTEM_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  `sdl-config --libs`  ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/plugins/core/system/System_SDL.so: $(SYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SYSTEM_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  `sdl-config --libs`   $(__orxEXTRALINK_p_17)
+endif
 endif
 
+ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
-../../../bin/plugins/core/system/System_SFML.so: $(SYSTEM_SFML_OBJECTS) $(__orxLIB___depname)
-	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SYSTEM_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system  ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/plugins/core/system/System_SFML.so: $(SYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SYSTEM_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   $(__orxEXTRALINK_p_18)
+endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/demo/Bounce.so: $(BOUNCE_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/plugins/demo/Bounce.so: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_19)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/demo/Scroll.so: $(SCROLL_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/plugins/demo/Scroll.so: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_20)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/demo/Cave.so: $(CAVE_OBJECTS) $(__orxLIB___depname)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CAVE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG)   ../../../lib/$(LINK)/lib$(orxLIBNAME).a -lm -ldl
+../../../bin/plugins/demo/Cave.so: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/orx
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CAVE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_21)
 endif
 
 ./$(BUILD)/orxDLL_orxAnim.o: ../../../src/anim/orxAnim.c
@@ -874,9 +965,6 @@ endif
 
 ./$(BUILD)/File_orxTest_File.o: ../../../test/orxTest_File.c
 	$(CC) -c -o $@ $(FILE_CFLAGS) $(CPPDEPS) $<
-
-./$(BUILD)/Display_SGE_orxDisplay.o: ../../../plugins/Display/SDL/orxDisplay.c
-	$(CC) -c -o $@ $(DISPLAY_SGE_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/Display_SFML_orxDisplay.o: ../../../plugins/Display/SFML/orxDisplay.cpp
 	$(CXX) -c -o $@ $(DISPLAY_SFML_CXXFLAGS) $(CPPDEPS) $<

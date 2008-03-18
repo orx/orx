@@ -78,24 +78,18 @@ dnl ### begin block 20_COND_USE_PLUGINS_1[bakefiles/orx.bkl] ###
         COND_USE_PLUGINS_1=""
     fi
     AC_SUBST(COND_USE_PLUGINS_1)
-dnl ### begin block 20_COND_USE_SDL_1[bakefiles/orx.bkl] ###
-    COND_USE_SDL_1="#"
-    if test "x$USE_SDL" = "x1" ; then
-        COND_USE_SDL_1=""
+dnl ### begin block 20_COND_USE_PLUGINS_1_USE_SDL_1[bakefiles/orx.bkl] ###
+    COND_USE_PLUGINS_1_USE_SDL_1="#"
+    if test "x$USE_PLUGINS" = "x1" -a "x$USE_SDL" = "x1" ; then
+        COND_USE_PLUGINS_1_USE_SDL_1=""
     fi
-    AC_SUBST(COND_USE_SDL_1)
-dnl ### begin block 20_COND_USE_SFML_1[bakefiles/orx.bkl] ###
-    COND_USE_SFML_1="#"
-    if test "x$USE_SFML" = "x1" ; then
-        COND_USE_SFML_1=""
+    AC_SUBST(COND_USE_PLUGINS_1_USE_SDL_1)
+dnl ### begin block 20_COND_USE_PLUGINS_1_USE_SFML_1[bakefiles/orx.bkl] ###
+    COND_USE_PLUGINS_1_USE_SFML_1="#"
+    if test "x$USE_PLUGINS" = "x1" -a "x$USE_SFML" = "x1" ; then
+        COND_USE_PLUGINS_1_USE_SFML_1=""
     fi
-    AC_SUBST(COND_USE_SFML_1)
-dnl ### begin block 20_COND_USE_SGE_1[bakefiles/orx.bkl] ###
-    COND_USE_SGE_1="#"
-    if test "x$USE_SGE" = "x1" ; then
-        COND_USE_SGE_1=""
-    fi
-    AC_SUBST(COND_USE_SGE_1)
+    AC_SUBST(COND_USE_PLUGINS_1_USE_SFML_1)
 dnl ### begin block 20_COND_USE_TEST_1[bakefiles/orx.bkl] ###
     COND_USE_TEST_1="#"
     if test "x$USE_TEST" = "x1" ; then

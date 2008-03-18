@@ -1,44 +1,39 @@
 <?xml version="1.0"?>
-<!--
-  -
-  - This bakefile is used to compile orx modules.
-  -
-  -->
 <bakefile>
 
     <!-- Set module link lib -->
-    <set var="orxLDFLAGS">
-		<if cond="LINK=='static' and orxCOMPILER=='__orxMSVC__'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
-		<if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)$(DIRSEP)$(orxLIBNAME).a</if>
+    <set var="orxEXTRALINK">
+     <if cond="LINK=='dynamic' and COMPILER=='gcc'">$(orxLIBNAME)</if>
+    </set>
+    
+    <set var="orxMSVCLINK">
+      <if cond="LINK=='dynamic' and COMPILER=='msvc'">$(orxLINKDEPEND)</if>
     </set>
 
-	<set var="toto">
-		<if cond="LINK=='static'">orxLIB</if>      
-		<if cond="LINK=='dynamic'">orxDLL</if>      
-	</set>
-	
+
+    <set var="orxMODULE_FLAGS">
+      <if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)\$(orxLIBNAME).a</if>
+      <if cond="LINK=='static' and COMPILER=='msvc'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
+    </set>
+
     <!-- Define the module template -->
     <template id="orxMODULELINK">
-		<ldflags>$(orxLDFLAGS)</ldflags>
-		<define>__orxDLL__</define>
-		<library>orxLIB</library>
-		<if cond="FORMAT in ['gnu', 'autoconf']">
-			<sys-lib>m</sys-lib>
-			<sys-lib>dl</sys-lib>
-		</if>
+      <depends>orx</depends>
+      <sys-lib>$(orxEXTRALINK)</sys-lib>
+      <ldflags>$(orxMODULE_FLAGS)</ldflags>
+      <library>$(orxMSVCLINK)</library>
+      <define>__orxDLL__</define>
     </template>
 
 	<define-rule name="orx-module-test" extends="module">
-      <template template="orxBASE,orxMODULELINK">
+      <template template="orxBASE,orxLINK,orxMODULELINK">
         <dirname>$(orxBINDIR)$(DIRSEP)modules</dirname>
       </template>
 	</define-rule>
 
 
-
-
   <!--- Create orx test module -->
-
+  
 	<orx-module-test id="Memory" cond="USE_TEST=='1'">
       <sources>test/orxTest_Memory.c</sources>
 	</orx-module-test>

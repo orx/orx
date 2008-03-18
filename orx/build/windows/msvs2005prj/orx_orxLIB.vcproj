@@ -22,7 +22,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -53,7 +53,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -71,7 +71,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -100,7 +100,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -131,7 +131,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -149,7 +149,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -178,7 +178,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -209,7 +209,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -227,7 +227,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -256,7 +256,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -287,7 +287,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -305,7 +305,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -334,7 +334,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -365,7 +365,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -383,7 +383,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -412,7 +412,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -443,7 +443,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -461,7 +461,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -490,7 +490,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -521,7 +521,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -539,7 +539,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -568,7 +568,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -599,7 +599,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -617,7 +617,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -646,7 +646,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -677,7 +677,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -695,7 +695,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -724,7 +724,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -755,7 +755,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -773,7 +773,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -802,7 +802,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -833,7 +833,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -851,7 +851,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -880,7 +880,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -911,7 +911,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -929,7 +929,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -958,7 +958,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -989,7 +989,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -1007,7 +1007,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1036,7 +1036,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -1067,7 +1067,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -1085,7 +1085,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1114,7 +1114,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -1145,7 +1145,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -1163,7 +1163,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1192,7 +1192,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\release\orxLIB"
 			ConfigurationType="4"
@@ -1223,7 +1223,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				BasicRuntimeChecks="0"
 				DebugInformationFormat="0"
 				BufferSecurityCheck="false"
@@ -1241,7 +1241,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -1270,1255 +1270,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\release\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="false"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="2"
-				PreprocessorDefinitions="_LIB;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-				BasicRuntimeChecks="0"
-				DebugInformationFormat="0"
-				BufferSecurityCheck="false"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\release\orxLIB\"
-				ObjectFile=".\release\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orx.pdb"
-				WarningLevel="1"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orx.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -2549,7 +1301,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -2567,7 +1319,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -2596,7 +1348,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -2627,7 +1379,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -2645,7 +1397,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -2674,7 +1426,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -2705,7 +1457,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -2723,7 +1475,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -2752,7 +1504,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -2783,7 +1535,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -2801,7 +1553,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -2830,7 +1582,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -2861,7 +1613,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -2879,7 +1631,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -2908,7 +1660,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -2939,7 +1691,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -2957,7 +1709,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -2986,7 +1738,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3017,7 +1769,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3035,7 +1787,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3064,7 +1816,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3095,7 +1847,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3113,7 +1865,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3142,7 +1894,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3173,7 +1925,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3191,7 +1943,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3220,7 +1972,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3251,7 +2003,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3269,7 +2021,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3298,7 +2050,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3329,7 +2081,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3347,7 +2099,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3376,7 +2128,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3407,7 +2159,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3425,7 +2177,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3454,7 +2206,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3485,7 +2237,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3503,7 +2255,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3532,7 +2284,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3563,7 +2315,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3581,7 +2333,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3610,7 +2362,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3641,7 +2393,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3659,7 +2411,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -3688,7 +2440,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\lib\static"
 			IntermediateDirectory=".\debug\orxLIB"
 			ConfigurationType="4"
@@ -3719,7 +2471,7 @@
 				ExceptionHandling="1"
 				AdditionalOptions="/wd4100 /wd4206 /wd4201"
 				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 				BasicRuntimeChecks="3"
 				DebugInformationFormat="3"
 				Detect64BitPortabilityProblems="true"
@@ -3737,1255 +2489,7 @@
 				Name="VCResourceCompilerTool"
 				Culture="1033"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_1 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_1 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_1|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\..\lib\static\orxd.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				OutputFile="..\..\..\lib\static\orx_orxLIB.bsc"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SGE_0 USE_SFML_0 USE_TEST_0 USE_PLUGINS_0|Win32"
-			OutputDirectory="..\..\..\lib\static"
-			IntermediateDirectory=".\debug\orxLIB"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\include"
-				MinimalRebuild="true"
-				ExceptionHandling="1"
-				AdditionalOptions="/wd4100 /wd4206 /wd4201"
-				RuntimeLibrary="3"
-				PreprocessorDefinitions="_LIB;__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
-				BasicRuntimeChecks="3"
-				DebugInformationFormat="3"
-				Detect64BitPortabilityProblems="true"
-				RuntimeTypeInfo="true"
-				AssemblerListingLocation=".\debug\orxLIB\"
-				ObjectFile=".\debug\orxLIB\"
-				ProgramDataBaseFileName="..\..\..\lib\static\orxd.pdb"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				Culture="1033"
-				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;_CRT_SECURE_NO_WARNINGS;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__;_DEBUG"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"

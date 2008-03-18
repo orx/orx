@@ -2,37 +2,67 @@
 <bakefile>
 
 	<define-rule name="orx-plugin" extends="module">
-		<template template="orxBASE,orxMODULELINK">
+		<template template="orxBASE,orxLINK,orxMODULELINK">
 		</template>
-		<define-tag name="category">
+		<define-tag name="destination">
 			<dirname>$(orxBINDIR)$(DIRSEP)plugins$(DIRSEP)$(value)</dirname>
 		</define-tag>
 	</define-rule>
 
-	<!-- ******************** SDL LINK ********************** -->
-  
-	<!-- On windows, sdl-config is not available, so we have to specify the option manually -->
-	<set var="orxSDLCFLAGS">
-		<if cond="PLATFORM_UNIX=='1'">`sdl-config --cflags`</if>
-	</set>
-  
-	<set var="orxSDLLIB">
-		<if cond="FORMAT=='mingw'">SDL</if>
-		<if cond="orxCOMPILER=='__orxMSVC__'">SDL.lib</if>
-		<if cond="PLATFORM_UNIX=='1'">`sdl-config --libs`</if>
-	</set>
+  <!-- ******************** FMOD LINK ********************** -->
 
-	<!-- Define the module template -->
-	<template id="orxSDL">
-		<cflags>$(orxSDLCFLAGS)</cflags>
-		<ldflags>$(orxSDLLIB)</ldflags>
-	</template>
+  <!-- Since on linux, FMOD packaging is not good, we are obliged to use this trick :/ -->
+  <set var="orxFMODLIB_MINGW">
+    <if cond="FORMAT=='mingw'">fmod</if>
+  </set>
+
+  <set var="orxFMODLIB_MSVC">
+    <if cond="COMPILER=='msvc'">fmodvc.lib</if>
+  </set>
+
+  <set var="orxFMODLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">/usr/lib/libfmod.so</if>
+  </set>
+
+  <!-- Define the module template -->
+  <template id="orxFMOD">
+    <sys-lib>$(orxFMODLIB_MINGW)</sys-lib>
+    <ldflags>$(orxFMODLIB_MSVC)</ldflags>
+    <ldflags>$(orxFMODLIB_UNIX)</ldflags>
+  </template>
+
+  <!-- ******************** SDL LINK ********************** -->
+  
+  <!-- On windows, sdl-config is not available, so we have to specify the option manually -->
+  <set var="orxSDLLIB_MINGW">
+    <if cond="FORMAT=='mingw'">SDL</if>
+  </set>
+
+  <set var="orxSDLLIB_MSVC">
+    <if cond="COMPILER=='msvc'">SDL.lib</if>
+  </set>
+
+  <set var="orxSDLCFLAGS_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">`sdl-config --cflags`</if>
+  </set>
+  <set var="orxSDLLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">`sdl-config --libs`</if>
+  </set>
+
+  <!-- Define the module template -->
+  <template id="orxSDL">
+    <cflags>$(orxSDLCFLAGS_UNIX)</cflags>
+    <ldflags>$(orxSDLLIB_UNIX)</ldflags>
+
+    <sys-lib>$(orxSDLLIB_MINGW)</sys-lib>
+    <ldflags>$(orxSDLLIB_MSVC)</ldflags>
+  </template>
   
 	<!-- ******************** SGE LINK ********************** -->
 
 	<set var="orxSGELIB">
 		<if cond="FORMAT=='mingw'">sge</if>
-		<if cond="orxCOMPILER=='__orxMSVC__'">sge.lib</if>
+		<if cond="COMPILER=='msvc'">sge.lib</if>
 		<if cond="PLATFORM_UNIX=='1'">sge</if>
 	</set>
 
@@ -43,63 +73,69 @@
 
 	<!-- ******************** SFML LINK ********************** -->
 
-	<set var="orxSFMLLIB">
-		<if cond="FORMAT=='mingw'">-lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
-		<if cond="orxCOMPILER=='__orxMSVC__'">sfml-graphics.lib sfml-audio.lib sfml-window.lib sfml-system.lib</if>
-		<if cond="PLATFORM_UNIX=='1'">-lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
-	</set>
+  <!-- On windows, sdl-config is not available, so we have to specify the option manually -->
+  <set var="orxSFMLLIB_MINGW">
+    <if cond="FORMAT=='mingw'">-lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
+  </set>
 
-	<!-- Define the module template -->
-	<template id="orxSFML">
-		<ldflags>$(orxSFMLLIB)</ldflags>
-	</template>
+  <set var="orxSFMLLIB_MSVC">
+    <if cond="COMPILER=='msvc'">sfml-graphics.lib sfml-audio.lib sfml-window.lib sfml-system.lib</if>
+  </set>
+
+
+  <set var="orxSFMLLIB_UNIX">
+    <if cond="PLATFORM_UNIX=='1'">-lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
+  </set>
+
+  <!-- Define the module template -->
+  <template id="orxSFML">
+    <ldflags>$(orxSFMLLIB_UNIX)</ldflags>
+
+    <sys-lib>$(orxSFMLLIB_MINGW)</sys-lib>
+    <ldflags>$(orxSFMLLIB_MSVC)</ldflags>
+  </template>
+
 
 	<!-- ******************* ORX CORE PLUGINS ******************** -->
 
 	<!--- Create orx core plugins -->
 	<!-- DISPLAY -->
 
-	<!-- Depends on SGE -->
-	<orx-plugin id="Display_SGE" cond="USE_SGE=='1'" template="orxSGE">
-		<category>core/display</category>
-		<sources>plugins/Display/SDL/orxDisplay.c</sources>
-	</orx-plugin>
-
 	<!-- Depends on SFML -->
-	<orx-plugin id="Display_SFML" cond="USE_SFML=='1'" template="orxSFML">
-		<category>core/display</category>
-		<sources>plugins/Display/SFML/orxDisplay.cpp</sources>
-	</orx-plugin> -->
-
+	  <orx-plugin id="Display_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+	    <destination>core/display</destination>
+	    <sources>plugins/Display/SFML/orxDisplay.cpp</sources>
+	  </orx-plugin>
+	  
 	<!-- RENDER -->
 
 	<!-- Depends on nothing -->
-	<orx-plugin id="Render_Home" cond="USE_PLUGINS=='1'">
-		<category>core/render</category>
-		<sources>plugins/Render/Home/orxRender.c</sources>
-	</orx-plugin>
+	  <orx-plugin id="Render_Home" cond="USE_PLUGINS=='1' and USE_PLUGINS=='1'">
+	    <destination>core/render</destination>
+	    <sources>plugins/Render/Home/orxRender.c</sources>
+	  </orx-plugin>
 
 	<!-- SOUND -->
 
 	<!-- Depends on SFML -->
-	<orx-plugin id="Sound_SFML" cond="USE_SFML=='1'" template="orxSFML">
-		<category>core/sound</category>
-		<sources>plugins/Sound/SFML/orxSound.cpp</sources>
-	</orx-plugin> -->
+	  <orx-plugin id="Sound_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+	    <destination>core/sound</destination>
+	    <sources>plugins/Sound/SFML/orxSound.cpp</sources>
+	  </orx-plugin>
 
 	<!-- MOUSE -->
 
 	<!-- Depends on SFML -->
-	<orx-plugin id="Mouse_SFML" cond="USE_SFML=='1'" template="orxSFML">
-		<category>core/mouse</category>
-		<sources>plugins/Mouse/SFML/orxMouse.cpp</sources>
-	</orx-plugin> -->
+	  <orx-plugin id="Mouse_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+	    <destination>core/mouse</destination>
+	    <sources>plugins/Mouse/SFML/orxMouse.cpp</sources>
+	  </orx-plugin>
 
 	<!-- KEYBOARD -->
 
 	<!-- Depends on SFML -->
-	<orx-plugin id="Keyboard_SFML" cond="USE_SFML=='1'" template="orxSFML">
-		<category>core/keyboard</category>
+	<orx-plugin id="Keyboard_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+		<destination>core/keyboard</destination>
 		<sources>plugins/Keyboard/SFML/orxKeyboard.cpp</sources>
 	</orx-plugin> -->
 
@@ -109,7 +145,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="File_LibC" cond="USE_PLUGINS=='1'">
-		<category>core/file</category>
+		<destination>core/file</destination>
 		<sources>plugins/File/LibC/orxFile.c</sources>
 	</orx-plugin>
 
@@ -117,7 +153,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="FileSystem_LibC" cond="USE_PLUGINS=='1'">
-		<category>core/file</category>
+		<destination>core/file</destination>
 		<sources>plugins/File/LibC/orxFileSystem.c</sources>
 	</orx-plugin>
 
@@ -126,14 +162,14 @@
 	<!-- SYSTEM -->
 
 	<!-- Depends on SDL -->
-	<orx-plugin id="System_SDL" cond="USE_SDL=='1'" template="orxSDL">
-		<category>core/system</category>
+	<orx-plugin id="System_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxSDL">
+		<destination>core/system</destination>
 		<sources>plugins/System/SDL/orxSystem.c</sources>
     </orx-plugin>
 
 	<!-- Depends on SFML -->
-	<orx-plugin id="System_SFML" cond="USE_SFML=='1'" template="orxSFML">
-		<category>core/system</category>
+	<orx-plugin id="System_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+		<destination>core/system</destination>
 		<sources>plugins/System/SFML/orxSystem.cpp</sources>
 	</orx-plugin> -->
 
@@ -141,7 +177,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Bounce" cond="USE_PLUGINS=='1'">
-		<category>demo</category>
+		<destination>demo</destination>
 		<sources>plugins/Demo/orxBounce.c</sources>
 	</orx-plugin>
 
@@ -149,7 +185,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Scroll" cond="USE_PLUGINS=='1'">
-		<category>demo</category>
+		<destination>demo</destination>
 		<sources>plugins/Demo/orxScroll.c</sources>
 	</orx-plugin>
 
@@ -157,7 +193,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Cave" cond="USE_PLUGINS=='1'">
-		<category>demo</category>
+		<destination>demo</destination>
 		<sources>plugins/Demo/orxCave.c</sources>
 	</orx-plugin>
 

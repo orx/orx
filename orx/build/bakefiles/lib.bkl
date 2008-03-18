@@ -213,16 +213,19 @@
             src/utils/orxTree.c
         </sources>
     </template>
-    
-    <!--mkdir id="builddir">
-        <dir>$(orxBUILDDIR)</dir>
-    </mkdir-->
-    
+
     <!-- ***************** DYNAMIC LIBRARY ************** -->
+
+	<!-- Link with math library on linux -->
+	<set var="orxMATHLIB">
+		<if cond="FORMAT=='gnu'">m</if>
+	</set>
+
     <!--- Create orx static library -->
     <dll id="orxDLL" template="orxLIB_BASE" cond="LINK=='dynamic'">
         <!-- Set the name of the library (will be different in debug and release mode -->
         <dllname>$(orxLIBNAME)</dllname>
+        <sys-lib>$(orxMATHLIB)</sys-lib> <!-- math library is still needed at the moment... It would be better to remove this dependency -->
     </dll>
 
     <!-- **************** STATIC LIBRARY ************** -->
@@ -230,5 +233,19 @@
     <!--- Create orx static library -->
     <lib id="orxLIB" template="orxLIB_BASE" cond="LINK=='static'">
     </lib>
+    
+    <!-- *********************** TEMPLATE TO LINK TO THE LIBRARY ***************** -->
+    <set var="orxLINKDEPEND">
+      <if cond="LINK=='static'">orxLIB</if>
+      <if cond="LINK=='dynamic'">orxDLL</if>
+    </set>
+
+    <!-- Set a template to define lib link -->
+    <template id="orxLINK">
+      <lib-path>$(orxLIBDIR)</lib-path>
+      <if cond="FORMAT in ['autoconf', 'gnu', 'msvc', 'mingw']">
+        <depends>$(orxLINKDEPEND)</depends>
+      </if>
+    </template>
 
 </bakefile>

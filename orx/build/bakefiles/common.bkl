@@ -52,15 +52,19 @@
 
     <!-- Set the preprocessor definition for plateform. -->
     <set var="orxPLATFORM" make_var="1">
-        <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> 	<!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
-        <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>    	<!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
-        <if cond="PLATFORM_MAC=='1'">__orxMAC__</if>    	<!-- set MAC preprocessor definition if a Mac platform is detected -->
+        <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
+        <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>    <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
+        <if cond="PLATFORM_MAC=='1'">__orxMAC__</if>       <!-- set MAC preprocessor definition if a Mac platform is detected -->
     </set>
-
+    
     <!-- Set the orx compiler var -->
     <set var="orxCOMPILER" make_var="1">
         <if cond="FORMAT in ['autoconf','gnu','mingw', 'xcode2']">__orxGCC__</if>
         <if cond="FORMAT in ['msvc','msvs2005prj']">__orxMSVC__</if>
+    </set>
+    <set var="COMPILER">
+        <if cond="FORMAT in ['msvc','msvs2005prj', 'gnu','mingw', 'xcode2']">$(COMPILER)</if>
+        <if cond="FORMAT == 'autoconf'">gcc</if>
     </set>
 
     <!-- Set the preprocessor definition for debug mode. -->
@@ -90,22 +94,21 @@
         <if cond="BUILD=='debug'">max</if>
         <if cond="BUILD=='release'">default</if>
     </set>
-
+    
     <set var="orxLIBNAME">
         <if cond="BUILD=='debug'">orxd</if>
         <if cond="BUILD=='release'">orx</if>
     </set>
-
-    <set var="orxWARNING_DEFINE">
-      <if cond="FORMAT in ['msvc','msvs2005prj']">_CRT_SECURE_NO_WARNINGS</if>
-    </set>
-
+    
     <!-- Disable specifics warnings -->
     <set var="orxDISABLE_WARNING">
       <if cond="FORMAT in ['autoconf','gnu','mingw','xcode2']">-Wno-unused-parameter</if>
       <!-- 4100 = unreferenced formal parameter, 4206 = translation unit is empty (empty file), C4201 = nonstandard extension used : nameless struct/union -->
       <if cond="FORMAT in ['msvc','msvs2005prj']">/wd4100 /wd4206 /wd4201</if>
     </set>
+
+    <!-- ****************** PATH ****************** -->
+
 
 	<set var="BUILDDIR">.$(DIRSEP)$(BUILD)</set>
 	<set var="orxLIBDIR">$(SRCDIR)$(DIRSEP)lib$(DIRSEP)$(LINK)</set>
@@ -124,14 +127,14 @@
         <define>$(orxPLATFORM)</define>
         <define>$(orxTEST)</define>
         <define>$(orxCOMPILER)</define>
-        <define>$(orxWARNING_DEFINE)</define>
-
+        
         <!-- Warnings. -->
         <warnings>$(orxWARNINGFLAG)</warnings>
         <cflags>$(orxDISABLE_WARNING)</cflags>
         
         <!-- Global include directory. -->
         <include>$(SRCDIR)$(DIRSEP)include</include>
+
     </template>
     
 </bakefile>
