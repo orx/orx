@@ -132,7 +132,9 @@ orxSTATIC orxCONST  orxSTRING   orxSTRING_EMPTY     = "";
 orxSTATIC orxCONST  orxSTRING   orxSTRING_TRUE      = "true";
 orxSTATIC orxCONST  orxSTRING   orxSTRING_FALSE     = "false";
 orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';
-orxSTATIC orxCONST  orxCHAR     orxCHAR_EOL         = '\n'; 
+orxSTATIC orxCONST  orxCHAR     orxCHAR_EOL         = '\n';
+orxSTATIC orxCONST  orxCHAR     orxCHAR_CR          = '\r';
+
 
 /* *** Directory separators *** */
 #define orxCHAR_DIRECTORY_SEPARATOR_WINDOWS         '\\'
