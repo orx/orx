@@ -132,11 +132,29 @@ orxSTATIC orxCONST  orxSTRING   orxSTRING_EMPTY     = "";
 orxSTATIC orxCONST  orxSTRING   orxSTRING_TRUE      = "true";
 orxSTATIC orxCONST  orxSTRING   orxSTRING_FALSE     = "false";
 orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';
-orxSTATIC orxCONST  orxCHAR     orxCHAR_EOL         = '\n';
 orxSTATIC orxCONST  orxCHAR     orxCHAR_CR          = '\r';
+orxSTATIC orxCONST  orxCHAR     orxCHAR_LF          = '\n';
+
+#ifdef __orxWINDOWS__
+
+  orxSTATIC orxCONST orxCHAR    orxCHAR_EOL         = '\n';
+  orxSTATIC orxCONST orxSTRING  orxSTRING_EOL       = "\r\n";
+
+#elif defined(__orxLINUX__)
+
+  orxSTATIC orxCONST orxCHAR    orxCHAR_EOL         = '\n';
+  orxSTATIC orxCONST orxSTRING  orxSTRING_EOL       = "\n";
+
+#elif defined(__orxMAC__)
+  
+  orxSTATIC orxCONST orxCHAR    orxCHAR_EOL         = '\r';
+  orxSTATIC orxCONST orxSTRING  orxSTRING_EOL       = "\r";
+
+#endif
 
 
 /* *** Directory separators *** */
+
 #define orxCHAR_DIRECTORY_SEPARATOR_WINDOWS         '\\'
 #define orxCHAR_DIRECTORY_SEPARATOR_LINUX           '/'
 #define orxSTRING_DIRECTORY_SEPARATOR_WINDOWS       "\\"     

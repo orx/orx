@@ -75,7 +75,7 @@
 
   <!-- On windows, sdl-config is not available, so we have to specify the option manually -->
   <set var="orxSFMLLIB_MINGW">
-    <if cond="FORMAT=='mingw'">-lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
+    <if cond="FORMAT=='mingw'">sfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
   </set>
 
   <set var="orxSFMLLIB_MSVC">

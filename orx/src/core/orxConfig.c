@@ -533,7 +533,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
         else if(pc == pcLineStart)
         {
           /* Skips all spaces */
-          while((pc < acBuffer + u32Size) && ((*pc == orxCHAR_EOL) || (*pc == orxCHAR_CR) || (*pc == orxCHAR_EOL)))
+          while((pc < acBuffer + u32Size) && ((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF)))
           {
             /* Updates pointers */
             pcLineStart++, pc++;
