@@ -100,6 +100,9 @@ orxVOID orxFile_LibC_Exit()
  */
 orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
 {
+  /* Module initialized ? */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
   /* Convert the open flags into a string */
   orxCHAR zMode[3];
   
@@ -178,6 +181,9 @@ orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
  */
 orxU32 orxFile_LibC_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
+  /* Module initialized ? */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
   /* Default return value */
   orxU32 u32Ret = 0;
   
@@ -200,6 +206,12 @@ orxU32 orxFile_LibC_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32Nb
  */
 orxU32 orxFile_LibC_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
+  /* Module initialized ? */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Checks inputs */
+  orxASSERT(_pstFile != orxNULL);
+
   /* Default return value */
   orxU32 u32Ret = 0;
   
@@ -217,20 +229,35 @@ orxU32 orxFile_LibC_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u
  * @param _zBuffer  (OUT)     Pointer where will be stored datas
  * @param _u32Size  (IN)      Size of buffer
  * @param _pstFile  (IN)      Pointer on the file descriptor
- * @return Returns if gets is ok.
+ * @return Returns true if a line has been read, else returns false.
  */
-orxSTATUS orxFile_LibC_Gets(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
+orxBOOL orxFile_LibC_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
 {
+  /* Module initialized ? */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Checks inputs */
+  orxASSERT(_pstFile != orxNULL);
+  
+  /* Default return value */
+  orxBOOL bRet = orxFALSE;
+  
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
+    /* Try to read a line */
     if(fgets(_zBuffer, _u32Size, (FILE*)_pstFile))
-  	  return orxSTATUS_SUCCESS;
+    {
+      bRet = orxTRUE;
+    }
     else
-  	  return orxSTATUS_FAILURE;
+    {
+      bRet = orxFALSE;
+    }
   }
-  else
-	  return orxSTATUS_FAILURE;
+  
+  /* Returns orxTRUE if a line has been read, else orxFALSE */
+  return bRet;
 }
 
 
@@ -240,6 +267,12 @@ orxSTATUS orxFile_LibC_Gets(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFi
  */
 orxSTATUS orxFile_LibC_Close(orxFILE *_pstFile)
 {
+  /* Module initialized ? */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
+
+  /* Checks inputs */
+  orxASSERT(_pstFile != orxNULL);
+
   /* Default return value */
   orxSTATUS eRet = orxSTATUS_FAILURE;
   
@@ -272,6 +305,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Exit, FILE, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Open, FILE, OPEN);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Read, FILE, READ);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Write, FILE, WRITE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Gets, FILE, GETS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_ReadLine, FILE, READ_LINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Close, FILE, CLOSE);
 orxPLUGIN_USER_CORE_FUNCTION_END();

@@ -53,7 +53,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Exit, orxVOID);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Open, orxFILE*, orxSTRING, orxU32);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Read, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Write, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Gets, orxSTATUS, orxSTRING, orxU32, orxFILE*);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_ReadLine, orxSTATUS, orxSTRING, orxU32, orxFILE*);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Close, orxSTATUS, orxFILE*);
 
 
@@ -110,11 +110,11 @@ orxSTATIC orxINLINE orxU32 orxFile_Write(orxVOID *_pDataToWrite, orxU32 _u32Elem
  * @param _zBuffer  (OUT)     Pointer where will be stored datas
  * @param _u32Size  (IN)      Size of buffer
  * @param _pstFile  (IN)      Pointer on the file descriptor
- * @return Returns if gets is ok.
+ * @return Returns orxTRUE if a line has been read, else returns orxFALSE.
  */
-orxSTATIC orxINLINE orxSTATUS orxFile_Gets(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
+orxSTATIC orxINLINE orxBOOL orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Gets)(_zBuffer, _u32Size, _pstFile);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_ReadLine)(_zBuffer, _u32Size, _pstFile);
 }
 
 /** Close an oppened file
