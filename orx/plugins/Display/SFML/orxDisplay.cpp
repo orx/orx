@@ -75,6 +75,7 @@ typedef struct __orxDISPLAY_TEXT_t
 typedef struct __orxDISPLAY_STATIC_t
 {
   orxU32            u32Flags;
+  orxU32            u32ScreenWidth, u32ScreenHeight;
   sf::RenderWindow *poRenderWindow;
 
   orxBANK          *pstTextBank;
@@ -523,7 +524,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   orxASSERT((_pstBitmap == spoScreen) && "Can only draw on screen with this version!");
 
   /* Stores screen clipping */
-  glScissor(_u32TLX, su32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
+  glScissor(_u32TLX, sstDisplay.u32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
 
   /* Enables clipping */
   glEnable(GL_SCISSOR_TEST);
@@ -560,6 +561,16 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
       {
         /* Inits default rendering window */
         sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::Style::Close);
+
+        /* Stores values */
+        sstDisplay.u32ScreenWidth   = su32ScreenWidth;
+        sstDisplay.u32ScreenHeight  = su32ScreenHeight;
+      }
+      else
+      {
+        /* Stores values */
+        sstDisplay.u32ScreenWidth   = s32ConfigWidth;
+        sstDisplay.u32ScreenHeight  = s32ConfigHeight;
       }
 
       /* Waits for vertical sync */
