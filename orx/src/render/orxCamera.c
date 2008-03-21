@@ -49,23 +49,13 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
-/** Internal Frustrum Structure
- */
-typedef struct __orxCAMERA_FRUSTRUM_t
-{
-  orxVECTOR vTL;                              /**< Upper left corner : 12 */
-  orxVECTOR vBR;                              /**< Bottom right corner : 24 */
-
-} orxCAMERA_FRUSTRUM;
-
-
 /** Camera structure
  */
 struct __orxCAMERA_t
 {
   orxSTRUCTURE        stStructure;            /**< Public structure, first structure member : 16 */  
   orxFRAME           *pstFrame;               /**< Frame : 20 */
-  orxCAMERA_FRUSTRUM  stFrustrum;             /**< Frustrum : 44 */
+  orxAABOX            stFrustrum;             /**< Frustrum : 44 */
 
   orxPAD(44)
 };
@@ -302,8 +292,10 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
 
 /** Sets camera frustrum (3D rectangle for 2D camera)
  * @param[in]   _pstCamera      Concerned camera
- * @param[in]   _pvTL           Upper left corner position
- * @param[in]   _pvBR           Bottom right corner position
+ * @param[in]   _fWidth         Width of frustrum
+ * @param[in]   _fHeight        Height of frustrum
+ * @param[in]   _fNear          Near distance of frustrum
+ * @param[in]   _fFar           Far distance of frustrum
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar)
@@ -313,11 +305,11 @@ orxSTATUS orxFASTCALL orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWi
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
-  orxASSERT(_fFar > _fNear);
+  orxASSERT(_fNear < _fFar);
 
   /* Updates internal frustrum */
-  orxVector_Set(&_pstCamera->stFrustrum.vTL, orx2F(-0.5f) * _fWidth, orx2F(-0.5f) * _fHeight, _fNear);
-  orxVector_Set(&_pstCamera->stFrustrum.vBR, orx2F(0.5f) * _fWidth, orx2F(0.5f) * _fHeight, _fFar);
+  orxVector_Set(&(_pstCamera->stFrustrum.vTL), orx2F(-0.5f) * _fWidth, orx2F(-0.5f) * _fHeight, _fNear);
+  orxVector_Set(&(_pstCamera->stFrustrum.vBR), orx2F(0.5f) * _fWidth, orx2F(0.5f) * _fHeight, _fFar);
 
   /* Done! */
   return eResult;
@@ -386,25 +378,23 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 
 /** Gets camera frustrum (3D box for 2D camera)
  * @param[in]   _pstCamera      Concerned camera
- * @param[out]  _pvTL           Upper left corner position
- * @param[out]  _pvBR           Bottom right corner position
+ * @param[out]  _pstFrustrum    Frustrum box
  */
-orxVOID orxFASTCALL orxCamera_GetFrustrum(orxCONST orxCAMERA *_pstCamera, orxVECTOR *_pvTL, orxVECTOR *_pvBR)
+orxVOID orxFASTCALL orxCamera_GetFrustrum(orxCONST orxCAMERA *_pstCamera, orxAABOX *_pstFrustrum)
 {
   orxVECTOR vPosition;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
-  orxASSERT(_pvTL != orxNULL);
-  orxASSERT(_pvBR != orxNULL);
+  orxASSERT(_pstFrustrum != orxNULL);
 
   /* Gets camera position */
   orxFrame_GetPosition(_pstCamera->pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
   /* Stores frustrum */
-  orxVector_Add(_pvTL, &(_pstCamera->stFrustrum.vTL), &vPosition);
-  orxVector_Add(_pvBR, &(_pstCamera->stFrustrum.vBR), &vPosition);
+  orxVector_Add(&(_pstFrustrum->vTL), &(_pstCamera->stFrustrum.vTL), &vPosition);
+  orxVector_Add(&(_pstFrustrum->vBR), &(_pstCamera->stFrustrum.vBR), &vPosition);
 
   return;
 }

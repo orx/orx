@@ -268,22 +268,23 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
           {
             orxOBJECT      *pstObject;
             orxRENDER_NODE *pstRenderNode;
-            orxVECTOR       vCameraUL, vCameraBR, vCameraCenter;
+            orxVECTOR       vCameraPosition;
+            orxAABOX        stFrustrum;
             orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraWidth, fCameraHeight, fCameraSqrBoundingRadius;
 
             /* Gets camera frustrum */
-            orxCamera_GetFrustrum(pstCamera, &vCameraUL, &vCameraBR);
+            orxCamera_GetFrustrum(pstCamera, &stFrustrum);
 
             /* Gets camera zoom */
             fZoom = orxCamera_GetZoom(pstCamera);
 
             /* Gets camera size */
-            fCameraWidth  = vCameraBR.fX - vCameraUL.fX;
-            fCameraHeight = vCameraBR.fY - vCameraUL.fY;
+            fCameraWidth  = stFrustrum.vBR.fX - stFrustrum.vTL.fX;
+            fCameraHeight = stFrustrum.vBR.fY - stFrustrum.vTL.fY;
 
             /* Gets camera center */
-            orxVector_Add(&vCameraCenter, &vCameraUL, &vCameraBR);
-            orxVector_Mulf(&vCameraCenter, &vCameraCenter, orx2F(0.5f));
+            orxVector_Add(&vCameraPosition, &(stFrustrum.vTL), &(stFrustrum.vBR));
+            orxVector_Mulf(&vCameraPosition, &vCameraPosition, orx2F(0.5f));
 
             /* Gets camera square bounding radius */
             fCameraSqrBoundingRadius = orx2F(0.5f) * ((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight));
@@ -330,7 +331,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                     orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
 
                     /* Is object in Z frustrum? */
-                    if((vObjectPos.fZ >= vCameraUL.fZ) && (vObjectPos.fZ <= vCameraBR.fZ))
+                    if((vObjectPos.fZ >= stFrustrum.vTL.fZ) && (vObjectPos.fZ <= stFrustrum.vBR.fZ))
                     {
                       orxVECTOR vSqrDist;
                       orxFLOAT  fWidth, fHeight, fObjectScaleX, fObjectScaleY, fObjectSqrBoundingRadius;
@@ -349,7 +350,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                       fObjectSqrBoundingRadius = orx2F(1.5f) * ((fWidth * fWidth) + (fHeight * fHeight));
 
                       /* Gets 2D square distance to camera */
-                      orxVector_Sub(&vSqrDist, &vObjectPos, &vCameraCenter);
+                      orxVector_Sub(&vSqrDist, &vObjectPos, &vCameraPosition);
                       orxVector_Mul(&vSqrDist, &vSqrDist, &vSqrDist); 
 
                       /* Circle test between object & camera */
@@ -435,12 +436,12 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
 
               /* Uses differential scrolling? */
               if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
-              && (vObjectPos.fZ > vCameraUL.fZ))
+              && (vObjectPos.fZ > stFrustrum.vTL.fZ))
               {
                 orxREGISTER orxFLOAT fScroll;
 
                 /* Gets scroll coefficient */
-                fScroll = (vCameraBR.fZ - vCameraUL.fZ) / (vObjectPos.fZ - vCameraUL.fZ);
+                fScroll = (stFrustrum.vBR.fZ - stFrustrum.vTL.fZ) / (vObjectPos.fZ - stFrustrum.vTL.fZ);
 
                 /* Gets differential scrolling values */
                 fScrollX = (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE) ? fScroll : orxFLOAT_1;
@@ -453,7 +454,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
               }
 
               /* Gets render position */
-              orxVector_Sub(&vRenderPos, &vObjectPos, &vCameraUL);
+              orxVector_Sub(&vRenderPos, &vObjectPos, &(stFrustrum.vTL));
               vRenderPos.fX  *= fRenderScaleX * fScrollX;
               vRenderPos.fY  *= fRenderScaleY * fScrollY;
               orxVector_Add(&vRenderPos, &vRenderPos, &stViewportBox.vTL);

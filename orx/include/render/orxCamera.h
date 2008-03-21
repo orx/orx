@@ -110,10 +110,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetZoom(orxCAMERA *_pstCamera,
 
 /** Gets camera frustrum (3D box for 2D camera)
  * @param[in]   _pstCamera      Concerned camera
- * @param[out]  _pvTL           Upper left corner position
- * @param[out]  _pvBR           Bottom right corner position
+ * @param[out]  _pstFrustrum    Frustrum box
  */
-extern orxDLLAPI orxVOID orxFASTCALL    orxCamera_GetFrustrum(orxCONST orxCAMERA *_pstCamera, orxVECTOR *_pvTL, orxVECTOR *_pvBR);
+extern orxDLLAPI orxVOID orxFASTCALL    orxCamera_GetFrustrum(orxCONST orxCAMERA *_pstCamera, orxAABOX *_pstFrustrum);
 
 /** Get camera position
  * @param[in]   _pstCamera      Concerned camera

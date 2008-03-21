@@ -507,7 +507,7 @@ orxSTATIC orxSTATUS orxCave_Init()
   sstCave.pstTVViewport = orxViewport_Create();
   orxViewport_SetCamera(sstCave.pstTVViewport, sstCave.pstTVCamera);
   orxViewport_SetSize(sstCave.pstTVViewport, orx2F(128.0f), orx2F(80.0f));
-  orxViewport_SetPosition(sstCave.pstTVViewport, orx2F(445.0f), orx2F(400.0f));
+  orxViewport_SetPosition(sstCave.pstTVViewport, orx2F(445.0f), orx2F(400.0f / 768.0f) * sstCave.fScreenHeight);
   orxViewport_Enable(sstCave.pstTVViewport, orxFALSE);
 
   /* Creates & inits main viewport */
