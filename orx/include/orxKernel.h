@@ -63,8 +63,7 @@
 #include "plugin/orxPluginCore.h"
 #include "plugin/orxPluginUser.h"
 
-#include "physics/orxBody.h"
-#include "physics/orxCollision.h"
+#include "physics/orxPhysics.h"
 
 #include "render/orxCamera.h"
 #include "render/orxRender.h"

@@ -147,12 +147,10 @@
         </sources>
 
         <headers>
-            include/physics/orxBody.h
-            include/physics/orxCollision.h
+            include/physics/orxPhysics.h
         </headers>
         <sources>
-            src/physics/orxBody.c
-            src/physics/orxCollision.c
+            src/physics/orxPhysics.c
         </sources>
 
         <headers>

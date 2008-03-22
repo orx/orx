@@ -22,7 +22,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -107,7 +107,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -192,7 +192,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -277,7 +277,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -362,7 +362,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -447,7 +447,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -532,7 +532,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -617,7 +617,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -702,7 +702,687 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -787,7 +1467,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -872,7 +1552,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -957,7 +1637,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -1042,7 +1722,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -1127,7 +1807,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -1212,7 +1892,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -1297,7 +1977,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\release\Bank"
 			ConfigurationType="2"
@@ -1382,7 +2062,687 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\release\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="false"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="2"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+				BasicRuntimeChecks="0"
+				DebugInformationFormat="0"
+				BufferSecurityCheck="false"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\release\Bank\"
+				ObjectFile=".\release\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="1"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -1468,7 +2828,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -1554,7 +2914,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -1640,7 +3000,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -1726,7 +3086,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -1812,7 +3172,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -1898,7 +3258,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -1984,7 +3344,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -2070,7 +3430,695 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\dynamic"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -2156,7 +4204,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -2242,7 +4290,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -2328,7 +4376,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -2414,7 +4462,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -2500,7 +4548,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -2586,7 +4634,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"
@@ -2672,7 +4720,695 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			Name="BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_TEST_1 USE_PLUGINS_0|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_1|Win32"
+			OutputDirectory="..\..\..\bin\modules"
+			IntermediateDirectory=".\debug\Bank"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\..\include"
+				MinimalRebuild="true"
+				ExceptionHandling="1"
+				AdditionalOptions="/wd4100 /wd4206 /wd4201"
+				RuntimeLibrary="3"
+				PreprocessorDefinitions="_USRDLL;DLL_EXPORTS;__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+				BasicRuntimeChecks="3"
+				DebugInformationFormat="3"
+				Detect64BitPortabilityProblems="true"
+				RuntimeTypeInfo="true"
+				AssemblerListingLocation=".\debug\Bank\"
+				ObjectFile=".\debug\Bank\"
+				ProgramDataBaseFileName="..\..\..\bin\modules\Bank.pdb"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\include"
+				PreprocessorDefinitions="__orxDEBUG__;__orxWINDOWS__;__orxTEST__;__orxMSVC__;__orxDLL__;_DEBUG"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				AdditionalOptions=""
+				OutputFile="..\..\..\bin\modules\Bank.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\..\lib\static"
+				GenerateManifest="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="..\..\..\bin\modules\Bank.pdb"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="..\..\..\bin\modules\orx_Bank.bsc"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_TEST_1 USE_PLUGINS_0|Win32"
 			OutputDirectory="..\..\..\bin\modules"
 			IntermediateDirectory=".\debug\Bank"
 			ConfigurationType="2"

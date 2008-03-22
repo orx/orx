@@ -72,6 +72,12 @@ dnl ### begin block 20_COND_PLATFORM_WIN32_1[bakefiles/orx.bkl] ###
         COND_PLATFORM_WIN32_1=""
     fi
     AC_SUBST(COND_PLATFORM_WIN32_1)
+dnl ### begin block 20_COND_USE_BOX2D_1_USE_PLUGINS_1[bakefiles/orx.bkl] ###
+    COND_USE_BOX2D_1_USE_PLUGINS_1="#"
+    if test "x$USE_BOX2D" = "x1" -a "x$USE_PLUGINS" = "x1" ; then
+        COND_USE_BOX2D_1_USE_PLUGINS_1=""
+    fi
+    AC_SUBST(COND_USE_BOX2D_1_USE_PLUGINS_1)
 dnl ### begin block 20_COND_USE_PLUGINS_1[bakefiles/orx.bkl] ###
     COND_USE_PLUGINS_1="#"
     if test "x$USE_PLUGINS" = "x1" ; then

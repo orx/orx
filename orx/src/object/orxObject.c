@@ -22,7 +22,7 @@
 #include "debug/orxDebug.h"
 #include "anim/orxAnimPointer.h"
 #include "display/orxGraphic.h"
-#include "physics/orxBody.h"
+#include "physics/orxPhysics.h"
 #include "object/orxFrame.h"
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
@@ -198,7 +198,7 @@ orxVOID orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FRAME);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
-  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_PHYSICS);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CLOCK);
 
@@ -507,39 +507,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
         /* With body? */
         if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY))
         {
-          orxBODY *pstBody;
+//! TEMP          orxBODY *pstBody;
 
           /* Creates body */
-          pstBody = orxBody_Create(orxBODY_KU32_FLAG_2D);
+//! TEMP          pstBody = orxBody_Create(orxBODY_KU32_FLAG_2D);
 
           /* Valid? */
-          if(pstBody != orxNULL)
-          {
-            /* Links it structures */
-            if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
-            {
-              /* Updates flags */
-              orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-              orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_BODY, orxOBJECT_KU32_FLAG_NONE);
-            }
-            else
-            {
-              /* !!! MSG !!! */
-
-              /* Deletes all structures */
-              orxBody_Delete(pstBody);
-              orxObject_Delete(pstObject);
-              pstObject = orxNULL;
-            }
-          }
-          else
-          {
-            /* !!! MSG !!! */
-
-            /* Deletes all structures */
-            orxObject_Delete(pstObject);
-            pstObject = orxNULL;
-          }
+//          if(pstBody != orxNULL)
+//          {
+//            /* Links it structures */
+//            if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
+//            {
+//              /* Updates flags */
+//              orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+//              orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_BODY, orxOBJECT_KU32_FLAG_NONE);
+//            }
+//            else
+//            {
+//              /* !!! MSG !!! */
+//
+//              /* Deletes all structures */
+//              orxBody_Delete(pstBody);
+//              orxObject_Delete(pstObject);
+//              pstObject = orxNULL;
+//            }
+//          }
+//          else
+//          {
+//            /* !!! MSG !!! */
+//
+//            /* Deletes all structures */
+//            orxObject_Delete(pstObject);
+//            pstObject = orxNULL;
+//          }
         }
       }
     }
@@ -625,39 +625,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObjectFromFile(orxCONST orxSTRING
       /* With body? */
       if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY))
       {
-        orxBODY *pstBody;
+//! TEMP        orxBODY *pstBody;
 
         /* Creates body */
-        pstBody = orxBody_Create(orxBODY_KU32_FLAG_2D);
+//! TEMP        pstBody = orxBody_Create(orxBODY_KU32_FLAG_2D);
 
         /* Valid? */
-        if(pstBody != orxNULL)
-        {
-          /* Links it structures */
-          if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
-          {
-            /* Updates flags */
-            orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-            orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_BODY, orxOBJECT_KU32_FLAG_NONE);
-          }
-          else
-          {
-            /* !!! MSG !!! */
-
-            /* Deletes all structures */
-            orxBody_Delete(pstBody);
-            orxObject_Delete(pstObject);
-            pstObject = orxNULL;
-          }
-        }
-        else
-        {
-          /* !!! MSG !!! */
-
-          /* Deletes all structures */
-          orxObject_Delete(pstObject);
-          pstObject = orxNULL;
-        }
+//        if(pstBody != orxNULL)
+//        {
+//          /* Links it structures */
+//          if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
+//          {
+//            /* Updates flags */
+//            orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+//            orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_BODY, orxOBJECT_KU32_FLAG_NONE);
+//          }
+//          else
+//          {
+//            /* !!! MSG !!! */
+//
+//            /* Deletes all structures */
+//            orxBody_Delete(pstBody);
+//            orxObject_Delete(pstObject);
+//            pstObject = orxNULL;
+//          }
+//        }
+//        else
+//        {
+//          /* !!! MSG !!! */
+//
+//          /* Deletes all structures */
+//          orxObject_Delete(pstObject);
+//          pstObject = orxNULL;
+//        }
       }
     }
   }
@@ -761,7 +761,7 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
 
         case orxSTRUCTURE_ID_BODY:
         {
-          orxBody_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, BODY));
+//! TEMP          orxBody_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, BODY));
           break;
         }
 

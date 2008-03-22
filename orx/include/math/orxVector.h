@@ -550,4 +550,19 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_2DRotate(orxAABOX *_pstRe
     return _pstRes;
 }
 
+/** Copies AABox values into another one. */
+orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, orxCONST orxAABOX *_pstSrc)
+{
+  /* Checks */
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT(_pstSrc != orxNULL);
+
+  /* Copies it */
+  orxMemory_Copy(_pstDst, _pstSrc, sizeof(orxAABOX));
+
+  /* Done! */
+  return _pstDst;
+}
+
+
 #endif /* _orxVECTOR_H_ */
