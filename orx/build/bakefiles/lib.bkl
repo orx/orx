@@ -147,9 +147,11 @@
         </sources>
 
         <headers>
+            include/physics/orxBody.h
             include/physics/orxPhysics.h
         </headers>
         <sources>
+            src/physics/orxBody.c
             src/physics/orxPhysics.c
         </sources>
 
@@ -169,6 +171,7 @@
             include/plugin/define/orxPlugin_Keyboard.h
             include/plugin/define/orxPlugin_Mouse.h
             include/plugin/define/orxPlugin_Package.h
+            include/plugin/define/orxPlugin_Physics.h
             include/plugin/define/orxPlugin_Render.h
             include/plugin/define/orxPlugin_Script.h
             include/plugin/define/orxPlugin_Sound.h

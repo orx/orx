@@ -96,6 +96,7 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxFrame.obj \
 	.\$(BUILD)\orxDLL_orxObject.obj \
 	.\$(BUILD)\orxDLL_orxStructure.obj \
+	.\$(BUILD)\orxDLL_orxBody.obj \
 	.\$(BUILD)\orxDLL_orxPhysics.obj \
 	.\$(BUILD)\orxDLL_orxPlugin.obj \
 	.\$(BUILD)\orxDLL_orxScript.obj \
@@ -144,6 +145,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxFrame.obj \
 	.\$(BUILD)\orxLIB_orxObject.obj \
 	.\$(BUILD)\orxLIB_orxStructure.obj \
+	.\$(BUILD)\orxLIB_orxBody.obj \
 	.\$(BUILD)\orxLIB_orxPhysics.obj \
 	.\$(BUILD)\orxLIB_orxPlugin.obj \
 	.\$(BUILD)\orxLIB_orxScript.obj \
@@ -281,11 +283,11 @@ FILESYSTEM_LIBC_CFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	/I..\..\..\include /D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
 FILESYSTEM_LIBC_OBJECTS =  \
 	.\$(BUILD)\FileSystem_LibC_orxFileSystem.obj
-PHYSICS_BOX2D_CFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
+PHYSICS_BOX2D_CXXFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
 	/Fd..\..\..\bin\plugins\core\physics\Physics_Box2D.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) $(__orxTEST_p) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	/I..\..\..\include /D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+	/I..\..\..\include /D__orxDLL__ /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
 PHYSICS_BOX2D_OBJECTS =  \
 	.\$(BUILD)\Physics_Box2D_orxPhysics.obj
 SYSTEM_SDL_CFLAGS = /MD$(__orxDEBUGFLAG_71) /DWIN32 $(__orxOPTIMIZEFLAG) \
@@ -828,6 +830,9 @@ clean:
 .\$(BUILD)\orxDLL_orxStructure.obj: ..\..\..\src\object\orxStructure.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\object\orxStructure.c
 
+.\$(BUILD)\orxDLL_orxBody.obj: ..\..\..\src\physics\orxBody.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\physics\orxBody.c
+
 .\$(BUILD)\orxDLL_orxPhysics.obj: ..\..\..\src\physics\orxPhysics.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXDLL_CFLAGS) ..\..\..\src\physics\orxPhysics.c
 
@@ -951,6 +956,9 @@ clean:
 .\$(BUILD)\orxLIB_orxStructure.obj: ..\..\..\src\object\orxStructure.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\object\orxStructure.c
 
+.\$(BUILD)\orxLIB_orxBody.obj: ..\..\..\src\physics\orxBody.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\physics\orxBody.c
+
 .\$(BUILD)\orxLIB_orxPhysics.obj: ..\..\..\src\physics\orxPhysics.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORXLIB_CFLAGS) ..\..\..\src\physics\orxPhysics.c
 
@@ -1038,8 +1046,8 @@ clean:
 .\$(BUILD)\FileSystem_LibC_orxFileSystem.obj: ..\..\..\plugins\File\LibC\orxFileSystem.c
 	$(CC) /c /nologo /TC /Fo$@ $(FILESYSTEM_LIBC_CFLAGS) ..\..\..\plugins\File\LibC\orxFileSystem.c
 
-.\$(BUILD)\Physics_Box2D_orxPhysics.obj: ..\..\..\plugins\Physics\Box2D\orxPhysics.c
-	$(CC) /c /nologo /TC /Fo$@ $(PHYSICS_BOX2D_CFLAGS) ..\..\..\plugins\Physics\Box2D\orxPhysics.c
+.\$(BUILD)\Physics_Box2D_orxPhysics.obj: ..\..\..\plugins\Physics\Box2D\orxPhysics.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(PHYSICS_BOX2D_CXXFLAGS) ..\..\..\plugins\Physics\Box2D\orxPhysics.cpp
 
 .\$(BUILD)\System_SDL_orxSystem.obj: ..\..\..\plugins\System\SDL\orxSystem.c
 	$(CC) /c /nologo /TC /Fo$@ $(SYSTEM_SDL_CFLAGS) ..\..\..\plugins\System\SDL\orxSystem.c

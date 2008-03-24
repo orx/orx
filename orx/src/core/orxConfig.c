@@ -634,9 +634,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
 }
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
-* @param[in] _zFileName        File name, if null or empty the default file name will be used
-* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
-*/
+ * @param[in] _zFileName        File name, if null or empty the default file name will be used
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
 {
   FILE     *pstFile;
@@ -699,6 +699,26 @@ orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
 
   /* Done! */
   return eResult;
+}
+
+/** Has specified value for the given key?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_HasValue(orxCONST orxSTRING _zKey)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+
+  /* Updates result */
+  bResult = (orxConfig_GetEntry(_zKey) != orxNULL) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }
 
 /** Reads an integer value from config
@@ -833,6 +853,40 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
 
   /* Done! */
   return bResult;
+}
+
+/** Reads a vector value from config
+ * @param[in]   _zKey             Key name
+ * @param[out]  _pstVector        Storage for vector value  
+ * @return The value
+ */
+orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pstVector)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxVECTOR        *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_pstVector != orxNULL);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Gets value */
+    if(orxString_ToVector(pstEntry->zValue, _pstVector, orxNULL) != orxSTATUS_FAILURE)
+    {
+      /* Updates result */
+      pstResult = _pstVector;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Writes an integer value to config
@@ -973,6 +1027,46 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValu
 
   /* Adds new entry */
   eResult = orxConfig_AddEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Writes a vector value to config
+ * @param[in] _zKey             Key name
+ * @param[in] _pstValue         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pstValue)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxCHAR           zValue[64];
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_pstValue != orxNULL);
+
+  /* Clears buffer */
+  orxMemory_Set(zValue, 0, 64 * sizeof(orxCHAR));
+
+  /* Gets literal value */
+  orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pstValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fZ, orxSTRING_KC_VECTOR_END); 
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, zValue);
 
   /* Done! */
   return eResult;

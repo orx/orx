@@ -5580,6 +5580,9 @@
 				RelativePath="..\..\..\src\memory\orxBank.c"
 			/>
 			<File
+				RelativePath="..\..\..\src\physics\orxBody.c"
+			/>
+			<File
 				RelativePath="..\..\..\src\render\orxCamera.c"
 			/>
 			<File
@@ -5712,6 +5715,9 @@
 				RelativePath="..\..\..\include\memory\orxBank.h"
 			/>
 			<File
+				RelativePath="..\..\..\include\physics\orxBody.h"
+			/>
+			<File
 				RelativePath="..\..\..\include\render\orxCamera.h"
 			/>
 			<File
@@ -5830,6 +5836,9 @@
 			/>
 			<File
 				RelativePath="..\..\..\include\plugin\define\orxPlugin_Package.h"
+			/>
+			<File
+				RelativePath="..\..\..\include\plugin\define\orxPlugin_Physics.h"
 			/>
 			<File
 				RelativePath="..\..\..\include\plugin\define\orxPlugin_Render.h"

@@ -28,10 +28,10 @@
 
 
 #define orx2RGBA(R, G, B, A)            ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
-#define orxRGBA_R(ARGB)                 (((ARGB) >> 24) & 0xFF)
-#define orxRGBA_G(ARGB)                 (((ARGB) >> 16) & 0xFF)
-#define orxRGBA_B(ARGB)                 (((ARGB) >> 8) & 0xFF)
-#define orxRGBA_A(ARGB)                 ((ARGB) & 0xFF)
+#define orxRGBA_R(RGBA)                 (((RGBA) >> 24) & 0xFF)
+#define orxRGBA_G(RGBA)                 (((RGBA) >> 16) & 0xFF)
+#define orxRGBA_B(RGBA)                 (((RGBA) >> 8) & 0xFF)
+#define orxRGBA_A(RGBA)                 ((RGBA) & 0xFF)
 
 typedef struct __orxBITMAP_t            orxBITMAP;
 
@@ -44,6 +44,11 @@ typedef struct __orxBITMAP_TRANSFORM_t
   orxFLOAT  fScaleY;
 
 } orxBITMAP_TRANSFORM;
+
+#define orxDISPLAY_KZ_CONFIG_SECTION    "Display"
+#define orxDISPLAY_KZ_CONFIG_WIDTH      "ScreenWidth"
+#define orxDISPLAY_KZ_CONFIG_HEIGHT     "ScreenHeight"
+#define orxDISPLAY_KZ_CONFIG_FONT       "Font"
 
 
 /***************************************************************************

@@ -31,6 +31,7 @@
 
 #include "orxInclude.h"
 #include "memory/orxMemory.h"
+#include "math/orxVector.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -39,6 +40,11 @@
 #include <ctype.h>
 
 #include "debug/orxDebug.h"
+
+
+#define orxSTRING_KC_VECTOR_START       '{'
+#define orxSTRING_KC_VECTOR_SEPARATOR   ','
+#define orxSTRING_KC_VECTOR_END         '}'
 
 
 /** Continues a CRC with a string one
@@ -59,6 +65,25 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxString_NContinueCRC(orxCONST orxSTRIN
 
 /* *** String inlined functions *** */
 
+
+/** Skips all white spaces
+ * @param[in] _zString        Concerned string
+ * @return    Sub string located after all leading white spaces
+ */
+orxSTATIC orxINLINE orxSTRING           orxString_SkipWhiteSpaces(orxCONST orxSTRING _zString)
+{
+  orxREGISTER orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(_zString != NULL);
+  orxASSERT(*_zString != *orxSTRING_EMPTY);
+
+  /* Skips all white spaces */
+  for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++);
+
+  /* Done! */
+  return zResult;
+}
 
 /** Returns the number of character in the string
  * @param _zString (IN) String used for length computation
@@ -304,6 +329,101 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
   }
 
 #endif /* __orxLINUX__ || __orxMAC__ */
+
+  /* Done! */
+  return eResult;
+}
+
+/** Convert a string to a vector
+ * @param[in]   _zString        String To convert
+ * @param[out]  _pstOutValue    Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _zString, orxVECTOR *_pstOutValue, orxSTRING *_pzRemaining)
+{
+  orxVECTOR stValue;
+  orxSTRING zString;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(_pstOutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Skips all white spaces */
+  zString = orxString_SkipWhiteSpaces(_zString);
+
+  /* Is a vector start character? */
+  if(*zString == orxSTRING_KC_VECTOR_START)
+  {
+    /* Skips all white spaces */
+    zString = orxString_SkipWhiteSpaces(zString + 1);
+
+    /* Gets X value */
+    eResult = orxString_ToFloat(zString, &(stValue.fX), &zString);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Skips all white spaces */
+      zString = orxString_SkipWhiteSpaces(zString);
+
+      /* Is a vector separator character? */
+      if(*zString == orxSTRING_KC_VECTOR_SEPARATOR)
+      {
+        /* Skips all white spaces */
+        zString = orxString_SkipWhiteSpaces(zString + 1);
+
+        /* Gets Y value */
+        eResult = orxString_ToFloat(zString, &(stValue.fY), &zString);
+
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Skips all white spaces */
+          zString = orxString_SkipWhiteSpaces(zString);
+
+          /* Is a vector separator character? */
+          if(*zString == orxSTRING_KC_VECTOR_SEPARATOR)
+          {
+            /* Skips all white spaces */
+            zString = orxString_SkipWhiteSpaces(zString + 1);
+
+            /* Gets Z value */
+            eResult = orxString_ToFloat(zString, &(stValue.fZ), &zString);
+
+            /* Success? */
+            if(eResult != orxSTATUS_FAILURE)
+            {
+              /* Skips all white spaces */
+              zString = orxString_SkipWhiteSpaces(zString);
+
+              /* Is not a vector end character? */
+              if(*zString != orxSTRING_KC_VECTOR_END)
+              {
+                /* Updates result */
+                eResult = orxSTATUS_FAILURE;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  /* Valid? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates vector */
+    orxVector_Copy(_pstOutValue, &stValue);
+
+    /* Asks for remaining string? */
+    if(_pzRemaining != orxNULL)
+    {
+      /* Stores it */
+      *_pzRemaining = zString + 1;
+    }
+  }
 
   /* Done! */
   return eResult;

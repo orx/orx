@@ -28,6 +28,7 @@
 
 #include "orxInclude.h"
 
+#include "math/orxVector.h"
 
 /** Config module setup
  */
@@ -49,48 +50,53 @@ extern orxDLLAPI orxVOID                orxConfig_Exit();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Load(orxCONST orxSTRING _zFileName);
 
-/** Saves config config to source
+/** Writes config to given file. Will overwrite any existing file, including all comments.
+ * @param[in] _zFileName        File name, if null or empty the default file name will be used
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxConfig_Save();
-
-/** Gets config file name
- * @return File name if loaded, orxSTRING_EMPTY otherwise
- */
-extern orxDLLAPI orxSTRING              orxConfig_GetFileName();
+extern orxDLLAPI orxSTATUS              orxConfig_Save(orxCONST orxSTRING _zFileName);
 
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select
  */
 extern orxDLLAPI orxSTATUS              orxConfig_SelectSection(orxCONST orxSTRING _zSectionName);
 
+/** Has specified value for the given key?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasValue(orxCONST orxSTRING _zKey);
+
 /** Reads an integer value from config
  * @param[in] _zKey             Key name
- * @param[in] _s32DefaultValue  Default value if key is not found
  * @return The value
  */
 extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetS32(orxCONST orxSTRING _zKey);
 
 /** Reads a float value from config
  * @param[in] _zKey             Key name
- * @param[in] _fDefaultValue    Default value if key is not found
  * @return The value
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL   orxConfig_GetFloat(orxCONST orxSTRING _zKey);
 
 /** Reads a string value from config
  * @param[in] _zKey             Key name
- * @param[in] _zDefaultValue    Default value if key is not found
  * @return The value
  */
 extern orxDLLAPI orxSTRING orxFASTCALL  orxConfig_GetString(orxCONST orxSTRING _zKey);
 
 /** Reads a boolean value from config
  * @param[in] _zKey             Key name
- * @param[in] _bDefaultValue    Default value if key is not found
  * @return The value
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(orxCONST orxSTRING _zKey);
+
+/** Reads a vector value from config
+ * @param[in]   _zKey             Key name
+ * @param[out]  _pstVector        Storage for vector value  
+ * @return The value
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pstVector);
 
 
 /** Writes an integer value to config
@@ -98,27 +104,34 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(orxCONST orxSTRING _zK
  * @param[in] _s32Value         Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Value);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Value);
 
 /** Writes a float value to config
  * @param[in] _zKey             Key name
  * @param[in] _fValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fValue);
 
 /** Writes a string value to config
  * @param[in] _zKey             Key name
  * @param[in] _fValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxConfig_SetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue);
 
 /** Writes a boolean value to config
  * @param[in] _zKey             Key name
  * @param[in] _fValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValue);
+
+/** Writes a vector value to config
+ * @param[in] _zKey             Key name
+ * @param[in] _pstValue         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pstValue);
 
 #endif /*_orxCONFIG_H_*/

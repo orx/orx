@@ -52,10 +52,6 @@ orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
 orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
 orxSTATIC orxCONST orxSTRING  szTitle           = "orxTestWindow";
 orxSTATIC orxCONST orxU32     su32TextBankSize  = 8;
-orxSTATIC orxCONST orxSTRING  szConfigSection   = "Display";
-orxSTATIC orxCONST orxSTRING  szConfigWidth     = "ScreenWidth";
-orxSTATIC orxCONST orxSTRING  szConfigHeight    = "ScreenHeight";
-orxSTATIC orxCONST orxSTRING  szConfigFont      = "Font";
 
 
 /***************************************************************************
@@ -117,10 +113,10 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
   if(pstText != orxNULL)
   {
     /* Sets config section */
-    orxConfig_SelectSection(szConfigSection);
+    orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
     /* Allocates text */
-    pstText->poString = new sf::String(_zString, orxConfig_GetString(szConfigFont));
+    pstText->poString = new sf::String(_zString, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_FONT));
 
     /* Sets its color */
     pstText->poString->SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
@@ -552,15 +548,15 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
       orxS32 s32ConfigWidth, s32ConfigHeight;
 
       /* Gets resolution from config */
-      orxConfig_SelectSection(szConfigSection);
-      s32ConfigWidth  = orxConfig_GetS32(szConfigWidth);
-      s32ConfigHeight = orxConfig_GetS32(szConfigHeight);
+      orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
+      s32ConfigWidth  = orxConfig_GetS32(orxDISPLAY_KZ_CONFIG_WIDTH);
+      s32ConfigHeight = orxConfig_GetS32(orxDISPLAY_KZ_CONFIG_HEIGHT);
 
       /* Not valid? */
       if((s32ConfigWidth <= 0) || (s32ConfigHeight <= 0) || ((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(s32ConfigWidth, s32ConfigHeight), szTitle, sf::Style::Close)) == orxNULL))
       {
         /* Inits default rendering window */
-        sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::Style::Close);
+        sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::Style::Close);
 
         /* Stores values */
         sstDisplay.u32ScreenWidth   = su32ScreenWidth;

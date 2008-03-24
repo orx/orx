@@ -44,10 +44,10 @@ LINK := static
 USE_SDL := 0
 
 #  [0,1]
-USE_SFML := 0
+USE_SFML := 1
 
 #  [0,1]
-USE_BOX2D := 0
+USE_BOX2D := 1
 
 #  [0,1]
 USE_TEST := 0
@@ -101,6 +101,7 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxFrame.o \
 	.\$(BUILD)\orxDLL_orxObject.o \
 	.\$(BUILD)\orxDLL_orxStructure.o \
+	.\$(BUILD)\orxDLL_orxBody.o \
 	.\$(BUILD)\orxDLL_orxPhysics.o \
 	.\$(BUILD)\orxDLL_orxPlugin.o \
 	.\$(BUILD)\orxDLL_orxScript.o \
@@ -147,6 +148,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxFrame.o \
 	.\$(BUILD)\orxLIB_orxObject.o \
 	.\$(BUILD)\orxLIB_orxStructure.o \
+	.\$(BUILD)\orxLIB_orxBody.o \
 	.\$(BUILD)\orxLIB_orxPhysics.o \
 	.\$(BUILD)\orxLIB_orxPlugin.o \
 	.\$(BUILD)\orxLIB_orxScript.o \
@@ -249,9 +251,9 @@ FILESYSTEM_LIBC_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	$(CPPFLAGS) $(CFLAGS)
 FILESYSTEM_LIBC_OBJECTS =  \
 	.\$(BUILD)\FileSystem_LibC_orxFileSystem.o
-PHYSICS_BOX2D_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	-I..\..\..\include -D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+PHYSICS_BOX2D_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(__orxDEBUG_p) -D$(orxPLATFORM) $(__orxTEST_p) -D$(orxCOMPILER) \
+	$(__orxWARNINGFLAG) -I..\..\..\include -D__orxDLL__ $(CPPFLAGS) $(CXXFLAGS)
 PHYSICS_BOX2D_OBJECTS =  \
 	.\$(BUILD)\Physics_Box2D_orxPhysics.o
 SYSTEM_SDL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
@@ -658,7 +660,7 @@ endif
 ifeq ($(USE_BOX2D),1)
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\core\physics\Physics_Box2D.dll: $(PHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(PHYSICS_BOX2D_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_17)  -lBox2D
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(PHYSICS_BOX2D_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_17)  -lBox2D
 endif
 endif
 
@@ -779,6 +781,9 @@ endif
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxDLL_orxStructure.o: ../../../src/object/orxStructure.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
+.\$(BUILD)\orxDLL_orxBody.o: ../../../src/physics/orxBody.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxDLL_orxPhysics.o: ../../../src/physics/orxPhysics.c
@@ -904,6 +909,9 @@ endif
 .\$(BUILD)\orxLIB_orxStructure.o: ../../../src/object/orxStructure.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+.\$(BUILD)\orxLIB_orxBody.o: ../../../src/physics/orxBody.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 .\$(BUILD)\orxLIB_orxPhysics.o: ../../../src/physics/orxPhysics.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -991,8 +999,8 @@ endif
 .\$(BUILD)\FileSystem_LibC_orxFileSystem.o: ../../../plugins/File/LibC/orxFileSystem.c
 	$(CC) -c -o $@ $(FILESYSTEM_LIBC_CFLAGS) $(CPPDEPS) $<
 
-.\$(BUILD)\Physics_Box2D_orxPhysics.o: ../../../plugins/Physics/Box2D/orxPhysics.c
-	$(CC) -c -o $@ $(PHYSICS_BOX2D_CFLAGS) $(CPPDEPS) $<
+.\$(BUILD)\Physics_Box2D_orxPhysics.o: ../../../plugins/Physics/Box2D/orxPhysics.cpp
+	$(CXX) -c -o $@ $(PHYSICS_BOX2D_CXXFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\System_SDL_orxSystem.o: ../../../plugins/System/SDL/orxSystem.c
 	$(CC) -c -o $@ $(SYSTEM_SDL_CFLAGS) $(CPPDEPS) $<
