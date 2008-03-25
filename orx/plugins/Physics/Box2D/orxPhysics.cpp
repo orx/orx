@@ -98,6 +98,55 @@ orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
   return;
 }
 
+extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxBODY_DEF *_pstBodyDef)
+{
+  b2Body     *poResult = 0;
+  b2BodyDef   stBodyDef;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyDef != orxNULL);
+
+  /* 2D? */
+  if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_2D))
+  {
+    /* Inits body definition */
+    stBodyDef.angle           = _pstBodyDef->fAngle;
+    stBodyDef.linearDamping   = _pstBodyDef->fLinearDamping;
+    stBodyDef.angularDamping  = _pstBodyDef->fAngularDamping;
+    stBodyDef.isBullet        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
+    stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_NO_ROTATION);
+    stBodyDef.position.Set(_pstBodyDef->vPosition.fX, _pstBodyDef->vPosition.fY);
+
+    /* Is dynamic? */
+    if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
+    {
+      /* Creates dynamic body */
+      poResult = sstPhysics.poWorld->CreateDynamicBody(&stBodyDef);
+    }
+    else
+    {
+      /* Creates static body */
+      poResult = sstPhysics.poWorld->CreateStaticBody(&stBodyDef);
+    }
+  }
+
+  /* Done! */
+  return (orxPHYSICS_BODY *)poResult;
+}
+
+extern "C" orxVOID orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
+{
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Deletes it */
+  sstPhysics.poWorld->DestroyBody((b2Body *)_pstBody);
+
+  return;
+}
+
 extern "C" orxSTATUS orxPhysics_Box2D_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -273,4 +322,6 @@ extern "C" orxVOID orxPhysics_Box2D_Exit()
 orxPLUGIN_USER_CORE_FUNCTION_START(PHYSICS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Init, PHYSICS, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Exit, PHYSICS, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBody, PHYSICS, CREATE_BODY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBody, PHYSICS, DELETE_BODY);
 orxPLUGIN_USER_CORE_FUNCTION_END();

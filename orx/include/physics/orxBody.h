@@ -34,19 +34,11 @@
 #include "orxInclude.h"
 
 #include "object/orxStructure.h"
+#include "physics/orxPhysics.h"
 
 
-/** Body flags
+/** Misc defines
  */
-#define orxBODY_KU32_FLAG_NONE                0x00000000  /**< No flags */
-
-#define orxBODY_KU32_FLAG_2D                  0x00000001  /**< 2D type body flag */
-#define orxBODY_KU32_FLAG_DYNAMIC             0x00000002  /**< Dynamic type body flag */
-#define orxBODY_KU32_FLAG_HIGH_SPEED          0x00000004  /**< High speed type body flag */
-
-#define orxBODY_KU32_MASK_USER_ALL            0x000000FF  /**< User all ID mask */
-
-
 #define orxBODY_KU32_PART_MAX_NUMBER          4
 
 
@@ -57,15 +49,6 @@ typedef struct __orxBODY_t                    orxBODY;
 /** Internal Body part structure
  */
 typedef struct __orxBODY_PART_t               orxBODY_PART;
-
-
-/** Body part definition
- */
-typedef struct __orxBODY_PART_DEF_t
-{
-  //! TODO
-
-} orxBODY_PART_DEF;
 
 
 /** Body module setup
@@ -82,10 +65,10 @@ extern orxDLLAPI orxVOID                      orxBody_Exit();
 
 
 /** Creates an empty body
- * @param[in]   _u32Flags                     Body flags (2D / ...)
+ * @param[in]   _pstBodyDef                   Body definition
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create(orxU32 _u32Flags);
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create(orxCONST orxBODY_DEF *_pstBodyDef);
 
 /** Deletes a body
  * @param[in]   _pstBody        Concerned body
@@ -126,6 +109,21 @@ extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartSelfFlags(orxCONST 
  * @return      Body part check mask / orxU16_UNDEFINED
  */
 extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartCheckMask(orxCONST orxBODY_PART *_pstBodyPart);
+
+
+/** Sets a body position
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvPosition     Position to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPosition(orxBODY *_pstBody, orxCONST orxVECTOR *_pvPosition);
+
+/** Sets a body rotation
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fRotation      Rotation to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation);
 
 #endif /* _orxBODY_H_ */
 

@@ -507,14 +507,22 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
         /* With body? */
         if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY))
         {
-          orxBODY *pstBody;
+          orxBODY      *pstBody;
+          orxBODY_DEF   stBodyDef;
+
+          /* Cleans body definition */
+          orxMemory_Set(&stBodyDef, 0, sizeof(orxBODY_DEF));
+
+          /* Inits body definition */
+          orxFLAG_SET(stBodyDef.u32Flags, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_2D) ? (orxBODY_DEF_KU32_FLAG_2D | orxBODY_DEF_KU32_FLAG_DYNAMIC) : orxBODY_DEF_KU32_FLAG_DYNAMIC, orxBODY_DEF_KU32_FLAG_NONE);
 
           /* Creates body */
-          pstBody = orxBody_Create(orxBODY_KU32_FLAG_2D);
+          pstBody = orxBody_Create(&stBodyDef);
 
           /* Valid? */
           if(pstBody != orxNULL)
           {
+            orxLOG("YOUHOU");
             /* Links it structures */
             if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
             {
@@ -534,6 +542,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
           }
           else
           {
+            orxLOG("BLAH");
             /* !!! MSG !!! */
 
             /* Deletes all structures */
@@ -625,10 +634,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObjectFromFile(orxCONST orxSTRING
       /* With body? */
       if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY))
       {
-        orxBODY *pstBody;
+        orxBODY      *pstBody;
+        orxBODY_DEF   stBodyDef;
+
+        /* Cleans body definition */
+        orxMemory_Set(&stBodyDef, 0, sizeof(orxBODY_DEF));
+
+        /* Inits body definition */
+        orxFLAG_SET(stBodyDef.u32Flags, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_2D) ? (orxBODY_DEF_KU32_FLAG_2D | orxBODY_DEF_KU32_FLAG_DYNAMIC) : orxBODY_DEF_KU32_FLAG_DYNAMIC, orxBODY_DEF_KU32_FLAG_NONE);
 
         /* Creates body */
-        pstBody = orxBody_Create(orxBODY_KU32_FLAG_2D);
+        pstBody = orxBody_Create(&stBodyDef);
 
         /* Valid? */
         if(pstBody != orxNULL)
@@ -907,8 +923,20 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, orxCONST orxV
   /* Valid? */
   if(pstFrame != orxNULL)
   {
+    orxBODY *pstBody;
+
     /* Sets object position */
     orxFrame_SetPosition(pstFrame, _pvPosition);
+
+    /* Gets body */
+    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      /* Updates body position */
+      orxBody_SetPosition(pstBody, _pvPosition);
+    }
   }
   else
   {
@@ -942,8 +970,20 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
   /* Valid? */
   if(pstFrame != orxNULL)
   {
+    orxBODY *pstBody;
+
     /* Sets Object rotation */
     orxFrame_SetRotation(pstFrame, _fRotation);
+
+    /* Gets body */
+    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      /* Updates body position */
+      orxBody_SetRotation(pstBody, _fRotation);
+    }
   }
   else
   {

@@ -70,7 +70,7 @@
   #define orxREGISTER           register
 
   /** The null adress. */
-  #define orxNULL               ((void *)0)
+  #define orxNULL               (0)
 
   /* *** Compiler specific *** */
   /** The function intend to be inlined. */

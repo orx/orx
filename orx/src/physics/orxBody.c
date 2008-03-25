@@ -24,14 +24,22 @@
 #include "memory/orxMemory.h"
 
 
+/** Body flags
+ */
+#define orxBODY_KU32_FLAG_NONE                0x00000000  /**< No flags */
+
+#define orxBODY_KU32_FLAG_HAS_DATA            0x00000001  /**< Has data flag */
+
+#define orxBODY_KU32_MASK_USER_ALL            0xFFFFFFFF  /**< User all ID mask */
+
+
 /** Module flags
  */
+#define orxBODY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags */
 
-#define orxBODY_KU32_STATIC_FLAG_NONE       0x00000000
+#define orxBODY_KU32_STATIC_FLAG_READY        0x10000000  /**< Ready flag */
 
-#define orxBODY_KU32_STATIC_FLAG_READY      0x10000000
-
-#define orxBODY_KU32_MASK_ALL               0xFFFFFFFF  /**< All flags */
+#define orxBODY_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
 
 /***************************************************************************
@@ -42,7 +50,7 @@
  */
 struct __orxBODY_PART_t
 {
-  orxPHYSICS_SHAPE *pstData;                                /**< Data structure : 4 */
+  orxPHYSICS_BODY_PART *pstData;                                /**< Data structure : 4 */
 
   orxPAD(4)
 };
@@ -51,17 +59,18 @@ struct __orxBODY_PART_t
  */
 struct __orxBODY_t
 {
-  orxSTRUCTURE  stStructure;                                /**< Public structure, first structure member : 16 */
-  orxBODY_PART  astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 32 */
+  orxSTRUCTURE      stStructure;                                /**< Public structure, first structure member : 16 */
+  orxBODY_PART      astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 32 */
+  orxPHYSICS_BODY  *pstData;                                    /**< Physics body data : 36 */
 
-  orxPAD(32)
+  orxPAD(36)
 };
 
 /** Static structure
  */
 typedef struct __orxBODY_STATIC_t
 {
-  orxU32 u32Flags;                                          /**< Control flags : 4 */
+  orxU32 u32Flags;                                              /**< Control flags : 4 */
 
 } orxBODY_STATIC;
 
@@ -110,6 +119,8 @@ orxSTATIC orxINLINE orxVOID orxBody_DeleteAll()
 orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  //! TODO : Process & forwards events sent by physics sensor zones
 
   /* Done! */
   return eResult;
@@ -195,16 +206,16 @@ orxVOID orxBody_Exit()
 }
 
 /** Creates an empty body
- * @param[in]   _u32Flags                     Body flags (2D / ...)
+ * @param[in]   _pstBodyDef                   Body definition
  * @return      Created orxBODY / orxNULL
  */
-orxBODY *orxFASTCALL orxBody_Create(orxU32 _u32Flags)
+orxBODY *orxFASTCALL orxBody_Create(orxCONST orxBODY_DEF *_pstBodyDef)
 {
   orxBODY *pstBody;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32Flags & orxBODY_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT(_pstBodyDef != orxNULL);
 
   /* Creates body */
   pstBody = (orxBODY *)orxStructure_Create(orxSTRUCTURE_ID_BODY);
@@ -215,11 +226,22 @@ orxBODY *orxFASTCALL orxBody_Create(orxU32 _u32Flags)
     /* Inits flags */
     orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_MASK_ALL);
 
-    /* 2D? */
-    if(orxFLAG_TEST(_u32Flags, orxBODY_KU32_FLAG_2D))
+    /* Creates physics body */
+    pstBody->pstData = orxPhysics_CreateBody(_pstBodyDef);
+
+    /* Valid? */
+    if(pstBody->pstData != orxNULL)
     {
       /* Updates flags */
-      orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_2D, orxBODY_KU32_FLAG_NONE);
+      orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Deletes allocated structure */
+      orxStructure_Delete(pstBody);
+      pstBody = orxNULL;
     }
   }
 
@@ -248,6 +270,13 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
     {
       /* Cleans it */
       orxBody_RemovePart(_pstBody, i);
+    }
+
+    /* Has data? */
+    if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+    {
+      /* Deletes physics body */
+      orxPhysics_DeleteBody(_pstBody->pstData);
     }
 
     /* Deletes structure */
@@ -385,4 +414,65 @@ orxU16 orxFASTCALL orxBody_GetPartCheckMask(orxCONST orxBODY_PART *_pstBodyPart)
 
   /* Done! */
   return u16Result;
+}
+
+/** Sets a body position
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvPosition     Position to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPosition(orxBODY *_pstBody, orxCONST orxVECTOR *_pvPosition)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    //! TODO
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a body rotation
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fRotation      Rotation to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    //! TODO
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
 }
