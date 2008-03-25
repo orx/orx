@@ -28,6 +28,7 @@ extern "C"
   #include "orxInclude.h"
 
   #include "core/orxConfig.h"
+  #include "core/orxClock.h" 
   #include "plugin/orxPluginUser.h"
 
   #include "physics/orxPhysics.h"
@@ -45,7 +46,9 @@ extern "C"
 #define orxPHYSICS_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
 
-orxSTATIC orxCONST orxU32 su32DefaultIterations = 10;
+orxSTATIC orxCONST orxU32   su32DefaultIterations   = 10;
+orxSTATIC orxCONST orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
+orxSTATIC orxCONST orxFLOAT sfDefaultDimensionRatio = orx2F(0.1f);
 
 
 /***************************************************************************
@@ -57,9 +60,9 @@ orxSTATIC orxCONST orxU32 su32DefaultIterations = 10;
 typedef struct __orxPHYSICS_STATIC_t
 {
   orxU32            u32Flags;                   /**< Control flags */
-
   orxU32            u32Iterations;              /**< Simulation iterations per step */
-  
+  orxFLOAT          fDimensionRatio;            /**< Dimension ratio */
+  orxCLOCK         *pstClock;                   /**< Simulation clock */
   b2World          *poWorld;                    /**< World */
   b2Body           *poGround;                   /**< Ground */
 
@@ -78,6 +81,22 @@ orxSTATIC orxPHYSICS_STATIC sstPhysics;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Update (callback to register on a clock)
+ * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
+ * @param[in]   _pstContext     Context sent when registering callback to the clock
+ */
+orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+{
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstClockInfo != orxNULL);
+
+  /* Updates world simulation */
+  sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pstContext);
+
+  return;
+}
 
 extern "C" orxSTATUS orxPhysics_Box2D_Init()
 {
@@ -127,7 +146,23 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       /* Success? */
       if(sstPhysics.poGround != orxNULL)
       {
-        orxS32 s32IterationsPerStep;
+        orxFLOAT  fFrequency, fTickSize, fRatio;
+        orxS32    s32IterationsPerStep;
+
+        /* Gets dimension ratio */
+        orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
+
+        /* Valid? */
+        if(fRatio > orxFLOAT_0)
+        {
+          /* Stores it */
+          sstPhysics.fDimensionRatio = fRatio;
+        }
+        else
+        {
+          /* Stores default one */
+          sstPhysics.fDimensionRatio = sfDefaultDimensionRatio;
+        }
 
         /* Gets iteration per step number from config */
         orxConfig_GetS32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
@@ -144,11 +179,59 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
           sstPhysics.u32Iterations = su32DefaultIterations;
         }
 
-        /* Updates status */
-        sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY;
+        /* Gets frequency */
+        fFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_FREQUENCY);
+
+        /* Valid? */
+        if(fFrequency <= orxFLOAT_0)
+        {
+          /* Gets tick size */
+          fTickSize = orxFLOAT_1 / fFrequency;
+        }
+        else
+        {
+          /* Gets default tick size */
+          fTickSize = orxFLOAT_1 / sfDefaultFrequency;
+        }
+
+        /* Creates physics clock */
+        sstPhysics.pstClock = orxClock_Create(fTickSize, orxCLOCK_TYPE_PHYSICS);
+
+        /* Valid? */
+        if(sstPhysics.pstClock != orxNULL)
+        {
+          /* Registers rendering function */
+          eResult = orxClock_Register(sstPhysics.pstClock, orxPhysics_Update, (orxVOID *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS);
+
+          /* Valid? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            /* Updates status */
+            sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY;
+          }
+          else
+          {
+            /* Deletes world */
+            delete sstPhysics.poWorld;
+
+            /* Updates result */
+            eResult = orxSTATUS_FAILURE;
+          }
+        }
+        else
+        {
+          /* Deletes world */
+          delete sstPhysics.poWorld;
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
       }
       else
       {
+        /* Deletes world */
+        delete sstPhysics.poWorld;
+
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
       }

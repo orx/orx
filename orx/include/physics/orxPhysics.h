@@ -45,6 +45,8 @@ typedef struct __orxPHYSICS_SHAPE_t orxPHYSICS_SHAPE;
 #define orxPHYSICS_KZ_CONFIG_WORLD_LOWER  "WorldLowerBound"
 #define orxPHYSICS_KZ_CONFIG_WORLD_UPPER  "WorldUpperBound"
 #define orxPHYSICS_KZ_CONFIG_ITERATIONS   "IterationsPerStep"
+#define orxPHYSICS_KZ_CONFIG_FREQUENCY    "SimulationFrequency"
+#define orxPHYSICS_KZ_CONFIG_RATIO        "DimensionRatio"
 
 
 /***************************************************************************

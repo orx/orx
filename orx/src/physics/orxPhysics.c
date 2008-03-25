@@ -38,7 +38,9 @@
 orxVOID orxPhysics_Setup()
 {
   /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_PLUGIN);
+  orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_CLOCK);
 
   return;
 }
