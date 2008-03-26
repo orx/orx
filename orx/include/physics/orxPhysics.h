@@ -64,6 +64,7 @@ typedef struct __orxBODY_DEF_t
 typedef struct __orxVODY_PART_DEF_t
 {
   //! TODO
+    int i;
 
 } orxBODY_PART_DEF;
 

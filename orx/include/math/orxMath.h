@@ -100,7 +100,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Cos(orxFLOAT _fOp)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = cos(_fOp);
+  fResult = cosf(_fOp);
 
 #else /* __orxMSVC__ */
 
@@ -120,7 +120,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Sin(orxFLOAT _fOp)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = sin(_fOp);
+  fResult = sinf(_fOp);
 
 #else /* __orxMSVC__ */
 
@@ -140,7 +140,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Tan(orxFLOAT _fOp)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = tan(_fOp);
+  fResult = tanf(_fOp);
 
 #else /* __orxMSVC__ */
 
@@ -160,7 +160,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_ACos(orxFLOAT _fOp)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = acos(_fOp);
+  fResult = acosf(_fOp);
 
 #else /* __orxMSVC__ */
 
@@ -180,7 +180,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = atan2(_fOp1, _fOp2);
+  fResult = atan2f(_fOp1, _fOp2);
 
 #else /* __orxMSVC__ */
 
@@ -203,7 +203,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Sqrt(orxFLOAT _fOp)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = sqrt(_fOp);
+  fResult = sqrtf(_fOp);
 
 #else /* __orxMSVC__ */
 
@@ -223,7 +223,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Floor(orxFLOAT _fOp)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = floor(_fOp);
+  fResult = floorf(_fOp);
 
 #else /* __orxMSVC__ */
 
@@ -243,7 +243,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Ceil(orxFLOAT _fOp)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = ceil(_fOp);
+  fResult = ceilf(_fOp);
 
 #else /* __orxMSVC__ */
 
@@ -263,7 +263,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
 #ifdef __orxMSVC__
   
   /* Updates result */
-  fResult = round(_fOp);
+  fResult = (fmodf(_fOp, orxFLOAT_1) >= orx2F(0.5f)) ? ceilf(_fOp) : floorf(_fOp);
 
 #else /* __orxMSVC__ */
 

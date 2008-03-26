@@ -1028,7 +1028,7 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable
           /* Stores new link info */
           u32ResAnim          = i;
           u32ResLink          = u32Link;
-          u32ResLinkPriority  = u32LinkPriority;
+          u32ResLinkPriority  = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_PRIORITY);
 
           /* Stops searching */
           break;
@@ -1633,7 +1633,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
     u32Counter = orxAnimSet_GetAnimCounter(_pstAnimSet);
 
     /* Until there are no animation left */
-    for(i = 0; (i < u32Counter) && (eResult == orxSTATUS_SUCCESS); i++)
+    for(i = 0, eResult = orxSTATUS_SUCCESS; (i < u32Counter) && (eResult == orxSTATUS_SUCCESS); i++)
     {
       eResult = orxAnimSet_RemoveAnim(_pstAnimSet, (orxHANDLE)i);
     }

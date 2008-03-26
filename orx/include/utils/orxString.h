@@ -95,7 +95,7 @@ orxSTATIC orxINLINE orxU32              orxString_GetLength(orxSTRING _zString)
   orxASSERT(_zString != orxNULL);
 
   /* Done! */
-  return(strlen(_zString));
+  return((orxU32)strlen(_zString));
 }
 
 /** Copies N characters from a string
@@ -648,7 +648,7 @@ orxSTATIC orxINLINE orxS32              orxString_SearchCharIndex(orxCONST orxST
  * @param[int] _zSrcString  Source formated string
  * @return The number of written characters
  */
-orxSTATIC orxINLINE orxCDECL orxS32     orxString_Print(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
+orxSTATIC orxINLINE orxS32 orxCDECL orxString_Print(orxSTRING _zDstString, orxSTRING _zSrcString, ...)
 {
   va_list stArgs;
   orxS32  s32Result;

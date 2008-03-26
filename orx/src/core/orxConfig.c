@@ -461,14 +461,13 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
  */
 orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
 {
+  FILE     *pstFile;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zFileName != orxNULL);
   orxASSERT(*_zFileName != *orxSTRING_EMPTY);
-
-  FILE *pstFile;
 
   /* Opens file */
   pstFile = fopen(_zFileName, "r");
@@ -480,9 +479,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
     orxU32  u32Size, u32Offset;
 
     /* While file isn't empty */
-    for(u32Size = fread(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0;
+    for(u32Size = (orxU32)fread(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0;
         u32Size > 0;
-        u32Size = fread(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset)
+        u32Size = (orxU32)fread(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset)
     {
       orxCHAR *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
 
@@ -613,7 +612,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
       if((pcLineStart != acBuffer) && (pc > pcLineStart))
       {
         /* Updates offset */
-        u32Offset = pc - pcLineStart;
+        u32Offset = (orxU32)(pc - pcLineStart);
 
         /* Copies it at the beginning of the buffer */
         orxMemory_Copy(acBuffer, pcLineStart, u32Offset);

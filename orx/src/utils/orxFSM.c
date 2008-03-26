@@ -280,7 +280,7 @@ orxFSM *orxFASTCALL orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU3
       pstStateMachine->pstStatesHashTable = orxHashTable_Create(_u16NbStates, u32BankFlags, _eMemType);
       
       /* Allocate bank for links. */
-      pstStateMachine->pstLinksBank = orxBank_Create(_u32NbLinks, sizeof(orxFSM_LINK), u32LinkFlags, _eMemType);
+      pstStateMachine->pstLinksBank = orxBank_Create((orxU16)_u32NbLinks, sizeof(orxFSM_LINK), u32LinkFlags, _eMemType);
     
       /* Correct bank allocations? */
       if(pstStateMachine->pstLinksBank != orxNULL)
@@ -289,7 +289,7 @@ orxFSM *orxFASTCALL orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU3
         pstStateMachine->pstLinksHashTable = orxHashTable_Create(_u32NbLinks, u32LinkFlags, _eMemType);
         
         /* Allocate bank for instances. */
-        pstStateMachine->pstInstancesBank = orxBank_Create(_u32NbInstances, sizeof(orxFSM_INSTANCE), u32InstanceFlags, _eMemType);
+        pstStateMachine->pstInstancesBank = orxBank_Create((orxU16)_u32NbInstances, sizeof(orxFSM_INSTANCE), u32InstanceFlags, _eMemType);
         
         /* Correct bank allocations? */
         if(pstStateMachine->pstInstancesBank == orxNULL)

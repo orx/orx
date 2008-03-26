@@ -159,7 +159,7 @@ orxSTATIC orxINLINE orxBANK_SEGMENT *orxBank_GetSegment(orxCONST orxBANK *_pstBa
   {
     /* Set Start and End address */
     pStartAddress = pstSegment->pSegmentDatas;
-    pEndAddress   = pStartAddress + (orxU32)(orxU8 *)(_pstBank->u32ElemSize * _pstBank->u16NbCellPerSegments);
+    pEndAddress   = pStartAddress + (_pstBank->u32ElemSize * _pstBank->u16NbCellPerSegments);
     
     /* Is cell in segment data range ? */
     if(((orxU8 *)_pCell >= pStartAddress) && ((orxU8 *)_pCell < pEndAddress))
@@ -309,7 +309,7 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
     pstBank->u16NbCellPerSegments     = _u16NbElem;
 
     /* Compute the necessary number of 32 bits packs */
-    pstBank->u16SizeSegmentBitField   = orxMemory_GetAlign(_u16NbElem, 32) / 32;
+    pstBank->u16SizeSegmentBitField   = (orxU16)orxMemory_GetAlign(_u16NbElem, 32) / 32;
 
     /* Allocate the first segment, and select it as current */
     pstBank->pstFirstSegment    = orxBank_SegmentCreate(pstBank);
@@ -651,6 +651,7 @@ orxVOID orxFASTCALL orxBank_DebugPrint(orxCONST orxBANK *_pstBank)
     pstSegment = pstSegment->pstNext;
   }
 }
+
 
 
 
