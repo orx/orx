@@ -50,6 +50,7 @@ typedef struct __orxFILESYSTEM_INFO_t
   orxCHAR zName[256];       /**< File's name */
   orxCHAR zPath[1024];      /**< Directory's name where is stored the file */
   orxCHAR zFullName[1280];  /**< Full file name */
+  orxCHAR zPattern[256];    /**< Search pattern */
   orxHANDLE hInternal;      /**< Internal use handle */
 } orxFILESYSTEM_INFO;
 
