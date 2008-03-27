@@ -280,7 +280,7 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
     }
 
     /* Stores pattern */
-    orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator], orxMIN(orxString_Length(_zSearchPattern) - s32LastSeparator, 255));
+    orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator], orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator, 255));
 
     /* Tranfers file info */
     orxFileSystem_LibC_GetInfoFromData(&stData, _pstFileInfo);
