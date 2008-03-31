@@ -147,6 +147,94 @@ extern "C" orxVOID orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
   return;
 }
 
+extern "C" orxSTATUS orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvPosition)
+{
+  b2Body   *poBody;
+  b2Vec2    vPosition;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Sets position vector */
+  vPosition.Set(_pvPosition->fX, _pvPosition->fY);
+
+  /* Updates its rotation */
+  eResult = (poBody->SetXForm(vPosition, poBody->GetAngle()) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
+{
+  b2Body   *poBody;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Updates its rotation */
+  eResult = (poBody->SetXForm(poBody->GetPosition(), _fRotation) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxVECTOR *orxPhysics_Box2D_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
+{
+  b2Body   *poBody;
+  b2Vec2    vPosition;
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets its position */
+  vPosition = poBody->GetPosition();
+
+  /* Updates result */
+  pvResult      = _pvPosition;
+  pvResult->fX  = vPosition.x;
+  pvResult->fY  = vPosition.y;
+
+  /* Done! */
+  return pvResult;
+}
+
+extern "C" orxFLOAT orxPhysics_Box2D_GetRotation(orxPHYSICS_BODY *_pstBody)
+{
+  b2Body   *poBody;
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets its rotation */
+  fResult = poBody->GetAngle();
+
+  /* Done! */
+  return fResult;
+}
+
 extern "C" orxSTATUS orxPhysics_Box2D_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -324,4 +412,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Init, PHYSICS, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Exit, PHYSICS, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBody, PHYSICS, CREATE_BODY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBody, PHYSICS, DELETE_BODY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPosition, PHYSICS, SET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetRotation, PHYSICS, SET_ROTATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPosition, PHYSICS, GET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetRotation, PHYSICS, GET_ROTATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();

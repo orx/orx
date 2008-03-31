@@ -36,16 +36,26 @@
 #include "math/orxVector.h"
 
 
-/** Physics body flags
+/** Body definition flags
  */
 #define orxBODY_DEF_KU32_FLAG_NONE          0x00000000  /**< No flags */
 
-#define orxBODY_DEF_KU32_FLAG_2D            0x00000001  /**< 2D type body flag */
-#define orxBODY_DEF_KU32_FLAG_DYNAMIC       0x00000002  /**< Dynamic type body flag */
-#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED    0x00000004  /**< High speed type body flag */
+#define orxBODY_DEF_KU32_FLAG_2D            0x00000001  /**< 2D type body def flag */
+#define orxBODY_DEF_KU32_FLAG_DYNAMIC       0x00000002  /**< Dynamic type body def flag */
+#define orxBODY_DEF_KU32_FLAG_HIGH_SPEED    0x00000004  /**< High speed type body def flag */
 #define orxBODY_DEF_KU32_FLAG_NO_ROTATION   0x00000008  /**< Body can't be rotated by physics */
 
 #define orxBODY_DEF_KU32_MASK_ALL           0xFFFFFFFF  /**< Body def all mask */
+
+/** Body part definition flags
+ */
+#define orxBODY_PART_DEF_KU32_FLAG_NONE     0x00000000  /**< No flags */
+
+#define orxBODY_PART_DEF_KU32_FLAG_BOX      0x00000001  /**< Box body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_SPHERE   0x00000002  /**< Sphere body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_RIGID    0x00000010  /**< Rigid body part def flag */
+
+#define orxBODY_PART_DEF_KU32_MASK_ALL      0xFFFFFFFF  /**< Body part def all mask */
 
 /** Body definition
  */
@@ -61,10 +71,14 @@ typedef struct __orxBODY_DEF_t
 
 /** Shape definition
  */
-typedef struct __orxVODY_PART_DEF_t
+typedef struct __orxBODY_PART_DEF_t
 {
-  //! TODO
-    int i;
+  orxFLOAT  fFriction;                      /**< Friction */
+  orxFLOAT  fRestitution;                   /**< Restitution */
+  orxFLOAT  fDensity;                       /**< Density */
+  orxU16    u16SelfFlags;                   /**< Self defining flags */
+  orxU16    u16CheckMask;                   /**< Check mask */
+  orxU32    u32Flags;                       /**< Control flags */
 
 } orxBODY_PART_DEF;
 
@@ -104,6 +118,10 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_Exit, orxVOID);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_CreateBody, orxPHYSICS_BODY *, orxCONST orxBODY_DEF *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_DeleteBody, orxVOID, orxPHYSICS_BODY *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetPosition, orxSTATUS, orxPHYSICS_BODY *, orxCONST orxVECTOR *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetRotation, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetPosition, orxVECTOR *, orxPHYSICS_BODY *, orxVECTOR *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetRotation, orxFLOAT, orxPHYSICS_BODY *);
 
 
 orxSTATIC orxINLINE orxSTATUS orxPhysics_Init()
@@ -124,6 +142,26 @@ orxSTATIC orxINLINE orxPHYSICS_BODY *orxPhysics_CreateBody(orxCONST orxBODY_DEF 
 orxSTATIC orxINLINE orxVOID orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBody)(_pstBody);
+}
+
+orxSTATIC orxINLINE orxSTATUS orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvPosition)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPosition)(_pstBody, _pvPosition);
+}
+
+orxSTATIC orxINLINE orxSTATUS orxPhysics_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetRotation)(_pstBody, _fRotation);
+}
+
+orxSTATIC orxINLINE orxVECTOR *orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPosition)(_pstBody, _pvPosition);
+}
+
+orxSTATIC orxINLINE orxFLOAT orxPhysics_GetRotation(orxPHYSICS_BODY *_pstBody)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetRotation)(_pstBody);
 }
 
 
