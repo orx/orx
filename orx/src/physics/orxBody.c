@@ -423,7 +423,7 @@ orxU16 orxFASTCALL orxBody_GetPartCheckMask(orxCONST orxBODY_PART *_pstBodyPart)
  */
 orxSTATUS orxFASTCALL orxBody_SetPosition(orxBODY *_pstBody, orxCONST orxVECTOR *_pvPosition)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
@@ -433,7 +433,8 @@ orxSTATUS orxFASTCALL orxBody_SetPosition(orxBODY *_pstBody, orxCONST orxVECTOR 
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    //! TODO
+    /* Updates its position */
+    eResult = orxPhysics_SetPosition(_pstBody->pstData, _pvPosition);
   }
   else
   {
@@ -454,7 +455,7 @@ orxSTATUS orxFASTCALL orxBody_SetPosition(orxBODY *_pstBody, orxCONST orxVECTOR 
  */
 orxSTATUS orxFASTCALL orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
@@ -463,7 +464,8 @@ orxSTATUS orxFASTCALL orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation
   /* Has data? */
   if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    //! TODO
+    /* Updates its position */
+    eResult = orxPhysics_SetRotation(_pstBody->pstData, _fRotation);
   }
   else
   {
