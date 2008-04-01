@@ -136,8 +136,12 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_CreateBodyPart, orxPHYSICS_BODY_PART 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_DeleteBodyPart, orxVOID, orxPHYSICS_BODY_PART *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetPosition, orxSTATUS, orxPHYSICS_BODY *, orxCONST orxVECTOR *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetRotation, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetSpeed, orxSTATUS, orxPHYSICS_BODY *, orxCONST orxVECTOR *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetAngularVelocity, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetPosition, orxVECTOR *, orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetRotation, orxFLOAT, orxPHYSICS_BODY *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetSpeed, orxVECTOR *, orxPHYSICS_BODY *, orxVECTOR *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetAngularVelocity, orxFLOAT, orxPHYSICS_BODY *);
 
 
 orxSTATIC orxINLINE orxSTATUS orxPhysics_Init()
@@ -180,6 +184,16 @@ orxSTATIC orxINLINE orxSTATUS orxPhysics_SetRotation(orxPHYSICS_BODY *_pstBody, 
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetRotation)(_pstBody, _fRotation);
 }
 
+orxSTATIC orxINLINE orxSTATUS orxPhysics_SetSpeed(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvSpeed)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetSpeed)(_pstBody, _pvSpeed);
+}
+
+orxSTATIC orxINLINE orxSTATUS orxPhysics_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetAngularVelocity)(_pstBody, _fVelocity);
+}
+
 orxSTATIC orxINLINE orxVECTOR *orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPosition)(_pstBody, _pvPosition);
@@ -188,6 +202,16 @@ orxSTATIC orxINLINE orxVECTOR *orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody,
 orxSTATIC orxINLINE orxFLOAT orxPhysics_GetRotation(orxPHYSICS_BODY *_pstBody)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetRotation)(_pstBody);
+}
+
+orxSTATIC orxINLINE orxVECTOR *orxPhysics_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetSpeed)(_pstBody, _pvSpeed);
+}
+
+orxSTATIC orxINLINE orxFLOAT orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pstBody)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetAngularVelocity)(_pstBody);
 }
 
 

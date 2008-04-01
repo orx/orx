@@ -490,3 +490,181 @@ orxSTATUS orxFASTCALL orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation
   /* Done! */
   return eResult;
 }
+
+/** Sets a body speed
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvSpeed        Speed to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetSpeed(orxBODY *_pstBody, orxCONST orxVECTOR *_pvSpeed)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Updates its speed */
+    eResult = orxPhysics_SetSpeed(_pstBody->pstData, _pvSpeed);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a body angular velocity
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fVelocity      Angular velocity to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetAngularVelocity(orxBODY *_pstBody, orxFLOAT _fVelocity)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Updates its position */
+    eResult = orxPhysics_SetAngularVelocity(_pstBody->pstData, _fVelocity);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets a body position
+ * @param[in]   _pstBody        Concerned body
+ * @param[out]  _pvPosition     Position to get
+ * @return      Body position / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxBody_GetPosition(orxBODY *_pstBody, orxVECTOR *_pvPosition)
+{
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Updates result */
+    pvResult = orxPhysics_GetPosition(_pstBody->pstData, _pvPosition);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Gets a body rotation
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body rotation
+ */
+orxFLOAT orxFASTCALL orxBody_GetRotation(orxBODY *_pstBody)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Updates result */
+    fResult = orxPhysics_GetRotation(_pstBody->pstData);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets a body speed
+ * @param[in]   _pstBody        Concerned body
+ * @param[out]   _pvSpeed       Speed to get
+ * @return      Body speed / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxBody_GetSpeed(orxBODY *_pstBody, orxVECTOR *_pvSpeed)
+{
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Updates result */
+    pvResult = orxPhysics_GetSpeed(_pstBody->pstData, _pvSpeed);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Gets a body angular velocity
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body angular velocity
+ */
+orxFLOAT orxFASTCALL orxBody_GetAngularVelocity(orxBODY *_pstBody)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Updates result */
+    fResult = orxPhysics_GetAngularVelocity(_pstBody->pstData);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}

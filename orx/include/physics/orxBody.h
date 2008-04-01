@@ -113,6 +113,47 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPosition(orxBODY *_pstB
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation);
 
+/** Sets a body speed
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvSpeed        Speed to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetSpeed(orxBODY *_pstBody, orxCONST orxVECTOR *_pvSpeed);
+
+/** Sets a body angular velocity
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fVelocity      Angular velocity to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAngularVelocity(orxBODY *_pstBody, orxFLOAT _fVelocity);
+
+/** Gets a body position
+ * @param[in]   _pstBody        Concerned body
+ * @param[out]  _pvPosition     Position to get
+ * @return      Body position / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetPosition(orxBODY *_pstBody, orxVECTOR *_pvPosition);
+
+/** Gets a body rotation
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body rotation
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetRotation(orxBODY *_pstBody);
+
+/** Gets a body speed
+ * @param[in]   _pstBody        Concerned body
+ * @param[out]   _pvSpeed       Speed to get
+ * @return      Body speed / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetSpeed(orxBODY *_pstBody, orxVECTOR *_pvSpeed);
+
+/** Gets a body angular velocity
+ * @param[in]   _pstBody        Concerned body
+ * @return      Body angular velocity
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularVelocity(orxBODY *_pstBody);
+
+
 #endif /* _orxBODY_H_ */
 
 

@@ -231,7 +231,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, orx
 {
   b2Body   *poBody;
   b2Vec2    vPosition;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -244,7 +244,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, orx
   /* Sets position vector */
   vPosition.Set(_pvPosition->fX, _pvPosition->fY);
 
-  /* Updates its rotation */
+  /* Updates its position */
   eResult = (poBody->SetXForm(vPosition, poBody->GetAngle()) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   /* Done! */
@@ -265,6 +265,49 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orx
 
   /* Updates its rotation */
   eResult = (poBody->SetXForm(poBody->GetPosition(), _fRotation) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvSpeed)
+{
+  b2Body   *poBody;
+  b2Vec2    vSpeed;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Sets speed vector */
+  vSpeed.Set(_pvSpeed->fX, _pvSpeed->fY);
+
+  /* Updates its speed */
+  poBody->SetLinearVelocity(vSpeed);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
+{
+  b2Body   *poBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Updates its angular velocity */
+  poBody->SetAngularVelocity(_fVelocity);
 
   /* Done! */
   return eResult;
@@ -310,6 +353,51 @@ extern "C" orxFLOAT orxPhysics_Box2D_GetRotation(orxPHYSICS_BODY *_pstBody)
 
   /* Gets its rotation */
   fResult = poBody->GetAngle();
+
+  /* Done! */
+  return fResult;
+}
+
+extern "C" orxVECTOR *orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
+{
+  b2Body   *poBody;
+  b2Vec2    vSpeed;
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets its speed */
+  vSpeed = poBody->GetLinearVelocity();
+
+  /* Updates result */
+  pvResult      = _pvSpeed;
+  pvResult->fX  = vSpeed.x;
+  pvResult->fY  = vSpeed.y;
+
+  /* Done! */
+  return pvResult;
+}
+
+extern "C" orxFLOAT orxPhysics_Box2D_GetAngularVelocity(orxPHYSICS_BODY *_pstBody)
+{
+  b2Body   *poBody;
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets its rotation */
+  fResult = poBody->GetAngularVelocity();
 
   /* Done! */
   return fResult;
@@ -496,6 +584,10 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBodyPart, PHYSICS, CREAT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBodyPart, PHYSICS, DELETE_BODY_PART);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPosition, PHYSICS, SET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetRotation, PHYSICS, SET_ROTATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetSpeed, PHYSICS, SET_SPEED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAngularVelocity, PHYSICS, SET_ANGULAR_VELOCITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPosition, PHYSICS, GET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetRotation, PHYSICS, GET_ROTATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSpeed, PHYSICS, GET_SPEED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularVelocity, PHYSICS, GET_ANGULAR_VELOCITY);
 orxPLUGIN_USER_CORE_FUNCTION_END();
