@@ -80,6 +80,20 @@ typedef struct __orxBODY_PART_DEF_t
   orxU16    u16CheckMask;                   /**< Check mask */
   orxU32    u32Flags;                       /**< Control flags */
 
+  union
+  {
+    struct
+    {
+      orxVECTOR vCenter;                    /**< Sphere center */
+      orxFLOAT  fRadius;                    /**< Sphere radius */
+    } stSphere;
+
+    struct
+    {
+      orxAABOX  stBox;                      /**< Axis aligned Box */
+    } stAABox;
+  };
+
 } orxBODY_PART_DEF;
 
 
@@ -118,6 +132,8 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_Exit, orxVOID);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_CreateBody, orxPHYSICS_BODY *, orxCONST orxBODY_DEF *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_DeleteBody, orxVOID, orxPHYSICS_BODY *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_CreateBodyPart, orxPHYSICS_BODY_PART *, orxPHYSICS_BODY *, orxCONST orxBODY_PART_DEF *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_DeleteBodyPart, orxVOID, orxPHYSICS_BODY_PART *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetPosition, orxSTATUS, orxPHYSICS_BODY *, orxCONST orxVECTOR *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetRotation, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetPosition, orxVECTOR *, orxPHYSICS_BODY *, orxVECTOR *);
@@ -142,6 +158,16 @@ orxSTATIC orxINLINE orxPHYSICS_BODY *orxPhysics_CreateBody(orxCONST orxBODY_DEF 
 orxSTATIC orxINLINE orxVOID orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBody)(_pstBody);
+}
+
+orxSTATIC orxINLINE orxPHYSICS_BODY_PART *orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, orxCONST orxBODY_PART_DEF *_pstBodyPartDef)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateBodyPart)(_pstBody, _pstBodyPartDef);
+}
+
+orxSTATIC orxINLINE orxVOID orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBodyPart)(_pstBodyPart);
 }
 
 orxSTATIC orxINLINE orxSTATUS orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvPosition)

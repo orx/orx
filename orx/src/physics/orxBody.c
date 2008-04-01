@@ -19,6 +19,8 @@
 
 #include "physics/orxBody.h"
 #include "physics/orxPhysics.h"
+#include "object/orxObject.h"
+#include "object/orxFrame.h"
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
@@ -118,9 +120,35 @@ orxSTATIC orxINLINE orxVOID orxBody_DeleteAll()
  */
 orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxBODY  *pstBody;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  //! TODO : Process & forwards events sent by physics sensor zones
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstStructure);
+
+  /* Gets body */
+  pstBody = orxSTRUCTURE_GET_POINTER(_pstStructure, BODY);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    //! TEMP : Will send a position update event when orxEvent module will be tested
+
+    /* Is a root's children frame? */
+    if(orxFrame_IsRootChild(orxOBJECT_GET_STRUCTURE((orxOBJECT *)_pstCaller, FRAME)) != orxFALSE)
+    {
+      orxVECTOR vPosition;
+
+      /* Gets body up-to-date position */
+      orxPhysics_GetPosition(pstBody->pstData, &vPosition);
+
+      /* Updates its position */
+      orxObject_SetPosition((orxOBJECT *)_pstCaller, &vPosition);
+    }
+
+    //! TODO : Process & forwards events sent by physics sensor zones
+  }
 
   /* Done! */
   return eResult;
@@ -139,6 +167,7 @@ orxVOID orxBody_Setup()
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PHYSICS);
+  orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_FRAME);
 
   return;
 }
@@ -300,14 +329,14 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
  * @param[in]   _pstPartDef     Body part definition
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxBODY_PART_DEF *_pstPartDef)
+orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCONST orxBODY_PART_DEF *_pstBodyPartDef)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
-  orxASSERT(_pstPartDef != orxNULL);
+  orxASSERT(_pstBodyPartDef != orxNULL);
   orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
   /* Had previous part? */
@@ -320,7 +349,27 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxBO
   /* Valid? */
   if(eResult != orxSTATUS_FAILURE)
   {
-    //! TODO
+    orxPHYSICS_BODY_PART *pstBodyPart;
+
+    /* Creates it */
+    pstBodyPart = orxPhysics_CreateBodyPart(_pstBody->pstData, _pstBodyPartDef);
+
+    /* Valid? */
+    if(pstBodyPart != orxNULL)
+    {
+      /* Stores it */
+      _pstBody->astPartList[_u32Index].pstData = pstBodyPart;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Cleans reference */
+      _pstBody->astPartList[_u32Index].pstData = orxNULL;
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
 
   /* Done! */
@@ -330,11 +379,11 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxBO
 /** Gets a body part
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Body part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @return      orxBODY_PART / orxNULL
+ * @return      orxBODY_PART handle / orxHANDLE_UNDEFINED
  */
-orxBODY_PART *orxFASTCALL orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u32Index)
+orxHANDLE orxFASTCALL orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u32Index)
 {
-  orxBODY_PART *pstResult = orxNULL;
+  orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
@@ -344,11 +393,11 @@ orxBODY_PART *orxFASTCALL orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u3
   /* Updates result */
   if(_pstBody->astPartList[_u32Index].pstData != orxNULL)
   {
-    pstResult = (orxBODY_PART *)&(_pstBody->astPartList[_u32Index]);
+    hResult = (orxHANDLE)_pstBody->astPartList[_u32Index].pstData;
   }
 
   /* Done! */
-  return pstResult;
+  return hResult;
 }
 
 /** Removes a body part
@@ -363,7 +412,8 @@ orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index)
   /* Has a part? */
   if(_pstBody->astPartList[_u32Index].pstData != orxNULL)
   {
-    //! TODO
+    /* Deletes it */
+    orxPhysics_DeleteBodyPart(_pstBody->astPartList[_u32Index].pstData);
 
     /* Deletes reference */
     _pstBody->astPartList[_u32Index].pstData = orxNULL;
@@ -376,44 +426,6 @@ orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index)
 
   /* Done! */
   return eResult;
-}
-
-/** Gets body part self flags
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      Body part self flags / orxU16_UNDEFINED
- */
-orxU16 orxFASTCALL orxBody_GetPartSelfFlags(orxCONST orxBODY_PART *_pstBodyPart)
-{
-  orxU16 u16Result = orxU16_UNDEFINED;
-
-  /* Checks */
-  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBodyPart != orxNULL);
-
-  /* Updates result */
-  //! TODO
-
-  /* Done! */
-  return u16Result;
-}
-
-/** Gets body part check mask
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      Body part check mask / orxU16_UNDEFINED
- */
-orxU16 orxFASTCALL orxBody_GetPartCheckMask(orxCONST orxBODY_PART *_pstBodyPart)
-{
-  orxU16 u16Result = orxU16_UNDEFINED;
-
-  /* Checks */
-  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBodyPart != orxNULL);
-
-  /* Updates result */
-  //! TODO
-
-  /* Done! */
-  return u16Result;
 }
 
 /** Sets a body position

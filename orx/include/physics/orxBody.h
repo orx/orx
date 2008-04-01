@@ -39,7 +39,7 @@
 
 /** Misc defines
  */
-#define orxBODY_KU32_PART_MAX_NUMBER          4
+#define orxBODY_KU32_PART_MAX_NUMBER          8
 
 
 /** Internal Body structure
@@ -79,17 +79,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
 /** Adds a part to body
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
- * @param[in]   _pstPartDef     Body part definition
+ * @param[in]   _pstBodyPartDef Body part definition
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxBODY_PART_DEF *_pstPartDef);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCONST orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Gets a body part
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Body part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @return      orxBODY_PART / orxNULL
+ * @return      orxBODY_PART handle / orxHANDLE_UNDEFINED
  */
-extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxHANDLE orxFASTCALL        orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
 
 /** Removes a body part
  * @param[in]   _pstBody        Concerned body
@@ -97,18 +97,6 @@ extern orxDLLAPI orxBODY_PART *orxFASTCALL    orxBody_GetPart(orxCONST orxBODY *
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index);
-
-/** Gets body part self flags
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      Body part self flags / orxU16_UNDEFINED
- */
-extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartSelfFlags(orxCONST orxBODY_PART *_pstBodyPart);
-
-/** Gets body part check mask
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      Body part check mask / orxU16_UNDEFINED
- */
-extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartCheckMask(orxCONST orxBODY_PART *_pstBodyPart);
 
 
 /** Sets a body position

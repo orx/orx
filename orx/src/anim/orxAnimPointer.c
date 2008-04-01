@@ -313,7 +313,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
     orxStructure_SetFlags(pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET | orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_MASK_FLAGS);
 
     /* Inits value */
-    pstAnimPointer->hCurrentAnim      = (orxHANDLE)orxNULL;
+    pstAnimPointer->hCurrentAnim      = (orxHANDLE)0;
     pstAnimPointer->fCurrentAnimTime  = orxFLOAT_0;
     pstAnimPointer->fFrequency        = orxANIMPOINTER_KF_FREQUENCY_DEFAULT;
     pstAnimPointer->fTime             = orxFLOAT_0;

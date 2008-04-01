@@ -114,6 +114,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_IsRenderStatusClean(orxCO
  */
 extern orxDLLAPI orxVOID orxFASTCALL          orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME * _pstParent);
 
+/** Is a root child?
+ * @param[in]   _pstFrame       Concerned frame
+ * @return orxTRUE if its parent is root, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_IsRootChild(orxCONST orxFRAME *_pstFrame);
+
 
 /** Sets a frame position
  * @param[in]   _pstFrame       Concerned frame

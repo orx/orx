@@ -147,6 +147,86 @@ extern "C" orxVOID orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
   return;
 }
 
+extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY *_pstBody, orxCONST orxBODY_PART_DEF *_pstBodyPartDef)
+{
+  b2Body       *poBody;
+  b2Shape      *poResult = 0;
+  b2ShapeDef   *pstShapeDef;
+  b2CircleDef   stCircleDef;
+  b2PolygonDef  stPolygonDef;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pstBodyPartDef != orxNULL);
+  orxASSERT(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX | orxBODY_PART_DEF_KU32_FLAG_SPHERE));
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Circle? */
+  if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SPHERE))
+  {
+    /* Gets def reference */
+    pstShapeDef = &stCircleDef;
+
+    /* Updates shape type */
+    stCircleDef.type = e_circleShape;
+
+    /* Stores its coordinates */
+    stCircleDef.localPosition.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fY);
+    stCircleDef.radius = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.fRadius;
+  }
+  /* Polygon */
+  else
+  {
+    /* Gets def reference */
+    pstShapeDef = &stPolygonDef;
+
+    /* Updates shape type */
+    stPolygonDef.type = e_polygonShape;
+
+    /* Stores its coordinates */
+    stPolygonDef.vertexCount = 4;
+    stPolygonDef.vertices[0].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY);
+    stPolygonDef.vertices[1].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY);
+    stPolygonDef.vertices[2].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY);
+    stPolygonDef.vertices[3].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY);
+  }
+
+  /* Inits shape definition */
+  pstShapeDef->friction     = _pstBodyPartDef->fFriction;
+  pstShapeDef->restitution  = _pstBodyPartDef->fRestitution;
+  pstShapeDef->density      = _pstBodyPartDef->fDensity;
+  pstShapeDef->categoryBits = _pstBodyPartDef->u16SelfFlags;
+  pstShapeDef->maskBits     = _pstBodyPartDef->u16CheckMask;
+  pstShapeDef->groupIndex   = (orxU16)(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fZ);
+  pstShapeDef->isSensor     = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_RIGID) == orxFALSE;
+
+  /* Creates it */
+  poResult = poBody->CreateShape(pstShapeDef); 
+
+  /* Done! */
+  return (orxPHYSICS_BODY_PART *)poResult;
+}
+
+extern "C" orxVOID orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2Shape  *poShape;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  poShape = (b2Shape *)_pstBodyPart;
+
+  /* Deletes its part */
+  poShape->GetBody()->DestroyShape(poShape);
+
+  return;
+}
+
 extern "C" orxSTATUS orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvPosition)
 {
   b2Body   *poBody;
@@ -412,6 +492,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Init, PHYSICS, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Exit, PHYSICS, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBody, PHYSICS, CREATE_BODY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBody, PHYSICS, DELETE_BODY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBodyPart, PHYSICS, CREATE_BODY_PART);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBodyPart, PHYSICS, DELETE_BODY_PART);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPosition, PHYSICS, SET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetRotation, PHYSICS, SET_ROTATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPosition, PHYSICS, GET_POSITION);
