@@ -508,7 +508,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
         fFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_FREQUENCY);
 
         /* Valid? */
-        if(fFrequency <= orxFLOAT_0)
+        if(fFrequency > orxFLOAT_0)
         {
           /* Gets tick size */
           fTickSize = orxFLOAT_1 / fFrequency;
