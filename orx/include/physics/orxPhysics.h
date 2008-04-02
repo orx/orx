@@ -63,6 +63,8 @@ typedef struct __orxBODY_DEF_t
 {
   orxVECTOR vPosition;                      /**< Position */
   orxFLOAT  fAngle;                         /**< Angle */
+  orxFLOAT  fInertia;                       /**< Inertia */
+  orxFLOAT  fMass;                          /**< Mass */
   orxFLOAT  fLinearDamping;                 /**< Linear damping */
   orxFLOAT  fAngularDamping;                /**< Angular damping */
   orxU32    u32Flags;                       /**< Control flags */

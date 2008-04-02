@@ -66,31 +66,31 @@ orxSTATIC orxBOUNCE_STATIC sstBounce;
 
 orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
-  orxVECTOR vPos, vDiff;
-  orxFLOAT fRot;
+//  orxVECTOR vPos, vDiff;
+//  orxFLOAT fRot;
 
-  orxObject_GetPosition(sstBounce.pstObject, &vPos);
-  fRot = orxObject_GetRotation(sstBounce.pstObject);
-
-  if(vPos.fY > sstBounce.fScreenHeight - (orx2F(0.5f) * sstBounce.fBallSide))
-  {
-    sstBounce.vSpeed.fY *= orx2F(-1.0f);
-    vPos.fY = sstBounce.fScreenHeight - (orx2F(0.5f) * sstBounce.fBallSide);
-  }
-
-  sstBounce.vSpeed.fY += orx2F(1.0f);
-
-  if((vPos.fX > sstBounce.fScreenWidth - (orx2F(0.5f) * sstBounce.fBallSide)) || (vPos.fX < (orx2F(0.5f) * sstBounce.fBallSide)))
-  {
-    sstBounce.vSpeed.fX *= orx2F(-1.0f);
-  }
-
-  fRot += sstBounce.vSpeed.fX * orx2F(0.01f);
-  orxVector_Mulf(&vDiff, &sstBounce.vSpeed, orxFLOAT_1);
-  orxVector_Add(&vPos, &vPos, &vDiff);
-
-  orxObject_SetPosition(sstBounce.pstObject, &vPos);
-  orxObject_SetRotation(sstBounce.pstObject, fRot);
+//  orxObject_GetPosition(sstBounce.pstObject, &vPos);
+//  fRot = orxObject_GetRotation(sstBounce.pstObject);
+//
+//  if(vPos.fY > sstBounce.fScreenHeight - (orx2F(0.5f) * sstBounce.fBallSide))
+//  {
+//    sstBounce.vSpeed.fY *= orx2F(-1.0f);
+//    vPos.fY = sstBounce.fScreenHeight - (orx2F(0.5f) * sstBounce.fBallSide);
+//  }
+//
+//  sstBounce.vSpeed.fY += orx2F(1.0f);
+//
+//  if((vPos.fX > sstBounce.fScreenWidth - (orx2F(0.5f) * sstBounce.fBallSide)) || (vPos.fX < (orx2F(0.5f) * sstBounce.fBallSide)))
+//  {
+//    sstBounce.vSpeed.fX *= orx2F(-1.0f);
+//  }
+//
+//  fRot += sstBounce.vSpeed.fX * orx2F(0.01f);
+//  orxVector_Mulf(&vDiff, &sstBounce.vSpeed, orxFLOAT_1);
+//  orxVector_Add(&vPos, &vPos, &vDiff);
+//
+//  orxObject_SetPosition(sstBounce.pstObject, &vPos);
+//  orxObject_SetRotation(sstBounce.pstObject, fRot);
 
   return;
 }
@@ -110,7 +110,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
   zFileName = orxConfig_GetString("BallFile");
 
   /* Creates ball */
-  sstBounce.pstObject = orxObject_CreateFromFile(zFileName, orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT);
+  sstBounce.pstObject = orxObject_CreateFromFile(zFileName, orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT | orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_SPHERE | orxOBJECT_KU32_FLAG_BODY_DYNAMIC);
 
   /* Valid? */
   if(sstBounce.pstObject != orxNULL)

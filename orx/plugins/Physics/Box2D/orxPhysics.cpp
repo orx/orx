@@ -62,6 +62,7 @@ typedef struct __orxPHYSICS_STATIC_t
   orxU32            u32Flags;                   /**< Control flags */
   orxU32            u32Iterations;              /**< Simulation iterations per step */
   orxFLOAT          fDimensionRatio;            /**< Dimension ratio */
+  orxFLOAT          fInvDimensionRatio;         /**< Inverse dimension ratio */
   orxCLOCK         *pstClock;                   /**< Simulation clock */
   b2World          *poWorld;                    /**< World */
   b2Body           *poGround;                   /**< Ground */
@@ -114,6 +115,8 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxBODY_DEF *_p
     stBodyDef.angle           = _pstBodyDef->fAngle;
     stBodyDef.linearDamping   = _pstBodyDef->fLinearDamping;
     stBodyDef.angularDamping  = _pstBodyDef->fAngularDamping;
+    stBodyDef.massData.I      = _pstBodyDef->fInertia;
+    stBodyDef.massData.mass   = _pstBodyDef->fMass;
     stBodyDef.isBullet        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
     stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_NO_ROTATION);
     stBodyDef.position.Set(_pstBodyDef->vPosition.fX, _pstBodyDef->vPosition.fY);
@@ -256,7 +259,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, orx
   poBody = (b2Body *)_pstBody;
 
   /* Sets position vector */
-  vPosition.Set(_pvPosition->fX, _pvPosition->fY);
+  vPosition.Set(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY);
 
   /* Updates its position */
   eResult = (poBody->SetXForm(vPosition, poBody->GetAngle()) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
@@ -299,7 +302,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pstBody, orxCON
   poBody = (b2Body *)_pstBody;
 
   /* Sets speed vector */
-  vSpeed.Set(_pvSpeed->fX, _pvSpeed->fY);
+  vSpeed.Set(sstPhysics.fDimensionRatio * _pvSpeed->fX, sstPhysics.fDimensionRatio * _pvSpeed->fY);
 
   /* Updates its speed */
   poBody->SetLinearVelocity(vSpeed);
@@ -346,8 +349,8 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetPosition(orxPHYSICS_BODY *_pstBody, or
 
   /* Updates result */
   pvResult      = _pvPosition;
-  pvResult->fX  = vPosition.x;
-  pvResult->fY  = vPosition.y;
+  pvResult->fX  = sstPhysics.fInvDimensionRatio * vPosition.x;
+  pvResult->fY  = sstPhysics.fInvDimensionRatio * vPosition.y;
 
   /* Done! */
   return pvResult;
@@ -391,8 +394,8 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVE
 
   /* Updates result */
   pvResult      = _pvSpeed;
-  pvResult->fX  = vSpeed.x;
-  pvResult->fY  = vSpeed.y;
+  pvResult->fX  = sstPhysics.fInvDimensionRatio * vSpeed.x;
+  pvResult->fY  = sstPhysics.fInvDimensionRatio * vSpeed.y;
 
   /* Done! */
   return pvResult;
@@ -469,7 +472,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
         orxS32    s32IterationsPerStep;
 
         /* Gets dimension ratio */
-        orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
+        fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
 
         /* Valid? */
         if(fRatio > orxFLOAT_0)
@@ -482,6 +485,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
           /* Stores default one */
           sstPhysics.fDimensionRatio = sfDefaultDimensionRatio;
         }
+
+        /* Stores inverse dimension ratio */
+        sstPhysics.fInvDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
 
         /* Gets iteration per step number from config */
         orxConfig_GetS32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
