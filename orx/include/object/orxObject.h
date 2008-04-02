@@ -48,8 +48,12 @@
 #define orxOBJECT_KU32_FLAG_NONE            0x00000000  /**< No flags */
 
 #define orxOBJECT_KU32_FLAG_2D              0x00000001  /**< 2D flags */
-#define orxOBJECT_KU32_FLAG_BODY            0x00000002  /**< Body flags */
-#define orxOBJECT_KU32_FLAG_NEIGHBOR_LIST   0x00000004  /**< Neighbor list flag */  
+#define orxOBJECT_KU32_FLAG_GRAPHIC         0x00000002  /**< Graphic flags */
+#define orxOBJECT_KU32_FLAG_BODY            0x00000004  /**< Body flags */
+#define orxOBJECT_KU32_FLAG_BODY_SPHERE     0x00000008  /**< Body sphere flags */
+#define orxOBJECT_KU32_FLAG_BODY_BOX        0x00000010  /**< Body box flags */
+#define orxOBJECT_KU32_FLAG_BODY_DYNAMIC    0x00000020  /**< Body dynamic flags */
+#define orxOBJECT_KU32_FLAG_CENTERED_PIVOT  0x00000040  /**< Centered pivot flag */  
 #define orxOBJECT_KU32_MASK_USER_ALL        0x000000FF  /**< User all ID mask */
 
 
@@ -71,18 +75,12 @@ extern orxDLLAPI orxVOID                    orxObject_Exit();
 /** Creates an empty object. */
 extern orxDLLAPI orxOBJECT *                orxObject_Create();
 
-/** Creates a specific object
- * @param[in]   _u32Flags             Object flags (2D / body / ...)
- * @return  orxOBJECT / orxNULL
- */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateSpecificObject(orxU32 _u32Flags);
-
-/** Creates a specific object from bitmap file
- * @param[in]   _zBitmapFileName      Bitmap file name to associate with the 2D object
- * @param[in]   _u32Flags             Object flags (2D / body / ...)
+/** Creates an object from file
+ * @param[in]   _zFileName            Resource file name to associate with the 2D object
+ * @param[in]   _u32Flags             Object flags (2D / graphic / body / ...)
  * @ return orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateSpecificObjectFromFile(orxCONST orxSTRING _zBitmapFileName, orxU32 _u32Flags);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, orxU32 _u32Flags);
 
 /** Deletes an object. */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObject);

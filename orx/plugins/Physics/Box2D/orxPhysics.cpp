@@ -206,6 +206,13 @@ extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY
   /* Creates it */
   poResult = poBody->CreateShape(pstShapeDef); 
 
+  /* Valid? */
+  if(poResult != 0)
+  {
+    /* Computes body's mass */
+    poBody->SetMassFromShapes();
+  }
+
   /* Done! */
   return (orxPHYSICS_BODY_PART *)poResult;
 }
@@ -213,6 +220,7 @@ extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY
 extern "C" orxVOID orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   b2Shape  *poShape;
+  b2Body   *poBody;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -221,8 +229,14 @@ extern "C" orxVOID orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBod
   /* Gets shape */
   poShape = (b2Shape *)_pstBodyPart;
 
+  /* Gets its body */
+  poBody = poShape->GetBody();
+
   /* Deletes its part */
-  poShape->GetBody()->DestroyShape(poShape);
+  poBody->DestroyShape(poShape);
+
+  /* Computes body's mass */
+  poBody->SetMassFromShapes();
 
   return;
 }

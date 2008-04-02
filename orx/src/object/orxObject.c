@@ -380,16 +380,18 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   return eResult;
 }
 
-/** Creates a specific object
+/** Creates an object from file
+ * @param[in]   _zFileName            Resource file name to associate with the 2D object
  * @param[in]   _u32Flags             Object flags (2D / body / ...)
- * @return  orxOBJECT / orxNULL
+ * @ return orxOBJECT / orxNULL
  */
-orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
+orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, orxU32 _u32Flags)
 {
   orxOBJECT *pstObject = orxNULL;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFileName != orxNULL);
   orxASSERT((_u32Flags & orxOBJECT_KU32_MASK_USER_ALL) == _u32Flags);
 
   /* Creates object */
@@ -434,50 +436,52 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
     /* 2D? */
     if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_2D))
     {
-      orxTEXTURE *pstTexture;
-
-      /* Loads textures */
-      pstTexture = orxTexture_Create();
-
-      /* Valid? */
-      if(pstTexture != orxNULL)
+      /* Should create graphic? */
+      if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_GRAPHIC))
       {
         orxGRAPHIC *pstGraphic;
 
         /* Creates & inits 2D graphic object from texture */
-        pstGraphic = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
+        pstGraphic = orxGraphic_CreateFromFile(_zFileName, orxGRAPHIC_KU32_FLAG_2D);
 
         /* Valid? */
         if(pstGraphic != orxNULL)
         {
-          /* Sets graphic 2D data */
-          if(orxGraphic_SetData(pstGraphic, (orxSTRUCTURE *)pstTexture) == orxSTATUS_SUCCESS)
+          /* Links it structures */
+          if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
           {
-            /* Links it structures */
-            if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
+            /* Should center pivot */
+            if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_CENTERED_PIVOT))
             {
-              /* Updates flags */
-              orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-              orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_2D, orxOBJECT_KU32_FLAG_NONE);
-            }
-            else
-            {
-              /* !!! MSG !!! */
+              orxFLOAT fWidth, fHeight;
 
-              /* Deletes all structures */
-              orxGraphic_Delete(pstGraphic);
-              orxTexture_Delete(pstTexture);
-              orxObject_Delete(pstObject);
-              pstObject = orxNULL;
+              /* Gets object size */
+              if(orxObject_GetSize(pstObject, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+              {
+                orxVECTOR vPivot;
+
+                /* Inits pivot */
+                orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
+
+                /* Updates object pivot */
+                if(orxObject_SetPivot(pstObject, &vPivot) != orxSTATUS_FAILURE)
+                {
+                  /* Updates object flags */
+                  orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_CENTERED_PIVOT, orxOBJECT_KU32_FLAG_NONE);
+                }
+              }
             }
+
+            /* Updates flags */
+            orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+            orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_GRAPHIC, orxOBJECT_KU32_FLAG_NONE);
           }
           else
           {
             /* !!! MSG !!! */
-
+  
             /* Deletes all structures */
             orxGraphic_Delete(pstGraphic);
-            orxTexture_Delete(pstTexture);
             orxObject_Delete(pstObject);
             pstObject = orxNULL;
           }
@@ -485,20 +489,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
         else
         {
           /* !!! MSG !!! */
-
+  
           /* Deletes all structures */
-          orxTexture_Delete(pstTexture);
           orxObject_Delete(pstObject);
           pstObject = orxNULL;
         }
-      }
-      else
-      {
-        /* !!! MSG !!! */
-
-        /* Deletes all structures */
-        orxObject_Delete(pstObject);
-        pstObject = orxNULL;
       }
 
       /* Valid? */
@@ -514,7 +509,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
           orxMemory_Set(&stBodyDef, 0, sizeof(orxBODY_DEF));
 
           /* Inits body definition */
-          orxFLAG_SET(stBodyDef.u32Flags, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_2D) ? (orxBODY_DEF_KU32_FLAG_2D | orxBODY_DEF_KU32_FLAG_DYNAMIC) : orxBODY_DEF_KU32_FLAG_DYNAMIC, orxBODY_DEF_KU32_FLAG_NONE);
+          orxFLAG_SET(stBodyDef.u32Flags, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_DYNAMIC) ? (orxBODY_DEF_KU32_FLAG_2D | orxBODY_DEF_KU32_FLAG_DYNAMIC) : orxBODY_DEF_KU32_FLAG_2D, orxBODY_DEF_KU32_FLAG_NONE);
 
           /* Creates body */
           pstBody = orxBody_Create(&stBodyDef);
@@ -522,13 +517,60 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
           /* Valid? */
           if(pstBody != orxNULL)
           {
-            orxLOG("YOUHOU");
             /* Links it structures */
             if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
             {
               /* Updates flags */
               orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-              orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_BODY, orxOBJECT_KU32_FLAG_NONE);
+              orxStructure_SetFlags(pstObject, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_DYNAMIC) ? (orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_DYNAMIC) : orxOBJECT_KU32_FLAG_BODY, orxOBJECT_KU32_FLAG_NONE);
+
+              /* Asks for body part? */
+              if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_SPHERE | orxOBJECT_KU32_FLAG_BODY_BOX))
+              {
+                orxBODY_PART_DEF  stBodyPartDef;
+                orxVECTOR         vPivot;
+                orxFLOAT          fWidth, fHeight;
+
+                /* Gets object size & pivot */
+                orxObject_GetSize(pstObject, &fWidth, &fHeight);
+                orxObject_GetPivot(pstObject, &vPivot);
+
+                /* Cleans body part definition */
+                orxMemory_Set(&stBodyPartDef, 0, sizeof(orxBODY_PART_DEF));
+
+                /* Inits it */
+                stBodyPartDef.fDensity = orxFLOAT_1;
+                stBodyPartDef.u32Flags = orxBODY_PART_DEF_KU32_FLAG_RIGID;
+                
+                /* Sphere? */
+                if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_SPHERE))
+                {
+                  orxFLOAT fRadius;
+
+                  /* Gets minimal radius */
+                  fRadius = orx2F(0.5f) * orxMIN(fWidth, fHeight);
+
+                  /* Inits body part def */
+                  orxVector_Set(&(stBodyPartDef.stSphere.vCenter), fRadius - vPivot.fX, fRadius - vPivot.fY, -vPivot.fZ);
+                  stBodyPartDef.stSphere.fRadius = fRadius;
+                  orxFLAG_SET(stBodyPartDef.u32Flags, orxBODY_PART_DEF_KU32_FLAG_SPHERE, orxBODY_PART_DEF_KU32_FLAG_NONE); 
+                }
+                /* Box */
+                else
+                {
+                  /* Inits body part def */
+                  orxVector_Set(&(stBodyPartDef.stAABox.stBox.vTL), -vPivot.fX, -vPivot.fY, -vPivot.fZ);
+                  orxVector_Set(&(stBodyPartDef.stAABox.stBox.vBR), fWidth - vPivot.fX, fHeight - vPivot.fY, -vPivot.fZ);
+                  orxFLAG_SET(stBodyPartDef.u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX, orxBODY_PART_DEF_KU32_FLAG_NONE); 
+                }
+
+                /* Creates body part */
+                if(orxBody_AddPart(pstBody, 0, &stBodyPartDef) != orxSTATUS_FAILURE)
+                {
+                  /* Updates flags */
+                  orxStructure_SetFlags(pstObject, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_SPHERE) ? orxOBJECT_KU32_FLAG_BODY_SPHERE : orxOBJECT_KU32_FLAG_BODY_BOX, orxOBJECT_KU32_FLAG_NONE);
+                }
+              }
             }
             else
             {
@@ -542,7 +584,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
           }
           else
           {
-            orxLOG("BLAH");
             /* !!! MSG !!! */
 
             /* Deletes all structures */
@@ -551,130 +592,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateSpecificObject(orxU32 _u32Flags)
           }
         }
       }
-    }
-    else
-    {
-      /* !!! MSG !!! */
-    }
-  }
-  else
-  {
-    /* !!! MSG !!! */
-  }
-
-  /* Done! */
-  return pstObject;
-}
-
-/** Creates a specific object from bitmap file
- * @param[in]   _zBitmapFileName      Bitmap file name to associate with the 2D object
- * @param[in]   _u32Flags             Object flags (2D / body / ...)
- * @ return orxOBJECT / orxNULL
- */
-orxOBJECT *orxFASTCALL orxObject_CreateSpecificObjectFromFile(orxCONST orxSTRING _zBitmapFileName, orxU32 _u32Flags)
-{
-  orxOBJECT *pstObject = orxNULL;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zBitmapFileName != orxNULL);
-  orxASSERT((_u32Flags & orxOBJECT_KU32_MASK_USER_ALL) == _u32Flags);
-
-  /* 2D? */
-  if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_2D))
-  {
-    /* Creates a non 2D-specific object */
-    pstObject = orxObject_CreateSpecificObject(_u32Flags & ~orxOBJECT_KU32_FLAG_2D);
-
-    /* Valid? */
-    if(pstObject != orxNULL)
-    {
-      orxGRAPHIC *pstGraphic;
-
-      /* Creates & inits 2D graphic object from texture */
-      pstGraphic = orxGraphic_CreateFromFile(_zBitmapFileName, orxGRAPHIC_KU32_FLAG_2D);
-
+      
       /* Valid? */
-      if(pstGraphic != orxNULL)
+      if(pstObject != orxNULL)
       {
-        /* Links it structures */
-        if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
-        {
-          /* Updates flags */
-          orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-          orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_2D, orxOBJECT_KU32_FLAG_NONE);
-        }
-        else
-        {
-          /* !!! MSG !!! */
-
-          /* Deletes all structures */
-          orxGraphic_Delete(pstGraphic);
-          orxObject_Delete(pstObject);
-          pstObject = orxNULL;
-        }
-      }
-      else
-      {
-        /* !!! MSG !!! */
-
-        /* Deletes all structures */
-        orxObject_Delete(pstObject);
-        pstObject = orxNULL;
+        /* Updates its flags */
+        orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_2D, orxOBJECT_KU32_FLAG_NONE);
       }
     }
     else
     {
       /* !!! MSG !!! */
-    }
-
-    /* Valid? */
-    if(pstObject != orxNULL)
-    {
-      /* With body? */
-      if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY))
-      {
-        orxBODY      *pstBody;
-        orxBODY_DEF   stBodyDef;
-
-        /* Cleans body definition */
-        orxMemory_Set(&stBodyDef, 0, sizeof(orxBODY_DEF));
-
-        /* Inits body definition */
-        orxFLAG_SET(stBodyDef.u32Flags, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_2D) ? (orxBODY_DEF_KU32_FLAG_2D | orxBODY_DEF_KU32_FLAG_DYNAMIC) : orxBODY_DEF_KU32_FLAG_DYNAMIC, orxBODY_DEF_KU32_FLAG_NONE);
-
-        /* Creates body */
-        pstBody = orxBody_Create(&stBodyDef);
-
-        /* Valid? */
-        if(pstBody != orxNULL)
-        {
-          /* Links it structures */
-          if(orxObject_LinkStructure(pstObject, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
-          {
-            /* Updates flags */
-            orxFLAG_SET(pstObject->astStructure[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-            orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_BODY, orxOBJECT_KU32_FLAG_NONE);
-          }
-          else
-          {
-            /* !!! MSG !!! */
-
-            /* Deletes all structures */
-            orxBody_Delete(pstBody);
-            orxObject_Delete(pstObject);
-            pstObject = orxNULL;
-          }
-        }
-        else
-        {
-          /* !!! MSG !!! */
-
-          /* Deletes all structures */
-          orxObject_Delete(pstObject);
-          pstObject = orxNULL;
-        }
-      }
     }
   }
   else
