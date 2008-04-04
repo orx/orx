@@ -300,9 +300,9 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxBODY_DEF *_pstBodyDef)
         orxVector_Copy(&(stMergedDef.vPosition), (orxVector_IsNull(&(_pstBodyDef->vPosition)) == orxFALSE) ? &(_pstBodyDef->vPosition) : &(sstBody.stBodyTemplate.vPosition));
         stMergedDef.fAngle          = (_pstBodyDef->fAngle != 0.0f) ? _pstBodyDef->fAngle : sstBody.stBodyTemplate.fAngle;
         stMergedDef.fInertia        = (_pstBodyDef->fInertia > 0.0f) ? _pstBodyDef->fInertia : sstBody.stBodyTemplate.fInertia;
-        stMergedDef.fMass           = (_pstBodyDef->fMass >= 0.0f) ? _pstBodyDef->fMass : sstBody.stBodyTemplate.fMass;
-        stMergedDef.fLinearDamping  = (_pstBodyDef->fLinearDamping >= 0.0f) ? _pstBodyDef->fLinearDamping : sstBody.stBodyTemplate.fLinearDamping;
-        stMergedDef.fAngularDamping = (_pstBodyDef->fAngularDamping >= 0.0f) ? _pstBodyDef->fAngularDamping : sstBody.stBodyTemplate.fAngularDamping;
+        stMergedDef.fMass           = (_pstBodyDef->fMass > 0.0f) ? _pstBodyDef->fMass : sstBody.stBodyTemplate.fMass;
+        stMergedDef.fLinearDamping  = (_pstBodyDef->fLinearDamping > 0.0f) ? _pstBodyDef->fLinearDamping : sstBody.stBodyTemplate.fLinearDamping;
+        stMergedDef.fAngularDamping = (_pstBodyDef->fAngularDamping > 0.0f) ? _pstBodyDef->fAngularDamping : sstBody.stBodyTemplate.fAngularDamping;
         stMergedDef.u32Flags        = (_pstBodyDef->u32Flags != orxBODY_DEF_KU32_FLAG_NONE) ? _pstBodyDef->u32Flags : sstBody.stBodyTemplate.u32Flags;
 
         /* Selects it */
@@ -428,9 +428,9 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
         orxMemory_Set(&stMergedPartDef, 0, sizeof(orxBODY_PART_DEF));
 
         /* Merges template with specialized definition */
-        stMergedPartDef.fFriction     = (_pstBodyPartDef->fFriction >= 0.0f) ? _pstBodyPartDef->fFriction : sstBody.stBodyPartTemplate.fFriction;
-        stMergedPartDef.fRestitution  = (_pstBodyPartDef->fRestitution >= 0.0f) ? _pstBodyPartDef->fRestitution : sstBody.stBodyPartTemplate.fRestitution;
-        stMergedPartDef.fDensity      = (_pstBodyPartDef->fDensity >= 0.0f) ? _pstBodyPartDef->fDensity : sstBody.stBodyPartTemplate.fDensity;
+        stMergedPartDef.fFriction     = (_pstBodyPartDef->fFriction > 0.0f) ? _pstBodyPartDef->fFriction : sstBody.stBodyPartTemplate.fFriction;
+        stMergedPartDef.fRestitution  = (_pstBodyPartDef->fRestitution > 0.0f) ? _pstBodyPartDef->fRestitution : sstBody.stBodyPartTemplate.fRestitution;
+        stMergedPartDef.fDensity      = (_pstBodyPartDef->fDensity > 0.0f) ? _pstBodyPartDef->fDensity : sstBody.stBodyPartTemplate.fDensity;
         stMergedPartDef.u16SelfFlags  = (_pstBodyPartDef->u16SelfFlags != 0) ? _pstBodyPartDef->u16SelfFlags : sstBody.stBodyPartTemplate.u16SelfFlags;
         stMergedPartDef.u16CheckMask  = (_pstBodyPartDef->u16CheckMask != 0) ? _pstBodyPartDef->u16CheckMask : sstBody.stBodyPartTemplate.u16CheckMask;
         stMergedPartDef.u32Flags      = (_pstBodyPartDef->u32Flags != orxBODY_PART_DEF_KU32_FLAG_NONE) ? _pstBodyPartDef->u32Flags : sstBody.stBodyPartTemplate.u32Flags;
