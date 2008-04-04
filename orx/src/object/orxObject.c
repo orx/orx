@@ -505,11 +505,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
           orxBODY      *pstBody;
           orxBODY_DEF   stBodyDef;
 
-          /* Cleans body definition */
-          orxMemory_Set(&stBodyDef, 0, sizeof(orxBODY_DEF));
+          /* Gets body template */
+          orxBody_GetTemplate(&stBodyDef);
 
           /* Defaults it */
-          stBodyDef.fInertia  = orxFLOAT_1;
+          if(stBodyDef.fInertia <= orxFLOAT_0)
+          {
+            stBodyDef.fInertia  = orxFLOAT_1;
+          }
           orxFLAG_SET(stBodyDef.u32Flags, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_DYNAMIC) ? (orxBODY_DEF_KU32_FLAG_2D | orxBODY_DEF_KU32_FLAG_DYNAMIC) : orxBODY_DEF_KU32_FLAG_2D, orxBODY_DEF_KU32_FLAG_NONE);
 
           /* Creates body */
@@ -529,6 +532,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
               if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_SPHERE | orxOBJECT_KU32_FLAG_BODY_BOX))
               {
                 orxBODY_PART_DEF  stBodyPartDef;
+                orxBOOL           bUsePartTemplate;
                 orxVECTOR         vPivot;
                 orxFLOAT          fWidth, fHeight;
 
@@ -536,16 +540,31 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
                 orxObject_GetSize(pstObject, &fWidth, &fHeight);
                 orxObject_GetPivot(pstObject, &vPivot);
 
-                /* Cleans body part definition */
-                orxMemory_Set(&stBodyPartDef, 0, sizeof(orxBODY_PART_DEF));
+                /* Gets body part template */
+                bUsePartTemplate = orxBody_GetPartTemplate(&stBodyPartDef);
 
                 /* Defaults it */
-                stBodyPartDef.fDensity      = orxFLOAT_1;
-                stBodyPartDef.fFriction     = orxFLOAT_1;
-                stBodyPartDef.u32Flags      = orxBODY_PART_DEF_KU32_FLAG_RIGID;
-                stBodyPartDef.u16SelfFlags  = 1;
-                stBodyPartDef.u16CheckMask  = 1;
-                
+                if(stBodyPartDef.fDensity <= orxFLOAT_0)
+                {
+                  stBodyPartDef.fDensity = orxFLOAT_1;
+                }
+                if((bUsePartTemplate == orxFALSE) || (stBodyPartDef.fFriction < orxFLOAT_0))
+                {
+                  stBodyPartDef.fFriction = orxFLOAT_1;
+                }
+                if(stBodyPartDef.u32Flags == orxBODY_PART_DEF_KU32_FLAG_NONE)
+                {
+                  stBodyPartDef.u32Flags = orxBODY_PART_DEF_KU32_FLAG_RIGID;
+                }
+                if(stBodyPartDef.u16SelfFlags == 0)
+                {
+                  stBodyPartDef.u16SelfFlags = 1;
+                }
+                if(stBodyPartDef.u16CheckMask == 0)
+                {
+                  stBodyPartDef.u16CheckMask = 1;
+                }
+
                 /* Sphere? */
                 if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_SPHERE))
                 {

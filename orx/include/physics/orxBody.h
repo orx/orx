@@ -111,6 +111,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetTemplate(orxCONST orxBO
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartTemplate(orxCONST orxBODY_PART_DEF *_pstBodyPartTemplate);
 
+/** Gets the body template
+ * @param[out]  _pstBodyTemplate  Body template to get
+ * @return      orxBODY_DEF / orxNULL
+ */
+extern orxDLLAPI orxBODY_DEF *orxFASTCALL     orxBody_GetTemplate(orxBODY_DEF *_pstBodyTemplate);
+
+/** Gets the body part template
+ * @param[out]  _pstBodyPartTemplate  Body part template to get
+ * @return      orxBODY_PART_DEF / orxNULL
+ */
+extern orxDLLAPI orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartTemplate(orxBODY_PART_DEF *_pstBodyPartTemplate);
+
 /** Sets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvPosition     Position to set

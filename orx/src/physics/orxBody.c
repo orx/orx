@@ -606,6 +606,74 @@ orxSTATUS orxFASTCALL orxBody_SetPartTemplate(orxCONST orxBODY_PART_DEF *_pstBod
   return eResult;
 }
 
+/** Gets the body template
+ * @param[out]  _pstBodyTemplate  Body template to get
+ * @return      orxBODY_DEF / orxNULL
+ */
+orxBODY_DEF *orxFASTCALL orxBody_GetTemplate(orxBODY_DEF *_pstBodyTemplate)
+{
+  orxBODY_DEF *pstResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyTemplate != orxNULL);
+
+  /* Has template? */
+  if(orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_TEMPLATE))
+  {
+    /* Copies template */
+    orxMemory_Copy(_pstBodyTemplate, &(sstBody.stBodyTemplate),sizeof(orxBODY_DEF));
+
+    /* Updates result */
+    pstResult = _pstBodyTemplate;
+  }
+  else
+  {
+    /* Clears template */
+    orxMemory_Set(_pstBodyTemplate, 0, sizeof(orxBODY_DEF));
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets the body part template
+ * @param[out]  _pstBodyPartTemplate  Body part template to get
+ * @return      orxBODY_PART_DEF / orxNULL
+ */
+orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartTemplate(orxBODY_PART_DEF *_pstBodyPartTemplate)
+{
+  orxBODY_PART_DEF *pstResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPartTemplate != orxNULL);
+
+  /* Has template? */
+  if(orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_PART_TEMPLATE))
+  {
+    /* Copies template */
+    orxMemory_Copy(_pstBodyPartTemplate, &(sstBody.stBodyPartTemplate),sizeof(orxBODY_PART_DEF));
+
+    /* Updates result */
+    pstResult = _pstBodyPartTemplate;
+  }
+  else
+  {
+    /* Clears template */
+    orxMemory_Set(_pstBodyPartTemplate, 0, sizeof(orxBODY_PART_DEF));
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Sets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvPosition     Position to set
