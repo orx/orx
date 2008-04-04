@@ -305,6 +305,20 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_2DRotate(orxVECTOR *_pvR
     return _pvRes;
 }
 
+orxSTATIC orxINLINE orxBOOL                   orxVector_IsNull(orxCONST orxVECTOR *_pvOp)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(_pvOp  != orxNULL);
+
+  /* Updates result */
+  bResult = ((_pvOp->fX == orxFLOAT_0) && (_pvOp->fY == orxFLOAT_0) && (_pvOp->fZ == orxFLOAT_0)) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   /* Checks */

@@ -31,8 +31,10 @@
 #define orxBODY_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
 #define orxBODY_KU32_FLAG_HAS_DATA            0x00000001  /**< Has data flag */
+#define orxBODY_KU32_FLAG_USE_TEMPLATE        0x00000002  /**< Use body template flag */
+#define orxBODY_KU32_FLAG_USE_PART_TEMPLATE   0x00000004  /**< Use body part template flag */
 
-#define orxBODY_KU32_MASK_USER_ALL            0xFFFFFFFF  /**< User all ID mask */
+#define orxBODY_KU32_MASK_ALL                 0xFFFFFFFF  /**< User all ID mask */
 
 
 /** Module flags
@@ -72,7 +74,9 @@ struct __orxBODY_t
  */
 typedef struct __orxBODY_STATIC_t
 {
-  orxU32 u32Flags;                                              /**< Control flags : 4 */
+  orxU32            u32Flags;                                   /**< Control flags */
+  orxBODY_DEF       stBodyTemplate;                             /**< Body template */
+  orxBODY_PART_DEF  stBodyPartTemplate;                         /**< Body part template */
 
 } orxBODY_STATIC;
 
@@ -269,7 +273,7 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxBODY_DEF *_pstBodyDef)
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBodyDef != orxNULL);
+  orxASSERT((_pstBodyDef != orxNULL) || (orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_TEMPLATE)));
 
   /* Creates body */
   pstBody = (orxBODY *)orxStructure_Create(orxSTRUCTURE_ID_BODY);
@@ -277,11 +281,47 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxBODY_DEF *_pstBodyDef)
   /* Valid? */
   if(pstBody != orxNULL)
   {
+    orxBODY_DEF           stMergedDef;
+    orxCONST orxBODY_DEF *pstSelectedDef;
+
     /* Inits flags */
     orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_MASK_ALL);
 
+    /* Uses template? */
+    if(orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_TEMPLATE))
+    {
+      /* Has specific definition? */
+      if(_pstBodyDef != orxNULL)
+      {
+        /* Cleans merged def */
+        orxMemory_Set(&stMergedDef, 0, sizeof(orxBODY_DEF));
+
+        /* Merges template with specialized definition */
+        orxVector_Copy(&(stMergedDef.vPosition), (orxVector_IsNull(&(_pstBodyDef->vPosition)) == orxFALSE) ? &(_pstBodyDef->vPosition) : &(sstBody.stBodyTemplate.vPosition));
+        stMergedDef.fAngle          = (_pstBodyDef->fAngle != 0.0f) ? _pstBodyDef->fAngle : sstBody.stBodyTemplate.fAngle;
+        stMergedDef.fInertia        = (_pstBodyDef->fInertia > 0.0f) ? _pstBodyDef->fInertia : sstBody.stBodyTemplate.fInertia;
+        stMergedDef.fMass           = (_pstBodyDef->fMass >= 0.0f) ? _pstBodyDef->fMass : sstBody.stBodyTemplate.fMass;
+        stMergedDef.fLinearDamping  = (_pstBodyDef->fLinearDamping >= 0.0f) ? _pstBodyDef->fLinearDamping : sstBody.stBodyTemplate.fLinearDamping;
+        stMergedDef.fAngularDamping = (_pstBodyDef->fAngularDamping >= 0.0f) ? _pstBodyDef->fAngularDamping : sstBody.stBodyTemplate.fAngularDamping;
+        stMergedDef.u32Flags        = (_pstBodyDef->u32Flags != orxBODY_DEF_KU32_FLAG_NONE) ? _pstBodyDef->u32Flags : sstBody.stBodyTemplate.u32Flags;
+
+        /* Selects it */
+        pstSelectedDef = &stMergedDef;
+      }
+      else
+      {
+        /* Selects template */
+        pstSelectedDef = &(sstBody.stBodyTemplate);
+      }      
+    }
+    else
+    {
+      /* Selects specialized definition */
+      pstSelectedDef = _pstBodyDef;
+    }
+
     /* Creates physics body */
-    pstBody->pstData = orxPhysics_CreateBody(_pstBodyDef);
+    pstBody->pstData = orxPhysics_CreateBody(pstSelectedDef);
 
     /* Valid? */
     if(pstBody->pstData != orxNULL)
@@ -361,7 +401,7 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
-  orxASSERT(_pstBodyPartDef != orxNULL);
+  orxASSERT((_pstBodyPartDef != orxNULL) || (orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_PART_TEMPLATE)));
   orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
   /* Had previous part? */
@@ -374,10 +414,57 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
   /* Valid? */
   if(eResult != orxSTATUS_FAILURE)
   {
-    orxPHYSICS_BODY_PART *pstBodyPart;
+    orxBODY_PART_DEF            stMergedPartDef;
+    orxCONST orxBODY_PART_DEF  *pstSelectedPartDef;
+    orxPHYSICS_BODY_PART       *pstBodyPart;
 
-    /* Creates it */
-    pstBodyPart = orxPhysics_CreateBodyPart(_pstBody->pstData, _pstBodyPartDef);
+    /* Uses part template? */
+    if(orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_PART_TEMPLATE))
+    {
+      /* Has specific part definition? */
+      if(_pstBodyPartDef != orxNULL)
+      {
+        /* Cleans merged part def */
+        orxMemory_Set(&stMergedPartDef, 0, sizeof(orxBODY_PART_DEF));
+
+        /* Merges template with specialized definition */
+        stMergedPartDef.fFriction     = (_pstBodyPartDef->fFriction >= 0.0f) ? _pstBodyPartDef->fFriction : sstBody.stBodyPartTemplate.fFriction;
+        stMergedPartDef.fRestitution  = (_pstBodyPartDef->fRestitution >= 0.0f) ? _pstBodyPartDef->fRestitution : sstBody.stBodyPartTemplate.fRestitution;
+        stMergedPartDef.fDensity      = (_pstBodyPartDef->fDensity >= 0.0f) ? _pstBodyPartDef->fDensity : sstBody.stBodyPartTemplate.fDensity;
+        stMergedPartDef.u16SelfFlags  = (_pstBodyPartDef->u16SelfFlags != 0) ? _pstBodyPartDef->u16SelfFlags : sstBody.stBodyPartTemplate.u16SelfFlags;
+        stMergedPartDef.u16CheckMask  = (_pstBodyPartDef->u16CheckMask != 0) ? _pstBodyPartDef->u16CheckMask : sstBody.stBodyPartTemplate.u16CheckMask;
+        stMergedPartDef.u32Flags      = (_pstBodyPartDef->u32Flags != orxBODY_PART_DEF_KU32_FLAG_NONE) ? _pstBodyPartDef->u32Flags : sstBody.stBodyPartTemplate.u32Flags;
+
+        /* Sphere? */
+        if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SPHERE))
+        {
+          orxVector_Copy(&(stMergedPartDef.stSphere.vCenter), (orxVector_IsNull(&(_pstBodyPartDef->stSphere.vCenter)) == orxFALSE) ? &(_pstBodyPartDef->stSphere.vCenter) : &(sstBody.stBodyPartTemplate.stSphere.vCenter));
+          stMergedPartDef.stSphere.fRadius = (_pstBodyPartDef->stSphere.fRadius > 0.0f) ? _pstBodyPartDef->stSphere.fRadius : sstBody.stBodyPartTemplate.stSphere.fRadius;
+        }
+        /* Box ? */
+        else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX))
+        {
+          orxVector_Copy(&(stMergedPartDef.stAABox.stBox.vTL), (orxVector_IsNull(&(_pstBodyPartDef->stAABox.stBox.vTL)) == orxFALSE) ? &(_pstBodyPartDef->stAABox.stBox.vTL) : &(sstBody.stBodyPartTemplate.stAABox.stBox.vTL));
+          orxVector_Copy(&(stMergedPartDef.stAABox.stBox.vBR), (orxVector_IsNull(&(_pstBodyPartDef->stAABox.stBox.vBR)) == orxFALSE) ? &(_pstBodyPartDef->stAABox.stBox.vBR) : &(sstBody.stBodyPartTemplate.stAABox.stBox.vBR));
+        }
+        
+        /* Selects it */
+        pstSelectedPartDef = &stMergedPartDef;
+      }
+      else
+      {
+        /* Selects template */
+        pstSelectedPartDef = &(sstBody.stBodyPartTemplate);
+      }      
+    }
+    else
+    {
+      /* Selects specialized definition */
+      pstSelectedPartDef = _pstBodyPartDef;
+    }
+
+    /* Creates part */
+    pstBodyPart = orxPhysics_CreateBodyPart(_pstBody->pstData, pstSelectedPartDef);
 
     /* Valid? */
     if(pstBodyPart != orxNULL)
@@ -447,6 +534,72 @@ orxSTATUS orxFASTCALL orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index)
   {
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a body template
+ * @param[in]   _pstBodyTemplate  Body template to set / orxNULL to remove it
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetTemplate(orxCONST orxBODY_DEF *_pstBodyTemplate)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Has template? */
+  if(_pstBodyTemplate != orxNULL)
+  {
+    /* Copies template */
+    orxMemory_Copy(&(sstBody.stBodyTemplate), _pstBodyTemplate, sizeof(orxBODY_DEF));
+
+    /* Updates flags */
+    orxFLAG_SET(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_TEMPLATE, orxBODY_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Clears template */
+    orxMemory_Set(&(sstBody.stBodyTemplate), 0, sizeof(orxBODY_DEF));
+
+    /* Updates flags */
+    orxFLAG_SET(sstBody.u32Flags, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_USE_TEMPLATE);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a body part template
+ * @param[in]   _pstBodyPartTemplate  Body part template to set / orxNULL to remove it
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPartTemplate(orxCONST orxBODY_PART_DEF *_pstBodyPartTemplate)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+
+  /* Has template? */
+  if(_pstBodyPartTemplate != orxNULL)
+  {
+    /* Copies template */
+    orxMemory_Copy(&(sstBody.stBodyPartTemplate), _pstBodyPartTemplate, sizeof(orxBODY_PART_DEF));
+
+    /* Updates flags */
+    orxFLAG_SET(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_PART_TEMPLATE, orxBODY_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Clears template */
+    orxMemory_Set(&(sstBody.stBodyPartTemplate), 0, sizeof(orxBODY_PART_DEF));
+
+    /* Updates flags */
+    orxFLAG_SET(sstBody.u32Flags, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_USE_PART_TEMPLATE);
   }
 
   /* Done! */

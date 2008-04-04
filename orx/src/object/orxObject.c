@@ -508,7 +508,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
           /* Cleans body definition */
           orxMemory_Set(&stBodyDef, 0, sizeof(orxBODY_DEF));
 
-          /* Inits body definition */
+          /* Defaults it */
           stBodyDef.fInertia  = orxFLOAT_1;
           orxFLAG_SET(stBodyDef.u32Flags, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_DYNAMIC) ? (orxBODY_DEF_KU32_FLAG_2D | orxBODY_DEF_KU32_FLAG_DYNAMIC) : orxBODY_DEF_KU32_FLAG_2D, orxBODY_DEF_KU32_FLAG_NONE);
 
@@ -539,9 +539,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
                 /* Cleans body part definition */
                 orxMemory_Set(&stBodyPartDef, 0, sizeof(orxBODY_PART_DEF));
 
-                /* Inits it */
-                stBodyPartDef.fDensity = orxFLOAT_1;
-                stBodyPartDef.u32Flags = orxBODY_PART_DEF_KU32_FLAG_RIGID;
+                /* Defaults it */
+                stBodyPartDef.fDensity      = orxFLOAT_1;
+                stBodyPartDef.fFriction     = orxFLOAT_1;
+                stBodyPartDef.u32Flags      = orxBODY_PART_DEF_KU32_FLAG_RIGID;
+                stBodyPartDef.u16SelfFlags  = 1;
+                stBodyPartDef.u16CheckMask  = 1;
                 
                 /* Sphere? */
                 if(orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_SPHERE))

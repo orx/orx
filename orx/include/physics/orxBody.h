@@ -99,6 +99,18 @@ extern orxDLLAPI orxHANDLE orxFASTCALL        orxBody_GetPart(orxCONST orxBODY *
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemovePart(orxBODY *_pstBody, orxU32 _u32Index);
 
 
+/** Sets a body template
+ * @param[in]   _pstBodyTemplate  Body template to set / orxNULL to remove it
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetTemplate(orxCONST orxBODY_DEF *_pstBodyTemplate);
+
+/** Sets a body part template
+ * @param[in]   _pstBodyPartTemplate  Body part template to set / orxNULL to remove it
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartTemplate(orxCONST orxBODY_PART_DEF *_pstBodyPartTemplate);
+
 /** Sets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvPosition     Position to set
