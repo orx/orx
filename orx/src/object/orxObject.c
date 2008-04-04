@@ -541,7 +541,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
                 orxObject_GetPivot(pstObject, &vPivot);
 
                 /* Gets body part template */
-                bUsePartTemplate = orxBody_GetPartTemplate(&stBodyPartDef);
+                bUsePartTemplate = (orxBody_GetPartTemplate(&stBodyPartDef) != orxNULL);
 
                 /* Defaults it */
                 if(stBodyPartDef.fDensity <= orxFLOAT_0)
