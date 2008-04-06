@@ -65,7 +65,6 @@ typedef struct __orxPHYSICS_STATIC_t
   orxFLOAT          fInvDimensionRatio;         /**< Inverse dimension ratio */
   orxCLOCK         *pstClock;                   /**< Simulation clock */
   b2World          *poWorld;                    /**< World */
-  b2Body           *poGround;                   /**< Ground */
 
 } orxPHYSICS_STATIC;
 
@@ -561,91 +560,71 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     /* Success? */
     if(sstPhysics.poWorld != orxNULL)
     {
-      b2BodyDef stGroundDef;
+      orxFLOAT  fFrequency, fTickSize, fRatio;
+      orxS32    s32IterationsPerStep;
 
-      /* Inits ground definition */
-      stGroundDef.position.SetZero();
+      /* Gets dimension ratio */
+      fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
 
-      /* Creates ground */
-      sstPhysics.poGround = sstPhysics.poWorld->CreateStaticBody(&stGroundDef);
-
-      /* Success? */
-      if(sstPhysics.poGround != orxNULL)
+      /* Valid? */
+      if(fRatio > orxFLOAT_0)
       {
-        orxFLOAT  fFrequency, fTickSize, fRatio;
-        orxS32    s32IterationsPerStep;
+        /* Stores it */
+        sstPhysics.fDimensionRatio = fRatio;
+      }
+      else
+      {
+        /* Stores default one */
+        sstPhysics.fDimensionRatio = sfDefaultDimensionRatio;
+      }
 
-        /* Gets dimension ratio */
-        fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
+      /* Stores inverse dimension ratio */
+      sstPhysics.fInvDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
 
-        /* Valid? */
-        if(fRatio > orxFLOAT_0)
-        {
-          /* Stores it */
-          sstPhysics.fDimensionRatio = fRatio;
-        }
-        else
-        {
-          /* Stores default one */
-          sstPhysics.fDimensionRatio = sfDefaultDimensionRatio;
-        }
+      /* Gets iteration per step number from config */
+      orxConfig_GetS32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
 
-        /* Stores inverse dimension ratio */
-        sstPhysics.fInvDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
+      /* Valid? */
+      if(s32IterationsPerStep > 0)
+      {
+        /* Stores it */
+        sstPhysics.u32Iterations = (orxU32)s32IterationsPerStep;
+      }
+      else
+      {
+        /* Uses default value */
+        sstPhysics.u32Iterations = su32DefaultIterations;
+      }
 
-        /* Gets iteration per step number from config */
-        orxConfig_GetS32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
+      /* Gets frequency */
+      fFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_FREQUENCY);
 
-        /* Valid? */
-        if(s32IterationsPerStep > 0)
-        {
-          /* Stores it */
-          sstPhysics.u32Iterations = (orxU32)s32IterationsPerStep;
-        }
-        else
-        {
-          /* Uses default value */
-          sstPhysics.u32Iterations = su32DefaultIterations;
-        }
+      /* Valid? */
+      if(fFrequency > orxFLOAT_0)
+      {
+        /* Gets tick size */
+        fTickSize = orxFLOAT_1 / fFrequency;
+      }
+      else
+      {
+        /* Gets default tick size */
+        fTickSize = orxFLOAT_1 / sfDefaultFrequency;
+      }
 
-        /* Gets frequency */
-        fFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_FREQUENCY);
+      /* Creates physics clock */
+      sstPhysics.pstClock = orxClock_Create(fTickSize, orxCLOCK_TYPE_PHYSICS);
 
-        /* Valid? */
-        if(fFrequency > orxFLOAT_0)
-        {
-          /* Gets tick size */
-          fTickSize = orxFLOAT_1 / fFrequency;
-        }
-        else
-        {
-          /* Gets default tick size */
-          fTickSize = orxFLOAT_1 / sfDefaultFrequency;
-        }
-
-        /* Creates physics clock */
-        sstPhysics.pstClock = orxClock_Create(fTickSize, orxCLOCK_TYPE_PHYSICS);
+      /* Valid? */
+      if(sstPhysics.pstClock != orxNULL)
+      {
+        /* Registers rendering function */
+        eResult = orxClock_Register(sstPhysics.pstClock, orxPhysics_Update, (orxVOID *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS);
 
         /* Valid? */
-        if(sstPhysics.pstClock != orxNULL)
+        if(eResult != orxSTATUS_FAILURE)
         {
-          /* Registers rendering function */
-          eResult = orxClock_Register(sstPhysics.pstClock, orxPhysics_Update, (orxVOID *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS);
-
-          /* Valid? */
-          if(eResult != orxSTATUS_FAILURE)
-          {
-            /* Updates status */
-            sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY;
-          }
-          else
-          {
-            /* Deletes world */
-            delete sstPhysics.poWorld;
-
-            /* Updates result */
-            eResult = orxSTATUS_FAILURE;
-          }
+          /* Updates status */
+          sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY;
         }
         else
         {
@@ -681,9 +660,6 @@ extern "C" orxVOID orxPhysics_Box2D_Exit()
   /* Was initialized? */
   if(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY)
   {
-    /* Deletes ground */
-    sstPhysics.poWorld->DestroyBody(sstPhysics.poGround);
-
     /* Deletes world */
     delete sstPhysics.poWorld;
 
