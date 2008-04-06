@@ -177,6 +177,37 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetSpeed(orxBODY *_pstBody
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularVelocity(orxBODY *_pstBody);
 
+/** Gets a body center of mass
+ * @param[in]   _pstBody        Concerned body
+ * @param[out]  _pvMassCenter   Mass center to get
+ * @return      Mass center / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetMassCenter(orxBODY *_pstBody, orxVECTOR *_pvMassCenter);
+
+
+/** Applies a torque
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fTorque        Torque to apply
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyTorque(orxBODY *_pstBody, orxFLOAT _fTorque);
+
+/** Applies a force
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvForce        Force to apply
+ * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBody, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint);
+
+/** Applies an impulse
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvImpulse      Impulse to apply
+ * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
+
 
 #endif /* _orxBODY_H_ */
 

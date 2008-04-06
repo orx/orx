@@ -420,6 +420,110 @@ extern "C" orxFLOAT orxPhysics_Box2D_GetAngularVelocity(orxPHYSICS_BODY *_pstBod
   return fResult;
 }
 
+extern "C" orxVECTOR *orxPhysics_Box2D_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
+{
+  b2Body     *poBody;
+  b2Vec2      vMassCenter;
+  orxVECTOR  *pvResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvMassCenter != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Gets its mass center */
+  vMassCenter = poBody->GetWorldCenter();
+
+  /* Transfer values */
+  _pvMassCenter->fX = vMassCenter.x;
+  _pvMassCenter->fY = vMassCenter.y;
+  _pvMassCenter->fZ = orxFLOAT_0;
+
+  /* Updates result */
+  pvResult = _pvMassCenter;
+
+  /* Done! */
+  return pvResult;
+}
+
+extern "C" orxSTATUS orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
+{
+  b2Body   *poBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Applies torque */
+  poBody->ApplyTorque(_fTorque);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint)
+{
+  b2Body   *poBody;
+  b2Vec2    vForce, vPoint;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvForce != orxNULL);
+  orxASSERT(_pvPoint != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Sets force */
+  vForce.Set(_pvForce->fX, _pvForce->fY);
+
+  /* Sets point */
+  vPoint.Set(_pvPoint->fX, _pvPoint->fY);
+
+  /* Applies force */
+  poBody->ApplyForce(vForce, vPoint);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint)
+{
+  b2Body   *poBody;
+  b2Vec2    vImpulse, vPoint;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvImpulse != orxNULL);
+  orxASSERT(_pvPoint != orxNULL);
+
+  /* Gets body */
+  poBody = (b2Body *)_pstBody;
+
+  /* Sets impulse */
+  vImpulse.Set(_pvImpulse->fX, _pvImpulse->fY);
+
+  /* Sets point */
+  vPoint.Set(_pvPoint->fX, _pvPoint->fY);
+
+  /* Applies force */
+  poBody->ApplyImpulse(vImpulse, vPoint);
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxPhysics_Box2D_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -610,4 +714,8 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPosition, PHYSICS, GET_POSI
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetRotation, PHYSICS, GET_ROTATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSpeed, PHYSICS, GET_SPEED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularVelocity, PHYSICS, GET_ANGULAR_VELOCITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMassCenter, PHYSICS, GET_MASS_CENTER)
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TORQUE)
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE)
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE)
 orxPLUGIN_USER_CORE_FUNCTION_END();

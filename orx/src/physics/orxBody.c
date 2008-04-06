@@ -914,3 +914,146 @@ orxFLOAT orxFASTCALL orxBody_GetAngularVelocity(orxBODY *_pstBody)
   /* Done! */
   return fResult;
 }
+
+/** Gets a body center of mass
+ * @param[in]   _pstBody        Concerned body
+ * @param[out]  _pvMassCenter   Mass center to get
+ * @return      Mass center / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxBody_GetMassCenter(orxBODY *_pstBody, orxVECTOR *_pvMassCenter)
+{
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvMassCenter != orxNULL);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Gets mass center */
+    pvResult = orxPhysics_GetMassCenter(_pstBody->pstData, _pvMassCenter);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Applies a torque
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _fTorque        Torque to apply
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_ApplyTorque(orxBODY *_pstBody, orxFLOAT _fTorque)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Applies torque */
+    eResult = orxPhysics_ApplyTorque(_pstBody->pstData, _fTorque);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Applies a force
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvForce        Force to apply
+ * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_ApplyForce(orxBODY *_pstBody, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvForce != orxNULL);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Has given point? */
+    if(_pvPoint != orxNULL)
+    {
+      /* Applies force */
+      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvForce, _pvPoint);
+    }
+    else
+    {
+      orxVECTOR vMassCenter;
+
+      /* Applies force on mass center */
+      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvForce, orxPhysics_GetMassCenter(_pstBody->pstData, &vMassCenter));
+    }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Applies an impulse
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvImpulse      Impulse to apply
+ * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvImpulse != orxNULL);
+
+  /* Has data? */
+  if(orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_HAS_DATA))
+  {
+    /* Has given point? */
+    if(_pvPoint != orxNULL)
+    {
+      /* Applies impulse */
+      eResult = orxPhysics_ApplyImpulse(_pstBody->pstData, _pvImpulse, _pvPoint);
+    }
+    else
+    {
+      orxVECTOR vMassCenter;
+
+      /* Applies impusle on mass center */
+      eResult = orxPhysics_ApplyForce(_pstBody->pstData, _pvImpulse, orxPhysics_GetMassCenter(_pstBody->pstData, &vMassCenter));
+    }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}

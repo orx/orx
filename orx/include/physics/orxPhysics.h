@@ -144,6 +144,10 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetPosition, orxVECTOR *, orxPHYSICS_
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetRotation, orxFLOAT, orxPHYSICS_BODY *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetSpeed, orxVECTOR *, orxPHYSICS_BODY *, orxVECTOR *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetAngularVelocity, orxFLOAT, orxPHYSICS_BODY *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_GetMassCenter, orxVECTOR *, orxPHYSICS_BODY *, orxVECTOR *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_ApplyTorque, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_ApplyForce, orxSTATUS, orxPHYSICS_BODY *, orxCONST orxVECTOR *, orxCONST orxVECTOR *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_ApplyImpulse, orxSTATUS, orxPHYSICS_BODY *, orxCONST  orxVECTOR *, orxCONST orxVECTOR *);
 
 
 orxSTATIC orxINLINE orxSTATUS orxPhysics_Init()
@@ -216,5 +220,24 @@ orxSTATIC orxINLINE orxFLOAT orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pst
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetAngularVelocity)(_pstBody);
 }
 
+orxSTATIC orxINLINE orxVECTOR *orxPhysics_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetMassCenter)(_pstBody, _pvMassCenter);
+}
+
+orxSTATIC orxINLINE orxSTATUS orxPhysics_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_ApplyTorque)(_pstBody, _fTorque);
+}
+
+orxSTATIC orxINLINE orxSTATUS orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_ApplyForce)(_pstBody, _pvForce, _pvPoint);
+}
+
+orxSTATIC orxINLINE orxSTATUS orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_ApplyImpulse)(_pstBody, _pvImpulse, _pvPoint);
+}
 
 #endif /* _orxPHYSICS_H_ */
