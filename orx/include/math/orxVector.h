@@ -267,6 +267,20 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareSize(orxCONST o
   return fResult;
 }
 
+orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSize(orxCONST orxVECTOR *_pvOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(_pvOp  != orxNULL);
+
+  /* Updates result */
+  fResult = orxMath_Sqrt((_pvOp->fX * _pvOp->fX) + (_pvOp->fY * _pvOp->fY) + (_pvOp->fZ * _pvOp->fZ));
+
+  /* Done! */
+  return fResult;
+}
+
 orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   orxVECTOR   vTemp;
@@ -284,6 +298,57 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCON
 
   /* Done! */
   return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT                  orxVector_GetDistance(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+{
+  orxVECTOR   vTemp;
+  orxREGISTER orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2  != orxNULL);
+
+  /* Gets distance vector */
+  orxVector_Sub(&vTemp, _pvOp2, _pvOp1);
+
+  /* Updates result */
+  fResult = orxVector_GetSize(&vTemp);
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+{
+  orxREGISTER orxFLOAT fOp;
+
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp  != orxNULL);
+
+  /* Gets squared size */
+  fOp = (_pvOp->fX * _pvOp->fX) + (_pvOp->fY * _pvOp->fY) + (_pvOp->fZ * _pvOp->fZ);
+
+  /* Valid? */
+  if(fOp> orxFLOAT_0)
+  {
+    /* Gets invert size */
+    fOp = orxFLOAT_1 / fOp;
+
+    /* Updates result */
+    _pvRes->fX = fOp * _pvOp->fX;
+    _pvRes->fY = fOp * _pvOp->fY;
+    _pvRes->fZ = fOp * _pvOp->fZ;
+  }
+  else
+  {
+    /* Clears result */
+    orxMemory_Set(_pvRes, 0, sizeof(orxVECTOR));
+  }
+
+  /* Done! */
+  return _pvRes;
 }
 
 orxSTATIC orxINLINE orxVECTOR *               orxVector_2DRotate(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxFLOAT _fAngle)
