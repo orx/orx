@@ -457,6 +457,21 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
               orxVector_Sub(&vRenderPos, &vObjectPos, &(stFrustrum.vTL));
               vRenderPos.fX  *= fRenderScaleX * fScrollX;
               vRenderPos.fY  *= fRenderScaleY * fScrollY;
+
+              /* Has camera rotation? */
+              if(fRenderRotation != orxFLOAT_0)
+              {
+                /* Gets position in camera space */
+                orxVector_Sub(&vRenderPos, &vRenderPos, &vCameraPosition);
+
+                /* Rotates it */
+                orxVector_2DRotate(&vRenderPos, &vRenderPos, fRenderRotation);
+
+                /* Gets position in world space */
+                orxVector_Add(&vRenderPos, &vRenderPos, &vCameraPosition);
+              }
+
+              /* Updates render position in viewport */
               orxVector_Add(&vRenderPos, &vRenderPos, &stViewportBox.vTL);
 
               /* Updates render frame */
