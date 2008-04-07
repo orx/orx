@@ -516,7 +516,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
           orxFLAG_SET(stBodyDef.u32Flags, orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_BODY_DYNAMIC) ? (orxBODY_DEF_KU32_FLAG_2D | orxBODY_DEF_KU32_FLAG_DYNAMIC) : orxBODY_DEF_KU32_FLAG_2D, orxBODY_DEF_KU32_FLAG_NONE);
 
           /* Creates body */
-          pstBody = orxBody_Create(pstObject, &stBodyDef);
+          pstBody = orxBody_Create((orxSTRUCTURE *)pstObject, &stBodyDef);
 
           /* Valid? */
           if(pstBody != orxNULL)

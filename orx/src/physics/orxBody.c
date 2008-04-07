@@ -63,20 +63,21 @@ struct __orxBODY_PART_t
  */
 struct __orxBODY_t
 {
-  orxSTRUCTURE      stStructure;                                /**< Public structure, first structure member : 16 */
-  orxBODY_PART      astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 32 */
-  orxPHYSICS_BODY  *pstData;                                    /**< Physics body data : 36 */
+  orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
+  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 32 */
+  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 36 */
+  orxCONST orxSTRUCTURE  *pstOwner;                                   /**< Owner structure : 40 */
 
-  orxPAD(36)
+  orxPAD(40)
 };
 
 /** Static structure
  */
 typedef struct __orxBODY_STATIC_t
 {
-  orxU32            u32Flags;                                   /**< Control flags */
-  orxBODY_DEF       stBodyTemplate;                             /**< Body template */
-  orxBODY_PART_DEF  stBodyPartTemplate;                         /**< Body part template */
+  orxU32            u32Flags;                                         /**< Control flags */
+  orxBODY_DEF       stBodyTemplate;                                   /**< Body template */
+  orxBODY_PART_DEF  stBodyPartTemplate;                               /**< Body part template */
 
 } orxBODY_STATIC;
 
@@ -264,11 +265,11 @@ orxVOID orxBody_Exit()
 }
 
 /** Creates an empty body
- * @param[in]   _hOwner                       Body's owner used for collision callbacks (usually an orxOBJECT)
+ * @param[in]   _pstOwner                     Body's owner used for collision callbacks (usually an orxOBJECT)
  * @param[in]   _pstBodyDef                   Body definition
  * @return      Created orxBODY / orxNULL
  */
-orxBODY *orxFASTCALL orxBody_Create(orxCONST orxHANDLE _hOwner, orxCONST orxBODY_DEF *_pstBodyDef)
+orxBODY *orxFASTCALL orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxBODY_DEF *_pstBodyDef)
 {
   orxBODY *pstBody;
 
@@ -322,11 +323,14 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxHANDLE _hOwner, orxCONST orxBODY
     }
 
     /* Creates physics body */
-    pstBody->pstData = orxPhysics_CreateBody(_hOwner, pstSelectedDef);
+    pstBody->pstData = orxPhysics_CreateBody(pstBody, pstSelectedDef);
 
     /* Valid? */
     if(pstBody->pstData != orxNULL)
     {
+      /* Stores owner */
+      pstBody->pstOwner = _pstOwner;
+      
       /* Updates flags */
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
     }

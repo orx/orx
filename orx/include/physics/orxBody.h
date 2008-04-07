@@ -65,11 +65,11 @@ extern orxDLLAPI orxVOID                      orxBody_Exit();
 
 
 /** Creates an empty body
- * @param[in]   _hOwner                       Body's owner used for collision callbacks (usually an orxOBJECT)
+ * @param[in]   _pstOwner                     Body's owner used for collision callbacks (usually an orxOBJECT)
  * @param[in]   _pstBodyDef                   Body definition
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create(orxCONST orxHANDLE _hOwner, orxCONST orxBODY_DEF *_pstBodyDef);
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxBODY_DEF *_pstBodyDef);
 
 /** Deletes a body
  * @param[in]   _pstBody        Concerned body
