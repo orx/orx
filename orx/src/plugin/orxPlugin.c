@@ -1001,7 +1001,7 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
-  orxASSERT(_hPluginHandle != orxNULL);
+  orxASSERT(_hPluginHandle != orxHANDLE_UNDEFINED);
 
   /* Gets plugin info */
   pstPluginInfo = orxPlugin_GetPluginInfo(_hPluginHandle);
@@ -1038,7 +1038,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
-  orxASSERT(_hPluginHandle != orxNULL);
+  orxASSERT(_hPluginHandle != orxHANDLE_UNDEFINED);
   orxASSERT(_zFunctionName != orxNULL);
 
   /* Gets the plugin info */

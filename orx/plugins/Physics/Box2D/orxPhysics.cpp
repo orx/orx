@@ -98,19 +98,21 @@ orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
   return;
 }
 
-extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxBODY_DEF *_pstBodyDef)
+extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxHANDLE _hUserData, orxCONST orxBODY_DEF *_pstBodyDef)
 {
   b2Body     *poResult = 0;
   b2BodyDef   stBodyDef;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_hUserData != orxHANDLE_UNDEFINED);
   orxASSERT(_pstBodyDef != orxNULL);
 
   /* 2D? */
   if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_2D))
   {
     /* Inits body definition */
+    stBodyDef.userData        = _hUserData;
     stBodyDef.angle           = _pstBodyDef->fAngle;
     stBodyDef.linearDamping   = _pstBodyDef->fLinearDamping;
     stBodyDef.angularDamping  = _pstBodyDef->fAngularDamping;

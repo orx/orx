@@ -264,10 +264,11 @@ orxVOID orxBody_Exit()
 }
 
 /** Creates an empty body
+ * @param[in]   _hOwner                       Body's owner used for collision callbacks (usually an orxOBJECT)
  * @param[in]   _pstBodyDef                   Body definition
  * @return      Created orxBODY / orxNULL
  */
-orxBODY *orxFASTCALL orxBody_Create(orxCONST orxBODY_DEF *_pstBodyDef)
+orxBODY *orxFASTCALL orxBody_Create(orxCONST orxHANDLE _hOwner, orxCONST orxBODY_DEF *_pstBodyDef)
 {
   orxBODY *pstBody;
 
@@ -321,7 +322,7 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxBODY_DEF *_pstBodyDef)
     }
 
     /* Creates physics body */
-    pstBody->pstData = orxPhysics_CreateBody(pstSelectedDef);
+    pstBody->pstData = orxPhysics_CreateBody(_hOwner, pstSelectedDef);
 
     /* Valid? */
     if(pstBody->pstData != orxNULL)
@@ -505,7 +506,7 @@ orxHANDLE orxFASTCALL orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u32Ind
   /* Updates result */
   if(_pstBody->astPartList[_u32Index].pstData != orxNULL)
   {
-    hResult = (orxHANDLE)_pstBody->astPartList[_u32Index].pstData;
+    hResult = (orxHANDLE)(_pstBody->astPartList[_u32Index].pstData);
   }
 
   /* Done! */
