@@ -70,7 +70,6 @@ do                                              \
   }                                             \
 } while(orxFALSE);
 
-#define orxFABS(V)                ((*(orxU32 *)&(V)) & 0x7FFFFFFFL)
 
 #define orxFRAND_INIT(SEED)       (srand(orxF2U(SEED)));
 #define orxFRAND(MIN, MAX)        ((orx2F(rand()) * (orxFLOAT_1 / orx2F(RAND_MAX)) * (MAX - MIN)) + MIN)
@@ -274,6 +273,18 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
 
   /* Done! */
   return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_FAbs(orxFLOAT _fOp)
+{
+//  orxU32 u32Temp;
+
+  /* Removes the sign bit */
+//  u32Temp = (*(orxU32 *)&_fOp) & 0x7FFFFFFF;
+
+  /* Done! */
+//  return *(orxFLOAT *)&u32Temp;
+  return (_fOp < orxFLOAT_0) ? -_fOp : _fOp;
 }
 
 #endif /* _orxMATH_H_ */

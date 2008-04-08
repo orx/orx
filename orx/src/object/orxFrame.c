@@ -411,7 +411,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
     fCoef         = fParentAngle;
     orxCIRCULAR_CLAMP_INC_MIN(fCoef, orxFLOAT_0, orxMATH_KF_PI);
     fCoef         = orxMATH_KF_PI_BY_2 - fCoef;
-    fCoef         = orxFABS(fCoef) * (orxFLOAT_1 / orxMATH_KF_PI_BY_2);
+    fCoef         = orxMath_FAbs(fCoef) * (orxFLOAT_1 / orxMATH_KF_PI_BY_2);
 
     /* Updates scales */
     fScaleX       = fLocalScaleX * ((fCoef * fParentScaleX) + ((orxFLOAT_1 - fCoef) * fParentScaleY));

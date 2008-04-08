@@ -32,7 +32,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
 {
   orxSTATIC orxU32 su32Counter = 0;
 
-  /* New click? */
+  /* Clicking? */
   if((su32Counter < orxConfig_GetFloat("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
   {
     orxS32      s32MouseX, s32MouseY;
@@ -46,10 +46,10 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     /* Gets mouse coordinates */
     orxMouse_GetPosition(&s32MouseX, &s32MouseY);
 
-    /* Gets position vector */
+    /* Gets on-screen position vector */
     orxVector_Set(&vPosition, orxS2F(s32MouseX) - orx2F(0.5f) * fScreenWidth, orxS2F(s32MouseY) - orx2F(0.5f) * fScreenHeight, orxFLOAT_0);
 
-    /* Spawn a ball */
+    /* Spawn a ball under the cursor with a random torque */
     pstObject = orxObject_CreateFromFile(orxConfig_GetString("BallFile"), orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT | orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_SPHERE | orxOBJECT_KU32_FLAG_BODY_DYNAMIC);
     orxFLOAT f = orxFRAND(orxConfig_GetFloat("MinTorque"), orxConfig_GetFloat("MaxTorque"));
     orxObject_SetPosition(pstObject, &vPosition);

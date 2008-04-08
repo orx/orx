@@ -584,7 +584,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       sstPhysics.fInvDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
 
       /* Gets iteration per step number from config */
-      orxConfig_GetS32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
+      s32IterationsPerStep = orxConfig_GetS32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
 
       /* Valid? */
       if(s32IterationsPerStep > 0)
