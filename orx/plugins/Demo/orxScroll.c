@@ -30,8 +30,7 @@
 /** Defines
  */
 #define orxSCROLL_KZ_DATA_FOLDER              "data" orxSTRING_DIRECTORY_SEPARATOR "scroll" orxSTRING_DIRECTORY_SEPARATOR
-#define orxSCROLL_KF_TICK_SIZE                orxFLOAT_0
-#define orxSCROLL_KF_DT_SIZE                  orx2F(0.01666f)
+#define orxSCROLL_KF_DT_SIZE                  orx2F(1.0f / 60.0f)
 #define orxSCROLL_KF_MAX_Z                    orx2F(10000.0f)
 #define orxSCROLL_KF_SPEED                    orx2F(180.0f)
 #define orxSCROLL_KZ_BACKGROUND_NAME          orxSCROLL_KZ_DATA_FOLDER"background.png"
@@ -301,8 +300,8 @@ orxSTATIC orxSTATUS orxScroll_Init()
     orxViewport_SetRelativeSize(sstScroll.pstViewport, sstScroll.fViewportSize, sstScroll.fViewportSize);
     orxViewport_SetRelativePosition(sstScroll.pstViewport, orxVIEWPORT_KU32_FLAG_ALIGN_CENTER);
 
-    /* Creates rendering clock */
-    sstScroll.pstClock = orxClock_Create(orxSCROLL_KF_TICK_SIZE, orxCLOCK_TYPE_USER);
+    /* Gets rendering clock */
+    sstScroll.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);
     orxClock_SetModifier(sstScroll.pstClock, orxCLOCK_MOD_TYPE_FIXED, orxSCROLL_KF_DT_SIZE);
 
     /* Registers update function */

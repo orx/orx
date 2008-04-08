@@ -1301,6 +1301,292 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _
   return eResult;
 }
 
+/** Sets an object speed
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvSpeed        Speed to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvSpeed)
+{
+  orxBODY  *pstBody;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Updates its speed */
+    eResult = orxBody_SetSpeed(pstBody, _pvSpeed);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets an object angular velocity
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fVelocity      Angular velocity to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLOAT _fVelocity)
+{
+  orxBODY  *pstBody;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Updates its angular velocity */
+    eResult = orxBody_SetAngularVelocity(pstBody, _fVelocity);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets an object speed
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvSpeed        Speed to get
+ * @return      Object speed / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvSpeed)
+{
+  orxBODY    *pstBody;
+  orxVECTOR  *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Gets its speed */
+    pvResult = orxBody_GetSpeed(pstBody, _pvSpeed);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Gets an object angular velocity
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object angular velocity
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
+{
+  orxBODY  *pstBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Gets its angular velocity */
+    fResult = orxBody_GetAngularVelocity(pstBody);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets an object center of mass
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvMassCenter   Mass center to get
+ * @return      Mass center / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter)
+{
+  orxBODY    *pstBody;
+  orxVECTOR  *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvMassCenter != orxNULL);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Gets its center of mass */
+    pvResult = orxBody_GetMassCenter(pstBody, _pvMassCenter);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Applies a torque
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTorque        Torque to apply
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTorque)
+{
+  orxBODY  *pstBody;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Applies torque */
+    eResult = orxBody_ApplyTorque(pstBody, _fTorque);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Applies a force
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvForce        Force to apply
+ * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint)
+{
+  orxBODY  *pstBody;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvForce != orxNULL);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Applies force */
+    eResult = orxBody_ApplyForce(pstBody, _pvForce, _pvPoint);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Applies an impulse
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _pvImpulse      Impulse to apply
+ * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint)
+{
+  orxBODY  *pstBody;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvImpulse != orxNULL);
+
+  /* Gets body */
+  pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Applies impulse */
+    eResult = orxBody_ApplyImpulse(pstBody, _pvImpulse, _pvPoint);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets object's bounding box
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstBoundingBox Bounding box result

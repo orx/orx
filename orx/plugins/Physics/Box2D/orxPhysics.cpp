@@ -616,6 +616,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       /* Creates physics clock */
       sstPhysics.pstClock = orxClock_Create(fTickSize, orxCLOCK_TYPE_PHYSICS);
 
+      /* Resyncs clocks */
+      orxClock_Resync();
+
       /* Valid? */
       if(sstPhysics.pstClock != orxNULL)
       {

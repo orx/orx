@@ -224,6 +224,65 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_
 extern orxDLLAPI orxAABOX *orxFASTCALL      orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxAABOX *_pstBoundingBox);
 
 
+/** Sets an object speed
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvSpeed        Speed to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvSpeed);
+
+/** Sets an object angular velocity
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fVelocity      Angular velocity to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLOAT _fVelocity);
+
+/** Gets an object speed
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]   _pvSpeed       Speed to get
+ * @return      Object speed / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvSpeed);
+
+/** Gets an object angular velocity
+ * @param[in]   _pstObject      Concerned object
+ * @return      Object angular velocity
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(orxOBJECT *_pstObject);
+
+/** Gets an object center of mass
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvMassCenter   Mass center to get
+ * @return      Mass center / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter);
+
+
+/** Applies a torque
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTorque        Torque to apply
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTorque);
+
+/** Applies a force
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvForce        Force to apply
+ * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyForce(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint);
+
+/** Applies an impulse
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _pvImpulse      Impulse to apply
+ * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
+
+
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
  * @param[in]   _pstCheckBox    Box to check intersection with
  * @return      orxBANK / orxNULL

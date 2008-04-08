@@ -506,7 +506,7 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   return;
 }
 
-/** Resync a clock with main one */
+/** Resync all clocks with main one */
 orxVOID orxClock_Resync()
 {
   /* Checks */
@@ -515,8 +515,16 @@ orxVOID orxClock_Resync()
   /* Not locked? */
   if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
   {
-	  /* Resyncs with current time */
-  	sstClock.fTime = sstClock.fTime;
+    orxCLOCK *pstClock;
+
+    /* For all clocks */
+    for(pstClock = orxBank_GetNext(sstClock.pstClockBank, orxNULL);
+        pstClock != orxNULL;
+        pstClock = orxBank_GetNext(sstClock.pstClockBank, pstClock))
+    {
+      /* Resyncs clock time & real time */
+      pstClock->fLastTick = pstClock->fRealTime = sstClock.fTime;      
+    }
   }
 
   return;
