@@ -401,9 +401,15 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
   if(pstObject != orxNULL)
   {
     orxFRAME *pstFrame;
+    orxU32    u32FrameFlags;
+
+    /* Inits flags */
+    u32FrameFlags   = orxFRAME_KU32_FLAG_NONE;
+    u32FrameFlags  |= orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_SCROLL_X) ? orxFRAME_KU32_FLAG_SCROLL_X : orxFRAME_KU32_FLAG_NONE; 
+    u32FrameFlags  |= orxFLAG_TEST(_u32Flags, orxOBJECT_KU32_FLAG_SCROLL_Y) ? orxFRAME_KU32_FLAG_SCROLL_Y : orxFRAME_KU32_FLAG_NONE;
 
     /* Creates its frame */
-    pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+    pstFrame = orxFrame_Create(u32FrameFlags);
 
     /* Valid? */
     if(pstFrame != orxNULL)

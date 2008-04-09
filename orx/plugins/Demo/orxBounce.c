@@ -50,7 +50,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     orxVector_Set(&vPosition, orxS2F(s32MouseX) - orx2F(0.5f) * fScreenWidth, orxS2F(s32MouseY) - orx2F(0.5f) * fScreenHeight, orxFLOAT_0);
 
     /* Spawn a ball under the cursor with a random torque */
-    pstObject = orxObject_CreateFromFile(orxConfig_GetString("BallFile"), orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT | orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_SPHERE | orxOBJECT_KU32_FLAG_BODY_DYNAMIC);
+    pstObject = orxObject_CreateFromFile(orxConfig_GetString("BallFile"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT|orxOBJECT_KU32_FLAG_BODY|orxOBJECT_KU32_FLAG_BODY_SPHERE|orxOBJECT_KU32_FLAG_BODY_DYNAMIC);
     orxFLOAT f = orxFRAND(orxConfig_GetFloat("MinTorque"), orxConfig_GetFloat("MaxTorque"));
     orxObject_SetPosition(pstObject, &vPosition);
     orxObject_ApplyTorque(pstObject, f);
@@ -68,7 +68,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
   orxVIEWPORT      *pstViewport;
   orxCAMERA        *pstCamera;
   orxCLOCK         *pstClock;
-  orxFLOAT          fScreenWidth, fScreenHeight;
+  orxFLOAT          fScreenWidth, fScreenHeight, fWallWidth, fWallHeight;
   orxOBJECT        *pstObject;
   orxVECTOR         vPosition;
   orxSTATUS         eResult;
@@ -76,7 +76,8 @@ orxSTATIC orxSTATUS orxBounce_Init()
   /* Gets screen dimensions */
   orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
 
-  /* Selects config section */
+  /* Loads config file and selects its section */
+  orxConfig_Load("Bounce.ini");
   orxConfig_SelectSection("Bounce");
 
   /* Inits and sets body part template */
@@ -86,26 +87,31 @@ orxSTATIC orxSTATUS orxBounce_Init()
   orxBody_SetPartTemplate(&stBodyPartTemplate);
 
   /* Creates ball */
-  pstObject = orxObject_CreateFromFile(orxConfig_GetString("BallFile"), orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT | orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_SPHERE | orxOBJECT_KU32_FLAG_BODY_DYNAMIC);
+  pstObject = orxObject_CreateFromFile(orxConfig_GetString("BallFile"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT|orxOBJECT_KU32_FLAG_BODY|orxOBJECT_KU32_FLAG_BODY_SPHERE|orxOBJECT_KU32_FLAG_BODY_DYNAMIC);
   orxFLOAT f = orxFRAND(orxConfig_GetFloat("MinTorque"), orxConfig_GetFloat("MaxTorque"));
   orxObject_ApplyTorque(pstObject, f);
 
-  /* Creates the four walls */
-  pstObject = orxObject_CreateFromFile(orxConfig_GetString("WallFile"), orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT | orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_BOX);
-  orxVector_Set(&vPosition, orx2F(-0.5f) * fScreenWidth, orxFLOAT_0, orxFLOAT_0);
+  /* Creates a wall */
+  pstObject = orxObject_CreateFromFile(orxConfig_GetString("WallFile"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT|orxOBJECT_KU32_FLAG_BODY|orxOBJECT_KU32_FLAG_BODY_BOX);
+
+  /* Gets it dimensions */
+  orxObject_GetSize(pstObject, &fWallWidth, &fWallHeight);
+
+  /* Places all the walls */
+  orxVector_Set(&vPosition, orx2F(-0.5f) * (fScreenWidth - fWallWidth), orxFLOAT_0, orxFLOAT_0);
   orxObject_SetPosition(pstObject, &vPosition);
 
-  pstObject = orxObject_CreateFromFile(orxConfig_GetString("WallFile"), orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT | orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_BOX);
-  orxVector_Set(&vPosition, orx2F(0.5f) * fScreenWidth, orxFLOAT_0, orxFLOAT_0);
+  pstObject = orxObject_CreateFromFile(orxConfig_GetString("WallFile"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT|orxOBJECT_KU32_FLAG_BODY|orxOBJECT_KU32_FLAG_BODY_BOX);
+  orxVector_Set(&vPosition, orx2F(0.5f) * (fScreenWidth - fWallWidth), orxFLOAT_0, orxFLOAT_0);
   orxObject_SetPosition(pstObject, &vPosition);
 
-  pstObject = orxObject_CreateFromFile(orxConfig_GetString("WallFile"), orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT | orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_BOX);
-  orxVector_Set(&vPosition, orxFLOAT_0, orx2F(-0.5f) * fScreenHeight, orxFLOAT_0);
+  pstObject = orxObject_CreateFromFile(orxConfig_GetString("WallFile"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT|orxOBJECT_KU32_FLAG_BODY|orxOBJECT_KU32_FLAG_BODY_BOX);
+  orxVector_Set(&vPosition, orxFLOAT_0, orx2F(-0.5f) * (fScreenHeight - fWallWidth), orxFLOAT_0);
   orxObject_SetPosition(pstObject, &vPosition);
   orxObject_SetRotation(pstObject, orxMATH_KF_PI_BY_2);
 
-  pstObject = orxObject_CreateFromFile(orxConfig_GetString("WallFile"), orxOBJECT_KU32_FLAG_2D | orxOBJECT_KU32_FLAG_GRAPHIC | orxOBJECT_KU32_FLAG_CENTERED_PIVOT | orxOBJECT_KU32_FLAG_BODY | orxOBJECT_KU32_FLAG_BODY_BOX);
-  orxVector_Set(&vPosition, orxFLOAT_0, orx2F(0.5f) * fScreenHeight, orxFLOAT_0);
+  pstObject = orxObject_CreateFromFile(orxConfig_GetString("WallFile"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT|orxOBJECT_KU32_FLAG_BODY|orxOBJECT_KU32_FLAG_BODY_BOX);
+  orxVector_Set(&vPosition, orxFLOAT_0, orx2F(0.5f) * (fScreenHeight - fWallWidth), orxFLOAT_0);
   orxObject_SetPosition(pstObject, &vPosition);
   orxObject_SetRotation(pstObject, orxMATH_KF_PI_BY_2);
 

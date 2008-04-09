@@ -53,8 +53,10 @@
 #define orxOBJECT_KU32_FLAG_BODY_SPHERE     0x00000008  /**< Body sphere flags */
 #define orxOBJECT_KU32_FLAG_BODY_BOX        0x00000010  /**< Body box flags */
 #define orxOBJECT_KU32_FLAG_BODY_DYNAMIC    0x00000020  /**< Body dynamic flags */
-#define orxOBJECT_KU32_FLAG_CENTERED_PIVOT  0x00000040  /**< Centered pivot flag */  
-#define orxOBJECT_KU32_MASK_USER_ALL        0x000000FF  /**< User all ID mask */
+#define orxOBJECT_KU32_FLAG_CENTERED_PIVOT  0x00000040  /**< Centered pivot flag */
+#define orxOBJECT_KU32_FLAG_SCROLL_X        0x00000080  /**< Horizontal differential scrolling flag */
+#define orxOBJECT_KU32_FLAG_SCROLL_Y        0x00000100  /**< Vertical differential scrolling flag */
+#define orxOBJECT_KU32_MASK_USER_ALL        0x0000FFFF  /**< User all ID mask */
 
 
 /** Defines */

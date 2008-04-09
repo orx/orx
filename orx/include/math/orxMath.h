@@ -83,6 +83,7 @@ do                                              \
 /*** Math Definitions ***/
 
 #define orxMATH_KF_SQRT_2         orx2F(1.414213562f)
+#define orxMATH_KF_2_PI           orx2F(6.283185307f)
 #define orxMATH_KF_PI             orx2F(3.141592654f)
 #define orxMATH_KF_PI_BY_2        orx2F(1.570796327f)
 #define orxMATH_KF_PI_BY_4        orx2F(0.785398163f)

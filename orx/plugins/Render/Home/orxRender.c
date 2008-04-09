@@ -51,7 +51,7 @@
 
 /** Defines
  */
-#define orxRENDER_KU32_TICK_SIZE              orxFLOAT_0
+#define orxRENDER_KF_TICK_SIZE                orx2F(1.0f / 60.0f)
 #define orxRENDER_KU32_ORDER_BANK_SIZE        128
 
 
@@ -579,7 +579,8 @@ orxSTATUS orxRender_Init()
     if(sstRender.pstRenderBank != orxNULL)
     {
       /* Creates rendering clock */
-      sstRender.pstClock = orxClock_Create(orxRENDER_KU32_TICK_SIZE, orxCLOCK_TYPE_RENDER);
+      sstRender.pstClock = orxClock_Create(orxFLOAT_0, orxCLOCK_TYPE_RENDER);
+      orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_FIXED, orxRENDER_KF_TICK_SIZE);
 
       /* Valid? */
       if(sstRender.pstClock != orxNULL)
