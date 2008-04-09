@@ -119,7 +119,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
   orxU32    i;
   orxFLOAT  fScreenWidth, fScreenHeight, fScrollingDepth;
   orxVECTOR vMin, vMax;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Gets screen dimensions */
   orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
@@ -181,7 +181,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
       /* Creates the object */
       pstObject = orxObject_CreateFromFile(orxConfig_GetString("FileName"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT|orxOBJECT_KU32_FLAG_SCROLL_X);
 
-     /* Inits its position */
+      /* Inits its position */
       orxVector_Set(&vPos,
                     fScreenWidth * orxFRAND(vMin.fX, vMax.fX),
                     fScreenHeight * orxFRAND(vMin.fY, vMax.fY),
