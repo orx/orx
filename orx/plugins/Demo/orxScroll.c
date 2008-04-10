@@ -76,7 +76,7 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
 {
   orxVECTOR vPos;
   orxFLOAT  fScreenWidth, fScreenHeight;
-  orxU32    i;
+  orxS32    i;
 
   /* Gets screen dimensions */
   orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
@@ -115,8 +115,7 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
  */
 orxSTATIC orxSTATUS orxScroll_Init()
 {
-  orxS32    s32WaveGroupNumber;
-  orxU32    i;
+  orxS32    s32WaveGroupNumber, i;
   orxFLOAT  fScreenWidth, fScreenHeight, fScrollingDepth;
   orxVECTOR vMin, vMax;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -162,7 +161,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
   /* For all resources */
   for(i = 0; i < orxSCROLL_RESOURCE_NUMBER; i++)
   {
-    orxU32 j;
+    orxS32 j;
     orxVECTOR vMin, vMax;
 
     /* Selects config section */
@@ -188,7 +187,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
                     fScrollingDepth * orxFRAND(vMin.fZ, vMax.fZ));
 
       /* Are we creating waves? */
-      if(i == orxSCROLL_RESOURCE_WAVE)
+      if((i == orxSCROLL_RESOURCE_WAVE) || (i == orxSCROLL_RESOURCE_BOAT1))
       {
         /* Assigns it to one of the wave group */
         orxObject_SetParent(pstObject, sapstWaveGroups[j % s32WaveGroupNumber]);
