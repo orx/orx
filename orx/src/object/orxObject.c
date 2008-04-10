@@ -20,6 +20,7 @@
 #include "object/orxObject.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxConfig.h"
 #include "anim/orxAnimPointer.h"
 #include "display/orxGraphic.h"
 #include "physics/orxBody.h"
@@ -54,6 +55,8 @@
 
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
+
+#define orxOBJECT_KZ_CONFIG_GRAPHIC_FILENAME    "Graphic"
 
 /*
  * Object storage structure
@@ -641,6 +644,51 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, o
 
   /* Done! */
   return pstObject;
+}
+
+/** Creates an object from config
+ * @param[in]   _zConfigID            Config ID
+ * @ return orxOBJECT / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+{
+  orxOBJECT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zConfigID != orxNULL);
+
+  /* Selects config section */
+  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  {
+    orxSTRING zGraphicFileName;
+    orxU32    u32Flags;
+
+    /* Defaults to 2D flags */
+    u32Flags = orxOBJECT_KU32_FLAG_2D;
+
+    /* Gets graphic file name */
+    zGraphicFileName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_FILENAME);
+
+    /* Valid? */
+    if(*zGraphicFileName != *orxSTRING_EMPTY)
+    {
+      /* Updates flags */
+      u32Flags |= orxOBJECT_KU32_FLAG_GRAPHIC;
+    }
+
+    //! TODO
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Links a structure to an object
