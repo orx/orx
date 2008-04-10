@@ -101,6 +101,7 @@ orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
     case orxDEBUG_LEVEL_SCREENSHOT:         zResult = "SCREENSHOT"; break;
     case orxDEBUG_LEVEL_FILE:               zResult = "FILE"; break;
     case orxDEBUG_LEVEL_PATHFINDER:         zResult = "PATHFINDER"; break;
+    case orxDEBUG_LEVEL_PHYSICS:            zResult = "PHYSICS"; break;
     case orxDEBUG_LEVEL_PLUGIN:             zResult = "PLUGIN"; break;
     case orxDEBUG_LEVEL_LOG:                zResult = "LOG"; break;
     case orxDEBUG_LEVEL_PARAM:              zResult = "PARAM"; break;
