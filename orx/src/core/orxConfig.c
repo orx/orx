@@ -493,13 +493,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zFileName != orxNULL);
-  orxASSERT(*_zFileName != *orxSTRING_EMPTY);
 
-  /* Opens file */
-  pstFile = fopen(_zFileName, "r");
-
-  /* Valid? */
-  if(pstFile != orxNULL)
+  /* Valid file to open? */
+  if((*_zFileName != *orxSTRING_EMPTY) && ((pstFile = fopen(_zFileName, "r")) != orxNULL))
   {
     orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
     orxU32  u32Size, u32Offset;
@@ -530,16 +526,18 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             /* Already defined? */
             if((pstEntry = orxConfig_GetEntry(pcLineStart)) != orxNULL)
             {
-              orxLOG("Config entry [%s::%s] has already the value <%s>. Ignoring new value <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->zValue, pcValueStart);
-            }
-            else
-            {
-              /* Adds entry */
-              orxConfig_AddEntry(pcLineStart, pcValueStart);
+              /* Logs */
+              orxLOG("Config entry [%s::%s]: Replacing value <%s> with new value <%s> (%s).", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->zValue, pcValueStart, _zFileName);
 
-              /* Updates pointers */
-              pcKeyEnd = pcValueStart = orxNULL;
+              /* Deletes entry */
+              orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
             }
+
+            /* Adds entry */
+            orxConfig_AddEntry(pcLineStart, pcValueStart);
+
+            /* Updates pointers */
+            pcKeyEnd = pcValueStart = orxNULL;
           }
 
           /* Sets temporary line start */
@@ -769,11 +767,52 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
   {
     orxS32 s32Value;
 
-    /* Gets value */
-    if(orxString_ToS32(pstEntry->zValue, 10, &s32Value, orxNULL) != orxSTATUS_FAILURE)
+    /* Hexadecimal? */
+    if((pstEntry->zValue[0] != orxCHAR_EOL)
+    && (pstEntry->zValue[0] == '0')
+    && (pstEntry->zValue[1] != orxCHAR_EOL)
+    && ((pstEntry->zValue[1] | 0x20) == 'x'))
     {
-      /* Updates result */
-      s32Result = s32Value;
+      /* Gets hexa value */
+      if(orxString_ToS32(pstEntry->zValue + 2, 16, &s32Value, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        s32Result = s32Value;
+      }
+    }
+    /* Binary? */
+    else if((pstEntry->zValue[0] != orxCHAR_EOL)
+         && (pstEntry->zValue[0] == '0')
+         && (pstEntry->zValue[1] != orxCHAR_EOL)
+         && ((pstEntry->zValue[1] | 0x20) == 'b'))
+    {
+      /* Gets binary value */
+      if(orxString_ToS32(pstEntry->zValue + 2, 2, &s32Value, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        s32Result = s32Value;
+      }
+    }
+    /* Octal? */
+    else if((pstEntry->zValue[0] != orxCHAR_EOL)
+    && ((pstEntry->zValue[0] | 0x20) == '0'))
+    {
+      /* Gets octal value */
+      if(orxString_ToS32(pstEntry->zValue + 1, 8, &s32Value, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        s32Result = s32Value;
+      }
+    }
+    /* Decimal */
+    else
+    {
+      /* Gets decimal value */
+      if(orxString_ToS32(pstEntry->zValue, 10, &s32Value, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        s32Result = s32Value;
+      }
     }
   }
 

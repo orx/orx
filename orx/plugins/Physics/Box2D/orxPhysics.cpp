@@ -113,13 +113,13 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxHANDLE _hUse
   {
     /* Inits body definition */
     stBodyDef.userData        = _hUserData;
-    stBodyDef.angle           = _pstBodyDef->fAngle;
+    stBodyDef.angle           = _pstBodyDef->fRotation;
     stBodyDef.linearDamping   = _pstBodyDef->fLinearDamping;
     stBodyDef.angularDamping  = _pstBodyDef->fAngularDamping;
     stBodyDef.massData.I      = _pstBodyDef->fInertia;
     stBodyDef.massData.mass   = _pstBodyDef->fMass;
     stBodyDef.isBullet        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
-    stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_NO_ROTATION);
+    stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
     stBodyDef.position.Set(_pstBodyDef->vPosition.fX, _pstBodyDef->vPosition.fY);
 
     /* Is dynamic? */
@@ -205,7 +205,7 @@ extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY
   pstShapeDef->categoryBits = _pstBodyPartDef->u16SelfFlags;
   pstShapeDef->maskBits     = _pstBodyPartDef->u16CheckMask;
   pstShapeDef->groupIndex   = (orxU16)(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fZ);
-  pstShapeDef->isSensor     = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_RIGID) == orxFALSE;
+  pstShapeDef->isSensor     = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
 
   /* Creates it */
   poResult = poBody->CreateShape(pstShapeDef); 

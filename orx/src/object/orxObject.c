@@ -34,7 +34,6 @@
 
 /** Module flags
  */
-
 #define orxOBJECT_KU32_STATIC_FLAG_NONE         0x00000000
 
 #define orxOBJECT_KU32_STATIC_FLAG_READY        0x00000001
@@ -45,7 +44,6 @@
 
 /** Flags
  */
-
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
 #define orxOBJECT_KU32_FLAG_2D                  0x00000001  /**< 2D flag */
@@ -71,6 +69,7 @@
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
+#define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_SCROLLING_X                "x"
@@ -389,7 +388,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zConfigID != orxNULL);
+  orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
 
   /* Gets previous config section */
   zPreviousSection = orxConfig_GetCurrentSection();
@@ -506,6 +505,18 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         }
       }
 
+      /* Has scale? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_SCALE) != orxFALSE)
+      {
+        orxVECTOR vScale;
+
+        /* Gets config scale */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vScale);
+
+        /* Updates object scale */
+        orxObject_SetScale(pstResult, vScale.fX, vScale.fY);
+      }
+
       /* *** Body *** */
 
       /* Gets body ID */
@@ -517,7 +528,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxBODY *pstBody;
 
         /* Creates body */
-//      pstBody = orxBody_CreateFromConfig(pstResult);
+        pstBody = orxBody_CreateFromConfig((orxSTRUCTURE *)pstResult, zBodyID);
       
         /* Valid? */
         if(pstBody != orxNULL)
@@ -539,7 +550,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       }
 
       /* Updates object rotation */
-      orxObject_SetRotation(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ROTATION));
+      orxObject_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ROTATION));
     }
 
     /* Restores previous section */

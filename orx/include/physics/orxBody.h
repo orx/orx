@@ -71,6 +71,13 @@ extern orxDLLAPI orxVOID                      orxBody_Exit();
  */
 extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxBODY_DEF *_pstBodyDef);
 
+/** Creates a body from config
+ * @param[in]   _pstOwner                     Body's owner used for collision callbacks (usually an orxOBJECT)
+ * @param[in]   _zConfigID                    Body config ID
+ * @return      Created orxGRAPHIC / orxNULL
+ */
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxSTRING _zConfigID);
+
 /** Deletes a body
  * @param[in]   _pstBody        Concerned body
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -84,6 +91,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCONST orxBODY_PART_DEF *_pstBodyPartDef);
+
+/** Adds a part to body from config
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
+ * @param[in]   _zConfigID      Body part config ID
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, orxCONST orxSTRING _zConfigID);
 
 /** Gets a body part
  * @param[in]   _pstBody        Concerned body

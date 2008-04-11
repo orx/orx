@@ -21,6 +21,8 @@
 #include "physics/orxPhysics.h"
 #include "object/orxObject.h"
 #include "object/orxFrame.h"
+#include "core/orxConfig.h"
+#include "utils/orxString.h"
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
@@ -44,6 +46,35 @@
 #define orxBODY_KU32_STATIC_FLAG_READY        0x10000000  /**< Ready flag */
 
 #define orxBODY_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
+
+
+/** Misc defines
+ */
+#define orxBODY_KZ_CONFIG_POSITION            "Position"
+#define orxBODY_KZ_CONFIG_ROTATION            "Rotation"
+#define orxBODY_KZ_CONFIG_INERTIA             "Inertia"
+#define orxBODY_KZ_CONFIG_MASS                "Mass"
+#define orxBODY_KZ_CONFIG_LINEAR_DAMPING      "LinearDamping"
+#define orxBODY_KZ_CONFIG_ANGULAR_DAMPING     "AngularDamping"
+#define orxBODY_KZ_CONFIG_FIXED_ROTATION      "FixedRotation"
+#define orxBODY_KZ_CONFIG_HIGH_SPEED          "HighSpeed"
+#define orxBODY_KZ_CONFIG_DYNAMIC             "Dynamic"
+#define orxBODY_KZ_CONFIG_PART                "Part"
+#define orxBODY_KZ_CONFIG_FRICTION            "Friction"
+#define orxBODY_KZ_CONFIG_RESTITUTION         "Restitution"
+#define orxBODY_KZ_CONFIG_DENSITY             "Density"
+#define orxBODY_KZ_CONFIG_SELF_FLAGS          "SelfFlags"
+#define orxBODY_KZ_CONFIG_CHECK_MASK          "CheckMask"
+#define orxBODY_KZ_CONFIG_TYPE                "Type"
+#define orxBODY_KZ_CONFIG_SOLID               "Solid"
+#define orxBODY_KZ_CONFIG_TOP_LEFT            "TopLeft"
+#define orxBODY_KZ_CONFIG_BOTTOM_RIGHT        "BottomRight"
+#define orxBODY_KZ_CONFIG_CENTER              "Center"
+#define orxBODY_KZ_CONFIG_RADIUS              "Radius"
+
+#define orxBODY_KZ_FULL                       "full"
+#define orxBODY_KZ_TYPE_SPHERE                "sphere"
+#define orxBODY_KZ_TYPE_BOX                   "box
 
 
 /***************************************************************************
@@ -194,6 +225,7 @@ orxVOID orxBody_Setup()
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PHYSICS);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_FRAME);
+  orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_CONFIG);
 
   return;
 }
@@ -296,7 +328,7 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST o
 
         /* Merges template with specialized definition */
         orxVector_Copy(&(stMergedDef.vPosition), (orxVector_IsNull(&(_pstBodyDef->vPosition)) == orxFALSE) ? &(_pstBodyDef->vPosition) : &(sstBody.stBodyTemplate.vPosition));
-        stMergedDef.fAngle          = (_pstBodyDef->fAngle != 0.0f) ? _pstBodyDef->fAngle : sstBody.stBodyTemplate.fAngle;
+        stMergedDef.fRotation       = (_pstBodyDef->fRotation != 0.0f) ? _pstBodyDef->fRotation : sstBody.stBodyTemplate.fRotation;
         stMergedDef.fInertia        = (_pstBodyDef->fInertia > 0.0f) ? _pstBodyDef->fInertia : sstBody.stBodyTemplate.fInertia;
         stMergedDef.fMass           = (_pstBodyDef->fMass > 0.0f) ? _pstBodyDef->fMass : sstBody.stBodyTemplate.fMass;
         stMergedDef.fLinearDamping  = (_pstBodyDef->fLinearDamping > 0.0f) ? _pstBodyDef->fLinearDamping : sstBody.stBodyTemplate.fLinearDamping;
@@ -342,6 +374,104 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST o
 
   /* Done! */
   return pstBody;
+}
+
+/** Creates a body from config
+ * @param[in]   _pstOwner                     Body's owner used for collision callbacks (usually an orxOBJECT)
+ * @param[in]   _zConfigID                    Body config ID
+ * @return      Created orxGRAPHIC / orxNULL
+ */
+orxBODY *orxFASTCALL orxBody_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxSTRING _zConfigID)
+{
+  orxSTRING zPreviousSection;
+  orxBODY  *pstResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstOwner);
+  orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
+
+  /* Gets previous config section */
+  zPreviousSection = orxConfig_GetCurrentSection();
+
+  /* Selects section */
+  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  {
+    orxBODY_DEF stBodyDef;
+
+    /* Clears body definition */
+    orxMemory_Set(&stBodyDef, 0, sizeof(orxBODY_DEF));
+
+    /* Inits it */
+    orxConfig_GetVector(orxBODY_KZ_CONFIG_POSITION, &(stBodyDef.vPosition));
+    stBodyDef.fRotation       = orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION);
+    stBodyDef.fInertia        = orxConfig_GetFloat(orxBODY_KZ_CONFIG_INERTIA);
+    stBodyDef.fMass           = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MASS);
+    stBodyDef.fLinearDamping  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_LINEAR_DAMPING);
+    stBodyDef.fAngularDamping = orxConfig_GetFloat(orxBODY_KZ_CONFIG_ANGULAR_DAMPING);
+    stBodyDef.u32Flags        = orxBODY_DEF_KU32_FLAG_2D;
+    if(orxConfig_GetBool(orxBODY_KZ_CONFIG_FIXED_ROTATION) != orxFALSE)
+    {
+      stBodyDef.u32Flags |= orxBODY_DEF_KU32_FLAG_FIXED_ROTATION;
+    }
+    if(orxConfig_GetBool(orxBODY_KZ_CONFIG_HIGH_SPEED) != orxFALSE)
+    {
+      stBodyDef.u32Flags |= orxBODY_DEF_KU32_FLAG_HIGH_SPEED;
+    }
+    if(orxConfig_GetBool(orxBODY_KZ_CONFIG_DYNAMIC) != orxFALSE)
+    {
+      stBodyDef.u32Flags |= orxBODY_DEF_KU32_FLAG_DYNAMIC;
+    }
+
+    /* Creates body */
+    pstResult = orxBody_Create(_pstOwner, &stBodyDef);
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      orxCHAR acPartID[16];
+      orxU32  i;
+
+      /* Clears buffer */
+      orxMemory_Set(acPartID, 0, 16 * sizeof(orxCHAR));
+
+      /* For all parts */
+      for(i = 1; i <= orxBODY_KU32_PART_MAX_NUMBER; i++)
+      {
+        orxSTRING zPartName;
+
+        /* Gets part name */
+        orxString_Print(acPartID, "%s%d", orxBODY_KZ_CONFIG_PART, i);
+
+        /* Has part? */
+        if(orxConfig_HasValue(acPartID) != orxFALSE)
+        {
+          /* Gets part name */
+          zPartName = orxConfig_GetString(acPartID);
+
+          /* Adds part */
+          orxBody_AddPartFromConfig(pstResult, i, zPartName);
+        }
+        else
+        {
+          break;
+        }
+      }
+    }
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Deletes a body
@@ -483,6 +613,120 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a part to body from config
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
+ * @param[in]   _zConfigID      Body part config ID
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, orxCONST orxSTRING _zConfigID)
+{
+  orxSTRING zPreviousSection;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
+  orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
+
+  /* Gets previous config section */
+  zPreviousSection = orxConfig_GetCurrentSection();
+
+  /* Selects section */
+  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  {
+    orxBODY_PART_DEF stBodyPartDef;
+
+    /* Clears body part definition */
+    orxMemory_Set(&stBodyPartDef, 0, sizeof(orxBODY_PART_DEF));
+
+    /* Inits it */
+    stBodyPartDef.fFriction     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FRICTION);
+    stBodyPartDef.fRestitution  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_RESTITUTION);
+    stBodyPartDef.fDensity      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DENSITY);
+    stBodyPartDef.u16SelfFlags  = (orxU16)orxConfig_GetS32(orxBODY_KZ_CONFIG_SELF_FLAGS);
+    stBodyPartDef.u16CheckMask  = (orxU16)orxConfig_GetS32(orxBODY_KZ_CONFIG_CHECK_MASK);
+    if(orxConfig_GetBool(orxBODY_KZ_CONFIG_SOLID) != orxFALSE)
+    {
+      stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SOLID;
+    }
+    if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE)), orxBODY_KZ_TYPE_SPHERE) == 0)
+    {
+      /* Updates sphere specific info */
+      stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SPHERE;
+      if(((orxConfig_HasValue(orxBODY_KZ_CONFIG_CENTER) == orxFALSE)
+       && (orxConfig_HasValue(orxBODY_KZ_CONFIG_RADIUS) == orxFALSE))
+      || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_RADIUS)), orxBODY_KZ_FULL) == 0)
+      || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_CENTER)), orxBODY_KZ_FULL) == 0))
+      {
+        orxVECTOR vPivot;
+        orxFLOAT  fWidth, fHeight, fScaleX, fScaleY, fRadius;
+
+        /* Gets object size, scale & pivot */
+        orxObject_GetSize(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &fWidth, &fHeight);
+        orxObject_GetScale(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &fScaleX, &fScaleY);
+        orxObject_GetPivot(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &vPivot);
+
+        /* Gets minimal radius */
+        fRadius = orx2F(0.5f) * orxMIN(fScaleX * fWidth, fScaleY * fHeight);
+
+        /* Inits body part def */
+        orxVector_Set(&(stBodyPartDef.stSphere.vCenter), fRadius - (fScaleX * vPivot.fX), fRadius - (fScaleY * vPivot.fY), -vPivot.fZ);
+        stBodyPartDef.stSphere.fRadius = fRadius;
+      }
+      else
+      {
+        orxConfig_GetVector(orxBODY_KZ_CONFIG_CENTER, &(stBodyPartDef.stSphere.vCenter));
+        stBodyPartDef.stSphere.fRadius = orxConfig_GetFloat(orxBODY_KZ_CONFIG_RADIUS);
+      }
+    }
+    else
+    {
+      /* Updates box specific info */
+      stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_BOX;
+      if(((orxConfig_HasValue(orxBODY_KZ_CONFIG_TOP_LEFT) == orxFALSE)
+       && (orxConfig_HasValue(orxBODY_KZ_CONFIG_BOTTOM_RIGHT) == orxFALSE))
+      || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_TOP_LEFT)), orxBODY_KZ_FULL) == 0)
+      || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_BOTTOM_RIGHT)), orxBODY_KZ_FULL) == 0))
+      {
+        orxVECTOR vPivot;
+        orxFLOAT  fWidth, fHeight, fScaleX, fScaleY;
+
+        /* Gets object size, scale & pivot */
+        orxObject_GetSize(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &fWidth, &fHeight);
+        orxObject_GetScale(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &fScaleX, &fScaleY);
+        orxObject_GetPivot(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &vPivot);
+
+        /* Inits body part def */
+        orxVector_Set(&(stBodyPartDef.stAABox.stBox.vTL), -fScaleX * vPivot.fX, -fScaleY * vPivot.fY, -vPivot.fZ);
+        orxVector_Set(&(stBodyPartDef.stAABox.stBox.vBR), fScaleX * (fWidth - vPivot.fX), fScaleY * (fHeight - vPivot.fY), -vPivot.fZ);
+      }
+      else
+      {
+        orxConfig_GetVector(orxBODY_KZ_CONFIG_TOP_LEFT, &(stBodyPartDef.stAABox.stBox.vTL));
+        orxConfig_GetVector(orxBODY_KZ_CONFIG_BOTTOM_RIGHT, &(stBodyPartDef.stAABox.stBox.vBR));
+      }
+    }
+
+    /* Adds body part */
+    eResult = orxBody_AddPart(_pstBody, _u32Index, &stBodyPartDef);
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
