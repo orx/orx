@@ -43,22 +43,6 @@
 #include "math/orxVector.h"
 
 
-/** Flags */
-
-#define orxOBJECT_KU32_FLAG_NONE            0x00000000  /**< No flags */
-
-#define orxOBJECT_KU32_FLAG_2D              0x00000001  /**< 2D flags */
-#define orxOBJECT_KU32_FLAG_GRAPHIC         0x00000002  /**< Graphic flags */
-#define orxOBJECT_KU32_FLAG_BODY            0x00000004  /**< Body flags */
-#define orxOBJECT_KU32_FLAG_BODY_SPHERE     0x00000008  /**< Body sphere flags */
-#define orxOBJECT_KU32_FLAG_BODY_BOX        0x00000010  /**< Body box flags */
-#define orxOBJECT_KU32_FLAG_BODY_DYNAMIC    0x00000020  /**< Body dynamic flags */
-#define orxOBJECT_KU32_FLAG_CENTERED_PIVOT  0x00000040  /**< Centered pivot flag */
-#define orxOBJECT_KU32_FLAG_SCROLL_X        0x00000080  /**< Horizontal differential scrolling flag */
-#define orxOBJECT_KU32_FLAG_SCROLL_Y        0x00000100  /**< Vertical differential scrolling flag */
-#define orxOBJECT_KU32_MASK_USER_ALL        0x0000FFFF  /**< User all ID mask */
-
-
 /** Defines */
 #define orxOBJECT_GET_STRUCTURE(OBJECT, TYPE) orxSTRUCTURE_GET_POINTER(_orxObject_GetStructure(OBJECT, orxSTRUCTURE_ID_##TYPE), TYPE)
 
@@ -67,22 +51,29 @@
 typedef struct __orxOBJECT_t                orxOBJECT;
 
 
-/** Object module setup. */
+/** Object module setup
+ */
 extern orxDLLAPI orxVOID                    orxObject_Setup();
-/** Inits the object system. */
+
+/** Inits the object module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                  orxObject_Init();
-/** Ends the object system. */
+
+/** Exits from the object module
+ */
 extern orxDLLAPI orxVOID                    orxObject_Exit();
 
-/** Creates an empty object. */
+/** Creates an empty object
+ * @return orxOBJECT / orxNULL
+ */
 extern orxDLLAPI orxOBJECT *                orxObject_Create();
 
-/** Creates an object from file
- * @param[in]   _zFileName            Resource file name to associate with the 2D object
- * @param[in]   _u32Flags             Object flags (2D / graphic / body / ...)
+/** Creates an object from config
+ * @param[in]   _zConfigID    Config ID
  * @ return orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromFile(orxCONST orxSTRING _zFileName, orxU32 _u32Flags);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID);
 
 /** Deletes an object. */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObject);

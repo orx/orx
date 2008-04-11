@@ -50,7 +50,6 @@ extern "C"
 orxSTATIC orxCONST orxU32     su32ScreenWidth   = 1024;
 orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
 orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
-orxSTATIC orxCONST orxSTRING  szTitle           = "orxTestWindow";
 orxSTATIC orxCONST orxU32     su32TextBankSize  = 8;
 
 
@@ -575,10 +574,10 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
       s32ConfigHeight = orxConfig_GetS32(orxDISPLAY_KZ_CONFIG_HEIGHT);
 
       /* Not valid? */
-      if((s32ConfigWidth <= 0) || (s32ConfigHeight <= 0) || ((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(s32ConfigWidth, s32ConfigHeight), szTitle, sf::Style::Close)) == orxNULL))
+      if((s32ConfigWidth <= 0) || (s32ConfigHeight <= 0) || ((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(s32ConfigWidth, s32ConfigHeight), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sf::Style::Close)) == orxNULL))
       {
         /* Inits default rendering window */
-        sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), szTitle, sf::Style::Close);
+        sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sf::Style::Close);
 
         /* Stores values */
         sstDisplay.u32ScreenWidth   = su32ScreenWidth;

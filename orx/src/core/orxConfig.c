@@ -7,7 +7,7 @@
  Lib C / file implementation of the Config module
  begin                : 09/12/2007
  author               : (C) Arcallians
- email                : cursor@arcallians.org
+ email                : iarwain@arcallians.org
  ***************************************************************************/
 
 /***************************************************************************
@@ -453,6 +453,32 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets current working section
+ * @return Current selected section
+ */
+orxSTRING orxConfig_GetCurrentSection()
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Has selected section? */
+  if(sstConfig.pstCurrentSection != orxNULL)
+  {
+    /* Updates result */
+    zResult = sstConfig.pstCurrentSection->zName;
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
+  
+  /* Done! */
+  return zResult;
 }
 
 /** Read config config from source.

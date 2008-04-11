@@ -142,39 +142,35 @@ orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxC
   /* Has data? */
   if(orxStructure_TestFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA))
   {
-    //! TEMP : Will send a position update event when orxEvent module will be tested
+    orxFRAME *pstFrame;
 
-    /* 2D? */
-    if(orxStructure_TestFlags(pstObject, orxOBJECT_KU32_FLAG_2D))
+    /* Gets its frame */
+    pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
+
+    /* Is a root's children frame? */
+    if(orxFrame_IsRootChild(pstFrame) != orxFALSE)
     {
-      orxFRAME *pstFrame;
+      orxVECTOR vPosition;
+      orxFLOAT  fZBackup, fRotation;
 
-      /* Gets its frame */
-      pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
+      //! TEMP : Will send a position update event when orxEvent module will be tested
 
-      /* Is a root's children frame? */
-      if(orxFrame_IsRootChild(pstFrame) != orxFALSE)
-      {
-        orxVECTOR vPosition;
-        orxFLOAT  fZBackup, fRotation;
+      /* Gets current position */
+      orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
 
-        /* Gets current position */
-        orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+      /* Backups its Z */
+      fZBackup = vPosition.fZ;
 
-        /* Backups its Z */
-        fZBackup = vPosition.fZ;
+      /* Gets body up-to-date position & rotation */
+      orxPhysics_GetPosition(pstBody->pstData, &vPosition);
+      fRotation = orxPhysics_GetRotation(pstBody->pstData);
 
-        /* Gets body up-to-date position & rotation */
-        orxPhysics_GetPosition(pstBody->pstData, &vPosition);
-        fRotation = orxPhysics_GetRotation(pstBody->pstData);
+      /* Restores Z */
+      vPosition.fZ = fZBackup;
 
-        /* Restores Z */
-        vPosition.fZ = fZBackup;
-
-        /* Updates position & rotation */
-        orxFrame_SetPosition(pstFrame, &vPosition);
-        orxFrame_SetRotation(pstFrame, fRotation);
-      }
+      /* Updates position & rotation */
+      orxFrame_SetPosition(pstFrame, &vPosition);
+      orxFrame_SetRotation(pstFrame, fRotation);
     }
 
     //! TODO : Process & forwards events sent by physics sensor zones

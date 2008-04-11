@@ -127,9 +127,10 @@ orxSTATIC orxSTATUS orxScroll_Init()
   orxConfig_Load("Scroll.ini");
   orxConfig_SelectSection("Scroll");
 
-  /* Gets scrolling depth and speed */
+  /* Gets scrolling depth and speed and wave amplitude coef */
   fScrollingDepth   = orxConfig_GetFloat("ScrollingDepth");
   sfScrollingSpeed  = orxConfig_GetFloat("ScrollingSpeed");
+  sfWaveAmplitude   = orxConfig_GetFloat("WaveAmplitude");
 
   /* Gets wave group number */
   s32WaveGroupNumber = orxConfig_GetS32("WaveGroupNumber");
@@ -140,8 +141,8 @@ orxSTATIC orxSTATUS orxScroll_Init()
   /* Creates the wave groups */
   sapstWaveGroups = orxMemory_Allocate(s32WaveGroupNumber * sizeof(orxOBJECT *), orxMEMORY_TYPE_TEMP);
 
-  /* Gets wave amplitude */
-  sfWaveAmplitude = orxConfig_GetFloat("Amplitude") * fScreenHeight * (orxConfig_GetVector("MaxPos", &vMax)->fY - orxConfig_GetVector("MinPos", &vMin)->fY);
+  /* Updates wave amplitude */
+  sfWaveAmplitude *= fScreenHeight * (orxConfig_GetVector("MaxPos", &vMax)->fY - orxConfig_GetVector("MinPos", &vMin)->fY);
 
   /* Creates main wave groups */
   for(i = 0; i < s32WaveGroupNumber; i++)
@@ -149,7 +150,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
     orxVECTOR vPos;
 
     /* Creates frame */
-    sapstWaveGroups[i] = orxObject_CreateFromFile(orxSTRING_EMPTY, orxOBJECT_KU32_FLAG_NONE);
+    sapstWaveGroups[i] = orxObject_CreateFromConfig("WaveGroup");
 
     /* Inits its vertical position (phasis) */
     orxVector_Set(&vPos, orxFLOAT_0, (orx2F(i) / orx2F(s32WaveGroupNumber)) * sfWaveAmplitude, orxFLOAT_0);
@@ -178,7 +179,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
       orxOBJECT  *pstObject;
 
       /* Creates the object */
-      pstObject = orxObject_CreateFromFile(orxConfig_GetString("FileName"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT|orxOBJECT_KU32_FLAG_SCROLL_X);
+      pstObject = orxObject_CreateFromConfig(sazResourceNames[i]);
 
       /* Inits its position */
       orxVector_Set(&vPos,
@@ -223,17 +224,13 @@ orxSTATIC orxSTATUS orxScroll_Init()
     orxViewport_SetCamera(pstViewport, spstCamera);
 
     /* Creates background */
-    pstBackground = orxObject_CreateFromFile(orxConfig_GetString("BackgroundFileName"), orxOBJECT_KU32_FLAG_2D|orxOBJECT_KU32_FLAG_GRAPHIC|orxOBJECT_KU32_FLAG_CENTERED_PIVOT);
+    pstBackground = orxObject_CreateFromConfig("Background");
 
     /* Gets its dimensions */
     orxObject_GetSize(pstBackground, &fBackgroundWidth, &fBackgroundHeight);
 
     /* Sets its scale */
     orxObject_SetScale(pstBackground, fScreenWidth / fBackgroundWidth, fScreenHeight / fBackgroundHeight);
-
-    /* Sets it at backgroun */
-    orxVector_Set(&vPosition, orxFLOAT_0, orxFLOAT_0, fScrollingDepth);
-    orxObject_SetPosition(pstBackground, &vPosition);
 
     /* Links it to camera frame */
     orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(pstBackground, FRAME), orxCamera_GetFrame(spstCamera));

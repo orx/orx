@@ -49,6 +49,7 @@ typedef struct __orxBITMAP_TRANSFORM_t
 #define orxDISPLAY_KZ_CONFIG_WIDTH      "ScreenWidth"
 #define orxDISPLAY_KZ_CONFIG_HEIGHT     "ScreenHeight"
 #define orxDISPLAY_KZ_CONFIG_FONT       "Font"
+#define orxDISPLAY_KZ_CONFIG_TITLE      "Title"
 
 
 /***************************************************************************

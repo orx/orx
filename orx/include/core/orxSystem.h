@@ -43,7 +43,6 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Exit, orxVOID);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_GetTime, orxFLOAT);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_GetDate, orxDATE);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Delay, orxVOID, orxFLOAT);
 
 
@@ -69,14 +68,6 @@ orxSTATIC orxINLINE orxVOID orxSystem_Exit()
 orxSTATIC orxINLINE orxFLOAT orxSystem_GetTime()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetTime)();
-}
-
-/** Gets date.
- * @return Current date.
- */
-orxSTATIC orxINLINE orxDATE orxSystem_GetDate()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetDate)();
 }
 
 /** Delay the program for given number of milliseconds.

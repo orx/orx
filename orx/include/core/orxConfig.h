@@ -61,6 +61,11 @@ extern orxDLLAPI orxSTATUS              orxConfig_Save(orxCONST orxSTRING _zFile
  */
 extern orxDLLAPI orxSTATUS              orxConfig_SelectSection(orxCONST orxSTRING _zSectionName);
 
+/** Gets current working section
+ * @return Current selected section
+ */
+extern orxDLLAPI orxSTRING              orxConfig_GetCurrentSection();
+
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
