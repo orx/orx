@@ -982,7 +982,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName
   orxASSERT(_zPluginName != orxNULL);
 
   /* Gets complete name */
-  orxTextIO_Printf(zFileName, "%s.%s", _zPluginFileName, szPluginLibraryExt);
+  orxString_Print(zFileName, "%s.%s", _zPluginFileName, szPluginLibraryExt);
 
   /* Does it */
   return(orxPlugin_Load(zFileName, _zPluginName));
