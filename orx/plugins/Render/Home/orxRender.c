@@ -223,6 +223,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
       orxU32      u32ULX, u32ULY, u32BRX, u32BRY;
       orxFLOAT    fTextureWidth, fTextureHeight;
       orxAABOX    stViewportBox, stTextureBox;
+      orxVECTOR   vViewportCenter;
 
       /* Gets texture size */
       orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
@@ -234,9 +235,11 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
       /* Gets viewport clipping */
       orxViewport_GetClipping(_pstViewport, &u32ULX, &u32ULY, &u32BRX, &u32BRY);
 
-      /* Gets viewport's corners */
+      /* Gets viewport's corners & center*/
       orxVector_Set(&(stViewportBox.vTL), orxU2F(u32ULX), orxU2F(u32ULY), orxFLOAT_0);
       orxVector_Set(&(stViewportBox.vBR), orxU2F(u32BRX), orxU2F(u32BRY), orxFLOAT_0);
+      orxVector_Add(&vViewportCenter, &(stViewportBox.vTL), &(stViewportBox.vBR));
+      orxVector_Mulf(&vViewportCenter, &vViewportCenter, orx2F(0.5f));
 
       /* Does it intersect with texture */
       if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
@@ -320,7 +323,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                   pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
 
                   /* Gets graphic's texture */
-                  pstTexture = (orxTEXTURE *)orxGraphic_GetData(pstGraphic);
+                  pstTexture = orxSTRUCTURE_GET_POINTER(orxGraphic_GetData(pstGraphic), TEXTURE);
 
                   /* Valid? */
                   if((pstFrame != orxNULL) && (pstTexture != orxNULL))
@@ -333,8 +336,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                     /* Is object in Z frustrum? */
                     if((vObjectPos.fZ >= stFrustrum.vTL.fZ) && (vObjectPos.fZ <= stFrustrum.vBR.fZ))
                     {
-                      orxVECTOR vSqrDist;
-                      orxFLOAT  fWidth, fHeight, fObjectScaleX, fObjectScaleY, fObjectSqrBoundingRadius;
+                      orxFLOAT  fWidth, fHeight, fObjectScaleX, fObjectScaleY, fObjectSqrBoundingRadius, fSqrDist;
 
                       /* Gets its texture size */
                       orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
@@ -350,12 +352,10 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                       fObjectSqrBoundingRadius = orx2F(1.5f) * ((fWidth * fWidth) + (fHeight * fHeight));
 
                       /* Gets 2D square distance to camera */
-                      orxVector_Sub(&vSqrDist, &vObjectPos, &vCameraPosition);
-                      orxVector_Mul(&vSqrDist, &vSqrDist, &vSqrDist); 
+                      fSqrDist = orxVector_GetSquareDistance(&vObjectPos, &vCameraPosition);
 
                       /* Circle test between object & camera */
-                      if((vSqrDist.fX <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius))
-                      || (vSqrDist.fY <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius)))
+                      if(fSqrDist <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius))
                       {
                         orxLINKLIST_NODE *pstNode;
 
@@ -453,26 +453,20 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 fScrollX = fScrollY = orxFLOAT_1;
               }
 
-              /* Gets render position */
-              orxVector_Sub(&vRenderPos, &vObjectPos, &(stFrustrum.vTL));
+              /* Gets position in camera space */
+              orxVector_Sub(&vRenderPos, &vObjectPos, &(vCameraPosition));
               vRenderPos.fX  *= fRenderScaleX * fScrollX;
               vRenderPos.fY  *= fRenderScaleY * fScrollY;
 
               /* Has camera rotation? */
               if(fRenderRotation != orxFLOAT_0)
               {
-                /* Gets position in camera space */
-                orxVector_Sub(&vRenderPos, &vRenderPos, &vCameraPosition);
-
                 /* Rotates it */
-                orxVector_2DRotate(&vRenderPos, &vRenderPos, fRenderRotation);
-
-                /* Gets position in world space */
-                orxVector_Add(&vRenderPos, &vRenderPos, &vCameraPosition);
+                orxVector_2DRotate(&vRenderPos, &vRenderPos, -fRenderRotation);
               }
 
-              /* Updates render position in viewport */
-              orxVector_Add(&vRenderPos, &vRenderPos, &stViewportBox.vTL);
+              /* Gets position in screen space */
+              orxVector_Add(&vRenderPos, &vRenderPos, &vViewportCenter);
 
               /* Updates render frame */
               orxFrame_SetPosition(pstRenderFrame, &vRenderPos);

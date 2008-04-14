@@ -367,6 +367,7 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxASSERT(_fZoom > orxFLOAT_0);
   orxSTRUCTURE_ASSERT(_pstCamera);
 
    /* Sets camera zoom */
