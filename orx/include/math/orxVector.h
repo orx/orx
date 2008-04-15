@@ -353,21 +353,21 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pv
 
 orxSTATIC orxINLINE orxVECTOR *               orxVector_2DRotate(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxFLOAT _fAngle)
 {
-    orxREGISTER orxFLOAT fSin, fCos;
+  orxREGISTER orxFLOAT fSin, fCos;
 
-    /* Checks */
-    orxASSERT(_pvRes  != orxNULL);
-    orxASSERT(_pvOp != orxNULL);
+  /* Checks */
+  orxASSERT(_pvRes  != orxNULL);
+  orxASSERT(_pvOp != orxNULL);
 
-    /* Gets cos & sin of angle */
-    fCos = orxMath_Cos(_fAngle);
-    fSin = orxMath_Sin(_fAngle);
+  /* Gets cos & sin of angle */
+  fCos = orxMath_Cos(_fAngle);
+  fSin = orxMath_Sin(_fAngle);
 
-    /* Updates result */
-    orxVector_Set(_pvRes, (fCos * _pvOp->fX) - (fSin * _pvOp->fY), (fSin * _pvOp->fX) + (fCos * _pvOp->fY), _pvOp->fZ);
+  /* Updates result */
+  orxVector_Set(_pvRes, (fCos * _pvOp->fX) - (fSin * _pvOp->fY), (fSin * _pvOp->fX) + (fCos * _pvOp->fY), _pvOp->fZ);
 
-    /* Done! */
-    return _pvRes;
+  /* Done! */
+  return _pvRes;
 }
 
 orxSTATIC orxINLINE orxBOOL                   orxVector_IsNull(orxCONST orxVECTOR *_pvOp)
@@ -518,115 +518,115 @@ orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {{orxFLOAT_0}, {orxFLOAT_0},
 /** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
 orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
 {
-    orxREGISTER orxBOOL bResult = orxFALSE;
+  orxREGISTER orxBOOL bResult = orxFALSE;
 
-    /* Checks */
-    orxASSERT(_pstBox1 != orxNULL);
-    orxASSERT(_pstBox2 != orxNULL);
+  /* Checks */
+  orxASSERT(_pstBox1 != orxNULL);
+  orxASSERT(_pstBox2 != orxNULL);
 
-    /* Warning : Corners should be sorted beforehand! */
+  /* Warning : Corners should be sorted beforehand! */
 
-    /* Z intersected? */
-    if((_pstBox2->vBR.fZ >= _pstBox1->vTL.fZ)
-        && (_pstBox2->vTL.fZ <= _pstBox1->vBR.fZ))
+  /* Z intersected? */
+  if((_pstBox2->vBR.fZ >= _pstBox1->vTL.fZ)
+  && (_pstBox2->vTL.fZ <= _pstBox1->vBR.fZ))
+  {
+    /* X intersected? */
+    if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
+    && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
     {
-        /* X intersected? */
-        if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
-            && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
-        {
-            /* Y intersected? */
-            if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
-                && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
-            {
-                /* Intersects */
-                bResult = orxTRUE;
-            }
-        }
+      /* Y intersected? */
+      if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
+      && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
+      {
+        /* Intersects */
+        bResult = orxTRUE;
+      }
     }
+  }
 
-    /* Done! */
-    return bResult;
+  /* Done! */
+  return bResult;
 }
 
 /** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
 orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
 {
-    orxREGISTER orxBOOL bResult = orxFALSE;
+  orxREGISTER orxBOOL bResult = orxFALSE;
 
-    /* Checks */
-    orxASSERT(_pstBox1 != orxNULL);
-    orxASSERT(_pstBox2 != orxNULL);
+  /* Checks */
+  orxASSERT(_pstBox1 != orxNULL);
+  orxASSERT(_pstBox2 != orxNULL);
 
-    /* Warning : Corners should be sorted beforehand! */
+  /* Warning : Corners should be sorted beforehand! */
 
-    /* X intersected? */
-    if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
-        && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
+  /* X intersected? */
+  if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
+  && (_pstBox2->vTL.fX <= _pstBox1->vBR.fX))
+  {
+    /* Y intersected? */
+    if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
+    && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
     {
-        /* Y intersected? */
-        if((_pstBox2->vBR.fY >= _pstBox1->vTL.fY)
-            && (_pstBox2->vTL.fY <= _pstBox1->vBR.fY))
-        {
-            /* Intersects */
-            bResult = orxTRUE;
-        }
+      /* Intersects */
+      bResult = orxTRUE;
     }
+  }
 
-    /* Done! */
-    return bResult;
+  /* Done! */
+  return bResult;
 }
 
 /** Reorders AABox corners */
 orxSTATIC orxINLINE orxVOID                   orxAABox_Reorder(orxAABOX *_pstBox)
 {
-    /* Checks */
-    orxASSERT(_pstBox != orxNULL);
+  /* Checks */
+  orxASSERT(_pstBox != orxNULL);
 
-    /* Reorders coordinates so as to have upper left & bottom right box corners */
+  /* Reorders coordinates so as to have upper left & bottom right box corners */
 
-    /* Z coord */
-    if(_pstBox->vTL.fZ > _pstBox->vBR.fZ)
-    {
-        /* Swaps */
-        orxSWAP32(_pstBox->vTL.fZ, _pstBox->vBR.fZ);
-    }
+  /* Z coord */
+  if(_pstBox->vTL.fZ > _pstBox->vBR.fZ)
+  {
+    /* Swaps */
+    orxSWAP32(_pstBox->vTL.fZ, _pstBox->vBR.fZ);
+  }
 
-    /* Y coord */
-    if(_pstBox->vTL.fY > _pstBox->vBR.fY)
-    {
-        /* Swaps */
-        orxSWAP32(_pstBox->vTL.fY, _pstBox->vBR.fY);
-    }
+  /* Y coord */
+  if(_pstBox->vTL.fY > _pstBox->vBR.fY)
+  {
+    /* Swaps */
+    orxSWAP32(_pstBox->vTL.fY, _pstBox->vBR.fY);
+  }
 
-    /* X coord */
-    if(_pstBox->vTL.fX > _pstBox->vBR.fX)
-    {
-        /* Swaps */
-        orxSWAP32(_pstBox->vTL.fX, _pstBox->vBR.fX);
-    }
+  /* X coord */
+  if(_pstBox->vTL.fX > _pstBox->vBR.fX)
+  {
+    /* Swaps */
+    orxSWAP32(_pstBox->vTL.fX, _pstBox->vBR.fX);
+  }
 
-    /* Done! */
-    return;
+  /* Done! */
+  return;
 }
 
 orxSTATIC orxINLINE orxAABOX *                orxAABox_2DRotate(orxAABOX *_pstRes, orxCONST orxAABOX *_pstOp, orxFLOAT _fAngle)
 {
-    orxREGISTER orxFLOAT fSin, fCos;
+  orxREGISTER orxFLOAT fSin, fCos;
 
-    /* Checks */
-    orxASSERT(_pstRes  != orxNULL);
-    orxASSERT(_pstOp != orxNULL);
+  /* Checks */
+  orxASSERT(_pstRes  != orxNULL);
+  orxASSERT(_pstOp != orxNULL);
 
-    /* Gets cos & sin of angle */
-    fCos = orxMath_Cos(_fAngle);
-    fSin = orxMath_Sin(_fAngle);
+  /* Gets cos & sin of angle */
+  fCos = orxMath_Cos(_fAngle);
+  fSin = orxMath_Sin(_fAngle);
 
-    /* Updates result */
-    orxVector_Set(&(_pstRes->vTL), (fCos * _pstOp->vTL.fX) - (fSin * _pstOp->vTL.fY), (fSin * _pstOp->vTL.fX) + (fCos * _pstOp->vTL.fY), _pstOp->vTL.fZ);
-    orxVector_Set(&(_pstRes->vBR), (fCos * _pstOp->vBR.fX) - (fSin * _pstOp->vBR.fY), (fSin * _pstOp->vBR.fX) + (fCos * _pstOp->vBR.fY), _pstOp->vBR.fZ);
+  /* Updates result */
+  orxVector_Set(&(_pstRes->vTL), (fCos * _pstOp->vTL.fX) - (fSin * _pstOp->vTL.fY), (fSin * _pstOp->vTL.fX) + (fCos * _pstOp->vTL.fY), _pstOp->vTL.fZ);
+  orxVector_Set(&(_pstRes->vBR), (fCos * _pstOp->vBR.fX) - (fSin * _pstOp->vBR.fY), (fSin * _pstOp->vBR.fX) + (fCos * _pstOp->vBR.fY), _pstOp->vBR.fZ);
 
-    /* Done! */
-    return _pstRes;
+  /* Done! */
+  return _pstRes;
 }
 
 /** Copies AABox values into another one. */

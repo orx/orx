@@ -538,13 +538,21 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
-  orxASSERT((_pstBitmap == spoScreen) && "Can only draw on screen with this version!");
 
-  /* Stores screen clipping */
-  glScissor(_u32TLX, sstDisplay.u32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
+  /* Screen? */
+  if(_pstBitmap == spoScreen)
+  {
+    /* Stores screen clipping */
+    glScissor(_u32TLX, sstDisplay.u32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
 
-  /* Enables clipping */
-  glEnable(GL_SCISSOR_TEST);
+    /* Enables clipping */
+    glEnable(GL_SCISSOR_TEST);
+  }
+  else
+  {
+    /* Sets sub rectangle for sprite */
+    ((sf::Sprite *)_pstBitmap)->SetSubRect(sf::IntRect(_u32TLX, _u32TLY, _u32BRX, _u32BRY));
+  }
 
   /* Done! */
   return eResult;
