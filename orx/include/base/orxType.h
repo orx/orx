@@ -62,6 +62,12 @@
 
   #define orx2F(V)              (orxFLOAT)(V)
 
+  #define orx2RGBA(R, G, B, A)  ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
+  #define orxRGBA_R(RGBA)       (((RGBA) >> 24) & 0xFF)
+  #define orxRGBA_G(RGBA)       (((RGBA) >> 16) & 0xFF)
+  #define orxRGBA_B(RGBA)       (((RGBA) >> 8) & 0xFF)
+  #define orxRGBA_A(RGBA)       ((RGBA) & 0xFF)
+
   #define orxENUM_NONE          0xFFFFFFFFL
 
   /* Platform specific */

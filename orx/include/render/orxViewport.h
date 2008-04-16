@@ -67,6 +67,12 @@ extern orxDLLAPI orxVOID                      orxViewport_Exit();
  */
 extern orxDLLAPI orxVIEWPORT *                orxViewport_Create();
 
+/** Creates a viewport from config
+ * @param[in]   _zConfigID    Config ID
+ * @ return orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxVIEWPORT *orxFASTCALL     orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+
 /** Deletes a viewport
  * @param[in]   _pstViewport    Viewport to delete
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
