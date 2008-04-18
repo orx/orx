@@ -69,7 +69,7 @@ extern orxDLLAPI orxVIEWPORT *                orxViewport_Create();
 
 /** Creates a viewport from config
  * @param[in]   _zConfigID    Config ID
- * @ return orxOBJECT / orxNULL
+ * @ return orxVIEWPORT / orxNULL
  */
 extern orxDLLAPI orxVIEWPORT *orxFASTCALL     orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfigID);
 

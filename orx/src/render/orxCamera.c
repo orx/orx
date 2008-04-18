@@ -27,6 +27,7 @@
 #include "render/orxCamera.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxConfig.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
 
@@ -43,6 +44,17 @@
 /** orxCAMERA flags / masks
  */
 #define orxCAMERA_KU32_MASK_ALL               0xFFFFFFFF  /**< All mask */
+
+
+/** Misc defines
+ */
+#define orxCAMERA_KZ_CONFIG_ZOOM              "Zoom"
+#define orxCAMERA_KZ_CONFIG_POSITION          "Position"
+#define orxCAMERA_KZ_CONFIG_ROTATION          "Rotation"
+#define orxCAMERA_KZ_CONFIG_FRUSTRUM_NEAR     "FrustrumNear"
+#define orxCAMERA_KZ_CONFIG_FRUSTRUM_FAR      "FrustrumFar"
+#define orxCAMERA_KZ_CONFIG_FRUSTRUM_WIDTH    "FrustrumWidth"
+#define orxCAMERA_KZ_CONFIG_FRUSTRUM_HEIGHT   "FrustrumHeight"
 
 
 /***************************************************************************
@@ -116,6 +128,7 @@ orxVOID orxCamera_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_FRAME);
 
@@ -254,6 +267,84 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
   return pstCamera;
 }
 
+/** Creates a camera from config
+ * @param[in]   _zConfigID    Config ID
+ * @ return orxCAMERA / orxNULL
+ */
+orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+{
+  orxCAMERA  *pstResult;
+  orxSTRING   zPreviousSection;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+
+  /* Gets previous config section */
+  zPreviousSection = orxConfig_GetCurrentSection();
+
+  /* Selects section */
+  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  {
+    /* Creates 2D default camera */
+    pstResult = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      orxVECTOR vPosition;
+      orxFLOAT  fNear, fFar, fWidth, fHeight;
+ 
+      /* Gets frustrum info */
+      fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTRUM_NEAR);
+      fFar    = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTRUM_FAR);
+      fWidth  = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTRUM_WIDTH);
+      fHeight = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTRUM_HEIGHT);
+
+      /* Applies it */
+      orxCamera_SetFrustrum(pstResult, fWidth, fHeight, fNear, fFar);
+
+      /* Has zoom? */
+      if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_ZOOM) != orxFALSE)
+      {
+        orxFLOAT fZoom;
+
+        /* Gets config zoom */
+        fZoom = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_ZOOM);
+
+        /* Valid? */
+        if(fZoom > orxFLOAT_0)
+        {
+          /* Applies it */
+          orxCamera_SetZoom(pstResult, fZoom);
+        }
+      }
+
+      /* Has a position? */
+      if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+      {
+        /* Updates camera position */
+        orxCamera_SetPosition(pstResult, &vPosition);
+      }
+
+      /* Updates object rotation */
+      orxCamera_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_ROTATION));
+    }
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Deletes a camera
  * @param[in]   _pstCamera      Camera to delete
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -305,7 +396,7 @@ orxSTATUS orxFASTCALL orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWi
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
-  orxASSERT(_fNear < _fFar);
+  orxASSERT(_fNear <= _fFar);
 
   /* Updates internal frustrum */
   orxVector_Set(&(_pstCamera->stFrustrum.vTL), orx2F(-0.5f) * _fWidth, orx2F(-0.5f) * _fHeight, _fNear);

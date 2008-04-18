@@ -65,8 +65,6 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
  */
 orxSTATIC orxSTATUS orxBounce_Init()
 {
-  orxVIEWPORT      *pstViewport;
-  orxCAMERA        *pstCamera;
   orxCLOCK         *pstClock;
   orxFLOAT          fScreenWidth, fScreenHeight;
   orxSTATUS         eResult;
@@ -88,13 +86,8 @@ orxSTATIC orxSTATUS orxBounce_Init()
   orxObject_CreateFromConfig("Wall3");
   orxObject_CreateFromConfig("Wall4");
 
-  /* Creates & inits camera (using screen dimensions as frustrum will avoid scaling whichever resolution we are using) */
-  pstCamera = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
-  orxCamera_SetFrustrum(pstCamera, fScreenWidth, fScreenHeight, orxFLOAT_0, orxFLOAT_1);
-
-  /* Creates & inits viewport on screen */
-  pstViewport = orxViewport_Create();
-  orxViewport_SetCamera(pstViewport, pstCamera);
+  /* Creates viewport on screen */
+  orxViewport_CreateFromConfig("BounceViewport");
 
   /* Gets rendering clock */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);

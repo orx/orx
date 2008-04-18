@@ -260,7 +260,7 @@ orxVIEWPORT *orxViewport_Create()
 
 /** Creates a viewport from config
  * @param[in]   _zConfigID    Config ID
- * @ return orxOBJECT / orxNULL
+ * @ return orxVIEWPORT / orxNULL
  */
 orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 {
@@ -317,7 +317,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
         orxCAMERA *pstCamera;
 
         /* Creates camera */
-        pstCamera = orxNULL; //! orxCamera_CreateFromConfig(zCameraName);
+        pstCamera = orxCamera_CreateFromConfig(zCameraName);
 
         /* Valid? */
         if(pstCamera != orxNULL)
@@ -354,6 +354,29 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
 
         /* Applies it */
         orxViewport_SetBackgroundColor(pstResult, stColor);
+      }
+
+      /* Has relative size? */
+      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE) != orxFALSE)
+      {
+        orxVECTOR vRelSize;
+
+        /* Gets it */
+        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE, &vRelSize);
+
+        /* Applies it */
+        orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
+      }
+      /* Has plain size */
+      else if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
+      {
+        orxVECTOR vSize;
+
+        /* Gets it */
+        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize);
+
+        /* Applies it */
+        orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
       }
 
       /* Has relative position? */
@@ -394,7 +417,6 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
         /* Applies it */
         orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
       }
-
       /* Has plain position */
       else if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_POSITION) != orxFALSE)
       {
@@ -404,30 +426,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
         orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos);
 
         /* Applies it */
-        orxViewport_SetSize(pstResult, vPos.fX, vPos.fY);
-      }
-
-      /* Has relative size? */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE) != orxFALSE)
-      {
-        orxVECTOR vRelSize;
-
-        /* Gets it */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE, &vRelSize);
-
-        /* Applies it */
-        orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
-      }
-      /* Has plain size */
-      else if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
-      {
-        orxVECTOR vSize;
-
-        /* Gets it */
-        orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize);
-
-        /* Applies it */
-        orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+        orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
       }
     }
 

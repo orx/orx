@@ -355,7 +355,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                       fSqrDist = orxVector_GetSquareDistance(&vObjectPos, &vCameraPosition);
 
                       /* Circle test between object & camera */
-                      if(fSqrDist <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius))
+                      if(fSqrDist * (fZoom * fZoom) <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius))
                       {
                         orxLINKLIST_NODE *pstNode;
 

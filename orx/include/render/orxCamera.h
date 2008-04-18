@@ -70,6 +70,12 @@ extern orxDLLAPI orxVOID                orxCamera_Exit();
  */
 extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags);
 
+/** Creates a camera from config
+ * @param[in]   _zConfigID    Config ID
+ * @ return orxCAMERA / orxNULL
+ */
+extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+
 /** Deletes a camera
  * @param[in]   _pstCamera      Camera to delete
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
