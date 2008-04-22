@@ -659,7 +659,7 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
 
         case orxSTRUCTURE_ID_BODY:
         {
-//! TEMP          orxBody_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, BODY));
+          orxBody_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, BODY));
           break;
         }
 
