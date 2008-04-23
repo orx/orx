@@ -6,7 +6,7 @@
 		<Option compiler="gcc" />
 		<Option extended_obj_names="1" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Static Debug">
 				<Option output="..\..\..\bin\orxd" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\..\bin" />
 				<Option object_output="debug\" />
@@ -23,7 +23,7 @@
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
-			<Target title="Release">
+			<Target title="Static Release">
 				<Option output="..\..\..\bin\orx" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\..\bin" />
 				<Option object_output="release\" />
@@ -37,6 +37,38 @@
 					<Add option="-s" />
 					<Add option="-Wl,--out-implib,..\..\..\lib\static\orx.a" />
 					<Add library="..\..\..\lib\static\liborx.a" />
+					<Add directory="..\..\..\lib\static" />
+				</Linker>
+			</Target>
+			<Target title="Dynamic Debug">
+				<Option output="..\..\..\bin\orxd" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\..\bin" />
+				<Option object_output="debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-D__orxDEBUG__" />
+					<Add directory="..\..\..\include" />
+				</Compiler>
+				<Linker>
+					<Add library="..\..\..\lib\dynamic\liborxd.a" />
+					<Add directory="..\..\..\lib\static" />
+				</Linker>
+			</Target>
+			<Target title="Dynamic Release">
+				<Option output="..\..\..\bin\orx" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\..\bin" />
+				<Option object_output="release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="..\..\..\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="..\..\..\lib\dynamic\liborx.a" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
