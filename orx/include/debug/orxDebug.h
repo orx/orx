@@ -153,21 +153,23 @@
 /* *** Debug types. *** */
 typedef enum __orxDEBUG_LEVEL_t
 {
-  orxDEBUG_LEVEL_MOUSE = 0,                   /**< Mouse Debug */
-  orxDEBUG_LEVEL_KEYBOARD,                    /**< Keyboard Debug */
-  orxDEBUG_LEVEL_JOYSTICK,                    /**< Joystick Debug */
-  orxDEBUG_LEVEL_INTERACTION,                 /**< Interaction Debug */
+  orxDEBUG_LEVEL_CLOCK = 0,                   /**< Clock Debug */
   orxDEBUG_LEVEL_DISPLAY,                     /**< Display Debug */
-  orxDEBUG_LEVEL_SOUND,                       /**< Sound Debug */
-  orxDEBUG_LEVEL_TIMER,                       /**< Timer Debug */
-  orxDEBUG_LEVEL_MEMORY,                      /**< Memory Debug */
-  orxDEBUG_LEVEL_SCREENSHOT,                  /**< Screenshot Debug */
   orxDEBUG_LEVEL_FILE,                        /**< File Debug */
+  orxDEBUG_LEVEL_INTERACTION,                 /**< Interaction Debug */
+  orxDEBUG_LEVEL_JOYSTICK,                    /**< Joystick Debug */
+  orxDEBUG_LEVEL_KEYBOARD,                    /**< Keyboard Debug */
+  orxDEBUG_LEVEL_MEMORY,                      /**< Memory Debug */
+  orxDEBUG_LEVEL_MOUSE,                       /**< Mouse Debug */
+  orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
   orxDEBUG_LEVEL_PATHFINDER,                  /**< Pathfinder Debug */
   orxDEBUG_LEVEL_PHYSICS,                     /**< Physics Debug */
   orxDEBUG_LEVEL_PLUGIN,                      /**< Plug-in Debug */
-  orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
   orxDEBUG_LEVEL_RENDER,                      /**< Render Debug */
+  orxDEBUG_LEVEL_SCREENSHOT,                  /**< Screenshot Debug */
+  orxDEBUG_LEVEL_SOUND,                       /**< Sound Debug */
+  orxDEBUG_LEVEL_SYSTEM,                      /**< System Debug */
+  orxDEBUG_LEVEL_TIMER,                       /**< Timer Debug */
 
   orxDEBUG_LEVEL_LOG,                         /**< Log Debug */
 

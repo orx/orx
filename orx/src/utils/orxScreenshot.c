@@ -26,7 +26,7 @@
 #include "display/orxDisplay.h"
 #include "io/orxFile.h"
 #include "io/orxFileSystem.h"
-#include "io/orxTextIO.h"
+#include "utils/orxString.h"
 #include "memory/orxMemory.h"
 #include "msg/msg_screenshot.h"
 
@@ -82,7 +82,6 @@ orxVOID orxScreenshot_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILE);
-  orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_TEXTIO);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_DISPLAY);
 
   return;
@@ -110,7 +109,7 @@ orxSTATUS orxScreenshot_Init()
     if(orxFileSystem_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
     {
       /* Gets file to find name */
-      orxTextIO_Printf(zFileName, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
+      orxString_Print(zFileName, "%s/%s*.*", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX);
 
       /* Finds first screenshot file */
       if(orxFileSystem_FindFirst(zFileName, &stFileInfos) != orxFALSE)
@@ -189,7 +188,7 @@ orxVOID orxScreenshot_Take()
   orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
 
   /* Computes screenshot name */
-  orxTextIO_Printf(zName, "%s/%s-%04ld.%s", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX, sstScreenshot.u32Counter, orxSCREENSHOT_KZ_EXT);
+  orxString_Print(zName, "%s/%s-%04ld.%s", orxSCREENSHOT_KZ_DIRECTORY, orxSCREENSHOT_KZ_PREFIX, sstScreenshot.u32Counter, orxSCREENSHOT_KZ_EXT);
 
   /* Saves it */
   orxDisplay_SaveBitmap(orxDisplay_GetScreenBitmap(), zName);

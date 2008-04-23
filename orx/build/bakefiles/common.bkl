@@ -35,18 +35,13 @@
 
   <option name="USE_SFML">
     <values>0,1</values>
-    <default-value>0</default-value>
+    <default-value>1</default-value>
   </option>
 
   <option name="USE_BOX2D">
     <values>0,1</values>
-    <default-value>0</default-value>
+    <default-value>1</default-value>
   </option>
-
-	<option name="USE_TEST">
-		<values>0,1</values>
-		<default-value>0</default-value>
-	</option>
 
 	<option name="USE_PLUGINS">
 		<values>0,1</values>
@@ -75,11 +70,6 @@
     <!-- Set the preprocessor definition for debug mode. -->
     <set var="orxDEBUG">
         <if cond="BUILD=='debug'">__orxDEBUG__</if>
-    </set>
-
-    <!-- Set the preprocessor definition for test mode. -->
-    <set var="orxTEST">
-        <if cond="USE_TEST=='1'">__orxTEST__</if>
     </set>
 
     <!-- ****************** COMPILATIONS FLAGS ****************** -->
@@ -130,7 +120,6 @@
         <!-- Preprocessor definitions. -->
         <define>$(orxDEBUG)</define>
         <define>$(orxPLATFORM)</define>
-        <define>$(orxTEST)</define>
         <define>$(orxCOMPILER)</define>
         
         <!-- Warnings. -->

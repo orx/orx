@@ -35,7 +35,6 @@
 #include "anim/orxAnimPointer.h"
 #include "display/orxDisplay.h"
 #include "display/orxGraphic.h"
-#include "io/orxTextIO.h"
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
 #include "math/orxVector.h"

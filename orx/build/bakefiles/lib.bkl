@@ -73,12 +73,10 @@
         <headers>
             include/debug/orxDebug.h
             include/debug/orxFPS.h
-            <!--include/debug/orxTest.h-->
         </headers>
         <sources>
             src/debug/orxDebug.c
             src/debug/orxFPS.c
-            <!--src/debug/orxTest.c-->
         </sources>
 
         <headers>
@@ -99,7 +97,6 @@
             include/io/orxKeyboard.h
             include/io/orxMouse.h
             include/io/orxPackage.h
-            include/io/orxTextIO.h
         </headers>
         <sources>
             src/io/orxFile.c
@@ -108,7 +105,6 @@
             src/io/orxKeyboard.c
             src/io/orxMouse.c
             src/io/orxPackage.c
-            src/io/orxTextIO.c
         </sources>
 
         <headers>

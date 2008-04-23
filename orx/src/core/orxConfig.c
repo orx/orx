@@ -527,7 +527,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             if((pstEntry = orxConfig_GetEntry(pcLineStart)) != orxNULL)
             {
               /* Logs */
-              orxLOG("Config entry [%s::%s]: Replacing value <%s> with new value <%s> (%s).", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->zValue, pcValueStart, _zFileName);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->zValue, pcValueStart, _zFileName);
 
               /* Deletes entry */
               orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
@@ -572,7 +572,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
               if(*pc == orxCHAR_EOL)
               {
                 /* !!! MSG !!! */
-                orxLOG("Section name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_SECTION_END);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Section name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_SECTION_END);
 
                 /* Updates new line start */
                 pcLineStart = pc + 1;

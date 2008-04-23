@@ -87,28 +87,35 @@ orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
   orxSTRING zResult;
 
+#define orxDEBUG_DECLARE_LEVEL_ENTRY(ID)    case orxDEBUG_LEVEL_##ID: zResult = #ID; break
+
   /* Depending on level */
   switch(_eLevel)
   {
-    case orxDEBUG_LEVEL_MOUSE:              zResult = "MOUSE"; break;
-    case orxDEBUG_LEVEL_KEYBOARD:           zResult = "KEYBOARD"; break;
-    case orxDEBUG_LEVEL_JOYSTICK:           zResult = "JOYSTICK"; break;
-    case orxDEBUG_LEVEL_INTERACTION:        zResult = "INTERACTION"; break;
-    case orxDEBUG_LEVEL_DISPLAY:            zResult = "DISPLAY"; break;
-    case orxDEBUG_LEVEL_SOUND:              zResult = "SOUND"; break;
-    case orxDEBUG_LEVEL_TIMER:              zResult = "TIMER"; break;
-    case orxDEBUG_LEVEL_MEMORY:             zResult = "MEMORY"; break;
-    case orxDEBUG_LEVEL_SCREENSHOT:         zResult = "SCREENSHOT"; break;
-    case orxDEBUG_LEVEL_FILE:               zResult = "FILE"; break;
-    case orxDEBUG_LEVEL_PATHFINDER:         zResult = "PATHFINDER"; break;
-    case orxDEBUG_LEVEL_PHYSICS:            zResult = "PHYSICS"; break;
-    case orxDEBUG_LEVEL_PLUGIN:             zResult = "PLUGIN"; break;
-    case orxDEBUG_LEVEL_LOG:                zResult = "LOG"; break;
-    case orxDEBUG_LEVEL_PARAM:              zResult = "PARAM"; break;
-    case orxDEBUG_LEVEL_RENDER:             zResult = "RENDER"; break;
-    case orxDEBUG_LEVEL_ALL:                zResult = "ALL"; break;
-    case orxDEBUG_LEVEL_ASSERT:             zResult = "ASSERT"; break;
-    case orxDEBUG_LEVEL_CRITICAL_ASSERT:    zResult = "CRITICAL ASSERT"; break;
+    orxDEBUG_DECLARE_LEVEL_ENTRY(CLOCK);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(DISPLAY);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(FILE);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(INTERACTION);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(JOYSTICK);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(KEYBOARD);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(MEMORY);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(MOUSE);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(PARAM);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(PATHFINDER);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(PHYSICS);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(PLUGIN);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(RENDER);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(SCREENSHOT);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(SOUND);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(SYSTEM);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(TIMER);
+    
+    orxDEBUG_DECLARE_LEVEL_ENTRY(ALL);
+
+    orxDEBUG_DECLARE_LEVEL_ENTRY(LOG);
+
+    orxDEBUG_DECLARE_LEVEL_ENTRY(ASSERT);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(CRITICAL_ASSERT);
     
     default:                                zResult = "INVALID DEBUG!"; break;
   }
@@ -314,7 +321,15 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   /* Log FUNCTION, FILE & LINE? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TAGGED)
   {
-    sprintf(sstDebug.zBuffer, "%s (%s() - %s:%ld)", sstDebug.zBuffer, _zFunction, _zFile, _u32Line);
+    orxCHAR *pc;
+
+    /* Trims relative path */
+    for(pc = _zFile;
+        (*pc != orxCHAR_EOL) && ((*pc == '.') || (*pc == orxCHAR_DIRECTORY_SEPARATOR_LINUX) || (*pc == orxCHAR_DIRECTORY_SEPARATOR_WINDOWS));
+        pc++);
+
+    /* Writes info */
+    sprintf(sstDebug.zBuffer, "%s (%s() - %s:%ld)", sstDebug.zBuffer, _zFunction, pc, _u32Line);
   }
 
   /* Debug Log */

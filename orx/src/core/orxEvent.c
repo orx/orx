@@ -22,8 +22,6 @@
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 
-#include "io/orxTextIO.h"
-
 
 /***************************************************************************
  * Static data and definitions                                             *
@@ -163,7 +161,7 @@ orxVOID orxFASTCALL orxEvent_Process(orxS16 _s16Ticks)
   	orxS16 s16Life = orxEVENT_MESSAGE_GET_LIFETIME(orxQueueItem_GetID(pstCurrentItem));
   	orxVOID* pData = orxQueueItem_GetExtraData(pstCurrentItem);
   	
-  	orxTextIO_PrintLn("Process event %04u (%04d - %p)", u16Type, s16Life, pData);
+  	orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Process event %04u (%04d - %p)", u16Type, s16Life, pData);
   	
   	/** Decrement lifetime.*/
   	if(s16Life != orxEVENT_KS16_MESSAGE_LIFETIME_CONSTANT)

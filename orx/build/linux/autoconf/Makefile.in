@@ -43,9 +43,9 @@ LINK = @LINK@
 
 DESTDIR = 
 orxCOMPILER = __orxGCC__
-ORXDLL_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ \
-	-D__orxDLLEXPORT__ $(PIC_FLAG) -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+ORXDLL_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ -D__orxDLLEXPORT__ $(PIC_FLAG) \
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxAnim.o \
 	./$(BUILD)/orxDLL_orxAnimPointer.o \
@@ -69,7 +69,6 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxKeyboard.o \
 	./$(BUILD)/orxDLL_orxMouse.o \
 	./$(BUILD)/orxDLL_orxPackage.o \
-	./$(BUILD)/orxDLL_orxTextIO.o \
 	./$(BUILD)/orxDLL_orxParam.o \
 	./$(BUILD)/orxDLL_orxVector.o \
 	./$(BUILD)/orxDLL_orxBank.o \
@@ -89,9 +88,9 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxScreenshot.o \
 	./$(BUILD)/orxDLL_orxString.o \
 	./$(BUILD)/orxDLL_orxTree.o
-ORXLIB_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ \
-	-D__orxDLLEXPORT__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+ORXLIB_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ -D__orxDLLEXPORT__ \
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxAnim.o \
 	./$(BUILD)/orxLIB_orxAnimPointer.o \
@@ -115,7 +114,6 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxKeyboard.o \
 	./$(BUILD)/orxLIB_orxMouse.o \
 	./$(BUILD)/orxLIB_orxPackage.o \
-	./$(BUILD)/orxLIB_orxTextIO.o \
 	./$(BUILD)/orxLIB_orxParam.o \
 	./$(BUILD)/orxLIB_orxVector.o \
 	./$(BUILD)/orxLIB_orxBank.o \
@@ -135,123 +133,73 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxScreenshot.o \
 	./$(BUILD)/orxLIB_orxString.o \
 	./$(BUILD)/orxLIB_orxTree.o
-ORX_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) -D$(orxCOMPILER) \
+ORX_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
 	-I$(srcdir)/../../../include -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORX_OBJECTS =  \
 	./$(BUILD)/orx_orxMain.o
-MEMORY_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-MEMORY_OBJECTS =  \
-	./$(BUILD)/Memory_orxTest_Memory.o
-BANK_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-BANK_OBJECTS =  \
-	./$(BUILD)/Bank_orxTest_Bank.o
-HASHTABLE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-HASHTABLE_OBJECTS =  \
-	./$(BUILD)/HashTable_orxTest_HashTable.o
-SOUND_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-SOUND_OBJECTS =  \
-	./$(BUILD)/Sound_orxTest_Sound.o
-PLUGIN_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-PLUGIN_OBJECTS =  \
-	./$(BUILD)/Plugin_orxTest_Plugin.o
-QUEUE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-QUEUE_OBJECTS =  \
-	./$(BUILD)/Queue_orxTest_Queue.o
-FSM_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) -D$(orxCOMPILER) \
-	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
-	$(CPPFLAGS) $(CFLAGS)
-FSM_OBJECTS =  \
-	./$(BUILD)/FSM_orxTest_FSM.o
-CLOCK_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-CLOCK_OBJECTS =  \
-	./$(BUILD)/Clock_orxTest_Clock.o
-EVENT_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-EVENT_OBJECTS =  \
-	./$(BUILD)/Event_orxTest_Event.o
-FILE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-FILE_OBJECTS =  \
-	./$(BUILD)/File_orxTest_File.o
-DISPLAY_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	$(CPPFLAGS) $(CXXFLAGS)
+DISPLAY_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
+	$(CXXFLAGS)
 DISPLAY_SFML_OBJECTS =  \
 	./$(BUILD)/Display_SFML_orxDisplay.o
-RENDER_HOME_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+RENDER_HOME_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
+	$(CPPFLAGS) $(CFLAGS)
 RENDER_HOME_OBJECTS =  \
 	./$(BUILD)/Render_Home_orxRender.o
-SOUND_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	$(CPPFLAGS) $(CXXFLAGS)
+SOUND_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
+	$(CXXFLAGS)
 SOUND_SFML_OBJECTS =  \
 	./$(BUILD)/Sound_SFML_orxSound.o
-MOUSE_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	$(CPPFLAGS) $(CXXFLAGS)
+MOUSE_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
+	$(CXXFLAGS)
 MOUSE_SFML_OBJECTS =  \
 	./$(BUILD)/Mouse_SFML_orxMouse.o
-KEYBOARD_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	$(CPPFLAGS) $(CXXFLAGS)
+KEYBOARD_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
+	$(CXXFLAGS)
 KEYBOARD_SFML_OBJECTS =  \
 	./$(BUILD)/Keyboard_SFML_orxKeyboard.o
-FILE_LIBC_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+FILE_LIBC_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
+	$(CPPFLAGS) $(CFLAGS)
 FILE_LIBC_OBJECTS =  \
 	./$(BUILD)/File_LibC_orxFile.o
-FILESYSTEM_LIBC_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+FILESYSTEM_LIBC_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
+	$(CPPFLAGS) $(CFLAGS)
 FILESYSTEM_LIBC_OBJECTS =  \
 	./$(BUILD)/FileSystem_LibC_orxFileSystem.o
-PHYSICS_BOX2D_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	$(CPPFLAGS) $(CXXFLAGS)
+PHYSICS_BOX2D_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
+	$(CXXFLAGS)
 PHYSICS_BOX2D_OBJECTS =  \
 	./$(BUILD)/Physics_Box2D_orxPhysics.o
-SYSTEM_SDL_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(orxSDLCFLAGS_UNIX) $(CPPFLAGS) $(CFLAGS)
+SYSTEM_SDL_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
+	$(orxSDLCFLAGS_UNIX) $(CPPFLAGS) $(CFLAGS)
 SYSTEM_SDL_OBJECTS =  \
 	./$(BUILD)/System_SDL_orxSystem.o
-SYSTEM_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	$(CPPFLAGS) $(CXXFLAGS)
+SYSTEM_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
+	$(CXXFLAGS)
 SYSTEM_SFML_OBJECTS =  \
 	./$(BUILD)/System_SFML_orxSystem.o
-BOUNCE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+BOUNCE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
+	$(CPPFLAGS) $(CFLAGS)
 BOUNCE_OBJECTS =  \
 	./$(BUILD)/Bounce_orxBounce.o
-SCROLL_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+SCROLL_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
+	$(CPPFLAGS) $(CFLAGS)
 SCROLL_OBJECTS =  \
 	./$(BUILD)/Scroll_orxScroll.o
-CAVE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) $(__orxTEST_p) \
-	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+CAVE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
+	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
+	$(CPPFLAGS) $(CFLAGS)
 CAVE_OBJECTS =  \
 	./$(BUILD)/Cave_orxCave.o
 
@@ -278,43 +226,6 @@ COND_LINK_STATIC_orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive \
 @COND_PLATFORM_MAC_0@__orx___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__orx___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL $(srcdir)/../../../bin/orx$(EXEEXT)
-COND_USE_TEST_1___Memory___depname = \
-	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Memory.$(SO_SUFFIX_MODULE)
-@COND_USE_TEST_1@__Memory___depname = $(COND_USE_TEST_1___Memory___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p = $(__orxLIBNAME_p)
-@COND_USE_TEST_1@__Bank___depname = \
-@COND_USE_TEST_1@	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Bank.$(SO_SUFFIX_MODULE)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_1 = $(__orxLIBNAME_p)
-COND_USE_TEST_1___HashTable___depname = \
-	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)HashTable.$(SO_SUFFIX_MODULE)
-@COND_USE_TEST_1@__HashTable___depname = $(COND_USE_TEST_1___HashTable___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_2 = $(__orxLIBNAME_p)
-COND_USE_TEST_1___Sound___depname = \
-	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Sound.$(SO_SUFFIX_MODULE)
-@COND_USE_TEST_1@__Sound___depname = $(COND_USE_TEST_1___Sound___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_3 = $(__orxLIBNAME_p)
-COND_USE_TEST_1___Plugin___depname = \
-	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Plugin.$(SO_SUFFIX_MODULE)
-@COND_USE_TEST_1@__Plugin___depname = $(COND_USE_TEST_1___Plugin___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_4 = $(__orxLIBNAME_p)
-COND_USE_TEST_1___Queue___depname = \
-	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Queue.$(SO_SUFFIX_MODULE)
-@COND_USE_TEST_1@__Queue___depname = $(COND_USE_TEST_1___Queue___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_5 = $(__orxLIBNAME_p)
-@COND_USE_TEST_1@__FSM___depname = \
-@COND_USE_TEST_1@	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)FSM.$(SO_SUFFIX_MODULE)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_6 = $(__orxLIBNAME_p)
-COND_USE_TEST_1___Clock___depname = \
-	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Clock.$(SO_SUFFIX_MODULE)
-@COND_USE_TEST_1@__Clock___depname = $(COND_USE_TEST_1___Clock___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_7 = $(__orxLIBNAME_p)
-COND_USE_TEST_1___Event___depname = \
-	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Event.$(SO_SUFFIX_MODULE)
-@COND_USE_TEST_1@__Event___depname = $(COND_USE_TEST_1___Event___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_8 = $(__orxLIBNAME_p)
-@COND_USE_TEST_1@__File___depname = \
-@COND_USE_TEST_1@	$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)File.$(SO_SUFFIX_MODULE)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_9 = $(__orxLIBNAME_p)
 @COND_PLATFORM_UNIX_1@orxSDLCFLAGS_UNIX = `sdl-config --cflags`
 @COND_PLATFORM_UNIX_1@orxSDLLIB_UNIX = `sdl-config --libs`
 @COND_PLATFORM_UNIX_1@orxSFMLLIB_UNIX = \
@@ -324,60 +235,59 @@ COND_USE_TEST_1___Event___depname = \
 COND_USE_PLUGINS_1_USE_SFML_1___Display_SFML___depname = \
 	$(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)Display_SFML.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__Display_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___Display_SFML___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_10 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1___Render_Home___depname = \
 	$(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)Render_Home.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Render_Home___depname = $(COND_USE_PLUGINS_1___Render_Home___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_11 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_1 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___Sound_SFML___depname = \
 	$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)Sound_SFML.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__Sound_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___Sound_SFML___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_12 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_2 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___Mouse_SFML___depname = \
 	$(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)Mouse_SFML.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__Mouse_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___Mouse_SFML___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_13 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_3 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___Keyboard_SFML___depname = \
 	$(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)Keyboard_SFML.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__Keyboard_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___Keyboard_SFML___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_14 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_4 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1___File_LibC___depname = \
 	$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)File_LibC.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__File_LibC___depname = $(COND_USE_PLUGINS_1___File_LibC___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_15 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_5 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1___FileSystem_LibC___depname = \
 	$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)FileSystem_LibC.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__FileSystem_LibC___depname = $(COND_USE_PLUGINS_1___FileSystem_LibC___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_16 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_6 = $(__orxLIBNAME_p)
 COND_USE_BOX2D_1_USE_PLUGINS_1___Physics_Box2D___depname = \
 	$(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)Physics_Box2D.$(SO_SUFFIX_MODULE)
 @COND_USE_BOX2D_1_USE_PLUGINS_1@__Physics_Box2D___depname = $(COND_USE_BOX2D_1_USE_PLUGINS_1___Physics_Box2D___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_17 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_7 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1_USE_SDL_1___System_SDL___depname = \
 	$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)System_SDL.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SDL_1@__System_SDL___depname = $(COND_USE_PLUGINS_1_USE_SDL_1___System_SDL___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_18 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_8 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___System_SFML___depname = \
 	$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)System_SFML.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__System_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___System_SFML___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_19 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_9 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1___Bounce___depname = \
 	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Bounce___depname = $(COND_USE_PLUGINS_1___Bounce___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_20 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_10 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1___Scroll___depname = \
 	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Scroll___depname = $(COND_USE_PLUGINS_1___Scroll___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_21 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_11 = $(__orxLIBNAME_p)
 COND_USE_PLUGINS_1___Cave___depname = \
 	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Cave___depname = $(COND_USE_PLUGINS_1___Cave___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_22 = $(__orxLIBNAME_p)
+@COND_LINK_DYNAMIC@__orxEXTRALINK_p_12 = $(__orxLIBNAME_p)
 @COND_BUILD_DEBUG@__orxDEBUG_p = -D__orxDEBUG__
 @COND_PLATFORM_MAC_1@__orxPLATFORM_p = -D__orxMAC__
 @COND_PLATFORM_UNIX_1@__orxPLATFORM_p = -D__orxLINUX__
 @COND_PLATFORM_WIN32_1@__orxPLATFORM_p = -D__orxWINDOWS__
-@COND_USE_TEST_1@__orxTEST_p = -D__orxTEST__
 @COND_LINK_DYNAMIC@__orxLINKDEPEND_DEP = $(__orxDLL___depname)
 @COND_LINK_STATIC@__orxLINKDEPEND_DEP = $(__orxLIB___depname)
 @COND_BUILD_DEBUG@__orxLIBNAME_p = -lorxd
@@ -385,7 +295,7 @@ COND_USE_PLUGINS_1___Cave___depname = \
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) $(srcdir)/../../../bin/orx$(EXEEXT) $(__Memory___depname) $(__Bank___depname) $(__HashTable___depname) $(__Sound___depname) $(__Plugin___depname) $(__Queue___depname) $(__FSM___depname) $(__Clock___depname) $(__Event___depname) $(__File___depname) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Physics_Box2D___depname) $(__System_SDL___depname) $(__System_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) $(srcdir)/../../../bin/orx$(EXEEXT) $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Physics_Box2D___depname) $(__System_SDL___depname) $(__System_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -400,16 +310,6 @@ clean:
 	rm -f $(srcdir)/../../../lib/$(LINK)/$(LIBPREFIX)$(orxLIBNAME).$(DLLIMP_SUFFIX)
 	rm -f $(srcdir)/../../../lib/$(LINK)/$(LIBPREFIX)$(orxLIBNAME)$(LIBEXT)
 	rm -f $(srcdir)/../../../bin/orx$(EXEEXT)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Memory.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Bank.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)HashTable.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Sound.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Plugin.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Queue.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)FSM.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Clock.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Event.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)File.$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)Display_SFML.$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)Render_Home.$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)Sound_SFML.$(SO_SUFFIX_MODULE)
@@ -440,74 +340,44 @@ $(srcdir)/../../../bin/orx$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
 	
 	$(__orx___mac_setfilecmd)
 
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Memory.$(SO_SUFFIX_MODULE): $(MEMORY_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(MEMORY_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Bank.$(SO_SUFFIX_MODULE): $(BANK_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(BANK_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_1)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)HashTable.$(SO_SUFFIX_MODULE): $(HASHTABLE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(HASHTABLE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_2)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Sound.$(SO_SUFFIX_MODULE): $(SOUND_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(SOUND_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_3)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Plugin.$(SO_SUFFIX_MODULE): $(PLUGIN_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(PLUGIN_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_4)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Queue.$(SO_SUFFIX_MODULE): $(QUEUE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(QUEUE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_5)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)FSM.$(SO_SUFFIX_MODULE): $(FSM_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(FSM_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_6)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Clock.$(SO_SUFFIX_MODULE): $(CLOCK_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(CLOCK_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_7)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)Event.$(SO_SUFFIX_MODULE): $(EVENT_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(EVENT_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_8)
-
-@COND_USE_TEST_1@$(srcdir)/../../../bin/modules/$(DLLPREFIX_MODULE)File.$(SO_SUFFIX_MODULE): $(FILE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_TEST_1@	$(SHARED_LD_MODULE_CC) $@ $(FILE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_9)
-
 @COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)Display_SFML.$(SO_SUFFIX_MODULE): $(DISPLAY_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(DISPLAY_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_10)
+@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(DISPLAY_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p)
 
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)Render_Home.$(SO_SUFFIX_MODULE): $(RENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(RENDER_HOME_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_11)
+@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(RENDER_HOME_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_1)
 
 @COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)Sound_SFML.$(SO_SUFFIX_MODULE): $(SOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(SOUND_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_12)
+@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(SOUND_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_2)
 
 @COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)Mouse_SFML.$(SO_SUFFIX_MODULE): $(MOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(MOUSE_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_13)
+@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(MOUSE_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_3)
 
 @COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)Keyboard_SFML.$(SO_SUFFIX_MODULE): $(KEYBOARD_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(KEYBOARD_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_14)
+@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(KEYBOARD_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_4)
 
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)File_LibC.$(SO_SUFFIX_MODULE): $(FILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(FILE_LIBC_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_15)
+@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(FILE_LIBC_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_5)
 
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)FileSystem_LibC.$(SO_SUFFIX_MODULE): $(FILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(FILESYSTEM_LIBC_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_16)
+@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(FILESYSTEM_LIBC_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_6)
 
 @COND_USE_BOX2D_1_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)Physics_Box2D.$(SO_SUFFIX_MODULE): $(PHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_BOX2D_1_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CXX) $@ $(PHYSICS_BOX2D_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxBOX2DLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_17)
+@COND_USE_BOX2D_1_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CXX) $@ $(PHYSICS_BOX2D_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxBOX2DLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_7)
 
 @COND_USE_PLUGINS_1_USE_SDL_1@$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)System_SDL.$(SO_SUFFIX_MODULE): $(SYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1_USE_SDL_1@	$(SHARED_LD_MODULE_CC) $@ $(SYSTEM_SDL_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSDLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_18)
+@COND_USE_PLUGINS_1_USE_SDL_1@	$(SHARED_LD_MODULE_CC) $@ $(SYSTEM_SDL_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSDLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_8)
 
 @COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)System_SFML.$(SO_SUFFIX_MODULE): $(SYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(SYSTEM_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_19)
+@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(SYSTEM_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_9)
 
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE): $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(BOUNCE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_20)
+@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(BOUNCE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_10)
 
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE): $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(SCROLL_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_21)
+@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(SCROLL_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_11)
 
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE): $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/orx$(EXEEXT)
-@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(CAVE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_22)
+@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(CAVE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_12)
 
 ./$(BUILD)/orxDLL_orxAnim.o: $(srcdir)/../../../src/anim/orxAnim.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/anim/orxAnim.c
@@ -574,9 +444,6 @@ $(srcdir)/../../../bin/orx$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 ./$(BUILD)/orxDLL_orxPackage.o: $(srcdir)/../../../src/io/orxPackage.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/io/orxPackage.c
-
-./$(BUILD)/orxDLL_orxTextIO.o: $(srcdir)/../../../src/io/orxTextIO.c
-	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/io/orxTextIO.c
 
 ./$(BUILD)/orxDLL_orxParam.o: $(srcdir)/../../../src/main/orxParam.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/main/orxParam.c
@@ -701,9 +568,6 @@ $(srcdir)/../../../bin/orx$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
 ./$(BUILD)/orxLIB_orxPackage.o: $(srcdir)/../../../src/io/orxPackage.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/io/orxPackage.c
 
-./$(BUILD)/orxLIB_orxTextIO.o: $(srcdir)/../../../src/io/orxTextIO.c
-	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/io/orxTextIO.c
-
 ./$(BUILD)/orxLIB_orxParam.o: $(srcdir)/../../../src/main/orxParam.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/main/orxParam.c
 
@@ -763,36 +627,6 @@ $(srcdir)/../../../bin/orx$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
 
 ./$(BUILD)/orx_orxMain.o: $(srcdir)/../../../src/main/orxMain.c
 	$(CCC) -c -o $@ $(ORX_CFLAGS) $(srcdir)/../../../src/main/orxMain.c
-
-./$(BUILD)/Memory_orxTest_Memory.o: $(srcdir)/../../../test/orxTest_Memory.c
-	$(CCC) -c -o $@ $(MEMORY_CFLAGS) $(srcdir)/../../../test/orxTest_Memory.c
-
-./$(BUILD)/Bank_orxTest_Bank.o: $(srcdir)/../../../test/orxTest_Bank.c
-	$(CCC) -c -o $@ $(BANK_CFLAGS) $(srcdir)/../../../test/orxTest_Bank.c
-
-./$(BUILD)/HashTable_orxTest_HashTable.o: $(srcdir)/../../../test/orxTest_HashTable.c
-	$(CCC) -c -o $@ $(HASHTABLE_CFLAGS) $(srcdir)/../../../test/orxTest_HashTable.c
-
-./$(BUILD)/Sound_orxTest_Sound.o: $(srcdir)/../../../test/orxTest_Sound.c
-	$(CCC) -c -o $@ $(SOUND_CFLAGS) $(srcdir)/../../../test/orxTest_Sound.c
-
-./$(BUILD)/Plugin_orxTest_Plugin.o: $(srcdir)/../../../test/orxTest_Plugin.c
-	$(CCC) -c -o $@ $(PLUGIN_CFLAGS) $(srcdir)/../../../test/orxTest_Plugin.c
-
-./$(BUILD)/Queue_orxTest_Queue.o: $(srcdir)/../../../test/orxTest_Queue.c
-	$(CCC) -c -o $@ $(QUEUE_CFLAGS) $(srcdir)/../../../test/orxTest_Queue.c
-
-./$(BUILD)/FSM_orxTest_FSM.o: $(srcdir)/../../../test/orxTest_FSM.c
-	$(CCC) -c -o $@ $(FSM_CFLAGS) $(srcdir)/../../../test/orxTest_FSM.c
-
-./$(BUILD)/Clock_orxTest_Clock.o: $(srcdir)/../../../test/orxTest_Clock.c
-	$(CCC) -c -o $@ $(CLOCK_CFLAGS) $(srcdir)/../../../test/orxTest_Clock.c
-
-./$(BUILD)/Event_orxTest_Event.o: $(srcdir)/../../../test/orxTest_Event.c
-	$(CCC) -c -o $@ $(EVENT_CFLAGS) $(srcdir)/../../../test/orxTest_Event.c
-
-./$(BUILD)/File_orxTest_File.o: $(srcdir)/../../../test/orxTest_File.c
-	$(CCC) -c -o $@ $(FILE_CFLAGS) $(srcdir)/../../../test/orxTest_File.c
 
 ./$(BUILD)/Display_SFML_orxDisplay.o: $(srcdir)/../../../plugins/Display/SFML/orxDisplay.cpp
 	$(CXXC) -c -o $@ $(DISPLAY_SFML_CXXFLAGS) $(srcdir)/../../../plugins/Display/SFML/orxDisplay.cpp

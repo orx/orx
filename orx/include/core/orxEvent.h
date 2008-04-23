@@ -120,12 +120,16 @@ typedef orxVOID (*orxEVENT_FUNCTION)(orxEVENT_MESSAGE_TYPE, orxEVENT_MESSAGE_LIF
 /** Event module setup
  */
 extern orxDLLAPI orxVOID                        orxEvent_Setup();
+
 /** Initialize Event Module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS                      orxEvent_Init();
+
 /** Exit Event module
  */
 extern orxDLLAPI orxVOID                        orxEvent_Exit();
+
 
 /** Set the manipulation flags of event manager.
  * @param _u32Flags Flags of event manager.
@@ -154,7 +158,7 @@ extern orxDLLAPI orxVOID orxFASTCALL            orxEvent_Add(orxEVENT_MESSAGE_TY
 /** Retrieve event number.
  * @return Event number.
  */
-extern orxDLLAPI orxU16 orxFASTCALL				orxEvent_GetCount();
+extern orxDLLAPI orxU16 orxFASTCALL     				         orxEvent_GetCount();
 
 /** Process events.
  * @param _pstEventManager Event manager.

@@ -27,7 +27,7 @@
 
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
-#include "io/orxTextIO.h"
+#include "utils/orxString.h"
 
 #define orxBANK_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxBANK_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
@@ -600,53 +600,57 @@ orxVOID orxFASTCALL orxBank_DebugPrint(orxCONST orxBANK *_pstBank)
   /* Correct parameters ? */
   orxASSERT(_pstBank != orxNULL);
 
-  orxTextIO_PrintLn("\n\n\n********* Bank (%x) *********", _pstBank);
-  orxTextIO_PrintLn("* u16NbCellPerSegments = %u", _pstBank->u16NbCellPerSegments);
-  orxTextIO_PrintLn("* u32ElemSize = %u", _pstBank->u32ElemSize);
-  orxTextIO_PrintLn("* u32Flags = %x", _pstBank->u32Flags);
-  orxTextIO_PrintLn("* eMemType = %u", _pstBank->eMemType);
-  orxTextIO_PrintLn("* u16SizeSegmentBitField = %u", _pstBank->u16SizeSegmentBitField);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "\n\n\n********* Bank (%x) *********", _pstBank);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u16NbCellPerSegments = %u", _pstBank->u16NbCellPerSegments);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u32ElemSize = %u", _pstBank->u32ElemSize);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u32Flags = %x", _pstBank->u32Flags);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* eMemType = %u", _pstBank->eMemType);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u16SizeSegmentBitField = %u", _pstBank->u16SizeSegmentBitField);
 
-  orxTextIO_PrintLn("\n* **** SEGMENTS ******");
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "\n* **** SEGMENTS ******");
 
   pstSegment = _pstBank->pstFirstSegment;
 
   while(pstSegment != orxNULL)
   {
-    orxTextIO_PrintLn("\n* ** Segment (%x) ***", pstSegment);
-    orxTextIO_PrintLn("* u16NbFree = %u", pstSegment->u16NbFree);
-    orxTextIO_PrintLn("* pstNext = %x", pstSegment->pstNext);
-    orxTextIO_PrintLn("* pSegmentDatas = %x", pstSegment->pSegmentDatas);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "\n* ** Segment (%x) ***", pstSegment);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* u16NbFree = %u", pstSegment->u16NbFree);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* pstNext = %x", pstSegment->pstNext);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "* pSegmentDatas = %x", pstSegment->pSegmentDatas);
 
     for(u32Index1 = 0; u32Index1 < _pstBank->u16SizeSegmentBitField; u32Index1++)
     {
-      orxTextIO_Print("Bits : %02d (%x) = ", u32Index1, pstSegment->pu32FreeElemBits[u32Index1]);
+      orxCHAR zBuffer[4096];
+
+      orxMemory_Set(zBuffer, 0, 4096 * sizeof(orxCHAR));
+
+      orxString_Print(zBuffer, "Bits : %02d (%x) = ", u32Index1, pstSegment->pu32FreeElemBits[u32Index1]);
       
       for(u32Index2 = 0; u32Index2 < 4; u32Index2++)
       {
-        orxTextIO_Print("[");
+        orxString_Print(zBuffer, "[");
         for(u32Index3 = 0; u32Index3 < 8; u32Index3++)
         {
           if((pstSegment->pu32FreeElemBits[u32Index1] & (orxU32)(1 << ((u32Index2 << 3) + u32Index3)) ) == (orxU32)(1 << ((u32Index2 << 3) + u32Index3)) )
           {
-            orxTextIO_Print("1");
+            orxString_Print(zBuffer, "1");
           }
           else
           {
-            orxTextIO_Print("0");
+            orxString_Print(zBuffer, "0");
           }
 
           if(u32Index3 == 3)
           {
-            orxTextIO_Print(" ");
+            orxString_Print(zBuffer, " ");
           }
         }
-        orxTextIO_Print("]");
+        orxString_Print(zBuffer, "]");
       }
       
-      orxTextIO_PrintLn(orxSTRING_EMPTY);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "%s", zBuffer);
     }
-    
+
     /* Go to next segment */
     pstSegment = pstSegment->pstNext;
   }

@@ -26,12 +26,14 @@
 #include "utils/orxHashTable.h"
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
-#include "io/orxTextIO.h"
+#include "utils/orxString.h"
+
 
 #define orxHASHTABLE_KU32_STATIC_FLAG_NONE  0x00000000  /**< No flags have been set */
 #define orxHASHTABLE_KU32_STATIC_FLAG_READY 0x00000001  /**< The module has been initialized */
 
 #define orxHASHTABLE_KU32_INDEX_SIZE        256
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -598,19 +600,23 @@ orxVOID orxFASTCALL orxHashTable_DebugPrint(orxCONST orxHASHTABLE *_pstHashTable
   /* Correct parameters ? */
   orxASSERT(_pstHashTable != orxNULL);
 
-  orxTextIO_PrintLn("\n\n\n********* HashTable (%x) *********", _pstHashTable);
+  orxLOG("\n\n\n********* HashTable (%x) *********", _pstHashTable);
 
   for(u32Index = 0; u32Index < orxHASHTABLE_KU32_INDEX_SIZE; u32Index++)
   {
-    orxTextIO_Print("[%3d]-->", u32Index);
+    orxCHAR zBuffer[4096];
+    
+    orxMemory_Set(zBuffer, 0, 4096 * sizeof(4096));
+
+    orxString_Print(zBuffer, "[%3d]-->", u32Index);
     pstCell = _pstHashTable->apstCell[u32Index];
     
     while(pstCell != orxNULL)
     {
-      orxTextIO_Print("(%u/%d)-->", pstCell->u32Key, (orxS32)pstCell->pData);
+      orxString_Print(zBuffer, "(%u/%p)-->", pstCell->u32Key, pstCell->pData);
       pstCell = pstCell->pstNext;
     }
     
-    orxTextIO_PrintLn("NULL");
+    orxLOG("%sNULL", zBuffer);
   }
 }

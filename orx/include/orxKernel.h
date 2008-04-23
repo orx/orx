@@ -33,7 +33,6 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxFPS.h"
-#include "debug/orxTest.h"
 
 #include "display/orxGraphic.h"
 #include "display/orxDisplay.h"
@@ -45,7 +44,6 @@
 #include "io/orxKeyboard.h"
 #include "io/orxMouse.h"
 #include "io/orxPackage.h"
-#include "io/orxTextIO.h"
 
 #include "main/orxParam.h"
 

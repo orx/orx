@@ -1,77 +1,28 @@
 <?xml version="1.0"?>
 <bakefile>
 
-    <!-- Set module link lib -->
-    <set var="orxEXTRALINK">
-     <if cond="LINK=='dynamic' and COMPILER=='gcc'">$(orxLIBNAME)</if>
-    </set>
-    
-    <set var="orxMSVCLINK">
-      <if cond="LINK=='dynamic' and COMPILER=='msvc'">$(orxLINKDEPEND)</if>
-    </set>
-
-
-    <set var="orxMODULE_FLAGS">
-      <if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)\$(orxLIBNAME).a</if>
-      <if cond="LINK=='static' and COMPILER=='msvc'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
-    </set>
-
-    <!-- Define the module template -->
-    <template id="orxMODULELINK">
-      <depends>orx</depends>
-      <sys-lib>$(orxEXTRALINK)</sys-lib>
-      <ldflags>$(orxMODULE_FLAGS)</ldflags>
-      <library>$(orxMSVCLINK)</library>
-      <define>__orxDLL__</define>
-    </template>
-
-	<define-rule name="orx-module-test" extends="module">
-      <template template="orxBASE,orxLINK,orxMODULELINK">
-        <dirname>$(orxBINDIR)$(DIRSEP)modules</dirname>
-      </template>
-	</define-rule>
-
-
-  <!--- Create orx test module -->
+  <!-- Set module link lib -->
+  <set var="orxEXTRALINK">
+   <if cond="LINK=='dynamic' and COMPILER=='gcc'">$(orxLIBNAME)</if>
+  </set>
   
-	<orx-module-test id="Memory" cond="USE_TEST=='1'">
-      <sources>test/orxTest_Memory.c</sources>
-	</orx-module-test>
+  <set var="orxMSVCLINK">
+    <if cond="LINK=='dynamic' and COMPILER=='msvc'">$(orxLINKDEPEND)</if>
+  </set>
 
-	<orx-module-test id="Bank" cond="USE_TEST=='1'">
-      <sources>test/orxTest_Bank.c</sources>
-	</orx-module-test>
 
-	<orx-module-test id="HashTable" cond="USE_TEST=='1'">
-      <sources>test/orxTest_HashTable.c</sources>
-	</orx-module-test>
+  <set var="orxMODULE_FLAGS">
+    <if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)\$(orxLIBNAME).a</if>
+    <if cond="LINK=='static' and COMPILER=='msvc'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
+  </set>
 
-	<orx-module-test id="Sound" cond="USE_TEST=='1'">
-      <sources>test/orxTest_Sound.c</sources>
-	</orx-module-test>
-
-	<orx-module-test id="Plugin" cond="USE_TEST=='1'">
-      <sources>test/orxTest_Plugin.c</sources>
-	</orx-module-test>
-
-	<orx-module-test id="Queue" cond="USE_TEST=='1'">
-      <sources>test/orxTest_Queue.c</sources>
-	</orx-module-test>
-
-	<orx-module-test id="FSM" cond="USE_TEST=='1'">
-      <sources>test/orxTest_FSM.c</sources>
-	</orx-module-test>
-
-	<orx-module-test id="Clock" cond="USE_TEST=='1'">
-      <sources>test/orxTest_Clock.c</sources>
-	</orx-module-test>
-
-	<orx-module-test id="Event" cond="USE_TEST=='1'">
-      <sources>test/orxTest_Event.c</sources>
-	</orx-module-test>
-
-	<orx-module-test id="File" cond="USE_TEST=='1'">
-      <sources>test/orxTest_File.c</sources>
-	</orx-module-test>
+  <!-- Define the module template -->
+  <template id="orxMODULELINK">
+    <depends>orx</depends>
+    <sys-lib>$(orxEXTRALINK)</sys-lib>
+    <ldflags>$(orxMODULE_FLAGS)</ldflags>
+    <library>$(orxMSVCLINK)</library>
+    <define>__orxDLL__</define>
+  </template>
 
 </bakefile>

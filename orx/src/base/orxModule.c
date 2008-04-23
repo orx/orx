@@ -78,14 +78,9 @@ orxVOID orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SCREENSHOT, orxScreenshot);
   orxMODULE_REGISTER(orxMODULE_ID_STRUCTURE, orxStructure);
   orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);
-  orxMODULE_REGISTER(orxMODULE_ID_TEXTIO, orxTextIO);
   orxMODULE_REGISTER(orxMODULE_ID_TEXTURE, orxTexture);
   orxMODULE_REGISTER(orxMODULE_ID_TREE, orxTree);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
-
-#ifdef __orxTEST__
-  orxMODULE_REGISTER(orxMODULE_ID_TEST, orxTest);
-#endif /* __orxTEST__ */
 
   /* Computes all dependencies */
   orxModule_UpdateDependencies();
