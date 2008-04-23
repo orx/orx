@@ -1,12 +1,12 @@
 /**
  * @file orxPlugin_File.h
- * 
+ *
  * Module to define file plugin registration ID
- */ 
- 
+ */
+
  /***************************************************************************
  orxPlugin_File.h
- 
+
  begin                : 01/05/2005
  author               : (C) Arcallians
  email                : bestel@arcallians.org
@@ -25,7 +25,7 @@
 #ifndef _orxPLUGIN_FILE_H_
 #define _orxPLUGIN_FILE_H_
 
-#include "orxPlugin_CoreID.h"
+#include "plugin/define/orxPlugin_CoreID.h"
 
 
 /*********************************************
@@ -45,7 +45,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_FILE_t
   orxPLUGIN_FUNCTION_BASE_ID_FILE_NUMBER,
 
   orxPLUGIN_FUNCTION_BASE_ID_FILE_NONE = orxENUM_NONE
-    
+
 } orxPLUGIN_FUNCTION_BASE_ID_FILE;
 
 

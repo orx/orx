@@ -21,7 +21,7 @@
 #ifndef _orxPLUGIN_PHYSICS_H_
 #define _orxPLUGIN_PHYSICS_H_
 
-#include "orxPlugin_CoreID.h"
+#include "plugin/define/orxPlugin_CoreID.h"
 
 
 /*********************************************
@@ -57,7 +57,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_t
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NUMBER,
 
   orxPLUGIN_FUNCTION_BASE_ID_PHYSICS_NONE = orxENUM_NONE
-    
+
 } orxPLUGIN_FUNCTION_BASE_ID_PHYSICS;
 
 

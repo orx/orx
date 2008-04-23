@@ -22,7 +22,7 @@
 #ifndef _orxPLUGIN_JOYSTICK_H_
 #define _orxPLUGIN_JOYSTICK_H_
 
-#include "orxPlugin_CoreID.h"
+#include "plugin/define/orxPlugin_CoreID.h"
 
 
 /*********************************************
@@ -37,7 +37,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_t
   orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NUMBER,
 
   orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK_NONE = orxENUM_NONE
-    
+
 } orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK;
 
 

@@ -21,7 +21,7 @@
 #ifndef _orxPLUGIN_DISPLAY_H_
 #define _orxPLUGIN_DISPLAY_H_
 
-#include "orxPlugin_CoreID.h"
+#include "plugin/define/orxPlugin_CoreID.h"
 
 
 /*********************************************
@@ -51,7 +51,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_t
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_NUMBER,
 
   orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_NONE = orxENUM_NONE
-    
+
 } orxPLUGIN_FUNCTION_BASE_ID_DISPLAY;
 
 

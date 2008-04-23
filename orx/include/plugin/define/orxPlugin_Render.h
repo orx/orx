@@ -21,7 +21,7 @@
 #ifndef _orxPLUGIN_RENDER_H_
 #define _orxPLUGIN_RENDER_H_
 
-#include "orxPlugin_CoreID.h"
+#include "plugin/define/orxPlugin_CoreID.h"
 
 
 /*********************************************
@@ -36,7 +36,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_RENDER_t
   orxPLUGIN_FUNCTION_BASE_ID_RENDER_NUMBER,
 
   orxPLUGIN_FUNCTION_BASE_ID_RENDER_NONE = orxENUM_NONE
-    
+
 } orxPLUGIN_FUNCTION_BASE_ID_RENDER;
 
 

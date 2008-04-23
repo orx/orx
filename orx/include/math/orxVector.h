@@ -1,9 +1,9 @@
-/** 
+/**
  * \file orxVector.h
- * 
+ *
  * Vector module.
  * Handles vectors.
- * 
+ *
  * \todo
  * Extract box code into box module
  * Adds rotate function with matrix module, when it's done
@@ -15,7 +15,7 @@
 /***************************************************************************
  orxVector.h
  Vector module
- 
+
  begin                : 30/03/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -435,13 +435,15 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical
         /* Z < 0? */
         if(*(orxU32 *)&(_pvOp->fZ) & (orxU32)0x80000000)
         {
-          orxU32 u32Temp;
+          orxU32              u32Temp;
+          orxREGISTER orxU32 *pu32Temp;
 
           /* Gets absolute value */
           u32Temp = *(orxU32 *)&(_pvOp->fZ) & (orxU32)0x7FFFFFFF;
 
           /* Sets rho */
-          fRho = *(orxFLOAT *)&u32Temp;
+          pu32Temp  = &u32Temp;
+          fRho      = *(orxFLOAT *)pu32Temp;
 
           /* Sets phi */
           fPhi = orxMATH_KF_PI;

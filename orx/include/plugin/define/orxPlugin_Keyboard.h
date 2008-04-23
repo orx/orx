@@ -22,7 +22,7 @@
 #ifndef _orxPLUGIN_KEYBOARD_H_
 #define _orxPLUGIN_KEYBOARD_H_
 
-#include "orxPlugin_CoreID.h"
+#include "plugin/define/orxPlugin_CoreID.h"
 
 
 /*********************************************
@@ -41,7 +41,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_t
   orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NUMBER,
 
   orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_NONE = orxENUM_NONE
-    
+
 } orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD;
 
 

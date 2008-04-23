@@ -22,7 +22,7 @@
 #ifndef _orxPLUGIN_SYSTEM_H_
 #define _orxPLUGIN_SYSTEM_H_
 
-#include "orxPlugin_CoreID.h"
+#include "plugin/define/orxPlugin_CoreID.h"
 
 
 /*********************************************
@@ -39,7 +39,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_t
   orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_NUMBER,
 
   orxPLUGIN_FUNCTION_BASE_ID_SYSTEM_NONE = orxENUM_NONE
-    
+
 } orxPLUGIN_FUNCTION_BASE_ID_SYSTEM;
 
 
