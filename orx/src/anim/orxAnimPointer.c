@@ -32,6 +32,13 @@
 #include "core/orxClock.h"
 
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4311 4312)
+
+#endif /* __orxMSVC__ */
+
+
 /** Module flags
  */
 #define orxANIMPOINTER_KU32_STATIC_FLAG_NONE          0x00000000  /**< No flags */
@@ -688,3 +695,10 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimPointe
   /* Done! */
   return eResult;
 }
+
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4311 4312)
+
+#endif /* __orxMSVC__ */

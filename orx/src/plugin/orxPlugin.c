@@ -22,7 +22,6 @@
 
 #include "debug/orxDebug.h"
 #include "main/orxParam.h"
-#include "io/orxTextIO.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
 #include "plugin/orxPluginUser.h"
@@ -762,7 +761,6 @@ orxVOID orxPlugin_Setup()
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_HASHTABLE);
-  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_TEXTIO);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_PARAM);
 
   return;

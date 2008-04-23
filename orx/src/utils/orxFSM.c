@@ -28,7 +28,6 @@
 #include "utils/orxHashTable.h"
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
-#include "io/orxTextIO.h"
 
 #define orxFSM_KU32_STATIC_FLAG_NONE  0x00000000  /**< No flags have been set. */
 #define orxFSM_KU32_STATIC_FLAG_READY 0x00000001  /**< The module has been initialized. */

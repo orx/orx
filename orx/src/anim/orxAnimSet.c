@@ -30,6 +30,13 @@
 #include "memory/orxMemory.h"
 
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4311 4312)
+
+#endif /* __orxMSVC__ */
+
+
 /** Module flags
  */
 #define orxANIMSET_KU32_STATIC_FLAG_NONE              0x00000000	/**< No flags */
@@ -2100,3 +2107,10 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet)
   /* Gets counter */
   return(orxStructure_GetFlags((orxANIMSET *)_pstAnimSet, orxANIMSET_KU32_MASK_COUNTER) >> orxANIMSET_KU32_ID_SHIFT_COUNTER);
 }
+
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4311 4312)
+
+#endif /* __orxMSVC__ */

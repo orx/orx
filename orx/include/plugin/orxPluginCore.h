@@ -107,6 +107,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 
 /* *** Definition macro *** */
 #ifdef __orxMSVC__
+#pragma warning(disable : 4113)
 
 #define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)  \
   orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)             \

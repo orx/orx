@@ -74,7 +74,7 @@
 
 #define orxBODY_KZ_FULL                       "full"
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
-#define orxBODY_KZ_TYPE_BOX                   "box
+#define orxBODY_KZ_TYPE_BOX                   "box"
 
 
 /***************************************************************************

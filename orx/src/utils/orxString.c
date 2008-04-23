@@ -1,5 +1,5 @@
 /**
- * @file orxTest.c
+ * @file orxString.c
  * 
  * String Module - Offers functions to manage Strings and CRC
  * 
