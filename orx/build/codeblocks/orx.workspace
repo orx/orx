@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="orx">
+		<Project filename="orxLIB\orxLIB.cbp" />
+		<Project filename="orx\orx.cbp" active="1">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

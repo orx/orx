@@ -90,7 +90,7 @@
         <if cond="BUILD=='release'">default</if>
     </set>
     
-    <set var="orxLIBNAME">
+    <set var="orxNAME">
         <if cond="BUILD=='debug'">orxd</if>
         <if cond="BUILD=='release'">orx</if>
     </set>

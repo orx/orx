@@ -10,7 +10,7 @@
     
     <!-- Template for orx libraries. -->
     <template id="orxLIB_BASE" template="orxBASE">
-        <libname>$(orxLIBNAME)</libname>
+        <libname>$(orxNAME)</libname>
         
         <define>__orxDLL__</define>
         <define>__orxDLLEXPORT__</define>
@@ -221,7 +221,7 @@
     <!--- Create orx static library -->
     <dll id="orxDLL" template="orxLIB_BASE" cond="LINK=='dynamic'">
         <!-- Set the name of the library (will be different in debug and release mode -->
-        <dllname>$(orxLIBNAME)</dllname>
+        <dllname>$(orxNAME)</dllname>
         <sys-lib>$(orxMATHLIB)</sys-lib> <!-- math library is still needed at the moment... It would be better to remove this dependency -->
     </dll>
 

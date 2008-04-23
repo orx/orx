@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="orxLIB" />
+		<Option compiler="gcc" />
+		<Option extended_obj_names="1" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\..\..\lib\static\liborxd" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="debug" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-D__orxDEBUG__" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="..\..\..\lib\static\liborx" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="release" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-Wno-strict-aliasing" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-D__orxWINDOWS__" />
+			<Add option="-D__orxGCC__" />
+			<Add directory="..\..\..\include" />
+		</Compiler>
+		<Unit filename="..\..\..\include\anim\orxAnim.h" />
+		<Unit filename="..\..\..\include\anim\orxAnimPointer.h" />
+		<Unit filename="..\..\..\include\anim\orxAnimSet.h" />
+		<Unit filename="..\..\..\include\base\orxDecl.h" />
+		<Unit filename="..\..\..\include\base\orxModule.h" />
+		<Unit filename="..\..\..\include\base\orxType.h" />
+		<Unit filename="..\..\..\include\core\orxClock.h" />
+		<Unit filename="..\..\..\include\core\orxConfig.h" />
+		<Unit filename="..\..\..\include\core\orxEvent.h" />
+		<Unit filename="..\..\..\include\core\orxSystem.h" />
+		<Unit filename="..\..\..\include\debug\orxDebug.h" />
+		<Unit filename="..\..\..\include\debug\orxFPS.h" />
+		<Unit filename="..\..\..\include\display\orxDisplay.h" />
+		<Unit filename="..\..\..\include\display\orxGraphic.h" />
+		<Unit filename="..\..\..\include\display\orxTexture.h" />
+		<Unit filename="..\..\..\include\io\orxFile.h" />
+		<Unit filename="..\..\..\include\io\orxFileSystem.h" />
+		<Unit filename="..\..\..\include\io\orxJoystick.h" />
+		<Unit filename="..\..\..\include\io\orxKeyboard.h" />
+		<Unit filename="..\..\..\include\io\orxMouse.h" />
+		<Unit filename="..\..\..\include\io\orxPackage.h" />
+		<Unit filename="..\..\..\include\main\orxParam.h" />
+		<Unit filename="..\..\..\include\math\orxMath.h" />
+		<Unit filename="..\..\..\include\math\orxVector.h" />
+		<Unit filename="..\..\..\include\memory\orxBank.h" />
+		<Unit filename="..\..\..\include\memory\orxMemory.h" />
+		<Unit filename="..\..\..\include\msg\msg_file.h" />
+		<Unit filename="..\..\..\include\msg\msg_fps.h" />
+		<Unit filename="..\..\..\include\msg\msg_game.h" />
+		<Unit filename="..\..\..\include\msg\msg_graph.h" />
+		<Unit filename="..\..\..\include\msg\msg_plugin.h" />
+		<Unit filename="..\..\..\include\msg\msg_screenshot.h" />
+		<Unit filename="..\..\..\include\msg\msg_timer.h" />
+		<Unit filename="..\..\..\include\object\orxFrame.h" />
+		<Unit filename="..\..\..\include\object\orxObject.h" />
+		<Unit filename="..\..\..\include\object\orxStructure.h" />
+		<Unit filename="..\..\..\include\orx.h" />
+		<Unit filename="..\..\..\include\orxInclude.h" />
+		<Unit filename="..\..\..\include\orxKernel.h" />
+		<Unit filename="..\..\..\include\orxUtils.h" />
+		<Unit filename="..\..\..\include\physics\orxBody.h" />
+		<Unit filename="..\..\..\include\physics\orxPhysics.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_CoreDefine.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_CoreID.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Display.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_File.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_FileSystem.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Joystick.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Keyboard.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Mouse.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Package.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Physics.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Render.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Script.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Sound.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_System.h" />
+		<Unit filename="..\..\..\include\plugin\orxPlugin.h" />
+		<Unit filename="..\..\..\include\plugin\orxPluginCore.h" />
+		<Unit filename="..\..\..\include\plugin\orxPluginType.h" />
+		<Unit filename="..\..\..\include\plugin\orxPluginUser.h" />
+		<Unit filename="..\..\..\include\render\orxCamera.h" />
+		<Unit filename="..\..\..\include\render\orxRender.h" />
+		<Unit filename="..\..\..\include\render\orxViewport.h" />
+		<Unit filename="..\..\..\include\script\orxScript.h" />
+		<Unit filename="..\..\..\include\sound\orxSound.h" />
+		<Unit filename="..\..\..\include\utils\orxFSM.h" />
+		<Unit filename="..\..\..\include\utils\orxHashTable.h" />
+		<Unit filename="..\..\..\include\utils\orxLinkList.h" />
+		<Unit filename="..\..\..\include\utils\orxQueue.h" />
+		<Unit filename="..\..\..\include\utils\orxScreenshot.h" />
+		<Unit filename="..\..\..\include\utils\orxString.h" />
+		<Unit filename="..\..\..\include\utils\orxTree.h" />
+		<Unit filename="..\..\..\include\utils\pathfinder.h" />
+		<Unit filename="..\..\..\src\anim\orxAnim.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\anim\orxAnimPointer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\anim\orxAnimSet.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\base\orxModule.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\core\orxClock.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\core\orxConfig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\core\orxEvent.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\core\orxSystem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\debug\orxDebug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\debug\orxFPS.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\display\orxDisplay.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\display\orxGraphic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\display\orxTexture.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\io\orxFile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\io\orxFileSystem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\io\orxJoystick.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\io\orxKeyboard.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\io\orxMouse.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\io\orxPackage.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\main\orxParam.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\math\orxVector.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\memory\orxBank.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\memory\orxMemory.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\object\orxFrame.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\object\orxObject.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\object\orxStructure.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\physics\orxBody.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\physics\orxPhysics.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\plugin\orxPlugin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\render\orxCamera.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\render\orxRender.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\render\orxViewport.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\script\orxScript.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\sound\orxSound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\utils\orxFSM.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\utils\orxHashTable.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\utils\orxLinkList.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\utils\orxQueue.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\utils\orxScreenshot.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\utils\orxString.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\utils\orxTree.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\utils\pathfinder.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

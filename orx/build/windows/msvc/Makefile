@@ -58,7 +58,7 @@ orxPLATFORM = __orxWINDOWS__
 orxCOMPILER = __orxMSVC__
 ORXDLL_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /D__orxDLLEXPORT__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
 ORXDLL_OBJECTS =  \
@@ -105,7 +105,7 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxTree.obj
 ORXLIB_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /D__orxDLLEXPORT__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
 ORXLIB_OBJECTS =  \
@@ -151,7 +151,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxString.obj \
 	.\$(BUILD)\orxLIB_orxTree.obj
 ORX_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) /Fd..\..\..\bin\orx.pdb \
+	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) /Fd..\..\..\bin\$(orxNAME).pdb \
 	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	/I..\..\..\include /D_CONSOLE /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
 ORX_OBJECTS =  \
@@ -251,16 +251,16 @@ CAVE_OBJECTS =  \
 ### Conditionally set variables: ###
 
 !if "$(BUILD)" == "debug"
-orxLIBNAME = orxd
+orxNAME = orxd
 !endif
 !if "$(BUILD)" == "release"
-orxLIBNAME = orx
+orxNAME = orx
 !endif
 !if "$(LINK)" == "dynamic"
-__orxDLL___depname = ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).dll
+__orxDLL___depname = ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll
 !endif
 !if "$(LINK)" == "static"
-__orxLIB___depname = ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
+__orxLIB___depname = ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib
 !endif
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
 __Display_SFML___depname = \
@@ -364,20 +364,20 @@ all: .\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\orx.exe $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Physics_Box2D___depname) $(__System_SDL___depname) $(__System_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\$(orxNAME).exe $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Physics_Box2D___depname) $(__System_SDL___depname) $(__System_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 clean: 
 	-if exist .\$(BUILD)\*.obj del .\$(BUILD)\*.obj
 	-if exist .\$(BUILD)\*.res del .\$(BUILD)\*.res
 	-if exist .\$(BUILD)\*.pch del .\$(BUILD)\*.pch
-	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).dll del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).dll
-	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).ilk del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).ilk
-	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).pdb del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).pdb
-	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
-	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
-	-if exist ..\..\..\bin\orx.exe del ..\..\..\bin\orx.exe
-	-if exist ..\..\..\bin\orx.ilk del ..\..\..\bin\orx.ilk
-	-if exist ..\..\..\bin\orx.pdb del ..\..\..\bin\orx.pdb
+	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll
+	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).ilk del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).ilk
+	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb
+	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib
+	-if exist ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib del ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib
+	-if exist ..\..\..\bin\$(orxNAME).exe del ..\..\..\bin\$(orxNAME).exe
+	-if exist ..\..\..\bin\$(orxNAME).ilk del ..\..\..\bin\$(orxNAME).ilk
+	-if exist ..\..\..\bin\$(orxNAME).pdb del ..\..\..\bin\$(orxNAME).pdb
 	-if exist ..\..\..\bin\plugins\core\display\Display_SFML.dll del ..\..\..\bin\plugins\core\display\Display_SFML.dll
 	-if exist ..\..\..\bin\plugins\core\display\Display_SFML.ilk del ..\..\..\bin\plugins\core\display\Display_SFML.ilk
 	-if exist ..\..\..\bin\plugins\core\display\Display_SFML.pdb del ..\..\..\bin\plugins\core\display\Display_SFML.pdb
@@ -419,111 +419,111 @@ clean:
 	-if exist ..\..\..\bin\plugins\demo\Cave.pdb del ..\..\..\bin\plugins\demo\Cave.pdb
 
 !if "$(LINK)" == "dynamic"
-..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).dll: $(ORXDLL_OBJECTS)
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).pdb" @<<
-	$(ORXDLL_OBJECTS)   /IMPLIB:..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib
+..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll: $(ORXDLL_OBJECTS)
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb" @<<
+	$(ORXDLL_OBJECTS)   /IMPLIB:..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib
 <<
 !endif
 
 !if "$(LINK)" == "static"
-..\..\..\lib\$(__LINK_FILENAMES)\$(orxLIBNAME).lib: $(ORXLIB_OBJECTS)
+..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib: $(ORXLIB_OBJECTS)
 	if exist $@ del $@
 	link /LIB /NOLOGO /OUT:$@ @<<
 	$(ORXLIB_OBJECTS)
 <<
 !endif
 
-..\..\..\bin\orx.exe: $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
-	link /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\orx.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES) /SUBSYSTEM:CONSOLE   @<<
+..\..\..\bin\$(orxNAME).exe: $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
+	link /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\$(orxNAME).pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES) /SUBSYSTEM:CONSOLE   @<<
 	$(ORX_OBJECTS)
 <<
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\display\Display_SFML.dll: $(DISPLAY_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\display\Display_SFML.dll: $(DISPLAY_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\display\Display_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
 	$(DISPLAY_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\core\render\Render_Home.dll: $(RENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\render\Render_Home.dll: $(RENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\render\Render_Home.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(RENDER_HOME_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\sound\Sound_SFML.dll: $(SOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\sound\Sound_SFML.dll: $(SOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\sound\Sound_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
 	$(SOUND_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\mouse\Mouse_SFML.dll: $(MOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\mouse\Mouse_SFML.dll: $(MOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\mouse\Mouse_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
 	$(MOUSE_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.dll: $(KEYBOARD_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.dll: $(KEYBOARD_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
 	$(KEYBOARD_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\core\file\File_LibC.dll: $(FILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\file\File_LibC.dll: $(FILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\file\File_LibC.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(FILE_LIBC_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\core\file\FileSystem_LibC.dll: $(FILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\file\FileSystem_LibC.dll: $(FILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\file\FileSystem_LibC.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(FILESYSTEM_LIBC_OBJECTS)
 <<
 !endif
 
 !if "$(USE_BOX2D)" == "1" && "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\core\physics\Physics_Box2D.dll: $(PHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\physics\Physics_Box2D.dll: $(PHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\physics\Physics_Box2D.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
 	$(PHYSICS_BOX2D_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SDL)" == "1"
-..\..\..\bin\plugins\core\system\System_SDL.dll: $(SYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\system\System_SDL.dll: $(SYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\system\System_SDL.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
 	$(SYSTEM_SDL_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\system\System_SFML.dll: $(SYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\core\system\System_SFML.dll: $(SYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\system\System_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
 	$(SYSTEM_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\demo\Bounce.dll: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\demo\Bounce.dll: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\demo\Bounce.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(BOUNCE_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\demo\Scroll.dll: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\demo\Scroll.dll: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\demo\Scroll.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(SCROLL_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\demo\Cave.dll: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\orx.exe
+..\..\..\bin\plugins\demo\Cave.dll: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\demo\Cave.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(CAVE_OBJECTS)
 <<

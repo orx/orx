@@ -3,7 +3,7 @@
 
   <!-- Set module link lib -->
   <set var="orxEXTRALINK">
-   <if cond="LINK=='dynamic' and COMPILER=='gcc'">$(orxLIBNAME)</if>
+   <if cond="LINK=='dynamic' and COMPILER=='gcc'">$(orxNAME)</if>
   </set>
   
   <set var="orxMSVCLINK">
@@ -12,7 +12,7 @@
 
 
   <set var="orxMODULE_FLAGS">
-    <if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)\$(orxLIBNAME).a</if>
+    <if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)\$(orxNAME).a</if>
     <if cond="LINK=='static' and COMPILER=='msvc'">$(orxBINDIR)$(DIRSEP)orx.lib</if>      
   </set>
 
