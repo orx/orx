@@ -4,6 +4,10 @@
 		<Project filename="orxLIB\orxLIB.cbp" />
 		<Project filename="orx\orx.cbp" active="1">
 			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orxSYSTEM_SFML\orxSYSTEM_SFML.cbp" />
+		</Project>
+		<Project filename="orxSYSTEM_SFML\orxSYSTEM_SFML.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
 		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

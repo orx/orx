@@ -9,7 +9,7 @@
 			<Target title="Static Debug">
 				<Option output="..\..\..\lib\static\liborxd" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="debug" />
+				<Option object_output="debug\static\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -22,7 +22,7 @@
 			<Target title="Static Release">
 				<Option output="..\..\..\lib\static\liborx" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="release" />
+				<Option object_output="release\static\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -38,7 +38,7 @@
 			<Target title="Dynamic Debug">
 				<Option output="..\..\..\lib\dynamic\orxd" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\..\lib\dynamic" />
-				<Option object_output="debug" />
+				<Option object_output="debug\dynamic\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -54,7 +54,7 @@
 			<Target title="Dynamic Release">
 				<Option output="..\..\..\lib\dynamic\orx" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\..\lib\dynamic" />
-				<Option object_output="release" />
+				<Option object_output="release\dynamic\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />

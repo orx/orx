@@ -9,7 +9,7 @@
 			<Target title="Static Debug">
 				<Option output="..\..\..\bin\orxd" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\..\bin" />
-				<Option object_output="debug\" />
+				<Option object_output="debug\static\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -26,7 +26,7 @@
 			<Target title="Static Release">
 				<Option output="..\..\..\bin\orx" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\..\bin" />
-				<Option object_output="release\" />
+				<Option object_output="release\static" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -43,7 +43,7 @@
 			<Target title="Dynamic Debug">
 				<Option output="..\..\..\bin\orxd" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\..\bin" />
-				<Option object_output="debug\" />
+				<Option object_output="debug\dynamic\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -59,7 +59,7 @@
 			<Target title="Dynamic Release">
 				<Option output="..\..\..\bin\orx" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\..\..\bin" />
-				<Option object_output="release\" />
+				<Option object_output="release\dynamic\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>

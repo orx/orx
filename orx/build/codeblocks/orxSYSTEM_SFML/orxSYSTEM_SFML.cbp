@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="orxSYSTEM_SFML" />
+		<Option compiler="gcc" />
+		<Option extended_obj_names="1" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\..\..\bin\plugins\core\system\orxSYSTEM_SFMLd" prefix_auto="1" extension_auto="1" />
+				<Option object_output="debug\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-D__orxDEBUG__" />
+				</Compiler>
+				<Linker>
+					<Add library="..\..\..\lib\static\orxd.a" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="..\..\..\bin\plugins\core\system\orxSYSTEM_SFML" prefix_auto="1" extension_auto="1" />
+				<Option object_output="release\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="..\..\..\lib\static\orx.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="Dynamic Debug" targets="Debug;" />
+			<Add alias="Dynamic Release" targets="Release;" />
+			<Add alias="Static Debug" targets="Debug;" />
+			<Add alias="Static Release" targets="Release;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-D__orxWINDOWS__" />
+			<Add option="-D__orxGCC__" />
+			<Add option="-D__orxDLL__" />
+			<Add directory="..\..\..\include" />
+		</Compiler>
+		<Linker>
+			<Add option="-fPIC -lsfml-system" />
+			<Add directory="..\..\..\lib\static" />
+		</Linker>
+		<Unit filename="..\..\..\plugins\System\SFML\orxSystem.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
