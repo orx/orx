@@ -4,13 +4,50 @@
 		<Project filename="orxLIB\orxLIB.cbp" />
 		<Project filename="orx\orx.cbp">
 			<Depends filename="orxLIB\orxLIB.cbp" />
-			<Depends filename="orxSystem_SFML\orxSystem_SFML.cbp" />
+		</Project>
+		<Project filename="orxDisplay_SFML\orxDisplay_SFML.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
+		<Project filename="orxFile_LibC\orxFile_LibC.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
+		<Project filename="orxFile_LibC\orxFileSystem_LibC.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
+		<Project filename="orxKeyboard_SFML\orxKeyboard_SFML.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
+		<Project filename="orxMouse_SFML\orxMouse_SFML.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
+		<Project filename="orxPhysics_Box2D\orxPhysics_Box2D.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
+		<Project filename="orxRender_Home\orxRender_Home.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
 		</Project>
 		<Project filename="orxSystem_SFML\orxSystem_SFML.cbp">
 			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
 		</Project>
-		<Project filename="orxDisplay_SFML\orxDisplay_SFML.cbp" active="1">
+		<Project filename="orxDemo\Bounce.cbp" active="1">
 			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
+		<Project filename="orxDemo\Cave.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
+		<Project filename="orxDemo\Scroll.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
 		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

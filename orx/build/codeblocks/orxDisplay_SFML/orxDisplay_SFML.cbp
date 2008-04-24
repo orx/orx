@@ -3,10 +3,11 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="orxDisplay_SFML" />
+		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Option extended_obj_names="1" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Static Debug">
 				<Option output="..\..\..\bin\plugins\core\display\orxDisplay_SFML" prefix_auto="1" extension_auto="1" />
 				<Option object_output="debug\" />
 				<Option type="3" />
@@ -18,9 +19,10 @@
 				</Compiler>
 				<Linker>
 					<Add library="..\..\..\lib\static\orxd.a" />
+					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
-			<Target title="Release">
+			<Target title="Static Release">
 				<Option output="..\..\..\bin\plugins\core\display\orxDisplay_SFML" prefix_auto="1" extension_auto="1" />
 				<Option object_output="release\" />
 				<Option type="3" />
@@ -32,15 +34,40 @@
 				<Linker>
 					<Add option="-s" />
 					<Add library="..\..\..\lib\static\orx.a" />
+					<Add directory="..\..\..\lib\static" />
+				</Linker>
+			</Target>
+			<Target title="Dynamic Debug">
+				<Option output="..\..\..\bin\plugins\core\display\orxDisplay_SFML" prefix_auto="1" extension_auto="1" />
+				<Option object_output="debug\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-D__orxDEBUG__" />
+				</Compiler>
+				<Linker>
+					<Add library="orxd" />
+					<Add directory="..\..\..\lib\dynamic" />
+				</Linker>
+			</Target>
+			<Target title="Dynamic Release">
+				<Option output="..\..\..\bin\plugins\core\display\orxDisplay_SFML" prefix_auto="1" extension_auto="1" />
+				<Option object_output="release\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="orx" />
+					<Add directory="..\..\..\lib\dynamic" />
 				</Linker>
 			</Target>
 		</Build>
-		<VirtualTargets>
-			<Add alias="Dynamic Debug" targets="Debug;" />
-			<Add alias="Dynamic Release" targets="Release;" />
-			<Add alias="Static Debug" targets="Debug;" />
-			<Add alias="Static Release" targets="Release;" />
-		</VirtualTargets>
 		<Compiler>
 			<Add option="-D__orxWINDOWS__" />
 			<Add option="-D__orxGCC__" />
@@ -49,7 +76,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="-fPIC -lsfml-graphics -lsfml-window -lsfml-system" />
-			<Add directory="..\..\..\lib\static" />
 		</Linker>
 		<Unit filename="..\..\..\plugins\Display\SFML\orxDisplay.cpp" />
 		<Extensions>

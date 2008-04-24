@@ -1,14 +1,14 @@
 /**
  * @file orxCave.c
- * 
+ *
  * Cave demo
- * 
+ *
  */
 
  /***************************************************************************
  orxCave.c
  Cave demo
- 
+
  begin                : 07/11/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -51,12 +51,12 @@ typedef enum __orxCAVE_RESOURCE_t
   orxCAVE_RESOURCE_BALL,
   orxCAVE_RESOURCE_BALL_REFLECT,
   orxCAVE_RESOURCE_BALL_SHADOW,
-  
-  orxCAVE_RESOURCE_BULB_FIRST, 
+
+  orxCAVE_RESOURCE_BULB_FIRST,
   orxCAVE_RESOURCE_BULB_1 = orxCAVE_RESOURCE_BULB_FIRST,
   orxCAVE_RESOURCE_BULB_2,
   orxCAVE_RESOURCE_BULB_3,
-  orxCAVE_RESOURCE_BULB_LAST = orxCAVE_RESOURCE_BULB_3,  
+  orxCAVE_RESOURCE_BULB_LAST = orxCAVE_RESOURCE_BULB_3,
 
   orxCAVE_RESOURCE_NUMBER,
 
@@ -79,7 +79,7 @@ typedef enum __orxCAVE_STEP_t
 
 } orxCAVE_STEP;
 
-/** Resource info structure 
+/** Resource info structure
  */
 typedef struct __orxCAVE_RESOURCE_INFO_t
 {
@@ -199,7 +199,7 @@ orxSTATIC orxINLINE orxSTATUS orxCave_UpdateMainCamera(orxFLOAT _fDT)
 
   /* Updates its scrolling */
   vPos.fX -= orxCAVE_KF_CAMERA_SPEED * _fDT;
-  
+
   /* Stop? */
   if(vPos.fX <= orx2F(0.5f) * sstCave.fScreenWidth)
   {
@@ -293,7 +293,7 @@ orxSTATIC orxINLINE orxSTATUS orxCave_UpdateBall(orxFLOAT _fDT)
 
 orxVOID orxFASTCALL orxCave_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
-  orxBOOL bNextStep;
+  orxBOOL bNextStep = orxFALSE;
 
   /* Has to wait? */
   if(sstCave.fStepDelay > orxFLOAT_0)
@@ -318,7 +318,7 @@ orxVOID orxFASTCALL orxCave_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOI
       {
         /* Updates camera */
         bNextStep = (orxCave_UpdateMainCamera(_pstClockInfo->fDT) != orxSTATUS_SUCCESS);
-  
+
         break;
       }
 
@@ -326,10 +326,10 @@ orxVOID orxFASTCALL orxCave_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOI
       {
         /* Enables TV viewport */
         orxViewport_Enable(sstCave.pstTVViewport, orxTRUE);
-  
+
         /* Goes to next step */
         bNextStep = orxTRUE;
-  
+
         break;
       }
 
@@ -337,7 +337,7 @@ orxVOID orxFASTCALL orxCave_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOI
       {
         /* Updates camera */
         bNextStep = (orxCave_UpdateBall(_pstClockInfo->fDT) != orxSTATUS_SUCCESS);
-  
+
         break;
       }
     }
@@ -379,7 +379,7 @@ orxSTATIC orxVOID orxCave_InitBulb()
   for(i = orxCAVE_RESOURCE_BULB_FIRST; i <= orxCAVE_RESOURCE_BULB_LAST; i++)
   {
     orxTEXTURE *pstTexture;
-    orxGRAPHIC *pstGraphic;  
+    orxGRAPHIC *pstGraphic;
     orxFLOAT    fWidth, fHeight;
 
     /* Loads textures */
