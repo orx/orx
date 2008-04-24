@@ -423,6 +423,9 @@ orxSTATUS orxClock_Update()
 
     /* Unlocks clocks */
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
+
+    /* Wait for next time slice */
+    orxSystem_Delay(orxFLOAT_0);
   }
 
   /* Done! */

@@ -1,14 +1,14 @@
 /**
  * @file orxBounce.c
- * 
+ *
  * Bounce demo
- * 
+ *
  */
 
  /***************************************************************************
  orxBounce.c
  Bounce demo
- 
+
  begin                : 07/04/2008
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -65,12 +65,8 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
  */
 orxSTATIC orxSTATUS orxBounce_Init()
 {
-  orxCLOCK         *pstClock;
-  orxFLOAT          fScreenWidth, fScreenHeight;
-  orxSTATUS         eResult;
-
-  /* Gets screen dimensions */
-  orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
+  orxCLOCK *pstClock;
+  orxSTATUS eResult;
 
   /* Loads config file and selects its section */
   orxConfig_Load("Bounce.ini");

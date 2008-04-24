@@ -344,11 +344,11 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   {
     if(_eLevel == orxDEBUG_LEVEL_LOG)
     {
-      pstFile = fopen(sstDebug.zLogFile, "awR");
+      pstFile = fopen(sstDebug.zLogFile, "a+");
     }
     else
     {
-      pstFile = fopen(sstDebug.zDebugFile, "awR");
+      pstFile = fopen(sstDebug.zDebugFile, "a+");
     }
 
     /* Valid? */

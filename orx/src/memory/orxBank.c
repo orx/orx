@@ -467,7 +467,7 @@ orxVOID orxFASTCALL orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
   orxASSERT(_pCell >= pstSegment->pSegmentDatas);
   
   /* Retrieve the cell index in the bitfield computing position with cell adress */
-  u32CellIndex    = (orxU32)_pCell - (orxU32)pstSegment->pSegmentDatas;
+  u32CellIndex    = (orxU32)((orxCHAR *)_pCell - (orxCHAR *)pstSegment->pSegmentDatas);
   u32Index32Bits  = u32CellIndex / (32 * _pstBank->u32ElemSize);
   u32IndexBit     = (u32CellIndex % (32 * _pstBank->u32ElemSize) / _pstBank->u32ElemSize);
   
@@ -534,7 +534,7 @@ orxVOID *orxFASTCALL orxBank_GetNext(orxCONST orxBANK *_pstBank, orxCONST orxVOI
     orxASSERT(pstSegment != orxNULL);
 
     /* Compute the cell bit index */
-    u32CellIndex    = (orxU32)_pCell - (orxU32)pstSegment->pSegmentDatas;
+    u32CellIndex    = (orxU32)((orxCHAR *)_pCell - (orxCHAR *)pstSegment->pSegmentDatas);
     u32Index32Bits  = u32CellIndex / (32 * _pstBank->u32ElemSize);
     s32IndexBit     = (u32CellIndex % (32 * _pstBank->u32ElemSize) / _pstBank->u32ElemSize);
   }
@@ -655,7 +655,3 @@ orxVOID orxFASTCALL orxBank_DebugPrint(orxCONST orxBANK *_pstBank)
     pstSegment = pstSegment->pstNext;
   }
 }
-
-
-
-

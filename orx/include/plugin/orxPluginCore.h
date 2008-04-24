@@ -80,7 +80,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 
 /* *** Default core function declaration *** */
 #define orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)                   \
-  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)()                \
+  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)() \
   {                                                                             \
     return(orxPlugin_DefaultCoreFunction(#FUNCTION_NAME, __FILE__, __LINE__));  \
   }                                                                             \

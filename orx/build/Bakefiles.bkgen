@@ -6,7 +6,7 @@
 	</input>
 
     <add-formats>
-        gnu,autoconf,mingw,msvc,msvs2005prj,xcode2
+        gnu,autoconf,mingw,msvc,xcode2
     </add-formats>
 
     <add-flags files="bakefiles/orx.bkl" formats="autoconf">

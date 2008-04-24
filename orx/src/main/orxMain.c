@@ -117,9 +117,6 @@ orxVOID orxMain_Run()
   {
     /* Update clocks */
     orxClock_Update();
-
-    /* Wait for next time slice */
-    orxSystem_Delay(orxFLOAT_0);
   }
 
   return;

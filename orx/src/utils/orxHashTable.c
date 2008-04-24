@@ -606,7 +606,7 @@ orxVOID orxFASTCALL orxHashTable_DebugPrint(orxCONST orxHASHTABLE *_pstHashTable
   {
     orxCHAR zBuffer[4096];
     
-    orxMemory_Set(zBuffer, 0, 4096 * sizeof(4096));
+    orxMemory_Set(zBuffer, 0, 4096 * sizeof(orxCHAR));
 
     orxString_Print(zBuffer, "[%3d]-->", u32Index);
     pstCell = _pstHashTable->apstCell[u32Index];

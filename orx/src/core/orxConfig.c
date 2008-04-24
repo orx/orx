@@ -682,7 +682,7 @@ orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
   }
 
   /* Opens file */
-  pstFile = fopen(zFileName, "wR");
+  pstFile = fopen(zFileName, "w+");
 
   /* Valid? */
   if(pstFile != orxNULL)
