@@ -814,7 +814,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Display_SFML;
+			path = orxDisplay_SFML;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		000000000000000000000174 = {
@@ -826,7 +826,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Render_Home;
+			path = orxRender_Home;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		00000000000000000000019f = {
@@ -838,7 +838,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Sound_SFML;
+			path = orxSound_SFML;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		0000000000000000000001ba = {
@@ -850,7 +850,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Mouse_SFML;
+			path = orxMouse_SFML;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		0000000000000000000001d5 = {
@@ -862,7 +862,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Keyboard_SFML;
+			path = orxKeyboard_SFML;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		0000000000000000000001f0 = {
@@ -874,7 +874,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = File_LibC;
+			path = orxFile_LibC;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		00000000000000000000021b = {
@@ -886,7 +886,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = FileSystem_LibC;
+			path = orxFileSystem_LibC;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		000000000000000000000245 = {
@@ -898,7 +898,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Physics_Box2D;
+			path = orxPhysics_Box2D;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		000000000000000000000260 = {
@@ -910,7 +910,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = System_SDL;
+			path = orxSystem_SDL;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		00000000000000000000027b = {
@@ -922,7 +922,7 @@
 			isa = PBXFileReference;
 			includeInIndex = 0;
 			lastKnownFileType = "compiled.mach-o.dylib";
-			path = System_SFML;
+			path = orxSystem_SFML;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		000000000000000000000296 = {
@@ -1319,7 +1319,7 @@
 			dependencies = (
 				00000000000000000000015e,
 			);
-			name = Display_SFML;
+			name = orxDisplay_SFML;
 			productReference = 000000000000000000000171;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1334,7 +1334,7 @@
 			dependencies = (
 				000000000000000000000179,
 			);
-			name = Render_Home;
+			name = orxRender_Home;
 			productReference = 00000000000000000000019c;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1349,7 +1349,7 @@
 			dependencies = (
 				0000000000000000000001a4,
 			);
-			name = Sound_SFML;
+			name = orxSound_SFML;
 			productReference = 0000000000000000000001b7;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1364,7 +1364,7 @@
 			dependencies = (
 				0000000000000000000001bf,
 			);
-			name = Mouse_SFML;
+			name = orxMouse_SFML;
 			productReference = 0000000000000000000001d2;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1379,7 +1379,7 @@
 			dependencies = (
 				0000000000000000000001da,
 			);
-			name = Keyboard_SFML;
+			name = orxKeyboard_SFML;
 			productReference = 0000000000000000000001ed;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1394,7 +1394,7 @@
 			dependencies = (
 				0000000000000000000001f5,
 			);
-			name = File_LibC;
+			name = orxFile_LibC;
 			productReference = 000000000000000000000218;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1409,7 +1409,7 @@
 			dependencies = (
 				000000000000000000000220,
 			);
-			name = FileSystem_LibC;
+			name = orxFileSystem_LibC;
 			productReference = 000000000000000000000243;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1424,7 +1424,7 @@
 			dependencies = (
 				00000000000000000000024a,
 			);
-			name = Physics_Box2D;
+			name = orxPhysics_Box2D;
 			productReference = 00000000000000000000025d;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1439,7 +1439,7 @@
 			dependencies = (
 				000000000000000000000265,
 			);
-			name = System_SDL;
+			name = orxSystem_SDL;
 			productReference = 000000000000000000000278;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -1454,7 +1454,7 @@
 			dependencies = (
 				000000000000000000000280,
 			);
-			name = System_SFML;
+			name = orxSystem_SFML;
 			productReference = 000000000000000000000293;
 			productType = "com.apple.product-type.library.dynamic";
 		};
@@ -4321,7 +4321,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4338,7 +4338,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4354,7 +4354,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4371,7 +4371,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4388,7 +4388,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4404,7 +4404,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4421,7 +4421,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4438,7 +4438,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4455,7 +4455,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4471,7 +4471,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4488,7 +4488,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4504,7 +4504,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4520,7 +4520,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4537,7 +4537,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4553,7 +4553,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4569,7 +4569,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Display_SFML;
+				PRODUCT_NAME = orxDisplay_SFML;
 				SYMROOT = ../../../bin/plugins/core/display;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4585,7 +4585,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4601,7 +4601,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4618,7 +4618,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4634,7 +4634,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4651,7 +4651,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4668,7 +4668,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4684,7 +4684,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4700,7 +4700,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4716,7 +4716,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4732,7 +4732,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4748,7 +4748,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4765,7 +4765,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4781,7 +4781,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4798,7 +4798,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4815,7 +4815,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4831,7 +4831,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4848,7 +4848,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4864,7 +4864,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4881,7 +4881,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4898,7 +4898,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4914,7 +4914,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4931,7 +4931,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4947,7 +4947,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -4963,7 +4963,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4980,7 +4980,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -4997,7 +4997,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5014,7 +5014,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5031,7 +5031,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5047,7 +5047,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5064,7 +5064,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5080,7 +5080,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5096,7 +5096,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Render_Home;
+				PRODUCT_NAME = orxRender_Home;
 				SYMROOT = ../../../bin/plugins/core/render;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5113,7 +5113,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5130,7 +5130,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5146,7 +5146,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5163,7 +5163,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5180,7 +5180,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5196,7 +5196,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5213,7 +5213,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5230,7 +5230,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5247,7 +5247,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5263,7 +5263,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5280,7 +5280,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5296,7 +5296,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5312,7 +5312,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5329,7 +5329,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5345,7 +5345,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5361,7 +5361,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Sound_SFML;
+				PRODUCT_NAME = orxSound_SFML;
 				SYMROOT = ../../../bin/plugins/core/sound;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5377,7 +5377,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5394,7 +5394,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5410,7 +5410,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5427,7 +5427,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5444,7 +5444,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5460,7 +5460,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5477,7 +5477,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5494,7 +5494,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5511,7 +5511,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5527,7 +5527,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5544,7 +5544,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5560,7 +5560,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5576,7 +5576,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5593,7 +5593,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5609,7 +5609,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5625,7 +5625,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Mouse_SFML;
+				PRODUCT_NAME = orxMouse_SFML;
 				SYMROOT = ../../../bin/plugins/core/mouse;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5641,7 +5641,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5658,7 +5658,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5674,7 +5674,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5691,7 +5691,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5708,7 +5708,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5724,7 +5724,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5741,7 +5741,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5758,7 +5758,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5775,7 +5775,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5791,7 +5791,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5808,7 +5808,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5824,7 +5824,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5840,7 +5840,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5857,7 +5857,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5873,7 +5873,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5889,7 +5889,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Keyboard_SFML;
+				PRODUCT_NAME = orxKeyboard_SFML;
 				SYMROOT = ../../../bin/plugins/core/keyboard;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5905,7 +5905,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5921,7 +5921,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5938,7 +5938,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -5954,7 +5954,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5971,7 +5971,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -5988,7 +5988,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6004,7 +6004,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6020,7 +6020,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6036,7 +6036,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6052,7 +6052,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6068,7 +6068,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6085,7 +6085,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6101,7 +6101,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6118,7 +6118,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6135,7 +6135,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6151,7 +6151,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6168,7 +6168,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6184,7 +6184,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6201,7 +6201,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6218,7 +6218,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6234,7 +6234,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6251,7 +6251,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6267,7 +6267,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6283,7 +6283,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6300,7 +6300,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6317,7 +6317,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6334,7 +6334,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6351,7 +6351,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6367,7 +6367,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6384,7 +6384,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6400,7 +6400,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6416,7 +6416,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = File_LibC;
+				PRODUCT_NAME = orxFile_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6433,7 +6433,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6449,7 +6449,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6466,7 +6466,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6482,7 +6482,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6499,7 +6499,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6516,7 +6516,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6532,7 +6532,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6548,7 +6548,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6564,7 +6564,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6580,7 +6580,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6596,7 +6596,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6613,7 +6613,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6629,7 +6629,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6646,7 +6646,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6663,7 +6663,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6679,7 +6679,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6696,7 +6696,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6712,7 +6712,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6729,7 +6729,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6746,7 +6746,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6762,7 +6762,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6779,7 +6779,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6795,7 +6795,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6811,7 +6811,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6828,7 +6828,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6845,7 +6845,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6862,7 +6862,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6879,7 +6879,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6895,7 +6895,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6912,7 +6912,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6928,7 +6928,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6944,7 +6944,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = FileSystem_LibC;
+				PRODUCT_NAME = orxFileSystem_LibC;
 				SYMROOT = ../../../bin/plugins/core/file;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6961,7 +6961,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -6977,7 +6977,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -6994,7 +6994,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7010,7 +7010,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7027,7 +7027,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7044,7 +7044,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7060,7 +7060,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7076,7 +7076,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7093,7 +7093,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7110,7 +7110,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7126,7 +7126,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7143,7 +7143,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7159,7 +7159,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7175,7 +7175,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7192,7 +7192,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7208,7 +7208,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = Physics_Box2D;
+				PRODUCT_NAME = orxPhysics_Box2D;
 				SYMROOT = ../../../bin/plugins/core/physics;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7225,7 +7225,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7241,7 +7241,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7258,7 +7258,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7275,7 +7275,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7291,7 +7291,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7308,7 +7308,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7325,7 +7325,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7342,7 +7342,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7358,7 +7358,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7374,7 +7374,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7390,7 +7390,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7407,7 +7407,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7423,7 +7423,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7440,7 +7440,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7456,7 +7456,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7473,7 +7473,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SDL;
+				PRODUCT_NAME = orxSystem_SDL;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7489,7 +7489,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7506,7 +7506,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7522,7 +7522,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7539,7 +7539,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7556,7 +7556,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7572,7 +7572,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7589,7 +7589,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7606,7 +7606,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7623,7 +7623,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7639,7 +7639,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7656,7 +7656,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7672,7 +7672,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorx -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7688,7 +7688,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -lorxd -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 				WARNING_CFLAGS = "-W -Wall";
@@ -7705,7 +7705,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7721,7 +7721,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};
@@ -7737,7 +7737,7 @@
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
 				OTHER_LDFLAGS = " -l -l -l";
-				PRODUCT_NAME = System_SFML;
+				PRODUCT_NAME = orxSystem_SFML;
 				SYMROOT = ../../../bin/plugins/core/system;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
 			};

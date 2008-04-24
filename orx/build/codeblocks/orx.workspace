@@ -2,11 +2,14 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="orx">
 		<Project filename="orxLIB\orxLIB.cbp" />
-		<Project filename="orx\orx.cbp" active="1">
+		<Project filename="orx\orx.cbp">
 			<Depends filename="orxLIB\orxLIB.cbp" />
-			<Depends filename="orxSYSTEM_SFML\orxSYSTEM_SFML.cbp" />
+			<Depends filename="orxSystem_SFML\orxSystem_SFML.cbp" />
 		</Project>
-		<Project filename="orxSYSTEM_SFML\orxSYSTEM_SFML.cbp">
+		<Project filename="orxSystem_SFML\orxSystem_SFML.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+		</Project>
+		<Project filename="orxDisplay_SFML\orxDisplay_SFML.cbp" active="1">
 			<Depends filename="orxLIB\orxLIB.cbp" />
 		</Project>
 	</Workspace>

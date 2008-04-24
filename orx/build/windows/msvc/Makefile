@@ -56,11 +56,11 @@ USE_PLUGINS = 1
 
 orxPLATFORM = __orxWINDOWS__
 orxCOMPILER = __orxMSVC__
-ORXDLL_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb $(__orxDEBUG_p) \
-	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
-	/D__orxDLL__ /D__orxDLLEXPORT__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+ORXDLL_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb \
+	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	/I..\..\..\include /D__orxDLL__ /D__orxDLLEXPORT__ /wd4100 /wd4206 /wd4201 \
+	$(CPPFLAGS) $(CFLAGS)
 ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxAnim.obj \
 	.\$(BUILD)\orxDLL_orxAnimPointer.obj \
@@ -103,11 +103,11 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxScreenshot.obj \
 	.\$(BUILD)\orxDLL_orxString.obj \
 	.\$(BUILD)\orxDLL_orxTree.obj
-ORXLIB_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb $(__orxDEBUG_p) \
-	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
-	/D__orxDLL__ /D__orxDLLEXPORT__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+ORXLIB_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fd..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb \
+	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	/I..\..\..\include /D__orxDLL__ /D__orxDLLEXPORT__ /wd4100 /wd4206 /wd4201 \
+	$(CPPFLAGS) $(CFLAGS)
 ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxAnim.obj \
 	.\$(BUILD)\orxLIB_orxAnimPointer.obj \
@@ -150,111 +150,106 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxScreenshot.obj \
 	.\$(BUILD)\orxLIB_orxString.obj \
 	.\$(BUILD)\orxLIB_orxTree.obj
-ORX_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) /Fd..\..\..\bin\$(orxNAME).pdb \
-	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
-	/I..\..\..\include /D_CONSOLE /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+ORX_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fd..\..\..\bin\$(orxNAME).pdb $(__orxDEBUG_p) \
+	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
+	/D_CONSOLE /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
 ORX_OBJECTS =  \
 	.\$(BUILD)\orx_orxMain.obj
-DISPLAY_SFML_CXXFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
+ORXDISPLAY_SFML_CXXFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\display\Display_SFML.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\display\orxDisplay_SFML.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
-DISPLAY_SFML_OBJECTS =  \
-	.\$(BUILD)\Display_SFML_orxDisplay.obj
-RENDER_HOME_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
+ORXDISPLAY_SFML_OBJECTS =  \
+	.\$(BUILD)\orxDisplay_SFML_orxDisplay.obj
+ORXRENDER_HOME_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\render\Render_Home.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\render\orxRender_Home.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
-RENDER_HOME_OBJECTS =  \
-	.\$(BUILD)\Render_Home_orxRender.obj
-SOUND_SFML_CXXFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
+ORXRENDER_HOME_OBJECTS =  \
+	.\$(BUILD)\orxRender_Home_orxRender.obj
+ORXSOUND_SFML_CXXFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\sound\Sound_SFML.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\sound\orxSound_SFML.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
-SOUND_SFML_OBJECTS =  \
-	.\$(BUILD)\Sound_SFML_orxSound.obj
-MOUSE_SFML_CXXFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
+ORXSOUND_SFML_OBJECTS =  \
+	.\$(BUILD)\orxSound_SFML_orxSound.obj
+ORXMOUSE_SFML_CXXFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\mouse\Mouse_SFML.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\mouse\orxMouse_SFML.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
-MOUSE_SFML_OBJECTS =  \
-	.\$(BUILD)\Mouse_SFML_orxMouse.obj
-KEYBOARD_SFML_CXXFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
+ORXMOUSE_SFML_OBJECTS =  \
+	.\$(BUILD)\orxMouse_SFML_orxMouse.obj
+ORXKEYBOARD_SFML_CXXFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.pdb $(__orxDEBUG_p) \
-	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
-	/D__orxDLL__ /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
-KEYBOARD_SFML_OBJECTS =  \
-	.\$(BUILD)\Keyboard_SFML_orxKeyboard.obj
-FILE_LIBC_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
+	/Fd..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.pdb \
+	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	/I..\..\..\include /D__orxDLL__ /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
+ORXKEYBOARD_SFML_OBJECTS =  \
+	.\$(BUILD)\orxKeyboard_SFML_orxKeyboard.obj
+ORXFILE_LIBC_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fd..\..\..\bin\plugins\core\file\orxFile_LibC.pdb \
+	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	/I..\..\..\include /D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+ORXFILE_LIBC_OBJECTS =  \
+	.\$(BUILD)\orxFile_LibC_orxFile.obj
+ORXFILESYSTEM_LIBC_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\file\File_LibC.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\file\orxFileSystem_LibC.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
-FILE_LIBC_OBJECTS =  \
-	.\$(BUILD)\File_LibC_orxFile.obj
-FILESYSTEM_LIBC_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
+ORXFILESYSTEM_LIBC_OBJECTS =  \
+	.\$(BUILD)\orxFileSystem_LibC_orxFileSystem.obj
+ORXPHYSICS_BOX2D_CXXFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\file\FileSystem_LibC.pdb $(__orxDEBUG_p) \
-	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
-	/D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
-FILESYSTEM_LIBC_OBJECTS =  \
-	.\$(BUILD)\FileSystem_LibC_orxFileSystem.obj
-PHYSICS_BOX2D_CXXFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\physics\Physics_Box2D.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
-PHYSICS_BOX2D_OBJECTS =  \
-	.\$(BUILD)\Physics_Box2D_orxPhysics.obj
-SYSTEM_SDL_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
+ORXPHYSICS_BOX2D_OBJECTS =  \
+	.\$(BUILD)\orxPhysics_Box2D_orxPhysics.obj
+ORXSYSTEM_SDL_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fd..\..\..\bin\plugins\core\system\orxSystem_SDL.pdb \
+	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	/I..\..\..\include /D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+ORXSYSTEM_SDL_OBJECTS =  \
+	.\$(BUILD)\orxSystem_SDL_orxSystem.obj
+ORXSYSTEM_SFML_CXXFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) \
 	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\system\System_SDL.pdb $(__orxDEBUG_p) \
-	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
-	/D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
-SYSTEM_SDL_OBJECTS =  \
-	.\$(BUILD)\System_SDL_orxSystem.obj
-SYSTEM_SFML_CXXFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\core\system\System_SFML.pdb $(__orxDEBUG_p) \
+	/Fd..\..\..\bin\plugins\core\system\orxSystem_SFML.pdb $(__orxDEBUG_p) \
 	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
 	/D__orxDLL__ /GR /EHsc $(CPPFLAGS) $(CXXFLAGS)
-SYSTEM_SFML_OBJECTS =  \
-	.\$(BUILD)\System_SFML_orxSystem.obj
-BOUNCE_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\demo\Bounce.pdb $(__orxDEBUG_p) /D$(orxPLATFORM) \
-	/D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include /D__orxDLL__ /wd4100 \
-	/wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+ORXSYSTEM_SFML_OBJECTS =  \
+	.\$(BUILD)\orxSystem_SFML_orxSystem.obj
+BOUNCE_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fd..\..\..\bin\plugins\demo\Bounce.pdb \
+	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	/I..\..\..\include /D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
 BOUNCE_OBJECTS =  \
 	.\$(BUILD)\Bounce_orxBounce.obj
-SCROLL_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\demo\Scroll.pdb $(__orxDEBUG_p) /D$(orxPLATFORM) \
-	/D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include /D__orxDLL__ /wd4100 \
-	/wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+SCROLL_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fd..\..\..\bin\plugins\demo\Scroll.pdb \
+	$(__orxDEBUG_p) /D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	/I..\..\..\include /D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
 SCROLL_OBJECTS =  \
 	.\$(BUILD)\Scroll_orxScroll.obj
-CAVE_CFLAGS = /MD$(__orxDEBUGFLAG_39) /DWIN32 $(__orxOPTIMIZEFLAG) \
-	$(__orxDEBUGFLAG) $(____orxDEBUGFLAG) \
-	/Fd..\..\..\bin\plugins\demo\Cave.pdb $(__orxDEBUG_p) /D$(orxPLATFORM) \
-	/D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include /D__orxDLL__ /wd4100 \
-	/wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
+CAVE_CFLAGS = /MD$(orx) /DWIN32 $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(____orxDEBUGFLAG) /Fd..\..\..\bin\plugins\demo\Cave.pdb $(__orxDEBUG_p) \
+	/D$(orxPLATFORM) /D$(orxCOMPILER) $(__orxWARNINGFLAG) /I..\..\..\include \
+	/D__orxDLL__ /wd4100 /wd4206 /wd4201 $(CPPFLAGS) $(CFLAGS)
 CAVE_OBJECTS =  \
 	.\$(BUILD)\Cave_orxCave.obj
 
 ### Conditionally set variables: ###
 
 !if "$(BUILD)" == "debug"
-orxNAME = orxd
+orxNAME = orx$(orx)
 !endif
 !if "$(BUILD)" == "release"
-orxNAME = orx
+orxNAME = orx$(orx)
 !endif
 !if "$(LINK)" == "dynamic"
 __orxDLL___depname = ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll
@@ -263,38 +258,43 @@ __orxDLL___depname = ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll
 __orxLIB___depname = ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib
 !endif
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-__Display_SFML___depname = \
-	..\..\..\bin\plugins\core\display\Display_SFML.dll
+__orxDisplay_SFML___depname = \
+	..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll
 !endif
 !if "$(USE_PLUGINS)" == "1"
-__Render_Home___depname = ..\..\..\bin\plugins\core\render\Render_Home.dll
+__orxRender_Home___depname = \
+	..\..\..\bin\plugins\core\render\orxRender_Home.dll
 !endif
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-__Sound_SFML___depname = ..\..\..\bin\plugins\core\sound\Sound_SFML.dll
+__orxSound_SFML___depname = \
+	..\..\..\bin\plugins\core\sound\orxSound_SFML.dll
 !endif
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-__Mouse_SFML___depname = ..\..\..\bin\plugins\core\mouse\Mouse_SFML.dll
+__orxMouse_SFML___depname = \
+	..\..\..\bin\plugins\core\mouse\orxMouse_SFML.dll
 !endif
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-__Keyboard_SFML___depname = \
-	..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.dll
+__orxKeyboard_SFML___depname = \
+	..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.dll
 !endif
 !if "$(USE_PLUGINS)" == "1"
-__File_LibC___depname = ..\..\..\bin\plugins\core\file\File_LibC.dll
+__orxFile_LibC___depname = ..\..\..\bin\plugins\core\file\orxFile_LibC.dll
 !endif
 !if "$(USE_PLUGINS)" == "1"
-__FileSystem_LibC___depname = \
-	..\..\..\bin\plugins\core\file\FileSystem_LibC.dll
+__orxFileSystem_LibC___depname = \
+	..\..\..\bin\plugins\core\file\orxFileSystem_LibC.dll
 !endif
 !if "$(USE_BOX2D)" == "1" && "$(USE_PLUGINS)" == "1"
-__Physics_Box2D___depname = \
-	..\..\..\bin\plugins\core\physics\Physics_Box2D.dll
+__orxPhysics_Box2D___depname = \
+	..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.dll
 !endif
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SDL)" == "1"
-__System_SDL___depname = ..\..\..\bin\plugins\core\system\System_SDL.dll
+__orxSystem_SDL___depname = \
+	..\..\..\bin\plugins\core\system\orxSystem_SDL.dll
 !endif
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-__System_SFML___depname = ..\..\..\bin\plugins\core\system\System_SFML.dll
+__orxSystem_SFML___depname = \
+	..\..\..\bin\plugins\core\system\orxSystem_SFML.dll
 !endif
 !if "$(USE_PLUGINS)" == "1"
 __Bounce___depname = ..\..\..\bin\plugins\demo\Bounce.dll
@@ -318,10 +318,10 @@ __orxDEBUGFLAG = /Zi
 __orxDEBUGFLAG = 
 !endif
 !if "$(BUILD)" == "debug"
-__orxDEBUGFLAG_38 = /DEBUG
+__orxDEBUGFLAG_1_3 = /DEBUG
 !endif
 !if "$(BUILD)" == "release"
-__orxDEBUGFLAG_38 = 
+__orxDEBUGFLAG_1_3 = 
 !endif
 !if "$(BUILD)" == "debug"
 ____orxDEBUGFLAG = /D_DEBUG
@@ -330,10 +330,10 @@ ____orxDEBUGFLAG = /D_DEBUG
 ____orxDEBUGFLAG = 
 !endif
 !if "$(BUILD)" == "debug"
-__orxDEBUGFLAG_39 = d
+orx = d
 !endif
 !if "$(BUILD)" == "release"
-__orxDEBUGFLAG_39 = 
+orx = 
 !endif
 !if "$(BUILD)" == "debug"
 __orxDEBUG_p = /D__orxDEBUG__
@@ -364,7 +364,7 @@ all: .\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\$(orxNAME).exe $(__Display_SFML___depname) $(__Render_Home___depname) $(__Sound_SFML___depname) $(__Mouse_SFML___depname) $(__Keyboard_SFML___depname) $(__File_LibC___depname) $(__FileSystem_LibC___depname) $(__Physics_Box2D___depname) $(__System_SDL___depname) $(__System_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\$(orxNAME).exe $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSound_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 clean: 
 	-if exist .\$(BUILD)\*.obj del .\$(BUILD)\*.obj
@@ -378,36 +378,36 @@ clean:
 	-if exist ..\..\..\bin\$(orxNAME).exe del ..\..\..\bin\$(orxNAME).exe
 	-if exist ..\..\..\bin\$(orxNAME).ilk del ..\..\..\bin\$(orxNAME).ilk
 	-if exist ..\..\..\bin\$(orxNAME).pdb del ..\..\..\bin\$(orxNAME).pdb
-	-if exist ..\..\..\bin\plugins\core\display\Display_SFML.dll del ..\..\..\bin\plugins\core\display\Display_SFML.dll
-	-if exist ..\..\..\bin\plugins\core\display\Display_SFML.ilk del ..\..\..\bin\plugins\core\display\Display_SFML.ilk
-	-if exist ..\..\..\bin\plugins\core\display\Display_SFML.pdb del ..\..\..\bin\plugins\core\display\Display_SFML.pdb
-	-if exist ..\..\..\bin\plugins\core\render\Render_Home.dll del ..\..\..\bin\plugins\core\render\Render_Home.dll
-	-if exist ..\..\..\bin\plugins\core\render\Render_Home.ilk del ..\..\..\bin\plugins\core\render\Render_Home.ilk
-	-if exist ..\..\..\bin\plugins\core\render\Render_Home.pdb del ..\..\..\bin\plugins\core\render\Render_Home.pdb
-	-if exist ..\..\..\bin\plugins\core\sound\Sound_SFML.dll del ..\..\..\bin\plugins\core\sound\Sound_SFML.dll
-	-if exist ..\..\..\bin\plugins\core\sound\Sound_SFML.ilk del ..\..\..\bin\plugins\core\sound\Sound_SFML.ilk
-	-if exist ..\..\..\bin\plugins\core\sound\Sound_SFML.pdb del ..\..\..\bin\plugins\core\sound\Sound_SFML.pdb
-	-if exist ..\..\..\bin\plugins\core\mouse\Mouse_SFML.dll del ..\..\..\bin\plugins\core\mouse\Mouse_SFML.dll
-	-if exist ..\..\..\bin\plugins\core\mouse\Mouse_SFML.ilk del ..\..\..\bin\plugins\core\mouse\Mouse_SFML.ilk
-	-if exist ..\..\..\bin\plugins\core\mouse\Mouse_SFML.pdb del ..\..\..\bin\plugins\core\mouse\Mouse_SFML.pdb
-	-if exist ..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.dll del ..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.dll
-	-if exist ..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.ilk del ..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.ilk
-	-if exist ..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.pdb del ..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.pdb
-	-if exist ..\..\..\bin\plugins\core\file\File_LibC.dll del ..\..\..\bin\plugins\core\file\File_LibC.dll
-	-if exist ..\..\..\bin\plugins\core\file\File_LibC.ilk del ..\..\..\bin\plugins\core\file\File_LibC.ilk
-	-if exist ..\..\..\bin\plugins\core\file\File_LibC.pdb del ..\..\..\bin\plugins\core\file\File_LibC.pdb
-	-if exist ..\..\..\bin\plugins\core\file\FileSystem_LibC.dll del ..\..\..\bin\plugins\core\file\FileSystem_LibC.dll
-	-if exist ..\..\..\bin\plugins\core\file\FileSystem_LibC.ilk del ..\..\..\bin\plugins\core\file\FileSystem_LibC.ilk
-	-if exist ..\..\..\bin\plugins\core\file\FileSystem_LibC.pdb del ..\..\..\bin\plugins\core\file\FileSystem_LibC.pdb
-	-if exist ..\..\..\bin\plugins\core\physics\Physics_Box2D.dll del ..\..\..\bin\plugins\core\physics\Physics_Box2D.dll
-	-if exist ..\..\..\bin\plugins\core\physics\Physics_Box2D.ilk del ..\..\..\bin\plugins\core\physics\Physics_Box2D.ilk
-	-if exist ..\..\..\bin\plugins\core\physics\Physics_Box2D.pdb del ..\..\..\bin\plugins\core\physics\Physics_Box2D.pdb
-	-if exist ..\..\..\bin\plugins\core\system\System_SDL.dll del ..\..\..\bin\plugins\core\system\System_SDL.dll
-	-if exist ..\..\..\bin\plugins\core\system\System_SDL.ilk del ..\..\..\bin\plugins\core\system\System_SDL.ilk
-	-if exist ..\..\..\bin\plugins\core\system\System_SDL.pdb del ..\..\..\bin\plugins\core\system\System_SDL.pdb
-	-if exist ..\..\..\bin\plugins\core\system\System_SFML.dll del ..\..\..\bin\plugins\core\system\System_SFML.dll
-	-if exist ..\..\..\bin\plugins\core\system\System_SFML.ilk del ..\..\..\bin\plugins\core\system\System_SFML.ilk
-	-if exist ..\..\..\bin\plugins\core\system\System_SFML.pdb del ..\..\..\bin\plugins\core\system\System_SFML.pdb
+	-if exist ..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll del ..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll
+	-if exist ..\..\..\bin\plugins\core\display\orxDisplay_SFML.ilk del ..\..\..\bin\plugins\core\display\orxDisplay_SFML.ilk
+	-if exist ..\..\..\bin\plugins\core\display\orxDisplay_SFML.pdb del ..\..\..\bin\plugins\core\display\orxDisplay_SFML.pdb
+	-if exist ..\..\..\bin\plugins\core\render\orxRender_Home.dll del ..\..\..\bin\plugins\core\render\orxRender_Home.dll
+	-if exist ..\..\..\bin\plugins\core\render\orxRender_Home.ilk del ..\..\..\bin\plugins\core\render\orxRender_Home.ilk
+	-if exist ..\..\..\bin\plugins\core\render\orxRender_Home.pdb del ..\..\..\bin\plugins\core\render\orxRender_Home.pdb
+	-if exist ..\..\..\bin\plugins\core\sound\orxSound_SFML.dll del ..\..\..\bin\plugins\core\sound\orxSound_SFML.dll
+	-if exist ..\..\..\bin\plugins\core\sound\orxSound_SFML.ilk del ..\..\..\bin\plugins\core\sound\orxSound_SFML.ilk
+	-if exist ..\..\..\bin\plugins\core\sound\orxSound_SFML.pdb del ..\..\..\bin\plugins\core\sound\orxSound_SFML.pdb
+	-if exist ..\..\..\bin\plugins\core\mouse\orxMouse_SFML.dll del ..\..\..\bin\plugins\core\mouse\orxMouse_SFML.dll
+	-if exist ..\..\..\bin\plugins\core\mouse\orxMouse_SFML.ilk del ..\..\..\bin\plugins\core\mouse\orxMouse_SFML.ilk
+	-if exist ..\..\..\bin\plugins\core\mouse\orxMouse_SFML.pdb del ..\..\..\bin\plugins\core\mouse\orxMouse_SFML.pdb
+	-if exist ..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.dll del ..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.dll
+	-if exist ..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.ilk del ..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.ilk
+	-if exist ..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.pdb del ..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.pdb
+	-if exist ..\..\..\bin\plugins\core\file\orxFile_LibC.dll del ..\..\..\bin\plugins\core\file\orxFile_LibC.dll
+	-if exist ..\..\..\bin\plugins\core\file\orxFile_LibC.ilk del ..\..\..\bin\plugins\core\file\orxFile_LibC.ilk
+	-if exist ..\..\..\bin\plugins\core\file\orxFile_LibC.pdb del ..\..\..\bin\plugins\core\file\orxFile_LibC.pdb
+	-if exist ..\..\..\bin\plugins\core\file\orxFileSystem_LibC.dll del ..\..\..\bin\plugins\core\file\orxFileSystem_LibC.dll
+	-if exist ..\..\..\bin\plugins\core\file\orxFileSystem_LibC.ilk del ..\..\..\bin\plugins\core\file\orxFileSystem_LibC.ilk
+	-if exist ..\..\..\bin\plugins\core\file\orxFileSystem_LibC.pdb del ..\..\..\bin\plugins\core\file\orxFileSystem_LibC.pdb
+	-if exist ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.dll del ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.dll
+	-if exist ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.ilk del ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.ilk
+	-if exist ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.pdb del ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.pdb
+	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SDL.dll del ..\..\..\bin\plugins\core\system\orxSystem_SDL.dll
+	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SDL.ilk del ..\..\..\bin\plugins\core\system\orxSystem_SDL.ilk
+	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SDL.pdb del ..\..\..\bin\plugins\core\system\orxSystem_SDL.pdb
+	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SFML.dll del ..\..\..\bin\plugins\core\system\orxSystem_SFML.dll
+	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SFML.ilk del ..\..\..\bin\plugins\core\system\orxSystem_SFML.ilk
+	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SFML.pdb del ..\..\..\bin\plugins\core\system\orxSystem_SFML.pdb
 	-if exist ..\..\..\bin\plugins\demo\Bounce.dll del ..\..\..\bin\plugins\demo\Bounce.dll
 	-if exist ..\..\..\bin\plugins\demo\Bounce.ilk del ..\..\..\bin\plugins\demo\Bounce.ilk
 	-if exist ..\..\..\bin\plugins\demo\Bounce.pdb del ..\..\..\bin\plugins\demo\Bounce.pdb
@@ -420,7 +420,7 @@ clean:
 
 !if "$(LINK)" == "dynamic"
 ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll: $(ORXDLL_OBJECTS)
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb" @<<
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).pdb" @<<
 	$(ORXDLL_OBJECTS)   /IMPLIB:..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).lib
 <<
 !endif
@@ -434,97 +434,97 @@ clean:
 !endif
 
 ..\..\..\bin\$(orxNAME).exe: $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP)
-	link /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\$(orxNAME).pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES) /SUBSYSTEM:CONSOLE   @<<
+	link /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\$(orxNAME).pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES) /SUBSYSTEM:CONSOLE   @<<
 	$(ORX_OBJECTS)
 <<
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\display\Display_SFML.dll: $(DISPLAY_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\display\Display_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
-	$(DISPLAY_SFML_OBJECTS)
+..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll: $(ORXDISPLAY_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\display\orxDisplay_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
+	$(ORXDISPLAY_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\core\render\Render_Home.dll: $(RENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\render\Render_Home.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
-	$(RENDER_HOME_OBJECTS)
+..\..\..\bin\plugins\core\render\orxRender_Home.dll: $(ORXRENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\render\orxRender_Home.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
+	$(ORXRENDER_HOME_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\sound\Sound_SFML.dll: $(SOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\sound\Sound_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
-	$(SOUND_SFML_OBJECTS)
+..\..\..\bin\plugins\core\sound\orxSound_SFML.dll: $(ORXSOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\sound\orxSound_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
+	$(ORXSOUND_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\mouse\Mouse_SFML.dll: $(MOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\mouse\Mouse_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
-	$(MOUSE_SFML_OBJECTS)
+..\..\..\bin\plugins\core\mouse\orxMouse_SFML.dll: $(ORXMOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\mouse\orxMouse_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
+	$(ORXMOUSE_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.dll: $(KEYBOARD_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\keyboard\Keyboard_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
-	$(KEYBOARD_SFML_OBJECTS)
+..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.dll: $(ORXKEYBOARD_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
+	$(ORXKEYBOARD_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\core\file\File_LibC.dll: $(FILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\file\File_LibC.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
-	$(FILE_LIBC_OBJECTS)
+..\..\..\bin\plugins\core\file\orxFile_LibC.dll: $(ORXFILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\file\orxFile_LibC.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
+	$(ORXFILE_LIBC_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\core\file\FileSystem_LibC.dll: $(FILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\file\FileSystem_LibC.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
-	$(FILESYSTEM_LIBC_OBJECTS)
+..\..\..\bin\plugins\core\file\orxFileSystem_LibC.dll: $(ORXFILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\file\orxFileSystem_LibC.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
+	$(ORXFILESYSTEM_LIBC_OBJECTS)
 <<
 !endif
 
 !if "$(USE_BOX2D)" == "1" && "$(USE_PLUGINS)" == "1"
-..\..\..\bin\plugins\core\physics\Physics_Box2D.dll: $(PHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\physics\Physics_Box2D.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
-	$(PHYSICS_BOX2D_OBJECTS)
+..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.dll: $(ORXPHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\physics\orxPhysics_Box2D.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
+	$(ORXPHYSICS_BOX2D_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SDL)" == "1"
-..\..\..\bin\plugins\core\system\System_SDL.dll: $(SYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\system\System_SDL.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
-	$(SYSTEM_SDL_OBJECTS)
+..\..\..\bin\plugins\core\system\orxSystem_SDL.dll: $(ORXSYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\system\orxSystem_SDL.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
+	$(ORXSYSTEM_SDL_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1" && "$(USE_SFML)" == "1"
-..\..\..\bin\plugins\core\system\System_SFML.dll: $(SYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\core\system\System_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
-	$(SYSTEM_SFML_OBJECTS)
+..\..\..\bin\plugins\core\system\orxSystem_SFML.dll: $(ORXSYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\core\system\orxSystem_SFML.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)    @<<
+	$(ORXSYSTEM_SFML_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
 ..\..\..\bin\plugins\demo\Bounce.dll: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\demo\Bounce.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\demo\Bounce.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(BOUNCE_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
 ..\..\..\bin\plugins\demo\Scroll.dll: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\demo\Scroll.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\demo\Scroll.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(SCROLL_OBJECTS)
 <<
 !endif
 
 !if "$(USE_PLUGINS)" == "1"
 ..\..\..\bin\plugins\demo\Cave.dll: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_38) /pdb:"..\..\..\bin\plugins\demo\Cave.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
+	link /DLL /NOLOGO /OUT:$@ $(LDFLAGS) $(__orxDEBUGFLAG_1_3) /pdb:"..\..\..\bin\plugins\demo\Cave.pdb" /LIBPATH:..\..\..\lib\$(__LINK_FILENAMES)  @<<
 	$(CAVE_OBJECTS)
 <<
 !endif
@@ -778,35 +778,35 @@ clean:
 .\$(BUILD)\orx_orxMain.obj: ..\..\..\src\main\orxMain.c
 	$(CC) /c /nologo /TC /Fo$@ $(ORX_CFLAGS) ..\..\..\src\main\orxMain.c
 
-.\$(BUILD)\Display_SFML_orxDisplay.obj: ..\..\..\plugins\Display\SFML\orxDisplay.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(DISPLAY_SFML_CXXFLAGS) ..\..\..\plugins\Display\SFML\orxDisplay.cpp
+.\$(BUILD)\orxDisplay_SFML_orxDisplay.obj: ..\..\..\plugins\Display\SFML\orxDisplay.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(ORXDISPLAY_SFML_CXXFLAGS) ..\..\..\plugins\Display\SFML\orxDisplay.cpp
 
-.\$(BUILD)\Render_Home_orxRender.obj: ..\..\..\plugins\Render\Home\orxRender.c
-	$(CC) /c /nologo /TC /Fo$@ $(RENDER_HOME_CFLAGS) ..\..\..\plugins\Render\Home\orxRender.c
+.\$(BUILD)\orxRender_Home_orxRender.obj: ..\..\..\plugins\Render\Home\orxRender.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXRENDER_HOME_CFLAGS) ..\..\..\plugins\Render\Home\orxRender.c
 
-.\$(BUILD)\Sound_SFML_orxSound.obj: ..\..\..\plugins\Sound\SFML\orxSound.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(SOUND_SFML_CXXFLAGS) ..\..\..\plugins\Sound\SFML\orxSound.cpp
+.\$(BUILD)\orxSound_SFML_orxSound.obj: ..\..\..\plugins\Sound\SFML\orxSound.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(ORXSOUND_SFML_CXXFLAGS) ..\..\..\plugins\Sound\SFML\orxSound.cpp
 
-.\$(BUILD)\Mouse_SFML_orxMouse.obj: ..\..\..\plugins\Mouse\SFML\orxMouse.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(MOUSE_SFML_CXXFLAGS) ..\..\..\plugins\Mouse\SFML\orxMouse.cpp
+.\$(BUILD)\orxMouse_SFML_orxMouse.obj: ..\..\..\plugins\Mouse\SFML\orxMouse.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(ORXMOUSE_SFML_CXXFLAGS) ..\..\..\plugins\Mouse\SFML\orxMouse.cpp
 
-.\$(BUILD)\Keyboard_SFML_orxKeyboard.obj: ..\..\..\plugins\Keyboard\SFML\orxKeyboard.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(KEYBOARD_SFML_CXXFLAGS) ..\..\..\plugins\Keyboard\SFML\orxKeyboard.cpp
+.\$(BUILD)\orxKeyboard_SFML_orxKeyboard.obj: ..\..\..\plugins\Keyboard\SFML\orxKeyboard.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(ORXKEYBOARD_SFML_CXXFLAGS) ..\..\..\plugins\Keyboard\SFML\orxKeyboard.cpp
 
-.\$(BUILD)\File_LibC_orxFile.obj: ..\..\..\plugins\File\LibC\orxFile.c
-	$(CC) /c /nologo /TC /Fo$@ $(FILE_LIBC_CFLAGS) ..\..\..\plugins\File\LibC\orxFile.c
+.\$(BUILD)\orxFile_LibC_orxFile.obj: ..\..\..\plugins\File\LibC\orxFile.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXFILE_LIBC_CFLAGS) ..\..\..\plugins\File\LibC\orxFile.c
 
-.\$(BUILD)\FileSystem_LibC_orxFileSystem.obj: ..\..\..\plugins\File\LibC\orxFileSystem.c
-	$(CC) /c /nologo /TC /Fo$@ $(FILESYSTEM_LIBC_CFLAGS) ..\..\..\plugins\File\LibC\orxFileSystem.c
+.\$(BUILD)\orxFileSystem_LibC_orxFileSystem.obj: ..\..\..\plugins\File\LibC\orxFileSystem.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXFILESYSTEM_LIBC_CFLAGS) ..\..\..\plugins\File\LibC\orxFileSystem.c
 
-.\$(BUILD)\Physics_Box2D_orxPhysics.obj: ..\..\..\plugins\Physics\Box2D\orxPhysics.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(PHYSICS_BOX2D_CXXFLAGS) ..\..\..\plugins\Physics\Box2D\orxPhysics.cpp
+.\$(BUILD)\orxPhysics_Box2D_orxPhysics.obj: ..\..\..\plugins\Physics\Box2D\orxPhysics.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(ORXPHYSICS_BOX2D_CXXFLAGS) ..\..\..\plugins\Physics\Box2D\orxPhysics.cpp
 
-.\$(BUILD)\System_SDL_orxSystem.obj: ..\..\..\plugins\System\SDL\orxSystem.c
-	$(CC) /c /nologo /TC /Fo$@ $(SYSTEM_SDL_CFLAGS) ..\..\..\plugins\System\SDL\orxSystem.c
+.\$(BUILD)\orxSystem_SDL_orxSystem.obj: ..\..\..\plugins\System\SDL\orxSystem.c
+	$(CC) /c /nologo /TC /Fo$@ $(ORXSYSTEM_SDL_CFLAGS) ..\..\..\plugins\System\SDL\orxSystem.c
 
-.\$(BUILD)\System_SFML_orxSystem.obj: ..\..\..\plugins\System\SFML\orxSystem.cpp
-	$(CXX) /c /nologo /TP /Fo$@ $(SYSTEM_SFML_CXXFLAGS) ..\..\..\plugins\System\SFML\orxSystem.cpp
+.\$(BUILD)\orxSystem_SFML_orxSystem.obj: ..\..\..\plugins\System\SFML\orxSystem.cpp
+	$(CXX) /c /nologo /TP /Fo$@ $(ORXSYSTEM_SFML_CXXFLAGS) ..\..\..\plugins\System\SFML\orxSystem.cpp
 
 .\$(BUILD)\Bounce_orxBounce.obj: ..\..\..\plugins\Demo\orxBounce.c
 	$(CC) /c /nologo /TC /Fo$@ $(BOUNCE_CFLAGS) ..\..\..\plugins\Demo\orxBounce.c

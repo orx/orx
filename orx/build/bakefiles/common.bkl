@@ -90,11 +90,16 @@
         <if cond="BUILD=='release'">default</if>
     </set>
     
-    <set var="orxNAME">
-        <if cond="BUILD=='debug'">orxd</if>
-        <if cond="BUILD=='release'">orx</if>
+    <set var="orxSUFFIX">
+        <if cond="BUILD=='debug'">d</if>
+        <if cond="BUILD=='release'"></if>
     </set>
     
+    <set var="orxNAME">
+        <if cond="BUILD=='debug'">orx$(orxSUFFIX)</if>
+        <if cond="BUILD=='release'">orx$(orxSUFFIX)</if>
+    </set>
+
     <!-- Disable specifics warnings -->
     <set var="orxDISABLE_WARNING">
       <if cond="FORMAT in ['autoconf','gnu','mingw','xcode2']">-Wno-unused-parameter</if>
