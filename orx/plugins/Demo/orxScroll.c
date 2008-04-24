@@ -104,7 +104,7 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     orxObject_GetPosition(sapstWaveGroups[i], &vPos);
 
     /* Updates its Y coordinate along a sine with initial phasis */
-    vPos.fY = sfWaveAmplitude * sinf((orxU2F(i) * orxMATH_KF_PI_BY_2) + (orxMATH_KF_PI_BY_2 * orxU2F(_pstClockInfo->fTime)));
+    vPos.fY = sfWaveAmplitude * sinf(orxMATH_KF_PI_BY_2 * (orxU2F(i) + orxU2F(_pstClockInfo->fTime)));
 
     /* Applies it */
     orxObject_SetPosition(sapstWaveGroups[i], &vPos);
@@ -202,8 +202,6 @@ orxSTATIC orxSTATUS orxScroll_Init()
   /* Success? */
   if(i == orxSCROLL_RESOURCE_NUMBER)
   {
-    orxVECTOR     vPosition;
-    orxFLOAT      fBackgroundWidth, fBackgroundHeight;
     orxCLOCK     *pstClock;
     orxOBJECT    *pstBackground;
     orxVIEWPORT  *pstViewport;
@@ -211,26 +209,14 @@ orxSTATIC orxSTATUS orxScroll_Init()
     /* Selects main section */
     orxConfig_SelectSection("Scroll");
 
-    /* Sets camera position */
-    orxVector_Set(&vPosition, orx2F(0.5f) * fScreenWidth, orx2F(0.5f) * fScreenHeight, orxFLOAT_0); 
+    /* Creates viewport */
+    pstViewport = orxViewport_CreateFromConfig("ScrollViewport");
 
-    /* Creates & inits camera */
-    spstCamera = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
-    orxCamera_SetFrustrum(spstCamera, fScreenWidth, fScreenHeight, orxFLOAT_0, fScrollingDepth);
-    orxCamera_SetPosition(spstCamera, &vPosition);
-
-    /* Creates & inits viewport on screen */
-    pstViewport = orxViewport_Create();
-    orxViewport_SetCamera(pstViewport, spstCamera);
+    /* Stores camera pointer */
+    spstCamera = orxViewport_GetCamera(pstViewport);
 
     /* Creates background */
     pstBackground = orxObject_CreateFromConfig("Background");
-
-    /* Gets its dimensions */
-    orxObject_GetSize(pstBackground, &fBackgroundWidth, &fBackgroundHeight);
-
-    /* Sets its scale */
-    orxObject_SetScale(pstBackground, fScreenWidth / fBackgroundWidth, fScreenHeight / fBackgroundHeight);
 
     /* Links it to camera frame */
     orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(pstBackground, FRAME), orxCamera_GetFrame(spstCamera));
