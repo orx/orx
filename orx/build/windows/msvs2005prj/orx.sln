@@ -8,6 +8,17 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orx", "orx\orx.vcproj", "{C
 		{590A8B1B-8ED1-47F7-8986-B4D372BDF4CB} = {590A8B1B-8ED1-47F7-8986-B4D372BDF4CB}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxDisplay_SFML", "orxDisplay_SFML\orxDisplay_SFML.vcproj", "{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{590A8B1B-8ED1-47F7-8986-B4D372BDF4CB} = {590A8B1B-8ED1-47F7-8986-B4D372BDF4CB}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{AFDE03CA-4270-4A76-923D-85A0D4DDBE46}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exe", "Exe", "{FB7694D5-5295-4BA6-81C8-0042C962A9CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core Plugins", "Core Plugins", "{71651024-CF5E-4EBF-A133-E3D8CF1D036E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -42,8 +53,25 @@ Global
 		{C0EC660D-8CF7-4C8E-BEA8-372305EF344D}.Static Debug|Win32.Build.0 = Static Debug|Win32
 		{C0EC660D-8CF7-4C8E-BEA8-372305EF344D}.Static Release|Win32.ActiveCfg = Static Release|Win32
 		{C0EC660D-8CF7-4C8E-BEA8-372305EF344D}.Static Release|Win32.Build.0 = Static Release|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Debug|Win32.ActiveCfg = Static Debug|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Debug|Win32.Build.0 = Static Debug|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Dynamic Debug|Win32.ActiveCfg = Dynamic Debug|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Dynamic Debug|Win32.Build.0 = Dynamic Debug|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Dynamic Release|Win32.ActiveCfg = Static Release|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Dynamic Release|Win32.Build.0 = Static Release|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Release|Win32.ActiveCfg = Static Release|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Release|Win32.Build.0 = Static Release|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Static Debug|Win32.ActiveCfg = Static Debug|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Static Debug|Win32.Build.0 = Static Debug|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Static Release|Win32.ActiveCfg = Static Release|Win32
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}.Static Release|Win32.Build.0 = Static Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{590A8B1B-8ED1-47F7-8986-B4D372BDF4CB} = {AFDE03CA-4270-4A76-923D-85A0D4DDBE46}
+		{C0EC660D-8CF7-4C8E-BEA8-372305EF344D} = {FB7694D5-5295-4BA6-81C8-0042C962A9CE}
+		{A518C140-0A1D-4AA7-A81F-0BFC739C86F5} = {71651024-CF5E-4EBF-A133-E3D8CF1D036E}
 	EndGlobalSection
 EndGlobal

@@ -49,7 +49,7 @@ extern "C"
 
 orxSTATIC orxCONST orxU32     su32ScreenWidth   = 1024;
 orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
-orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)0xFFFFFFFF;
+orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)-1;
 orxSTATIC orxCONST orxU32     su32TextBankSize  = 8;
 
 
@@ -121,7 +121,7 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
     pstText->poString->SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
 
     /* Sets its center */
-    pstText->poString->SetRotationCenter(_pstTransform->s32SrcX, _pstTransform->s32SrcY);
+    pstText->poString->SetRotationCenter((float)_pstTransform->s32SrcX, (float)_pstTransform->s32SrcY);
 
     /* Sets its rotation */
     pstText->poString->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
@@ -130,8 +130,8 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
     pstText->poString->SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
 
     /* Sets its position */
-    pstText->poString->SetLeft(_pstTransform->s32DstX - _pstTransform->s32SrcX);
-    pstText->poString->SetTop(_pstTransform->s32DstY - _pstTransform->s32SrcY);
+    pstText->poString->SetLeft((float)(_pstTransform->s32DstX - _pstTransform->s32SrcX));
+    pstText->poString->SetTop((float)(_pstTransform->s32DstY - _pstTransform->s32SrcY));
   }
 
   /* Done! */
@@ -363,8 +363,8 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   poSprite = (sf::Sprite *)_pstSrc;
 
   /* Updates its position */
-  poSprite->SetLeft(_s32PosX);
-  poSprite->SetTop(_s32PosY);
+  poSprite->SetLeft((float)_s32PosX);
+  poSprite->SetTop((float)_s32PosY);
 
   /* Draws it */
   sstDisplay.poRenderWindow->Draw(*poSprite);

@@ -358,7 +358,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
       fflush(pstFile);
       fclose(pstFile);
     }
-   }
+  }
 
   /* Console Display? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)  

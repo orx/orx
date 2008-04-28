@@ -275,7 +275,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="..\..\..\..\lib\dynamic\orx.dll"
-				GenerateDebugInformation="false"
+				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ImportLibrary="..\..\..\..\lib\dynamic\orx.lib"
