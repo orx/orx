@@ -36,9 +36,11 @@
 typedef enum __orxSCRIPT_TYPE_t
 {
   orxSCRIPT_TYPE_NULL,
+  orxSCRIPT_TYPE_POINTER,
   orxSCRIPT_TYPE_S32,
   orxSCRIPT_TYPE_FLOAT,
-  orxSCRIPT_TYPE_STRING,
+  orxSCRIPT_TYPE_DOUBLE,
+/*  orxSCRIPT_TYPE_STRING,*/
   orxSCRIPT_TYPE_VOID,
   
   /* Sentinel */
@@ -50,13 +52,7 @@ typedef enum __orxSCRIPT_TYPE_t
 typedef union __orxSCRIPT_PARAM_t
 {
   orxSCRIPT_TYPE eType;   /**< Parameter type */
-  
-  union
-  {
-    orxS32    *ps32Value;
-    orxFLOAT  *pfValue;
-    orxSTRING *pzValue;
-  };
+  orxVOID   *pValue;
   
 } orxSCRIPT_PARAM;
 
@@ -68,6 +64,7 @@ typedef struct __orxSCRIPT_FUNCTION_t
   orxS32 s32NbParams;                               /**< Number of parameters */
   orxSCRIPT_TYPE aeParamsType[SCRIPT_MAX_PARAMS];   /**< List of parameters for each exported function */
   orxSCRIPT_FUNCTION_PTR pfnFunction;               /**< pointer on the function to call */
+  orxS32 s32StackSize;                              /**< Stack size */
   
   /******* OPTIONAL *********/
 
@@ -86,6 +83,15 @@ typedef struct __orxSCRIPT_FUNCTION_t
 /** Script module setup. */
 extern orxDLLAPI orxVOID orxScript_Setup();
 
+/** Initialize the Script Module
+ * @return Returns the status of the operation
+ */
+extern orxDLLAPI orxSTATUS orxScript_Init();
+
+/** Uninitialize the Script Module
+ */
+extern orxDLLAPI orxVOID orxScript_Exit();
+
 /** Function to register a new function in the system. 
  * This function sotre the parameters in the global list, gets the new entry index and call the plugin register function
  * @param _zFunctionName  (IN)  String value of the function
@@ -95,12 +101,12 @@ extern orxDLLAPI orxVOID orxScript_Setup();
 extern orxDLLAPI orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, orxSCRIPT_FUNCTION_PTR _pfnFunction, orxCONST orxSTRING _zParamTypes);
 
 /** Executes a callback with input parameters, returns the result of the called function in the output
- * @param _s32ParamCount  (IN)  Parameters count
- * @param _pstInputValues (IN)  Array of input parameters
- * @param _pstOutputValue (OUT) Returned value from the function
+ * @param _pstFunctionInfo   (IN)  Function info
+ * @param _pstInputValues    (IN)  Array of input parameters
+ * @param _pstOutputValue    (OUT) Returned value from the function
  * @return Return orxSTATUS_SUCCESS if the function has been correctly executed, else orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_ExecuteFunction(orxS32 _s32ParamCount, orxCONST orxSCRIPT_PARAM *_pstInputValues, orxSCRIPT_PARAM *_pstOutputValue);
+extern orxDLLAPI orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCONST orxSCRIPT_PARAM *_pstInputValues, orxSCRIPT_PARAM *_pstOutputValue);
 
 /** Returns function info from an index or orxNULL if not found
  * @param _s32Index (IN)  parameter index
@@ -115,8 +121,8 @@ extern orxDLLAPI orxSCRIPT_FUNCTION *orxScript_GetFunctionInfo(orxS32 _s32Index)
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_PluginInit, orxSTATUS);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_PluginExit, orxVOID);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_RunFile, orxSTATUS, orxCONST orxSTRING);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_RunString, orxSTATUS, orxCONST orxSTRING);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_GetType, orxSCRIPT_TYPE, orxCONST orxSTRING);
@@ -131,16 +137,16 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxScript_RegisterFunction, orxSTATUS, orxS32);
 /** Initialize the Script Module
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxSTATUS orxScript_Init()
+orxSTATIC orxINLINE orxSTATUS orxScript_PluginInit()
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Init)();
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_PluginInit)();
 }
 
 /** Uninitialize the Script Module
  */
-orxSTATIC orxINLINE orxVOID orxScript_Exit()
+orxSTATIC orxINLINE orxVOID orxScript_PluginExit()
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_Exit)();
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_PluginExit)();
 }
 
 /** Parse and run a script file

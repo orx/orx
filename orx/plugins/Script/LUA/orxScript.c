@@ -189,11 +189,11 @@ orxSTATIC int orxScript_LUA_Execute(lua_State *_pState)
       }
       
       /* Calls the generic function system to sends arguments in the system */
-      orxSTATUS eStatus = orxScript_ExecuteFunction(pstFunctionInfo->s32NbParams, aeInputs, aeOutputs);
+      orxSTATUS eStatus = orxScript_ExecuteFunction(pstFunctionInfo, aeInputs, aeOutputs);
       
       /* Valid return type ? */
       if((eStatus == orxSTATUS_SUCCESS)
-      && (pstFunctionInfo->aeParamsType[0] != orxSCRIPT_NONE))
+      && (pstFunctionInfo->aeParamsType[0] != orxSCRIPT_VOID))
       {
         /* Returns 1 result */
         iRet = 1;
