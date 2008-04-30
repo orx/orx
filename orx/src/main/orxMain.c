@@ -1,14 +1,14 @@
 /**
  * @file orxMain.c
- * 
+ *
  * Main program implementation
- * 
+ *
  */
- 
+
  /***************************************************************************
  orxMain.c
  Main program implementation
- 
+
  begin                : 04/09/2005
  author               : (C) Arcallians
  email                : bestel@arcallians.org
@@ -23,8 +23,11 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "orx.h"
 
+/** Flags
+ */
 #define orxMAIN_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags */
 #define orxMAIN_KU32_STATIC_FLAG_READY  0x00000001  /**< Ready flag */
 
@@ -32,9 +35,16 @@
 
 #define orxMAIN_KU32_STATIC_MASK_ALL    0xFFFFFFFF  /**< All mask */
 
+/** Misc defines
+ */
+#define orxMAIN_KZ_CONFIG_SECTION       "Main"      /**< Main config section */
+#define orxMAIN_KZ_CONFIG_GAME_FILE     "GameFile"  /**< Game file config key */
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
 typedef struct __orxMAIN_STATIC_t
 {
   orxU32 u32Flags;       /**< Control flags */
@@ -59,6 +69,8 @@ orxVOID orxMain_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
 
   return;
 }
@@ -72,11 +84,28 @@ orxSTATUS orxMain_Init()
   /* Don't call twice the init function */
   if(!(sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY))
   {
+    orxSTRING zGameFileName;
+
     /* Sets module as initialized */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
 
-    /* Success */
-    eResult = orxSTATUS_SUCCESS;
+    /* Selects section */
+    orxConfig_SelectSection(orxMAIN_KZ_CONFIG_SECTION);
+
+    /* Has game file? */
+    if(orxConfig_HasValue(orxMAIN_KZ_CONFIG_GAME_FILE) != orxFALSE)
+    {
+      /* Gets the game file name */
+      zGameFileName = orxConfig_GetString(orxMAIN_KZ_CONFIG_GAME_FILE);
+
+      /* Loads it */
+      eResult = (orxPlugin_Load(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    }
+    else
+    {
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
   else
   {

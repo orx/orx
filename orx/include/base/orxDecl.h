@@ -1,9 +1,9 @@
-/** 
+/**
  * \file orxDecl.h
- * 
+ *
  * Declarations.
  * Defines all base declarations.
- * 
+ *
  * \todo
  * Add the required declarations at need.
  */
@@ -12,7 +12,7 @@
 /***************************************************************************
  orxDecl.h
  Base declarations
- 
+
  begin                : 14/04/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -55,10 +55,10 @@
 
   /** The function will be exported (dll compilation) */
   #define orxDLLEXPORT          __declspec(dllexport)
-  
+
   /** The function will be imported (exe comoilation) */
   #define orxDLLIMPORT          __declspec(dllimport)
-  
+
   /** The function will not be exported nor imported */
   #define orxDLLLOCAL
 
@@ -89,23 +89,23 @@
 
     /** The function will be called fastly (use registers for parameters as far as possible).*/
     #define orxFASTCALL         __attribute__ ((fastcall))
-    
+
     /** The function will be called using stdcall convention.*/
     #define orxSTDCALL            __attribute__ ((stdcall))
 
     /** The function will be called using cdecl convention.*/
     #define orxCDECL              __attribute__ ((cdecl))
 
-  /** The function will be exported (dll compilation) */
+    /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
-  
+
     /** The function will be imported (exe comoilation) */
     #define orxDLLIMPORT
-  
+
     /** The function will not be exported nor imported */
     #define orxDLLLOCAL         __attribute__ ((visibility("hidden")))
 
-    /** The function or the object will be constant. */    
+    /** The function or the object will be constant. */
     #define orxCONST            const
     /** The function or the object will be static. */
     #define orxSTATIC           static
@@ -118,8 +118,8 @@
     #define orxNULL             ((void *)0)
 
   #endif /* __orxLINUX__ || __orxMAC__ */
-  
-#endif /* __orxWINDOWS__ */  
+
+#endif /* __orxWINDOWS__ */
 
 /* DLL? */
 #ifdef __orxDLL__          /* orx compiled as a dynamic library */
@@ -180,21 +180,21 @@ do                                                            \
 } while(orxFALSE);
 
 
-/** Tests all flags 
+/** Tests all flags
  * @param[in] X Flag container
  * @param[in] F Flags to test
  * @return true if flags are all presents
  */
 #define orxFLAG_TEST_ALL(X, F) (((X) & (F)) == (F))
 
-/** Tests flags 
+/** Tests flags
  * @param[in] X Flag container
  * @param[in] F Flags to test
  * @return true if at least one flag is present
  */
 #define orxFLAG_TEST(X, F) (((X) & (F)) != 0)
 
-/** Gets flags 
+/** Gets flags
  * @param[in] X Flag container
  * @param[in] F Flags to test
  * @return Masked flags
