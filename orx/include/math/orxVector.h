@@ -645,5 +645,19 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, o
   return _pstDst;
 }
 
+orxSTATIC orxINLINE orxVECTOR *               orxAABox_GetCenter(orxCONST orxAABOX *_pstOp, orxVECTOR *_pvRes)
+{
+  /* Checks */
+  orxASSERT(_pstOp != orxNULL);
+  orxASSERT(_pvRes != orxNULL);
+
+  /* Gets box center */
+  orxVector_Add(_pvRes, &(_pstOp->vTL), &(_pstOp->vBR));
+  orxVector_Mulf(_pvRes, _pvRes, orx2F(0.5f));
+
+  /* Done! */
+  return _pvRes;
+}
+
 
 #endif /* _orxVECTOR_H_ */

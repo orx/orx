@@ -11,8 +11,8 @@
  * @file orxViewport.h
  * @date 14/12/2003
  * @author (C) Arcallians
- * 
- * @todo 
+ *
+ * @todo
  * Add internal/external dependency system
  * Optimize dependencies storage
  * Add freezing behaviour
@@ -20,7 +20,7 @@
 
 /**
  * @addtogroup Viewport
- * 
+ *
  * Viewport module
  * Allows to creates and handle viewports.
  * Viewports are structures associated to cameras and used for rendering.
@@ -211,6 +211,13 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetRelativeSize(orxCON
  * @param[out]  _pu32BRY        Y coordinate of bottom right corner
  */
 extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetClipping(orxCONST orxVIEWPORT *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY);
+
+/** Gets an axis aligned box of viewport
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[out]  _pstBox         Output box
+ * @return orxAABOX / orxNULL
+ */
+extern orxDLLAPI orxAABOX *orxFASTCALL        orxViewport_GetBox(orxCONST orxVIEWPORT *_pstViewport, orxAABOX *_pstBox);
 
 
 #endif /* _orxVIEWPORT_H_ */

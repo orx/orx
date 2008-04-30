@@ -1,14 +1,14 @@
 /**
  * @file orxRender.c
- * 
+ *
  * Render module
- * 
+ *
  */
 
  /***************************************************************************
  orxRender.c
  Render module
- 
+
  begin                : 25/09/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -219,7 +219,6 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
     if(pstBitmap != orxNULL)
     {
       orxCAMERA  *pstCamera;
-      orxU32      u32ULX, u32ULY, u32BRX, u32BRY;
       orxFLOAT    fTextureWidth, fTextureHeight;
       orxAABOX    stViewportBox, stTextureBox;
       orxVECTOR   vViewportCenter;
@@ -231,20 +230,17 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
       orxVector_SetAll(&(stTextureBox.vTL), orxFLOAT_0);
       orxVector_Set(&(stTextureBox.vBR), fTextureWidth, fTextureHeight, orxFLOAT_0);
 
-      /* Gets viewport clipping */
-      orxViewport_GetClipping(_pstViewport, &u32ULX, &u32ULY, &u32BRX, &u32BRY);
+      /* Gets viewport box */
+      orxViewport_GetBox(_pstViewport, &stViewportBox);
 
-      /* Gets viewport's corners & center*/
-      orxVector_Set(&(stViewportBox.vTL), orxU2F(u32ULX), orxU2F(u32ULY), orxFLOAT_0);
-      orxVector_Set(&(stViewportBox.vBR), orxU2F(u32BRX), orxU2F(u32BRY), orxFLOAT_0);
-      orxVector_Add(&vViewportCenter, &(stViewportBox.vTL), &(stViewportBox.vBR));
-      orxVector_Mulf(&vViewportCenter, &vViewportCenter, orx2F(0.5f));
+      /* Gets its center */
+      orxAABox_GetCenter(&stViewportBox, &vViewportCenter);
 
       /* Does it intersect with texture */
       if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
       {
         /* Sets bitmap clipping */
-        orxDisplay_SetBitmapClipping(pstBitmap, u32ULX, u32ULY, u32BRX, u32BRY);
+        orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
 
         /* Should clear bitmap? */
         if(orxViewport_IsBackgroundClearingEnabled(_pstViewport) != orxFALSE)
@@ -292,8 +288,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
             fCameraSqrBoundingRadius = orx2F(0.5f) * ((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight));
 
             /* Gets rendering scales */
-            fRenderScaleX = fZoom * (stViewportBox.vBR.fX - stViewportBox.vTL.fX) / fCameraWidth; 
-            fRenderScaleY = fZoom * (stViewportBox.vBR.fY - stViewportBox.vTL.fY) / fCameraHeight; 
+            fRenderScaleX = fZoom * (stViewportBox.vBR.fX - stViewportBox.vTL.fX) / fCameraWidth;
+            fRenderScaleY = fZoom * (stViewportBox.vBR.fY - stViewportBox.vTL.fY) / fCameraHeight;
 
             /* Gets camera rotation */
             fRenderRotation = orxCamera_GetRotation(pstCamera);
@@ -540,7 +536,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 
   /* Increases FPS counter */
   orxFPS_IncreaseFrameCounter();
-  
+
   /* Swap buffers */
   orxDisplay_Swap();
 
@@ -551,6 +547,67 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
+
+/** Gets a world position from a screen one
+ * @param[in]  _pvScreenPosition        Screen space position
+ * @param[out] _pvWorldPosition         Corresponding world position
+ * @return orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxVector_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+{
+  orxVIEWPORT  *pstViewport;
+  orxVECTOR    *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvScreenPosition != orxNULL);
+  orxASSERT(_pvWorldPosition != orxNULL);
+
+  /* For all viewports */
+  for(pstViewport = (orxVIEWPORT *)orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT);
+      pstViewport != orxNULL;
+      pstViewport = (orxVIEWPORT *)orxStructure_GetNext(pstViewport))
+  {
+    orxCAMERA *pstCamera;
+
+    /* Is active and has camera? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && ((pstCamera = orxViewport_GetCamera(pstViewport)) != orxNULL))
+    {
+      orxAABOX stViewportBox;
+
+      /* Gets viewport box */
+      orxViewport_GetBox(pstViewport, &stViewportBox);
+
+      /* Is position in box? */
+      if((_pvScreenPosition->fX >= stViewportBox.vTL.fX)
+      && (_pvScreenPosition->fX <= stViewportBox.vBR.fX)
+      && (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
+      && (_pvScreenPosition->fY <= stViewportBox.vBR.fY))
+      {
+        orxVECTOR vLocalPosition;
+        orxAABOX  stCameraFrustrum;
+
+        /* Updates result */
+        pvResult = _pvWorldPosition;
+
+        /* Gets viewport space normalized position */
+        orxVector_Set(&vLocalPosition, (_pvScreenPosition->fX - stViewportBox.vTL.fX) / (stViewportBox.vBR.fX - stViewportBox.vTL.fX), (_pvScreenPosition->fY - stViewportBox.vTL.fY) / (stViewportBox.vBR.fY - stViewportBox.vTL.fY), orxFLOAT_0);
+
+        /* Gets camera frustrum */
+        orxCamera_GetFrustrum(pstCamera, &stCameraFrustrum);
+
+        /* Gets its world coordinates */
+        orxVector_Set(pvResult, stCameraFrustrum.vTL.fX + (vLocalPosition.fX * (stCameraFrustrum.vBR.fX - stCameraFrustrum.vTL.fX)), stCameraFrustrum.vTL.fY + (vLocalPosition.fY * (stCameraFrustrum.vBR.fY - stCameraFrustrum.vTL.fY)), orx2F(0.5f) * (stCameraFrustrum.vBR.fZ - stCameraFrustrum.vTL.fZ));
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return pvResult;
+}
 
 /** Inits the Render module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -616,7 +673,7 @@ orxSTATUS orxRender_Init()
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 /** Exits from the Render module

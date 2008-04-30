@@ -1,14 +1,14 @@
 /**
  * @file orxRender.c
- * 
+ *
  * Render module
- * 
+ *
  */
 
  /***************************************************************************
  orxRender.c
  Render module
- 
+
  begin                : 25/09/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -62,6 +62,7 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(RENDER)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(RENDER, INIT, orxRender_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(RENDER, EXIT, orxRender_Exit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(RENDER, GET_WORLD_POSITION, orxRender_GetWorldPosition)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(RENDER)
 
@@ -70,3 +71,4 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(RENDER)
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, orxCONST orxVECTOR *, orxVECTOR *);

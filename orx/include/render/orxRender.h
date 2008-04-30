@@ -1,9 +1,9 @@
-/** 
+/**
  * \file orxRender.h
- * 
+ *
  * Render Module.
  * Renders visible objects on screen, using active renders.
- * 
+ *
  * \todo
  * Optimize viewport list handling.
  */
@@ -12,7 +12,7 @@
 /***************************************************************************
  orxRender.h
  Render module
- 
+
  begin                : 15/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -37,12 +37,20 @@
 
 #include "object/orxObject.h"
 
+
 /***************************************************************************
  * Functions directly implemented by orx core
  ***************************************************************************/
 
 /** Render module setup */
-extern orxDLLAPI orxVOID            orxRender_Setup();
+extern orxDLLAPI orxVOID                orxRender_Setup();
+
+/** Gets a world position from a screen one
+ * @param[in]  _pvScreenPosition        Screen space position
+ * @param[out] _pvWorldPosition         Corresponding world position
+ * @return orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
 
 
 /***************************************************************************
@@ -51,6 +59,7 @@ extern orxDLLAPI orxVOID            orxRender_Setup();
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, orxCONST orxVECTOR *, orxVECTOR *);
 
 
 orxSTATIC orxINLINE orxSTATUS orxRender_Init()
@@ -61,6 +70,11 @@ orxSTATIC orxINLINE orxSTATUS orxRender_Init()
 orxSTATIC orxINLINE orxVOID orxRender_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Exit)();
+}
+
+orxSTATIC orxINLINE orxVECTOR *orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pvWorldPosition);
 }
 
 

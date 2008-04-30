@@ -1,14 +1,14 @@
 /**
  * @file orxViewport.c
- * 
+ *
  * Viewport module
- * 
+ *
  */
 
  /***************************************************************************
  orxViewport.c
  Viewport module
- 
+
  begin                : 14/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -480,7 +480,7 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }
@@ -528,7 +528,7 @@ orxVOID orxFASTCALL orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE
 
   /* Updates texture pointer */
   _pstViewport->pstTexture = _pstTexture;
-  
+
   /* Has a new texture? */
   if(_pstTexture != orxNULL)
   {
@@ -721,7 +721,7 @@ orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *
   }
 
   return;
-} 
+}
 
 /** Gets a viewport camera
  * @param[in]   _pstViewport    Concerned viewport
@@ -782,7 +782,7 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
 
   /* Gets associated texture */
   pstTexture = orxViewport_GetTexture(_pstViewport);
-  
+
   /* Valid? */
   if(pstTexture != orxNULL)
   {
@@ -841,7 +841,7 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 /** Gets a viewport position
@@ -1014,4 +1014,31 @@ orxVOID orxFASTCALL orxViewport_GetClipping(orxCONST orxVIEWPORT *_pstViewport, 
   *_pu32BRY = orxF2U(_pstViewport->fY + _pstViewport->fHeight);
 
   return;
+}
+
+/** Gets an axis aligned box of viewport
+ * @param[in]   _pstViewport    Concerned viewport
+ * @param[out]  _pstBox         Output box
+ * @return orxAABOX / orxNULL
+ */
+orxAABOX *orxFASTCALL orxViewport_GetBox(orxCONST orxVIEWPORT *_pstViewport, orxAABOX *_pstBox)
+{
+  orxAABOX *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+  orxASSERT(_pstBox != orxNULL);
+
+  /* Updates result */
+  pstResult = _pstBox;
+
+  /* Sets its values */
+  orxVector_Set(&(pstResult->vTL), _pstViewport->fX, _pstViewport->fY, orxFLOAT_0);
+  orxVector_Copy(&(pstResult->vBR), &(pstResult->vTL));
+  pstResult->vBR.fX += _pstViewport->fWidth;
+  pstResult->vBR.fY += _pstViewport->fHeight;
+
+  /* Done! */
+  return pstResult;
 }
