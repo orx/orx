@@ -47,13 +47,6 @@
 #include "anim/orxAnimSet.h"
 
 
-/** AnimPointer flags
- */
-#define orxANIMPOINTER_KU32_FLAG_NONE         0x00000000  /**< No flags */
-
-#define orxANIMPOINTER_KU32_FLAG_PAUSE        0x00010000  /**< Animation id pause flag */
-
-
 /** Internal AnimPointer structure
  */
 typedef struct __orxANIMPOINTER_t             orxANIMPOINTER;
@@ -74,9 +67,15 @@ extern orxDLLAPI orxVOID                      orxAnimPointer_Exit();
 
 /** Creates an empty AnimPointer
  * @param[in]   _pstAnimSet                   AnimSet reference
- * @return      Created orxANIMPOINTER / orxNULL
+ * @return      orxANIMPOINTER / orxNULL
  */
 extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_Create(orxANIMSET *_pstAnimSet);
+
+/** Creates an animation pointer from config
+ * @param[in]   _zConfigID                    Config ID
+ * @return      orxANIMPOINTER / orxNULL
+ */
+extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_CreateFromConfig(orxCONST orxSTRING _zConfigID);
 
 /** Deletes an AnimPointer
  * @param[in]   _pstAnimPointer               AnimPointer to delete
@@ -148,6 +147,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTime(orxANIMPOIN
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetFrequency(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fFrequency);
 
+/** AnimPointer pause accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _bPause                       Pause / Unpause
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_Pause(orxANIMPOINTER *_pstAnimPointer, orxBOOL _bPause);
 
 #endif /* _orxANIMPOINTER_H_ */
 

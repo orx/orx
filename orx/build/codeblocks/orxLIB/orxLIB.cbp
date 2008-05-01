@@ -51,6 +51,10 @@
 					<Add option="-D__orxDLL__" />
 					<Add option="-D__orxDLLEXPORT__" />
 				</Compiler>
+				<ExtraCommands>
+					<Add after="cmd /c copy /Y ..\..\..\lib\dynamic\orxd.dll ..\..\..\bin" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Target title="Dynamic Release">
 				<Option output="..\..\..\lib\dynamic\orx" prefix_auto="1" extension_auto="1" />
@@ -71,6 +75,10 @@
 					<Add option="-s" />
 					<Add option="-Wl,--out-implib=..\..\..\lib\dynamic\liborx.a" />
 				</Linker>
+				<ExtraCommands>
+					<Add after="cmd /c copy /Y ..\..\..\lib\dynamic\orx.dll ..\..\..\bin" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 		</Build>
 		<Compiler>

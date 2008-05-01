@@ -45,8 +45,8 @@
  */
 #define orxANIMSET_KU32_FLAG_NONE                   0x00000000  /**< No flags. */
 
-#define orxANIMSET_KU32_FLAG_REFERENCE_LOCK         0x01000000  /**< If there's already a reference on it, the AnimSet is locked for changes. */
-#define orxANIMSET_KU32_FLAG_LINK_STATIC            0x10000000  /**< If not static, animpointer should duplicate the link table upon linking/creation. */
+#define orxANIMSET_KU32_FLAG_REFERENCE_LOCK         0x00010000  /**< If there's already a reference on it, the AnimSet is locked for changes. */
+#define orxANIMSET_KU32_FLAG_LINK_STATIC            0x00020000  /**< If not static, animpointer should duplicate the link table upon linking/creation. */
 
 /** AnimSet Link Flags
  */
@@ -88,6 +88,12 @@ extern orxDLLAPI orxVOID                            orxAnimSet_Exit();
  * return 			Created orxANIMSET / orxNULL
  */
 extern orxDLLAPI orxANIMSET *orxFASTCALL            orxAnimSet_Create(orxU32 _u32Size);
+
+/** Creates an animation set from config
+ * @param[in]   _zConfigID                    Config ID
+ * @return      orxANIMSET / orxNULL
+ */
+extern orxDLLAPI orxANIMSET *orxFASTCALL            orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigID);
 
 /** Deletes an AnimSet
  * @param[in]		_pstAnimSet													AnimSet to delete

@@ -64,6 +64,7 @@
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_FILENAME    "Graphic"
+#define orxOBJECT_KZ_CONFIG_ANIMSET_NAME        "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
@@ -402,7 +403,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zGraphicFileName, zAutoScrolling, zBodyID;
+      orxSTRING zGraphicFileName, zAnimSetName, zAutoScrolling, zBodyID;
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags;
       orxVECTOR vPosition;
@@ -501,6 +502,31 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
             /* Updates its pivot */
             orxObject_SetPivot(pstResult, &vPivot);
+          }
+        }
+      }
+
+      /* *** Animation *** */
+
+      /* Gets animation set name */
+      zAnimSetName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ANIMSET_NAME);
+
+      /* Valid? */
+      if((zAnimSetName != orxNULL) && (*zAnimSetName != *orxSTRING_EMPTY))
+      {
+        orxANIMPOINTER *pstAnimPointer;
+
+        /* Creates animation pointer from it */
+        pstAnimPointer = orxAnimPointer_CreateFromConfig(zAnimSetName);
+
+        /* Valid? */
+        if(pstAnimPointer != orxNULL)
+        {
+          /* Links it structures */
+          if(orxObject_LinkStructure(pstResult, (orxSTRUCTURE *)pstAnimPointer) != orxSTATUS_FAILURE)
+          {
+            /* Updates flags */
+            orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_ANIMPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
           }
         }
       }

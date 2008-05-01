@@ -26,6 +26,7 @@
 
 #include "anim/orxAnimSet.h"
 
+#include "core/orxConfig.h"
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 
@@ -47,6 +48,8 @@
 /** orxANIMSET flags
  */
 #define orxANIMSET_KU32_FLAG_NONE                     0x00000000	/**< ID flag none */
+
+#define orxANIMSET_KU32_FLAG_INTERNAL                 0x10000000  /**< Internal structure handling flag  */
 
 #define orxANIMSET_KU32_MASK_SIZE                     0x000000FF	/**< ID mask for size */
 #define orxANIMSET_KU32_MASK_COUNTER                  0x0000FF00	/**< ID mask for counter */
@@ -1226,6 +1229,7 @@ orxVOID orxAnimSet_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_ANIM);
 
@@ -1367,6 +1371,50 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
 
   /* Done! */
   return pstAnimSet;
+}
+
+/** Creates an animation set from config
+ * @param[in]   _zConfigID                    Config ID
+ * @return      orxANIMSET / orxNULL
+ */
+orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+{
+  orxSTRING   zPreviousSection;
+  orxANIMSET *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
+
+  /* Gets previous config section */
+  zPreviousSection = orxConfig_GetCurrentSection();
+
+  /* Selects section */
+  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  {
+    //! TODO: Creates anim set + anims
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      /* Updates status flags */
+      orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL, orxANIMSET_KU32_FLAG_NONE);
+
+      //! TODO: Inits it
+    }
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Deletes an AnimSet
@@ -1592,6 +1640,13 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _
       /* Updates animation reference counter */
       orxStructure_DecreaseCounter((_pstAnimSet->pastAnim[u32AnimIndex]));
   
+      /* Was internally allocated? */
+      if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_INTERNAL) != orxFALSE)
+      {
+        /* Deletes animset */
+        orxAnim_Delete(_pstAnimSet->pastAnim[u32AnimIndex]);
+      }
+
       /* Removes animation */
       _pstAnimSet->pastAnim[u32AnimIndex] = orxNULL;
 
