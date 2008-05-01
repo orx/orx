@@ -1,13 +1,13 @@
 /**
  * @file orxModule.c
- * 
+ *
  * Module registration
- * 
+ *
  * @todo
  * - Add optimizations (space/time) for dependencies storage/computation
  * - Add extra non-core modules registering + dependencies declaration
  */
- 
+
  /***************************************************************************
  orxModule.c
  Module registration
@@ -137,7 +137,7 @@ typedef struct __orxMODULE_INFO_t
 } orxMODULE_INFO;
 
 /*
- * Static structure 
+ * Static structure
  */
 typedef struct __orxMODULE_STATIC_t
 {
@@ -206,7 +206,7 @@ orxSTATUS orxFASTCALL _orxModule_Init(orxMODULE_ID _eModuleID, orxBOOL _bExternC
   if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_REGISTERED)
   {
     /* Is not initialized? */
-    if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
+    if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP)))
     {
       /* For all dependencies */
       for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64DependFlags, u32Index = 0;
@@ -221,7 +221,7 @@ orxSTATUS orxFASTCALL _orxModule_Init(orxMODULE_ID _eModuleID, orxBOOL _bExternC
           {
             /* Inits it */
             eResult = _orxModule_Init(u32Index, orxFALSE);
-    
+
             /* Failed ? */
             if(eResult != orxSTATUS_SUCCESS)
             {
@@ -235,6 +235,9 @@ orxSTATUS orxFASTCALL _orxModule_Init(orxMODULE_ID _eModuleID, orxBOOL _bExternC
       /* All dependencies initialized? */
       if(eResult == orxSTATUS_SUCCESS)
       {
+        /* Updates temp flag */
+        sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_TEMP;
+
         /* Calls module init function */
         eResult = sstModule.astModuleInfo[_eModuleID].pfnInit();
 
@@ -242,7 +245,12 @@ orxSTATUS orxFASTCALL _orxModule_Init(orxMODULE_ID _eModuleID, orxBOOL _bExternC
         if(eResult == orxSTATUS_SUCCESS)
         {
           /* Updates initialized flag */
-          sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP;
+          sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_INITIALIZED;
+        }
+        else
+        {
+          /* Updates temp flag */
+          sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_TEMP;
         }
       }
     }

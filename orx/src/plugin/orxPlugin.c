@@ -1,7 +1,7 @@
 /***************************************************************************
  orxPlugin.c
  Plugin module
- 
+
  begin                : 04/09/2002
  author               : (C) Arcallians
  email                : david.anderson@calixo.net
@@ -48,7 +48,7 @@
 
 
 /*
- * Platform dependant type & function defines
+ * Platform dependent type & function defines
  */
 
 /* WINDOWS */
@@ -78,7 +78,7 @@
 
 
 /*
- * Platform independant defines
+ * Platform independent defines
  */
 
 #define orxPLUGIN_KU32_STATIC_FLAG_NONE                     0x00000000L
@@ -194,8 +194,8 @@ orxSTATIC orxPLUGIN_STATIC sstPlugin;
 
 /***************************************************************************
  orxPlugin_UpdateAllModule
- 
- This function updates all modules relying on core plugins. 
+
+ This function updates all modules relying on core plugins.
  Returns nothing.
  ***************************************************************************/
 orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
@@ -230,7 +230,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
         {
           /* Marks as loaded */
           sstPlugin.astCoreInfo[i].u32Flags |= orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED;
-          
+
           /* Tries to init associated module */
           orxModule_Init(sstPlugin.astCoreInfo[i].eModuleID);
         }
@@ -243,7 +243,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
         {
           /* Marks as not loaded */
           sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED;
-          
+
           /* Tries to exit from associated module */
           orxModule_Exit(sstPlugin.astCoreInfo[i].eModuleID);
         }
@@ -253,15 +253,15 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
       sstPlugin.astCoreInfo[i].u32Flags &= ~orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY;
     }
   }
-  
+
   /* Done! */
   return;
 }
 
 /***************************************************************************
  orxPlugin_CreateFunctionInfo
- 
- This function creates & initiates a function_info cell. 
+
+ This function creates & initiates a function_info cell.
  Returns created cell.
  ***************************************************************************/
 orxPLUGIN_FUNCTION_INFO *orxFASTCALL orxPlugin_CreateFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo)
@@ -311,7 +311,7 @@ orxVOID orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo,
 
 /***************************************************************************
  orxPlugin_RegisterCoreFunction
- 
+
  This function registers a core function.
  Returns orxVOID.
  ***************************************************************************/
@@ -329,7 +329,7 @@ orxSTATIC orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_
 
   /* Checks */
   orxASSERT(u32PluginIndex < orxPLUGIN_CORE_ID_NUMBER);
-  
+
   /* Gets core function table */
   pstCoreFunction = sstPlugin.astCoreInfo[u32PluginIndex].pstCoreFunctionTable;
 
@@ -351,7 +351,7 @@ orxSTATIC orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_
 
       /* Updates plugin status */
       sstPlugin.astCoreInfo[u32PluginIndex].u32Flags |= orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY;
-      
+
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
     }
@@ -371,7 +371,7 @@ orxSTATIC orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_
 
 /***************************************************************************
  orxPlugin_UnregisterCoreFunction
- 
+
  This function unregisters a core function.
  Returns orxVOID.
  ***************************************************************************/
@@ -419,8 +419,8 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_
 
 /***************************************************************************
  orxPlugin_CreatePluginInfo
- 
- This function creates & initiates a plugin_info cell. 
+
+ This function creates & initiates a plugin_info cell.
  Returns created cell.
  ***************************************************************************/
 orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
@@ -447,7 +447,7 @@ orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
     {
       /* Creates function hash table */
       pstPluginInfo->pstFunctionTable = orxHashTable_Create(orxPLUGIN_KU32_FUNCTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-      
+
       /* Invalid? */
       if(pstPluginInfo->pstFunctionTable == orxNULL)
       {
@@ -456,7 +456,7 @@ orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
         /* Frees previously allocated data */
         orxBank_Delete(pstPluginInfo->pstFunctionBank);
         orxBank_Free(sstPlugin.pstPluginBank, pstPluginInfo);
-        
+
         /* Not successful */
         pstPluginInfo = orxNULL;
       }
@@ -467,7 +467,7 @@ orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
 
       /* Frees previously allocated data */
       orxBank_Free(sstPlugin.pstPluginBank, pstPluginInfo);
-        
+
       /* Not successful */
       pstPluginInfo = orxNULL;
     }
@@ -479,10 +479,10 @@ orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
 
 /***************************************************************************
  orxPlugin_DeletePluginInfo
- 
+
  This function completely shuts down the given plugin.
  It should be called from orxPlugin_Unload or orxPlugin_DeleteAll.
- 
+
  Returns nothing.
  ***************************************************************************/
 orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
@@ -534,7 +534,7 @@ orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
 
 /***************************************************************************
  orxPlugin_GetPluginInfo
- 
+
  This function finds a plugin info, and returns a reference to it
  if it exists, otherwise orxNULL.
 
@@ -559,7 +559,7 @@ orxSTATIC orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHa
 /***************************************************************************
  orxPlugin_GetFunctionAddress
  Returns a  pointer to the requested function.
- 
+
  returns: orxPLUGIN_FUNCTION if success, orxNULL otherwise
  ***************************************************************************/
 orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSysPlugin, orxCONST orxSTRING _zFunctionName)
@@ -569,7 +569,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
   /* Checks */
   orxASSERT(_pstSysPlugin != orxHANDLE_UNDEFINED);
   orxASSERT(_zFunctionName != orxNULL);
-  
+
   /* Gets function */
   pfnFunction = (orxPLUGIN_FUNCTION)orxPLUGIN_GET_SYMBOL_ADDRESS(_pstSysPlugin, _zFunctionName);
 
@@ -586,7 +586,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
 
 /***************************************************************************
  orxPlugin_RegisterPlugin
- 
+
  This function registers a plugin.
  Returns orxSTATUS_SUCCESS / orxSTATUS_FAILURE.
  ***************************************************************************/
@@ -662,7 +662,7 @@ orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_
 
 /***************************************************************************
  orxPlugin_AddCoreInfo
- 
+
  This function adds a core plugin info structure to the global info array.
  Returns orxVOID.
  ***************************************************************************/
@@ -807,7 +807,7 @@ orxSTATUS orxPlugin_Init()
 
       /* Registers it */
       orxParam_Register(&stParams);
-      
+
       /* Successful */
       eResult = orxSTATUS_SUCCESS;
     }
@@ -886,7 +886,7 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
  orxPlugin_Load
  Loads the shared object specified as a null terminated string, and makes
  it subsequently available under the name in the 2nd param.
- 
+
  returns: plugin handle on success, orxHANDLE_UNDEFINED if load error
  ***************************************************************************/
 orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName)
@@ -919,7 +919,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
       /* Registers plugin */
       if(orxPlugin_RegisterPlugin(pstSysPlugin, pstPluginInfo) == orxSTATUS_SUCCESS)
       {
-        /* Stores plugin name */  
+        /* Stores plugin name */
         pstPluginInfo->zPluginName = _zPluginName;
 
         /* Gets plugin handle */
@@ -989,7 +989,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName
 /***************************************************************************
  orxPlugin_Unload
  Unloads the shared object designated by its handle
- 
+
  returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
  ***************************************************************************/
 orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
@@ -1026,7 +1026,7 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
 /***************************************************************************
  orxPlugin_GetFunction
  Returns the requested function pointer;
- 
+
  returns: orxPLUGIN_FUNCTION / orxNULL
  ***************************************************************************/
 orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, orxCONST orxSTRING _zFunctionName)
@@ -1067,9 +1067,9 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
 
 /***************************************************************************
  orxPlugin_GetHandle
- 
+
  This function returns the handle of the given plugin.
- 
+
  returns plugin handle on success, orxHANDLE_UNDEFINED otherwise
  ***************************************************************************/
 orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
@@ -1101,9 +1101,9 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
 
 /***************************************************************************
  orxPlugin_GetName
- 
+
  This function returns the name of the given plugin.
- 
+
  returns Name/orxSTRING_EMPTY
  ***************************************************************************/
 orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)

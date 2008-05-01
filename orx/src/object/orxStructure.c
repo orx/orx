@@ -1,7 +1,7 @@
 /***************************************************************************
  orxStructure.c
  Structure module
- 
+
  begin                : 08/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -89,7 +89,7 @@ typedef struct __orxSTRUCTURE_STORAGE_NODE_t
 {
   /* Storage node union : 16 */
   union
-  {    
+  {
     /* Link list node */
     orxLINKLIST_NODE stLinkListNode;
 
@@ -244,7 +244,7 @@ orxVOID orxStructure_Exit()
         orxLinkList_Clean(&(sstStructure.astStorage[i].stLinkList));
 
         break;
-      
+
       case orxSTRUCTURE_STORAGE_TYPE_TREE:
 
         /* Empties tree */
@@ -442,7 +442,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
     {
       /* Creates node */
       pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxBank_Allocate(sstStructure.astStorage[_eStructureID].pstNodeBank);
-  
+
       /* Valid? */
       if(pstNode != orxNULL)
       {
@@ -458,7 +458,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         switch(pstNode->eType)
         {
         case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
-    
+
           /* Adds node to list */
           eResult = orxLinkList_AddEnd(&(sstStructure.astStorage[_eStructureID].stLinkList), &(pstNode->stLinkListNode));
 
@@ -479,21 +479,21 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           }
 
           break;
-    
+
         default:
-    
+
           /* !!! MSG !!! */
-    
+
           /* Wrong type */
           eResult = orxSTATUS_FAILURE;
         }
-        
+
         /* Succesful? */
         if(eResult == orxSTATUS_SUCCESS)
         {
           /* Cleans whole structure */
           orxMemory_Set(pstStructure, 0, sstStructure.astInfo[_eStructureID].u32Size);
-          
+
           /* Stores ID with magic number */
           pstStructure->eID           = _eStructureID | orxSTRUCTURE_MAGIC_NUMBER;
 
@@ -506,19 +506,19 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         else
         {
           /* !!! MSG !!! */
-    
+
           /* Frees allocated node & structure */
           orxBank_Free(sstStructure.astStorage[_eStructureID].pstNodeBank, pstNode);
           orxBank_Free(sstStructure.astStorage[_eStructureID].pstStructureBank, pstStructure);
 
           /* Not created */
           pstStructure = orxNULL;
-        }        
+        }
       }
       else
       {
         /* !!! MSG !!! */
-        
+
         /* Frees allocated structure */
         orxBank_Free(sstStructure.astStorage[_eStructureID].pstStructureBank, pstStructure);
 
@@ -663,6 +663,57 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 
     /* Gets node from list */
     pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetFirst(&(sstStructure.astStorage[_eStructureID].stLinkList));
+
+    break;
+
+  case orxSTRUCTURE_STORAGE_TYPE_TREE:
+
+    /* Gets node from tree */
+    pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxTree_GetRoot(&(sstStructure.astStorage[_eStructureID].stTree));
+
+    break;
+
+  default:
+
+    /* !!! MSG !!! */
+
+    /* No node found */
+    pstNode = orxNULL;
+
+    break;
+  }
+
+  /* Node found? */
+  if(pstNode != orxNULL)
+  {
+    /* Gets associated structure */
+    pstStructure = pstNode->pstStructure;
+  }
+
+  /* Done! */
+  return pstStructure;
+}
+
+/** Gets last stored structure (last list cell or tree root depending on storage type)
+ * @param[in] _eStructureID      Concerned structure ID
+ * return orxSTRUCTURE / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID)
+{
+  orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
+  orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
+
+  /* Depending on type */
+  switch(sstStructure.astStorage[_eStructureID].eType)
+  {
+  case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+
+    /* Gets node from list */
+    pstNode = (orxSTRUCTURE_STORAGE_NODE *)orxLinkList_GetLast(&(sstStructure.astStorage[_eStructureID].stLinkList));
 
     break;
 
@@ -974,7 +1025,7 @@ orxSTATUS orxFASTCALL orxStructure_SetParent(orxHANDLE _phStructure, orxHANDLE _
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Not done */
     eResult = orxSTATUS_FAILURE;
   }

@@ -1,10 +1,10 @@
-/** 
+/**
  * \file orxStructure.h
- * 
+ *
  * Structure Module.
  * Allows to creates and handle structures.
  * Structures can be referenced by other structures (or objects).
- * 
+ *
  * \todo
  * Add the required structures when needed.
  * Do a generic system for structure registering (id given at realtime)
@@ -14,7 +14,7 @@
 /***************************************************************************
  orxStructure.h
  Structure module
- 
+
  begin                : 08/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -56,7 +56,7 @@
 #define orxSTRUCTURE_REGISTER(TYPE, STORAGE_TYPE, MEMORY_TYPE, UPDATE_FUNCTION) \
   orxStructure_Register(orxSTRUCTURE_ID_##TYPE, STORAGE_TYPE, MEMORY_TYPE, sizeof(orx##TYPE), UPDATE_FUNCTION)
 
-/** Structure assert 
+/** Structure assert
  */
 #define orxSTRUCTURE_ASSERT(STRUCTURE)                          \
   orxASSERT((STRUCTURE) != orxNULL);                            \
@@ -121,10 +121,10 @@ typedef struct __orxSTRUCTURE_t
 
   /* Flags : 12 */
   orxU32          u32Flags;
-  
+
   /* Handle of internal storage node. : 16 */
   orxHANDLE       hStorageNode;
-  
+
 } orxSTRUCTURE;
 
 
@@ -164,6 +164,8 @@ extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Update(orxH
 
 /** Gets first stored structure (first list cell or tree root depending on storage type). */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID);
+/** Gets last stored structure (last list cell or tree root depending on storage type). */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID);
 
 /** Structure tree parent get accessor. */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetParent(orxCONST orxHANDLE _phStructure);

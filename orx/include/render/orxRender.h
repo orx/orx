@@ -45,13 +45,6 @@
 /** Render module setup */
 extern orxDLLAPI orxVOID                orxRender_Setup();
 
-/** Gets a world position from a screen one
- * @param[in]  _pvScreenPosition        Screen space position
- * @param[out] _pvWorldPosition         Corresponding world position
- * @return orxVECTOR / orxNULL
- */
-extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
-
 
 /***************************************************************************
  * Functions extended by plugins
@@ -59,7 +52,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_GetWorldPosition(orxCONST orxV
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, orxCONST orxVECTOR *, orxVECTOR *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_GetWorldPosition, orxSTATUS, orxCONST orxVECTOR *, orxVECTOR *);
 
 
 orxSTATIC orxINLINE orxSTATUS orxRender_Init()
@@ -72,7 +65,7 @@ orxSTATIC orxINLINE orxVOID orxRender_Exit()
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Exit)();
 }
 
-orxSTATIC orxINLINE orxVECTOR *orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxSTATIC orxINLINE orxSTATUS orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pvWorldPosition);
 }

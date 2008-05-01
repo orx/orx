@@ -526,9 +526,9 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* For all viewports */
-  for(pstViewport = (orxVIEWPORT *)orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT);
+  for(pstViewport = (orxVIEWPORT *)orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT);
       pstViewport != orxNULL;
-      pstViewport = (orxVIEWPORT *)orxStructure_GetNext(pstViewport))
+      pstViewport = (orxVIEWPORT *)orxStructure_GetPrevious(pstViewport))
   {
     /* Renders it */
     orxRender_RenderViewport(pstViewport);
@@ -551,12 +551,12 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 /** Gets a world position from a screen one
  * @param[in]  _pvScreenPosition        Screen space position
  * @param[out] _pvWorldPosition         Corresponding world position
- * @return orxVECTOR / orxNULL
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxVECTOR *orxFASTCALL orxVector_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxSTATUS orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   orxVIEWPORT  *pstViewport;
-  orxVECTOR    *pvResult = orxNULL;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
@@ -588,9 +588,6 @@ orxVECTOR *orxFASTCALL orxVector_GetWorldPosition(orxCONST orxVECTOR *_pvScreenP
         orxVECTOR vLocalPosition;
         orxAABOX  stCameraFrustrum;
 
-        /* Updates result */
-        pvResult = _pvWorldPosition;
-
         /* Gets viewport space normalized position */
         orxVector_Set(&vLocalPosition, (_pvScreenPosition->fX - stViewportBox.vTL.fX) / (stViewportBox.vBR.fX - stViewportBox.vTL.fX), (_pvScreenPosition->fY - stViewportBox.vTL.fY) / (stViewportBox.vBR.fY - stViewportBox.vTL.fY), orxFLOAT_0);
 
@@ -598,7 +595,10 @@ orxVECTOR *orxFASTCALL orxVector_GetWorldPosition(orxCONST orxVECTOR *_pvScreenP
         orxCamera_GetFrustrum(pstCamera, &stCameraFrustrum);
 
         /* Gets its world coordinates */
-        orxVector_Set(pvResult, stCameraFrustrum.vTL.fX + (vLocalPosition.fX * (stCameraFrustrum.vBR.fX - stCameraFrustrum.vTL.fX)), stCameraFrustrum.vTL.fY + (vLocalPosition.fY * (stCameraFrustrum.vBR.fY - stCameraFrustrum.vTL.fY)), orx2F(0.5f) * (stCameraFrustrum.vBR.fZ - stCameraFrustrum.vTL.fZ));
+        orxVector_Set(_pvWorldPosition, stCameraFrustrum.vTL.fX + (vLocalPosition.fX * (stCameraFrustrum.vBR.fX - stCameraFrustrum.vTL.fX)), stCameraFrustrum.vTL.fY + (vLocalPosition.fY * (stCameraFrustrum.vBR.fY - stCameraFrustrum.vTL.fY)), orx2F(0.5f) * (stCameraFrustrum.vBR.fZ - stCameraFrustrum.vTL.fZ));
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
 
         break;
       }
@@ -606,7 +606,7 @@ orxVECTOR *orxFASTCALL orxVector_GetWorldPosition(orxCONST orxVECTOR *_pvScreenP
   }
 
   /* Done! */
-  return pvResult;
+  return eResult;
 }
 
 /** Inits the Render module
@@ -712,5 +712,6 @@ orxPLUGIN_USER_CORE_FUNCTION_START(RENDER);
 
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Init, RENDER, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Exit, RENDER, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_GetWorldPosition, RENDER, GET_WORLD_POSITION);
 
 orxPLUGIN_USER_CORE_FUNCTION_END();

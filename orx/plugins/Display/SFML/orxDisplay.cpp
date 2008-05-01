@@ -1,14 +1,14 @@
 /**
  * @file orxDisplay.cpp
- * 
+ *
  * SFML display plugin
- * 
+ *
  */
- 
+
  /***************************************************************************
  orxDisplay.cpp
  SFML display plugin
- 
+
  begin                : 18/10/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -74,7 +74,7 @@ typedef struct __orxDISPLAY_STATIC_t
   sf::RenderWindow *poRenderWindow;
 
   orxBANK          *pstTextBank;
-  
+
 } orxDISPLAY_STATIC;
 
 
@@ -186,7 +186,7 @@ extern "C" orxBITMAP *orxDisplay_SFML_CreateBitmap(orxU32 _u32Width, orxU32 _u32
 
 extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  sf::Color oColor;   
+  sf::Color oColor;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -215,14 +215,12 @@ extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
       /* Updates pixel */
       *pu32Cursor = u32Color;
     }
-
-    /* Updates whole image */
-//    poImage->Update();
   }
   else
   {
-    /* Sets rendering background color */
-    sstDisplay.poRenderWindow->SetBackgroundColor(oColor);
+    /* Clear the color buffer with given color */
+    glClearColor((1.0f / 255.f) * oColor.r, (1.0f / 255.f) * oColor.g, (1.0f / 255.f) * oColor.b, (1.0f / 255.f) * oColor.a);
+    glClear(GL_COLOR_BUFFER_BIT);
   }
 
   /* Done! */
@@ -341,9 +339,6 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, or
     /* Clears transparency mask */
     poImage->CreateMaskFromColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), 0xFF), 0xFF);
   }
-
-  /* Updates it */
-//  poImage->Update();
 
   /* Done! */
   return eResult;
@@ -485,7 +480,7 @@ extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(orxCONST orxBITMAP *_pstBitma
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_pu32Width != orxNULL);
   orxASSERT(_pu32Height != orxNULL);
-  
+
   /* Not screen? */
   if(_pstBitmap != spoScreen)
   {
@@ -518,7 +513,7 @@ extern "C" orxSTATUS orxDisplay_SFML_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT 
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pfWidth != orxNULL);
   orxASSERT(_pfHeight != orxNULL);
-  
+
   /* Gets size info */
   u32Width  = sstDisplay.poRenderWindow->GetWidth();
   u32Height = sstDisplay.poRenderWindow->GetHeight();
@@ -569,7 +564,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     orxMemory_Set(&sstDisplay, 0, sizeof(orxDISPLAY_STATIC));
 
     /* Creates text bank */
-    sstDisplay.pstTextBank = orxBank_Create(su32TextBankSize, sizeof(orxDISPLAY_TEXT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN); 
+    sstDisplay.pstTextBank = orxBank_Create(su32TextBankSize, sizeof(orxDISPLAY_TEXT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
     if(sstDisplay.pstTextBank != orxNULL)
@@ -612,7 +607,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 extern "C" orxVOID orxDisplay_SFML_Exit()

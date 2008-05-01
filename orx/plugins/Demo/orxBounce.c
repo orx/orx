@@ -39,25 +39,25 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   if((su32Counter < orxConfig_GetFloat("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
   {
     orxS32      s32MouseX, s32MouseY;
-    orxFLOAT    fScreenWidth, fScreenHeight;
-    orxVECTOR   vPosition;
+    orxVECTOR   vScreenPos, vWorldPos;
     orxOBJECT  *pstObject;
-
-    /* Gets screen dimensions */
-    orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
 
     /* Gets mouse coordinates */
     orxMouse_GetPosition(&s32MouseX, &s32MouseY);
 
     /* Gets on-screen position vector */
-    orxVector_Set(&vPosition, orxS2F(s32MouseX) - orx2F(0.5f) * fScreenWidth, orxS2F(s32MouseY) - orx2F(0.5f) * fScreenHeight, orxFLOAT_0);
+    orxVector_Set(&vScreenPos, orxS2F(s32MouseX), orxS2F(s32MouseY), orxFLOAT_0);
 
-    /* Spawn a ball under the cursor */
-    pstObject = orxObject_CreateFromConfig("Ball");
-    orxObject_SetPosition(pstObject, &vPosition);
+    /* Has a matching world position? */
+    if(orxRender_GetWorldPosition(&vScreenPos, &vWorldPos) != orxSTATUS_FAILURE)
+    {
+        /* Spawn a ball under the cursor */
+        pstObject = orxObject_CreateFromConfig("Ball");
+        orxObject_SetPosition(pstObject, &vWorldPos);
 
-    /* Update counter */
-    su32Counter++;
+        /* Update counter */
+        su32Counter++;
+    }
   }
 }
 
