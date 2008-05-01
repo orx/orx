@@ -29,6 +29,8 @@
 #include "plugin/orxPluginUser.h"
 
 #include "render/orxViewport.h"
+#include "render/orxRender.h"
+#include "core/orxConfig.h"
 #include "debug/orxFPS.h"
 #include "memory/orxBank.h"
 #include "utils/orxLinkList.h"
@@ -52,6 +54,8 @@
  */
 #define orxRENDER_KF_TICK_SIZE                orx2F(1.0f / 60.0f)
 #define orxRENDER_KU32_ORDER_BANK_SIZE        128
+#define orxRENDER_KST_DEFAULT_COLOR           orx2RGBA(255, 0, 0, 255)
+#define orxRENDER_KZ_FPS_FORMAT               "FPS: %d"
 
 
 /***************************************************************************
@@ -537,6 +541,29 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   /* Increases FPS counter */
   orxFPS_IncreaseFrameCounter();
 
+  /* Selects render config section */
+  orxConfig_SelectSection(orxRENDER_KZ_CONFIG_SECTION);
+
+  /* Should display FPS? */
+  if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
+  {
+    orxBITMAP_TRANSFORM stTextTransform;
+    orxCHAR             acText[16];
+
+    /* Clears text transform */
+    orxMemory_Set(&stTextTransform, 0, sizeof(orxBITMAP_TRANSFORM));
+
+    /* Inits it */
+    stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(0.8f);
+    stTextTransform.s32DstX = stTextTransform.s32DstY = 10;
+
+    /* Writes text */
+    orxString_Print(acText, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+
+    /* Display FPS */
+    orxDisplay_DrawText(orxDisplay_GetScreenBitmap(), &stTextTransform, orxRENDER_KST_DEFAULT_COLOR, acText);
+  }
+  
   /* Swap buffers */
   orxDisplay_Swap();
 
@@ -553,7 +580,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
  * @param[out] _pvWorldPosition         Corresponding world position
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxSTATUS orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   orxVIEWPORT  *pstViewport;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
@@ -612,7 +639,7 @@ orxSTATUS orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxV
 /** Inits the Render module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxRender_Init()
+orxSTATUS orxRender_Home_Init()
 {
   orxSTATUS eResult;
 
@@ -678,7 +705,7 @@ orxSTATUS orxRender_Init()
 
 /** Exits from the Render module
  */
-orxVOID orxRender_Exit()
+orxVOID orxRender_Home_Exit()
 {
   /* Initialized? */
   if(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY)
@@ -710,8 +737,8 @@ orxVOID orxRender_Exit()
 
 orxPLUGIN_USER_CORE_FUNCTION_START(RENDER);
 
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Init, RENDER, INIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Exit, RENDER, EXIT);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_GetWorldPosition, RENDER, GET_WORLD_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_Init, RENDER, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_Exit, RENDER, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxRender_Home_GetWorldPosition, RENDER, GET_WORLD_POSITION);
 
 orxPLUGIN_USER_CORE_FUNCTION_END();

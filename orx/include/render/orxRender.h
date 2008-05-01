@@ -38,6 +38,13 @@
 #include "object/orxObject.h"
 
 
+/** Misc defines
+ */
+
+#define orxRENDER_KZ_CONFIG_SECTION   "Render"
+#define orxRENDER_KZ_CONFIG_SHOW_FPS  "ShowFPS"
+
+
 /***************************************************************************
  * Functions directly implemented by orx core
  ***************************************************************************/
