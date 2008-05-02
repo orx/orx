@@ -64,7 +64,7 @@
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_FILENAME    "Graphic"
-#define orxOBJECT_KZ_CONFIG_ANIMSET_NAME        "AnimationSet"
+#define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "Animation"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
@@ -98,7 +98,7 @@ typedef struct __orxOBJECT_STORAGE_t
  */
 struct __orxOBJECT_t
 {
-  orxSTRUCTURE      stStructure;                /**<Public structure, first structure member : 16 */ 
+  orxSTRUCTURE      stStructure;                /**<Public structure, first structure member : 16 */
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 48 */
 
   /* Padding */
@@ -136,7 +136,7 @@ orxSTATIC orxOBJECT_STATIC sstObject;
 orxSTATIC orxINLINE orxVOID orxObject_DeleteAll()
 {
   orxOBJECT *pstObject;
-  
+
   /* Gets first object */
   pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
 
@@ -403,7 +403,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zGraphicFileName, zAnimSetName, zAutoScrolling, zBodyID;
+      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zBodyID;
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags;
       orxVECTOR vPosition;
@@ -463,7 +463,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       if((zGraphicFileName != orxNULL) && (*zGraphicFileName != *orxSTRING_EMPTY))
       {
         orxGRAPHIC *pstGraphic;
-      
+
         /* Creates graphic */
         pstGraphic = orxGraphic_CreateFromFile(zGraphicFileName, orxGRAPHIC_KU32_FLAG_2D);
 
@@ -509,15 +509,15 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* *** Animation *** */
 
       /* Gets animation set name */
-      zAnimSetName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ANIMSET_NAME);
+      zAnimPointerName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME);
 
       /* Valid? */
-      if((zAnimSetName != orxNULL) && (*zAnimSetName != *orxSTRING_EMPTY))
+      if((zAnimPointerName != orxNULL) && (*zAnimPointerName != *orxSTRING_EMPTY))
       {
         orxANIMPOINTER *pstAnimPointer;
 
         /* Creates animation pointer from it */
-        pstAnimPointer = orxAnimPointer_CreateFromConfig(zAnimSetName);
+        pstAnimPointer = orxAnimPointer_CreateFromConfig(zAnimPointerName);
 
         /* Valid? */
         if(pstAnimPointer != orxNULL)
@@ -555,7 +555,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
         /* Creates body */
         pstBody = orxBody_CreateFromConfig((orxSTRUCTURE *)pstResult, zBodyID);
-      
+
         /* Valid? */
         if(pstBody != orxNULL)
         {
@@ -623,7 +623,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
 
     /* Links new structure to object */
     _pstObject->astStructure[eStructureID].pstStructure = _pstStructure;
-    _pstObject->astStructure[eStructureID].u32Flags     = orxOBJECT_KU32_STORAGE_FLAG_NONE; 
+    _pstObject->astStructure[eStructureID].u32Flags     = orxOBJECT_KU32_STORAGE_FLAG_NONE;
   }
   else
   {
@@ -733,7 +733,7 @@ orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(orxCONST orxOBJECT *_pstObject
 
   /* Done ! */
   return pstStructure;
-}    
+}
 
 /** Enables/disables an object
  * @param[in]   _pstObject    Concerned object
@@ -1600,7 +1600,7 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
 
           /* Updates result */
           pstResult = _pstBoundingBox;
-        }        
+        }
       }
     }
   }

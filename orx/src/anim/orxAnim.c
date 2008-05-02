@@ -1,14 +1,14 @@
 /**
  * @file orxAnim.c
- * 
+ *
  * Animation (Data) module
- * 
+ *
  */
 
  /***************************************************************************
  orxAnim.c
  Animation (Data) module
- 
+
  begin                : 12/02/2004
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -59,7 +59,9 @@
  */
 #define orxANIM_KZ_CONFIG_KEY_DATA          "KeyData"
 #define orxANIM_KZ_CONFIG_KEY_DURATION      "KeyDuration"
+#define orxANIM_KZ_CONFIG_KEY_PIVOT         "KeyPivot"
 
+#define orxANIM_KZ_CENTERED_PIVOT           "centered"
 
 #define orxANIM_KC_NUMBER_MARKER            '#'
 
@@ -180,7 +182,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_SetStorageSize(orxANIM *_pstAnim, orxU32 _u3
   orxStructure_SetFlags(_pstAnim, _u32Size << orxANIM_KS32_ID_SHIFT_SIZE, orxANIM_KU32_MASK_SIZE);
 
   return;
-}  
+}
 
 /** Sets an animation internal key counter
  * @param[in]   _pstAnim        Concerned animation
@@ -215,7 +217,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_IncreaseKeyCounter(orxANIM *_pstAnim)
   orxAnim_SetKeyCounter(_pstAnim, u32KeyCounter + 1);
 
   return;
-}  
+}
 
 /** Increases an animation internal key counter
  * @param[in]   _pstAnim        Concerned animation
@@ -234,7 +236,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_DecreaseKeyCounter(orxANIM *_pstAnim)
   orxAnim_SetKeyCounter(_pstAnim, u32KeyCounter - 1);
 
   return;
-}  
+}
 
 /** Deletes all animations
  */
@@ -352,7 +354,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32Flags & orxANIM_KU32_MASK_USER_ALL) == _u32Flags); 
+  orxASSERT((_u32Flags & orxANIM_KU32_MASK_USER_ALL) == _u32Flags);
   orxASSERT(_u32Size <= orxANIM_KU32_KEY_MAX_NUMBER);
 
   /* Creates anim */
@@ -472,7 +474,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromFile(orxCONST orxSTRING _zBitmapFilePatte
 
           /* Valid? */
           if(ppstGraphic != orxNULL)
-          {            
+          {
             /* Stores it */
             *ppstGraphic = pstGraphic;
           }
@@ -540,7 +542,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromFile(orxCONST orxSTRING _zBitmapFilePatte
   }
 
   /* Done! */
-  return pstResult;  
+  return pstResult;
 }
 
 /** Creates an animation from config
@@ -578,13 +580,14 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxCHAR   acDurationID[32];
+      orxCHAR   acDurationID[32], acPivotID[32];
       orxFLOAT  fTimeStamp = orxFLOAT_0;
       orxU32    i;
 
       /* Clears buffers */
       orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
       orxMemory_Set(acDurationID, 0, 32 * sizeof(orxCHAR));
+      orxMemory_Set(acPivotID, 0, 32 * sizeof(orxCHAR));
 
       /* For all keys */
       for(i = 0; i < u32KeyCounter; i++)
@@ -608,6 +611,8 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           /* Valid? */
           if(pstGraphic != orxNULL)
           {
+            orxVECTOR vPivot;
+
             /* Gets duration ID */
             orxString_Print(acDurationID, "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
 
@@ -622,6 +627,34 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
               /* Deletes it */
               orxGraphic_Delete(pstGraphic);
             }
+
+            /* Gets duration ID */
+            orxString_Print(acPivotID, "%s%d", orxANIM_KZ_CONFIG_KEY_PIVOT, i + 1);
+
+            /* Uses centered pivot? */
+            if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(acPivotID)), orxANIM_KZ_CENTERED_PIVOT) == 0)
+            {
+              orxFLOAT fWidth, fHeight;
+
+              /* Gets graphic size */
+              if(orxGraphic_GetSize(pstGraphic, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+              {
+                /* Inits pivot */
+                orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
+              }
+              else
+              {
+                orxVector_Copy(&vPivot, &orxVECTOR_0);
+              }
+            }
+            /* Gets pivot value */
+            else if(orxConfig_GetVector(acPivotID, &vPivot) == orxNULL)
+            {
+              orxVector_Copy(&vPivot, &orxVECTOR_0);
+            }
+
+            /* Updates its pivot */
+            orxGraphic_SetPivot(pstGraphic, &vPivot);
           }
         }
       }
@@ -680,7 +713,7 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }
@@ -705,7 +738,7 @@ orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, 
   orxSTRUCTURE_ASSERT(_pstAnim);
   orxASSERT(_pstData != orxNULL);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
-  orxASSERT((orxAnim_GetKeyCounter(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCounter(_pstAnim) - 1].fTimeStamp)); 
+  orxASSERT((orxAnim_GetKeyCounter(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCounter(_pstAnim) - 1].fTimeStamp));
 
   /* Gets storage size & counter */
   u32Size     = orxAnim_GetKeyStorageSize(_pstAnim);
@@ -917,7 +950,7 @@ orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(orxCONST orxANIM *_pstAnim)
 
   /* Gets storage size */
   return(orxStructure_GetFlags((orxANIM *)_pstAnim, orxANIM_KU32_MASK_SIZE) >> orxANIM_KS32_ID_SHIFT_SIZE);
-}  
+}
 
 /** Animation key counter accessor
  * @param[in]   _pstAnim        Concerned animation
