@@ -2,7 +2,7 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="orx">
 		<Project filename="orxLIB\orxLIB.cbp" />
-		<Project filename="orx\orx.cbp">
+		<Project filename="orx\orx.cbp" active="1">
 			<Depends filename="orxLIB\orxLIB.cbp" />
 		</Project>
 		<Project filename="orxDisplay_SFML\orxDisplay_SFML.cbp">
@@ -37,7 +37,7 @@
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />
 		</Project>
-		<Project filename="orxDemo\Bounce.cbp" active="1">
+		<Project filename="orxDemo\Bounce.cbp">
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />
 		</Project>
