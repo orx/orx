@@ -49,6 +49,7 @@
 #define orxVIEWPORT_KU32_FLAG_CAMERA          0x00000002  /**< Has camera flag */
 #define orxVIEWPORT_KU32_FLAG_TEXTURE         0x00000004  /**< Has texture flag */
 #define orxVIEWPORT_KU32_FLAG_CLEAR           0x00000008  /**< Clear background before render flag */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL        0x10000000  /**< Internal structure handling flag  */
 
 #define orxVIEWPORT_KU32_FLAG_DEFAULT         0x00000009  /**< Default flags */
 
@@ -296,13 +297,16 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
         orxTEXTURE *pstTexture;
 
         /* Creates texture */
-        pstTexture = orxNULL; //! orxTexture_CreateFromConfig(zTextureName);
+        pstTexture = orxTexture_CreateFromFile(zTextureName);
 
         /* Valid? */
         if(pstTexture != orxNULL)
         {
           /* Sets it */
           orxViewport_SetTexture(pstResult, pstTexture);
+
+          /* Updates status flags */
+          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL, orxVIEWPORT_KU32_FLAG_NONE);
         }
       }
 
@@ -472,6 +476,13 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
     {
       /* Removes its reference */
       orxStructure_DecreaseCounter((_pstViewport->pstTexture));
+
+      /* Was internally allocated? */
+      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL) != orxFALSE)
+      {
+        /* Deletes texture */
+        orxTexture_Delete(_pstViewport->pstTexture);
+      }
     }
 
     /* Deletes structure */

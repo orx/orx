@@ -27,6 +27,7 @@
 #include "anim/orxAnim.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxConfig.h"
 #include "display/orxGraphic.h"
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
@@ -52,6 +53,12 @@
 #define orxANIM_KS32_ID_SHIFT_COUNTER       24           /**< Counter ID shift */
 
 #define orxANIM_KU32_FLAG_INTERNAL          0x00001000  /**< Internal structure handling flag  */
+
+
+/** Misc defines
+ */
+#define orxANIM_KZ_CONFIG_KEY_DATA          "KeyData"
+#define orxANIM_KZ_CONFIG_KEY_DURATION      "KeyDuration"
 
 
 #define orxANIM_KC_NUMBER_MARKER            '#'
@@ -264,6 +271,7 @@ orxVOID orxAnim_Setup()
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_SYSTEM);
+  orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_GRAPHIC);
 
@@ -459,7 +467,6 @@ orxANIM *orxFASTCALL orxAnim_CreateFromFile(orxCONST orxSTRING _zBitmapFilePatte
             (pstGraphic = orxGraphic_CreateFromFile(zBaseName, orxGRAPHIC_KU32_FLAG_2D)) != orxNULL;
             orxString_Print(zBaseName + s32MarkerIndex, "%0*d%s", u32MarkerNumber, ++u32AnimSize + 1, _zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber))
         {
-        orxLOG("%s", zBaseName);
           /* Allocates a cell */
           ppstGraphic = orxBank_Allocate(pstBank);
 
@@ -534,6 +541,108 @@ orxANIM *orxFASTCALL orxAnim_CreateFromFile(orxCONST orxSTRING _zBitmapFilePatte
 
   /* Done! */
   return pstResult;  
+}
+
+/** Creates an animation from config
+ * @param[in]   _zConfigID                    Config ID
+ * @return      orxANIMSET / orxNULL
+ */
+orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+{
+  orxSTRING zPreviousSection;
+  orxANIM  *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+
+  /* Gets previous config section */
+  zPreviousSection = orxConfig_GetCurrentSection();
+
+  /* Selects section */
+  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  {
+    orxU32  u32KeyCounter;
+    orxCHAR acID[16];
+
+    /* Clears buffer */
+    orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
+
+    /* For all keys */
+    for(u32KeyCounter = 1, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter);
+        orxConfig_HasValue(acID) != orxFALSE;
+        u32KeyCounter++, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter));
+
+    /* Creates 2D animation */
+    pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, --u32KeyCounter);
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      orxCHAR   acDurationID[32];
+      orxFLOAT  fTimeStamp = orxFLOAT_0;
+      orxU32    i;
+
+      /* Clears buffers */
+      orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
+      orxMemory_Set(acDurationID, 0, 32 * sizeof(orxCHAR));
+
+      /* For all keys */
+      for(i = 0; i < u32KeyCounter; i++)
+      {
+        orxSTRING zDataName;
+
+        /* Gets data ID */
+        orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, i + 1);
+
+        /* Gets its name */
+        zDataName = orxConfig_GetString(acID);
+
+        /* Valid? */
+        if((zDataName != orxNULL) && (*zDataName != *orxSTRING_EMPTY))
+        {
+          orxGRAPHIC *pstGraphic;
+
+          /* Creates it */
+          pstGraphic = orxGraphic_CreateFromFile(zDataName, orxGRAPHIC_KU32_FLAG_2D);
+
+          /* Valid? */
+          if(pstGraphic != orxNULL)
+          {
+            /* Gets duration ID */
+            orxString_Print(acDurationID, "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
+
+            /* Updates its timestamp */
+            fTimeStamp += orxConfig_GetFloat(acDurationID);
+
+            /* Adds it */
+            if(orxAnim_AddKey(pstResult, (orxSTRUCTURE *)pstGraphic, fTimeStamp) == orxSTATUS_FAILURE)
+            {
+              /* !!! MSG !!! */
+
+              /* Deletes it */
+              orxGraphic_Delete(pstGraphic);
+            }
+          }
+        }
+      }
+
+      /* Updates status flags */
+      orxStructure_SetFlags(pstResult, orxANIM_KU32_FLAG_INTERNAL, orxANIM_KU32_FLAG_NONE);
+    }
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Deletes an animation

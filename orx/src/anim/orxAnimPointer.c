@@ -378,15 +378,20 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRING _
     if(pstAnimSet != orxNULL)
     {
       /* Creates animation pointer from it */
-      orxAnimPointer_Create(pstAnimSet);
+      pstResult = orxAnimPointer_Create(pstAnimSet);
 
       /* Valid? */
       if(pstResult != orxNULL)
       {
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, orxANIMPOINTER_KU32_FLAG_INTERNAL, orxANIMPOINTER_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* !!! MSG !!! */
 
-        //! TODO: Inits it
+        /* Deletes created anim set */
+        orxAnimSet_Delete(pstAnimSet);
       }
     }
 
