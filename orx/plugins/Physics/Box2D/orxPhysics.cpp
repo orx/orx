@@ -37,6 +37,13 @@ extern "C"
 #include <Box2D/Box2D.h>
 
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4311 4312)
+
+#endif /* __orxMSVC__ */
+
+
 /** Module flags
  */
 #define orxPHYSICS_KU32_STATIC_FLAG_NONE        0x00000000 /**< No flags */
@@ -557,7 +564,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     vWorldGravity.Set(vGravity.fX, vGravity.fY);
 
     /* Creates world */
-    sstPhysics.poWorld = new b2World(stWorldAABB, vWorldGravity, bAllowSleep);
+    sstPhysics.poWorld = new b2World(stWorldAABB, vWorldGravity, bAllowSleep ? true : false);
 
     /* Success? */
     if(sstPhysics.poWorld != orxNULL)
@@ -700,3 +707,10 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TO
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE)
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE)
 orxPLUGIN_USER_CORE_FUNCTION_END();
+
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4311 4312)
+
+#endif /* __orxMSVC__ */

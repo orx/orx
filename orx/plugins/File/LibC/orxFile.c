@@ -100,11 +100,11 @@ orxVOID orxFile_LibC_Exit()
  */
 orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
 {
-  /* Module initialized ? */
-  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-
   /* Convert the open flags into a string */
   orxCHAR zMode[3];
+
+  /* Module initialized ? */
+  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
   
   /* Fills with null terminated characters */
   orxMemory_Set(&zMode, orxCHAR_NULL, 3);
@@ -181,16 +181,16 @@ orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
  */
 orxU32 orxFile_LibC_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
+  /* Default return value */
+  orxU32 u32Ret = 0;
+
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
 
-  /* Default return value */
-  orxU32 u32Ret = 0;
-  
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-    u32Ret = fread(_pReadData, _u32ElemSize, _u32NbElem, (FILE*)_pstFile);
+    u32Ret = (orxU32)fread(_pReadData, _u32ElemSize, _u32NbElem, (FILE*)_pstFile);
   }
   
   /* Returns the number of read elements */
@@ -206,19 +206,19 @@ orxU32 orxFile_LibC_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32Nb
  */
 orxU32 orxFile_LibC_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
+  /* Default return value */
+  orxU32 u32Ret = 0;
+
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
 
   /* Checks inputs */
   orxASSERT(_pstFile != orxNULL);
 
-  /* Default return value */
-  orxU32 u32Ret = 0;
-  
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-    u32Ret = fwrite(_pDataToWrite, _u32ElemSize, _u32NbElem, (FILE*)_pstFile);
+    u32Ret = (orxU32)fwrite(_pDataToWrite, _u32ElemSize, _u32NbElem, (FILE*)_pstFile);
   }
   
   /* Returns the number of read elements */
@@ -233,14 +233,14 @@ orxU32 orxFile_LibC_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u
  */
 orxBOOL orxFile_LibC_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
 {
+  /* Default return value */
+  orxBOOL bRet = orxFALSE;
+
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
 
   /* Checks inputs */
   orxASSERT(_pstFile != orxNULL);
-  
-  /* Default return value */
-  orxBOOL bRet = orxFALSE;
   
   /* Valid input ? */
   if(_pstFile != orxNULL)
@@ -267,15 +267,15 @@ orxBOOL orxFile_LibC_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pst
  */
 orxSTATUS orxFile_LibC_Close(orxFILE *_pstFile)
 {
+  /* Default return value */
+  orxSTATUS eRet = orxSTATUS_FAILURE;
+
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
 
   /* Checks inputs */
   orxASSERT(_pstFile != orxNULL);
 
-  /* Default return value */
-  orxSTATUS eRet = orxSTATUS_FAILURE;
-  
   /* valid ? */
   if(_pstFile != orxNULL)
   {

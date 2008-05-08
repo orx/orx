@@ -30,6 +30,12 @@
 
   #include <io.h>
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4311 4312)
+
+#endif /* __orxMSVC__ */
+
 #else
 
   #include <sys/types.h>
@@ -87,7 +93,7 @@ orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST struct _
 
   /* Stores info */
   _pstFileInfo->u32Size       = _pstData->size;
-  _pstFileInfo->u32TimeStamp  = _pstData->time_write;
+  _pstFileInfo->u32TimeStamp  = (orxU32)_pstData->time_write;
   orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->name, 255);
   orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
   _pstFileInfo->u32Flags      = (_pstData->attrib == 0)
@@ -190,14 +196,14 @@ orxBOOL orxFileSystem_LibC_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
 {
   orxBOOL bResult = orxFALSE;
 
-  /* Checks */
-  orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFileInfo != orxNULL);
-
 #ifdef __orxWINDOWS__
 
   struct _finddata_t  stData;
   orxS32              s32FindResult;
+
+  /* Checks */
+  orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
 
   /* Opens the search */
   s32FindResult = _findnext((orxS32)_pstFileInfo->hInternal, &stData);
@@ -215,6 +221,10 @@ orxBOOL orxFileSystem_LibC_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
 #else /* __orxWINDOWS__ */
   
   struct dirent *pstDirEnt;
+
+  /* Checks */
+  orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
 
   /* Clear vars */
   orxMemory_Set(_pstFileInfo->zFullName, 0, 1280);
@@ -245,17 +255,17 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
 {
   orxBOOL bResult = orxFALSE;
 
-  /* Checks */
-  orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstFileInfo != orxNULL);
-
 #ifdef __orxWINDOWS__
 
   struct _finddata_t  stData;
   orxS32              s32Handle;
 
+  /* Checks */
+  orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
+
   /* Opens the search */
-  s32Handle = _findfirst(_zSearchPattern, &stData);
+  s32Handle = (orxU32)_findfirst(_zSearchPattern, &stData);
 
   /* Valid? */
   if(s32Handle >= 0)
@@ -296,6 +306,10 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
   
   /* Stores seach pattern */
   orxS32 s32LastSeparator, i;
+
+  /* Checks */
+  orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstFileInfo != orxNULL);
 
   /* Gets last directory separator */
   for(s32LastSeparator = -1, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR, 0);
@@ -469,3 +483,10 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFileSystem_LibC_Delete, FILESYSTEM, DELETE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFileSystem_LibC_CreateDir, FILESYSTEM, CREATE_DIR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFileSystem_LibC_DeleteDir, FILESYSTEM, DELETE_DIR);
 orxPLUGIN_USER_CORE_FUNCTION_END();
+
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4311 4312)
+
+#endif /* __orxMSVC__ */
