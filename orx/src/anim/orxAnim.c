@@ -60,6 +60,8 @@
 #define orxANIM_KZ_CONFIG_KEY_DATA          "KeyData"
 #define orxANIM_KZ_CONFIG_KEY_DURATION      "KeyDuration"
 #define orxANIM_KZ_CONFIG_KEY_PIVOT         "KeyPivot"
+#define orxANIM_KZ_CONFIG_DEFAULT_DURATION  "DefaultKeyDuration"
+#define orxANIM_KZ_CONFIG_DEFAULT_PIVOT     "DefaultKeyPivot"
 
 #define orxANIM_KZ_CENTERED_PIVOT           "centered"
 
@@ -612,12 +614,13 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           if(pstGraphic != orxNULL)
           {
             orxVECTOR vPivot;
+            orxSTRING zPivotID;
 
             /* Gets duration ID */
             orxString_Print(acDurationID, "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
 
             /* Updates its timestamp */
-            fTimeStamp += orxConfig_GetFloat(acDurationID);
+            fTimeStamp += orxConfig_HasValue(acDurationID) ? orxConfig_GetFloat(acDurationID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);
 
             /* Adds it */
             if(orxAnim_AddKey(pstResult, (orxSTRUCTURE *)pstGraphic, fTimeStamp) == orxSTATUS_FAILURE)
@@ -628,11 +631,23 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
               orxGraphic_Delete(pstGraphic);
             }
 
-            /* Gets duration ID */
+            /* Writes key pivot ID */
             orxString_Print(acPivotID, "%s%d", orxANIM_KZ_CONFIG_KEY_PIVOT, i + 1);
 
+            /* Has specific pivot ID? */
+            if(orxConfig_HasValue(acPivotID) != orxFALSE)
+            {
+              /* Uses it */
+              zPivotID = acPivotID;
+            }
+            else
+            {
+              /* Uses default one */
+              zPivotID = orxANIM_KZ_CONFIG_DEFAULT_PIVOT;
+            }
+
             /* Uses centered pivot? */
-            if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(acPivotID)), orxANIM_KZ_CENTERED_PIVOT) == 0)
+            if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(zPivotID)), orxANIM_KZ_CENTERED_PIVOT) == 0)
             {
               orxFLOAT fWidth, fHeight;
 
@@ -648,7 +663,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
               }
             }
             /* Gets pivot value */
-            else if(orxConfig_GetVector(acPivotID, &vPivot) == orxNULL)
+            else if(orxConfig_GetVector(zPivotID, &vPivot) == orxNULL)
             {
               orxVector_Copy(&vPivot, &orxVECTOR_0);
             }
