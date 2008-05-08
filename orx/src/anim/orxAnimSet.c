@@ -1479,7 +1479,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
               hAnimHandle = orxAnimSet_AddAnim(pstResult, pstAnim);
 
               /* Adds it to registration table */
-              orxHashTable_Add(pstRegistrationTable, orxString_ToCRC(zAnimName), hAnimHandle + 1);
+              orxHashTable_Add(pstRegistrationTable, orxString_ToCRC(zAnimName), (orxVOID *)((orxU32)hAnimHandle + 1));
             }
           }
         }
@@ -1510,8 +1510,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
             zDstAnim    = zSeparator + 1;
 
             /* Gets source & destination anim handles */
-            hSrcAnim = orxHashTable_Get(pstRegistrationTable, orxString_ToCRC(zSrcAnim)) - 1;
-            hDstAnim = orxHashTable_Get(pstRegistrationTable, orxString_ToCRC(zDstAnim)) - 1;
+            hSrcAnim = (orxHANDLE)((orxU32)orxHashTable_Get(pstRegistrationTable, orxString_ToCRC(zSrcAnim)) - 1);
+            hDstAnim = (orxHANDLE)((orxU32)orxHashTable_Get(pstRegistrationTable, orxString_ToCRC(zDstAnim)) - 1);
 
             /* Adds link */
             hLink = orxAnimSet_AddLink(pstResult, hSrcAnim, hDstAnim);

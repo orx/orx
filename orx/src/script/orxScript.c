@@ -135,6 +135,9 @@ orxVOID orxScript_Exit()
  */
 orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, orxSCRIPT_FUNCTION_PTR _pfnFunction, orxCONST orxSTRING _zParamTypes)
 {
+  orxS32  s32Count, s32Index, s32Previous;
+  orxBOOL bEnd;
+
   /* Default return value */
   orxSTATUS eStatus = orxSTATUS_FAILURE;
 
@@ -142,9 +145,9 @@ orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, or
   orxASSERT(_zFunctionName != orxNULL);
   orxASSERT(_pfnFunction != orxNULL);
   orxASSERT(_zParamTypes != orxNULL);
-  
+
   /* Gets index */
-  orxS32 s32Index = sstScript.s32Count;
+  s32Index = sstScript.s32Count;
   
   /* Stores function name */
   sstScript.astFunctions[s32Index].zFunctionName = _zFunctionName;
@@ -153,9 +156,9 @@ orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, or
   sstScript.astFunctions[s32Index].pfnFunction = _pfnFunction;
   
   /* Parse parameters type */
-  orxS32 s32Count = 0;
-  orxBOOL bEnd = orxFALSE;
-  orxS32 s32Previous = 0;
+  s32Count = 0;
+  bEnd = orxFALSE;
+  s32Previous = 0;
   while(!bEnd)
   {
     orxSCRIPT_TYPE eType;
@@ -228,6 +231,8 @@ void orxScript_Test(float j)
  */
 orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCONST orxSCRIPT_PARAM *_pstInputValues, orxSCRIPT_PARAM *_pstOutputValue)
 {
+  orxS32 s32Index, s32StackPointer;
+
   /* Default return value */
   orxSTATUS eRet = orxSTATUS_FAILURE;
   
@@ -237,7 +242,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
   orxASSERT(_pstOutputValue != orxNULL);
   
   /* Sets the initial stack size */
-  orxS32 s32StackPointer = 12;
+  s32StackPointer = 12;
 
   /* Computes the total stack size */
   s32StackPointer += _pstFunctionInfo->s32StackSize;
@@ -255,10 +260,8 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
     asm("movl    %esp, -8(%ebp)");
 #else
     /* Use Intel instruction */
-    asm("");
+    //! asm("");
 #endif
-  
-  orxS32 s32Index;
   
   /* Go through the list of inputs */
   for(s32Index = 0; s32Index < _pstFunctionInfo->s32NbParams - 1; s32Index++)
@@ -275,7 +278,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
     asm("#POINTER");
 #else
     /* Use Intel instruction */
-    asm("");
+    //! asm("");
 #endif
 
         break;
@@ -317,7 +320,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
 
 #else
     /* Use Intel instruction */
-    asm("");
+    //! asm("");
 #endif
 
         break;
@@ -330,7 +333,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
     asm("#DOUBLE");
 #else
     /* Use Intel instruction */
-    asm("");
+    //! asm("");
 #endif
 
         break;
@@ -361,7 +364,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
     /* Use Intel instruction */
 
     // Gets function result from the stack and store it in pResult
-    asm("");
+    //! asm("");
 #endif
     }
   }
