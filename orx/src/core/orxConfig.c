@@ -76,7 +76,7 @@ typedef struct __orxCONFIG_ENTRY_t
 typedef struct __orxCONFIG_SECTION_t
 {
   orxBANK    *pstBank;                      /**< Bank of entries : 4 */
-  orxSTRING   zName;                        /**< Section name : 8 */ 
+  orxSTRING   zName;                        /**< Section name : 8 */
   orxU32      u32CRC;                       /**< Section CRC : 12 */
 
   orxPAD(12)
@@ -362,7 +362,7 @@ orxSTATUS orxConfig_Init()
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
   }
@@ -399,8 +399,9 @@ orxVOID orxConfig_Exit()
 }
 
 /** Selects current working section
-* @param[in] _zSectionName     Section name to select
-*/
+ * @param[in] _zSectionName     Section name to select
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
@@ -476,7 +477,7 @@ orxSTRING orxConfig_GetCurrentSection()
     /* Updates result */
     zResult = orxSTRING_EMPTY;
   }
-  
+
   /* Done! */
   return zResult;
 }
@@ -686,7 +687,7 @@ orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
 
   /* Valid? */
   if(pstFile != orxNULL)
-  {    
+  {
     orxCONFIG_SECTION *pstSection;
 
     /* For all sections */
@@ -739,6 +740,43 @@ orxBOOL orxFASTCALL orxConfig_HasValue(orxCONST orxSTRING _zKey)
 
   /* Updates result */
   bResult = (orxConfig_GetEntry(_zKey) != orxNULL) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Has section for the given section name?
+ * @param[in] _zSectionName     Section name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
+{
+  orxCONFIG_SECTION  *pstSection;
+  orxU32              u32CRC;
+  orxBOOL             bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+  orxASSERT(*_zSectionName != *orxSTRING_EMPTY);
+
+  /* Gets section name CRC */
+  u32CRC = orxString_ToCRC(_zSectionName);
+
+  /* For all the sections */
+  for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+      pstSection != orxNULL;
+      pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+  {
+    /* Found? */
+    if(u32CRC == pstSection->u32CRC)
+    {
+      /* Updates result */
+      bResult = orxTRUE;
+
+      break;
+    }
+  }
 
   /* Done! */
   return bResult;
@@ -921,7 +959,7 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
 
 /** Reads a vector value from config
  * @param[in]   _zKey             Key name
- * @param[out]  _pstVector        Storage for vector value  
+ * @param[out]  _pstVector        Storage for vector value
  * @return The value
  */
 orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pstVector)
@@ -973,7 +1011,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Valu
   orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
 
   /* Gets literal value */
-  orxString_Print(zValue, "%d", _s32Value); 
+  orxString_Print(zValue, "%d", _s32Value);
 
   /* Gets entry */
   pstEntry = orxConfig_GetEntry(_zKey);
@@ -1012,7 +1050,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fVa
   orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
 
   /* Gets literal value */
-  orxString_Print(zValue, "%g", _fValue); 
+  orxString_Print(zValue, "%g", _fValue);
 
   /* Gets entry */
   pstEntry = orxConfig_GetEntry(_zKey);
@@ -1117,7 +1155,7 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orx
   orxMemory_Set(zValue, 0, 64 * sizeof(orxCHAR));
 
   /* Gets literal value */
-  orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pstValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fZ, orxSTRING_KC_VECTOR_END); 
+  orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pstValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fZ, orxSTRING_KC_VECTOR_END);
 
   /* Gets entry */
   pstEntry = orxConfig_GetEntry(_zKey);

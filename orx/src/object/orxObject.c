@@ -395,7 +395,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   zPreviousSection = orxConfig_GetCurrentSection();
 
   /* Selects section */
-  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     /* Creates object */
     pstResult = orxObject_Create();

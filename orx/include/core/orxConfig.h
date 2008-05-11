@@ -1,13 +1,13 @@
 /**
  * @file orxConfig.h
- * 
+ *
  * Module for config/config.
- */ 
+ */
 
  /***************************************************************************
  orxConfig.h
  Config/config management
- 
+
  begin                : 02/02/2008
  author               : (C) Arcallians
  email                : cursor@arcallians.org / iarwain@arcallians.org
@@ -66,6 +66,12 @@ extern orxDLLAPI orxSTATUS              orxConfig_SelectSection(orxCONST orxSTRI
  */
 extern orxDLLAPI orxSTRING              orxConfig_GetCurrentSection();
 
+/** Has section for the given section name?
+ * @param[in] _zSectionName     Section name
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(orxCONST orxSTRING _zSectionName);
+
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
@@ -98,7 +104,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(orxCONST orxSTRING _zK
 
 /** Reads a vector value from config
  * @param[in]   _zKey             Key name
- * @param[out]  _pstVector        Storage for vector value  
+ * @param[out]  _pstVector        Storage for vector value
  * @return The value
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pstVector);
