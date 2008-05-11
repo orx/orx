@@ -51,6 +51,9 @@
 					<Add option="-D__orxDLL__" />
 					<Add option="-D__orxDLLEXPORT__" />
 				</Compiler>
+				<Linker>
+					<Add option="-Wl,--out-implib=..\..\..\lib\dynamic\liborxd.a" />
+				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c copy /Y ..\..\..\lib\dynamic\orxd.dll ..\..\..\bin" />
 					<Mode after="always" />
