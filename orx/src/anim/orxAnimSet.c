@@ -1109,9 +1109,10 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable
  * @param[in]   _pstLinkTable									Concerned LinkTable
  * @param[in]   _u32SrcAnim										Source Anim index
  * @param[in]   _u32DstAnim										Destination Anim index
+ * @param[in[   _bSimulate                    Simulation mode, no update will be made on the link table
  * @return 			Next Anim index / orxU32_UNDEFINED
  */
-orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32SrcAnim, orxU32 _u32DstAnim)
+orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32SrcAnim, orxU32 _u32DstAnim, orxBOOL _bSimulate)
 {
   orxU32 u32BaseIndex, u32Size, u32Loop;
   orxU32 u32Anim = orxU32_UNDEFINED, u32Link, u32LinkIndex;
@@ -1134,26 +1135,30 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnimUsingDest(orxANIMSET_LINK_TABLE *_pst
     /* Gets anim index */
     u32Anim = (u32Link & orxANIMSET_KU32_LINK_MASK_ANIM) >> orxANIMSET_KU32_LINK_SHIFT_ANIM;
 
-    /* Gets direct link id */
-    u32LinkIndex = u32BaseIndex + u32Anim;
-
-    /* Gets direct link */
-    u32Link = _pstLinkTable->au32LinkArray[u32LinkIndex];
-
-    /* Gets current loop counter */
-    u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER);
-
-    /* Is loop counter used? */
-    if(u32Loop != orxU32_UNDEFINED)
+    /* Not in simulation mode? */
+    if(_bSimulate == orxFALSE)
     {
-      /* Updates loop counter */
-      orxAnimSet_SetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER, u32Loop - 1);
+      /* Gets direct link id */
+      u32LinkIndex = u32BaseIndex + u32Anim;
 
-      /* Is link table dirty again? */
-      if(u32Loop <= 1)
+      /* Gets direct link */
+      u32Link = _pstLinkTable->au32LinkArray[u32LinkIndex];
+
+      /* Gets current loop counter */
+      u32Loop = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER);
+
+      /* Is loop counter used? */
+      if(u32Loop != orxU32_UNDEFINED)
       {
-        /* Updates flags */
-        orxAnimSet_SetLinkTableFlag(_pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE);
+        /* Updates loop counter */
+        orxAnimSet_SetLinkTableLinkProperty(_pstLinkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER, u32Loop - 1);
+
+        /* Is link table dirty again? */
+        if(u32Loop <= 1)
+        {
+          /* Updates flags */
+          orxAnimSet_SetLinkTableFlag(_pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE);
+        }
       }
     }
   }
@@ -2186,23 +2191,33 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
     /* Has next animation? */
     if(_hDstAnim != orxHANDLE_UNDEFINED)
     {
-      orxU32 u32LinkIndex, u32LinkProperty;
+      orxU32 u32LinkIndex, u32LinkProperty, u32RoutingAnim;
 
-      /* Gets link index */
-      u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + (orxU32)_hDstAnim;
+      /* Gets routing animation in simulation mode */
+      u32RoutingAnim = orxAnimSet_ComputeNextAnimUsingDest(pstWorkTable, u32Anim, (orxU32)_hDstAnim, orxTRUE);
 
-      /* Gets immediate cut property */
-      u32LinkProperty = orxAnimSet_GetLinkTableLinkProperty(pstWorkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT);
+      /* Valid? */
+      if(u32RoutingAnim != orxU32_UNDEFINED)
+      {
+        /* Gets link index */
+        u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + u32RoutingAnim;
 
-      /* Updates cut status */
-      bCut = (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
+        /* Gets immediate cut property */
+        u32LinkProperty = orxAnimSet_GetLinkTableLinkProperty(pstWorkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT);
+
+        /* Updates cut status */
+        bCut = (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
+      }
     }
 
     /* Should cut? */
     if(bCut != orxFALSE)
     {
       /* Get next animation according to destination aim */
-      u32Anim = orxAnimSet_ComputeNextAnimUsingDest(pstWorkTable, u32Anim, (orxU32)_hDstAnim);
+      u32Anim = orxAnimSet_ComputeNextAnimUsingDest(pstWorkTable, u32Anim, (orxU32)_hDstAnim, orxFALSE);
+
+      /* Resets time stamp */
+      *_pfTime = orxFLOAT_0;
 
       /* Updates result */
       hResult = (orxHANDLE)u32Anim;
@@ -2227,7 +2242,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
         else
         {
           /* Get next animation according to destination aim */
-          u32Anim = orxAnimSet_ComputeNextAnimUsingDest(pstWorkTable, u32Anim, (orxU32)_hDstAnim);
+          u32Anim = orxAnimSet_ComputeNextAnimUsingDest(pstWorkTable, u32Anim, (orxU32)_hDstAnim, orxFALSE);
         }
 
         /* Updates timestamp */
