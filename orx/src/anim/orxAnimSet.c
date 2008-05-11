@@ -2186,13 +2186,16 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
     /* Has next animation? */
     if(_hDstAnim != orxHANDLE_UNDEFINED)
     {
-      orxU32 u32LinkIndex;
+      orxU32 u32LinkIndex, u32LinkProperty;
 
       /* Gets link index */
       u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + (orxU32)_hDstAnim;
 
       /* Gets immediate cut property */
-      bCut = (orxBOOL)orxAnimSet_GetLinkTableLinkProperty(pstWorkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT);
+      u32LinkProperty = orxAnimSet_GetLinkTableLinkProperty(pstWorkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT);
+
+      /* Updates cut status */
+      bCut = (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
     }
 
     /* Should cut? */
