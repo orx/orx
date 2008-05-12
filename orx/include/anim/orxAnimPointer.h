@@ -133,6 +133,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetCurrentAnim(orxA
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle);
 
+/** AnimPointer current Animation set accessor using ID
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetCurrentAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID);
+
+/** AnimPointer target Animation set accessor using ID
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetTargetAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID);
+
 /** AnimPointer current Time accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _fTime                        Time to set

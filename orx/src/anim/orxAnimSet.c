@@ -53,6 +53,7 @@
 
 #define orxANIMSET_KU32_FLAG_INTERNAL                 0x10000000  /**< Internal structure handling flag  */
 #define orxANIMSET_KU32_FLAG_REFERENCED               0x20000000  /**< Referenced flag  */
+#define orxANIMSET_KU32_FLAG_ID_TABLE                 0x40000000  /**< Has an ID table flag  */
 
 #define orxANIMSET_KU32_MASK_SIZE                     0x000000FF	/**< ID mask for size */
 #define orxANIMSET_KU32_MASK_COUNTER                  0x0000FF00	/**< ID mask for counter */
@@ -101,6 +102,8 @@
 
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 
+#define orxANIMSET_KU32_ID_TABLE_SIZE                 32          /**< ID table size */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -136,9 +139,10 @@ struct __orxANIMSET_t
   orxSTRUCTURE 						stStructure;								/**< Public structure, first structure member : 16 */
   orxANIM 							**pastAnim;										/**< Used animation pointer array : 20 */
   orxANIMSET_LINK_TABLE  *pstLinkTable;								/**< Link table pointer : 24 */
-  orxU32                  u32ReferenceKey;            /**< Reference key : 28 */
+  orxHASHTABLE           *pstIDTable;                 /**< ID hash table : 28 */
+  orxU32                  u32ReferenceKey;            /**< Reference key : 32 */
 
-  orxPAD(28)
+  orxPAD(32)
 };
 
 
@@ -1445,14 +1449,14 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
       pstResult = orxAnimSet_Create(--u32AnimCounter);
 
       /* Valid? */
-      if(pstResult != orxNULL)
+      if((pstResult != orxNULL)
+      && ((pstResult->pstIDTable = orxHashTable_Create(orxANIMSET_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN)) != orxNULL))
       {
-        orxCHAR       acPropertyID[32];
-        orxHASHTABLE *pstRegistrationTable;
-        orxU32        i;
+        orxCHAR acPropertyID[32];
+        orxU32  i;
 
-        /* Creates registration table */
-        pstRegistrationTable = orxHashTable_Create(orxANIMSET_KU32_MAX_ANIM_NUMBER, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+        /* Updates status flags */
+        orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
 
         /* Clears buffer */
         orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
@@ -1483,8 +1487,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
               /* Adds it to set */
               hAnimHandle = orxAnimSet_AddAnim(pstResult, pstAnim);
 
-              /* Adds it to registration table */
-              orxHashTable_Add(pstRegistrationTable, orxString_ToCRC(zAnimName), (orxVOID *)((orxU32)hAnimHandle + 1));
+              /* Adds it to ID table */
+              orxHashTable_Add(pstResult->pstIDTable, orxString_ToCRC(zAnimName), (orxVOID *)((orxU32)hAnimHandle + 1));
             }
           }
         }
@@ -1515,8 +1519,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
             zDstAnim    = zSeparator + 1;
 
             /* Gets source & destination anim handles */
-            hSrcAnim = (orxHANDLE)((orxU32)orxHashTable_Get(pstRegistrationTable, orxString_ToCRC(zSrcAnim)) - 1);
-            hDstAnim = (orxHANDLE)((orxU32)orxHashTable_Get(pstRegistrationTable, orxString_ToCRC(zDstAnim)) - 1);
+            hSrcAnim = (orxHANDLE)((orxU32)orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
+            hDstAnim = (orxHANDLE)((orxU32)orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
 
             /* Adds link */
             hLink = orxAnimSet_AddLink(pstResult, hSrcAnim, hDstAnim);
@@ -1539,9 +1543,6 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
             *zSeparator = orxANIMSET_KC_CONFIG_LINK_SEPARATOR;
           }
         }
-
-        /* Deletes registration table */
-        orxHashTable_Delete(pstRegistrationTable);
 
         /* Stores its reference key */
         pstResult->u32ReferenceKey = orxString_ToCRC(_zConfigID);
@@ -1593,6 +1594,13 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
     {
       /* Removes it from reference table */
       orxHashTable_Remove(sstAnimSet.pstReferenceTable, _pstAnimSet->u32ReferenceKey);
+    }
+
+    /* Has ID table? */
+    if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
+    {
+      /* Deletes it */
+      orxHashTable_Delete(_pstAnimSet->pstIDTable);
     }
 
     /* Deletes structure */
@@ -2333,6 +2341,30 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet)
 
   /* Gets counter */
   return(orxStructure_GetFlags((orxANIMSET *)_pstAnimSet, orxANIMSET_KU32_MASK_COUNTER) >> orxANIMSET_KU32_ID_SHIFT_COUNTER);
+}
+
+/** Gets animation handle from ID
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32AnimID                          Animation ID (config's animation name CRC)
+ * @return Anim handle / orxHANDLE_UNDEFINED
+ */
+orxHANDLE orxFASTCALL orxAnimSet_GetAnimHandleFromID(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32AnimID)
+{
+  orxHANDLE hResult = orxHANDLE_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimSet);
+
+  /* Has ID table? */
+  if(orxStructure_TestFlags((orxANIMSET *)_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
+  {
+    /* Gets corresponding handle */
+    hResult = (orxHANDLE)((orxU32)orxHashTable_Get(_pstAnimSet->pstIDTable, _u32AnimID) - 1);
+  }
+
+  /* Done! */
+  return hResult;
 }
 
 

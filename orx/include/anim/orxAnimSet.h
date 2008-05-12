@@ -218,6 +218,13 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimStorageSiz
  */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet);
 
+/** Gets animation handle from ID
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _u32AnimID                          Animation ID (config's animation name CRC)
+ * @return Anim handle / orxHANDLE_UNDEFINED
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetAnimHandleFromID(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32AnimID);
+
 
 #endif /* _orxANIMSET_H_ */
 

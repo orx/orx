@@ -737,6 +737,62 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPoint
   return eResult;
 }
 
+/** AnimPointer current Animation set accessor using ID
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
+{
+  orxHANDLE hAnimHandle;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Gets corresponding anim handle */
+  hAnimHandle = orxAnimSet_GetAnimHandleFromID(_pstAnimPointer->pstAnimSet, _u32AnimID);
+
+  /* Valid? */
+  if(hAnimHandle != orxHANDLE_UNDEFINED)
+  {
+    /* Sets current anim */
+    eResult = orxAnimPointer_SetCurrentAnim(_pstAnimPointer, hAnimHandle);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** AnimPointer target Animation set accessor using ID
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
+{
+  orxHANDLE hAnimHandle;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Gets corresponding anim handle */
+  hAnimHandle = orxAnimSet_GetAnimHandleFromID(_pstAnimPointer->pstAnimSet, _u32AnimID);
+
+  /* Valid? */
+  if(hAnimHandle != orxHANDLE_UNDEFINED)
+  {
+    /* Sets target anim */
+    eResult = orxAnimPointer_SetTargetAnim(_pstAnimPointer, hAnimHandle);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** AnimPointer current Time accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @param[in]   _fTime                        Time to set
