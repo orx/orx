@@ -35,6 +35,18 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   /* Selects config section */
   orxConfig_SelectSection("Bounce");
 
+  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT))
+  {
+    orxVECTOR v;
+    orxSTATIC orxFLOAT sfAngle = orxFLOAT_0;
+
+    sfAngle += 0.02f;
+
+    orxVector_Set(&v, 10.0f * orxMath_Cos(sfAngle), 10.0f * orxMath_Sin(sfAngle), 0.0f);
+
+    orxPhysics_SetGravity(&v);
+  }
+  
   /* Clicking? */
   if((su32Counter < orxConfig_GetFloat("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
   {

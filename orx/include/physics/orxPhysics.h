@@ -132,6 +132,7 @@ extern orxDLLAPI orxVOID            orxPhysics_Setup();
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_Exit, orxVOID);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_SetGravity, orxSTATUS, orxCONST orxVECTOR *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_CreateBody, orxPHYSICS_BODY *, orxCONST orxHANDLE, orxCONST orxBODY_DEF *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_DeleteBody, orxVOID, orxPHYSICS_BODY *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxPhysics_CreateBodyPart, orxPHYSICS_BODY_PART *, orxPHYSICS_BODY *, orxCONST orxBODY_PART_DEF *);
@@ -158,6 +159,11 @@ orxSTATIC orxINLINE orxSTATUS orxPhysics_Init()
 orxSTATIC orxINLINE orxVOID orxPhysics_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Exit)();
+}
+
+orxSTATIC orxINLINE orxSTATUS orxPhysics_SetGravity(orxCONST orxVECTOR *_pvGravity)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetGravity)(_pvGravity);
 }
 
 orxSTATIC orxINLINE orxPHYSICS_BODY *orxPhysics_CreateBody(orxCONST orxHANDLE _hUserData, orxCONST orxBODY_DEF *_pstBodyDef)

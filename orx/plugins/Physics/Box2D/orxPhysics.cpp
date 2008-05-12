@@ -532,6 +532,21 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, or
   return eResult;
 }
 
+extern "C" orxSTATUS orxPhysics_Box2D_SetGravity(orxCONST orxVECTOR *_pvGravity)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvGravity != orxNULL);
+
+  /* Updates gravity */
+  sstPhysics.poWorld->m_gravity.Set(_pvGravity->fX, _pvGravity->fY);
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxPhysics_Box2D_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -690,6 +705,7 @@ extern "C" orxVOID orxPhysics_Box2D_Exit()
 orxPLUGIN_USER_CORE_FUNCTION_START(PHYSICS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Init, PHYSICS, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Exit, PHYSICS, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetGravity, PHYSICS, SET_GRAVITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBody, PHYSICS, CREATE_BODY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBody, PHYSICS, DELETE_BODY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBodyPart, PHYSICS, CREATE_BODY_PART);
