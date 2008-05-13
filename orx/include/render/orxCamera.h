@@ -83,15 +83,15 @@ extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxS
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_Delete(orxCAMERA *_pstCamera);
 
 
-/** Sets camera frustrum
+/** Sets camera frustum
  * @param[in]   _pstCamera      Concerned camera
- * @param[in]   _fWidth         Width of frustrum
- * @param[in]   _fHeight        Height of frustrum
- * @param[in]   _fNear          Near distance of frustrum
- * @param[in]   _fFar           Far distance of frustrum
+ * @param[in]   _fWidth         Width of frustum
+ * @param[in]   _fHeight        Height of frustum
+ * @param[in]   _fNear          Near distance of frustum
+ * @param[in]   _fFar           Far distance of frustum
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetFrustum(orxCAMERA *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar);
 
 /** Sets camera position
  * @param[in]   _pstCamera      Concerned camera
@@ -114,11 +114,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetRotation(orxCAMERA *_pstCam
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom);
 
-/** Gets camera frustrum (3D box for 2D camera)
+/** Gets camera frustum (3D box for 2D camera)
  * @param[in]   _pstCamera      Concerned camera
- * @param[out]  _pstFrustrum    Frustrum box
+ * @param[out]  _pstFrustum    Frustum box
  */
-extern orxDLLAPI orxVOID orxFASTCALL    orxCamera_GetFrustrum(orxCONST orxCAMERA *_pstCamera, orxAABOX *_pstFrustrum);
+extern orxDLLAPI orxVOID orxFASTCALL    orxCamera_GetFrustum(orxCONST orxCAMERA *_pstCamera, orxAABOX *_pstFrustum);
 
 /** Get camera position
  * @param[in]   _pstCamera      Concerned camera

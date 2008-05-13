@@ -51,10 +51,10 @@
 #define orxCAMERA_KZ_CONFIG_ZOOM              "Zoom"
 #define orxCAMERA_KZ_CONFIG_POSITION          "Position"
 #define orxCAMERA_KZ_CONFIG_ROTATION          "Rotation"
-#define orxCAMERA_KZ_CONFIG_FRUSTRUM_NEAR     "FrustrumNear"
-#define orxCAMERA_KZ_CONFIG_FRUSTRUM_FAR      "FrustrumFar"
-#define orxCAMERA_KZ_CONFIG_FRUSTRUM_WIDTH    "FrustrumWidth"
-#define orxCAMERA_KZ_CONFIG_FRUSTRUM_HEIGHT   "FrustrumHeight"
+#define orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR      "FrustumNear"
+#define orxCAMERA_KZ_CONFIG_FRUSTUM_FAR       "FrustumFar"
+#define orxCAMERA_KZ_CONFIG_FRUSTUM_WIDTH     "FrustumWidth"
+#define orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT    "FrustumHeight"
 
 
 /***************************************************************************
@@ -67,7 +67,7 @@ struct __orxCAMERA_t
 {
   orxSTRUCTURE        stStructure;            /**< Public structure, first structure member : 16 */  
   orxFRAME           *pstFrame;               /**< Frame : 20 */
-  orxAABOX            stFrustrum;             /**< Frustrum : 44 */
+  orxAABOX            stFrustum;             /**< Frustum : 44 */
 
   orxPAD(44)
 };
@@ -294,14 +294,14 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       orxVECTOR vPosition;
       orxFLOAT  fNear, fFar, fWidth, fHeight;
  
-      /* Gets frustrum info */
-      fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTRUM_NEAR);
-      fFar    = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTRUM_FAR);
-      fWidth  = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTRUM_WIDTH);
-      fHeight = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTRUM_HEIGHT);
+      /* Gets frustum info */
+      fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
+      fFar    = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_FAR);
+      fWidth  = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_WIDTH);
+      fHeight = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT);
 
       /* Applies it */
-      orxCamera_SetFrustrum(pstResult, fWidth, fHeight, fNear, fFar);
+      orxCamera_SetFrustum(pstResult, fWidth, fHeight, fNear, fFar);
 
       /* Has zoom? */
       if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_ZOOM) != orxFALSE)
@@ -381,15 +381,15 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   return eResult;
 }
 
-/** Sets camera frustrum (3D rectangle for 2D camera)
+/** Sets camera frustum (3D rectangle for 2D camera)
  * @param[in]   _pstCamera      Concerned camera
- * @param[in]   _fWidth         Width of frustrum
- * @param[in]   _fHeight        Height of frustrum
- * @param[in]   _fNear          Near distance of frustrum
- * @param[in]   _fFar           Far distance of frustrum
+ * @param[in]   _fWidth         Width of frustum
+ * @param[in]   _fHeight        Height of frustum
+ * @param[in]   _fNear          Near distance of frustum
+ * @param[in]   _fFar           Far distance of frustum
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar)
+orxSTATUS orxFASTCALL orxCamera_SetFrustum(orxCAMERA *_pstCamera, orxFLOAT _fWidth, orxFLOAT _fHeight, orxFLOAT _fNear, orxFLOAT _fFar)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -398,9 +398,9 @@ orxSTATUS orxFASTCALL orxCamera_SetFrustrum(orxCAMERA *_pstCamera, orxFLOAT _fWi
   orxSTRUCTURE_ASSERT(_pstCamera);
   orxASSERT(_fNear <= _fFar);
 
-  /* Updates internal frustrum */
-  orxVector_Set(&(_pstCamera->stFrustrum.vTL), orx2F(-0.5f) * _fWidth, orx2F(-0.5f) * _fHeight, _fNear);
-  orxVector_Set(&(_pstCamera->stFrustrum.vBR), orx2F(0.5f) * _fWidth, orx2F(0.5f) * _fHeight, _fFar);
+  /* Updates internal frustum */
+  orxVector_Set(&(_pstCamera->stFrustum.vTL), orx2F(-0.5f) * _fWidth, orx2F(-0.5f) * _fHeight, _fNear);
+  orxVector_Set(&(_pstCamera->stFrustum.vBR), orx2F(0.5f) * _fWidth, orx2F(0.5f) * _fHeight, _fFar);
 
   /* Done! */
   return eResult;
@@ -468,25 +468,25 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
   return eResult;
 }
 
-/** Gets camera frustrum (3D box for 2D camera)
+/** Gets camera frustum (3D box for 2D camera)
  * @param[in]   _pstCamera      Concerned camera
- * @param[out]  _pstFrustrum    Frustrum box
+ * @param[out]  _pstFrustum    Frustum box
  */
-orxVOID orxFASTCALL orxCamera_GetFrustrum(orxCONST orxCAMERA *_pstCamera, orxAABOX *_pstFrustrum)
+orxVOID orxFASTCALL orxCamera_GetFrustum(orxCONST orxCAMERA *_pstCamera, orxAABOX *_pstFrustum)
 {
   orxVECTOR vPosition;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
-  orxASSERT(_pstFrustrum != orxNULL);
+  orxASSERT(_pstFrustum != orxNULL);
 
   /* Gets camera position */
   orxFrame_GetPosition(_pstCamera->pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
-  /* Stores frustrum */
-  orxVector_Add(&(_pstFrustrum->vTL), &(_pstCamera->stFrustrum.vTL), &vPosition);
-  orxVector_Add(&(_pstFrustrum->vBR), &(_pstCamera->stFrustrum.vBR), &vPosition);
+  /* Stores frustum */
+  orxVector_Add(&(_pstFrustum->vTL), &(_pstCamera->stFrustum.vTL), &vPosition);
+  orxVector_Add(&(_pstFrustum->vBR), &(_pstCamera->stFrustum.vBR), &vPosition);
 
   return;
 }
