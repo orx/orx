@@ -275,7 +275,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
             orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraWidth, fCameraHeight, fCameraSqrBoundingRadius;
 
             /* Gets camera frustrum */
-            orxCamera_GetFrustrum(pstCamera, &stFrustrum);
+            orxCamera_GetFrustum(pstCamera, &stFrustum);
 
             /* Gets camera zoom */
             fZoom = orxCamera_GetZoom(pstCamera);
@@ -563,7 +563,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
     /* Display FPS */
     orxDisplay_DrawText(orxDisplay_GetScreenBitmap(), &stTextTransform, orxRENDER_KST_DEFAULT_COLOR, acText);
   }
-  
+
   /* Swap buffers */
   orxDisplay_Swap();
 
