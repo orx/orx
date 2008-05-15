@@ -271,21 +271,21 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
             orxOBJECT      *pstObject;
             orxRENDER_NODE *pstRenderNode;
             orxVECTOR       vCameraPosition;
-            orxAABOX        stFrustrum;
+            orxAABOX        stFrustum;
             orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraWidth, fCameraHeight, fCameraSqrBoundingRadius;
 
-            /* Gets camera frustrum */
+            /* Gets camera frustum */
             orxCamera_GetFrustum(pstCamera, &stFrustum);
 
             /* Gets camera zoom */
             fZoom = orxCamera_GetZoom(pstCamera);
 
             /* Gets camera size */
-            fCameraWidth  = stFrustrum.vBR.fX - stFrustrum.vTL.fX;
-            fCameraHeight = stFrustrum.vBR.fY - stFrustrum.vTL.fY;
+            fCameraWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
+            fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
 
             /* Gets camera center */
-            orxVector_Add(&vCameraPosition, &(stFrustrum.vTL), &(stFrustrum.vBR));
+            orxVector_Add(&vCameraPosition, &(stFrustum.vTL), &(stFrustum.vBR));
             orxVector_Mulf(&vCameraPosition, &vCameraPosition, orx2F(0.5f));
 
             /* Gets camera square bounding radius */
@@ -332,8 +332,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                     /* Gets its position */
                     orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
 
-                    /* Is object in Z frustrum? */
-                    if((vObjectPos.fZ >= stFrustrum.vTL.fZ) && (vObjectPos.fZ <= stFrustrum.vBR.fZ))
+                    /* Is object in Z frustum? */
+                    if((vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
                     {
                       orxFLOAT  fWidth, fHeight, fObjectScaleX, fObjectScaleY, fObjectSqrBoundingRadius, fSqrDist;
 
@@ -435,12 +435,12 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
 
               /* Uses differential scrolling? */
               if((orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
-              && (vObjectPos.fZ > stFrustrum.vTL.fZ))
+              && (vObjectPos.fZ > stFrustum.vTL.fZ))
               {
                 orxREGISTER orxFLOAT fScroll;
 
                 /* Gets scroll coefficient */
-                fScroll = (stFrustrum.vBR.fZ - stFrustrum.vTL.fZ) / (vObjectPos.fZ - stFrustrum.vTL.fZ);
+                fScroll = (stFrustum.vBR.fZ - stFrustum.vTL.fZ) / (vObjectPos.fZ - stFrustum.vTL.fZ);
 
                 /* Gets differential scrolling values */
                 fScrollX = (orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_SCROLL_X) != orxFALSE) ? fScroll : orxFLOAT_1;
@@ -613,16 +613,16 @@ orxSTATUS orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition,
       && (_pvScreenPosition->fY <= stViewportBox.vBR.fY))
       {
         orxVECTOR vLocalPosition;
-        orxAABOX  stCameraFrustrum;
+        orxAABOX  stCameraFrustum;
 
         /* Gets viewport space normalized position */
         orxVector_Set(&vLocalPosition, (_pvScreenPosition->fX - stViewportBox.vTL.fX) / (stViewportBox.vBR.fX - stViewportBox.vTL.fX), (_pvScreenPosition->fY - stViewportBox.vTL.fY) / (stViewportBox.vBR.fY - stViewportBox.vTL.fY), orxFLOAT_0);
 
-        /* Gets camera frustrum */
-        orxCamera_GetFrustrum(pstCamera, &stCameraFrustrum);
+        /* Gets camera frustum */
+        orxCamera_GetFrustum(pstCamera, &stCameraFrustum);
 
         /* Gets its world coordinates */
-        orxVector_Set(_pvWorldPosition, stCameraFrustrum.vTL.fX + (vLocalPosition.fX * (stCameraFrustrum.vBR.fX - stCameraFrustrum.vTL.fX)), stCameraFrustrum.vTL.fY + (vLocalPosition.fY * (stCameraFrustrum.vBR.fY - stCameraFrustrum.vTL.fY)), orx2F(0.5f) * (stCameraFrustrum.vBR.fZ - stCameraFrustrum.vTL.fZ));
+        orxVector_Set(_pvWorldPosition, stCameraFrustum.vTL.fX + (vLocalPosition.fX * (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX)), stCameraFrustum.vTL.fY + (vLocalPosition.fY * (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY)), orx2F(0.5f) * (stCameraFrustum.vBR.fZ - stCameraFrustum.vTL.fZ));
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;

@@ -490,9 +490,9 @@ orxSTATIC orxSTATUS orxCave_Init()
   sstCave.pstMainCamera = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
   sstCave.pstTVCamera = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
 
-  /* Sets cameras frustrum */
-  orxCamera_SetFrustrum(sstCave.pstMainCamera, sstCave.fScreenWidth, sstCave.fScreenHeight, orxFLOAT_0, orxFLOAT_1);
-  orxCamera_SetFrustrum(sstCave.pstTVCamera, orx2F(256.0f), orx2F(160.0f), orxFLOAT_0, orxFLOAT_1);
+  /* Sets cameras frustum */
+  orxCamera_SetFrustum(sstCave.pstMainCamera, sstCave.fScreenWidth, sstCave.fScreenHeight, orxFLOAT_0, orxFLOAT_1);
+  orxCamera_SetFrustum(sstCave.pstTVCamera, orx2F(256.0f), orx2F(160.0f), orxFLOAT_0, orxFLOAT_1);
 
   /* Gets background size */
   orxTexture_GetSize(sstCave.astData[orxCAVE_RESOURCE_BACKGROUND].pstTexture, &(sstCave.fBackgroundWidth), &(sstCave.fBackgroundHeight));
