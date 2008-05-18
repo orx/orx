@@ -1,7 +1,7 @@
 /***************************************************************************
  orxTexture.c
  Texture module
- 
+
  begin                : 07/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -109,7 +109,7 @@ orxSTATIC orxTEXTURE_STATIC sstTexture;
 orxSTATIC orxINLINE orxVOID orxTexture_DeleteAll()
 {
   orxTEXTURE *pstTexture;
-  
+
   /* Gets first texture */
   pstTexture = (orxTEXTURE *)orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE);
 
@@ -191,7 +191,7 @@ orxSTATUS orxTexture_Init()
     {
       /* Creates hash table */
       sstTexture.pstTable = orxHashTable_Create(orxTEXTURE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-      
+
       /* Success? */
       if(sstTexture.pstTable != orxNULL)
       {
@@ -267,7 +267,7 @@ orxVOID orxTexture_Exit()
   {
     /* Unlinks screen texture */
     orxTexture_UnlinkBitmap(sstTexture.pstScreen);
-    
+
     /* Deletes screen texture */
     orxTexture_Delete(sstTexture.pstScreen);
 
@@ -337,7 +337,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFil
 
   /* Search for a texture using this bitmap */
   pstTexture = orxTexture_FindByName(_zBitmapFileName);
-  
+
   /* Found? */
   if(pstTexture != orxNULL)
   {
@@ -353,7 +353,7 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFil
     if(pstTexture != orxNULL)
     {
       orxBITMAP *pstBitmap;
-    
+
       /* Loads bitmap */
       pstBitmap = orxDisplay_LoadBitmap(_zBitmapFileName);
 
@@ -420,7 +420,7 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   else
   {
     /* Decreases self reference counter */
-    _pstTexture->u32Counter--;    
+    _pstTexture->u32Counter--;
   }
 
   /* Done! */
@@ -461,7 +461,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
 
       /* Updates flags */
       orxStructure_SetFlags(_pstTexture, orxStructure_GetFlags(pstTexture, orxTEXTURE_KU32_MASK_ALL) | orxTEXTURE_KU32_FLAG_EXTERNAL, orxTEXTURE_KU32_FLAG_NONE);
- 
+
       /* References external texture */
       _pstTexture->hData      = (orxHANDLE)pstTexture;
 
@@ -478,7 +478,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
 
        /* Updates flags */
       orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE, orxTEXTURE_KU32_FLAG_NONE);
- 
+
       /* References bitmap */
       _pstTexture->hData = (orxHANDLE)_pstBitmap;
 
@@ -536,7 +536,7 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
       ((orxTEXTURE *)(_pstTexture->hData))->u32Counter--;
 
       /* Cleans data */
-      _pstTexture->hData = orxHANDLE_UNDEFINED;      
+      _pstTexture->hData = orxHANDLE_UNDEFINED;
     }
     else
     {
@@ -659,6 +659,41 @@ orxSTRING orxFASTCALL orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture)
   return zResult;
 }
 
+/** Sets texture color
+ * @param[in]   _pstTexture     Concerned texture
+ * @param[in]   _stColor        Color to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, orxRGBA _stColor)
+{
+  orxBITMAP  *pstBitmap;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTexture);
+
+  /* Gets bitmap */
+  pstBitmap = orxTexture_GetBitmap(_pstTexture);
+
+  /* Valid? */
+  if(pstBitmap != orxNULL)
+  {
+    /* Updates its color */
+    eResult = orxDisplay_SetBitmapColor(pstBitmap, _stColor);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets screen texture
  * @return      Screen texture / orxNULL
  */
@@ -666,7 +701,7 @@ orxTEXTURE *orxTexture_GetScreenTexture()
 {
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  
+
   /* Done! */
   return(sstTexture.pstScreen);
 }

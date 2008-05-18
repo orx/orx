@@ -46,7 +46,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
 
     orxPhysics_SetGravity(&v);
   }
-  
+
   /* Clicking? */
   if((su32Counter < orxConfig_GetFloat("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
   {

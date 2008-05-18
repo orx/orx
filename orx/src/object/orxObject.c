@@ -1610,6 +1610,41 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
   return pstResult;
 }
 
+/** Sets object color
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _stColor        Color to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, orxRGBA _stColor)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Sets its color */
+    eResult = orxGraphic_SetColor(pstGraphic, _stColor);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
  * @param[in]   _pstCheckBox    Box to check intersection with
  * @return      orxBANK / orxNULL

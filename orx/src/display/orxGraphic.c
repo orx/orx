@@ -1,14 +1,14 @@
 /**
  * @file orxGraphic.c
- * 
+ *
  * Graphic module
- * 
+ *
  */
 
  /***************************************************************************
  orxGraphic.c
  Graphic module
- 
+
  begin                : 08/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -130,7 +130,7 @@ orxVOID orxGraphic_Setup()
 orxSTATUS orxGraphic_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-  
+
   /* Not already Initialized? */
   if((sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY) == orxGRAPHIC_KU32_STATIC_FLAG_NONE)
   {
@@ -147,7 +147,7 @@ orxSTATUS orxGraphic_Init()
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
   }
-  
+
   /* Initialized? */
   if(eResult == orxSTATUS_SUCCESS)
   {
@@ -247,7 +247,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromFile(orxCONST orxSTRING _zBitmapFil
       orxTEXTURE *pstTexture = orxNULL;
 
       /* Gets marker index */
-      s32FirstMarkerIndex = orxString_SearchCharIndex(_zBitmapFileName, orxGRAPHIC_KC_MARKER_START, 0); 
+      s32FirstMarkerIndex = orxString_SearchCharIndex(_zBitmapFileName, orxGRAPHIC_KC_MARKER_START, 0);
 
       /* Use marker? */
       if(s32FirstMarkerIndex >= 0)
@@ -334,7 +334,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromFile(orxCONST orxSTRING _zBitmapFil
                   {
                     /* Loads texture */
                     pstTexture = orxTexture_CreateFromFile(stFileInfo.zFullName);
-      
+
                     /* Valid? */
                     if(pstTexture != orxNULL)
                     {
@@ -409,7 +409,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromFile(orxCONST orxSTRING _zBitmapFil
 
   /* Done! */
   return pstResult;
-}      
+}
 
 /** Deletes a graphic
  * @param[in]   _pstGraphic     Graphic to delete
@@ -434,7 +434,7 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }
@@ -451,7 +451,7 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
 orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *_pstData)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  
+
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
@@ -502,7 +502,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     else
     {
       /* !!! MSG !!! */
-      
+
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
     }
@@ -570,7 +570,7 @@ orxVECTOR *orxFASTCALL orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orx
   orxVector_Copy(_pvPivot, &(_pstGraphic->vPivot));
 
   /* Done! */
-  return _pvPivot;  
+  return _pvPivot;
 }
 
 /** Gets graphic size
@@ -593,12 +593,43 @@ orxSTATUS orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFL
   if(orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets its size */
-    eResult = orxTexture_GetSize((orxTEXTURE *)_pstGraphic->pstData, _pfWidth, _pfHeight);
+    eResult = orxTexture_GetSize(orxSTRUCTURE_GET_POINTER(_pstGraphic->pstData, TEXTURE), _pfWidth, _pfHeight);
   }
   else
   {
     /* No size */
     *_pfWidth  = *_pfHeight = orx2F(-1.0f);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets graphic color
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _stColor        Color to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxRGBA _stColor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Valid 2D data? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
+  {
+    /* Sets color */
+    eResult = orxTexture_SetColor(orxSTRUCTURE_GET_POINTER(_pstGraphic->pstData, TEXTURE), _stColor);
+  }
+  else
+  {
+    /* !!! MSG !!! */
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

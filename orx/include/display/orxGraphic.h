@@ -11,8 +11,8 @@
  * @file orxGraphic.h
  * @date 08/12/2003
  * @author (C) Arcallians
- * 
- * @todo 
+ *
+ * @todo
  * Later on, add a texture cache system for rotated/scaled texture.
  * This cache system should be activated or not by user.
  * Adds 3D system (Not planned yet).
@@ -20,7 +20,7 @@
 
 /**
  * @addtogroup Display
- * 
+ *
  * Graphic Module.
  * Allows to creates and handle 2D/3D Graphics.
  * They are used as texture/animation container, with associated properties.
@@ -122,6 +122,13 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetPivot(orxCONST orxGR
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+
+/** Sets graphic color
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _stColor        Color to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxRGBA _stColor);
 
 #endif /* _orxGRAPHIC_H_ */
 

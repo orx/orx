@@ -1,11 +1,11 @@
-/** 
+/**
  * \file orxTexture.h
- * 
+ *
  * Texture Module.
  * Allows to creates and handle textures.
  * They thus can be referenced by other structures.
  * Textures are 2D structures.
- * 
+ *
  * \todo
  * Add external texture linking
  * Add bitmap name (ID) storing for later retrieving
@@ -15,7 +15,7 @@
 /***************************************************************************
  orxTextures.h
  Texture module
- 
+
  begin                : 07/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -72,6 +72,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(orxCONST orxTEXTURE
 
 /** Texture name accessor. */
 extern orxDLLAPI orxSTRING orxFASTCALL    orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture);
+
+/** Sets texture color
+ * @param[in]   _pstTexture     Concerned texture
+ * @param[in]   _stColor        Color to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetColor(orxTEXTURE *_pstTexture, orxRGBA _stColor);
 
 /** Gets screen texture
  * @return      Screen texture / orxNULL

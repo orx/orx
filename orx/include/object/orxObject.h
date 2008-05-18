@@ -1,10 +1,10 @@
-/** 
+/**
  * \file orxObject.h
- * 
+ *
  * Object Module.
  * Allows to creates and handle objects.
  * Objects are structures containers that can refer to many other structures such as frames, graphics, etc...
- * 
+ *
  * \todo
  * Call the anim IsRenderStatusClean when it has been created.
  * Add the required structures when needed.
@@ -15,7 +15,7 @@
 /***************************************************************************
  orxObject.h
  Object module
- 
+
  begin                : 01/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -268,12 +268,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyTorque(orxOBJECT *_ps
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyForce(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint);
 
 /** Applies an impulse
- * @param[in]   _pstObject        Concerned object
+ * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvImpulse      Impulse to apply
  * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
+
+
+/** Sets object color
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _stColor        Color to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, orxRGBA _stColor);
 
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
