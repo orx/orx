@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9,00"
 	Name="orxDisplay_SFML"
 	ProjectGUID="{A518C140-0A1D-4AA7-A81F-0BFC739C86F5}"
 	RootNamespace="orxDisplay_SFML"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -66,9 +67,12 @@
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib sfml-graphics.lib sfml-window.lib sfml-system.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll"
 				LinkIncremental="2"
+				GenerateManifest="true"
 				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -88,9 +92,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -145,11 +146,14 @@
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orx.lib sfml-graphics.lib sfml-window.lib sfml-system.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll"
 				LinkIncremental="1"
+				GenerateManifest="true"
 				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -169,9 +173,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -203,7 +204,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ORXDISPLAY_SFML_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDEBUG__"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ORXDISPLAY_SFML_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDEBUG__;__orxDLL__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -226,13 +227,16 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\static\orxd.lib sfml-graphics.lib sfml-window.lib sfml-system.lib"
+				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib sfml-graphics.lib sfml-window.lib sfml-system.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll"
 				LinkIncremental="2"
+				GenerateManifest="true"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -252,9 +256,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -286,7 +287,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ORXDISPLAY_SFML_EXPORTS;__orxWINDOWS__;__orxMSVC__"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ORXDISPLAY_SFML_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -306,14 +307,17 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\static\orx.lib sfml-graphics.lib sfml-window.lib sfml-system.lib"
+				AdditionalDependencies="..\..\..\..\lib\static\imporx.lib sfml-graphics.lib sfml-window.lib sfml-system.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll"
 				LinkIncremental="1"
+				GenerateManifest="true"
 				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -333,9 +337,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
