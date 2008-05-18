@@ -107,7 +107,11 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxObject_UnlinkStructure(orxOBJECT 
 /* *** Object accessors *** */
 
 
-/** Structure used by an object get accessor, given its structure ID. Structure must be cast correctly. */
+/** Structure used by an object get accessor, given its structure ID. Structure must then be cast correctly (see helper macro)
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eStructureID   ID of the structure to get
+ * @return orxSTRUCTURE / orxNULL
+ */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  _orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID);
 
 

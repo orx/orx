@@ -711,12 +711,11 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
 /* *** Structure accessors *** */
 
 
-/***************************************************************************
- _orxObject_GetStructure
- Gets a structure used by an object, given its structure ID.
-
- returns: pointer to the requested structure (must be cast correctly)
- ***************************************************************************/
+/** Structure used by an object get accessor, given its structure ID. Structure must then be cast correctly (see helper macro)
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eStructureID   ID of the structure to get
+ * @return orxSTRUCTURE / orxNULL
+ */
 orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure = orxNULL;
