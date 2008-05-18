@@ -56,7 +56,7 @@
   /** The function will be exported (dll compilation) */
   #define orxDLLEXPORT          __declspec(dllexport)
 
-  /** The function will be imported (exe comoilation) */
+  /** The function will be imported (exe compilation) */
   #define orxDLLIMPORT          __declspec(dllimport)
 
   /** The function will not be exported nor imported */
@@ -99,7 +99,7 @@
     /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
 
-    /** The function will be imported (exe comoilation) */
+    /** The function will be imported (exe compilation) */
     #define orxDLLIMPORT
 
     /** The function will not be exported nor imported */
