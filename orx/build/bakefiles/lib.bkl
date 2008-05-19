@@ -195,7 +195,6 @@
             include/utils/orxFSM.h
             include/utils/orxHashTable.h
             include/utils/orxLinkList.h
-            include/utils/orxQueue.h
             include/utils/orxScreenshot.h
             include/utils/orxString.h
             include/utils/orxTree.h
@@ -204,7 +203,6 @@
             src/utils/orxFSM.c
             src/utils/orxHashTable.c
             src/utils/orxLinkList.c
-            src/utils/orxQueue.c
             src/utils/orxScreenshot.c
             src/utils/orxString.c
             src/utils/orxTree.c

@@ -111,7 +111,6 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxFSM.o \
 	./$(BUILD)/orxDLL_orxHashTable.o \
 	./$(BUILD)/orxDLL_orxLinkList.o \
-	./$(BUILD)/orxDLL_orxQueue.o \
 	./$(BUILD)/orxDLL_orxScreenshot.o \
 	./$(BUILD)/orxDLL_orxString.o \
 	./$(BUILD)/orxDLL_orxTree.o
@@ -156,7 +155,6 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxFSM.o \
 	./$(BUILD)/orxLIB_orxHashTable.o \
 	./$(BUILD)/orxLIB_orxLinkList.o \
-	./$(BUILD)/orxLIB_orxQueue.o \
 	./$(BUILD)/orxLIB_orxScreenshot.o \
 	./$(BUILD)/orxLIB_orxString.o \
 	./$(BUILD)/orxLIB_orxTree.o
@@ -632,9 +630,6 @@ endif
 ./$(BUILD)/orxDLL_orxLinkList.o: ../../../src/utils/orxLinkList.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
-./$(BUILD)/orxDLL_orxQueue.o: ../../../src/utils/orxQueue.c
-	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
-
 ./$(BUILD)/orxDLL_orxScreenshot.o: ../../../src/utils/orxScreenshot.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -753,9 +748,6 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxLIB_orxLinkList.o: ../../../src/utils/orxLinkList.c
-	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
-
-./$(BUILD)/orxLIB_orxQueue.o: ../../../src/utils/orxQueue.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxLIB_orxScreenshot.o: ../../../src/utils/orxScreenshot.c

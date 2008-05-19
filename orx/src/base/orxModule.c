@@ -53,7 +53,7 @@ orxVOID orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_CLOCK, orxClock);
   orxMODULE_REGISTER(orxMODULE_ID_CONFIG, orxConfig);
   orxMODULE_REGISTER(orxMODULE_ID_DISPLAY, orxDisplay);
-  orxMODULE_REGISTER(orxMODULE_ID_EVENT, orxEvent);
+  //!orxMODULE_REGISTER(orxMODULE_ID_EVENT, orxEvent);
   orxMODULE_REGISTER(orxMODULE_ID_FILE, orxFile);
   orxMODULE_REGISTER(orxMODULE_ID_FILESYSTEM, orxFileSystem);
   orxMODULE_REGISTER(orxMODULE_ID_FPS, orxFPS);
@@ -71,7 +71,6 @@ orxVOID orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_PARAM, orxParam);
   orxMODULE_REGISTER(orxMODULE_ID_PHYSICS, orxPhysics);
   orxMODULE_REGISTER(orxMODULE_ID_PLUGIN, orxPlugin);
-  orxMODULE_REGISTER(orxMODULE_ID_QUEUE, orxQueue);
   orxMODULE_REGISTER(orxMODULE_ID_RENDER, orxRender);
   orxMODULE_REGISTER(orxMODULE_ID_SCRIPT, orxScript);
   orxMODULE_REGISTER(orxMODULE_ID_SOUND, orxSound);

@@ -11,7 +11,7 @@
  * @file
  * @date 12/09/2005
  * @author (C) Arcallians
- * 
+ *
  */
 
 #ifndef _orxUTILS_H_
@@ -25,7 +25,6 @@
 #include "utils/orxFSM.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxLinkList.h"
-#include "utils/orxQueue.h"
 #include "utils/orxScreenshot.h"
 #include "utils/orxString.h"
 #include "utils/orxTree.h"

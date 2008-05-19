@@ -157,7 +157,6 @@
 		<Unit filename="..\..\..\include\utils\orxFSM.h" />
 		<Unit filename="..\..\..\include\utils\orxHashTable.h" />
 		<Unit filename="..\..\..\include\utils\orxLinkList.h" />
-		<Unit filename="..\..\..\include\utils\orxQueue.h" />
 		<Unit filename="..\..\..\include\utils\orxScreenshot.h" />
 		<Unit filename="..\..\..\include\utils\orxString.h" />
 		<Unit filename="..\..\..\include\utils\orxTree.h" />
@@ -271,9 +270,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\utils\orxLinkList.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\..\..\src\utils\orxQueue.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\utils\orxScreenshot.c">

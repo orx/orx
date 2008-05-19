@@ -11,7 +11,7 @@
  * @file orxModule.h
  * @date 12/09/2005
  * @author (C) Arcallians
- * 
+ *
  */
 
 #ifndef _orxMODULE_H_
@@ -52,7 +52,6 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_PARAM,
   orxMODULE_ID_PHYSICS,
   orxMODULE_ID_PLUGIN,
-  orxMODULE_ID_QUEUE,
   orxMODULE_ID_RENDER,
   orxMODULE_ID_SCRIPT,
   orxMODULE_ID_SOUND,

@@ -531,10 +531,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\src\utils\orxQueue.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\src\utils\orxScreenshot.c"
 					>
 				</File>
@@ -898,10 +894,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\include\utils\orxLinkList.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\include\utils\orxQueue.h"
 					>
 				</File>
 				<File

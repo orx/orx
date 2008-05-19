@@ -21,11 +21,11 @@
  * @page Event
  * @section event_intro Introduction.
  * The event module goal is to provide a simple and generalist interface to manipulate event messages.
- * 
+ *
  * The general idea is to register many handler functions to event IDs, register events and - at the process time - each event are handled by the corrresponding function.
- * 
+ *
  * @section event_api API.
- * 
+ *
  * @subsection event_api_createdelete Create and delete an event manager.
  * In order to use the event capabilities, you must create an event manager (You must destroy it after use).
  * to create it, use the function orxEvent_CreateManager precising the maximum number of event you want to store, the size of handler hash key (256 is good, see orxHashTable),
@@ -37,7 +37,7 @@
  * ...
  * orxEvent_DeleteManager(pstEventManager);
  * @endcode
- * 
+ *
  * @subsection event_api_handler Register an handler.
  * In order to use events, you must register some handling functions.
  * Each function can be associate to one (or more) ID.
@@ -54,10 +54,10 @@
  * ...
  * orxEvent_RegisterHandler(pstEventManager, u16ID, NULL);
  * @endcode
- * 
+ *
  * @subsection event_api_registerfunction Register functions.
- * To register a function, you just have to call a 
- * 
+ * To register a function, you just have to call a
+ *
  * @addtogroup Event
  * @{
  */
@@ -68,7 +68,6 @@
 #include "orxInclude.h"
 #include "core/orxClock.h"
 #include "utils/orxHashTable.h"
-#include "utils/orxQueue.h"
 
 
 /**
@@ -108,7 +107,7 @@ typedef orxVOID (*orxEVENT_FUNCTION)(orxEVENT_MESSAGE_TYPE, orxEVENT_MESSAGE_LIF
 /**
  * Event manager definition and manipulation :
  */
- 
+
 /** Event manager manipulation flags.*/
 #define orxEVENT_KU32_FLAG_MANIPULATION_STANDARD                        0x00000000  /**< Nothing special is done.*/
 #define orxEVENT_KU32_FLAG_MANIPULATION_REMOVE_NEGATIVE_LIFETIME_EVENT  0x00000001  /**< Remove negative timelife event and do not process it. */

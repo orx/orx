@@ -84,7 +84,6 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxFSM.o \
 	./$(BUILD)/orxDLL_orxHashTable.o \
 	./$(BUILD)/orxDLL_orxLinkList.o \
-	./$(BUILD)/orxDLL_orxQueue.o \
 	./$(BUILD)/orxDLL_orxScreenshot.o \
 	./$(BUILD)/orxDLL_orxString.o \
 	./$(BUILD)/orxDLL_orxTree.o
@@ -129,7 +128,6 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxFSM.o \
 	./$(BUILD)/orxLIB_orxHashTable.o \
 	./$(BUILD)/orxLIB_orxLinkList.o \
-	./$(BUILD)/orxLIB_orxQueue.o \
 	./$(BUILD)/orxLIB_orxScreenshot.o \
 	./$(BUILD)/orxLIB_orxString.o \
 	./$(BUILD)/orxLIB_orxTree.o
@@ -493,9 +491,6 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 ./$(BUILD)/orxDLL_orxLinkList.o: $(srcdir)/../../../src/utils/orxLinkList.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/utils/orxLinkList.c
 
-./$(BUILD)/orxDLL_orxQueue.o: $(srcdir)/../../../src/utils/orxQueue.c
-	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/utils/orxQueue.c
-
 ./$(BUILD)/orxDLL_orxScreenshot.o: $(srcdir)/../../../src/utils/orxScreenshot.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/utils/orxScreenshot.c
 
@@ -615,9 +610,6 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 
 ./$(BUILD)/orxLIB_orxLinkList.o: $(srcdir)/../../../src/utils/orxLinkList.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/utils/orxLinkList.c
-
-./$(BUILD)/orxLIB_orxQueue.o: $(srcdir)/../../../src/utils/orxQueue.c
-	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/utils/orxQueue.c
 
 ./$(BUILD)/orxLIB_orxScreenshot.o: $(srcdir)/../../../src/utils/orxScreenshot.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/utils/orxScreenshot.c
