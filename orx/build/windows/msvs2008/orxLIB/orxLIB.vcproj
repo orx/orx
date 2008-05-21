@@ -228,6 +228,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="orx DLL copy"
+				CommandLine="copy /y ..\..\..\..\lib\dynamic\orxd.dll ..\..\..\..\bin"
 			/>
 		</Configuration>
 		<Configuration
@@ -308,6 +310,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="orx DLL copy"
+				CommandLine="copy /y ..\..\..\..\lib\dynamic\orx.dll ..\..\..\..\bin"
 			/>
 		</Configuration>
 	</Configurations>
