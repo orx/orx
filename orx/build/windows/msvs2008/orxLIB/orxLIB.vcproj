@@ -45,7 +45,7 @@
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -109,7 +109,7 @@
 				AdditionalIncludeDirectories="..\..\..\..\include"
 				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				ExceptionHandling="0"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -176,7 +176,7 @@
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -196,13 +196,14 @@
 				Name="VCLinkerTool"
 				RegisterOutput="false"
 				OutputFile="..\..\..\..\lib\dynamic\orxd.dll"
-				GenerateManifest="true"
+				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				OptimizeReferences="0"
 				EnableCOMDATFolding="0"
 				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				SupportUnloadOfDelayLoadedDLL="true"
 				ImportLibrary="..\..\..\..\lib\dynamic\orxd.lib"
 				TargetMachine="1"
 			/>
@@ -211,6 +212,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -256,7 +258,7 @@
 				AdditionalIncludeDirectories="..\..\..\..\include"
 				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				ExceptionHandling="0"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -275,12 +277,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="..\..\..\..\lib\dynamic\orx.dll"
-				GenerateManifest="true"
+				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				SupportUnloadOfDelayLoadedDLL="true"
 				ImportLibrary="..\..\..\..\lib\dynamic\orx.lib"
 				TargetMachine="1"
 			/>
@@ -289,6 +292,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

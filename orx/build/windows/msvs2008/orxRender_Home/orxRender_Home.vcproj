@@ -45,7 +45,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ORXRENDER_HOME_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDEBUG__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -67,12 +67,13 @@
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\render\orxRender_Home.dll"
 				LinkIncremental="2"
-				GenerateManifest="true"
-				IgnoreDefaultLibraryNames="LIBCMT"
+				GenerateManifest="false"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -80,6 +81,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -124,7 +126,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ORXRENDER_HOME_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -146,14 +148,15 @@
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orx.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\render\orxRender_Home.dll"
 				LinkIncremental="1"
-				GenerateManifest="true"
-				IgnoreDefaultLibraryNames="LIBCMT"
+				GenerateManifest="false"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -161,6 +164,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -207,7 +211,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ORXRENDER_HOME_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDEBUG__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -230,13 +234,14 @@
 				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\render\orxRender_Home.dll"
 				LinkIncremental="2"
-				GenerateManifest="true"
+				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
-				IgnoreDefaultLibraryNames="LIBCMT"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -244,6 +249,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -288,7 +294,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ORXRENDER_HOME_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -310,14 +316,15 @@
 				AdditionalDependencies="..\..\..\..\lib\static\imporx.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\render\orxRender_Home.dll"
 				LinkIncremental="1"
-				GenerateManifest="true"
-				IgnoreDefaultLibraryNames="LIBCMT"
+				GenerateManifest="false"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -325,6 +332,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

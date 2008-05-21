@@ -123,8 +123,6 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxHANDLE _hUse
     stBodyDef.angle           = _pstBodyDef->fRotation;
     stBodyDef.linearDamping   = _pstBodyDef->fLinearDamping;
     stBodyDef.angularDamping  = _pstBodyDef->fAngularDamping;
-    stBodyDef.massData.I      = _pstBodyDef->fInertia;
-    stBodyDef.massData.mass   = _pstBodyDef->fMass;
     stBodyDef.isBullet        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
     stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
     stBodyDef.position.Set(_pstBodyDef->vPosition.fX, _pstBodyDef->vPosition.fY);
@@ -132,13 +130,21 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxHANDLE _hUse
     /* Is dynamic? */
     if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
     {
+      /* Stores mass properties */
+      stBodyDef.massData.I      = _pstBodyDef->fInertia;
+      stBodyDef.massData.mass   = _pstBodyDef->fMass;
+
       /* Creates dynamic body */
-      poResult = sstPhysics.poWorld->CreateDynamicBody(&stBodyDef);
+      poResult = sstPhysics.poWorld->CreateBody(&stBodyDef);
     }
     else
     {
+      /* Cleans mass properties */
+      stBodyDef.massData.I      = 0.0f;
+      stBodyDef.massData.mass   = 0.0f;
+
       /* Creates static body */
-      poResult = sstPhysics.poWorld->CreateStaticBody(&stBodyDef);
+      poResult = sstPhysics.poWorld->CreateBody(&stBodyDef);
     }
   }
 
@@ -206,13 +212,13 @@ extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY
   }
 
   /* Inits shape definition */
-  pstShapeDef->friction     = _pstBodyPartDef->fFriction;
-  pstShapeDef->restitution  = _pstBodyPartDef->fRestitution;
-  pstShapeDef->density      = _pstBodyPartDef->fDensity;
-  pstShapeDef->categoryBits = _pstBodyPartDef->u16SelfFlags;
-  pstShapeDef->maskBits     = _pstBodyPartDef->u16CheckMask;
-  pstShapeDef->groupIndex   = (orxU16)(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fZ);
-  pstShapeDef->isSensor     = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
+  pstShapeDef->friction             = _pstBodyPartDef->fFriction;
+  pstShapeDef->restitution          = _pstBodyPartDef->fRestitution;
+  pstShapeDef->density              = _pstBodyPartDef->fDensity;
+  pstShapeDef->filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
+  pstShapeDef->filter.maskBits      = _pstBodyPartDef->u16CheckMask;
+  pstShapeDef->filter.groupIndex    = (orxU16)(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fZ);
+  pstShapeDef->isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
 
   /* Creates it */
   poResult = poBody->CreateShape(pstShapeDef); 
@@ -534,14 +540,18 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, or
 
 extern "C" orxSTATUS orxPhysics_Box2D_SetGravity(orxCONST orxVECTOR *_pvGravity)
 {
+  b2Vec2    vGravity;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvGravity != orxNULL);
 
+  /* Sets gravity vector */
+  vGravity.Set(_pvGravity->fX, _pvGravity->fY);
+
   /* Updates gravity */
-  sstPhysics.poWorld->m_gravity.Set(_pvGravity->fX, _pvGravity->fY);
+  sstPhysics.poWorld->SetGravity(vGravity);
 
   /* Done! */
   return eResult;

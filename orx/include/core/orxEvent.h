@@ -31,6 +31,7 @@
 typedef enum __orxEVENT_TYPE_t
 {
   orxEVENT_TYPE_SYSTEM = 0,
+  orxEVENT_TYPE_RENDER,
   orxEVENT_TYPE_PHYSICS,
 
   orxEVENT_TYPE_CORE_NUMBER,

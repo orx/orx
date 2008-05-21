@@ -25,6 +25,7 @@
 #include "core/orxEvent.h"
 #include "debug/orxDebug.h"
 #include "memory/orxBank.h"
+#include "utils/orxHashTable.h"
 
 
 /** Module flags
@@ -36,8 +37,9 @@
 #define orxEVENT_KU32_STATIC_MASK_ALL     0xFFFFFFFF  /**< All mask */
 
 
-/** Defines
+/** Misc defines
  */
+#define orxEVENT_KU32_HANDLER_TABLE_SIZE  4
 
 
 /***************************************************************************
@@ -48,8 +50,9 @@
  */
 typedef struct __orxEVENT_STATIC_t
 {
-  orxU32              u32Flags;                                 /**< Control flags */
-
+  orxU32        u32Flags;                             /**< Control flags */
+  orxHASHTABLE *pstHandlerTable;                      /**< Handler table */
+  
 } orxEVENT_STATIC;
 
 
@@ -76,6 +79,7 @@ orxVOID orxEvent_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_HASHTABLE);
 
   return;
 }
@@ -93,11 +97,25 @@ orxSTATUS orxEvent_Init()
     /* Cleans control structure */
     orxMemory_Set(&sstEvent, 0, sizeof(orxEVENT_STATIC));
 
-    /* Inits Flags */
-    orxFLAG_SET(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY, orxEVENT_KU32_STATIC_MASK_ALL);
+    /* Creates handler table */
+    sstEvent.pstHandlerTable = orxHashTable_Create(orxEVENT_KU32_HANDLER_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_NONE);
 
-    /* Success */
-    eResult = orxSTATUS_SUCCESS;
+    /* Valid? */
+    if(sstEvent.pstHandlerTable != orxNULL)
+    {
+      /* Inits Flags */
+      orxFLAG_SET(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY, orxEVENT_KU32_STATIC_MASK_ALL);
+
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
   else
   {
@@ -118,6 +136,9 @@ orxVOID orxEvent_Exit()
   /* Initialized? */
   if(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY))
   {
+    /* Deletes hashtable */
+    orxHashTable_Delete(sstEvent.pstHandlerTable);
+
     /* Updates flags */
     orxFLAG_SET(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_NONE, orxEVENT_KU32_STATIC_MASK_ALL);
   }

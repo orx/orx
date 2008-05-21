@@ -1,6 +1,0 @@
-################################################################################
-# DO NOT REMOVE THIS FILE                                                      #
-# IT IS USED TO PROTECT THE DIRECTORY AGAIN CVS PRUNE DIRECTORY OPTION         #
-################################################################################
-
-build : directory where are stored visual studio 2005 project files
