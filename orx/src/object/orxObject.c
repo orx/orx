@@ -1194,10 +1194,10 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
 
 /** Sets current animation for object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _hAnimHandle    Animation handle
+ * @param[in]   _u32AnimID      Animation ID (config's name CRC) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle)
+orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxU32 _u32AnimID)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxSTATUS       eResult;
@@ -1213,7 +1213,7 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxHANDLE 
   if(pstAnimPointer != NULL)
   {
     /* Sets current animation */
-    eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, _hAnimHandle);
+    eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, _u32AnimID);
   }
   else
   {
@@ -1227,10 +1227,10 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxHANDLE 
 
 /** Sets target animation for object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _hAnimHandle    Animation handle
+ * @param[in]   _u32AnimID      Animation ID (config's name CRC) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle)
+orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxU32 _u32AnimID)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxSTATUS       eResult;
@@ -1246,7 +1246,7 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _
   if(pstAnimPointer != NULL)
   {
     /* Sets target animation */
-    eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, _hAnimHandle);
+    eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, _u32AnimID);
   }
   else
   {

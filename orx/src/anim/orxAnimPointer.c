@@ -643,7 +643,7 @@ orxFLOAT orxFASTCALL orxAnimPointer_GetFrequency(orxCONST orxANIMPOINTER *_pstAn
  * @param[in]   _hAnimHandle                  Animation handle to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle)
+orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -694,7 +694,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
  * @param[in]   _hAnimHandle                  Animation handle to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle)
+orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -742,7 +742,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPoint
  * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
+orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
 {
   orxHANDLE hAnimHandle;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -758,7 +758,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimID(orxANIMPOINTER *_pstAnimPo
   if(hAnimHandle != orxHANDLE_UNDEFINED)
   {
     /* Sets current anim */
-    eResult = orxAnimPointer_SetCurrentAnim(_pstAnimPointer, hAnimHandle);
+    eResult = orxAnimPointer_SetCurrentAnimHandle(_pstAnimPointer, hAnimHandle);
   }
 
   /* Done! */
@@ -770,7 +770,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimID(orxANIMPOINTER *_pstAnimPo
  * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimID(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
+orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
 {
   orxHANDLE hAnimHandle;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -786,7 +786,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimID(orxANIMPOINTER *_pstAnimPoi
   if(hAnimHandle != orxHANDLE_UNDEFINED)
   {
     /* Sets target anim */
-    eResult = orxAnimPointer_SetTargetAnim(_pstAnimPointer, hAnimHandle);
+    eResult = orxAnimPointer_SetTargetAnimHandle(_pstAnimPointer, hAnimHandle);
   }
 
   /* Done! */

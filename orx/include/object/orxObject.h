@@ -200,17 +200,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimSet(orxOBJECT *_pst
 
 /** Sets current animation for object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _hAnimHandle    Animation handle
+ * @param[in]   _u32AnimID      Animation ID (config's name CRC) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxU32 _u32AnimID);
 
 /** Sets target animation for object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _hAnimHandle    Animation handle
+ * @param[in]   _u32AnimID      Animation ID (config's name CRC) to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxHANDLE _hAnimHandle);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxU32 _u32AnimID);
 
 
 /** Gets object's bounding box
