@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib"
-				OutputFile="..\..\..\..\bin\plugins\core\file\orxFileSystem_LibC.dll"
+				OutputFile="..\..\..\..\bin\plugins\core\file\orxFileSystem_LibCd.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames=""
@@ -232,7 +232,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib"
-				OutputFile="..\..\..\..\bin\plugins\core\file\orxFileSystem_LibC.dll"
+				OutputFile="..\..\..\..\bin\plugins\core\file\orxFileSystem_LibCd.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"

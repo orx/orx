@@ -125,6 +125,7 @@
 
 	<!-- Depends on SFML -->
 	  <orx-plugin id="orxDisplay_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+      <dllname>orxDisplay_SFML$(orxSUFFIX)</dllname>
 	    <destination>core/display</destination>
 	    <sources>plugins/Display/SFML/orxDisplay.cpp</sources>
 	  </orx-plugin>
@@ -133,6 +134,7 @@
 
 	<!-- Depends on nothing -->
 	  <orx-plugin id="orxRender_Home" cond="USE_PLUGINS=='1' and USE_PLUGINS=='1'">
+      <dllname>orxRender_Home$(orxSUFFIX)</dllname>
 	    <destination>core/render</destination>
 	    <sources>plugins/Render/Home/orxRender.c</sources>
 	  </orx-plugin>
@@ -141,6 +143,7 @@
 
 	<!-- Depends on SFML -->
 	  <orx-plugin id="orxSound_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+      <dllname>orxSound_SFML$(orxSUFFIX)</dllname>
 	    <destination>core/sound</destination>
 	    <sources>plugins/Sound/SFML/orxSound.cpp</sources>
 	  </orx-plugin>
@@ -149,6 +152,7 @@
 
 	<!-- Depends on SFML -->
 	  <orx-plugin id="orxMouse_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+      <dllname>orxMouse_SFML$(orxSUFFIX)</dllname>
 	    <destination>core/mouse</destination>
 	    <sources>plugins/Mouse/SFML/orxMouse.cpp</sources>
 	  </orx-plugin>
@@ -156,52 +160,58 @@
 	<!-- KEYBOARD -->
 
 	<!-- Depends on SFML -->
-	<orx-plugin id="orxKeyboard_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
-		<destination>core/keyboard</destination>
-		<sources>plugins/Keyboard/SFML/orxKeyboard.cpp</sources>
-	</orx-plugin> -->
+    <orx-plugin id="orxKeyboard_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+      <dllname>orxKeyboard_SFML$(orxSUFFIX)</dllname>
+      <destination>core/keyboard</destination>
+      <sources>plugins/Keyboard/SFML/orxKeyboard.cpp</sources>
+    </orx-plugin> -->
 
 	<!-- JOYSTICK -->
 
 	<!-- FILE -->
 
 	<!-- Depends on nothing -->
-	<orx-plugin id="orxFile_LibC" cond="USE_PLUGINS=='1'">
-		<destination>core/file</destination>
-		<sources>plugins/File/LibC/orxFile.c</sources>
-	</orx-plugin>
+    <orx-plugin id="orxFile_LibC" cond="USE_PLUGINS=='1'">
+      <dllname>orxFile_LibC$(orxSUFFIX)</dllname>
+      <destination>core/file</destination>
+      <sources>plugins/File/LibC/orxFile.c</sources>
+    </orx-plugin>
 
 	<!-- FILE_SYSTEM -->
 
 	<!-- Depends on nothing -->
-	<orx-plugin id="orxFileSystem_LibC" cond="USE_PLUGINS=='1'">
-		<destination>core/file</destination>
-		<sources>plugins/File/LibC/orxFileSystem.c</sources>
-	</orx-plugin>
+    <orx-plugin id="orxFileSystem_LibC" cond="USE_PLUGINS=='1'">
+      <dllname>orxFileSystem_LibC$(orxSUFFIX)</dllname>
+      <destination>core/file</destination>
+      <sources>plugins/File/LibC/orxFileSystem.c</sources>
+    </orx-plugin>
 
 	<!-- PACKAGE -->
 
 	<!-- PHYSICS -->
 
 	<!-- Depends on Box2D -->
-	<orx-plugin id="orxPhysics_Box2D" cond="USE_BOX2D=='1' and USE_PLUGINS=='1'" template="orxBOX2D">
-		<destination>core/physics</destination>
-		<sources>plugins/Physics/Box2D/orxPhysics.cpp</sources>
+    <orx-plugin id="orxPhysics_Box2D" cond="USE_BOX2D=='1' and USE_PLUGINS=='1'" template="orxBOX2D">
+      <dllname>orxPhysics_Box2D$(orxSUFFIX)</dllname>
+      <destination>core/physics</destination>
+      <sources>plugins/Physics/Box2D/orxPhysics.cpp</sources>
     </orx-plugin>
 
   <!-- SYSTEM -->
 
 	<!-- Depends on SDL -->
-	<orx-plugin id="orxSystem_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxSDL">
-		<destination>core/system</destination>
-		<sources>plugins/System/SDL/orxSystem.c</sources>
-  </orx-plugin>
+  	<orx-plugin id="orxSystem_SDL" cond="USE_SDL=='1' and USE_PLUGINS=='1'" template="orxSDL">
+      <dllname>orxSystem_SDL$(orxSUFFIX)</dllname>
+  		<destination>core/system</destination>
+  		<sources>plugins/System/SDL/orxSystem.c</sources>
+    </orx-plugin>
 
 	<!-- Depends on SFML -->
-	<orx-plugin id="orxSystem_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
-		<destination>core/system</destination>
-		<sources>plugins/System/SFML/orxSystem.cpp</sources>
-	</orx-plugin> -->
+  	<orx-plugin id="orxSystem_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+      <dllname>orxSystem_SFML$(orxSUFFIX)</dllname>
+  		<destination>core/system</destination>
+  		<sources>plugins/System/SFML/orxSystem.cpp</sources>
+  	</orx-plugin> -->
 
 	<!-- BOUNCE DEMO -->
 

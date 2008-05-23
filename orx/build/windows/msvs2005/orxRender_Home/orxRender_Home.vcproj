@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib"
-				OutputFile="..\..\..\..\bin\plugins\core\render\orxRender_Home.dll"
+				OutputFile="..\..\..\..\bin\plugins\core\render\orxRender_Homed.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames=""
@@ -232,7 +232,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib"
-				OutputFile="..\..\..\..\bin\plugins\core\render\orxRender_Home.dll"
+				OutputFile="..\..\..\..\bin\plugins\core\render\orxRender_Homed.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"

@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib sfml-window-d.lib sfml-system-d.lib"
-				OutputFile="..\..\..\..\bin\plugins\core\mouse\orxMouse_SFML.dll"
+				OutputFile="..\..\..\..\bin\plugins\core\mouse\orxMouse_SFMLd.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames=""
@@ -233,7 +233,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib sfml-window-d.lib sfml-system-d.lib"
-				OutputFile="..\..\..\..\bin\plugins\core\mouse\orxMouse_SFML.dll"
+				OutputFile="..\..\..\..\bin\plugins\core\mouse\orxMouse_SFMLd.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"

@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib sfml-system-d.lib"
-				OutputFile="..\..\..\..\bin\plugins\core\system\orxSystem_SFML.dll"
+				OutputFile="..\..\..\..\bin\plugins\core\system\orxSystem_SFMLd.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames=""
@@ -233,7 +233,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib sfml-system-d.lib"
-				OutputFile="..\..\..\..\bin\plugins\core\system\orxSystem_SFML.dll"
+				OutputFile="..\..\..\..\bin\plugins\core\system\orxSystem_SFMLd.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"

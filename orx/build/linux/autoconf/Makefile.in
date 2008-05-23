@@ -234,43 +234,43 @@ COND_LINK_STATIC_orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive \
 @COND_PLATFORM_UNIX_1@	-lsfml-system
 @COND_PLATFORM_UNIX_1@orxBOX2DLIB_UNIX = -lBox2D
 COND_USE_PLUGINS_1_USE_SFML_1___orxDisplay_SFML___depname = \
-	$(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)orxDisplay_SFML.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)orxDisplay_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__orxDisplay_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___orxDisplay_SFML___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p = $(__orxNAME_p)
 COND_USE_PLUGINS_1___orxRender_Home___depname = \
-	$(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__orxRender_Home___depname = $(COND_USE_PLUGINS_1___orxRender_Home___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_1 = $(__orxNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___orxSound_SFML___depname = \
-	$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__orxSound_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___orxSound_SFML___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_2 = $(__orxNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___orxMouse_SFML___depname = \
-	$(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__orxMouse_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___orxMouse_SFML___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_3 = $(__orxNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___orxKeyboard_SFML___depname = \
-	$(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)orxKeyboard_SFML.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)orxKeyboard_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__orxKeyboard_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___orxKeyboard_SFML___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_4 = $(__orxNAME_p)
 COND_USE_PLUGINS_1___orxFile_LibC___depname = \
-	$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFile_LibC.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFile_LibC$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__orxFile_LibC___depname = $(COND_USE_PLUGINS_1___orxFile_LibC___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_5 = $(__orxNAME_p)
 COND_USE_PLUGINS_1___orxFileSystem_LibC___depname = \
-	$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFileSystem_LibC.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFileSystem_LibC$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__orxFileSystem_LibC___depname = $(COND_USE_PLUGINS_1___orxFileSystem_LibC___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_6 = $(__orxNAME_p)
 COND_USE_BOX2D_1_USE_PLUGINS_1___orxPhysics_Box2D___depname = \
-	$(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)orxPhysics_Box2D.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)orxPhysics_Box2D$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_BOX2D_1_USE_PLUGINS_1@__orxPhysics_Box2D___depname = $(COND_USE_BOX2D_1_USE_PLUGINS_1___orxPhysics_Box2D___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_7 = $(__orxNAME_p)
 COND_USE_PLUGINS_1_USE_SDL_1___orxSystem_SDL___depname = \
-	$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SDL.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SDL$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SDL_1@__orxSystem_SDL___depname = $(COND_USE_PLUGINS_1_USE_SDL_1___orxSystem_SDL___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_8 = $(__orxNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___orxSystem_SFML___depname = \
-	$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1_USE_SFML_1@__orxSystem_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___orxSystem_SFML___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_9 = $(__orxNAME_p)
 COND_USE_PLUGINS_1___Bounce___depname = \
@@ -311,16 +311,16 @@ clean:
 	rm -f $(srcdir)/../../../lib/$(LINK)/$(LIBPREFIX)$(orxNAME).$(DLLIMP_SUFFIX)
 	rm -f $(srcdir)/../../../lib/$(LINK)/$(LIBPREFIX)$(orxNAME)$(LIBEXT)
 	rm -f $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
-	rm -f $(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)orxDisplay_SFML.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)orxKeyboard_SFML.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFile_LibC.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFileSystem_LibC.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)orxPhysics_Box2D.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SDL.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML.$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)orxDisplay_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)orxKeyboard_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFile_LibC$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFileSystem_LibC$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)orxPhysics_Box2D$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SDL$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE)
@@ -341,34 +341,34 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 	
 	$(__orx___mac_setfilecmd)
 
-@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)orxDisplay_SFML.$(SO_SUFFIX_MODULE): $(ORXDISPLAY_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)orxDisplay_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXDISPLAY_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXDISPLAY_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p)
 
-@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home.$(SO_SUFFIX_MODULE): $(ORXRENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXRENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(ORXRENDER_HOME_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_1)
 
-@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML.$(SO_SUFFIX_MODULE): $(ORXSOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXSOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXSOUND_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_2)
 
-@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML.$(SO_SUFFIX_MODULE): $(ORXMOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXMOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXMOUSE_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_3)
 
-@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)orxKeyboard_SFML.$(SO_SUFFIX_MODULE): $(ORXKEYBOARD_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)orxKeyboard_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXKEYBOARD_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXKEYBOARD_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_4)
 
-@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFile_LibC.$(SO_SUFFIX_MODULE): $(ORXFILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFile_LibC$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXFILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(ORXFILE_LIBC_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_5)
 
-@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFileSystem_LibC.$(SO_SUFFIX_MODULE): $(ORXFILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/file/$(DLLPREFIX_MODULE)orxFileSystem_LibC$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXFILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(ORXFILESYSTEM_LIBC_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_6)
 
-@COND_USE_BOX2D_1_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)orxPhysics_Box2D.$(SO_SUFFIX_MODULE): $(ORXPHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_BOX2D_1_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)orxPhysics_Box2D$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXPHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_BOX2D_1_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXPHYSICS_BOX2D_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxBOX2DLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_7)
 
-@COND_USE_PLUGINS_1_USE_SDL_1@$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SDL.$(SO_SUFFIX_MODULE): $(ORXSYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1_USE_SDL_1@$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SDL$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXSYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1_USE_SDL_1@	$(SHARED_LD_MODULE_CC) $@ $(ORXSYSTEM_SDL_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSDLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_8)
 
-@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML.$(SO_SUFFIX_MODULE): $(ORXSYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXSYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXSYSTEM_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_9)
 
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE): $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)

@@ -52,7 +52,15 @@
 #define orxCONFIG_KC_ASSIGN               '='         /**< Assign character */
 #define orxCONFIG_KC_COMMENT              ';'         /**< Comment character */
 
-#define orxCONFIG_KZ_DEFAULT_FILE         "orx.ini"   /**< Default config file name */
+#ifdef __orxDEBUG__
+
+  #define orxCONFIG_KZ_DEFAULT_FILE         "orxd.ini"   /**< Default config file name */
+
+#else /* __orxDEBUG__ */
+
+  #define orxCONFIG_KZ_DEFAULT_FILE         "orx.ini"  /**< Default config file name */
+
+#endif /* __orxDEBUG__ */
 
 
 /***************************************************************************

@@ -8,7 +8,7 @@
 		<Option extended_obj_names="1" />
 		<Build>
 			<Target title="Static Debug">
-				<Option output="..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFMLd" prefix_auto="1" extension_auto="1" />
 				<Option object_output="debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -38,7 +38,7 @@
 				</Linker>
 			</Target>
 			<Target title="Dynamic Debug">
-				<Option output="..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFMLd" prefix_auto="1" extension_auto="1" />
 				<Option object_output="debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
