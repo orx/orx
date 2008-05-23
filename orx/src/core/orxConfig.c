@@ -645,7 +645,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
       if((pcLineStart != acBuffer) && (pc > pcLineStart))
       {
         /* Updates offset */
-        u32Offset = (orxU32)(pc - pcLineStart - 1);
+        u32Offset = (orxU32)(pc - pcLineStart);
 
         /* Copies it at the beginning of the buffer */
         orxMemory_Copy(acBuffer, pcLineStart, u32Offset);
