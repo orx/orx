@@ -66,7 +66,7 @@ orxSTATUS orxFile_LibC_Init()
   orxASSERT(!(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY));
 
   /* Cleans static controller */
-  orxMemory_Set(&sstFile, 0, sizeof(orxFILE_STATIC));
+  orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
 
 	/* Set module has ready */
 	sstFile.u32Flags = orxFILE_KU32_STATIC_FLAG_READY;
@@ -88,7 +88,7 @@ orxVOID orxFile_LibC_Exit()
 {
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-  
+
   /* Module not ready now */
   sstFile.u32Flags = orxFILE_KU32_STATIC_FLAG_NONE;
 }
@@ -105,13 +105,13 @@ orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
 
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-  
+
   /* Fills with null terminated characters */
   orxMemory_Set(&zMode, orxCHAR_NULL, 3);
-  
+
   /*** LIB C MODES :
    * r   : Open text file for reading.
-   *       The stream is positioned at the beginning of the file. 
+   *       The stream is positioned at the beginning of the file.
    * r+  : Open for reading and writing.
    *       The stream is positioned at the beginning of the file.
    * w   : Truncate file to zero length or create text file for writing.
@@ -136,7 +136,7 @@ orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
    *  X   |       |   X    | a+
    *  X   |  X    |   X    | a+
    */
-   
+
   /* Read only ? */
   if(_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_READ)
   {
@@ -166,8 +166,8 @@ orxFILE* orxFile_LibC_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
   {
     /* Copy the mode in the string */
     orxMemory_Copy(&zMode, "a+", 2 * sizeof(orxCHAR));
-  } 
-  
+  }
+
   /* Open the file */
   return(orxFILE*)fopen(_zPath, zMode);
 }
@@ -192,7 +192,7 @@ orxU32 orxFile_LibC_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32Nb
   {
     u32Ret = (orxU32)fread(_pReadData, _u32ElemSize, _u32NbElem, (FILE*)_pstFile);
   }
-  
+
   /* Returns the number of read elements */
   return u32Ret;
 }
@@ -220,7 +220,7 @@ orxU32 orxFile_LibC_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u
   {
     u32Ret = (orxU32)fwrite(_pDataToWrite, _u32ElemSize, _u32NbElem, (FILE*)_pstFile);
   }
-  
+
   /* Returns the number of read elements */
   return u32Ret;
 }
@@ -241,7 +241,7 @@ orxBOOL orxFile_LibC_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pst
 
   /* Checks inputs */
   orxASSERT(_pstFile != orxNULL);
-  
+
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
@@ -255,7 +255,7 @@ orxBOOL orxFile_LibC_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pst
       bRet = orxFALSE;
     }
   }
-  
+
   /* Returns orxTRUE if a line has been read, else orxFALSE */
   return bRet;
 }
@@ -286,7 +286,7 @@ orxSTATUS orxFile_LibC_Close(orxFILE *_pstFile)
       eRet = orxSTATUS_SUCCESS;
     }
   }
-  
+
   /* return success status */
   return eRet;
 }

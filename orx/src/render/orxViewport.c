@@ -170,7 +170,7 @@ orxSTATUS orxViewport_Init()
   if(!(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstViewport, 0, sizeof(orxVIEWPORT_STATIC));
+    orxMemory_Zero(&sstViewport, sizeof(orxVIEWPORT_STATIC));
 
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(VIEWPORT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);

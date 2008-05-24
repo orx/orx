@@ -83,7 +83,7 @@
 //  if(!(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY))
 //  {
 //    /* Cleans static controller */
-//    orxMemory_Set(&sstSound, 0, sizeof(orxSOUND_STATIC));
+//    orxMemory_Zero(&sstSound, sizeof(orxSOUND_STATIC));
 //
 //    /* Updates status */
 //    sstSound.u32Flags |= orxSOUND_KU32_STATIC_FLAG_READY;
@@ -101,7 +101,7 @@
 //  if((sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY) == orxSOUND_KU32_STATIC_FLAG_READY)
 //  {
 //    /* Cleans static controller */
-//    orxMemory_Set(&sstSound, 0, sizeof(orxSOUND_STATIC));
+//    orxMemory_Zero(&sstSound, sizeof(orxSOUND_STATIC));
 //  }
 //
 //  return;

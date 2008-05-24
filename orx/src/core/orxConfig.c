@@ -342,7 +342,7 @@ orxSTATUS orxConfig_Init()
   if(!orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Set(&sstConfig, 0, sizeof(orxCONFIG_STATIC));
+    orxMemory_Zero(&sstConfig, sizeof(orxCONFIG_STATIC));
 
     /* Creates section bank */
     sstConfig.pstSectionBank = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
@@ -1016,7 +1016,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Valu
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Clears buffer */
-  orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
+  orxMemory_Zero(zValue, 16 * sizeof(orxCHAR));
 
   /* Gets literal value */
   orxString_Print(zValue, "%d", _s32Value);
@@ -1055,7 +1055,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fVa
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Clears buffer */
-  orxMemory_Set(zValue, 0, 16 * sizeof(orxCHAR));
+  orxMemory_Zero(zValue, 16 * sizeof(orxCHAR));
 
   /* Gets literal value */
   orxString_Print(zValue, "%g", _fValue);
@@ -1160,7 +1160,7 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orx
   orxASSERT(_pstValue != orxNULL);
 
   /* Clears buffer */
-  orxMemory_Set(zValue, 0, 64 * sizeof(orxCHAR));
+  orxMemory_Zero(zValue, 64 * sizeof(orxCHAR));
 
   /* Gets literal value */
   orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pstValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fZ, orxSTRING_KC_VECTOR_END);

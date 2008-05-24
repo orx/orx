@@ -57,7 +57,7 @@
 //  orxASSERT(!(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY));
 //
 //  /* Cleans static controller */
-//  orxMemory_Set(&sstMouse, 0, sizeof(orxMOUSE_STATIC));
+//  orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 //  
 //  /* Try to install allegro mouse */
 //  if(install_mouse() != -1)

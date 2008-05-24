@@ -1,9 +1,9 @@
-/** 
+/**
  * \file orxLinkList.h
- * 
+ *
  * Link List Module.
  * Allows to handle link lists.
- * 
+ *
  * \todo
  * Add new features at need.
  */
@@ -12,7 +12,7 @@
 /***************************************************************************
  orxLinkList.h
  Link List module
- 
+
  begin                : 06/04/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -33,7 +33,7 @@
 
 /**
  * @addtogroup LinkList
- * 
+ *
  * @{
  *
  * @section linklist Link List - How to.

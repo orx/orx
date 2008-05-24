@@ -28,7 +28,7 @@ extern "C"
   #include "orxInclude.h"
 
   #include "core/orxConfig.h"
-  #include "core/orxEvent.h" 
+  #include "core/orxEvent.h"
   #include "math/orxMath.h"
   #include "plugin/orxPluginUser.h"
   #include "memory/orxBank.h"
@@ -274,7 +274,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
         orxEVENT stEvent;
 
         /* Inits event */
-        orxMemory_Set(&stEvent, 0, sizeof(orxEVENT));
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
         stEvent.eType = orxEVENT_TYPE_CLOSE;
 
         /* Sends system close event */
@@ -295,7 +295,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
             orxEVENT stEvent;
 
             /* Inits event */
-            orxMemory_Set(&stEvent, 0, sizeof(orxEVENT));
+            orxMemory_Zero(&stEvent, sizeof(orxEVENT));
             stEvent.eType = orxEVENT_TYPE_CLOSE;
 
             /* Sends system close event */
@@ -600,7 +600,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
   if(!(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstDisplay, 0, sizeof(orxDISPLAY_STATIC));
+    orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
     /* Creates text bank */
     sstDisplay.pstTextBank = orxBank_Create(su32TextBankSize, sizeof(orxDISPLAY_TEXT), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -658,7 +658,7 @@ extern "C" orxVOID orxDisplay_SFML_Exit()
     delete sstDisplay.poRenderWindow;
 
     /* Cleans static controller */
-    orxMemory_Set(&sstDisplay, 0, sizeof(orxDISPLAY_STATIC));
+    orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
   }
 
   return;

@@ -1,7 +1,7 @@
 /***************************************************************************
  orxScreenshot.c
  Screenshot module
- 
+
  begin                : 07/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -103,7 +103,7 @@ orxSTATUS orxScreenshot_Init()
   if(!(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Set(&sstScreenshot, 0, sizeof(orxSCREENSHOT_STATIC));
+    orxMemory_Zero(&sstScreenshot, sizeof(orxSCREENSHOT_STATIC));
 
     /* Valid? */
     if(orxFileSystem_Exists(orxSCREENSHOT_KZ_DIRECTORY) != orxFALSE)
@@ -121,14 +121,14 @@ orxSTATUS orxScreenshot_Init()
         }
         /* Till all screenshots have been found */
         while(orxFileSystem_FindNext(&stFileInfos) != orxFALSE);
-        
+
         /* Ends the search */
         orxFileSystem_FindClose(&stFileInfos);
       }
 
       /* Inits Flags */
       sstScreenshot.u32Flags = orxSCREENSHOT_KU32_STATIC_FLAG_READY;
-      
+
       /* Success */
       eResult = orxSTATUS_SUCCESS;
     }

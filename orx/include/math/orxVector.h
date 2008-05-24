@@ -344,7 +344,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pv
   else
   {
     /* Clears result */
-    orxMemory_Set(_pvRes, 0, sizeof(orxVECTOR));
+    orxMemory_Zero(_pvRes, sizeof(orxVECTOR));
   }
 
   /* Done! */

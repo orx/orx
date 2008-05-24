@@ -1,7 +1,7 @@
 /***************************************************************************
  orxLinkList.c
  List module
- 
+
  begin                : 06/04/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -88,12 +88,12 @@ orxSTATUS orxLinkList_Init()
   if(!(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstLinkList, 0, sizeof(orxLINKLIST_STATIC));
-  
+    orxMemory_Zero(&sstLinkList, sizeof(orxLINKLIST_STATIC));
+
     /* Inits flags */
     sstLinkList.u32Flags = orxLINKLIST_KU32_STATIC_FLAG_READY;
-    
-    /* Success */ 
+
+    /* Success */
     eResult = orxSTATUS_SUCCESS;
   }
   else
@@ -149,7 +149,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
 
     /* Gets first node */
     pstNode = _pstList->pstFirst;
-    
+
     /* Clean all nodes */
     while(pstNode != orxNULL)
     {
@@ -157,7 +157,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
       pstNext = pstNode->pstNext;
 
       /* Cleans current node */
-      orxMemory_Set(pstNode, 0, sizeof(orxLINKLIST_NODE));
+      orxMemory_Zero(pstNode, sizeof(orxLINKLIST_NODE));
 
       /* Go to next node */
       pstNode = pstNext;
@@ -165,7 +165,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
   }
 
   /* Cleans list */
-  orxMemory_Set(_pstList, 0, sizeof(orxLINKLIST));
+  orxMemory_Zero(_pstList, sizeof(orxLINKLIST));
 
   /* Done! */
   return orxSTATUS_SUCCESS;
@@ -193,7 +193,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NO
     _pstNode->pstNext     = _pstList->pstFirst;
     _pstNode->pstPrevious = orxNULL;
     _pstNode->pstList     = _pstList;
-  
+
     /* Updates old node if needed */
     if(_pstList->pstFirst != orxNULL)
     {
@@ -245,7 +245,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE
     _pstNode->pstPrevious = _pstList->pstLast;
     _pstNode->pstNext     = orxNULL;
     _pstNode->pstList     = _pstList;
-  
+
     /* Updates old node if needed */
     if(_pstList->pstLast != orxNULL)
     {
@@ -296,7 +296,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
   {
     /* Gets list */
     pstList = _pstRefNode->pstList;
-  
+
     /* Valid? */
     if(pstList != orxNULL)
     {
@@ -322,14 +322,14 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
 
       /* Updates ref node */
       _pstRefNode->pstPrevious  = _pstNode;
-    
+
       /* Updates counter */
       pstList->u32Counter++;
     }
     else
     {
       /* !!! MSG !!! */
-  
+
       /* No list found */
       eResult = orxSTATUS_FAILURE;
     }
@@ -337,7 +337,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Already linked */
     eResult = orxSTATUS_FAILURE;
   }
@@ -367,7 +367,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
   {
     /* Gets list */
     pstList = _pstRefNode->pstList;
-  
+
     /* Valid? */
     if(pstList != orxNULL)
     {
@@ -393,14 +393,14 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
 
       /* Updates ref node */
       _pstRefNode->pstNext      = _pstNode;
-    
+
       /* Updates counter */
       pstList->u32Counter++;
     }
     else
     {
       /* !!! MSG !!! */
-  
+
       /* No list found */
       eResult = orxSTATUS_FAILURE;
     }
@@ -408,7 +408,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Already linked */
     eResult = orxSTATUS_FAILURE;
   }
@@ -477,7 +477,7 @@ orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
     }
 
     /* Cleans node */
-    orxMemory_Set(_pstNode, 0, sizeof(orxLINKLIST_NODE));
+    orxMemory_Zero(_pstNode, sizeof(orxLINKLIST_NODE));
 
     /* Udpates counter */
     pstList->u32Counter--;
@@ -485,7 +485,7 @@ orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Failed */
     eResult = orxSTATUS_FAILURE;
   }

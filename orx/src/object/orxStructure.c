@@ -172,7 +172,7 @@ orxSTATUS orxStructure_Init()
   if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstStructure, 0, sizeof(orxSTRUCTURE_STATIC));
+    orxMemory_Zero(&sstStructure, sizeof(orxSTRUCTURE_STATIC));
 
     /* For all IDs */
     for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
@@ -346,7 +346,7 @@ orxVOID orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
     orxBank_Delete(sstStructure.astStorage[_eStructureID].pstStructureBank);
 
     /* Unregisters it */
-    orxMemory_Set(&(sstStructure.astInfo[_eStructureID]), 0, sizeof(orxSTRUCTURE_REGISTER_INFO));
+    orxMemory_Zero(&(sstStructure.astInfo[_eStructureID]), sizeof(orxSTRUCTURE_REGISTER_INFO));
     sstStructure.astStorage[_eStructureID].pstStructureBank = orxNULL;
     sstStructure.astStorage[_eStructureID].eType            = orxSTRUCTURE_STORAGE_TYPE_NONE;
   }
@@ -449,7 +449,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         orxSTATUS eResult;
 
         /* Cleans it */
-        orxMemory_Set(pstNode, 0, sizeof(orxSTRUCTURE_STORAGE_NODE));
+        orxMemory_Zero(pstNode, sizeof(orxSTRUCTURE_STORAGE_NODE));
 
         /* Stores its type */
         pstNode->eType = sstStructure.astStorage[_eStructureID].eType;
@@ -492,7 +492,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         if(eResult == orxSTATUS_SUCCESS)
         {
           /* Cleans whole structure */
-          orxMemory_Set(pstStructure, 0, sstStructure.astInfo[_eStructureID].u32Size);
+          orxMemory_Zero(pstStructure, sstStructure.astInfo[_eStructureID].u32Size);
 
           /* Stores ID with magic number */
           pstStructure->eID           = _eStructureID | orxSTRUCTURE_MAGIC_NUMBER;
@@ -589,7 +589,7 @@ orxVOID orxFASTCALL orxStructure_Delete(orxHANDLE _phStructure)
     orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_phStructure)].pstStructureBank, _phStructure);
 
     /* Cleans structure */
-    orxMemory_Set(_phStructure, 0, sizeof(orxSTRUCTURE));
+    orxMemory_Zero(_phStructure, sizeof(orxSTRUCTURE));
   }
   else
   {

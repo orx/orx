@@ -94,7 +94,7 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
   orxU32 u32UserPluginFunctionCounter = 0; \
   orxU32 u32UserPluginFunctionMaxNumber = sizeof(STRUCTURE) / sizeof(orxPLUGIN_USER_FUNCTION_INFO); \
   orxPLUGIN_USER_FUNCTION_INFO *pstUserPluginFunctionInfo = STRUCTURE; \
-  orxMemory_Set(pstUserPluginFunctionInfo, 0, u32UserPluginFunctionMaxNumber * sizeof(orxPLUGIN_USER_FUNCTION_INFO));
+  orxMemory_Zero(pstUserPluginFunctionInfo, u32UserPluginFunctionMaxNumber * sizeof(orxPLUGIN_USER_FUNCTION_INFO));
 
 #define orxPLUGIN_USER_FUNCTION_ADD(FUNCTION, ARGS, PLUGIN_ID, FUNCTION_BASE_ID, NAME) \
   _orxPLUGIN_USER_FUNCTION_ADD_LOW_LEVEL(&FUNCTION, \

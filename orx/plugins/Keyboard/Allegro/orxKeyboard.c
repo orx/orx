@@ -58,7 +58,7 @@
 //  orxASSERT(!(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY));
 //
 //  /* Cleans static controller */
-//  orxMemory_Set(&sstKeyboard, 0, sizeof(orxKEYBOARD_STATIC));
+//  orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
 //  
 //  /* Try to install allegro mouse */
 //  if(install_keyboard() != -1)

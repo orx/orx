@@ -362,7 +362,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                         pstRenderNode = orxBank_Allocate(sstRender.pstRenderBank);
 
                         /* Cleans its internal node */
-                        orxMemory_Set(pstRenderNode, 0, sizeof(orxLINKLIST_NODE));
+                        orxMemory_Zero(pstRenderNode, sizeof(orxLINKLIST_NODE));
 
                         /* Stores object */
                         pstRenderNode->pstObject = pstObject;
@@ -484,7 +484,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
             orxBank_Clear(sstRender.pstRenderBank);
 
             /* Cleans rendering list */
-            orxMemory_Set(&(sstRender.stRenderList), 0, sizeof(orxLINKLIST));
+            orxMemory_Zero(&(sstRender.stRenderList), sizeof(orxLINKLIST));
 
             /* Deletes rendering frame */
             orxFrame_Delete(pstRenderFrame);
@@ -551,7 +551,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
     orxCHAR             acText[16];
 
     /* Clears text transform */
-    orxMemory_Set(&stTextTransform, 0, sizeof(orxBITMAP_TRANSFORM));
+    orxMemory_Zero(&stTextTransform, sizeof(orxBITMAP_TRANSFORM));
 
     /* Inits it */
     stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(0.8f);
@@ -647,7 +647,7 @@ orxSTATUS orxRender_Home_Init()
   if(!(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstRender, 0, sizeof(orxRENDER_STATIC));
+    orxMemory_Zero(&sstRender, sizeof(orxRENDER_STATIC));
 
     /* Creates rendering bank */
     sstRender.pstRenderBank = orxBank_Create(orxRENDER_KU32_ORDER_BANK_SIZE, sizeof(orxRENDER_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);

@@ -57,7 +57,7 @@ orxSTATUS orxJoystick_Init()
   orxASSERT(!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY));
 
   /* Cleans static controller */
-  orxMemory_Set(&sstJoystick, 0, sizeof(orxJOYSTICK_STATIC));
+  orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
   
   /* Set module has ready */
   sstJoystick.u32Flags = orxJOYSTICK_KU32_STATIC_FLAG_READY;

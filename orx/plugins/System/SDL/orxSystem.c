@@ -63,7 +63,7 @@ orxSTATUS orxSystemSDL_Init()
   if(!(sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstSystem, 0, sizeof(orxSYSTEM_STATIC));
+    orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
 
     /* Hqs SDL_Init already been called ? */
     if(SDL_WasInit(SDL_INIT_EVERYTHING) == 0)

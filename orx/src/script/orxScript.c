@@ -1,13 +1,13 @@
 /**
  * @file orxScript.c
- * 
+ *
  * Module for core script extension management.
- */ 
- 
+ */
+
  /***************************************************************************
  orxScript.c
  Module for core script extension management.
- 
+
  begin                : 03/05/2005
  author               : (C) Arcallians
  email                : bestel@arcallians.org
@@ -74,7 +74,7 @@ orxSCRIPT_TYPE orxScript_GetTypeValue(orxCONST orxSTRING _zValue)
 {
   /* Default return value */
   orxSCRIPT_TYPE eRet = orxSCRIPT_TYPE_NONE;
-  
+
   /* orxVOID ? */
   if(orxString_Compare(_zValue, "orxVOID") == 0)
   {
@@ -99,7 +99,7 @@ orxSCRIPT_TYPE orxScript_GetTypeValue(orxCONST orxSTRING _zValue)
   {
     eRet = orxSCRIPT_TYPE_NONE;
   }
-  
+
   /* Returns type */
   return eRet;
 }
@@ -110,8 +110,8 @@ orxSCRIPT_TYPE orxScript_GetTypeValue(orxCONST orxSTRING _zValue)
 orxSTATUS orxScript_Init()
 {
   /** Inits parameters */
-  orxMemory_Set(&sstScript, 0, sizeof(orxSCRIPT_STATIC));
-  
+  orxMemory_Zero(&sstScript, sizeof(orxSCRIPT_STATIC));
+
   /** Calls plugin init */
   return orxScript_PluginInit();
 }
@@ -124,10 +124,10 @@ orxVOID orxScript_Exit()
   orxScript_PluginExit();
 
   /** Inits parameters */
-  orxMemory_Set(&sstScript, 0, sizeof(orxSCRIPT_STATIC));
+  orxMemory_Zero(&sstScript, sizeof(orxSCRIPT_STATIC));
 }
 
-/** Function to register a new function in the system. 
+/** Function to register a new function in the system.
  * This function sotre the parameters in the global list, gets the new entry index and call the plugin register function
  * @param _zFunctionName  (IN)  String value of the function
  * @param _pfnFunction    (IN)  Function pointer
@@ -148,13 +148,13 @@ orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, or
 
   /* Gets index */
   s32Index = sstScript.s32Count;
-  
+
   /* Stores function name */
   sstScript.astFunctions[s32Index].zFunctionName = _zFunctionName;
-  
+
   /* Stores function pointer */
   sstScript.astFunctions[s32Index].pfnFunction = _pfnFunction;
-  
+
   /* Parse parameters type */
   s32Count = 0;
   bEnd = orxFALSE;
@@ -163,10 +163,10 @@ orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, or
   {
     orxSCRIPT_TYPE eType;
     orxCHAR zParam[64];
-    
+
     /* Gets next index for comma ? */
     orxS32 s32Current = orxString_SearchCharIndex(_zFunctionName, ',', s32Previous);
-    
+
     /* Found ? */
     if(s32Current >= 0)
     {
@@ -176,7 +176,7 @@ orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, or
     {
       bEnd = orxTRUE;
     }
-    
+
     /* Not end ? */
     if(!bEnd)
     {
@@ -187,33 +187,33 @@ orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, or
       /* Last parameters */
       orxString_NCopy(zParam, _zFunctionName + s32Previous, orxString_GetLength(_zFunctionName) - s32Previous);
     }
-    
+
     /* Gets type */
     eType = orxScript_GetTypeValue(zParam);
-    
+
     /* Checks the type of the string value */
     sstScript.astFunctions[s32Index].aeParamsType[s32Count] = eType;
-    
+
     /* Computes the stack size */
     // TODO :
     // sstScript.astFunctions[s32Index].s32StackSize += orxScript_GetTypeSize(eType);
 
     /* Increase param count */
     s32Count++;
-    
+
     /* Updates index */
     s32Previous = s32Current + 1;
   }
-    
+
   /* Stores the parameter count */
   sstScript.astFunctions[s32Index].s32NbParams = s32Count;
-  
+
   /* Register function in the plugin */
   eStatus = orxScript_RegisterFunction(s32Index);
-  
+
   /* Increase the global count */
   sstScript.s32Count++;
-  
+
   /* Returns regisration status */
   return eStatus;
 }
@@ -235,34 +235,34 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
 
   /* Default return value */
   orxSTATUS eRet = orxSTATUS_FAILURE;
-  
+
   /* Checks parameters */
   orxASSERT(_pstFunctionInfo != orxNULL);
   orxASSERT(_pstInputValues != orxNULL);
   orxASSERT(_pstOutputValue != orxNULL);
-  
+
   /* Sets the initial stack size */
   s32StackPointer = 12;
 
   /* Computes the total stack size */
   s32StackPointer += _pstFunctionInfo->s32StackSize;
-  
+
   /* Gets the stack size */
 
 #ifdef __orxGCC__
     /* GCC Use old AT&T convention to write ASM :( */
     asm("#esp");
-    
+
     /* Decrease the stack pointer */
     asm("subl -8(%ebp),   %esp");
-    
+
     /* Stores the current ESP (stack pointer address) into s32StackPointer */
     asm("movl    %esp, -8(%ebp)");
 #else
     /* Use Intel instruction */
     //! asm("");
 #endif
-  
+
   /* Go through the list of inputs */
   for(s32Index = 0; s32Index < _pstFunctionInfo->s32NbParams - 1; s32Index++)
   {
@@ -273,7 +273,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
       case orxSCRIPT_TYPE_POINTER:
 #ifdef __orxGCC__
     /* GCC Use old AT&T convention to write ASM :( */
-    
+
     // Push elements on the stack
     asm("#POINTER");
 #else
@@ -288,33 +288,33 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
 
 #ifdef __orxGCC__
         /* GCC Use old AT&T convention to write ASM :( */
-    
+
         // Push elements on the stack
         asm("#S32 / FLOAT");
-        
+
         /* ASM push the following value on the stack
          * => (orxS32)  *(orxS32 *)  (_pstInputValues[s32Index].pValue);
          * OR
          * => (orxFLOAT)*(orxFLOAT *)(_pstInputValues[s32Index].pValue);
          */
-    
+
         /* Computes the ESP offset (increase the stack offset of 4 bytes) */
         asm("movl  -8(%ebp),   %eax");
         asm("addl        $4,   %eax");
-    
+
         /* Stores the ESP offset into s32StackPointer */
         asm("movl     %eax, -8(%ebp)");
-    
+
         /* Stores the ESP offset into a temporary register */
         asm("movl     %eax,    %ebx");
-    
+
         /* Gets the value from the input array and manage memory indirection */
         asm("movl -12(%ebp),   %eax");
         asm("sall        $2,   %eax");
         asm("addl  12(%ebp),   %eax");
         asm("movl    (%eax),   %eax");
         asm("movl    (%eax),   %eax");
-    
+
         /* Push the input value on the stack */
         asm("movl     %eax,   (%ebx)");
 
@@ -328,7 +328,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
       case orxSCRIPT_TYPE_DOUBLE:
 #ifdef __orxGCC__
     /* GCC Use old AT&T convention to write ASM :( */
-    
+
     // Push elements on the stack
     asm("#DOUBLE");
 #else
@@ -337,11 +337,11 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
 #endif
 
         break;
-        
+
       default:
         break;
     }
-    
+
     // Call the function
     //_pstFunctionInfo->pfnFunction();
     orxScript_Test(5.0f);
@@ -350,14 +350,14 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
     if(_pstFunctionInfo->aeParamsType[0] != orxSCRIPT_TYPE_VOID)
     {
       _pstOutputValue[0].eType = _pstFunctionInfo->aeParamsType[0];
-      
+
       /* Gets the result pointer */
       //orxVOID *pValue;
       //pValue = (orxVOID *)_pstOutputValue[0].ps32Value;
-      
+
 #ifdef __orxGCC__
     /* GCC Use old AT&T convention to write ASM :( */
-    
+
     // Gets function result from the stack and store it in pResult
     asm("");
 #else
@@ -368,7 +368,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
 #endif
     }
   }
-  
+
   /* Returns execution status */
   return eRet;
 }
@@ -388,7 +388,7 @@ orxSCRIPT_FUNCTION *orxScript_GetFunctionInfo(orxS32 _s32Index)
     /* Gets pointer on info */
     pstRet = &(sstScript.astFunctions[_s32Index]);
   }
-  
+
   /* Returns pointer on function info */
   return pstRet;
 }

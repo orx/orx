@@ -1,14 +1,14 @@
 /**
  * @file orxMouse.cpp
- * 
+ *
  * SFML mouse plugin
- * 
+ *
  */
- 
+
  /***************************************************************************
  orxMouse.cpp
  SFML mouse plugin
- 
+
  begin                : 26/11/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -31,7 +31,7 @@ extern "C"
   #include "plugin/orxPlugin.h"
 
   #include "io/orxMouse.h"
-  #include "display/orxDisplay.h" 
+  #include "display/orxDisplay.h"
 }
 
 #include <SFML/Graphics.hpp>
@@ -80,7 +80,7 @@ extern "C" orxSTATUS orxMouse_SFML_Init()
   if(!(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstMouse, 0, sizeof(orxMOUSE_STATIC));
+    orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
     /* Terrible hack : gets application input from display SFML plugin */
     sstMouse.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
@@ -97,7 +97,7 @@ extern "C" orxSTATUS orxMouse_SFML_Init()
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 extern "C" orxVOID orxMouse_SFML_Exit()
@@ -106,7 +106,7 @@ extern "C" orxVOID orxMouse_SFML_Exit()
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstMouse, 0, sizeof(orxMOUSE_STATIC));
+    orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
   }
 
   return;

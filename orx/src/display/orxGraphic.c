@@ -135,7 +135,7 @@ orxSTATUS orxGraphic_Init()
   if((sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY) == orxGRAPHIC_KU32_STATIC_FLAG_NONE)
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstGraphic, 0, sizeof(orxGRAPHIC_STATIC));
+    orxMemory_Zero(&sstGraphic, sizeof(orxGRAPHIC_STATIC));
 
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
@@ -260,7 +260,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromFile(orxCONST orxSTRING _zBitmapFil
         orxASSERT(s32FirstMarkerIndex < 255);
 
         /* Clears buffer */
-        orxMemory_Set(zBaseName, 0, 256 * sizeof(orxCHAR));
+        orxMemory_Zero(zBaseName, 256 * sizeof(orxCHAR));
 
         /* Gets base name */
         orxString_NCopy(zBaseName, _zBitmapFileName, s32FirstMarkerIndex);

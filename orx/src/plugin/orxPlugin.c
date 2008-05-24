@@ -278,7 +278,7 @@ orxPLUGIN_FUNCTION_INFO *orxFASTCALL orxPlugin_CreateFunctionInfo(orxPLUGIN_INFO
   if(pstFunctionInfo != orxNULL)
   {
     /* Inits it */
-    orxMemory_Set(pstFunctionInfo, 0, sizeof(orxPLUGIN_FUNCTION_INFO));
+    orxMemory_Zero(pstFunctionInfo, sizeof(orxPLUGIN_FUNCTION_INFO));
   }
   else
   {
@@ -434,7 +434,7 @@ orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
   if(pstPluginInfo != orxNULL)
   {
     /* Inits it */
-    orxMemory_Set(pstPluginInfo, 0, sizeof(orxPLUGIN_INFO));
+    orxMemory_Zero(pstPluginInfo, sizeof(orxPLUGIN_INFO));
 
     /* Undefines plugin handle */
     pstPluginInfo->hPluginHandle      = orxHANDLE_UNDEFINED;
@@ -780,7 +780,7 @@ orxSTATUS orxPlugin_Init()
   if(!(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Set(&sstPlugin, 0, sizeof(orxPLUGIN_STATIC));
+    orxMemory_Zero(&sstPlugin, sizeof(orxPLUGIN_STATIC));
 
     /* Creates an empty spst_plugin_list */
     sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -797,7 +797,7 @@ orxSTATUS orxPlugin_Init()
       orxPlugin_RegisterCorePlugins();
 
       /* Inits the param structure */
-      orxMemory_Set(&stParams, 0, sizeof(orxPARAM));
+      orxMemory_Zero(&stParams, sizeof(orxPARAM));
       stParams.pfnParser  = orxPlugin_ProcessParams;
       stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
       stParams.zShortName = "P";

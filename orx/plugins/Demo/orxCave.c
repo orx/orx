@@ -434,7 +434,7 @@ orxSTATIC orxSTATUS orxCave_Init()
   orxSTATUS   eResult;
 
   /* Cleans static controller */
-  orxMemory_Set(&sstCave, 0, sizeof(orxCAVE_STATIC));
+  orxMemory_Zero(&sstCave, sizeof(orxCAVE_STATIC));
 
   /* Gets screen dimensions */
   orxDisplay_GetBitmapSize(orxDisplay_GetScreenBitmap(), &u32ScreenWidth, &u32ScreenHeight);

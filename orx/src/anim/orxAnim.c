@@ -293,7 +293,7 @@ orxSTATUS orxAnim_Init()
   if(!(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstAnim, 0, sizeof(orxANIM_STATIC));
+    orxMemory_Zero(&sstAnim, sizeof(orxANIM_STATIC));
 
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(ANIM, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
@@ -378,7 +378,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
       if(pstAnim->astKeyList != orxNULL)
       {
         /* Cleans key array */
-        orxMemory_Set(pstAnim->astKeyList, 0, _u32Size * sizeof(orxANIM_KEY));
+        orxMemory_Zero(pstAnim->astKeyList, _u32Size * sizeof(orxANIM_KEY));
 
         /* Sets storage size & counter */
         orxAnim_SetStorageSize(pstAnim, _u32Size);
@@ -461,7 +461,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromFile(orxCONST orxSTRING _zBitmapFilePatte
         orxASSERT(s32MarkerIndex + u32MarkerNumber < 255);
 
         /* Clears buffer */
-        orxMemory_Set(zBaseName, 0, 256 * sizeof(orxCHAR));
+        orxMemory_Zero(zBaseName, 256 * sizeof(orxCHAR));
 
         /* Copies base name */
         orxString_NCopy(zBaseName, _zBitmapFilePattern, 256);
@@ -569,7 +569,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     orxCHAR acID[16];
 
     /* Clears buffer */
-    orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
+    orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
 
     /* For all keys */
     for(u32KeyCounter = 1, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter);
@@ -587,9 +587,9 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       orxU32    i;
 
       /* Clears buffers */
-      orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
-      orxMemory_Set(acDurationID, 0, 32 * sizeof(orxCHAR));
-      orxMemory_Set(acPivotID, 0, 32 * sizeof(orxCHAR));
+      orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
+      orxMemory_Zero(acDurationID, 32 * sizeof(orxCHAR));
+      orxMemory_Zero(acPivotID, 32 * sizeof(orxCHAR));
 
       /* For all keys */
       for(i = 0; i < u32KeyCounter; i++)
@@ -838,7 +838,7 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
     }
 
     /* Cleans the key info */
-    orxMemory_Set(pstKey, 0, sizeof(orxANIM_KEY));
+    orxMemory_Zero(pstKey, sizeof(orxANIM_KEY));
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;

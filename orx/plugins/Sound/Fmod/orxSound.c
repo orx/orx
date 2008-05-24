@@ -65,7 +65,7 @@ orxSTATUS orxSound_Fmod_Init()
   orxASSERT(!(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY));
 
   /* Cleans static controller */
-  orxMemory_Set(&sstSound, 0, sizeof(orxSOUND_STATIC));
+  orxMemory_Zero(&sstSound, sizeof(orxSOUND_STATIC));
 
   /* Init FMOD */
   if(FSOUND_Init(44100, 32, 0))

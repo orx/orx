@@ -1,14 +1,14 @@
 /**
  * @file orxCamera.c
- * 
+ *
  * Camera module
- * 
+ *
  */
 
  /***************************************************************************
  orxCamera.c
  Camera module
- 
+
  begin                : 10/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -65,7 +65,7 @@
  */
 struct __orxCAMERA_t
 {
-  orxSTRUCTURE        stStructure;            /**< Public structure, first structure member : 16 */  
+  orxSTRUCTURE        stStructure;            /**< Public structure, first structure member : 16 */
   orxFRAME           *pstFrame;               /**< Frame : 20 */
   orxAABOX            stFrustum;             /**< Frustum : 44 */
 
@@ -100,7 +100,7 @@ orxSTATIC orxCAMERA_STATIC sstCamera;
 orxSTATIC orxVOID orxCamera_DeleteAll()
 {
   orxCAMERA *pstCamera;
-  
+
   /* Gets first camera */
   pstCamera = (orxCAMERA *)orxStructure_GetFirst(orxSTRUCTURE_ID_CAMERA);
 
@@ -141,12 +141,12 @@ orxVOID orxCamera_Setup()
 orxSTATUS orxCamera_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-  
+
   /* Not already Initialized? */
   if(!(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Set(&sstCamera, 0, sizeof(orxCAMERA_STATIC));
+    orxMemory_Zero(&sstCamera, sizeof(orxCAMERA_STATIC));
 
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(CAMERA, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
@@ -220,7 +220,7 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
     /* Creates frame */
     pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
 
-    /* Valid? */  
+    /* Valid? */
     if(pstFrame != orxNULL)
     {
       /* 2D? */
@@ -293,7 +293,7 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     {
       orxVECTOR vPosition;
       orxFLOAT  fNear, fFar, fWidth, fHeight;
- 
+
       /* Gets frustum info */
       fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
       fFar    = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_FAR);
@@ -372,7 +372,7 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }

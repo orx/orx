@@ -1,14 +1,14 @@
 /**
  * @file orxClock.c
- * 
+ *
  * Clock module
- * 
+ *
  */
 
  /***************************************************************************
  orxClock.c
  Clock module
- 
+
  begin                : 04/02/2004
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -205,7 +205,7 @@ orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_p
   {
     case orxCLOCK_MOD_TYPE_FIXED:
     {
-      /* Fixed DT value */    
+      /* Fixed DT value */
       fNewDT = *pfModValue;
       break;
     }
@@ -229,7 +229,7 @@ orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_p
     }
   }
 
-  /* Done! */  
+  /* Done! */
   return fNewDT;
 }
 
@@ -265,12 +265,12 @@ orxVOID orxClock_Setup()
 orxSTATUS orxClock_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-  
+
   /* Not already Initialized? */
   if(!(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Set(&sstClock, 0, sizeof(orxCLOCK_STATIC));
+    orxMemory_Zero(&sstClock, sizeof(orxCLOCK_STATIC));
 
     /* Creates clock bank */
     sstClock.pstClockBank = orxBank_Create(orxCLOCK_KU32_CLOCK_BANK_SIZE, sizeof(orxCLOCK), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -301,7 +301,7 @@ orxSTATUS orxClock_Init()
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
   }
@@ -382,7 +382,7 @@ orxSTATUS orxClock_Update()
         pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
     {
       orxFLOAT fClockDT, fDiff;
-  
+
       /* Is clock not paused? */
       if(orxClock_IsPaused(pstClock) == orxFALSE)
       {
@@ -405,7 +405,7 @@ orxSTATUS orxClock_Update()
 
           /* Updates clock time */
           pstClock->stClockInfo.fTime += fDT;
-          
+
           /* For all registered callbacks */
           for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
               pstFunctionStorage != orxNULL;
@@ -470,7 +470,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 
       /* Releases allocated clock */
       orxBank_Free(sstClock.pstClockBank, pstClock);
-      
+
       /* Not allocated */
       pstClock = orxNULL;
     }
@@ -526,7 +526,7 @@ orxVOID orxClock_Resync()
         pstClock = orxBank_GetNext(sstClock.pstClockBank, pstClock))
     {
       /* Resyncs clock time & real time */
-      pstClock->fLastTick = pstClock->fRealTime = sstClock.fTime;      
+      pstClock->fLastTick = pstClock->fRealTime = sstClock.fTime;
     }
   }
 
@@ -657,14 +657,14 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
 
     /* Stores context */
     pstFunctionStorage->pstContext  = _pstContext;
-    
+
     /* Stores module id */
     pstFunctionStorage->eModuleID   = _eModuleID;
   }
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Not successful */
     eResult = orxSTATUS_FAILURE;
   }
@@ -772,7 +772,7 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Not found */
     eResult = orxSTATUS_FAILURE;
   }
@@ -818,11 +818,11 @@ orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
 
   /* Finds next matching clock */
   pstClock = orxClock_FindClock(_pstClock->stClockInfo.fTickSize, _pstClock->stClockInfo.eType, _pstClock);
-  
+
   /* Done! */
   return pstClock;
 }
- 
+
 /***************************************************************************
  orxClock_GetNext
  Gets next existing clock (can be used to parse all existing clocks).

@@ -1,7 +1,7 @@
 /***************************************************************************
  orxTree.c
  Tree module
- 
+
  begin                : 07/04/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -89,7 +89,7 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
         for(pstChild = _pstNode->pstParent->pstChild;
             pstChild->pstSibling != _pstNode;
             pstChild = pstChild->pstSibling);
-    
+
         /* Updates it */
         pstChild->pstSibling = _pstNode->pstSibling;
       }
@@ -117,9 +117,9 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
       {
         /* Removes it */
         pstTree->pstRoot = orxNULL;
-        
+
         /* Updates node */
-        orxMemory_Set(_pstNode, 0, sizeof(orxTREE_NODE));
+        orxMemory_Zero(_pstNode, sizeof(orxTREE_NODE));
 
         /* Updates counter */
         pstTree->u32Counter = 0;
@@ -185,16 +185,16 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
       }
 
       /* Updates node */
-      orxMemory_Set(_pstNode, 0, sizeof(orxTREE_NODE));
+      orxMemory_Zero(_pstNode, sizeof(orxTREE_NODE));
 
       /* Updates counter */
-      pstTree->u32Counter--;      
+      pstTree->u32Counter--;
     }
   }
 
   /* Done! */
   return eResult;
-}  
+}
 
 
 /***************************************************************************
@@ -226,18 +226,18 @@ orxVOID orxTree_Setup()
 orxSTATUS orxTree_Init()
 {
   orxSTATUS eResult;
-  
+
   eResult = orxSTATUS_FAILURE;
-  
+
   /* Already Initialized? */
   if(!(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstTree, 0, sizeof(orxTREE_STATIC));
-  
+    orxMemory_Zero(&sstTree, sizeof(orxTREE_STATIC));
+
     /* Inits flags */
     sstTree.u32Flags = orxTREE_KU32_STATIC_FLAG_READY;
-    
+
     /* Success */
     eResult = orxSTATUS_SUCCESS;
   }
@@ -271,7 +271,7 @@ orxVOID orxTree_Exit()
   {
     /* !!! MSG !!! */
   }
-  
+
   return;
 }
 
@@ -284,7 +284,7 @@ orxVOID orxTree_Exit()
 orxSTATUS orxTree_Clean(orxTREE *_pstTree)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-    
+
   /* Checks */
   orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTree != orxNULL);
@@ -300,7 +300,7 @@ orxSTATUS orxTree_Clean(orxTREE *_pstTree)
   if(eResult == orxSTATUS_SUCCESS)
   {
     /* Cleans tree */
-    orxMemory_Set(_pstTree, 0, sizeof(orxTREE));
+    orxMemory_Zero(_pstTree, sizeof(orxTREE));
   }
 
   /* Done! */
@@ -340,7 +340,7 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
       _pstTree->pstRoot = _pstNode;
 
       /* Cleans it */
-      orxMemory_Set(_pstNode, 0, sizeof(orxTREE_NODE));
+      orxMemory_Zero(_pstNode, sizeof(orxTREE_NODE));
 
       /* Stores tree pointer */
       _pstNode->pstTree = _pstTree;
@@ -382,7 +382,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   {
     /* Gets tree */
     pstTree = _pstRefNode->pstTree;
-  
+
     /* Valid? */
     if(pstTree != orxNULL)
     {
@@ -433,7 +433,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     else
     {
       /* !!! MSG !!! */
-  
+
       /* No tree found */
       eResult = orxSTATUS_FAILURE;
     }
@@ -441,7 +441,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Already in a tree */
     eResult = orxSTATUS_FAILURE;
   }
@@ -490,7 +490,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     else
     {
       /* !!! MSG !!! */
-  
+
       /* No tree found */
       eResult = orxSTATUS_FAILURE;
     }
@@ -498,7 +498,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Already in a tree */
     eResult = orxSTATUS_FAILURE;
   }
@@ -568,7 +568,7 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   else
   {
     /* !!! MSG !!! */
-    
+
     /* Not already in the tree */
     eResult = orxSTATUS_FAILURE;
   }

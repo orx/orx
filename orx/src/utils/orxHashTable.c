@@ -1,14 +1,14 @@
 /**
  * @file orxHashTable.c
- * 
+ *
  * Memory Hash table manipulation module
- * 
+ *
  */
- 
+
  /***************************************************************************
  orxHashTable.c
  Hash table manipulation module
- 
+
  begin                : 05/05/2005
  author               : (C) Arcallians
  email                : cursor@arcallians.org
@@ -85,7 +85,7 @@ orxSTATIC orxINLINE orxU32 orxHashTable_FindIndex(orxCONST orxHASHTABLE *_pstHas
 
   /* Correct parameters ? */
   orxASSERT(_pstHashTable != orxNULL);
-  
+
   /* Compute the hash index */
   return(_u32Key & (orxHASHTABLE_KU32_INDEX_SIZE - 1));
 }
@@ -123,13 +123,13 @@ orxSTATUS orxHashTable_Init()
   {
     /* Module not already initialized ? */
     orxASSERT(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY));
-  
+
     /* Cleans static controller */
-    orxMemory_Set(&sstHashTable, 0, sizeof(orxHASHTABLE_STATIC));
-  
+    orxMemory_Zero(&sstHashTable, sizeof(orxHASHTABLE_STATIC));
+
     /* Set module as ready */
     sstHashTable.u32Flags = orxHASHTABLE_KU32_STATIC_FLAG_READY;
-    
+
     /* Success */
     eResult = orxSTATUS_SUCCESS;
   }
@@ -155,7 +155,7 @@ orxVOID orxHashTable_Exit()
     /* Module not ready now */
     sstHashTable.u32Flags = orxHASHTABLE_KU32_STATIC_FLAG_NONE;
   }
-  
+
   return;
 }
 
@@ -171,19 +171,19 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
 {
   orxHASHTABLE *pstHashTable = orxNULL; /* New created hash table */
   orxU32 u32Flags;                  /* Flags used for bank creation */
-    
+
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
-  
+
   /* (hash can hold at least one key) */
   orxASSERT(_u32NbKey > 0);
 
   /* Allocate memory for a hash table */
   pstHashTable = (orxHASHTABLE *)orxMemory_Allocate(sizeof(orxHASHTABLE), _eMemType);
-  
+
   /* Enough memory ? */
   if(pstHashTable != orxNULL)
   {
@@ -196,13 +196,13 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
     {
       u32Flags = orxBANK_KU32_FLAG_NONE;
     }
-    
+
     /* Clean values */
-    orxMemory_Set(pstHashTable, 0, sizeof(orxHASHTABLE));
-  
+    orxMemory_Zero(pstHashTable, sizeof(orxHASHTABLE));
+
     /* Allocate bank for cells */
     pstHashTable->pstBank = orxBank_Create((orxU16)_u32NbKey, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
-    
+
     /* Correct bank allocation ? */
     if(pstHashTable->pstBank == orxNULL)
     {
@@ -211,7 +211,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
       pstHashTable = orxNULL;
     }
   }
-  
+
   return pstHashTable;
 }
 
@@ -225,16 +225,16 @@ orxVOID orxFASTCALL orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 
   /* Correct parameters ? */
   orxASSERT(_pstHashTable != orxNULL);
-  
+
   /* Clear hash table (unallocate cells) */
   orxHashTable_Clear(_pstHashTable);
-  
+
   /* Free bank */
   orxBank_Delete(_pstHashTable->pstBank);
-  
+
   /* Unallocate memory */
   orxMemory_Free(_pstHashTable);
-  
+
   /* Done ! */
 }
 
@@ -251,9 +251,9 @@ orxVOID orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
 
   /* Clear the memory bank */
   orxBank_Clear(_pstHashTable->pstBank);
-  
+
   /* Clear the hash */
-  orxMemory_Set(_pstHashTable->apstCell, 0, sizeof(_pstHashTable->apstCell));
+  orxMemory_Zero(_pstHashTable->apstCell, sizeof(_pstHashTable->apstCell));
 }
 
 /** Gets a hash table item counter
@@ -286,7 +286,7 @@ orxVOID *orxFASTCALL orxHashTable_Get(orxCONST orxHASHTABLE *_pstHashTable, orxU
 {
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
-  
+
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
 
@@ -295,7 +295,7 @@ orxVOID *orxFASTCALL orxHashTable_Get(orxCONST orxHASHTABLE *_pstHashTable, orxU
 
   /* Get the index from the key */
   u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
-  
+
   /* Traverse to find the key */
   pstCell = _pstHashTable->apstCell[u32Index];
   while(pstCell != orxNULL && pstCell->u32Key != _u32Key)
@@ -303,7 +303,7 @@ orxVOID *orxFASTCALL orxHashTable_Get(orxCONST orxHASHTABLE *_pstHashTable, orxU
     /* Try with next cell */
     pstCell = pstCell->pstNext;
   }
-  
+
   /* Cell found ? */
   if(pstCell != orxNULL)
   {
@@ -326,7 +326,7 @@ orxVOID orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key
 {
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
-  
+
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
 
@@ -335,7 +335,7 @@ orxVOID orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key
 
   /* Get the index from the key */
   u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
-  
+
   /* Traverse to find the key */
   pstCell = _pstHashTable->apstCell[u32Index];
   while(pstCell != orxNULL && pstCell->u32Key != _u32Key)
@@ -343,7 +343,7 @@ orxVOID orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key
     /* Try with next cell */
     pstCell = pstCell->pstNext;
   }
-  
+
   /* Cell found ? */
   if(pstCell != orxNULL)
   {
@@ -354,7 +354,7 @@ orxVOID orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key
   {
     /* Allocate a new cell if possible */
     pstCell = (orxHASHTABLE_CELL *)orxBank_Allocate(_pstHashTable->pstBank);
-    
+
     /* If allocation succeed, insert the new cell */
     if(pstCell != orxNULL)
     {
@@ -362,7 +362,7 @@ orxVOID orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key
       pstCell->u32Key = _u32Key;
       pstCell->pData  = _pData;
       pstCell->pstNext = _pstHashTable->apstCell[u32Index];
-      
+
       /* Insert it */
       _pstHashTable->apstCell[u32Index] = pstCell;
     }
@@ -381,27 +381,27 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
   orxU32 u32Index;                      /* Hash index */
   orxHASHTABLE_CELL *pstCell;             /* New cell to add */
   orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
-  
+
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
 
   /* Correct parameters ? */
   orxASSERT(_pstHashTable != orxNULL);
-  
+
   /* Can't add a NULL pointer, else Get will returns orxNULL and it won't be possible to detect errors
    * Maybe that this behaviour should be different ?
    */
   orxASSERT(_pData != orxNULL);
-  
+
   /* The key must not exist */
   if(orxHashTable_Get(_pstHashTable, _u32Key) == orxNULL)
   {
     /* Get the hash table index */
     u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
-    
+
     /* Allocate a new cell if possible */
     pstCell = (orxHASHTABLE_CELL *)orxBank_Allocate(_pstHashTable->pstBank);
-    
+
     /* If allocation succeed, insert the new cell */
     if(pstCell != orxNULL)
     {
@@ -409,7 +409,7 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
       pstCell->u32Key = _u32Key;
       pstCell->pData  = _pData;
       pstCell->pstNext = _pstHashTable->apstCell[u32Index];
-      
+
       /* Insert it */
       _pstHashTable->apstCell[u32Index] = pstCell;
       eStatus = orxSTATUS_SUCCESS;
@@ -433,7 +433,7 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
   orxHASHTABLE_CELL *pstCell = orxNULL;       /* Cell used to traverse */
   orxHASHTABLE_CELL *pstRemoveCell = orxNULL; /* Cell to remove */
   orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
-  
+
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
 
@@ -442,7 +442,7 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
 
   /* Get the index from the key */
   u32Index = orxHashTable_FindIndex(_pstHashTable, _u32Key);
-  
+
   pstCell = _pstHashTable->apstCell[u32Index];
 
   /* Is the first key is the key to remove ? */
@@ -453,7 +453,7 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
       /* The first cell has to be removed */
       _pstHashTable->apstCell[u32Index] = pstCell->pstNext;
       orxBank_Free(_pstHashTable->pstBank, pstCell);
-      
+
       /* Operation succeed */
       eStatus = orxSTATUS_SUCCESS;
     }
@@ -465,17 +465,17 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
         /* Try with next cell */
         pstCell = pstCell->pstNext;
       }
-      
+
       /* Cell found ? (key should be on the next cell) */
       if(pstCell->pstNext != orxNULL)
       {
         /* We found it, remove this cell */
         pstRemoveCell = pstCell->pstNext;
         pstCell->pstNext = pstRemoveCell->pstNext;
-        
+
         /* Free cell from bank */
         orxBank_Free(_pstHashTable->pstBank, pstRemoveCell);
-        
+
         /* Operation succeed */
         eStatus = orxSTATUS_SUCCESS;
       }
@@ -519,7 +519,7 @@ orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32
 			{
 				*_ppData = _pstHashTable->apstCell[u16Cell]->pData;
 			}
-			
+
 			/* Updates result */
 			hResult = (orxHANDLE)(_pstHashTable->apstCell[u16Cell]);
 			break;
@@ -593,7 +593,7 @@ orxVOID orxFASTCALL orxHashTable_DebugPrint(orxCONST orxHASHTABLE *_pstHashTable
 {
   orxHASHTABLE_CELL *pstCell = orxNULL;
   orxU32 u32Index;
-    
+
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
 
@@ -605,18 +605,18 @@ orxVOID orxFASTCALL orxHashTable_DebugPrint(orxCONST orxHASHTABLE *_pstHashTable
   for(u32Index = 0; u32Index < orxHASHTABLE_KU32_INDEX_SIZE; u32Index++)
   {
     orxCHAR zBuffer[4096];
-    
-    orxMemory_Set(zBuffer, 0, 4096 * sizeof(orxCHAR));
+
+    orxMemory_Zero(zBuffer, 4096 * sizeof(orxCHAR));
 
     orxString_Print(zBuffer, "[%3d]-->", u32Index);
     pstCell = _pstHashTable->apstCell[u32Index];
-    
+
     while(pstCell != orxNULL)
     {
       orxString_Print(zBuffer, "(%u/%p)-->", pstCell->u32Key, pstCell->pData);
       pstCell = pstCell->pstNext;
     }
-    
+
     orxLOG("%sNULL", zBuffer);
   }
 }

@@ -1,14 +1,14 @@
 /**
  * @file orxFrame.c
- * 
+ *
  * Frame (scene node) module
- * 
+ *
  */
 
  /***************************************************************************
  orxFrame.c
  Frame (scene node) module
- 
+
  begin                : 02/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -253,7 +253,7 @@ orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME 
     }
 
     case orxFRAME_SPACE_LOCAL:
-    {  
+    {
       /* Updates result */
       pvResult = &(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalPos);
 
@@ -325,7 +325,7 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetRotation(orxCONST orxFRAME *_pstFrame,
 orxSTATIC orxINLINE orxSTATUS _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
- 
+
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_pfScaleX != orxNULL);
@@ -525,7 +525,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_SetDirty(orxFRAME *_pstFrame)
 orxSTATIC orxINLINE orxVOID orxFrame_DeleteAll()
 {
   orxREGISTER orxFRAME *pstFrame;
-  
+
   /* Gets first frame */
   pstFrame = (orxFRAME *)orxStructure_GetChild(sstFrame.pstRoot);
 
@@ -573,7 +573,7 @@ orxSTATUS orxFrame_Init()
   if(!(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Set(&sstFrame, 0, sizeof(orxFRAME_STATIC));
+    orxMemory_Zero(&sstFrame, sizeof(orxFRAME_STATIC));
 
     /* Inits flags */
     sstFrame.u32Flags = orxFRAME_KU32_STATIC_MASK_DEFAULT|orxFRAME_KU32_STATIC_FLAG_READY;
@@ -595,7 +595,7 @@ orxSTATUS orxFrame_Init()
 
         /* Cleans flags */
         sstFrame.u32Flags = orxFRAME_KU32_STATIC_FLAG_NONE;
-  
+
         /* Can't process */
         eResult = orxSTATUS_FAILURE;
       }
@@ -613,7 +613,7 @@ orxSTATUS orxFrame_Init()
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
   }
-  
+
   /* Done! */
   return eResult;
 }
@@ -652,7 +652,7 @@ orxFRAME *orxFrame_Create(orxU32 _u32Flags)
 
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32Flags & orxFRAME_KU32_MASK_USER_ALL) == _u32Flags); 
+  orxASSERT((_u32Flags & orxFRAME_KU32_MASK_USER_ALL) == _u32Flags);
 
   /* Creates frame */
   pstFrame = (orxFRAME *)orxStructure_Create(orxSTRUCTURE_ID_FRAME);
@@ -678,7 +678,7 @@ orxFRAME *orxFrame_Create(orxU32 _u32Flags)
       if(pstData != orxNULL)
       {
         /* Cleans it */
-        orxMemory_Set(pstData, 0, sizeof(orxFRAME_DATA_2D));
+        orxMemory_Zero(pstData, sizeof(orxFRAME_DATA_2D));
 
         /* Inits values */
         pstData->fGlobalScaleX  = orxFLOAT_1;
@@ -962,7 +962,7 @@ orxFLOAT orxFASTCALL orxFrame_GetRotation(orxFRAME *_pstFrame, orxFRAME_SPACE _e
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
- 
+
   /* Is Frame 2D? */
   if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
@@ -1010,7 +1010,7 @@ orxSTATUS orxFASTCALL orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSp
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFrame);
   orxASSERT(_eSpace < orxFRAME_SPACE_NUMBER);
- 
+
   /* Is Frame 2D? */
   if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {

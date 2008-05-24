@@ -226,7 +226,7 @@ orxSTATUS orxObject_Init()
   if(!(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstObject, 0, sizeof(orxOBJECT_STATIC));
+    orxMemory_Zero(&sstObject, sizeof(orxOBJECT_STATIC));
 
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(OBJECT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
@@ -701,7 +701,7 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
     }
 
     /* Cleans it */
-    orxMemory_Set(&(_pstObject->astStructure[_eStructureID]), 0, sizeof(orxOBJECT_STORAGE));
+    orxMemory_Zero(&(_pstObject->astStructure[_eStructureID]), sizeof(orxOBJECT_STORAGE));
   }
 
   return;
@@ -1559,7 +1559,7 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
   orxASSERT(_pstBoundingBox != orxNULL);
 
   /* Cleans result */
-  orxMemory_Set(_pstBoundingBox, 0, sizeof(orxAABOX));
+  orxMemory_Zero(_pstBoundingBox, sizeof(orxAABOX));
 
   /* Is 2D ? */
   if(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_2D))

@@ -1,16 +1,16 @@
 /**
  * @file orxString.h
- * 
+ *
  * String Module - Offers functions to manage Strings and CRC
- * 
+ *
  * @todo Add CRC generation
  * @todo Maybe add functionalities to have an easyer string management than standard C API
  */
- 
+
  /***************************************************************************
  orxString.h
  String management Module
- 
+
  begin                : 21/04/2005
  author               : (C) Arcallians
  email                : bestel@arcallians.org
@@ -185,11 +185,11 @@ orxSTATIC orxINLINE orxS32              orxString_Compare(orxCONST orxSTRING _zS
   orxASSERT(_zString1 != orxNULL);
   orxASSERT(_zString2 != orxNULL);
 
-  /* Done! */  
+  /* Done! */
   return(strcmp(_zString1, _zString2));
 }
 
-/** Compare N first character from two strings. If the first one is smaller 
+/** Compare N first character from two strings. If the first one is smaller
  * than the second, it returns -1, If the second one is bigger than the first,
  * and 0 if they are equals.
  * @param _zString1   (IN) First String to compare
@@ -410,7 +410,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _z
       }
     }
   }
-  
+
   /* Valid? */
   if(eResult != orxSTATUS_FAILURE)
   {
@@ -446,7 +446,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToBool(orxCONST orxSTRING _zSt
 
   /* Tries numeric value */
   eResult = orxString_ToS32(_zString, 10, &s32Value, _pzRemaining);
-  
+
   /* Valid? */
   if(eResult != orxSTATUS_FAILURE)
   {
@@ -456,7 +456,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToBool(orxCONST orxSTRING _zSt
   else
   {
     orxU32 u32Length;
-    
+
     /* Gets length of false */
     u32Length = orxString_GetLength(orxSTRING_FALSE);
 
@@ -591,7 +591,7 @@ orxSTATIC orxINLINE orxSTRING           orxString_SearchString(orxCONST orxSTRIN
   /* Correct parameters ? */
   orxASSERT(_zString1 != orxNULL);
   orxASSERT(_zString2 != orxNULL);
-  
+
   /* Returns result */
   return(strstr(_zString1, _zString2));
 }
@@ -605,7 +605,7 @@ orxSTATIC orxINLINE orxSTRING           orxString_SearchChar(orxCONST orxSTRING 
 {
   /* Correct parameters ? */
   orxASSERT(_zString != orxNULL);
-  
+
   /* Returns result */
   return(strchr(_zString, _cChar));
 }

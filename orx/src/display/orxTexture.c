@@ -181,7 +181,7 @@ orxSTATUS orxTexture_Init()
   if(!(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstTexture, 0, sizeof(orxTEXTURE_STATIC));
+    orxMemory_Zero(&sstTexture, sizeof(orxTEXTURE_STATIC));
 
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);

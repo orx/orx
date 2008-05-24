@@ -1,16 +1,16 @@
 /**
  * @file orxMemory.c
- * 
+ *
  * Memory allocation / Deallocation module
- * 
+ *
  * @todo
  * Optimizations
  */
- 
+
  /***************************************************************************
  orxMemory.h
  Memory allocation / deallocation module
- 
+
  begin                : 02/04/2005
  author               : (C) Arcallians
  email                : bestel@arcallians.org
@@ -24,7 +24,7 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "memory/orxMemory.h"
 #include "debug/orxDebug.h"
 
@@ -74,7 +74,7 @@ orxVOID orxMemory_Setup()
 orxSTATUS orxMemory_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-  
+
   /* No dependencies for this module */
 
   /* Module not already initialized ? */
@@ -82,7 +82,7 @@ orxSTATUS orxMemory_Init()
   if(!(sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstMemory, 0, sizeof(orxMEMORY_STATIC));
+    orxMemory_Zero(&sstMemory, sizeof(orxMEMORY_STATIC));
 
     /* Module initialized */
     sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_READY;
@@ -140,10 +140,10 @@ orxVOID *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemTyp
 {
   /* Module initialized ? */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
- 
+
   /* Valid parameters ? */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
-  
+
   /* Returns system allocation function */
   return((orxVOID *)malloc(_u32Size));
 }
@@ -211,12 +211,22 @@ orxVOID *orxFASTCALL orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Si
   return((orxVOID *)memset(_pDest, _u8Data, _u32Size));
 }
 
+/** Fill a portion of memory with zeroes
+ * @param _pDest    (OUT) Destination pointer
+ * @param _u32Size  (IN)  Size of data
+ * @return returns a pointer on _pDest
+ */
+orxVOID *orxFASTCALL orxMemory_Zero(orxVOID *_pDest, orxU32 _u32Size)
+{
+  return((orxVOID *)memset(_pDest, 0, _u32Size));
+}
+
 /** Realloc a portion of memory if the already allocated memory is not suffisant.
  * @param[in] _pMem	   Memory to reallocate.
  * @param[in] _u32Size Wanted size.
  * @return The pointer reallocated.
  */
-orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Reallocate(orxVOID *_pMem, orxU32 _u32Size)
+orxDLLAPI orxVOID *orxFASTCALL orxMemory_Reallocate(orxVOID *_pMem, orxU32 _u32Size)
 {
   return((orxVOID *)realloc(_pMem, _u32Size));
 }

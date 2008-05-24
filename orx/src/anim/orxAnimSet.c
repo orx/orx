@@ -717,7 +717,7 @@ orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_T
   if(pstInfo != orxNULL)
   {
     /* Cleans it */
-    orxMemory_Set(pstInfo, 0, sizeof(orxLINK_UPDATE_INFO));
+    orxMemory_Zero(pstInfo, sizeof(orxLINK_UPDATE_INFO));
 
     /* Stores link table */
     pstInfo->pstLinkTable = _pstLinkTable;
@@ -735,7 +735,7 @@ orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_T
     if(pstInfo->au8LinkInfo != orxNULL)
     {
       /* Cleans it */
-      orxMemory_Set(pstInfo->au8LinkInfo, 0, u32Number * (orxU32)(_pstLinkTable->u16LinkCounter) * sizeof(orxU8));
+      orxMemory_Zero(pstInfo->au8LinkInfo, u32Number * (orxU32)(_pstLinkTable->u16LinkCounter) * sizeof(orxU8));
     }
     else
     {
@@ -835,7 +835,7 @@ orxSTATIC orxANIMSET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
     orxU32 u32ArraySize;
 
     /* Cleans it */
-    orxMemory_Set(pstLinkTable, 0, sizeof(orxANIMSET_LINK_TABLE));
+    orxMemory_Zero(pstLinkTable, sizeof(orxANIMSET_LINK_TABLE));
 
     /* Gets array size */
     u32ArraySize = _u32Size * _u32Size;
@@ -853,8 +853,8 @@ orxSTATIC orxANIMSET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
       if(pstLinkTable->au8LoopArray != orxNULL)
       {
         /* Cleans tables */
-        orxMemory_Set(pstLinkTable->au32LinkArray, 0, u32ArraySize * sizeof(orxU32));
-        orxMemory_Set(pstLinkTable->au8LoopArray, 0, u32ArraySize * sizeof(orxU8));
+        orxMemory_Zero(pstLinkTable->au32LinkArray, u32ArraySize * sizeof(orxU32));
+        orxMemory_Zero(pstLinkTable->au8LoopArray, u32ArraySize * sizeof(orxU8));
 
         /* Inits values */
         pstLinkTable->u16TableSize    = (orxU16)_u32Size;
@@ -1273,7 +1273,7 @@ orxSTATUS orxAnimSet_Init()
   if(!(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstAnimSet, 0, sizeof(orxANIMSET_STATIC));
+    orxMemory_Zero(&sstAnimSet, sizeof(orxANIMSET_STATIC));
 
     /* Creates reference table */
     sstAnimSet.pstReferenceTable = orxHashTable_Create(32, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -1356,7 +1356,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
     if(pstAnimSet->pastAnim != orxNULL)
     {
       /* Cleans it */
-      orxMemory_Set(pstAnimSet->pastAnim, 0, _u32Size * sizeof(orxANIM *));
+      orxMemory_Zero(pstAnimSet->pastAnim, _u32Size * sizeof(orxANIM *));
 
       /* Set storage size & counter */
       orxAnimSet_SetAnimStorageSize(pstAnimSet, _u32Size);
@@ -1438,7 +1438,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
       orxCHAR acID[16];
 
       /* Clears buffer */
-      orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
+      orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
 
       /* For all animations */
       for(u32AnimCounter = 1, orxString_Print(acID, "%s%d", orxANIMSET_KZ_CONFIG_ANIM, u32AnimCounter);
@@ -1459,7 +1459,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
         orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_ID_TABLE, orxANIMSET_KU32_FLAG_NONE);
 
         /* Clears buffer */
-        orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
+        orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
 
         /* For all animations */
         for(i = 0; i < u32AnimCounter; i++)
@@ -1494,8 +1494,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
         }
 
         /* Clears buffers */
-        orxMemory_Set(acID, 0, 16 * sizeof(orxCHAR));
-        orxMemory_Set(acPropertyID, 0, 32 * sizeof(orxCHAR));
+        orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
+        orxMemory_Zero(acPropertyID, 32 * sizeof(orxCHAR));
 
         /* For all links */
         for(i = 1, orxString_Print(acID, "%s%d", orxANIMSET_KZ_CONFIG_LINK, i);

@@ -1,7 +1,7 @@
 /***************************************************************************
  orxFPS.c
  FPS module
- 
+
  begin                : 10/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -75,7 +75,7 @@ orxSTATIC orxVOID orxFASTCALL orxFPS_Update(orxCONST orxCLOCK_INFO *_pstClockInf
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
-  
+
   /* Gets FPS value */
   sstFPS.u32FPS = sstFPS.u32FrameCounter;
 
@@ -121,7 +121,7 @@ orxSTATUS orxFPS_Init()
   if(!(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Set((orxFPS_STATIC *)&sstFPS, 0, sizeof(orxFPS_STATIC));
+    orxMemory_Zero((orxFPS_STATIC *)&sstFPS, sizeof(orxFPS_STATIC));
 
     /* Creates clock */
     sstFPS.pstClock = orxClock_Create(orxFPS_KU32_CLOCK_TICKSIZE, orxCLOCK_TYPE_SECOND);
@@ -137,7 +137,7 @@ orxSTATUS orxFPS_Init()
       {
         /* Inits Flags */
         sstFPS.u32Flags = orxFPS_KU32_STATIC_FLAG_READY;
-        
+
         /* Success */
         eResult = orxSTATUS_SUCCESS;
       }
@@ -225,6 +225,6 @@ orxU32 orxFPS_GetFPS()
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
 
-  /* Returns it */  
+  /* Returns it */
   return sstFPS.u32FPS;
 }

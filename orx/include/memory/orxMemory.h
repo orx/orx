@@ -11,13 +11,13 @@
  * @file
  * @date 02/04/2005
  * @author (C) Arcallians
- * 
+ *
  * @todo Optimizations
  * @todo Manage the memory instead of use the access to OS allocation
  * @todo manage memory alignment
  * @todo Allows to specifiy memory starting address & maximum size for each memory type
  */
- 
+
 /**
  * @addtogroup Memory
  * Memory allocation / Unallocation module
@@ -27,7 +27,7 @@
 #ifndef _orxMEMORY_H_
 #define _orxMEMORY_H_
 
- 
+
 #include "orxInclude.h"
 
 
@@ -46,7 +46,7 @@ typedef enum __orxMEMORY_TYPE_t
   orxMEMORY_TYPE_TEMP,                  /**< Temporary / scratch memory */
 
   orxMEMORY_TYPE_NUMBER,                /**< Number of memory type */
-  
+
   orxMEMORY_TYPE_NONE = orxENUM_NONE    /**< Invalid memory type */
 
 } orxMEMORY_TYPE;
@@ -115,6 +115,13 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(orxCONST orxVOID *_pMe
  * @return returns a pointer on _pDest
  */
 extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size);
+
+/** Fill a portion of memory with zeroes
+ * @param[out] _pDest   Destination pointer
+ * @param[in]  _u32Size Size of data
+ * @return returns a pointer on _pDest
+ */
+extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Zero(orxVOID *_pDest, orxU32 _u32Size);
 
 /** Realloc a portion of memory if the already allocated memory is not suffisant.
  * @param[in] _pMem	   Memory to reallocate.

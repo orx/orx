@@ -53,7 +53,7 @@ typedef struct __orxEVENT_STATIC_t
 {
   orxU32        u32Flags;                             /**< Control flags */
   orxHASHTABLE *pstHandlerTable;                      /**< Handler table */
-  
+
 } orxEVENT_STATIC;
 
 
@@ -96,7 +96,7 @@ orxSTATUS orxEvent_Init()
   if(!orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans control structure */
-    orxMemory_Set(&sstEvent, 0, sizeof(orxEVENT_STATIC));
+    orxMemory_Zero(&sstEvent, sizeof(orxEVENT_STATIC));
 
     /* Creates handler table */
     sstEvent.pstHandlerTable = orxHashTable_Create(orxEVENT_KU32_HANDLER_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);

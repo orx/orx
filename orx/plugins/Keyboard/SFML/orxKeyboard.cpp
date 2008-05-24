@@ -1,14 +1,14 @@
 /**
  * @file orxKeyboard.cpp
- * 
+ *
  * SFML keyboard plugin
- * 
+ *
  */
- 
+
  /***************************************************************************
  orxKeyboard.cpp
  SFML keyboard plugin
- 
+
  begin                : 12/01/2008
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -31,7 +31,7 @@ extern "C"
   #include "plugin/orxPlugin.h"
 
   #include "io/orxKeyboard.h"
-  #include "display/orxDisplay.h" 
+  #include "display/orxDisplay.h"
 }
 
 #include <SFML/Graphics.hpp>
@@ -196,7 +196,7 @@ extern "C" orxSTATUS orxKeyboard_SFML_Init()
   if(!(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstKeyboard, 0, sizeof(orxKEYBOARD_STATIC));
+    orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
 
     /* Terrible hack : gets application input from SFML display plugin */
     sstKeyboard.poInput = (sf::Input *)orxDisplay_GetApplicationInput();
@@ -213,7 +213,7 @@ extern "C" orxSTATUS orxKeyboard_SFML_Init()
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 extern "C" orxVOID orxKeyboard_SFML_Exit()
@@ -222,7 +222,7 @@ extern "C" orxVOID orxKeyboard_SFML_Exit()
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstKeyboard, 0, sizeof(orxKEYBOARD_STATIC));
+    orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
   }
 
   return;

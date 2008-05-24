@@ -249,7 +249,7 @@ orxSTATUS orxAnimPointer_Init()
   if(!(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstAnimPointer, 0, sizeof(orxANIMPOINTER_STATIC));
+    orxMemory_Zero(&sstAnimPointer, sizeof(orxANIMPOINTER_STATIC));
 
     /* Registers structure type */
     eResult = orxSTRUCTURE_REGISTER(ANIMPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, &orxAnimPointer_Update);

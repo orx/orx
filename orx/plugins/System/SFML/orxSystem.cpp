@@ -1,14 +1,14 @@
 /**
  * @file orxSystem.cpp
- * 
+ *
  * SFML system plugin
- * 
+ *
  */
- 
+
  /***************************************************************************
  orxSystem.cpp
  SFML system plugin
- 
+
  begin                : 25/10/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -81,12 +81,12 @@ extern "C" orxSTATUS orxSystem_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  
+
   /* Was already initialized. */
   if(!(sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstSystem, 0, sizeof(orxSYSTEM_STATIC));
+    orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
 
     /* Inits system clock */
     sstSystem.poClock = new sf::Clock();
@@ -99,7 +99,7 @@ extern "C" orxSTATUS orxSystem_SFML_Init()
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 /** Exit the system module
@@ -113,7 +113,7 @@ extern "C" orxVOID orxSystem_SFML_Exit()
     delete sstSystem.poClock;
 
     /* Cleans static controller */
-    orxMemory_Set(&sstSystem, 0, sizeof(orxSYSTEM_STATIC));
+    orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
   }
 
   return;

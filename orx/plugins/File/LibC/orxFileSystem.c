@@ -44,7 +44,7 @@
   #include <sys/stat.h>
   #include <unistd.h>
 
-#endif 
+#endif
 
 
 /***************************************************************************
@@ -66,7 +66,7 @@
 typedef struct __orxFILESYSTEM_STATIC_t
 {
   orxU32            u32Flags;
-  
+
 } orxFILESYSTEM_STATIC;
 
 
@@ -110,7 +110,7 @@ orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST struct _
 orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST struct dirent *_pstData, orxFILESYSTEM_INFO *_pstFileInfo)
 {
   struct stat stStat;
-  
+
   /* Checks */
   orxASSERT(_pstData != orxNULL);
   orxASSERT(_pstFileInfo != orxNULL);
@@ -118,37 +118,37 @@ orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST struct d
   /* Stores info */
   orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->d_name, 255);
   orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
-  
+
   /* Gets file info */
   stat(_pstFileInfo->zFullName, &stStat);
-  
+
   _pstFileInfo->u32Flags = 0;
-  
+
   /* Read only file ? */
   /* TODO : Update the way that read only is computed. It depends of the reader user/group */
   if((stStat.st_mode & S_IROTH) && !(stStat.st_mode & S_IWOTH))
   {
     _pstFileInfo->u32Flags |= orxFILESYSTEM_KU32_FLAG_INFO_RDONLY;
   }
-  
+
   /* Hidden ? */
   if(_pstFileInfo->zName[0] == '.')
   {
     _pstFileInfo->u32Flags |= orxFILESYSTEM_KU32_FLAG_INFO_HIDDEN;
   }
-  
+
   /* Dir ? */
   if(stStat.st_mode & S_IFDIR)
   {
     _pstFileInfo->u32Flags |= orxFILESYSTEM_KU32_FLAG_INFO_DIR;
   }
-  
+
   /* Normal file ? */
   if(_pstFileInfo->u32Flags == 0)
   {
     _pstFileInfo->u32Flags = orxFILESYSTEM_KU32_FLAG_INFO_NORMAL;
   }
-  
+
   /* Sets time and last file access time */
   _pstFileInfo->u32Size       = stStat.st_size;
   _pstFileInfo->u32TimeStamp  = stStat.st_mtime;
@@ -170,14 +170,14 @@ orxSTATUS orxFileSystem_LibC_Init()
   if(!(sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstFileSystem, 0, sizeof(orxFILESYSTEM_STATIC));
+    orxMemory_Zero(&sstFileSystem, sizeof(orxFILESYSTEM_STATIC));
 
     /* Updates status */
     sstFileSystem.u32Flags |= orxFILESYSTEM_KU32_STATIC_FLAG_READY;
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 orxVOID orxFileSystem_LibC_Exit()
@@ -186,7 +186,7 @@ orxVOID orxFileSystem_LibC_Exit()
   if(sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY)
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstFileSystem, 0, sizeof(orxFILESYSTEM_STATIC));
+    orxMemory_Zero(&sstFileSystem, sizeof(orxFILESYSTEM_STATIC));
   }
 
   return;
@@ -219,7 +219,7 @@ orxBOOL orxFileSystem_LibC_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
   }
 
 #else /* __orxWINDOWS__ */
-  
+
   struct dirent *pstDirEnt;
 
   /* Checks */
@@ -227,20 +227,20 @@ orxBOOL orxFileSystem_LibC_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Clear vars */
-  orxMemory_Set(_pstFileInfo->zFullName, 0, 1280);
-  
+  orxMemory_Zero(_pstFileInfo->zFullName, 1280);
+
   /* Updates full name */
   orxString_Copy(_pstFileInfo->zFullName, _pstFileInfo->zPath);
 
   /* Read directory */
-  
+
   /* loop on entries until the pattern match */
   while((!bResult)
      && (pstDirEnt = readdir((DIR*)_pstFileInfo->hInternal)))
   {
     /* Gets file infos */
     orxFileSystem_LibC_GetInfoFromData(pstDirEnt, _pstFileInfo);
-    
+
     /* Match ? */
     bResult = (fnmatch(_pstFileInfo->zPattern, _pstFileInfo->zName, 0) == 0);
   }
@@ -278,9 +278,9 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
         s32LastSeparator = i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR, i + 1));
 
     /* Clears vars */
-    orxMemory_Set(_pstFileInfo->zPath, 0, 1024);
-    orxMemory_Set(_pstFileInfo->zPattern, 0, 256);
-    
+    orxMemory_Zero(_pstFileInfo->zPath, 1024);
+    orxMemory_Zero(_pstFileInfo->zPattern, 256);
+
     /* Has directory? */
     if(s32LastSeparator >= 0)
     {
@@ -303,7 +303,7 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
   }
 
 #else /* __orxWINDOWS__ */
-  
+
   /* Stores seach pattern */
   orxS32 s32LastSeparator, i;
 
@@ -317,8 +317,8 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
       s32LastSeparator =  i, i = orxString_SearchCharIndex(_zSearchPattern, orxCHAR_DIRECTORY_SEPARATOR, i + 1));
 
   /* Clears vars */
-  orxMemory_Set(_pstFileInfo->zPath, 0, 1024);
-  orxMemory_Set(_pstFileInfo->zPattern, 0, 256);
+  orxMemory_Zero(_pstFileInfo->zPath, 1024);
+  orxMemory_Zero(_pstFileInfo->zPattern, 256);
 
   /* Has directory? */
   if(s32LastSeparator >= 0)
@@ -326,25 +326,25 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
     /* Updates path & full name base */
     orxString_NCopy(_pstFileInfo->zPath, _zSearchPattern, orxMIN(s32LastSeparator + 1, 1023));
   }
-  
+
   /* Stores pattern */
   orxString_NCopy(_pstFileInfo->zPattern, &_zSearchPattern[s32LastSeparator], orxMIN(orxString_GetLength(_zSearchPattern) - s32LastSeparator, 255));
 
   /* Open directory */
   DIR *pDir = opendir(_pstFileInfo->zPath);
-  
+
   /* Valid ? */
   if(pDir != NULL)
   {
     /* Stores the DIR handle */
     _pstFileInfo->hInternal = (orxHANDLE) pDir;
-    
+
     /* Retrieves info */
     bResult = orxFileSystem_LibC_FindNext(_pstFileInfo);
   }
-     
+
 #endif /* __orxWINDOWS__ */
-  
+
   /* Done! */
   return bResult;
 }
@@ -364,7 +364,7 @@ orxVOID orxFileSystem_LibC_FindClose(orxFILESYSTEM_INFO *_pstFileInfo)
 
   /* Closes the search */
   closedir((DIR *) _pstFileInfo->hInternal);
-  
+
 #endif /* __orxWINDOWS__ */
 
   /* Clears handle */
@@ -390,7 +390,7 @@ orxSTATUS orxFileSystem_LibC_Info(orxSTRING _zFileName, orxFILESYSTEM_INFO *_pst
 
   /* Closes the find */
   orxFileSystem_LibC_FindClose(_pstFileInfo);
-    
+
   /* Done! */
   return eResult;
 }
@@ -415,7 +415,7 @@ orxSTATUS orxFileSystem_LibC_Rename(orxSTRING _zSource, orxSTRING _zDest)
 
   /* Checks */
   orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
-  
+
   /* Not implemented yet */
   orxASSERT(orxFALSE && "Not implemented yet!");
 
@@ -432,7 +432,7 @@ orxSTATUS orxFileSystem_LibC_Delete(orxSTRING _zFileName)
 
   /* Not implemented yet */
   orxASSERT(orxFALSE && "Not implemented yet!");
-  
+
   /* Done! */
   return eResult;
 }
@@ -443,7 +443,7 @@ orxSTATUS orxFileSystem_LibC_CreateDir(orxSTRING _zDirName)
 
   /* Checks */
   orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
-  
+
   /* Not implemented yet */
   orxASSERT(orxFALSE && "Not implemented yet!");
 

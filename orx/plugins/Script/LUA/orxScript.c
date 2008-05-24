@@ -239,7 +239,7 @@ orxSTATUS orxScript_LUA_Init()
   if(!(sstScript.u32Flags & orxSCRIPT_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
-    orxMemory_Set(&sstScript, 0, sizeof(orxSCRIPT_STATIC));
+    orxMemory_Zero(&sstScript, sizeof(orxSCRIPT_STATIC));
     
     /* Creates a new LUA state */
     sstScript.pstGlobalState  = lua_open();
@@ -273,13 +273,13 @@ orxSTATUS orxScript_LUA_Init()
 orxVOID orxScript_LUA_Exit()
 {
   /* Was initialized? */
-  if(sstPhysics.u32Flags & orxSCRIPT_KU32_STATIC_FLAG_READY)
+  if(sstScript.u32Flags & orxSCRIPT_KU32_STATIC_FLAG_READY)
   {
     /* Close LUA global state */
     lua_close(sstScript.pstGlobalState);
 
     /* Cleans static controller */
-    orxMemory_Set(&sstPhysics, 0, sizeof(orxPHYSICS_STATIC));
+    orxMemory_Zero(&sstScript, sizeof(orxPHYSICS_STATIC));
   }
 
   return;

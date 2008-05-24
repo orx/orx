@@ -1,14 +1,14 @@
 /**
  * @file orxPhysics.cpp
- * 
+ *
  * Box2D physics plugin
- * 
+ *
  */
- 
+
  /***************************************************************************
  orxPhysics.cpp
  Box2D physics plugin
- 
+
  begin                : 24/03/2008
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -28,7 +28,7 @@ extern "C"
   #include "orxInclude.h"
 
   #include "core/orxConfig.h"
-  #include "core/orxClock.h" 
+  #include "core/orxClock.h"
   #include "plugin/orxPluginUser.h"
 
   #include "physics/orxPhysics.h"
@@ -56,22 +56,49 @@ extern "C"
 orxSTATIC orxCONST orxU32   su32DefaultIterations   = 10;
 orxSTATIC orxCONST orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
 orxSTATIC orxCONST orxFLOAT sfDefaultDimensionRatio = orx2F(0.1f);
+orxSTATIC orxCONST orxU32   su32MessageBankSize     = 64;
 
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Contact listener
+ */
+class orxPhysicsContactListener : public b2ContactListener
+{
+public:
+
+  void Remove(const b2ContactPoint *_poPoint)
+  {
+  }
+
+  void Result(const b2ContactResult *_poPoint)
+  {
+  }
+};
+
+/** Boundary listener
+ */
+class orxPhysicsBoundaryListener : public b2BoundaryListener
+{
+  void Violation(b2Body *_poBody)
+  {
+  }
+};
+
 /** Static structure
  */
 typedef struct __orxPHYSICS_STATIC_t
 {
-  orxU32            u32Flags;                   /**< Control flags */
-  orxU32            u32Iterations;              /**< Simulation iterations per step */
-  orxFLOAT          fDimensionRatio;            /**< Dimension ratio */
-  orxFLOAT          fInvDimensionRatio;         /**< Inverse dimension ratio */
-  orxCLOCK         *pstClock;                   /**< Simulation clock */
-  b2World          *poWorld;                    /**< World */
+  orxU32                      u32Flags;           /**< Control flags */
+  orxU32                      u32Iterations;      /**< Simulation iterations per step */
+  orxFLOAT                    fDimensionRatio;    /**< Dimension ratio */
+  orxFLOAT                    fInvDimensionRatio; /**< Inverse dimension ratio */
+  orxCLOCK                   *pstClock;           /**< Simulation clock */
+  b2World                    *poWorld;            /**< World */
+  orxPhysicsContactListener  *poContactListener;  /**< Contact listener */
+  orxPhysicsBoundaryListener *poBoundaryListener; /**< Boundary listener */
 
 } orxPHYSICS_STATIC;
 
@@ -221,7 +248,7 @@ extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY
   pstShapeDef->isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
 
   /* Creates it */
-  poResult = poBody->CreateShape(pstShapeDef); 
+  poResult = poBody->CreateShape(pstShapeDef);
 
   /* Valid? */
   if(poResult != 0)
@@ -570,7 +597,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     b2Vec2    vWorldGravity;
 
     /* Cleans static controller */
-    orxMemory_Set(&sstPhysics, 0, sizeof(orxPHYSICS_STATIC));
+    orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
 
     /* Gets gravity & allow sleep from config */
     orxConfig_SelectSection(orxPHYSICS_KZ_CONFIG_SECTION);
@@ -596,6 +623,14 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     {
       orxFLOAT  fFrequency, fTickSize, fRatio;
       orxS32    s32IterationsPerStep;
+
+      /* Creates listeners */
+      sstPhysics.poContactListener  = new orxPhysicsContactListener();
+      sstPhysics.poBoundaryListener = new orxPhysicsBoundaryListener();
+
+      /* Registers them */
+      sstPhysics.poWorld->SetContactListener(sstPhysics.poContactListener);
+      sstPhysics.poWorld->SetBoundaryListener(sstPhysics.poBoundaryListener);
 
       /* Gets dimension ratio */
       fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
@@ -665,6 +700,10 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
         }
         else
         {
+          /* Deletes listeners */
+          delete sstPhysics.poContactListener;
+          delete sstPhysics.poBoundaryListener;
+
           /* Deletes world */
           delete sstPhysics.poWorld;
 
@@ -674,6 +713,10 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       }
       else
       {
+        /* Deletes listeners */
+        delete sstPhysics.poContactListener;
+        delete sstPhysics.poBoundaryListener;
+
         /* Deletes world */
         delete sstPhysics.poWorld;
 
@@ -689,7 +732,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 extern "C" orxVOID orxPhysics_Box2D_Exit()
@@ -697,11 +740,15 @@ extern "C" orxVOID orxPhysics_Box2D_Exit()
   /* Was initialized? */
   if(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY)
   {
+    /* Deletes the listeners */
+    delete sstPhysics.poContactListener;
+    delete sstPhysics.poBoundaryListener;
+
     /* Deletes world */
     delete sstPhysics.poWorld;
 
     /* Cleans static controller */
-    orxMemory_Set(&sstPhysics, 0, sizeof(orxPHYSICS_STATIC));
+    orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
   }
 
   return;
