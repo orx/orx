@@ -39,7 +39,8 @@
 
 /** Misc defines
  */
-#define orxEVENT_KU32_HANDLER_TABLE_SIZE  4
+#define orxEVENT_KU32_HANDLER_TABLE_SIZE  64
+#define orxEVENT_KU32_HANDLER_BANK_SIZE   4
 
 
 /***************************************************************************
@@ -98,7 +99,7 @@ orxSTATUS orxEvent_Init()
     orxMemory_Set(&sstEvent, 0, sizeof(orxEVENT_STATIC));
 
     /* Creates handler table */
-    sstEvent.pstHandlerTable = orxHashTable_Create(orxEVENT_KU32_HANDLER_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_NONE);
+    sstEvent.pstHandlerTable = orxHashTable_Create(orxEVENT_KU32_HANDLER_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
     if(sstEvent.pstHandlerTable != orxNULL)
@@ -153,12 +154,54 @@ orxVOID orxEvent_Exit()
  */
 orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler)
 {
+  orxBANK  *pstBank;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_eEventType < orxEVENT_TYPE_MAX_NUMBER);
   orxASSERT(_pfnEventHandler != orxNULL);
+
+  /* Gets corresponding bank */
+  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _eEventType);
+
+  /* No bank yet? */
+  if(pstBank == orxNULL)
+  {
+    /* Creates it */
+    pstBank = orxBank_Create(orxEVENT_KU32_HANDLER_BANK_SIZE, sizeof(orxEVENT_HANDLER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if(pstBank != orxNULL)
+    {
+      /* Tries to add it to the table */
+      if(orxHashTable_Add(sstEvent.pstHandlerTable, _eEventType, pstBank) == orxSTATUS_FAILURE)
+      {
+        /* Deletes bank */
+        orxBank_Delete(pstBank);
+        pstBank = orxNULL;
+      }
+    }
+  }
+
+  /* Valid? */
+  if(pstBank != orxNULL)
+  {
+    orxEVENT_HANDLER *ppfnHandler;
+
+    /* Creates a new handler slot */
+    ppfnHandler = (orxEVENT_HANDLER *)orxBank_Allocate(pstBank);
+
+    /* Valid? */
+    if(ppfnHandler != orxNULL)
+    {
+      /* Updates it */
+      *ppfnHandler = _pfnEventHandler;
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -169,12 +212,37 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
  */
 orxSTATUS orxFASTCALL orxEvent_Send(orxCONST orxEVENT *_pstEvent)
 {
+  orxBANK  *pstBank;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_pstEvent != orxNULL);
   orxASSERT(_pstEvent->eType < orxEVENT_TYPE_MAX_NUMBER);
+
+  /* Gets corresponding bank */
+  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _pstEvent->eType);
+
+  /* Valid? */
+  if(pstBank != orxNULL)
+  {
+    orxEVENT_HANDLER *ppfnHandler;
+
+    /* For all handler */
+    for(ppfnHandler = orxBank_GetNext(pstBank, orxNULL);
+        ppfnHandler != orxNULL;
+        ppfnHandler = orxBank_GetNext(pstBank, ppfnHandler))
+    {
+      /* Calls handler */
+      if((*ppfnHandler)(_pstEvent) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -187,12 +255,45 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxCONST orxEVENT *_pstEvent)
  */
 orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler)
 {
+  orxBANK  *pstBank;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_eEventType < orxEVENT_TYPE_MAX_NUMBER);
   orxASSERT(_pfnEventHandler != orxNULL);
+
+  /* Gets corresponding bank */
+  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _eEventType);
+
+  /* Valid? */
+  if(pstBank != orxNULL)
+  {
+    orxEVENT_HANDLER *ppfnHandler;
+
+    /* For all handler */
+    for(ppfnHandler = orxBank_GetNext(pstBank, orxNULL);
+        ppfnHandler != orxNULL;
+        ppfnHandler = orxBank_GetNext(pstBank, ppfnHandler))
+    {
+      /* Found? */
+      if(*ppfnHandler == _pfnEventHandler)
+      {
+        /* Removes it */
+        orxBank_Free(pstBank, ppfnHandler);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+  }
+  else
+  {
+    /* Defaults to success */
+    eResult = orxSTATUS_SUCCESS;
+  }
 
   /* Done! */
   return eResult;

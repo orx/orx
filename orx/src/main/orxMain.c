@@ -62,6 +62,37 @@ orxSTATIC orxMAIN_STATIC sstMain;
  * Functions                                                               *
  ***************************************************************************/
 
+/** Main event handler
+ */
+orxSTATIC orxSTATUS orxFASTCALL orxMain_EventHandler(orxCONST orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Depending on event */
+  switch(_pstEvent->eType)
+  {
+    /* Close event */
+    case orxEVENT_TYPE_CLOSE:
+    {
+      /* Updates status */
+      sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_EXIT;
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Main module setup
  */
 orxVOID orxMain_Setup()
@@ -70,6 +101,7 @@ orxVOID orxMain_Setup()
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
 
   return;
@@ -105,6 +137,13 @@ orxSTATUS orxMain_Init()
     {
       /* Success */
       eResult = orxSTATUS_SUCCESS;
+    }
+
+    /* Successful? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Registers close event handler */
+      eResult = orxEvent_AddHandler(orxEVENT_TYPE_CLOSE, orxMain_EventHandler);
     }
   }
   else

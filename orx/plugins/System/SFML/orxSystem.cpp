@@ -131,15 +131,15 @@ extern "C" orxFLOAT orxSystem_SFML_GetTime()
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _fSystem Number of seconds to wait.
+ * @param[in] _fSeconds Number of seconds to wait.
  */
-extern "C" orxVOID orxSystem_SFML_Delay(orxFLOAT _fSystem)
+extern "C" orxVOID orxSystem_SFML_Delay(orxFLOAT _fSeconds)
 {
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Sleeps */
-  sf::Sleep(_fSystem);
+  sf::Sleep(_fSeconds);
 }
 
 

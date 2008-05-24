@@ -34,6 +34,8 @@ typedef enum __orxEVENT_TYPE_t
   orxEVENT_TYPE_RENDER,
   orxEVENT_TYPE_PHYSICS,
 
+  orxEVENT_TYPE_CLOSE,
+
   orxEVENT_TYPE_CORE_NUMBER,
 
   orxEVENT_TYPE_USER_DEFINED = orxEVENT_TYPE_CORE_NUMBER,
@@ -57,9 +59,9 @@ typedef struct __orxEVENT_t
 
 
 /**
- * Event handler type / return orxTRUE if events processing should be stopped for the current event, orxFALSE otherwise
+ * Event handler type / return orxSTATUS_FAILURE if events processing should be stopped for the current event, orxSTATUS_FAILURE otherwise
  */
-typedef orxBOOL (orxFASTCALL *orxEVENT_HANDLER)(orxCONST orxEVENT *_pstEvent);
+typedef orxSTATUS (orxFASTCALL *orxEVENT_HANDLER)(orxCONST orxEVENT *_pstEvent);
 
 
 /** Event module setup

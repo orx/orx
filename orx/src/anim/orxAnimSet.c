@@ -1799,7 +1799,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _
     u32AnimIndex = (orxU32)_hAnimHandle;
 
     /* Animation found for the given ID? */
-    if(_pstAnimSet->pastAnim[u32AnimIndex] == orxNULL)
+    if(_pstAnimSet->pastAnim[u32AnimIndex] != orxNULL)
     {
       /* Updates counter */
       orxAnimSet_DecreaseAnimCounter(_pstAnimSet);

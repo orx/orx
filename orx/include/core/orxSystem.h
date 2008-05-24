@@ -71,11 +71,11 @@ orxSTATIC orxINLINE orxFLOAT orxSystem_GetTime()
 }
 
 /** Delay the program for given number of milliseconds.
- * @param[in] _fSystem  Number of seconds to wait.
+ * @param[in] _fSeconds Number of seconds to wait.
  */
-orxSTATIC orxINLINE orxVOID orxSystem_Delay(orxFLOAT _fSystem)
+orxSTATIC orxINLINE orxVOID orxSystem_Delay(orxFLOAT _fSeconds)
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Delay)(_fSystem);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Delay)(_fSeconds);
 }
 
 #endif /* _orxSYSTEM_H_ */

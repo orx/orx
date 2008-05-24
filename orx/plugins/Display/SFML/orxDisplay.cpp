@@ -28,6 +28,7 @@ extern "C"
   #include "orxInclude.h"
 
   #include "core/orxConfig.h"
+  #include "core/orxEvent.h" 
   #include "math/orxMath.h"
   #include "plugin/orxPluginUser.h"
   #include "memory/orxBank.h"
@@ -145,20 +146,24 @@ extern "C" orxVOID orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != spoScreen));
+  orxASSERT(_pstBitmap != orxNULL);
 
-  /* Gets sprite */
-  poSprite = (sf::Sprite *)_pstBitmap;
-
-  /* Has image? */
-  if((poImage = poSprite->GetImage()) != orxNULL)
+  /* Not screen? */
+  if(_pstBitmap != spoScreen)
   {
-    /* Deletes it */
-    delete poImage;
-  }
+    /* Gets sprite */
+    poSprite = (sf::Sprite *)_pstBitmap;
 
-  /* Deletes sprite */
-  delete poSprite;
+    /* Has image? */
+    if((poImage = poSprite->GetImage()) != orxNULL)
+    {
+      /* Deletes it */
+      delete poImage;
+    }
+
+    /* Deletes sprite */
+    delete poSprite;
+  }
 
   return;
 }
@@ -257,33 +262,49 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
   /* Displays render window */
   sstDisplay.poRenderWindow->Display();
 
-  //! TEMP : Until orx events are ready
+  /* Handles all pending events */
   while(sstDisplay.poRenderWindow->GetEvent(oEvent))
   {
     /* Depending on type */
     switch(oEvent.Type)
     {
+      /* Closing? */
       case sf::Event::Closed:
       {
-        /* Exits */
-        exit(EXIT_SUCCESS);
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Set(&stEvent, 0, sizeof(orxEVENT));
+        stEvent.eType = orxEVENT_TYPE_CLOSE;
+
+        /* Sends system close event */
+        orxEvent_Send(&stEvent);
 
         break;
       }
 
+      /* Key pressed? */
       case sf::Event::KeyPressed:
       {
         /* Depending on key */
         switch(oEvent.Key.Code)
         {
+          /* Escape */
           case sf::Key::Escape:
           {
-            /* Exits */
-            exit(EXIT_SUCCESS);
+            orxEVENT stEvent;
+
+            /* Inits event */
+            orxMemory_Set(&stEvent, 0, sizeof(orxEVENT));
+            stEvent.eType = orxEVENT_TYPE_CLOSE;
+
+            /* Sends system close event */
+            orxEvent_Send(&stEvent);
 
             break;
           }
 
+          /* V */
           case sf::Key::V:
           {
             /* Updates VSync flag */
@@ -300,8 +321,6 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
             break;
           }
         }
-
-        break;
       }
 
       default:
