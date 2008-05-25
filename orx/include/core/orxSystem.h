@@ -27,6 +27,19 @@
 typedef orxU32                      orxDATE;
 
 
+/** Event enum
+ */
+typedef enum __orxSYSTEM_EVENT_t
+{
+  orxSYSTEM_EVENT_CLOSE = 0,
+
+  orxSYSTEM_EVENT_NUMBER,
+
+  orxSYSTEM_EVENT_NONE = orxENUM_NONE
+
+} orxSYSTEM_EVENT;
+
+
 /***************************************************************************
  * Functions directly implemented by orx core
  ***************************************************************************/

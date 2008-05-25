@@ -26,29 +26,42 @@
 
 #include "orx.h"
 
+orxSTATIC orxU32 su32BallCounter = 1;
+
+/** Bounce event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+orxSTATIC orxFASTCALL orxSTATUS orxBounce_EventHandler(orxCONST orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
+
+  /* Going out of world? */
+  if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
+  {
+    /* Deletes it */
+    orxObject_Delete(orxSTRUCTURE_GET_POINTER(_pstEvent->hSender, OBJECT));
+
+    /* Updates ball counter */
+    su32BallCounter--;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Update callback
  */
 orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
-  orxSTATIC orxU32 su32Counter = 0;
-
   /* Selects config section */
   orxConfig_SelectSection("Bounce");
 
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT))
-  {
-    orxVECTOR v;
-    orxSTATIC orxFLOAT sfAngle = orxFLOAT_0;
-
-    sfAngle += 0.02f;
-
-    orxVector_Set(&v, 10.0f * orxMath_Cos(sfAngle), 10.0f * orxMath_Sin(sfAngle), 0.0f);
-
-    orxPhysics_SetGravity(&v);
-  }
-
   /* Clicking? */
-  if((su32Counter < orxConfig_GetFloat("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
+  if((su32BallCounter < orxConfig_GetFloat("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
   {
     orxS32      s32MouseX, s32MouseY;
     orxVECTOR   vScreenPos, vWorldPos;
@@ -68,7 +81,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
         orxObject_SetPosition(pstObject, &vWorldPos);
 
         /* Update counter */
-        su32Counter++;
+        su32BallCounter++;
     }
   }
 }
@@ -102,6 +115,9 @@ orxSTATIC orxSTATUS orxBounce_Init()
 
   /* Registers callback */
   eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN);
+
+  /* Registers event handler */
+  eResult = eResult && orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler); 
 
   /* Done! */
   return eResult;

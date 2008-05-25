@@ -34,8 +34,6 @@ typedef enum __orxEVENT_TYPE_t
   orxEVENT_TYPE_RENDER,
   orxEVENT_TYPE_PHYSICS,
 
-  orxEVENT_TYPE_CLOSE,
-
   orxEVENT_TYPE_CORE_NUMBER,
 
   orxEVENT_TYPE_USER_DEFINED = orxEVENT_TYPE_CORE_NUMBER,
@@ -51,9 +49,10 @@ typedef enum __orxEVENT_TYPE_t
 typedef struct __orxEVENT_t
 {
   orxEVENT_TYPE     eType;                            /**< Event type : 4 */
-  orxHANDLE         hSender;                          /**< Sender handle : 8 */
-  orxHANDLE         hRecipient;                       /**< Recipient handle : 12 */
-  orxVOID          *pstPayload;                       /**> Event payload : 16 */
+  orxENUM           eID;                              /**< Event ID : 8 */
+  orxHANDLE         hSender;                          /**< Sender handle : 12 */
+  orxHANDLE         hRecipient;                       /**< Recipient handle : 16 */
+  orxVOID          *pstPayload;                       /**> Event payload : 20 */
 
 } orxEVENT;
 

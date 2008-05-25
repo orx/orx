@@ -59,6 +59,7 @@
   typedef orxCHAR *             orxSTRING;
 
   typedef orxU32                orxRGBA;
+  typedef orxU32                orxENUM;
 
   #define orx2F(V)              (orxFLOAT)(V)
 
@@ -113,6 +114,7 @@
     typedef orxCHAR *						orxSTRING;
 
     typedef orxU32              orxRGBA;
+    typedef orxU32              orxENUM;
 
     #define orx2F(V)            (orxFLOAT)(V)
 

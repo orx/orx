@@ -29,6 +29,7 @@ extern "C"
 
   #include "core/orxConfig.h"
   #include "core/orxEvent.h"
+  #include "core/orxSystem.h" 
   #include "math/orxMath.h"
   #include "plugin/orxPluginUser.h"
   #include "memory/orxBank.h"
@@ -275,7 +276,8 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
 
         /* Inits event */
         orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType = orxEVENT_TYPE_CLOSE;
+        stEvent.eType = orxEVENT_TYPE_SYSTEM;
+        stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
 
         /* Sends system close event */
         orxEvent_Send(&stEvent);
@@ -296,7 +298,8 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
 
             /* Inits event */
             orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-            stEvent.eType = orxEVENT_TYPE_CLOSE;
+            stEvent.eType = orxEVENT_TYPE_SYSTEM;
+            stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
 
             /* Sends system close event */
             orxEvent_Send(&stEvent);

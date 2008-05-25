@@ -63,16 +63,21 @@ orxSTATIC orxMAIN_STATIC sstMain;
  ***************************************************************************/
 
 /** Main event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
  */
 orxSTATIC orxSTATUS orxFASTCALL orxMain_EventHandler(orxCONST orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Depending on event */
-  switch(_pstEvent->eType)
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
   {
     /* Close event */
-    case orxEVENT_TYPE_CLOSE:
+    case orxSYSTEM_EVENT_CLOSE:
     {
       /* Updates status */
       sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_EXIT;
@@ -142,8 +147,8 @@ orxSTATUS orxMain_Init()
     /* Successful? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Registers close event handler */
-      eResult = orxEvent_AddHandler(orxEVENT_TYPE_CLOSE, orxMain_EventHandler);
+      /* Registers system event handler */
+      eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
     }
   }
   else

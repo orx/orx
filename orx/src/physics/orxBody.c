@@ -19,9 +19,9 @@
 
 #include "physics/orxBody.h"
 #include "physics/orxPhysics.h"
+#include "core/orxConfig.h"
 #include "object/orxObject.h"
 #include "object/orxFrame.h"
-#include "core/orxConfig.h"
 #include "utils/orxString.h"
 
 #include "debug/orxDebug.h"
@@ -184,8 +184,6 @@ orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxC
       orxVECTOR vPosition;
       orxFLOAT  fZBackup, fRotation;
 
-      //! TEMP : Will send a position update event when orxEvent module will be tested
-
       /* Gets current position */
       orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
 
@@ -203,8 +201,6 @@ orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxC
       orxFrame_SetPosition(pstFrame, &vPosition);
       orxFrame_SetRotation(pstFrame, fRotation);
     }
-
-    //! TODO : Process & forwards events sent by physics sensor zones
   }
 
   /* Done! */
@@ -351,7 +347,7 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST o
     }
 
     /* Creates physics body */
-    pstBody->pstData = orxPhysics_CreateBody(pstBody, pstSelectedDef);
+    pstBody->pstData = orxPhysics_CreateBody(_pstOwner, pstSelectedDef);
 
     /* Valid? */
     if(pstBody->pstData != orxNULL)

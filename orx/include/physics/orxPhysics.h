@@ -98,6 +98,28 @@ typedef struct __orxBODY_PART_DEF_t
 
 } orxBODY_PART_DEF;
 
+/** Event enum
+ */
+typedef enum __orxPHYSICS_EVENT_t
+{
+  orxPHYSICS_EVENT_CONTACT_NEW = 0,
+  orxPHYSICS_EVENT_CONTACT_PERSIST,
+  orxPHYSICS_EVENT_CONTACT_REMOVE,
+  orxPHYSICS_EVENT_OUT_OF_WORLD,
+
+  orxPHYSICS_EVENT_NONE = orxENUM_NONE
+
+} orxPHYSICS_EVENT;
+
+/** Contact event payload
+ */
+typedef struct __orxPHYSICS_CONTACT_EVENT_PAYLOAD_t
+{
+  orxVECTOR vPosition;                      /**< Contact position: 12 */
+  orxVECTOR vNormal;                        /**< Contact normal: 24 */
+  orxFLOAT  fPenetration;                   /**< Penetration: 28 */
+
+} orxPHYSICS_CONTACT_EVENT_PAYLOAD;
 
 /** Internal physics body structure
  */

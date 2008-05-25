@@ -29,6 +29,8 @@ extern "C"
 
   #include "core/orxConfig.h"
   #include "core/orxClock.h"
+  #include "core/orxEvent.h"
+  #include "memory/orxBank.h"
   #include "plugin/orxPluginUser.h"
 
   #include "physics/orxPhysics.h"
@@ -63,28 +65,32 @@ orxSTATIC orxCONST orxU32   su32MessageBankSize     = 64;
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Event storage
+ */
+typedef struct __orxPHYSICS_EVENT_STORAGE_t
+{
+  orxPHYSICS_CONTACT_EVENT_PAYLOAD  stPayload;      /**< Event payload */
+  orxPHYSICS_EVENT                  eID;            /**< Event ID */
+  b2Body                           *poSource;       /**< Event source */
+  b2Body                           *poDestination;  /**< Event destination */
+
+} orxPHYSICS_EVENT_STORAGE;
+
 /** Contact listener
  */
 class orxPhysicsContactListener : public b2ContactListener
 {
 public:
-
-  void Remove(const b2ContactPoint *_poPoint)
-  {
-  }
-
-  void Result(const b2ContactResult *_poPoint)
-  {
-  }
+  void Remove(const b2ContactPoint *_poPoint);
+  void Result(const b2ContactResult *_poPoint);
 };
 
 /** Boundary listener
  */
 class orxPhysicsBoundaryListener : public b2BoundaryListener
 {
-  void Violation(b2Body *_poBody)
-  {
-  }
+public:
+  void Violation(b2Body *_poBody);
 };
 
 /** Static structure
@@ -96,6 +102,7 @@ typedef struct __orxPHYSICS_STATIC_t
   orxFLOAT                    fDimensionRatio;    /**< Dimension ratio */
   orxFLOAT                    fInvDimensionRatio; /**< Inverse dimension ratio */
   orxCLOCK                   *pstClock;           /**< Simulation clock */
+  orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
   orxPhysicsContactListener  *poContactListener;  /**< Contact listener */
   orxPhysicsBoundaryListener *poBoundaryListener; /**< Boundary listener */
@@ -116,18 +123,87 @@ orxSTATIC orxPHYSICS_STATIC sstPhysics;
  * Private functions                                                       *
  ***************************************************************************/
 
+void orxPhysicsContactListener::Remove(const b2ContactPoint *_poPoint)
+{
+
+  return;
+}
+
+void orxPhysicsContactListener::Result(const b2ContactResult *_poPoint)
+{
+
+  return;
+}
+
+void orxPhysicsBoundaryListener::Violation(b2Body *_poBody)
+{
+  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+
+  /* Adds an out of world event */
+  pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
+
+  /* Valid? */
+  if(pstEventStorage != orxNULL)
+  {
+    /* Inits it */
+    pstEventStorage->eID      = orxPHYSICS_EVENT_OUT_OF_WORLD;
+    pstEventStorage->poSource = _poBody;
+  }
+
+  return;
+}
+
+
 /** Update (callback to register on a clock)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pstContext     Context sent when registering callback to the clock
  */
 orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
+  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+  orxEVENT                  stEvent;
+
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Updates world simulation */
   sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pstContext);
+
+  /* Clears and inits event */
+  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+  stEvent.eType = orxEVENT_TYPE_PHYSICS;
+
+  /* For all stored events */
+  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL);
+      pstEventStorage != orxNULL;
+      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, pstEventStorage))
+  {
+    /* Depending on type */
+    switch(pstEventStorage->eID)
+    {
+      case orxPHYSICS_EVENT_OUT_OF_WORLD:
+      {
+        /* Inits event */
+        stEvent.eID         = orxPHYSICS_EVENT_OUT_OF_WORLD;
+        stEvent.hRecipient  = stEvent.hSender = (orxHANDLE)pstEventStorage->poSource->GetUserData();
+        stEvent.pstPayload  = orxNULL;
+
+        /* Sends it */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
+      default:
+      {
+        break;
+      }
+    }
+  }
+
+  /* Clears stored events */
+  orxBank_Clear(sstPhysics.pstEventBank);
 
   return;
 }
@@ -695,6 +771,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
+          /* Creates contact bank */
+          sstPhysics.pstEventBank = orxBank_Create(su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
           /* Updates status */
           sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY;
         }
