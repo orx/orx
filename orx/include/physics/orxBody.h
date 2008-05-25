@@ -37,11 +37,6 @@
 #include "physics/orxPhysics.h"
 
 
-/** Misc defines
- */
-#define orxBODY_KU32_PART_MAX_NUMBER          8
-
-
 /** Internal Body structure
  */
 typedef struct __orxBODY_t                    orxBODY;
@@ -84,6 +79,12 @@ extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_CreateFromConfig(orxCONST 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
 
+/** Gets a body owner
+ * @param[in]   _pstBody        Concerned body
+ * @return      orxSTRUCTURE / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetOwner(orxCONST orxBODY *_pstBody);
+
 /** Adds a part to body
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
@@ -103,9 +104,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPartFromConfig(orxBODY 
 /** Gets a body part
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Body part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
- * @return      orxBODY_PART handle / orxHANDLE_UNDEFINED
+ * @return      orxPHYSICS_BODY_PART / orxNULL
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL        orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxPHYSICS_BODY_PART * orxFASTCALL orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
 
 /** Removes a body part
  * @param[in]   _pstBody        Concerned body

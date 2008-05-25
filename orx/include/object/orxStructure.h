@@ -228,7 +228,7 @@ orxSTATIC orxINLINE orxSTRUCTURE_ID                     orxStructure_GetID(orxCO
   orxSTRUCTURE_ASSERT(_phStructure);
 
   /* Returns it */
-  return(((orxSTRUCTURE *)_phStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER);
+  return((orxSTRUCTURE_ID)(((orxSTRUCTURE *)_phStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER));
 }
 
 /** Structure flags test accessor

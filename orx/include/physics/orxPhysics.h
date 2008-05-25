@@ -102,7 +102,7 @@ typedef struct __orxBODY_PART_DEF_t
  */
 typedef enum __orxPHYSICS_EVENT_t
 {
-  orxPHYSICS_EVENT_CONTACT_NEW = 0,
+  orxPHYSICS_EVENT_CONTACT_ADD = 0,
   orxPHYSICS_EVENT_CONTACT_PERSIST,
   orxPHYSICS_EVENT_CONTACT_REMOVE,
   orxPHYSICS_EVENT_OUT_OF_WORLD,
@@ -115,9 +115,11 @@ typedef enum __orxPHYSICS_EVENT_t
  */
 typedef struct __orxPHYSICS_CONTACT_EVENT_PAYLOAD_t
 {
-  orxVECTOR vPosition;                      /**< Contact position: 12 */
-  orxVECTOR vNormal;                        /**< Contact normal: 24 */
-  orxFLOAT  fPenetration;                   /**< Penetration: 28 */
+  orxVECTOR vPosition;                    /**< Contact position: 12 */
+  orxVECTOR vNormal;                      /**< Contact normal: 24 */
+  orxFLOAT  fPenetration;                 /**< Penetration: 28 */
+  orxU32    u32SourcePartIndex;           /**< Source shape index: 32 */
+  orxU32    u32DestinationPartIndex;      /**< Destination shape index: 36 */
 
 } orxPHYSICS_CONTACT_EVENT_PAYLOAD;
 
@@ -130,6 +132,8 @@ typedef struct __orxPHYSICS_BODY_t        orxPHYSICS_BODY;
 typedef struct __orxPHYSICS_BODY_PART_t   orxPHYSICS_BODY_PART;
 
 
+/** Config defines
+ */
 #define orxPHYSICS_KZ_CONFIG_SECTION      "Physics"
 #define orxPHYSICS_KZ_CONFIG_GRAVITY      "Gravity"
 #define orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP  "AllowSleep"
@@ -138,6 +142,12 @@ typedef struct __orxPHYSICS_BODY_PART_t   orxPHYSICS_BODY_PART;
 #define orxPHYSICS_KZ_CONFIG_ITERATIONS   "IterationsPerStep"
 #define orxPHYSICS_KZ_CONFIG_FREQUENCY    "SimulationFrequency"
 #define orxPHYSICS_KZ_CONFIG_RATIO        "DimensionRatio"
+
+/** Misc defines
+ */
+#define orxPHYSICS_KU32_PART_MAX_NUMBER   8
+
+
 
 
 /***************************************************************************

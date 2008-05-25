@@ -34,6 +34,7 @@ extern "C"
   #include "plugin/orxPluginUser.h"
 
   #include "physics/orxPhysics.h"
+  #include "physics/orxBody.h"
 }
 
 #include <Box2D/Box2D.h>
@@ -69,10 +70,13 @@ orxSTATIC orxCONST orxU32   su32MessageBankSize     = 64;
  */
 typedef struct __orxPHYSICS_EVENT_STORAGE_t
 {
-  orxPHYSICS_CONTACT_EVENT_PAYLOAD  stPayload;      /**< Event payload */
-  orxPHYSICS_EVENT                  eID;            /**< Event ID */
-  b2Body                           *poSource;       /**< Event source */
-  b2Body                           *poDestination;  /**< Event destination */
+  orxPHYSICS_CONTACT_EVENT_PAYLOAD  stPayload;        /**< Event payload */
+  orxPHYSICS_EVENT                  eID;              /**< Event ID */
+  b2Body                           *poSource;         /**< Event source */
+  b2Body                           *poDestination;    /**< Event destination */
+  orxU32                            u32SrcShapeIndex; /**< Source shape index */
+  orxU32                            u32DstShapeIndex; /**< Destination shape index */
+  orxU32                            u32Key;           /**< Event key */
 
 } orxPHYSICS_EVENT_STORAGE;
 
@@ -82,7 +86,8 @@ class orxPhysicsContactListener : public b2ContactListener
 {
 public:
   void Remove(const b2ContactPoint *_poPoint);
-  void Result(const b2ContactResult *_poPoint);
+  void Add(const b2ContactPoint *_poPoint);
+  void Persist(const b2ContactPoint *_poPoint);
 };
 
 /** Boundary listener
@@ -123,14 +128,124 @@ orxSTATIC orxPHYSICS_STATIC sstPhysics;
  * Private functions                                                       *
  ***************************************************************************/
 
-void orxPhysicsContactListener::Remove(const b2ContactPoint *_poPoint)
+orxU32 orxPhysics_Box2D_GetShapeIndex(orxCONST b2Body *_poBody, orxCONST b2Shape *_poShape)
 {
+  orxBODY  *pstBody;
+  orxU32    u32Result = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(_poBody != orxNULL);
+  orxASSERT(_poShape != orxNULL);
+
+  /* Gets corresponding body */
+  pstBody = orxSTRUCTURE_GET_POINTER(const_cast<b2Body *>(_poBody)->GetUserData(), BODY);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    orxPHYSICS_BODY_PART *pstBodyPart;
+    orxU32                i;
+
+    /* For all parts */
+    for(i = 0; i < orxPHYSICS_KU32_PART_MAX_NUMBER; i++)
+    {
+      /* Gets part */
+      pstBodyPart = orxBody_GetPart(pstBody, i);
+
+      /* Valid? */
+      if(pstBodyPart != orxNULL)
+      {
+        /* Found? */
+        if((orxHANDLE)pstBodyPart == (orxHANDLE)_poShape)
+        {
+          /* Updates result */
+          u32Result = i;
+
+          break;
+        }
+      }
+      else
+      {
+        /* Stops */
+        break;
+      }
+    }
+  }
+  
+  /* Done! */
+  return u32Result;
+}
+
+void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSICS_EVENT _eEventID)
+{
+  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+  orxBOOL                   bSendEvent = orxTRUE;
+
+  /* For all pending events */
+  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL);
+      pstEventStorage != orxNULL;
+      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, pstEventStorage))
+  {
+    /* Same key? */
+    if(pstEventStorage->u32Key == _poPoint->id.key)
+    {
+      /* Removes it */
+      orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+
+      /* Don't send event */
+      bSendEvent = orxFALSE;
+
+      break;
+    }
+  }
+
+  /* Should send the event? */
+  if(bSendEvent != orxFALSE)
+  {
+    orxPHYSICS_EVENT_STORAGE *pstEventStorage;
+
+    /* Adds an out of world event */
+    pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
+
+    /* Valid? */
+    if(pstEventStorage != orxNULL)
+    {
+      /* Inits it */
+      pstEventStorage->eID                                = _eEventID;
+      pstEventStorage->u32Key                             = _poPoint->id.key;
+      pstEventStorage->poSource                           = _poPoint->shape1->GetBody();
+      pstEventStorage->poDestination                      = _poPoint->shape2->GetBody();
+      pstEventStorage->stPayload.fPenetration             = -_poPoint->separation;
+      pstEventStorage->stPayload.u32SourcePartIndex       = orxPhysics_Box2D_GetShapeIndex(pstEventStorage->poSource, _poPoint->shape1); 
+      pstEventStorage->stPayload.u32DestinationPartIndex  = orxPhysics_Box2D_GetShapeIndex(pstEventStorage->poDestination, _poPoint->shape2);
+      orxVector_Set(&(pstEventStorage->stPayload.vPosition), _poPoint->position.x, _poPoint->position.y, orxFLOAT_0);
+      orxVector_Set(&(pstEventStorage->stPayload.vNormal), _poPoint->normal.x, _poPoint->normal.y, orxFLOAT_0);
+    }
+  }
 
   return;
 }
 
-void orxPhysicsContactListener::Result(const b2ContactResult *_poPoint)
+void orxPhysicsContactListener::Add(const b2ContactPoint *_poPoint)
 {
+  /* Sends contact event */
+  orxPhysics_Box2D_SendContactEvent(_poPoint, orxPHYSICS_EVENT_CONTACT_ADD);
+
+  return;
+}
+
+void orxPhysicsContactListener::Remove(const b2ContactPoint *_poPoint)
+{
+  /* Sends contact event */
+  orxPhysics_Box2D_SendContactEvent(_poPoint, orxPHYSICS_EVENT_CONTACT_REMOVE);
+
+  return;
+}
+
+void orxPhysicsContactListener::Persist(const b2ContactPoint *_poPoint)
+{
+  /* Sends contact event */
+  orxPhysics_Box2D_SendContactEvent(_poPoint, orxPHYSICS_EVENT_CONTACT_PERSIST);
 
   return;
 }
@@ -188,6 +303,22 @@ orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
         stEvent.eID         = orxPHYSICS_EVENT_OUT_OF_WORLD;
         stEvent.hRecipient  = stEvent.hSender = (orxHANDLE)pstEventStorage->poSource->GetUserData();
         stEvent.pstPayload  = orxNULL;
+
+        /* Sends it */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
+      case orxPHYSICS_EVENT_CONTACT_ADD:
+      case orxPHYSICS_EVENT_CONTACT_PERSIST:
+      case orxPHYSICS_EVENT_CONTACT_REMOVE:
+      {
+        /* Inits event */
+        stEvent.eID         = pstEventStorage->eID;
+        stEvent.hSender     = (orxHANDLE)pstEventStorage->poSource->GetUserData();
+        stEvent.hRecipient  = (orxHANDLE)pstEventStorage->poDestination->GetUserData();
+        stEvent.pstPayload  = &(pstEventStorage->stPayload);
 
         /* Sends it */
         orxEvent_Send(&stEvent);
