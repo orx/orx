@@ -1,14 +1,14 @@
 /**
  * @file orxScroll.c
- * 
+ *
  * Scrolling demo
- * 
+ *
  */
 
  /***************************************************************************
  orxScroll.c
  Scrolling demo
- 
+
  begin                : 22/10/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -83,6 +83,9 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
 
   /* Gets camera position */
   orxCamera_GetPosition(spstCamera, &vPos);
+
+  /* Selects main section */
+  orxConfig_SelectSection("Scroll");
 
   /* Updates position vector */
   vPos.fX += orxConfig_GetFloat("ScrollingSpeed") * _pstClockInfo->fDT;

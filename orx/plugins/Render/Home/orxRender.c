@@ -96,7 +96,7 @@ orxSTATIC orxRENDER_STATIC sstRender;
  ***************************************************************************/
 
 /** Renders a viewport
- * @param[in]   _pstObject        Obbject to render
+ * @param[in]   _pstObject        Object to render
  * @param[in]   _pstRenderBitmap  Bitmap surface where to render
  * @param[in]   _pstFrame         Rendering frame
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
