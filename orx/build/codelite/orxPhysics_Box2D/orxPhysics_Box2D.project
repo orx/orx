@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="orxPhysics_Box2D">
+  <Description/>
+  <VirtualDirectory Name="src">
+    <File Name="..\..\..\plugins\Physics\Box2D\orxPhysics.cpp"/>
+  </VirtualDirectory>
+  <Settings Type="Dynamic Library">
+    <Configuration Name="Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -lbox2d">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orxd"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -lbox2d -s">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orx"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -lbox2d ../../../lib/static/orxd.a"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -lbox2d ../../../lib/static/orx.a -s"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies>
+    <Project Name="orx"/>
+    <Project Name="orxLIB"/>
+  </Dependencies>
+</CodeLite_Project>

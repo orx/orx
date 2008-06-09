@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="orxLIB">
+  <Description/>
+  <VirtualDirectory Name="src">
+    <VirtualDirectory Name="anim">
+      <File Name="..\..\..\src\anim\orxAnim.c"/>
+      <File Name="..\..\..\src\anim\orxAnimPointer.c"/>
+      <File Name="..\..\..\src\anim\orxAnimSet.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="base">
+      <File Name="..\..\..\src\base\orxModule.c"/>
+      <File Name="..\..\..\src\base\orxType.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="core">
+      <File Name="..\..\..\src\core\orxClock.c"/>
+      <File Name="..\..\..\src\core\orxConfig.c"/>
+      <File Name="..\..\..\src\core\orxEvent.c"/>
+      <File Name="..\..\..\src\core\orxSystem.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="debug">
+      <File Name="..\..\..\src\debug\orxDebug.c"/>
+      <File Name="..\..\..\src\debug\orxFPS.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="display">
+      <File Name="..\..\..\src\display\orxDisplay.c"/>
+      <File Name="..\..\..\src\display\orxGraphic.c"/>
+      <File Name="..\..\..\src\display\orxTexture.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="io">
+      <File Name="..\..\..\src\io\orxFile.c"/>
+      <File Name="..\..\..\src\io\orxFileSystem.c"/>
+      <File Name="..\..\..\src\io\orxJoystick.c"/>
+      <File Name="..\..\..\src\io\orxKeyboard.c"/>
+      <File Name="..\..\..\src\io\orxMouse.c"/>
+      <File Name="..\..\..\src\io\orxPackage.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="main">
+      <File Name="..\..\..\src\main\orxMain.c"/>
+      <File Name="..\..\..\src\main\orxParam.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="math">
+      <File Name="..\..\..\src\math\orxVector.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="memory">
+      <File Name="..\..\..\src\memory\orxBank.c"/>
+      <File Name="..\..\..\src\memory\orxMemory.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="object">
+      <File Name="..\..\..\src\object\orxFrame.c"/>
+      <File Name="..\..\..\src\object\orxObject.c"/>
+      <File Name="..\..\..\src\object\orxStructure.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="physics">
+      <File Name="..\..\..\src\physics\orxBody.c"/>
+      <File Name="..\..\..\src\physics\orxPhysics.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="plugin">
+      <File Name="..\..\..\src\plugin\orxPlugin.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="render">
+      <File Name="..\..\..\src\render\orxCamera.c"/>
+      <File Name="..\..\..\src\render\orxRender.c"/>
+      <File Name="..\..\..\src\render\orxViewport.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="script">
+      <File Name="..\..\..\src\script\orxScript.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="sound">
+      <File Name="..\..\..\src\sound\orxSound.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="utils">
+      <File Name="..\..\..\src\utils\orxFSM.c"/>
+      <File Name="..\..\..\src\utils\orxHashTable.c"/>
+      <File Name="..\..\..\src\utils\orxLinkList.c"/>
+      <File Name="..\..\..\src\utils\orxScreenshot.c"/>
+      <File Name="..\..\..\src\utils\orxString.c"/>
+      <File Name="..\..\..\src\utils\orxTree.c"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="..\..\..\include\orx.h"/>
+    <File Name="..\..\..\include\orxInclude.h"/>
+    <File Name="..\..\..\include\orxKernel.h"/>
+    <File Name="..\..\..\include\orxUtils.h"/>
+    <VirtualDirectory Name="anim">
+      <File Name="..\..\..\include\anim\orxAnim.h"/>
+      <File Name="..\..\..\include\anim\orxAnimPointer.h"/>
+      <File Name="..\..\..\include\anim\orxAnimSet.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="base">
+      <File Name="..\..\..\include\base\orxDecl.h"/>
+      <File Name="..\..\..\include\base\orxModule.h"/>
+      <File Name="..\..\..\include\base\orxType.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="core">
+      <File Name="..\..\..\include\core\orxClock.h"/>
+      <File Name="..\..\..\include\core\orxConfig.h"/>
+      <File Name="..\..\..\include\core\orxEvent.h"/>
+      <File Name="..\..\..\include\core\orxSystem.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="debug">
+      <File Name="..\..\..\include\debug\orxDebug.h"/>
+      <File Name="..\..\..\include\debug\orxFPS.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="display">
+      <File Name="..\..\..\include\display\orxDisplay.h"/>
+      <File Name="..\..\..\include\display\orxGraphic.h"/>
+      <File Name="..\..\..\include\display\orxTexture.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="io">
+      <File Name="..\..\..\include\io\orxFile.h"/>
+      <File Name="..\..\..\include\io\orxFileSystem.h"/>
+      <File Name="..\..\..\include\io\orxJoystick.h"/>
+      <File Name="..\..\..\include\io\orxKeyboard.h"/>
+      <File Name="..\..\..\include\io\orxMouse.h"/>
+      <File Name="..\..\..\include\io\orxPackage.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="main">
+      <File Name="..\..\..\include\main\orxParam.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="math">
+      <File Name="..\..\..\include\math\orxMath.h"/>
+      <File Name="..\..\..\include\math\orxVector.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="memory">
+      <File Name="..\..\..\include\memory\orxBank.h"/>
+      <File Name="..\..\..\include\memory\orxMemory.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="msg">
+      <File Name="..\..\..\include\msg\msg_file.h"/>
+      <File Name="..\..\..\include\msg\msg_fps.h"/>
+      <File Name="..\..\..\include\msg\msg_game.h"/>
+      <File Name="..\..\..\include\msg\msg_graph.h"/>
+      <File Name="..\..\..\include\msg\msg_plugin.h"/>
+      <File Name="..\..\..\include\msg\msg_screenshot.h"/>
+      <File Name="..\..\..\include\msg\msg_timer.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="object">
+      <File Name="..\..\..\include\object\orxFrame.h"/>
+      <File Name="..\..\..\include\object\orxObject.h"/>
+      <File Name="..\..\..\include\object\orxStructure.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="physics">
+      <File Name="..\..\..\include\physics\orxBody.h"/>
+      <File Name="..\..\..\include\physics\orxPhysics.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="plugin">
+      <File Name="..\..\..\include\plugin\orxPlugin.h"/>
+      <File Name="..\..\..\include\plugin\orxPluginCore.h"/>
+      <File Name="..\..\..\include\plugin\orxPluginType.h"/>
+      <File Name="..\..\..\include\plugin\orxPluginUser.h"/>
+      <VirtualDirectory Name="define">
+        <File Name="..\..\..\include\plugin\define\orxPlugin_CoreDefine.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_CoreID.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Display.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_File.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_FileSystem.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Joystick.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Keyboard.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Mouse.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Package.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Physics.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Render.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Script.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_Sound.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_System.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="render">
+      <File Name="..\..\..\include\render\orxCamera.h"/>
+      <File Name="..\..\..\include\render\orxRender.h"/>
+      <File Name="..\..\..\include\render\orxViewport.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="script">
+      <File Name="..\..\..\include\script\orxScript.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="sound">
+      <File Name="..\..\..\include\sound\orxSound.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="utils">
+      <File Name="..\..\..\include\utils\orxFSM.h"/>
+      <File Name="..\..\..\include\utils\orxHashTable.h"/>
+      <File Name="..\..\..\include\utils\orxLinkList.h"/>
+      <File Name="..\..\..\include\utils\orxScreenshot.h"/>
+      <File Name="..\..\..\include\utils\orxString.h"/>
+      <File Name="..\..\..\include\utils\orxTree.h"/>
+      <File Name="..\..\..\include\utils\pathfinder.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <Configuration Name="Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../lib/dynamic/orxd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDLLEXPORT__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-Wl,--out-implib=..\..\..\lib\dynamic\liborxd.a ../../../lib/dynamic/orxd.dll"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger">
+      <General OutputFile="" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDLLEXPORT__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../lib/static/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options=""/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../lib/static/liborx.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies/>
+</CodeLite_Project>
