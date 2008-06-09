@@ -32,7 +32,7 @@
   </template>
 
   <!-- ******************** SDL LINK ********************** -->
-  
+
   <!-- On windows, sdl-config is not available, so we have to specify the option manually -->
   <set var="orxSDLLIB_MINGW">
     <if cond="FORMAT=='mingw'">SDL</if>
@@ -57,7 +57,7 @@
     <sys-lib>$(orxSDLLIB_MINGW)</sys-lib>
     <ldflags>$(orxSDLLIB_MSVC)</ldflags>
   </template>
-  
+
 	<!-- ******************** SGE LINK ********************** -->
 
 	<set var="orxSGELIB">
@@ -129,7 +129,7 @@
 	    <destination>core/display</destination>
 	    <sources>plugins/Display/SFML/orxDisplay.cpp</sources>
 	  </orx-plugin>
-	  
+
 	<!-- RENDER -->
 
 	<!-- Depends on nothing -->
@@ -209,22 +209,24 @@
 	<!-- Depends on SFML -->
   	<orx-plugin id="orxSystem_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
       <dllname>orxSystem_SFML$(orxSUFFIX)</dllname>
-  		<destination>core/system</destination>
-  		<sources>plugins/System/SFML/orxSystem.cpp</sources>
+      <destination>core/system</destination>
+      <sources>plugins/System/SFML/orxSystem.cpp</sources>
   	</orx-plugin> -->
 
 	<!-- BOUNCE DEMO -->
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Bounce" cond="USE_PLUGINS=='1'">
-		<destination>demo</destination>
-		<sources>plugins/Demo/orxBounce.c</sources>
+    <dllname>orxBounce$(orxSUFFIX)</dllname>
+    <destination>demo</destination>
+    <sources>plugins/Demo/orxBounce.c</sources>
 	</orx-plugin>
 
 	<!-- SCROLL DEMO -->
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Scroll" cond="USE_PLUGINS=='1'">
+    <dllname>orxScroll$(orxSUFFIX)</dllname>
 		<destination>demo</destination>
 		<sources>plugins/Demo/orxScroll.c</sources>
 	</orx-plugin>
@@ -233,6 +235,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Cave" cond="USE_PLUGINS=='1'">
+    <dllname>orxCave$(orxSUFFIX)</dllname>
 		<destination>demo</destination>
 		<sources>plugins/Demo/orxCave.c</sources>
 	</orx-plugin>

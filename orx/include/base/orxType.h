@@ -1,9 +1,9 @@
-/** 
+/**
  * \file orxType.h
- * 
+ *
  * Base types.
  * Defines all base types.
- * 
+ *
  * \todo
  * Add the required types at need.
  */
@@ -12,7 +12,7 @@
 /***************************************************************************
  orxType.h
  Base types
- 
+
  begin                : 12/04/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -40,9 +40,9 @@
 #ifdef __orxWINDOWS__
 
   typedef void                  orxVOID;
-  
+
   typedef orxVOID *             orxHANDLE;
-  
+
   typedef unsigned  long        orxU32;
   typedef unsigned  short       orxU16;
   typedef unsigned  char        orxU8;
@@ -84,8 +84,8 @@
     typedef signed    __int64     orxS64;
 
   #endif /* __orxMSVC__ */
-    
-  
+
+
 
 #else /* __orxWINDOWS__ */
 
@@ -93,9 +93,9 @@
   #if defined(__orxLINUX__) || defined(__orxMAC__)
 
     typedef void                orxVOID;
-  
+
     typedef orxVOID *						orxHANDLE;
-  
+
     typedef unsigned  long long orxU64;
     typedef unsigned  long      orxU32;
     typedef unsigned  short     orxU16;
@@ -121,74 +121,47 @@
     #define orxENUM_NONE        0xFFFFFFFFL
 
   #endif /* __orxLINUX__ || __orxMAC__ */
-  
-#endif /* __orxWINDOWS__ */  
 
+#endif /* __orxWINDOWS__ */
 
-/* *** Boolean Defines *** */
-orxSTATIC orxCONST  orxBOOL     orxFALSE            = (orxBOOL)(1 != 1);
-orxSTATIC orxCONST  orxBOOL     orxTRUE             = (orxBOOL)(1 == 1);
+/* *** Misc constants *** */
 
-/* *** Undefined defines *** */
-orxSTATIC orxCONST  orxU64      orxU64_UNDEFINED    = (orxU64)(-1);
-orxSTATIC orxCONST  orxU32      orxU32_UNDEFINED    = (orxU32)(-1);
-orxSTATIC orxCONST  orxU16      orxU16_UNDEFINED    = (orxU16)(-1);
-orxSTATIC orxCONST  orxU8       orxU8_UNDEFINED     = (orxU8)(-1);
-orxSTATIC orxCONST  orxHANDLE   orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
+/* *** Boolean constants *** */
+extern orxDLLAPI orxCONST orxBOOL     orxFALSE;
+extern orxDLLAPI orxCONST orxBOOL     orxTRUE;
 
-orxSTATIC orxCONST  orxSTRING   orxSTRING_EMPTY     = "";
-orxSTATIC orxCONST  orxSTRING   orxSTRING_TRUE      = "true";
-orxSTATIC orxCONST  orxSTRING   orxSTRING_FALSE     = "false";
-orxSTATIC orxCONST  orxCHAR     orxCHAR_NULL        = '\0';
-orxSTATIC orxCONST  orxCHAR     orxCHAR_CR          = '\r';
-orxSTATIC orxCONST  orxCHAR     orxCHAR_LF          = '\n';
+/* *** Undefined constants *** */
+extern orxDLLAPI orxCONST orxU64      orxU64_UNDEFINED;
+extern orxDLLAPI orxCONST orxU32      orxU32_UNDEFINED;
+extern orxDLLAPI orxCONST orxU16      orxU16_UNDEFINED;
+extern orxDLLAPI orxCONST orxU8       orxU8_UNDEFINED;
+extern orxDLLAPI orxCONST orxHANDLE   orxHANDLE_UNDEFINED;
 
-#ifdef __orxWINDOWS__
+extern orxDLLAPI orxCONST orxSTRING   orxSTRING_EMPTY;
+extern orxDLLAPI orxCONST orxSTRING   orxSTRING_TRUE;
+extern orxDLLAPI orxCONST orxSTRING   orxSTRING_FALSE;
+extern orxDLLAPI orxCONST orxCHAR     orxCHAR_NULL;
+extern orxDLLAPI orxCONST orxCHAR     orxCHAR_CR;
+extern orxDLLAPI orxCONST orxCHAR     orxCHAR_LF;
 
-  orxSTATIC orxCONST orxCHAR    orxCHAR_EOL         = '\n';
-  orxSTATIC orxCONST orxSTRING  orxSTRING_EOL       = "\r\n";
-
-#elif defined(__orxLINUX__)
-
-  orxSTATIC orxCONST orxCHAR    orxCHAR_EOL         = '\n';
-  orxSTATIC orxCONST orxSTRING  orxSTRING_EOL       = "\n";
-
-#elif defined(__orxMAC__)
-  
-  orxSTATIC orxCONST orxCHAR    orxCHAR_EOL         = '\r';
-  orxSTATIC orxCONST orxSTRING  orxSTRING_EOL       = "\r";
-
-#endif
+extern orxDLLAPI orxCONST orxCHAR     orxCHAR_EOL;
+extern orxDLLAPI orxCONST orxSTRING   orxSTRING_EOL;
 
 
 /* *** Directory separators *** */
 
-#define orxCHAR_DIRECTORY_SEPARATOR_WINDOWS         '\\'
-#define orxCHAR_DIRECTORY_SEPARATOR_LINUX           '/'
-#define orxSTRING_DIRECTORY_SEPARATOR_WINDOWS       "\\"     
-#define orxSTRING_DIRECTORY_SEPARATOR_LINUX         "/"
+extern orxDLLAPI orxCONST orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_WINDOWS;
+extern orxDLLAPI orxCONST orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+extern orxDLLAPI orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_WINDOWS;
+extern orxDLLAPI orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX;
 
-#ifdef __orxWINDOWS__
-
-  #define orxCHAR_DIRECTORY_SEPARATOR               orxCHAR_DIRECTORY_SEPARATOR_WINDOWS
-  #define orxSTRING_DIRECTORY_SEPARATOR             orxSTRING_DIRECTORY_SEPARATOR_WINDOWS
-
-#else /* __orxWINDOWS__ */
-
-  /* Linux / Mac */
-  #if defined(__orxLINUX__) || defined(__orxMAC__)
-
-    #define orxCHAR_DIRECTORY_SEPARATOR             orxCHAR_DIRECTORY_SEPARATOR_LINUX
-    #define orxSTRING_DIRECTORY_SEPARATOR           orxSTRING_DIRECTORY_SEPARATOR_LINUX
-
-  #endif /* __orxLINUX__ || __orxMAC__ */
-
-#endif /* __orxWINDOWS__ */
+extern orxDLLAPI orxCONST orxCHAR     orxCHAR_DIRECTORY_SEPARATOR;
+extern orxDLLAPI orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR;
 
 
-/* *** Float defines *** */
-#define orxFLOAT_0                                  orx2F(0.0f)
-#define orxFLOAT_1                                  orx2F(1.0f)
+/* *** Float constants *** */
+extern orxDLLAPI orxCONST orxFLOAT orxFLOAT_0;
+extern orxDLLAPI orxCONST orxFLOAT orxFLOAT_1;
 
 
 /* *** Status defines *** */

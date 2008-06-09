@@ -29,7 +29,7 @@ extern "C"
 
   #include "core/orxConfig.h"
   #include "core/orxEvent.h"
-  #include "core/orxSystem.h" 
+  #include "core/orxSystem.h"
   #include "math/orxMath.h"
   #include "plugin/orxPluginUser.h"
   #include "memory/orxBank.h"

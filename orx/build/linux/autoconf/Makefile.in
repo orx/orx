@@ -51,6 +51,7 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxAnimPointer.o \
 	./$(BUILD)/orxDLL_orxAnimSet.o \
 	./$(BUILD)/orxDLL_orxModule.o \
+	./$(BUILD)/orxDLL_orxType.o \
 	./$(BUILD)/orxDLL_orxCamera.o \
 	./$(BUILD)/orxDLL_orxRender.o \
 	./$(BUILD)/orxDLL_orxViewport.o \
@@ -95,6 +96,7 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxAnimPointer.o \
 	./$(BUILD)/orxLIB_orxAnimSet.o \
 	./$(BUILD)/orxLIB_orxModule.o \
+	./$(BUILD)/orxLIB_orxType.o \
 	./$(BUILD)/orxLIB_orxCamera.o \
 	./$(BUILD)/orxLIB_orxRender.o \
 	./$(BUILD)/orxLIB_orxViewport.o \
@@ -132,7 +134,8 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxString.o \
 	./$(BUILD)/orxLIB_orxTree.o
 ORX_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
-	-I$(srcdir)/../../../include -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+	-I$(srcdir)/../../../include $(__orxLINK_IMPORT_DEFINE_p) \
+	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORX_OBJECTS =  \
 	./$(BUILD)/orx_orxMain.o
 ORXDISPLAY_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
@@ -227,6 +230,7 @@ COND_LINK_STATIC_orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive \
 @COND_PLATFORM_MAC_1@__orx___mac_setfilecmd = \
 @COND_PLATFORM_MAC_1@	$(SETFILE) -t APPL \
 @COND_PLATFORM_MAC_1@	$(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_LINK_DYNAMIC@__orxLINK_IMPORT_DEFINE_p = -D__orxDLL__
 @COND_PLATFORM_UNIX_1@orxSDLCFLAGS_UNIX = `sdl-config --cflags`
 @COND_PLATFORM_UNIX_1@orxSDLLIB_UNIX = `sdl-config --libs`
 @COND_PLATFORM_UNIX_1@orxSFMLLIB_UNIX = \
@@ -274,15 +278,15 @@ COND_USE_PLUGINS_1_USE_SFML_1___orxSystem_SFML___depname = \
 @COND_USE_PLUGINS_1_USE_SFML_1@__orxSystem_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___orxSystem_SFML___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_9 = $(__orxNAME_p)
 COND_USE_PLUGINS_1___Bounce___depname = \
-	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxBounce$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Bounce___depname = $(COND_USE_PLUGINS_1___Bounce___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_10 = $(__orxNAME_p)
 COND_USE_PLUGINS_1___Scroll___depname = \
-	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxScroll$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Scroll___depname = $(COND_USE_PLUGINS_1___Scroll___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_11 = $(__orxNAME_p)
 COND_USE_PLUGINS_1___Cave___depname = \
-	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE)
+	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxCave$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Cave___depname = $(COND_USE_PLUGINS_1___Cave___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_12 = $(__orxNAME_p)
 @COND_BUILD_DEBUG@__orxDEBUG_p = -D__orxDEBUG__
@@ -321,9 +325,9 @@ clean:
 	rm -f $(srcdir)/../../../bin/plugins/core/physics/$(DLLPREFIX_MODULE)orxPhysics_Box2D$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SDL$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxBounce$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxScroll$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxCave$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 
 distclean: clean
 	rm -f config.cache config.log config.status bk-deps bk-make-pch shared-ld-sh Makefile
@@ -371,13 +375,13 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 @COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXSYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXSYSTEM_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_9)
 
-@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce.$(SO_SUFFIX_MODULE): $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxBounce$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(BOUNCE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_10)
 
-@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll.$(SO_SUFFIX_MODULE): $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxScroll$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(SCROLL_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_11)
 
-@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave.$(SO_SUFFIX_MODULE): $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)orxCave$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(CAVE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_12)
 
 ./$(BUILD)/orxDLL_orxAnim.o: $(srcdir)/../../../src/anim/orxAnim.c
@@ -391,6 +395,9 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 
 ./$(BUILD)/orxDLL_orxModule.o: $(srcdir)/../../../src/base/orxModule.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/base/orxModule.c
+
+./$(BUILD)/orxDLL_orxType.o: $(srcdir)/../../../src/base/orxType.c
+	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/base/orxType.c
 
 ./$(BUILD)/orxDLL_orxCamera.o: $(srcdir)/../../../src/render/orxCamera.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/render/orxCamera.c
@@ -511,6 +518,9 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 
 ./$(BUILD)/orxLIB_orxModule.o: $(srcdir)/../../../src/base/orxModule.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/base/orxModule.c
+
+./$(BUILD)/orxLIB_orxType.o: $(srcdir)/../../../src/base/orxType.c
+	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/base/orxType.c
 
 ./$(BUILD)/orxLIB_orxCamera.o: $(srcdir)/../../../src/render/orxCamera.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/render/orxCamera.c

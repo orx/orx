@@ -346,6 +346,10 @@
 					RelativePath="..\..\..\..\src\base\orxModule.c"
 					>
 				</File>
+				<File
+					RelativePath="..\..\..\..\src\base\orxType.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="core"

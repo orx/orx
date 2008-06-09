@@ -8,7 +8,7 @@
 		<Option extended_obj_names="1" />
 		<Build>
 			<Target title="Static Debug">
-				<Option output="..\..\..\bin\plugins\demo\Bounce" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\..\bin\plugins\demo\Bounced" prefix_auto="1" extension_auto="1" />
 				<Option object_output="debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -38,7 +38,7 @@
 				</Linker>
 			</Target>
 			<Target title="Dynamic Debug">
-				<Option output="..\..\..\bin\plugins\demo\Bounce" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\..\bin\plugins\demo\Bounced" prefix_auto="1" extension_auto="1" />
 				<Option object_output="debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -83,6 +83,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

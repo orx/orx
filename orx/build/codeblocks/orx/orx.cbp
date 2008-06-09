@@ -50,6 +50,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
+					<Add option="-D__orxDLL__" />
 					<Add directory="..\..\..\include" />
 				</Compiler>
 				<Linker>
@@ -65,6 +66,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-D__orxDLL__" />
 					<Add directory="..\..\..\include" />
 				</Compiler>
 				<Linker>
@@ -88,6 +90,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

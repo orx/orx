@@ -507,11 +507,11 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_FromSphericalToCartesian
 /* *** Vector constants *** */
 
 
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_X    = {{orxFLOAT_1}, {orxFLOAT_0}, {orxFLOAT_0}};
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Y    = {{orxFLOAT_0}, {orxFLOAT_1}, {orxFLOAT_0}};
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_Z    = {{orxFLOAT_0}, {orxFLOAT_0}, {orxFLOAT_1}};
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_X;
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Y;
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Z;
 
-orxSTATIC orxCONST  orxVECTOR      orxVECTOR_0    = {{orxFLOAT_0}, {orxFLOAT_0}, {orxFLOAT_0}};
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_0;
 
 
 /* *** AABox inlined functions */

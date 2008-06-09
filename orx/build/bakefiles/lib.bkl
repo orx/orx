@@ -39,11 +39,12 @@
 
         <headers>
             include/base/orxDecl.h
-            include/base/orxType.h
             include/base/orxModule.h
+            include/base/orxType.h
         </headers>
         <sources>
             src/base/orxModule.c
+            src/base/orxType.c
         </sources>
 
         <headers>

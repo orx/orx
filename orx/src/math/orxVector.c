@@ -1,7 +1,7 @@
 /***************************************************************************
  orxVector.c
  Vector module
- 
+
  begin                : 27/04/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -18,3 +18,12 @@
 
 
 #include "math/orxVector.h"
+
+
+/* *** Vector constants *** */
+
+orxCONST orxVECTOR orxVECTOR_X = {{orx2F(1.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+orxCONST orxVECTOR orxVECTOR_Y = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f)}};
+orxCONST orxVECTOR orxVECTOR_Z = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
+
+orxCONST orxVECTOR orxVECTOR_0 = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};

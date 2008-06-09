@@ -71,6 +71,7 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxAnimPointer.o \
 	.\$(BUILD)\orxDLL_orxAnimSet.o \
 	.\$(BUILD)\orxDLL_orxModule.o \
+	.\$(BUILD)\orxDLL_orxType.o \
 	.\$(BUILD)\orxDLL_orxCamera.o \
 	.\$(BUILD)\orxDLL_orxRender.o \
 	.\$(BUILD)\orxDLL_orxViewport.o \
@@ -115,6 +116,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxAnimPointer.o \
 	.\$(BUILD)\orxLIB_orxAnimSet.o \
 	.\$(BUILD)\orxLIB_orxModule.o \
+	.\$(BUILD)\orxLIB_orxType.o \
 	.\$(BUILD)\orxLIB_orxCamera.o \
 	.\$(BUILD)\orxLIB_orxRender.o \
 	.\$(BUILD)\orxLIB_orxViewport.o \
@@ -153,7 +155,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxTree.o
 ORX_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) -D$(orxCOMPILER) $(__orxWARNINGFLAG) -I..\..\..\include \
-	-Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
+	$(__orxLINK_IMPORT_DEFINE_p) -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORX_OBJECTS =  \
 	.\$(BUILD)\orx_orxMain.o
 ORXDISPLAY_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
@@ -253,6 +255,9 @@ ifeq ($(LINK),static)
 orxLDFLAGS_IMPLIB = -Wl,--export-all-symbols \
 	-Wl,--out-implib,..\..\..\lib\$(LINK)\$(orxNAME).a
 endif
+ifeq ($(LINK),dynamic)
+__orxLINK_IMPORT_DEFINE_p = -D__orxDLL__
+endif
 ifeq ($(LINK),static)
 orxMODULE_FLAGS = ..\..\..\lib\$(LINK)\$(orxNAME).a
 endif
@@ -341,19 +346,19 @@ ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_9 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Bounce___depname = ..\..\..\bin\plugins\demo\Bounce.dll
+__Bounce___depname = ..\..\..\bin\plugins\demo\orxBounce$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_10 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Scroll___depname = ..\..\..\bin\plugins\demo\Scroll.dll
+__Scroll___depname = ..\..\..\bin\plugins\demo\orxScroll$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_11 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Cave___depname = ..\..\..\bin\plugins\demo\Cave.dll
+__Cave___depname = ..\..\..\bin\plugins\demo\orxCave$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_12 = $(__orxNAME_p)
@@ -424,9 +429,9 @@ clean:
 	-if exist ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SDL$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\system\orxSystem_SDL$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SFML$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\system\orxSystem_SFML$(orxSUFFIX).dll
-	-if exist ..\..\..\bin\plugins\demo\Bounce.dll del ..\..\..\bin\plugins\demo\Bounce.dll
-	-if exist ..\..\..\bin\plugins\demo\Scroll.dll del ..\..\..\bin\plugins\demo\Scroll.dll
-	-if exist ..\..\..\bin\plugins\demo\Cave.dll del ..\..\..\bin\plugins\demo\Cave.dll
+	-if exist ..\..\..\bin\plugins\demo\orxBounce$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\orxBounce$(orxSUFFIX).dll
+	-if exist ..\..\..\bin\plugins\demo\orxScroll$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\orxScroll$(orxSUFFIX).dll
+	-if exist ..\..\..\bin\plugins\demo\orxCave$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\orxCave$(orxSUFFIX).dll
 
 ifeq ($(LINK),dynamic)
 ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll: $(ORXDLL_OBJECTS)
@@ -508,17 +513,17 @@ endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\demo\Bounce.dll: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+..\..\..\bin\plugins\demo\orxBounce$(orxSUFFIX).dll: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_10)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\demo\Scroll.dll: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+..\..\..\bin\plugins\demo\orxScroll$(orxSUFFIX).dll: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_11)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\demo\Cave.dll: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+..\..\..\bin\plugins\demo\orxCave$(orxSUFFIX).dll: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CAVE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_12)
 endif
 
@@ -532,6 +537,9 @@ endif
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxDLL_orxModule.o: ../../../src/base/orxModule.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
+.\$(BUILD)\orxDLL_orxType.o: ../../../src/base/orxType.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxDLL_orxCamera.o: ../../../src/render/orxCamera.c
@@ -652,6 +660,9 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxLIB_orxModule.o: ../../../src/base/orxModule.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+.\$(BUILD)\orxLIB_orxType.o: ../../../src/base/orxType.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxLIB_orxCamera.o: ../../../src/render/orxCamera.c
