@@ -691,7 +691,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
 
 /** AnimPointer target Animation set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _hAnimHandle                  Animation handle to set
+ * @param[in]   _hAnimHandle                  Animation handle to set / orxHANDLE_UNDEFINED
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAnimPointer, orxHANDLE _hAnimHandle)
@@ -705,8 +705,17 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
   /* Has Animset? */
   if(orxStructure_TestAllFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET | orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
   {
+    /* Removes target anim? */
+    if(_hAnimHandle == orxHANDLE_UNDEFINED)
+    {
+      /* Removes ID */
+      _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
+
+      /* Computes animpointer */
+      eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
+    }
     /* In range? */
-    if((orxU32)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
+    else if((orxU32)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
     {
       /* Stores ID */
       _pstAnimPointer->hTargetAnim = _hAnimHandle;
@@ -767,7 +776,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnim(orxANIMPOINTER *_pstAnimPoin
 
 /** AnimPointer target Animation set accessor using ID
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
- * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set
+ * @param[in]   _u32AnimID                    Animation ID (config's name CRC) to set / orxU32_UNDEFINED
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPointer, orxU32 _u32AnimID)
@@ -780,14 +789,10 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnim(orxANIMPOINTER *_pstAnimPoint
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
   /* Gets corresponding anim handle */
-  hAnimHandle = orxAnimSet_GetAnimHandleFromID(_pstAnimPointer->pstAnimSet, _u32AnimID);
+  hAnimHandle = (_u32AnimID != orxU32_UNDEFINED) ? orxAnimSet_GetAnimHandleFromID(_pstAnimPointer->pstAnimSet, _u32AnimID) : orxHANDLE_UNDEFINED;
 
-  /* Valid? */
-  if(hAnimHandle != orxHANDLE_UNDEFINED)
-  {
-    /* Sets target anim */
-    eResult = orxAnimPointer_SetTargetAnimHandle(_pstAnimPointer, hAnimHandle);
-  }
+  /* Sets target anim */
+  eResult = orxAnimPointer_SetTargetAnimHandle(_pstAnimPointer, hAnimHandle);
 
   /* Done! */
   return eResult;

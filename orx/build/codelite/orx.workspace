@@ -23,7 +23,7 @@
       <Project Name="orxDisplay_SFML" ConfigName="Static Debug"/>
       <Project Name="orx" ConfigName="Static Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Dynamic Debug" Selected="no">
+    <WorkspaceConfiguration Name="Dynamic Debug" Selected="yes">
       <Project Name="orxSystem_SFML" ConfigName="Dynamic Debug"/>
       <Project Name="orxRender_Home" ConfigName="Dynamic Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Dynamic Debug"/>
@@ -35,7 +35,7 @@
       <Project Name="orxDisplay_SFML" ConfigName="Dynamic Debug"/>
       <Project Name="orx" ConfigName="Dynamic Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Static Release" Selected="yes">
+    <WorkspaceConfiguration Name="Static Release" Selected="no">
       <Project Name="orxSystem_SFML" ConfigName="Static Release"/>
       <Project Name="orxRender_Home" ConfigName="Static Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Static Release"/>

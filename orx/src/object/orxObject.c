@@ -1227,7 +1227,7 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxU32 _u3
 
 /** Sets target animation for object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _u32AnimID      Animation ID (config's name CRC) to set
+ * @param[in]   _u32AnimID      Animation ID (config's name CRC) to set / orxU32_UNDEFINED
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxU32 _u32AnimID)
