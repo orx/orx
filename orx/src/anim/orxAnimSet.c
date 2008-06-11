@@ -1052,30 +1052,17 @@ orxSTATIC orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable
       /* Has no empty loop counter (if no loop, value is orxU32_UNDEFINED)? */
       if(u32Loop != 0)
       {
-        /* Is self looping? */
-        if(i == u32BaseIndex + _u32AnimIndex)
+        /* Gets path priority */
+        u32LinkPriority = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_PRIORITY);
+
+        if((u32LinkPriority > u32ResLinkPriority)
+        || ((i == u32BaseIndex + _u32AnimIndex)
+         && (u32LinkPriority == u32ResLinkPriority)))
         {
           /* Stores new link info */
           u32ResAnim          = i;
           u32ResLink          = u32Link;
-          u32ResLinkPriority  = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_PRIORITY);
-
-          /* Stops searching */
-          break;
-        }
-        else
-        {
-          /* Gets path priority */
-          u32LinkPriority = orxAnimSet_GetLinkTableLinkProperty(_pstLinkTable, i, orxANIMSET_KU32_LINK_FLAG_PRIORITY);
-
-          /* Is priority higher than previous one? */
-          if(u32LinkPriority > u32ResLinkPriority)
-          {
-            /* Stores new link info */
-            u32ResAnim          = i;
-            u32ResLink          = u32Link;
-            u32ResLinkPriority  = u32LinkPriority;
-          }
+          u32ResLinkPriority  = u32LinkPriority;
         }
       }
     }

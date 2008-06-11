@@ -11,7 +11,7 @@
   <Project Name="orx" Path="orx\orx.project" Active="Yes"/>
   <Project Name="orxMouse_SFML" Path="orxMouse_SFML\orxMouse_SFML.project"/>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Static Debug" Selected="yes">
+    <WorkspaceConfiguration Name="Static Debug" Selected="no">
       <Project Name="orxSystem_SFML" ConfigName="Static Debug"/>
       <Project Name="orxRender_Home" ConfigName="Static Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Static Debug"/>
@@ -35,7 +35,7 @@
       <Project Name="orxDisplay_SFML" ConfigName="Dynamic Debug"/>
       <Project Name="orx" ConfigName="Dynamic Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Static Release" Selected="no">
+    <WorkspaceConfiguration Name="Static Release" Selected="yes">
       <Project Name="orxSystem_SFML" ConfigName="Static Release"/>
       <Project Name="orxRender_Home" ConfigName="Static Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Static Release"/>
