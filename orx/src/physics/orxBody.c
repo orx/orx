@@ -165,7 +165,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxC
   orxSTRUCTURE_ASSERT(_pstStructure);
 
   /* Gets body */
-  pstBody = orxSTRUCTURE_GET_POINTER(_pstStructure, BODY);
+  pstBody = orxBODY(_pstStructure);
 
   /* Gets calling object */
   pstObject = (orxOBJECT *)_pstCaller;
@@ -299,7 +299,7 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST o
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(orxSTRUCTURE_GET_POINTER(_pstOwner, OBJECT));
+  orxASSERT(orxOBJECT(_pstOwner));
   orxASSERT((_pstBodyDef != orxNULL) || (orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_TEMPLATE)));
 
   /* Creates body */
@@ -686,9 +686,9 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
         orxFLOAT  fWidth, fHeight, fScaleX, fScaleY, fRadius;
 
         /* Gets object size, scale & pivot */
-        orxObject_GetSize(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &fWidth, &fHeight);
-        orxObject_GetScale(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &fScaleX, &fScaleY);
-        orxObject_GetPivot(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &vPivot);
+        orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &fWidth, &fHeight);
+        orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &fScaleX, &fScaleY);
+        orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 
         /* Gets minimal radius */
         fRadius = orx2F(0.5f) * orxMIN(fScaleX * fWidth, fScaleY * fHeight);
@@ -716,9 +716,9 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
         orxFLOAT  fWidth, fHeight, fScaleX, fScaleY;
 
         /* Gets object size, scale & pivot */
-        orxObject_GetSize(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &fWidth, &fHeight);
-        orxObject_GetScale(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &fScaleX, &fScaleY);
-        orxObject_GetPivot(orxSTRUCTURE_GET_POINTER(_pstBody->pstOwner, OBJECT), &vPivot);
+        orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &fWidth, &fHeight);
+        orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &fScaleX, &fScaleY);
+        orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 
         /* Inits body part def */
         orxVector_Set(&(stBodyPartDef.stAABox.stBox.vTL), -fScaleX * vPivot.fX, -fScaleY * vPivot.fY, -vPivot.fZ);

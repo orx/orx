@@ -668,25 +668,25 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
       {
         case orxSTRUCTURE_ID_FRAME:
         {
-          orxFrame_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, FRAME));
+          orxFrame_Delete(orxFRAME(pstStructure));
           break;
         }
 
         case orxSTRUCTURE_ID_GRAPHIC:
         {
-          orxGraphic_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, GRAPHIC));
+          orxGraphic_Delete(orxGRAPHIC(pstStructure));
           break;
         }
 
         case orxSTRUCTURE_ID_ANIMPOINTER:
         {
-          orxAnimPointer_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, ANIMPOINTER));
+          orxAnimPointer_Delete(orxANIMPOINTER(pstStructure));
           break;
         }
 
         case orxSTRUCTURE_ID_BODY:
         {
-          orxBody_Delete(orxSTRUCTURE_GET_POINTER(pstStructure, BODY));
+          orxBody_Delete(orxBODY(pstStructure));
           break;
         }
 
@@ -1572,7 +1572,7 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
       orxTEXTURE *pstTexture;
 
       /* Has Data? */
-      if((pstTexture = orxSTRUCTURE_GET_POINTER(orxGraphic_GetData(pstGraphic), TEXTURE)) != orxNULL)
+      if((pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic))) != orxNULL)
       {
         orxFLOAT fWidth, fHeight;
 
@@ -1667,9 +1667,9 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(orxCONST orxAABOX *_pstCheckBo
     orxU32 u32Counter;
 
     /* For all objects */
-    for(u32Counter = 0, pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT), OBJECT);
+    for(u32Counter = 0, pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
         (u32Counter < orxOBJECT_KU32_NEIGHBOR_LIST_SIZE) && (pstObject != orxNULL);
-        pstObject = orxSTRUCTURE_GET_POINTER(orxStructure_GetNext(pstObject), OBJECT), u32Counter++)
+        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)), u32Counter++)
     {
       /* Gets its bounding box */
       if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)

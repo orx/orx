@@ -138,7 +138,7 @@ orxU32 orxPhysics_Box2D_GetShapeIndex(orxCONST b2Body *_poBody, orxCONST b2Shape
   orxASSERT(_poShape != orxNULL);
 
   /* Gets corresponding body */
-  pstBody = orxSTRUCTURE_GET_POINTER(const_cast<b2Body *>(_poBody)->GetUserData(), BODY);
+  pstBody = orxBODY(const_cast<b2Body *>(_poBody)->GetUserData());
 
   /* Valid? */
   if(pstBody != orxNULL)
@@ -171,7 +171,7 @@ orxU32 orxPhysics_Box2D_GetShapeIndex(orxCONST b2Body *_poBody, orxCONST b2Shape
       }
     }
   }
-  
+
   /* Done! */
   return u32Result;
 }
@@ -216,7 +216,7 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
       pstEventStorage->poSource                           = _poPoint->shape1->GetBody();
       pstEventStorage->poDestination                      = _poPoint->shape2->GetBody();
       pstEventStorage->stPayload.fPenetration             = -_poPoint->separation;
-      pstEventStorage->stPayload.u32SourcePartIndex       = orxPhysics_Box2D_GetShapeIndex(pstEventStorage->poSource, _poPoint->shape1); 
+      pstEventStorage->stPayload.u32SourcePartIndex       = orxPhysics_Box2D_GetShapeIndex(pstEventStorage->poSource, _poPoint->shape1);
       pstEventStorage->stPayload.u32DestinationPartIndex  = orxPhysics_Box2D_GetShapeIndex(pstEventStorage->poDestination, _poPoint->shape2);
       orxVector_Set(&(pstEventStorage->stPayload.vPosition), _poPoint->position.x, _poPoint->position.y, orxFLOAT_0);
       orxVector_Set(&(pstEventStorage->stPayload.vNormal), _poPoint->normal.x, _poPoint->normal.y, orxFLOAT_0);

@@ -133,7 +133,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       orxGRAPHIC *pstTemp;
 
       /* Gets current anim data */
-      pstTemp = orxSTRUCTURE_GET_POINTER(orxAnimPointer_GetCurrentAnimData(pstAnimPointer), GRAPHIC);
+      pstTemp = orxGRAPHIC(orxAnimPointer_GetCurrentAnimData(pstAnimPointer));
 
       /* Valid? */
       if(pstTemp != orxNULL)
@@ -322,7 +322,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                   pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
 
                   /* Gets graphic's texture */
-                  pstTexture = orxSTRUCTURE_GET_POINTER(orxGraphic_GetData(pstGraphic), TEXTURE);
+                  pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
 
                   /* Valid? */
                   if((pstFrame != orxNULL) && (pstTexture != orxNULL))

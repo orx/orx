@@ -833,7 +833,7 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
       if(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D))
       {
         /* Deletes it */
-        orxGraphic_Delete(orxSTRUCTURE_GET_POINTER(pstKey->pstData, GRAPHIC));
+        orxGraphic_Delete(orxGRAPHIC(pstKey->pstData));
       }
     }
 

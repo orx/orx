@@ -469,7 +469,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
       if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
       {
         /* Deletes it */
-        orxTexture_Delete(orxSTRUCTURE_GET_POINTER(_pstGraphic->pstData, TEXTURE));
+        orxTexture_Delete(orxTEXTURE(_pstGraphic->pstData));
       }
       else
       {
@@ -494,7 +494,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     orxStructure_IncreaseCounter(_pstData);
 
     /* Is data a texture? */
-    if(orxSTRUCTURE_GET_POINTER(_pstData, TEXTURE) != orxNULL)
+    if(orxTEXTURE(_pstData) != orxNULL)
     {
       /* Updates flags */
       orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_STATIC_FLAG_NONE);
@@ -593,7 +593,7 @@ orxSTATUS orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFL
   if(orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets its size */
-    eResult = orxTexture_GetSize(orxSTRUCTURE_GET_POINTER(_pstGraphic->pstData, TEXTURE), _pfWidth, _pfHeight);
+    eResult = orxTexture_GetSize(orxTEXTURE(_pstGraphic->pstData), _pfWidth, _pfHeight);
   }
   else
   {
@@ -625,7 +625,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxRGBA _stCo
   if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
   {
     /* Sets color */
-    eResult = orxTexture_SetColor(orxSTRUCTURE_GET_POINTER(_pstGraphic->pstData, TEXTURE), _stColor);
+    eResult = orxTexture_SetColor(orxTEXTURE(_pstGraphic->pstData), _stColor);
   }
   else
   {

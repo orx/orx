@@ -43,7 +43,7 @@ orxSTATIC orxFASTCALL orxSTATUS orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
   if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
   {
     /* Deletes corresponding object */
-    orxObject_Delete(orxSTRUCTURE_GET_POINTER(orxBody_GetOwner(orxSTRUCTURE_GET_POINTER(_pstEvent->hSender, BODY)), OBJECT));
+    orxObject_Delete(orxOBJECT(orxBody_GetOwner(orxBODY(_pstEvent->hSender))));
 
     /* Updates ball counter */
     su32BallCounter--;
@@ -117,7 +117,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
   eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN);
 
   /* Registers event handler */
-  eResult = eResult && orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler); 
+  eResult = eResult && orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler);
 
   /* Done! */
   return eResult;
