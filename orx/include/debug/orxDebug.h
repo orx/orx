@@ -84,7 +84,7 @@
                        |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                        \
                        |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                  \
                         orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                  \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
       orxDEBUG_FLAG_RESTORE();
 
   #endif /* __orxMSVC__ */
@@ -214,5 +214,6 @@ extern orxDLLAPI orxVOID                      _orxDebug_Break();
 
 
 #endif /* __orxDEBUG__ */
+
 
 

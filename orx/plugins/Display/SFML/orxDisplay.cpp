@@ -181,7 +181,7 @@ extern "C" orxBITMAP *orxDisplay_SFML_CreateBitmap(orxU32 _u32Width, orxU32 _u32
   poImage = new sf::Image(_u32Width, _u32Height);
 
   /* Activates smoothing */
-  poImage->SetSmooth(orxTRUE);
+  poImage->SetSmooth(true);
 
   /* Creates sprite using the new image */
   poSprite = new sf::Sprite(*poImage);
@@ -314,7 +314,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
             sstDisplay.u32Flags ^= orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
 
             /* Updates VSync use */
-            sstDisplay.poRenderWindow->UseVerticalSync((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? orxTRUE : orxFALSE);
+            sstDisplay.poRenderWindow->UseVerticalSync((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? true : false);
 
             break;
           }
@@ -466,12 +466,12 @@ extern "C" orxSTATUS orxDisplay_SFML_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, 
     poImage = const_cast<sf::Image *>(((sf::Sprite *)_pstBitmap)->GetImage());
 
     /* Saves it */
-    eResult = (poImage->SaveToFile(_zFilename) != orxFALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = (poImage->SaveToFile(_zFilename) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
   else
   {
     /* Gets screen capture */
-    eResult = (sstDisplay.poRenderWindow->Capture().SaveToFile(_zFilename) != orxFALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = (sstDisplay.poRenderWindow->Capture().SaveToFile(_zFilename) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
 
   /* Done! */
@@ -490,12 +490,12 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
   poImage = new sf::Image();
 
   /* Loads it from file */
-  if(poImage->LoadFromFile(_zFilename) != orxFALSE)
+  if(poImage->LoadFromFile(_zFilename) != false)
   {
     sf::Sprite *poSprite;
 
     /* Activates smoothing */
-    poImage->SetSmooth(orxTRUE);
+    poImage->SetSmooth(true);
 
     /* Creates a sprite from it */
     poSprite = new sf::Sprite(*poImage);
@@ -636,7 +636,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
       }
 
       /* Waits for vertical sync */
-      sstDisplay.poRenderWindow->UseVerticalSync(orxTRUE);
+      sstDisplay.poRenderWindow->UseVerticalSync(true);
 
       /* Updates status */
       sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY | orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
