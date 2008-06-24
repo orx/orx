@@ -279,6 +279,9 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTab
       /* Priority */
       case orxANIMSET_KU32_LINK_FLAG_PRIORITY:
       {
+        /* Checks */
+        orxASSERT(_u32Value <= (orxANIMSET_KU32_LINK_MASK_PRIORITY >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY));
+
         /* Updates priority */
         if(_u32Value != 0)
         {

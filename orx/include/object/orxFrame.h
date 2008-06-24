@@ -11,15 +11,15 @@
  * @file orxFrame.h
  * @date 01/12/2003
  * @author (C) Arcallians
- * 
- * @todo 
+ *
+ * @todo
  * Use matrix instead of disjoint pos vector/angle float/scale float for frame data structure.
  * 3D system (later).
  */
 
 /**
  * @addtogroup Object
- * 
+ *
  * Frame (scene node) Module.
  * Allows to handles frame (scene nodes).
  * It consists in a nodes (arranged in a hierarchical tree)
@@ -31,7 +31,7 @@
  *
  * @{
  */
- 
+
 
 #ifndef _orxFRAME_H_
 #define _orxFRAME_H_
@@ -49,6 +49,8 @@
 #define orxFRAME_KU32_FLAG_SCROLL_Y           0x00000002  /**< Y axis differential scrolling flag */
 #define orxFRAME_KU32_MASK_SCROLL_BOTH        0x00000003  /**< Both axis differential scrolling mask */
 
+#define orxFRAME_KU32_FLAG_DEPTH_SCALE        0x00000004  /**< Relative depth scaling flag */
+
 #define orxFRAME_KU32_MASK_USER_ALL           0x000000FF  /**< User all ID mask */
 
 
@@ -58,11 +60,11 @@ typedef enum __orxFRAME_SPACE_t
 {
   orxFRAME_SPACE_GLOBAL = 0,
   orxFRAME_SPACE_LOCAL,
-  
+
   orxFRAME_SPACE_NUMBER,
-  
+
   orxFRAME_SPACE_NONE = orxENUM_NONE
-  
+
 } orxFRAME_SPACE;
 
 

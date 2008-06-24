@@ -9,9 +9,11 @@
 		<Build>
 			<Target title="Static Debug">
 				<Option output="..\..\..\bin\plugins\core\render\orxRender_Homed" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\..\bin" />
 				<Option object_output="debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option host_application="orxd.exe" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
@@ -24,6 +26,7 @@
 			</Target>
 			<Target title="Static Release">
 				<Option output="..\..\..\bin\plugins\core\render\orxRender_Home" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\..\bin" />
 				<Option object_output="release\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -39,6 +42,7 @@
 			</Target>
 			<Target title="Dynamic Debug">
 				<Option output="..\..\..\bin\plugins\core\render\orxRender_Homed" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\..\bin" />
 				<Option object_output="debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -54,6 +58,7 @@
 			</Target>
 			<Target title="Dynamic Release">
 				<Option output="..\..\..\bin\plugins\core\render\orxRender_Home" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\..\bin" />
 				<Option object_output="release\" />
 				<Option type="3" />
 				<Option compiler="gcc" />

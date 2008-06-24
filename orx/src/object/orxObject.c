@@ -68,6 +68,7 @@
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
+#define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
@@ -439,6 +440,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       {
         /* Updates frame flags */
         u32FrameFlags   = orxFRAME_KU32_FLAG_NONE;
+      }
+
+      /* Depth scaling active? */
+      if(orxConfig_GetBool(orxOBJECT_KZ_CONFIG_DEPTH_SCALE) != orxFALSE)
+      {
+        /* Updates frame flags */
+        u32FrameFlags  |= orxFRAME_KU32_FLAG_DEPTH_SCALE;
       }
 
       /* Creates frame */
