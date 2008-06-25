@@ -55,26 +55,17 @@
  */
 struct __orxTEXTURE_t
 {
-  /* Public structure, first structure member : 16 */
-  orxSTRUCTURE  stStructure;
-
-  /* Self reference counter : 20 */
-  orxU32        u32Counter;
-
-  /* Associated bitmap name : 24 */
-  orxSTRING     zDataName;
-
-  /* Width : 28 */
-  orxFLOAT      fWidth;
-
-  /* Height : 32 */
-  orxFLOAT      fHeight;
-
-  /* Data : 36 */
-  orxHANDLE     hData;
+  orxSTRUCTURE  stStructure;                    /**< Public structure, first structure member : 16 */
+  orxU32        u32Counter;                     /**< Self reference counter : 20 */
+  orxSTRING     zDataName;                      /**< Associated bitmap name : 24 */
+  orxFLOAT      fWidth;                         /**< Width : 28 */
+  orxFLOAT      fHeight;                        /**< Height : 32 */
+  orxFLOAT      fTop;                           /**< Top : 36 */
+  orxFLOAT      fLeft;                          /**< Left : 40 */
+  orxHANDLE     hData;                          /**< Data : 44 */
 
   /* Padding */
-  orxPAD(36)
+  orxPAD(44)
 };
 
 /*
@@ -82,9 +73,9 @@ struct __orxTEXTURE_t
  */
 typedef struct __orxTEXTURE_STATIC_t
 {
-  orxHASHTABLE *pstTable;                     /**< Bitmap hashtable : 4 */
-  orxTEXTURE   *pstScreen;                    /**< Screen texture : 8 */
-  orxU32        u32Flags;                     /**< Control flags : 12 */
+  orxHASHTABLE *pstTable;                       /**< Bitmap hashtable : 4 */
+  orxTEXTURE   *pstScreen;                      /**< Screen texture : 8 */
+  orxU32        u32Flags;                       /**< Control flags : 12 */
 
 } orxTEXTURE_STATIC;
 
@@ -465,9 +456,11 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       /* References external texture */
       _pstTexture->hData      = (orxHANDLE)pstTexture;
 
-      /* Copies size */
+      /* Copies size & TL corner */
       _pstTexture->fWidth   = pstTexture->fWidth;
       _pstTexture->fHeight  = pstTexture->fHeight;
+      _pstTexture->fTop     = pstTexture->fTop;
+      _pstTexture->fLeft    = pstTexture->fLeft;
 
       /* Updates external texture self referenced counter */
       pstTexture->u32Counter++;
@@ -488,6 +481,8 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       /* Stores it */
       _pstTexture->fWidth   = orxU2F(u32Width);
       _pstTexture->fHeight  = orxU2F(u32Height);
+      _pstTexture->fTop     = orxFLOAT_0;
+      _pstTexture->fLeft    = orxFLOAT_0;
     }
 
     /* Updates texture name */
@@ -602,42 +597,124 @@ orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
   return pstBitmap;
 }
 
-/***************************************************************************
- orxTexture_GetSize
- Gets size.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
-orxSTATUS orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+/** Texture width get accessor
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      Texture's width
+ */
+orxFLOAT orxFASTCALL orxTexture_GetWidth(orxCONST orxTEXTURE *_pstTexture)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTexture);
-  orxASSERT(_pfWidth != orxNULL);
-  orxASSERT(_pfHeight != orxNULL);
 
   /* Has size? */
   if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
   {
-    /* Gets size */
-    *_pfWidth  = _pstTexture->fWidth;
-    *_pfHeight = _pstTexture->fHeight;
+    /* Updates result */
+    fResult = _pstTexture->fWidth;
   }
   else
   {
     /* !!! MSG !!! */
 
     /* No size */
-    *_pfWidth  = *_pfHeight = orx2F(-1.0f);
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    fResult = orx2F(-1.0f);
   }
 
   /* Done! */
-  return eResult;
+  return fResult;
+}
+
+/** Texture height get accessor
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      Texture's height
+ */
+orxFLOAT orxFASTCALL orxTexture_GetHeight(orxCONST orxTEXTURE *_pstTexture)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTexture);
+
+  /* Has size? */
+  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
+  {
+    /* Updates result */
+    fResult = _pstTexture->fHeight;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* No size */
+    fResult = orx2F(-1.0f);
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Texture top get accessor
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      Texture's top
+ */
+orxFLOAT orxFASTCALL orxTexture_GetTop(orxCONST orxTEXTURE *_pstTexture)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTexture);
+
+  /* Has size? */
+  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
+  {
+    /* Updates result */
+    fResult = _pstTexture->fTop;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* No size */
+    fResult = orx2F(-1.0f);
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Texture left get accessor
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      Texture's left
+ */
+orxFLOAT orxFASTCALL orxTexture_GetLeft(orxCONST orxTEXTURE *_pstTexture)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTexture);
+
+  /* Has size? */
+  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
+  {
+    /* Updates result */
+    fResult = _pstTexture->fLeft;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* No size */
+    fResult = orx2F(-1.0f);
+  }
+
+  /* Done! */
+  return fResult;
 }
 
 /** Gets texture name

@@ -386,7 +386,8 @@ orxSTATIC orxVOID orxCave_InitBulb()
     pstTexture = orxTexture_CreateFromFile(sastInfo[i].zFileName);
 
     /* Gets texture size */
-    orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
+    fWidth  = orxTexture_GetWidth(pstTexture);
+    fHeight = orxTexture_GetHeight(pstTexture);
 
     /* Creates & inits 2D graphic objet from texture */
     pstGraphic = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
@@ -458,7 +459,8 @@ orxSTATIC orxSTATUS orxCave_Init()
         orxFLOAT  fWidth, fHeight;
 
         /* Gets texture size */
-        orxTexture_GetSize(sstCave.astData[i].pstTexture, &fWidth, &fHeight);
+        fWidth  = orxTexture_GetWidth(sstCave.astData[i].pstTexture);
+        fHeight = orxTexture_GetHeight(sstCave.astData[i].pstTexture);
 
         /* Creates its frame */
         pstFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
@@ -495,7 +497,8 @@ orxSTATIC orxSTATUS orxCave_Init()
   orxCamera_SetFrustum(sstCave.pstTVCamera, orx2F(256.0f), orx2F(160.0f), orxFLOAT_0, orxFLOAT_1);
 
   /* Gets background size */
-  orxTexture_GetSize(sstCave.astData[orxCAVE_RESOURCE_BACKGROUND].pstTexture, &(sstCave.fBackgroundWidth), &(sstCave.fBackgroundHeight));
+  sstCave.fBackgroundWidth  = orxTexture_GetWidth(sstCave.astData[orxCAVE_RESOURCE_BACKGROUND].pstTexture);
+  sstCave.fBackgroundHeight = orxTexture_GetHeight(sstCave.astData[orxCAVE_RESOURCE_BACKGROUND].pstTexture);
 
   /* Sets cameras position */
   orxVector_Set(&vPos, orx2F(sstCave.fBackgroundWidth - (0.5f * sstCave.fScreenWidth)), orx2F(0.5f - sastInfo[orxCAVE_RESOURCE_BACKGROUND].vRelativePivot.fY) * sstCave.fBackgroundHeight, orxFLOAT_0);

@@ -1577,38 +1577,32 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
     /* Has graphic? */
     if((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
     {
-      orxTEXTURE *pstTexture;
+      orxFLOAT fWidth, fHeight;
 
-      /* Has Data? */
-      if((pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic))) != orxNULL)
+      /* Gets size */
+      if(orxGraphic_GetSize(pstGraphic, &fWidth, &fHeight) != orxSTATUS_FAILURE)
       {
-        orxFLOAT fWidth, fHeight;
+        orxVECTOR vPivot, vPosition;
+        orxFLOAT  fAngle;
 
-        /* Gets size */
-        if(orxTexture_GetSize(pstTexture, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+        /* Gets pivot, position & rotation */
+        orxObject_GetPivot(_pstObject, &vPivot);
+        orxObject_GetPosition(_pstObject, &vPosition);
+        fAngle = orxObject_GetRotation(_pstObject);
+
+        /* Updates box */
+        orxVector_Sub(&(_pstBoundingBox->vTL), &vPosition, &vPivot);
+        orxVector_Set(&(_pstBoundingBox->vBR), _pstBoundingBox->vTL.fX + fWidth, _pstBoundingBox->vTL.fY + fHeight, _pstBoundingBox->vTL.fZ);
+
+        /* Has rotation? */
+        if(fAngle != orxFLOAT_0)
         {
-          orxVECTOR vPivot, vPosition;
-          orxFLOAT  fAngle;
-
-          /* Gets pivot, position & rotation */
-          orxObject_GetPivot(_pstObject, &vPivot);
-          orxObject_GetPosition(_pstObject, &vPosition);
-          fAngle = orxObject_GetRotation(_pstObject);
-
-          /* Updates box */
-          orxVector_Sub(&(_pstBoundingBox->vTL), &vPosition, &vPivot);
-          orxVector_Set(&(_pstBoundingBox->vBR), _pstBoundingBox->vTL.fX + fWidth, _pstBoundingBox->vTL.fY + fHeight, _pstBoundingBox->vTL.fZ);
-
-          /* Has rotation? */
-          if(fAngle != orxFLOAT_0)
-          {
-            /* Rotates bouding box */
-            orxAABox_2DRotate(_pstBoundingBox, _pstBoundingBox, fAngle);
-          }
-
-          /* Updates result */
-          pstResult = _pstBoundingBox;
+          /* Rotates bouding box */
+          orxAABox_2DRotate(_pstBoundingBox, _pstBoundingBox, fAngle);
         }
+
+        /* Updates result */
+        pstResult = _pstBoundingBox;
       }
     }
   }

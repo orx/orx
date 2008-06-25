@@ -120,9 +120,10 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D)))
   {
     orxBITMAP      *pstBitmap;
+    orxTEXTURE     *pstTexture;
     orxANIMPOINTER *pstAnimPointer;
     orxVECTOR       vPivot, vPosition;
-    orxFLOAT        fRotation, fScaleX, fScaleY;
+    orxFLOAT        fRotation, fScaleX, fScaleY, fClipTop, fClipLeft, fClipBottom, fClipRight;
 
     /* Gets animation pointer */
     pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
@@ -146,13 +147,24 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     /* Gets its pivot */
     orxGraphic_GetPivot(pstGraphic, &vPivot);
 
-    /* Gets graphic's bitmap */
-    pstBitmap = orxTexture_GetBitmap((orxTEXTURE *)orxGraphic_GetData(pstGraphic));
+    /* Gets its texture */
+    pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+
+    /* Gets its bitmap */
+    pstBitmap = orxTexture_GetBitmap(pstTexture);
 
     /* Gets rendering frame's position, rotation & scale */
     fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFALSE);
     orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &fScaleX, &fScaleY);
     orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+
+    /* Gets its clipping corners */
+    fClipTop    = orxTexture_GetTop(pstTexture);
+    fClipLeft   = orxTexture_GetLeft(pstTexture);
+    fClipBottom = fClipTop + orxTexture_GetHeight(pstTexture);
+    fClipRight  = fClipLeft + orxTexture_GetWidth(pstTexture);
+    
+    orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipRight), orxF2U(fClipBottom));
 
     /* No scale nor rotation? */
     if((fRotation == orxFLOAT_0) && (fScaleX == orxFLOAT_1) && (fScaleY == orxFLOAT_1))
@@ -234,16 +246,12 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
     if(pstBitmap != orxNULL)
     {
       orxCAMERA  *pstCamera;
-      orxFLOAT    fTextureWidth, fTextureHeight;
       orxAABOX    stViewportBox, stTextureBox;
       orxVECTOR   vViewportCenter;
 
-      /* Gets texture size */
-      orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
-
       /* Inits texture box */
-      orxVector_SetAll(&(stTextureBox.vTL), orxFLOAT_0);
-      orxVector_Set(&(stTextureBox.vBR), fTextureWidth, fTextureHeight, orxFLOAT_0);
+      orxVector_Set(&(stTextureBox.vTL), orxTexture_GetLeft(pstTexture), orxTexture_GetTop(pstTexture), orxFLOAT_0);
+      orxVector_Set(&(stTextureBox.vBR), orxTexture_GetWidth(pstTexture), orxTexture_GetHeight(pstTexture), orxFLOAT_0);
 
       /* Gets viewport box */
       orxViewport_GetBox(_pstViewport, &stViewportBox);
@@ -254,8 +262,16 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
       /* Does it intersect with texture */
       if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
       {
+        orxFLOAT fClipTop, fClipLeft, fClipRight, fClipBottom;
+
+        /* Gets clipping corners */
+        fClipLeft   = stViewportBox.vTL.fX + stTextureBox.vTL.fX;
+        fClipTop    = stViewportBox.vTL.fY + stTextureBox.vTL.fY;
+        fClipRight  = fClipLeft + orxMIN(stTextureBox.vBR.fX, stViewportBox.vBR.fX);
+        fClipBottom = fClipTop + orxMIN(stTextureBox.vBR.fY, stViewportBox.vBR.fY);
+
         /* Sets bitmap clipping */
-        orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
+        orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipRight), orxF2U(fClipBottom));
 
         /* Should clear bitmap? */
         if(orxViewport_IsBackgroundClearingEnabled(_pstViewport) != orxFALSE)
@@ -358,7 +374,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                         orxFLOAT fWidth, fHeight, fObjectScaleX, fObjectScaleY, fObjectSqrBoundingRadius, fSqrDist;
 
                         /* Gets its texture size */
-                        orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
+                        fWidth  = orxTexture_GetWidth(pstTexture);
+                        fHeight = orxTexture_GetHeight(pstTexture);
 
                         /* Gets object's scales */
                         orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &fObjectScaleX, &fObjectScaleY);
@@ -519,6 +536,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
 
                 /* Gets position in screen space */
                 orxVector_Add(&vRenderPos, &vRenderPos, &vViewportCenter);
+                orxVector_Add(&vRenderPos, &vRenderPos, &(stTextureBox.vTL));
 
                 /* Updates render frame */
                 orxFrame_SetPosition(pstRenderFrame, &vRenderPos);
@@ -659,10 +677,21 @@ orxSTATUS orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition,
     if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
     && ((pstCamera = orxViewport_GetCamera(pstViewport)) != orxNULL))
     {
-      orxAABOX stViewportBox;
+      orxAABOX  stViewportBox;
+      orxFLOAT  fTop, fLeft;
 
       /* Gets viewport box */
       orxViewport_GetBox(pstViewport, &stViewportBox);
+
+      /* Gets texture TL corner */
+      fTop  = orxTexture_GetTop(orxViewport_GetTexture(pstViewport));
+      fLeft = orxTexture_GetTop(orxViewport_GetTexture(pstViewport));
+
+      /* Updates viewport box */
+      stViewportBox.vTL.fX += fLeft;
+      stViewportBox.vTL.fY += fTop;
+      stViewportBox.vBR.fX += fLeft;
+      stViewportBox.vBR.fY += fTop;
 
       /* Is position in box? */
       if((_pvScreenPosition->fX >= stViewportBox.vTL.fX)

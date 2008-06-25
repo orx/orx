@@ -67,8 +67,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_UnlinkBitmap(orxTEXTURE *_p
 /** Corresponding bitmap get accessor. */
 extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture);
 
-/** Texture size get accessor. */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+/** Texture width get accessor
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      Texture's width
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetWidth(orxCONST orxTEXTURE *_pstTexture);
+
+/** Texture height get accessor
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      Texture's height
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetHeight(orxCONST orxTEXTURE *_pstTexture);
+
+/** Texture top get accessor
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      Texture's top
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetTop(orxCONST orxTEXTURE *_pstTexture);
+
+/** Texture left get accessor
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      Texture's left
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetLeft(orxCONST orxTEXTURE *_pstTexture);
 
 /** Texture name accessor. */
 extern orxDLLAPI orxSTRING orxFASTCALL    orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture);

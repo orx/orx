@@ -800,7 +800,8 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
     orxFLOAT fHeight, fWidth;
 
     /* Gets texture size */
-    orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
+    fWidth  = orxTexture_GetWidth(pstTexture);
+    fHeight = orxTexture_GetHeight(pstTexture);
 
     /* Align left? */
     if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_LEFT)
@@ -902,7 +903,6 @@ orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW,
 orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW, orxFLOAT _fH)
 {
   orxTEXTURE *pstTexture;
-  orxFLOAT    fTextureWidth, fTextureHeight;
   orxSTATUS   eResult;
 
   /* Checks */
@@ -917,12 +917,9 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
   /* Valid? */
   if(pstTexture != orxNULL)
   {
-    /* Gets texture size */
-    orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
-
     /* Updates viewport size */
-    _pstViewport->fWidth  = fTextureWidth * _fW;
-    _pstViewport->fHeight = fTextureHeight * _fH;
+    _pstViewport->fWidth  = orxTexture_GetWidth(pstTexture) * _fW;
+    _pstViewport->fHeight = orxTexture_GetHeight(pstTexture) * _fH;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -967,7 +964,6 @@ orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxF
 orxVOID orxFASTCALL orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH)
 {
   orxTEXTURE *pstTexture;
-  orxFLOAT    fTextureWidth, fTextureHeight;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -981,12 +977,9 @@ orxVOID orxFASTCALL orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewpo
   /* Valid? */
   if(pstTexture != orxNULL)
   {
-    /* Gets texture size */
-    orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
-
     /* Gets relative size */
-    *_pfW = _pstViewport->fWidth / fTextureWidth;
-    *_pfH = _pstViewport->fHeight / fTextureHeight;
+    *_pfW = _pstViewport->fWidth / orxTexture_GetWidth(pstTexture);
+    *_pfH = _pstViewport->fHeight / orxTexture_GetHeight(pstTexture);
   }
   else
   {

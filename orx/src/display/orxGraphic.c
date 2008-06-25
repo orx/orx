@@ -593,7 +593,11 @@ orxSTATUS orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFL
   if(orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets its size */
-    eResult = orxTexture_GetSize(orxTEXTURE(_pstGraphic->pstData), _pfWidth, _pfHeight);
+    *_pfWidth   = orxTexture_GetWidth(orxTEXTURE(_pstGraphic->pstData));
+    *_pfHeight  = orxTexture_GetHeight(orxTEXTURE(_pstGraphic->pstData));
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
