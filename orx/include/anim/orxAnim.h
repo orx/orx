@@ -77,14 +77,6 @@ extern orxDLLAPI orxVOID                      orxAnim_Exit();
  */
 extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size);
 
-/** Creates an animation from files
- * @param[in]   _zBitmapFilePattern Bitmap file pattern relative to animation
- * @param[in]   _u32Flags           Anim flags (2D / ...)
- * @param[in]   _fKeyDuration       Duration of each key
- * @ return orxANIM / orxNULL
- */
-extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_CreateFromFile(orxCONST orxSTRING _zBitmapFilePattern, orxU32 _u32Flags, orxFLOAT _fKeyDuration);
-
 /** Creates an animation from config
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMSET / orxNULL

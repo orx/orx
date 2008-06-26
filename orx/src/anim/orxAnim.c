@@ -59,13 +59,7 @@
  */
 #define orxANIM_KZ_CONFIG_KEY_DATA          "KeyData"
 #define orxANIM_KZ_CONFIG_KEY_DURATION      "KeyDuration"
-#define orxANIM_KZ_CONFIG_KEY_PIVOT         "KeyPivot"
 #define orxANIM_KZ_CONFIG_DEFAULT_DURATION  "DefaultKeyDuration"
-#define orxANIM_KZ_CONFIG_DEFAULT_PIVOT     "DefaultKeyPivot"
-
-#define orxANIM_KZ_CENTERED_PIVOT           "centered"
-
-#define orxANIM_KC_NUMBER_MARKER            '#'
 
 
 /***************************************************************************
@@ -412,141 +406,6 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
   return pstAnim;
 }
 
-/** Creates an animation from files
- * @param[in]   _zBitmapFilePattern         Bitmap file pattern relative to animation
- * @param[in]   _u32Flags                   Anim flags (2D / ...)
- * @param[in]   _fKeyDuration               Duration of each key
- * @ return orxANIM / orxNULL
- */
-orxANIM *orxFASTCALL orxAnim_CreateFromFile(orxCONST orxSTRING _zBitmapFilePattern, orxU32 _u32Flags, orxFLOAT _fKeyDuration)
-{
-  orxANIM  *pstResult = orxNULL;
-
-  /* Checks */
-  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zBitmapFilePattern != orxNULL);
-  orxASSERT((_u32Flags & orxANIM_KU32_MASK_USER_ALL) == _u32Flags);
-  orxASSERT(_fKeyDuration > orxFLOAT_0);
-
-  /* 2D? */
-  if(orxFLAG_TEST(_u32Flags, orxANIM_KU32_FLAG_2D))
-  {
-    orxS32 s32MarkerIndex;
-
-    /* Gets marker index */
-    s32MarkerIndex = orxString_SearchCharIndex(_zBitmapFilePattern, orxANIM_KC_NUMBER_MARKER, 0);
-
-    /* Found? */
-    if(s32MarkerIndex >= 0)
-    {
-      orxBANK *pstBank;
-
-      /* Creates temp bank */
-      pstBank = orxBank_Create(32, sizeof(orxGRAPHIC *), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-      /* Valid? */
-      if(pstBank != orxNULL)
-      {
-        orxGRAPHIC   *pstGraphic;
-        orxGRAPHIC  **ppstGraphic;
-        orxU32        u32MarkerNumber, u32AnimSize;
-        orxCHAR       zBaseName[256];
-
-        /* Gets number of marker */
-        for(u32MarkerNumber = 1;
-            (*(_zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber) != orxCHAR_NULL) && (*(_zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber) == orxANIM_KC_NUMBER_MARKER);
-            u32MarkerNumber++);
-
-        /* Checks */
-        orxASSERT(s32MarkerIndex + u32MarkerNumber < 255);
-
-        /* Clears buffer */
-        orxMemory_Zero(zBaseName, 256 * sizeof(orxCHAR));
-
-        /* Copies base name */
-        orxString_NCopy(zBaseName, _zBitmapFilePattern, 256);
-
-        /* For all matching files pattern */
-        for(u32AnimSize = 0, orxString_Print(zBaseName + s32MarkerIndex, "%0*d%s", u32MarkerNumber, u32AnimSize + 1, _zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber);
-            (pstGraphic = orxGraphic_CreateFromFile(zBaseName, orxGRAPHIC_KU32_FLAG_2D)) != orxNULL;
-            orxString_Print(zBaseName + s32MarkerIndex, "%0*d%s", u32MarkerNumber, ++u32AnimSize + 1, _zBitmapFilePattern + s32MarkerIndex + u32MarkerNumber))
-        {
-          /* Allocates a cell */
-          ppstGraphic = orxBank_Allocate(pstBank);
-
-          /* Valid? */
-          if(ppstGraphic != orxNULL)
-          {
-            /* Stores it */
-            *ppstGraphic = pstGraphic;
-          }
-          else
-          {
-            /* !!! MSG !!! */
-            break;
-          }
-        }
-
-        /* Creates anim */
-        pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, u32AnimSize);
-
-        /* Valid? */
-        if(pstResult != orxNULL)
-        {
-          orxFLOAT fTimeStamp;
-
-          /* For all created graphics */
-          for(fTimeStamp = _fKeyDuration, ppstGraphic = orxBank_GetNext(pstBank, orxNULL);
-              ppstGraphic != orxNULL;
-              fTimeStamp += _fKeyDuration, ppstGraphic = orxBank_GetNext(pstBank, ppstGraphic))
-          {
-            /* Adds it */
-            if(orxAnim_AddKey(pstResult, (orxSTRUCTURE *)*ppstGraphic, fTimeStamp) == orxSTATUS_FAILURE)
-            {
-              /* !!! MSG !!! */
-
-              /* Deletes it */
-              orxGraphic_Delete(*ppstGraphic);
-            }
-          }
-
-          /* Updates internal flag */
-          orxStructure_SetFlags(pstResult, orxANIM_KU32_FLAG_INTERNAL, orxANIM_KU32_FLAG_NONE);
-        }
-        else
-        {
-          /* For all created graphics */
-          for(ppstGraphic = orxBank_GetNext(pstBank, orxNULL);
-              ppstGraphic != orxNULL;
-              ppstGraphic = orxBank_GetNext(pstBank, ppstGraphic))
-          {
-            /* Deletes it */
-            orxGraphic_Delete(*ppstGraphic);
-          }
-        }
-
-        /* Deletes bank */
-        orxBank_Delete(pstBank);
-      }
-      else
-      {
-        /* !!! MSG !!! */
-      }
-    }
-    else
-    {
-      /* !!! MSG !!! */
-    }
-  }
-  else
-  {
-    /* !!! MSG !!! */
-  }
-
-  /* Done! */
-  return pstResult;
-}
-
 /** Creates an animation from config
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMSET / orxNULL
@@ -582,14 +441,13 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxCHAR   acDurationID[32], acPivotID[32];
+      orxCHAR   acDurationID[32];
       orxFLOAT  fTimeStamp = orxFLOAT_0;
       orxU32    i;
 
       /* Clears buffers */
       orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
       orxMemory_Zero(acDurationID, 32 * sizeof(orxCHAR));
-      orxMemory_Zero(acPivotID, 32 * sizeof(orxCHAR));
 
       /* For all keys */
       for(i = 0; i < u32KeyCounter; i++)
@@ -608,14 +466,11 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           orxGRAPHIC *pstGraphic;
 
           /* Creates it */
-          pstGraphic = orxGraphic_CreateFromFile(zDataName, orxGRAPHIC_KU32_FLAG_2D);
+          pstGraphic = orxGraphic_CreateFromConfig(zDataName);
 
           /* Valid? */
           if(pstGraphic != orxNULL)
           {
-            orxVECTOR vPivot;
-            orxSTRING zPivotID;
-
             /* Gets duration ID */
             orxString_Print(acDurationID, "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
 
@@ -623,53 +478,13 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
             fTimeStamp += orxConfig_HasValue(acDurationID) ? orxConfig_GetFloat(acDurationID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);
 
             /* Adds it */
-            if(orxAnim_AddKey(pstResult, (orxSTRUCTURE *)pstGraphic, fTimeStamp) == orxSTATUS_FAILURE)
+            if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
             {
               /* !!! MSG !!! */
 
               /* Deletes it */
               orxGraphic_Delete(pstGraphic);
             }
-
-            /* Writes key pivot ID */
-            orxString_Print(acPivotID, "%s%d", orxANIM_KZ_CONFIG_KEY_PIVOT, i + 1);
-
-            /* Has specific pivot ID? */
-            if(orxConfig_HasValue(acPivotID) != orxFALSE)
-            {
-              /* Uses it */
-              zPivotID = acPivotID;
-            }
-            else
-            {
-              /* Uses default one */
-              zPivotID = orxANIM_KZ_CONFIG_DEFAULT_PIVOT;
-            }
-
-            /* Uses centered pivot? */
-            if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(zPivotID)), orxANIM_KZ_CENTERED_PIVOT) == 0)
-            {
-              orxFLOAT fWidth, fHeight;
-
-              /* Gets graphic size */
-              if(orxGraphic_GetSize(pstGraphic, &fWidth, &fHeight) != orxSTATUS_FAILURE)
-              {
-                /* Inits pivot */
-                orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
-              }
-              else
-              {
-                orxVector_Copy(&vPivot, &orxVECTOR_0);
-              }
-            }
-            /* Gets pivot value */
-            else if(orxConfig_GetVector(zPivotID, &vPivot) == orxNULL)
-            {
-              orxVector_Copy(&vPivot, &orxVECTOR_0);
-            }
-
-            /* Updates its pivot */
-            orxGraphic_SetPivot(pstGraphic, &vPivot);
           }
         }
       }

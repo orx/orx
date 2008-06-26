@@ -63,7 +63,7 @@
  */
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
-#define orxOBJECT_KZ_CONFIG_GRAPHIC_FILENAME    "Graphic"
+#define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "Animation"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
@@ -456,7 +456,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       if(pstFrame != orxNULL)
       {
         /* Links it */
-        if(orxObject_LinkStructure(pstResult, (orxSTRUCTURE *)pstFrame) != orxSTATUS_FAILURE)
+        if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstFrame)) != orxSTATUS_FAILURE)
         {
           /* Updates flags */
           orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_FRAME].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
@@ -466,7 +466,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* *** Graphic *** */
 
       /* Gets graphic file name */
-      zGraphicFileName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_FILENAME);
+      zGraphicFileName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_NAME);
 
       /* Valid? */
       if((zGraphicFileName != orxNULL) && (*zGraphicFileName != *orxSTRING_EMPTY))
@@ -474,43 +474,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxGRAPHIC *pstGraphic;
 
         /* Creates graphic */
-        pstGraphic = orxGraphic_CreateFromFile(zGraphicFileName, orxGRAPHIC_KU32_FLAG_2D);
+        pstGraphic = orxGraphic_CreateFromConfig(zGraphicFileName);
 
         /* Valid? */
         if(pstGraphic != orxNULL)
         {
           /* Links it structures */
-          if(orxObject_LinkStructure(pstResult, (orxSTRUCTURE *)pstGraphic) != orxSTATUS_FAILURE)
+          if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstGraphic)) != orxSTATUS_FAILURE)
           {
-            orxVECTOR vPivot;
-
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_GRAPHIC].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
-
-            /* Uses centered pivot? */
-            if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxOBJECT_KZ_CONFIG_PIVOT)), orxOBJECT_KZ_CENTERED_PIVOT) == 0)
-            {
-              orxFLOAT fWidth, fHeight;
-
-              /* Gets object size */
-              if(orxObject_GetSize(pstResult, &fWidth, &fHeight) != orxSTATUS_FAILURE)
-              {
-                /* Inits pivot */
-                orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
-              }
-              else
-              {
-                orxVector_Copy(&vPivot, &orxVECTOR_0);
-              }
-            }
-            /* Gets pivot value */
-            else if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_PIVOT, &vPivot) == orxNULL)
-            {
-              orxVector_Copy(&vPivot, &orxVECTOR_0);
-            }
-
-            /* Updates its pivot */
-            orxObject_SetPivot(pstResult, &vPivot);
           }
         }
       }
@@ -532,7 +505,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         if(pstAnimPointer != orxNULL)
         {
           /* Links it structures */
-          if(orxObject_LinkStructure(pstResult, (orxSTRUCTURE *)pstAnimPointer) != orxSTATUS_FAILURE)
+          if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstAnimPointer)) != orxSTATUS_FAILURE)
           {
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_ANIMPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
@@ -563,7 +536,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxBODY *pstBody;
 
         /* Creates body */
-        pstBody = orxBody_CreateFromConfig((orxSTRUCTURE *)pstResult, zBodyID);
+        pstBody = orxBody_CreateFromConfig(orxSTRUCTURE(pstResult), zBodyID);
 
         /* Valid? */
         if(pstBody != orxNULL)
@@ -1181,7 +1154,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
     eResult = orxSTATUS_SUCCESS;
 
     /* Links it to the object */
-    eResult = orxObject_LinkStructure(_pstObject, (orxSTRUCTURE *)pstAnimPointer);
+    eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstAnimPointer));
 
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)

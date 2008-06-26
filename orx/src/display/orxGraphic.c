@@ -28,7 +28,7 @@
 
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
-#include "io/orxFileSystem.h"
+#include "core/orxConfig.h"
 
 
 /** Module flags
@@ -44,9 +44,12 @@
 #define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
 
 
-#define orxGRAPHIC_KC_MARKER_START            '$'
-#define orxGRAPHIC_KC_MARKER_WIDTH            'w'
-#define orxGRAPHIC_KC_MARKER_HEIGHT           'h'
+/** Misc defines
+ */
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME     "Texture"
+#define orxGRAPHIC_KZ_CONFIG_PIVOT            "Pivot"
+
+#define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
 
 
 /***************************************************************************
@@ -120,6 +123,7 @@ orxVOID orxGraphic_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_TEXTURE);
 
   return;
@@ -220,166 +224,82 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create(orxU32 _u32Flags)
   return pstGraphic;
 }
 
-/** Creates a graphic from file
- * @param[in]   _zBitmapFileName              Bitmap to use as data
- * @param[in]   _u32Flags                     Graphic flags (2D / ...)
+/** Creates a graphic from config
+ * @param[in]   _zConfigID            Config ID
  * @ return orxGRAPHIC / orxNULL
  */
-orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromFile(orxCONST orxSTRING _zBitmapFileName, orxU32 _u32Flags)
+orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 {
-  orxGRAPHIC *pstResult = orxNULL;
+  orxGRAPHIC *pstResult;
+  orxSTRING   zPreviousSection;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zBitmapFileName != orxNULL);
-  orxASSERT((_u32Flags & orxGRAPHIC_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
 
-  /* Creates graphic */
-  pstResult = orxGraphic_Create(_u32Flags);
+  /* Gets previous config section */
+  zPreviousSection = orxConfig_GetCurrentSection();
 
-  /* Valid? */
-  if(pstResult != orxNULL)
+  /* Selects section */
+  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    /* 2D? */
-    if(orxFLAG_TEST(_u32Flags, orxGRAPHIC_KU32_FLAG_2D))
+    /* Creates graphic */
+    pstResult = orxGraphic_Create(orxGRAPHIC_KU32_FLAG_2D);
+
+    /* Valid? */
+    if(pstResult != orxNULL)
     {
-      orxS32      s32FirstMarkerIndex, s32Width, s32Height;
-      orxTEXTURE *pstTexture = orxNULL;
+      orxSTRING zTextureName;
+      
+      /* Gets texture name */
+      zTextureName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
 
-      /* Gets marker index */
-      s32FirstMarkerIndex = orxString_SearchCharIndex(_zBitmapFileName, orxGRAPHIC_KC_MARKER_START, 0);
-
-      /* Use marker? */
-      if(s32FirstMarkerIndex >= 0)
+      /* Valid? */
+      if((zTextureName != orxNULL) && (*zTextureName != *orxSTRING_EMPTY))
       {
-        orxFILESYSTEM_INFO  stFileInfo;
-        orxBOOL             bDone;
-        orxCHAR             zBaseName[256];
+        orxTEXTURE *pstTexture;
 
-        /* Checks */
-        orxASSERT(s32FirstMarkerIndex < 255);
+        /* Creates textures */
+        pstTexture = orxTexture_CreateFromFile(zTextureName);
 
-        /* Clears buffer */
-        orxMemory_Zero(zBaseName, 256 * sizeof(orxCHAR));
-
-        /* Gets base name */
-        orxString_NCopy(zBaseName, _zBitmapFileName, s32FirstMarkerIndex);
-
-        /* Adds wildcard */
-        zBaseName[s32FirstMarkerIndex] = '*';
-
-        /* For all matching file */
-        for(bDone = (orxFileSystem_FindFirst(zBaseName, &stFileInfo) != orxSTATUS_FAILURE) ? orxFALSE : orxTRUE;
-            bDone == orxFALSE;
-            bDone = (orxFileSystem_FindNext(&stFileInfo) != orxSTATUS_FAILURE) ? orxFALSE : orxTRUE)
-        {
-          orxS32   *ps32Value;
-          orxSTRING zRemaining;
-
-          /* Height? */
-          if(_zBitmapFileName[s32FirstMarkerIndex + 1] == orxGRAPHIC_KC_MARKER_HEIGHT)
-          {
-            /* Updates value pointer */
-            ps32Value = &s32Height;
-          }
-          /* Width? */
-          else if(_zBitmapFileName[s32FirstMarkerIndex + 1] == orxGRAPHIC_KC_MARKER_WIDTH)
-          {
-            /* Updates value pointer */
-            ps32Value = &s32Width;
-          }
-          else
-          {
-            /* Updates value pointer */
-            ps32Value = orxNULL;
-          }
-
-          /* Valid? */
-          if(ps32Value != orxNULL)
-          {
-            /* Gets value */
-            if(orxString_ToS32(stFileInfo.zFullName + s32FirstMarkerIndex, 10, ps32Value, &zRemaining) != orxSTATUS_FAILURE)
-            {
-              orxS32 s32SecondMarkerIndex;
-
-              /* Gets second marker index */
-              s32SecondMarkerIndex = orxString_SearchCharIndex(_zBitmapFileName, orxGRAPHIC_KC_MARKER_START, s32FirstMarkerIndex + 1);
-
-              /* Valid? */
-              if(s32SecondMarkerIndex >= 0)
-              {
-                /* Height? */
-                if((_zBitmapFileName[s32SecondMarkerIndex + 1] == orxGRAPHIC_KC_MARKER_HEIGHT) && (ps32Value == &s32Width))
-                {
-                  /* Updates value pointer */
-                  ps32Value = &s32Height;
-                }
-                /* Width? */
-                else if((_zBitmapFileName[s32SecondMarkerIndex + 1] == orxGRAPHIC_KC_MARKER_WIDTH) && (ps32Value == &s32Height))
-                {
-                  /* Updates value pointer */
-                  ps32Value = &s32Width;
-                }
-                else
-                {
-                  /* Updates value pointer */
-                  ps32Value = orxNULL;
-                }
-
-                /* Valid? */
-                if(ps32Value != orxNULL)
-                {
-                  /* Gets value */
-                  if(orxString_ToS32(zRemaining + (s32SecondMarkerIndex - s32FirstMarkerIndex - 2), 10, ps32Value, &zRemaining) != orxSTATUS_FAILURE)
-                  {
-                    /* Loads texture */
-                    pstTexture = orxTexture_CreateFromFile(stFileInfo.zFullName);
-
-                    /* Valid? */
-                    if(pstTexture != orxNULL)
-                    {
-                      /* Done! */
-                      bDone = orxTRUE;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        /* Closes search */
-        orxFileSystem_FindClose(&stFileInfo);
-      }
-      else
-      {
-        /* Loads textures */
-        pstTexture = orxTexture_CreateFromFile(_zBitmapFileName);
-      }
-
-      /* Valid texture? */
-      if(pstTexture != orxNULL)
-      {
         /* Links it */
         if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
         {
-          /* Uses a pivot? */
-          if(s32FirstMarkerIndex >= 0)
+          orxVECTOR vPivot;
+
+          /* Uses centered pivot? */
+          if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT)), orxGRAPHIC_KZ_CENTERED_PIVOT) == 0)
           {
-            orxVECTOR vPivot;
+            orxFLOAT fWidth, fHeight;
 
-            /* Sets pivot vector */
-            orxVector_Set(&vPivot, orxS2F(s32Width), orxS2F(s32Height), orxFLOAT_0);
-
-            /* Updates graphic */
-            orxGraphic_SetPivot(pstResult, &vPivot);
+            /* Gets object size */
+            if(orxGraphic_GetSize(pstResult, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+            {
+              /* Inits pivot */
+              orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
+            }
+            else
+            {
+              orxVector_Copy(&vPivot, &orxVECTOR_0);
+            }
           }
+          /* Gets pivot value */
+          else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) == orxNULL)
+          {
+            orxVector_Copy(&vPivot, &orxVECTOR_0);
+          }
+
+          /* Updates its pivot */
+          orxGraphic_SetPivot(pstResult, &vPivot);
 
           /* Updates status flags */
           orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
         }
         else
         {
+          /* !!! MSG !!! */
+
           /* Deletes structures */
           orxTexture_Delete(pstTexture);
           orxGraphic_Delete(pstResult);
@@ -388,23 +308,17 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromFile(orxCONST orxSTRING _zBitmapFil
           pstResult = orxNULL;
         }
       }
-      else
-      {
-        /* !!! MSG !!! */
+    }
 
-        /* Deletes structures */
-        orxGraphic_Delete(pstResult);
-        pstResult = orxNULL;
-      }
-    }
-    else
-    {
-      /* !!! MSG !!! */
-    }
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
   }
   else
   {
     /* !!! MSG !!! */
+
+    /* Updates result */
+    pstResult = orxNULL;
   }
 
   /* Done! */

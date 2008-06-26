@@ -529,7 +529,7 @@ orxSTRUCTURE *orxFASTCALL orxBody_GetOwner(orxCONST orxBODY *_pstBody)
   orxSTRUCTURE_ASSERT(_pstBody);
 
   /* Updates result */
-  pstResult = (orxSTRUCTURE *)_pstBody->pstOwner;
+  pstResult = orxSTRUCTURE(_pstBody->pstOwner);
 
   /* Done! */
   return pstResult;

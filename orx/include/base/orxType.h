@@ -160,8 +160,8 @@ extern orxDLLAPI orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR;
 
 
 /* *** Float constants *** */
-extern orxDLLAPI orxCONST orxFLOAT orxFLOAT_0;
-extern orxDLLAPI orxCONST orxFLOAT orxFLOAT_1;
+extern orxDLLAPI orxCONST orxFLOAT    orxFLOAT_0;
+extern orxDLLAPI orxCONST orxFLOAT    orxFLOAT_1;
 
 
 /* *** Status defines *** */

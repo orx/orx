@@ -890,7 +890,7 @@ orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW,
   /* Updates size */
   _pstViewport->fWidth  = _fW;
   _pstViewport->fHeight = _fH;
-
+  
   return;
 }
 

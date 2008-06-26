@@ -251,6 +251,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
 
       /* Inits texture box */
       orxVector_Set(&(stTextureBox.vTL), orxTexture_GetLeft(pstTexture), orxTexture_GetTop(pstTexture), orxFLOAT_0);
+      orxVector_Copy(&(stTextureBox.vBR), &(stTextureBox.vTL));
       orxVector_Set(&(stTextureBox.vBR), orxTexture_GetWidth(pstTexture), orxTexture_GetHeight(pstTexture), orxFLOAT_0);
 
       /* Gets viewport box */
@@ -267,8 +268,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
         /* Gets clipping corners */
         fClipLeft   = stViewportBox.vTL.fX + stTextureBox.vTL.fX;
         fClipTop    = stViewportBox.vTL.fY + stTextureBox.vTL.fY;
-        fClipRight  = fClipLeft + orxMIN(stTextureBox.vBR.fX, stViewportBox.vBR.fX);
-        fClipBottom = fClipTop + orxMIN(stTextureBox.vBR.fY, stViewportBox.vBR.fY);
+        fClipRight  = orxMIN(stViewportBox.vTL.fX + stTextureBox.vBR.fX, stTextureBox.vTL.fX + stViewportBox.vBR.fX);
+        fClipBottom = orxMIN(stViewportBox.vTL.fY + stTextureBox.vBR.fY, stTextureBox.vTL.fY + stViewportBox.vBR.fY);
 
         /* Sets bitmap clipping */
         orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipRight), orxF2U(fClipBottom));

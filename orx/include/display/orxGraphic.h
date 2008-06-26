@@ -73,12 +73,11 @@ extern orxDLLAPI orxVOID                      orxGraphic_Exit();
  */
 extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Create(orxU32 _u32Flags);
 
-/** Creates a graphic from a file
- * @param[in]   _zBitmapFileName              Bitmap to use as data
- * @param[in]   _u32Flags                     Graphic flags (2D / ...)
+/** Creates a graphic from config
+ * @param[in]   _zConfigID            Config ID
  * @ return orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_CreateFromFile(orxCONST orxSTRING _zBitmapFileName, orxU32 _u32Flags);
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigID);
 
 /** Deletes a graphic
  * @param[in]   _pstGraphic       Graphic to delete
