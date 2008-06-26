@@ -11,14 +11,14 @@
  * @file orxAnim.h
  * @date 11/02/2004
  * @author (C) Arcallians
- * 
- * @todo 
+ *
+ * @todo
  * Rewrite with new Graphic/Anim system
  */
 
 /**
  * @addtogroup Anim
- * 
+ *
  * Animation (Data) Module.
  * Allows to creates and handle Animations data.
  * It consists of a structure containing data for a single animation
@@ -28,7 +28,7 @@
  *
  * @{
  */
- 
+
 
 #ifndef _orxANIM_H_
 #define _orxANIM_H_
