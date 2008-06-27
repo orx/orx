@@ -94,6 +94,16 @@ extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetLeft(orxCONST orxTEXTURE
 /** Texture name accessor. */
 extern orxDLLAPI orxSTRING orxFASTCALL    orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture);
 
+/** Sets texture sub-rectangle
+ * @param[in]   _pstTexture     Concerned texture
+ * @param[in]   _fLeft          Left (top left corner X coordinate)
+ * @param[in]   _fTop           Top (top left corner Y coordinate)
+ * @param[in]   _fRight         Right (bottom right corner X coordinate)
+ * @param[in]   _fBottom        Bottom (bottom right corner Y coordinate)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetSubRectangle(orxTEXTURE *_pstTexture, orxFLOAT _fLeft, orxFLOAT _fTop, orxFLOAT _fRight, orxFLOAT _fBottom);
+
 /** Sets texture color
  * @param[in]   _pstTexture     Concerned texture
  * @param[in]   _stColor        Color to set

@@ -58,14 +58,16 @@ struct __orxTEXTURE_t
   orxSTRUCTURE  stStructure;                    /**< Public structure, first structure member : 16 */
   orxU32        u32Counter;                     /**< Self reference counter : 20 */
   orxSTRING     zDataName;                      /**< Associated bitmap name : 24 */
-  orxFLOAT      fWidth;                         /**< Width : 28 */
-  orxFLOAT      fHeight;                        /**< Height : 32 */
-  orxFLOAT      fTop;                           /**< Top : 36 */
-  orxFLOAT      fLeft;                          /**< Left : 40 */
-  orxHANDLE     hData;                          /**< Data : 44 */
+  orxFLOAT      fFullWidth;                     /**< Full width : 28 */
+  orxFLOAT      fFullHeight;                    /**< Full height : 32 */
+  orxFLOAT      fWidth;                         /**< Width : 36 */
+  orxFLOAT      fHeight;                        /**< Height : 40 */
+  orxFLOAT      fTop;                           /**< Top : 44 */
+  orxFLOAT      fLeft;                          /**< Left : 48 */
+  orxHANDLE     hData;                          /**< Data : 52 */
 
   /* Padding */
-  orxPAD(44)
+  orxPAD(52)
 };
 
 /*
@@ -457,10 +459,12 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       _pstTexture->hData      = (orxHANDLE)pstTexture;
 
       /* Copies size & TL corner */
-      _pstTexture->fWidth   = pstTexture->fWidth;
-      _pstTexture->fHeight  = pstTexture->fHeight;
-      _pstTexture->fTop     = pstTexture->fTop;
-      _pstTexture->fLeft    = pstTexture->fLeft;
+      _pstTexture->fFullWidth   = pstTexture->fFullWidth;
+      _pstTexture->fFullHeight  = pstTexture->fFullHeight;
+      _pstTexture->fWidth       = pstTexture->fWidth;
+      _pstTexture->fHeight      = pstTexture->fHeight;
+      _pstTexture->fTop         = pstTexture->fTop;
+      _pstTexture->fLeft        = pstTexture->fLeft;
 
       /* Updates external texture self referenced counter */
       pstTexture->u32Counter++;
@@ -479,10 +483,12 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       orxDisplay_GetBitmapSize(_pstBitmap, &u32Width, &u32Height);
 
       /* Stores it */
-      _pstTexture->fWidth   = orxU2F(u32Width);
-      _pstTexture->fHeight  = orxU2F(u32Height);
-      _pstTexture->fTop     = orxFLOAT_0;
-      _pstTexture->fLeft    = orxFLOAT_0;
+      _pstTexture->fFullWidth   = orxU2F(u32Width);
+      _pstTexture->fFullHeight  = orxU2F(u32Height);
+      _pstTexture->fWidth       = _pstTexture->fFullWidth;
+      _pstTexture->fHeight      = _pstTexture->fFullHeight;
+      _pstTexture->fTop         = orxFLOAT_0;
+      _pstTexture->fLeft        = orxFLOAT_0;
     }
 
     /* Updates texture name */
@@ -734,6 +740,52 @@ orxSTRING orxFASTCALL orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture)
 
   /* Done! */
   return zResult;
+}
+
+/** Sets texture sub-rectangle
+ * @param[in]   _pstTexture     Concerned texture
+ * @param[in]   _fLeft          Left (top left corner X coordinate)
+ * @param[in]   _fTop           Top (top left corner Y coordinate)
+ * @param[in]   _fRight         Right (bottom right corner X coordinate)
+ * @param[in]   _fBottom        Bottom (bottom right corner Y coordinate)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxTexture_SetSubRectangle(orxTEXTURE *_pstTexture, orxFLOAT _fLeft, orxFLOAT _fTop, orxFLOAT _fRight, orxFLOAT _fBottom)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTexture);
+  orxASSERT(_fLeft >= orxFLOAT_0);
+  orxASSERT(_fTop >= orxFLOAT_0);
+  orxASSERT(_fRight > _fLeft);
+  orxASSERT(_fBottom > _fTop);
+
+  /* Has bitmap and are coordinates valid? */
+  if((orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) != orxFALSE)
+  && (_fRight <= _pstTexture->fFullWidth)
+  && (_fBottom <= _pstTexture->fFullHeight))
+  {
+    /* Stores sub-rectangle values */
+    _pstTexture->fLeft    = _fLeft;
+    _pstTexture->fTop     = _fTop;
+    _pstTexture->fWidth   = _fRight - _fLeft;
+    _pstTexture->fHeight  = _fBottom - _fTop;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Sets texture color

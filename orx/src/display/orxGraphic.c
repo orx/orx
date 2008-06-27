@@ -47,6 +47,8 @@
 /** Misc defines
  */
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME     "Texture"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_TL       "TextureTL"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_BR       "TextureBR"
 #define orxGRAPHIC_KZ_CONFIG_PIVOT            "Pivot"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
@@ -251,7 +253,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
     if(pstResult != orxNULL)
     {
       orxSTRING zTextureName;
-      
+
       /* Gets texture name */
       zTextureName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
 
@@ -263,45 +265,73 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
         /* Creates textures */
         pstTexture = orxTexture_CreateFromFile(zTextureName);
 
-        /* Links it */
-        if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
+        /* Valid? */
+        if(pstTexture != orxNULL)
         {
-          orxVECTOR vPivot;
-
-          /* Uses centered pivot? */
-          if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT)), orxGRAPHIC_KZ_CENTERED_PIVOT) == 0)
+          /* Links it */
+          if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
           {
-            orxFLOAT fWidth, fHeight;
+            orxVECTOR vPivot;
 
-            /* Gets object size */
-            if(orxGraphic_GetSize(pstResult, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+            /* Has corners? */
+            if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL) != orxFALSE)
+            && (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_BR) != orxFALSE))
             {
-              /* Inits pivot */
-              orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
+              orxAABOX stTextureBox;
+
+              /* Gets both corners */
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL, &(stTextureBox.vTL));
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_BR, &(stTextureBox.vBR));
+
+              /* Applies them */
+              orxTexture_SetSubRectangle(pstTexture, stTextureBox.vTL.fX, stTextureBox.vTL.fY, stTextureBox.vBR.fX, stTextureBox.vBR.fY);
             }
-            else
+
+            /* Uses centered pivot? */
+            if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT)), orxGRAPHIC_KZ_CENTERED_PIVOT) == 0)
+            {
+              orxFLOAT fWidth, fHeight;
+
+              /* Gets object size */
+              if(orxGraphic_GetSize(pstResult, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+              {
+                /* Inits pivot */
+                orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
+              }
+              else
+              {
+                orxVector_Copy(&vPivot, &orxVECTOR_0);
+              }
+            }
+            /* Gets pivot value */
+            else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) == orxNULL)
             {
               orxVector_Copy(&vPivot, &orxVECTOR_0);
             }
+
+            /* Updates its pivot */
+            orxGraphic_SetPivot(pstResult, &vPivot);
+
+            /* Updates status flags */
+            orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
           }
-          /* Gets pivot value */
-          else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) == orxNULL)
+          else
           {
-            orxVector_Copy(&vPivot, &orxVECTOR_0);
+            /* !!! MSG !!! */
+
+            /* Deletes structures */
+            orxTexture_Delete(pstTexture);
+            orxGraphic_Delete(pstResult);
+
+            /* Updates result */
+            pstResult = orxNULL;
           }
-
-          /* Updates its pivot */
-          orxGraphic_SetPivot(pstResult, &vPivot);
-
-          /* Updates status flags */
-          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
         }
         else
         {
           /* !!! MSG !!! */
 
           /* Deletes structures */
-          orxTexture_Delete(pstTexture);
           orxGraphic_Delete(pstResult);
 
           /* Updates result */
