@@ -50,8 +50,12 @@
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_TL       "TextureTL"
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_BR       "TextureBR"
 #define orxGRAPHIC_KZ_CONFIG_PIVOT            "Pivot"
+#define orxGRAPHIC_KZ_CONFIG_FLIP              "Flip"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
+#define orxGRAPHIC_KZ_X                       "x"
+#define orxGRAPHIC_KZ_Y                       "y"
+#define orxGRAPHIC_KZ_BOTH                    "both"
 
 
 /***************************************************************************
@@ -272,6 +276,11 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
           if(orxGraphic_SetData(pstResult, (orxSTRUCTURE *)pstTexture) != orxSTATUS_FAILURE)
           {
             orxVECTOR vPivot;
+            orxSTRING zFlipping;
+            orxU32    u32Flags;
+
+            /* Inits default 2D flags */
+            u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D;
 
             /* Has corners? */
             if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL) != orxFALSE)
@@ -312,8 +321,30 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             /* Updates its pivot */
             orxGraphic_SetPivot(pstResult, &vPivot);
 
+            /* Gets flipping value */
+            zFlipping = orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP));
+
+            /* X flipping? */
+            if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_X) == 0)
+            {
+              /* Updates frame flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X;
+            }
+            /* Y flipping? */
+            else if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_Y) == 0)
+            {
+              /* Updates frame flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_Y;
+            }
+            /* Both flipping? */
+            else if(orxString_Compare(zFlipping, orxGRAPHIC_KZ_BOTH) == 0)
+            {
+              /* Updates frame flags */
+              u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X | orxGRAPHIC_KU32_FLAG_FLIP_Y;
+            }
+
             /* Updates status flags */
-            orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
+            orxStructure_SetFlags(pstResult, u32Flags, orxGRAPHIC_KU32_FLAG_NONE);
           }
           else
           {

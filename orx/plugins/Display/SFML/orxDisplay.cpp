@@ -430,22 +430,36 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   poSprite = (sf::Sprite *)_pstSrc;
 
   /* Updates its center */
-  poSprite->SetCenter(_pstTransform->s32SrcX, _pstTransform->s32SrcY);
+  poSprite->SetCenter((float)_pstTransform->s32SrcX, (float)_pstTransform->s32SrcY);
 
   /* Updates its rotation */
   poSprite->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
 
+  /* Updates its flipping */
+  if(_pstTransform->fScaleX < 0.0f)
+  {
+    poSprite->FlipX(true);
+  }
+  if(_pstTransform->fScaleY < 0.0f)
+  {
+    poSprite->FlipY(true);
+  }
+
   /* Updates its scale */
-  poSprite->SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
+  poSprite->SetScale(orxMath_FAbs(_pstTransform->fScaleX), orxMath_FAbs(_pstTransform->fScaleY));
 
   /* Blits it */
   eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->s32DstX, _pstTransform->s32DstY);
 
   /* Resets its center */
-  poSprite->SetCenter(0, 0);
+  poSprite->SetCenter(0.0f, 0.0f);
 
   /* Resets its rotation */
   poSprite->SetRotation(0.0f);
+
+  /* Resets its flipping */
+  poSprite->FlipX(false);
+  poSprite->FlipY(false);
 
   /* Resets its scale */
   poSprite->SetScale(1.0f, 1.0f);

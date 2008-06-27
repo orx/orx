@@ -68,15 +68,16 @@
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
+#define orxOBJECT_KZ_CONFIG_FLIP                "Flip"
 #define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
-#define orxOBJECT_KZ_SCROLLING_X                "x"
-#define orxOBJECT_KZ_SCROLLING_Y                "y"
-#define orxOBJECT_KZ_SCROLLING_BOTH             "both"
+#define orxOBJECT_KZ_X                          "x"
+#define orxOBJECT_KZ_Y                          "y"
+#define orxOBJECT_KZ_BOTH                       "both"
 
 
 /***************************************************************************
@@ -405,7 +406,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zBodyID;
+      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyID;
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags;
       orxVECTOR vPosition;
@@ -419,19 +420,19 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       zAutoScrolling = orxString_LowerCase(orxConfig_GetString(orxOBJECT_KZ_CONFIG_AUTO_SCROLL));
 
       /* X auto scrolling? */
-      if(orxString_Compare(zAutoScrolling, orxOBJECT_KZ_SCROLLING_X) == 0)
+      if(orxString_Compare(zAutoScrolling, orxOBJECT_KZ_X) == 0)
       {
         /* Updates frame flags */
         u32FrameFlags   = orxFRAME_KU32_FLAG_SCROLL_X;
       }
       /* Y auto scrolling? */
-      else if(orxString_Compare(zAutoScrolling, orxOBJECT_KZ_SCROLLING_Y) == 0)
+      else if(orxString_Compare(zAutoScrolling, orxOBJECT_KZ_Y) == 0)
       {
         /* Updates frame flags */
         u32FrameFlags   = orxFRAME_KU32_FLAG_SCROLL_Y;
       }
       /* Both auto scrolling? */
-      else if(orxString_Compare(zAutoScrolling, orxOBJECT_KZ_SCROLLING_BOTH) == 0)
+      else if(orxString_Compare(zAutoScrolling, orxOBJECT_KZ_BOTH) == 0)
       {
         /* Updates frame flags */
         u32FrameFlags   = orxFRAME_KU32_FLAG_SCROLL_X | orxFRAME_KU32_FLAG_SCROLL_Y;
@@ -440,6 +441,28 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       {
         /* Updates frame flags */
         u32FrameFlags   = orxFRAME_KU32_FLAG_NONE;
+      }
+
+      /* Gets flipping value */
+      zFlipping = orxString_LowerCase(orxConfig_GetString(orxOBJECT_KZ_CONFIG_FLIP));
+
+      /* X flipping? */
+      if(orxString_Compare(zFlipping, orxOBJECT_KZ_X) == 0)
+      {
+        /* Updates frame flags */
+        u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_X;
+      }
+      /* Y flipping? */
+      else if(orxString_Compare(zFlipping, orxOBJECT_KZ_Y) == 0)
+      {
+        /* Updates frame flags */
+        u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_Y;
+      }
+      /* Both flipping? */
+      else if(orxString_Compare(zFlipping, orxOBJECT_KZ_BOTH) == 0)
+      {
+        /* Updates frame flags */
+        u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_X | orxFRAME_KU32_FLAG_FLIP_Y;
       }
 
       /* Depth scaling active? */

@@ -46,6 +46,10 @@
 
 #define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic flag  */
 
+#define orxGRAPHIC_KU32_FLAG_FLIP_X           0x00000010  /**< X axis flipping flag */
+#define orxGRAPHIC_KU32_FLAG_FLIP_Y           0x00000020  /**< Y axis flipping flag */
+#define orxGRAPHIC_KU32_MASK_FLIP_BOTH        0x00000030  /**< Both axis flippinf mask */
+
 #define orxGRAPHIC_KU32_MASK_USER_ALL         0x000000FF  /**< User all ID mask */
 
 

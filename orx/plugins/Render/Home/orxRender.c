@@ -163,8 +163,27 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     fClipLeft   = orxTexture_GetLeft(pstTexture);
     fClipBottom = fClipTop + orxTexture_GetHeight(pstTexture);
     fClipRight  = fClipLeft + orxTexture_GetWidth(pstTexture);
-    
+
+    /* Updates its clipping */
     orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipRight), orxF2U(fClipBottom));
+
+    /* Uses flipping? */
+    if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_MASK_FLIP_BOTH) != orxFALSE)
+    {
+      /* X-axis flip? */
+      if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_X) != orxFALSE)
+      {
+        /* Updates render scale */
+        fScaleX = -fScaleX;
+      }
+
+      /* Y-axis flip? */
+      if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_Y) != orxFALSE)
+      {
+        /* Updates render scale */
+        fScaleY = -fScaleY;
+      }
+    }
 
     /* No scale nor rotation? */
     if((fRotation == orxFLOAT_0) && (fScaleX == orxFLOAT_1) && (fScaleY == orxFLOAT_1))
@@ -496,6 +515,24 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                   {
                     /* Updates render position */
                     vRenderPos.fY *= fScroll;
+                  }
+                }
+
+                /* Uses flipping? */
+                if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_FLIP_BOTH) != orxFALSE)
+                {
+                  /* X-axis flip? */
+                  if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_X) != orxFALSE)
+                  {
+                    /* Updates render scale */
+                    fRenderScaleX = -fRenderScaleX;
+                  }
+
+                  /* Y-axis flip? */
+                  if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_Y) != orxFALSE)
+                  {
+                    /* Updates render scale */
+                    fRenderScaleY = -fRenderScaleY;
                   }
                 }
 
