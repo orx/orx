@@ -119,6 +119,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D)))
   {
+    orxRGBA         stColor;
     orxBITMAP      *pstBitmap;
     orxTEXTURE     *pstTexture;
     orxANIMPOINTER *pstAnimPointer;
@@ -185,6 +186,16 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       }
     }
 
+    /* Has color? */
+    if(orxObject_HasColor(_pstObject) != orxFALSE)
+    {
+      /* Backups previous color */
+      stColor = orxDisplay_GetBitmapColor(pstBitmap);
+
+      /* Updates display color */
+      orxDisplay_SetBitmapColor(pstBitmap, orxObject_GetColor(_pstObject));
+    }
+
     /* No scale nor rotation? */
     if((fRotation == orxFLOAT_0) && (fScaleX == orxFLOAT_1) && (fScaleY == orxFLOAT_1))
     {
@@ -220,6 +231,13 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
+    }
+    
+    /* Has color? */
+    if(orxObject_HasColor(_pstObject) != orxFALSE)
+    {
+      /* Restores its original color */
+      orxDisplay_SetBitmapColor(pstBitmap, stColor);
     }
   }
   else

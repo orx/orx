@@ -381,9 +381,28 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, or
 
 extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
   sf::Sprite *poSprite;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != spoScreen));
+
+  /* Gets sprite */
+  poSprite = (sf::Sprite *)_pstBitmap;
+
+  /* Sets sprite color */
+  poSprite->SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxRGBA orxDisplay_SFML_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)
+{
+  sf::Sprite *poSprite;
+  sf::Color   oColor;
+  orxRGBA     stResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -392,11 +411,14 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstBitmap, orxRG
   /* Gets image */
   poSprite = (sf::Sprite *)_pstBitmap;
 
-  /* Sets sprite color */
-  poSprite->SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
+  /* Gets its color */
+  oColor = poSprite->GetColor();
+
+  /* Updates result */
+  stResult = orx2RGBA(oColor.r, oColor.g, oColor.b, oColor.a);
 
   /* Done! */
-  return eResult;
+  return stResult;
 }
 
 extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc,  orxCONST orxFLOAT _fPosX, orxFLOAT _fPosY)
@@ -748,6 +770,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapClipping, DISPLAY, SET
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_BlitBitmap, DISPLAY, BLIT_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawText, DISPLAY, DRAW_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_END();

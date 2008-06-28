@@ -47,6 +47,7 @@
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
 #define orxOBJECT_KU32_FLAG_2D                  0x00000001  /**< 2D flag */
+#define orxOBJECT_KU32_FLAG_HAS_COLOR           0x00000002  /**< Has color flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
@@ -69,6 +70,7 @@
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
 #define orxOBJECT_KZ_CONFIG_FLIP                "Flip"
+#define orxOBJECT_KZ_CONFIG_COLOR               "Color"
 #define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
@@ -91,9 +93,6 @@ typedef struct __orxOBJECT_STORAGE_t
   orxSTRUCTURE *pstStructure;                   /**< Structure pointer : 4 */
   orxU32        u32Flags;                       /**< Flags : 8 */
 
-  /* Padding */
-  orxPAD(8)
-
 } orxOBJECT_STORAGE;
 
 /** Object structure
@@ -102,9 +101,10 @@ struct __orxOBJECT_t
 {
   orxSTRUCTURE      stStructure;                /**<Public structure, first structure member : 16 */
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 48 */
+  orxRGBA           stColor;                    /**< Object color: 52 */
 
   /* Padding */
-  orxPAD(48)
+  orxPAD(52)
 };
 
 /** Static structure
@@ -569,6 +569,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
         /* Updates object scale */
         orxObject_SetScale(pstResult, vScale.fX, vScale.fY);
+      }
+
+      /* Has color? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_COLOR) != orxFALSE)
+      {
+        /* Updates object color */
+        orxObject_SetColor(pstResult, orxConfig_GetU32(orxOBJECT_KZ_CONFIG_COLOR));
       }
 
       /* *** Body *** */
@@ -1637,32 +1644,88 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
  */
 orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, orxRGBA _stColor)
 {
-  orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets graphic */
-  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+  /* Stores color */
+  _pstObject-> stColor = _stColor;
 
-  /* Valid? */
-  if(pstGraphic != orxNULL)
+  /* Updates its flag */
+  orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR, orxOBJECT_KU32_FLAG_NONE);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Clears object color
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_ClearColor(orxOBJECT *_pstObject)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates its flag */
+  orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_COLOR);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Object has color accessor
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxObject_HasColor(orxCONST orxOBJECT *_pstObject)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR);
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets object color
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxRGBA
+ */
+orxRGBA orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject)
+{
+  orxRGBA stResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Has color? */
+  if(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR))
   {
-    /* Sets its color */
-    eResult = orxGraphic_SetColor(pstGraphic, _stColor);
+    /* Updates result */
+    stResult = _pstObject->stColor;
   }
   else
   {
     /* !!! MSG !!! */
 
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    /* Clears result */
+    stResult = 0;
   }
 
   /* Done! */
-  return eResult;
+  return stResult;
 }
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)

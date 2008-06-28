@@ -287,6 +287,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_p
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, orxRGBA _stColor);
 
+/** Clears object color
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ClearColor(orxOBJECT *_pstObject);
+
+/** Object has color accessor
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(orxCONST orxOBJECT *_pstObject);
+
+/** Gets object color
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxRGBA
+ */
+extern orxDLLAPI orxRGBA orxFASTCALL        orxObject_GetColor(orxCONST orxOBJECT *_pstObject);
+
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
  * @param[in]   _pstCheckBox    Box to check intersection with
