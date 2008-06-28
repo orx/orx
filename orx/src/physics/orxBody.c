@@ -667,8 +667,8 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
     stBodyPartDef.fFriction     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FRICTION);
     stBodyPartDef.fRestitution  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_RESTITUTION);
     stBodyPartDef.fDensity      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DENSITY);
-    stBodyPartDef.u16SelfFlags  = (orxU16)orxConfig_GetS32(orxBODY_KZ_CONFIG_SELF_FLAGS);
-    stBodyPartDef.u16CheckMask  = (orxU16)orxConfig_GetS32(orxBODY_KZ_CONFIG_CHECK_MASK);
+    stBodyPartDef.u16SelfFlags  = (orxU16)orxConfig_GetU32(orxBODY_KZ_CONFIG_SELF_FLAGS);
+    stBodyPartDef.u16CheckMask  = (orxU16)orxConfig_GetU32(orxBODY_KZ_CONFIG_CHECK_MASK);
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_SOLID) != orxFALSE)
     {
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SOLID;

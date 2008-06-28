@@ -78,11 +78,17 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(orxCONST orxSTRING 
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasValue(orxCONST orxSTRING _zKey);
 
-/** Reads an integer value from config
+/** Reads a signed integer value from config
  * @param[in] _zKey             Key name
  * @return The value
  */
 extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetS32(orxCONST orxSTRING _zKey);
+
+/** Reads an unsigned integer value from config
+ * @param[in] _zKey             Key name
+ * @return The value
+ */
+extern orxDLLAPI orxU32 orxFASTCALL     orxConfig_GetU32(orxCONST orxSTRING _zKey);
 
 /** Reads a float value from config
  * @param[in] _zKey             Key name
@@ -110,12 +116,19 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(orxCONST orxSTRING _zK
 extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pstVector);
 
 
-/** Writes an integer value to config
+/** Writes a signed integer value to config
  * @param[in] _zKey             Key name
  * @param[in] _s32Value         Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Value);
+
+/** Writes an unsigned integer value to config
+ * @param[in] _zKey             Key name
+ * @param[in] _u32Value         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetU32(orxCONST orxSTRING _zKey, orxU32 _u32Value);
 
 /** Writes a float value to config
  * @param[in] _zKey             Key name

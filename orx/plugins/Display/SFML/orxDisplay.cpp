@@ -74,6 +74,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32            u32Flags;
   orxU32            u32ScreenWidth, u32ScreenHeight;
   sf::RenderWindow *poRenderWindow;
+  sf::Font         *poFont;
 
   orxBANK          *pstTextBank;
 
@@ -118,8 +119,17 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
     /* Sets config section */
     orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-    /* Allocates text */
-    pstText->poString = new sf::String(_zString/*, orxConfig_GetString(orxDISPLAY_KZ_CONFIG_FONT)*/);
+    /* Has font? */
+    if(sstDisplay.poFont != orxNULL)
+    {
+      /* Allocates text */
+      pstText->poString = new sf::String(_zString, *(sstDisplay.poFont));
+    }
+    else
+    {
+      /* Allocates text */
+      pstText->poString = new sf::String(_zString);
+    }
 
     /* Sets its color */
     pstText->poString->SetColor(sf::Color(orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor), orxRGBA_A(_stColor)));
@@ -630,15 +640,15 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     /* Valid? */
     if(sstDisplay.pstTextBank != orxNULL)
     {
-      orxS32 s32ConfigWidth, s32ConfigHeight;
+      orxU32 u32ConfigWidth, u32ConfigHeight;
 
       /* Gets resolution from config */
       orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
-      s32ConfigWidth  = orxConfig_GetS32(orxDISPLAY_KZ_CONFIG_WIDTH);
-      s32ConfigHeight = orxConfig_GetS32(orxDISPLAY_KZ_CONFIG_HEIGHT);
+      u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
+      u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
 
       /* Not valid? */
-      if((s32ConfigWidth <= 0) || (s32ConfigHeight <= 0) || ((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(s32ConfigWidth, s32ConfigHeight), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sf::Style::Close)) == orxNULL))
+      if((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(u32ConfigWidth, u32ConfigHeight), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sf::Style::Close)) == orxNULL)
       {
         /* Inits default rendering window */
         sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sf::Style::Close);
@@ -650,8 +660,23 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
       else
       {
         /* Stores values */
-        sstDisplay.u32ScreenWidth   = s32ConfigWidth;
-        sstDisplay.u32ScreenHeight  = s32ConfigHeight;
+        sstDisplay.u32ScreenWidth   = u32ConfigWidth;
+        sstDisplay.u32ScreenHeight  = u32ConfigHeight;
+      }
+
+      /* Has config font? */
+      if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_FONT) != orxFALSE)
+      {
+        /* Allocates the font */
+        sstDisplay.poFont = new sf::Font;
+
+        /* Tries to load it */
+        if(sstDisplay.poFont->LoadFromFile(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_FONT)) == false)
+        {
+          /* Deletes it */
+          delete sstDisplay.poFont;
+          sstDisplay.poFont = orxNULL;
+        }
       }
 
       /* Waits for vertical sync */
@@ -678,6 +703,13 @@ extern "C" orxVOID orxDisplay_SFML_Exit()
   {
     /* Deletes rendering window */
     delete sstDisplay.poRenderWindow;
+
+    /* Has font? */
+    if(sstDisplay.poFont != orxNULL)
+    {
+      /* Deletes it */
+      delete sstDisplay.poFont;
+    }
 
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));

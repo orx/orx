@@ -790,7 +790,7 @@ orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
   return bResult;
 }
 
-/** Reads an integer value from config
+/** Reads a signed integer value from config
  * @param[in] _zKey             Key name
  * @param[in] _s32DefaultValue  Default value if key is not found
  * @return The value
@@ -864,6 +864,82 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
 
   /* Done! */
   return s32Result;
+}
+
+/** Reads an unsigned integer value from config
+ * @param[in] _zKey             Key name
+ * @param[in] _s32DefaultValue  Default value if key is not found
+ * @return The value
+ */
+orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxU32            u32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+
+  /* Gets corresponding entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    orxU32 u32Value;
+
+    /* Hexadecimal? */
+    if((pstEntry->zValue[0] != orxCHAR_EOL)
+    && (pstEntry->zValue[0] == '0')
+    && (pstEntry->zValue[1] != orxCHAR_EOL)
+    && ((pstEntry->zValue[1] | 0x20) == 'x'))
+    {
+      /* Gets hexa value */
+      if(orxString_ToU32(pstEntry->zValue + 2, 16, &u32Value, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        u32Result = u32Value;
+      }
+    }
+    /* Binary? */
+    else if((pstEntry->zValue[0] != orxCHAR_EOL)
+         && (pstEntry->zValue[0] == '0')
+         && (pstEntry->zValue[1] != orxCHAR_EOL)
+         && ((pstEntry->zValue[1] | 0x20) == 'b'))
+    {
+      /* Gets binary value */
+      if(orxString_ToU32(pstEntry->zValue + 2, 2, &u32Value, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        u32Result = u32Value;
+      }
+    }
+    /* Octal? */
+    else if((pstEntry->zValue[0] != orxCHAR_EOL)
+    && ((pstEntry->zValue[0] | 0x20) == '0'))
+    {
+      /* Gets octal value */
+      if(orxString_ToU32(pstEntry->zValue + 1, 8, &u32Value, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        u32Result = u32Value;
+      }
+    }
+    /* Decimal */
+    else
+    {
+      /* Gets decimal value */
+      if(orxString_ToU32(pstEntry->zValue, 10, &u32Value, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        u32Result = u32Value;
+      }
+    }
+  }
+
+  /* Done! */
+  return u32Result;
 }
 
 /** Reads a float value from config
@@ -1020,6 +1096,45 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Valu
 
   /* Gets literal value */
   orxString_Print(zValue, "%d", _s32Value);
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(_zKey);
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+  }
+
+  /* Adds new entry */
+  eResult = orxConfig_AddEntry(_zKey, zValue);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Writes an unsigned integer value to config
+ * @param[in] _zKey             Key name
+ * @param[in] _u32Value         Value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetU32(orxCONST orxSTRING _zKey, orxU32 _u32Value)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxCHAR           zValue[16];
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+
+  /* Clears buffer */
+  orxMemory_Zero(zValue, 16 * sizeof(orxCHAR));
+
+  /* Gets literal value */
+  orxString_Print(zValue, "%u", _u32Value);
 
   /* Gets entry */
   pstEntry = orxConfig_GetEntry(_zKey);

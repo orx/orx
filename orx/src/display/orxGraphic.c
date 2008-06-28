@@ -50,7 +50,8 @@
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_TL       "TextureTL"
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_BR       "TextureBR"
 #define orxGRAPHIC_KZ_CONFIG_PIVOT            "Pivot"
-#define orxGRAPHIC_KZ_CONFIG_FLIP              "Flip"
+#define orxGRAPHIC_KZ_CONFIG_COLOR            "Color"
+#define orxGRAPHIC_KZ_CONFIG_FLIP             "Flip"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
 #define orxGRAPHIC_KZ_X                       "x"
@@ -341,6 +342,18 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             {
               /* Updates frame flags */
               u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X | orxGRAPHIC_KU32_FLAG_FLIP_Y;
+            }
+
+            /* Has color? */
+            if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_COLOR) != orxFALSE)
+            {
+              orxRGBA stColor;
+
+              /* Gets it */
+              stColor = orxConfig_GetU32(orxGRAPHIC_KZ_CONFIG_COLOR);
+
+              /* Applies it */
+              orxTexture_SetColor(pstTexture, stColor);
             }
 
             /* Updates status flags */

@@ -829,7 +829,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     if(sstPhysics.poWorld != orxNULL)
     {
       orxFLOAT  fFrequency, fTickSize, fRatio;
-      orxS32    s32IterationsPerStep;
+      orxU32    u32IterationsPerStep;
 
       /* Creates listeners */
       sstPhysics.poContactListener  = new orxPhysicsContactListener();
@@ -858,13 +858,13 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       sstPhysics.fInvDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
 
       /* Gets iteration per step number from config */
-      s32IterationsPerStep = orxConfig_GetS32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
+      u32IterationsPerStep = orxConfig_GetU32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
 
       /* Valid? */
-      if(s32IterationsPerStep > 0)
+      if(u32IterationsPerStep > 0)
       {
         /* Stores it */
-        sstPhysics.u32Iterations = (orxU32)s32IterationsPerStep;
+        sstPhysics.u32Iterations = u32IterationsPerStep;
       }
       else
       {

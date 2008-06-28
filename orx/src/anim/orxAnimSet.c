@@ -1513,7 +1513,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
               if(orxConfig_HasValue(acPriorityID) != orxFALSE)
               {
                 /* Updates link priority */
-                orxAnimSet_SetLinkProperty(pstResult, hLink, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetS32(acPriorityID));
+                orxAnimSet_SetLinkProperty(pstResult, hLink, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetU32(acPriorityID));
               }
             }
 

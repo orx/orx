@@ -207,7 +207,7 @@ orxSTATIC orxINLINE orxS32              orxString_NCompare(orxCONST orxSTRING _z
   return strncmp(_zString1, _zString2, _u32NbChar);
 }
 
-/** Convert a String to a value
+/** Convert a String to a signed int value
  * @param[in]   _zString        String To convert
  * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
  * @param[out]  _ps32OutValue   Converted value
@@ -225,7 +225,49 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxCONST orxSTRING _zStr
 
   /* Convert */
   *_ps32OutValue = strtol(_zString, &pcEnd, _u32Base);
+  
+  /* Valid conversion ? */
+  if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
+  /* Asks for remaining string? */
+  if(_pzRemaining != orxNULL)
+  {
+    /* Stores it */
+    *_pzRemaining = pcEnd;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Convert a String to an unsigned int value
+ * @param[in]   _zString        String To convert
+ * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
+ * @param[out]  _ps32OutValue   Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATIC orxINLINE orxSTATUS           orxString_ToU32(orxCONST orxSTRING _zString, orxU32 _u32Base, orxU32 *_pu32OutValue, orxSTRING *_pzRemaining)
+{
+  orxCHAR    *pcEnd;
+  orxSTATUS   eResult;
+
+  /* Correct parameters ? */
+  orxASSERT(_pu32OutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Convert */
+  *_pu32OutValue = strtoul(_zString, &pcEnd, _u32Base);
+  
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
   {
