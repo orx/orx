@@ -171,7 +171,8 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
     /* Is object enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
-      orxU32 i;
+      orxU32    i;
+      orxFRAME *pstFrame;
 
       /* !!! TODO !!! */
       /* Updates culling infos before calling update subfunctions */
@@ -186,6 +187,28 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
           if(orxStructure_Update(pstObject->astStructure[i].pstStructure, pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
           {
             /* !!! MSG !!! */
+          }
+        }
+      }
+
+      /* Has frame? */
+      if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
+      {
+        orxBODY *pstBody;
+        
+        /* Gets its body */
+        pstBody = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
+        
+        /* Valid? */
+        if(pstBody != orxNULL)
+        {
+          /* Is not a root's children frame? */
+          if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
+          {
+            orxVECTOR vPosition;
+
+            /* Updates body position with frame's one */
+            orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition));
           }
         }
       }
