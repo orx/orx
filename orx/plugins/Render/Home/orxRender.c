@@ -192,7 +192,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       orxVector_Sub(&vPosition, &vPosition, &vPivot);
 
       /* Blits bitmap */
-      eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, orxF2U(vPosition.fX), orxF2U(vPosition.fY));
+      eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, vPosition.fX, vPosition.fY);
     }
     else
     {
@@ -202,10 +202,10 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
         orxBITMAP_TRANSFORM stTransform;
 
         /* Sets transformation values */
-        stTransform.s32SrcX   = orxF2S(vPivot.fX);
-        stTransform.s32SrcY   = orxF2S(vPivot.fY);
-        stTransform.s32DstX   = orxF2S(vPosition.fX);
-        stTransform.s32DstY   = orxF2S(vPosition.fY);
+        stTransform.fSrcX     = vPivot.fX;
+        stTransform.fSrcY     = vPivot.fY;
+        stTransform.fDstX     = vPosition.fX;
+        stTransform.fDstY     = vPosition.fY;
         stTransform.fScaleX   = fScaleX;
         stTransform.fScaleY   = fScaleY;
         stTransform.fRotation = fRotation;
@@ -669,7 +669,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 
     /* Inits it */
     stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(0.8f);
-    stTextTransform.s32DstX = stTextTransform.s32DstY = 10;
+    stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
 
     /* Writes text */
     orxString_Print(acText, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
