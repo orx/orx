@@ -133,6 +133,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetSize(orxCONST orxGRA
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxRGBA _stColor);
 
+/** Clears graphic color
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_ClearColor(orxGRAPHIC *_pstGraphic);
+
+/** Graphic has color accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasColor(orxCONST orxGRAPHIC *_pstGraphic);
+
+/** Gets graphic color
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxRGBA
+ */
+extern orxDLLAPI orxRGBA orxFASTCALL          orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic);
+
 #endif /* _orxGRAPHIC_H_ */
 
 

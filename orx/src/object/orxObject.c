@@ -574,7 +574,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Has color? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_COLOR) != orxFALSE)
       {
-        /* Updates object color */
+        /* Applies it */
         orxObject_SetColor(pstResult, orxConfig_GetU32(orxOBJECT_KZ_CONFIG_COLOR));
       }
 
@@ -1651,7 +1651,7 @@ orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, orxRGBA _stColor
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Stores color */
-  _pstObject-> stColor = _stColor;
+  _pstObject->stColor = _stColor;
 
   /* Updates its flag */
   orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR, orxOBJECT_KU32_FLAG_NONE);

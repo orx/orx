@@ -34,12 +34,15 @@
 /** Module flags
  */
 
-#define orxGRAPHIC_KU32_STATIC_FLAG_NONE      0x00000000
+#define orxGRAPHIC_KU32_STATIC_FLAG_NONE      0x00000000  /**< No flags  */
 
-#define orxGRAPHIC_KU32_STATIC_FLAG_READY     0x00000001
+#define orxGRAPHIC_KU32_STATIC_FLAG_READY     0x00000001  /**< Ready flag  */
 
 
+/** Graphic flags
+ */
 #define orxGRAPHIC_KU32_FLAG_INTERNAL         0x10000000  /**< Internal structure handling flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_COLOR        0x20000000  /**< Has color flag  */
 
 #define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
 
@@ -70,8 +73,9 @@ struct __orxGRAPHIC_t
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
   orxSTRUCTURE *pstData;                    /**< Data structure : 20 */
   orxVECTOR     vPivot;                     /**< Pivot : 36 */
+  orxRGBA       stColor;                    /**< Color : 40 */
 
-  orxPAD(36)
+  orxPAD(40)
 };
 
 /** Static structure
@@ -347,13 +351,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             /* Has color? */
             if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_COLOR) != orxFALSE)
             {
-              orxRGBA stColor;
-
-              /* Gets it */
-              stColor = orxConfig_GetU32(orxGRAPHIC_KZ_CONFIG_COLOR);
-
               /* Applies it */
-              orxTexture_SetColor(pstTexture, stColor);
+              orxGraphic_SetColor(pstResult, orxConfig_GetU32(orxGRAPHIC_KZ_CONFIG_COLOR));
             }
 
             /* Updates status flags */
@@ -613,20 +612,80 @@ orxSTATUS orxFASTCALL orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxRGBA _stCo
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
-  /* Valid 2D data? */
-  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
+  /* Stores color */
+  _pstGraphic->stColor = _stColor;
+
+  /* Updates its flag */
+  orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Clears graphic color
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_ClearColor(orxGRAPHIC *_pstGraphic)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates its flag */
+  orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_HAS_COLOR);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Graphic has color accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxGraphic_HasColor(orxCONST orxGRAPHIC *_pstGraphic)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR);
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets graphic color
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxRGBA
+ */
+orxRGBA orxFASTCALL orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic)
+{
+  orxRGBA stResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Has color? */
+  if(orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR))
   {
-    /* Sets color */
-    eResult = orxTexture_SetColor(orxTEXTURE(_pstGraphic->pstData), _stColor);
+    /* Updates result */
+    stResult = _pstGraphic->stColor;
   }
   else
   {
     /* !!! MSG !!! */
 
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    /* Clears result */
+    stResult = 0;
   }
 
   /* Done! */
-  return eResult;
+  return stResult;
 }
