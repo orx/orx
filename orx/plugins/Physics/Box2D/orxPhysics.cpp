@@ -890,6 +890,13 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       /* Creates physics clock */
       sstPhysics.pstClock = orxClock_Create(fTickSize, orxCLOCK_TYPE_PHYSICS);
 
+      /* Has fixed DT? */
+      if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_FIXED_DT) != orxFALSE)
+      {
+        /* Sets DT as fixed */
+        orxClock_SetModifier(sstPhysics.pstClock, orxCLOCK_MOD_TYPE_FIXED, fTickSize);
+      }
+
       /* Resyncs clocks */
       orxClock_Resync();
 

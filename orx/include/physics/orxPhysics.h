@@ -142,12 +142,12 @@ typedef struct __orxPHYSICS_BODY_PART_t   orxPHYSICS_BODY_PART;
 #define orxPHYSICS_KZ_CONFIG_ITERATIONS   "IterationsPerStep"
 #define orxPHYSICS_KZ_CONFIG_FREQUENCY    "SimulationFrequency"
 #define orxPHYSICS_KZ_CONFIG_RATIO        "DimensionRatio"
+#define orxPHYSICS_KZ_CONFIG_FIXED_DT     "FixedDT"
+
 
 /** Misc defines
  */
 #define orxPHYSICS_KU32_PART_MAX_NUMBER   8
-
-
 
 
 /***************************************************************************
