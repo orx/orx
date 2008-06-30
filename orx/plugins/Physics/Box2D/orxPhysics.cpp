@@ -204,7 +204,7 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
   {
     orxPHYSICS_EVENT_STORAGE *pstEventStorage;
 
-    /* Adds an out of world event */
+    /* Adds a contact event */
     pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
 
     /* Valid? */
