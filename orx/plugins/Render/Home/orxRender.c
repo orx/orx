@@ -119,7 +119,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D)))
   {
-    orxRGBA         stColor;
+    orxRGBA         stColor = 0;
     orxBITMAP      *pstBitmap;
     orxTEXTURE     *pstTexture;
     orxANIMPOINTER *pstAnimPointer;
@@ -242,7 +242,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
         eResult = orxSTATUS_SUCCESS;
       }
     }
-    
+
     /* Has object or graphic color? */
     if((orxObject_HasColor(_pstObject) != orxFALSE)
     || (orxGraphic_HasColor(pstGraphic) != orxFALSE))
