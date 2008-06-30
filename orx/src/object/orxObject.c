@@ -1228,10 +1228,10 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
 
 /** Sets current animation for object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _u32AnimID      Animation ID (config's name CRC) to set
+ * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxU32 _u32AnimID)
+orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxCONST orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxSTATUS       eResult;
@@ -1246,8 +1246,17 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxU32 _u3
   /* Valid? */
   if(pstAnimPointer != NULL)
   {
-    /* Sets current animation */
-    eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, _u32AnimID);
+    /* Is string null or empty? */
+    if((_zAnimName == orxNULL) || (*_zAnimName == *orxSTRING_EMPTY))
+    {
+      /* Resets current animation */
+      eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, orxU32_UNDEFINED);
+    }
+    else
+    {
+      /* Sets current animation */
+      eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, orxString_ToCRC(_zAnimName));
+    }
   }
   else
   {
@@ -1261,10 +1270,10 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxU32 _u3
 
 /** Sets target animation for object
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _u32AnimID      Animation ID (config's name CRC) to set / orxU32_UNDEFINED
+ * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxU32 _u32AnimID)
+orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxCONST orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxSTATUS       eResult;
@@ -1279,8 +1288,17 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxU32 _u32
   /* Valid? */
   if(pstAnimPointer != NULL)
   {
-    /* Sets target animation */
-    eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, _u32AnimID);
+    /* Is string null or empty? */
+    if((_zAnimName == orxNULL) || (*_zAnimName == *orxSTRING_EMPTY))
+    {
+      /* Resets target animation */
+      eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, orxU32_UNDEFINED);
+    }
+    else
+    {
+      /* Sets target animation */
+      eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, orxString_ToCRC(_zAnimName));
+    }
   }
   else
   {
