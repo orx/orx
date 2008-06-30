@@ -1,26 +1,3 @@
-/**
- * \file orxTexture.h
- *
- * Texture Module.
- * Allows to creates and handle textures.
- * They thus can be referenced by other structures.
- * Textures are 2D structures.
- *
- * \todo
- * Add external texture linking
- * Add bitmap name (ID) storing for later retrieving
- */
-
-
-/***************************************************************************
- orxTextures.h
- Texture module
-
- begin                : 07/12/2003
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
@@ -29,6 +6,21 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file orxTexture.h
+ * @date 07/12/2003
+ * @author (C) Arcallians
+ */
+
+/**
+ * @addtogroup Display
+ * 
+ * Texture module
+ * Module that handles textures
+ *
+ * @{
+ */
 
 
 #ifndef _orxTEXTURE_H_
@@ -40,69 +32,79 @@
 #include "math/orxMath.h"
 
 
-/** Internal texture structure. */
+/** Internal texture structure */
 typedef struct __orxTEXTURE_t             orxTEXTURE;
 
 
-/** Texture module setup */
+/** Setups the texture module
+ */
 extern orxDLLAPI orxVOID                  orxTexture_Setup();
-/** Inits the texture system. */
+
+/** Inits the texture module
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                orxTexture_Init();
-/** Exits from the texture system. */
+
+/** Exits from the texture module
+ */
 extern orxDLLAPI orxVOID                  orxTexture_Exit();
 
-/** Creates an empty texture. */
+
+/** Creates an empty texture
+ * @return      orxTEXTURE / orxNULL
+ */
 extern orxDLLAPI orxTEXTURE *             orxTexture_Create();
-/** Creates a texture from a bitmap file. */
+
+/** Creates a texture from a bitmap file
+ * @param[in]   _zBitmapFileName  Name of the bitmap
+ * @return      orxTEXTURE / orxNULL
+ */
 extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFileName);
-/** Deletes a texture (Warning : it deletes referenced bitmap too!). */
+
+/** Deletes a texture (and its referenced bitmap)
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_Delete(orxTEXTURE *_pstTexture);
 
-/** Links a bitmap to a texture (Warning : use a different bitmap for each texture). */
+/** Links a bitmap
+ * @param[in]   _pstTexture     Concerned texture
+ * @param[in]   _pstBitmap      Bitmap to link
+ * @param[in]   _zDataName      Name associated with the bitmap (usually filename)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zDataName);
-/** Unlinks a bitmap from a texture (Warning : it deletes it). */
+
+/** Unlinks (and deletes if not used anymore) a bitmap
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture);
 
 
-/** Corresponding bitmap get accessor. */
+/** Gets texture bitmap
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      orxBITMAP / orxNULL
+ */
 extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture);
 
-/** Texture width get accessor
+/** Gets texture width
  * @param[in]   _pstTexture     Concerned texture
  * @return      Texture's width
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetWidth(orxCONST orxTEXTURE *_pstTexture);
 
-/** Texture height get accessor
+/** Gets texture height
  * @param[in]   _pstTexture     Concerned texture
  * @return      Texture's height
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetHeight(orxCONST orxTEXTURE *_pstTexture);
 
-/** Texture top get accessor
- * @param[in]   _pstTexture     Concerned texture
- * @return      Texture's top
+/** Gets texture name
+ * @param[in]   _pstTexture   Concerned texture
+ * @return      Texture name / orxNULL
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetTop(orxCONST orxTEXTURE *_pstTexture);
-
-/** Texture left get accessor
- * @param[in]   _pstTexture     Concerned texture
- * @return      Texture's left
- */
-extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetLeft(orxCONST orxTEXTURE *_pstTexture);
-
-/** Texture name accessor. */
 extern orxDLLAPI orxSTRING orxFASTCALL    orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture);
-
-/** Sets texture sub-rectangle
- * @param[in]   _pstTexture     Concerned texture
- * @param[in]   _fLeft          Left (top left corner X coordinate)
- * @param[in]   _fTop           Top (top left corner Y coordinate)
- * @param[in]   _fRight         Right (bottom right corner X coordinate)
- * @param[in]   _fBottom        Bottom (bottom right corner Y coordinate)
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetSubRectangle(orxTEXTURE *_pstTexture, orxFLOAT _fLeft, orxFLOAT _fTop, orxFLOAT _fRight, orxFLOAT _fBottom);
 
 /** Sets texture color
  * @param[in]   _pstTexture     Concerned texture
@@ -117,3 +119,5 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetColor(orxTEXTURE *_pstTe
 extern orxDLLAPI orxTEXTURE *             orxTexture_GetScreenTexture();
 
 #endif /* _orxTEXTURE_H_ */
+
+/** @} */

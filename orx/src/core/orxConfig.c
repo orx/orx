@@ -1,10 +1,12 @@
 /**
  * @file orxConfig.c
+ *
  */
 
 /***************************************************************************
  orxConfig.c
- Lib C / file implementation of the Config module
+ Config module
+
  begin                : 09/12/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -95,17 +97,19 @@ typedef struct __orxCONFIG_SECTION_t
  */
 typedef struct __orxCONFIG_STATIC_t
 {
-  orxBANK            *pstSectionBank;                           /**< Bank of sections */
-  orxCONFIG_SECTION  *pstCurrentSection;                        /**< Current working section */
-  orxU32              u32Flags;                                 /**< Control flags */
+  orxBANK            *pstSectionBank;       /**< Bank of sections */
+  orxCONFIG_SECTION  *pstCurrentSection;    /**< Current working section */
+  orxU32              u32Flags;             /**< Control flags */
 
 } orxCONFIG_STATIC;
 
 
 /***************************************************************************
- * Module global variable                                                  *
+ * Static variables                                                        *
  ***************************************************************************/
 
+/** static data
+ */
 orxSTATIC orxCONFIG_STATIC sstConfig;
 
 

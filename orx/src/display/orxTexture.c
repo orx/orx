@@ -1,3 +1,8 @@
+/**
+ * @file orxTexture.c
+ *
+ */
+
 /***************************************************************************
  orxTexture.c
  Texture module
@@ -25,17 +30,16 @@
 #include "utils/orxHashTable.h"
 
 
-/*
- * Platform independant defines
+/** Module flags
  */
-
 #define orxTEXTURE_KU32_STATIC_FLAG_NONE        0x00000000
 
 #define orxTEXTURE_KU32_STATIC_FLAG_READY       0x00000001
 
 #define orxTEXTURE_KU32_STATIC_MASK_ALL         0xFFFFFFFF
 
-
+/** Defines
+ */
 #define orxTEXTURE_KU32_FLAG_NONE               0x00000000
 
 #define orxTEXTURE_KU32_FLAG_BITMAP             0x00000010
@@ -50,28 +54,26 @@
 #define orxTEXTURE_KZ_SCREEN_NAME               "-=SCREEN=-"
 
 
-/*
- * Texture structure
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Texture structure
  */
 struct __orxTEXTURE_t
 {
   orxSTRUCTURE  stStructure;                    /**< Public structure, first structure member : 16 */
   orxU32        u32Counter;                     /**< Self reference counter : 20 */
   orxSTRING     zDataName;                      /**< Associated bitmap name : 24 */
-  orxFLOAT      fFullWidth;                     /**< Full width : 28 */
-  orxFLOAT      fFullHeight;                    /**< Full height : 32 */
-  orxFLOAT      fWidth;                         /**< Width : 36 */
-  orxFLOAT      fHeight;                        /**< Height : 40 */
-  orxFLOAT      fTop;                           /**< Top : 44 */
-  orxFLOAT      fLeft;                          /**< Left : 48 */
-  orxHANDLE     hData;                          /**< Data : 52 */
+  orxFLOAT      fWidth;                         /**< Width : 28 */
+  orxFLOAT      fHeight;                        /**< Height : 32 */
+  orxHANDLE     hData;                          /**< Data : 36 */
 
   /* Padding */
-  orxPAD(52)
+  orxPAD(36)
 };
 
-/*
- * Static structure
+/** Static structure
  */
 typedef struct __orxTEXTURE_STATIC_t
 {
@@ -81,24 +83,20 @@ typedef struct __orxTEXTURE_STATIC_t
 
 } orxTEXTURE_STATIC;
 
-/*
- * Static data
- */
+
+/***************************************************************************
+ * Module global variable                                                  *
+ ***************************************************************************/
+
 orxSTATIC orxTEXTURE_STATIC sstTexture;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
-/***************************************************************************
- orxTexture_DeleteAll
- Deletes all textures.
-
- returns: orxVOID
- ***************************************************************************/
+/** Deletes all textures
+ */
 orxSTATIC orxINLINE orxVOID orxTexture_DeleteAll()
 {
   orxTEXTURE *pstTexture;
@@ -119,12 +117,10 @@ orxSTATIC orxINLINE orxVOID orxTexture_DeleteAll()
   return;
 }
 
-/***************************************************************************
- orxTexture_FindByName
- Finds a texture linked to a specified data.
-
- returns: orxVOID
- ***************************************************************************/
+/** Finds a texture by name
+ * @param[in]   _wDataName    Name of the texture to find
+ * @return      orxTEXTURE / orxNULL
+ */
 orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByName(orxCONST orxSTRING _zDataName)
 {
   orxREGISTER orxTEXTURE *pstTexture;
@@ -138,17 +134,11 @@ orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByName(orxCONST orxSTRING _zDataN
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxTexture_Setup
- Texture module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Setups the texture module
+ */
 orxVOID orxTexture_Setup()
 {
   /* Adds module dependencies */
@@ -160,12 +150,9 @@ orxVOID orxTexture_Setup()
   return;
 }
 
-/***************************************************************************
- orxTexture_Init
- Inits texture system.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Inits the texture module
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxTexture_Init()
 {
   orxSTATUS eResult;
@@ -247,12 +234,8 @@ orxSTATUS orxTexture_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxTexture_Exit
- Exits from the texture system.
-
- returns: orxVOID
- ***************************************************************************/
+/** Exits from the texture module
+ */
 orxVOID orxTexture_Exit()
 {
   /* Initialized? */
@@ -285,12 +268,9 @@ orxVOID orxTexture_Exit()
   return;
 }
 
-/***************************************************************************
- orxTexture_Create
- Creates a new empty texture.
-
- returns: Created texture.
- ***************************************************************************/
+/** Creates an empty texture
+ * @return      orxTEXTURE / orxNULL
+ */
 orxTEXTURE *orxTexture_Create()
 {
   orxTEXTURE *pstTexture;
@@ -314,12 +294,10 @@ orxTEXTURE *orxTexture_Create()
   return pstTexture;
 }
 
-/***************************************************************************
- orxTexture_CreateFromFile
- Creates a texture from a bitmap file.
-
- returns: Created texture.
- ***************************************************************************/
+/** Creates a texture from a bitmap file
+ * @param[in]   _zBitmapFileName  Name of the bitmap
+ * @return      orxTEXTURE / orxNULL
+ */
 orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFileName)
 {
   orxTEXTURE *pstTexture;
@@ -376,12 +354,10 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFil
   return pstTexture;
 }
 
-/***************************************************************************
- orxTexture_Delete
- Deletes an texture.
-
- returns: orxVOID
- ***************************************************************************/
+/** Deletes a texture (and its referenced bitmap)
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -420,12 +396,12 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
   return eResult;
 }
 
-/***************************************************************************
- orxTexture_LinkBitmap
- Links a bitmap to a texture.
-
- returns: orxVOID
- ***************************************************************************/
+/** Links a bitmap
+ * @param[in]   _pstTexture     Concerned texture
+ * @param[in]   _pstBitmap      Bitmap to link
+ * @param[in]   _zDataName      Name associated with the bitmap (usually filename)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zDataName)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -459,12 +435,8 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       _pstTexture->hData      = (orxHANDLE)pstTexture;
 
       /* Copies size & TL corner */
-      _pstTexture->fFullWidth   = pstTexture->fFullWidth;
-      _pstTexture->fFullHeight  = pstTexture->fFullHeight;
       _pstTexture->fWidth       = pstTexture->fWidth;
       _pstTexture->fHeight      = pstTexture->fHeight;
-      _pstTexture->fTop         = pstTexture->fTop;
-      _pstTexture->fLeft        = pstTexture->fLeft;
 
       /* Updates external texture self referenced counter */
       pstTexture->u32Counter++;
@@ -483,12 +455,8 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       orxDisplay_GetBitmapSize(_pstBitmap, &u32Width, &u32Height);
 
       /* Stores it */
-      _pstTexture->fFullWidth   = orxU2F(u32Width);
-      _pstTexture->fFullHeight  = orxU2F(u32Height);
-      _pstTexture->fWidth       = _pstTexture->fFullWidth;
-      _pstTexture->fHeight      = _pstTexture->fFullHeight;
-      _pstTexture->fTop         = orxFLOAT_0;
-      _pstTexture->fLeft        = orxFLOAT_0;
+      _pstTexture->fWidth   = orxU2F(u32Width);
+      _pstTexture->fHeight  = orxU2F(u32Height);
     }
 
     /* Updates texture name */
@@ -509,13 +477,10 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
   return eResult;
 }
 
-/***************************************************************************
- orxTexture_UnlinkBitmap
- Unlinks a bitmap from a texture.
- !!! Warning : it deletes it. !!!
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Unlinks (and deletes if not used anymore) a bitmap
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -566,16 +531,10 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
   return eResult;
 }
 
-
-/* *** Structure accessors *** */
-
-
-/***************************************************************************
- orxTexture_GetBitmap
- Gets corresponding bitmap.
-
- returns: bitmap
- ***************************************************************************/
+/** Gets texture bitmap
+ * @param[in]   _pstTexture     Concerned texture
+ * @return      orxBITMAP / orxNULL
+ */
 orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
 {
   orxREGISTER orxBITMAP *pstBitmap = orxNULL;
@@ -603,7 +562,7 @@ orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
   return pstBitmap;
 }
 
-/** Texture width get accessor
+/** Gets texture width
  * @param[in]   _pstTexture     Concerned texture
  * @return      Texture's width
  */
@@ -633,7 +592,7 @@ orxFLOAT orxFASTCALL orxTexture_GetWidth(orxCONST orxTEXTURE *_pstTexture)
   return fResult;
 }
 
-/** Texture height get accessor
+/** Gets texture height
  * @param[in]   _pstTexture     Concerned texture
  * @return      Texture's height
  */
@@ -650,66 +609,6 @@ orxFLOAT orxFASTCALL orxTexture_GetHeight(orxCONST orxTEXTURE *_pstTexture)
   {
     /* Updates result */
     fResult = _pstTexture->fHeight;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* No size */
-    fResult = orx2F(-1.0f);
-  }
-
-  /* Done! */
-  return fResult;
-}
-
-/** Texture top get accessor
- * @param[in]   _pstTexture     Concerned texture
- * @return      Texture's top
- */
-orxFLOAT orxFASTCALL orxTexture_GetTop(orxCONST orxTEXTURE *_pstTexture)
-{
-  orxFLOAT fResult;
-
-  /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstTexture);
-
-  /* Has size? */
-  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
-  {
-    /* Updates result */
-    fResult = _pstTexture->fTop;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* No size */
-    fResult = orx2F(-1.0f);
-  }
-
-  /* Done! */
-  return fResult;
-}
-
-/** Texture left get accessor
- * @param[in]   _pstTexture     Concerned texture
- * @return      Texture's left
- */
-orxFLOAT orxFASTCALL orxTexture_GetLeft(orxCONST orxTEXTURE *_pstTexture)
-{
-  orxFLOAT fResult;
-
-  /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstTexture);
-
-  /* Has size? */
-  if(orxStructure_TestFlags((orxTEXTURE *)_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
-  {
-    /* Updates result */
-    fResult = _pstTexture->fLeft;
   }
   else
   {
@@ -740,52 +639,6 @@ orxSTRING orxFASTCALL orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture)
 
   /* Done! */
   return zResult;
-}
-
-/** Sets texture sub-rectangle
- * @param[in]   _pstTexture     Concerned texture
- * @param[in]   _fLeft          Left (top left corner X coordinate)
- * @param[in]   _fTop           Top (top left corner Y coordinate)
- * @param[in]   _fRight         Right (bottom right corner X coordinate)
- * @param[in]   _fBottom        Bottom (bottom right corner Y coordinate)
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxTexture_SetSubRectangle(orxTEXTURE *_pstTexture, orxFLOAT _fLeft, orxFLOAT _fTop, orxFLOAT _fRight, orxFLOAT _fBottom)
-{
-  orxSTATUS eResult;
-
-  /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstTexture);
-  orxASSERT(_fLeft >= orxFLOAT_0);
-  orxASSERT(_fTop >= orxFLOAT_0);
-  orxASSERT(_fRight > _fLeft);
-  orxASSERT(_fBottom > _fTop);
-
-  /* Has bitmap and are coordinates valid? */
-  if((orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP) != orxFALSE)
-  && (_fRight <= _pstTexture->fFullWidth)
-  && (_fBottom <= _pstTexture->fFullHeight))
-  {
-    /* Stores sub-rectangle values */
-    _pstTexture->fLeft    = _fLeft;
-    _pstTexture->fTop     = _fTop;
-    _pstTexture->fWidth   = _fRight - _fLeft;
-    _pstTexture->fHeight  = _fBottom - _fTop;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
 }
 
 /** Sets texture color

@@ -151,6 +151,18 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasColor(orxCONST orxGR
  */
 extern orxDLLAPI orxRGBA orxFASTCALL          orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic);
 
+/** Gets graphic top
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      Top coordinate
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetTop(orxCONST orxGRAPHIC *_pstGraphic);
+
+/** Gets graphic left
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      Left coordinate
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetLeft(orxCONST orxGRAPHIC *_pstGraphic);
+
 #endif /* _orxGRAPHIC_H_ */
 
 

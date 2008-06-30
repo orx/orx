@@ -73,9 +73,13 @@ struct __orxGRAPHIC_t
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
   orxSTRUCTURE *pstData;                    /**< Data structure : 20 */
   orxVECTOR     vPivot;                     /**< Pivot : 36 */
-  orxRGBA       stColor;                    /**< Color : 40 */
+  orxFLOAT      fTop;                       /**< Top coordinate : 40 */
+  orxFLOAT      fLeft;                      /**< Left coordinate : 44 */
+  orxFLOAT      fWidth;                     /**< Width : 48 */
+  orxFLOAT      fHeight;                    /**< Height : 52 */
+  orxRGBA       stColor;                    /**< Color : 56 */
 
-  orxPAD(40)
+  orxPAD(56)
 };
 
 /** Static structure
@@ -297,8 +301,19 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
               orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL, &(stTextureBox.vTL));
               orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_BR, &(stTextureBox.vBR));
 
-              /* Applies them */
-              orxTexture_SetSubRectangle(pstTexture, stTextureBox.vTL.fX, stTextureBox.vTL.fY, stTextureBox.vBR.fX, stTextureBox.vBR.fY);
+              /* Stores them */
+              pstResult->fLeft    = stTextureBox.vTL.fX;
+              pstResult->fTop     = stTextureBox.vTL.fY;
+              pstResult->fWidth   = stTextureBox.vBR.fX - stTextureBox.vTL.fX;
+              pstResult->fHeight  = stTextureBox.vBR.fY - stTextureBox.vTL.fY;
+            }
+            else
+            {
+              /* Inits full coordinates */
+              pstResult->fLeft    = orxFLOAT_0;
+              pstResult->fTop     = orxFLOAT_0;
+              pstResult->fWidth   = orxTexture_GetWidth(pstTexture);
+              pstResult->fHeight  = orxTexture_GetHeight(pstTexture);
             }
 
             /* Uses centered pivot? */
@@ -580,8 +595,8 @@ orxSTATUS orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFL
   if(orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets its size */
-    *_pfWidth   = orxTexture_GetWidth(orxTEXTURE(_pstGraphic->pstData));
-    *_pfHeight  = orxTexture_GetHeight(orxTEXTURE(_pstGraphic->pstData));
+    *_pfWidth   = _pstGraphic->fWidth;
+    *_pfHeight  = _pstGraphic->fHeight;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -688,4 +703,42 @@ orxRGBA orxFASTCALL orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic)
 
   /* Done! */
   return stResult;
+}
+
+/** Gets graphic top
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      Top coordinate
+ */
+orxFLOAT orxFASTCALL orxGraphic_GetTop(orxCONST orxGRAPHIC *_pstGraphic)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  fResult = _pstGraphic->fTop;
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets graphic left
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      Left coordinate
+ */
+orxFLOAT orxFASTCALL orxGraphic_GetLeft(orxCONST orxGRAPHIC *_pstGraphic)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  fResult = _pstGraphic->fLeft;
+
+  /* Done! */
+  return fResult;
 }

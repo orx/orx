@@ -1,18 +1,3 @@
-/**
- * @file orxConfig.h
- *
- * Module for config/config.
- */
-
- /***************************************************************************
- orxConfig.h
- Config/config management
-
- begin                : 02/02/2008
- author               : (C) Arcallians
- email                : cursor@arcallians.org / iarwain@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
@@ -21,6 +6,22 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file orxConfig.h
+ * @date 02/02/2008
+ * @author (C) Arcallians
+ */
+
+/**
+ * @addtogroup Core
+ * 
+ * Config module
+ * Module that handles configuration files
+ *
+ * @{
+ */
+
 
 #ifndef _orxCONFIG_H_
 #define _orxCONFIG_H_
@@ -159,3 +160,5 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBool(orxCONST orxSTRING _zK
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pstValue);
 
 #endif /*_orxCONFIG_H_*/
+
+/** @} */

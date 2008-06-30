@@ -1,15 +1,3 @@
-/**
- * @file orxEvent.c
- */
-
-/***************************************************************************
- orxEvent.c
- Event module
- begin                : 20/05/2008
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
@@ -18,6 +6,20 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file orxEvent.h
+ * @date 20/05/2008
+ * @author (C) Arcallians
+ */
+
+/**
+ * @addtogroup Core
+ * 
+ * Event module
+ * Module that handles internal events
+ * @{
+ */
 
 
 #ifndef _orxEVENT_H_
@@ -98,3 +100,5 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_RemoveHandler(orxEVENT_TYPE _eE
 
 
 #endif /*_orxEVENT_H_*/
+
+/** @} */

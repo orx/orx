@@ -19,7 +19,7 @@
  */
 
 /**
- * @addtogroup Clock
+ * @addtogroup Core
  * 
  * Clock module
  * Module that handles clocks which is the low level kernel part of orx execution.
