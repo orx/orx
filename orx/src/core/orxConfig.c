@@ -423,45 +423,55 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zSectionName != orxNULL);
-  orxASSERT(*_zSectionName != *orxSTRING_EMPTY);
 
-  /* Gets section name CRC */
-  u32CRC = orxString_ToCRC(_zSectionName);
-
-  /* For all the sections */
-  for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
-      pstSection != orxNULL;
-      pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+  /* Valid? */
+  if(*_zSectionName != *orxSTRING_EMPTY)
   {
-    /* Found? */
-    if(u32CRC == pstSection->u32CRC)
-    {
-      /* Selects it */
-      sstConfig.pstCurrentSection = pstSection;
+    /* Gets section name CRC */
+    u32CRC = orxString_ToCRC(_zSectionName);
 
-      break;
+    /* For all the sections */
+    for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+        pstSection != orxNULL;
+        pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+    {
+      /* Found? */
+      if(u32CRC == pstSection->u32CRC)
+      {
+        /* Selects it */
+        sstConfig.pstCurrentSection = pstSection;
+
+        break;
+      }
+    }
+
+    /* Not found? */
+    if(pstSection == orxNULL)
+    {
+      /* Creates it */
+      pstSection = orxConfig_CreateSection(_zSectionName);
+
+      /* Success? */
+      if(pstSection != orxNULL)
+      {
+        /* Selects it */
+        sstConfig.pstCurrentSection = pstSection;
+      }
+      else
+      {
+        /* !!! MSG !!! */
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
   }
-
-  /* Not found? */
-  if(pstSection == orxNULL)
+  else
   {
-    /* Creates it */
-    pstSection = orxConfig_CreateSection(_zSectionName);
+    /* !!! MSG !!! */
 
-    /* Success? */
-    if(pstSection != orxNULL)
-    {
-      /* Selects it */
-      sstConfig.pstCurrentSection = pstSection;
-    }
-    else
-    {
-      /* !!! MSG !!! */
-
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

@@ -78,9 +78,9 @@ typedef enum __orxFX_TYPE_t
 
 } orxFX_TYPE;
 
-/** FX parameters
+/** FX slot
  */
-typedef struct __orxFX_PARAM_t
+typedef struct __orxFX_SLOT_t
 {
 	orxFX_TYPE  eFXType;                          /**< Type : 4 */
   orxFLOAT    fStartTime;                       /**< Start Time : 8 */
@@ -123,18 +123,19 @@ typedef struct __orxFX_PARAM_t
 
   orxU32 u32Flags;                              /**< Flags : 48 */
 
-} orxFX_PARAM;
+} orxFX_SLOT;
 
 /** FX structure
  */
 struct __orxFX_t
 {
   orxSTRUCTURE  stStructure;                            /**< Public structure, first structure member : 16 */
-  orxFX_PARAM   astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 64 */
+  orxFX_SLOT    astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 64 */
   orxU32        u32ID;                                  /**< FX ID : 68 */
+  orxFLOAT      fDuration;                              /**< FX duration : 72 */
 
   /* Padding */
-  orxPAD(68)
+  orxPAD(72)
 };
 
 /** Static structure
@@ -159,6 +160,33 @@ orxSTATIC orxFX_STATIC sstFX;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Finds the first empty slot
+ * @param[in] _pstFX            Concerned FX
+ * @return orxU32 / orxU32_UNDEFINED
+ */
+orxSTATIC orxINLINE orxU32 orxFX_FindEmptySlotIndex(orxCONST orxFX *_pstFX)
+{
+  orxU32 i, u32Result = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(_pstFX);
+
+  /* For all slots */
+  for(i = 0; i < orxFX_KU32_SLOT_NUMBER; i++)
+  {
+    /* Empty? */
+    if(!orxFLAG_TEST(_pstFX->astFXSlotList[i].u32Flags, orxFX_SLOT_KU32_FLAG_DEFINED))
+    {
+      /* Updates result */
+      u32Result = i;
+      break;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
 
 /** Deletes all the FXs
  */
@@ -450,14 +478,42 @@ orxBOOL orxFASTCALL orxFX_IsEnabled(orxCONST orxFX *_pstFX)
  */
 orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxU8 _u8StartAlpha, orxU8 _u8EndAlpha, orxU32 _u32Flags)
 {
+  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32Flags & orxFX_PARAM_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxSTRUCTURE_ASSERT(_pstFX);
 
-  //! TODO
+  /* Finds empty slot index */
+  u32Index = orxFX_FindEmptySlotIndex(_pstFX);
+
+  /* Valid? */
+  if(u32Index != orxU32_UNDEFINED)
+  {
+    orxFX_SLOT *pstFXSlot;
+
+    /* Gets the slot */
+    pstFXSlot = &(_pstFX->astFXSlotList[u32Index]);
+
+    /* Updates its parameters */
+    pstFXSlot->eFXType      = orxFX_TYPE_ALPHA_FADE;
+    pstFXSlot->fStartTime   = _fStartTime;
+    pstFXSlot->fEndTime     = _fEndTime;
+    pstFXSlot->fCyclePeriod = _fCyclePeriod;
+    pstFXSlot->fCyclePhasis = _fCyclePhasis;
+    pstFXSlot->u8StartAlpha = _u8StartAlpha;
+    pstFXSlot->u8EndAlpha   = _u8EndAlpha;
+    pstFXSlot->u32Flags     = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | orxFX_SLOT_KU32_FLAG_DEFINED;
+
+    /* Is longer than current FX duration? */
+    if(_fEndTime > _pstFX->fDuration)
+    {
+      /* Updates it */
+      _pstFX->fDuration = _fEndTime;
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -476,14 +532,42 @@ orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, or
  */
 orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxRGBA _stStartColor, orxRGBA _stEndColor, orxU32 _u32Flags)
 {
+  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32Flags & orxFX_PARAM_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxSTRUCTURE_ASSERT(_pstFX);
 
-  //! TODO
+  /* Finds empty slot index */
+  u32Index = orxFX_FindEmptySlotIndex(_pstFX);
+
+  /* Valid? */
+  if(u32Index != orxU32_UNDEFINED)
+  {
+    orxFX_SLOT *pstFXSlot;
+
+    /* Gets the slot */
+    pstFXSlot = &(_pstFX->astFXSlotList[u32Index]);
+
+    /* Updates its parameters */
+    pstFXSlot->eFXType      = orxFX_TYPE_COLOR_BLEND;
+    pstFXSlot->fStartTime   = _fStartTime;
+    pstFXSlot->fEndTime     = _fEndTime;
+    pstFXSlot->fCyclePeriod = _fCyclePeriod;
+    pstFXSlot->fCyclePhasis = _fCyclePhasis;
+    pstFXSlot->stStartColor = _stStartColor;
+    pstFXSlot->stEndColor   = _stEndColor;
+    pstFXSlot->u32Flags     = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | orxFX_SLOT_KU32_FLAG_DEFINED;
+
+    /* Is longer than current FX duration? */
+    if(_fEndTime > _pstFX->fDuration)
+    {
+      /* Updates it */
+      _pstFX->fDuration = _fEndTime;
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -502,14 +586,42 @@ orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, o
  */
 orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, orxU32 _u32Flags)
 {
+  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32Flags & orxFX_PARAM_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxSTRUCTURE_ASSERT(_pstFX);
 
-  //! TODO
+  /* Finds empty slot index */
+  u32Index = orxFX_FindEmptySlotIndex(_pstFX);
+
+  /* Valid? */
+  if(u32Index != orxU32_UNDEFINED)
+  {
+    orxFX_SLOT *pstFXSlot;
+
+    /* Gets the slot */
+    pstFXSlot = &(_pstFX->astFXSlotList[u32Index]);
+
+    /* Updates its parameters */
+    pstFXSlot->eFXType        = orxFX_TYPE_ROTATION;
+    pstFXSlot->fStartTime     = _fStartTime;
+    pstFXSlot->fEndTime       = _fEndTime;
+    pstFXSlot->fCyclePeriod   = _fCyclePeriod;
+    pstFXSlot->fCyclePhasis   = _fCyclePhasis;
+    pstFXSlot->fStartRotation = _fStartRotation;
+    pstFXSlot->fEndRotation   = _fEndRotation;
+    pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | orxFX_SLOT_KU32_FLAG_DEFINED;
+
+    /* Is longer than current FX duration? */
+    if(_fEndTime > _pstFX->fDuration)
+    {
+      /* Updates it */
+      _pstFX->fDuration = _fEndTime;
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -528,14 +640,44 @@ orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orx
  */
 orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxCONST orxVECTOR *_pvStartScale, orxCONST orxVECTOR *_pvEndScale, orxU32 _u32Flags)
 {
+  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32Flags & orxFX_PARAM_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxSTRUCTURE_ASSERT(_pstFX);
+  orxASSERT(_pvStartScale != orxNULL);
+  orxASSERT(_pvEndScale != orxNULL);
 
-  //! TODO
+  /* Finds empty slot index */
+  u32Index = orxFX_FindEmptySlotIndex(_pstFX);
+
+  /* Valid? */
+  if(u32Index != orxU32_UNDEFINED)
+  {
+    orxFX_SLOT *pstFXSlot;
+
+    /* Gets the slot */
+    pstFXSlot = &(_pstFX->astFXSlotList[u32Index]);
+
+    /* Updates its parameters */
+    pstFXSlot->eFXType      = orxFX_TYPE_SCALE;
+    pstFXSlot->fStartTime   = _fStartTime;
+    pstFXSlot->fEndTime     = _fEndTime;
+    pstFXSlot->fCyclePeriod = _fCyclePeriod;
+    pstFXSlot->fCyclePhasis = _fCyclePhasis;
+    orxVector_Copy(&(pstFXSlot->vStartScale), _pvStartScale);
+    orxVector_Copy(&(pstFXSlot->vEndScale), _pvEndScale);
+    pstFXSlot->u32Flags     = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | orxFX_SLOT_KU32_FLAG_DEFINED;
+
+    /* Is longer than current FX duration? */
+    if(_fEndTime > _pstFX->fDuration)
+    {
+      /* Updates it */
+      _pstFX->fDuration = _fEndTime;
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -547,21 +689,51 @@ orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
  * @param[in]   _fEndTime       Time end
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
- * @param[in]   _pvStartTranslation Starting translation value
- * @param[in]   _pvEndTranslation Ending translation value
+ * @param[in]   _pvStartPosition Starting position value
+ * @param[in]   _pvEndPosition  Ending position value
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxCONST orxVECTOR *_pvStartTranslation, orxCONST orxVECTOR *_pvEndTranslation, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxCONST orxVECTOR *_pvStartPosition, orxCONST orxVECTOR *_pvEndPosition, orxU32 _u32Flags)
 {
+  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
-  orxASSERT((_u32Flags & orxFX_PARAM_KU32_MASK_USER_ALL) == _u32Flags);
+  orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxSTRUCTURE_ASSERT(_pstFX);
+  orxASSERT(_pvStartPosition != orxNULL);
+  orxASSERT(_pvEndPosition != orxNULL);
 
-  //! TODO
+  /* Finds empty slot index */
+  u32Index = orxFX_FindEmptySlotIndex(_pstFX);
+
+  /* Valid? */
+  if(u32Index != orxU32_UNDEFINED)
+  {
+    orxFX_SLOT *pstFXSlot;
+
+    /* Gets the slot */
+    pstFXSlot = &(_pstFX->astFXSlotList[u32Index]);
+
+    /* Updates its parameters */
+    pstFXSlot->eFXType      = orxFX_TYPE_TRANSLATION;
+    pstFXSlot->fStartTime   = _fStartTime;
+    pstFXSlot->fEndTime     = _fEndTime;
+    pstFXSlot->fCyclePeriod = _fCyclePeriod;
+    pstFXSlot->fCyclePhasis = _fCyclePhasis;
+    orxVector_Copy(&(pstFXSlot->vStartPosition), _pvStartPosition);
+    orxVector_Copy(&(pstFXSlot->vEndPosition), _pvEndPosition);
+    pstFXSlot->u32Flags     = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | orxFX_SLOT_KU32_FLAG_DEFINED;
+
+    /* Is longer than current FX duration? */
+    if(_fEndTime > _pstFX->fDuration)
+    {
+      /* Updates it */
+      _pstFX->fDuration = _fEndTime;
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -579,9 +751,8 @@ orxFLOAT orxFASTCALL orxFX_GetDuration(orxCONST orxFX *_pstFX)
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFX);
 
-  //! TODO
   /* Updates result */
-  fResult = orxFLOAT_0;
+  fResult = _pstFX->fDuration;
 
   /* Done! */
   return fResult;

@@ -31,24 +31,24 @@
 #include "math/orxVector.h"
 
 
-/** Param flags
+/** Slot flags
  */
-#define orxFX_PARAM_KU32_FLAG_NONE                0x00000000  /**< No flag */
+#define orxFX_SLOT_KU32_FLAG_NONE               0x00000000  /**< No flag */
 
-#define orxFX_PARAM_KU32_FLAG_DEFINED             0x10000000  /**< Defined flag */
+#define orxFX_SLOT_KU32_FLAG_DEFINED            0x10000000  /**< Defined flag */
 
-#define orxFX_PARAM_KU32_FLAG_ABSOLUTE            0x00000100  /**< Absolute flag */
-#define orxFX_PARAM_KU32_FLAG_BLEND_SQUARE        0x00000200  /**< Square blend curve flag */
+#define orxFX_SLOT_KU32_FLAG_ABSOLUTE           0x00000100  /**< Absolute flag */
+#define orxFX_SLOT_KU32_FLAG_BLEND_SQUARE       0x00000200  /**< Square blend curve flag */
 
-#define orxFX_PARAM_KU32_FLAG_BLEND_CURVE_LINEAR  0x00000001  /**< Blend curve linear flag */
-#define orxFX_PARAM_KU32_FLAG_BLEND_CURVE_SAW     0x00000002  /**< Blend curve saw flag */
-#define orxFX_PARAM_KU32_FLAG_BLEND_CURVE_SINE    0x00000004  /**< Blend curve sine flag */
+#define orxFX_SLOT_KU32_FLAG_BLEND_CURVE_LINEAR 0x00000001  /**< Blend curve linear flag */
+#define orxFX_SLOT_KU32_FLAG_BLEND_CURVE_SAW    0x00000002  /**< Blend curve saw flag */
+#define orxFX_SLOT_KU32_FLAG_BLEND_CURVE_SINE   0x00000004  /**< Blend curve sine flag */
 
-#define orxFX_PARAM_KU32_MASK_BLEND_CURVE         0x000000FF  /**< Blend curve mask */
+#define orxFX_SLOT_KU32_MASK_BLEND_CURVE        0x000000FF  /**< Blend curve mask */
 
-#define orxFX_PARAM_KU32_MASK_USER_ALL            0x0000FFFF  /**< User all mask */
+#define orxFX_SLOT_KU32_MASK_USER_ALL           0x0000FFFF  /**< User all mask */
 
-#define orxFX_PARAM_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
+#define orxFX_SLOT_KU32_MASK_ALL                0xFFFFFFFF  /**< All mask */
 
 
 /** Internal FX structure
@@ -156,8 +156,8 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, or
  * @param[in]   _fEndTime       Time end
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
- * @param[in]   _pvStartTranslation Starting translation value
- * @param[in]   _pvEndTranslation Ending translation value
+ * @param[in]   _pvStartPosition Starting position value
+ * @param[in]   _pvEndPosition  Ending position value
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
