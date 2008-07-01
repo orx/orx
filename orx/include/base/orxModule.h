@@ -88,6 +88,9 @@ extern orxDLLAPI orxVOID                  orxModule_RegisterAll();
 /** Adds dependencies between 2 modules. */
 extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
 
+/** Adds optional dependencies between 2 modules. */
+extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
+
 /** Updates dependencies for all modules. */
 extern orxDLLAPI orxVOID                  orxModule_UpdateDependencies();
 

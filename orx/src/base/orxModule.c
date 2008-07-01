@@ -120,20 +120,23 @@ typedef struct __orxMODULE_INFO_t
   /* Dependency flags : 8 */
   orxU64                    u64DependFlags;
 
-  /* Setup function : 12 */
+  /* Optional dependency flags : 16 */
+  orxU64                    u64OptionalDependFlags;
+
+  /* Setup function : 20 */
   orxMODULE_SETUP_FUNCTION  pfnSetup;
 
-  /* Init function : 16 */
+  /* Init function : 24 */
   orxMODULE_INIT_FUNCTION   pfnInit;
 
-  /* Exit function : 20 */
+  /* Exit function : 28 */
   orxMODULE_EXIT_FUNCTION   pfnExit;
 
-  /* Status flags : 24 */
+  /* Status flags : 32 */
   orxU32                    u32StatusFlags;
 
   /* Padding */
-  orxPAD(24)
+  orxPAD(32)
 
 } orxMODULE_INFO;
 
@@ -188,6 +191,17 @@ orxVOID orxFASTCALL _orxModule_Exit(orxMODULE_ID _eModuleID)
       }
     }
 
+    /* For all optional modules */
+    for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
+    {
+      /* Is module dependent? */
+      if(sstModule.astModuleInfo[u32Index].u64OptionalDependFlags & u64Depend)
+      {
+        /* Exits from it */
+        _orxModule_Exit(u32Index);
+      }
+    }
+
     /* Calls module exit function */
     sstModule.astModuleInfo[_eModuleID].pfnExit();
   }
@@ -229,6 +243,23 @@ orxSTATUS orxFASTCALL _orxModule_Init(orxMODULE_ID _eModuleID, orxBOOL _bExternC
               /* Stops init here */
               break;
             }
+          }
+        }
+      }
+
+      /* For all optional dependencies */
+      for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64OptionalDependFlags, u32Index = 0;
+          u64Depend != (orxU64)0;
+          u64Depend >>= 1, u32Index++)
+      {
+        /* Depends? */
+        if(u64Depend & (orxU64)1)
+        {
+          /* Not already initialized */
+          if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
+          {
+            /* Inits it */
+            _orxModule_Init(u32Index, orxFALSE);
           }
         }
       }
@@ -332,6 +363,21 @@ orxVOID orxFASTCALL orxModule_AddDependency(orxMODULE_ID _eModuleID, orxMODULE_I
 
   /* Stores dependency */
   sstModule.astModuleInfo[_eModuleID].u64DependFlags |= ((orxU64)1) << _eDependID;
+
+  /* Done! */
+  return;
+}
+
+/** Adds optional dependencies between 2 modules
+ */
+orxVOID orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)
+{
+  /* Checks */
+  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
+  orxASSERT(_eDependID < orxMODULE_ID_NUMBER);
+
+  /* Stores dependency */
+  sstModule.astModuleInfo[_eModuleID].u64OptionalDependFlags |= ((orxU64)1) << _eDependID;
 
   /* Done! */
   return;
