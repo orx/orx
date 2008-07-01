@@ -26,6 +26,7 @@
 #include "memory/orxMemory.h"
 #include "core/orxClock.h"
 #include "object/orxStructure.h"
+#include "object/orxObject.h"
 
 
 /** Module flags
@@ -130,7 +131,6 @@ orxSTATIC orxINLINE orxVOID orxFXPointer_DeleteAll()
   return;
 }
 
-
 /** Updates the FXPointer (Callback for generic structure update calling)
  * @param[in]   _pstStructure                 Generic Structure or the concerned Body
  * @param[in]   _pstCaller                    Structure of the caller
@@ -140,19 +140,31 @@ orxSTATIC orxINLINE orxVOID orxFXPointer_DeleteAll()
 orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
   orxFXPOINTER *pstFXPointer;
+  orxOBJECT    *pstObject;
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstStructure);
+  orxSTRUCTURE_ASSERT(_pstCaller);
 
   /* Gets FXPointer */
   pstFXPointer = orxFXPOINTER(_pstStructure);
 
+  /* Gets calling object */
+  pstObject = orxOBJECT(_pstCaller);
+
   /* Is enabled? */
   if(orxFXPointer_IsEnabled(pstFXPointer) != orxFALSE)
   {
-    orxU32 i;
+    orxFLOAT  fLastTime;
+    orxU32    i;
+
+    /* Backups last time */
+    fLastTime = pstFXPointer->fTime;
+
+    /* Computes its new time cursor */
+    pstFXPointer->fTime += _pstClockInfo->fDT;
 
     /* For all FXs */
     for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -165,10 +177,32 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
       /* Valid? */
       if(pstFX != orxNULL)
       {
-        //! TODO: Gets object values + updates them using FX
+        orxFLOAT  fFXLocalEndTime;
+        orxBOOL   bEnd;
 
-        /* Is ended? */
-        if(pstFXPointer->fTime > pstFXPointer->astFXList[i].fStartTime + orxFX_GetDuration(pstFX))
+        /* Gets FX local time */
+        fFXLocalEndTime = pstFXPointer->fTime - pstFXPointer->astFXList[i].fStartTime;
+
+        /* Has ended? */
+        if(fFXLocalEndTime >= orxFX_GetDuration(pstFX))
+        {
+          /* Updates time */
+          fFXLocalEndTime = orxFX_GetDuration(pstFX);
+          
+          /* Updates ending status */
+          bEnd = orxTRUE;
+        }
+        else
+        {
+          /* Updates ending status */
+          bEnd = orxFALSE;
+        }
+
+        /* Applies FX from last time to now */
+        eResult = orxFX_Apply(pstFX, pstObject, fLastTime, fFXLocalEndTime);
+
+        /* Should stop? */
+        if(bEnd != orxFALSE)
         {
           /* Decreases its reference counter */
           orxStructure_DecreaseCounter(pstFX);

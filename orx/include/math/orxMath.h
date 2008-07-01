@@ -72,7 +72,7 @@ do                                              \
 
 
 #define orxFRAND_INIT(SEED)       (srand(orxF2U(SEED)));
-#define orxFRAND(MIN, MAX)        ((orx2F(rand()) * (orxFLOAT_1 / orx2F(RAND_MAX)) * (MAX - MIN)) + MIN)
+#define orxFRAND(MIN, MAX)        ((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (MAX - MIN)) + MIN)
 
 #define orxF2U(V)                 ((orxU32)  (V))
 #define orxF2S(V)                 ((orxS32)  (V))
@@ -200,17 +200,8 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Sqrt(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-  
   /* Updates result */
   fResult = sqrtf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = sqrtf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -220,17 +211,8 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Floor(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-  
   /* Updates result */
   fResult = floorf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = floorf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -240,17 +222,8 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Ceil(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-  
   /* Updates result */
   fResult = ceilf(_fOp);
-
-#else /* __orxMSVC__ */
-
-  /* Updates result */
-  fResult = ceilf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;
@@ -276,16 +249,21 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
   return fResult;
 }
 
-orxSTATIC orxINLINE orxFLOAT orxMath_FAbs(orxFLOAT _fOp)
+orxSTATIC orxINLINE orxFLOAT orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
 {
-//  orxU32 u32Temp;
+  orxREGISTER orxFLOAT fResult;
 
-  /* Removes the sign bit */
-//  u32Temp = (*(orxU32 *)&_fOp) & 0x7FFFFFFF;
+  /* Updates result */
+  fResult = fmodf(_fOp1, _fOp2);
 
   /* Done! */
-//  return *(orxFLOAT *)&u32Temp;
-  return (_fOp < orxFLOAT_0) ? -_fOp : _fOp;
+  return fResult;
+}
+
+orxSTATIC orxINLINE orxFLOAT orxMath_Abs(orxFLOAT _fOp)
+{
+  /* Done! */
+  return fabsf(_fOp);
 }
 
 #endif /* _orxMATH_H_ */

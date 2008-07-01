@@ -332,36 +332,6 @@ orxFX *orxFX_Create()
   return pstResult;
 }
 
-/** Deletes an FX
- * @param[in] _pstFX            Concerned FX
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstFX);
-
-  /* Not referenced? */
-  if(orxStructure_GetRefCounter(_pstFX) == 0)
-  {
-    /* Deletes structure */
-    orxStructure_Delete(_pstFX);
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Referenced by others */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Creates an FX from config
  * @param[in]   _zConfigID            Config ID
  * @ return orxFX / orxNULL
@@ -424,6 +394,148 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
   /* Done! */
   return pstResult;
+}
+
+/** Deletes an FX
+ * @param[in] _pstFX            Concerned FX
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFX);
+
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter(_pstFX) == 0)
+  {
+    /* Deletes structure */
+    orxStructure_Delete(_pstFX);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Applies FX on object
+ * @param[in] _pstFX            FX to apply
+ * @param[in] _pstObject        Object on which to apply the FX
+ * @param[in] _fStartTime       FX local application start time
+ * @param[in] _fEndTime         FX local application end time
+ * @return    orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
+{
+  orxU32    i;
+  orxBOOL   bAlphaLock = orxFALSE, bColorBlendLock = orxFALSE, bRotationLock = orxFALSE, bScaleLock = orxFALSE, bTranslationLock = orxFALSE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(_pstFX);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_fStartTime >= orxFLOAT_0);
+  orxASSERT(_fEndTime > _fStartTime);
+
+  /* For all slots */
+  for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)
+  {
+    orxCONST orxFX_SLOT *pstFXSlot;
+
+    /* Gets the slot */
+    pstFXSlot = &(_pstFX->astFXSlotList[i]);
+
+    /* Is defined? */
+    if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_DEFINED))
+    {
+      orxFLOAT fStartTime, fEndTime, fPeriod, fFrequency, fStartCoef, fEndCoef;
+
+      /* Gets corrected start and end time */
+      fStartTime  = orxMAX(_fStartTime, pstFXSlot->fStartTime);
+      fEndTime    = orxMIN(_fEndTime, pstFXSlot->fEndTime);
+
+      /* Is this slot active in the time period? */
+      if(fEndTime >fStartTime)
+      {
+        /* Is FX type not blocked? */
+        if(((pstFXSlot->eFXType == orxFX_TYPE_ALPHA_FADE) && (bAlphaLock == orxFALSE))
+        || ((pstFXSlot->eFXType == orxFX_TYPE_COLOR_BLEND) && (bColorBlendLock == orxFALSE))
+        || ((pstFXSlot->eFXType == orxFX_TYPE_ROTATION) && (bRotationLock == orxFALSE))
+        || ((pstFXSlot->eFXType == orxFX_TYPE_SCALE) && (bScaleLock == orxFALSE))
+        || ((pstFXSlot->eFXType == orxFX_TYPE_TRANSLATION) && (bTranslationLock == orxFALSE)))
+        {
+          /* Has a valid cycle period? */
+          if(pstFXSlot->fCyclePeriod != orxFLOAT_0)
+          {
+            /* Gets it */
+            fPeriod = pstFXSlot->fCyclePeriod;
+          }
+          else
+          {
+            /* Gets whole duration as period */
+            fPeriod = pstFXSlot->fEndTime - pstFXSlot->fStartTime;
+          }
+
+          /* Gets its corresponding frequency */
+          fFrequency = orxFLOAT_1 / fPeriod;
+
+          /* Depending on blend curve */
+          switch(pstFXSlot->u32Flags & orxFX_SLOT_KU32_MASK_BLEND_CURVE)
+          {
+            case orxFX_SLOT_KU32_FLAG_BLEND_CURVE_LINEAR:
+            {
+              /* Gets linear start coef in period in [0.0; 1.0] starting at given phasis */
+              fStartCoef = (fStartTime * fFrequency) + pstFXSlot->fCyclePhasis;
+
+              /* Non zero? */
+              if(fStartCoef != orxFLOAT_0)
+              {
+                /* Gets its modulo */
+                fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
+
+                /* Zero? */
+                if(fStartCoef == orxFLOAT_0)
+                {
+                  /* Sets it at max value */
+                  fStartCoef = orxFLOAT_1;
+                }
+              }
+
+              /* Gets linear end coef in period in [0.0; 1.0] starting at given phasis */
+              fEndCoef = (fEndTime * fFrequency) + pstFXSlot->fCyclePhasis;
+
+              /* Non zero? */
+              if(fEndCoef != orxFLOAT_0)
+              {
+                /* Gets its modulo */
+                fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
+
+                /* Zero? */
+                if(fEndCoef == orxFLOAT_0)
+                {
+                  /* Sets it at max value */
+                  fEndCoef = orxFLOAT_1;
+                }
+              }
+              
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Enables/disables an FX

@@ -478,7 +478,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   }
 
   /* Updates its scale */
-  poSprite->SetScale(orxMath_FAbs(_pstTransform->fScaleX), orxMath_FAbs(_pstTransform->fScaleY));
+  poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
 
   /* Blits it */
   eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->fDstX, _pstTransform->fDstY);

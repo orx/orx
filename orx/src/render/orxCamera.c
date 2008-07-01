@@ -454,6 +454,7 @@ orxSTATUS orxFASTCALL orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRo
  */
 orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 {
+  orxFLOAT  fInvZoom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -461,8 +462,11 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
   orxASSERT(_fZoom > orxFLOAT_0);
   orxSTRUCTURE_ASSERT(_pstCamera);
 
-   /* Sets camera zoom */
-  orxFrame_SetScale(_pstCamera->pstFrame, orxFLOAT_1 / _fZoom, orxFLOAT_1 / _fZoom);
+  /* Gets inverse zoom */
+  fInvZoom = orxFLOAT_1 / _fZoom;
+
+  /* Sets camera zoom */
+  orxFrame_SetScale(_pstCamera->pstFrame, fInvZoom, fInvZoom);
 
   /* Done! */
   return eResult;

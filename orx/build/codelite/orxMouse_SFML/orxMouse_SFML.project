@@ -7,7 +7,7 @@
   <Settings Type="Dynamic Library">
     <Configuration Name="Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
       <General OutputFile="../../../bin/plugins/core/mouse/orxMouse_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g">
+      <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
@@ -64,7 +64,7 @@
     </Configuration>
     <Configuration Name="Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
       <General OutputFile="../../../bin/plugins/core/mouse/orxMouse_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g">
+      <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>

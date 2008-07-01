@@ -29,6 +29,7 @@
 
 #include "orxInclude.h"
 #include "math/orxVector.h"
+#include "object/orxObject.h"
 
 
 /** Slot flags
@@ -85,6 +86,15 @@ extern orxDLLAPI orxFX *orxFASTCALL             orxFX_CreateFromConfig(orxCONST 
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Delete(orxFX *_pstFX);
+
+/** Applies FX on object
+ * @param[in] _pstFX            FX to apply
+ * @param[in] _pstObject        Object on which to apply the FX
+ * @param[in] _fStartTime       FX local application start time
+ * @param[in] _fEndTime         FX local application end time
+ * @return    orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime);
 
 /** Enables/disables an FX
  * @param[in]   _pstFX          Concerned FX
