@@ -510,8 +510,12 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
   /* Valid file to open? */
   if((*_zFileName != *orxSTRING_EMPTY) && ((pstFile = fopen(_zFileName, "r")) != orxNULL))
   {
-    orxCHAR acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
-    orxU32  u32Size, u32Offset;
+    orxCHAR   acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
+    orxU32    u32Size, u32Offset;
+    orxSTRING zPreviousSection;
+
+    /* Gets previous config section */
+    zPreviousSection = orxConfig_GetCurrentSection();
 
     /* While file isn't empty */
     for(u32Size = (orxU32)fread(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0;
@@ -663,6 +667,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
   }
 
   /* Done! */

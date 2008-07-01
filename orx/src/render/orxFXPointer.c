@@ -57,7 +57,7 @@
 
 /** Misc defines
  */
-#define orxFXPOINTER_KU32_FX_NUMBER                4
+#define orxFXPOINTER_KU32_FX_NUMBER             4
 
 
 /***************************************************************************
