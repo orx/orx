@@ -302,6 +302,21 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(orxCONST orxOBJEC
 extern orxDLLAPI orxRGBA orxFASTCALL        orxObject_GetColor(orxCONST orxOBJECT *_pstObject);
 
 
+/** Adds an FX using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID);
+
+/** Removes an FX using using its config ID
+ * @param[in]   _pstObject      Concerned FXPointer
+ * @param[in]   _zFXConfigID    Config ID of the FX to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID);
+
+
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
  * @param[in]   _pstCheckBox    Box to check intersection with
  * @return      orxBANK / orxNULL

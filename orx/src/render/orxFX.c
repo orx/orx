@@ -27,6 +27,7 @@
 #include "core/orxConfig.h"
 #include "core/orxClock.h"
 #include "object/orxStructure.h"
+#include "utils/orxString.h"
 
 
 /** Module flags
@@ -60,6 +61,7 @@
 struct __orxFX_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
+  orxU32            u32ID;                      /**< FX ID : 20 */
 
   /* Padding */
   orxPAD(16)
@@ -273,6 +275,9 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
+      /* Stores its ID */
+      pstResult->u32ID = orxString_ToCRC(_zConfigID);
+
       //! TODO
     }
 
@@ -328,4 +333,44 @@ orxBOOL orxFASTCALL orxFX_IsEnabled(orxCONST orxFX *_pstFX)
 
   /* Done! */
   return(orxStructure_TestFlags((orxFX *)_pstFX, orxFX_KU32_FLAG_ENABLED));
+}
+
+/** Gets FX duration
+ * @param[in]   _pstFX          Concerned FX
+ * @return      orxFLOAT
+ */
+orxFLOAT orxFASTCALL orxFX_GetDuration(orxCONST orxFX *_pstFX)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFX);
+
+  //! TODO
+  /* Updates result */
+  fResult = orxFLOAT_0;
+
+  /* Done! */
+  return(fResult);
+}
+
+/** Tests FX name against given one
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _zName          Name to test
+ * @return      orxTRUE if it's FX name, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxFX_IsName(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zName)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFX);
+
+  /* Updates result */
+  bResult = (orxString_ToCRC(_zName) == _pstFX->u32ID) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return(bResult);
 }

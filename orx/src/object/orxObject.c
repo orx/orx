@@ -1320,7 +1320,7 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxCONST or
  * @param[in]   _pvSpeed        Speed to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvSpeed)
+orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvSpeed)
 {
   orxBODY  *pstBody;
   orxSTATUS eResult;
@@ -1356,7 +1356,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSpeed(orxOBJECT *_pstOb
  * @param[in]   _fVelocity      Angular velocity to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLOAT _fVelocity)
+orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLOAT _fVelocity)
 {
   orxBODY  *pstBody;
   orxSTATUS eResult;
@@ -1391,7 +1391,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAngularVelocity(orxOBJE
  * @param[out]  _pvSpeed        Speed to get
  * @return      Object speed / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvSpeed)
+orxVECTOR *orxFASTCALL orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvSpeed)
 {
   orxBODY    *pstBody;
   orxVECTOR  *pvResult;
@@ -1426,7 +1426,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSpeed(orxOBJECT *_pstOb
  * @param[in]   _pstObject      Concerned object
  * @return      Object angular velocity
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
+orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
 {
   orxBODY  *pstBody;
   orxFLOAT  fResult;
@@ -1749,6 +1749,84 @@ orxRGBA orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject)
 
   /* Done! */
   return stResult;
+}
+
+/** Adds an FX using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID)
+{
+  orxFXPOINTER *pstFXPointer;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its FXPointer */
+  pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+  /* Doesn't exist? */
+  if(pstFXPointer == orxNULL)
+  {
+    /* Creates one */
+    pstFXPointer = orxFXPointer_Create();
+
+    /* Valid? */
+    if(pstFXPointer != orxNULL)
+    {
+      /* Links it */
+      eResult = orxObject_LinkStructure(_pstObject, (orxSTRUCTURE *)pstFXPointer);
+      
+      /* Valid? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates flags */
+        orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+        /* Adds FX from config */
+        eResult = orxFXPointer_AddFXFromConfig(pstFXPointer, _zFXConfigID);
+      }
+    }
+  }
+  else
+  {
+    /* Adds FX from config */
+    eResult = orxFXPointer_AddFXFromConfig(pstFXPointer, _zFXConfigID);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes an FX using using its config ID
+ * @param[in]   _pstObject      Concerned FXPointer
+ * @param[in]   _zFXConfigID    Config ID of the FX to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID)
+{
+  orxFXPOINTER *pstFXPointer;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its FXPointer */
+  pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+  /* Valid? */
+  if(pstFXPointer != orxNULL)
+  {
+    /* Removes FX from config */
+    eResult = orxFXPointer_RemoveFXFromConfig(pstFXPointer, _zFXConfigID);
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)

@@ -72,6 +72,35 @@ extern orxDLLAPI orxVOID orxFASTCALL            orxFXPointer_Enable(orxFXPOINTER
  */
 extern orxDLLAPI orxBOOL orxFASTCALL            orxFXPointer_IsEnabled(orxCONST orxFXPOINTER *_pstFXPointer);
 
+
+/** Adds an FX
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _pstFX        FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX);
+
+/** Removes an FX
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _pstFX        FX to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX);
+
+/** Adds an FX using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID);
+
+/** Removes an FX using using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID);
+
 #endif /* _orxFXPointer_H_ */
 
 /** @} */

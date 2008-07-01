@@ -44,17 +44,6 @@
   FX_DEF.u8StartAlpha = START_ALPHA;                                                                                        \
   FX_DEF.u8EndAlpha   = END_ALPHA;
 
-#define orxFX_DEF_INIT_SCALE(FX_DEF, START_TIME, END_TIME, CYCLE_PERIOD, CYCLE_PHASIS, FLAGS, START_SCALE, END_SCALE)       \
-  orxMemory_Zero(&(FX_DEF), sizeof(orxFX_DEF));                                                                             \
-  FX_DEF.eFXType      = orxFX_TYPE_SCALE;                                                                                   \
-  FX_DEF.u32FXFlags   = (FLAGS) & orxFX_MASK_USER;                                                                          \
-  FX_DEF.fStartTime   = START_TIME;                                                                                         \
-  FX_DEF.fEndTime     = END_TIME;                                                                                           \
-  FX_DEF.fCyclePeriod = CYCLE_PERIOD;                                                                                       \
-  FX_DEF.fCyclePhasis = CYCLE_PHASIS;                                                                                       \
-  FX_DEF.vStartScale  = START_SCALE;                                                                                        \
-  FX_DEF.vEndScale    = END_SCALE;
-
 #define orxFX_DEF_INIT_COLOR_BLEND(FX_DEF, START_TIME, END_TIME, CYCLE_PERIOD, CYCLE_PHASIS, FLAGS, START_COLOR, END_COLOR) \
   orxMemory_Zero(&(FX_DEF), sizeof(orxFX_DEF));                                                                             \
   FX_DEF.eFXType      = orxFX_TYPE_COLOR_BLEND;                                                                             \
@@ -66,9 +55,31 @@
   FX_DEF.stStartColor = START_COLOR;                                                                                        \
   FX_DEF.stEndColor   = END_COLOR;
 
+#define orxFX_DEF_INIT_ROTATION(FX_DEF, START_TIME, END_TIME, CYCLE_PERIOD, CYCLE_PHASIS, FLAGS, START_ROTATION, END_ROTATION)\
+  orxMemory_Zero(&(FX_DEF), sizeof(orxFX_DEF));                                                                             \
+  FX_DEF.eFXType        = orxFX_TYPE_ROTATE;                                                                              \
+  FX_DEF.u32FXFlags     = (FLAGS) & orxFX_MASK_USER;                                                                          \
+  FX_DEF.fStartTime     = START_TIME;                                                                                         \
+  FX_DEF.fEndTime       = END_TIME;                                                                                           \
+  FX_DEF.fCyclePeriod   = CYCLE_PERIOD;                                                                                       \
+  FX_DEF.fCyclePhasis   = CYCLE_PHASIS;                                                                                       \
+  FX_DEF.fStartRotation = START_ROTATION;                                                                                        \
+  FX_DEF.fEndRotation   = END_ROTATION;
+
+#define orxFX_DEF_INIT_SCALE(FX_DEF, START_TIME, END_TIME, CYCLE_PERIOD, CYCLE_PHASIS, FLAGS, START_SCALE, END_SCALE)       \
+  orxMemory_Zero(&(FX_DEF), sizeof(orxFX_DEF));                                                                             \
+  FX_DEF.eFXType      = orxFX_TYPE_SCALE;                                                                                   \
+  FX_DEF.u32FXFlags   = (FLAGS) & orxFX_MASK_USER;                                                                          \
+  FX_DEF.fStartTime   = START_TIME;                                                                                         \
+  FX_DEF.fEndTime     = END_TIME;                                                                                           \
+  FX_DEF.fCyclePeriod = CYCLE_PERIOD;                                                                                       \
+  FX_DEF.fCyclePhasis = CYCLE_PHASIS;                                                                                       \
+  FX_DEF.vStartScale  = START_SCALE;                                                                                        \
+  FX_DEF.vEndScale    = END_SCALE;
+
 #define orxFX_DEF_INIT_TRANSLATION(FX_DEF, START_TIME, END_TIME, CYCLE_PERIOD, CYCLE_PHASIS, FLAGS, START_POS, END_POS)     \
   orxMemory_Zero(&(FX_DEF), sizeof(orxFX_DEF));                                                                             \
-  FX_DEF.eFXType        = orxFX_TYPE_TRANSLATION;                                                                           \
+  FX_DEF.eFXType        = orxFX_TYPE_TRANSLATE;                                                                           \
   FX_DEF.u32FXFlags     = (FLAGS) & orxFX_MASK_USER;                                                                        \
   FX_DEF.fStartTime     = START_TIME;                                                                                       \
   FX_DEF.fEndTime       = END_TIME;                                                                                         \
@@ -101,10 +112,11 @@
  */
 typedef enum __orxFX_TYPE_t
 {
-	orxFX_TYPE_SCALE = 0,
-	orxFX_TYPE_ALPHA_FADE,
+	orxFX_TYPE_ALPHA_FADE = 0,
 	orxFX_TYPE_COLOR_BLEND,
-	orxFX_TYPE_TRANSLATION,
+	orxFX_TYPE_ROTATE,
+	orxFX_TYPE_SCALE,
+	orxFX_TYPE_TRANSLATE,
 
 	orxFX_TYPE_NUMBER,
 
@@ -132,15 +144,21 @@ typedef struct __orxFX_DEF_t
 
     struct
     {
-      orxVECTOR vStartScale;                    /**< Scale start value : 32 */
-      orxVECTOR vEndScale;                      /**< Scale end value : 44 */
-    };                                          /**< Scale : 44 */
-
-    struct
-    {
       orxRGBA stStartColor;                     /**< ColorBlend start value : 24 */
       orxRGBA stEndColor;                       /**< ColorBlend end value : 28 */
     };                                          /** Color blend : 28 */
+
+    struct
+    {
+      orxFLOAT fStartRotation;                  /**< Rotation start value : 24 */
+      orxFLOAT fEndRotation;                    /**< Rotation end value : 28 */
+    };                                          /**< Scale : 28 */
+
+    struct
+    {
+      orxVECTOR vStartScale;                    /**< Scale start value : 32 */
+      orxVECTOR vEndScale;                      /**< Scale end value : 44 */
+    };                                          /**< Scale : 44 */
 
     struct
     {
@@ -199,6 +217,19 @@ extern orxDLLAPI orxVOID orxFASTCALL            orxFX_Enable(orxFX *_pstFX, orxB
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsEnabled(orxCONST orxFX *_pstFX);
+
+/** Gets FX duration
+ * @param[in]   _pstFX          Concerned FX
+ * @return      orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetDuration(orxCONST orxFX *_pstFX);
+
+/** Tests FX name against given one
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _zName          Name to test
+ * @return      orxTRUE if it's FX name, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsName(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zName);
 
 #endif /* _orxFX_H_ */
 

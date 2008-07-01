@@ -46,29 +46,51 @@
 #define orxFXPOINTER_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
 
+/** Holder flags
+ */
+#define orxFXPOINTER_HOLDER_KU32_FLAG_NONE      0x00000000  /**< No flags */
+
+#define orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL  0x10000000  /**< Internal flag */
+
+#define orxFXPOINTER_HOLDER_KU32_MASK_ALL       0xFFFFFFFF  /**< All mask */
+
+
 /** Misc defines
  */
+#define orxFXPOINTER_KU32_FX_NUMBER                4
 
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** FX holder structure
+ */
+typedef struct __orxFXPOINTER_HOLDER_t
+{
+  orxFX    *pstFX;                                          /**< FX reference : 4 */
+  orxFLOAT  fStartTime;                                     /**< Start time : 8 */
+  orxU32    u32Flags;                                       /**< Flags : 12 */
+
+} orxFXPOINTER_HOLDER;
+
 /** FX structure
  */
 struct __orxFXPOINTER_t
 {
-  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
+  orxSTRUCTURE        stStructure;                          /**< Public structure, first structure member : 16 */
+  orxFXPOINTER_HOLDER astFXList[orxFXPOINTER_KU32_FX_NUMBER];  /**< FX list : 64 */
+  orxFLOAT            fTime;                                /**< Time stamp : 68 */
 
   /* Padding */
-  orxPAD(16)
+  orxPAD(68)
 };
 
 /** Static structure
  */
 typedef struct __orxFXPOINTER_STATIC_t
 {
-  orxU32 u32Flags;                              /**< Control flags */
+  orxU32 u32Flags;                                            /**< Control flags */
 
 } orxFXPOINTER_STATIC;
 
@@ -127,7 +149,43 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
   /* Gets FXPointer */
   pstFXPointer = orxFXPOINTER(_pstStructure);
 
-  //! TODO
+  /* Is enabled? */
+  if(orxFXPointer_IsEnabled(pstFXPointer) != orxFALSE)
+  {
+    orxU32 i;
+
+    /* For all FXs */
+    for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+    {
+      orxFX *pstFX;
+      
+      /* Gets FX */
+      pstFX = pstFXPointer->astFXList[i].pstFX;
+
+      /* Valid? */
+      if(pstFX != orxNULL)
+      {
+        //! TODO: Gets object values + updates them using FX
+
+        /* Is ended? */
+        if(pstFXPointer->fTime > pstFXPointer->astFXList[i].fStartTime + orxFX_GetDuration(pstFX))
+        {
+          /* Decreases its reference counter */
+          orxStructure_DecreaseCounter(pstFX);
+
+          /* Removes its reference */
+          pstFXPointer->astFXList[i].pstFX = orxNULL;
+
+          /* Is internal? */
+          if(orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+          {
+            /* Deletes it */
+            orxFX_Delete(pstFX);
+          }
+        }
+      }
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -256,6 +314,19 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstFXPointer) == 0)
   {
+    orxU32 i;
+
+    /* For all FXs */
+    for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+    {
+      /* Valid? */
+      if(_pstFXPointer->astFXList[i].pstFX != orxNULL)
+      {
+        /* Deletes it */
+        orxFX_Delete(_pstFXPointer->astFXList[i].pstFX);
+      }
+    }
+
     /* Deletes structure */
     orxStructure_Delete(_pstFXPointer);
   }
@@ -308,4 +379,222 @@ orxBOOL orxFASTCALL orxFXPointer_IsEnabled(orxCONST orxFXPOINTER *_pstFXPointer)
 
   /* Done! */
   return(orxStructure_TestFlags((orxFXPOINTER *)_pstFXPointer, orxFXPOINTER_KU32_FLAG_ENABLED));
+}
+
+/** Adds an FX
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _pstFX        FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_AddFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX)
+{
+  orxU32    u32Index;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxFXPOINTER(_pstFXPointer));
+  orxASSERT(orxFX(_pstFX));
+
+  /* Finds an empty slot */
+  for(u32Index = 0; (u32Index < orxFXPOINTER_KU32_FX_NUMBER) && (_pstFXPointer->astFXList[u32Index].pstFX != orxNULL); u32Index++);
+
+  /* Found? */
+  if(u32Index < orxFXPOINTER_KU32_FX_NUMBER)
+  {
+    /* Increases its reference counter */
+    orxStructure_IncreaseCounter(_pstFX);
+
+    /* Adds it to holder */
+    _pstFXPointer->astFXList[u32Index].pstFX = _pstFX;
+
+    /* Inits its start time */
+    _pstFXPointer->astFXList[u32Index].fStartTime = _pstFXPointer->fTime;
+
+    /* Updates its flags */
+    orxFLAG_SET(_pstFXPointer->astFXList[u32Index].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_NONE, orxFXPOINTER_HOLDER_KU32_MASK_ALL);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes an FX
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _pstFX        FX to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxFXPOINTER(_pstFXPointer));
+  orxASSERT(orxFX(_pstFX));
+
+  /* For all slots */
+  for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+  {
+    orxFX *pstFX;
+    
+    /* Gets FX */
+    pstFX = _pstFXPointer->astFXList[i].pstFX;
+
+    /* Valid? */
+    if(pstFX != orxNULL)
+    {
+      /* Found? */
+      if(pstFX == _pstFX)
+      {
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(pstFX);
+
+        /* Removes its reference */
+        _pstFXPointer->astFXList[i].pstFX = orxNULL;
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxFX_Delete(pstFX);
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds an FX using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID)
+{
+  orxU32    u32Index;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxFXPOINTER(_pstFXPointer));
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
+
+  /* Finds an empty slot */
+  for(u32Index = 0; (u32Index < orxFXPOINTER_KU32_FX_NUMBER) && (_pstFXPointer->astFXList[u32Index].pstFX != orxNULL); u32Index++);
+
+  /* Found? */
+  if(u32Index < orxFXPOINTER_KU32_FX_NUMBER)
+  {
+    orxFX *pstFX;
+
+    /* Creates FX */
+    pstFX = orxFX_CreateFromConfig(_zFXConfigID);
+
+    /* Valid? */
+    if(pstFX != orxNULL)
+    {
+      /* Increases its reference counter */
+      orxStructure_IncreaseCounter(pstFX);
+
+      /* Adds it to holder */
+      _pstFXPointer->astFXList[u32Index].pstFX = pstFX;
+
+      /* Inits its start time */
+      _pstFXPointer->astFXList[u32Index].fStartTime = _pstFXPointer->fTime;
+
+      /* Updates its flags */
+      orxFLAG_SET(_pstFXPointer->astFXList[u32Index].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxFXPOINTER_HOLDER_KU32_MASK_ALL);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes an FX using using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxFXPOINTER(_pstFXPointer));
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
+
+  /* For all slots */
+  for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+  {
+    orxFX *pstFX;
+    
+    /* Gets FX */
+    pstFX = _pstFXPointer->astFXList[i].pstFX;
+
+    /* Valid? */
+    if(pstFX != orxNULL)
+    {
+      /* Found? */
+      if(orxFX_IsName(pstFX, _zFXConfigID) != orxFALSE)
+      {
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(pstFX);
+
+        /* Removes its reference */
+        _pstFXPointer->astFXList[i].pstFX = orxNULL;
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxFX_Delete(pstFX);
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
