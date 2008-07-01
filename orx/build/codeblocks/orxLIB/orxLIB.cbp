@@ -150,6 +150,8 @@
 		<Unit filename="..\..\..\include\plugin\orxPluginType.h" />
 		<Unit filename="..\..\..\include\plugin\orxPluginUser.h" />
 		<Unit filename="..\..\..\include\render\orxCamera.h" />
+		<Unit filename="..\..\..\include\render\orxFX.h" />
+		<Unit filename="..\..\..\include\render\orxFXPointer.h" />
 		<Unit filename="..\..\..\include\render\orxRender.h" />
 		<Unit filename="..\..\..\include\render\orxViewport.h" />
 		<Unit filename="..\..\..\include\script\orxScript.h" />
@@ -252,6 +254,12 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\render\orxCamera.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\render\orxFX.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\render\orxFXPointer.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\render\orxRender.c">

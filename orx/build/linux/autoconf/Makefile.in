@@ -53,6 +53,8 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxModule.o \
 	./$(BUILD)/orxDLL_orxType.o \
 	./$(BUILD)/orxDLL_orxCamera.o \
+	./$(BUILD)/orxDLL_orxFX.o \
+	./$(BUILD)/orxDLL_orxFXPointer.o \
 	./$(BUILD)/orxDLL_orxRender.o \
 	./$(BUILD)/orxDLL_orxViewport.o \
 	./$(BUILD)/orxDLL_orxConfig.o \
@@ -98,6 +100,8 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxModule.o \
 	./$(BUILD)/orxLIB_orxType.o \
 	./$(BUILD)/orxLIB_orxCamera.o \
+	./$(BUILD)/orxLIB_orxFX.o \
+	./$(BUILD)/orxLIB_orxFXPointer.o \
 	./$(BUILD)/orxLIB_orxRender.o \
 	./$(BUILD)/orxLIB_orxViewport.o \
 	./$(BUILD)/orxLIB_orxConfig.o \
@@ -402,6 +406,12 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 ./$(BUILD)/orxDLL_orxCamera.o: $(srcdir)/../../../src/render/orxCamera.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/render/orxCamera.c
 
+./$(BUILD)/orxDLL_orxFX.o: $(srcdir)/../../../src/render/orxFX.c
+	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/render/orxFX.c
+
+./$(BUILD)/orxDLL_orxFXPointer.o: $(srcdir)/../../../src/render/orxFXPointer.c
+	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/render/orxFXPointer.c
+
 ./$(BUILD)/orxDLL_orxRender.o: $(srcdir)/../../../src/render/orxRender.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/render/orxRender.c
 
@@ -524,6 +534,12 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 
 ./$(BUILD)/orxLIB_orxCamera.o: $(srcdir)/../../../src/render/orxCamera.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/render/orxCamera.c
+
+./$(BUILD)/orxLIB_orxFX.o: $(srcdir)/../../../src/render/orxFX.c
+	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/render/orxFX.c
+
+./$(BUILD)/orxLIB_orxFXPointer.o: $(srcdir)/../../../src/render/orxFXPointer.c
+	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/render/orxFXPointer.c
 
 ./$(BUILD)/orxLIB_orxRender.o: $(srcdir)/../../../src/render/orxRender.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/render/orxRender.c

@@ -28,6 +28,7 @@
 #include "display/orxGraphic.h"
 #include "physics/orxBody.h"
 #include "object/orxFrame.h"
+#include "render/orxFXPointer.h"
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
 
@@ -99,7 +100,7 @@ typedef struct __orxOBJECT_STORAGE_t
  */
 struct __orxOBJECT_t
 {
-  orxSTRUCTURE      stStructure;                /**<Public structure, first structure member : 16 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 48 */
   orxRGBA           stColor;                    /**< Object color: 52 */
 
@@ -111,17 +112,14 @@ struct __orxOBJECT_t
  */
 typedef struct __orxOBJECT_STATIC_t
 {
-  /* Clock */
-  orxCLOCK *pstClock;
-
-  /* Control flags */
-  orxU32 u32Flags;
+  orxCLOCK *pstClock;                           /**< Clock */
+  orxU32 u32Flags;                              /**< Control flags */
 
 } orxOBJECT_STATIC;
 
 
 /***************************************************************************
- * Module global variable                                                  *
+ * Static variables                                                        *
  ***************************************************************************/
 
 /** Static data
@@ -195,10 +193,10 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
       if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
       {
         orxBODY *pstBody;
-        
+
         /* Gets its body */
         pstBody = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
-        
+
         /* Valid? */
         if(pstBody != orxNULL)
         {
@@ -234,6 +232,7 @@ orxVOID orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FXPOINTER);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CONFIG);
 
@@ -721,6 +720,12 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
         case orxSTRUCTURE_ID_BODY:
         {
           orxBody_Delete(orxBODY(pstStructure));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_FXPOINTER:
+        {
+          orxFXPointer_Delete(orxFXPOINTER(pstStructure));
           break;
         }
 

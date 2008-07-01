@@ -1,3 +1,8 @@
+/**
+ * @file orxStructure.c
+ *
+ */
+
 /***************************************************************************
  orxStructure.c
  Structure module
@@ -24,34 +29,32 @@
 #include "utils/orxTree.h"
 
 
-/*
- * Platform independant defines
+/** Module flags
  */
 
 #define orxSTRUCTURE_KU32_STATIC_FLAG_NONE    0x00000000
 #define orxSTRUCTURE_KU32_STATIC_FLAG_READY   0x00000001
 
-/* *** Misc *** */
+
+/** Defines
+ */
 #define orxSTRUCTURE_KU32_STORAGE_BANK_SIZE   256
 
 #define orxSTRUCTURE_KU32_STRUCTURE_BANK_SIZE 32
 
 
-/*
- * Internal storage structure
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Internal storage structure
  */
 typedef struct __orxSTRUCTURE_STORAGE_t
 {
-  /* Storage type : 4 */
-  orxSTRUCTURE_STORAGE_TYPE eType;
+  orxSTRUCTURE_STORAGE_TYPE eType;            /**< Storage type : 4 */
+  orxBANK *pstNodeBank;                       /**< Associated node bank : 8 */
+  orxBANK *pstStructureBank;                  /**< Associated structure bank : 12 */
 
-  /* Associated node bank : 8 */
-  orxBANK *pstNodeBank;
-
-  /* Associated structure bank : 12 */
-  orxBANK *pstStructureBank;
-
-  /* Storage union : 24 */
   union
   {
     /* Link List */
@@ -59,35 +62,25 @@ typedef struct __orxSTRUCTURE_STORAGE_t
 
     /* Tree */
     orxTREE stTree;
-  };
+  };                                          /**< Storage union : 24 */
 
 } orxSTRUCTURE_STORAGE;
 
-/*
- * Internal registration info
+/** Internal registration info
  */
 typedef struct __orxSTRUCTURE_REGISTER_INFO_t
 {
-  /* Structure storage type : 4 */
-  orxSTRUCTURE_STORAGE_TYPE eStorageType;
-
-  /* Structure storage size : 8 */
-  orxU32 u32Size;
-
-  /* Structure storage memory type : 12 */
-  orxMEMORY_TYPE eMemoryType;
-
-  /* Structure update callbacks : 16 */
-  orxSTRUCTURE_UPDATE_FUNCTION pfnUpdate;
+  orxSTRUCTURE_STORAGE_TYPE eStorageType;     /**< Structure storage type : 4 */
+  orxU32 u32Size;                             /**< Structure storage size : 8 */
+  orxMEMORY_TYPE eMemoryType;                 /**< Structure storage memory type : 12 */
+  orxSTRUCTURE_UPDATE_FUNCTION pfnUpdate;     /**< Structure update callbacks : 16 */
 
 } orxSTRUCTURE_REGISTER_INFO;
 
-/*
- * Internal storage node
+/** Internal storage node
  */
 typedef struct __orxSTRUCTURE_STORAGE_NODE_t
 {
-  /* Storage node union : 16 */
   union
   {
     /* Link list node */
@@ -95,57 +88,43 @@ typedef struct __orxSTRUCTURE_STORAGE_NODE_t
 
     /* Tree node */
     orxTREE_NODE stTreeNode;
-  };
-
-  /* Pointer to structure : 20 */
-  orxSTRUCTURE *pstStructure;
-
-  /* Storage type : 24 */
-  orxSTRUCTURE_STORAGE_TYPE eType;
+  };                                          /**< Storage node union : 16 */
+  orxSTRUCTURE *pstStructure;                 /**< Pointer to structure : 20 */
+  orxSTRUCTURE_STORAGE_TYPE eType;            /**< Storage type : 24 */
 
 } orxSTRUCTURE_STORAGE_NODE;
 
-/*
- * Static structure
+/** Static structure
  */
 typedef struct __orxSTRUCTURE_STATIC_t
 {
-  /* Structure banks */
-  orxSTRUCTURE_STORAGE astStorage[orxSTRUCTURE_ID_NUMBER];
-
-  /* Structure info */
-  orxSTRUCTURE_REGISTER_INFO astInfo[orxSTRUCTURE_ID_NUMBER];
-
-  /* Control flags */
-  orxU32 u32Flags;
+  orxSTRUCTURE_STORAGE astStorage[orxSTRUCTURE_ID_NUMBER];    /**< Structure banks */
+  orxSTRUCTURE_REGISTER_INFO astInfo[orxSTRUCTURE_ID_NUMBER]; /**< Structure info */
+  orxU32 u32Flags;                                            /**< Control flags */
 
 } orxSTRUCTURE_STATIC;
 
-/*
- * Static data
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** static data
  */
 orxSTATIC orxSTRUCTURE_STATIC sstStructure;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxStructure_Setup
- Structure module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Structure module setup
+ */
 orxVOID orxStructure_Setup()
 {
   /* Adds module dependencies */
@@ -157,12 +136,9 @@ orxVOID orxStructure_Setup()
   return;
 }
 
-/***************************************************************************
- orxStructure_Init
- Inits structure system.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Initializess the structure module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxStructure_Init()
 {
   orxU32 i;
@@ -219,12 +195,8 @@ orxSTATUS orxStructure_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxStructure_Exit
- Exits from the structure system.
-
- returns: orxVOID
- ***************************************************************************/
+/** Exits from the structure module
+ */
 orxVOID orxStructure_Exit()
 {
   /* Initialized? */
@@ -276,12 +248,14 @@ orxVOID orxStructure_Exit()
   return;
 }
 
-/***************************************************************************
- orxStructure_Register
- Registers a structure type.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Registers a given ID
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @param[in]   _eStorageType   Storage type to use for this structure type
+ * @param[in]   _eMemoryTyp     Memory type to store this structure type
+ * @param[in]   _u32Size        Structure size
+ * @param[in]   _pfnUpdate      Structure update function
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxCONST orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -327,12 +301,9 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
   return eResult;
 }
 
-/***************************************************************************
- orxStructure_Unregister
- Unregisters a structure type.
-
- returns: orxVOID
- ***************************************************************************/
+/** Unregisters a given ID
+ * @param[in]   _eStructureID   Concerned structure ID
+ */
 orxVOID orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
@@ -358,70 +329,10 @@ orxVOID orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
   return;
 }
 
-/***************************************************************************
- orxStructure_GetStorageType
- Gets structure storage type.
-
- returns: Structure storage ID
- ***************************************************************************/
-orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID)
-{
-  /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
-
-  /* Returns it */
-  return(sstStructure.astStorage[_eStructureID].eType);
-}
-
-/***************************************************************************
- orxStructure_GetNumber
- Gets given type structure number.
-
- returns: number / orxU32_UNDEFINED
- ***************************************************************************/
-orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
-{
-  orxREGISTER orxU32 u32Result = orxU32_UNDEFINED;
-
-  /* Checks */
-  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
-
-  /* Dependig on type */
-  switch(sstStructure.astStorage[_eStructureID].eType)
-  {
-  case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
-
-    /* Gets counter */
-    u32Result = orxLinkList_GetCounter(&(sstStructure.astStorage[_eStructureID].stLinkList));
-
-    break;
-
-  case orxSTRUCTURE_STORAGE_TYPE_TREE:
-
-    /* Gets counter */
-    u32Result = orxTree_GetCounter(&(sstStructure.astStorage[_eStructureID].stTree));
-
-    break;
-
-  default:
-
-    /* !!! MSG !!! */
-
-    break;
-  }
-
-  /* Done ! */
-  return u32Result;
-}
-
-/***************************************************************************
- orxStructure_Create
- Creates a clean structure for given type.
-
- returns: orxSTRUCTURE pointer / orxNULL
- ***************************************************************************/
+/** Creates a clean structure for given type
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTRUCTURE / orxNULL
+ */
 orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
@@ -540,12 +451,9 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
   return pstStructure;
 }
 
-/***************************************************************************
- orxStructure_Delete
- Deletes a structure (needs to be cleaned before).
-
- returns: orxVOID
- ***************************************************************************/
+/** Deletes a structure (needs to be cleaned beforehand)
+ * @param[in]   _phStructure    Concerned structure
+ */
 orxVOID orxFASTCALL orxStructure_Delete(orxHANDLE _phStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
@@ -599,12 +507,66 @@ orxVOID orxFASTCALL orxStructure_Delete(orxHANDLE _phStructure)
   return;
 }
 
-/***************************************************************************
- orxStructure_Update
- Updates structure if update function was registered for the structure type.
+/** Gets structure storage type
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTRUCTURE_STORAGE_TYPE
+ */
+orxSTRUCTURE_STORAGE_TYPE orxFASTCALL orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID)
+{
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
 
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- ***************************************************************************/
+  /* Returns it */
+  return(sstStructure.astStorage[_eStructureID].eType);
+}
+
+/** Gets given type structure number
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxU32 / orxU32_UNDEFINED
+ */
+orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
+{
+  orxREGISTER orxU32 u32Result = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
+  orxASSERT(_eStructureID < orxSTRUCTURE_ID_NUMBER);
+
+  /* Dependig on type */
+  switch(sstStructure.astStorage[_eStructureID].eType)
+  {
+  case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+
+    /* Gets counter */
+    u32Result = orxLinkList_GetCounter(&(sstStructure.astStorage[_eStructureID].stLinkList));
+
+    break;
+
+  case orxSTRUCTURE_STORAGE_TYPE_TREE:
+
+    /* Gets counter */
+    u32Result = orxTree_GetCounter(&(sstStructure.astStorage[_eStructureID].stTree));
+
+    break;
+
+  default:
+
+    /* !!! MSG !!! */
+
+    break;
+  }
+
+  /* Done ! */
+  return u32Result;
+}
+
+/** Updates structure if update function was registered for the structure type
+ * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _phCaller       Caller structure
+ * @param[in]   _pstClockInfo   Update associated clock info
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxStructure_Update(orxHANDLE _phStructure, orxCONST orxHANDLE _phCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -637,16 +599,10 @@ orxSTATUS orxFASTCALL orxStructure_Update(orxHANDLE _phStructure, orxCONST orxHA
   return eResult;
 }
 
-
-/* *** Structure accessors *** */
-
-
-/***************************************************************************
- orxStructure_GetFirst
- Gets first stored structure (first list cell or tree root depending on storage type).
-
- returns: first structure
- ***************************************************************************/
+/** Gets first stored structure (first list cell or tree root depending on storage type)
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTRUCTURE
+ */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
@@ -745,12 +701,10 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID)
   return pstStructure;
 }
 
-/***************************************************************************
- orxStructure_GetParent
- Structure tree parent get accessor.
-
- returns: parent
- ***************************************************************************/
+/** Gets structure tree parent
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxHANDLE _phStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
@@ -793,12 +747,10 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxHANDLE _phStructure
   return pstStructure;
 }
 
-/***************************************************************************
- orxStructure_GetChild
- Structure tree child get accessor.
-
- returns: child
- ***************************************************************************/
+/** Gets structure tree child
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxHANDLE _phStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
@@ -841,12 +793,10 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxHANDLE _phStructure)
   return pstStructure;
 }
 
-/***************************************************************************
- orxStructure_GetLeftSibling
- Structure tree left sibling get accessor.
-
- returns: left sibling
- ***************************************************************************/
+/** Gets structure tree sibling
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxHANDLE _phStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
@@ -889,12 +839,10 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxHANDLE _phStructur
   return pstStructure;
 }
 
-/***************************************************************************
- orxStructure_GetPrevious
- Structure list previous get accessor.
-
- returns: previous
- ***************************************************************************/
+/** Gets structure list previous
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxHANDLE _phStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
@@ -937,12 +885,10 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxHANDLE _phStructu
   return pstStructure;
 }
 
-/***************************************************************************
- orxStructure_GetNext
- Structure list next get accessor.
-
- returns: next
- ***************************************************************************/
+/** Gets structure list next
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxHANDLE _phStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
@@ -985,12 +931,11 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxHANDLE _phStructure)
   return pstStructure;
 }
 
-/***************************************************************************
- orxStructure_SetParent
- Structure tree parent set accessor.
-
- returns: orxVOID
- ***************************************************************************/
+/** Sets structure tree parent
+ * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _phParent       Structure to set as parent
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxStructure_SetParent(orxHANDLE _phStructure, orxHANDLE _phParent)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode, *pstParentNode;

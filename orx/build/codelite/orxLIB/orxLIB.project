@@ -61,6 +61,8 @@
       <File Name="..\..\..\src\render\orxCamera.c"/>
       <File Name="..\..\..\src\render\orxRender.c"/>
       <File Name="..\..\..\src\render\orxViewport.c"/>
+      <File Name="..\..\..\src\render\orxFX.c"/>
+      <File Name="..\..\..\src\render\orxFXPointer.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="script">
       <File Name="..\..\..\src\script\orxScript.c"/>
@@ -170,6 +172,8 @@
       <File Name="..\..\..\include\render\orxCamera.h"/>
       <File Name="..\..\..\include\render\orxRender.h"/>
       <File Name="..\..\..\include\render\orxViewport.h"/>
+      <File Name="..\..\..\include\render\orxFX.h"/>
+      <File Name="..\..\..\include\render\orxFXPointer.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="script">
       <File Name="..\..\..\include\script\orxScript.h"/>

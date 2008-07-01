@@ -1,26 +1,3 @@
-/**
- * \file orxObject.h
- *
- * Object Module.
- * Allows to creates and handle objects.
- * Objects are structures containers that can refer to many other structures such as frames, graphics, etc...
- *
- * \todo
- * Call the anim IsRenderStatusClean when it has been created.
- * Add the required structures when needed.
- * Add Sweep & Prune and specialized storages depending on purposes.
- */
-
-
-/***************************************************************************
- orxObject.h
- Object module
-
- begin                : 01/12/2003
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
@@ -29,6 +6,22 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file orxObject.h
+ * @date 01/12/2003
+ * @author (C) Arcallians
+ */
+
+/**
+ * @addtogroup Object
+ * 
+ * Object module
+ * Allows to creates and handle objects.
+ * Objects are structures containers that can refer to many other structures such as frames, graphics, etc...
+ *
+ * @{
+ */
 
 
 #ifndef _orxOBJECT_H_
@@ -75,7 +68,10 @@ extern orxDLLAPI orxOBJECT *                orxObject_Create();
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID);
 
-/** Deletes an object. */
+/** Deletes an object
+ * @param[in] _pstObject        Concerned object
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObject);
 
 /** Enables/disables an object
@@ -319,3 +315,5 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxObject_DeleteNeighborList(orxBANK
 
 
 #endif /* _orxOBJECT_H_ */
+
+/** @} */

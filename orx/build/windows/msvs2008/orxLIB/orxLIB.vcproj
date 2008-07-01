@@ -503,6 +503,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\src\render\orxFX.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\src\render\orxFXPointer.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\src\render\orxRender.c"
 					>
 				</File>
@@ -866,6 +874,14 @@
 				>
 				<File
 					RelativePath="..\..\..\..\include\render\orxCamera.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\include\render\orxFX.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\include\render\orxFXPointer.h"
 					>
 				</File>
 				<File

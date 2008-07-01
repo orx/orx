@@ -1,25 +1,3 @@
-/**
- * \file orxStructure.h
- *
- * Structure Module.
- * Allows to creates and handle structures.
- * Structures can be referenced by other structures (or objects).
- *
- * \todo
- * Add the required structures when needed.
- * Do a generic system for structure registering (id given at realtime)
- */
-
-
-/***************************************************************************
- orxStructure.h
- Structure module
-
- begin                : 08/12/2003
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
@@ -28,6 +6,22 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file orxStructure.h
+ * @date 08/12/2003
+ * @author (C) Arcallians
+ */
+
+/**
+ * @addtogroup Object
+ * 
+ * Structure module
+ * Allows to creates and handle structures.
+ * Structures can be referenced by other structures (or objects).
+ *
+ * @{
+ */
 
 
 #ifndef _orxSTRUCTURE_H_
@@ -40,7 +34,8 @@
 #include "memory/orxMemory.h"
 
 
-/** Structure pointer get helpers */
+/** Structure pointer get helpers
+ */
 #ifdef __orxDEBUG__
 
   #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE)               \
@@ -53,18 +48,22 @@
 #endif /* __orxDEBUG__ */
 
 #define orxSTRUCTURE(STRUCTURE)   ((STRUCTURE != orxNULL) && ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER)) ? (orxSTRUCTURE *)STRUCTURE : (orxSTRUCTURE *)orxNULL
-#define orxFRAME(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, FRAME)
-#define orxGRAPHIC(STRUCTURE)     orxSTRUCTURE_GET_POINTER(STRUCTURE, GRAPHIC)
-#define orxANIMPOINTER(STRUCTURE) orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIMPOINTER)
-#define orxBODY(STRUCTURE)        orxSTRUCTURE_GET_POINTER(STRUCTURE, BODY)
-#define orxANIM(STRUCTURE)        orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIM)
-#define orxANIMSET(STRUCTURE)     orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIMSET)
-#define orxCAMERA(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, CAMERA)
-#define orxOBJECT(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, OBJECT)
-#define orxTEXTURE(STRUCTURE)     orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXTURE)
-#define orxVIEWPORT(STRUCTURE)    orxSTRUCTURE_GET_POINTER(STRUCTURE, VIEWPORT)
 
-/** Structure register macro. */
+#define orxANIM(STRUCTURE)        orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIM)
+#define orxANIMPOINTER(STRUCTURE) orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIMPOINTER)
+#define orxANIMSET(STRUCTURE)     orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIMSET)
+#define orxBODY(STRUCTURE)        orxSTRUCTURE_GET_POINTER(STRUCTURE, BODY)
+#define orxCAMERA(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, CAMERA)
+#define orxFRAME(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, FRAME)
+#define orxFX(STRUCTURE)          orxSTRUCTURE_GET_POINTER(STRUCTURE, FX)
+#define orxFXPOINTER(STRUCTURE)   orxSTRUCTURE_GET_POINTER(STRUCTURE, FXPOINTER)
+#define orxGRAPHIC(STRUCTURE)     orxSTRUCTURE_GET_POINTER(STRUCTURE, GRAPHIC)
+#define orxOBJECT(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, OBJECT)
+#define orxVIEWPORT(STRUCTURE)    orxSTRUCTURE_GET_POINTER(STRUCTURE, VIEWPORT)
+#define orxTEXTURE(STRUCTURE)     orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXTURE)
+
+/** Structure register macro
+ */
 #define orxSTRUCTURE_REGISTER(TYPE, STORAGE_TYPE, MEMORY_TYPE, UPDATE_FUNCTION) \
   orxStructure_Register(orxSTRUCTURE_ID_##TYPE, STORAGE_TYPE, MEMORY_TYPE, sizeof(orx##TYPE), UPDATE_FUNCTION)
 
@@ -83,7 +82,8 @@
 #endif
 
 
-/** Structure IDs. */
+/** Structure IDs
+ */
 typedef enum __orxSTRUCTURE_ID_t
 {
   /* *** Following structures can be linked to objects *** */
@@ -92,6 +92,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_GRAPHIC,
   orxSTRUCTURE_ID_ANIMPOINTER,
   orxSTRUCTURE_ID_BODY,
+  orxSTRUCTURE_ID_FXPOINTER,
 
   orxSTRUCTURE_ID_LINKABLE_NUMBER,
 
@@ -100,6 +101,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_ANIM = orxSTRUCTURE_ID_LINKABLE_NUMBER,
   orxSTRUCTURE_ID_ANIMSET,
   orxSTRUCTURE_ID_CAMERA,
+  orxSTRUCTURE_ID_FX,
   orxSTRUCTURE_ID_OBJECT,
   orxSTRUCTURE_ID_TEXTURE,
   orxSTRUCTURE_ID_VIEWPORT,
@@ -110,7 +112,8 @@ typedef enum __orxSTRUCTURE_ID_t
 
 } orxSTRUCTURE_ID;
 
-/** Structure storage types. */
+/** Structure storage types
+ */
 typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
 {
   orxSTRUCTURE_STORAGE_TYPE_LINKLIST = 0,
@@ -122,7 +125,8 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
 
 } orxSTRUCTURE_STORAGE_TYPE;
 
-/** Public struct structure (Must be first structure member!). */
+/** Public struct structure (Must be first derived structure member!)
+ */
 typedef struct __orxSTRUCTURE_t
 {
   /* Structure ID. : 4 */
@@ -140,65 +144,133 @@ typedef struct __orxSTRUCTURE_t
 } orxSTRUCTURE;
 
 
-/** Structure update callback function type. */
+/** Structure update callback function type
+ */
 typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
 
-/** Structure module setup. */
+/** Structure module setup
+ */
 extern orxDLLAPI orxVOID                                orxStructure_Setup();
-/** Inits the structure system. */
+
+/** Initializess the structure module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                              orxStructure_Init();
-/** Exits from the structure system. */
+
+/** Exits from the structure module
+ */
 extern orxDLLAPI orxVOID                                orxStructure_Exit();
 
-/** Registers a given ID. */
+
+/** Registers a given ID
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @param[in]   _eStorageType   Storage type to use for this structure type
+ * @param[in]   _eMemoryTyp     Memory type to store this structure type
+ * @param[in]   _u32Size        Structure size
+ * @param[in]   _pfnUpdate      Structure update function
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxCONST orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate);
-/** Unregisters a given ID. */
+
+/** Unregisters a given ID
+ * @param[in]   _eStructureID   Concerned structure ID
+ */
 extern orxDLLAPI orxVOID    orxFASTCALL                 orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
 
-/** Creates a clean structure for given type. */
+
+/** Creates a clean structure for given type
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTRUCTURE / orxNULL
+ */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_Create(orxSTRUCTURE_ID _eStructureID);
-/** Deletes a structure (needs to be cleaned before). */
+
+/** Deletes a structure (needs to be cleaned beforehand)
+ * @param[in]   _phStructure    Concerned structure
+ */
 extern orxDLLAPI orxVOID    orxFASTCALL                 orxStructure_Delete(orxHANDLE _phStructure);
 
-/** Gets given type structure number. */
-extern orxDLLAPI orxU32     orxFASTCALL                 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID);
 
-/** Gets structure storage type. */
+/** Gets structure storage type
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTRUCTURE_STORAGE_TYPE
+ */
 extern orxDLLAPI orxSTRUCTURE_STORAGE_TYPE orxFASTCALL  orxStructure_GetStorageType(orxSTRUCTURE_ID _eStructureID);
 
-/** Updates structure if update function was registered for the structure type. */
+/** Gets given type structure number
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxU32 / orxU32_UNDEFINED
+ */
+extern orxDLLAPI orxU32     orxFASTCALL                 orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID);
+
+/** Updates structure if update function was registered for the structure type
+ * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _phCaller       Caller structure
+ * @param[in]   _pstClockInfo   Update associated clock info
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Update(orxHANDLE _phStructure, orxCONST orxHANDLE _phCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
 
 /** *** Structure storage accessors *** */
 
 
-/** Gets first stored structure (first list cell or tree root depending on storage type). */
+/** Gets first stored structure (first list cell or tree root depending on storage type)
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTRUCTURE
+ */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID);
-/** Gets last stored structure (last list cell or tree root depending on storage type). */
+
+/** Gets last stored structure (last list cell or tree root depending on storage type)
+ * @param[in]   _eStructureID   Concerned structure ID
+ * @return      orxSTRUCTURE
+ */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID);
 
-/** Structure tree parent get accessor. */
+/** Gets structure tree parent
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetParent(orxCONST orxHANDLE _phStructure);
-/** Structure tree child get accessor. */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetChild(orxCONST orxHANDLE _phStructure);
-/** Structure tree sibling get accessor. */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetSibling(orxCONST orxHANDLE _phStructure);
-/** Structure list previous get accessor. */
 
+/** Gets structure tree child
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetChild(orxCONST orxHANDLE _phStructure);
+
+/** Gets structure tree sibling
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetSibling(orxCONST orxHANDLE _phStructure);
+
+/** Gets structure list previous
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetPrevious(orxCONST orxHANDLE _phStructure);
-/** Structure list next get accessor. */
+
+/** Gets structure list next
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE
+ */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetNext(orxCONST orxHANDLE _phStructure);
 
-/** Structure tree parent set accessor. */
+/** Sets structure tree parent
+ * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _phParent       Structure to set as parent
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_SetParent(orxHANDLE _phStructure, orxHANDLE _phParent);
 
 
 /** *** Inlined structure accessors *** */
 
 
-/** Increases structure reference counter. */
+/** Increases structure reference counter
+ * @param[in]   _phStructure    Concerned structure
+ */
 orxSTATIC orxINLINE orxVOID                             orxStructure_IncreaseCounter(orxHANDLE _phStructure)
 {
   /* Checks */
@@ -210,7 +282,9 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_IncreaseCou
   return;
 }
 
-/** Decreases structure reference counter. */
+/** Decreases structure reference counter
+ * @param[in]   _phStructure    Concerned structure
+ */
 orxSTATIC orxINLINE orxVOID                             orxStructure_DecreaseCounter(orxHANDLE _phStructure)
 {
   /* Checks */
@@ -223,7 +297,10 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_DecreaseCou
   return;
 }
 
-/** Gets structure reference counter. */
+/** Gets structure reference counter
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxU32
+ */
 orxSTATIC orxINLINE orxU32                              orxStructure_GetRefCounter(orxCONST orxHANDLE _phStructure)
 {
   /* Checks */
@@ -233,7 +310,10 @@ orxSTATIC orxINLINE orxU32                              orxStructure_GetRefCount
   return(((orxSTRUCTURE *)_phStructure)->u32RefCounter);
 }
 
-/** Gets structure ID. */
+/** Gets structure ID
+ * @param[in]   _phStructure    Concerned structure
+ * @return      orxSTRUCTURE_ID
+ */
 orxSTATIC orxINLINE orxSTRUCTURE_ID                     orxStructure_GetID(orxCONST orxHANDLE _phStructure)
 {
   /* Checks */
@@ -243,7 +323,7 @@ orxSTATIC orxINLINE orxSTRUCTURE_ID                     orxStructure_GetID(orxCO
   return((orxSTRUCTURE_ID)(((orxSTRUCTURE *)_phStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER));
 }
 
-/** Structure flags test accessor
+/** Tests flags against structure ones
  * @param[in]   _phStructure    Concerned structure
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
@@ -257,7 +337,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestFlags(o
   return(orxFLAG_TEST(((orxSTRUCTURE *)_phStructure)->u32Flags, _u32Flags));
 }
 
-/** Structure all flags test accessor
+/** Tests all flags against structure ones
  * @param[in]   _phStructure    Concerned structure
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
@@ -271,7 +351,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestAllFlag
   return(orxFLAG_TEST_ALL(((orxSTRUCTURE *)_phStructure)->u32Flags, _u32Flags));
 }
 
-/** Structure all flags get accessor
+/** Gets structure flags
  * @param[in]   _phStructure    Concerned structure
  * @param[in]   _u32Flags       Mask to use for getting flags
  * @return      orxU32
@@ -285,7 +365,7 @@ orxSTATIC orxINLINE orxU32                              orxStructure_GetFlags(or
   return(orxFLAG_GET(((orxSTRUCTURE *)_phStructure)->u32Flags, _u32Mask));
 }
 
-/** Structure flag set accessor
+/** Sets structure flags
  * @param[in]   _phStructure    Concerned structure
  * @param[in]   _u32AddFlags    Flags to add
  * @param[in]   _u32RemoveFlags Flags to remove
@@ -302,3 +382,5 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_SetFlags(or
 
 
 #endif /* _orxSTRUCTURE_H_ */
+
+/** @} */

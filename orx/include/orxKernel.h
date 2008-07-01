@@ -65,6 +65,8 @@
 #include "physics/orxPhysics.h"
 
 #include "render/orxCamera.h"
+#include "render/orxFX.h"
+#include "render/orxFXPointer.h"
 #include "render/orxRender.h"
 #include "render/orxViewport.h"
 

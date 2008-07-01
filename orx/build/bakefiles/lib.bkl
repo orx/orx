@@ -49,11 +49,15 @@
 
         <headers>
             include/render/orxCamera.h
+            include/render/orxFX.h
+            include/render/orxFXPointer.h
             include/render/orxRender.h
             include/render/orxViewport.h
         </headers>
         <sources>
             src/render/orxCamera.c
+            src/render/orxFX.c
+            src/render/orxFXPointer.c
             src/render/orxRender.c
             src/render/orxViewport.c
         </sources>

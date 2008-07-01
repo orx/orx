@@ -80,6 +80,8 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxModule.o \
 	./$(BUILD)/orxDLL_orxType.o \
 	./$(BUILD)/orxDLL_orxCamera.o \
+	./$(BUILD)/orxDLL_orxFX.o \
+	./$(BUILD)/orxDLL_orxFXPointer.o \
 	./$(BUILD)/orxDLL_orxRender.o \
 	./$(BUILD)/orxDLL_orxViewport.o \
 	./$(BUILD)/orxDLL_orxConfig.o \
@@ -125,6 +127,8 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxModule.o \
 	./$(BUILD)/orxLIB_orxType.o \
 	./$(BUILD)/orxLIB_orxCamera.o \
+	./$(BUILD)/orxLIB_orxFX.o \
+	./$(BUILD)/orxLIB_orxFXPointer.o \
 	./$(BUILD)/orxLIB_orxRender.o \
 	./$(BUILD)/orxLIB_orxViewport.o \
 	./$(BUILD)/orxLIB_orxConfig.o \
@@ -545,6 +549,12 @@ endif
 ./$(BUILD)/orxDLL_orxCamera.o: ../../../src/render/orxCamera.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./$(BUILD)/orxDLL_orxFX.o: ../../../src/render/orxFX.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
+./$(BUILD)/orxDLL_orxFXPointer.o: ../../../src/render/orxFXPointer.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./$(BUILD)/orxDLL_orxRender.o: ../../../src/render/orxRender.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -666,6 +676,12 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxLIB_orxCamera.o: ../../../src/render/orxCamera.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+./$(BUILD)/orxLIB_orxFX.o: ../../../src/render/orxFX.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+./$(BUILD)/orxLIB_orxFXPointer.o: ../../../src/render/orxFXPointer.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxLIB_orxRender.o: ../../../src/render/orxRender.c
