@@ -221,6 +221,24 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Div(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
+/** Lerps from one vector to another one using a coefficient */
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Lerp(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2, orxFLOAT _fOp)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2 != orxNULL);
+  orxASSERT((_fOp >= orxFLOAT_0) && (_fOp <= orxFLOAT_1));
+
+  /* Lerps all*/
+  _pvRes->fX = orxLERP(_pvOp1->fX, _pvOp2->fX, _fOp);
+  _pvRes->fY = orxLERP(_pvOp1->fY, _pvOp2->fY, _fOp);
+  _pvRes->fZ = orxLERP(_pvOp1->fZ, _pvOp2->fZ, _fOp);
+
+  /* Done! */
+  return _pvRes;
+}
+
 /** Negates a vector and stores result in another one. */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Neg(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {

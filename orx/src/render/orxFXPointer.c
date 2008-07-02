@@ -427,8 +427,8 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFX(orxFXPOINTER *_pstFXPointer, orxFX *_ps
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
-  orxASSERT(orxFXPOINTER(_pstFXPointer));
-  orxASSERT(orxFX(_pstFX));
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+  orxSTRUCTURE_ASSERT(_pstFX);
 
   /* Finds an empty slot */
   for(u32Index = 0; (u32Index < orxFXPOINTER_KU32_FX_NUMBER) && (_pstFXPointer->astFXList[u32Index].pstFX != orxNULL); u32Index++);
@@ -475,8 +475,8 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
-  orxASSERT(orxFXPOINTER(_pstFXPointer));
-  orxASSERT(orxFX(_pstFX));
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+  orxSTRUCTURE_ASSERT(_pstFX);
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -528,7 +528,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, 
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
-  orxASSERT(orxFXPOINTER(_pstFXPointer));
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
   orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
 
   /* Finds an empty slot */
@@ -592,7 +592,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
-  orxASSERT(orxFXPOINTER(_pstFXPointer));
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
   orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
 
   /* For all slots */

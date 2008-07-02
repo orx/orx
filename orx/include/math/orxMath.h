@@ -40,6 +40,8 @@
 
 /* *** Public macro definition. *** */
 
+#define orxLERP(A, B, T)          ((A) + ((T) * ((B) - (A))))
+
 #define orxMIN(A, B)              (((A) > (B)) ? (B) : (A))
 #define orxMAX(A, B)              (((A) < (B)) ? (B) : (A))
 
