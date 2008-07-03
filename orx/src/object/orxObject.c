@@ -810,7 +810,7 @@ orxBOOL orxFASTCALL orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject)
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Done! */
-  return(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_ENABLED));
+  return(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED));
 }
 
 /** Sets object pivot
@@ -1619,7 +1619,7 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
   orxMemory_Zero(_pstBoundingBox, sizeof(orxAABOX));
 
   /* Is 2D ? */
-  if(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_2D))
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_2D))
   {
     orxGRAPHIC *pstGraphic;
 
@@ -1715,7 +1715,7 @@ orxBOOL orxFASTCALL orxObject_HasColor(orxCONST orxOBJECT *_pstObject)
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Updates result */
-  bResult = orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR);
+  bResult = orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR);
 
   /* Done! */
   return bResult;
@@ -1734,7 +1734,7 @@ orxRGBA orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject)
   orxSTRUCTURE_ASSERT(_pstObject);
 
   /* Has color? */
-  if(orxStructure_TestFlags((orxOBJECT *)_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR))
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR))
   {
     /* Updates result */
     stResult = _pstObject->stColor;
