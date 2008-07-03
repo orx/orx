@@ -76,12 +76,25 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     /* Has a matching world position? */
     if(orxRender_GetWorldPosition(&vScreenPos, &vWorldPos) != orxSTATUS_FAILURE)
     {
-        /* Spawn a ball under the cursor */
-        pstObject = orxObject_CreateFromConfig("Ball");
-        orxObject_SetPosition(pstObject, &vWorldPos);
+      orxFX *pstFX;
+      orxFXPOINTER *pstFXPointer;
 
-        /* Update counter */
-        su32BallCounter++;
+      /* Spawn a ball under the cursor */
+      pstObject = orxObject_CreateFromConfig("Ball");
+      orxObject_SetPosition(pstObject, &vWorldPos);
+
+      orxObject_AddFX(pstObject, "toto");
+
+      pstFX = orxFX_Create();
+
+      orxFX_AddAlphaFade(pstFX, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f, 1.0f, orxFX_CURVE_LINEAR, orxFX_SLOT_KU32_FLAG_ABSOLUTE);
+
+      pstFXPointer = orxOBJECT_GET_STRUCTURE(pstObject, FXPOINTER);
+
+      orxFXPointer_AddFX(pstFXPointer, pstFX);
+
+      /* Update counter */
+      su32BallCounter++;
     }
   }
 }

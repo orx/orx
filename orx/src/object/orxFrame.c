@@ -381,7 +381,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
   orxASSERT((_pstSrcFrame != orxNULL));
 
   /* 2D data? */
-  if(orxStructure_TestFlags((orxFRAME *)_pstSrcFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstSrcFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
     orxVECTOR           vTempPos;
     orxCONST orxVECTOR *pvParentPos, *pvPos;
@@ -390,7 +390,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
     orxFRAME            *pstParentFrame;
 
     /* gets parent frame */
-    pstParentFrame = (orxFRAME *)orxStructure_GetParent((orxFRAME *)_pstSrcFrame);
+    pstParentFrame = orxFRAME(orxStructure_GetParent(_pstSrcFrame));
 
     /* Gets parent's global data */
     pvParentPos   = _orxFrame_GetPosition(pstParentFrame, orxFRAME_SPACE_GLOBAL);
@@ -459,7 +459,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* gets parent frame */
-  pstParentFrame = (orxFRAME *)orxStructure_GetParent(_pstFrame);
+  pstParentFrame = orxFRAME(orxStructure_GetParent(_pstFrame));
 
   /* Is cell dirty & has parent? */
   if((orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_VALUE_DIRTY) != orxFALSE)
@@ -490,13 +490,13 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, o
   if(_pstFrame != orxNULL)
   {
     /* Updates child status */
-    orxFrame_SetFlagRecursively((orxFRAME *)orxStructure_GetChild(_pstFrame), _u32AddFlags, _u32RemoveFlags, orxTRUE);
+    orxFrame_SetFlagRecursively(orxFRAME(orxStructure_GetChild(_pstFrame)), _u32AddFlags, _u32RemoveFlags, orxTRUE);
 
     /* Recursed? */
     if(_bRecursed)
     {
       /* Updates siblings status */
-      orxFrame_SetFlagRecursively((orxFRAME *)orxStructure_GetSibling(_pstFrame), _u32AddFlags, _u32RemoveFlags, orxTRUE);
+      orxFrame_SetFlagRecursively(orxFRAME(orxStructure_GetSibling(_pstFrame)), _u32AddFlags, _u32RemoveFlags, orxTRUE);
     }
 
     /* Updates cell flags */
@@ -527,7 +527,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_DeleteAll()
   orxREGISTER orxFRAME *pstFrame;
 
   /* Gets first frame */
-  pstFrame = (orxFRAME *)orxStructure_GetChild(sstFrame.pstRoot);
+  pstFrame = orxFRAME(orxStructure_GetChild(sstFrame.pstRoot));
 
   /* Untill only root remains */
   while(pstFrame != orxNULL)
@@ -780,7 +780,7 @@ orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
   orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Test render dirty flag */
-  return(orxStructure_TestFlags((orxFRAME *)_pstFrame, orxFRAME_KU32_FLAG_RENDER_DIRTY));
+  return(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_RENDER_DIRTY));
 }
 
 /** Sets a frame parent
@@ -824,7 +824,7 @@ orxBOOL orxFASTCALL orxFrame_IsRootChild(orxCONST orxFRAME *_pstFrame)
   orxSTRUCTURE_ASSERT(_pstFrame);
 
   /* Updates result*/
-  bResult = (orxFRAME *)orxStructure_GetParent((orxFRAME *)_pstFrame) == sstFrame.pstRoot;
+  bResult = orxFRAME(orxStructure_GetParent(_pstFrame)) == sstFrame.pstRoot;
 
   /* Done! */
   return bResult;

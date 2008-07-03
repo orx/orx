@@ -177,7 +177,7 @@ do                                                            \
   *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
   *((orxU32 *)&(B)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
   *((orxU32 *)&(A)) = *((orxU32 *)&(A)) ^ *((orxU32 *)&(B));  \
-} while(orxFALSE);
+} while(orxFALSE)
 
 
 /** Tests all flags
@@ -211,7 +211,7 @@ do                            \
 {                             \
   (X) &= ~(R);                \
   (X) |= (A);                 \
-} while(orxFALSE);
+} while(orxFALSE)
 
 
 #endif /*_orxDECL_H_*/

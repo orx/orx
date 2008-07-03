@@ -48,6 +48,20 @@
 
 #define orxFX_KU32_MASK_ALL                     0xFFFFFFFF  /**< All mask */
 
+/** Slot flags
+ */
+#define orxFX_SLOT_KU32_FLAG_NONE               0x00000000  /**< No flag */
+
+#define orxFX_SLOT_KU32_FLAG_DEFINED            0x10000000  /**< Defined flag */
+
+#define orxFX_SLOT_KU32_MASK_BLEND_CURVE        0x0000000F  /**< Blend curve mask */
+
+
+#define orxFX_SLOT_KU32_MASK_USER_ALL           0x0000FFFF  /**< User all mask */
+
+#define orxFX_SLOT_KU32_MASK_ALL                0xFFFFFFFF  /**< All mask */
+
+
 
 /** Misc defines
  */
@@ -416,10 +430,19 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Has an ID? */
+    if(_pstFX->u32ID != 0)
+    {
+      /* Decreases its reference counter */
+      orxStructure_DecreaseCounter(_pstFX);
+    }
+    else
+    {
+      /* !!! MSG !!! */
 
-    /* Referenced by others */
-    eResult = orxSTATUS_FAILURE;
+      /* Referenced by others */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
 
   /* Done! */
@@ -502,7 +525,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
           /* Depending on blend curve */
           switch(pstFXSlot->u32Flags & orxFX_SLOT_KU32_MASK_BLEND_CURVE)
           {
-            case orxFX_SLOT_KU32_FLAG_BLEND_CURVE_LINEAR:
+            case orxFX_CURVE_LINEAR:
             {
               /* Gets linear start coef in period [0.0; 1.0] starting at given phasis */
               fStartCoef = (fStartTime * fFrequency) + pstFXSlot->fCyclePhasis;
@@ -541,7 +564,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               break;
             }
 
-            case orxFX_SLOT_KU32_FLAG_BLEND_CURVE_SAW:
+            case orxFX_CURVE_SAW:
             {
               /* Gets linear coef in period [0.0; 2.0] starting at given phasis */
               fStartCoef = (fStartTime * fFrequency) + pstFXSlot->fCyclePhasis;
@@ -554,7 +577,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               }
 
               /* Gets linear coef in period [0.0; 2.0] starting at given phasis */
-              fEndCoef = (fEndCoef * fFrequency) + pstFXSlot->fCyclePhasis;
+              fEndCoef = (fEndTime * fFrequency) + pstFXSlot->fCyclePhasis;
               fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
 
               /* Gets symetric coef between 1.0 & 2.0 */
@@ -566,7 +589,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               break;
             }
 
-            case orxFX_SLOT_KU32_FLAG_BLEND_CURVE_SINE:
+            case orxFX_CURVE_SINE:
             {
               /* Gets sine coef starting at given phasis * 2Pi - Pi/2 */
               fStartCoef = (orxMath_Sin((orxMATH_KF_2_PI * (fStartTime + (fPeriod * (pstFXSlot->fCyclePhasis - orx2F(0.25f))))) * fFrequency) + orxFLOAT_1) * orx2F(0.5f);
@@ -587,7 +610,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
           }
 
           /* Using a square curve? */
-          if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_BLEND_SQUARE))
+          if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_CURVE_SQUARE))
           {
             /* Squares both coefs */
             fStartCoef *= fStartCoef;
@@ -756,22 +779,109 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               break;
             }
           }
-          
-          /* Update alpha? */
-          if(bAlphaUpdate != orxFALSE)
+
+          /* Global color update? */
+          if((bAlphaUpdate != orxFALSE)
+          || (bColorBlendUpdate != orxFALSE))
           {
-            /* Non absolute? */
-            if(bAlphaLock == orxFALSE)
+            /* Update alpha? */
+            if(bAlphaUpdate != orxFALSE)
             {
-              /* Updates alpha with previous one */
-              fAlpha += (orxU2F(orxRGBA_A(stColor)) * orxRGBA_NORMALIZER);
+              /* Non absolute? */
+              if(bAlphaLock == orxFALSE)
+              {
+                /* Updates alpha with previous one */
+                fAlpha += (orxU2F(orxRGBA_A(stColor)) * orxRGBA_NORMALIZER);
+              }
+
+              /* Clamps alpha */
+              fAlpha = orxCLAMP(fAlpha, orxFLOAT_0, orxFLOAT_1);
+            }
+            else
+            {
+              /* Resets alpha */
+              fAlpha = orxFLOAT_1;
             }
 
-            /* Clamps alpha */
-            fAlpha = orxCLAMP(fAlpha, orxFLOAT_0, orxFLOAT_1);
+            /* Update color blend? */
+            if(bColorBlendUpdate != orxFALSE)
+            {
+              /* Non absolute */
+              if(bColorBlendLock == orxFALSE)
+              {
+                /* Updates color with previous one */
+                vColor.fX += (orxU2F(orxRGBA_R(stColor)) * orxRGBA_NORMALIZER);
+                vColor.fY += (orxU2F(orxRGBA_G(stColor)) * orxRGBA_NORMALIZER);
+                vColor.fZ += (orxU2F(orxRGBA_B(stColor)) * orxRGBA_NORMALIZER);
+              }
 
-            /* Updates color */
-            stColor = orx2RGBA(orxRGBA_R(stColor), orxRGBA_G(stColor), orxRGBA_B(stColor), (orxU8)orxF2U(orx2F(255.0f) * fAlpha));
+              /* Clamps color */
+              vColor.fX = orxCLAMP(vColor.fX, orxFLOAT_0, orxFLOAT_1);
+              vColor.fY = orxCLAMP(vColor.fY, orxFLOAT_0, orxFLOAT_1);
+              vColor.fZ = orxCLAMP(vColor.fZ, orxFLOAT_0, orxFLOAT_1);
+            }
+            else
+            {
+              /* Resets color */
+              orxVector_SetAll(&vColor, orxFLOAT_1);
+            }
+
+            /* Updates global color */
+            orxVector_Mulf(&vColor, &vColor, orx2F(255.0f));
+            stColor = orx2RGBA((orxU8)orxF2U(vColor.fX), (orxU8)orxF2U(vColor.fY), (orxU8)orxF2U(vColor.fZ), (orxU8)orxF2U(orx2F(255.0f) * fAlpha));
+
+            /* Applies it */
+            orxObject_SetColor(_pstObject, stColor);
+          }
+
+          /* Update rotation? */
+          if(bRotationUpdate != orxFALSE)
+          {
+            /* Non absolute? */
+            if(bRotationLock == orxFALSE)
+            {
+              /* Updates rotation with previous one */
+              fRotation += orxObject_GetRotation(_pstObject);
+            }
+
+            /* Applies it */
+            orxObject_SetRotation(_pstObject, fRotation);
+          }
+
+          /* Update scale? */
+          if(bScaleUpdate != orxFALSE)
+          {
+            /* Non absolute? */
+            if(bScaleLock != orxFALSE)
+            {
+              orxFLOAT fObjectScaleX, fObjectScaleY;
+
+              /* Gets object scale */
+              orxObject_GetScale(_pstObject, &fObjectScaleX, &fObjectScaleY);
+
+              /* Updates scale with previous one */
+              vScale.fX *= fObjectScaleX;
+              vScale.fY *= fObjectScaleY;
+            }
+
+            /* Applies it */
+            orxObject_SetScale(_pstObject, vScale.fX, vScale.fY);
+          }
+
+          /* Update translation? */
+          if(bTranslationUpdate != orxFALSE)
+          {
+            /* Non absolute? */
+            if(bTranslationLock != orxFALSE)
+            {
+              orxVECTOR vObjectPosition;
+
+              /* Updates position with previous one */
+              orxVector_Add(&vPosition, &vPosition, orxObject_GetPosition(_pstObject, &vObjectPosition));
+            }
+
+            /* Applies it */
+            orxObject_SetPosition(_pstObject, &vPosition);
           }
         }
       }
@@ -818,7 +928,7 @@ orxBOOL orxFASTCALL orxFX_IsEnabled(orxCONST orxFX *_pstFX)
   orxSTRUCTURE_ASSERT(_pstFX);
 
   /* Done! */
-  return(orxStructure_TestFlags((orxFX *)_pstFX, orxFX_KU32_FLAG_ENABLED));
+  return(orxStructure_TestFlags(_pstFX, orxFX_KU32_FLAG_ENABLED));
 }
 
 /** Adds alpha fade to an FX
@@ -829,10 +939,11 @@ orxBOOL orxFASTCALL orxFX_IsEnabled(orxCONST orxFX *_pstFX)
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
  * @param[in]   _fStartAlpha    Starting alpha value
  * @param[in]   _fEndAlpha      Ending alpha value
+ * @param[in]   _eCurve         Blending curve type
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, orxFX_CURVE _eCurve, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -859,8 +970,8 @@ orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, or
     pstFXSlot->fEndTime     = _fEndTime;
     pstFXSlot->fCyclePeriod = _fCyclePeriod;
     pstFXSlot->fCyclePhasis = _fCyclePhasis;
-    pstFXSlot->fStartAlpha = _fStartAlpha;
-    pstFXSlot->fEndAlpha   = _fEndAlpha;
+    pstFXSlot->fStartAlpha  = _fStartAlpha;
+    pstFXSlot->fEndAlpha    = _fEndAlpha;
     pstFXSlot->u32Flags     = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | orxFX_SLOT_KU32_FLAG_DEFINED;
 
     /* Is longer than current FX duration? */
@@ -883,10 +994,11 @@ orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, or
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
  * @param[in]   _stStartColor   Starting color value
  * @param[in]   _stEndColor     Ending color value
+ * @param[in]   _eCurve         Blending curve type
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxRGBA _stStartColor, orxRGBA _stEndColor, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxRGBA _stStartColor, orxRGBA _stEndColor, orxFX_CURVE _eCurve, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -937,10 +1049,11 @@ orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, o
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
  * @param[in]   _fStartRotation Starting rotation value
  * @param[in]   _fEndRotation   Ending rotation value
+ * @param[in]   _eCurve         Blending curve type
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, orxFX_CURVE _eCurve, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -991,10 +1104,11 @@ orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orx
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
  * @param[in]   _pvStartScale   Starting scale value
  * @param[in]   _pvEndScale     Ending scale value
+ * @param[in]   _eCurve         Blending curve type
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxCONST orxVECTOR *_pvStartScale, orxCONST orxVECTOR *_pvEndScale, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxCONST orxVECTOR *_pvStartScale, orxCONST orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1047,10 +1161,11 @@ orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
  * @param[in]   _pvStartPosition Starting position value
  * @param[in]   _pvEndPosition  Ending position value
+ * @param[in]   _eCurve         Blending curve type
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxCONST orxVECTOR *_pvStartPosition, orxCONST orxVECTOR *_pvEndPosition, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxCONST orxVECTOR *_pvStartPosition, orxCONST orxVECTOR *_pvEndPosition, orxFX_CURVE _eCurve, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;

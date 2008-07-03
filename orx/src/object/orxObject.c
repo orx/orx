@@ -138,7 +138,7 @@ orxSTATIC orxINLINE orxVOID orxObject_DeleteAll()
   orxOBJECT *pstObject;
 
   /* Gets first object */
-  pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
+  pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
 
   /* Non empty? */
   while(pstObject != orxNULL)
@@ -147,7 +147,7 @@ orxSTATIC orxINLINE orxVOID orxObject_DeleteAll()
     orxObject_Delete(pstObject);
 
     /* Gets first object */
-    pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
+    pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
   }
 
   return;
@@ -162,9 +162,9 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   orxOBJECT *pstObject;
 
   /* For all objects */
-  for(pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
+  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
       pstObject != orxNULL;
-      pstObject = (orxOBJECT *)orxStructure_GetNext(pstObject))
+      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
   {
     /* Is object enabled? */
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
@@ -348,7 +348,7 @@ orxOBJECT *orxObject_Create()
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
 
   /* Creates object */
-  pstObject = (orxOBJECT *)orxStructure_Create(orxSTRUCTURE_ID_OBJECT);
+  pstObject = orxOBJECT(orxStructure_Create(orxSTRUCTURE_ID_OBJECT));
 
   /* Created? */
   if(pstObject != orxNULL)

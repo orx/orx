@@ -380,9 +380,9 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
               fRenderRotation = orxCamera_GetRotation(pstCamera);
 
               /* For all objects */
-              for(pstObject = (orxOBJECT *)orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT);
+              for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
                   pstObject != orxNULL;
-                  pstObject = (orxOBJECT *)orxStructure_GetNext(pstObject))
+                  pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
               {
                 /* Is object enabled? */
                 if(orxObject_IsEnabled(pstObject) != orxFALSE)
@@ -668,9 +668,9 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* For all viewports */
-  for(pstViewport = (orxVIEWPORT *)orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT);
+  for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
       pstViewport != orxNULL;
-      pstViewport = (orxVIEWPORT *)orxStructure_GetPrevious(pstViewport))
+      pstViewport = orxVIEWPORT(orxStructure_GetPrevious(pstViewport)))
   {
     /* Renders it */
     orxRender_RenderViewport(pstViewport);
@@ -729,9 +729,9 @@ orxSTATUS orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition,
   orxASSERT(_pvWorldPosition != orxNULL);
 
   /* For all viewports */
-  for(pstViewport = (orxVIEWPORT *)orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT);
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
       pstViewport != orxNULL;
-      pstViewport = (orxVIEWPORT *)orxStructure_GetNext(pstViewport))
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
   {
     orxCAMERA *pstCamera;
 

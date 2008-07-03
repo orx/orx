@@ -133,7 +133,7 @@ orxSTATIC orxINLINE orxVOID orxBody_DeleteAll()
   orxREGISTER orxBODY *pstBody;
 
   /* Gets first body */
-  pstBody = (orxBODY *)orxStructure_GetFirst(orxSTRUCTURE_ID_BODY);
+  pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
 
   /* Non empty? */
   while(pstBody != orxNULL)
@@ -142,7 +142,7 @@ orxSTATIC orxINLINE orxVOID orxBody_DeleteAll()
     orxBody_Delete(pstBody);
 
     /* Gets first Body */
-    pstBody = (orxBODY *)orxStructure_GetFirst(orxSTRUCTURE_ID_BODY);
+    pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
   }
 
   return;
@@ -168,7 +168,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxC
   pstBody = orxBODY(_pstStructure);
 
   /* Gets calling object */
-  pstObject = (orxOBJECT *)_pstCaller;
+  pstObject = orxOBJECT(_pstCaller);
 
   /* Has data? */
   if(orxStructure_TestFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA))
@@ -303,7 +303,7 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST o
   orxASSERT((_pstBodyDef != orxNULL) || (orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_TEMPLATE)));
 
   /* Creates body */
-  pstBody = (orxBODY *)orxStructure_Create(orxSTRUCTURE_ID_BODY);
+  pstBody = orxBODY(orxStructure_Create(orxSTRUCTURE_ID_BODY));
 
   /* Valid? */
   if(pstBody != orxNULL)

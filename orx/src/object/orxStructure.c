@@ -452,24 +452,24 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 }
 
 /** Deletes a structure (needs to be cleaned beforehand)
- * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _pStructure    Concerned structure
  */
-orxVOID orxFASTCALL orxStructure_Delete(orxHANDLE _phStructure)
+orxVOID orxFASTCALL orxStructure_Delete(orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_phStructure);
+  orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Gets storage node */
-  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_phStructure)->hStorageNode;
+  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
 
   /* Valid? */
   if(pstNode != orxNULL)
   {
     /* Dependig on type */
-    switch(sstStructure.astStorage[orxStructure_GetID(_phStructure)].eType)
+    switch(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType)
     {
     case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
 
@@ -491,13 +491,13 @@ orxVOID orxFASTCALL orxStructure_Delete(orxHANDLE _phStructure)
     }
 
     /* Deletes it */
-    orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_phStructure)].pstNodeBank, pstNode);
+    orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_pStructure)].pstNodeBank, pstNode);
 
     /* Deletes structure */
-    orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_phStructure)].pstStructureBank, _phStructure);
+    orxBank_Free(sstStructure.astStorage[orxStructure_GetID(_pStructure)].pstStructureBank, _pStructure);
 
     /* Cleans structure */
-    orxMemory_Zero(_phStructure, sizeof(orxSTRUCTURE));
+    orxMemory_Zero(_pStructure, sizeof(orxSTRUCTURE));
   }
   else
   {
@@ -562,28 +562,28 @@ orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 }
 
 /** Updates structure if update function was registered for the structure type
- * @param[in]   _phStructure    Concerned structure
- * @param[in]   _phCaller       Caller structure
+ * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pCaller       Caller structure
  * @param[in]   _pstClockInfo   Update associated clock info
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxStructure_Update(orxHANDLE _phStructure, orxCONST orxHANDLE _phCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
+orxSTATUS orxFASTCALL orxStructure_Update(orxVOID *_pStructure, orxCONST orxVOID *_pCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_phStructure);
+  orxSTRUCTURE_ASSERT(_pStructure);
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Is structure registered? */
-  if(sstStructure.astInfo[orxStructure_GetID(_phStructure)].u32Size != 0)
+  if(sstStructure.astInfo[orxStructure_GetID(_pStructure)].u32Size != 0)
   {
     /* Is an update function registered? */
-    if(sstStructure.astInfo[orxStructure_GetID(_phStructure)].pfnUpdate != orxNULL)
+    if(sstStructure.astInfo[orxStructure_GetID(_pStructure)].pfnUpdate != orxNULL)
     {
       /* Calls it */
-      eResult = sstStructure.astInfo[orxStructure_GetID(_phStructure)].pfnUpdate(((orxSTRUCTURE *)_phStructure), ((orxSTRUCTURE *)_phCaller), _pstClockInfo);
+      eResult = sstStructure.astInfo[orxStructure_GetID(_pStructure)].pfnUpdate(((orxSTRUCTURE *)_pStructure), ((orxSTRUCTURE *)_pCaller), _pstClockInfo);
     }
     else
     {
@@ -702,20 +702,20 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID)
 }
 
 /** Gets structure tree parent
- * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxHANDLE _phStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_phStructure);
+  orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Gets node */
-  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_phStructure)->hStorageNode;
+  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
 
   /* Valid? */
   if(pstNode != orxNULL)
@@ -748,20 +748,20 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxHANDLE _phStructure
 }
 
 /** Gets structure tree child
- * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxHANDLE _phStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_phStructure);
+  orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Gets node */
-  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_phStructure)->hStorageNode;
+  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
 
   /* Valid? */
   if(pstNode != orxNULL)
@@ -794,20 +794,20 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxHANDLE _phStructure)
 }
 
 /** Gets structure tree sibling
- * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxHANDLE _phStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_phStructure);
+  orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Gets node */
-  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_phStructure)->hStorageNode;
+  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
 
   /* Valid? */
   if(pstNode != orxNULL)
@@ -840,20 +840,20 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxHANDLE _phStructur
 }
 
 /** Gets structure list previous
- * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxHANDLE _phStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_phStructure);
+  orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Gets node */
-  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_phStructure)->hStorageNode;
+  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
 
   /* Valid? */
   if(pstNode != orxNULL)
@@ -886,20 +886,20 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxHANDLE _phStructu
 }
 
 /** Gets structure list next
- * @param[in]   _phStructure    Concerned structure
+ * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxHANDLE _phStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_phStructure);
+  orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Gets node */
-  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_phStructure)->hStorageNode;
+  pstNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
 
   /* Valid? */
   if(pstNode != orxNULL)
@@ -932,23 +932,23 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxHANDLE _phStructure)
 }
 
 /** Sets structure tree parent
- * @param[in]   _phStructure    Concerned structure
- * @param[in]   _phParent       Structure to set as parent
+ * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pParent       Structure to set as parent
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxStructure_SetParent(orxHANDLE _phStructure, orxHANDLE _phParent)
+orxSTATUS orxFASTCALL orxStructure_SetParent(orxVOID *_pStructure, orxVOID *_pParent)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode, *pstParentNode;
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_phStructure);
-  orxSTRUCTURE_ASSERT(_phParent);
+  orxSTRUCTURE_ASSERT(_pStructure);
+  orxSTRUCTURE_ASSERT(_pParent);
 
   /* Gets nodes */
-  pstNode       = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_phStructure)->hStorageNode;
-  pstParentNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_phParent)->hStorageNode;
+  pstNode       = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pStructure)->hStorageNode;
+  pstParentNode = (orxSTRUCTURE_STORAGE_NODE *)((orxSTRUCTURE *)_pParent)->hStorageNode;
 
   /* Valid? */
   if((pstNode != orxNULL) && (pstParentNode != orxNULL))

@@ -1,9 +1,9 @@
-/** 
+/**
  * \file orxDebug.h
- * 
+ *
  * Debug Module.
  * Debugging help features.
- * 
+ *
  * \todo
  * - Add mask test for level displaying
  * - Add graphical debug from outside, using a shared debug info array
@@ -15,7 +15,7 @@
 /***************************************************************************
  orxDebug.h
  Debug module
- 
+
  begin                : 10/12/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -65,6 +65,7 @@
 #ifdef __orxGCC__
 
   #define orxLOG(STRING, ...)                                                                               \
+  do{                                                                                                         \
     _orxDebug_BackupFlags();                                                                                \
     _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                    \
                       |orxDEBUG_KU32_STATIC_FLAG_FILE                                                       \
@@ -72,20 +73,23 @@
                       |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                 \
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
-    _orxDebug_RestoreFlags();
+    _orxDebug_RestoreFlags();                                                                               \
+  } while(orxFALSE)
 
-#else /* __orxGCC__ */                                                                              
+#else /* __orxGCC__ */
   #ifdef __orxMSVC__
 
     #define orxLOG(STRING, ...)                                                                               \
+    do{                                                                                                         \
       orxDEBUG_FLAG_BACKUP();                                                                                 \
       orxDEBUG_FLAG_SET(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                     \
                        |orxDEBUG_KU32_STATIC_FLAG_FILE                                                        \
                        |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                        \
                        |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                  \
                         orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                  \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
-      orxDEBUG_FLAG_RESTORE();
+      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);    \
+      orxDEBUG_FLAG_RESTORE();                                                                                \
+    }while(orxFALSE)
 
   #endif /* __orxMSVC__ */
 #endif /* __orcGCC__ */
@@ -103,7 +107,7 @@
       #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
     #endif /* __orxMSVC__ */
   #endif /* __orcGCC__ */
-  
+
   /* End platform specific */
 
   #define orxDEBUG_FLAG_SET(SET, UNSET)       _orxDebug_SetFlags(SET, UNSET)

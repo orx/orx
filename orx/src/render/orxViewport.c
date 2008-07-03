@@ -125,7 +125,7 @@ orxSTATIC orxINLINE orxVOID orxViewport_DeleteAll()
   orxVIEWPORT *pstViewport;
 
   /* Gets first viewport */
-  pstViewport = (orxVIEWPORT *)orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT);
+  pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
 
   /* Non empty? */
   while(pstViewport != orxNULL)
@@ -134,7 +134,7 @@ orxSTATIC orxINLINE orxVOID orxViewport_DeleteAll()
     orxViewport_Delete(pstViewport);
 
     /* Gets first remaining viewport */
-    pstViewport = (orxVIEWPORT *)orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT);
+    pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
   }
 
   return;
@@ -233,7 +233,7 @@ orxVIEWPORT *orxViewport_Create()
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
 
   /* Creates viewport */
-  pstViewport = (orxVIEWPORT *)orxStructure_Create(orxSTRUCTURE_ID_VIEWPORT);
+  pstViewport = orxVIEWPORT(orxStructure_Create(orxSTRUCTURE_ID_VIEWPORT));
 
   /* Valid? */
   if(pstViewport != orxNULL)
@@ -575,7 +575,7 @@ orxTEXTURE *orxFASTCALL orxViewport_GetTexture(orxCONST orxVIEWPORT *_pstViewpor
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Has texture? */
-  if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_TEXTURE) != orxFALSE)
+  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_TEXTURE) != orxFALSE)
   {
     /* Updates result */
     pstResult = _pstViewport->pstTexture;
@@ -656,7 +656,7 @@ orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Tests */
-  return(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_ENABLED));
+  return(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ENABLED));
 }
 
 /** Enables / disables background clearing for a viewport
@@ -695,7 +695,7 @@ orxBOOL orxFASTCALL orxViewport_IsBackgroundClearingEnabled(orxCONST orxVIEWPORT
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Tests */
-  return(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_CLEAR));
+  return(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CLEAR));
 }
 
 /** Sets a viewport camera
@@ -747,7 +747,7 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
   orxSTRUCTURE_ASSERT(_pstViewport);
 
   /* Has a camera? */
-  if(orxStructure_TestFlags((orxVIEWPORT *)_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA) != orxFALSE)
+  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA) != orxFALSE)
   {
     /* Updates result */
     pstResult = _pstViewport->pstCamera;

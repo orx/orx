@@ -111,7 +111,7 @@ orxSTATIC orxINLINE orxVOID orxGraphic_DeleteAll()
   orxREGISTER orxGRAPHIC *pstGraphic;
 
   /* Gets first graphic */
-  pstGraphic = (orxGRAPHIC *)orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC);
+  pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
 
   /* Non empty? */
   while(pstGraphic != orxNULL)
@@ -120,7 +120,7 @@ orxSTATIC orxINLINE orxVOID orxGraphic_DeleteAll()
     orxGraphic_Delete(pstGraphic);
 
     /* Gets first Graphic */
-    pstGraphic = (orxGRAPHIC *)orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC);
+    pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
   }
 
   return;
@@ -219,7 +219,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create(orxU32 _u32Flags)
   orxASSERT((_u32Flags & orxGRAPHIC_KU32_MASK_USER_ALL) == _u32Flags);
 
   /* Creates graphic */
-  pstGraphic = (orxGRAPHIC *)orxStructure_Create(orxSTRUCTURE_ID_GRAPHIC);
+  pstGraphic = orxGRAPHIC(orxStructure_Create(orxSTRUCTURE_ID_GRAPHIC));
 
   /* Valid? */
   if(pstGraphic != orxNULL)
@@ -592,7 +592,7 @@ orxSTATUS orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFL
   orxASSERT(_pfHeight != orxNULL);
 
   /* Valid 2D data? */
-  if(orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets its size */
     *_pfWidth   = _pstGraphic->fWidth;
@@ -669,7 +669,7 @@ orxBOOL orxFASTCALL orxGraphic_HasColor(orxCONST orxGRAPHIC *_pstGraphic)
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Updates result */
-  bResult = orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR);
+  bResult = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR);
 
   /* Done! */
   return bResult;
@@ -688,7 +688,7 @@ orxRGBA orxFASTCALL orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic)
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Has color? */
-  if(orxStructure_TestFlags((orxGRAPHIC *)_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR))
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR))
   {
     /* Updates result */
     stResult = _pstGraphic->stColor;

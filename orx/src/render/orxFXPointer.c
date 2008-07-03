@@ -170,7 +170,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
     for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
     {
       orxFX *pstFX;
-      
+
       /* Gets FX */
       pstFX = pstFXPointer->astFXList[i].pstFX;
 
@@ -188,7 +188,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
         {
           /* Updates time */
           fFXLocalEndTime = orxFX_GetDuration(pstFX);
-          
+
           /* Updates ending status */
           bEnd = orxTRUE;
         }
@@ -356,8 +356,15 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
       /* Valid? */
       if(_pstFXPointer->astFXList[i].pstFX != orxNULL)
       {
-        /* Deletes it */
-        orxFX_Delete(_pstFXPointer->astFXList[i].pstFX);
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(_pstFXPointer->astFXList[i].pstFX);
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxFX_Delete(_pstFXPointer->astFXList[i].pstFX);
+        }
       }
     }
 
@@ -412,7 +419,7 @@ orxBOOL orxFASTCALL orxFXPointer_IsEnabled(orxCONST orxFXPOINTER *_pstFXPointer)
   orxSTRUCTURE_ASSERT(_pstFXPointer);
 
   /* Done! */
-  return(orxStructure_TestFlags((orxFXPOINTER *)_pstFXPointer, orxFXPOINTER_KU32_FLAG_ENABLED));
+  return(orxStructure_TestFlags(_pstFXPointer, orxFXPOINTER_KU32_FLAG_ENABLED));
 }
 
 /** Adds an FX
@@ -482,7 +489,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
   {
     orxFX *pstFX;
-    
+
     /* Gets FX */
     pstFX = _pstFXPointer->astFXList[i].pstFX;
 
@@ -599,7 +606,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
   {
     orxFX *pstFX;
-    
+
     /* Gets FX */
     pstFX = _pstFXPointer->astFXList[i].pstFX;
 

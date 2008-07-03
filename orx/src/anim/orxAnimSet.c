@@ -1000,7 +1000,7 @@ orxSTATIC orxVOID orxAnimSet_DeleteAll()
   orxANIMSET *pstAnimSet;
 
   /* Gets first anim set */
-  pstAnimSet = (orxANIMSET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET);
+  pstAnimSet = orxANIMSET(orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET));
 
   /* Non empty? */
   while(pstAnimSet != orxNULL)
@@ -1009,7 +1009,7 @@ orxSTATIC orxVOID orxAnimSet_DeleteAll()
     orxAnimSet_Delete(pstAnimSet);
 
     /* Gets first Animation Set */
-    pstAnimSet = (orxANIMSET *)orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET);
+    pstAnimSet = orxANIMSET(orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET));
   }
 
   return;
@@ -1312,7 +1312,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
   orxASSERT(_u32Size <= orxANIMSET_KU32_MAX_ANIM_NUMBER);
 
   /* Creates animset */
-  pstAnimSet = (orxANIMSET *)orxStructure_Create(orxSTRUCTURE_ID_ANIMSET);
+  pstAnimSet = orxANIMSET(orxStructure_Create(orxSTRUCTURE_ID_ANIMSET));
 
   /* Non null? */
   if(pstAnimSet != orxNULL)
@@ -2288,7 +2288,7 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimStorageSize(orxCONST orxANIMSET *_pstAnimSe
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Gets storage size */
-  return(orxStructure_GetFlags((orxANIMSET *)_pstAnimSet, orxANIMSET_KU32_MASK_SIZE) >> orxANIMSET_KU32_ID_SHIFT_SIZE);
+  return(orxStructure_GetFlags(_pstAnimSet, orxANIMSET_KU32_MASK_SIZE) >> orxANIMSET_KU32_ID_SHIFT_SIZE);
 }
 
 /** AnimSet Anim counter get accessor
@@ -2302,7 +2302,7 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet)
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Gets counter */
-  return(orxStructure_GetFlags((orxANIMSET *)_pstAnimSet, orxANIMSET_KU32_MASK_COUNTER) >> orxANIMSET_KU32_ID_SHIFT_COUNTER);
+  return(orxStructure_GetFlags(_pstAnimSet, orxANIMSET_KU32_MASK_COUNTER) >> orxANIMSET_KU32_ID_SHIFT_COUNTER);
 }
 
 /** Gets animation handle from ID
@@ -2319,7 +2319,7 @@ orxHANDLE orxFASTCALL orxAnimSet_GetAnimHandleFromID(orxCONST orxANIMSET *_pstAn
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Has ID table? */
-  if(orxStructure_TestFlags((orxANIMSET *)_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
+  if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
   {
     /* Gets corresponding handle */
     hResult = (orxHANDLE)((orxU32)orxHashTable_Get(_pstAnimSet->pstIDTable, _u32AnimID) - 1);

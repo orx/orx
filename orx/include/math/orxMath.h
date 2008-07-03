@@ -57,7 +57,7 @@ do                                              \
   {                                             \
     (V) -= ((MAX) - (MIN));                     \
   }                                             \
-} while(orxFALSE);
+} while(orxFALSE)
 
 #define orxCIRCULAR_CLAMP_INC_MAX(V, MIN, MAX)  \
 do                                              \
@@ -70,7 +70,7 @@ do                                              \
   {                                             \
     (V) -= ((MAX) - (MIN));                     \
   }                                             \
-} while(orxFALSE);
+} while(orxFALSE)
 
 
 #define orxFRAND_INIT(SEED)       (srand(orxF2U(SEED)));

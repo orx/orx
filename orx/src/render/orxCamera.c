@@ -102,7 +102,7 @@ orxSTATIC orxVOID orxCamera_DeleteAll()
   orxCAMERA *pstCamera;
 
   /* Gets first camera */
-  pstCamera = (orxCAMERA *)orxStructure_GetFirst(orxSTRUCTURE_ID_CAMERA);
+  pstCamera = orxCAMERA(orxStructure_GetFirst(orxSTRUCTURE_ID_CAMERA));
 
   /* Non empty? */
   while(pstCamera != orxNULL)
@@ -111,7 +111,7 @@ orxSTATIC orxVOID orxCamera_DeleteAll()
     orxCamera_Delete(pstCamera);
 
     /* Gets first remaining camera */
-    pstCamera = (orxCAMERA *)orxStructure_GetFirst(orxSTRUCTURE_ID_CAMERA);
+    pstCamera = orxCAMERA(orxStructure_GetFirst(orxSTRUCTURE_ID_CAMERA));
   }
 
   return;
@@ -212,7 +212,7 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
   orxASSERT((_u32Flags & orxCAMERA_KU32_MASK_USER_ALL) == _u32Flags);
 
   /* Creates camera */
-  pstCamera = (orxCAMERA *)orxStructure_Create(orxSTRUCTURE_ID_CAMERA);
+  pstCamera = orxCAMERA(orxStructure_Create(orxSTRUCTURE_ID_CAMERA));
 
   /* Valid? */
   if(pstCamera != orxNULL)
