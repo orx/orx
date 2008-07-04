@@ -730,6 +730,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
   orxRGBA   stColor;
   orxBOOL   bAlphaLock = orxFALSE, bColorBlendLock = orxFALSE, bRotationLock = orxFALSE, bScaleLock = orxFALSE, bTranslationLock = orxFALSE;
   orxBOOL   bAlphaUpdate = orxFALSE, bColorBlendUpdate = orxFALSE, bRotationUpdate = orxFALSE, bScaleUpdate = orxFALSE, bTranslationUpdate = orxFALSE;
+  orxBOOL   bFirstCall;
   orxFLOAT  fAlpha = orxFLOAT_0, fRotation = orxFLOAT_0, fInvDuration;
   orxVECTOR vColor, vScale, vPosition;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -768,8 +769,11 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
       fStartTime  = orxMAX(_fStartTime, pstFXSlot->fStartTime);
       fEndTime    = orxMIN(_fEndTime, pstFXSlot->fEndTime);
 
+      /* Updates first call status */
+      bFirstCall = (fStartTime == pstFXSlot->fStartTime) ? orxTRUE : orxFALSE;
+
       /* Is this slot active in the time period? */
-      if(fEndTime > fStartTime)
+      if(fEndTime >= fStartTime)
       {
         orxFX_TYPE eFXType;
 
@@ -784,7 +788,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
         || ((eFXType == orxFX_TYPE_TRANSLATION) && (bTranslationLock == orxFALSE)))
         {
           /* Has a valid cycle period? */
-          if(pstFXSlot->fCyclePeriod != orxFLOAT_0)
+          if(pstFXSlot->fCyclePeriod > orxFLOAT_0)
           {
             /* Gets it */
             fPeriod = pstFXSlot->fCyclePeriod;
@@ -796,7 +800,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
           }
 
           /* Gets its corresponding frequency */
-          fFrequency = orxFLOAT_1 / fPeriod;
+          fFrequency = (fPeriod != orxFLOAT_0) ? (orxFLOAT_1 / fPeriod) : orxFLOAT_1;
 
           /* Depending on blend curve */
           switch(pstFXSlot->u32Flags & orxFX_SLOT_KU32_MASK_BLEND_CURVE)
@@ -885,14 +889,6 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
             }
           }
 
-          /* Using a squared curve? */
-          if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_CURVE_SQUARED))
-          {
-            /* Squares both coefs */
-            fStartCoef *= fStartCoef;
-            fEndCoef   *= fEndCoef;
-          }
-
           /* Has amplification? */
           if(pstFXSlot->fAmplification != orxFLOAT_1)
           {
@@ -905,6 +901,14 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
             /* Updates the coefs */
             fStartCoef *= fStartAmplification;
             fEndCoef   *= fEndAmplification;
+          }
+
+          /* Using a squared curve? */
+          if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_CURVE_SQUARED))
+          {
+            /* Squares both coefs */
+            fStartCoef *= fStartCoef;
+            fEndCoef   *= fEndCoef;
           }
 
           /* Clamps the coefs */
@@ -929,9 +933,20 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               {
                 orxFLOAT fStartAlpha, fEndAlpha;
 
-                /* Gets alpha values */
-                fStartAlpha  = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fStartCoef);
-                fEndAlpha    = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fEndCoef);
+                /* First call? */
+                if(bFirstCall != orxFALSE)
+                {
+                  /* Gets start value */
+                  fStartAlpha = orxFLOAT_0;
+                }
+                else
+                {
+                  /* Gets start value */
+                  fStartAlpha = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fStartCoef);
+                }
+                
+                /* Gets end value */
+                fEndAlpha = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fEndCoef);
 
                 /* Updates global alpha value */
                 fAlpha += fEndAlpha - fStartAlpha;
@@ -959,8 +974,19 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               {
                 orxVECTOR vStartColor, vEndColor;
 
-                /* Gets alpha values */
-                orxVector_Lerp(&vStartColor, &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fStartCoef);
+                /* First call? */
+                if(bFirstCall != orxFALSE)
+                {
+                  /* Gets start value */
+                  orxVector_SetAll(&vStartColor, orxFLOAT_0);
+                }
+                else
+                {
+                  /* Gets start value */
+                  orxVector_Lerp(&vStartColor, &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fStartCoef);
+                }
+                
+                /* Gets end value */
                 orxVector_Lerp(&vEndColor, &(pstFXSlot->vStartColor), &(pstFXSlot->vEndColor), fEndCoef);
 
                 /* Updates global color value */
@@ -988,9 +1014,20 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               {
                 orxFLOAT fStartRotation, fEndRotation;
 
-                /* Gets rotation values */
-                fStartRotation  = orxLERP(pstFXSlot->fStartRotation, pstFXSlot->fEndRotation, fStartCoef);
-                fEndRotation    = orxLERP(pstFXSlot->fStartRotation, pstFXSlot->fEndRotation, fEndCoef);
+                /* First call? */
+                if(bFirstCall != orxFALSE)
+                {
+                  /* Gets start value */
+                  fStartRotation = orxFLOAT_0;
+                }
+                else
+                {
+                  /* Gets start value */
+                  fStartRotation = orxLERP(pstFXSlot->fStartAlpha, pstFXSlot->fEndAlpha, fStartCoef);
+                }
+                
+                /* Gets end value */
+                fEndRotation = orxLERP(pstFXSlot->fStartRotation, pstFXSlot->fEndRotation, fEndCoef);
 
                 /* Updates global alpha value */
                 fRotation += fEndRotation - fStartRotation;
@@ -1018,12 +1055,23 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               {
                 orxVECTOR vStartScale, vEndScale;
 
-                /* Gets scale values */
-                orxVector_Lerp(&vStartScale, &(pstFXSlot->vStartScale), &(pstFXSlot->vEndScale), fStartCoef);
-                orxVector_Lerp(&vEndScale, &(pstFXSlot->vStartScale), &(pstFXSlot->vEndScale), fEndCoef);
+                /* First call? */
+                if(bFirstCall != orxFALSE)
+                {
+                  /* Gets start value */
+                  orxVector_SetAll(&vStartScale, orxFLOAT_1);
+                }
+                else
+                {
+                  /* Gets start value */
+                  orxVector_Lerp(&vStartScale, &(pstFXSlot->vStartScale), &(pstFXSlot->vEndScale), fStartCoef);
 
-                /* Neutralizes Z scale */
-                vStartScale.fZ = vEndScale.fZ = orxFLOAT_1;
+                  /* Neutralizes Z scale */
+                  vStartScale.fZ = orxFLOAT_1;
+                }
+                
+                /* Gets end value */
+                orxVector_Lerp(&vEndScale, &(pstFXSlot->vStartScale), &(pstFXSlot->vEndScale), fEndCoef);
 
                 /* Updates global scale value */
                 orxVector_Mul(&vScale, &vScale, orxVector_Div(&vEndScale, &vEndScale, &vStartScale));
@@ -1051,8 +1099,19 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               {
                 orxVECTOR vStartPosition, vEndPosition;
 
-                /* Gets position values */
-                orxVector_Lerp(&vStartPosition, &(pstFXSlot->vStartPosition), &(pstFXSlot->vEndPosition), fStartCoef);
+                /* First call? */
+                if(bFirstCall != orxFALSE)
+                {
+                  /* Gets start value */
+                  orxVector_SetAll(&vStartPosition, orxFLOAT_0);
+                }
+                else
+                {
+                  /* Gets start value */
+                  orxVector_Lerp(&vStartPosition, &(pstFXSlot->vStartPosition), &(pstFXSlot->vEndPosition), fStartCoef);
+                }
+                
+                /* Gets end value */
                 orxVector_Lerp(&vEndPosition, &(pstFXSlot->vStartPosition), &(pstFXSlot->vEndPosition), fEndCoef);
 
                 /* Updates global position value */
