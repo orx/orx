@@ -32,6 +32,8 @@ typedef orxU32                      orxDATE;
 typedef enum __orxSYSTEM_EVENT_t
 {
   orxSYSTEM_EVENT_CLOSE = 0,
+  orxSYSTEM_EVENT_FOCUS_GAINED,
+  orxSYSTEM_EVENT_FOCUS_LOST,
 
   orxSYSTEM_EVENT_NUMBER,
 

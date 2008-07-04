@@ -298,6 +298,38 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
         break;
       }
 
+      /* Gained focus? */
+      case sf::Event::GainedFocus:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType = orxEVENT_TYPE_SYSTEM;
+        stEvent.eID   = orxSYSTEM_EVENT_FOCUS_GAINED;
+
+        /* Sends system focus gained event */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+		
+      /* Lost focus? */
+      case sf::Event::LostFocus:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType = orxEVENT_TYPE_SYSTEM;
+        stEvent.eID   = orxSYSTEM_EVENT_FOCUS_LOST;
+
+        /* Sends system focus lost event */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
       /* Key pressed? */
       case sf::Event::KeyPressed:
       {
