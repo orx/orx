@@ -6,7 +6,7 @@
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
     <Configuration Name="Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="">
-      <General OutputFile="../../../bin/plugins/demo/orxBounced.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/demo/Bounced.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
@@ -35,7 +35,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="">
-      <General OutputFile="../../../bin/plugins/demo/orxBounce.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/demo/Bounce.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
@@ -63,7 +63,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/orxBounced.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/demo/Bounced.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
@@ -89,7 +89,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="">
-      <General OutputFile="../../../bin/plugins/demo/orxBounce.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/demo/Bounce.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>

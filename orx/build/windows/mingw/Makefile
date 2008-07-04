@@ -350,19 +350,19 @@ ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_9 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Bounce___depname = ..\..\..\bin\plugins\demo\orxBounce$(orxSUFFIX).dll
+__Bounce___depname = ..\..\..\bin\plugins\demo\Bounce$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_10 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Scroll___depname = ..\..\..\bin\plugins\demo\orxScroll$(orxSUFFIX).dll
+__Scroll___depname = ..\..\..\bin\plugins\demo\Scroll$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_11 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Cave___depname = ..\..\..\bin\plugins\demo\orxCave$(orxSUFFIX).dll
+__Cave___depname = ..\..\..\bin\plugins\demo\Cave$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_12 = $(__orxNAME_p)
@@ -433,9 +433,9 @@ clean:
 	-if exist ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SDL$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\system\orxSystem_SDL$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\system\orxSystem_SFML$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\system\orxSystem_SFML$(orxSUFFIX).dll
-	-if exist ..\..\..\bin\plugins\demo\orxBounce$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\orxBounce$(orxSUFFIX).dll
-	-if exist ..\..\..\bin\plugins\demo\orxScroll$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\orxScroll$(orxSUFFIX).dll
-	-if exist ..\..\..\bin\plugins\demo\orxCave$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\orxCave$(orxSUFFIX).dll
+	-if exist ..\..\..\bin\plugins\demo\Bounce$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\Bounce$(orxSUFFIX).dll
+	-if exist ..\..\..\bin\plugins\demo\Scroll$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\Scroll$(orxSUFFIX).dll
+	-if exist ..\..\..\bin\plugins\demo\Cave$(orxSUFFIX).dll del ..\..\..\bin\plugins\demo\Cave$(orxSUFFIX).dll
 
 ifeq ($(LINK),dynamic)
 ..\..\..\lib\$(__LINK_FILENAMES)\$(orxNAME).dll: $(ORXDLL_OBJECTS)
@@ -517,17 +517,17 @@ endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\demo\orxBounce$(orxSUFFIX).dll: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+..\..\..\bin\plugins\demo\Bounce$(orxSUFFIX).dll: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_10)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\demo\orxScroll$(orxSUFFIX).dll: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+..\..\..\bin\plugins\demo\Scroll$(orxSUFFIX).dll: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_11)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-..\..\..\bin\plugins\demo\orxCave$(orxSUFFIX).dll: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+..\..\..\bin\plugins\demo\Cave$(orxSUFFIX).dll: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CAVE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_12)
 endif
 

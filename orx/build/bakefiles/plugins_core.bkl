@@ -217,7 +217,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Bounce" cond="USE_PLUGINS=='1'">
-    <dllname>orxBounce$(orxSUFFIX)</dllname>
+    <dllname>Bounce$(orxSUFFIX)</dllname>
     <destination>demo</destination>
     <sources>plugins/Demo/orxBounce.c</sources>
 	</orx-plugin>
@@ -226,7 +226,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Scroll" cond="USE_PLUGINS=='1'">
-    <dllname>orxScroll$(orxSUFFIX)</dllname>
+    <dllname>Scroll$(orxSUFFIX)</dllname>
 		<destination>demo</destination>
 		<sources>plugins/Demo/orxScroll.c</sources>
 	</orx-plugin>
@@ -235,7 +235,7 @@
 
 	<!-- Depends on nothing -->
 	<orx-plugin id="Cave" cond="USE_PLUGINS=='1'">
-    <dllname>orxCave$(orxSUFFIX)</dllname>
+    <dllname>Cave$(orxSUFFIX)</dllname>
 		<destination>demo</destination>
 		<sources>plugins/Demo/orxCave.c</sources>
 	</orx-plugin>

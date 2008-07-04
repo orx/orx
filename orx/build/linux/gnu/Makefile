@@ -352,19 +352,19 @@ ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_9 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Bounce___depname = ../../../bin/plugins/demo/orxBounce$(orxSUFFIX).so
+__Bounce___depname = ../../../bin/plugins/demo/Bounce$(orxSUFFIX).so
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_10 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Scroll___depname = ../../../bin/plugins/demo/orxScroll$(orxSUFFIX).so
+__Scroll___depname = ../../../bin/plugins/demo/Scroll$(orxSUFFIX).so
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_11 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
-__Cave___depname = ../../../bin/plugins/demo/orxCave$(orxSUFFIX).so
+__Cave___depname = ../../../bin/plugins/demo/Cave$(orxSUFFIX).so
 endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_12 = $(__orxNAME_p)
@@ -433,9 +433,9 @@ clean:
 	rm -f ../../../bin/plugins/core/physics/orxPhysics_Box2D$(orxSUFFIX).so
 	rm -f ../../../bin/plugins/core/system/orxSystem_SDL$(orxSUFFIX).so
 	rm -f ../../../bin/plugins/core/system/orxSystem_SFML$(orxSUFFIX).so
-	rm -f ../../../bin/plugins/demo/orxBounce$(orxSUFFIX).so
-	rm -f ../../../bin/plugins/demo/orxScroll$(orxSUFFIX).so
-	rm -f ../../../bin/plugins/demo/orxCave$(orxSUFFIX).so
+	rm -f ../../../bin/plugins/demo/Bounce$(orxSUFFIX).so
+	rm -f ../../../bin/plugins/demo/Scroll$(orxSUFFIX).so
+	rm -f ../../../bin/plugins/demo/Cave$(orxSUFFIX).so
 
 ifeq ($(LINK),dynamic)
 ../../../lib/$(LINK)/lib$(orxNAME).so: $(ORXDLL_OBJECTS)
@@ -517,17 +517,17 @@ endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/demo/orxBounce$(orxSUFFIX).so: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
+../../../bin/plugins/demo/Bounce$(orxSUFFIX).so: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_10)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/demo/orxScroll$(orxSUFFIX).so: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
+../../../bin/plugins/demo/Scroll$(orxSUFFIX).so: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_11)
 endif
 
 ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/demo/orxCave$(orxSUFFIX).so: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
+../../../bin/plugins/demo/Cave$(orxSUFFIX).so: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CAVE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_12)
 endif
 
