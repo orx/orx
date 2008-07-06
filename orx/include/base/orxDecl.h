@@ -101,13 +101,13 @@
     #else /* __orxGP2X__ */
 
       /** The function will be called fastly (use registers for parameters as far as possible).*/
-      #define orxFASTCALL         __attribute__ ((fastcall))
+      #define orxFASTCALL       __attribute__ ((fastcall))
     
       /** The function will be called using stdcall convention.*/
-      #define orxSTDCALL          __attribute__ ((stdcall))
+      #define orxSTDCALL        __attribute__ ((stdcall))
 
       /** The function will be called using cdecl convention.*/
-      #define orxCDECL            __attribute__ ((cdecl))
+      #define orxCDECL          __attribute__ ((cdecl))
 
     #endif /* __orxGP2X__ */
 

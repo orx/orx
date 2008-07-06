@@ -62,6 +62,57 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
+    <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/gp2x/plugins/core/file/orxFileSystem_LibCd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxGP2X__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+        <Preprocessor Value="_REENTRANT"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="GP2X Release" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/gp2x/plugins/core/file/orxFileSystem_LibC.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxGP2X__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="_REENTRANT"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
     <Configuration Name="Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/file/orxFileSystem_LibCd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">

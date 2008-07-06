@@ -21,16 +21,16 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
@@ -48,16 +48,16 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Executable">
@@ -69,7 +69,7 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
-      <Linker Required="yes" Options="-Wl,--whole-archive ../../../lib/static/gp2x/liborxd.a -Wl,--no-whole-archive">
+      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/gp2x/liborxd.a -Wl,--no-whole-archive">
         <LibraryPath Value="../../../lib/static/gp2x"/>
         <Library Value="dl"/>
         <Library Value="m"/>
@@ -78,18 +78,45 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="GP2X Release" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/gp2X/orx.gpe" IntermediateDirectory="$(ConfigurationName)" Command="orx.gpe" CommandArguments="" WorkingDirectory="../../../bin/gp2x/" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxGP2X__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="_REENTRANT"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/gp2x/liborx.a -Wl,--no-whole-archive">
+        <LibraryPath Value="../../../lib/static/gp2x"/>
+        <Library Value="dl"/>
+        <Library Value="m"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
@@ -100,25 +127,23 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive -Wl,--no-whole-archive -Wl,--export-all-symbols -Wl,--out-implib,../../../lib/static/orxd.a ../../../lib/static/liborxd.a">
+      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborxd.a -Wl,--no-whole-archive -Wl,--export-all-symbols -Wl,--out-implib,../../../lib/static/orxd.a">
         <LibraryPath Value="../../../lib/static"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
@@ -135,16 +160,16 @@
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
   </Settings>
