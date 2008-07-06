@@ -43,7 +43,7 @@
 
   #else /* __orxMSVC__ */
 
-    #define orxFASTCALL           __fastcall
+    #define orxFASTCALL         __fastcall
 
   #endif /* __orxMSVC__ */
 
@@ -85,16 +85,31 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac */
-  #if defined(__orxLINUX__) || defined(__orxMAC__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
-    /** The function will be called fastly (use registers for parameters as far as possible).*/
-    #define orxFASTCALL         __attribute__ ((fastcall))
+    #ifdef __orxGP2X__
+    
+      /** The function will be called fastly (use registers for parameters as far as possible).*/
+      #define orxFASTCALL
 
-    /** The function will be called using stdcall convention.*/
-    #define orxSTDCALL            __attribute__ ((stdcall))
+      /** The function will be called using stdcall convention.*/
+      #define orxSTDCALL
 
-    /** The function will be called using cdecl convention.*/
-    #define orxCDECL              __attribute__ ((cdecl))
+      /** The function will be called using cdecl convention.*/
+      #define orxCDECL
+
+    #else /* __orxGP2X__ */
+
+      /** The function will be called fastly (use registers for parameters as far as possible).*/
+      #define orxFASTCALL         __attribute__ ((fastcall))
+    
+      /** The function will be called using stdcall convention.*/
+      #define orxSTDCALL          __attribute__ ((stdcall))
+
+      /** The function will be called using cdecl convention.*/
+      #define orxCDECL            __attribute__ ((cdecl))
+
+    #endif /* __orxGP2X__ */
 
     /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
@@ -117,7 +132,7 @@
     /** The null adress. */
     #define orxNULL             ((void *)0)
 
-  #endif /* __orxLINUX__ || __orxMAC__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
 
 #endif /* __orxWINDOWS__ */
 

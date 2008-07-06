@@ -115,7 +115,7 @@
     </Configuration>
   </Settings>
   <Dependencies>
-    <Project Name="orx"/>
     <Project Name="orxLIB"/>
+    <Project Name="orx"/>
   </Dependencies>
 </CodeLite_Project>

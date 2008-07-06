@@ -305,8 +305,8 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
   orxASSERT(_pfOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
-  /* Linux / Mac? */
-#if defined(__orxLINUX__) || defined(__orxMAC__)
+  /* Linux / Mac / GP2X? */
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
   /* Convert */
   /* Note : Here we should use strtot which detects errors.
@@ -333,7 +333,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
     *_pzRemaining = _zString + orxString_GetLength(_zString);
   }
 
-#else /* __orxLINUX__ */
+#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
 
   {
     orxCHAR *pcEnd;
@@ -370,7 +370,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
     }
   }
 
-#endif /* __orxLINUX__ || __orxMAC__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
 
   /* Done! */
   return eResult;

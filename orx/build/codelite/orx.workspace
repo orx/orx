@@ -2,7 +2,7 @@
 <CodeLite_Workspace Name="orx" Database=".\orx.tags">
   <Project Name="orxFileSystem_LibC" Path="orxFileSystem_LibC\orxFileSystem_LibC.project" Active="No"/>
   <Project Name="orxRender_Home" Path="orxRender_Home\orxRender_Home.project"/>
-  <Project Name="orxLIB" Path="orxLIB\orxLIB.project"/>
+  <Project Name="orxLIB" Path="orxLIB\orxLIB.project" Active="No"/>
   <Project Name="orxKeyboard_SFML" Path="orxKeyboard_SFML\orxKeyboard_SFML.project"/>
   <Project Name="orxFile_LibC" Path="orxFile_LibC\orxFile_LibC.project"/>
   <Project Name="orxPhysics_Box2D" Path="orxPhysics_Box2D\orxPhysics_Box2D.project"/>
@@ -73,6 +73,21 @@
       <Project Name="orxCave" ConfigName="Dynamic Release"/>
       <Project Name="orxBounce" ConfigName="Dynamic Release"/>
       <Project Name="orx" ConfigName="Dynamic Release"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="GP2X Debug" Selected="no">
+      <Project Name="orxSystem_SFML" ConfigName="Static Debug"/>
+      <Project Name="orxScroll" ConfigName="Static Debug"/>
+      <Project Name="orxRender_Home" ConfigName="Static Debug"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Static Debug"/>
+      <Project Name="orxMouse_SFML" ConfigName="Static Debug"/>
+      <Project Name="orxLIB" ConfigName="GP2X Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Static Debug"/>
+      <Project Name="orxFile_LibC" ConfigName="Static Debug"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Static Debug"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Static Debug"/>
+      <Project Name="orxCave" ConfigName="Static Debug"/>
+      <Project Name="orxBounce" ConfigName="Static Debug"/>
+      <Project Name="orx" ConfigName="GP2X Debug"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

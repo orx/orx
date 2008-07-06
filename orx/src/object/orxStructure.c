@@ -705,7 +705,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID)
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxCONST orxVOID *_pStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -751,7 +751,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxCONST orxVOID *_pSt
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxCONST orxVOID *_pStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -797,7 +797,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxCONST orxVOID *_pStr
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxCONST orxVOID *_pStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -843,7 +843,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxCONST orxVOID *_pS
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxCONST orxVOID *_pStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;
@@ -889,7 +889,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxCONST orxVOID *_p
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxCONST orxVOID *_pStructure)
+orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxVOID *_pStructure)
 {
   orxREGISTER orxSTRUCTURE_STORAGE_NODE *pstNode;
   orxREGISTER orxSTRUCTURE *pstStructure = orxNULL;

@@ -51,7 +51,7 @@ orxCONST orxCHAR      orxCHAR_LF          = '\n';
   orxCONST orxCHAR    orxCHAR_EOL         = '\n';
   orxCONST orxSTRING  orxSTRING_EOL       = "\r\n";
 
-#elif defined(__orxLINUX__)
+#elif defined(__orxLINUX__) || defined (__orxGP2X__)
 
   orxCONST orxCHAR    orxCHAR_EOL         = '\n';
   orxCONST orxSTRING  orxSTRING_EOL       = "\n";
@@ -78,13 +78,13 @@ orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX    = "/";
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac */
-  #if defined(__orxLINUX__) || defined(__orxMAC__)
+  /* Linux / Mac / GP2X */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
     orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR         = '/';
     orxCONST orxSTRING  orxSTRING_DIRECTORY_SEPARATOR       = "/";
 
-  #endif /* __orxLINUX__ || __orxMAC__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
 
 #endif /* __orxWINDOWS__ */
 

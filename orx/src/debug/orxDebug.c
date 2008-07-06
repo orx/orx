@@ -216,19 +216,27 @@ orxVOID _orxDebug_Exit()
 orxVOID _orxDebug_Break()
 {
   /* Windows / Linux */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__)
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
   /* Compiler specific */
 
   #ifdef __orxGCC__
-    asm("int $3");
+  
+    #ifdef __orxGP2X__
+
+    #else /* __orxGP2X__ */
+
+      asm("int $3");
+
+    #endif /* __orxGP2X__ */
+
   #endif /* __orxGCC__ */
 
   #ifdef __orxMSVC__
     __debugbreak();
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
 
   return;
 }
