@@ -78,7 +78,7 @@
       <Project Name="orxSystem_SFML" ConfigName="Static Debug"/>
       <Project Name="orxScroll" ConfigName="Static Debug"/>
       <Project Name="orxRender_Home" ConfigName="GP2X Debug"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="Static Debug"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="GP2X Debug"/>
       <Project Name="orxMouse_SFML" ConfigName="Static Debug"/>
       <Project Name="orxLIB" ConfigName="GP2X Debug"/>
       <Project Name="orxKeyboard_SFML" ConfigName="Static Debug"/>
@@ -93,7 +93,7 @@
       <Project Name="orxSystem_SFML" ConfigName="Static Debug"/>
       <Project Name="orxScroll" ConfigName="Static Debug"/>
       <Project Name="orxRender_Home" ConfigName="GP2X Release"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="Static Debug"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="GP2X Release"/>
       <Project Name="orxMouse_SFML" ConfigName="Static Debug"/>
       <Project Name="orxLIB" ConfigName="GP2X Release"/>
       <Project Name="orxKeyboard_SFML" ConfigName="Static Debug"/>

@@ -46,7 +46,7 @@
 
 #endif /* __orxDEBUG__ */
 
-#define orxSTRUCTURE(STRUCTURE)   ((STRUCTURE != orxNULL) && ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER)) ? (orxSTRUCTURE *)STRUCTURE : (orxSTRUCTURE *)orxNULL
+#define orxSTRUCTURE(STRUCTURE)   (((STRUCTURE != orxNULL) && ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER)) ? (orxSTRUCTURE *)STRUCTURE : (orxSTRUCTURE *)orxNULL)
 
 #define orxANIM(STRUCTURE)        orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIM)
 #define orxANIMPOINTER(STRUCTURE) orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIMPOINTER)
@@ -160,7 +160,7 @@ orxSTATIC orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(orxCONST orxVOID *_pS
   orxSTRUCTURE *pstResult;
 
   /* Updates result */
-  pstResult = ((_pStructure != orxNULL) && (((orxSTRUCTURE *)_pStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) == _eStructureID) ? (orxSTRUCTURE *)_pStructure : orxNULL;
+  pstResult = ((_pStructure != orxNULL) && (((orxSTRUCTURE *)_pStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) == _eStructureID) ? (orxSTRUCTURE *)_pStructure : (orxSTRUCTURE *)orxNULL;
 
   /* Done! */
   return pstResult;
@@ -297,7 +297,7 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_IncreaseCou
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Increases it */
-  ((orxSTRUCTURE *)_pStructure)->u32RefCounter++;
+  (orxSTRUCTURE(_pStructure))->u32RefCounter++;
 
   return;
 }
@@ -309,10 +309,10 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_DecreaseCou
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
-  orxASSERT(((orxSTRUCTURE *)_pStructure)->u32RefCounter > 0);
+  orxASSERT(orxSTRUCTURE(_pStructure)->u32RefCounter > 0);
 
   /* Decreases it */
-  ((orxSTRUCTURE *)_pStructure)->u32RefCounter--;
+  orxSTRUCTURE(_pStructure)->u32RefCounter--;
 
   return;
 }
@@ -327,7 +327,7 @@ orxSTATIC orxINLINE orxU32                              orxStructure_GetRefCount
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Returns it */
-  return(((orxSTRUCTURE *)_pStructure)->u32RefCounter);
+  return(orxSTRUCTURE(_pStructure)->u32RefCounter);
 }
 
 /** Gets structure ID
@@ -340,7 +340,7 @@ orxSTATIC orxINLINE orxSTRUCTURE_ID                     orxStructure_GetID(orxCO
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Returns it */
-  return((orxSTRUCTURE_ID)(((orxSTRUCTURE *)_pStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER));
+  return((orxSTRUCTURE_ID)(orxSTRUCTURE(_pStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER));
 }
 
 /** Tests flags against structure ones
@@ -354,7 +354,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestFlags(o
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Done! */
-  return(orxFLAG_TEST(((orxSTRUCTURE *)_pStructure)->u32Flags, _u32Flags));
+  return(orxFLAG_TEST(orxSTRUCTURE(_pStructure)->u32Flags, _u32Flags));
 }
 
 /** Tests all flags against structure ones
@@ -368,7 +368,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestAllFlag
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Done! */
-  return(orxFLAG_TEST_ALL(((orxSTRUCTURE *)_pStructure)->u32Flags, _u32Flags));
+  return(orxFLAG_TEST_ALL(orxSTRUCTURE(_pStructure)->u32Flags, _u32Flags));
 }
 
 /** Gets structure flags
@@ -382,7 +382,7 @@ orxSTATIC orxINLINE orxU32                              orxStructure_GetFlags(or
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Done! */
-  return(orxFLAG_GET(((orxSTRUCTURE *)_pStructure)->u32Flags, _u32Mask));
+  return(orxFLAG_GET(orxSTRUCTURE(_pStructure)->u32Flags, _u32Mask));
 }
 
 /** Sets structure flags
@@ -395,7 +395,7 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_SetFlags(or
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
 
-  orxFLAG_SET(((orxSTRUCTURE *)_pStructure)->u32Flags, _u32AddFlags, _u32RemoveFlags);
+  orxFLAG_SET(orxSTRUCTURE(_pStructure)->u32Flags, _u32AddFlags, _u32RemoveFlags);
 
   return;
 }
