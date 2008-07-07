@@ -70,7 +70,7 @@
  */
 #define orxFX_KU32_REFERENCE_TABLE_SIZE         32
 
-#define orxFX_KU32_SLOT_NUMBER                  8
+#define orxFX_KU32_SLOT_NUMBER                  5
 
 #define orxFX_KZ_CONFIG_SLOT                    "Slot"
 #define orxFX_KZ_CONFIG_TYPE                    "Type"
@@ -92,6 +92,7 @@
 #define orxFX_KZ_CONFIG_END_SCALE               "EndScale"
 #define orxFX_KZ_CONFIG_START_POSITION          "StartPosition"
 #define orxFX_KZ_CONFIG_END_POSITION            "EndPosition"
+#define orxFX_KZ_CONFIG_KEEP_IN_CACHE           "KeepInCache"
 
 #define orxFX_KZ_LINEAR                         "linear"
 #define orxFX_KZ_SAW                            "saw"
@@ -133,7 +134,7 @@ typedef struct __orxFX_SLOT_t
   orxFLOAT    fEndTime;                         /**< End Time : 8 */
   orxFLOAT    fCyclePeriod;                     /**< Cycle period : 12 */
   orxFLOAT    fCyclePhasis;                     /**< Cycle phasis : 16 */
-  orxFLOAT    fAmplification;                   /** Amplification over time : 20 */
+  orxFLOAT    fAmplification;                   /**< Amplification over time : 20 */
 
   union
   {
@@ -177,9 +178,9 @@ typedef struct __orxFX_SLOT_t
 struct __orxFX_t
 {
   orxSTRUCTURE  stStructure;                            /**< Public structure, first structure member : 16 */
-  orxFX_SLOT    astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 64 */
-  orxU32        u32ID;                                  /**< FX ID : 68 */
-  orxFLOAT      fDuration;                              /**< FX duration : 72 */
+  orxU32        u32ID;                                  /**< FX ID : 20 */
+  orxFLOAT      fDuration;                              /**< FX duration : 24 */
+  orxFX_SLOT    astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 264 */
 
   /* Padding */
   orxPAD(72)
@@ -634,10 +635,20 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
               break;
             }
           }
+
+          /* Should keep it in cache? */
+          if(orxConfig_GetBool(orxFX_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+          {
+            /* Increases its reference counter to keep it in cache table */
+            orxStructure_IncreaseCounter(pstResult);
+          }
         }
         else
         {
           /* !!! MSG !!! */
+
+          /* Deletes it */
+          orxFX_Delete(pstResult);
 
           /* Updates result */
           pstResult = orxNULL;
