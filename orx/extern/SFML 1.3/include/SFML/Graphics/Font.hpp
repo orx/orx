@@ -1,0 +1,119 @@
+////////////////////////////////////////////////////////////
+//
+// SFML - Simple and Fast Multimedia Library
+// Copyright (C) 2007-2008 Laurent Gomila (laurent.gom@gmail.com)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+////////////////////////////////////////////////////////////
+
+#ifndef SFML_FONT_HPP
+#define SFML_FONT_HPP
+
+////////////////////////////////////////////////////////////
+// Headers
+////////////////////////////////////////////////////////////
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <map>
+#include <string>
+
+
+namespace sf
+{
+class String;
+
+namespace priv
+{
+class FontLoader;
+}
+////////////////////////////////////////////////////////////
+/// Font is the low-level class for loading and
+/// manipulating character fonts. This class is meant to
+/// be used by sf::String
+////////////////////////////////////////////////////////////
+class SFML_API Font
+{
+public :
+
+    ////////////////////////////////////////////////////////////
+    /// Default constructor
+    ///
+    ////////////////////////////////////////////////////////////
+    Font();
+
+    ////////////////////////////////////////////////////////////
+    /// Load the font from a file
+    ///
+    /// \param Filename : Font file to load
+    /// \param CharSize : Size of characters in bitmap - the bigger, the higher quality (30 by default)
+    /// \param Charset :  Characters set to generate (empty by default - takes the ASCII range [31, 255])
+    ///
+    /// \return True if loading was successful
+    ///
+    ////////////////////////////////////////////////////////////
+    bool LoadFromFile(const std::string& Filename, unsigned int CharSize = 30, std::wstring Charset = L"");
+
+    ////////////////////////////////////////////////////////////
+    /// Load the font from a file in memory
+    ///
+    /// \param Data :        Pointer to the data to load
+    /// \param SizeInBytes : Size of the data, in bytes
+    /// \param CharSize :    Size of characters in bitmap - the bigger, the higher quality (30 by default)
+    /// \param Charset :     Characters set to generate (empty by default - takes the ASCII range [31, 255])
+    ///
+    /// \return True if loading was successful
+    ///
+    ////////////////////////////////////////////////////////////
+    bool LoadFromMemory(const char* Data, std::size_t SizeInBytes, unsigned int CharSize = 30, std::wstring Charset = L"");
+
+    ////////////////////////////////////////////////////////////
+    /// Get the SFML default built-in font (Arial)
+    ///
+    /// \return Instance of the default font
+    ///
+    ////////////////////////////////////////////////////////////
+    static const Font& GetDefaultFont();
+
+private :
+
+    friend class String;
+    friend class priv::FontLoader;
+
+    ////////////////////////////////////////////////////////////
+    /// Defines the drawing attributes of a character
+    ////////////////////////////////////////////////////////////
+    struct Character
+    {
+        IntRect   Rect;    ///< Bouding rectangle in relative coordinates
+        FloatRect Coord;   ///< Texture coordinates inside the bitmap font
+        int       Advance; ///< Offset to move to the next character
+    };
+
+    ////////////////////////////////////////////////////////////
+    // Member data
+    ////////////////////////////////////////////////////////////
+    Image                        myTexture;    ///< Texture holding the bitmap font
+    unsigned int                 myCharSize;   ///< Size of characters in the bitmap font
+    std::map<wchar_t, Character> myCharacters; ///< Rendering settings of each character
+};
+
+} // namespace sf
+
+
+#endif // SFML_FONT_HPP
