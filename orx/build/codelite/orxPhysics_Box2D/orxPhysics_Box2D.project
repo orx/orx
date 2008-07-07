@@ -74,7 +74,7 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a">
+      <Linker Required="yes" Options="-fPIC">
         <Library Value="Box2Dd"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -102,7 +102,7 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s">
+      <Linker Required="yes" Options="-fPIC -s">
         <Library Value="Box2D"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>

@@ -76,7 +76,7 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a"/>
+      <Linker Required="yes" Options="-fPIC"/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -104,7 +104,7 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s"/>
+      <Linker Required="yes" Options="-fPIC -s"/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
