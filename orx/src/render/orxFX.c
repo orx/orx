@@ -760,9 +760,6 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
   /* Gets object color */
   stColor = (orxObject_HasColor(_pstObject) != orxFALSE) ? orxObject_GetColor(_pstObject) : orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
 
-  /* Gets 1.0 / duration */
-  fInvDuration = orxFLOAT_1 / _pstFX->fDuration;
-
   /* For all slots */
   for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)
   {
@@ -787,6 +784,9 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
       if(fEndTime >= fStartTime)
       {
         orxFX_TYPE eFXType;
+
+        /* Gets 1.0 / duration */
+        fInvDuration = orxFLOAT_1 / (pstFXSlot->fEndTime - pstFXSlot->fStartTime);
 
         /* Gets FX type */
         eFXType = orxFX_GetSlotType(pstFXSlot);
@@ -906,8 +906,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
             orxFLOAT fStartAmplification, fEndAmplification;
 
             /* Gets amplification coefs */
-            fStartAmplification = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, fStartTime * fInvDuration);
-            fEndAmplification   = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, fEndTime * fInvDuration);
+            fStartAmplification = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, (fStartTime - pstFXSlot->fStartTime) * fInvDuration);
+            fEndAmplification   = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, (fEndTime - pstFXSlot->fStartTime) * fInvDuration);
 
             /* Updates the coefs */
             fStartCoef *= fStartAmplification;
