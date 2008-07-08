@@ -1,5 +1,5 @@
 /**
- * \file keyboard.c
+ * @file orxKeyboard.c
  */
 
 /***************************************************************************
@@ -17,16 +17,13 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "io/orxKeyboard.h"
 #include "plugin/orxPluginCore.h"
 
 
-/***************************************************************************
- orxKeyboard_Setup
- Keyboard module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Keyboard module setup
+ */
 orxVOID orxKeyboard_Setup()
 {
   /* Adds module dependencies */

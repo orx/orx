@@ -2,13 +2,9 @@
  * @file orxKeyboard.cpp
  *
  * SFML keyboard plugin
- *
  */
 
  /***************************************************************************
- orxKeyboard.cpp
- SFML keyboard plugin
-
  begin                : 12/01/2008
  author               : (C) Arcallians
  email                : iarwain@arcallians.org

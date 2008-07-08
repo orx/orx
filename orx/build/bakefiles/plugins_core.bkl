@@ -168,6 +168,13 @@
 
 	<!-- JOYSTICK -->
 
+	<!-- Depends on SFML -->
+	  <orx-plugin id="orxJoystick_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+      <dllname>orxJoystick_SFML$(orxSUFFIX)</dllname>
+	    <destination>core/joystick</destination>
+	    <sources>plugins/Joystick/SFML/orxJoystick.cpp</sources>
+	  </orx-plugin>
+
 	<!-- FILE -->
 
 	<!-- Depends on nothing -->

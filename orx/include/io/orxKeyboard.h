@@ -1,18 +1,3 @@
-/**
- * @file orxKeayboard.h
- *
- * Keyboard plugin
- */
-
- /***************************************************************************
- orxKeyboard.h
- Keyboard plugin
-
- begin                : 22/11/2003
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
@@ -21,6 +6,22 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file orxKeyboard.h
+ * @date 22/11/2003
+ * @author (C) Arcallians
+ */
+
+/**
+ * @addtogroup IO
+ * 
+ * Keyboard plugin module
+ * Plugin module that handles keyboard peripherals
+ *
+ * @{
+ */
+
 
 #ifndef _orxKEYBOARD_H_
 #define _orxKEYBOARD_H_
@@ -145,7 +146,8 @@ typedef enum __orxKEYBOARD_KEY_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Keyboard module setup */
+/** Keyboard module setup
+ */
 extern orxDLLAPI orxVOID                              orxKeyboard_Setup();
 
 
@@ -212,3 +214,5 @@ orxSTATIC orxINLINE orxVOID orxKeyboard_ClearBuffer()
 
 
 #endif /* _orxKEYBOARD_H_ */
+
+/** @} */

@@ -1,5 +1,5 @@
 /**
- * \file orxJoystick.c
+ * @file orxJoystick.c
  */
 
 /***************************************************************************
@@ -17,24 +17,18 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "io/orxJoystick.h"
 #include "plugin/orxPluginCore.h"
 
 
-/***************************************************************************
- orxJoystick_Setup
- Joystick module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Joystick module setup
+ */
 orxVOID orxJoystick_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_LINKLIST);
-  orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_TREE);
 
   return;
 }
@@ -50,6 +44,8 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(JOYSTICK)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, INIT, orxJoystick_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, EXIT, orxJoystick_Exit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, GET_AXIS_VALUE, orxJoystick_GetAxisValue)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, IS_BUTTON_PRESSED, orxJoystick_IsButtonPressed)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(JOYSTICK)
 
@@ -58,3 +54,5 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(JOYSTICK)
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_GetAxisValue, orxFLOAT, orxU32, orxJOYSTICK_AXIS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_IsButtonPressed, orxBOOL, orxU32, orxJOYSTICK_BUTTON);

@@ -187,6 +187,11 @@ ORXKEYBOARD_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	-I..\..\..\include -D__orxDLL__ $(CPPFLAGS) $(CXXFLAGS)
 ORXKEYBOARD_SFML_OBJECTS =  \
 	.\$(BUILD)\orxKeyboard_SFML_orxKeyboard.o
+ORXJOYSTICK_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+	$(__orxDEBUG_p) -D$(orxPLATFORM) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
+	-I..\..\..\include -D__orxDLL__ $(CPPFLAGS) $(CXXFLAGS)
+ORXJOYSTICK_SFML_OBJECTS =  \
+	.\$(BUILD)\orxJoystick_SFML_orxJoystick.o
 ORXFILE_LIBC_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D$(orxPLATFORM) -D$(orxCOMPILER) $(__orxWARNINGFLAG) -I..\..\..\include \
 	-D__orxDLL__ -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
@@ -309,18 +314,27 @@ ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_4 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+__orxJoystick_SFML___depname = \
+	..\..\..\bin\plugins\core\joystick\orxJoystick_SFML$(orxSUFFIX).dll
+endif
+endif
+ifeq ($(LINK),dynamic)
+__orxEXTRALINK_p_5 = $(__orxNAME_p)
+endif
+ifeq ($(USE_PLUGINS),1)
 __orxFile_LibC___depname = \
 	..\..\..\bin\plugins\core\file\orxFile_LibC$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_5 = $(__orxNAME_p)
+__orxEXTRALINK_p_6 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 __orxFileSystem_LibC___depname = \
 	..\..\..\bin\plugins\core\file\orxFileSystem_LibC$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_6 = $(__orxNAME_p)
+__orxEXTRALINK_p_7 = $(__orxNAME_p)
 endif
 ifeq ($(USE_BOX2D),1)
 ifeq ($(USE_PLUGINS),1)
@@ -329,7 +343,7 @@ __orxPhysics_Box2D___depname = \
 endif
 endif
 ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_7 = $(__orxNAME_p)
+__orxEXTRALINK_p_8 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
@@ -338,7 +352,7 @@ __orxSystem_SDL___depname = \
 endif
 endif
 ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_8 = $(__orxNAME_p)
+__orxEXTRALINK_p_9 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
@@ -347,25 +361,25 @@ __orxSystem_SFML___depname = \
 endif
 endif
 ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_9 = $(__orxNAME_p)
+__orxEXTRALINK_p_10 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 __Bounce___depname = ..\..\..\bin\plugins\demo\Bounce$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_10 = $(__orxNAME_p)
+__orxEXTRALINK_p_11 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 __Scroll___depname = ..\..\..\bin\plugins\demo\Scroll$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_11 = $(__orxNAME_p)
+__orxEXTRALINK_p_12 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 __Cave___depname = ..\..\..\bin\plugins\demo\Cave$(orxSUFFIX).dll
 endif
 ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_12 = $(__orxNAME_p)
+__orxEXTRALINK_p_13 = $(__orxNAME_p)
 endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
@@ -414,7 +428,7 @@ all: .\$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\$(orxNAME).exe $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSound_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ..\..\..\bin\$(orxNAME).exe $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSound_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 clean: 
 	-if exist .\$(BUILD)\*.o del .\$(BUILD)\*.o
@@ -428,6 +442,7 @@ clean:
 	-if exist ..\..\..\bin\plugins\core\sound\orxSound_SFML$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\sound\orxSound_SFML$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\mouse\orxMouse_SFML$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\mouse\orxMouse_SFML$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\keyboard\orxKeyboard_SFML$(orxSUFFIX).dll
+	-if exist ..\..\..\bin\plugins\core\joystick\orxJoystick_SFML$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\joystick\orxJoystick_SFML$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\file\orxFile_LibC$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\file\orxFile_LibC$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\file\orxFileSystem_LibC$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\file\orxFileSystem_LibC$(orxSUFFIX).dll
 	-if exist ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D$(orxSUFFIX).dll del ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D$(orxSUFFIX).dll
@@ -486,49 +501,56 @@ endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
+ifeq ($(USE_SFML),1)
+..\..\..\bin\plugins\core\joystick\orxJoystick_SFML$(orxSUFFIX).dll: $(ORXJOYSTICK_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXJOYSTICK_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_5)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
+endif
+endif
+
+ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\core\file\orxFile_LibC$(orxSUFFIX).dll: $(ORXFILE_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXFILE_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_5)
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXFILE_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_6)
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\core\file\orxFileSystem_LibC$(orxSUFFIX).dll: $(ORXFILESYSTEM_LIBC_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXFILESYSTEM_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_6)
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXFILESYSTEM_LIBC_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_7)
 endif
 
 ifeq ($(USE_BOX2D),1)
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\core\physics\orxPhysics_Box2D$(orxSUFFIX).dll: $(ORXPHYSICS_BOX2D_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXPHYSICS_BOX2D_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_7)  -lBox2D
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXPHYSICS_BOX2D_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_8)  -lBox2D
 endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SDL),1)
 ..\..\..\bin\plugins\core\system\orxSystem_SDL$(orxSUFFIX).dll: $(ORXSYSTEM_SDL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXSYSTEM_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_8)  -lSDL
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXSYSTEM_SDL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_9)  -lSDL
 endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
 ..\..\..\bin\plugins\core\system\orxSystem_SFML$(orxSUFFIX).dll: $(ORXSYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXSYSTEM_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_9)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXSYSTEM_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)    $(__orxEXTRALINK_p_10)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system
 endif
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\demo\Bounce$(orxSUFFIX).dll: $(BOUNCE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_10)
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(BOUNCE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_11)
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\demo\Scroll$(orxSUFFIX).dll: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_11)
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_12)
 endif
 
 ifeq ($(USE_PLUGINS),1)
 ..\..\..\bin\plugins\demo\Cave$(orxSUFFIX).dll: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ..\..\..\bin\$(orxNAME).exe
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CAVE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_12)
+	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CAVE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L..\..\..\lib\$(__LINK_FILENAMES) $(orxMODULE_FLAGS)  $(__orxEXTRALINK_p_13)
 endif
 
 .\$(BUILD)\orxDLL_orxAnim.o: ../../../src/anim/orxAnim.c
@@ -806,6 +828,9 @@ endif
 
 .\$(BUILD)\orxKeyboard_SFML_orxKeyboard.o: ../../../plugins/Keyboard/SFML/orxKeyboard.cpp
 	$(CXX) -c -o $@ $(ORXKEYBOARD_SFML_CXXFLAGS) $(CPPDEPS) $<
+
+.\$(BUILD)\orxJoystick_SFML_orxJoystick.o: ../../../plugins/Joystick/SFML/orxJoystick.cpp
+	$(CXX) -c -o $@ $(ORXJOYSTICK_SFML_CXXFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxFile_LibC_orxFile.o: ../../../plugins/File/LibC/orxFile.c
 	$(CC) -c -o $@ $(ORXFILE_LIBC_CFLAGS) $(CPPDEPS) $<

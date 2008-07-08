@@ -35,7 +35,7 @@
 
 typedef struct __orxFILE_STATIC_t
 {
-  orxU32 u32Flags;         /**< Flags set by the mouse plugin module */
+  orxU32 u32Flags;
 } orxFILE_STATIC;
 
 struct __orxFILE_t

@@ -1,12 +1,8 @@
 /**
  * @file orxEvent.c
- *
  */
 
 /***************************************************************************
- orxEvent.c
- Event module
-
  begin                : 20/05/2008
  author               : (C) Arcallians
  email                : iarwain@arcallians.org

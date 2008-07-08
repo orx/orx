@@ -2,13 +2,9 @@
  * @file orxMouse.cpp
  *
  * SFML mouse plugin
- *
  */
 
  /***************************************************************************
- orxMouse.cpp
- SFML mouse plugin
-
  begin                : 26/11/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org

@@ -1,14 +1,8 @@
 /**
  * @file orxAnimSet.c
- *
- * Animation (Set) module
- *
  */
 
  /***************************************************************************
- orxAnimSet.c
- Animation (Set) module
-
  begin                : 13/02/2004
  author               : (C) Arcallians
  email                : iarwain@arcallians.org

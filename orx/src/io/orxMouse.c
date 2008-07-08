@@ -1,5 +1,5 @@
 /**
- * \file orxMouse.c
+ * @file orxMouse.c
  */
 
 /***************************************************************************
@@ -22,12 +22,8 @@
 #include "plugin/orxPluginCore.h"
 
 
-/***************************************************************************
- orxMouse_Setup
- Mouse module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Mouse module setup
+ */
 orxVOID orxMouse_Setup()
 {
   /* Adds module dependencies */

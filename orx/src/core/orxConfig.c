@@ -1,12 +1,8 @@
 /**
  * @file orxConfig.c
- *
  */
 
 /***************************************************************************
- orxConfig.c
- Config module
-
  begin                : 09/12/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org

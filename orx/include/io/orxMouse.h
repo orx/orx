@@ -1,13 +1,3 @@
-/**
- * \file orxMouse.h
- */
-
-/***************************************************************************
- begin                : 22/11/2003
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
@@ -16,6 +6,22 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file orxMouse.h
+ * @date 22/11/2003
+ * @author (C) Arcallians
+ */
+
+/**
+ * @addtogroup IO
+ * 
+ * Mouse plugin module
+ * Plugin module that handles mouse-like peripherals
+ *
+ * @{
+ */
+
 
 #ifndef _orxMOUSE_H_
 #define _orxMOUSE_H_
@@ -43,7 +49,8 @@ typedef enum __orxMOUSE_BUTTON_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Mouse module setup */
+/** Mouse module setup
+ */
 extern orxDLLAPI orxVOID                              orxMouse_Setup();
 
 
@@ -93,3 +100,5 @@ orxSTATIC orxINLINE orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)
 
 
 #endif /* _orxMOUSE_H_ */
+
+/** @} */

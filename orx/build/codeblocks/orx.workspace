@@ -17,6 +17,10 @@
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />
 		</Project>
+		<Project filename="orxJoystick_SFML\orxJoystick_SFML.cbp">
+			<Depends filename="orxLIB\orxLIB.cbp" />
+			<Depends filename="orx\orx.cbp" />
+		</Project>
 		<Project filename="orxKeyboard_SFML\orxKeyboard_SFML.cbp">
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />

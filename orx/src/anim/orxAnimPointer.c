@@ -1,14 +1,8 @@
 /**
  * @file orxAnimPointer.c
- *
- * Animation (Pointer) module
- *
  */
 
  /***************************************************************************
- orxAnimPointer.c
- Animation (Pointer) module
-
  begin                : 03/03/2004
  author               : (C) Arcallians
  email                : iarwain@arcallians.org

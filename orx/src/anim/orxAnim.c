@@ -1,14 +1,8 @@
 /**
  * @file orxAnim.c
- *
- * Animation (Data) module
- *
  */
 
  /***************************************************************************
- orxAnim.c
- Animation (Data) module
-
  begin                : 12/02/2004
  author               : (C) Arcallians
  email                : iarwain@arcallians.org

@@ -1,12 +1,8 @@
 /**
  * @file orxClock.c
- *
  */
 
 /***************************************************************************
- orxClock.c
- Clock module
-
  begin                : 04/02/2004
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
