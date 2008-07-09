@@ -79,37 +79,5 @@
       <Project Name="orxBounce" ConfigName="Dynamic Release"/>
       <Project Name="orx" ConfigName="Dynamic Release"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="GP2X Debug" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxScroll" ConfigName="Static Debug"/>
-      <Project Name="orxRender_Home" ConfigName="GP2X Debug"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="GP2X Debug"/>
-      <Project Name="orxMouse_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxLIB" ConfigName="GP2X Debug"/>
-      <Project Name="orxKeyboard_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxFile_LibC" ConfigName="GP2X Debug"/>
-      <Project Name="orxFileSystem_LibC" ConfigName="GP2X Debug"/>
-      <Project Name="orxDisplay_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxCave" ConfigName="Static Debug"/>
-      <Project Name="orxBounce" ConfigName="Static Debug"/>
-      <Project Name="orx" ConfigName="GP2X Debug"/>
-      <Project Name="orxJoystick_SFML" ConfigName="Static Debug"/>
-    </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="GP2X Release" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxScroll" ConfigName="Static Debug"/>
-      <Project Name="orxRender_Home" ConfigName="GP2X Release"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="GP2X Release"/>
-      <Project Name="orxMouse_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxLIB" ConfigName="GP2X Release"/>
-      <Project Name="orxKeyboard_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxFile_LibC" ConfigName="GP2X Release"/>
-      <Project Name="orxFileSystem_LibC" ConfigName="GP2X Release"/>
-      <Project Name="orxDisplay_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxCave" ConfigName="Static Debug"/>
-      <Project Name="orxBounce" ConfigName="Static Debug"/>
-      <Project Name="orx" ConfigName="GP2X Release"/>
-      <Project Name="orxJoystick_SFML" ConfigName="Static Debug"/>
-    </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
