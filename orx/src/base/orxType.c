@@ -27,17 +27,17 @@
 #include "orx.h"
 
 
-/* *** Misc constants *** */
-
-orxCONST orxBOOL      orxFALSE            = (orxBOOL)(1 != 1);
-orxCONST orxBOOL      orxTRUE             = (orxBOOL)(1 == 1);
-
 /* *** Undefined constants *** */
 orxCONST orxU64       orxU64_UNDEFINED    = (orxU64)(-1);
 orxCONST orxU32       orxU32_UNDEFINED    = (orxU32)(-1);
 orxCONST orxU16       orxU16_UNDEFINED    = (orxU16)(-1);
 orxCONST orxU8        orxU8_UNDEFINED     = (orxU8)(-1);
 orxCONST orxHANDLE    orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
+
+
+/* *** Misc constants *** */
+orxCONST orxBOOL      orxFALSE            = (orxBOOL)(1 != 1);
+orxCONST orxBOOL      orxTRUE             = (orxBOOL)(1 == 1);
 
 orxCONST orxSTRING    orxSTRING_EMPTY     = "";
 orxCONST orxSTRING    orxSTRING_TRUE      = "true";

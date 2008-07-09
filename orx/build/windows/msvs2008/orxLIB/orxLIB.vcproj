@@ -431,10 +431,6 @@
 				Name="main"
 				>
 				<File
-					RelativePath="..\..\..\..\src\main\orxMain.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\src\main\orxParam.c"
 					>
 				</File>
