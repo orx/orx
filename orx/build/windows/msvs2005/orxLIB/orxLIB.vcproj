@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="orxLIB"
 	ProjectGUID="{590A8B1B-8ED1-47F7-8986-B4D372BDF4CB}"
 	RootNamespace="orxLIB"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -41,6 +40,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\include"
+				AdditionalUsingDirectories=""
 				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDEBUG__;__orxDLL__;__orxDLLEXPORT__"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -201,8 +201,6 @@
 				OptimizeReferences="0"
 				EnableCOMDATFolding="0"
 				LinkTimeCodeGeneration="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				SupportUnloadOfDelayLoadedDLL="true"
 				ImportLibrary="..\..\..\..\lib\dynamic\orxd.lib"
 				TargetMachine="1"
@@ -225,6 +223,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -283,8 +284,6 @@
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				SupportUnloadOfDelayLoadedDLL="true"
 				ImportLibrary="..\..\..\..\lib\dynamic\orx.lib"
 				TargetMachine="1"
@@ -307,6 +306,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -431,10 +433,6 @@
 				Name="main"
 				>
 				<File
-					RelativePath="..\..\..\..\src\main\orxMain.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\..\..\src\main\orxParam.c"
 					>
 				</File>
@@ -501,6 +499,7 @@
 				<File
 					RelativePath="..\..\..\..\src\render\orxCamera.c"
 					>
+				</File>
 				<File
 					RelativePath="..\..\..\..\src\render\orxFX.c"
 					>

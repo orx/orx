@@ -210,6 +210,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\include"
+				AdditionalUsingDirectories=""
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ORXDISPLAY_SFML_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDEBUG__;__orxDLL__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -238,7 +239,7 @@
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
-				IgnoreDefaultLibraryNames=""
+				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				SupportUnloadOfDelayLoadedDLL="true"
@@ -316,7 +317,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\dynamic\imporx.lib sfml-graphics.lib sfml-window.lib sfml-system.lib"
+				AdditionalDependencies="..\..\..\..\lib\static\imporx.lib sfml-graphics.lib sfml-window.lib sfml-system.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\display\orxDisplay_SFML.dll"
 				LinkIncremental="1"
 				GenerateManifest="false"
