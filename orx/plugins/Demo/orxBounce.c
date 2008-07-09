@@ -120,7 +120,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
   eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN);
 
   /* Registers event handler */
-  eResult = eResult && orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler);
+  eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   /* Done! */
   return eResult;
