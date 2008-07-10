@@ -42,6 +42,7 @@ typedef struct __orxBITMAP_TRANSFORM_t
 #define orxDISPLAY_KZ_CONFIG_SECTION    "Display"
 #define orxDISPLAY_KZ_CONFIG_WIDTH      "ScreenWidth"
 #define orxDISPLAY_KZ_CONFIG_HEIGHT     "ScreenHeight"
+#define orxDISPLAY_KZ_CONFIG_DEPTH      "ScreenDepth"
 #define orxDISPLAY_KZ_CONFIG_FONT       "Font"
 #define orxDISPLAY_KZ_CONFIG_TITLE      "Title"
 
@@ -84,7 +85,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, orxCONST orxBI
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, orxCONST orxSTRING);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, orxCONST orxBITMAP *);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxU32 *, orxU32 *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxFLOAT *, orxFLOAT *);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE);
 
@@ -170,9 +171,9 @@ orxSTATIC orxINLINE orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileNa
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_LoadBitmap)(_zFileName);
 }
 
-orxSTATIC orxINLINE orxSTATUS orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxU32 *_pu32Width, orxU32 *_pu32Height)
+orxSTATIC orxINLINE orxSTATUS orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapSize)(_pstBitmap, _pu32Width, _pu32Height);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapSize)(_pstBitmap, _pfWidth, _pfHeight);
 }
 
 orxSTATIC orxINLINE orxRGBA orxDisplay_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)

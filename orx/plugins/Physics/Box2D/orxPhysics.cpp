@@ -2,13 +2,9 @@
  * @file orxPhysics.cpp
  *
  * Box2D physics plugin
- *
  */
 
- /***************************************************************************
- orxPhysics.cpp
- Box2D physics plugin
-
+/***************************************************************************
  begin                : 24/03/2008
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -22,6 +18,7 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
 
 extern "C"
 {

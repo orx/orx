@@ -110,6 +110,6 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, orxCONST orxBIT
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, orxCONST orxSTRING);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, orxCONST orxBITMAP *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxU32 *, orxU32 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxFLOAT *, orxFLOAT *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE);

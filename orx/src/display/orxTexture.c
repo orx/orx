@@ -443,8 +443,6 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
     }
     else
     {
-      orxU32 u32Width, u32Height;
-
        /* Updates flags */
       orxStructure_SetFlags(_pstTexture, orxTEXTURE_KU32_FLAG_BITMAP | orxTEXTURE_KU32_FLAG_SIZE, orxTEXTURE_KU32_FLAG_NONE);
 
@@ -452,11 +450,7 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
       _pstTexture->hData = (orxHANDLE)_pstBitmap;
 
       /* Gets bitmap size */
-      orxDisplay_GetBitmapSize(_pstBitmap, &u32Width, &u32Height);
-
-      /* Stores it */
-      _pstTexture->fWidth   = orxU2F(u32Width);
-      _pstTexture->fHeight  = orxU2F(u32Height);
+      orxDisplay_GetBitmapSize(_pstBitmap, &(_pstTexture->fWidth), &(_pstTexture->fHeight));
     }
 
     /* Updates texture name */

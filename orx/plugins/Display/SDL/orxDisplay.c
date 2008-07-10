@@ -1,14 +1,10 @@
 /**
  * @file orxDisplay.c
- * 
+ *
  * SDL display plugin
- * 
  */
- 
- /***************************************************************************
- orxDisplay.c
- SDL display plugin
- 
+
+/***************************************************************************
  begin                : 14/11/2003
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -23,46 +19,99 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "orxInclude.h"
 
-#include "debug/orxDebug.h"
+#include "core/orxConfig.h"
+#include "core/orxEvent.h"
+#include "core/orxSystem.h"
 #include "math/orxMath.h"
 #include "plugin/orxPluginUser.h"
-
-#include "msg/msg_graph.h"
 
 #include "display/orxDisplay.h"
 
 
-
 #include <SDL/SDL.h>
-#include <SDL/sge.h>
-
-#define KI_BPP    24
-#define KI_WIDTH  800
-#define KI_HEIGHT 600
+#include <SDL/SDL_image.h>
 
 
-/********************
- *   Core Related   *
- ********************/
+/** Module flags
+ */
+#define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000 /**< No flags */
 
-static SDL_Surface *spstScreen = NULL;
+#define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001 /**< Ready flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC       0x00000002 /**< Ready flag */
+
+#define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
+
+#ifdef __orxGP2X__
+
+#define orxDISPLAY_KU32_SCREEN_WIDTH            320
+#define orxDISPLAY_KU32_SCREEN_HEIGHT           240
+#define orxDISPLAY_KU32_SCREEN_DEPTH            16
+
+#else /* __orxGP2X__ */
+
+#define orxDISPLAY_KU32_SCREEN_WIDTH            1024
+#define orxDISPLAY_KU32_SCREEN_HEIGHT           768
+#define orxDISPLAY_KU32_SCREEN_DEPTH            32
+
+#endif /* __orxGP2X__ */
+
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Static structure
+ */
+typedef struct __orxDISPLAY_STATIC_t
+{
+  orxU32            u32Flags;
+  orxFLOAT          fScreenWidth, fScreenHeight;
+  SDL_Surface *     pstScreen;
+
+} orxDISPLAY_STATIC;
+
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
+ */
+orxSTATIC orxDISPLAY_STATIC sstDisplay;
+
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
 
 orxBITMAP *orxDisplay_SDL_GetScreen()
 {
-  return((orxBITMAP *)SDL_GetVideoSurface());
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Done! */
+  return((orxBITMAP *)sstDisplay.pstScreen);
 }
 
-orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTranform, orxRGBA _stColor, orxCONST orxSTRING _zFormat)
+orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxCONST orxSTRING _zString)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-/* TODO :
- * Write the string onto screen, using char per char pixel writing
- */
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_pstTransform != orxNULL);
+  orxASSERT(_zString != orxNULL);
 
-  orxASSERT(orxFALSE && "Not implemented yet!");
+  /* TODO :
+   * Write the string onto screen, using char per char pixel writing
+   */
+
+  /* Not yet implemented */
+  orxASSERT(orxFALSE && "Not yet implemented!");
 
   /* Done! */
   return eResult;
@@ -70,13 +119,22 @@ orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBI
 
 orxVOID orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+
+  /* Deletes it */
   SDL_FreeSurface((SDL_Surface *)_pstBitmap);
+
   return;
 }
 
 orxBITMAP *orxDisplay_SDL_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
 {
   orxU32 u32RMask, u32GMask, u32BMask, u32AMask;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* SDL interprets each pixel as a 32-bit number, so our masks must depend
      on the endianness (byte order) of the machine */
@@ -92,50 +150,171 @@ orxBITMAP *orxDisplay_SDL_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
   u32AMask = 0xFF000000;
 #endif
 
-  return((orxBITMAP *)SDL_CreateRGBSurface(SDL_HWSURFACE, _u32Width, _u32Height, KI_BPP,
-                                          u32RMask, u32GMask, u32BMask, u32AMask));
+  return((orxBITMAP *)SDL_CreateRGBSurface(SDL_HWSURFACE, _u32Width, _u32Height, sstDisplay.pstScreen->format->BitsPerPixel, u32RMask, u32GMask, u32BMask, u32AMask));
 }
 
 orxSTATUS orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+
+  /* Updates result */
   eResult = (SDL_FillRect((SDL_Surface *)_pstBitmap, NULL, _stColor) == 0)
             ? orxSTATUS_SUCCESS
             : orxSTATUS_FAILURE;
 
+  /* Done! */
   return eResult;
 }
 
 orxSTATUS orxDisplay_SDL_Swap()
 {
+  SDL_Event stSDLEvent;
   orxSTATUS eResult;
 
-  eResult = (SDL_Flip(spstScreen) == 0)
-            ? orxSTATUS_SUCCESS
-            : orxSTATUS_FAILURE;
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  /* Updates result */
+  eResult = (SDL_Flip(sstDisplay.pstScreen) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  /* Handles all pending events */
+  while(SDL_PollEvent(&stSDLEvent))
+  {
+    /* Depending on type */
+    switch(stSDLEvent.type)
+    {
+      /* Closing? */
+      case SDL_QUIT:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType = orxEVENT_TYPE_SYSTEM;
+        stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
+
+        /* Sends system close event */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
+      /* Gained/Lost focus? */
+      case SDL_ACTIVEEVENT:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType = orxEVENT_TYPE_SYSTEM;
+        stEvent.eID   = (stSDLEvent.active.gain) ? orxSYSTEM_EVENT_FOCUS_GAINED : orxSYSTEM_EVENT_FOCUS_LOST;
+
+        /* Sends system focus gained event */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
+      /* Key pressed? */
+      case SDL_KEYDOWN:
+      {
+        /* Depending on key */
+        switch(stSDLEvent.key.keysym.sym)
+        {
+          /* Escape */
+          case SDLK_ESCAPE:
+          {
+            orxEVENT stEvent;
+
+            /* Inits event */
+            orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+            stEvent.eType = orxEVENT_TYPE_SYSTEM;
+            stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
+
+            /* Sends system close event */
+            orxEvent_Send(&stEvent);
+
+            break;
+          }
+
+          default:
+          {
+            break;
+          }
+        }
+      }
+
+      default:
+      {
+        break;
+      }
+    }
+  }
+
+  /* Done! */
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstSrc, orxRGBA _stColor, orxBOOL _bEnable)
+orxSTATUS orxDisplay_SDL_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
 {
   orxSTATUS eResult;
 
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
+
+  /* Enable? */
   if(_bEnable != orxFALSE)
   {
-    eResult = (SDL_SetColorKey((SDL_Surface *)_pstSrc, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstSrc)->format, orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor))) == 0)
+    /* Updates result */
+    eResult = (SDL_SetColorKey((SDL_Surface *)_pstBitmap, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(((SDL_Surface *)_pstBitmap)->format, orxRGBA_R(_stColor), orxRGBA_G(_stColor), orxRGBA_B(_stColor))) == 0)
               ? orxSTATUS_SUCCESS
               : orxSTATUS_FAILURE;
   }
   else
   {
-    eResult = (SDL_SetColorKey((SDL_Surface *)_pstSrc, 0, 0) == 0)
+    /* Updates result */
+    eResult = (SDL_SetColorKey((SDL_Surface *)_pstBitmap, 0, 0) == 0)
               ? orxSTATUS_SUCCESS
               : orxSTATUS_FAILURE;
   }
-  
+
+  /* Done! */
   return eResult;
+}
+
+orxSTATUS orxDisplay_SDL_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
+
+  /* Not yet implemented */
+  orxASSERT(orxFALSE && "Not yet implemented!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxRGBA orxDisplay_SDL_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)
+{
+  orxRGBA stResult = 0;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
+
+  /* Not yet implemented */
+  orxASSERT(orxFALSE && "Not yet implemented!");
+
+  /* Done! */
+  return stResult;
 }
 
 orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxFLOAT _fPosX, orxFLOAT _fPosY)
@@ -143,32 +322,42 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
   SDL_Rect  stSrcRect, stDstRect;
   orxSTATUS eResult;
 
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != (orxBITMAP *)sstDisplay.pstScreen));
+
+  /* Inits blitting rectangles */
   stSrcRect.x = 0;
   stSrcRect.y = 0;
   stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
   stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-  stDstRect.x = _s32PosX;
-  stDstRect.y = _s32PosY;
-  stDstRect.w = 0.0f;
-  stDstRect.h = 0.0f;
+  stDstRect.x = orxF2U(_fPosX);
+  stDstRect.y = orxF2U(_fPosY);
+  stDstRect.w = 0;
+  stDstRect.h = 0;
 
+  /* Updates result */
   eResult = (SDL_BlitSurface((SDL_Surface *)_pstSrc, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect) == 0)
             ? orxSTATUS_SUCCESS
             : orxSTATUS_FAILURE;
 
+  /* Done! */
   return eResult;
 }
 
 orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
 {
-  SDL_Rect  stRectangle;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Uses SGE for bitmap transformation */
-  stRectangle = sge_transform((SDL_Surface *)_pstSrc, (SDL_Surface *)_pstDst, _pstTransform->fRotation * orxMATH_KF_RAD_TO_DEG, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fSrcX, _pstTransform->fSrcY, _pstTransform->fDstX, _pstTransform->fDstY, _u32Flags);
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT((_pstSrc != orxNULL) && (_pstSrc != (orxBITMAP *)sstDisplay.pstScreen));
+  orxASSERT(_pstTransform != orxNULL);
 
-  /* Updates result */
-  eResult = ((stRectangle.x == 0) && (stRectangle.y == 0) && (stRectangle.w == 0) && (stRectangle.h == 0)) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
+  /* Not implemented yet */
+  orxASSERT(orxFALSE && "Not implemented yet!");
 
   /* Done! */
   return eResult;
@@ -178,10 +367,64 @@ orxSTATUS orxDisplay_SDL_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orx
 {
   orxSTATUS eResult;
 
-  eResult = (SDL_SaveBMP((SDL_Surface *)_pstBitmap, _zFilename) == 0)
-            ? orxSTATUS_SUCCESS
-            : orxSTATUS_FAILURE;
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_zFilename != orxNULL);
 
+  /* Updates result */
+  eResult = (SDL_SaveBMP((SDL_Surface *)_pstBitmap, _zFilename) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+  /* Done! */
+  return eResult;
+}
+
+orxBITMAP *orxDisplay_SDL_LoadBitmap(orxCONST orxSTRING _zFilename)
+{
+  orxBITMAP *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Not implemented yet */
+  pstResult = (orxBITMAP *)IMG_Load(_zFilename);
+
+  /* Done! */
+  return pstResult;
+}
+
+orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
+
+  /* Gets size */
+  *_pfWidth   = orxS2F(((SDL_Surface *)_pstBitmap)->w);
+  *_pfHeight  = orxS2F(((SDL_Surface *)_pstBitmap)->h);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxDisplay_SDL_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
+
+  /* Gets size */
+  *_pfWidth   = sstDisplay.fScreenWidth;
+  *_pfHeight  = sstDisplay.fScreenHeight;
+
+  /* Done! */
   return eResult;
 }
 
@@ -189,6 +432,10 @@ orxSTATUS orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX
 {
   SDL_Rect  stClipRect;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBitmap != orxNULL);
 
   /* Gets SDL clip rectangle */
   stClipRect.x = _u32TLX;
@@ -199,6 +446,7 @@ orxSTATUS orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX
   /* Applies it */
   SDL_SetClipRect((SDL_Surface *)_pstBitmap, &stClipRect);
 
+  /* Done! */
   return eResult;
 }
 
@@ -206,95 +454,102 @@ orxSTATUS orxDisplay_SDL_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  if(SDL_WasInit(SDL_INIT_EVERYTHING) != 0)
+  /* Was not already initialized? */
+  if(!(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY))
   {
-    SDL_InitSubSystem(SDL_INIT_VIDEO);
-  }
-  else
-  {
-    SDL_Init(SDL_INIT_VIDEO);
+    /* Cleans static controller */
+    orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
+
+    /* Is SDL partly initialized? */
+    if(SDL_WasInit(SDL_INIT_EVERYTHING) != 0)
+    {
+      /* Inits the video subsystem */
+      SDL_InitSubSystem(SDL_INIT_VIDEO);
+    }
+    else
+    {
+      /* Inits SDl with video */
+      SDL_Init(SDL_INIT_VIDEO);
+    }
+
+#ifdef __orxGP2X__
+
+    /* Inits display using config values? */
+    sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+
+    /* Stores values */
+    sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
+    sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+
+#else /* __orxGP2X__ */
+
+    {
+      orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth;
+
+      /* Gets resolution from config */
+      orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
+      u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
+      u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
+      u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
+
+      /* Inits display using config values? */
+      if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT)) == orxNULL)
+      {
+        /* Inits display using default parameters */
+        sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+
+        /* Stores values */
+        sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
+        sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+      }
+      else
+      {
+        /* Stores values */
+        sstDisplay.fScreenWidth   = orxU2F(u32ConfigWidth);
+        sstDisplay.fScreenHeight  = orxU2F(u32ConfigHeight);
+      }
+    }
+
+#endif /* __orxGP2X__ */
+
+
+  /* Updates result ? */
+  eResult = (sstDisplay.pstScreen != NULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
 
-  spstScreen = SDL_SetVideoMode(KI_WIDTH,
-                                KI_HEIGHT,
-                                KI_BPP,
-                                SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
-
-  if(spstScreen == NULL)
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, KZ_MSG_MODE_INIT_FAILED_III, KI_WIDTH, KI_HEIGHT, KI_BPP);
-
-    eResult = orxSTATUS_FAILURE;
-  }
-  else
-  {
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, KZ_MSG_MODE_INIT_SUCCESS_III, KI_WIDTH, KI_HEIGHT, KI_BPP);
-  }
-
+  /* Done! */
   return eResult;  
 }
 
 orxVOID orxDisplay_SDL_Exit()
 {
-  if(SDL_WasInit(SDL_INIT_EVERYTHING) == SDL_INIT_VIDEO)
+  /* Was initialized? */
+  if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    SDL_Quit();
-  }
-  else
-  {
-    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    /* Is video the only subsystem initialized? */
+    if(SDL_WasInit(SDL_INIT_EVERYTHING) == SDL_INIT_VIDEO)
+    {
+      /* Exits from SDL */
+      SDL_Quit();
+    }
+    else
+    {
+      /* Exits from video subsystem */
+      SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    }
+
+    /* Cleans static controller */
+    orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
   }
 
   return;
-}
-
-orxBITMAP *orxDisplay_SDL_LoadBitmap(orxCONST orxSTRING _zFilename)
-{
-  /* !!! TODO !!!
-   * Needs to add a test on requested format.
-   * Needs to work with other format than BMP. */
-
-  return((orxBITMAP *)SDL_LoadBMP(_zFilename));
-}
-
-orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxU32 *_pu32Width, orxU32 *_pu32Height)
-{
-  orxSTATUS eResult;
-
-  orxASSERT(_pu32Width != orxNULL);
-  orxASSERT(_pu32Height != orxNULL);
-  
-  /* Non null? */
-  if(_pstBitmap != NULL)
-  {
-    /* Gets size info */
-    *_pu32Width  = ((SDL_Surface *)_pstBitmap)->w;
-    *_pu32Height = ((SDL_Surface *)_pstBitmap)->h;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Null pointer -> cleans size values */
-    *_pu32Width  = 0;
-    *_pu32Height = 0;
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
 }
 
 orxHANDLE orxDisplay_SDL_GetApplicationInput()
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
-  /* Not implemented yet */
+  /* Not yet implemented */
   orxASSERT(orxFALSE && "Not implemented yet!");
 
   /* Done! */
@@ -315,11 +570,14 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SaveBitmap, DISPLAY, SAVE_BITMAP
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformBitmap, DISPLAY, TRANSFORM_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapSize, DISPLAY, GET_BITMAP_SIZE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreenSize, DISPLAY, GET_SCREEN_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetScreen, DISPLAY, GET_SCREEN_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_ClearBitmap, DISPLAY, CLEAR_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapClipping, DISPLAY, SET_BITMAP_CLIPPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_BlitBitmap, DISPLAY, BLIT_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawText, DISPLAY, DRAW_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_END();

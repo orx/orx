@@ -429,7 +429,7 @@ orxSTATIC orxVOID orxCave_InitBulb()
 
 orxSTATIC orxSTATUS orxCave_Init()
 {
-  orxU32      u32ScreenWidth, u32ScreenHeight, i;
+  orxU32      i;
   orxVECTOR   vPos;
   orxFRAME   *pstFrame;
   orxSTATUS   eResult;
@@ -438,9 +438,7 @@ orxSTATIC orxSTATUS orxCave_Init()
   orxMemory_Zero(&sstCave, sizeof(orxCAVE_STATIC));
 
   /* Gets screen dimensions */
-  orxDisplay_GetBitmapSize(orxDisplay_GetScreenBitmap(), &u32ScreenWidth, &u32ScreenHeight);
-  sstCave.fScreenWidth  = orxU2F(u32ScreenWidth);
-  sstCave.fScreenHeight = orxU2F(u32ScreenHeight);
+  orxDisplay_GetBitmapSize(orxDisplay_GetScreenBitmap(), &(sstCave.fScreenWidth), &(sstCave.fScreenHeight));
 
   /* For all resources */
   for(i = 0; i < orxCAVE_RESOURCE_NUMBER; i++)

@@ -2,13 +2,9 @@
  * @file orxDisplay.cpp
  *
  * SFML display plugin
- *
  */
 
- /***************************************************************************
- orxDisplay.cpp
- SFML display plugin
-
+/***************************************************************************
  begin                : 18/10/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -313,7 +309,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
 
         break;
       }
-		
+
       /* Lost focus? */
       case sf::Event::LostFocus:
       {
@@ -453,7 +449,7 @@ extern "C" orxRGBA orxDisplay_SFML_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap
   return stResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc,  orxCONST orxFLOAT _fPosX, orxFLOAT _fPosY)
+extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxFLOAT _fPosX, orxFLOAT _fPosY)
 {
   sf::Sprite   *poSprite;
   sf::Vector2f  vPosition;
@@ -489,6 +485,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   orxASSERT((_pstSrc != orxNULL) && (_pstSrc != spoScreen));
   orxASSERT((_u32Flags == 0) && "Not used yet!")
   orxASSERT((_pstDst == spoScreen) && "Can only draw on screen with this version!");
+  orxASSERT(_pstTransform != orxNULL);
 
   /* Gets sprite */
   poSprite = (sf::Sprite *)_pstSrc;
@@ -539,6 +536,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
+  orxASSERT(_zFilename != orxNULL);
 
   /* Not screen? */
   if(_pstBitmap != spoScreen)
@@ -596,15 +594,15 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
   return pstResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxU32 *_pu32Width, orxU32 *_pu32Height)
+extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
-  orxASSERT(_pu32Width != orxNULL);
-  orxASSERT(_pu32Height != orxNULL);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
 
   /* Not screen? */
   if(_pstBitmap != spoScreen)
@@ -615,14 +613,14 @@ extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(orxCONST orxBITMAP *_pstBitma
     poImage = const_cast<sf::Image *>(((sf::Sprite *)_pstBitmap)->GetImage());
 
     /* Gets size info */
-    *_pu32Width  = poImage->GetWidth();
-    *_pu32Height = poImage->GetHeight();
+    *_pfWidth  = orxS2F(poImage->GetWidth());
+    *_pfHeight = orxS2F(poImage->GetHeight());
   }
   else
   {
     /* Gets size info */
-    *_pu32Width  = sstDisplay.poRenderWindow->GetWidth();
-    *_pu32Height = sstDisplay.poRenderWindow->GetHeight();
+    *_pfWidth  = orxS2F(sstDisplay.poRenderWindow->GetWidth());
+    *_pfHeight = orxS2F(sstDisplay.poRenderWindow->GetHeight());
   }
 
   /* Done! */
