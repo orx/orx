@@ -15,7 +15,7 @@
 
 /**
  * @addtogroup Render
- * 
+ *
  * FXPointer module
  * Allows to creates rendering special effects containers for objects.
  *
@@ -80,6 +80,14 @@ extern orxDLLAPI orxBOOL orxFASTCALL            orxFXPointer_IsEnabled(orxCONST 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX);
 
+/** Adds a delayed FX
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _pstFX        FX to add
+ * @param[in]   _fDelay       Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX, orxFLOAT _fDelay);
+
 /** Removes an FX
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _pstFX        FX to remove
@@ -93,6 +101,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFX(orxFXPOINT
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID);
+
+/** Adds a delayed FX using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to add
+ * @param[in]   _fDelay       Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
 /** Removes an FX using using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer

@@ -15,7 +15,7 @@
 
 /**
  * @addtogroup Object
- * 
+ *
  * Object module
  * Allows to creates and handle objects.
  * Objects are structures containers that can refer to many other structures such as frames, graphics, etc...
@@ -308,6 +308,14 @@ extern orxDLLAPI orxRGBA orxFASTCALL        orxObject_GetColor(orxCONST orxOBJEC
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID);
+
+/** Adds a delayed FX using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
 /** Removes an FX using using its config ID
  * @param[in]   _pstObject      Concerned FXPointer

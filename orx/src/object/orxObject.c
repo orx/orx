@@ -1758,12 +1758,36 @@ orxRGBA orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject)
  */
 orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID)
 {
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
+
+  /* Adds FX */
+  eResult = orxObject_AddDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a delayed FX using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+{
   orxFXPOINTER *pstFXPointer;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
+  orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Gets its FXPointer */
   pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
@@ -1779,7 +1803,7 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING 
     {
       /* Links it */
       eResult = orxObject_LinkStructure(_pstObject, (orxSTRUCTURE *)pstFXPointer);
-      
+
       /* Valid? */
       if(eResult != orxSTATUS_FAILURE)
       {
@@ -1787,7 +1811,7 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING 
         orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
 
         /* Adds FX from config */
-        eResult = orxFXPointer_AddFXFromConfig(pstFXPointer, _zFXConfigID);
+        eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
       }
     }
   }

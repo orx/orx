@@ -177,32 +177,14 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
       /* Valid? */
       if(pstFX != orxNULL)
       {
-        orxFLOAT  fFXLocalEndTime;
-        orxBOOL   bEnd;
+        orxFLOAT fFXLocalStartTime, fFXLocalEndTime;
 
-        /* Gets FX local time */
-        fFXLocalEndTime = pstFXPointer->fTime - pstFXPointer->astFXList[i].fStartTime;
-
-        /* Has ended? */
-        if(fFXLocalEndTime >= orxFX_GetDuration(pstFX))
-        {
-          /* Updates time */
-          fFXLocalEndTime = orxFX_GetDuration(pstFX);
-
-          /* Updates ending status */
-          bEnd = orxTRUE;
-        }
-        else
-        {
-          /* Updates ending status */
-          bEnd = orxFALSE;
-        }
+        /* Gets FX local times */
+        fFXLocalStartTime = fLastTime - pstFXPointer->astFXList[i].fStartTime;
+        fFXLocalEndTime   = pstFXPointer->fTime - pstFXPointer->astFXList[i].fStartTime;
 
         /* Applies FX from last time to now */
-        eResult = orxFX_Apply(pstFX, pstObject, fLastTime, fFXLocalEndTime);
-
-        /* Should stop? */
-        if(bEnd != orxFALSE)
+        if(orxFX_Apply(pstFX, pstObject, fFXLocalStartTime, fFXLocalEndTime) == orxSTATUS_FAILURE)
         {
           /* Decreases its reference counter */
           orxStructure_DecreaseCounter(pstFX);
@@ -429,6 +411,28 @@ orxBOOL orxFASTCALL orxFXPointer_IsEnabled(orxCONST orxFXPOINTER *_pstFXPointer)
  */
 orxSTATUS orxFASTCALL orxFXPointer_AddFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX)
 {
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+  orxSTRUCTURE_ASSERT(_pstFX);
+
+  /* Adds FX */
+  eResult = orxFXPointer_AddDelayedFX(_pstFXPointer, _pstFX, orxFLOAT_0);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a delayed FX
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _pstFX        FX to add
+ * @param[in]   _fDelay       Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX, orxFLOAT _fDelay)
+{
   orxU32    u32Index;
   orxSTATUS eResult;
 
@@ -436,6 +440,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFX(orxFXPOINTER *_pstFXPointer, orxFX *_ps
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFXPointer);
   orxSTRUCTURE_ASSERT(_pstFX);
+  orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Finds an empty slot */
   for(u32Index = 0; (u32Index < orxFXPOINTER_KU32_FX_NUMBER) && (_pstFXPointer->astFXList[u32Index].pstFX != orxNULL); u32Index++);
@@ -450,7 +455,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFX(orxFXPOINTER *_pstFXPointer, orxFX *_ps
     _pstFXPointer->astFXList[u32Index].pstFX = _pstFX;
 
     /* Inits its start time */
-    _pstFXPointer->astFXList[u32Index].fStartTime = _pstFXPointer->fTime;
+    _pstFXPointer->astFXList[u32Index].fStartTime = _pstFXPointer->fTime + _fDelay;
 
     /* Updates its flags */
     orxFLAG_SET(_pstFXPointer->astFXList[u32Index].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_NONE, orxFXPOINTER_HOLDER_KU32_MASK_ALL);
@@ -530,6 +535,28 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
  */
 orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID)
 {
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
+
+  /* Adds FX */
+  eResult = orxFXPointer_AddDelayedFXFromConfig(_pstFXPointer, _zFXConfigID, orxFLOAT_0);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a delayed FX using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to add
+ * @param[in]   _fDelay       Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+{
   orxU32    u32Index;
   orxSTATUS eResult;
 
@@ -537,6 +564,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, 
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFXPointer);
   orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
+  orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Finds an empty slot */
   for(u32Index = 0; (u32Index < orxFXPOINTER_KU32_FX_NUMBER) && (_pstFXPointer->astFXList[u32Index].pstFX != orxNULL); u32Index++);
@@ -559,7 +587,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, 
       _pstFXPointer->astFXList[u32Index].pstFX = pstFX;
 
       /* Inits its start time */
-      _pstFXPointer->astFXList[u32Index].fStartTime = _pstFXPointer->fTime;
+      _pstFXPointer->astFXList[u32Index].fStartTime = _pstFXPointer->fTime + _fDelay;
 
       /* Updates its flags */
       orxFLAG_SET(_pstFXPointer->astFXList[u32Index].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxFXPOINTER_HOLDER_KU32_MASK_ALL);
