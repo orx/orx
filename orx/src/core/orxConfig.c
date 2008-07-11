@@ -316,6 +316,7 @@ orxSTATIC orxINLINE orxVOID orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSecti
   return;
 }
 
+
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/

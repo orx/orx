@@ -147,7 +147,7 @@ orxSTATUS orxMain_Init()
     /* Successful? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Registers system event handler */
+      /* Registers custom system event handler */
       eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
     }
   }
@@ -172,9 +172,6 @@ orxVOID orxMain_Exit()
   {
     /* Sets module as not ready */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_NONE, orxMAIN_KU32_STATIC_FLAG_READY);
-
-    /* Exits from all modules */
-    orxModule_ExitAll();
   }
 
   /* Done */
@@ -183,16 +180,15 @@ orxVOID orxMain_Exit()
 
 /** Run the main engine
  */
-orxVOID orxMain_Run()
+orxSTATUS orxMain_Run()
 {
-  /* Main Loop (Until exit event received) */
-  while((sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_EXIT) != orxMAIN_KU32_STATIC_FLAG_EXIT)
-  {
-    /* Update clocks */
-    orxClock_Update();
-  }
+  orxSTATUS eResult;
 
-  return;
+  /* Updates result */
+  eResult = (orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT)) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Main function
@@ -203,34 +199,9 @@ orxVOID orxMain_Run()
  */
 int main(int argc, char **argv)
 {
-  /* Inits the Debug System */
-  orxDEBUG_INIT();
+  /* Executes orx */
+  orx_Execute(argc, argv, orxMain_Setup, orxMain_Init, orxMain_Run, orxMain_Exit);
 
-  /* Registers main module */
-  orxModule_Register(orxMODULE_ID_MAIN, orxMain_Setup, orxMain_Init, orxMain_Exit);
-
-  /* Registers all modules */
-  orxModule_RegisterAll();
-
-  /* Calls all modules setup */
-  orxModule_SetupAll();
-
-  /* Sends the command line arguments to orxParam module */
-  if(orxParam_SetArgs(argc, argv) == orxSTATUS_SUCCESS)
-  {
-    /* Inits the engine */
-    if(orxModule_Init(orxMODULE_ID_MAIN) == orxSTATUS_SUCCESS)
-    {
-      /* Runs the engine */
-      orxMain_Run();
-
-      /* Exits from engine */
-      orxModule_Exit(orxMODULE_ID_MAIN);
-    }
-  }
-
-  /* Exits from the Debug system */
-  orxDEBUG_EXIT();
-
+  /* Done! */
   return EXIT_SUCCESS;
 }

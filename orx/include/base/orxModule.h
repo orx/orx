@@ -76,6 +76,7 @@ typedef enum __orxMODULE_ID_t
 /* *** init/exit function prototypes *** */
 typedef orxSTATUS                         (*orxMODULE_INIT_FUNCTION)  ();
 typedef orxVOID                           (*orxMODULE_EXIT_FUNCTION)  ();
+typedef orxSTATUS                         (*orxMODULE_RUN_FUNCTION)   ();
 typedef orxVOID                           (*orxMODULE_SETUP_FUNCTION) ();
 
 
