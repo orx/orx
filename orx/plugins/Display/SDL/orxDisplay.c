@@ -40,7 +40,6 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000 /**< No flags */
 
 #define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001 /**< Ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC       0x00000002 /**< Ready flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
@@ -452,7 +451,7 @@ orxSTATUS orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX
 
 orxSTATUS orxDisplay_SDL_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Was not already initialized? */
   if(!(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY))
@@ -464,57 +463,67 @@ orxSTATUS orxDisplay_SDL_Init()
     if(SDL_WasInit(SDL_INIT_EVERYTHING) != 0)
     {
       /* Inits the video subsystem */
-      SDL_InitSubSystem(SDL_INIT_VIDEO);
+      eResult = (SDL_InitSubSystem(SDL_INIT_VIDEO) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
     else
     {
-      /* Inits SDl with video */
-      SDL_Init(SDL_INIT_VIDEO);
+      /* Inits SDL with video */
+      eResult = (SDL_Init(SDL_INIT_VIDEO) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
 
+    /* Valid? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
 #ifdef __orxGP2X__
 
-    /* Inits display using config values? */
-    sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+      /* Inits display using config values? */
+      sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
 
-    /* Stores values */
-    sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-    sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+      /* Stores values */
+      sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
+      sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
 
 #else /* __orxGP2X__ */
 
-    {
-      orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth;
-
-      /* Gets resolution from config */
-      orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
-      u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
-      u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
-      u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
-
-      /* Inits display using config values? */
-      if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT)) == orxNULL)
       {
-        /* Inits display using default parameters */
-        sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+        orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth;
 
-        /* Stores values */
-        sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
-        sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+        /* Gets resolution from config */
+        orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
+        u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
+        u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
+        u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
+
+        /* Inits display using config values? */
+        if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT)) == orxNULL)
+        {
+          /* Inits display using default parameters */
+          sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+
+          /* Stores values */
+          sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
+          sstDisplay.fScreenHeight  = orxU2F(orxDISPLAY_KU32_SCREEN_HEIGHT);
+        }
+        else
+        {
+          /* Stores values */
+          sstDisplay.fScreenWidth   = orxU2F(u32ConfigWidth);
+          sstDisplay.fScreenHeight  = orxU2F(u32ConfigHeight);
+        }
       }
-      else
-      {
-        /* Stores values */
-        sstDisplay.fScreenWidth   = orxU2F(u32ConfigWidth);
-        sstDisplay.fScreenHeight  = orxU2F(u32ConfigHeight);
-      }
-    }
 
 #endif /* __orxGP2X__ */
 
+      /* Updates result ? */
+      eResult = (sstDisplay.pstScreen != NULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
-  /* Updates result ? */
-  eResult = (sstDisplay.pstScreen != NULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      /* Valid? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Sets module as ready */
+        sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
+      }
+    }
   }
 
   /* Done! */
@@ -556,9 +565,10 @@ orxHANDLE orxDisplay_SDL_GetApplicationInput()
   return hResult;
 }
 
-/********************
- *  Plugin Related  *
- ********************/
+
+/***************************************************************************
+ * Plugin Related                                                          *
+ ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_Init, DISPLAY, INIT);

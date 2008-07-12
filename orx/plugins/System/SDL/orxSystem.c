@@ -1,12 +1,13 @@
 /**
- * \file orxSystem.c
+ * @file orxSystem.c
+ *
+ * SDL system plugin
  */
 
 /***************************************************************************
  begin                : 30/07/2005
  author               : (C) Arcallians
- email                : bestel@arcallians.org
- email                : cursor@arcallians.org
+ email                : iarwain@arcallians.org
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,39 +18,48 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
- 
+
+
 #include "orxInclude.h"
+
 #include "plugin/orxPluginUser.h"
-#include "debug/orxDebug.h"
-#include "math/orxMath.h"
-#include "memory/orxMemory.h"
 #include "core/orxSystem.h"
 
 #include <SDL/SDL.h>
 
-#define orxSYSTEM_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags have been set */
-#define orxSYSTEM_KU32_STATIC_FLAG_READY  0x00000001  /**< The module has been initialized */
+/** Module flags
+ */
+#define orxSYSTEM_KU32_STATIC_FLAG_NONE         0x00000000 /**< No flags */
+
+#define orxSYSTEM_KU32_STATIC_FLAG_READY        0x00000001 /**< Ready flag */
+
+#define orxSYSTEM_KU32_STATIC_MASK_ALL          0xFFFFFFFF /**< All mask */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Static structure
+ */
 typedef struct __orxSYSTEM_STATIC_t
 {
   orxU32 u32Flags;         /**< Flags set by the system plugin module */
+
 } orxSYSTEM_STATIC;
 
+
 /***************************************************************************
- * Module global variable                                                  *
+ * Static variables                                                        *
  ***************************************************************************/
+
+/** Static data
+ */
 orxSTATIC orxSYSTEM_STATIC sstSystem;
+
 
 /***************************************************************************
  * Private functions                                                       *
- ***************************************************************************/
-
-/***************************************************************************
- * Public functions                                                        *
  ***************************************************************************/
 
 /** Init the system module
@@ -57,33 +67,34 @@ orxSTATIC orxSYSTEM_STATIC sstSystem;
  */
 orxSTATUS orxSystemSDL_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS; /* Init result */
+  orxSTATUS eResult; /* Init result */
 
-  /* Module not already initialized ? */
+  /* Was not already initialized? */
   if(!(sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
 
-    /* Hqs SDL_Init already been called ? */
-    if(SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
+    /* Is SDL partly initialized? */
+    if(SDL_WasInit(SDL_INIT_EVERYTHING) != 0)
     {
-      /* No, calls it */
-      if(SDL_Init(0)==0)
-      {
-        /* Init system subsystem */
-        if(SDL_InitSubSystem(SDL_INIT_SYSTEMR)==0)
-        {
-          /* Set module as ready */
-          sstSystem.u32Flags = orxSYSTEM_KU32_STATIC_FLAG_READY;
-          
-          /* Successfull init */
-          eResult = orxSTATUS_SUCCESS;
-        }
-      }
+      /* Inits the timer subsystem */
+      eResult = (SDL_InitSubSystem(SDL_INIT_TIMER) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    }
+    else
+    {
+      /* Inits SDL with timer */
+      eResult = (SDL_Init(SDL_INIT_TIMER) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    }
+
+    /* Valid? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Sets module as ready */
+      sstSystem.u32Flags = orxSYSTEM_KU32_STATIC_FLAG_READY;
     }
   }
-  
+
   /* Done */
   return eResult;
 }
@@ -92,21 +103,23 @@ orxSTATUS orxSystemSDL_Init()
  */
 orxVOID orxSystemSDL_Exit()
 {
-  /* Module initialized ? */
+  /* Was initialized ? */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
   {
-    /* Unitialize SDL System */
-    SDL_QuitSubSystem(SDL_INIT_SYSTEMR);
-    
-    /* All subsystem uninitialized ? */
-    if(SDL_WasInit(SDL_INIT_EVERYTHING) == 0)
+    /* Is timer the only subsystem initialized? */
+    if(SDL_WasInit(SDL_INIT_EVERYTHING) == SDL_INIT_TIMER)
     {
-      /* Quit SDL */
+      /* Exits from SDL */
       SDL_Quit();
     }
-    
-    /* Module not ready now */
-    sstSystem.u32Flags = orxSYSTEM_KU32_STATIC_FLAG_NONE;
+    else
+    {
+      /* Exits from timer subsystem */
+      SDL_QuitSubSystem(SDL_INIT_TIMER);
+    }
+
+    /* Cleans static controller */
+    orxMemory_Zero(&sstSystem, sizeof(orxSYSTEM_STATIC));
   }
 }
 
@@ -115,21 +128,25 @@ orxVOID orxSystemSDL_Exit()
  */
 orxFLOAT orxSystemSDL_GetTime()
 {
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
+  /* Done! */
   return(orx2F(0.001f) * orxU2F(SDL_GetTicks()));
 }
 
 /** Delay the program for given number of milliseconds.
  * @param[in] _fSystem Number of seconds to wait.
  */
-orxVOID orxSystemSDL_Delay(orxFLOAT _fSystem)
+orxVOID orxSystemSDL_Delay(orxFLOAT _fSeconds)
 {
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
-  
-  SDL_Delay(orxF2U(orx2F(1000.0f) * _fSystem));
+
+  /* Delays */
+  SDL_Delay(orxF2U(orx2F(1000.0f) * _fSeconds));
+
+  return;
 }
 
 
