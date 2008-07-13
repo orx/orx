@@ -1,12 +1,12 @@
 /**
  * @file orxPlugin_CoreDefine.h
- * 
+ *
  * Header that regroups all core plugin defines.
- */ 
- 
+ */
+
  /***************************************************************************
  orxPlugin_CoreDefine.h
- 
+
  begin                : 09/05/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -46,7 +46,7 @@
 #include "plugin/define/orxPlugin_Physics.h"
 #include "plugin/define/orxPlugin_Render.h"
 #include "plugin/define/orxPlugin_Script.h"
-#include "plugin/define/orxPlugin_Sound.h"
+#include "plugin/define/orxPlugin_SoundSystem.h"
 #include "plugin/define/orxPlugin_System.h"
 
 
@@ -63,7 +63,7 @@ orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(PACKAGE);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(PHYSICS);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(RENDER);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(SCRIPT);
-orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(SOUND);
+orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(SOUNDSYSTEM);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(SYSTEM);
 
 /*
@@ -81,7 +81,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCorePlugins()
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PHYSICS)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(RENDER)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(SCRIPT)();
-  orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(SOUND)();
+  orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(SOUNDSYSTEM)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(SYSTEM)();
 }
 

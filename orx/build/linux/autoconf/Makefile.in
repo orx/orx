@@ -84,6 +84,7 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxPlugin.o \
 	./$(BUILD)/orxDLL_orxScript.o \
 	./$(BUILD)/orxDLL_orxSound.o \
+	./$(BUILD)/orxDLL_orxSoundSystem.o \
 	./$(BUILD)/orxDLL_orxFSM.o \
 	./$(BUILD)/orxDLL_orxHashTable.o \
 	./$(BUILD)/orxDLL_orxLinkList.o \
@@ -131,6 +132,7 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxPlugin.o \
 	./$(BUILD)/orxLIB_orxScript.o \
 	./$(BUILD)/orxLIB_orxSound.o \
+	./$(BUILD)/orxLIB_orxSoundSystem.o \
 	./$(BUILD)/orxLIB_orxFSM.o \
 	./$(BUILD)/orxLIB_orxHashTable.o \
 	./$(BUILD)/orxLIB_orxLinkList.o \
@@ -152,11 +154,11 @@ ORXRENDER_HOME_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
 	$(CPPFLAGS) $(CFLAGS)
 ORXRENDER_HOME_OBJECTS =  \
 	./$(BUILD)/orxRender_Home_orxRender.o
-ORXSOUND_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
-	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
-	$(CXXFLAGS)
-ORXSOUND_SFML_OBJECTS =  \
-	./$(BUILD)/orxSound_SFML_orxSound.o
+ORXSOUNDSYSTEM_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) \
+	-D$(orxCOMPILER) -I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) \
+	$(CPPFLAGS) $(CXXFLAGS)
+ORXSOUNDSYSTEM_SFML_OBJECTS =  \
+	./$(BUILD)/orxSoundSystem_SFML_orxSoundSystem.o
 ORXMOUSE_SFML_CXXFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
 	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) $(CPPFLAGS) \
 	$(CXXFLAGS)
@@ -254,9 +256,9 @@ COND_USE_PLUGINS_1___orxRender_Home___depname = \
 	$(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__orxRender_Home___depname = $(COND_USE_PLUGINS_1___orxRender_Home___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_1 = $(__orxNAME_p)
-COND_USE_PLUGINS_1_USE_SFML_1___orxSound_SFML___depname = \
-	$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
-@COND_USE_PLUGINS_1_USE_SFML_1@__orxSound_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___orxSound_SFML___depname)
+COND_USE_PLUGINS_1_USE_SFML_1___orxSoundSystem_SFML___depname = \
+	$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSoundSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+@COND_USE_PLUGINS_1_USE_SFML_1@__orxSoundSystem_SFML___depname = $(COND_USE_PLUGINS_1_USE_SFML_1___orxSoundSystem_SFML___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_2 = $(__orxNAME_p)
 COND_USE_PLUGINS_1_USE_SFML_1___orxMouse_SFML___depname = \
 	$(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
@@ -313,7 +315,7 @@ COND_USE_PLUGINS_1___Cave___depname = \
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT) $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSound_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT) $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSoundSystem_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -330,7 +332,7 @@ clean:
 	rm -f $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 	rm -f $(srcdir)/../../../bin/plugins/core/display/$(DLLPREFIX_MODULE)orxDisplay_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home$(orxSUFFIX).$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
+	rm -f $(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSoundSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/keyboard/$(DLLPREFIX_MODULE)orxKeyboard_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/core/joystick/$(DLLPREFIX_MODULE)orxJoystick_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
@@ -365,8 +367,8 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/core/render/$(DLLPREFIX_MODULE)orxRender_Home$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXRENDER_HOME_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(ORXRENDER_HOME_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_1)
 
-@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSound_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXSOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
-@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXSOUND_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_2)
+@COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/sound/$(DLLPREFIX_MODULE)orxSoundSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXSOUNDSYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
+@COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXSOUNDSYSTEM_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_2)
 
 @COND_USE_PLUGINS_1_USE_SFML_1@$(srcdir)/../../../bin/plugins/core/mouse/$(DLLPREFIX_MODULE)orxMouse_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(ORXMOUSE_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1_USE_SFML_1@	$(SHARED_LD_MODULE_CXX) $@ $(ORXMOUSE_SFML_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)  $(orxSFMLLIB_UNIX)   $(LIBS) $(__orxEXTRALINK_p_3)
@@ -512,6 +514,9 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 ./$(BUILD)/orxDLL_orxSound.o: $(srcdir)/../../../src/sound/orxSound.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/sound/orxSound.c
 
+./$(BUILD)/orxDLL_orxSoundSystem.o: $(srcdir)/../../../src/sound/orxSoundSystem.c
+	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/sound/orxSoundSystem.c
+
 ./$(BUILD)/orxDLL_orxFSM.o: $(srcdir)/../../../src/utils/orxFSM.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/utils/orxFSM.c
 
@@ -641,6 +646,9 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 ./$(BUILD)/orxLIB_orxSound.o: $(srcdir)/../../../src/sound/orxSound.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/sound/orxSound.c
 
+./$(BUILD)/orxLIB_orxSoundSystem.o: $(srcdir)/../../../src/sound/orxSoundSystem.c
+	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/sound/orxSoundSystem.c
+
 ./$(BUILD)/orxLIB_orxFSM.o: $(srcdir)/../../../src/utils/orxFSM.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/utils/orxFSM.c
 
@@ -668,8 +676,8 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 ./$(BUILD)/orxRender_Home_orxRender.o: $(srcdir)/../../../plugins/Render/Home/orxRender.c
 	$(CCC) -c -o $@ $(ORXRENDER_HOME_CFLAGS) $(srcdir)/../../../plugins/Render/Home/orxRender.c
 
-./$(BUILD)/orxSound_SFML_orxSound.o: $(srcdir)/../../../plugins/Sound/SFML/orxSound.cpp
-	$(CXXC) -c -o $@ $(ORXSOUND_SFML_CXXFLAGS) $(srcdir)/../../../plugins/Sound/SFML/orxSound.cpp
+./$(BUILD)/orxSoundSystem_SFML_orxSoundSystem.o: $(srcdir)/../../../plugins/Sound/SFML/orxSoundSystem.cpp
+	$(CXXC) -c -o $@ $(ORXSOUNDSYSTEM_SFML_CXXFLAGS) $(srcdir)/../../../plugins/Sound/SFML/orxSoundSystem.cpp
 
 ./$(BUILD)/orxMouse_SFML_orxMouse.o: $(srcdir)/../../../plugins/Mouse/SFML/orxMouse.cpp
 	$(CXXC) -c -o $@ $(ORXMOUSE_SFML_CXXFLAGS) $(srcdir)/../../../plugins/Mouse/SFML/orxMouse.cpp

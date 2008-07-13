@@ -143,7 +143,7 @@
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Physics.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Render.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Script.h" />
-		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Sound.h" />
+		<Unit filename="..\..\..\include\plugin\define\orxPlugin_SoundSystem.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_System.h" />
 		<Unit filename="..\..\..\include\plugin\orxPlugin.h" />
 		<Unit filename="..\..\..\include\plugin\orxPluginCore.h" />
@@ -156,6 +156,7 @@
 		<Unit filename="..\..\..\include\render\orxViewport.h" />
 		<Unit filename="..\..\..\include\script\orxScript.h" />
 		<Unit filename="..\..\..\include\sound\orxSound.h" />
+		<Unit filename="..\..\..\include\sound\orxSoundSystem.h" />
 		<Unit filename="..\..\..\include\utils\orxFSM.h" />
 		<Unit filename="..\..\..\include\utils\orxHashTable.h" />
 		<Unit filename="..\..\..\include\utils\orxLinkList.h" />
@@ -272,6 +273,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\sound\orxSound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\sound\orxSoundSystem.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\utils\orxFSM.c">

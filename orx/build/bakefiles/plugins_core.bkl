@@ -142,10 +142,10 @@
 	<!-- SOUND -->
 
 	<!-- Depends on SFML -->
-	  <orx-plugin id="orxSound_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
-      <dllname>orxSound_SFML$(orxSUFFIX)</dllname>
+	  <orx-plugin id="orxSoundSystem_SFML" cond="USE_SFML=='1' and USE_PLUGINS=='1'" template="orxSFML">
+      <dllname>orxSoundSystem_SFML$(orxSUFFIX)</dllname>
 	    <destination>core/sound</destination>
-	    <sources>plugins/Sound/SFML/orxSound.cpp</sources>
+	    <sources>plugins/Sound/SFML/orxSoundSystem.cpp</sources>
 	  </orx-plugin>
 
 	<!-- MOUSE -->

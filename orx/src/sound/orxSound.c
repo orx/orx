@@ -1,19 +1,11 @@
 /**
  * @file orxSound.c
- * 
- * Module for sound management.
- * 
- * @todo Add Stream management and 3D sounds in the API
- */ 
+ */
 
 /***************************************************************************
- orxSound.c
-
- begin                : 23/07/2002
-                        14/11/2003
+ begin                : 13/07/2008
  author               : (C) Arcallians
- email                : snegri@free.fr
-                        iarwain@arcallians.org
+ email                : iarwain@arcallians.org
  ***************************************************************************/
 
 /***************************************************************************
@@ -25,62 +17,110 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "sound/orxSound.h"
 
-/********************
- *  Plugin Related  *
- ********************/
+#include "orxInclude.h"
+
+#include "sound/orxSound.h"
+#include "memory/orxMemory.h"
+
+
+/** Module flags
+ */
+#define orxSOUND_KU32_STATIC_FLAG_NONE    0x00000000  /**< No flags */
+
+#define orxSOUND_KU32_STATIC_FLAG_READY   0x00000001  /**< Ready flag */
+
+#define orxSOUND_KU32_STATIC_MASK_ALL     0xFFFFFFFF  /**< All mask */
+
+
+/** Defines
+ */
+
 
 /***************************************************************************
- orxSound_Setup
- Sound module setup.
-
- returns: nothing
+ * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Static structure
+ */
+typedef struct __orxSOUND_STATIC_t
+{
+  orxU32  u32Flags;                       /**< Control flags */
+
+} orxSOUND_STATIC;
+
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** static data
+ */
+orxSTATIC orxSOUND_STATIC sstSound;
+
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+
+/***************************************************************************
+ * Public functions                                                        *
+ ***************************************************************************/
+
+/** Sound module setup
+ */
 orxVOID orxSound_Setup()
 {
   /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_LINKLIST);
-  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_TREE);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_SOUNDSYSTEM);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_CONFIG);
 
   return;
 }
 
+/** Inits the sound module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxSound_Init()
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-/* *** Core function info array *** */
+  /* Not already Initialized? */
+  if(!orxFLAG_TEST(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY))
+  {
+    /* Cleans control structure */
+    orxMemory_Zero(&sstSound, sizeof(orxSOUND_STATIC));
 
-orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SOUND)
+    /* Inits Flags */
+    orxFLAG_SET(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY, orxSOUND_KU32_STATIC_MASK_ALL);
 
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, INIT, orxSound_Init)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, EXIT, orxSound_Exit)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, SAMPLE_LOAD_FROM_FILE, orxSound_SampleLoadFromFile)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, SAMPLE_LOAD_FROM_MEMORY, orxSound_SampleLoadFromMemory)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, SAMPLE_UNLOAD, orxSound_SampleUnload)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, SAMPLE_PLAY, orxSound_SamplePlay)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, CHANNEL_STOP, orxSound_ChannelStop)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, CHANNEL_PAUSE, orxSound_ChannelPause)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, CHANNEL_TEST_FLAGS, orxSound_ChannelTestFlags)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, CHANNEL_SET_FLAGS, orxSound_ChannelSetFlags)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUND, CHANNEL_SET_VOLUME, orxSound_ChannelSetVolume)
+    /* Success */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG !!! */
 
-orxPLUGIN_END_CORE_FUNCTION_ARRAY(SOUND)
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
 
+  /* Done! */
+  return eResult;
+}
 
-/* *** Core function definitions *** */
+/** Exits from the sound module
+ */
+orxVOID orxSound_Exit()
+{
+  /* Initialized? */
+  if(orxFLAG_TEST(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY))
+  {
+    /* Updates flags */
+    orxFLAG_SET(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_NONE, orxSOUND_KU32_STATIC_MASK_ALL);
+  }
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SampleLoadFromFile, orxSOUND_SAMPLE *, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SampleLoadFromMemory, orxSOUND_SAMPLE *, orxCONST orxVOID *, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SampleUnload, orxVOID, orxSOUND_SAMPLE *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SamplePlay, orxU32, orxU32, orxSOUND_SAMPLE *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SampleTestFlags, orxBOOL, orxSOUND_SAMPLE *, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_SampleSetFlags, orxVOID, orxSOUND_SAMPLE *, orxU32, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_ChannelStop, orxSTATUS, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_ChannelPause, orxSTATUS, orxU32, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_ChannelTestFlags, orxBOOL, orxU32, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_ChannelSetFlags, orxVOID, orxU32, orxU32, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSound_ChannelSetVolume, orxSTATUS, orxU32, orxU8);
+  return;
+}

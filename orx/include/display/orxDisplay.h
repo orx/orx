@@ -1,13 +1,3 @@
-/**
- * \file orxDisplay.h
- */
-
-/***************************************************************************
- begin                : 23/04/2003
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
 /***************************************************************************
  *                                                                         *
  *   This library is free software; you can redistribute it and/or modify  *
@@ -16,6 +6,22 @@
  *   of the License, or (at your option) any later version.                *
  *                                                                         *
  ***************************************************************************/
+
+/**
+ * @file orxDisplay.h
+ * @date 23/04/2003
+ * @author (C) Arcallians
+ */
+
+/**
+ * @addtogroup Display
+ * 
+ * Display plugin module
+ * Plugin module that handles display
+ *
+ * @{
+ */
+
 
 #ifndef _orxDISPLAY_H_
 #define _orxDISPLAY_H_

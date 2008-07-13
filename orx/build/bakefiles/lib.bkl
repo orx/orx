@@ -175,7 +175,7 @@
             include/plugin/define/orxPlugin_Physics.h
             include/plugin/define/orxPlugin_Render.h
             include/plugin/define/orxPlugin_Script.h
-            include/plugin/define/orxPlugin_Sound.h
+            include/plugin/define/orxPlugin_SoundSystem.h
             include/plugin/define/orxPlugin_System.h
         </headers>
         <sources>
@@ -191,9 +191,11 @@
 
         <headers>
             include/sound/orxSound.h
+            include/sound/orxSoundSystem.h
         </headers>
         <sources>
             src/sound/orxSound.c
+            src/sound/orxSoundSystem.c
         </sources>
 
         <headers>

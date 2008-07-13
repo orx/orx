@@ -68,6 +68,7 @@
     </VirtualDirectory>
     <VirtualDirectory Name="sound">
       <File Name="..\..\..\src\sound\orxSound.c"/>
+      <File Name="..\..\..\src\sound\orxSoundSystem.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="utils">
       <File Name="..\..\..\src\utils\orxFSM.c"/>
@@ -163,7 +164,7 @@
         <File Name="..\..\..\include\plugin\define\orxPlugin_Physics.h"/>
         <File Name="..\..\..\include\plugin\define\orxPlugin_Render.h"/>
         <File Name="..\..\..\include\plugin\define\orxPlugin_Script.h"/>
-        <File Name="..\..\..\include\plugin\define\orxPlugin_Sound.h"/>
+        <File Name="..\..\..\include\plugin\define\orxPlugin_SoundSystem.h"/>
         <File Name="..\..\..\include\plugin\define\orxPlugin_System.h"/>
       </VirtualDirectory>
     </VirtualDirectory>
@@ -179,6 +180,7 @@
     </VirtualDirectory>
     <VirtualDirectory Name="sound">
       <File Name="..\..\..\include\sound\orxSound.h"/>
+      <File Name="..\..\..\include\sound\orxSoundSystem.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="utils">
       <File Name="..\..\..\include\utils\orxFSM.h"/>

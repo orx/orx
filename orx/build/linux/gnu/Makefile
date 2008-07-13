@@ -111,6 +111,7 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxPlugin.o \
 	./$(BUILD)/orxDLL_orxScript.o \
 	./$(BUILD)/orxDLL_orxSound.o \
+	./$(BUILD)/orxDLL_orxSoundSystem.o \
 	./$(BUILD)/orxDLL_orxFSM.o \
 	./$(BUILD)/orxDLL_orxHashTable.o \
 	./$(BUILD)/orxDLL_orxLinkList.o \
@@ -158,6 +159,7 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxPlugin.o \
 	./$(BUILD)/orxLIB_orxScript.o \
 	./$(BUILD)/orxLIB_orxSound.o \
+	./$(BUILD)/orxLIB_orxSoundSystem.o \
 	./$(BUILD)/orxLIB_orxFSM.o \
 	./$(BUILD)/orxLIB_orxHashTable.o \
 	./$(BUILD)/orxLIB_orxLinkList.o \
@@ -179,11 +181,11 @@ ORXRENDER_HOME_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 ORXRENDER_HOME_OBJECTS =  \
 	./$(BUILD)/orxRender_Home_orxRender.o
-ORXSOUND_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
+ORXSOUNDSYSTEM_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	$(__orxDEBUG_p) -D$(orxPLATFORM) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC $(CPPFLAGS) $(CXXFLAGS)
-ORXSOUND_SFML_OBJECTS =  \
-	./$(BUILD)/orxSound_SFML_orxSound.o
+ORXSOUNDSYSTEM_SFML_OBJECTS =  \
+	./$(BUILD)/orxSoundSystem_SFML_orxSoundSystem.o
 ORXMOUSE_SFML_CXXFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) \
 	$(__orxDEBUG_p) -D$(orxPLATFORM) -D$(orxCOMPILER) $(__orxWARNINGFLAG) \
 	-I../../../include -D__orxDLL__ -fPIC -DPIC $(CPPFLAGS) $(CXXFLAGS)
@@ -290,8 +292,8 @@ __orxEXTRALINK_p_1 = $(__orxNAME_p)
 endif
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
-__orxSound_SFML___depname = \
-	../../../bin/plugins/core/sound/orxSound_SFML$(orxSUFFIX).so
+__orxSoundSystem_SFML___depname = \
+	../../../bin/plugins/core/sound/orxSoundSystem_SFML$(orxSUFFIX).so
 endif
 endif
 ifeq ($(LINK),dynamic)
@@ -424,7 +426,7 @@ all: ./$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/$(orxNAME) $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSound_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/$(orxNAME) $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSoundSystem_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
 
 install: all
 
@@ -439,7 +441,7 @@ clean:
 	rm -f ../../../bin/$(orxNAME)
 	rm -f ../../../bin/plugins/core/display/orxDisplay_SFML$(orxSUFFIX).so
 	rm -f ../../../bin/plugins/core/render/orxRender_Home$(orxSUFFIX).so
-	rm -f ../../../bin/plugins/core/sound/orxSound_SFML$(orxSUFFIX).so
+	rm -f ../../../bin/plugins/core/sound/orxSoundSystem_SFML$(orxSUFFIX).so
 	rm -f ../../../bin/plugins/core/mouse/orxMouse_SFML$(orxSUFFIX).so
 	rm -f ../../../bin/plugins/core/keyboard/orxKeyboard_SFML$(orxSUFFIX).so
 	rm -f ../../../bin/plugins/core/joystick/orxJoystick_SFML$(orxSUFFIX).so
@@ -481,8 +483,8 @@ endif
 
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)
-../../../bin/plugins/core/sound/orxSound_SFML$(orxSUFFIX).so: $(ORXSOUND_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
-	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXSOUND_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   $(__orxEXTRALINK_p_2)
+../../../bin/plugins/core/sound/orxSoundSystem_SFML$(orxSUFFIX).so: $(ORXSOUNDSYSTEM_SFML_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
+	$(CXX) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(ORXSOUNDSYSTEM_SFML_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)  -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system   $(__orxEXTRALINK_p_2)
 endif
 endif
 
@@ -664,6 +666,9 @@ endif
 ./$(BUILD)/orxDLL_orxSound.o: ../../../src/sound/orxSound.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+./$(BUILD)/orxDLL_orxSoundSystem.o: ../../../src/sound/orxSoundSystem.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 ./$(BUILD)/orxDLL_orxFSM.o: ../../../src/utils/orxFSM.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -793,6 +798,9 @@ endif
 ./$(BUILD)/orxLIB_orxSound.o: ../../../src/sound/orxSound.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
+./$(BUILD)/orxLIB_orxSoundSystem.o: ../../../src/sound/orxSoundSystem.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
 ./$(BUILD)/orxLIB_orxFSM.o: ../../../src/utils/orxFSM.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
@@ -820,8 +828,8 @@ endif
 ./$(BUILD)/orxRender_Home_orxRender.o: ../../../plugins/Render/Home/orxRender.c
 	$(CC) -c -o $@ $(ORXRENDER_HOME_CFLAGS) $(CPPDEPS) $<
 
-./$(BUILD)/orxSound_SFML_orxSound.o: ../../../plugins/Sound/SFML/orxSound.cpp
-	$(CXX) -c -o $@ $(ORXSOUND_SFML_CXXFLAGS) $(CPPDEPS) $<
+./$(BUILD)/orxSoundSystem_SFML_orxSoundSystem.o: ../../../plugins/Sound/SFML/orxSoundSystem.cpp
+	$(CXX) -c -o $@ $(ORXSOUNDSYSTEM_SFML_CXXFLAGS) $(CPPDEPS) $<
 
 ./$(BUILD)/orxMouse_SFML_orxMouse.o: ../../../plugins/Mouse/SFML/orxMouse.cpp
 	$(CXX) -c -o $@ $(ORXMOUSE_SFML_CXXFLAGS) $(CPPDEPS) $<

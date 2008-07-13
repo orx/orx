@@ -76,6 +76,7 @@ orxVOID orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_RENDER, orxRender);
   orxMODULE_REGISTER(orxMODULE_ID_SCRIPT, orxScript);
   orxMODULE_REGISTER(orxMODULE_ID_SOUND, orxSound);
+  orxMODULE_REGISTER(orxMODULE_ID_SOUNDSYSTEM, orxSoundSystem);
   orxMODULE_REGISTER(orxMODULE_ID_SCREENSHOT, orxScreenshot);
   orxMODULE_REGISTER(orxMODULE_ID_STRUCTURE, orxStructure);
   orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);

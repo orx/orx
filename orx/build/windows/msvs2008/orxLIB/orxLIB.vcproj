@@ -530,6 +530,10 @@
 					RelativePath="..\..\..\..\src\sound\orxSound.c"
 					>
 				</File>
+				<File
+					RelativePath="..\..\..\..\src\sound\orxSoundSystem.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="utils"
@@ -856,7 +860,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\..\..\include\plugin\define\orxPlugin_Sound.h"
+						RelativePath="..\..\..\..\include\plugin\define\orxPlugin_SoundSystem.h"
 						>
 					</File>
 					<File
@@ -902,6 +906,10 @@
 				>
 				<File
 					RelativePath="..\..\..\..\include\sound\orxSound.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\include\sound\orxSoundSystem.h"
 					>
 				</File>
 			</Filter>
