@@ -80,7 +80,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxMain_EventHandler(orxCONST orxEVENT *_pstEven
     case orxSYSTEM_EVENT_CLOSE:
     {
       /* Updates status */
-      sstMain.u32Flags |= orxMAIN_KU32_STATIC_FLAG_EXIT;
+      orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT, orxMAIN_KU32_STATIC_FLAG_NONE);
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
@@ -112,14 +112,14 @@ orxVOID orxMain_Setup()
   return;
 }
 
-/** Initialize the main module (will initialize all needed modules)
+/** Inits the main module
  */
 orxSTATUS orxMain_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Don't call twice the init function */
-  if(!(sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY))
+  if(!orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
   {
     orxSTRING zGameFileName;
 
@@ -166,12 +166,12 @@ orxSTATUS orxMain_Init()
   return eResult;
 }
 
-/** Exit main module
+/** Exits from main module
  */
 orxVOID orxMain_Exit()
 {
   /* Module initialized ? */
-  if((sstMain.u32Flags & orxMAIN_KU32_STATIC_FLAG_READY) == orxMAIN_KU32_STATIC_FLAG_READY)
+  if(orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
   {
     /* Sets module as not ready */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_NONE, orxMAIN_KU32_STATIC_FLAG_READY);
@@ -181,7 +181,7 @@ orxVOID orxMain_Exit()
   return;
 }
 
-/** Run the main engine
+/** Runs the main engine
  */
 orxSTATUS orxMain_Run()
 {
