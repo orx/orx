@@ -5,7 +5,6 @@
 		<Option title="orx" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
-		<Option extended_obj_names="1" />
 		<Build>
 			<Target title="Static Debug">
 				<Option output="..\..\..\bin\orxd" prefix_auto="1" extension_auto="1" />
@@ -19,8 +18,7 @@
 					<Add directory="..\..\..\include" />
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,--out-implib,..\..\..\lib\static\orxd.a" />
-					<Add library="..\..\..\lib\static\liborxd.a" />
+					<Add option="-Wl,--whole-archive ..\..\..\lib\static\liborxd.a -Wl,--no-whole-archive -Wl,--out-implib,..\..\..\lib\static\orxd.a" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
@@ -36,8 +34,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-Wl,--out-implib,..\..\..\lib\static\orx.a" />
-					<Add library="..\..\..\lib\static\liborx.a" />
+					<Add option="-Wl,--whole-archive ..\..\..\lib\static\liborx.a -Wl,--no-whole-archive -Wl,--out-implib,..\..\..\lib\static\orx.a" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
@@ -82,7 +79,7 @@
 			<Add option="-D__orxGCC__" />
 		</Compiler>
 		<Linker>
-			<Add option="-Wl,--export-dynamic -Wl,--whole-archive -Wl,--no-whole-archive -Wl,--export-all-symbols" />
+			<Add option="-Wl,--export-dynamic -Wl,--export-all-symbols" />
 		</Linker>
 		<Unit filename="..\..\..\src\main\orxMain.c">
 			<Option compilerVar="CC" />
