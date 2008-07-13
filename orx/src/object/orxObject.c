@@ -563,8 +563,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       {
         orxVECTOR vScale;
 
-        /* Gets config scale */
-        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vScale);
+        /* Is config scale not a vector? */
+        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vScale) == orxSTATUS_FAILURE)
+        {
+          orxFLOAT fScale;
+
+          /* Gets config uniformed scale */
+          fScale = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_SCALE);
+
+          /* Updates vector */
+          orxVector_SetAll(&vScale, fScale);
+        }
 
         /* Updates object scale */
         orxObject_SetScale(pstResult, vScale.fX, vScale.fY);
