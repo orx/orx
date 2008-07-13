@@ -10,14 +10,14 @@
   <Project Name="orxDisplay_SFML" Path="orxDisplay_SFML\orxDisplay_SFML.project"/>
   <Project Name="orx" Path="orx\orx.project" Active="Yes"/>
   <Project Name="orxMouse_SFML" Path="orxMouse_SFML\orxMouse_SFML.project"/>
-  <Project Name="orxBounce" Path="orxBounce\orxBounce.project" Active="No"/>
-  <Project Name="orxCave" Path="orxCave\orxCave.project" Active="No"/>
-  <Project Name="orxScroll" Path="orxScroll\orxScroll.project" Active="No"/>
+  <Project Name="Bounce" Path="orxDemo\Bounce.project" Active="No"/>
+  <Project Name="Cave" Path="orxDemo\Cave.project" Active="No"/>
+  <Project Name="Scroll" Path="orxDemo\Scroll.project" Active="No"/>
   <Project Name="orxJoystick_SFML" Path="orxJoystick_SFML\orxJoystick_SFML.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Static Debug" Selected="yes">
       <Project Name="orxSystem_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxScroll" ConfigName="Static Debug"/>
+      <Project Name="Scroll" ConfigName="Static Debug"/>
       <Project Name="orxRender_Home" ConfigName="Static Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Static Debug"/>
       <Project Name="orxMouse_SFML" ConfigName="Static Debug"/>
@@ -27,8 +27,8 @@
       <Project Name="orxFile_LibC" ConfigName="Static Debug"/>
       <Project Name="orxFileSystem_LibC" ConfigName="Static Debug"/>
       <Project Name="orxDisplay_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxCave" ConfigName="Static Debug"/>
-      <Project Name="orxBounce" ConfigName="Static Debug"/>
+      <Project Name="Cave" ConfigName="Static Debug"/>
+      <Project Name="Bounce" ConfigName="Static Debug"/>
       <Project Name="orx" ConfigName="Static Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Dynamic Debug" Selected="no">
@@ -42,14 +42,14 @@
       <Project Name="orxFileSystem_LibC" ConfigName="Dynamic Debug"/>
       <Project Name="orxDisplay_SFML" ConfigName="Dynamic Debug"/>
       <Project Name="orx" ConfigName="Dynamic Debug"/>
-      <Project Name="orxBounce" ConfigName="Dynamic Debug"/>
-      <Project Name="orxCave" ConfigName="Dynamic Debug"/>
-      <Project Name="orxScroll" ConfigName="Dynamic Debug"/>
+      <Project Name="Bounce" ConfigName="Dynamic Debug"/>
+      <Project Name="Cave" ConfigName="Dynamic Debug"/>
+      <Project Name="Scroll" ConfigName="Dynamic Debug"/>
       <Project Name="orxJoystick_SFML" ConfigName="Dynamic Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Static Release" Selected="no">
       <Project Name="orxSystem_SFML" ConfigName="Static Release"/>
-      <Project Name="orxScroll" ConfigName="Static Release"/>
+      <Project Name="Scroll" ConfigName="Static Release"/>
       <Project Name="orxRender_Home" ConfigName="Static Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Static Release"/>
       <Project Name="orxMouse_SFML" ConfigName="Static Release"/>
@@ -59,13 +59,13 @@
       <Project Name="orxFile_LibC" ConfigName="Static Release"/>
       <Project Name="orxFileSystem_LibC" ConfigName="Static Release"/>
       <Project Name="orxDisplay_SFML" ConfigName="Static Release"/>
-      <Project Name="orxCave" ConfigName="Static Release"/>
-      <Project Name="orxBounce" ConfigName="Static Release"/>
+      <Project Name="Cave" ConfigName="Static Release"/>
+      <Project Name="Bounce" ConfigName="Static Release"/>
       <Project Name="orx" ConfigName="Static Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Dynamic Release" Selected="no">
       <Project Name="orxSystem_SFML" ConfigName="Dynamic Release"/>
-      <Project Name="orxScroll" ConfigName="Dynamic Release"/>
+      <Project Name="Scroll" ConfigName="Dynamic Release"/>
       <Project Name="orxRender_Home" ConfigName="Dynamic Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Dynamic Release"/>
       <Project Name="orxMouse_SFML" ConfigName="Dynamic Release"/>
@@ -75,8 +75,8 @@
       <Project Name="orxFile_LibC" ConfigName="Dynamic Release"/>
       <Project Name="orxFileSystem_LibC" ConfigName="Dynamic Release"/>
       <Project Name="orxDisplay_SFML" ConfigName="Dynamic Release"/>
-      <Project Name="orxCave" ConfigName="Dynamic Release"/>
-      <Project Name="orxBounce" ConfigName="Dynamic Release"/>
+      <Project Name="Cave" ConfigName="Dynamic Release"/>
+      <Project Name="Bounce" ConfigName="Dynamic Release"/>
       <Project Name="orx" ConfigName="Dynamic Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
