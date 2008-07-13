@@ -116,10 +116,10 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(orxCONST orxSTRING _zK
 
 /** Reads a vector value from config
  * @param[in]   _zKey             Key name
- * @param[out]  _pstVector        Storage for vector value
+ * @param[out]  _pvVector         Storage for vector value
  * @return The value
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pstVector);
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pvVector);
 
 
 /** Writes a signed integer value to config
@@ -159,10 +159,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBool(orxCONST orxSTRING _zK
 
 /** Writes a vector value to config
  * @param[in] _zKey             Key name
- * @param[in] _pstValue         Value
+ * @param[in] _pvValue          Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pstValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pvValue);
 
 #endif /*_orxCONFIG_H_*/
 

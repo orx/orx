@@ -1123,19 +1123,19 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
 
 /** Reads a vector value from config
  * @param[in]   _zKey             Key name
- * @param[out]  _pstVector        Storage for vector value
+ * @param[out]  _pvVector         Storage for vector value
  * @return The value
  */
-orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pstVector)
+orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pvVector)
 {
   orxCONFIG_ENTRY  *pstEntry;
-  orxVECTOR        *pstResult = orxNULL;
+  orxVECTOR        *pvResult = orxNULL;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
-  orxASSERT(_pstVector != orxNULL);
+  orxASSERT(_pvVector != orxNULL);
 
   /* Gets corresponding entry */
   pstEntry = orxConfig_GetEntry(_zKey);
@@ -1146,7 +1146,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
     orxSTRING zRemainder;
 
     /* Gets value */
-    if(orxString_ToVector(pstEntry->zValue, _pstVector, &zRemainder) != orxSTATUS_FAILURE)
+    if(orxString_ToVector(pstEntry->zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
     {
       orxU32 u32RandomSeparatorIndex;
       orxVECTOR vOtherValue;
@@ -1159,18 +1159,18 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
       && (orxString_ToVector(zRemainder + u32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
       {
         /* Updates result */
-        _pstVector->fX = orxFRAND(_pstVector->fX, vOtherValue.fX);
-        _pstVector->fY = orxFRAND(_pstVector->fY, vOtherValue.fY);
-        _pstVector->fZ = orxFRAND(_pstVector->fZ, vOtherValue.fZ);
+        _pvVector->fX = orxFRAND(_pvVector->fX, vOtherValue.fX);
+        _pvVector->fY = orxFRAND(_pvVector->fY, vOtherValue.fY);
+        _pvVector->fZ = orxFRAND(_pvVector->fZ, vOtherValue.fZ);
       }
 
       /* Updates result */
-      pstResult = _pstVector;
+      pvResult = _pvVector;
     }
   }
 
   /* Done! */
-  return pstResult;
+  return pvResult;
 }
 
 /** Writes an integer value to config
@@ -1357,10 +1357,10 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValu
 
 /** Writes a vector value to config
  * @param[in] _zKey             Key name
- * @param[in] _pstValue         Value
+ * @param[in] _pvValue         Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pstValue)
+orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pvValue)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCHAR           zValue[64];
@@ -1370,13 +1370,13 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orx
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
-  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_pvValue != orxNULL);
 
   /* Clears buffer */
   orxMemory_Zero(zValue, 64 * sizeof(orxCHAR));
 
   /* Gets literal value */
-  orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pstValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pstValue->fZ, orxSTRING_KC_VECTOR_END);
+  orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pvValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fZ, orxSTRING_KC_VECTOR_END);
 
   /* Gets entry */
   pstEntry = orxConfig_GetEntry(_zKey);

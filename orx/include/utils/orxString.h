@@ -481,14 +481,14 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _zString, orxVECTOR *_pstOutValue, orxSTRING *_pzRemaining)
+orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _zString, orxVECTOR *_pvOutValue, orxSTRING *_pzRemaining)
 {
   orxVECTOR stValue;
   orxSTRING zString;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
-  orxASSERT(_pstOutValue != orxNULL);
+  orxASSERT(_pvOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
   /* Skips all white spaces */
@@ -556,7 +556,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _z
   if(eResult != orxSTATUS_FAILURE)
   {
     /* Updates vector */
-    orxVector_Copy(_pstOutValue, &stValue);
+    orxVector_Copy(_pvOutValue, &stValue);
 
     /* Asks for remaining string? */
     if(_pzRemaining != orxNULL)
