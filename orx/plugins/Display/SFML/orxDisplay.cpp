@@ -326,47 +326,6 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
         break;
       }
 
-      /* Key pressed? */
-      case sf::Event::KeyPressed:
-      {
-        /* Depending on key */
-        switch(oEvent.Key.Code)
-        {
-          /* Escape */
-          case sf::Key::Escape:
-          {
-            orxEVENT stEvent;
-
-            /* Inits event */
-            orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-            stEvent.eType = orxEVENT_TYPE_SYSTEM;
-            stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
-
-            /* Sends system close event */
-            orxEvent_Send(&stEvent);
-
-            break;
-          }
-
-          /* V */
-          case sf::Key::V:
-          {
-            /* Updates VSync flag */
-            sstDisplay.u32Flags ^= orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
-
-            /* Updates VSync use */
-            sstDisplay.poRenderWindow->UseVerticalSync((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? true : false);
-
-            break;
-          }
-
-          default:
-          {
-            break;
-          }
-        }
-      }
-
       default:
       {
         break;
@@ -676,6 +635,35 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   return eResult;
 }
 
+extern "C" orxSTATUS orxDisplay_SFML_EnableVSync(orxBOOL _bEnable)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Enables? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Enables vertical sync */
+    sstDisplay.poRenderWindow->UseVerticalSync(true);
+
+    /* Updates status */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC, orxDISPLAY_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Disables vertical Sync */
+    sstDisplay.poRenderWindow->UseVerticalSync(false);
+
+    /* Updates status */
+    orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VSYNC);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxDisplay_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -731,11 +719,11 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
         }
       }
 
-      /* Waits for vertical sync */
-      sstDisplay.poRenderWindow->UseVerticalSync(true);
-
       /* Updates status */
-      sstDisplay.u32Flags |= orxDISPLAY_KU32_STATIC_FLAG_READY | orxDISPLAY_KU32_STATIC_FLAG_VSYNC;
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
+
+      /* Enables vertical sync */
+      orxDisplay_SFML_EnableVSync(orxTRUE);
     }
     else
     {
@@ -803,4 +791,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColor, DISPLAY, SET_BI
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawText, DISPLAY, DRAW_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_END();

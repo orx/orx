@@ -94,6 +94,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, orxCONST orx
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxFLOAT *, orxFLOAT *);
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_EnableVSync, orxSTATUS, orxBOOL);
 
 
 
@@ -190,6 +191,11 @@ orxSTATIC orxINLINE orxRGBA orxDisplay_GetBitmapColor(orxCONST orxBITMAP *_pstBi
 orxSTATIC orxINLINE orxHANDLE orxDisplay_GetApplicationInput()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetApplicationInput)();
+}
+
+orxSTATIC orxINLINE orxSTATUS orxDisplay_EnableVSync(orxBOOL _bEnable)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_EnableVSync)(_bEnable);
 }
 
 

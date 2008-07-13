@@ -1,17 +1,8 @@
 /**
  * @file orxModule.c
- *
- * Module registration
- *
- * @todo
- * - Add optimizations (space/time) for dependencies storage/computation
- * - Add extra non-core modules registering + dependencies declaration
  */
 
- /***************************************************************************
- orxModule.c
- Module registration
-
+/***************************************************************************
  begin                : 12/09/2005
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -26,16 +17,12 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "orx.h"
 
 
-/***************************************************************************
- ***************************************************************************
- ******                       PUBLIC ZONE                             ******
- ***************************************************************************
- ***************************************************************************/
-
-/* *** Module registration macro *** */
+/** Module registration macro
+ */
 #define orxMODULE_REGISTER(MODULE_ID, MODULE_BASENAME)  orxModule_Register(MODULE_ID, MODULE_BASENAME##_Setup, MODULE_BASENAME##_Init, MODULE_BASENAME##_Exit)
 
 
@@ -90,31 +77,25 @@ orxVOID orxModule_RegisterAll()
   return;
 }
 
+/** Module flags
+ */
+#define orxMODULE_KU32_STATIC_FLAG_NONE         0x00000000
+
+
+/** Module status flags
+ */
+#define orxMODULE_KU32_STATUS_FLAG_NONE         0x00000000
+
+#define orxMODULE_KU32_STATUS_FLAG_REGISTERED   0x00000001
+#define orxMODULE_KU32_STATUS_FLAG_INITIALIZED  0x00000002
+#define orxMODULE_KU32_STATUS_FLAG_TEMP         0x00010000
+
 
 /***************************************************************************
- ***************************************************************************
- ******                       PRIVATE ZONE                            ******
- ***************************************************************************
+ * Structure declaration                                                   *
  ***************************************************************************/
 
-/*
- * Module flags
- */
-#define orxMODULE_KU32_STATIC_FLAG_NONE         0x00000000L
-
-
-/*
- * Module status flags
- */
-#define orxMODULE_KU32_STATUS_FLAG_NONE         0x00000000L
-
-#define orxMODULE_KU32_STATUS_FLAG_REGISTERED   0x00000001L
-#define orxMODULE_KU32_STATUS_FLAG_INITIALIZED  0x00000002L
-#define orxMODULE_KU32_STATUS_FLAG_TEMP         0x00010000L
-
-
-/*
- * Internal module info structure
+/** Internal module info structure
  */
 typedef struct __orxMODULE_INFO_t
 {
@@ -141,8 +122,7 @@ typedef struct __orxMODULE_INFO_t
 
 } orxMODULE_INFO;
 
-/*
- * Static structure
+/** Static structure
  */
 typedef struct __orxMODULE_STATIC_t
 {
@@ -153,16 +133,17 @@ typedef struct __orxMODULE_STATIC_t
 } orxMODULE_STATIC;
 
 
-/*
- * Static data
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** static data
  */
 orxSTATIC orxMODULE_STATIC sstModule;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
 /** Exits from a module recursively
@@ -329,9 +310,7 @@ orxSTATUS orxFASTCALL _orxModule_Init(orxMODULE_ID _eModuleID, orxBOOL _bExternC
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
 /** Registers a module
@@ -515,4 +494,22 @@ orxVOID orxModule_ExitAll()
 
   /* Done! */
   return;
+}
+
+/** Is module initialized?
+ * @param[in] _eModulueID       Concerned module ID
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxModule_IsInitialized(orxMODULE_ID _eModuleID)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(sstModule.astModuleInfo[_eModuleID].u32StatusFlags, orxMODULE_KU32_STATUS_FLAG_INITIALIZED) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }

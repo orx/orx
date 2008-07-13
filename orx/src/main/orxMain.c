@@ -29,8 +29,8 @@
 /** Flags
  */
 #define orxMAIN_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags */
-#define orxMAIN_KU32_STATIC_FLAG_READY  0x00000001  /**< Ready flag */
 
+#define orxMAIN_KU32_STATIC_FLAG_READY  0x00000001  /**< Ready flag */
 #define orxMAIN_KU32_STATIC_FLAG_EXIT   0x00000002  /**< Exit flag */
 
 #define orxMAIN_KU32_STATIC_MASK_ALL    0xFFFFFFFF  /**< All mask */
@@ -147,6 +147,9 @@ orxSTATUS orxMain_Init()
     /* Successful? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Updates status */
+      orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
+
       /* Registers custom system event handler */
       eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
     }
@@ -183,6 +186,24 @@ orxVOID orxMain_Exit()
 orxSTATUS orxMain_Run()
 {
   orxSTATUS eResult;
+
+  /* Is keyboard module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD) != orxFALSE)
+  {
+    /* Is escape pressed? */
+    if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)
+    {
+      orxEVENT stEvent;
+
+      /* Inits event */
+      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+      stEvent.eType = orxEVENT_TYPE_SYSTEM;
+      stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
+
+      /* Sends system close event */
+      orxEvent_Send(&stEvent);
+    }
+  }
 
   /* Updates result */
   eResult = (orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT)) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;

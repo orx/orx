@@ -11,8 +11,17 @@
  * @file orxModule.h
  * @date 12/09/2005
  * @author (C) Arcallians
- *
  */
+
+/**
+ * @addtogroup Base
+ * 
+ * Module file
+ * Code that handles modules and their dependencies
+ *
+ * @{
+ */
+
 
 #ifndef _orxMODULE_H_
 #define _orxMODULE_H_
@@ -74,7 +83,7 @@ typedef enum __orxMODULE_ID_t
 } orxMODULE_ID;
 
 
-/* *** init/exit function prototypes *** */
+/* *** setup/init/exit/run function prototypes *** */
 typedef orxSTATUS                         (*orxMODULE_INIT_FUNCTION)  ();
 typedef orxVOID                           (*orxMODULE_EXIT_FUNCTION)  ();
 typedef orxSTATUS                         (*orxMODULE_RUN_FUNCTION)   ();
@@ -114,5 +123,13 @@ extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Exit(orxMODULE_ID _eModuleID
 /** Exits from all modules.*/
 extern orxDLLAPI orxVOID                  orxModule_ExitAll();
 
+/** Is module initialized?
+ * @param[in] _eModulueID       Concerned module ID
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL      orxModule_IsInitialized(orxMODULE_ID _eModuleID);
+
 
 #endif /* _orxMODULE_H_ */
+
+/** @} */
