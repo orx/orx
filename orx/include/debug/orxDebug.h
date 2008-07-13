@@ -216,12 +216,6 @@ extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_SetFlags(orxU32 _u32Add,
 /** Software break function. */
 extern orxDLLAPI orxVOID                      _orxDebug_Break();
 
-#ifdef __orxGP2X__
-
-extern orxDLLAPI void orxD();
-
-#endif
-
 #endif /* __orxDEBUG__ */
 
 

@@ -24,36 +24,8 @@
 
 #include "debug/orxDebug.h"
 
-#ifdef __orxGP2X__
 
-#include "SDL/SDL.h"
-
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
-#define SCREEN_DEPTH 8
-
-static SDL_Surface *bmpGood, *bmpBad;
-static SDL_Surface *screen;
-static SDL_Rect    targetarea;
-
-void orxD()
-{
-     targetarea.x = 100;
-     targetarea.y = 100;
-     targetarea.w = bmpGood->w;
-     targetarea.h = bmpGood->h;
-     SDL_BlitSurface(bmpGood, NULL, screen, &targetarea);
-     
-     /* update the screen (aka double buffering) */
-     SDL_Flip(screen);
-     
-     while(1);
-}
-
-#endif
-
-/*
- * Platform independant defines
+/** Platform independant defines
  */
 
 #define orxDEBUG_KU32_STATIC_FLAG_NONE          0x00000000
@@ -63,8 +35,7 @@ void orxD()
 #define orxDEBUG_KU32_STATIC_MASK_ALL           0xFFFFFFFF
 
 
-/*
- * Static structure
+/** Static structure
  */
 typedef struct __orxDEBUG_STATIC_t
 {
@@ -170,21 +141,6 @@ orxSTATUS _orxDebug_Init()
   orxU8 *pu8;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-#ifdef __orxGP2X__
-
-  
-     /* Initialize SDL */
-     SDL_Init(SDL_INIT_VIDEO);
-     
-     /* Initialize the screen / window */
-     screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_DEPTH, SDL_SWSURFACE);
-     
-     /* Load test.bmp */
-     bmpGood = SDL_LoadBMP("data/bounce/ball.bmp");
-     bmpBad = SDL_LoadBMP("data/bounce/ryu.bmp");
-     
-#endif
-
   /* Init dependencies */
   
   /* Correct parameters ? */
@@ -265,17 +221,6 @@ orxVOID _orxDebug_Break()
   #ifdef __orxGCC__
   
     #ifdef __orxGP2X__
-
-     targetarea.x = 100;
-     targetarea.y = 100;
-     targetarea.w = bmpBad->w;
-     targetarea.h = bmpBad->h;
-     SDL_BlitSurface(bmpBad, NULL, screen, &targetarea);
-     
-     /* update the screen (aka double buffering) */
-     SDL_Flip(screen);
-     
-     while(1);
 
     #else /* __orxGP2X__ */
 
