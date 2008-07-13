@@ -76,7 +76,6 @@ orxSTATIC orxINLINE orxSTRING           orxString_SkipWhiteSpaces(orxCONST orxST
 
   /* Checks */
   orxASSERT(_zString != NULL);
-  orxASSERT(*_zString != *orxSTRING_EMPTY);
 
   /* Skips all white spaces */
   for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++);
@@ -207,19 +206,19 @@ orxSTATIC orxINLINE orxS32              orxString_NCompare(orxCONST orxSTRING _z
   return strncmp(_zString1, _zString2, _u32NbChar);
 }
 
-/** Convert a String to a signed int value
+/** Converts a String to a signed int value using the given base
  * @param[in]   _zString        String To convert
  * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
  * @param[out]  _ps32OutValue   Converted value
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxCONST orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, orxSTRING *_pzRemaining)
+orxSTATIC orxINLINE orxSTATUS           orxString_ToS32Base(orxCONST orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, orxSTRING *_pzRemaining)
 {
   orxCHAR    *pcEnd;
   orxSTATUS   eResult;
 
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_ps32OutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
@@ -249,19 +248,69 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxCONST orxSTRING _zStr
   return eResult;
 }
 
-/** Convert a String to an unsigned int value
+/** Converts a String to a signed int value, guessing the base
+ * @param[in]   _zString        String To convert
+ * @param[out]  _ps32OutValue   Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxCONST orxSTRING _zString, orxS32 *_ps32OutValue, orxSTRING *_pzRemaining)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(_ps32OutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Hexadecimal? */
+  if((_zString[0] != orxCHAR_EOL)
+  && (_zString[0] == '0')
+  && (_zString[1] != orxCHAR_EOL)
+  && ((_zString[1] | 0x20) == 'x'))
+  {
+    /* Gets hexa value */
+    eResult = orxString_ToS32Base(_zString + 2, 16, _ps32OutValue, _pzRemaining);
+  }
+  /* Binary? */
+  else if((_zString[0] != orxCHAR_EOL)
+       && (_zString[0] == '0')
+       && (_zString[1] != orxCHAR_EOL)
+       && ((_zString[1] | 0x20) == 'b'))
+  {
+    /* Gets binary value */
+    eResult = orxString_ToS32Base(_zString + 2, 2, _ps32OutValue, _pzRemaining);
+  }
+  /* Octal? */
+  else if((_zString[0] != orxCHAR_EOL)
+  && ((_zString[0] | 0x20) == '0'))
+  {
+    /* Gets octal value */
+    eResult = orxString_ToS32Base(_zString + 1, 8, _ps32OutValue, _pzRemaining);
+  }
+  /* Decimal */
+  else
+  {
+    /* Gets decimal value */
+    eResult = orxString_ToS32Base(_zString, 10, _ps32OutValue, _pzRemaining);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Converts a String to an unsigned int value using the given base
  * @param[in]   _zString        String To convert
  * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
  * @param[out]  _ps32OutValue   Converted value
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS           orxString_ToU32(orxCONST orxSTRING _zString, orxU32 _u32Base, orxU32 *_pu32OutValue, orxSTRING *_pzRemaining)
+orxSTATIC orxINLINE orxSTATUS           orxString_ToU32Base(orxCONST orxSTRING _zString, orxU32 _u32Base, orxU32 *_pu32OutValue, orxSTRING *_pzRemaining)
 {
   orxCHAR    *pcEnd;
   orxSTATUS   eResult;
 
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pu32OutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
@@ -291,6 +340,56 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToU32(orxCONST orxSTRING _zStr
   return eResult;
 }
 
+/** Converts a String to an unsigned int value, guessing the base
+ * @param[in]   _zString        String To convert
+ * @param[out]  _pu32OutValue   Converted value
+ * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
+ * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATIC orxINLINE orxSTATUS           orxString_ToU32(orxCONST orxSTRING _zString, orxU32 *_pu32OutValue, orxSTRING *_pzRemaining)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(_pu32OutValue != orxNULL);
+  orxASSERT(_zString != orxNULL);
+
+  /* Hexadecimal? */
+  if((_zString[0] != orxCHAR_EOL)
+  && (_zString[0] == '0')
+  && (_zString[1] != orxCHAR_EOL)
+  && ((_zString[1] | 0x20) == 'x'))
+  {
+    /* Gets hexa value */
+    eResult = orxString_ToU32Base(_zString + 2, 16, _pu32OutValue, _pzRemaining);
+  }
+  /* Binary? */
+  else if((_zString[0] != orxCHAR_EOL)
+       && (_zString[0] == '0')
+       && (_zString[1] != orxCHAR_EOL)
+       && ((_zString[1] | 0x20) == 'b'))
+  {
+    /* Gets binary value */
+    eResult = orxString_ToU32Base(_zString + 2, 2, _pu32OutValue, _pzRemaining);
+  }
+  /* Octal? */
+  else if((_zString[0] != orxCHAR_EOL)
+  && ((_zString[0] | 0x20) == '0'))
+  {
+    /* Gets octal value */
+    eResult = orxString_ToU32Base(_zString + 1, 8, _pu32OutValue, _pzRemaining);
+  }
+  /* Decimal */
+  else
+  {
+    /* Gets decimal value */
+    eResult = orxString_ToU32Base(_zString, 10, _pu32OutValue, _pzRemaining);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Convert a string to a value
  * @param[in]   _zString        String To convert
  * @param[out]  _pfOutValue     Converted value
@@ -301,7 +400,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
 {
   orxSTATUS eResult;
 
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pfOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
@@ -487,7 +586,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToBool(orxCONST orxSTRING _zSt
   orxASSERT(_zString != orxNULL);
 
   /* Tries numeric value */
-  eResult = orxString_ToS32(_zString, 10, &s32Value, _pzRemaining);
+  eResult = orxString_ToS32Base(_zString, 10, &s32Value, _pzRemaining);
 
   /* Valid? */
   if(eResult != orxSTATUS_FAILURE)
@@ -630,7 +729,7 @@ orxSTATIC orxINLINE orxU32              orxString_NToCRC(orxCONST orxSTRING _zSt
  */
 orxSTATIC orxINLINE orxSTRING           orxString_SearchString(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2)
 {
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_zString1 != orxNULL);
   orxASSERT(_zString2 != orxNULL);
 
@@ -645,7 +744,7 @@ orxSTATIC orxINLINE orxSTRING           orxString_SearchString(orxCONST orxSTRIN
  */
 orxSTATIC orxINLINE orxSTRING           orxString_SearchChar(orxCONST orxSTRING _zString, orxCHAR _cChar)
 {
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_zString != orxNULL);
 
   /* Returns result */
@@ -664,9 +763,9 @@ orxSTATIC orxINLINE orxS32              orxString_SearchCharIndex(orxCONST orxST
   orxREGISTER orxS32    s32Index;
   orxREGISTER orxCHAR  *pc;
 
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32Position < orxString_GetLength(_zString));
+  orxASSERT(_u32Position <= orxString_GetLength(_zString));
 
   /* For all characters */
   for(s32Index = _u32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)

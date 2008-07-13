@@ -73,8 +73,14 @@ do                                              \
 } while(orxFALSE)
 
 
-#define orxFRAND_INIT(SEED)       (srand(orxF2U(SEED)));
+#define orxFRAND_INIT(SEED)       srand(orxF2U(SEED))
 #define orxFRAND(MIN, MAX)        ((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (MAX - MIN)) + MIN)
+
+#define orxU32RAND_INIT(SEED)     srand(SEED)
+#define orxU32RAND(MIN, MAX)      orxF2U((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxU2F(MAX) - orxU2F(MIN))) + orxU2F(MIN))
+
+#define orxS32RAND_INIT(SEED)     srand(SEED)
+#define orxS32RAND(MIN, MAX)      orxF2S((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxS2F(MAX) - orxS2F(MIN))) + orxS2F(MIN))
 
 #define orxF2U(V)                 ((orxU32)  (V))
 #define orxF2S(V)                 ((orxS32)  (V))

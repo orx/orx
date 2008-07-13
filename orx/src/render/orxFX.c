@@ -1174,7 +1174,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
       else
       {
         /* Resets alpha */
-        fAlpha = orxFLOAT_1;
+        fAlpha = orxU2F(orxRGBA_A(stColor)) * orxRGBA_NORMALIZER;
       }
 
       /* Update color blend? */
@@ -1198,7 +1198,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
       else
       {
         /* Resets color */
-        orxVector_SetAll(&vColor, orx2F(255.0f));
+        orxVector_Set(&vColor, orxU2F(orxRGBA_R(stColor)), orxU2F(orxRGBA_G(stColor)), orxU2F(orxRGBA_B(stColor)));
       }
 
       /* Updates global color */

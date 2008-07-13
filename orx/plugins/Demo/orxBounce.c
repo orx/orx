@@ -61,7 +61,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   orxConfig_SelectSection("Bounce");
 
   /* Clicking? */
-  if((su32BallCounter < orxConfig_GetFloat("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
+  if((su32BallCounter < orxConfig_GetU32("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
   {
     orxS32      s32MouseX, s32MouseY;
     orxVECTOR   vScreenPos, vWorldPos;

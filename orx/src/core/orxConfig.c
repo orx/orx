@@ -26,6 +26,7 @@
 #include "core/orxConfig.h"
 #include "debug/orxDebug.h"
 #include "memory/orxBank.h"
+#include "math/orxMath.h"
 #include "utils/orxString.h"
 
 
@@ -49,6 +50,7 @@
 #define orxCONFIG_KC_SECTION_END          ']'         /**< Section end character */
 #define orxCONFIG_KC_ASSIGN               '='         /**< Assign character */
 #define orxCONFIG_KC_COMMENT              ';'         /**< Comment character */
+#define orxCONFIG_KC_RANDOM_SEPARATOR     '~'         /**< Random number separator character */
 
 #ifdef __orxDEBUG__
 
@@ -829,50 +831,26 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
   /* Found? */
   if(pstEntry != orxNULL)
   {
-    orxS32 s32Value;
+    orxS32    s32Value;
+    orxSTRING zRemainder;
 
-    /* Hexadecimal? */
-    if((pstEntry->zValue[0] != orxCHAR_EOL)
-    && (pstEntry->zValue[0] == '0')
-    && (pstEntry->zValue[1] != orxCHAR_EOL)
-    && ((pstEntry->zValue[1] | 0x20) == 'x'))
+    /* Gets value */
+    if(orxString_ToS32(pstEntry->zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
     {
-      /* Gets hexa value */
-      if(orxString_ToS32(pstEntry->zValue + 2, 16, &s32Value, orxNULL) != orxSTATUS_FAILURE)
+      orxU32 u32RandomSeparatorIndex;
+      orxS32 s32OtherValue;
+
+      /* Searches for the random separator */
+      u32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+      /* Found and has another value? */
+      if((u32RandomSeparatorIndex >= 0)
+      && (orxString_ToS32(zRemainder + u32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
       {
         /* Updates result */
-        s32Result = s32Value;
+        s32Result = orxS32RAND(s32Value, s32OtherValue);
       }
-    }
-    /* Binary? */
-    else if((pstEntry->zValue[0] != orxCHAR_EOL)
-         && (pstEntry->zValue[0] == '0')
-         && (pstEntry->zValue[1] != orxCHAR_EOL)
-         && ((pstEntry->zValue[1] | 0x20) == 'b'))
-    {
-      /* Gets binary value */
-      if(orxString_ToS32(pstEntry->zValue + 2, 2, &s32Value, orxNULL) != orxSTATUS_FAILURE)
-      {
-        /* Updates result */
-        s32Result = s32Value;
-      }
-    }
-    /* Octal? */
-    else if((pstEntry->zValue[0] != orxCHAR_EOL)
-    && ((pstEntry->zValue[0] | 0x20) == '0'))
-    {
-      /* Gets octal value */
-      if(orxString_ToS32(pstEntry->zValue + 1, 8, &s32Value, orxNULL) != orxSTATUS_FAILURE)
-      {
-        /* Updates result */
-        s32Result = s32Value;
-      }
-    }
-    /* Decimal */
-    else
-    {
-      /* Gets decimal value */
-      if(orxString_ToS32(pstEntry->zValue, 10, &s32Value, orxNULL) != orxSTATUS_FAILURE)
+      else
       {
         /* Updates result */
         s32Result = s32Value;
@@ -905,50 +883,25 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
   /* Found? */
   if(pstEntry != orxNULL)
   {
-    orxU32 u32Value;
+    orxU32    u32Value;
+    orxSTRING zRemainder;
 
-    /* Hexadecimal? */
-    if((pstEntry->zValue[0] != orxCHAR_EOL)
-    && (pstEntry->zValue[0] == '0')
-    && (pstEntry->zValue[1] != orxCHAR_EOL)
-    && ((pstEntry->zValue[1] | 0x20) == 'x'))
+    /* Gets value */
+    if(orxString_ToU32(pstEntry->zValue, &u32Value, &zRemainder) != orxSTATUS_FAILURE)
     {
-      /* Gets hexa value */
-      if(orxString_ToU32(pstEntry->zValue + 2, 16, &u32Value, orxNULL) != orxSTATUS_FAILURE)
+      orxU32 u32RandomSeparatorIndex, u32OtherValue;
+
+      /* Searches for the random separator */
+      u32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+      /* Found and has another value? */
+      if((u32RandomSeparatorIndex >= 0)
+      && (orxString_ToU32(zRemainder + u32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
       {
         /* Updates result */
-        u32Result = u32Value;
+        u32Result = orxU32RAND(u32Value, u32OtherValue);
       }
-    }
-    /* Binary? */
-    else if((pstEntry->zValue[0] != orxCHAR_EOL)
-         && (pstEntry->zValue[0] == '0')
-         && (pstEntry->zValue[1] != orxCHAR_EOL)
-         && ((pstEntry->zValue[1] | 0x20) == 'b'))
-    {
-      /* Gets binary value */
-      if(orxString_ToU32(pstEntry->zValue + 2, 2, &u32Value, orxNULL) != orxSTATUS_FAILURE)
-      {
-        /* Updates result */
-        u32Result = u32Value;
-      }
-    }
-    /* Octal? */
-    else if((pstEntry->zValue[0] != orxCHAR_EOL)
-    && ((pstEntry->zValue[0] | 0x20) == '0'))
-    {
-      /* Gets octal value */
-      if(orxString_ToU32(pstEntry->zValue + 1, 8, &u32Value, orxNULL) != orxSTATUS_FAILURE)
-      {
-        /* Updates result */
-        u32Result = u32Value;
-      }
-    }
-    /* Decimal */
-    else
-    {
-      /* Gets decimal value */
-      if(orxString_ToU32(pstEntry->zValue, 10, &u32Value, orxNULL) != orxSTATUS_FAILURE)
+      else
       {
         /* Updates result */
         u32Result = u32Value;
@@ -981,13 +934,30 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
   /* Found? */
   if(pstEntry != orxNULL)
   {
-    orxFLOAT fValue;
+    orxFLOAT  fValue;
+    orxSTRING zRemainder;
 
     /* Gets value */
-    if(orxString_ToFloat(pstEntry->zValue, &fValue, orxNULL) != orxSTATUS_FAILURE)
+    if(orxString_ToFloat(pstEntry->zValue, &fValue, &zRemainder) != orxSTATUS_FAILURE)
     {
-      /* Updates result */
-      fResult = fValue;
+      orxU32    u32RandomSeparatorIndex;
+      orxFLOAT  fOtherValue;
+
+      /* Searches for the random separator */
+      u32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+      /* Found and has another value? */
+      if((u32RandomSeparatorIndex >= 0)
+      && (orxString_ToFloat(zRemainder + u32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
+      {
+        /* Updates result */
+        fResult = orxFRAND(fValue, fOtherValue);
+      }
+      else
+      {
+        /* Updates result */
+        fResult = fValue;
+      }
     }
   }
 
@@ -1081,9 +1051,27 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
   /* Found? */
   if(pstEntry != orxNULL)
   {
+    orxSTRING zRemainder;
+
     /* Gets value */
-    if(orxString_ToVector(pstEntry->zValue, _pstVector, orxNULL) != orxSTATUS_FAILURE)
+    if(orxString_ToVector(pstEntry->zValue, _pstVector, &zRemainder) != orxSTATUS_FAILURE)
     {
+      orxU32 u32RandomSeparatorIndex;
+      orxVECTOR vOtherValue;
+
+      /* Searches for the random separator */
+      u32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+      /* Found and has another value? */
+      if((u32RandomSeparatorIndex >= 0)
+      && (orxString_ToVector(zRemainder + u32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+      {
+        /* Updates result */
+        _pstVector->fX = orxFRAND(_pstVector->fX, vOtherValue.fX);
+        _pstVector->fY = orxFRAND(_pstVector->fY, vOtherValue.fY);
+        _pstVector->fZ = orxFRAND(_pstVector->fZ, vOtherValue.fZ);
+      }
+
       /* Updates result */
       pstResult = _pstVector;
     }
