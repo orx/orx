@@ -32,33 +32,38 @@
 
 /** Module flags
  */
-#define orxCONFIG_KU32_STATIC_FLAG_NONE   0x00000000  /**< No flags */
+#define orxCONFIG_KU32_STATIC_FLAG_NONE     0x00000000  /**< No flags */
 
-#define orxCONFIG_KU32_STATIC_FLAG_READY  0x00000001  /**< Ready flag */
+#define orxCONFIG_KU32_STATIC_FLAG_READY    0x00000001  /**< Ready flag */
+#define orxCONFIG_KU32_STATIC_FLAG_HISTORY  0x00000002  /**< Keep history flag */
 
-#define orxCONFIG_KU32_STATIC_MASK_ALL    0xFFFFFFFF  /**< All mask */
+#define orxCONFIG_KU32_STATIC_MASK_ALL      0xFFFFFFFF  /**< All mask */
 
 
 /** Defines
  */
-#define orxCONFIG_KU32_SECTION_BANK_SIZE  16          /**< Default section bank size */
-#define orxCONFIG_KU32_ENTRY_BANK_SIZE    16          /**< Default section bank size */
+#define orxCONFIG_KU32_SECTION_BANK_SIZE    16          /**< Default section bank size */
+#define orxCONFIG_KU32_ENTRY_BANK_SIZE      16          /**< Default entry bank size */
+#define orxCONFIG_KU32_HISTORY_BANK_SIZE    4           /**< Default history bank size */
 
-#define orxCONFIG_KU32_BUFFER_SIZE        4096        /**< Buffer size */
+#define orxCONFIG_KU32_BUFFER_SIZE          4096        /**< Buffer size */
 
-#define orxCONFIG_KC_SECTION_START        '['         /**< Section start character */
-#define orxCONFIG_KC_SECTION_END          ']'         /**< Section end character */
-#define orxCONFIG_KC_ASSIGN               '='         /**< Assign character */
-#define orxCONFIG_KC_COMMENT              ';'         /**< Comment character */
-#define orxCONFIG_KC_RANDOM_SEPARATOR     '~'         /**< Random number separator character */
+#define orxCONFIG_KC_SECTION_START          '['         /**< Section start character */
+#define orxCONFIG_KC_SECTION_END            ']'         /**< Section end character */
+#define orxCONFIG_KC_ASSIGN                 '='         /**< Assign character */
+#define orxCONFIG_KC_COMMENT                ';'         /**< Comment character */
+#define orxCONFIG_KC_RANDOM_SEPARATOR       '~'         /**< Random number separator character */
+
+#define orxCONFIG_KZ_CONFIG_SECTION         "Config"    /**< Config section name */
+#define orxCONFIG_KZ_CONFIG_HISTORY         "History"   /**< History config entry name */
 
 #ifdef __orxDEBUG__
 
-  #define orxCONFIG_KZ_DEFAULT_FILE         "orxd.ini"   /**< Default config file name */
+  #define orxCONFIG_KZ_DEFAULT_FILE         "orxd.ini"  /**< Default config file name */
 
 #else /* __orxDEBUG__ */
 
-  #define orxCONFIG_KZ_DEFAULT_FILE         "orx.ini"  /**< Default config file name */
+  #define orxCONFIG_KZ_DEFAULT_FILE         "orx.ini"   /**< Default config file name */
 
 #endif /* __orxDEBUG__ */
 
@@ -97,6 +102,7 @@ typedef struct __orxCONFIG_STATIC_t
 {
   orxBANK            *pstSectionBank;       /**< Bank of sections */
   orxCONFIG_SECTION  *pstCurrentSection;    /**< Current working section */
+  orxBANK            *pstHistoryBank;       /**< History bank */
   orxU32              u32Flags;             /**< Control flags */
 
 } orxCONFIG_STATIC;
@@ -356,18 +362,41 @@ orxSTATUS orxConfig_Init()
       /* Inits Flags */
       orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY, orxCONFIG_KU32_STATIC_MASK_ALL);
 
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+
       /* Loads default config file */
       orxConfig_Load(orxCONFIG_KZ_DEFAULT_FILE);
 
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* !!! MSG !!! */
+      /* Selects config section */
+      orxConfig_SelectSection(orxCONFIG_KZ_CONFIG_SECTION);
 
-      /* Section bank not created */
-      eResult = orxSTATUS_FAILURE;
+      /* Should keep history? */
+      if(orxConfig_GetBool(orxCONFIG_KZ_CONFIG_HISTORY) != orxFALSE)
+      {
+        /* Creates history bank */
+        sstConfig.pstHistoryBank = orxBank_Create(orxCONFIG_KU32_HISTORY_BANK_SIZE, sizeof(orxSTRING), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+
+        /* Valid? */
+        if(sstConfig.pstHistoryBank != orxNULL)
+        {
+          /* Updates flags */
+          orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
+        }
+        else
+        {
+          /* !!! MSG !!! */
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+
+          /* Clears Flags */
+          orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_MASK_ALL);
+
+          /* Deletes created bank */
+          orxBank_Delete(sstConfig.pstSectionBank);
+        }
+      }
     }
   }
   else
@@ -401,6 +430,14 @@ orxVOID orxConfig_Exit()
     /* Deletes section bank */
     orxBank_Delete(sstConfig.pstSectionBank);
     sstConfig.pstSectionBank = orxNULL;
+
+    /* Has history bank? */
+    if(sstConfig.pstHistoryBank != orxNULL)
+    {
+      /* Deletes it */
+      orxBank_Delete(sstConfig.pstHistoryBank);
+      sstConfig.pstHistoryBank = orxNULL;
+    }
 
     /* Updates flags */
     orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_MASK_ALL);
@@ -677,9 +714,64 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
 
+    /* Should keep history? */
+    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
+    {
+      orxSTRING *pzEntry;
+
+      /* Add an history entry */
+      pzEntry = (orxSTRING *)orxBank_Allocate(sstConfig.pstHistoryBank);
+
+      /* Valid? */
+      if(pzEntry != orxNULL)
+      {
+        /* Stores the file name */
+        *pzEntry = orxString_Duplicate(_zFileName);
+      }
+    }
+
     /* Restores previous section */
     orxConfig_SelectSection(zPreviousSection);
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Reloads config files from history
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
+{
+  orxSTRING  *pzHistoryEntry;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Removes history flag */
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
+
+  /* Reloads default file */
+  eResult = orxConfig_Load(orxCONFIG_KZ_DEFAULT_FILE);
+
+  /* Logs */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", orxCONFIG_KZ_DEFAULT_FILE);
+
+  /* For all entries in history */
+  for(pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
+      (pzHistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
+      pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, pzHistoryEntry))
+  {
+    /* Reloads it */
+    eResult = orxConfig_Load(*pzHistoryEntry);
+
+    /* Logs */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", *pzHistoryEntry);
+  }
+
+  /* Restores history flag */
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
 
   /* Done! */
   return eResult;

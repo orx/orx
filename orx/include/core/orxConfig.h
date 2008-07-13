@@ -45,11 +45,16 @@ extern orxDLLAPI orxSTATUS              orxConfig_Init();
 extern orxDLLAPI orxVOID                orxConfig_Exit();
 
 
-/** Loads config config from source
+/** Loads config file from source
  * @param[in] _zFileName        File name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Load(orxCONST orxSTRING _zFileName);
+
+/** Reloads config files from history
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ReloadHistory();
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
