@@ -45,6 +45,7 @@
 #define orxFX_KU32_FLAG_NONE                    0x00000000  /**< No flags */
 
 #define orxFX_KU32_FLAG_ENABLED                 0x10000000  /**< Enabled flag */
+#define orxFX_KU32_FLAG_LOOP                    0x20000000  /**< Loop flag */
 
 #define orxFX_KU32_MASK_ALL                     0xFFFFFFFF  /**< All mask */
 
@@ -77,6 +78,7 @@
 #define orxFX_KZ_CONFIG_CURVE                   "Curve"
 #define orxFX_KZ_CONFIG_SQUARED                 "Squared"
 #define orxFX_KZ_CONFIG_ABSOLUTE                "Absolute"
+#define orxFX_KZ_CONFIG_LOOP                    "Loop"
 #define orxFX_KZ_CONFIG_AMPLIFICATION           "Amplification"
 #define orxFX_KZ_CONFIG_START_TIME              "StartTime"
 #define orxFX_KZ_CONFIG_END_TIME                "EndTime"
@@ -654,6 +656,13 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
               /* Stops */
               break;
             }
+          }
+
+          /* Should loop? */
+          if(orxConfig_GetBool(orxFX_KZ_CONFIG_LOOP) != orxFALSE)
+          {
+            /* Updates flags */
+            orxStructure_SetFlags(pstResult, orxFX_KU32_FLAG_LOOP, orxFX_KU32_FLAG_NONE);
           }
 
           /* Should keep it in cache? */
@@ -1659,6 +1668,54 @@ orxBOOL orxFASTCALL orxFX_IsName(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zNa
 
   /* Updates result */
   bResult = (orxString_ToCRC(_zName) == _pstFX->u32ID) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Set FX loop property
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _bLoop          Loop / don't loop
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFX_Loop(orxFX *_pstFX, orxBOOL _bLoop)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFX);
+
+  /* Should loop? */
+  if(_bLoop != orxFALSE)
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstFX, orxFX_KU32_FLAG_LOOP, orxFX_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstFX, orxFX_KU32_FLAG_NONE, orxFX_KU32_FLAG_LOOP);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Is FX looping
+ * @param[in]   _pstFX          Concerned FX
+ * @return      orxTRUE if looping, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxFX_IsLooping(orxCONST orxFX *_pstFX)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFX);
+
+  /* Updates result */
+  bResult = (orxStructure_TestFlags(_pstFX, orxFX_KU32_FLAG_LOOP)) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;

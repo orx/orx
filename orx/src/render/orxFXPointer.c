@@ -186,17 +186,26 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
         /* Applies FX from last time to now */
         if(orxFX_Apply(pstFX, pstObject, fFXLocalStartTime, fFXLocalEndTime) == orxSTATUS_FAILURE)
         {
-          /* Decreases its reference counter */
-          orxStructure_DecreaseCounter(pstFX);
-
-          /* Removes its reference */
-          pstFXPointer->astFXList[i].pstFX = orxNULL;
-
-          /* Is internal? */
-          if(orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+          /* Is a looping FX? */
+          if(orxFX_IsLooping(pstFX) != orxFALSE)
           {
-            /* Deletes it */
-            orxFX_Delete(pstFX);
+            /* Updates its start time */
+            pstFXPointer->astFXList[i].fStartTime = pstFXPointer->fTime;
+          }
+          else
+          {
+            /* Decreases its reference counter */
+            orxStructure_DecreaseCounter(pstFX);
+
+            /* Removes its reference */
+            pstFXPointer->astFXList[i].pstFX = orxNULL;
+
+            /* Is internal? */
+            if(orxFLAG_TEST(pstFXPointer->astFXList[i].u32Flags, orxFXPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+            {
+              /* Deletes it */
+              orxFX_Delete(pstFX);
+            }
           }
         }
       }

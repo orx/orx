@@ -197,6 +197,19 @@ extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetDuration(orxCONST orxFX
  */
 extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsName(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zName);
 
+/** Set FX loop property
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _bLoop          Loop / don't loop
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Loop(orxFX *_pstFX, orxBOOL _bLoop);
+
+/** Is FX looping
+ * @param[in]   _pstFX          Concerned FX
+ * @return      orxTRUE if looping, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsLooping(orxCONST orxFX *_pstFX);
+
 #endif /* _orxFX_H_ */
 
 /** @} */
