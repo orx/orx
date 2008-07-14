@@ -72,6 +72,7 @@
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
 #define orxOBJECT_KZ_CONFIG_FLIP                "Flip"
 #define orxOBJECT_KZ_CONFIG_COLOR               "Color"
+#define orxOBJECT_KZ_CONFIG_ALPHA               "Alpha"
 #define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
@@ -102,10 +103,10 @@ struct __orxOBJECT_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 48 */
-  orxRGBA           stColor;                    /**< Object color: 52 */
+  orxCOLOR          stColor;                    /**< Object color: 64 */
 
   /* Padding */
-  orxPAD(52)
+  orxPAD(64)
 };
 
 /** Static structure
@@ -353,6 +354,9 @@ orxOBJECT *orxObject_Create()
   /* Created? */
   if(pstObject != orxNULL)
   {
+    /* Clears its color */
+    orxObject_ClearColor(pstObject);
+
     /* Inits flags */
     orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
   }
@@ -582,8 +586,26 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Has color? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_COLOR) != orxFALSE)
       {
+        orxVECTOR vColor;
+
+        /* Gets its value */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor);
+
         /* Applies it */
-        orxObject_SetColor(pstResult, orxConfig_GetU32(orxOBJECT_KZ_CONFIG_COLOR));
+        orxColor_SetRGB(&(pstResult->stColor), &vColor);
+
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_HAS_COLOR, orxOBJECT_KU32_FLAG_NONE);
+      }
+
+      /* Has alpha? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ALPHA) != orxFALSE)
+      {
+        /* Applies it */
+        orxColor_SetAlpha(&(pstResult->stColor), orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
+
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_HAS_COLOR, orxOBJECT_KU32_FLAG_NONE);
       }
 
       /* *** Body *** */
@@ -1671,19 +1693,20 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
 
 /** Sets object color
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _stColor        Color to set
+ * @param[in]   _pstColor       Color to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, orxCONST orxCOLOR *_pstColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pstColor != orxNULL);
 
   /* Stores color */
-  _pstObject->stColor = _stColor;
+  orxColor_Copy(&(_pstObject->stColor), _pstColor);
 
   /* Updates its flag */
   orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR, orxOBJECT_KU32_FLAG_NONE);
@@ -1706,6 +1729,9 @@ orxSTATUS orxFASTCALL orxObject_ClearColor(orxOBJECT *_pstObject)
 
   /* Updates its flag */
   orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_COLOR);
+
+  /* Restores default color */
+  orxColor_SetRGBA(&(_pstObject->stColor), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
 
   /* Done! */
   return eResult;
@@ -1732,32 +1758,37 @@ orxBOOL orxFASTCALL orxObject_HasColor(orxCONST orxOBJECT *_pstObject)
 
 /** Gets object color
  * @param[in]   _pstObject      Concerned object
- * @return      orxRGBA
+ * @param[out]  _pstColor       Object's color
+ * @return      orxCOLOR / orxNULL
  */
-orxRGBA orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject)
+orxCOLOR *orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject, orxCOLOR *_pstColor)
 {
-  orxRGBA stResult;
+  orxCOLOR *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pstColor != orxNULL);
 
   /* Has color? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_COLOR))
   {
+    /* Copies color */
+    orxColor_Copy(_pstColor, &(_pstObject->stColor));
+
     /* Updates result */
-    stResult = _pstObject->stColor;
+    pstResult = _pstColor;
   }
   else
   {
     /* !!! MSG !!! */
 
     /* Clears result */
-    stResult = 0;
+    pstResult = orxNULL;
   }
 
   /* Done! */
-  return stResult;
+  return pstResult;
 }
 
 /** Adds an FX using its config ID

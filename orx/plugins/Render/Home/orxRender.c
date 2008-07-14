@@ -119,7 +119,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D)))
   {
-    orxRGBA         stColor = 0;
+    orxRGBA         stBackupColor = 0;
     orxBITMAP      *pstBitmap;
     orxTEXTURE     *pstTexture;
     orxANIMPOINTER *pstAnimPointer;
@@ -190,20 +190,24 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     /* Has object color? */
     if(orxObject_HasColor(_pstObject) != orxFALSE)
     {
+      orxCOLOR stColor;
+
       /* Backups previous color */
-      stColor = orxDisplay_GetBitmapColor(pstBitmap);
+      stBackupColor = orxDisplay_GetBitmapColor(pstBitmap);
 
       /* Updates display color */
-      orxDisplay_SetBitmapColor(pstBitmap, orxObject_GetColor(_pstObject));
+      orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxObject_GetColor(_pstObject, &stColor)));
     }
     /* Has graphic color? */
     else if(orxGraphic_HasColor(pstGraphic) != orxFALSE)
     {
+      orxCOLOR stColor;
+
       /* Backups previous color */
-      stColor = orxDisplay_GetBitmapColor(pstBitmap);
+      stBackupColor = orxDisplay_GetBitmapColor(pstBitmap);
 
       /* Updates display color */
-      orxDisplay_SetBitmapColor(pstBitmap, orxGraphic_GetColor(pstGraphic));
+      orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
     }
 
     /* No scale nor rotation? */
@@ -248,7 +252,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     || (orxGraphic_HasColor(pstGraphic) != orxFALSE))
     {
       /* Restores its original color */
-      orxDisplay_SetBitmapColor(pstBitmap, stColor);
+      orxDisplay_SetBitmapColor(pstBitmap, stBackupColor);
     }
   }
   else

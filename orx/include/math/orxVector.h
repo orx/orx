@@ -49,18 +49,21 @@ typedef struct __orxVECTOR_t
   {
     orxFLOAT fX;
     orxFLOAT fRho;
+    orxFLOAT fR;
   };
 
   union
   {
     orxFLOAT fY;
     orxFLOAT fTheta;
+    orxFLOAT fG;
   };
 
   union
   {
     orxFLOAT fZ;
     orxFLOAT fPhi;
+    orxFLOAT fB;
   };
 
 } orxVECTOR;
@@ -239,7 +242,59 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Lerp(orxVECTOR *_pvRes, 
   return _pvRes;
 }
 
-/** Negates a vector and stores result in another one. */
+/** Gets minimum between two vectors */
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Min(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2 != orxNULL);
+
+  /* Gets all mins */
+  _pvRes->fX = orxMIN(_pvOp1->fX, _pvOp2->fX);
+  _pvRes->fY = orxMIN(_pvOp1->fY, _pvOp2->fY);
+  _pvRes->fZ = orxMIN(_pvOp1->fZ, _pvOp2->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
+/** Gets maximum between two vectors */
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Max(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2 != orxNULL);
+
+  /* Gets all maxs */
+  _pvRes->fX = orxMAX(_pvOp1->fX, _pvOp2->fX);
+  _pvRes->fY = orxMAX(_pvOp1->fY, _pvOp2->fY);
+  _pvRes->fZ = orxMAX(_pvOp1->fZ, _pvOp2->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
+/** Clamps a vector between two others */
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Clamp(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxCONST orxVECTOR *_pvMin, orxCONST orxVECTOR *_pvMax)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp != orxNULL);
+  orxASSERT(_pvMin != orxNULL);
+  orxASSERT(_pvMax != orxNULL);
+
+  /* Gets all clamped values */
+  _pvRes->fX = orxCLAMP(_pvOp->fX, _pvMin->fX, _pvMax->fX);
+  _pvRes->fY = orxCLAMP(_pvOp->fY, _pvMin->fY, _pvMax->fY);
+  _pvRes->fZ = orxCLAMP(_pvOp->fZ, _pvMin->fZ, _pvMax->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
+/** Negates a vector and stores result in another one */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Neg(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   /* Checks */
@@ -530,6 +585,7 @@ extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Y;
 extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Z;
 
 extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_0;
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_WHITE;
 
 
 /* *** AABox inlined functions */

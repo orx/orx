@@ -32,7 +32,7 @@
 
 
 /*
- * Platform independant defines
+ * Platform independent defines
  */
 
 #define orxSCREENSHOT_KU32_STATIC_FLAG_NONE       0x00000000

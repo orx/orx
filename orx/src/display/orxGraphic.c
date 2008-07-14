@@ -54,6 +54,7 @@
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_BR       "TextureBR"
 #define orxGRAPHIC_KZ_CONFIG_PIVOT            "Pivot"
 #define orxGRAPHIC_KZ_CONFIG_COLOR            "Color"
+#define orxGRAPHIC_KZ_CONFIG_ALPHA            "Alpha"
 #define orxGRAPHIC_KZ_CONFIG_FLIP             "Flip"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
@@ -72,14 +73,14 @@ struct __orxGRAPHIC_t
 {
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
   orxSTRUCTURE *pstData;                    /**< Data structure : 20 */
-  orxVECTOR     vPivot;                     /**< Pivot : 36 */
-  orxFLOAT      fTop;                       /**< Top coordinate : 40 */
-  orxFLOAT      fLeft;                      /**< Left coordinate : 44 */
-  orxFLOAT      fWidth;                     /**< Width : 48 */
-  orxFLOAT      fHeight;                    /**< Height : 52 */
-  orxRGBA       stColor;                    /**< Color : 56 */
+  orxVECTOR     vPivot;                     /**< Pivot : 32 */
+  orxCOLOR      stColor;                    /**< Color : 48 */
+  orxFLOAT      fTop;                       /**< Top coordinate : 52 */
+  orxFLOAT      fLeft;                      /**< Left coordinate : 56 */
+  orxFLOAT      fWidth;                     /**< Width : 60 */
+  orxFLOAT      fHeight;                    /**< Height : 64 */
 
-  orxPAD(56)
+  orxPAD(64)
 };
 
 /** Static structure
@@ -230,6 +231,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create(orxU32 _u32Flags)
     /* 2D? */
     if(orxFLAG_TEST(_u32Flags, orxGRAPHIC_KU32_FLAG_2D))
     {
+      /* Clears its color */
+      orxGraphic_ClearColor(pstGraphic);
+
       /* Updates flags */
       orxStructure_SetFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
     }
@@ -366,8 +370,26 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             /* Has color? */
             if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_COLOR) != orxFALSE)
             {
+              orxVECTOR vColor;
+
+              /* Gets its value */
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_COLOR, &vColor);
+
               /* Applies it */
-              orxGraphic_SetColor(pstResult, orxConfig_GetU32(orxGRAPHIC_KZ_CONFIG_COLOR));
+              orxColor_SetRGB(&(pstResult->stColor), &vColor);
+
+              /* Updates status */
+              orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+            }
+
+            /* Has alpha? */
+            if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_ALPHA) != orxFALSE)
+            {
+              /* Applies it */
+              orxColor_SetAlpha(&(pstResult->stColor), orxConfig_GetFloat(orxGRAPHIC_KZ_CONFIG_ALPHA));
+
+              /* Updates status */
+              orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
             }
 
             /* Updates status flags */
@@ -616,19 +638,20 @@ orxSTATUS orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFL
 
 /** Sets graphic color
  * @param[in]   _pstGraphic     Concerned graphic
- * @param[in]   _stColor        Color to set
+ * @param[in]   _pstColor       Color to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxRGBA _stColor)
+orxSTATUS orxFASTCALL orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxCONST orxCOLOR *_pstColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
+  orxASSERT(_pstColor != orxNULL);
 
   /* Stores color */
-  _pstGraphic->stColor = _stColor;
+  orxColor_Copy(&(_pstGraphic->stColor), _pstColor);
 
   /* Updates its flag */
   orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
@@ -651,6 +674,9 @@ orxSTATUS orxFASTCALL orxGraphic_ClearColor(orxGRAPHIC *_pstGraphic)
 
   /* Updates its flag */
   orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_HAS_COLOR);
+
+  /* Restores default color */
+  orxColor_SetRGBA(&(_pstGraphic->stColor), orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF));
 
   /* Done! */
   return eResult;
@@ -677,32 +703,37 @@ orxBOOL orxFASTCALL orxGraphic_HasColor(orxCONST orxGRAPHIC *_pstGraphic)
 
 /** Gets graphic color
  * @param[in]   _pstGraphic     Concerned graphic
- * @return      orxRGBA
+ * @param[out]  _pstColor       Object's color
+ * @return      orxCOLOR / orxNULL
  */
-orxRGBA orxFASTCALL orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic)
+orxCOLOR *orxFASTCALL orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic, orxCOLOR *_pstColor)
 {
-  orxRGBA stResult;
+  orxCOLOR *pstResult;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
+  orxASSERT(_pstColor != orxNULL);
 
   /* Has color? */
   if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_COLOR))
   {
+    /* Copies color */
+    orxColor_Copy(_pstColor, &(_pstGraphic->stColor));
+
     /* Updates result */
-    stResult = _pstGraphic->stColor;
+    pstResult = _pstColor;
   }
   else
   {
     /* !!! MSG !!! */
 
     /* Clears result */
-    stResult = 0;
+    pstResult = orxNULL;
   }
 
   /* Done! */
-  return stResult;
+  return pstResult;
 }
 
 /** Gets graphic top

@@ -131,13 +131,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddAlphaFade(orxFX *_pstFX
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _stStartColor   Starting color value
- * @param[in]   _stEndColor     Ending color value
+ * @param[in]   _pvStartColor   Starting color value
+ * @param[in]   _pvEndColor     Ending color value
  * @param[in]   _eCurve         Blending curve type
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxRGBA _stStartColor, orxRGBA _stEndColor, orxFX_CURVE _eCurve, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxU32 _u32Flags);
 
 /** Adds rotation to an FX
  * @param[in]   _pstFX          Concerned FX

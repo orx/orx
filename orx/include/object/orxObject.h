@@ -33,6 +33,7 @@
 #include "object/orxStructure.h"
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
+#include "display/orxDisplay.h"
 #include "math/orxVector.h"
 
 
@@ -278,10 +279,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_p
 
 /** Sets object color
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _stColor        Color to set
+ * @param[in]   _pstColor       Color to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, orxRGBA _stColor);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, orxCONST orxCOLOR *_pstColor);
 
 /** Clears object color
  * @param[in]   _pstObject      Concerned object
@@ -297,9 +298,10 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasColor(orxCONST orxOBJEC
 
 /** Gets object color
  * @param[in]   _pstObject      Concerned object
- * @return      orxRGBA
+ * @param[out]  _pstColor       Object's color
+ * @return      orxCOLOR / orxNULL
  */
-extern orxDLLAPI orxRGBA orxFASTCALL        orxObject_GetColor(orxCONST orxOBJECT *_pstObject);
+extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(orxCONST orxOBJECT *_pstObject, orxCOLOR *_pstColor);
 
 
 /** Adds an FX using its config ID

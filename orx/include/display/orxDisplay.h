@@ -35,7 +35,8 @@
 
 typedef struct __orxBITMAP_t            orxBITMAP;
 
-
+/** Transform structure
+ */
 typedef struct __orxBITMAP_TRANSFORM_t
 {
   orxFLOAT  fSrcX, fSrcY, fDstX, fDstY;
@@ -44,6 +45,16 @@ typedef struct __orxBITMAP_TRANSFORM_t
   orxFLOAT  fScaleY;
 
 } orxBITMAP_TRANSFORM;
+
+/** Color structure
+ */
+typedef struct __orxCOLOR_t
+{
+  orxVECTOR vRGB;                       /**< RGB components: 12 */
+  orxFLOAT  fAlpha;                     /**< Alpha component: 16 */
+
+} orxCOLOR;
+
 
 #define orxDISPLAY_KZ_CONFIG_SECTION    "Display"
 #define orxDISPLAY_KZ_CONFIG_WIDTH      "ScreenWidth"
@@ -57,8 +68,136 @@ typedef struct __orxBITMAP_TRANSFORM_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Display module setup */
+/** Display module setup
+ */
 extern orxDLLAPI orxVOID            orxDisplay_Setup();
+
+/** Sets all components from an orxRGBA
+ * @param[in]   _pstColor       Concerned color
+ * @return      orxCOLOR
+ */
+orxSTATIC orxINLINE orxCOLOR *      orxColor_SetRGBA(orxCOLOR *_pstColor, orxRGBA _stRGBA)
+{
+  orxCOLOR *pstResult = _pstColor;
+
+  /* Checks */
+  orxASSERT(_pstColor != orxNULL);
+
+  /* Stores RGB */
+  orxVector_Set(&(_pstColor->vRGB), orxRGBA_R(_stRGBA), orxRGBA_G(_stRGBA), orxRGBA_B(_stRGBA));
+
+  /* Stores alpha */
+  _pstColor->fAlpha = orxRGBA_A(_stRGBA) * orxRGBA_NORMALIZER;
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Sets all components
+ * @param[in]   _pstColor       Concerned color
+ * @param[in]   _pvRGB          RGB components
+ * @param[in]   _fAlpha         Normalized alpha component
+ * @return      orxCOLOR
+ */
+orxSTATIC orxINLINE orxCOLOR *      orxColor_Set(orxCOLOR *_pstColor, orxCONST orxVECTOR *_pvRGB, orxFLOAT _fAlpha)
+{
+  orxCOLOR *pstResult = _pstColor;
+
+  /* Checks */
+  orxASSERT(_pstColor != orxNULL);
+
+  /* Stores RGB */
+  orxVector_Copy(&(_pstColor->vRGB), _pvRGB);
+
+  /* Stores alpha */
+  _pstColor->fAlpha = _fAlpha;
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Sets RGB components
+ * @param[in]   _pstColor       Concerned color
+ * @param[in]   _pvRGB          RGB components
+ * @return      orxCOLOR
+ */
+orxSTATIC orxINLINE orxCOLOR *      orxColor_SetRGB(orxCOLOR *_pstColor, orxCONST orxVECTOR *_pvRGB)
+{
+  orxCOLOR *pstResult = _pstColor;
+
+  /* Checks */
+  orxASSERT(_pstColor != orxNULL);
+  orxASSERT(_pvRGB != orxNULL);
+
+  /* Stores components */
+  orxVector_Copy(&(_pstColor->vRGB), _pvRGB);
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Sets alpha component
+ * @param[in]   _pstColor       Concerned color
+ * @param[in]   _fAlpha         Normalized alpha component
+ * @return      orxCOLOR / orxNULL
+ */
+orxSTATIC orxINLINE orxCOLOR *      orxColor_SetAlpha(orxCOLOR *_pstColor, orxFLOAT _fAlpha)
+{
+  orxCOLOR *pstResult = _pstColor;
+
+  /* Checks */
+  orxASSERT(_pstColor != orxNULL);
+
+  /* Stores it */
+  _pstColor->fAlpha = _fAlpha;
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets orxRGBA from an orxCOLOR
+ * @param[in]   _pstColor       Concerned color
+ * @return      orxRGBA
+ */
+orxSTATIC orxINLINE orxRGBA orxColor_ToRGBA(orxCONST orxCOLOR *_pstColor)
+{
+  orxRGBA   stResult;
+  orxVECTOR vColor;
+  orxFLOAT  fAlpha;
+
+  /* Checks */
+  orxASSERT(_pstColor != orxNULL);
+
+  /* Clamps RGB components */
+  orxVector_Clamp(&vColor, &(_pstColor->vRGB), &orxVECTOR_0, &orxVECTOR_WHITE);
+
+  /* Clamps alpha */
+  fAlpha = orxCLAMP(_pstColor->fAlpha, orxFLOAT_0, orxFLOAT_1);
+
+  /* Updates result */
+  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(255.0f * fAlpha));
+
+  /* Done! */
+  return stResult;
+}
+
+/** Copies an orxCOLOR into another one
+ * @param[in]   _pstDst         Destination color
+ * @param[in]   _pstSrc         Source color
+ * @return      orxCOLOR
+ */
+orxSTATIC orxINLINE orxCOLOR * orxColor_Copy(orxCOLOR *_pstDst, orxCONST orxCOLOR *_pstSrc)
+{
+  /* Checks */
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT(_pstSrc != orxNULL);
+
+  /* Copies it */
+  orxMemory_Copy(_pstDst, _pstSrc, sizeof(orxCOLOR));
+
+  /* Done! */
+  return _pstDst;
+}
 
 
 /***************************************************************************

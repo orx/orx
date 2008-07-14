@@ -23,7 +23,7 @@
 
 
 /*
- * Platform independant defines
+ * Platform independent defines
  */
 
 #define orxLINKLIST_KU32_STATIC_FLAG_NONE         0x00000000

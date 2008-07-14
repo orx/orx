@@ -34,7 +34,7 @@
 /* *** Uses orx declarations *** */
 #include "base/orxDecl.h"
 
-/* *** Platform depedant base types */
+/* *** Platform dependent base types */
 
 /* Windows */
 #ifdef __orxWINDOWS__
