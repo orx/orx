@@ -666,6 +666,18 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
               pcLineStart = pc + 1;
             }
           }
+          /* Comment character? */
+          else if(*pc == orxCONFIG_KC_COMMENT)
+          {
+            /* Skips the whole line */
+            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+            {
+              pc++;
+            }
+
+            /* Updates line start pointer */
+            pcLineStart = pc + 1;
+          }
           else
           {
             /* Finds assign character */
