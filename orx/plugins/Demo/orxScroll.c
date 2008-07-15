@@ -1,14 +1,10 @@
 /**
  * @file orxScroll.c
  *
- * Scrolling demo
- *
+ * Automated scrolling demo
  */
 
- /***************************************************************************
- orxScroll.c
- Scrolling demo
-
+/***************************************************************************
  begin                : 22/10/2007
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -27,21 +23,9 @@
 #include "orx.h"
 
 
-/** Resource enum
+/** Misc defines
  */
-typedef enum __orxSCROLL_RESOURCE_t
-{
-  orxSCROLL_RESOURCE_FUJI = 0,
-  orxSCROLL_RESOURCE_BOAT1,
-  orxSCROLL_RESOURCE_BOAT2,
-  orxSCROLL_RESOURCE_CLOUD,
-  orxSCROLL_RESOURCE_WAVE,
-
-  orxSCROLL_RESOURCE_NUMBER,
-
-  orxSCROLL_RESOURCE_NONE = orxENUM_NONE
-
-} orxSCROLL_RESOURCE;
+#define orxSCROLL_RESOURCE_NUMBER   5
 
 /** Resource names
  */
@@ -54,151 +38,109 @@ orxSTATIC orxSTRING sazResourceNames[orxSCROLL_RESOURCE_NUMBER] =
  "Wave"
 };
 
-/** Waves groups
- */
-orxSTATIC orxOBJECT **sapstWaveGroups;
 
 /** Camera
  */
 orxSTATIC orxCAMERA *spstCamera;
 
-/** Scrolling speed
+/** Overlay (for fade in / fade out)
  */
-orxSTATIC orxFLOAT sfScrollingSpeed;
+orxSTATIC orxOBJECT *spstOverlay;
 
-/** Wave amplitude
+/** Root
  */
-orxSTATIC orxFLOAT sfWaveAmplitude;
+orxSTATIC orxOBJECT *spstRoot;
 
-/** Update callback
+
+/** Update callback used to update the scrolling. N.B.: it could also have been done through FXs, doing the synchro in the .ini, and no clock would have been needed.
  */
 orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   orxVECTOR vPos;
-  orxFLOAT  fScreenWidth, fScreenHeight;
-  orxS32    i;
+  orxFLOAT  fMove;
 
-  /* Gets screen dimensions */
-  orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
-
-  /* Gets camera position */
-  orxCamera_GetPosition(spstCamera, &vPos);
-
-  /* Selects main section */
+  /* Selects scroll section */
   orxConfig_SelectSection("Scroll");
 
-  /* Updates position vector */
-  vPos.fX += orxConfig_GetFloat("ScrollingSpeed") * _pstClockInfo->fDT;
+  /* Computes move delta */
+  fMove = _pstClockInfo->fDT * orxConfig_GetFloat("ScrollingSpeed");
+
+  /* Gets root position */
+  orxObject_GetPosition(spstRoot, &vPos);
 
   /* End of scrolling? */
-  if(vPos.fX > orxConfig_GetFloat("ScrollingRelativeLength") * fScreenWidth)
+  if(vPos.fX >= orxConfig_GetFloat("ScrollingMax")
+  && (vPos.fX - orxConfig_GetFloat("ScrollingMax") < fMove))
   {
-    /* Go back at beginning */
-    vPos.fX = orx2F(0.5f) * fScreenWidth;
+    /* Adds fade FX on overlay */
+    orxObject_AddFX(spstOverlay, "FadeFX");
+
+    /* Adds reinit FX on root */
+    orxObject_AddFX(spstRoot, "ReinitFX");
   }
 
-  /* Updates camera position */
-  orxCamera_SetPosition(spstCamera, &vPos);
+  /* Updates scrolling */
+  vPos.fX += fMove;
 
-  /* For all wave groups */
-  for(i = 0; i < orxConfig_GetS32("WaveGroupNumber"); i++)
-  {
-    /* Gets object's position */
-    orxObject_GetPosition(sapstWaveGroups[i], &vPos);
-
-    /* Updates its Y coordinate along a sine with initial phasis */
-    vPos.fY = sfWaveAmplitude * sinf(orxMATH_KF_PI_BY_2 * (orxU2F(i) + orxU2F(_pstClockInfo->fTime)));
-
-    /* Applies it */
-    orxObject_SetPosition(sapstWaveGroups[i], &vPos);
-  }
+  /* Updates root position */
+  orxObject_SetPosition(spstRoot, &vPos);
 }
 
 /** Inits the scroll demo
  */
 orxSTATIC orxSTATUS orxScroll_Init()
 {
-  orxS32    s32WaveGroupNumber, i;
-  orxFLOAT  fScreenWidth, fScreenHeight, fScrollingDepth;
-  orxVECTOR vMin, vMax;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Gets screen dimensions */
-  orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
+  orxS32      i, s32WaveGroupNumber;
+  orxOBJECT  *apstWaveGroupList[32];
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
 
   /* Loads config file and selects its section */
   orxConfig_Load("Scroll.ini");
   orxConfig_SelectSection("Scroll");
 
-  /* Gets scrolling depth and speed and wave amplitude coef */
-  fScrollingDepth   = orxConfig_GetFloat("ScrollingDepth");
-  sfScrollingSpeed  = orxConfig_GetFloat("ScrollingSpeed");
-  sfWaveAmplitude   = orxConfig_GetFloat("WaveAmplitude");
-
   /* Gets wave group number */
-  s32WaveGroupNumber = orxConfig_GetS32("WaveGroupNumber");
+  s32WaveGroupNumber = orxMIN(orxConfig_GetS32("WaveGroupNumber"), 32);
 
-  /* Selects wave section */
-  orxConfig_SelectSection("Wave");
-
-  /* Creates the wave groups */
-  sapstWaveGroups = orxMemory_Allocate(s32WaveGroupNumber * sizeof(orxOBJECT *), orxMEMORY_TYPE_TEMP);
-
-  /* Updates wave amplitude */
-  sfWaveAmplitude *= fScreenHeight * (orxConfig_GetVector("MaxPos", &vMax)->fY - orxConfig_GetVector("MinPos", &vMin)->fY);
-
-  /* Creates main wave groups */
+  /* For all wave groups */
   for(i = 0; i < s32WaveGroupNumber; i++)
   {
-    orxVECTOR vPos;
+    orxCHAR acWaveGroupID[32];
 
-    /* Creates frame */
-    sapstWaveGroups[i] = orxObject_CreateFromConfig("WaveGroup");
+    /* Gets its name */
+    orxString_Print(acWaveGroupID, "WaveGroup%d", i + 1);
 
-    /* Inits its vertical position (phasis) */
-    orxVector_Set(&vPos, orxFLOAT_0, (orx2F(i) / orx2F(s32WaveGroupNumber)) * sfWaveAmplitude, orxFLOAT_0);
+    /* Creates it */
+    apstWaveGroupList[i] = orxObject_CreateFromConfig(acWaveGroupID);
 
-    /* Sets it */
-    orxObject_SetPosition(sapstWaveGroups[i], &vPos);
+    /* Adds wave FX to it */
+    orxObject_AddDelayedFX(apstWaveGroupList[i], "WaveFX", orxS2F(i));
   }
 
   /* For all resources */
   for(i = 0; i < orxSCROLL_RESOURCE_NUMBER; i++)
   {
     orxS32 j;
-    orxVECTOR vMin, vMax;
 
     /* Selects config section */
     orxConfig_SelectSection(sazResourceNames[i]);
 
-    /* Gets its min & max placement vectors */
-    orxConfig_GetVector("MinPos", &vMin);
-    orxConfig_GetVector("MaxPos", &vMax);
-
     /* For all requested instances */
     for(j = 0; j < orxConfig_GetS32("Number"); j++)
     {
-      orxVECTOR   vPos;
-      orxOBJECT  *pstObject;
+      orxOBJECT *pstObject;
 
       /* Creates the object */
       pstObject = orxObject_CreateFromConfig(sazResourceNames[i]);
 
-      /* Inits its position */
-      orxVector_Set(&vPos,
-                    fScreenWidth * orxFRAND(vMin.fX, vMax.fX),
-                    fScreenHeight * orxFRAND(vMin.fY, vMax.fY),
-                    fScrollingDepth * orxFRAND(vMin.fZ, vMax.fZ));
+      /* Selects resource section */
+      orxConfig_SelectSection(sazResourceNames[i]);
 
-      /* Are we creating waves? */
-      if((i == orxSCROLL_RESOURCE_WAVE) || (i == orxSCROLL_RESOURCE_BOAT1))
+      /* Is on wave? */
+      if(orxConfig_GetBool("OnWave"))
       {
         /* Assigns it to one of the wave group */
-        orxObject_SetParent(pstObject, sapstWaveGroups[j % s32WaveGroupNumber]);
+        orxObject_SetParent(pstObject, apstWaveGroupList[j % s32WaveGroupNumber]);
       }
-
-      /* Sets its position */
-      orxObject_SetPosition(pstObject, &vPos);
     }
   }
 
@@ -206,8 +148,8 @@ orxSTATIC orxSTATUS orxScroll_Init()
   if(i == orxSCROLL_RESOURCE_NUMBER)
   {
     orxCLOCK     *pstClock;
-    orxOBJECT    *pstBackground;
     orxVIEWPORT  *pstViewport;
+    orxOBJECT    *pstBackground;
 
     /* Selects main section */
     orxConfig_SelectSection("Scroll");
@@ -215,14 +157,24 @@ orxSTATIC orxSTATUS orxScroll_Init()
     /* Creates viewport */
     pstViewport = orxViewport_CreateFromConfig("ScrollViewport");
 
-    /* Stores camera pointer */
-    spstCamera = orxViewport_GetCamera(pstViewport);
+    /* Creates root */
+    spstRoot = orxObject_CreateFromConfig("Root");
 
     /* Creates background */
     pstBackground = orxObject_CreateFromConfig("Background");
 
-    /* Links it to camera frame */
+    /* Creates overlay */
+    spstOverlay = orxObject_CreateFromConfig("Overlay");
+
+    /* Stores camera pointer */
+    spstCamera = orxViewport_GetCamera(pstViewport);
+
+    /* Links camera to root */
+    orxFrame_SetParent(orxCamera_GetFrame(spstCamera), orxOBJECT_GET_STRUCTURE(spstRoot, FRAME));
+
+    /* Links background & overlay to camera */
     orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(pstBackground, FRAME), orxCamera_GetFrame(spstCamera));
+    orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(spstOverlay, FRAME), orxCamera_GetFrame(spstCamera));
 
     /* Gets rendering clock */
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);

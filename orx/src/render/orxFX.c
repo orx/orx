@@ -1356,7 +1356,7 @@ orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, or
   orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxASSERT(_eCurve < orxFX_CURVE_NUMBER);
   orxASSERT(_fStartTime >= orxFLOAT_0);
-  orxASSERT(_fEndTime > _fStartTime);
+  orxASSERT(_fEndTime >= _fStartTime);
   orxSTRUCTURE_ASSERT(_pstFX);
 
   /* Finds empty slot index */
@@ -1415,7 +1415,7 @@ orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, o
   orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxASSERT(_eCurve < orxFX_CURVE_NUMBER);
   orxASSERT(_fStartTime >= orxFLOAT_0);
-  orxASSERT(_fEndTime > _fStartTime);
+  orxASSERT(_fEndTime >= _fStartTime);
   orxSTRUCTURE_ASSERT(_pstFX);
   orxASSERT(_pvStartColor != orxNULL);
   orxASSERT(_pvEndColor != orxNULL);
@@ -1476,7 +1476,7 @@ orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orx
   orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxASSERT(_eCurve < orxFX_CURVE_NUMBER);
   orxASSERT(_fStartTime >= orxFLOAT_0);
-  orxASSERT(_fEndTime > _fStartTime);
+  orxASSERT(_fEndTime >= _fStartTime);
   orxSTRUCTURE_ASSERT(_pstFX);
 
   /* Finds empty slot index */
@@ -1535,7 +1535,7 @@ orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
   orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxASSERT(_eCurve < orxFX_CURVE_NUMBER);
   orxASSERT(_fStartTime >= orxFLOAT_0);
-  orxASSERT(_fEndTime > _fStartTime);
+  orxASSERT(_fEndTime >= _fStartTime);
   orxSTRUCTURE_ASSERT(_pstFX);
   orxASSERT(_pvStartScale != orxNULL);
   orxASSERT(_pvEndScale != orxNULL);
@@ -1596,7 +1596,7 @@ orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, 
   orxASSERT((_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) == _u32Flags);
   orxASSERT(_eCurve < orxFX_CURVE_NUMBER);
   orxASSERT(_fStartTime >= orxFLOAT_0);
-  orxASSERT(_fEndTime > _fStartTime);
+  orxASSERT(_fEndTime >= _fStartTime);
   orxSTRUCTURE_ASSERT(_pstFX);
   orxASSERT(_pvStartPosition != orxNULL);
   orxASSERT(_pvEndPosition != orxNULL);
