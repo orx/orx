@@ -899,17 +899,17 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               {
                 /* Gets linear coef in period [0.0; 2.0] starting at given phasis */
                 fStartCoef = (fStartTime * fFrequency) + pstFXSlot->fCyclePhasis;
-                fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
+                fStartCoef = orxMath_Mod(fStartCoef * orx2F(2.0f), orx2F(2.0f));
 
                 /* Gets symetric coef between 1.0 & 2.0 */
                 if(fStartCoef > orxFLOAT_1)
                 {
                   fStartCoef = orx2F(2.0f) - fStartCoef;
                 }
-
+                
                 /* Gets linear coef in period [0.0; 2.0] starting at given phasis */
                 fEndCoef = (fEndTime * fFrequency) + pstFXSlot->fCyclePhasis;
-                fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
+                fEndCoef = orxMath_Mod(fEndCoef * orx2F(2.0f), orx2F(2.0f));
 
                 /* Gets symetric coef between 1.0 & 2.0 */
                 if(fEndCoef > orxFLOAT_1)
