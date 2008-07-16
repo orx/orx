@@ -60,6 +60,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_WIDTH      "ScreenWidth"
 #define orxDISPLAY_KZ_CONFIG_HEIGHT     "ScreenHeight"
 #define orxDISPLAY_KZ_CONFIG_DEPTH      "ScreenDepth"
+#define orxDISPLAY_KZ_CONFIG_FULLSCREEN "FullScreen"
 #define orxDISPLAY_KZ_CONFIG_FONT       "Font"
 #define orxDISPLAY_KZ_CONFIG_TITLE      "Title"
 

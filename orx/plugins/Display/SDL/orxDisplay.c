@@ -500,7 +500,7 @@ orxSTATUS orxDisplay_SDL_Init()
 #else /* __orxGP2X__ */
 
       {
-        orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth;
+        orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags;
 
         /* Gets resolution from config */
         orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -508,8 +508,20 @@ orxSTATUS orxDisplay_SDL_Init()
         u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
         u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
 
+        /* Full screen? */
+        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
+        {
+          /* Updates flags */
+          u32Flags = SDL_FULLSCREEN | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
+        }
+        else
+        {
+          /* Updates flags */
+          u32Flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
+        }
+
         /* Inits display using config values? */
-        if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT)) == orxNULL)
+        if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags)) == orxNULL)
         {
           /* Inits display using default parameters */
           sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);

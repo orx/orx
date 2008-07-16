@@ -47,6 +47,7 @@ extern "C"
 
 orxSTATIC orxCONST orxU32     su32ScreenWidth   = 1024;
 orxSTATIC orxCONST orxU32     su32ScreenHeight  = 768;
+orxSTATIC orxCONST orxU32     su32ScreenDepth   = 32;
 orxSTATIC orxCONST orxBITMAP *spoScreen         = (orxCONST orxBITMAP *)-1;
 orxSTATIC orxCONST orxU32     su32TextBankSize  = 8;
 
@@ -68,7 +69,7 @@ typedef struct __orxDISPLAY_TEXT_t
 typedef struct __orxDISPLAY_STATIC_t
 {
   orxU32            u32Flags;
-  orxU32            u32ScreenWidth, u32ScreenHeight;
+  orxU32            u32ScreenWidth, u32ScreenHeight, u32ScreenDepth;
   sf::RenderWindow *poRenderWindow;
   sf::Font         *poFont;
 
@@ -680,28 +681,44 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
     /* Valid? */
     if(sstDisplay.pstTextBank != orxNULL)
     {
-      orxU32 u32ConfigWidth, u32ConfigHeight;
+      orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth;
+      unsigned long ulStyle;
 
       /* Gets resolution from config */
       orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
       u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
       u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
+      u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
+
+      /* Full screen? */
+      if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
+      {
+        /* Updates flags */
+        ulStyle = sf::Style::Fullscreen;
+      }
+      else
+      {
+        /* Updates flags */
+        ulStyle = sf::Style::Close;
+      }
 
       /* Not valid? */
-      if((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(u32ConfigWidth, u32ConfigHeight), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sf::Style::Close)) == orxNULL)
+      if((sstDisplay.poRenderWindow = new sf::RenderWindow(sf::VideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle)) == orxNULL)
       {
         /* Inits default rendering window */
-        sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), sf::Style::Close);
+        sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight, su32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle);
 
         /* Stores values */
         sstDisplay.u32ScreenWidth   = su32ScreenWidth;
         sstDisplay.u32ScreenHeight  = su32ScreenHeight;
+        sstDisplay.u32ScreenDepth   = su32ScreenDepth;
       }
       else
       {
         /* Stores values */
         sstDisplay.u32ScreenWidth   = u32ConfigWidth;
         sstDisplay.u32ScreenHeight  = u32ConfigHeight;
+        sstDisplay.u32ScreenDepth   = u32ConfigDepth;
       }
 
       /* Has config font? */
