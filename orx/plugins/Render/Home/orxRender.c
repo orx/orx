@@ -298,61 +298,77 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
     if(pstBitmap != orxNULL)
     {
       orxCAMERA  *pstCamera;
-      orxAABOX    stViewportBox, stTextureBox;
-      orxFLOAT    fTextureWidth, fTextureHeight;
-      orxVECTOR   vViewportCenter;
 
-      /* Gets texture size */
-      fTextureWidth   = orxTexture_GetWidth(pstTexture);
-      fTextureHeight  = orxTexture_GetHeight(pstTexture);
+      /* Gets camera */
+      pstCamera = orxViewport_GetCamera(_pstViewport);
 
-      /* Inits texture box */
-      orxVector_SetAll(&(stTextureBox.vTL), orxFLOAT_0);
-      orxVector_Set(&(stTextureBox.vBR), fTextureWidth, fTextureHeight, orxFLOAT_0);
-
-      /* Gets viewport box */
-      orxViewport_GetBox(_pstViewport, &stViewportBox);
-
-      /* Gets its center */
-      orxAABox_GetCenter(&stViewportBox, &vViewportCenter);
-
-      /* Does it intersect with texture */
-      if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
+      /* Valid 2D camera? */
+      if((pstCamera != orxNULL)
+      && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
       {
-        /* Sets bitmap clipping */
-        orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
+        orxFRAME *pstRenderFrame;
 
-        /* Should clear bitmap? */
-        if(orxViewport_IsBackgroundClearingEnabled(_pstViewport) != orxFALSE)
+        /* Creates rendering frame */
+        pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+
+        /* Valid? */
+        if(pstRenderFrame != orxNULL)
         {
-          /* Clears it */
-          orxDisplay_ClearBitmap(pstBitmap, orxViewport_GetBackgroundColor(_pstViewport));
-        }
+          orxAABOX  stFrustum, stViewportBox, stTextureBox;
+          orxFLOAT  fCameraWidth, fCameraHeight, fTextureWidth, fTextureHeight;
+          orxVECTOR vViewportCenter;
 
-        /* Gets camera */
-        pstCamera = orxViewport_GetCamera(_pstViewport);
+          /* Gets camera frustum */
+          orxCamera_GetFrustum(pstCamera, &stFrustum);
 
-        /* Valid 2D camera? */
-        if((pstCamera != orxNULL)
-        && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
-        {
-          orxFRAME *pstRenderFrame;
+          /* Gets camera size */
+          fCameraWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
+          fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
 
-          /* Creates rendering frame */
-          pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
+          /* Gets texture size */
+          fTextureWidth   = orxTexture_GetWidth(pstTexture);
+          fTextureHeight  = orxTexture_GetHeight(pstTexture);
 
-          /* Valid? */
-          if(pstRenderFrame != orxNULL)
+          /* Inits texture box */
+          orxVector_SetAll(&(stTextureBox.vTL), orxFLOAT_0);
+          orxVector_Set(&(stTextureBox.vBR), fTextureWidth, fTextureHeight, orxFLOAT_0);
+
+          /* Gets viewport box */
+          orxViewport_GetBox(_pstViewport, &stViewportBox);
+
+          /* Gets its center */
+          orxAABox_GetCenter(&stViewportBox, &vViewportCenter);
+
+          /* Does it intersect with texture */
+          if(orxAABox_Test2DIntersection(&stTextureBox, &stViewportBox) != orxFALSE)
           {
-            orxAABOX stFrustum;
-            orxFLOAT fCameraWidth, fCameraHeight;
+            orxFLOAT fCorrectionRatio;
 
-            /* Gets camera frustum */
-            orxCamera_GetFrustum(pstCamera, &stFrustum);
+            /* Gets current correction ratio */
+            fCorrectionRatio = orxViewport_GetCorrectionRatio(_pstViewport);
 
-            /* Gets camera size */
-            fCameraWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
-            fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
+            /* Has correction ratio? */
+            if(fCorrectionRatio != orxFLOAT_1)
+            {
+              orxFLOAT fDelta;
+
+              /* Gets rendering limit delta using correction ratio */
+              fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
+
+              /* Updates viewport */
+              stViewportBox.vTL.fX += fDelta;
+              stViewportBox.vBR.fX -= fDelta;
+            }
+
+            /* Sets bitmap clipping */
+            orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
+            
+            /* Should clear bitmap? */
+            if(orxViewport_IsBackgroundClearingEnabled(_pstViewport) != orxFALSE)
+            {
+              /* Clears it */
+              orxDisplay_ClearBitmap(pstBitmap, orxViewport_GetBackgroundColor(_pstViewport));
+            }
 
             /* Valid? */
             if((fCameraWidth > orxFLOAT_0)
@@ -743,10 +759,27 @@ orxSTATUS orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition,
     if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
     && ((pstCamera = orxViewport_GetCamera(pstViewport)) != orxNULL))
     {
-      orxAABOX stViewportBox;
+      orxAABOX  stViewportBox;
+      orxFLOAT  fCorrectionRatio;
 
       /* Gets viewport box */
       orxViewport_GetBox(pstViewport, &stViewportBox);
+
+      /* Gets viewport correction ratio */
+      fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+      
+      /* Has one? */
+      if(fCorrectionRatio != orxFLOAT_1)
+      {
+        orxFLOAT fDelta;
+
+        /* Gets rendering limit delta using correction ratio */
+        fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
+
+        /* Updates viewport */
+        stViewportBox.vTL.fX += fDelta;
+        stViewportBox.vBR.fX -= fDelta;
+      }
 
       /* Is position in box? */
       if((_pvScreenPosition->fX >= stViewportBox.vTL.fX)

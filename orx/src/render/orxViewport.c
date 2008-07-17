@@ -890,7 +890,7 @@ orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW,
   /* Updates size */
   _pstViewport->fWidth  = _fW;
   _pstViewport->fHeight = _fH;
-  
+
   return;
 }
 
@@ -1045,4 +1045,41 @@ orxAABOX *orxFASTCALL orxViewport_GetBox(orxCONST orxVIEWPORT *_pstViewport, orx
 
   /* Done! */
   return pstResult;
+}
+
+/** Get viewport correction ratio
+ * @param[in]   _pstViewport  Concerned viewport
+ * @return      Correction ratio value
+ */
+orxFLOAT orxFASTCALL orxViewport_GetCorrectionRatio(orxCONST orxVIEWPORT *_pstViewport)
+{
+  orxCAMERA  *pstCamera;
+  orxFLOAT    fResult = orxFLOAT_1;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Gets camera */
+  pstCamera = orxViewport_GetCamera(_pstViewport);
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    orxFLOAT fCameraWidth, fCameraHeight;
+    orxAABOX stFrustum;
+
+    /* Gets camera frustum */
+    orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+    /* Gets camera size */
+    fCameraWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
+    fCameraHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
+
+    /* Updates result */
+    fResult = (_pstViewport->fHeight / _pstViewport->fWidth) * (fCameraWidth / fCameraHeight);
+  }
+
+  /* Done! */
+  return fResult;
 }

@@ -69,7 +69,7 @@ typedef struct __orxDISPLAY_TEXT_t
 typedef struct __orxDISPLAY_STATIC_t
 {
   orxU32            u32Flags;
-  orxU32            u32ScreenWidth, u32ScreenHeight, u32ScreenDepth;
+  orxU32            u32ScreenWidth, u32ScreenHeight;
   sf::RenderWindow *poRenderWindow;
   sf::Font         *poFont;
 
@@ -622,7 +622,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   {
     /* Stores screen clipping */
     glScissor(_u32TLX, sstDisplay.u32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
-
+    
     /* Enables clipping */
     glEnable(GL_SCISSOR_TEST);
   }
@@ -707,19 +707,11 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
       {
         /* Inits default rendering window */
         sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight, su32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle);
+      }
 
-        /* Stores values */
-        sstDisplay.u32ScreenWidth   = su32ScreenWidth;
-        sstDisplay.u32ScreenHeight  = su32ScreenHeight;
-        sstDisplay.u32ScreenDepth   = su32ScreenDepth;
-      }
-      else
-      {
-        /* Stores values */
-        sstDisplay.u32ScreenWidth   = u32ConfigWidth;
-        sstDisplay.u32ScreenHeight  = u32ConfigHeight;
-        sstDisplay.u32ScreenDepth   = u32ConfigDepth;
-      }
+      /* Stores values */
+      sstDisplay.u32ScreenWidth   = sstDisplay.poRenderWindow->GetWidth();
+      sstDisplay.u32ScreenHeight  = sstDisplay.poRenderWindow->GetHeight();
 
       /* Has config font? */
       if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_FONT) != orxFALSE)

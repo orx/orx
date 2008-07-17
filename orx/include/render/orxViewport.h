@@ -219,6 +219,12 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetClipping(orxCONST o
  */
 extern orxDLLAPI orxAABOX *orxFASTCALL        orxViewport_GetBox(orxCONST orxVIEWPORT *_pstViewport, orxAABOX *_pstBox);
 
+/** Get viewport correction ratio
+ * @param[in]   _pstViewport  Concerned viewport
+ * @return      Correction ratio value
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxViewport_GetCorrectionRatio(orxCONST orxVIEWPORT *_pstViewport);
+
 
 #endif /* _orxVIEWPORT_H_ */
 
