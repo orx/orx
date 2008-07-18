@@ -77,7 +77,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Delete(orxOBJECT *_pstObje
 
 /** Enables/disables an object
  * @param[in]   _pstObject    Concerned object
- * @param[in]   _bEnable      enable / disable
+ * @param[in]   _bEnable      Enable / disable
  */
 extern orxDLLAPI orxVOID orxFASTCALL        orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable);
 
@@ -86,6 +86,18 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxObject_Enable(orxOBJECT *_pstObje
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject);
+
+/** Sets user data for an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pUserData    User data to store / orxNULL
+ */
+extern orxDLLAPI orxVOID orxFASTCALL        orxObject_SetUserData(orxOBJECT *_pstObject, orxVOID *_pUserData);
+
+/** Gets object's user data
+ * @param[in]   _pstObject    Concerned object
+ * @return      Storeduser data / orxNULL
+ */
+extern orxDLLAPI orxVOID *orxFASTCALL       orxObject_GetUserData(orxOBJECT *_pstObject);
 
 /** Links a structure to an object
  * @param[in]   _pstObject      Concerned object

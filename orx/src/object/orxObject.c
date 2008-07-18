@@ -102,11 +102,12 @@ typedef struct __orxOBJECT_STORAGE_t
 struct __orxOBJECT_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
-  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 48 */
-  orxCOLOR          stColor;                    /**< Object color: 64 */
+  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 56 */
+  orxCOLOR          stColor;                    /**< Object color: 72 */
+  orxVOID          *pUserData;                  /**< User data : 76 */
 
   /* Padding */
-  orxPAD(64)
+  orxPAD(76)
 };
 
 /** Static structure
@@ -842,6 +843,41 @@ orxBOOL orxFASTCALL orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject)
 
   /* Done! */
   return(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED));
+}
+
+/** Sets user data for an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pUserData    User data to store / orxNULL
+ */
+orxVOID orxFASTCALL orxObject_SetUserData(orxOBJECT *_pstObject, orxVOID *_pUserData)
+{
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Stores it */
+  _pstObject->pUserData = _pUserData;
+
+  return;
+}
+
+/** Gets object's user data
+ * @param[in]   _pstObject    Concerned object
+ * @return      Storeduser data / orxNULL
+ */
+orxVOID *orxFASTCALL orxObject_GetUserData(orxOBJECT *_pstObject)
+{
+  orxVOID *pResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets user data */
+  pResult = _pstObject->pUserData;
+
+  /* Done! */
+  return pResult;
 }
 
 /** Sets object pivot
