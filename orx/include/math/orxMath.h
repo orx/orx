@@ -268,6 +268,17 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
   return fResult;
 }
 
+orxSTATIC orxINLINE orxFLOAT orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+  /* Updates result */
+  fResult = powf(_fOp, _fExp);
+
+  /* Done! */
+  return fResult;
+}
+
 orxSTATIC orxINLINE orxFLOAT orxMath_Abs(orxFLOAT _fOp)
 {
   /* Done! */

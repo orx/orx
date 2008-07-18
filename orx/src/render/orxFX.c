@@ -76,7 +76,7 @@
 #define orxFX_KZ_CONFIG_SLOT                    "Slot"
 #define orxFX_KZ_CONFIG_TYPE                    "Type"
 #define orxFX_KZ_CONFIG_CURVE                   "Curve"
-#define orxFX_KZ_CONFIG_SQUARED                 "Squared"
+#define orxFX_KZ_CONFIG_POW                     "Pow"
 #define orxFX_KZ_CONFIG_ABSOLUTE                "Absolute"
 #define orxFX_KZ_CONFIG_LOOP                    "Loop"
 #define orxFX_KZ_CONFIG_AMPLIFICATION           "Amplification"
@@ -137,41 +137,42 @@ typedef struct __orxFX_SLOT_t
   orxFLOAT    fCyclePeriod;                     /**< Cycle period : 12 */
   orxFLOAT    fCyclePhasis;                     /**< Cycle phasis : 16 */
   orxFLOAT    fAmplification;                   /**< Amplification over time : 20 */
+  orxFLOAT    fPow;                             /**< Curve exponent : 24 */
 
   union
   {
     struct
     {
-      orxFLOAT fStartAlpha;                     /**< Alpha start value : 24 */
-      orxFLOAT fEndAlpha;                       /**< Alpha end value : 28 */
-    };                                          /**< Alpha Fade  : 28 */
+      orxFLOAT fStartAlpha;                     /**< Alpha start value : 28 */
+      orxFLOAT fEndAlpha;                       /**< Alpha end value : 32 */
+    };                                          /**< Alpha Fade  : 32 */
 
     struct
     {
-      orxVECTOR vStartColor;                    /**< ColorBlend start value : 32 */
-      orxVECTOR vEndColor;                      /**< ColorBlend end value : 44 */
-    };                                          /** Color blend : 44 */
+      orxVECTOR vStartColor;                    /**< ColorBlend start value : 36 */
+      orxVECTOR vEndColor;                      /**< ColorBlend end value : 48 */
+    };                                          /** Color blend : 48 */
 
     struct
     {
-      orxFLOAT fStartRotation;                  /**< Rotation start value : 24 */
-      orxFLOAT fEndRotation;                    /**< Rotation end value : 28 */
-    };                                          /**< Scale : 28 */
+      orxFLOAT fStartRotation;                  /**< Rotation start value : 28 */
+      orxFLOAT fEndRotation;                    /**< Rotation end value : 32 */
+    };                                          /**< Scale : 32 */
 
     struct
     {
-      orxVECTOR vStartScale;                    /**< Scale start value : 32 */
-      orxVECTOR vEndScale;                      /**< Scale end value : 44 */
-    };                                          /**< Scale : 44 */
+      orxVECTOR vStartScale;                    /**< Scale start value : 36 */
+      orxVECTOR vEndScale;                      /**< Scale end value : 48 */
+    };                                          /**< Scale : 48 */
 
     struct
     {
-      orxVECTOR vStartPosition;                 /**< Translation vector : 32 */
-      orxVECTOR vEndPosition;                   /**< Translation end position : 44 */
-    };                                          /**< Translation : 44 */
+      orxVECTOR vStartPosition;                 /**< Translation vector : 36 */
+      orxVECTOR vEndPosition;                   /**< Translation end position : 48 */
+    };                                          /**< Translation : 48 */
   };
 
-  orxU32 u32Flags;                              /**< Flags : 48 */
+  orxU32 u32Flags;                              /**< Flags : 52 */
 
 } orxFX_SLOT;
 
@@ -182,10 +183,10 @@ struct __orxFX_t
   orxSTRUCTURE  stStructure;                            /**< Public structure, first structure member : 16 */
   orxU32        u32ID;                                  /**< FX ID : 20 */
   orxFLOAT      fDuration;                              /**< FX duration : 24 */
-  orxFX_SLOT    astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 264 */
+  orxFX_SLOT    astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 284 */
 
   /* Padding */
-  orxPAD(72)
+  orxPAD(284)
 };
 
 /** Static structure
@@ -310,7 +311,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
     /* Valid? */
     if(eResult == orxSTATUS_SUCCESS)
     {
-      orxFLOAT  fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification;
+      orxFLOAT  fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, fPow;
       orxSTRING zType;
       orxU32    u32Flags = 0;
 
@@ -334,12 +335,8 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         u32Flags |= orxFX_SLOT_KU32_FLAG_ABSOLUTE;
       }
 
-      /* Is squared? */
-      if(orxConfig_GetBool(orxFX_KZ_CONFIG_SQUARED) != orxFALSE)
-      {
-        /* Updates flags */
-        u32Flags |= orxFX_SLOT_KU32_FLAG_CURVE_SQUARED;
-      }
+      /* Gets exponent? */
+      fPow = orxConfig_HasValue(orxFX_KZ_CONFIG_POW) ? orxConfig_GetFloat(orxFX_KZ_CONFIG_POW) : orxFLOAT_1;
 
       /* Gets its type */
       zType = orxString_LowerCase(orxConfig_GetString(orxFX_KZ_CONFIG_TYPE));
@@ -354,7 +351,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         fEndAlpha   = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_ALPHA);
 
         /* Adds alpha fade slot */
-        eResult = orxFX_AddAlphaFade(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, fStartAlpha, fEndAlpha, eCurve, u32Flags);
+        eResult = orxFX_AddAlphaFade(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, fStartAlpha, fEndAlpha, eCurve, fPow, u32Flags);
       }
       /* Color blend? */
       else if(orxString_Compare(zType, orxFX_KZ_COLOR) == 0)
@@ -366,7 +363,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         orxConfig_GetVector(orxFX_KZ_CONFIG_END_COLOR, &vEndColor);
 
         /* Adds color blend slot */
-        eResult = orxFX_AddColorBlend(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartColor, &vEndColor, eCurve, u32Flags);
+        eResult = orxFX_AddColorBlend(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
       }
       /* Rotation? */
       else if(orxString_Compare(zType, orxFX_KZ_ROTATION) == 0)
@@ -378,7 +375,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         fEndRotation    = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_ROTATION);
 
         /* Adds rotation slot */
-        eResult = orxFX_AddRotation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, orxMATH_KF_DEG_TO_RAD * fStartRotation, orxMATH_KF_DEG_TO_RAD * fEndRotation, eCurve, u32Flags);
+        eResult = orxFX_AddRotation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, orxMATH_KF_DEG_TO_RAD * fStartRotation, orxMATH_KF_DEG_TO_RAD * fEndRotation, eCurve, fPow, u32Flags);
       }
       /* Scale? */
       else if(orxString_Compare(zType, orxFX_KZ_SCALE) == 0)
@@ -410,7 +407,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         }
 
         /* Adds scale slot */
-        eResult = orxFX_AddScale(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartScale, &vEndScale, eCurve, u32Flags);
+        eResult = orxFX_AddScale(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartScale, &vEndScale, eCurve, fPow, u32Flags);
       }
       /* Translation? */
       else if(orxString_Compare(zType, orxFX_KZ_TRANSLATION) == 0)
@@ -422,7 +419,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         orxConfig_GetVector(orxFX_KZ_CONFIG_END_POSITION, &vEndPosition);
 
         /* Adds scale slot */
-        eResult = orxFX_AddTranslation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartPosition, &vEndPosition, eCurve, u32Flags);
+        eResult = orxFX_AddTranslation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartPosition, &vEndPosition, eCurve, fPow, u32Flags);
       }
     }
 
@@ -906,7 +903,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
                 {
                   fStartCoef = orx2F(2.0f) - fStartCoef;
                 }
-                
+
                 /* Gets linear coef in period [0.0; 2.0] starting at given phasis */
                 fEndCoef = (fEndTime * fFrequency) + pstFXSlot->fCyclePhasis;
                 fEndCoef = orxMath_Mod(fEndCoef * orx2F(2.0f), orx2F(2.0f));
@@ -954,12 +951,12 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               fEndCoef   *= fEndAmplification;
             }
 
-            /* Using a squared curve? */
-            if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_CURVE_SQUARED))
+            /* Using an exponential curve? */
+            if(pstFXSlot->fPow != orxFLOAT_1)
             {
-              /* Squares both coefs */
-              fStartCoef *= fStartCoef;
-              fEndCoef   *= fEndCoef;
+              /* Updates both coefs */
+              fStartCoef = orxMath_Pow(fStartCoef, pstFXSlot->fPow);
+              fEndCoef   = orxMath_Pow(fEndCoef, pstFXSlot->fPow);
             }
 
             /* Clamps the coefs */
@@ -1343,10 +1340,11 @@ orxBOOL orxFASTCALL orxFX_IsEnabled(orxCONST orxFX *_pstFX)
  * @param[in]   _fStartAlpha    Starting alpha value
  * @param[in]   _fEndAlpha      Ending alpha value
  * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, orxFX_CURVE _eCurve, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1376,6 +1374,7 @@ orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, or
     pstFXSlot->fCyclePeriod   = _fCyclePeriod;
     pstFXSlot->fCyclePhasis   = _fCyclePhasis;
     pstFXSlot->fAmplification = _fAmplification;
+    pstFXSlot->fPow           = _fPow;
     pstFXSlot->fStartAlpha    = _fStartAlpha;
     pstFXSlot->fEndAlpha      = _fEndAlpha;
     pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_ALPHA_FADE << orxFX_SLOT_KU32_SHIFT_TYPE) |orxFX_SLOT_KU32_FLAG_DEFINED;
@@ -1402,10 +1401,11 @@ orxSTATUS orxFASTCALL orxFX_AddAlphaFade(orxFX *_pstFX, orxFLOAT _fStartTime, or
  * @param[in]   _pvStartColor   Starting color value
  * @param[in]   _pvEndColor     Ending color value
  * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1437,6 +1437,7 @@ orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, o
     pstFXSlot->fCyclePeriod   = _fCyclePeriod;
     pstFXSlot->fCyclePhasis   = _fCyclePhasis;
     pstFXSlot->fAmplification = _fAmplification;
+    pstFXSlot->fPow           = _fPow;
     orxVector_Copy(&(pstFXSlot->vStartColor), _pvStartColor);
     orxVector_Copy(&(pstFXSlot->vEndColor), _pvEndColor);
     pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_COLOR_BLEND << orxFX_SLOT_KU32_SHIFT_TYPE) | orxFX_SLOT_KU32_FLAG_DEFINED;
@@ -1463,10 +1464,11 @@ orxSTATUS orxFASTCALL orxFX_AddColorBlend(orxFX *_pstFX, orxFLOAT _fStartTime, o
  * @param[in]   _fStartRotation Starting rotation value
  * @param[in]   _fEndRotation   Ending rotation value
  * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, orxFX_CURVE _eCurve, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1496,6 +1498,7 @@ orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orx
     pstFXSlot->fCyclePeriod   = _fCyclePeriod;
     pstFXSlot->fCyclePhasis   = _fCyclePhasis;
     pstFXSlot->fAmplification = _fAmplification;
+    pstFXSlot->fPow           = _fPow;
     pstFXSlot->fStartRotation = _fStartRotation;
     pstFXSlot->fEndRotation   = _fEndRotation;
     pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_ROTATION << orxFX_SLOT_KU32_SHIFT_TYPE) | orxFX_SLOT_KU32_FLAG_DEFINED;
@@ -1522,10 +1525,11 @@ orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orx
  * @param[in]   _pvStartScale   Starting scale value
  * @param[in]   _pvEndScale     Ending scale value
  * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxCONST orxVECTOR *_pvStartScale, orxCONST orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxCONST orxVECTOR *_pvStartScale, orxCONST orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1557,6 +1561,7 @@ orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
     pstFXSlot->fCyclePeriod   = _fCyclePeriod;
     pstFXSlot->fCyclePhasis   = _fCyclePhasis;
     pstFXSlot->fAmplification = _fAmplification;
+    pstFXSlot->fPow           = _fPow;
     orxVector_Copy(&(pstFXSlot->vStartScale), _pvStartScale);
     orxVector_Copy(&(pstFXSlot->vEndScale), _pvEndScale);
     pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_SCALE << orxFX_SLOT_KU32_SHIFT_TYPE) | orxFX_SLOT_KU32_FLAG_DEFINED;
@@ -1583,10 +1588,11 @@ orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
  * @param[in]   _pvStartPosition Starting position value
  * @param[in]   _pvEndPosition  Ending position value
  * @param[in]   _eCurve         Blending curve type
+ * @param[in]   _fPow           Blending curve exponent
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxCONST orxVECTOR *_pvStartPosition, orxCONST orxVECTOR *_pvEndPosition, orxFX_CURVE _eCurve, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxCONST orxVECTOR *_pvStartPosition, orxCONST orxVECTOR *_pvEndPosition, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1618,6 +1624,7 @@ orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, 
     pstFXSlot->fCyclePeriod   = _fCyclePeriod;
     pstFXSlot->fCyclePhasis   = _fCyclePhasis;
     pstFXSlot->fAmplification = _fAmplification;
+    pstFXSlot->fPow           = _fPow;
     orxVector_Copy(&(pstFXSlot->vStartPosition), _pvStartPosition);
     orxVector_Copy(&(pstFXSlot->vEndPosition), _pvEndPosition);
     pstFXSlot->u32Flags       = (_u32Flags & orxFX_SLOT_KU32_MASK_USER_ALL) | _eCurve | (orxFX_TYPE_TRANSLATION << orxFX_SLOT_KU32_SHIFT_TYPE) | orxFX_SLOT_KU32_FLAG_DEFINED;
