@@ -463,6 +463,19 @@ orxSTATUS orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
   return eResult;
 }
 
+orxBOOL orxDisplay_SDL_IsVSyncEnabled()
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  //! TODO: Writes its implementation
+
+  /* Done! */
+  return bResult;
+}
+
 orxSTATUS orxDisplay_SDL_Init()
 {
   orxSTATUS eResult;
@@ -617,4 +630,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapColor, DISPLAY, GET_BIT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawText, DISPLAY, DRAW_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_EnableVSync, DISPLAY, ENABLE_VSYNC);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_END();

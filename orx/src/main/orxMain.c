@@ -203,6 +203,35 @@ orxSTATUS orxMain_Run()
       /* Sends system close event */
       orxEvent_Send(&stEvent);
     }
+
+    /* Is display module initialized? */
+    if(orxModule_IsInitialized(orxMODULE_ID_DISPLAY) != orxFALSE)
+    {
+      orxSTATIC orxBOOL sbPressed = 0;
+
+      /* Was F12 pressed? */
+      if(sbPressed != orxFALSE)
+      {
+        /* No longer pressed? */
+        if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F12) == orxFALSE)
+        {
+          /* Updates key status */
+          sbPressed = orxFALSE;
+        }
+      }
+      else
+      {
+        /* Is F12 pressed? */
+        if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F12) != orxFALSE)
+        {
+          /* Toggles vsync */
+          orxDisplay_EnableVSync(!orxDisplay_IsVSyncEnabled());
+
+          /* Updates key status */
+          sbPressed = orxTRUE;
+        }
+      }
+    }
   }
 
   /* Updates result */

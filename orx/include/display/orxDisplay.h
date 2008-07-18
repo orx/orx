@@ -235,6 +235,7 @@ orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST or
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_EnableVSync, orxSTATUS, orxBOOL);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL);
 
 
 
@@ -336,6 +337,11 @@ orxSTATIC orxINLINE orxHANDLE orxDisplay_GetApplicationInput()
 orxSTATIC orxINLINE orxSTATUS orxDisplay_EnableVSync(orxBOOL _bEnable)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_EnableVSync)(_bEnable);
+}
+
+orxSTATIC orxINLINE orxBOOL orxDisplay_IsVSyncEnabled()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_IsVSyncEnabled)();
 }
 
 

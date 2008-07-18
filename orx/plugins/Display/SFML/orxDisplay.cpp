@@ -665,6 +665,20 @@ extern "C" orxSTATUS orxDisplay_SFML_EnableVSync(orxBOOL _bEnable)
   return eResult;
 }
 
+extern "C" orxBOOL orxDisplay_SFML_IsVSyncEnabled()
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 extern "C" orxSTATUS orxDisplay_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -801,4 +815,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BI
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawText, DISPLAY, DRAW_TEXT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_EnableVSync, DISPLAY, ENABLE_VSYNC);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
 orxPLUGIN_USER_CORE_FUNCTION_END();
