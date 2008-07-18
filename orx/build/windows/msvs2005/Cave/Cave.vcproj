@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="orxScroll"
-	ProjectGUID="{3C205FBE-CD22-4265-B9F1-A48EC28DF294}"
-	RootNamespace="orxScroll"
+	Name="Cave"
+	ProjectGUID="{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}"
+	RootNamespace="Cave"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ORXSCROLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDEBUG__"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CAVE_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDEBUG__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -64,7 +64,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib"
-				OutputFile="..\..\..\..\bin\plugins\demo\Scrolld.dll"
+				OutputFile="..\..\..\..\bin\plugins\demo\Caved.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames=""
@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ORXSCROLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;CAVE_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -146,7 +146,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\dynamic\orx.lib"
-				OutputFile="..\..\..\..\bin\plugins\demo\Scroll.dll"
+				OutputFile="..\..\..\..\bin\plugins\demo\Cave.dll"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames=""
@@ -210,7 +210,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\include"
 				AdditionalUsingDirectories=""
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ORXSCROLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDEBUG__"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CAVE_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDEBUG__"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -234,7 +234,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib"
-				OutputFile="..\..\..\..\bin\plugins\demo\Scrolld.dll"
+				OutputFile="..\..\..\..\bin\plugins\demo\Caved.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
@@ -296,7 +296,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\..\..\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ORXSCROLL_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;CAVE_EXPORTS;__orxWINDOWS__;__orxMSVC__;__orxDLL__"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -317,7 +317,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="..\..\..\..\lib\static\imporx.lib"
-				OutputFile="..\..\..\..\bin\plugins\demo\Scroll.dll"
+				OutputFile="..\..\..\..\bin\plugins\demo\Cave.dll"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames=""
@@ -364,7 +364,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\plugins\Demo\orxScroll.c"
+				RelativePath="..\..\..\..\plugins\Demo\orxCave.c"
 				>
 			</File>
 		</Filter>

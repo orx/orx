@@ -568,7 +568,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxVECTOR vScale;
 
         /* Is config scale not a vector? */
-        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vScale) == orxSTATUS_FAILURE)
+        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vScale) == orxNULL)
         {
           orxFLOAT fScale;
 

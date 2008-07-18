@@ -386,7 +386,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         orxVECTOR vStartScale, vEndScale;
 
         /* Is config start scale not a vector? */
-        if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_SCALE, &vStartScale) == orxSTATUS_FAILURE)
+        if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_SCALE, &vStartScale) == orxNULL)
         {
           orxFLOAT fScale;
 
@@ -398,7 +398,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         }
 
         /* Is config end scale not a vector? */
-        if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_SCALE, &vEndScale) == orxSTATUS_FAILURE)
+        if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_SCALE, &vEndScale) == orxNULL)
         {
           orxFLOAT fScale;
 
