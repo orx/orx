@@ -35,11 +35,12 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
-/** Abstract sound structure
+/** Abstract sound structures
  */
-typedef struct __orxSOUNDSYSTEM_SOUND_t orxSOUNDSYSTEM_SOUND;
+typedef struct __orxSOUNDSYSTEM_SOUND_t   orxSOUNDSYSTEM_SOUND;
+typedef struct __orxSOUNDSYSTEM_SAMPLE_t  orxSOUNDSYSTEM_SAMPLE;
 
-/** Sound status enum
+/** Sound system status enum
  */
 typedef enum __orxSOUNDSYSTEM_STATUS_t
 {
@@ -68,9 +69,11 @@ extern orxDLLAPI orxVOID                              orxSoundSystem_Setup();
 
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_Init, orxSTATUS);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_LoadSample, orxSOUNDSYSTEM_SOUND *, orxCONST orxSTRING);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_LoadStream, orxSOUNDSYSTEM_SOUND *, orxCONST orxSTRING);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_Unload, orxVOID, orxSOUNDSYSTEM_SOUND *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_LoadSample, orxSOUNDSYSTEM_SAMPLE *, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_UnloadSample, orxVOID, orxSOUNDSYSTEM_SAMPLE *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_CreateFromSample, orxSOUNDSYSTEM_SOUND *, orxCONST orxSOUNDSYSTEM_SAMPLE *);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_CreateStreamFromFile, orxSOUNDSYSTEM_SOUND *, orxCONST orxSTRING);
+orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_Delete, orxVOID, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_Play, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_Pause, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DECLARE_CORE_FUNCTION(orxSoundSystem_Stop, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
@@ -96,19 +99,29 @@ orxSTATIC orxINLINE orxVOID orxSoundSystem_Exit()
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Exit)();
 }
 
-orxSTATIC orxINLINE orxSOUNDSYSTEM_SOUND *orxSoundSystem_LoadSample(orxCONST orxSTRING _zFilename)
+orxSTATIC orxINLINE orxSOUNDSYSTEM_SAMPLE *orxSoundSystem_LoadSample(orxCONST orxSTRING _zFilename)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_LoadSample)(_zFilename);
 }
 
-orxSTATIC orxINLINE orxSOUNDSYSTEM_SOUND *orxSoundSystem_LoadStream(orxCONST orxSTRING _zFilename)
+orxSTATIC orxINLINE orxVOID orxSoundSystem_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_LoadStream)(_zFilename);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_UnloadSample)(_pstSample);
 }
 
-orxSTATIC orxINLINE orxVOID orxSoundSystem_Unload(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATIC orxINLINE orxSOUNDSYSTEM_SOUND *orxSoundSystem_CreateFromSample(orxCONST orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Unload)(_pstSound);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_CreateFromSample)(_pstSample);
+}
+
+orxSTATIC orxINLINE orxSOUNDSYSTEM_SOUND *orxSoundSystem_CreateStreamFromFile(orxCONST orxSTRING _zFilename)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_CreateStreamFromFile)(_zFilename);
+}
+
+orxSTATIC orxINLINE orxVOID orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Delete)(_pstSound);
 }
 
 orxSTATIC orxINLINE orxSTATUS orxSoundSystem_Play(orxSOUNDSYSTEM_SOUND *_pstSound)

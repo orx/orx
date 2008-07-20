@@ -35,7 +35,6 @@
 /** Slot flags
  */
 #define orxFX_SLOT_KU32_FLAG_ABSOLUTE           0x00000100  /**< Absolute flag */
-#define orxFX_SLOT_KU32_FLAG_CURVE_SQUARED      0x00000200  /**< Square blend curve flag */
 
 
 /** FX curve enum

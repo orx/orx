@@ -37,6 +37,11 @@
 #include "physics/orxPhysics.h"
 
 
+/** Misc defines
+ */
+#define orxBODY_KU32_PART_MAX_NUMBER          8
+
+
 /** Internal Body structure
  */
 typedef struct __orxBODY_t                    orxBODY;

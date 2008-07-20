@@ -520,7 +520,7 @@ orxSTATUS orxFX_Init()
   if(eResult == orxSTATUS_SUCCESS)
   {
     /* Inits Flags */
-    sstFX.u32Flags = orxFX_KU32_STATIC_FLAG_READY;
+    orxFLAG_SET(sstFX.u32Flags, orxFX_KU32_STATIC_FLAG_READY, orxFX_KU32_STATIC_FLAG_NONE);
   }
 
   /* Done! */
@@ -626,7 +626,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxMemory_Zero(acSlotID, 16 * sizeof(orxCHAR));
 
         /* Stores its ID */
-        pstResult->u32ID = orxString_ToCRC(_zConfigID);
+        pstResult->u32ID = u32ID;
 
         /* Adds it to reference table */
         if(orxHashTable_Add(sstFX.pstReferenceTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)

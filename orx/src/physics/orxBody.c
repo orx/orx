@@ -95,7 +95,7 @@ struct __orxBODY_PART_t
 struct __orxBODY_t
 {
   orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
-  orxBODY_PART            astPartList[orxPHYSICS_KU32_PART_MAX_NUMBER];/**< Body part structure list : 32 */
+  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 32 */
   orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 36 */
   orxCONST orxSTRUCTURE  *pstOwner;                                   /**< Owner structure : 40 */
 
@@ -433,7 +433,7 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, 
       orxMemory_Zero(acPartID, 16 * sizeof(orxCHAR));
 
       /* For all parts */
-      for(i = 1; i <= orxPHYSICS_KU32_PART_MAX_NUMBER; i++)
+      for(i = 1; i <= orxBODY_KU32_PART_MAX_NUMBER; i++)
       {
         orxSTRING zPartName;
 
@@ -488,7 +488,7 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
     orxU32 i;
 
     /* For all data structure */
-    for(i = 0; i < orxPHYSICS_KU32_PART_MAX_NUMBER; i++)
+    for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
     {
       /* Cleans it */
       orxBody_RemovePart(_pstBody, i);
@@ -537,7 +537,7 @@ orxSTRUCTURE *orxFASTCALL orxBody_GetOwner(orxCONST orxBODY *_pstBody)
 
 /** Adds a body part
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxPHYSICS_KU32_PART_MAX_NUMBER)
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
  * @param[in]   _pstPartDef     Body part definition
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -549,7 +549,7 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
   orxASSERT((_pstBodyPartDef != orxNULL) || (orxFLAG_TEST(sstBody.u32Flags, orxBODY_KU32_FLAG_USE_PART_TEMPLATE)));
-  orxASSERT(_u32Index < orxPHYSICS_KU32_PART_MAX_NUMBER);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
   /* Had previous part? */
   if(_pstBody->astPartList[_u32Index].pstData != orxNULL)
@@ -637,7 +637,7 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
 
 /** Adds a part to body from config
  * @param[in]   _pstBody        Concerned body
- * @param[in]   _u32Index       Part index (should be less than orxPHYSICS_KU32_PART_MAX_NUMBER)
+ * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
  * @param[in]   _zConfigID      Body part config ID
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -649,7 +649,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
-  orxASSERT(_u32Index < orxPHYSICS_KU32_PART_MAX_NUMBER);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
   orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
 
   /* Gets previous config section */
@@ -761,7 +761,7 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(orxCONST orxBODY *_pstBody, or
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstBody);
-  orxASSERT(_u32Index < orxPHYSICS_KU32_PART_MAX_NUMBER);
+  orxASSERT(_u32Index < orxBODY_KU32_PART_MAX_NUMBER);
 
   /* Updates result */
   pstResult = _pstBody->astPartList[_u32Index].pstData;

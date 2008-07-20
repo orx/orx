@@ -144,7 +144,7 @@ orxU32 orxPhysics_Box2D_GetShapeIndex(orxCONST b2Body *_poBody, orxCONST b2Shape
     orxU32                i;
 
     /* For all parts */
-    for(i = 0; i < orxPHYSICS_KU32_PART_MAX_NUMBER; i++)
+    for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
     {
       /* Gets part */
       pstBodyPart = orxBody_GetPart(pstBody, i);

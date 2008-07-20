@@ -111,10 +111,10 @@ extern "C" orxVOID orxSoundSystem_SFML_Exit()
   return;
 }
 
-extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_LoadSample(orxCONST orxSTRING _zFilename)
+extern "C" orxSOUNDSYSTEM_SAMPLE *orxSoundSystem_SFML_LoadSample(orxCONST orxSTRING _zFilename)
 {
-  orxSOUNDSYSTEM_SOUND *pstResult;
-  sf::SoundBuffer      *poBuffer;
+  orxSOUNDSYSTEM_SAMPLE *pstResult;
+  sf::SoundBuffer       *poBuffer;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -126,14 +126,8 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_LoadSample(orxCONST orxSTRI
   /* Loads it from file */
   if(poBuffer->LoadFromFile(_zFilename) != false)
   {
-    /* Creates result */
-    pstResult = new orxSOUNDSYSTEM_SOUND();
-
-    /* Creates a sound */
-    pstResult->poSound = new sf::Sound(*poBuffer);
-
-    /* Updates its status */
-    pstResult->bIsMusic = false;
+    /* Updates result */
+    pstResult = (orxSOUNDSYSTEM_SAMPLE *)poBuffer;
   }
   else
   {
@@ -141,14 +135,56 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_LoadSample(orxCONST orxSTRI
     delete poBuffer;
 
     /* Updates result */
-    pstResult = (orxSOUNDSYSTEM_SOUND *)orxNULL;
+    pstResult = (orxSOUNDSYSTEM_SAMPLE *)orxNULL;
   }
 
   /* Done! */
   return pstResult;
 }
 
-extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_LoadStream(orxCONST orxSTRING _zFilename)
+extern "C" orxVOID orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+{
+  sf::SoundBuffer *poBuffer;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSample != orxNULL);
+
+  /* Gets sound buffer */
+  poBuffer = (sf::SoundBuffer *)_pstSample;
+
+  /* Deletes it */
+  delete poBuffer;
+
+  return;
+}
+
+extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_CreateFromSample(orxCONST orxSOUNDSYSTEM_SAMPLE *_pstSample)
+{
+  orxSOUNDSYSTEM_SOUND *pstResult;
+  sf::SoundBuffer      *poBuffer;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSample != orxNULL);
+
+  /* Gets sound buffer */
+  poBuffer = (sf::SoundBuffer *)_pstSample;
+
+  /* Creates result */
+  pstResult = new orxSOUNDSYSTEM_SOUND();
+
+  /* Creates a sound */
+  pstResult->poSound = new sf::Sound(*poBuffer);
+
+  /* Updates its status */
+  pstResult->bIsMusic = false;
+
+  /* Done! */
+  return pstResult;
+}
+
+extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_CreateStreamFromFile(orxCONST orxSTRING _zFilename)
 {
   orxSOUNDSYSTEM_SOUND *pstResult;
   sf::Music            *poMusic;
@@ -185,7 +221,7 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_LoadStream(orxCONST orxSTRI
   return pstResult;
 }
 
-extern "C" orxVOID orxSoundSystem_SFML_Unload(orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxVOID orxSoundSystem_SFML_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -195,22 +231,16 @@ extern "C" orxVOID orxSoundSystem_SFML_Unload(orxSOUNDSYSTEM_SOUND *_pstSound)
   if(_pstSound->bIsMusic != false)
   {
     /* Deletes its music */
-    delete(_pstSound->poMusic);
-
-    /* Deletes it */
-    delete _pstSound;
+    delete _pstSound->poMusic;
   }
   else
   {
-    /* Deletes its associated sound buffer */
-    delete(_pstSound->poSound->GetBuffer());
-
     /* Deletes its sound */
     delete _pstSound->poSound;
-
-    /* Deletes it */
-    delete _pstSound;
   }
+
+  /* Deletes it */
+  delete _pstSound;
 
   return;
 }
@@ -299,12 +329,12 @@ extern "C" orxSTATUS orxSoundSystem_SFML_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSou
   if(_pstSound->bIsMusic != false)
   {
     /* Sets its volume */
-    _pstSound->poMusic->SetVolume(_fVolume);
+    _pstSound->poMusic->SetVolume(100.0f * _fVolume);
   }
   else
   {
     /* Sets its volume */
-    _pstSound->poSound->SetVolume(_fVolume);
+    _pstSound->poSound->SetVolume(100.0f * _fVolume);
   }
 
   /* Done! */
@@ -396,12 +426,12 @@ extern "C" orxFLOAT orxSoundSystem_SFML_GetVolume(orxCONST orxSOUNDSYSTEM_SOUND 
   if(_pstSound->bIsMusic != false)
   {
     /* Gets its volume */
-    fResult = _pstSound->poMusic->GetVolume();
+    fResult = orx2F(0.01f * _pstSound->poMusic->GetVolume());
   }
   else
   {
     /* Gets its volume */
-    fResult = _pstSound->poSound->GetVolume();
+    fResult = orx2F(0.01f * _pstSound->poSound->GetVolume());
   }
 
   /* Done! */
@@ -594,8 +624,10 @@ orxPLUGIN_USER_CORE_FUNCTION_START(SOUNDSYSTEM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Init, SOUNDSYSTEM, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Exit, SOUNDSYSTEM, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_LoadSample, SOUNDSYSTEM, LOAD_SAMPLE);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_LoadStream, SOUNDSYSTEM, LOAD_STREAM);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Unload, SOUNDSYSTEM, UNLOAD);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_UnloadSample, SOUNDSYSTEM, UNLOAD_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Delete, SOUNDSYSTEM, DELETE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Play, SOUNDSYSTEM, PLAY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Pause, SOUNDSYSTEM, PAUSE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Stop, SOUNDSYSTEM, STOP);
