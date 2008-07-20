@@ -17,6 +17,7 @@
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
 				<Linker>
+					<Add option="-lsfml-graphics-d -lsfml-window-d -lsfml-system-d" />
 					<Add library="..\..\..\lib\static\orxd.a" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
@@ -32,6 +33,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-lsfml-graphics -lsfml-window -lsfml-system" />
 					<Add library="..\..\..\lib\static\orx.a" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
@@ -47,6 +49,7 @@
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
 				<Linker>
+					<Add option="-lsfml-graphics-d -lsfml-window-d -lsfml-system-d" />
 					<Add library="orxd" />
 					<Add directory="..\..\..\lib\dynamic" />
 				</Linker>
@@ -62,6 +65,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-lsfml-graphics -lsfml-window -lsfml-system" />
 					<Add library="orx" />
 					<Add directory="..\..\..\lib\dynamic" />
 				</Linker>
@@ -74,7 +78,7 @@
 			<Add directory="..\..\..\include" />
 		</Compiler>
 		<Linker>
-			<Add option="-fPIC -lsfml-graphics -lsfml-window -lsfml-system" />
+			<Add option="-fPIC" />
 		</Linker>
 		<Unit filename="..\..\..\plugins\Display\SFML\orxDisplay.cpp" />
 		<Extensions>
