@@ -526,6 +526,7 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zFilename != orxNULL);
 
   /* Creates empty image */
   poImage = new sf::Image();
@@ -546,6 +547,9 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
   }
   else
   {
+    /* Deletes image */
+    delete poImage;
+
     /* Updates result */
     pstResult = (orxBITMAP *)orxNULL;
   }
@@ -790,9 +794,9 @@ extern "C" orxHANDLE orxDisplay_SFML_GetApplicationInput()
 }
 
 
-/********************
- *  Plugin Related  *
- ********************/
+/***************************************************************************
+ * Plugin related                                                          *
+ ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_Init, DISPLAY, INIT);

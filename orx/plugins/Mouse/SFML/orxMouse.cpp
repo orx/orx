@@ -170,9 +170,9 @@ extern "C" orxBOOL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eButton)
 }
 
 
-/********************
- *  Plugin Related  *
- ********************/
+/***************************************************************************
+ * Plugin related                                                          *
+ ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(MOUSE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_Init, MOUSE, INIT);

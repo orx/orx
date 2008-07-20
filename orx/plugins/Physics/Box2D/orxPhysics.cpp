@@ -969,9 +969,9 @@ extern "C" orxVOID orxPhysics_Box2D_Exit()
 }
 
 
-/********************
- *  Plugin Related  *
- ********************/
+/***************************************************************************
+ * Plugin related                                                          *
+ ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(PHYSICS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Init, PHYSICS, INIT);

@@ -466,9 +466,9 @@ orxSTATUS orxFileSystem_LibC_DeleteDir(orxSTRING _zDirName)
 }
 
 
-/********************
- *  Plugin Related  *
- ********************/
+/***************************************************************************
+ * Plugin related                                                          *
+ ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(FILESYSTEM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFileSystem_LibC_Init, FILESYSTEM, INIT);

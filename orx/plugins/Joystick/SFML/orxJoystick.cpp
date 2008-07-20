@@ -210,9 +210,9 @@ extern "C" orxBOOL orxJoystick_SFML_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_B
 }
 
 
-/********************
- *  Plugin Related  *
- ********************/
+/***************************************************************************
+ * Plugin related                                                          *
+ ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(JOYSTICK);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxJoystick_SFML_Init, JOYSTICK, INIT);

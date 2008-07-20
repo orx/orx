@@ -293,9 +293,9 @@ extern "C" orxVOID orxKeyboard_SFML_ClearBuffer()
   return;
 }
 
-/********************
- *  Plugin Related  *
- ********************/
+/***************************************************************************
+ * Plugin related                                                          *
+ ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(KEYBOARD);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_SFML_Init, KEYBOARD, INIT);
