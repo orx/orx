@@ -104,6 +104,7 @@ ORXDLL_OBJECTS =  \
 	.\$(BUILD)\orxDLL_orxPlugin.o \
 	.\$(BUILD)\orxDLL_orxScript.o \
 	.\$(BUILD)\orxDLL_orxSound.o \
+	.\$(BUILD)\orxDLL_orxSoundPointer.o \
 	.\$(BUILD)\orxDLL_orxSoundSystem.o \
 	.\$(BUILD)\orxDLL_orxFSM.o \
 	.\$(BUILD)\orxDLL_orxHashTable.o \
@@ -152,6 +153,7 @@ ORXLIB_OBJECTS =  \
 	.\$(BUILD)\orxLIB_orxPlugin.o \
 	.\$(BUILD)\orxLIB_orxScript.o \
 	.\$(BUILD)\orxLIB_orxSound.o \
+	.\$(BUILD)\orxLIB_orxSoundPointer.o \
 	.\$(BUILD)\orxLIB_orxSoundSystem.o \
 	.\$(BUILD)\orxLIB_orxFSM.o \
 	.\$(BUILD)\orxLIB_orxHashTable.o \
@@ -666,6 +668,9 @@ endif
 .\$(BUILD)\orxDLL_orxSound.o: ../../../src/sound/orxSound.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
+.\$(BUILD)\orxDLL_orxSoundPointer.o: ../../../src/sound/orxSoundPointer.c
+	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
+
 .\$(BUILD)\orxDLL_orxSoundSystem.o: ../../../src/sound/orxSoundSystem.c
 	$(CC) -c -o $@ $(ORXDLL_CFLAGS) $(CPPDEPS) $<
 
@@ -796,6 +801,9 @@ endif
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxLIB_orxSound.o: ../../../src/sound/orxSound.c
+	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
+
+.\$(BUILD)\orxLIB_orxSoundPointer.o: ../../../src/sound/orxSoundPointer.c
 	$(CC) -c -o $@ $(ORXLIB_CFLAGS) $(CPPDEPS) $<
 
 .\$(BUILD)\orxLIB_orxSoundSystem.o: ../../../src/sound/orxSoundSystem.c

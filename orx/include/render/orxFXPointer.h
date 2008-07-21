@@ -50,12 +50,12 @@ extern orxDLLAPI orxVOID                        orxFXPointer_Exit();
 
 
 /** Creates an empty FXPointer
- * @return orxFX / orxNULL
+ * @return orxFXPOINTER / orxNULL
  */
 extern orxDLLAPI orxFXPOINTER *                 orxFXPointer_Create();
 
 /** Deletes an FXPointer
- * @param[in] _pstFXPointer     Concerned FX
+ * @param[in] _pstFXPointer     Concerned FXPointer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer);

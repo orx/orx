@@ -73,6 +73,7 @@
 #include "script/orxScript.h"
 
 #include "sound/orxSound.h"
+#include "sound/orxSoundPointer.h"
 #include "sound/orxSoundSystem.h"
 
 

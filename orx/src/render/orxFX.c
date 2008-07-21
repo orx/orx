@@ -1660,12 +1660,12 @@ orxFLOAT orxFASTCALL orxFX_GetDuration(orxCONST orxFX *_pstFX)
   return fResult;
 }
 
-/** Tests FX name against given one
+/** Tests FX config ID against given one
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _zName          Name to test
- * @return      orxTRUE if it's FX name, orxFALSE otherwise
+ * @param[in]   _zConfigID      Config ID to test
+ * @return      orxTRUE if it's FX one, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxFX_IsName(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zName)
+orxBOOL orxFASTCALL orxFX_IsConfigID(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zConfigID)
 {
   orxBOOL bResult;
 
@@ -1674,7 +1674,7 @@ orxBOOL orxFASTCALL orxFX_IsName(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zNa
   orxSTRUCTURE_ASSERT(_pstFX);
 
   /* Updates result */
-  bResult = (orxString_ToCRC(_zName) == _pstFX->u32ID) ? orxTRUE : orxFALSE;
+  bResult = (orxString_ToCRC(_zConfigID) == _pstFX->u32ID) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;

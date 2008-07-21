@@ -69,6 +69,7 @@
     <VirtualDirectory Name="sound">
       <File Name="..\..\..\src\sound\orxSound.c"/>
       <File Name="..\..\..\src\sound\orxSoundSystem.c"/>
+      <File Name="..\..\..\src\sound\orxSoundPointer.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="utils">
       <File Name="..\..\..\src\utils\orxFSM.c"/>
@@ -181,6 +182,7 @@
     <VirtualDirectory Name="sound">
       <File Name="..\..\..\include\sound\orxSound.h"/>
       <File Name="..\..\..\include\sound\orxSoundSystem.h"/>
+      <File Name="..\..\..\include\sound\orxSoundPointer.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="utils">
       <File Name="..\..\..\include\utils\orxFSM.h"/>

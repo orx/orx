@@ -191,10 +191,12 @@
 
         <headers>
             include/sound/orxSound.h
+            include/sound/orxSoundPointer.h
             include/sound/orxSoundSystem.h
         </headers>
         <sources>
             src/sound/orxSound.c
+            src/sound/orxSoundPointer.c
             src/sound/orxSoundSystem.c
         </sources>
 

@@ -4,7 +4,7 @@
 
 /***************************************************************************
  orxFXPointer.c
- FX module
+ FX pointer module
  begin                : 30/06/2008
  author               : (C) Arcallians
  email                : iarwain@arcallians.org
@@ -65,7 +65,7 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
-/** FX holder structure
+/** FXPointer holder structure
  */
 typedef struct __orxFXPOINTER_HOLDER_t
 {
@@ -75,7 +75,7 @@ typedef struct __orxFXPOINTER_HOLDER_t
 
 } orxFXPOINTER_HOLDER;
 
-/** FX structure
+/** FXPointer structure
  */
 struct __orxFXPOINTER_t
 {
@@ -109,13 +109,13 @@ orxSTATIC orxFXPOINTER_STATIC sstFXPointer;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Deletes all the FXs
+/** Deletes all the FXPointers
  */
 orxSTATIC orxINLINE orxVOID orxFXPointer_DeleteAll()
 {
   orxFXPOINTER *pstFXPointer;
 
-  /* Gets first FX */
+  /* Gets first FXPointer */
   pstFXPointer = orxFXPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_FXPOINTER));
 
   /* Non empty? */
@@ -124,8 +124,8 @@ orxSTATIC orxINLINE orxVOID orxFXPointer_DeleteAll()
     /* Deletes it */
     orxFXPointer_Delete(pstFXPointer);
 
-    /* Gets first FX */
-    pstFXPointer = orxFXPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_FX));
+    /* Gets first FXPointer */
+    pstFXPointer = orxFXPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_FXPOINTER));
   }
 
   return;
@@ -279,7 +279,7 @@ orxVOID orxFXPointer_Exit()
   /* Initialized? */
   if(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY)
   {
-    /* Deletes FX list */
+    /* Deletes FXPointer list */
     orxFXPointer_DeleteAll();
 
     /* Unregisters structure type */
@@ -306,7 +306,7 @@ orxFXPOINTER *orxFXPointer_Create()
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
 
-  /* Creates FX */
+  /* Creates FXPointer */
   pstResult = orxFXPOINTER(orxStructure_Create(orxSTRUCTURE_ID_FXPOINTER));
 
   /* Created? */
@@ -528,6 +528,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
+
         break;
       }
     }
@@ -651,7 +652,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxFX_IsName(pstFX, _zFXConfigID) != orxFALSE)
+      if(orxFX_IsConfigID(pstFX, _zFXConfigID) != orxFALSE)
       {
         /* Decreases its reference counter */
         orxStructure_DecreaseCounter(pstFX);

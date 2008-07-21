@@ -183,8 +183,8 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
       pstEventStorage != orxNULL;
       pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, pstEventStorage))
   {
-    /* Same key? */
-    if(pstEventStorage->u32Key == _poPoint->id.key)
+    /* Same pair? */
+    if((pstEventStorage->poSource == _poPoint->shape1->GetBody()) && (pstEventStorage->poDestination == _poPoint->shape2->GetBody()))
     {
       /* Removes it */
       orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);

@@ -48,6 +48,13 @@ orxSTATIC orxFASTCALL orxSTATUS orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
     /* Updates ball counter */
     su32BallCounter--;
   }
+  /* Colliding? */
+  else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+  {
+    /* Adds bump FX on both objects */
+    orxObject_AddFX(orxOBJECT(orxBody_GetOwner(orxBODY(_pstEvent->hSender))), "Bump");
+    orxObject_AddFX(orxOBJECT(orxBody_GetOwner(orxBODY(_pstEvent->hRecipient))), "Bump");
+  }
 
   /* Done! */
   return eResult;
@@ -103,9 +110,6 @@ orxSTATIC orxSTATUS orxBounce_Init()
 
   /* Inits the random seed */
   orxFRAND_INIT(orx2F(1000000.0f) * orxSystem_GetTime());
-
-  /* Creates ball */
-  orxObject_CreateFromConfig("Ball");
 
   /* Creates walls */
   orxObject_CreateFromConfig("Wall1");

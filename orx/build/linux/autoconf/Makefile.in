@@ -84,6 +84,7 @@ ORXDLL_OBJECTS =  \
 	./$(BUILD)/orxDLL_orxPlugin.o \
 	./$(BUILD)/orxDLL_orxScript.o \
 	./$(BUILD)/orxDLL_orxSound.o \
+	./$(BUILD)/orxDLL_orxSoundPointer.o \
 	./$(BUILD)/orxDLL_orxSoundSystem.o \
 	./$(BUILD)/orxDLL_orxFSM.o \
 	./$(BUILD)/orxDLL_orxHashTable.o \
@@ -132,6 +133,7 @@ ORXLIB_OBJECTS =  \
 	./$(BUILD)/orxLIB_orxPlugin.o \
 	./$(BUILD)/orxLIB_orxScript.o \
 	./$(BUILD)/orxLIB_orxSound.o \
+	./$(BUILD)/orxLIB_orxSoundPointer.o \
 	./$(BUILD)/orxLIB_orxSoundSystem.o \
 	./$(BUILD)/orxLIB_orxFSM.o \
 	./$(BUILD)/orxLIB_orxHashTable.o \
@@ -514,6 +516,9 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 ./$(BUILD)/orxDLL_orxSound.o: $(srcdir)/../../../src/sound/orxSound.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/sound/orxSound.c
 
+./$(BUILD)/orxDLL_orxSoundPointer.o: $(srcdir)/../../../src/sound/orxSoundPointer.c
+	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/sound/orxSoundPointer.c
+
 ./$(BUILD)/orxDLL_orxSoundSystem.o: $(srcdir)/../../../src/sound/orxSoundSystem.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/sound/orxSoundSystem.c
 
@@ -645,6 +650,9 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 
 ./$(BUILD)/orxLIB_orxSound.o: $(srcdir)/../../../src/sound/orxSound.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/sound/orxSound.c
+
+./$(BUILD)/orxLIB_orxSoundPointer.o: $(srcdir)/../../../src/sound/orxSoundPointer.c
+	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/sound/orxSoundPointer.c
 
 ./$(BUILD)/orxLIB_orxSoundSystem.o: $(srcdir)/../../../src/sound/orxSoundSystem.c
 	$(CCC) -c -o $@ $(ORXLIB_CFLAGS) $(srcdir)/../../../src/sound/orxSoundSystem.c

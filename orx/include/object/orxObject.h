@@ -35,6 +35,7 @@
 #include "anim/orxAnimSet.h"
 #include "display/orxDisplay.h"
 #include "math/orxVector.h"
+#include "sound/orxSound.h"
 
 
 /** Defines */
@@ -167,11 +168,24 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetPivot(orxCONST orxOBJEC
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition);
 
+/** Get object world position
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvPosition     Object world position
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition);
+
 /** Get object rotation
  * @param[in]   _pstObject      Concerned object
- * @return      Rotation value
+ * @return      orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetRotation(orxCONST orxOBJECT *_pstObject);
+
+/** Get object world rotation
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetWorldRotation(orxCONST orxOBJECT *_pstObject);
 
 /** Get object scale
  * @param[in]   _pstObject      Concerned object
@@ -180,6 +194,14 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetRotation(orxCONST orxOB
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
+
+/** Get object world scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pfScaleX       Object world X scale
+ * @param[out]  _pfScaleY       Object world Y scale
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
 
 
 /** Sets an object parent
@@ -332,11 +354,32 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObjec
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
 /** Removes an FX using using its config ID
- * @param[in]   _pstObject      Concerned FXPointer
+ * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID);
+
+
+/** Adds a sound using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zSoundConfigID Config ID of the sound to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddSound(orxOBJECT *_pstObject, orxCONST orxSTRING _zSoundConfigID);
+
+/** Removes a sound using using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zSoundConfigID Config ID of the sound to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveSound(orxOBJECT *_pstObject, orxCONST orxSTRING _zSoundConfigID);
+
+/** Gets last added sound (Do *NOT* destroy it directly before removing it!!!)
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSOUND / orxNULL
+ */
+extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(orxCONST orxOBJECT *_pstObject);
 
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)

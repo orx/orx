@@ -155,6 +155,7 @@
 		<Unit filename="..\..\..\include\render\orxViewport.h" />
 		<Unit filename="..\..\..\include\script\orxScript.h" />
 		<Unit filename="..\..\..\include\sound\orxSound.h" />
+		<Unit filename="..\..\..\include\sound\orxSoundPointer.h" />
 		<Unit filename="..\..\..\include\sound\orxSoundSystem.h" />
 		<Unit filename="..\..\..\include\utils\orxFSM.h" />
 		<Unit filename="..\..\..\include\utils\orxHashTable.h" />
@@ -272,6 +273,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\sound\orxSound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\sound\orxSoundPointer.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\sound\orxSoundSystem.c">

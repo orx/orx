@@ -531,6 +531,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\src\sound\orxSoundPointer.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\src\sound\orxSoundSystem.c"
 					>
 				</File>
@@ -906,6 +910,10 @@
 				>
 				<File
 					RelativePath="..\..\..\..\include\sound\orxSound.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\include\sound\orxSoundPointer.h"
 					>
 				</File>
 				<File

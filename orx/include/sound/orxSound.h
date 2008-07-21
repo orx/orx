@@ -164,6 +164,13 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetDuration(orxCONST orxS
  */
 extern orxDLLAPI orxSOUND_STATUS orxFASTCALL  orxSound_GetStatus(orxCONST orxSOUND *_pstSound);
 
+/** Tests sound config ID against given one
+ * @param[in]   _pstSound     Concerned sound
+ * @param[in]   _zConfigID    Config ID to test
+ * @return      orxTRUE if it's sound one, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxSound_IsConfigID(orxCONST orxSOUND *_pstSound, orxCONST orxSTRING _zConfigID);
+
 #endif /*_orxSOUND_H_*/
 
 /** @} */

@@ -372,7 +372,7 @@ orxSTATIC orxINLINE orxSTATUS _orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, o
  ***************************************************************************/
 /** Gets a frame position
  * @param[out]  _pstDstFrame    Destination frame, will contain up-to-date frame
- * @param[IN]   _pstSrcFrame    Source frame, which needs update
+ * @param[in]   _pstSrcFrame    Source frame, which needs update
  */
 orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME *_pstSrcFrame)
 {

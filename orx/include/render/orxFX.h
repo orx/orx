@@ -194,12 +194,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddTranslation(orxFX *_pst
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetDuration(orxCONST orxFX *_pstFX);
 
-/** Tests FX name against given one
+/** Tests FX config ID against given one
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _zName          Name to test
- * @return      orxTRUE if it's FX name, orxFALSE otherwise
+ * @param[in]   _zConfigID      Config ID to test
+ * @return      orxTRUE if it's FX one, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsName(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zName);
+extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsConfigID(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zConfigID);
 
 /** Set FX loop property
  * @param[in]   _pstFX          Concerned FX

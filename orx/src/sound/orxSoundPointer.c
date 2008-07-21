@@ -1,0 +1,652 @@
+/**
+ * @file orxSoundPointer.c
+ */
+
+/***************************************************************************
+ orxSoundPointer.c
+ Sound pointer module
+ begin                : 20/07/2008
+ author               : (C) Arcallians
+ email                : iarwain@arcallians.org
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by the Free Software Foundation; either version 2.1      *
+ *   of the License, or (at your option) any later version.                *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#include "sound/orxSoundPointer.h"
+
+#include "debug/orxDebug.h"
+#include "memory/orxMemory.h"
+#include "core/orxClock.h"
+#include "object/orxStructure.h"
+#include "object/orxObject.h"
+
+
+/** Module flags
+ */
+#define orxSOUNDPOINTER_KU32_STATIC_FLAG_NONE       0x00000000
+
+#define orxSOUNDPOINTER_KU32_STATIC_FLAG_READY      0x00000001
+
+#define orxSOUNDPOINTER_KU32_STATIC_MASK_ALL        0xFFFFFFFF
+
+
+/** Flags
+ */
+#define orxSOUNDPOINTER_KU32_FLAG_NONE              0x00000000  /**< No flags */
+
+#define orxSOUNDPOINTER_KU32_FLAG_ENABLED           0x10000000  /**< Enabled flag */
+
+#define orxSOUNDPOINTER_KU32_MASK_ALL               0xFFFFFFFF  /**< All mask */
+
+
+/** Holder flags
+ */
+#define orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE       0x00000000  /**< No flags */
+
+#define orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL   0x10000000  /**< Internal flag */
+
+#define orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL        0xFFFFFFFF  /**< All mask */
+
+
+/** Misc defines
+ */
+#define orxSOUNDPOINTER_KU32_SOUND_NUMBER           4
+
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** SoundPointer holder structure
+ */
+typedef struct __orxSOUNDPOINTER_HOLDER_t
+{
+  orxSOUND *pstSound;                                                       /**< Sound reference : 4 */
+  orxU32    u32Flags;                                                       /**< Flags : 8 */
+
+} orxSOUNDPOINTER_HOLDER;
+
+/** SoundPointer structure
+ */
+struct __orxSOUNDPOINTER_t
+{
+  orxSTRUCTURE            stStructure;                                      /**< Public structure, first structure member : 16 */
+  orxSOUNDPOINTER_HOLDER  astSoundList[orxSOUNDPOINTER_KU32_SOUND_NUMBER];  /**< Sound list : 48 */
+  orxU32                  u32LastAddedIndex;                                /**< Last added sound index : 52 */
+
+  /* Padding */
+  orxPAD(52)
+};
+
+/** Static structure
+ */
+typedef struct __orxSOUNDPOINTER_STATIC_t
+{
+  orxU32 u32Flags;                                                          /**< Control flags */
+
+} orxSOUNDPOINTER_STATIC;
+
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
+ */
+orxSTATIC orxSOUNDPOINTER_STATIC sstSoundPointer;
+
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+/** Deletes all the SoundPointers
+ */
+orxSTATIC orxINLINE orxVOID orxSoundPointer_DeleteAll()
+{
+  orxSOUNDPOINTER *pstSoundPointer;
+
+  /* Gets first SoundPointer */
+  pstSoundPointer = orxSOUNDPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUNDPOINTER));
+
+  /* Non empty? */
+  while(pstSoundPointer != orxNULL)
+  {
+    /* Deletes it */
+    orxSoundPointer_Delete(pstSoundPointer);
+
+    /* Gets first SoundPointer */
+    pstSoundPointer = orxSOUNDPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUNDPOINTER));
+  }
+
+  return;
+}
+
+/** Updates the SoundPointer (Callback for generic structure update calling)
+ * @param[in]   _pstStructure                 Generic Structure or the concerned Body
+ * @param[in]   _pstCaller                    Structure of the caller
+ * @param[in]   _pstClockInfo                 Clock info used for time updates
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATIC orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
+{
+  orxSOUNDPOINTER *pstSoundPointer;
+  orxOBJECT    *pstObject;
+  orxSTATUS     eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstStructure);
+  orxSTRUCTURE_ASSERT(_pstCaller);
+
+  /* Gets SoundPointer */
+  pstSoundPointer = orxSOUNDPOINTER(_pstStructure);
+
+  /* Gets calling object */
+  pstObject = orxOBJECT(_pstCaller);
+
+  /* Is enabled? */
+  if(orxSoundPointer_IsEnabled(pstSoundPointer) != orxFALSE)
+  {
+    orxU32 i;
+
+    /* For all Sounds */
+    for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+    {
+      orxSOUND *pstSound;
+
+      /* Gets sound */
+      pstSound = pstSoundPointer->astSoundList[i].pstSound;
+
+      /* Valid? */
+      if(pstSound != orxNULL)
+      {
+        /* Is sound stopped? */
+        if(orxSound_GetStatus(pstSound) == orxSOUND_STATUS_STOP)
+        {
+          /* Removes it */
+          orxSoundPointer_RemoveSound(pstSoundPointer, pstSound);
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/***************************************************************************
+ * Public functions                                                        *
+ ***************************************************************************/
+
+/** SoundPointer module setup
+ */
+orxVOID orxSoundPointer_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_SOUND);
+
+  return;
+}
+
+/** Inits the SoundPointer module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxSoundPointer_Init()
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not already Initialized? */
+  if(!(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY))
+  {
+    /* Cleans static controller */
+    orxMemory_Zero(&sstSoundPointer, sizeof(orxSOUNDPOINTER_STATIC));
+
+    /* Registers structure type */
+    eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSoundPointer_Update);
+
+    /* Initialized? */
+    if(eResult == orxSTATUS_SUCCESS)
+    {
+      /* Inits Flags */
+      sstSoundPointer.u32Flags = orxSOUNDPOINTER_KU32_STATIC_FLAG_READY;
+    }
+    else
+    {
+      /* !!! MSG !!! */
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Exits from the SoundPointer module
+ */
+orxVOID orxSoundPointer_Exit()
+{
+  /* Initialized? */
+  if(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY)
+  {
+    /* Deletes SoundPointer list */
+    orxSoundPointer_DeleteAll();
+
+    /* Unregisters structure type */
+    orxStructure_Unregister(orxSTRUCTURE_ID_SOUNDPOINTER);
+
+    /* Updates flags */
+    sstSoundPointer.u32Flags &= ~orxSOUNDPOINTER_KU32_STATIC_FLAG_READY;
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  return;
+}
+
+/** Creates an empty SoundPointer
+ * @return      Created orxSOUNDPOINTER / orxNULL
+ */
+orxSOUNDPOINTER *orxSoundPointer_Create()
+{
+  orxSOUNDPOINTER *pstResult;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+
+  /* Creates SoundPointer */
+  pstResult = orxSOUNDPOINTER(orxStructure_Create(orxSTRUCTURE_ID_SOUNDPOINTER));
+
+  /* Created? */
+  if(pstResult != orxNULL)
+  {
+    /* Clears last added sound index */
+    pstResult->u32LastAddedIndex = orxU32_UNDEFINED;
+
+    /* Inits flags */
+    orxStructure_SetFlags(pstResult, orxSOUNDPOINTER_KU32_FLAG_ENABLED, orxSOUNDPOINTER_KU32_MASK_ALL);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Deletes a SoundPointer
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* Not referenced? */
+  if(orxStructure_GetRefCounter(_pstSoundPointer) == 0)
+  {
+    orxU32 i;
+
+    /* For all sounds */
+    for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+    {
+      /* Valid? */
+      if(_pstSoundPointer->astSoundList[i].pstSound != orxNULL)
+      {
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(_pstSoundPointer->astSoundList[i].pstSound);
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxSound_Delete(_pstSoundPointer->astSoundList[i].pstSound);
+        }
+      }
+    }
+
+    /* Deletes structure */
+    orxStructure_Delete(_pstSoundPointer);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Enables/disables a SoundPointer
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _bEnable        Enable / disable
+ */
+orxVOID orxFASTCALL orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* Enable? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstSoundPointer, orxSOUNDPOINTER_KU32_FLAG_ENABLED, orxSOUNDPOINTER_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstSoundPointer, orxSOUNDPOINTER_KU32_FLAG_NONE, orxSOUNDPOINTER_KU32_FLAG_ENABLED);
+  }
+
+  return;
+}
+
+/** Is SoundPointer enabled?
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxSoundPointer_IsEnabled(orxCONST orxSOUNDPOINTER *_pstSoundPointer)
+{
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* Done! */
+  return(orxStructure_TestFlags(_pstSoundPointer, orxSOUNDPOINTER_KU32_FLAG_ENABLED));
+}
+
+/** Adds a sound
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _pstSound           Sound to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer, orxSOUND *_pstSound)
+{
+  orxU32    u32Index;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Finds an empty slot */
+  for(u32Index = 0; (u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER) && (_pstSoundPointer->astSoundList[u32Index].pstSound != orxNULL); u32Index++);
+
+  /* Found? */
+  if(u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER)
+  {
+    /* Increases its reference counter */
+    orxStructure_IncreaseCounter(_pstSound);
+
+    /* Adds it to holder */
+    _pstSoundPointer->astSoundList[u32Index].pstSound = _pstSound;
+
+    /* Updates its flags */
+    orxFLAG_SET(_pstSoundPointer->astSoundList[u32Index].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_NONE, orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL);
+
+    /* Stores it as last added sound */
+    _pstSoundPointer->u32LastAddedIndex = u32Index;
+
+    /* Plays it */
+    eResult = orxSound_Play(_pstSound);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Clears last added sound index */
+    _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a sound
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _pstSound           Sound to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPointer, orxSOUND *_pstSound)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* For all slots */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Found? */
+      if(pstSound == _pstSound)
+      {
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(pstSound);
+
+        /* Was last added sound? */
+        if(_pstSoundPointer->u32LastAddedIndex == i)
+        {
+          /* Clears last added sound index */
+          _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
+        }
+
+        /* Removes its reference */
+        _pstSoundPointer->astSoundList[i].pstSound = orxNULL;
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxSound_Delete(pstSound);
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a sound using its config ID
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _zSoundConfigID     Config ID of the sound to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, orxCONST orxSTRING _zSoundConfigID)
+{
+  orxU32    u32Index;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+  orxASSERT((_zSoundConfigID != orxNULL) && (*_zSoundConfigID != *orxSTRING_EMPTY));
+
+  /* Finds an empty slot */
+  for(u32Index = 0; (u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER) && (_pstSoundPointer->astSoundList[u32Index].pstSound != orxNULL); u32Index++);
+
+  /* Found? */
+  if(u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER)
+  {
+    orxSOUND *pstSound;
+
+    /* Creates sound */
+    pstSound = orxSound_CreateFromConfig(_zSoundConfigID);
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Increases its reference counter */
+      orxStructure_IncreaseCounter(pstSound);
+
+      /* Adds it to holder */
+      _pstSoundPointer->astSoundList[u32Index].pstSound = pstSound;
+
+      /* Updates its flags */
+      orxFLAG_SET(_pstSoundPointer->astSoundList[u32Index].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL);
+
+      /* Stores it as last added sound */
+      _pstSoundPointer->u32LastAddedIndex = u32Index;
+
+      /* Plays it */
+      eResult = orxSound_Play(pstSound);
+    }
+    else
+    {
+      /* !!! MSG !!! */
+
+      /* Clears last added sound index */
+      _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a sound using using its config ID
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _zSoundConfigID     Config ID of the sound to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, orxCONST orxSTRING _zSoundConfigID)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+  orxASSERT((_zSoundConfigID != orxNULL) && (*_zSoundConfigID != *orxSTRING_EMPTY));
+
+  /* For all slots */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Found? */
+      if(orxSound_IsConfigID(pstSound, _zSoundConfigID) != orxFALSE)
+      {
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(pstSound);
+
+        /* Was last added sound? */
+        if(_pstSoundPointer->u32LastAddedIndex == i)
+        {
+          /* Clears last added sound index */
+          _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
+        }
+
+        /* Removes its reference */
+        _pstSoundPointer->astSoundList[i].pstSound = orxNULL;
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstSoundPointer->astSoundList[i].u32Flags, orxSOUNDPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxSound_Delete(pstSound);
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets last added sound (Do *NOT* destroy it directly before removing it!!!)
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxSOUND / orxNULL
+ */
+orxSOUND *orxFASTCALL orxSoundPointer_GetLastAddedSound(orxCONST orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxSOUND *pstResult;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* Has valid last added sound */
+  if((_pstSoundPointer->u32LastAddedIndex != orxU32_UNDEFINED)
+  && (_pstSoundPointer->astSoundList[_pstSoundPointer->u32LastAddedIndex].pstSound != orxNULL))
+  {
+    /* Updates result */
+    pstResult = _pstSoundPointer->astSoundList[_pstSoundPointer->u32LastAddedIndex].pstSound;
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}

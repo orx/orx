@@ -58,7 +58,7 @@
 #define orxSOUND_KZ_CONFIG_LOOP                         "Loop"
 #define orxSOUND_KZ_CONFIG_PITCH                        "Pitch"
 #define orxSOUND_KZ_CONFIG_VOLUME                       "Volume"
-#define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepInCache"
+#define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepDataInCache"
 
 
 /***************************************************************************
@@ -653,7 +653,7 @@ orxSTATUS orxFASTCALL orxSound_SetVolume(orxSOUND *_pstSound, orxFLOAT _fVolume)
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
-  orxASSERT((_fVolume >= orxFLOAT_0) && (_fVolume >= orxFLOAT_1));
+  orxASSERT((_fVolume >= orxFLOAT_0) && (_fVolume <= orxFLOAT_1));
 
   /* Sets its volume */
   eResult = orxSoundSystem_SetVolume(_pstSound->pstData, _fVolume);
@@ -863,4 +863,24 @@ orxSOUND_STATUS orxFASTCALL orxSound_GetStatus(orxCONST orxSOUND *_pstSound)
 
   /* Done! */
   return eResult;
+}
+
+/** Tests sound config ID against given one
+ * @param[in]   _pstSound     Concerned sound
+ * @param[in]   _zConfigID    Config ID to test
+ * @return      orxTRUE if it's sound one, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxSound_IsConfigID(orxCONST orxSOUND *_pstSound, orxCONST orxSTRING _zConfigID)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Updates result */
+  bResult = (orxString_ToCRC(_zConfigID) == _pstSound->u32ID) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }

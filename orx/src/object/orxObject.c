@@ -24,13 +24,14 @@
 
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
+#include "core/orxClock.h"
+#include "memory/orxMemory.h"
 #include "anim/orxAnimPointer.h"
 #include "display/orxGraphic.h"
 #include "physics/orxBody.h"
 #include "object/orxFrame.h"
 #include "render/orxFXPointer.h"
-#include "core/orxClock.h"
-#include "memory/orxMemory.h"
+#include "sound/orxSoundPointer.h"
 
 
 /** Module flags
@@ -102,12 +103,12 @@ typedef struct __orxOBJECT_STORAGE_t
 struct __orxOBJECT_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
-  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 56 */
-  orxCOLOR          stColor;                    /**< Object color: 72 */
-  orxVOID          *pUserData;                  /**< User data : 76 */
+  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 64 */
+  orxCOLOR          stColor;                    /**< Object color: 80 */
+  orxVOID          *pUserData;                  /**< User data : 84 */
 
   /* Padding */
-  orxPAD(76)
+  orxPAD(84)
 };
 
 /** Static structure
@@ -237,7 +238,7 @@ orxVOID orxObject_Setup()
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FXPOINTER);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUND);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
 
   return;
 }
@@ -627,7 +628,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         if(pstBody != orxNULL)
         {
           /* Links it */
-          if(orxObject_LinkStructure(pstResult, (orxSTRUCTURE *)pstBody) != orxSTATUS_FAILURE)
+          if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstBody)) != orxSTATUS_FAILURE)
           {
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_BODY].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
@@ -759,6 +760,12 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
         case orxSTRUCTURE_ID_FXPOINTER:
         {
           orxFXPointer_Delete(orxFXPOINTER(pstStructure));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_SOUNDPOINTER:
+        {
+          orxSoundPointer_Delete(orxSOUNDPOINTER(pstStructure));
           break;
         }
 
@@ -1120,9 +1127,45 @@ orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orx
   return pvResult;
 }
 
+/** Get object world position
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvPosition     Object world position
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetWorldPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition)
+{
+  orxFRAME  *pstFrame;
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Gets object position */
+     pvResult = orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, _pvPosition);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    pvResult = orxNULL;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
 /** Get object rotation
  * @param[in]   _pstObject      Concerned object
- * @return      Rotation value
+ * @return      orxFLOAT
  */
 orxFLOAT orxFASTCALL orxObject_GetRotation(orxCONST orxOBJECT *_pstObject)
 {
@@ -1141,6 +1184,40 @@ orxFLOAT orxFASTCALL orxObject_GetRotation(orxCONST orxOBJECT *_pstObject)
   {
     /* Gets object rotation */
     fResult = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Get object world rotation
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxFLOAT
+ */
+orxFLOAT orxFASTCALL orxObject_GetWorldRotation(orxCONST orxOBJECT *_pstObject)
+{
+  orxFRAME *pstFrame;
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Gets object rotation */
+    fResult = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
   }
   else
   {
@@ -1179,6 +1256,44 @@ orxSTATUS orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOA
   {
     /* Gets object scale */
     eResult = orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pfScaleX, _pfScaleY);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets object world scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pfScaleX       Object world X scale
+ * @param[out]  _pfScaleY       Object world Y scale
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY)
+{
+  orxFRAME *pstFrame;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pfScaleX != orxNULL);
+  orxASSERT(_pfScaleY != orxNULL);
+
+  /* Gets frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+
+  /* Valid? */
+  if(pstFrame != orxNULL)
+  {
+    /* Gets object scale */
+    eResult = orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, _pfScaleX, _pfScaleY);
   }
   else
   {
@@ -1700,16 +1815,17 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
       if(orxGraphic_GetSize(pstGraphic, &fWidth, &fHeight) != orxSTATUS_FAILURE)
       {
         orxVECTOR vPivot, vPosition;
-        orxFLOAT  fAngle;
+        orxFLOAT  fAngle, fScaleX, fScaleY;
 
-        /* Gets pivot, position & rotation */
+        /* Gets pivot, positionm scale & rotation */
         orxObject_GetPivot(_pstObject, &vPivot);
-        orxObject_GetPosition(_pstObject, &vPosition);
-        fAngle = orxObject_GetRotation(_pstObject);
+        orxObject_GetWorldPosition(_pstObject, &vPosition);
+        orxObject_GetWorldScale(_pstObject, &fScaleX, &fScaleY);
+        fAngle = orxObject_GetWorldRotation(_pstObject);
 
         /* Updates box */
         orxVector_Sub(&(_pstBoundingBox->vTL), &vPosition, &vPivot);
-        orxVector_Set(&(_pstBoundingBox->vBR), _pstBoundingBox->vTL.fX + fWidth, _pstBoundingBox->vTL.fY + fHeight, _pstBoundingBox->vTL.fZ);
+        orxVector_Set(&(_pstBoundingBox->vBR), _pstBoundingBox->vTL.fX + (fScaleX * fWidth), _pstBoundingBox->vTL.fY + (fScaleY * fHeight), _pstBoundingBox->vTL.fZ);
 
         /* Has rotation? */
         if(fAngle != orxFLOAT_0)
@@ -1879,7 +1995,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orx
     if(pstFXPointer != orxNULL)
     {
       /* Links it */
-      eResult = orxObject_LinkStructure(_pstObject, (orxSTRUCTURE *)pstFXPointer);
+      eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstFXPointer));
 
       /* Valid? */
       if(eResult != orxSTATUS_FAILURE)
@@ -1895,7 +2011,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orx
   else
   {
     /* Adds FX from config */
-    eResult = orxFXPointer_AddFXFromConfig(pstFXPointer, _zFXConfigID);
+    eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
   }
 
   /* Done! */
@@ -1928,6 +2044,112 @@ orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, orxCONST orxSTRI
 
   /* Done! */
   return eResult;
+}
+
+/** Adds a sound using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zSoundConfigID Config ID of the sound to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, orxCONST orxSTRING _zSoundConfigID)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zSoundConfigID != orxNULL) && (*_zSoundConfigID != *orxSTRING_EMPTY));
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Doesn't exist? */
+  if(pstSoundPointer == orxNULL)
+  {
+    /* Creates one */
+    pstSoundPointer = orxSoundPointer_Create();
+
+    /* Valid? */
+    if(pstSoundPointer != orxNULL)
+    {
+      /* Links it */
+      eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstSoundPointer));
+
+      /* Valid? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates flags */
+        orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_SOUNDPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+        /* Adds sound from config */
+        eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+      }
+    }
+  }
+  else
+  {
+    /* Adds sound from config */
+    eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a sound using using its config ID
+ * @param[in]   _pstObject      Concerned FXPointer
+ * @param[in]   _zSoundConfigID Config ID of the sound to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_RemoveSound(orxOBJECT *_pstObject, orxCONST orxSTRING _zSoundConfigID)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Removes FX from config */
+    eResult = orxSoundPointer_RemoveSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets last added sound (Do *NOT* destroy it directly before removing it!!!)
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSOUND / orxNULL
+ */
+orxSOUND *orxFASTCALL orxObject_GetLastAddedSound(orxCONST orxOBJECT *_pstObject)
+{
+  orxSOUNDPOINTER  *pstSoundPointer;
+  orxSOUND         *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its SoundPointer */
+  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+  /* Valid? */
+  if(pstSoundPointer != orxNULL)
+  {
+    /* Updates result */
+    pstResult = orxSoundPointer_GetLastAddedSound(pstSoundPointer);
+  }
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
