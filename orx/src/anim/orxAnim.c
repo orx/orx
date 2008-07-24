@@ -419,10 +419,10 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
   {
     orxU32  u32KeyCounter;
-    orxCHAR acID[16];
+    orxCHAR acID[32];
 
     /* Clears buffer */
-    orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
+    orxMemory_Zero(acID, 32 * sizeof(orxCHAR));
 
     /* For all keys */
     for(u32KeyCounter = 1, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter);
@@ -440,7 +440,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       orxU32    i;
 
       /* Clears buffers */
-      orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
+      orxMemory_Zero(acID, 32 * sizeof(orxCHAR));
       orxMemory_Zero(acDurationID, 32 * sizeof(orxCHAR));
 
       /* For all keys */

@@ -43,6 +43,7 @@
  */
 #define orxGRAPHIC_KU32_FLAG_INTERNAL         0x10000000  /**< Internal structure handling flag  */
 #define orxGRAPHIC_KU32_FLAG_HAS_COLOR        0x20000000  /**< Has color flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT        0x40000000  /**< Has pivot flag  */
 
 #define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
 
@@ -333,17 +334,25 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
               }
               else
               {
+                /* Defaults pivot to origin */
                 orxVector_Copy(&vPivot, &orxVECTOR_0);
               }
+
+              /* Updates it */
+              orxGraphic_SetPivot(pstResult, &vPivot);
+
             }
             /* Gets pivot value */
-            else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) == orxNULL)
+            else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) != orxNULL)
             {
-              orxVector_Copy(&vPivot, &orxVECTOR_0);
+              /* Updates it */
+              orxGraphic_SetPivot(pstResult, &vPivot);
             }
-
-            /* Updates its pivot */
-            orxGraphic_SetPivot(pstResult, &vPivot);
+            else
+            {
+              /* Clears pivot */
+              orxGraphic_SetPivot(pstResult, orxNULL);
+            }
 
             /* Gets flipping value */
             zFlipping = orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP));
@@ -569,10 +578,24 @@ orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxV
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
-  orxASSERT(_pvPivot != orxNULL);
 
-  /* Stores pivot */
-  orxVector_Copy(&(_pstGraphic->vPivot), _pvPivot);
+  /* Valid pivot? */
+  if(_pvPivot != orxNULL)
+  {
+    /* Stores it */
+    orxVector_Copy(&(_pstGraphic->vPivot), _pvPivot);
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_PIVOT, orxGRAPHIC_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Stores it */
+    orxVector_Copy(&(_pstGraphic->vPivot), &orxVECTOR_0);
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_HAS_PIVOT);
+  }
 
   /* Done! */
   return eResult;
@@ -585,16 +608,33 @@ orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxV
  */
 orxVECTOR *orxFASTCALL orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvPivot)
 {
+  orxVECTOR *pvResult;
+
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvPivot != orxNULL);
 
-  /* Copies pivot */
-  orxVector_Copy(_pvPivot, &(_pstGraphic->vPivot));
+  /* Has pivot? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_PIVOT) != orxFALSE)
+  {
+    /* Copies it */
+    orxVector_Copy(_pvPivot, &(_pstGraphic->vPivot));
+
+    /* Updates result */
+    pvResult = _pvPivot;
+  }
+  else
+  {
+    /* Clears it */
+    orxVector_Copy(_pvPivot, &orxVECTOR_0);
+
+    /* Updates result */
+    pvResult = orxNULL;
+  }
 
   /* Done! */
-  return _pvPivot;
+  return pvResult;
 }
 
 /** Gets graphic size
