@@ -46,6 +46,7 @@
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				FloatingPointModel="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -106,10 +107,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
 				AdditionalIncludeDirectories="..\..\..\..\include"
 				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
+				FloatingPointModel="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -177,6 +180,7 @@
 				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				FloatingPointModel="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -257,10 +261,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
 				AdditionalIncludeDirectories="..\..\..\..\include"
 				PreprocessorDefinitions="__orxWINDOWS__;__orxMSVC__;__orxDLL__;__orxDLLEXPORT__"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
+				FloatingPointModel="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
