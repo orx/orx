@@ -46,7 +46,6 @@
 #define orxANIMPOINTER_KU32_FLAG_NONE                 0x00000000  /**< No flags */
 
 #define orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM     0x00000001  /**< Has current animation flag */
-#define orxANIMPOINTER_KU32_FLAG_HAS_NEXT_ANIM        0x00000002  /**< Has next animation flag */
 #define orxANIMPOINTER_KU32_FLAG_ANIMSET              0x00000010  /**< Has animset flag */
 #define orxANIMPOINTER_KU32_FLAG_LINK_TABLE           0x00000020  /**< Has link table flag */
 #define orxANIMPOINTER_KU32_FLAG_PAUSED               0x00000040  /**< Pause flag */
@@ -504,7 +503,7 @@ orxANIMSET *orxFASTCALL orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstA
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation handle
  */
-orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnimHandle(orxCONST orxANIMPOINTER *_pstAnimPointer)
 {
   orxHANDLE hAnimHandle = orxHANDLE_UNDEFINED;
 
@@ -532,7 +531,7 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_ps
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation handle
  */
-orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnim(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnimHandle(orxCONST orxANIMPOINTER *_pstAnimPointer)
 {
   orxHANDLE hAnimHandle = orxHANDLE_UNDEFINED;
 
@@ -555,6 +554,80 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnim(orxCONST orxANIMPOINTER *_pst
   return hAnimHandle;
 }
 
+/** AnimPointer current Animation ID get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Current Animation ID
+ */
+orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAnimPointer)
+{
+  orxU32 u32AnimID = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Has anim? */
+  if((orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
+  && (orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
+  {
+    orxANIM *pstAnim;
+
+    /* Gets it */
+    pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+
+    /* Valid? */
+    if(pstAnim != orxNULL)
+    {
+      /* Updates result */
+      u32AnimID = orxAnim_GetID(pstAnim);
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return u32AnimID;
+}
+
+/** AnimPointer target Animation ID get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Target Animation ID
+ */
+orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(orxCONST orxANIMPOINTER *_pstAnimPointer)
+{
+  orxU32 u32AnimID = orxU32_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Has anim? */
+  if((orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET) != orxFALSE)
+  && (orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE))
+  {
+    orxANIM *pstAnim;
+
+    /* Gets it */
+    pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hTargetAnim);
+
+    /* Valid? */
+    if(pstAnim != orxNULL)
+    {
+      /* Updates result */
+      u32AnimID = orxAnim_GetID(pstAnim);
+    }
+  }
+  else
+  {
+    /* !!! MSG !!! */
+  }
+
+  /* Done! */
+  return u32AnimID;
+}
+
 /** AnimPointer current anim data get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current anim data / orxNULL
@@ -569,7 +642,7 @@ orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(orxCONST orxANIMPOIN
   orxSTRUCTURE_ASSERT(_pstAnimPointer);
 
   /* Gets current anim handle */
-  hAnimHandle = orxAnimPointer_GetCurrentAnim(_pstAnimPointer);
+  hAnimHandle = orxAnimPointer_GetCurrentAnimHandle(_pstAnimPointer);
 
   /* Valid? */
   if(hAnimHandle != orxHANDLE_UNDEFINED)

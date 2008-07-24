@@ -326,6 +326,21 @@ orxSTATIC orxINLINE orxVOID orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSecti
   return;
 }
 
+/** Clears all config data
+ */
+orxSTATIC orxINLINE orxVOID orxConfig_Clear()
+{
+  orxCONFIG_SECTION *pstSection;
+
+  /* While there's still a section */
+  while((pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL)) != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteSection(pstSection);
+  }
+
+  return;
+}
 
 /***************************************************************************
  * Public functions                                                        *
@@ -437,14 +452,8 @@ orxVOID orxConfig_Exit()
   /* Initialized? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
   {
-    orxCONFIG_SECTION *pstSection;
-
-    /* While there's still a section */
-    while((pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL)) != orxNULL)
-    {
-      /* Deletes it */
-      orxConfig_DeleteSection(pstSection);
-    }
+    /* Clears all data */
+    orxConfig_Clear();
 
     /* Deletes section bank */
     orxBank_Delete(sstConfig.pstSectionBank);
@@ -809,6 +818,9 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 
   /* Removes history flag */
   orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
+
+  /* Clears all data */
+  orxConfig_Clear();
 
   /* Reloads default file */
   eResult = orxConfig_Load(sstConfig.zBaseFile);

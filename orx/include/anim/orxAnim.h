@@ -145,6 +145,12 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(orxCONST orx
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnim_GetLength(orxCONST orxANIM *_pstAnim);
 
+/** Anim ID get accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Anim ID / orxU32_UNDEFINED
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetID(orxCONST orxANIM *_pstAnim);
+
 
 #endif /* _orxANIM_H_ */
 

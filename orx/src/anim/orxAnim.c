@@ -74,9 +74,10 @@ typedef struct __orxANIM_KEY_t
 struct __orxANIM_t
 {
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
-  orxANIM_KEY  *astKeyList;                 /**< Key array : 20 */
+  orxU32        u32ID;                      /**< Anim ID : 20 */
+  orxANIM_KEY  *astKeyList;                 /**< Key array : 24 */
 
-  orxPAD(20)
+  orxPAD(24)
 };
 
 
@@ -438,6 +439,9 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       orxCHAR   acDurationID[32];
       orxFLOAT  fTimeStamp = orxFLOAT_0;
       orxU32    i;
+
+      /* Stores its ID */
+      pstResult->u32ID = orxString_ToCRC(_zConfigID);
 
       /* Clears buffers */
       orxMemory_Zero(acID, 32 * sizeof(orxCHAR));
@@ -827,4 +831,23 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
 
   /* Done! */
   return fLength;
+}
+
+/** Anim ID get accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      Anim ID / orxU32_UNDEFINED
+ */
+orxU32 orxFASTCALL orxAnim_GetID(orxCONST orxANIM *_pstAnim)
+{
+  orxU32    u32Result;
+
+  /* Checks */
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnim);
+
+  /* Updates result */
+  u32Result = _pstAnim->u32ID;
+
+  /* Done! */
+  return u32Result;
 }
