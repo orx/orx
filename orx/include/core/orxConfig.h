@@ -45,6 +45,13 @@ extern orxDLLAPI orxSTATUS              orxConfig_Init();
 extern orxDLLAPI orxVOID                orxConfig_Exit();
 
 
+/** Sets config base name
+ * @param[in] _zBaseName        Base name used for default config file
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBaseName(orxCONST orxSTRING _zBaseName);
+
+
 /** Loads config file from source
  * @param[in] _zFileName        File name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

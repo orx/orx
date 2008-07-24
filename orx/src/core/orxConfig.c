@@ -45,6 +45,7 @@
 #define orxCONFIG_KU32_SECTION_BANK_SIZE    16          /**< Default section bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE      16          /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE    4           /**< Default history bank size */
+#define orxCONFIG_KU32_BASE_FILENAME_LENGTH 64          /**< Base file name length */
 
 #define orxCONFIG_KU32_BUFFER_SIZE          4096        /**< Buffer size */
 
@@ -104,6 +105,7 @@ typedef struct __orxCONFIG_STATIC_t
   orxCONFIG_SECTION  *pstCurrentSection;    /**< Current working section */
   orxBANK            *pstHistoryBank;       /**< History bank */
   orxU32              u32Flags;             /**< Control flags */
+  orxCHAR             zBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH]; /**< Base file name */
 
 } orxCONFIG_STATIC;
 
@@ -350,8 +352,25 @@ orxSTATUS orxConfig_Init()
   /* Not already Initialized? */
   if(!orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
   {
+    orxCHAR zBackupBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH];
+
+    /* Backups base file name */
+    orxMemory_Copy(zBackupBaseFile, sstConfig.zBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH);
+
     /* Cleans control structure */
     orxMemory_Zero(&sstConfig, sizeof(orxCONFIG_STATIC));
+
+    /* Valid base file name? */
+    if(*zBackupBaseFile != orxCHAR_NULL)
+    {
+      /* Restores base file name */
+      orxMemory_Copy(sstConfig.zBaseFile, zBackupBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH);
+    }
+    else
+    {
+      /* Stores default base file name */
+      orxString_Copy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE);
+    }
 
     /* Creates section bank */
     sstConfig.pstSectionBank = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
@@ -366,7 +385,7 @@ orxSTATUS orxConfig_Init()
       eResult = orxSTATUS_SUCCESS;
 
       /* Loads default config file */
-      orxConfig_Load(orxCONFIG_KZ_DEFAULT_FILE);
+      orxConfig_Load(sstConfig.zBaseFile);
 
       /* Selects config section */
       orxConfig_SelectSection(orxCONFIG_KZ_CONFIG_SECTION);
@@ -444,6 +463,33 @@ orxVOID orxConfig_Exit()
   }
 
   return;
+}
+
+/** Sets config base name
+ * @param[in] _zBaseName        Base name used for default config file
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetBaseName(orxCONST orxSTRING _zBaseName)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxString_GetLength(_zBaseName) < orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1);
+
+  /* Valid? */
+  if((_zBaseName != orxNULL) && (*_zBaseName != *orxSTRING_EMPTY))
+  {
+    /* Copies it */
+    orxString_Print(sstConfig.zBaseFile, "%s.ini", _zBaseName);
+  }
+  else
+  {
+    /* Uses default name */
+    orxString_Copy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE);
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Selects current working section
@@ -765,10 +811,10 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
   orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
 
   /* Reloads default file */
-  eResult = orxConfig_Load(orxCONFIG_KZ_DEFAULT_FILE);
+  eResult = orxConfig_Load(sstConfig.zBaseFile);
 
   /* Logs */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", orxCONFIG_KZ_DEFAULT_FILE);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
 
   /* For all entries in history */
   for(pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
@@ -811,7 +857,7 @@ orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
   else
   {
     /* Uses default file */
-    zFileName = orxCONFIG_KZ_DEFAULT_FILE;
+    zFileName = sstConfig.zBaseFile;
   }
 
   /* Opens file */

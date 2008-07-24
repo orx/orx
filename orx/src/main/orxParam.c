@@ -48,21 +48,22 @@
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+ 
 typedef struct __orxPARAM_INFO_t
 {
-  orxPARAM stParam; /* Param values */
-  orxU32 u32Count;  /* Number of time that this param has been met in the command line */
+  orxPARAM  stParam;              /* Param values */
+  orxU32    u32Count;             /* Number of time that this param has been met in the command line */
 } orxPARAM_INFO;
 
 typedef struct __orxPARAM_STATIC_t
 {
-  orxBANK      *pstBank;      /* Bank of registered parameters */
-  orxHASHTABLE *pstHashTable; /* HashTable of registered Parameters */
+  orxBANK      *pstBank;          /* Bank of registered parameters */
+  orxHASHTABLE *pstHashTable;     /* HashTable of registered Parameters */
 
-  orxU32        u32ParamNumber; /* Param counter */
-  orxSTRING    *azParams;       /* Params */
+  orxU32        u32ParamNumber;   /* Param counter */
+  orxSTRING    *azParams;         /* Params */
 
-  orxU32        u32Flags;     /* Module flags */
+  orxU32        u32Flags;         /* Module flags */
 
 } orxPARAM_STATIC;
 
@@ -70,6 +71,7 @@ typedef struct __orxPARAM_STATIC_t
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
+
 orxSTATIC orxPARAM_STATIC sstParam;
 
 /***************************************************************************
@@ -582,11 +584,29 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
  */
 orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[])
 {
+  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Stores info */
   sstParam.u32ParamNumber = _u32NbParams;
   sstParam.azParams       = _azParams;
+
+  /* Has base name a '.'? */
+  if((u32Index = orxString_SearchCharIndex(sstParam.azParams[0], '.', 0)) >= 0)
+  {
+    /* Ends basename here */
+    *(sstParam.azParams[0] + u32Index) = orxCHAR_NULL;
+  }
+
+  /* Stores base name for config */
+  orxConfig_SetBaseName(sstParam.azParams[0]);
+
+  /* Had a '.' in basename? */
+  if(u32Index >= 0)
+  {
+    /* Restores it */
+    *(sstParam.azParams[0] + u32Index) = '.';
+  }
 
   /* Done! */
   return eResult;
