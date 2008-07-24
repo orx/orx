@@ -57,25 +57,8 @@ extern orxDLLAPI orxVOID                orxRender_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxRender_GetWorldPosition, orxSTATUS, orxCONST orxVECTOR *, orxVECTOR *);
-
-
-orxSTATIC orxINLINE orxSTATUS orxRender_Init()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Init)();
-}
-
-orxSTATIC orxINLINE orxVOID orxRender_Exit()
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Exit)();
-}
-
-orxSTATIC orxINLINE orxSTATUS orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pvWorldPosition);
-}
-
+extern orxDLLAPI orxSTATUS  orxRender_Init();
+extern orxDLLAPI orxVOID    orxRender_Exit();
+extern orxDLLAPI orxSTATUS  orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
 
 #endif /* _orxRENDER_H_ */

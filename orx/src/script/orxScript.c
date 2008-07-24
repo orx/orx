@@ -394,6 +394,26 @@ orxSCRIPT_FUNCTION *orxScript_GetFunctionInfo(orxS32 _s32Index)
 }
 
 
+/***************************************************************************
+ * Plugin related                                                          *
+ ***************************************************************************/
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginInit, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginExit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunFile, orxSTATUS, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunString, orxSTATUS, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetType, orxSCRIPT_TYPE, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetS32Value, orxSTATUS, orxCONST orxSTRING, orxS32*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetFloatValue, orxSTATUS, orxCONST orxSTRING, orxFLOAT*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetStringValue, orxSTATUS, orxCONST orxSTRING, orxSTRING*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetS32Value, orxSTATUS, orxCONST orxSTRING, orxS32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetFloatValue, orxSTATUS, orxCONST orxSTRING, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetStringValue, orxSTATUS, orxCONST orxSTRING, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RegisterFunction, orxSTATUS, orxS32);
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SCRIPT)
@@ -412,30 +432,116 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SCRIPT, REGISTER_FUNCTION, orxScript_RegisterF
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(SCRIPT)
 
 
-/* *** Core function definitions *** */
+/* *** Core function implementations *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginInit, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginExit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunFile, orxSTATUS, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunString, orxSTATUS, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetType, orxSCRIPT_TYPE, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetS32Value, orxSTATUS, orxCONST orxSTRING, orxS32*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetFloatValue, orxSTATUS, orxCONST orxSTRING, orxFLOAT*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetStringValue, orxSTATUS, orxCONST orxSTRING, orxSTRING*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetS32Value, orxSTATUS, orxCONST orxSTRING, orxS32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetFloatValue, orxSTATUS, orxCONST orxSTRING, orxFLOAT);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetStringValue, orxSTATUS, orxCONST orxSTRING, orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RegisterFunction, orxSTATUS, orxS32);
+/** Initializes the Script Module
+ * @return Returns the status of the operation
+ */
+orxSTATUS orxScript_PluginInit()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_PluginInit)();
+}
+
+/** Uninitializes the Script Module
+ */
+orxVOID orxScript_PluginExit()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_PluginExit)();
+}
+
+/** Parses and runs a script file
+ * @param _zFileName  (IN)  File name
+ * @return Returns Success if valid parsing/execution, else returns orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_RunFile(orxCONST orxSTRING _zFileName)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_RunFile)(_zFileName);
+}
+
+/** Parses and runs a script string
+ * @param _zScript    (IN)  script to parse
+ * @return Returns Success if valid parsing/execution, else returns orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_RunString(orxCONST orxSTRING _zScript)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_RunString)(_zScript);
+}
 
 
-/***************************************************************************
- * Structure declaration                                                   *
- ***************************************************************************/
+/** Gets a global variable type
+ * @param _zVar       (IN) Variable name
+ * @return Returns the type of the given variable. Returns orxSCRIPT_TYPE_NONE if variable not found.
+ */
+orxSCRIPT_TYPE orxScript_GetType(orxCONST orxSTRING _zVar)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_GetType)(_zVar);
+}
 
-/***************************************************************************
- * Module global variable                                                  *
- ***************************************************************************/
+/** Gets a global script variable value
+ * @param _zVar       (IN)  Variable name
+ * @param _bOutValue  (OUT) Signed 32 bits returns value
+ * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_GetS32Value(orxCONST orxSTRING _zVar, orxS32 *_s32OutValue)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_GetS32Value)(_zVar, _s32OutValue);
+}
 
-/***************************************************************************
- * Public functions                                                        *
- ***************************************************************************/
+/** Gets a global script variable value
+ * @param _zVar       (IN)  Variable name
+ * @param _fOutValue  (OUT) Float returns value
+ * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_GetFloatValue(orxCONST orxSTRING _zVar, orxFLOAT *_fOutValue)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_GetFloatValue)(_zVar, _fOutValue);
+}
+
+/** Gets a global script variable value
+ * @param _zVar       (IN)  Variable name
+ * @param _zOutValue  (OUT) String returns value
+ * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_GetStringValue(orxCONST orxSTRING _zVar, orxSTRING *_zOutValue)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_GetStringValue)(_zVar, _zOutValue);
+}
+
+/** Sets a global script variable value
+ * @param _zVar       (IN) Variable name
+ * @param _s32Value   (IN) Signed 32 bits value
+ * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_SetS32Value(orxCONST orxSTRING _zVar, orxS32 _s32Value)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_SetS32Value)(_zVar, _s32Value);
+}
+
+/** Sets a global script variable value
+ * @param _zVar       (IN) Variable name
+ * @param _fValue     (IN) Float value
+ * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_SetFloatValue(orxCONST orxSTRING _zVar, orxFLOAT _fValue)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_SetFloatValue)(_zVar, _fValue);
+}
+
+/** Sets a global script variable value
+ * @param _zVar       (IN) Variable name
+ * @param _zValue     (IN) String value
+ * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_SetStringValue(orxCONST orxSTRING _zVar, orxSTRING _zValue)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_SetStringValue)(_zVar, _zValue);
+}
+
+/** Sets a global script variable value
+ * @param _s32Index   (IN) Index of the function data from the global list
+ * @return Returns orxSTATUS_SUCCESS if valid registration, else orxSTATUS_FAILURE
+ */
+orxSTATUS orxScript_RegisterFunction(orxS32 _s32Index)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_RegisterFunction)(_s32Index);
+}

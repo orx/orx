@@ -38,6 +38,14 @@ orxVOID orxJoystick_Setup()
  * Plugin related                                                          *
  ***************************************************************************/
 
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_GetAxisValue, orxFLOAT, orxU32, orxJOYSTICK_AXIS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_IsButtonPressed, orxBOOL, orxU32, orxJOYSTICK_BUTTON);
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(JOYSTICK)
@@ -50,9 +58,39 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(JOYSTICK, IS_BUTTON_PRESSED, orxJoystick_IsBut
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(JOYSTICK)
 
 
-/* *** Core function definitions *** */
+/* *** Core function implementations *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_GetAxisValue, orxFLOAT, orxU32, orxJOYSTICK_AXIS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_IsButtonPressed, orxBOOL, orxU32, orxJOYSTICK_BUTTON);
+/** Inits the joystick module
+ * @return Returns the status of the operation
+ */
+orxSTATUS orxJoystick_Init()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Init)();
+}
+
+/** Exits from the joystick module
+ */
+orxVOID orxJoystick_Exit()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Exit)();
+}
+
+/** Gets mouse on screen position
+ * @param _u32ID        ID of the joystick to test
+ * @param _eAxis        Joystick axis to check
+ * @return Value of the axis
+ */
+orxFLOAT orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_GetAxisValue)(_u32ID, _eAxis);
+}
+
+/** Is joystick button pressed?
+ * @param _u32ID        ID of the joystick to test
+ * @param _eButton      Joystick button to check
+ * @return orxTRUE if presse / orxFALSE otherwise
+ */
+orxBOOL orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_IsButtonPressed)(_u32ID, _eButton);
+}

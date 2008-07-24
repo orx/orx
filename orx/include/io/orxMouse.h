@@ -58,46 +58,27 @@ extern orxDLLAPI orxVOID                              orxMouse_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxMouse_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxMouse_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxMouse_GetPosition, orxSTATUS, orxS32 *, orxS32 *);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);
-
-
-/** Init the mouse module
+/** Inits the mouse module
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxSTATUS orxMouse_Init()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Init)();
-}
+extern orxDLLAPI orxSTATUS orxMouse_Init();
 
-/** Exit the mouse module
+/** Exits from the mouse module
  */
-orxSTATIC orxINLINE orxVOID orxMouse_Exit()
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Exit)();
-}
+extern orxDLLAPI orxVOID orxMouse_Exit();
 
 /** Gets mouse on screen position
  * @param[out] _ps32x   X coordinates
  * @param[out] _ps32y   Y coordinates
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxMouse_GetPosition(orxS32 *_s32X, orxS32 *_s32Y)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetPosition)(_s32X, _s32Y);
-}
+extern orxDLLAPI orxSTATUS orxMouse_GetPosition(orxS32 *_s32X, orxS32 *_s32Y);
 
 /** Is mouse button pressed?
  * @param _eButton      Mouse button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_IsButtonPressed)(_eButton);
-}
-
+extern orxDLLAPI orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
 
 #endif /* _orxMOUSE_H_ */
 

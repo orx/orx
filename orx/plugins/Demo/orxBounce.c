@@ -26,7 +26,7 @@
 
 #include "orx.h"
 
-orxSTATIC orxU32 su32BallCounter = 1;
+orxSTATIC orxU32 su32BallCounter = 0;
 
 /** Bounce event handler
  * @param[in]   _pstEvent                     Sent event

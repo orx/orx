@@ -54,43 +54,24 @@ extern orxDLLAPI orxVOID            orxSystem_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Exit, orxVOID);
-
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_GetTime, orxFLOAT);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxSystem_Delay, orxVOID, orxFLOAT);
-
-
 /** Inits the system module.
  * @return The status of the operation.
  */
-orxSTATIC orxINLINE orxSTATUS orxSystem_Init()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Init)();
-}
+extern orxDLLAPI orxSTATUS          orxSystem_Init();
 
 /** Exits from the system module.
  * @return The status of the operation.
  */
-orxSTATIC orxINLINE orxVOID orxSystem_Exit()
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Exit)();
-}
+extern orxDLLAPI orxVOID            orxSystem_Exit();
 
 /** Gets time.
  * @return Current time.
  */
-orxSTATIC orxINLINE orxFLOAT orxSystem_GetTime()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetTime)();
-}
+extern orxDLLAPI orxFLOAT           orxSystem_GetTime();
 
 /** Delay the program for given number of milliseconds.
  * @param[in] _fSeconds Number of seconds to wait.
  */
-orxSTATIC orxINLINE orxVOID orxSystem_Delay(orxFLOAT _fSeconds)
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Delay)(_fSeconds);
-}
+extern orxDLLAPI orxVOID            orxSystem_Delay(orxFLOAT _fSeconds);
 
 #endif /* _orxSYSTEM_H_ */

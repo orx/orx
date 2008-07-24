@@ -79,24 +79,11 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 #define orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME) _orxDefaultCoreFunction_##FUNCTION_NAME
 
 /* *** Default core function declaration *** */
-#define orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)                   \
+#define orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)                     \
   extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)() \
-  {                                                                             \
-    return(orxPlugin_DefaultCoreFunction(#FUNCTION_NAME, __FILE__, __LINE__));  \
-  }                                                                             \
-
-
-/***************************************************************************
- ***************************************************************************
- ******             CORE FUNCTION DECLARATION HANDLING                ******
- ***************************************************************************
- ***************************************************************************/
-
-/* *** Declaration macro *** */
-#define orxPLUGIN_DECLARE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)                 \
-  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)();  \
-                                                                                    \
-  extern orxDLLAPI RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(__VA_ARGS__);
+  {                                                                               \
+    return(orxPlugin_DefaultCoreFunction(#FUNCTION_NAME, __FILE__, __LINE__));    \
+  }
 
 
 /***************************************************************************
@@ -108,20 +95,12 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 /* *** Definition macro *** */
 #ifdef __orxMSVC__
 #pragma warning(disable : 4113)
-
-#define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)  \
-  orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)             \
-                                                                    \
-  RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))() = (RETURN(*)()) (&orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME));
-
-#else /* __orxMSVC__ */
+#endif /* __orxMSVC__ */
 
 #define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)  \
   orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)             \
                                                                     \
   RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(__VA_ARGS__) = (RETURN(*)(__VA_ARGS__)) (&orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME));
-
-#endif /* __orxMSVC__ */
 
 
 /***************************************************************************

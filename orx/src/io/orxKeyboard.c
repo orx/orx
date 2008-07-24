@@ -41,6 +41,16 @@ orxVOID orxKeyboard_Setup()
  * Plugin related                                                          *
  ***************************************************************************/
 
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_IsKeyPressed, orxBOOL, orxKEYBOARD_KEY);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Read, orxKEYBOARD_KEY);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, orxVOID);
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(KEYBOARD)
@@ -55,11 +65,53 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(KEYBOARD, CLEAR_BUFFER, orxKeyboard_ClearBuffe
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(KEYBOARD)
 
 
-/* *** Core function definitions *** */
+/* *** Core function implementations *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_IsKeyPressed, orxBOOL, orxKEYBOARD_KEY);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Read, orxKEYBOARD_KEY);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, orxVOID);
+/** Inits the keyboard module
+ */
+orxSTATUS orxKeyboard_Init()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Init)();
+}
+
+/** Exits from the keyboard module
+ */
+orxVOID orxKeyboard_Exit()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Exit)();
+}
+
+/** Is key pressed?
+ * @param _eKey       Key to check
+ * @return orxTRUE if presse / orxFALSE otherwise
+ */
+orxBOOL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_IsKeyPressed)(_eKey);
+}
+
+/** Returns orxTRUE if there are keypresses waiting in the input buffer.
+ * @return orxTRUE if keys have been pressed, else orxFALSE
+ */
+orxBOOL orxKeyboard_Hit()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Hit)();
+}
+
+/** Returns the next character from the keyboard buffer, in ASCII format.
+ * If the buffer is empty, it waits until a key is pressed.
+ * The low byte of the return value contains the ASCII code of the key,
+ * and the high byte the scancode.
+ * @return Ascii and scancode value
+ */
+orxKEYBOARD_KEY orxKeyboard_Read()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Read)();
+}
+
+/**  Empties the keyboard buffer.
+ */
+orxVOID orxKeyboard_ClearBuffer()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ClearBuffer)();
+}

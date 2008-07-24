@@ -205,144 +205,47 @@ orxSTATIC orxINLINE orxCOLOR * orxColor_Copy(orxCOLOR *_pstDst, orxCONST orxCOLO
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_Exit, orxVOID);
+extern orxDLLAPI orxSTATUS orxDisplay_Init();
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_Swap, orxSTATUS);
+extern orxDLLAPI orxVOID orxDisplay_Exit();
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_DrawText, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxBITMAP_TRANSFORM *, orxRGBA, orxCONST orxSTRING);
+extern orxDLLAPI orxSTATUS orxDisplay_Swap();
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_CreateBitmap, orxBITMAP *, orxU32, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_DeleteBitmap, orxVOID, orxBITMAP *);
+extern orxDLLAPI orxSTATUS orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxCONST orxSTRING _zText);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetScreenBitmap, orxBITMAP *);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetScreenSize, orxSTATUS, orxFLOAT *, orxFLOAT *);
+extern orxDLLAPI orxBITMAP *orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxRGBA);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxBITMAP_TRANSFORM *, orxU32);
+extern orxDLLAPI orxVOID orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGBA, orxBOOL);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_SetBitmapColor, orxSTATUS, orxBITMAP *, orxRGBA);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxU32, orxU32, orxU32, orxU32);
+extern orxDLLAPI orxBITMAP *orxDisplay_GetScreenBitmap();
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_BlitBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxFLOAT, orxFLOAT);
+extern orxDLLAPI orxSTATUS orxDisplay_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxSTRING);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, orxCONST orxSTRING);
+extern orxDLLAPI orxSTATUS orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, orxCONST orxBITMAP *);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxFLOAT *, orxFLOAT *);
+extern orxDLLAPI orxSTATUS orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags);
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_EnableVSync, orxSTATUS, orxBOOL);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL);
+extern orxDLLAPI orxSTATUS orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable);
 
+extern orxDLLAPI orxSTATUS orxDisplay_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
+extern orxDLLAPI orxSTATUS orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY);
 
-orxSTATIC orxINLINE orxSTATUS orxDisplay_Init()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_Init)();
-}
+extern orxDLLAPI orxSTATUS orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY);
 
-orxSTATIC orxINLINE orxVOID orxDisplay_Exit()
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_Exit)();
-}
+extern orxDLLAPI orxSTATUS orxDisplay_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFileName);
 
-orxSTATIC orxINLINE orxSTATUS orxDisplay_Swap()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_Swap)();
-}
+extern orxDLLAPI orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileName);
 
-orxSTATIC orxINLINE orxSTATUS orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxCONST orxSTRING _zText)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DrawText)(_pstBitmap, _pstTransform, _stColor, _zText);
-}
+extern orxDLLAPI orxSTATUS orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
-orxSTATIC orxINLINE orxBITMAP *orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateBitmap)(_u32Width, _u32Height);
-}
+extern orxDLLAPI orxRGBA orxDisplay_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap);
 
-orxSTATIC orxINLINE orxVOID orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap)
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DeleteBitmap)(_pstBitmap);
-}
+extern orxDLLAPI orxHANDLE orxDisplay_GetApplicationInput();
 
-orxSTATIC orxINLINE orxBITMAP *orxDisplay_GetScreenBitmap()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetScreenBitmap)();
-}
+extern orxDLLAPI orxSTATUS orxDisplay_EnableVSync(orxBOOL _bEnable);
 
-orxSTATIC orxINLINE orxSTATUS orxDisplay_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetScreenSize)(_pfWidth, _pfHeight);
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_ClearBitmap)(_pstBitmap, _stColor);
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_TransformBitmap)(_pstDst, _pstSrc, _pstTransform, _u32Flags);
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetBitmapColorKey)(_pstBitmap, _stColor, _bEnable);
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetBitmapColor)(_pstBitmap, _stColor);
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetBitmapClipping)(_pstBitmap, _u32TLX, _u32TLY, _u32BRX, _u32BRY);
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_BlitBitmap)(_pstDst, _pstSrc, _fPosX, _fPosY);
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFileName)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SaveBitmap)(_pstBitmap, _zFileName);
-}
-
-orxSTATIC orxINLINE orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileName)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_LoadBitmap)(_zFileName);
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapSize)(_pstBitmap, _pfWidth, _pfHeight);
-}
-
-orxSTATIC orxINLINE orxRGBA orxDisplay_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapColor)(_pstBitmap);
-}
-
-orxSTATIC orxINLINE orxHANDLE orxDisplay_GetApplicationInput()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetApplicationInput)();
-}
-
-orxSTATIC orxINLINE orxSTATUS orxDisplay_EnableVSync(orxBOOL _bEnable)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_EnableVSync)(_bEnable);
-}
-
-orxSTATIC orxINLINE orxBOOL orxDisplay_IsVSyncEnabled()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_IsVSyncEnabled)();
-}
+extern orxDLLAPI orxBOOL orxDisplay_IsVSyncEnabled();
 
 
 #endif /* _orxDISPLAY_H_ */

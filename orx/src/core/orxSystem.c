@@ -45,6 +45,15 @@ orxVOID orxSystem_Setup()
  * Plugin related                                                          *
  ***************************************************************************/
 
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Exit, orxVOID);
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_GetTime, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Delay, orxVOID, orxFLOAT);
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(SYSTEM)
@@ -58,10 +67,24 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SYSTEM, DELAY, orxSystem_Delay)
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(SYSTEM)
 
 
-/* *** Core function definitions *** */
+/* *** Core function implementations *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Exit, orxVOID);
+orxSTATUS orxSystem_Init()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Init)();
+}
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_GetTime, orxFLOAT);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Delay, orxVOID, orxFLOAT);
+orxVOID orxSystem_Exit()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Exit)();
+}
+
+orxFLOAT orxSystem_GetTime()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetTime)();
+}
+
+orxVOID orxSystem_Delay(orxFLOAT _fSeconds)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Delay)(_fSeconds);
+}

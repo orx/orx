@@ -102,46 +102,28 @@ extern orxDLLAPI orxVOID                              orxJoystick_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxJoystick_GetAxisValue, orxFLOAT, orxU32, orxJOYSTICK_AXIS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxJoystick_IsButtonPressed, orxBOOL, orxU32, orxJOYSTICK_BUTTON);
-
-
-/** Init the joystick module
+/** Inits the joystick module
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxSTATUS orxJoystick_Init()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Init)();
-}
+extern orxDLLAPI orxSTATUS orxJoystick_Init();
 
-/** Exit from the joystick module
+/** Exits from the joystick module
  */
-orxSTATIC orxINLINE orxVOID orxJoystick_Exit()
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Exit)();
-}
+extern orxDLLAPI orxVOID orxJoystick_Exit();
 
 /** Gets mouse on screen position
  * @param _u32ID        ID of the joystick to test
  * @param _eAxis        Joystick axis to check
  * @return Value of the axis
  */
-orxSTATIC orxINLINE orxFLOAT orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_GetAxisValue)(_u32ID, _eAxis);
-}
+extern orxDLLAPI orxFLOAT orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis);
 
 /** Is joystick button pressed?
  * @param _u32ID        ID of the joystick to test
  * @param _eButton      Joystick button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_IsButtonPressed)(_u32ID, _eButton);
-}
+extern orxDLLAPI orxBOOL orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton);
 
 
 #endif /* _orxJOYSTICK_H_ */

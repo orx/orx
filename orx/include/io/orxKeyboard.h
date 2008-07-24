@@ -155,44 +155,24 @@ extern orxDLLAPI orxVOID                              orxKeyboard_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxKeyboard_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxKeyboard_IsKeyPressed, orxBOOL, orxKEYBOARD_KEY);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxKeyboard_Read, orxKEYBOARD_KEY);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxKeyboard_ClearBuffer, orxVOID);
-
-
-/** Init the keyboard module
+/** Inits the keyboard module
  */
-orxSTATIC orxINLINE orxSTATUS orxKeyboard_Init()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Init)();
-}
+extern orxDLLAPI orxSTATUS orxKeyboard_Init();
 
-/** Exit the keyboard module
+/** Exits from the keyboard module
  */
-orxSTATIC orxINLINE orxVOID orxKeyboard_Exit()
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Exit)();
-}
+extern orxDLLAPI orxVOID orxKeyboard_Exit();
 
 /** Is key pressed?
  * @param _eKey       Key to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_IsKeyPressed)(_eKey);
-}
+extern orxDLLAPI orxBOOL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey);
 
 /** Returns orxTRUE if there are keypresses waiting in the input buffer.
  * @return orxTRUE if keys have been pressed, else orxFALSE
  */
-orxSTATIC orxINLINE orxBOOL orxKeyboard_Hit()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Hit)();
-}
+extern orxDLLAPI orxBOOL orxKeyboard_Hit();
 
 /** Returns the next character from the keyboard buffer, in ASCII format.
  * If the buffer is empty, it waits until a key is pressed.
@@ -200,18 +180,11 @@ orxSTATIC orxINLINE orxBOOL orxKeyboard_Hit()
  * and the high byte the scancode.
  * @return Ascii and scancode value
  */
-orxSTATIC orxINLINE orxKEYBOARD_KEY orxKeyboard_Read()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Read)();
-}
+extern orxDLLAPI orxKEYBOARD_KEY orxKeyboard_Read();
 
 /**  Empties the keyboard buffer.
  */
-orxSTATIC orxINLINE orxVOID orxKeyboard_ClearBuffer()
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ClearBuffer)();
-}
-
+extern orxDLLAPI orxVOID orxKeyboard_ClearBuffer();
 
 #endif /* _orxKEYBOARD_H_ */
 

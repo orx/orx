@@ -39,6 +39,14 @@ orxVOID orxMouse_Setup()
  * Plugin related                                                          *
  ***************************************************************************/
 
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxSTATUS, orxS32 *, orxS32 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(MOUSE)
@@ -51,9 +59,38 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, IS_BUTTON_PRESSED, orxMouse_IsButtonPre
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
 
 
-/* *** Core function definitions *** */
+/* *** Core function implementations *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxSTATUS, orxS32 *, orxS32 *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);
+/** Inits the mouse module
+ * @return Returns the status of the operation
+ */
+orxSTATUS orxMouse_Init()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Init)();
+}
+
+/** Exits from the mouse module
+ */
+orxVOID orxMouse_Exit()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Exit)();
+}
+
+/** Gets mouse on screen position
+ * @param[out] _ps32x   X coordinates
+ * @param[out] _ps32y   Y coordinates
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxMouse_GetPosition(orxS32 *_s32X, orxS32 *_s32Y)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetPosition)(_s32X, _s32Y);
+}
+
+/** Is mouse button pressed?
+ * @param _eButton      Mouse button to check
+ * @return orxTRUE if presse / orxFALSE otherwise
+ */
+orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_IsButtonPressed)(_eButton);
+}

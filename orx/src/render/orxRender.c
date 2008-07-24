@@ -56,6 +56,13 @@ orxVOID orxRender_Setup()
  * Plugin related                                                          *
  ***************************************************************************/
 
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxSTATUS, orxCONST orxVECTOR *, orxVECTOR *);
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(RENDER)
@@ -67,8 +74,19 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(RENDER, GET_WORLD_POSITION, orxRender_GetWorld
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(RENDER)
 
 
-/* *** Core function definitions *** */
+/* *** Core function implementations *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxSTATUS, orxCONST orxVECTOR *, orxVECTOR *);
+orxSTATUS orxRender_Init()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Init)();
+}
+
+orxVOID orxRender_Exit()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Exit)();
+}
+
+orxSTATUS orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pvWorldPosition);
+}

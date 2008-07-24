@@ -61,6 +61,25 @@ orxBOOL orxFASTCALL orxFileSystem_Exists(orxCONST orxSTRING _zFileName)
 }
 
 
+/***************************************************************************
+ * Plugin related                                                          *
+ ***************************************************************************/
+
+/* *** Core function definitions *** */
+
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Init, orxSTATUS);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindFirst, orxBOOL, orxCONST orxSTRING, orxFILESYSTEM_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindNext, orxBOOL, orxFILESYSTEM_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindClose, orxVOID, orxFILESYSTEM_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Info, orxSTATUS, orxCONST orxSTRING, orxFILESYSTEM_INFO *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Copy, orxSTATUS, orxCONST orxSTRING, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Rename, orxSTATUS, orxCONST orxSTRING, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Delete, orxSTATUS, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_CreateDir, orxSTATUS, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_DeleteDir, orxSTATUS, orxCONST orxSTRING);
+
+
 /* *** Core function info array *** */
 
 orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(FILESYSTEM)
@@ -80,29 +99,102 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(FILESYSTEM, DELETE_DIR, orxFileSystem_DeleteDi
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(FILESYSTEM)
 
 
-/* *** Core function definitions *** */
+/* *** Core function implementations *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Exit, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindFirst, orxBOOL, orxCONST orxSTRING, orxFILESYSTEM_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindNext, orxBOOL, orxFILESYSTEM_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindClose, orxVOID, orxFILESYSTEM_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Info, orxSTATUS, orxCONST orxSTRING, orxFILESYSTEM_INFO *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Copy, orxSTATUS, orxCONST orxSTRING, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Rename, orxSTATUS, orxCONST orxSTRING, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Delete, orxSTATUS, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_CreateDir, orxSTATUS, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_DeleteDir, orxSTATUS, orxCONST orxSTRING);
+/** Initialize the File Module
+ */
+orxSTATUS orxFileSystem_Init()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_Init)();
+}
 
+/** Uninitialize the File Module
+ */
+orxVOID orxFileSystem_Exit()
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_Exit)();
+}
 
-/***************************************************************************
- * Structure declaration                                                   *
- ***************************************************************************/
+/** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
+ * @param _zSearchPattern (IN)     Pattern to find
+ * @param _pstFileInfos   (OUT)    Informations about the first file found
+ * @return orxTRUE if a file has been found, else orxFALSE
+ */
+orxBOOL orxFileSystem_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILESYSTEM_INFO *_pstFileInfo)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_FindFirst)(_zSearchPattern, _pstFileInfo);
+}
 
-/***************************************************************************
- * Module global variable                                                  *
- ***************************************************************************/
+/** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFileSystem_FindFirst
+ * @param _pstFileInfos   (IN/OUT) Informations about the found file
+ * @return orxTRUE, if the next file has been found, else returns orxFALSE
+ */
+orxBOOL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_FindNext)(_pstFileInfo);
+}
 
-/***************************************************************************
- * Public functions                                                        *
- ***************************************************************************/
+/** Closes a search (free the memory allocated for this search)
+ * @param _pstFileInfos   (IN)     Informations returned during search
+ */
+orxVOID orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_FindClose)(_pstFileInfo);
+}
+
+/** Retrieves informations about a file
+ * @param _zFileName      (IN)      Files used to get informations
+ * @param _pstFileInfos   (OUT)     Returned file's informations
+ * @return Returns the status of the operation
+ */
+orxSTATUS orxFileSystem_Info(orxCONST orxSTRING _zFileName, orxFILESYSTEM_INFO *_pstFileInfo)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_Info)(_zFileName, _pstFileInfo);
+}
+
+/** Copies a file
+ * @param _zSource        (IN)     Source file's name
+ * @param _zDest          (IN)     Destination file's name
+ * @return The status of the operation
+ */
+orxSTATUS orxFileSystem_Copy(orxCONST orxSTRING _zSource, orxCONST orxSTRING _zDest)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_Copy)(_zSource, _zDest);
+}
+
+/** Renames a file
+ * @param _zSource        (IN)     Source file's name
+ * @param _zDest          (IN)     Destination file's name
+ * @return The status of the operation
+ */
+orxSTATUS orxFileSystem_Rename(orxCONST orxSTRING _zSource, orxCONST orxSTRING _zDest)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_Rename)(_zSource, _zDest);
+}
+
+/** Deletes a file
+ * @param _zFileName      (IN)     File's name to delete
+ * @return The status of the operation
+ */
+orxSTATUS orxFileSystem_Delete(orxCONST orxSTRING _zFileName)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_Delete)(_zFileName);
+}
+
+/** Creates a directory
+ * @param _zDirName       (IN)     New directory's name
+ * @return The status of the operation
+ */
+orxSTATUS orxFileSystem_CreateDir(orxCONST orxSTRING _zDirName)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_CreateDir)(_zDirName);
+}
+
+/** Remove an empty directory
+ * @param _zDirName       (IN)     Directory's name to delete
+ * @return The status of the operation
+ */
+orxSTATUS orxFileSystem_DeleteDir(orxCONST orxSTRING _zDirName)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFileSystem_DeleteDir)(_zDirName);
+}

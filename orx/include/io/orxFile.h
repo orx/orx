@@ -48,82 +48,51 @@ extern orxDLLAPI orxVOID                orxFile_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Init, orxSTATUS);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Exit, orxVOID);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Open, orxFILE*, orxSTRING, orxU32);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Read, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Write, orxU32, orxVOID*, orxU32, orxU32, orxFILE*);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_ReadLine, orxSTATUS, orxSTRING, orxU32, orxFILE*);
-orxPLUGIN_DECLARE_CORE_FUNCTION(orxFile_Close, orxSTATUS, orxFILE*);
-
-
-
 /** Initialize the File Module
  */
-orxSTATIC orxINLINE orxSTATUS orxFile_Init()
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Init)();
-}
+extern orxDLLAPI orxSTATUS              orxFile_Init();
 
 /** Uninitialize the File Module
  */
-orxSTATIC orxINLINE orxVOID orxFile_Exit()
-{
-  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Exit)();
-}
+extern orxDLLAPI orxVOID                orxFile_Exit();
 
-/** Open a file for later read or write operation.
+/** Opens a file for later read or write operation
  * @param _zPath         (IN)      Full file's path to open
  * @param _u32OpenFlags  (IN)      List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
-orxSTATIC orxINLINE orxFILE* orxFile_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Open)(_zPath, _u32OpenFlags);
-}
+extern orxDLLAPI orxFILE*               orxFile_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags);
 
-/** Read datas from a file
+/** Reads data from a file
  * @param _pReadData     (OUT)     Pointer where will be stored datas
  * @param _u32ElemSize   (IN)      Size of 1 element
  * @param _u32NbElem     (IN)      Number of elements
  * @param _pstFile       (IN)      Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-orxSTATIC orxINLINE orxU32 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Read)(_pReadData, _u32ElemSize, _u32NbElem, _pstFile);
-}
+extern orxDLLAPI orxU32                 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
-/** write datas to a file
+/** writes data to a file
  * @param _pDataToWrite  (IN)      Pointer where will be stored datas
  * @param _u32ElemSize   (IN)      Size of 1 element
  * @param _u32NbElem     (IN)      Number of elements
  * @param _pstFile       (IN)      Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-orxSTATIC orxINLINE orxU32 orxFile_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Write)(_pDataToWrite, _u32ElemSize, _u32NbElem, _pstFile);
-}
+extern orxDLLAPI orxU32                 orxFile_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
-/** get text line from a file
+/** Gets text line from a file
  * @param _zBuffer  (OUT)     Pointer where will be stored datas
  * @param _u32Size  (IN)      Size of buffer
  * @param _pstFile  (IN)      Pointer on the file descriptor
  * @return Returns orxTRUE if a line has been read, else returns orxFALSE.
  */
-orxSTATIC orxINLINE orxBOOL orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_ReadLine)(_zBuffer, _u32Size, _pstFile);
-}
+extern orxDLLAPI orxBOOL                orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile);
 
-/** Close an oppened file
+/** Closes an oppened file
  * @param _pstFile       (IN)      File's pointer to close
  * @return Returns the status of the operation
  */
-orxSTATIC orxINLINE orxSTATUS orxFile_Close(orxFILE *_pstFile)
-{
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxFile_Close)(_pstFile);
-}
+extern orxDLLAPI orxSTATUS              orxFile_Close(orxFILE *_pstFile);
 
 #endif /* _orxFILE_H_ */
