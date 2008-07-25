@@ -640,12 +640,13 @@ orxSTATIC orxBOOL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU3
  /** Updates all links for an Anim
  * @param[in]   _u32Index			                Anim index
  * @param[in]   _pstInfo											Associated LinkUpdateInfo
+ * @return      orxTRUE if updated, orxFALSE otherwise
  */
-orxVOID orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
+orxBOOL orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
 {
-  orxU32 u32BaseIndex;
+  orxU32 u32BaseIndex, i;
   orxANIMSET_LINK_TABLE *pstLinkTable;
-  orxU32 i;
+  orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstInfo != orxNULL);
@@ -672,9 +673,6 @@ orxVOID orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
         /* Is animation 'dirty' for this one? */
         if(orxAnimSet_GetLinkInfo(_pstInfo, i, _u32Index) == orxFALSE)
         {
-          /* Updates this animation */
-          orxAnimSet_UpdateLink(i, _pstInfo);
-
           /* Updates 'dirty' status */
           orxAnimSet_SetLinkInfo(_pstInfo, i, _u32Index);
 
@@ -684,6 +682,9 @@ orxVOID orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
             /* Links have been modified for current animation */
             orxAnimSet_CleanLinkInfo(_pstInfo, _u32Index);
             orxAnimSet_SetLinkInfo(_pstInfo, _u32Index, _u32Index);
+
+            /* Updates result */
+            bResult = orxTRUE;
           }
         }
       }
@@ -693,7 +694,8 @@ orxVOID orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDATE_INFO *_pstInfo)
     orxAnimSet_ResetLinkInfo(_pstInfo, _u32Index, _u32Index);
   }
 
-  return;
+  /* Done! */
+  return bResult;
 }
 
 /** Creates and inits a LinkUpdateInfo
@@ -721,19 +723,19 @@ orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_T
     pstInfo->pstLinkTable = _pstLinkTable;
 
     /* Computes number of orxU8 needed for one link info : ((size - 1) / 8) + 1 */
-    u32Number = (orxU32)(((_pstLinkTable->u16LinkCounter - 1) >> 3) + 1);
+    u32Number = (orxU32)(((_pstLinkTable->u16TableSize - 1) >> 3) + 1);
 
     /* Stores it */
     pstInfo->u32ByteNumber = u32Number;
 
     /* Allocates link info array */
-    pstInfo->au8LinkInfo = (orxU8 *)orxMemory_Allocate(u32Number * (orxU32)(_pstLinkTable->u16LinkCounter) * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+    pstInfo->au8LinkInfo = (orxU8 *)orxMemory_Allocate(u32Number * (orxU32)(_pstLinkTable->u16TableSize) * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
 
     /* Was allocated? */
     if(pstInfo->au8LinkInfo != orxNULL)
     {
       /* Cleans it */
-      orxMemory_Zero(pstInfo->au8LinkInfo, u32Number * (orxU32)(_pstLinkTable->u16LinkCounter) * sizeof(orxU8));
+      orxMemory_Zero(pstInfo->au8LinkInfo, u32Number * (orxU32)(_pstLinkTable->u16TableSize) * sizeof(orxU8));
     }
     else
     {
@@ -1172,10 +1174,20 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
       /* Was allocated? */
       if(pstUpdateInfo != orxNULL)
       {
-        /* Updates all animations */
-        for(i = 0; i < _pstLinkTable->u16TableSize; i++)
+        orxBOOL bNeedUpdate = orxTRUE;
+
+        /* While updates are needed */
+        while(bNeedUpdate != orxFALSE)
         {
-          orxAnimSet_UpdateLink(i, pstUpdateInfo);
+          /* Clears update */
+          bNeedUpdate = orxFALSE;
+
+          /* For all animations */
+          for(i = 0; i < _pstLinkTable->u16TableSize; i++)
+          {
+            /* Updates its links */
+            bNeedUpdate = orxAnimSet_UpdateLink(i, pstUpdateInfo) || bNeedUpdate;
+          }
         }
 
         /* Updates flags */

@@ -999,15 +999,14 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
     /* Gets value */
     if(orxString_ToS32(pstEntry->zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
     {
-      orxU32 u32RandomSeparatorIndex;
-      orxS32 s32OtherValue;
+      orxS32 s32RandomSeparatorIndex, s32OtherValue;
 
       /* Searches for the random separator */
-      u32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+      s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
 
       /* Found and has another value? */
-      if((u32RandomSeparatorIndex >= 0)
-      && (orxString_ToS32(zRemainder + u32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+      if((s32RandomSeparatorIndex >= 0)
+      && (orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
       {
         /* Updates result */
         s32Result = orxS32RAND(s32Value, s32OtherValue);
@@ -1051,14 +1050,15 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
     /* Gets value */
     if(orxString_ToU32(pstEntry->zValue, &u32Value, &zRemainder) != orxSTATUS_FAILURE)
     {
-      orxU32 u32RandomSeparatorIndex, u32OtherValue;
+      orxS32 s32RandomSeparatorIndex;
+      orxU32 u32OtherValue;
 
       /* Searches for the random separator */
-      u32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+      s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
 
       /* Found and has another value? */
-      if((u32RandomSeparatorIndex >= 0)
-      && (orxString_ToU32(zRemainder + u32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+      if((s32RandomSeparatorIndex >= 0)
+      && (orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
       {
         /* Updates result */
         u32Result = orxU32RAND(u32Value, u32OtherValue);
@@ -1102,15 +1102,15 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
     /* Gets value */
     if(orxString_ToFloat(pstEntry->zValue, &fValue, &zRemainder) != orxSTATUS_FAILURE)
     {
-      orxU32    u32RandomSeparatorIndex;
+      orxS32    s32RandomSeparatorIndex;
       orxFLOAT  fOtherValue;
 
       /* Searches for the random separator */
-      u32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+      s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
 
       /* Found and has another value? */
-      if((u32RandomSeparatorIndex >= 0)
-      && (orxString_ToFloat(zRemainder + u32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
+      if((s32RandomSeparatorIndex >= 0)
+      && (orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
       {
         /* Updates result */
         fResult = orxFRAND(fValue, fOtherValue);
@@ -1218,15 +1218,15 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
     /* Gets value */
     if(orxString_ToVector(pstEntry->zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
     {
-      orxU32 u32RandomSeparatorIndex;
+      orxS32 s32RandomSeparatorIndex;
       orxVECTOR vOtherValue;
 
       /* Searches for the random separator */
-      u32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+      s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
 
       /* Found and has another value? */
-      if((u32RandomSeparatorIndex >= 0)
-      && (orxString_ToVector(zRemainder + u32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+      if((s32RandomSeparatorIndex >= 0)
+      && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
       {
         /* Updates result */
         _pvVector->fX = orxFRAND(_pvVector->fX, vOtherValue.fX);
