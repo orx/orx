@@ -549,7 +549,7 @@ orxSTATIC orxBOOL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU3
   /* Gets link table */
   pstLinkTable = _pstInfo->pstLinkTable;
 
-  /* Computes base indexes */
+  /* Computes base indices */
   u32SrcBaseIndex = _u32SrcIndex * (orxU32)(pstLinkTable->u16TableSize);
   u32DstBaseIndex = _u32DstIndex * (orxU32)(pstLinkTable->u16TableSize);
 
@@ -2045,36 +2045,6 @@ orxHANDLE orxFASTCALL orxAnimSet_GetLink(orxCONST orxANIMSET *_pstAnimSet, orxHA
 
   /* Done! */
   return hResult;
-}
-
-/** Computes all link relations
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimSet)
-{
-  orxSTATUS eResult;
-
-  /* Checks */
-  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstAnimSet);
-
-  /* Not locked? */
-  if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCE_LOCK) == orxFALSE)
-  {
-    /* Computes link table */
-    eResult = orxAnimSet_ComputeLinkTable(_pstAnimSet->pstLinkTable);
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
 }
 
 /** Sets a link property

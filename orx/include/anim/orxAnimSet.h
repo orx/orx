@@ -166,12 +166,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveLink(orxANI
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
 
-/** Computes all link relations
- * @param[in]		_pstAnimSet													Concerned AnimSet
- * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_ComputeLinks(orxANIMSET *_pstAnimSet);
-
 /** Sets a link property
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hLinkHandle												Handle of the concerned link
