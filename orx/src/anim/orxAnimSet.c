@@ -277,7 +277,7 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTab
         orxASSERT(_u32Value <= (orxANIMSET_KU32_LINK_MASK_PRIORITY >> orxANIMSET_KU32_LINK_SHIFT_PRIORITY));
 
         /* Updates priority */
-        if(_u32Value != 0)
+        if(_u32Value != orxU32_UNDEFINED)
         {
           _pstLinkTable->au32LinkArray[_u32LinkIndex] |= orxANIMSET_KU32_LINK_FLAG_PRIORITY
                                                    + ((_u32Value << orxANIMSET_KU32_LINK_SHIFT_PRIORITY) & orxANIMSET_KU32_LINK_MASK_PRIORITY);
@@ -621,8 +621,9 @@ orxSTATIC orxBOOL orxAnimSet_UpdateLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU3
 
         /* Computes new path */
         u32DstLink = orxANIMSET_KU32_LINK_FLAG_PATH
-          				 + ((u32SrcLength + 1) << orxANIMSET_KU32_LINK_SHIFT_LENGTH)
-          				 + (_u32SrcIndex << orxANIMSET_KU32_LINK_SHIFT_ANIM);
+                   | ((u32SrcLength + 1) << orxANIMSET_KU32_LINK_SHIFT_LENGTH)
+                   | (u32DirectPriority << orxANIMSET_KU32_LINK_SHIFT_PRIORITY)
+                   | (_u32SrcIndex << orxANIMSET_KU32_LINK_SHIFT_ANIM);
 
         /* Stores it */
         pstLinkTable->au32LinkArray[u32DstBaseIndex + i] = u32DstLink;
@@ -1906,9 +1907,9 @@ orxHANDLE orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSr
     {
       /* Adds link */
       u32Link = (orxANIMSET_KU32_LINK_FLAG_LINK | orxANIMSET_KU32_LINK_FLAG_PATH)
-              + (0x00000001 << orxANIMSET_KU32_LINK_SHIFT_LENGTH)
-              + (orxANIMSET_KU32_LINK_DEFAULT_PRIORITY << orxANIMSET_KU32_LINK_SHIFT_PRIORITY)
-              + ((orxU32)_hDstAnim << orxANIMSET_KU32_LINK_SHIFT_ANIM);
+              | (0x00000001 << orxANIMSET_KU32_LINK_SHIFT_LENGTH)
+              | (orxANIMSET_KU32_LINK_DEFAULT_PRIORITY << orxANIMSET_KU32_LINK_SHIFT_PRIORITY)
+              | ((orxU32)_hDstAnim << orxANIMSET_KU32_LINK_SHIFT_ANIM);
 
       /* Stores it */
       orxAnimSet_SetLinkTableLink(pstLinkTable, u32Index, u32Link);
@@ -1974,7 +1975,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _
     {
       /* Updates link table */
       orxAnimSet_SetLinkTableLink(pstLinkTable, (orxU32)_hLinkHandle, orxANIMSET_KU32_LINK_DEFAULT_NONE);
-      orxAnimSet_SetLinkTableLinkProperty(pstLinkTable, (orxU32)_hLinkHandle, orxANIMSET_KU32_LINK_FLAG_PRIORITY, 0);
+      orxAnimSet_SetLinkTableLinkProperty(pstLinkTable, (orxU32)_hLinkHandle, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxU32_UNDEFINED);
 
       /* Animset has to be computed again */
       orxAnimSet_SetLinkTableFlag(pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE);
