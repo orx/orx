@@ -22,7 +22,6 @@
 #include "debug/orxDebug.h"
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
-#include "msg/msg_fps.h"
 
 /*
  * Platform independent defines

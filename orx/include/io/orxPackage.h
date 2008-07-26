@@ -1,28 +1,42 @@
+/* Orx - Portable Game Engine
+ *
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 /**
  * @file orxPackage.h
- * 
- * Module for package management.
- * 
- */ 
- 
- /***************************************************************************
- orxPackage.h
- Package management
- 
- begin                : 01/05/2005
- author               : (C) Arcallians
- email                : bestel@arcallians.org
- ***************************************************************************/
+ * @date 01/05/2005
+ * @author bestel@arcallians.org
+ *
+ * @todo
+ */
 
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
- 
+/**
+ * @addtogroup IO
+ * 
+ * Package plugin module
+ * Module that handles packages
+ *
+ * @{
+ */
+
+
 #ifndef _orxPACKAGE_H_
 #define _orxPACKAGE_H_
  
@@ -137,3 +151,5 @@ extern orxDLLAPI orxVOID orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos);
 extern orxDLLAPI orxU32 orxPackage_Read(orxVOID *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName);
 
 #endif /* _orxPACKAGE_H_ */
+
+/** @} */

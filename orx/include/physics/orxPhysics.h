@@ -1,30 +1,40 @@
-/** 
- * \file orxPhysics.h
- * 
- * Physics module
- * Handles physics & collision requests.
- * 
- * \todo
+/* Orx - Portable Game Engine
+ *
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/**
+ * @file orxPhysics.h
+ * @date 24/03/2008
+ * @author iarwain@orx-project.org
+ *
+ * @todo
+ */
 
-/***************************************************************************
- orxPhysics.h
- Physics module
- 
- begin                : 24/03/2008
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
+/**
+ * @addtogroup Physics
+ * 
+ * Physics plugin module
+ * Module that handles physics interactions
+ *
+ * @{
+ */
 
 
 #ifndef _orxPHYSICS_H_
@@ -198,3 +208,5 @@ extern orxDLLAPI orxSTATUS orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, orxC
 extern orxDLLAPI orxSTATUS orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
 
 #endif /* _orxPHYSICS_H_ */
+
+/** @} */

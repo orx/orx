@@ -1,27 +1,41 @@
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
-
-/**
- *@file orxFSM.h
- *@date 20/06/2005
- *@author (C) Arcallians
+/* Orx - Portable Game Engine
  *
- *@todo 
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /**
- *@addtogroup StateMachine
+ * @file orxFSM.h
+ * @date 20/06/2005
+ * @author Corrosif (???@???.???)
  *
- *State Machine.
- *Allows to create state machines, for various purposes.
- *@{
+ * @todo
  */
+
+/**
+ * @addtogroup Utils
+ * 
+ * FSM module
+ * Module that handles FSMs
+ *
+ * @{
+ */
+
 
 #ifndef _orxFSM_H_
 #define _orxFSM_H_
@@ -202,7 +216,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_UpdateInstance(orxFSM_INSTA
  *@return Returns the status of the operation. It fails if nothing has happend.
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_Update(orxFSM *_pstStateMachine);
-
 
 #endif /**_orxFSM_H_ */
 

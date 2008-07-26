@@ -1,31 +1,45 @@
-/**
- * \file orxPlugin.h
- * This module provides functions for loading dynamic code into the core
- * engine and finding symbols within the dynamic modules.
+/* Orx - Portable Game Engine
  *
- * \todo
- * Has to :
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+/**
+ * @file orxPlugin.h
+ * @date 06/09/2002
+ * @author iarwain@orx-project.org
+ *
+ * @todo
  * - Add execute function for user register function + arg parser/checker
  * - Add execute/get function using ID (with hashtable)
  * - Add new string use for all string related operations, when systeme is done
  * - make a Complete Function Info Archiving (Global Info Structure (hash table?))
  */
 
-/*
- begin                : 06/09/2002
- author               : (C) Arcallians
- email                : david.anderson@calixo.net
-                      : iarwain@arcallians.org (2003->)
+/**
+ * @addtogroup Plugin
+ * 
+ * Plugin module
+ * This module provides functions for loading dynamic code into the core
+ * engine and finding symbols within the dynamic modules.
+ *
+ * @{
  */
-
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
 
 
 #ifndef _orxPLUGIN_H_
@@ -96,3 +110,5 @@ extern orxDLLAPI orxSTRING orxFASTCALL          orxPlugin_GetName(orxHANDLE _hPl
 
 
 #endif /* _orxPLUGIN_H_ */
+
+/** @} */

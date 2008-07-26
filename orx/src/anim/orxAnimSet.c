@@ -23,7 +23,7 @@
 #include "core/orxConfig.h"
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
-#include "utils/orxHashtable.h"
+#include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
 

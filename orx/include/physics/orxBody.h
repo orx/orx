@@ -1,18 +1,30 @@
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
+/* Orx - Portable Game Engine
+ *
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 /**
  * @file orxBody.h
  * @date 10/03/2008
- * @author (C) Arcallians
- * 
- * @todo 
+ * @author iarwain@orx-project.org
+ *
+ * @todo
  */
 
 /**
@@ -20,9 +32,9 @@
  * 
  * Body Module
  * Allows to creates and handle physical bodies
- * They are used as container with associated properties.
- * Bodies are used by objects.
- * They thus can be referenced by objects as structures.
+ * They are used as container with associated properties
+ * Bodies are used by objects
+ * They thus can be referenced by objects as structures
  *
  * @{
  */
@@ -230,8 +242,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBo
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
 
-
 #endif /* _orxBODY_H_ */
-
 
 /** @} */

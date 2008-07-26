@@ -1,31 +1,34 @@
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
+/* Orx - Portable Game Engine
+ *
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 /**
  * @file orxAnimPointer.h
  * @date 03/03/2004
- * @author (C) Arcallians
+ * @author iarwain@orx-project.org
  *
  * @todo
- * C Rewrite with new Graphic/Anim system
- * V Remove dependency to orxTime and use only orxCLOCK_INFO time (for *_set and _create funtions)
- * V Add/Remove "update-all function" clock registering in orxAnimPointer_Init / orxAnimPointer_Exit.
- * V Add current anim, timestamp, dest anim, animset ref, link_table ref in structure.
- * V Duplicate link table on creation if animset is non link-static.
- * V Lock animset & update ref counter upon creation, unlock it upon destruction if updated ref counter is 0.
- * V Optimized animpointer update : will only happen if graphic is displayed on screen.
- * X Add clocks registering (using different frequencies) for an animpointer update.
- * - Add optimization with above system, to compute only if graphic is tagged as rendered.
  */
 
 /**
- * @addtogroup AnimPointer
+ * @addtogroup Anim
  *
  * Animation (Pointer) Module.
  * Allows to creates and handle Animation Set Pointers.

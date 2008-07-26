@@ -28,8 +28,6 @@
 #include "plugin/orxPluginCore.h"
 #include "utils/orxHashTable.h"
 
-#include "msg/msg_plugin.h"
-
 
 #if defined(__orxLINUX__) || defined (__orxMAC__) || defined(__orxGP2X__)
 
@@ -577,7 +575,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
   if(pfnFunction == orxNULL)
   {
     /* Logs an error */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "The requested function <%s> couldn't be find.", _zFunctionName);
   }
 
   /* Done! */
@@ -876,7 +874,7 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
                    |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                    |orxDEBUG_KU32_STATIC_FLAG_TYPE,
                     orxDEBUG_KU32_STATIC_MASK_USER_ALL);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, MSG_PLUGIN_KZ_DEFAULT_NOT_LOADED_ZZI, _zFunctionName, _zFileName, _u32Line);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() - %s:%ld> has been called before being loaded!\nPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line);
   orxDEBUG_FLAG_RESTORE();
 
   return orxNULL;
@@ -944,17 +942,16 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
     }
     else
     {
+      /* !!! MSG !!! */
+
       /* Closes plugin */
       orxPLUGIN_CLOSE(pstSysPlugin);
-
-      /* Logs an error */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_MALLOC_FAILED);
     }
   }
   else
   {
     /* Logs an error */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_LOAD_FAILED_Z, _zPluginFileName);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't load the plugin <%s>.", _zPluginFileName);
   }
 
   /* Returns its handle */
@@ -1012,8 +1009,7 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
   }
   else
   {
-    /* Logs error */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_FOUND);
+    /* !!! MSG !!! */
 
     /* Not found */
     eResult = orxSTATUS_FAILURE;
@@ -1051,14 +1047,12 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
     /* Not found? */
     if(pfnFunction == orxNULL)
     {
-      /* Logs an error */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
+      /* !!! MSG !!! */
     }
   }
   else
   {
-    /* Logs an error */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_FUNCTION_NOT_FOUND);
+    /* !!! MSG !!! */
   }
 
   /* Done! */
@@ -1126,8 +1120,7 @@ orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   }
   else
   {
-    /* Logs an error */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, MSG_PLUGIN_KZ_NOT_FOUND);
+    /* !!! MSG !!! */
   }
 
   /* Done! */

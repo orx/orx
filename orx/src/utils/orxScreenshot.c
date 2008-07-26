@@ -28,7 +28,6 @@
 #include "io/orxFileSystem.h"
 #include "utils/orxString.h"
 #include "memory/orxMemory.h"
-#include "msg/msg_screenshot.h"
 
 
 /*
@@ -194,7 +193,7 @@ orxVOID orxScreenshot_Take()
   orxDisplay_SaveBitmap(orxDisplay_GetScreenBitmap(), zName);
 
   /* Logs */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, KZ_MSG_SHOT_TAKEN_S, zName);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Screenshot captured: <%s>.", zName);
 
   /* Updates screenshot counter */
   sstScreenshot.u32Counter++;

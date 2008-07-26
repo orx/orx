@@ -1,0 +1,26 @@
+Orx authors:
+
+  Architecture and all core features except memory management, script, package and file handling:
+    Romain Killian
+
+  Memory management, script, package and file handling:
+    Nicolas Antoniazzi
+
+  Tools:
+    Nicolas Antoniazzi
+    Emilien Kia
+    Romain Killian
+    Andreas Thillosen
+
+  Bakefiles:
+    Nicolas Antoniazzi
+    Emilien Kia
+
+  IDE project files (CodeLite, Code::Blocks, Visual Studio) and external dependencies:
+    Romain Killian
+
+  GP2X version:
+    Romain Killian
+
+  Main executable, demos and tutorials:
+    Romain Killian

@@ -1,31 +1,40 @@
-/**
- * \file orxRender.h
+/* Orx - Portable Game Engine
  *
- * Render Module.
- * Renders visible objects on screen, using active renders.
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
  *
- * \todo
- * Optimize viewport list handling.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/**
+ * @file orxRender.h
+ * @date 15/12/2003
+ * @author iarwain@orx-project.org
+ *
+ * @todo
+ */
 
-/***************************************************************************
- orxRender.h
- Render module
-
- begin                : 15/12/2003
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
+/**
+ * @addtogroup Render
+ * 
+ * Render plugin module
+ * Renders visible objects on screen, using active cameras/viewports.
+ *
+ * @{
+ */
 
 
 #ifndef _orxRENDER_H_
@@ -62,3 +71,5 @@ extern orxDLLAPI orxVOID    orxRender_Exit();
 extern orxDLLAPI orxSTATUS  orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
 
 #endif /* _orxRENDER_H_ */
+
+/** @} */

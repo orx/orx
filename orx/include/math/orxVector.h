@@ -1,34 +1,43 @@
-/**
- * \file orxVector.h
+/* Orx - Portable Game Engine
  *
- * Vector module.
- * Handles vectors.
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
  *
- * \todo
- * Extract box code into box module
- * Adds rotate function with matrix module, when it's done
- * Gets it intrinsic depending on platform.
- * All handling functions.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/**
+ * @file orxVector.h
+ * @date 30/03/2005
+ * @author iarwain@orx-project.org
+ *
+ * @todo
+ * - Extract box code into box module
+ * - Adds rotate function with matrix module, when it's done
+ * - Gets it intrinsic depending on platform.
+ */
 
-/***************************************************************************
- orxVector.h
- Vector module
-
- begin                : 30/03/2005
- author               : (C) Arcallians
- email                : iarwain@arcallians.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
+/**
+ * @addtogroup Math
+ * 
+ * Vector module
+ * Module that handles vectors and basic structures based on them
+ *
+ * @{
+ */
 
 
 #ifndef _orxVECTOR_H_
@@ -733,5 +742,6 @@ orxSTATIC orxINLINE orxVECTOR *               orxAABox_GetCenter(orxCONST orxAAB
   return _pvRes;
 }
 
-
 #endif /* _orxVECTOR_H_ */
+
+/** @} */

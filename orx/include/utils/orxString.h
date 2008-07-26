@@ -1,29 +1,42 @@
-/**
- * @file orxString.h
+/* Orx - Portable Game Engine
  *
- * String Module - Offers functions to manage Strings and CRC
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
  *
- * @todo Add CRC generation
- * @todo Maybe add functionalities to have an easyer string management than standard C API
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- /***************************************************************************
- orxString.h
- String management Module
+/**
+ * @file orxString.h
+ * @date 21/04/2005
+ * @author bestel@arcallians.org
+ *
+ * @todo
+ * - Add autoindexing for ID generation
+ */
 
- begin                : 21/04/2005
- author               : (C) Arcallians
- email                : bestel@arcallians.org
- ***************************************************************************/
+/**
+ * @addtogroup Utils
+ * 
+ * String module
+ * Module that handles strings
+ *
+ * @{
+ */
 
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
 
 #ifndef _orxSTRING_H_
 #define _orxSTRING_H_
@@ -808,3 +821,5 @@ orxSTATIC orxINLINE orxS32 orxCDECL orxString_Print(orxSTRING _zDstString, orxST
 }
 
 #endif /* _orxSTRING_H_ */
+
+/** @} */
