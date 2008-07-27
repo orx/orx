@@ -102,7 +102,7 @@
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
     #ifdef __orxGP2X__
-    
+
       /** The function will be called fastly (use registers for parameters as far as possible).*/
       #define orxFASTCALL
 
@@ -116,7 +116,7 @@
 
       /** The function will be called fastly (use registers for parameters as far as possible).*/
       #define orxFASTCALL       __attribute__ ((fastcall))
-    
+
       /** The function will be called using stdcall convention.*/
       #define orxSTDCALL        __attribute__ ((stdcall))
 

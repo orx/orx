@@ -29,7 +29,7 @@
 
 /**
  * @addtogroup Base
- * 
+ *
  * Module file
  * Code that handles modules and their dependencies
  *
