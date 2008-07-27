@@ -67,7 +67,7 @@
       <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Debug"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="yes">
+    <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="no">
       <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Release"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
       <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
@@ -84,7 +84,7 @@
       <Project Name="Cave" ConfigName="Linux Dynamic Release"/>
       <Project Name="Bounce" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Win32 Static Debug" Selected="no">
+    <WorkspaceConfiguration Name="Win32 Static Debug" Selected="yes">
       <Project Name="orxSystem_SFML" ConfigName="Win32 Static Debug"/>
       <Project Name="Scroll" ConfigName="Win32 Static Debug"/>
       <Project Name="orxRender_Home" ConfigName="Win32 Static Debug"/>
