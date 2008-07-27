@@ -1,29 +1,37 @@
-/**
- * @file orxMain.c
+/* Orx - Portable Game Engine
  *
- * Main program implementation
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
  *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- /***************************************************************************
- orxMain.c
- Main program implementation
-
- begin                : 04/09/2005
- author               : (C) Arcallians
- email                : bestel@arcallians.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
+/**
+ * @file orxMain.c
+ * @date 18/07/2008
+ * @author iarwain@orx-project.org
+ * 
+ * Default main executable
+ *
+ * @todo
+ */
 
 
+/** Includes
+ */
 #include "orx.h"
 
 /** Flags
@@ -45,21 +53,26 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Static structure
+ */
 typedef struct __orxMAIN_STATIC_t
 {
-  orxU32 u32Flags;       /**< Control flags */
+  orxU32 u32Flags;                      /**< Control flags */
 
 } orxMAIN_STATIC;
 
+
 /***************************************************************************
- * Module global variable                                                  *
+ * Static variables                                                        *
  ***************************************************************************/
 
+/** Static data
+ */
 orxSTATIC orxMAIN_STATIC sstMain;
 
 
 /***************************************************************************
- * Functions                                                               *
+ * Private functions                                                       *
  ***************************************************************************/
 
 /** Main event handler
@@ -118,7 +131,7 @@ orxSTATUS orxMain_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Don't call twice the init function */
+  /* Not already initialized? */
   if(!orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
   {
     orxSTRING zGameFileName;
@@ -241,11 +254,10 @@ orxSTATUS orxMain_Run()
   return eResult;
 }
 
-/** Main function
- * @param[in] argc  Number of parameters
- * @param[in] argv  List array of parameters
- * @note Since the event function is not registered, the program will not
- * be able to exit properly.
+/** Main entry point
+ * @param[in] argc                            Number of parameters
+ * @param[in] argv                            List of parameters
+ * @return    EXIT_SUCCESS / EXIT_FAILURE
  */
 int main(int argc, char **argv)
 {

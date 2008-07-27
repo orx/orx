@@ -1,29 +1,35 @@
-/**
- * @file orxMemory.c
+/* Orx - Portable Game Engine
  *
- * Memory allocation / Deallocation module
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
  *
- * @todo
- * Optimizations
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- /***************************************************************************
- orxMemory.h
- Memory allocation / deallocation module
-
- begin                : 02/04/2005
- author               : (C) Arcallians
- email                : bestel@arcallians.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
+/**
+ * @file orxMemory.c
+ * @date 02/04/2005
+ * @author bestel@arcallians.org
+ *
+ * @todo
+ * - Optimizations
+ * - Manage the memory instead of use the access to OS allocation
+ * - Manage memory alignment
+ * - Allow to specifiy memory starting address & maximum size for each memory type
+ */
 
 #include "memory/orxMemory.h"
 #include "debug/orxDebug.h"

@@ -1,29 +1,33 @@
-/**
- * @file orxBank.c
+/* Orx - Portable Game Engine
  *
- * Memory Bank allocation / Unallocation module
+ * Orx is the legal property of its developers, whose names
+ * are listed in the COPYRIGHT file distributed 
+ * with this source distribution.
  *
- * @todo Add a clever method to unallocate segments.
- * @todo Optimisation for traverse
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
- /***************************************************************************
- orxMemory.h
- Memory allocation / unallocation module
+/**
+ * @file orxBank.c
+ * @date 02/04/2005
+ * @author bestel@arcallians.org
+ *
+ * @todo
+ * - Optimizations 
+ */
 
- begin                : 02/04/2005
- author               : (C) Arcallians
- email                : bestel@arcallians.org
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This library is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU Lesser General Public License           *
- *   as published by the Free Software Foundation; either version 2.1      *
- *   of the License, or (at your option) any later version.                *
- *                                                                         *
- ***************************************************************************/
 
 #include "memory/orxBank.h"
 #include "debug/orxDebug.h"
