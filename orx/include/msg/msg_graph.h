@@ -1,5 +1,0 @@
-#define KZ_MSG_MODE_INIT_FAILED_III       "Echec de l'initialisation du mode %dx%d (%d bits)"
-#define KZ_MSG_MODE_INIT_SUCCESS_III      "Mode graphique initialisé en %dx%d (%d bits)"
-#define KZ_MSG_MODE_PAGEFLIP_FAILED       "Echec de l'initialisation du mode \"page flip\""
-#define KZ_MSG_MODE_DOUBLEBUFFER_FAILED   "Echec de l'initialisation du double buffer!"
-#define KZ_MSG_NO_MODE_FOUND              "Aucun mode graphique correct n'a été trouvé!!!"

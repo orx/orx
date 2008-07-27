@@ -1,7 +1,0 @@
-#define KZ_MSG_DIRECTORY_MISSING_S    "Le répertoire %s n'existe pas, les screenshots seront pris dans le répertoire courant.\n"
-#define KZ_MSG_DIRECTORY_UNREADABLE_S "Impossible d'accéder au répertoire courant.\n*** Le mécanisme des screenshots est désactivé ***\n"
-#define KZ_MSG_NO_SUB_BITMAP          "\nImpossible de créer une surface de screenshot depuis la mémoire video.\n***"
-#define KZ_MSG_SHOT_FOUND_S           "Screenshot trouvé : %s\n"
-#define KZ_MSG_INIT_DONE_SSI          "Initialisation des screenshots : préfix = %s, répertoire = %s, numéro = %d. *** Fin d'initialisation ***\n"
-#define KZ_MSG_SHOT_TAKEN_S           "*** Ecran capturé en %s ***\n"
-#define KZ_MSG_NOT_ACTIVATED          "*** La capture d'écran est désactivée!!! ***\n"
