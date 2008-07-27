@@ -222,11 +222,11 @@ orxSTATUS orxMain_Run()
     {
       orxSTATIC orxBOOL sbPressed = 0;
 
-      /* Was F12 pressed? */
+      /* Was F10 pressed? */
       if(sbPressed != orxFALSE)
       {
         /* No longer pressed? */
-        if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F12) == orxFALSE)
+        if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F10) == orxFALSE)
         {
           /* Updates key status */
           sbPressed = orxFALSE;
@@ -234,8 +234,8 @@ orxSTATUS orxMain_Run()
       }
       else
       {
-        /* Is F12 pressed? */
-        if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F12) != orxFALSE)
+        /* Is F10 pressed? */
+        if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F10) != orxFALSE)
         {
           /* Toggles vsync */
           orxDisplay_EnableVSync(!orxDisplay_IsVSyncEnabled());

@@ -1,88 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CodeLite_Workspace Name="orx" Database=".\orx.tags">
-  <Project Name="orxFileSystem_LibC" Path="orxFileSystem_LibC\orxFileSystem_LibC.project" Active="No"/>
-  <Project Name="orxRender_Home" Path="orxRender_Home\orxRender_Home.project"/>
-  <Project Name="orxLIB" Path="orxLIB\orxLIB.project" Active="No"/>
-  <Project Name="orxKeyboard_SFML" Path="orxKeyboard_SFML\orxKeyboard_SFML.project"/>
-  <Project Name="orxFile_LibC" Path="orxFile_LibC\orxFile_LibC.project"/>
-  <Project Name="orxPhysics_Box2D" Path="orxPhysics_Box2D\orxPhysics_Box2D.project"/>
-  <Project Name="orxSystem_SFML" Path="orxSystem_SFML\orxSystem_SFML.project"/>
-  <Project Name="orxDisplay_SFML" Path="orxDisplay_SFML\orxDisplay_SFML.project"/>
-  <Project Name="orx" Path="orx\orx.project" Active="Yes"/>
-  <Project Name="orxMouse_SFML" Path="orxMouse_SFML\orxMouse_SFML.project"/>
-  <Project Name="Bounce" Path="orxDemo\Bounce.project" Active="No"/>
-  <Project Name="Cave" Path="orxDemo\Cave.project" Active="No"/>
-  <Project Name="Scroll" Path="orxDemo\Scroll.project" Active="No"/>
-  <Project Name="orxJoystick_SFML" Path="orxJoystick_SFML\orxJoystick_SFML.project" Active="No"/>
-  <Project Name="orxSoundSystem_SFML" Path="orxSoundSystem_SFML\orxSoundSystem_SFML.project" Active="No"/>
+<CodeLite_Workspace Name="orx" Database="./orx.tags">
+  <Project Name="orxFileSystem_LibC" Path="orxFileSystem_LibC/orxFileSystem_LibC.project" Active="No"/>
+  <Project Name="orxRender_Home" Path="orxRender_Home/orxRender_Home.project"/>
+  <Project Name="orxLIB" Path="orxLIB/orxLIB.project" Active="No"/>
+  <Project Name="orxKeyboard_SFML" Path="orxKeyboard_SFML/orxKeyboard_SFML.project"/>
+  <Project Name="orxFile_LibC" Path="orxFile_LibC/orxFile_LibC.project"/>
+  <Project Name="orxPhysics_Box2D" Path="orxPhysics_Box2D/orxPhysics_Box2D.project"/>
+  <Project Name="orxSystem_SFML" Path="orxSystem_SFML/orxSystem_SFML.project"/>
+  <Project Name="orxDisplay_SFML" Path="orxDisplay_SFML/orxDisplay_SFML.project"/>
+  <Project Name="orx" Path="orx/orx.project" Active="Yes"/>
+  <Project Name="orxMouse_SFML" Path="orxMouse_SFML/orxMouse_SFML.project"/>
+  <Project Name="Bounce" Path="orxDemo/Bounce.project" Active="No"/>
+  <Project Name="Cave" Path="orxDemo/Cave.project" Active="No"/>
+  <Project Name="Scroll" Path="orxDemo/Scroll.project" Active="No"/>
+  <Project Name="orxJoystick_SFML" Path="orxJoystick_SFML/orxJoystick_SFML.project" Active="No"/>
+  <Project Name="orxSoundSystem_SFML" Path="orxSoundSystem_SFML/orxSoundSystem_SFML.project" Active="No"/>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Static Debug" Selected="yes">
-      <Project Name="orxSystem_SFML" ConfigName="Static Debug"/>
-      <Project Name="Scroll" ConfigName="Static Debug"/>
-      <Project Name="orxRender_Home" ConfigName="Static Debug"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="Static Debug"/>
-      <Project Name="orxMouse_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxLIB" ConfigName="Static Debug"/>
-      <Project Name="orxKeyboard_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxJoystick_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxFile_LibC" ConfigName="Static Debug"/>
-      <Project Name="orxFileSystem_LibC" ConfigName="Static Debug"/>
-      <Project Name="orxDisplay_SFML" ConfigName="Static Debug"/>
-      <Project Name="orxSoundSystem_SFML" ConfigName="Static Debug"/>
-      <Project Name="Cave" ConfigName="Static Debug"/>
-      <Project Name="Bounce" ConfigName="Static Debug"/>
-      <Project Name="orx" ConfigName="Static Debug"/>
+    <WorkspaceConfiguration Name="Linux Static Debug" Selected="no">
+      <Project Name="orxSystem_SFML" ConfigName="Linux Static Debug"/>
+      <Project Name="Scroll" ConfigName="Linux Static Debug"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Static Debug"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Static Debug"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Static Debug"/>
+      <Project Name="orxLIB" ConfigName="Linux Static Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Static Debug"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Static Debug"/>
+      <Project Name="orxFile_LibC" ConfigName="Linux Static Debug"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Linux Static Debug"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Static Debug"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Static Debug"/>
+      <Project Name="Cave" ConfigName="Linux Static Debug"/>
+      <Project Name="Bounce" ConfigName="Linux Static Debug"/>
+      <Project Name="orx" ConfigName="Linux Static Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Dynamic Debug" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Dynamic Debug"/>
-      <Project Name="orxRender_Home" ConfigName="Dynamic Debug"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="Dynamic Debug"/>
-      <Project Name="orxMouse_SFML" ConfigName="Dynamic Debug"/>
-      <Project Name="orxLIB" ConfigName="Dynamic Debug"/>
-      <Project Name="orxKeyboard_SFML" ConfigName="Dynamic Debug"/>
-      <Project Name="orxFile_LibC" ConfigName="Dynamic Debug"/>
-      <Project Name="orxFileSystem_LibC" ConfigName="Dynamic Debug"/>
-      <Project Name="orxDisplay_SFML" ConfigName="Dynamic Debug"/>
-      <Project Name="orx" ConfigName="Dynamic Debug"/>
-      <Project Name="Bounce" ConfigName="Dynamic Debug"/>
-      <Project Name="Cave" ConfigName="Dynamic Debug"/>
-      <Project Name="Scroll" ConfigName="Dynamic Debug"/>
-      <Project Name="orxJoystick_SFML" ConfigName="Dynamic Debug"/>
-      <Project Name="orxSoundSystem_SFML" ConfigName="Dynamic Debug"/>
+    <WorkspaceConfiguration Name="Linux Static Release" Selected="no">
+      <Project Name="orxSystem_SFML" ConfigName="Linux Static Release"/>
+      <Project Name="Scroll" ConfigName="Linux Static Release"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Static Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Static Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Static Release"/>
+      <Project Name="orxLIB" ConfigName="Linux Static Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Static Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Static Release"/>
+      <Project Name="orxFile_LibC" ConfigName="Linux Static Release"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Linux Static Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Static Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Static Release"/>
+      <Project Name="Cave" ConfigName="Linux Static Release"/>
+      <Project Name="Bounce" ConfigName="Linux Static Release"/>
+      <Project Name="orx" ConfigName="Linux Static Release"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Static Release" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Static Release"/>
-      <Project Name="Scroll" ConfigName="Static Release"/>
-      <Project Name="orxRender_Home" ConfigName="Static Release"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="Static Release"/>
-      <Project Name="orxMouse_SFML" ConfigName="Static Release"/>
-      <Project Name="orxLIB" ConfigName="Static Release"/>
-      <Project Name="orxKeyboard_SFML" ConfigName="Static Release"/>
-      <Project Name="orxJoystick_SFML" ConfigName="Static Release"/>
-      <Project Name="orxFile_LibC" ConfigName="Static Release"/>
-      <Project Name="orxFileSystem_LibC" ConfigName="Static Release"/>
-      <Project Name="orxDisplay_SFML" ConfigName="Static Release"/>
-      <Project Name="orxSoundSystem_SFML" ConfigName="Static Release"/>
-      <Project Name="Cave" ConfigName="Static Release"/>
-      <Project Name="Bounce" ConfigName="Static Release"/>
-      <Project Name="orx" ConfigName="Static Release"/>
+    <WorkspaceConfiguration Name="Linux Dynamic Debug" Selected="no">
+      <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxLIB" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxFile_LibC" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orx" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="Bounce" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="Cave" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="Scroll" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Debug"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Dynamic Release" Selected="no">
-      <Project Name="orxSystem_SFML" ConfigName="Dynamic Release"/>
-      <Project Name="Scroll" ConfigName="Dynamic Release"/>
-      <Project Name="orxRender_Home" ConfigName="Dynamic Release"/>
-      <Project Name="orxPhysics_Box2D" ConfigName="Dynamic Release"/>
-      <Project Name="orxMouse_SFML" ConfigName="Dynamic Release"/>
-      <Project Name="orxLIB" ConfigName="Dynamic Release"/>
-      <Project Name="orxKeyboard_SFML" ConfigName="Dynamic Release"/>
-      <Project Name="orxJoystick_SFML" ConfigName="Dynamic Release"/>
-      <Project Name="orxFile_LibC" ConfigName="Dynamic Release"/>
-      <Project Name="orxFileSystem_LibC" ConfigName="Dynamic Release"/>
-      <Project Name="orxDisplay_SFML" ConfigName="Dynamic Release"/>
-      <Project Name="orxSoundSystem_SFML" ConfigName="Dynamic Release"/>
-      <Project Name="Cave" ConfigName="Dynamic Release"/>
-      <Project Name="Bounce" ConfigName="Dynamic Release"/>
-      <Project Name="orx" ConfigName="Dynamic Release"/>
+    <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="no">
+      <Project Name="orxSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="Scroll" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxRender_Home" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxLIB" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxFile_LibC" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Linux Dynamic Release"/>
+      <Project Name="Cave" ConfigName="Linux Dynamic Release"/>
+      <Project Name="Bounce" ConfigName="Linux Dynamic Release"/>
+      <Project Name="orx" ConfigName="Linux Dynamic Release"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Win32 Static Debug" Selected="yes">
+      <Project Name="orxSystem_SFML" ConfigName="Win32 Static Debug"/>
+      <Project Name="Scroll" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxRender_Home" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxMouse_SFML" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxLIB" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxFile_LibC" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Win32 Static Debug"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Win32 Static Debug"/>
+      <Project Name="Cave" ConfigName="Win32 Static Debug"/>
+      <Project Name="Bounce" ConfigName="Win32 Static Debug"/>
+      <Project Name="orx" ConfigName="Win32 Static Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Win32 Static Release" Selected="no">
+      <Project Name="orxSystem_SFML" ConfigName="Win32 Static Release"/>
+      <Project Name="Scroll" ConfigName="Win32 Static Release"/>
+      <Project Name="orxRender_Home" ConfigName="Win32 Static Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Win32 Static Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Win32 Static Release"/>
+      <Project Name="orxLIB" ConfigName="Win32 Static Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Win32 Static Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Win32 Static Release"/>
+      <Project Name="orxFile_LibC" ConfigName="Win32 Static Release"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Win32 Static Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Win32 Static Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Win32 Static Release"/>
+      <Project Name="Cave" ConfigName="Win32 Static Release"/>
+      <Project Name="Bounce" ConfigName="Win32 Static Release"/>
+      <Project Name="orx" ConfigName="Win32 Static Release"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Win32 Dynamic Debug" Selected="no">
+      <Project Name="orxSystem_SFML" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxRender_Home" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxMouse_SFML" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxLIB" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxFile_LibC" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orx" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="Bounce" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="Cave" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="Scroll" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Win32 Dynamic Debug"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Win32 Dynamic Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="no">
+      <Project Name="orxSystem_SFML" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="Scroll" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxRender_Home" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxPhysics_Box2D" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxMouse_SFML" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxLIB" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxKeyboard_SFML" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxJoystick_SFML" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxFile_LibC" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxFileSystem_LibC" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxDisplay_SFML" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orxSoundSystem_SFML" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="Cave" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="Bounce" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="orx" ConfigName="Win32 Dynamic Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

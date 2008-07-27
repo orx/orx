@@ -2,10 +2,118 @@
 <CodeLite_Project Name="orxKeyboard_SFML">
   <Description/>
   <VirtualDirectory Name="src">
-    <File Name="..\..\..\plugins\Keyboard\SFML\orxKeyboard.cpp"/>
+    <File Name="../../../plugins/Keyboard/SFML/orxKeyboard.cpp"/>
   </VirtualDirectory>
   <Settings Type="Dynamic Library">
-    <Configuration Name="Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+    <Configuration Name="Linux Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -lsfml-window-d -lsfml-system-d">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orxd"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFML.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -lsfml-window -lsfml-system -s">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orx"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -lsfml-window-d -lsfml-system-d ../../../lib/static/orxd.a"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+      <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFML.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -lsfml-window -lsfml-system ../../../lib/static/orx.a -s"/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
       <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
@@ -34,7 +142,7 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
       <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFML.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
@@ -62,7 +170,7 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+    <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
       <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
@@ -88,7 +196,7 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
+    <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger">
       <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFML.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
@@ -115,6 +223,10 @@
     </Configuration>
   </Settings>
   <Dependencies>
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>

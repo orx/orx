@@ -572,10 +572,6 @@
 					RelativePath="..\..\..\..\src\utils\orxTree.c"
 					>
 				</File>
-				<File
-					RelativePath="..\..\..\..\src\utils\pathfinder.c"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -736,38 +732,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\include\memory\orxMemory.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="msg"
-				>
-				<File
-					RelativePath="..\..\..\..\include\msg\msg_file.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\include\msg\msg_fps.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\include\msg\msg_game.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\include\msg\msg_graph.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\include\msg\msg_plugin.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\include\msg\msg_screenshot.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\include\msg\msg_timer.h"
 					>
 				</File>
 			</Filter>
@@ -952,10 +916,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\include\utils\orxTree.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\..\..\include\utils\pathfinder.h"
 					>
 				</File>
 			</Filter>

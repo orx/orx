@@ -114,13 +114,6 @@
 		<Unit filename="..\..\..\include\math\orxVector.h" />
 		<Unit filename="..\..\..\include\memory\orxBank.h" />
 		<Unit filename="..\..\..\include\memory\orxMemory.h" />
-		<Unit filename="..\..\..\include\msg\msg_file.h" />
-		<Unit filename="..\..\..\include\msg\msg_fps.h" />
-		<Unit filename="..\..\..\include\msg\msg_game.h" />
-		<Unit filename="..\..\..\include\msg\msg_graph.h" />
-		<Unit filename="..\..\..\include\msg\msg_plugin.h" />
-		<Unit filename="..\..\..\include\msg\msg_screenshot.h" />
-		<Unit filename="..\..\..\include\msg\msg_timer.h" />
 		<Unit filename="..\..\..\include\object\orxFrame.h" />
 		<Unit filename="..\..\..\include\object\orxObject.h" />
 		<Unit filename="..\..\..\include\object\orxStructure.h" />
@@ -163,7 +156,6 @@
 		<Unit filename="..\..\..\include\utils\orxScreenshot.h" />
 		<Unit filename="..\..\..\include\utils\orxString.h" />
 		<Unit filename="..\..\..\include\utils\orxTree.h" />
-		<Unit filename="..\..\..\include\utils\pathfinder.h" />
 		<Unit filename="..\..\..\src\anim\orxAnim.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -297,9 +289,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\utils\orxTree.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\..\..\src\utils\pathfinder.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

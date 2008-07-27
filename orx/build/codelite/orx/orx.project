@@ -2,64 +2,18 @@
 <CodeLite_Project Name="orx">
   <Description/>
   <VirtualDirectory Name="src">
-    <File Name="..\..\..\src\main\orxMain.c"/>
+    <File Name="../../../src/main/orxMain.c"/>
   </VirtualDirectory>
+  <Dependencies>
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="GP2X Debug">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
   <Settings Type="Executable">
-    <Configuration Name="Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-g -Wall">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-        <Preprocessor Value="__orxDEBUG__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive -Wl,--no-whole-archive -Wl,--export-all-symbols ../../../lib/dynamic/liborxd.a">
-        <LibraryPath Value="../../../lib/dynamic"/>
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/orx.exe" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-O2">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive -Wl,--no-whole-archive -Wl,--export-all-symbols ../../../lib/dynamic/liborx.a">
-        <LibraryPath Value="../../../lib/dynamic"/>
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/gp2X/orxd.gpe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.gpe" CommandArguments="" WorkingDirectory="../../../bin/gp2x/" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
@@ -119,8 +73,171 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxd" IntermediateDirectory="$(ConfigurationName)" Command="orxd" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/dynamic/liborxd.a -Wl,--no-whole-archive">
+        <LibraryPath Value="../../../lib/dynamic"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orx" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/dynamic/liborx.a -Wl,--no-whole-archive">
+        <LibraryPath Value="../../../lib/dynamic"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxd" IntermediateDirectory="$(ConfigurationName)" Command="orxd" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborxd.a -Wl,--no-whole-archive">
+        <LibraryPath Value="../../../lib/static"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orx" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborx.a -Wl,--no-whole-archive">
+        <LibraryPath Value="../../../lib/static"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive -Wl,--no-whole-archive -Wl,--export-all-symbols ../../../lib/dynamic/liborxd.a">
+        <LibraryPath Value="../../../lib/dynamic"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orx.exe" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive -Wl,--no-whole-archive -Wl,--export-all-symbols ../../../lib/dynamic/liborx.a">
+        <LibraryPath Value="../../../lib/dynamic"/>
+      </Linker>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+      <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="..\..\..\bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
@@ -146,7 +263,7 @@
         <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
+    <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orx.exe" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
@@ -173,7 +290,7 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
-  <Dependencies>
+  <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
 </CodeLite_Project>
