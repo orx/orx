@@ -74,7 +74,7 @@
                       |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                       \
                       |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                 \
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
-    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
     _orxDebug_RestoreFlags();                                                                               \
   } while(orxFALSE)
 
@@ -89,7 +89,7 @@
                        |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                        \
                        |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                  \
                         orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                  \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);    \
+      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);    \
       orxDEBUG_FLAG_RESTORE();                                                                                \
     }while(orxFALSE)
 
@@ -103,10 +103,10 @@
 
   /* Debug print, compiler specific */
   #ifdef __orxGCC__
-    #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
+    #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
   #else /* __orxGCC__ */
     #ifdef __orxMSVC__
-      #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
+      #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
     #endif /* __orxMSVC__ */
   #endif /* __orcGCC__ */
 

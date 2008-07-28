@@ -342,7 +342,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   /* Log FUNCTION, FILE & LINE? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TAGGED)
   {
-    orxCHAR *pc;
+    orxCONST orxCHAR *pc;
 
     /* Trims relative path */
     for(pc = _zFile;

@@ -149,7 +149,7 @@ orxSTATUS orxMain_Init()
       zGameFileName = orxConfig_GetString(orxMAIN_KZ_CONFIG_GAME_FILE);
 
       /* Loads it */
-      eResult = (orxPlugin_Load(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      eResult = (orxPlugin_LoadUsingExt(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
     else
     {

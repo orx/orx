@@ -411,6 +411,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToU32(orxCONST orxSTRING _zStr
  */
 orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zString, orxFLOAT *_pfOutValue, orxSTRING *_pzRemaining)
 {
+  orxCHAR  *pcEnd;
   orxSTATUS eResult;
 
   /* Checks */
@@ -418,17 +419,20 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
   orxASSERT(_zString != orxNULL);
 
   /* Linux / Mac / GP2X? */
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__) || defined(__orxMSVC__)
 
-  /* Convert */
-  /* Note : Here we should use strtot which detects errors.
-   * This function is C99 compliant but it doesn't seems to be implemented in
-   * the standard GNU lib C. We will use atof instead (which doesn't detect errors :( )
-   */
-  *_pfOutValue = (orxFLOAT)atof(_zString);
+  /* Converts it */
+  *_pfOutValue = (orxFLOAT)strtod(_zString, &pcEnd);
 
-  /* Valid? */
-  if(_zString[0] != orxCHAR_NULL)
+#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxMSVC__ */
+
+  /* Converts it */
+  *_pfOutValue = strtof(_zString, &pcEnd);
+
+#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ || __orxMSVC__ */
+
+  /* Valid conversion ? */
+  if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
   {
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -436,53 +440,15 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
   else
   {
     /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Asks for remaining string? */
   if(_pzRemaining != orxNULL)
   {
-    *_pzRemaining = _zString + orxString_GetLength(_zString);
+    /* Stores it */
+    *_pzRemaining = pcEnd;
   }
-
-#else /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
-
-  {
-    orxCHAR *pcEnd;
-
-#ifdef __orxMSVC__
-
-    /* Converts it */
-    *_pfOutValue = (orxFLOAT)strtod(_zString, &pcEnd);
-
-#else /* __orxMSVC__ */
-
-    /* Converts it */
-    *_pfOutValue = strtof(_zString, &pcEnd);
-
-#endif /* __orxMSVC__ */
-
-    /* Valid conversion ? */
-    if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))
-    {
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-    else
-    {
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
-
-    /* Asks for remaining string? */
-    if(_pzRemaining != orxNULL)
-    {
-      /* Stores it */
-      *_pzRemaining = pcEnd;
-    }
-  }
-
-#endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
 
   /* Done! */
   return eResult;

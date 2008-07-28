@@ -123,7 +123,7 @@
 
     typedef void                orxVOID;
 
-    typedef orxVOID *						orxHANDLE;
+    typedef orxVOID *           orxHANDLE;
 
     typedef unsigned  long long orxU64;
     typedef unsigned  long      orxU32;
@@ -140,7 +140,7 @@
     typedef float               orxFLOAT;
 
     typedef char                orxCHAR;
-    typedef orxCHAR *						orxSTRING;
+    typedef orxCHAR *           orxSTRING;
 
     typedef orxU32              orxRGBA;
     typedef orxU32              orxENUM;
