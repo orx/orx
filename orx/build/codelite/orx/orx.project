@@ -7,9 +7,6 @@
   <Dependencies>
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="GP2X Debug">
-    <Project Name="orxLIB"/>
-  </Dependencies>
   <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
@@ -310,6 +307,9 @@
     </Configuration>
   </Settings>
   <Dependencies Name="Win32 Dynamic Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="GP2X Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
 </CodeLite_Project>
