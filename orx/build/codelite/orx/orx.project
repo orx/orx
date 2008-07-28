@@ -10,10 +10,19 @@
   <Dependencies Name="GP2X Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="Win32 Dynamic Release">
+  <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
   </Dependencies>
-  <Dependencies Name="Win32 Static Debug">
+  <Dependencies Name="Linux Static Debug">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Linux Dynamic Debug">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Linux Dynamic Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Release">
     <Project Name="orxLIB"/>
   </Dependencies>
   <Settings Type="Executable">
@@ -167,9 +176,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
@@ -197,9 +204,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
@@ -211,7 +216,7 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/dynamic/liborxd.a -Wl,--no-whole-archive -Wl,--export-all-symbols">
+      <Linker Required="yes" Options="-Wl,--export-dynamic ../../../lib/dynamic/liborxd.a -Wl,--export-all-symbols">
         <LibraryPath Value="../../../lib/dynamic"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -240,7 +245,7 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/dynamic/liborx.a -Wl,--no-whole-archive -Wl,--export-all-symbols">
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic ../../../lib/dynamic/liborx.a -Wl,--export-all-symbols">
         <LibraryPath Value="../../../lib/dynamic"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
@@ -315,13 +320,4 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
-  <Dependencies Name="Linux Static Debug">
-    <Project Name="orxLIB"/>
-  </Dependencies>
-  <Dependencies Name="Linux Dynamic Debug">
-    <Project Name="orxLIB"/>
-  </Dependencies>
-  <Dependencies Name="Linux Dynamic Release">
-    <Project Name="orxLIB"/>
-  </Dependencies>
 </CodeLite_Project>
