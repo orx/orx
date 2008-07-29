@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CodeLite_Workspace Name="orx_gp2x" Database=".\orx_gp2x.tags">
-  <Project Name="orxFileSystem_LibC" Path="orxFileSystem_LibC\orxFileSystem_LibC.project" Active="No"/>
-  <Project Name="orxRender_Home" Path="orxRender_Home\orxRender_Home.project"/>
-  <Project Name="orxLIB" Path="orxLIB\orxLIB.project" Active="No"/>
-  <Project Name="orxFile_LibC" Path="orxFile_LibC\orxFile_LibC.project"/>
-  <Project Name="orxPhysics_Box2D" Path="orxPhysics_Box2D\orxPhysics_Box2D.project"/>
-  <Project Name="orx" Path="orx\orx.project" Active="Yes"/>
-  <Project Name="Bounce" Path="orxDemo\Bounce.project" Active="No"/>
-  <Project Name="Cave" Path="orxDemo\Cave.project" Active="No"/>
-  <Project Name="Scroll" Path="orxDemo\Scroll.project" Active="No"/>
-  <Project Name="orxDisplay_SDL" Path="orxDisplay_SDL\orxDisplay_SDL.project" Active="No"/>
-  <Project Name="orxSystem_SDL" Path="orxSystem_SDL\orxSystem_SDL.project" Active="No"/>
+<CodeLite_Workspace Name="orx_gp2x" Database="./orx_gp2x.tags">
+  <Project Name="orxFileSystem_LibC" Path="orxFileSystem_LibC/orxFileSystem_LibC.project" Active="No"/>
+  <Project Name="orxRender_Home" Path="orxRender_Home/orxRender_Home.project"/>
+  <Project Name="orxLIB" Path="orxLIB/orxLIB.project" Active="No"/>
+  <Project Name="orxFile_LibC" Path="orxFile_LibC/orxFile_LibC.project"/>
+  <Project Name="orxPhysics_Box2D" Path="orxPhysics_Box2D/orxPhysics_Box2D.project"/>
+  <Project Name="orx" Path="orx/orx.project" Active="Yes"/>
+  <Project Name="Bounce" Path="orxDemo/Bounce.project" Active="No"/>
+  <Project Name="Cave" Path="orxDemo/Cave.project" Active="No"/>
+  <Project Name="Scroll" Path="orxDemo/Scroll.project" Active="No"/>
+  <Project Name="orxDisplay_SDL" Path="orxDisplay_SDL/orxDisplay_SDL.project" Active="No"/>
+  <Project Name="orxSystem_SDL" Path="orxSystem_SDL/orxSystem_SDL.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="GP2X Debug" Selected="yes">
       <Project Name="orxSystem_SDL" ConfigName="GP2X Debug"/>
