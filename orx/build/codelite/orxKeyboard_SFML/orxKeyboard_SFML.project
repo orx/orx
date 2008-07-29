@@ -29,8 +29,8 @@
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
-        <Library Value="sfml-window-d"/>
-        <Library Value="sfml-system-d"/>
+        <Library Value="sfml-window"/>
+        <Library Value="sfml-system"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -94,8 +94,8 @@
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="orxd"/>
-        <Library Value="sfml-window-d"/>
-        <Library Value="sfml-system-d"/>
+        <Library Value="sfml-window"/>
+        <Library Value="sfml-system"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -147,7 +147,7 @@
 </CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="">
+    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
@@ -156,9 +156,11 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -lsfml-window-d -lsfml-system-d">
+      <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
+        <Library Value="sfml-window-d"/>
+        <Library Value="sfml-system-d"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -176,7 +178,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="">
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFML.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
@@ -184,9 +186,11 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -lsfml-window -lsfml-system -s">
+      <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orx"/>
+        <Library Value="sfml-window"/>
+        <Library Value="sfml-system"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -204,7 +208,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="">
+    <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
@@ -213,7 +217,11 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -lsfml-window-d -lsfml-system-d ../../../lib/static/orxd.a"/>
+      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="sfml-window-d"/>
+        <Library Value="sfml-system-d"/>
+      </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -230,7 +238,7 @@
         <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="">
+    <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/keyboard/orxKeyboard_SFML.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
@@ -238,7 +246,11 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -lsfml-window -lsfml-system ../../../lib/static/orx.a -s"/>
+      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="sfml-window"/>
+        <Library Value="sfml-system"/>
+      </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>

@@ -29,7 +29,7 @@
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
-        <Library Value="sfml-system-d"/>
+        <Library Value="sfml-system"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -92,7 +92,7 @@
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="orxd"/>
-        <Library Value="sfml-system-d"/>
+        <Library Value="sfml-system"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -152,9 +152,10 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -lsfml-system-d">
+      <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
+        <Library Value="sfml-system-d"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -180,9 +181,10 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -lsfml-system -s">
+      <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orx"/>
+        <Library Value="sfml-system"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -209,7 +211,10 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -lsfml-system-d ../../../lib/static/orxd.a"/>
+      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="sfml-system-d"/>
+      </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -234,7 +239,10 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -lsfml-system ../../../lib/static/orx.a -s"/>
+      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="sfml-system"/>
+      </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
