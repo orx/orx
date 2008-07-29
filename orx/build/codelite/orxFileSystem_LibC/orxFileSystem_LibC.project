@@ -12,7 +12,15 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
+  <Dependencies Name="Linux Static Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
   <Dependencies Name="Linux Dynamic Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Linux Static Debug">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
@@ -295,7 +303,9 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
   </Settings>
