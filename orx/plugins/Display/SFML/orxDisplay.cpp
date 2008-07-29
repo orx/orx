@@ -753,7 +753,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
         {
           /* Deletes it */
           delete sstDisplay.poFont;
-          sstDisplay.poFont = orxNULL;
+          sstDisplay.poFont = NULL;
         }
       }
 
