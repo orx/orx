@@ -43,7 +43,7 @@
 
 
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL/SDL_rotozoom.h>
 
 
 /** Module flags
@@ -121,7 +121,7 @@ orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBI
    */
 
   /* Not yet implemented */
-  orxASSERT(orxFALSE && "Not yet implemented!");
+  orxLOG("Not yet implemented!");
 
   /* Done! */
   return eResult;
@@ -306,7 +306,7 @@ orxSTATUS orxDisplay_SDL_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
   orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
 
   /* Not yet implemented */
-  orxASSERT(orxFALSE && "Not yet implemented!");
+  orxLOG("Not yet implemented!");
 
   /* Done! */
   return eResult;
@@ -321,7 +321,7 @@ orxRGBA orxDisplay_SDL_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)
   orxASSERT((_pstBitmap != orxNULL) && (_pstBitmap != (orxBITMAP *)sstDisplay.pstScreen));
 
   /* Not yet implemented */
-  orxASSERT(orxFALSE && "Not yet implemented!");
+  orxLOG("Not yet implemented!");
 
   /* Done! */
   return stResult;
@@ -358,7 +358,8 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
 
 orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  SDL_Surface  *pstSurface;
+  orxSTATUS     eResult;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -366,8 +367,37 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
   orxASSERT((_pstSrc != orxNULL) && (_pstSrc != (orxBITMAP *)sstDisplay.pstScreen));
   orxASSERT(_pstTransform != orxNULL);
 
-  /* Not implemented yet */
-  orxASSERT(orxFALSE && "Not implemented yet!");
+  /* Creates transformed surface */
+  pstSurface = rotozoomSurface((SDL_Surface *)_pstSrc, _pstTransform->fRotation, _pstTransform->fScaleX, 0);
+
+  /* Valid? */
+  if(pstSurface != orxNULL)
+  {
+    SDL_Rect stSrcRect, stDstRect;
+
+    /* Inits blitting rectangles */
+    stSrcRect.x = orxF2U(_pstTransform->fSrcX);
+    stSrcRect.y = orxF2U(_pstTransform->fSrcX);
+    stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
+    stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
+    stDstRect.x = orxF2U(_pstTransform->fDstX);
+    stDstRect.y = orxF2U(_pstTransform->fDstX);
+    stDstRect.w = 0;
+    stDstRect.h = 0;
+
+    /* Updates result */
+    eResult = (SDL_BlitSurface(pstSurface, &stSrcRect, (SDL_Surface *)_pstDst, &stDstRect) == 0)
+              ? orxSTATUS_SUCCESS
+              : orxSTATUS_FAILURE;
+
+    /* Deletes transformed surface */
+    SDL_FreeSurface(pstSurface);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
@@ -396,7 +426,7 @@ orxBITMAP *orxDisplay_SDL_LoadBitmap(orxCONST orxSTRING _zFilename)
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  /* Not implemented yet */
+  /* Loads image */
   pstResult = (orxBITMAP *)IMG_Load(_zFilename);
 
   /* Done! */
@@ -468,7 +498,7 @@ orxSTATUS orxDisplay_SDL_EnableVSync(orxBOOL _bEnable)
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Not yet implemented */
-  orxASSERT(orxFALSE && "Not implemented yet!");
+  orxLOG("Not implemented yet!");
 
   /* Done! */
   return eResult;
@@ -609,7 +639,7 @@ orxHANDLE orxDisplay_SDL_GetApplicationInput()
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
   /* Not yet implemented */
-  orxASSERT(orxFALSE && "Not implemented yet!");
+  orxLOG("Not implemented yet!");
 
   /* Done! */
   return hResult;

@@ -319,4 +319,8 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
+  <Dependencies Name="GP2X Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
 </CodeLite_Project>
