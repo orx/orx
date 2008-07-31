@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,15 +23,15 @@
  * @file orxAnimSet.h
  * @date 13/02/2004
  * @author iarwain@orx-project.org
- * 
- * @todo 
+ *
+ * @todo
  * - Optimize the link Anim graph handling & structures.
  * - Clean & simplify internal structures.
  */
 
 /**
  * @addtogroup Anim
- * 
+ *
  * Animation (Set) Module.
  * Allows to creates and handle Sets of Anims.
  * It consists of a structure containing Anims and their relations.
@@ -194,15 +194,16 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_SetLinkProperty(o
  */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property);
 
-/** Computes active Anim given current and destination Anim handles & a relative timestamp.
- * @param[in]		_pstAnimSet    											Concerned AnimSet
- * @param[in]   _hSrcAnim 													Source (current) Anim handle
- * @param[in]   _hDstAnim 													Destination Anim handle, if none (auto mode) set it to orxHANDLE_UNDEFINED
- * @param[in,out] _pfTime  												  Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
- * @param[out]  _pstLinkTable 										  Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
+/** Computes active Anim given current and destination Anim handles & a relative timestamp
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _hSrcAnim                           Source (current) Anim handle
+ * @param[in]   _hDstAnim                           Destination Anim handle, if none (auto mode) set it to orxHANDLE_UNDEFINED
+ * @param[in,out] _pfTime                           Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
+ * @param[in, out] _pstLinkTable                    Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
+ * @param[out] _pbCut                               Animation has been cut
  * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable);
+extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut);
 
 /** AnimSet Anim get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet

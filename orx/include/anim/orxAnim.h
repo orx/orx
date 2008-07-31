@@ -68,6 +68,29 @@
 typedef struct __orxANIM_t                    orxANIM;
 
 
+/** Event enum
+ */
+typedef enum __orxANIM_EVENT_t
+{
+  orxANIM_EVENT_START = 0,
+  orxANIM_EVENT_END,
+  orxANIM_EVENT_CUT,
+
+  orxANIM_EVENT_NUMBER,
+
+  orxANIM_EVENT_NONE = orxENUM_NONE
+
+} orxANIM_EVENT;
+
+/** Anim event payload
+ */
+typedef struct __orxANIM_EVENT_PAYLOAD_t
+{
+  orxANIM *pstAnim;                          /**< Animation: 4 */
+
+} orxANIM_EVENT_PAYLOAD;
+
+
 /** Anim module setup
  */
 extern orxDLLAPI orxVOID                      orxAnim_Setup();

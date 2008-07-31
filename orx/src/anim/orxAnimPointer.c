@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -31,6 +31,7 @@
 #include "anim/orxAnimPointer.h"
 
 #include "core/orxConfig.h"
+#include "core/orxEvent.h"
 #include "debug/orxDebug.h"
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
@@ -158,18 +159,35 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
     /* Has current animation */
     if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
+      orxBOOL bCut;
+
       /* Updates Times */
       _pstAnimPointer->fTime += _fDT * _pstAnimPointer->fFrequency;
       _pstAnimPointer->fCurrentAnimTime += _fDT * _pstAnimPointer->fFrequency;
 
       /* Computes & updates anim*/
-      hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hTargetAnim, &(_pstAnimPointer->fCurrentAnimTime), _pstAnimPointer->pstLinkTable);
+      hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hTargetAnim, &(_pstAnimPointer->fCurrentAnimTime), _pstAnimPointer->pstLinkTable, &bCut);
 
       /* Change happened? */
       if(hNewAnim != _pstAnimPointer->hCurrentAnim)
       {
-        /* Updates anim handle */
+        orxEVENT              stEvent;
+        orxANIM_EVENT_PAYLOAD stPayload;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
+        stEvent.eType       = orxEVENT_TYPE_ANIM;
+        stEvent.eID         = (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_END;
+        stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)_pstAnimPointer;
+        stEvent.pstPayload  = &stPayload;
+        stPayload.pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+
+        /* Updates current anim handle */
         _pstAnimPointer->hCurrentAnim = hNewAnim;
+
+        /* Sends it */
+        orxEvent_Send(&stEvent);
 
         /* No next anim? */
         if(hNewAnim == orxHANDLE_UNDEFINED)
@@ -179,6 +197,15 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
 
           /* Updates flags */
           orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM);
+        }
+        else
+        {
+          /* Inits event */
+          stEvent.eID       = orxANIM_EVENT_START;
+          stPayload.pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+
+          /* Sends it */
+          orxEvent_Send(&stEvent);
         }
       }
 
@@ -235,6 +262,7 @@ orxVOID orxAnimPointer_Setup()
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_ANIMSET);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_ANIM);
 

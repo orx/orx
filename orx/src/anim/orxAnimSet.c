@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +23,8 @@
  * @file orxAnimSet.h
  * @date 13/02/2004
  * @author iarwain@orx-project.org
- * 
- * @todo 
+ *
+ * @todo
  * - Optimize the link Anim graph handling & structures.
  * - Clean & simplify internal structures.
  */
@@ -2119,15 +2119,16 @@ orxU32 orxFASTCALL orxAnimSet_GetLinkProperty(orxCONST orxANIMSET *_pstAnimSet, 
   return(orxAnimSet_GetLinkTableLinkProperty(_pstAnimSet->pstLinkTable, (orxU32)_hLinkHandle, _u32Property));
 }
 
-/** Computes active Anim given current and destination Anim handles & a relative timestamp.
- * @param[in]		_pstAnimSet    											Concerned AnimSet
- * @param[in]   _hSrcAnim 													Source (current) Anim handle
- * @param[in]   _hDstAnim 													Destination Anim handle, if none (auto mode) set it to orxHANDLE_UNDEFINED
- * @param[in,out] _pfTime  												  Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
- * @param[out]  _pstLinkTable 											Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
+/** Computes active Anim given current and destination Anim handles & a relative timestamp
+ * @param[in]   _pstAnimSet                         Concerned AnimSet
+ * @param[in]   _hSrcAnim                           Source (current) Anim handle
+ * @param[in]   _hDstAnim                           Destination Anim handle, if none (auto mode) set it to orxHANDLE_UNDEFINED
+ * @param[in,out] _pfTime                           Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
+ * @param[in, out] _pstLinkTable                    Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
+ * @param[out] _pbCut                               Animation has been cut
  * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
-orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable)
+orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut)
 {
   orxANIMSET_LINK_TABLE  *pstWorkTable;
   orxHANDLE               hResult = _hSrcAnim;
@@ -2136,6 +2137,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnimSet);
   orxASSERT(_pfTime != orxNULL);
+  orxASSERT(_pbCut != orxNULL);
   orxASSERT((orxU32)_hSrcAnim < orxAnimSet_GetAnimCounter(_pstAnimSet));
   orxASSERT(((orxU32)_hDstAnim < orxAnimSet_GetAnimCounter(_pstAnimSet)) || (_hDstAnim == orxHANDLE_UNDEFINED));
 
@@ -2158,7 +2160,9 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
   if(orxAnimSet_ComputeLinkTable(pstWorkTable) == orxSTATUS_SUCCESS)
   {
     orxU32  u32Anim, u32LinkIndex, u32LinkProperty, u32RoutingAnim;
-    orxBOOL bCut = orxFALSE;
+
+    /* Defaults to not cut */
+    *_pbCut = orxFALSE;
 
     /* Gets current animation */
     u32Anim = (orxU32)_hSrcAnim;
@@ -2176,11 +2180,11 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
       u32LinkProperty = orxAnimSet_GetLinkTableLinkProperty(pstWorkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT);
 
       /* Updates cut status */
-      bCut = (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
+      *_pbCut = (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
     }
 
     /* Should cut? */
-    if(bCut != orxFALSE)
+    if(*_pbCut != orxFALSE)
     {
       /* Get next animation according to destination aim */
       u32Anim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_hDstAnim != orxHANDLE_UNDEFINED) ? (orxU32)_hDstAnim : orxU32_UNDEFINED, orxFALSE);
