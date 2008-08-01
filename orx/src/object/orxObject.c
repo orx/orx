@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -113,10 +113,11 @@ struct __orxOBJECT_t
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 64 */
   orxCOLOR          stColor;                    /**< Object color: 80 */
-  orxVOID          *pUserData;                  /**< User data : 84 */
+  orxVECTOR         vSpeed;                     /**< Object speed: 92 */
+  orxVOID          *pUserData;                  /**< User data : 96 */
 
   /* Padding */
-  orxPAD(84)
+  orxPAD(96)
 };
 
 /** Static structure
@@ -219,6 +220,22 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
             /* Updates body position with frame's one */
             orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition));
           }
+        }
+        else
+        {
+          orxVECTOR vPosition, vMove;
+
+          /* Gets its position */
+          orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+
+          /* Computes its move */
+          orxVector_Mulf(&vMove, &(pstObject->vSpeed), _pstClockInfo->fDT);
+
+          /* Gets its new position */
+          orxVector_Add(&vPosition, &vPosition, &vMove);
+
+          /* Stores it */
+          orxFrame_SetPosition(pstFrame, &vPosition);
         }
       }
     }
@@ -1643,10 +1660,11 @@ orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECT
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Stores it */
+    orxVector_Copy(&(_pstObject->vSpeed), _pvSpeed);
 
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    eResult = orxTRUE;
   }
 
   /* Done! */
@@ -1714,10 +1732,11 @@ orxVECTOR *orxFASTCALL orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvS
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Stores value */
+    orxVector_Copy(_pvSpeed, &(_pstObject->vSpeed));
 
     /* Updates result */
-    pvResult = orxNULL;
+    pvResult = _pvSpeed;
   }
 
   /* Done! */
