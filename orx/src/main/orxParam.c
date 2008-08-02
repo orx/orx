@@ -144,6 +144,8 @@ orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azPa
   /* Correct parameters ? */
   orxASSERT(_u32NbParam > 0);
 
+  orxPARAM_LOG("Options:");
+
   /* Extra parameters ? */
   if(_u32NbParam == 1)
   {
@@ -152,7 +154,7 @@ orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azPa
     /* No => display the full list of registered option with short description */
     while((pstParamInfo = orxBank_GetNext(sstParam.pstBank, pstParamInfo)) != orxNULL)
     {
-      orxPARAM_LOG("%s%s (%s%s):\t%s",
+      orxPARAM_LOG("%s%s %s%s\t\t%s",
              orxPARAM_KZ_MODULE_SHORT_PREFIX,
              pstParamInfo->stParam.zShortName,
              orxPARAM_KZ_MODULE_LONG_PREFIX,
@@ -184,7 +186,7 @@ orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azPa
       if(pstParamInfo != orxNULL)
       {
         /* Display its help */
-        orxPARAM_LOG("%s%s (%s%s):\t%s",
+        orxPARAM_LOG("%s%s %s%s\t\t%s",
                orxPARAM_KZ_MODULE_SHORT_PREFIX,
                pstParamInfo->stParam.zShortName,
                orxPARAM_KZ_MODULE_LONG_PREFIX,
@@ -193,7 +195,7 @@ orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azPa
       }
       else
       {
-        orxPARAM_LOG("%s: Unknown parameter.", _azParams[u32Index]);
+        orxPARAM_LOG("<%s>\t\tUnknown command line parameter", _azParams[u32Index]);
       }
     }
   }
