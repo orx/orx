@@ -96,9 +96,14 @@ extern orxDLLAPI orxVOID                orxParam_Exit();
 
 /** Register a new parameter
  * @param[in] _pstParam Informations about the option to register
- * @return Returns the status of the registration
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Register(orxCONST orxPARAM *_pstParam);
+
+/** Displays help if requested
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_DisplayHelp();
 
 /** Sets the command line arguments
  * @param[in] _u32NbParam Number of read parameters

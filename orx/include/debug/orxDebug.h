@@ -67,31 +67,33 @@
 #ifdef __orxGCC__
 
   #define orxLOG(STRING, ...)                                                                               \
-  do{                                                                                                         \
+  do                                                                                                        \
+  {                                                                                                         \
     _orxDebug_BackupFlags();                                                                                \
     _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                    \
                       |orxDEBUG_KU32_STATIC_FLAG_FILE                                                       \
                       |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                       \
                       |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                 \
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
-    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
     _orxDebug_RestoreFlags();                                                                               \
   } while(orxFALSE)
 
 #else /* __orxGCC__ */
   #ifdef __orxMSVC__
 
-    #define orxLOG(STRING, ...)                                                                               \
-    do{                                                                                                         \
-      orxDEBUG_FLAG_BACKUP();                                                                                 \
-      orxDEBUG_FLAG_SET(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                     \
-                       |orxDEBUG_KU32_STATIC_FLAG_FILE                                                        \
-                       |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                        \
-                       |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                  \
-                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                  \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);    \
-      orxDEBUG_FLAG_RESTORE();                                                                                \
-    }while(orxFALSE)
+    #define orxLOG(STRING, ...)                                                                             \
+    do                                                                                                      \
+    {                                                                                                       \
+      _orxDebug_BackupFlags();                                                                              \
+      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                  \
+                       |orxDEBUG_KU32_STATIC_FLAG_FILE                                                      \
+                       |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                      \
+                       |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                \
+                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                \
+      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
+      _orxDebug_RestoreFlags();                                                                             \
+    } while(orxFALSE)
 
   #endif /* __orxMSVC__ */
 #endif /* __orcGCC__ */

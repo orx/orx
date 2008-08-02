@@ -33,9 +33,11 @@
 #include "memory/orxBank.h"
 #include "core/orxEvent.h"
 #include "core/orxConfig.h"
+#include "core/orxSystem.h"
 #include "utils/orxString.h"
 #include "utils/orxHashTable.h"
 #include "debug/orxDebug.h"
+
 
 #define orxPARAM_KU32_MODULE_FLAG_NONE    0x00000000  /**< No flags have been set */
 #define orxPARAM_KU32_MODULE_FLAG_READY   0x00000001  /**< The module has been initialized */
@@ -48,6 +50,35 @@
 #define orxPARAM_KZ_MODULE_LONG_PREFIX    "--"        /**< Prefix for long parameters */
 
 #define orxPARAM_KZ_CONFIG_SECTION        "Param"     /**< Param config section name */
+
+
+#ifdef __orxGCC__
+
+  #define orxPARAM_LOG(STRING, ...)                                                                         \
+  do                                                                                                        \
+  {                                                                                                         \
+    _orxDebug_BackupFlags();                                                                                \
+    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                   \
+                       orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
+    _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
+    _orxDebug_RestoreFlags();                                                                               \
+  } while(orxFALSE)
+
+#else /* __orxGCC__ */
+  #ifdef __orxMSVC__
+
+    #define orxPARAM_LOG(STRING, ...)                                                                       \
+    do                                                                                                      \
+    {                                                                                                       \
+      _orxDebug_BackupFlags();                                                                              \
+      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                 \
+                         orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                               \
+      _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
+      _orxDebug_RestoreFlags();                                                                             \
+    } while(orxFALSE)
+
+  #endif /* __orxMSVC__ */
+#endif /* __orcGCC__ */
 
 
 /***************************************************************************
@@ -106,9 +137,8 @@ orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-orxSTATUS orxFASTCALL orxParamHelp(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[])
+orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[])
 {
-  /* Module initialized ? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
   /* Correct parameters ? */
@@ -122,12 +152,12 @@ orxSTATUS orxFASTCALL orxParamHelp(orxU32 _u32NbParam, orxCONST orxSTRING _azPar
     /* No => display the full list of registered option with short description */
     while((pstParamInfo = orxBank_GetNext(sstParam.pstBank, pstParamInfo)) != orxNULL)
     {
-      orxString_Print("%s%s (%s%s) : %s",
-                      orxPARAM_KZ_MODULE_SHORT_PREFIX,
-                      pstParamInfo->stParam.zShortName,
-                      orxPARAM_KZ_MODULE_LONG_PREFIX,
-                      pstParamInfo->stParam.zLongName,
-                      pstParamInfo->stParam.zShortDesc);
+      orxPARAM_LOG("%s%s (%s%s):\t%s",
+             orxPARAM_KZ_MODULE_SHORT_PREFIX,
+             pstParamInfo->stParam.zShortName,
+             orxPARAM_KZ_MODULE_LONG_PREFIX,
+             pstParamInfo->stParam.zLongName,
+             pstParamInfo->stParam.zShortDesc);
     }
   }
   else
@@ -135,13 +165,13 @@ orxSTATUS orxFASTCALL orxParamHelp(orxU32 _u32NbParam, orxCONST orxSTRING _azPar
     orxU32 u32Index;          /* Index to traverse extra parameters */
     orxU32 u32LongPrefixCRC;  /* CRC for the long prefix string */
 
-    /* Create the CRC VAlue of the prefix */
+    /* Create the CRC value of the prefix */
     u32LongPrefixCRC = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
 
     /* Display the long description of the extra parameters only */
     for(u32Index = 1; u32Index < _u32NbParam; u32Index++)
     {
-      orxU32 u32Name;                 /* CRC Name of the long option */
+      orxU32 u32Name;               /* CRC Name of the long option */
       orxPARAM_INFO *pstParamInfo;  /* Stored parameter value */
 
       /* Create the full CRC Value */
@@ -153,20 +183,20 @@ orxSTATUS orxFASTCALL orxParamHelp(orxU32 _u32NbParam, orxCONST orxSTRING _azPar
       /* Valid info ? */
       if(pstParamInfo != orxNULL)
       {
-        /* Display the full help */
-        orxString_Print("%s :\n%s\n",
-                        pstParamInfo->stParam.zLongName,
-                        pstParamInfo->stParam.zLongDesc);
+        /* Display its help */
+        orxPARAM_LOG("%s%s (%s%s):\t%s",
+               orxPARAM_KZ_MODULE_SHORT_PREFIX,
+               pstParamInfo->stParam.zShortName,
+               orxPARAM_KZ_MODULE_LONG_PREFIX,
+               pstParamInfo->stParam.zLongName,
+               pstParamInfo->stParam.zShortDesc);
       }
       else
       {
-        orxString_Print("%s : Unkown parameter\n", _azParams[u32Index]);
+        orxPARAM_LOG("%s: Unknown parameter.", _azParams[u32Index]);
       }
     }
   }
-
-  /* Send the Exit Event to the engine */
-/*  orxEvent_Add() */
 
   /* Help request always fail => Show help instead of starting the engine */
   return orxSTATUS_FAILURE;
@@ -311,6 +341,16 @@ orxSTATIC orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
         /* Stop on error? */
         else if(orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_STOP_ON_ERROR))
         {
+          orxEVENT stEvent;
+
+          /* Send the Exit Event to the engine */
+          orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+          stEvent.eType = orxEVENT_TYPE_SYSTEM;
+          stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
+
+          /* Sends system close event */
+          orxEvent_Send(&stEvent);
+
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
         }
@@ -368,6 +408,7 @@ orxVOID orxParam_Setup()
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_HASHTABLE);
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_EVENT);
 
   return;
 }
@@ -419,35 +460,22 @@ orxSTATUS orxParam_Init()
         /* Set module as ready */
         sstParam.u32Flags   = orxPARAM_KU32_MODULE_FLAG_READY;
 
-        /* Everything seems ok. Register the module help function */
-        stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
-        stParams.pfnParser  = orxParamHelp;
-        stParams.zShortName = "h";
-        stParams.zLongName  = "help";
-        stParams.zShortDesc = "Display this help. You can use extra parameter to display complete description (-h <param>)";
-        stParams.zLongDesc  = "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed";
+        /* Inits the param structure */
+        orxMemory_Zero(&stParams, sizeof(orxPARAM));
+        stParams.pfnParser  = orxParam_ProcessConfigParams;
+        stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
+        stParams.zShortName = "c";
+        stParams.zLongName  = "config";
+        stParams.zShortDesc = "Loads the specified configuration file.";
+        stParams.zLongDesc  = "Loads the specified configuration file from the current execution folder. More than one file can be specified.";
 
-        /* Register */
+        /* Registers it */
         eResult = orxParam_Register(&stParams);
 
         /* If registration failed, module become unready */
         if(eResult == orxSTATUS_FAILURE)
         {
           sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
-        }
-        else
-        {
-          /* Inits the param structure */
-          orxMemory_Zero(&stParams, sizeof(orxPARAM));
-          stParams.pfnParser  = orxParam_ProcessConfigParams;
-          stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
-          stParams.zShortName = "C";
-          stParams.zLongName  = "config";
-          stParams.zShortDesc = "Loads the specified configuration file.";
-          stParams.zLongDesc  = "Loads the specified configuration file from the current execution folder. More than one file can be specified.";
-
-          /* Registers it */
-          orxParam_Register(&stParams);
         }
       }
     }
@@ -612,6 +640,32 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     /* Restores it */
     *(sstParam.azParams[0] + u32Index) = '.';
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Displays help if requested
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxParam_DisplayHelp()
+{
+  orxPARAM  stParams;
+  orxSTATUS eResult;
+
+  /* Module initialized ? */
+  orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
+
+  /* Everything seems ok. Register the module help function */
+  stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
+  stParams.pfnParser  = orxParam_Help;
+  stParams.zShortName = "h";
+  stParams.zLongName  = "help";
+  stParams.zShortDesc = "Display this help. You can use extra parameter to display complete description (-h <param>).";
+  stParams.zLongDesc  = "h or help without parameter display the full list of parameters. if you supply extra parameters, their full description will be printed.";
+
+  /* Register */
+  eResult = orxParam_Register(&stParams);
 
   /* Done! */
   return eResult;

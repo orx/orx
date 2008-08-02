@@ -129,7 +129,7 @@ orxVOID orxMain_Setup()
  */
 orxSTATUS orxMain_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Not already initialized? */
   if(!orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
@@ -139,40 +139,39 @@ orxSTATUS orxMain_Init()
     /* Sets module as initialized */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
 
-    /* Selects section */
-    orxConfig_SelectSection(orxMAIN_KZ_CONFIG_SECTION);
+    /* Registers custom system event handler */
+    orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
 
-    /* Has game file? */
-    if(orxConfig_HasValue(orxMAIN_KZ_CONFIG_GAME_FILE) != orxFALSE)
-    {
-      /* Gets the game file name */
-      zGameFileName = orxConfig_GetString(orxMAIN_KZ_CONFIG_GAME_FILE);
+    /* Displays help */
+    eResult = orxParam_DisplayHelp();
 
-      /* Loads it */
-      eResult = (orxPlugin_LoadUsingExt(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-    }
-    else
-    {
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
-    }
-
-    /* Successful? */
+    /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Updates status */
-      orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
+      /* Selects section */
+      orxConfig_SelectSection(orxMAIN_KZ_CONFIG_SECTION);
 
-      /* Registers custom system event handler */
-      eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
+      /* Has game file? */
+      if(orxConfig_HasValue(orxMAIN_KZ_CONFIG_GAME_FILE) != orxFALSE)
+      {
+        /* Gets the game file name */
+        zGameFileName = orxConfig_GetString(orxMAIN_KZ_CONFIG_GAME_FILE);
+
+        /* Loads it */
+        eResult = (orxPlugin_LoadUsingExt(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      }
+
+      /* Successful? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates status */
+        orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
+      }
     }
   }
   else
   {
     /* !!! MSG !!! */
-
-    /* Already initialized */
-    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */

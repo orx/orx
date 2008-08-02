@@ -812,7 +812,7 @@ orxSTATUS orxPlugin_Init()
       orxMemory_Zero(&stParams, sizeof(orxPARAM));
       stParams.pfnParser  = orxPlugin_ProcessParams;
       stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
-      stParams.zShortName = "P";
+      stParams.zShortName = "p";
       stParams.zLongName  = "plugin";
       stParams.zShortDesc = "Loads the specified plugins.";
       stParams.zLongDesc  = "Loads the specified plugins from the current execution folder. More than one plugin can be specified. They can be core or user plugins.";
