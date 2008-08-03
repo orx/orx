@@ -202,6 +202,8 @@ orxSTATUS orxMain_Run()
   /* Is keyboard module initialized? */
   if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD) != orxFALSE)
   {
+    orxSTATIC orxBOOL sbBackSpacePressed = 0, sbF11Pressed;
+
     /* Is escape pressed? */
     if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)
     {
@@ -216,19 +218,40 @@ orxSTATUS orxMain_Run()
       orxEvent_Send(&stEvent);
     }
 
+    /* Was backspace pressed? */
+    if(sbBackSpacePressed != orxFALSE)
+    {
+      /* No longer pressed? */
+      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACK) == orxFALSE)
+      {
+        /* Updates key status */
+        sbBackSpacePressed = orxFALSE;
+      }
+    }
+    else
+    {
+      /* Is backspace pressed? */
+      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACK) != orxFALSE)
+      {
+        /* Reloads config history */
+        orxConfig_ReloadHistory();
+
+        /* Updates key status */
+        sbBackSpacePressed = orxTRUE;
+      }
+    }
+
     /* Is display module initialized? */
     if(orxModule_IsInitialized(orxMODULE_ID_DISPLAY) != orxFALSE)
     {
-      orxSTATIC orxBOOL sbPressed = 0;
-
       /* Was F11 pressed? */
-      if(sbPressed != orxFALSE)
+      if(sbF11Pressed != orxFALSE)
       {
         /* No longer pressed? */
         if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_F11) == orxFALSE)
         {
           /* Updates key status */
-          sbPressed = orxFALSE;
+          sbF11Pressed = orxFALSE;
         }
       }
       else
@@ -240,7 +263,7 @@ orxSTATUS orxMain_Run()
           orxDisplay_EnableVSync(!orxDisplay_IsVSyncEnabled());
 
           /* Updates key status */
-          sbPressed = orxTRUE;
+          sbF11Pressed = orxTRUE;
         }
       }
     }
