@@ -22,6 +22,9 @@
   <Dependencies Name="GP2X Release">
     <Project Name="orxLIB"/>
   </Dependencies>
+  <Dependencies Name="Win32 Dynamic Release">
+    <Project Name="orxLIB"/>
+  </Dependencies>
   <Settings Type="Executable">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/gp2X/orxd.gpe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.gpe" CommandArguments="" WorkingDirectory="../../../bin/gp2x/" PauseExecWhenProcTerminates="yes"/>
@@ -264,7 +267,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
-      <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="--help" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
@@ -321,9 +324,6 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
-  <Dependencies Name="Win32 Dynamic Release">
-    <Project Name="orxLIB"/>
-  </Dependencies>
   <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
   </Dependencies>

@@ -90,7 +90,7 @@ typedef struct __orxCONFIG_ENTRY_t
 {
   orxSTRING         zKey;                   /**< Entry key: 4 */
   orxSTRING         zValue;                 /**< Entry value : 8 */
-  orxU32            u32CRC;                 /**< Key CRC : 12 */
+  orxU32            u32ID;                  /**< Key ID (CRC) : 12 */
 
   orxPAD(12)
 
@@ -102,9 +102,10 @@ typedef struct __orxCONFIG_SECTION_t
 {
   orxBANK    *pstBank;                      /**< Bank of entries : 4 */
   orxSTRING   zName;                        /**< Section name : 8 */
-  orxU32      u32CRC;                       /**< Section CRC : 12 */
+  orxU32      u32ID;                        /**< Section CRC : 12 */
+  orxU32      u32ParentID;                  /**< Parent ID (RCR) : 16 */
 
-  orxPAD(12)
+  orxPAD(16)
 
 } orxCONFIG_SECTION;
 
@@ -151,7 +152,7 @@ orxSTATIC orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
       pstEntry = orxBank_GetNext(sstConfig.pstCurrentSection->pstBank, pstEntry))
   {
     /* Found? */
-    if(_u32KeyID == pstEntry->u32CRC)
+    if(_u32KeyID == pstEntry->u32ID)
     {
       /* Updates result */
       pstResult = pstEntry;
@@ -182,13 +183,13 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetValue(orxU32 _u32KeyID)
   /* Valid? */
   if(pstEntry != orxNULL)
   {
-    /* Has inheritance? */
+    /* Has local inheritance? */
     if(*(pstEntry->zValue) == orxCONFIG_KC_INHERITANCE_SEPARATOR)
     {
-      orxSTRING zPreviousSection;
+      orxCONFIG_SECTION *pstPreviousSection;
 
       /* Backups current section */
-      zPreviousSection = sstConfig.pstCurrentSection->zName;
+      pstPreviousSection = sstConfig.pstCurrentSection;
 
       /* Selects parent section */
       orxConfig_SelectSection(pstEntry->zValue + 1);
@@ -197,12 +198,46 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetValue(orxU32 _u32KeyID)
       zResult = orxConfig_GetValue(_u32KeyID);
 
       /* Restores current section */
-      orxConfig_SelectSection(zPreviousSection);
+      sstConfig.pstCurrentSection = pstPreviousSection;
     }
     else
     {
       /* Updates result */
       zResult = pstEntry->zValue;
+    }
+  }
+  else
+  {
+    /* Has parent? */
+    if(sstConfig.pstCurrentSection->u32ParentID != 0)
+    {
+      orxCONFIG_SECTION *pstSection;
+
+      /* For all the sections */
+      for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+          pstSection != orxNULL;
+          pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+      {
+        /* Found? */
+        if(pstSection->u32ID == sstConfig.pstCurrentSection->u32ParentID)
+        {
+          orxCONFIG_SECTION *pstPreviousSection;
+
+          /* Backups current section */
+          pstPreviousSection = sstConfig.pstCurrentSection;
+
+          /* Sets parent as current section */
+          sstConfig.pstCurrentSection = pstSection;
+
+          /* Gets inherited value */
+          zResult = orxConfig_GetValue(_u32KeyID);
+
+          /* Restores current section */
+          sstConfig.pstCurrentSection = pstPreviousSection;
+
+          break;
+        }
+      }
     }
   }
 
@@ -244,8 +279,8 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
       /* Valid? */
       if(pstEntry->zKey != orxNULL)
       {
-        /* Sets its CRC */
-        pstEntry->u32CRC = orxString_ToCRC(pstEntry->zKey);
+        /* Sets its ID */
+        pstEntry->u32ID = orxString_ToCRC(pstEntry->zKey);
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -295,8 +330,10 @@ orxSTATIC orxINLINE orxVOID orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection
 
 /** Creates a section
  * @param[in] _zSectionName     Name of the section to create
+ * @param[in] _u32SectionID     ID of the section to create
+ * @param[in] _u32ParentID      ID of the parent of the section to create
  */
-orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRING _zSectionName)
+orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRING _zSectionName, orxU32 _u32SectionID, orxU32 _u32ParentID)
 {
   orxCONFIG_SECTION *pstSection;
 
@@ -322,8 +359,11 @@ orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRIN
       /* Valid? */
       if(pstSection->zName != orxNULL)
       {
-        /* Sets its CRC */
-        pstSection->u32CRC = orxString_ToCRC(pstSection->zName);
+        /* Sets its ID */
+        pstSection->u32ID = _u32SectionID;
+
+        /* Cleans its parent ID */
+        pstSection->u32ParentID = _u32ParentID;
       }
       else
       {
@@ -559,9 +599,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(orxCONST orxSTRING _zBaseName)
  */
 orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
 {
-  orxCONFIG_SECTION  *pstSection;
-  orxU32              u32CRC;
-  orxSTATUS           eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -570,8 +608,22 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
   /* Valid? */
   if(*_zSectionName != *orxSTRING_EMPTY)
   {
-    /* Gets section name CRC */
-    u32CRC = orxString_ToCRC(_zSectionName);
+    orxCONFIG_SECTION  *pstSection;
+    orxU32              u32SectionID;
+    orxS32              s32MarkerIndex;
+
+    /* Looks for inheritance index */
+    s32MarkerIndex = orxString_SearchCharIndex(_zSectionName, orxCONFIG_KC_INHERITANCE_SEPARATOR, 0);
+
+    /* Found? */
+    if(s32MarkerIndex >= 0)
+    {
+      /* Cut the name */
+      *(_zSectionName + s32MarkerIndex) = orxCHAR_NULL;
+    }
+
+    /* Gets the section ID */
+    u32SectionID = orxString_ToCRC(_zSectionName);
 
     /* For all the sections */
     for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
@@ -579,7 +631,7 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
         pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
     {
       /* Found? */
-      if(u32CRC == pstSection->u32CRC)
+      if(pstSection->u32ID == u32SectionID)
       {
         /* Selects it */
         sstConfig.pstCurrentSection = pstSection;
@@ -591,8 +643,22 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
     /* Not found? */
     if(pstSection == orxNULL)
     {
+      orxU32 u32ParentID;
+
+      /* Has inheritance? */
+      if(s32MarkerIndex >= 0)
+      {
+        /* Gets its parent ID */
+        u32ParentID = orxString_ToCRC(_zSectionName + s32MarkerIndex + 1);
+      }
+      else
+      {
+        /* Clears parent ID */
+        u32ParentID = 0;
+      }
+
       /* Creates it */
-      pstSection = orxConfig_CreateSection(_zSectionName);
+      pstSection = orxConfig_CreateSection(_zSectionName, u32SectionID, u32ParentID);
 
       /* Success? */
       if(pstSection != orxNULL)
@@ -607,6 +673,13 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
       }
+    }
+
+    /* Had inheritance marker? */
+    if(s32MarkerIndex >= 0)
+    {
+      /* Restores it */
+      *(_zSectionName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_SEPARATOR;
     }
   }
   else
@@ -994,7 +1067,7 @@ orxBOOL orxFASTCALL orxConfig_HasValue(orxCONST orxSTRING _zKey)
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Updates result */
-  bResult = (orxConfig_GetEntry(orxString_ToCRC(_zKey)) != orxNULL) ? orxTRUE : orxFALSE;
+  bResult = (orxConfig_GetValue(orxString_ToCRC(_zKey)) != orxNULL) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
@@ -1007,7 +1080,7 @@ orxBOOL orxFASTCALL orxConfig_HasValue(orxCONST orxSTRING _zKey)
 orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
-  orxU32              u32CRC;
+  orxU32              u32ID;
   orxBOOL             bResult = orxFALSE;
 
   /* Checks */
@@ -1015,8 +1088,8 @@ orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
   orxASSERT(_zSectionName != orxNULL);
   orxASSERT(*_zSectionName != *orxSTRING_EMPTY);
 
-  /* Gets section name CRC */
-  u32CRC = orxString_ToCRC(_zSectionName);
+  /* Gets section name ID */
+  u32ID = orxString_ToCRC(_zSectionName);
 
   /* For all the sections */
   for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
@@ -1024,7 +1097,7 @@ orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
       pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
   {
     /* Found? */
-    if(u32CRC == pstSection->u32CRC)
+    if(pstSection->u32ID == u32ID)
     {
       /* Updates result */
       bResult = orxTRUE;

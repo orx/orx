@@ -78,20 +78,6 @@
     <Project Name="orxSoundSystem_SFML"/>
     <Project Name="orxSystem_SFML"/>
   </Dependencies>
-  <Dependencies Name="Win32 Static Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
   <Dependencies Name="Win32 Static Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
@@ -416,5 +402,19 @@
     <Project Name="orxPhysics_Box2D"/>
     <Project Name="orxRender_Home"/>
     <Project Name="orxSystem_SDL"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxMouse_SFML"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
   </Dependencies>
 </CodeLite_Project>
