@@ -64,6 +64,7 @@
 #define orxCONFIG_KC_ASSIGN                 '='         /**< Assign character */
 #define orxCONFIG_KC_COMMENT                ';'         /**< Comment character */
 #define orxCONFIG_KC_RANDOM_SEPARATOR       '~'         /**< Random number separator character */
+#define orxCONFIG_KC_INHERITANCE_SEPARATOR  '@'         /**< Inheritance separator character */
 
 #define orxCONFIG_KZ_CONFIG_SECTION         "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_HISTORY         "History"   /**< History config entry name */
@@ -646,10 +647,16 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
           /* Has key & value? */
           if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
           {
-            orxCONFIG_ENTRY *pstEntry;
+            orxSTRING         pcValueEnd;
+            orxCONFIG_ENTRY  *pstEntry;
+
+            /* Finds end of value position */
+            for(pcValueEnd = pc - 1;
+                (pcValueEnd > pcValueStart) && ((*pcValueEnd == ' ') || (*pcValueEnd == '\t') || (*pcValueEnd == orxCHAR_CR) || (*pcValueEnd == orxCHAR_LF));
+                pcValueEnd--);
 
             /* Cuts the strings */
-            *pcKeyEnd = *pc = orxCHAR_NULL;
+            *pcKeyEnd = *(++pcValueEnd) = orxCHAR_NULL;
 
             /* Already defined? */
             if((pstEntry = orxConfig_GetEntry(pcLineStart)) != orxNULL)
@@ -684,7 +691,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
         else if(pc == pcLineStart)
         {
           /* Skips all spaces */
-          while((pc < acBuffer + u32Size) && ((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF)))
+          while((pc < acBuffer + u32Size) && ((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF) || (*pc == ' ') || (*pc == '\t')))
           {
             /* Updates pointers */
             pcLineStart++, pc++;
@@ -756,16 +763,19 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_ASSIGN))
             {
               /* Finds end of key position */
-              for(pcKeyEnd = pc;
-                  (pcKeyEnd > pcLineStart) && ((*pcKeyEnd == ' ') || (*pcKeyEnd == '\t'));
+              for(pcKeyEnd = pc - 1;
+                  (pcKeyEnd > pcLineStart) && ((*pcKeyEnd == ' ') || (*pcKeyEnd == '\t') || (*pcKeyEnd == orxCHAR_CR) || (*pcKeyEnd == orxCHAR_LF));
                   pcKeyEnd--);
+
+              /* Updates key end pointer */
+              pcKeyEnd += 1;
 
               /* Checks */
               orxASSERT(pcKeyEnd > pcLineStart);
 
               /* Finds start of value position */
               for(pcValueStart = pc + 1;
-                  (pcValueStart < acBuffer + u32Size) && ((*pcKeyEnd == ' ') || (*pcKeyEnd == '\t') || (*pcKeyEnd == '\n'));
+                  (pcValueStart < acBuffer + u32Size) && ((*pcValueStart == ' ') || (*pcValueStart == '\t') || (*pcValueStart == orxCHAR_CR) || (*pcValueStart == orxCHAR_LF));
                   pcValueStart++);
             }
           }
