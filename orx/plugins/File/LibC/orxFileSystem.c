@@ -120,13 +120,17 @@ orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST struct _
 orxSTATIC orxINLINE orxVOID orxFileSystem_LibC_GetInfoFromData(orxCONST struct dirent *_pstData, orxFILESYSTEM_INFO *_pstFileInfo)
 {
   struct stat stStat;
+  orxSTRING   zName;
 
   /* Checks */
   orxASSERT(_pstData != orxNULL);
   orxASSERT(_pstFileInfo != orxNULL);
 
+  /* Gets data name */
+  zName = (orxSTRING)_pstData->d_name;
+
   /* Stores info */
-  orxString_NCopy(_pstFileInfo->zName, (orxSTRING)_pstData->d_name, 255);
+  orxString_NCopy(_pstFileInfo->zName, zName, 255);
   orxString_Copy(_pstFileInfo->zFullName + orxString_GetLength(_pstFileInfo->zPath), _pstFileInfo->zName);
 
   /* Gets file info */
