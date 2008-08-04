@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -747,7 +747,7 @@ orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, orxCONST or
     zPluginName = _azParams[i] + s32LastSeparatorIndex;
 
     /* Loads plugin */
-    eResult = (orxPlugin_LoadUsingExt(_azParams[i], zPluginName) != orxHANDLE_UNDEFINED);
+    orxPlugin_LoadUsingExt(_azParams[i], zPluginName) != orxHANDLE_UNDEFINED;
   }
 
   /* Done! */

@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
  * @file orxMain.c
  * @date 18/07/2008
  * @author iarwain@orx-project.org
- * 
+ *
  * Default main executable
  *
  * @todo
