@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -92,9 +92,6 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
       /* Spawn a ball under the cursor */
       pstObject = orxObject_CreateFromConfig("Ball");
       orxObject_SetPosition(pstObject, &vWorldPos);
-
-      /* Adds fade FX */
-      orxObject_AddFX(pstObject, "Fade");
 
       /* Update counter */
       su32BallCounter++;

@@ -86,6 +86,7 @@
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
+#define orxOBJECT_KZ_CONFIG_FX                  "FX"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_X                          "x"
@@ -661,6 +662,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         }
       }
 
+      /* *** Misc *** */
+
       /* Has a position? */
       if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
       {
@@ -670,6 +673,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
       /* Updates object rotation */
       orxObject_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ROTATION));
+
+      /* Has FX? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FX) != orxFALSE)
+      {
+        /* Adds it */
+        orxObject_AddFX(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_FX));
+      }
     }
 
     /* Restores previous section */
