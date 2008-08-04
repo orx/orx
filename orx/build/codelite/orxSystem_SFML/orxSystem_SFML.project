@@ -31,6 +31,7 @@
         <Library Value="orxd"/>
         <Library Value="sfml-system"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -44,9 +45,7 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
@@ -62,6 +61,7 @@
         <Library Value="orx"/>
         <Library Value="sfml-system"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -94,6 +94,7 @@
         <Library Value="orxd"/>
         <Library Value="sfml-system"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -125,6 +126,7 @@
         <Library Value="orx"/>
         <Library Value="sfml-system"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -143,7 +145,7 @@
 </CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="">
+    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/system/orxSystem_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
@@ -157,6 +159,7 @@
         <Library Value="orxd"/>
         <Library Value="sfml-system-d"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -170,10 +173,12 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="">
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/system/orxSystem_SFML.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
@@ -186,6 +191,7 @@
         <Library Value="orx"/>
         <Library Value="sfml-system"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -199,10 +205,12 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="">
+    <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/system/orxSystem_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
@@ -211,10 +219,12 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a">
+      <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="sfml-system-d"/>
+        <Library Value="imporxd"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -228,10 +238,12 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
-    <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="">
+    <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/system/orxSystem_SFML.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
@@ -239,10 +251,12 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s">
+      <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="sfml-system"/>
+        <Library Value="imporx"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -256,7 +270,9 @@
       </CustomBuild>
       <AdditionalRules>
         <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
   </Settings>

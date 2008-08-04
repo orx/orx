@@ -17,7 +17,7 @@
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
 				<Linker>
-					<Add library="..\..\..\lib\static\orxd.a" />
+					<Add library="imporxd" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
@@ -32,7 +32,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="..\..\..\lib\static\orx.a" />
+					<Add library="imporx" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>

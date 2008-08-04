@@ -12,7 +12,7 @@
 
 
   <set var="orxMODULE_FLAGS">
-    <if cond="LINK=='static' and FORMAT=='mingw'">$(orxLIBDIR)$(DIRSEP)$(orxNAME).a</if>
+    <if cond="LINK=='static' and FORMAT=='mingw'">-limp$(orxNAME)</if>
     <if cond="LINK=='static' and COMPILER=='msvc'">$(orxBINDIR)$(DIRSEP)$(orxNAME).lib</if>      
   </set>
 

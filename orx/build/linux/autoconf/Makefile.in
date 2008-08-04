@@ -237,7 +237,7 @@ CAVE_OBJECTS =  \
 @COND_LINK_STATIC@	$(srcdir)/../../../lib/$(LINK)/$(LIBPREFIX)$(orxNAME)$(LIBEXT)
 @COND_LINK_DYNAMIC@orxLDFLAGS = -l$(orxNAME)
 COND_LINK_STATIC_orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive \
-	-l$(orxNAME) -lm -Wl,--no-whole-archive
+	-l$(orxNAME) -Wl,--no-whole-archive -lm
 @COND_LINK_STATIC@orxLDFLAGS = $(COND_LINK_STATIC_orxLDFLAGS)
 @COND_PLATFORM_MAC_0@__orx___mac_setfilecmd = @true
 @COND_PLATFORM_MAC_1@__orx___mac_setfilecmd = \

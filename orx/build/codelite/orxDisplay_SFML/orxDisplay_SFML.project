@@ -223,11 +223,12 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a">
+      <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="sfml-graphics-d"/>
         <Library Value="sfml-window-d"/>
         <Library Value="sfml-system-d"/>
+        <Library Value="imporxd"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -253,10 +254,11 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s">
+      <Linker Required="yes" Options="-fPIC -s">
         <Library Value="sfml-graphics"/>
         <Library Value="sfml-window"/>
         <Library Value="sfml-system"/>
+        <Library Value="imporx"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>

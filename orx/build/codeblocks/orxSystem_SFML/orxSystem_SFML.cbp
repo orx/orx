@@ -17,8 +17,8 @@
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
 				<Linker>
-					<Add option="-lsfml-system-d" />
-					<Add library="..\..\..\lib\static\orxd.a" />
+					<Add library="sfml-system-d" />
+					<Add library="imporxd" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
@@ -33,8 +33,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lsfml-system" />
-					<Add library="..\..\..\lib\static\orx.a" />
+					<Add library="sfml-system" />
+					<Add library="imporx" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
@@ -49,7 +49,7 @@
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
 				<Linker>
-					<Add option="-lsfml-system-d" />
+					<Add library="sfml-system-d" />
 					<Add library="orxd" />
 					<Add directory="..\..\..\lib\dynamic" />
 				</Linker>
@@ -65,7 +65,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lsfml-system" />
+					<Add library="sfml-system" />
 					<Add library="orx" />
 					<Add directory="..\..\..\lib\dynamic" />
 				</Linker>

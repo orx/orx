@@ -261,18 +261,18 @@ ifeq ($(LINK),dynamic)
 orxLDFLAGS = -l$(orxNAME)
 endif
 ifeq ($(LINK),static)
-orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -l$(orxNAME) -lm \
-	-Wl,--no-whole-archive
+orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -l$(orxNAME) \
+	-Wl,--no-whole-archive -lm
 endif
 ifeq ($(LINK),static)
 orxLDFLAGS_IMPLIB = -Wl,--export-all-symbols \
-	-Wl,--out-implib,..\..\..\lib\$(LINK)\$(orxNAME).a
+	-Wl,--out-implib,..\..\..\lib\$(LINK)\libimp$(orxNAME).a
 endif
 ifeq ($(LINK),dynamic)
 __orxLINK_IMPORT_DEFINE_p = -D__orxDLL__
 endif
 ifeq ($(LINK),static)
-orxMODULE_FLAGS = ..\..\..\lib\$(LINK)\$(orxNAME).a
+orxMODULE_FLAGS = -limp$(orxNAME)
 endif
 ifeq ($(USE_PLUGINS),1)
 ifeq ($(USE_SFML),1)

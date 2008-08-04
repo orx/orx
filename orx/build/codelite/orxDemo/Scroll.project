@@ -50,20 +50,6 @@
     <Project Name="orxSoundSystem_SFML"/>
     <Project Name="orxSystem_SFML"/>
   </Dependencies>
-  <Dependencies Name="Win32 Dynamic Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
   <Dependencies Name="Win32 Static Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
@@ -92,283 +78,6 @@
     <Project Name="orxSoundSystem_SFML"/>
     <Project Name="orxSystem_SFML"/>
   </Dependencies>
-  <Settings Type="Dynamic Library">
-    <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/gp2x/plugins/demo/Scrolld.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxGP2X__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-        <Preprocessor Value="__orxDEBUG__"/>
-        <Preprocessor Value="_REENTRANT"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC"/>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="GP2X Release" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/gp2x/plugins/demo/Scroll.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxGP2X__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-        <Preprocessor Value="_REENTRANT"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC -s"/>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/Scrolld.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-        <Preprocessor Value="__orxDEBUG__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC">
-        <LibraryPath Value="../../../lib/dynamic"/>
-        <Library Value="orxd"/>
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/Scroll.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC -s">
-        <LibraryPath Value="../../../lib/dynamic"/>
-        <Library Value="orx"/>
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/Scrolld.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-        <Preprocessor Value="__orxDEBUG__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC -s">
-        <LibraryPath Value="../../../lib/static"/>
-        <Library Value="orxd"/>
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/Scroll.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC -s">
-        <LibraryPath Value="../../../lib/static"/>
-        <Library Value="orx"/>
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/Scrolld.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-        <Preprocessor Value="__orxDEBUG__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC">
-        <LibraryPath Value="../../../lib/dynamic"/>
-        <Library Value="orxd"/>
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/Scroll.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC -s">
-        <LibraryPath Value="../../../lib/dynamic"/>
-        <Library Value="orx"/>
-      </Linker>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/Scrolld.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-        <Preprocessor Value="__orxDEBUG__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a -s"/>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-    <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/demo/Scroll.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-O2">
-        <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
-      </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s"/>
-      <ResourceCompiler Required="no" Options=""/>
-      <PreBuild/>
-      <PostBuild/>
-      <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
-        <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
-      </CustomBuild>
-      <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
-      </AdditionalRules>
-    </Configuration>
-  </Settings>
   <Dependencies Name="GP2X Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
@@ -389,20 +98,6 @@
     <Project Name="orxRender_Home"/>
     <Project Name="orxSystem_SDL"/>
   </Dependencies>
-  <Dependencies Name="Win32 Static Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
   <Dependencies Name="Win32 Dynamic Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
@@ -413,6 +108,347 @@
     <Project Name="orxKeyboard_SFML"/>
     <Project Name="orxMouse_SFML"/>
     <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
+  </Dependencies>
+  <Settings Type="Dynamic Library">
+    <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/gp2x/plugins/demo/Scrolld.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxGP2X__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+        <Preprocessor Value="_REENTRANT"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="GP2X Release" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/gp2x/plugins/demo/Scroll.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxGP2X__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="_REENTRANT"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -s"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/plugins/demo/Scrolld.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orxd"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/plugins/demo/Scroll.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -s">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orx"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/plugins/demo/Scrolld.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -s">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="orxd"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/plugins/demo/Scroll.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -s">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="orx"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/plugins/demo/Scrolld.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orxd"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/plugins/demo/Scroll.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -s">
+        <LibraryPath Value="../../../lib/dynamic"/>
+        <Library Value="orx"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/plugins/demo/Scrolld.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-g -Wall">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+        <Preprocessor Value="__orxDEBUG__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="imporxd"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/plugins/demo/Scroll.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -s">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="imporx"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory></WorkingDirectory>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Win32 Dynamic Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxMouse_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxMouse_SFML"/>
     <Project Name="orxRender_Home"/>
     <Project Name="orxSoundSystem_SFML"/>
     <Project Name="orxSystem_SFML"/>

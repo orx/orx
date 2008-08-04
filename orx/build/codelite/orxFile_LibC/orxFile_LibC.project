@@ -40,6 +40,7 @@
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -68,6 +69,7 @@
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s"/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -99,6 +101,7 @@
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -129,6 +132,7 @@
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orx"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -160,6 +164,7 @@
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="orxd"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -190,6 +195,7 @@
         <LibraryPath Value="../../../lib/static"/>
         <Library Value="orx"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -221,6 +227,7 @@
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -251,6 +258,7 @@
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orx"/>
       </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -278,7 +286,11 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a"/>
+      <Linker Required="yes" Options="-fPIC">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="imporxd"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
@@ -305,7 +317,11 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s"/>
+      <Linker Required="yes" Options="-fPIC -s">
+        <LibraryPath Value="../../../lib/static"/>
+        <Library Value="imporx"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>

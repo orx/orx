@@ -270,8 +270,8 @@ ifeq ($(LINK),dynamic)
 orxLDFLAGS = -l$(orxNAME)
 endif
 ifeq ($(LINK),static)
-orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -l$(orxNAME) -lm \
-	-Wl,--no-whole-archive
+orxLDFLAGS = -Wl,--export-dynamic -Wl,--whole-archive -l$(orxNAME) \
+	-Wl,--no-whole-archive -lm
 endif
 ifeq ($(LINK),dynamic)
 __orxLINK_IMPORT_DEFINE_p = -D__orxDLL__

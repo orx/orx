@@ -3436,7 +3436,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3452,7 +3452,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3468,7 +3468,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3485,7 +3485,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3502,7 +3502,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3519,7 +3519,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3536,7 +3536,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3569,7 +3569,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3585,7 +3585,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3601,7 +3601,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3617,7 +3617,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3633,7 +3633,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3649,7 +3649,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3729,7 +3729,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3762,7 +3762,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3779,7 +3779,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3796,7 +3796,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3878,7 +3878,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3894,7 +3894,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -3910,7 +3910,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4027,7 +4027,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4109,7 +4109,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4126,7 +4126,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4211,7 +4211,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4228,7 +4228,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4245,7 +4245,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4261,7 +4261,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4310,7 +4310,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4326,7 +4326,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4360,7 +4360,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorx -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orx;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4424,7 +4424,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;
@@ -4441,7 +4441,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__";
 				LIBRARY_SEARCH_PATHS = ../../../lib/static;
 				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -lm -Wl,--no-whole-archive -l -l";
+				OTHER_LDFLAGS = "-Wl,--export-dynamic -Wl,--whole-archive -lorxd -Wl,--no-whole-archive -lm -l -l";
 				PRODUCT_NAME = orxd;
 				SYMROOT = ../../../bin;
 				USER_HEADER_SEARCH_PATHS = ../../../include;

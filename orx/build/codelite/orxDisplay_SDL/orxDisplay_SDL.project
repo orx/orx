@@ -138,10 +138,11 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a">
+      <Linker Required="yes" Options="-fPIC">
         <Library Value="SDL"/>
         <Library Value="SDL_gfx"/>
         <Library Value="SDL_image"/>
+        <Library Value="imporxd"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -167,10 +168,11 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s">
+      <Linker Required="yes" Options="-fPIC -s">
         <Library Value="SDL"/>
         <Library Value="SDL_gfx"/>
         <Library Value="SDL_image"/>
+        <Library Value="imporx"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -260,10 +262,11 @@
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orxd.a">
+      <Linker Required="yes" Options="-fPIC">
         <Library Value="SDL"/>
         <Library Value="SDL_gfx"/>
         <Library Value="SDL_image"/>
+        <Library Value="imporxd"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
@@ -289,10 +292,11 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC ../../../lib/static/orx.a -s">
+      <Linker Required="yes" Options="-fPIC -s">
         <Library Value="SDL"/>
         <Library Value="SDL_gfx"/>
         <Library Value="SDL_image"/>
+        <Library Value="imporx"/>
       </Linker>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
