@@ -31,7 +31,7 @@
  */
 
 /**
- * @addtogroup Display
+ * @addtogroup orxGraphic
  *
  * Graphic Module.
  * Allows to creates and handle 2D/3D Graphics.

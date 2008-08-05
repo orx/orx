@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup IO
+ * @addtogroup orxKeyboard
  * 
  * Keyboard plugin module
  * Plugin module that handles keyboard peripherals
@@ -188,11 +188,8 @@ extern orxDLLAPI orxBOOL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey);
  */
 extern orxDLLAPI orxBOOL orxKeyboard_Hit();
 
-/** Returns the next character from the keyboard buffer, in ASCII format.
- * If the buffer is empty, it waits until a key is pressed.
- * The low byte of the return value contains the ASCII code of the key,
- * and the high byte the scancode.
- * @return Ascii and scancode value
+/** Gets the next character from the keyboard buffer
+ * @return orxKEYBOARD_KEY
  */
 extern orxDLLAPI orxKEYBOARD_KEY orxKeyboard_Read();
 

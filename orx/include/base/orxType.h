@@ -29,7 +29,7 @@
  */
 
 /**
- * @addtogroup Base
+ * @addtogroup orxType
  * 
  * Base types
  *

@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Math
+ * @addtogroup orxMath
  * 
  * Math module
  * Contains all base math functions

@@ -185,7 +185,6 @@
     </VirtualDirectory>
   </VirtualDirectory>
   <Dependencies/>
-  <Dependencies Name="Win32 Static Debug"/>
   <Dependencies Name="Linux Dynamic Debug"/>
   <Dependencies Name="GP2X Debug"/>
   <Settings Type="Static Library">
@@ -199,23 +198,21 @@
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Required="yes" Options=""/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="GP2X Release" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
@@ -227,23 +224,21 @@
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Required="yes" Options="-s"/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
@@ -257,25 +252,23 @@
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options=""/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cp -f ../../../lib/dynamic/liborxd.so ../../../bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
@@ -288,25 +281,23 @@
         <Preprocessor Value="__orxDLLEXPORT__"/>
       </Compiler>
       <Linker Required="yes" Options="-s"/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cp -f ../../../lib/dynamic/liborx.so ../../../bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
@@ -318,23 +309,21 @@
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options=""/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
@@ -345,23 +334,21 @@
         <Preprocessor Value="__orxGCC__"/>
       </Compiler>
       <Linker Required="yes" Options="-s"/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild>
-
-</CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
@@ -375,23 +362,23 @@
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-Wl,--out-implib=../../../lib/dynamic/liborxd.a"/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cmd /c copy /Y ..\..\..\lib\dynamic\orxd.dll ..\..\..\bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
@@ -404,23 +391,23 @@
         <Preprocessor Value="__orxDLLEXPORT__"/>
       </Compiler>
       <Linker Required="yes" Options="-Wl,--out-implib=../../../lib/dynamic/liborx.a -s"/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cmd /c copy /Y ..\..\..\lib\dynamic\orx.dll ..\..\..\bin</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
@@ -432,21 +419,21 @@
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options=""/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
@@ -457,22 +444,23 @@
         <Preprocessor Value="__orxGCC__"/>
       </Compiler>
       <Linker Required="yes" Options="-s"/>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand></CleanCommand>
-        <BuildCommand></BuildCommand>
-        <SingleFileCommand></SingleFileCommand>
-        <MakefileGenerationCommand></MakefileGenerationCommand>
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory></WorkingDirectory>
+        <WorkingDirectory/>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild></CustomPostBuild>
-        <CustomPreBuild></CustomPreBuild>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
       </AdditionalRules>
     </Configuration>
   </Settings>
+  <Dependencies Name="Win32 Static Debug"/>
 </CodeLite_Project>

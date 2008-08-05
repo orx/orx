@@ -27,16 +27,6 @@
  * @todo
  */
 
-/**
- * @addtogroup Render
- * 
- * Viewport module
- * Allows to creates and handle viewports.
- * Viewports are structures associated to cameras and used for rendering.
- *
- * @{
- */
-
 
 #include "render/orxViewport.h"
 

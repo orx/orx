@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Base
+ * @addtogroup orxModule
  *
  * Module file
  * Code that handles modules and their dependencies
@@ -105,42 +105,63 @@ typedef orxSTATUS                         (*orxMODULE_RUN_FUNCTION)   ();
 typedef orxVOID                           (*orxMODULE_SETUP_FUNCTION) ();
 
 
-/** Registers a module. */
+/** Registers a module
+ * @param[in]   _eModuleID                Concerned module ID
+ * @param[in]   _pfnSetup                 Module setup callback
+ * @param[in]   _pfnInit                  Module init callback
+ * @param[in]   _pfnExit                  Module exit callback
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Register(orxMODULE_ID _eModuleID, orxCONST orxMODULE_SETUP_FUNCTION _pfnSetup, orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit);
 
 /** Registers all modules. ! Needs to be updated for all new modules ! */
 extern orxDLLAPI orxVOID                  orxModule_RegisterAll();
 
-/** Adds dependencies between 2 modules. */
+/** Adds dependencies between 2 modules
+ * @param[in]   _eModuleID                Concerned module ID
+ * @param[in]   _eDependID                Module ID of the needed module
+ */
 extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
 
-/** Adds optional dependencies between 2 modules. */
+/** Adds optional dependencies between 2 modules
+ * @param[in]   _eModuleID                Concerned module ID
+ * @param[in]   _eModuleID                Module ID of the optionally needed module
+ */
 extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
 
-/** Updates dependencies for all modules. */
+/** Updates dependencies for all modules */
 extern orxDLLAPI orxVOID                  orxModule_UpdateDependencies();
 
-/** Calls a module setup. */
+/** Calls a module setup callback
+ * @param[in]   _eModuleID                Concerned module ID
+ */
 extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Setup(orxMODULE_ID _eModuleID);
 
-/** Calls all module setups.*/
+/** Calls all module setups */
 extern orxDLLAPI orxVOID                  orxModule_SetupAll();
 
-/** Inits a module. */
+/** Inits a module
+ * @param[in]   _eModuleID                Concerned module ID
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxModule_Init(orxMODULE_ID _eModuleID);
 
-/** Inits all modules.*/
+/** Inits all modules
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                orxModule_InitAll();
 
-/** Exits from a module. */
+/** Exits from a module
+ * @param[in]   _eModuleID                Concerned module ID
+ */
 extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Exit(orxMODULE_ID _eModuleID);
 
 /** Exits from all modules.*/
 extern orxDLLAPI orxVOID                  orxModule_ExitAll();
 
 /** Is module initialized?
- * @param[in] _eModulueID       Concerned module ID
- * @return orxTRUE / orxFALSE
+ * @param[in]   _eModulueID               Concerned module ID
+ * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL      orxModule_IsInitialized(orxMODULE_ID _eModuleID);
 

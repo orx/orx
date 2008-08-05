@@ -115,12 +115,11 @@ orxSTATIC orxCLOCK_STATIC sstClock;
  * Private functions                                                       *
  ***************************************************************************/
 
-/***************************************************************************
- orxClock_FindFunctionStorage
- Finds a clock function storage.
-
- returns: orxCLOCK_FUNCTION_STORAGE * / orxNULL
- ***************************************************************************/
+/** Finds a clock function storage
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Concerned callback
+ * @return      orxCLOCK_FUNCTION_STORAGE / orxNULL
+ */
 orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
@@ -147,12 +146,12 @@ orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxC
   return pstFunctionStorage;
 }
 
-/***************************************************************************
- orxClock_FindClock
- Finds a clock matching given criterias from a given start clock.
-
- returns: orxCLOCK * / orxNULL
- ***************************************************************************/
+/** Finds the next clock in list given a tick size and a type
+ * @param[in]   _fTickSize                            Desired tick size
+ * @param[in]   _eType                                Desired type
+ * @param[in]   _pstStartClock                        Clock used as a starting point in the list
+ * @return      orxCLOCK / orxNULL
+ */
 orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType, orxCONST orxCLOCK *_pstStartClock)
 {
   orxCLOCK *pstClock;
@@ -180,12 +179,11 @@ orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_T
   return pstClock;
 }
 
-/***************************************************************************
- orxClock_ComputeDT
- Computes DT according to Mod.
-
- returns: Computed DT.
- ***************************************************************************/
+/** Computes DT according to modifier
+ * @param[in]   _fDT                                  Real DT
+ * @param[in]   _pstClockInfo                         Concerned clock info
+ * @return      Modified DT
+ */
 orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_pstClockInfo)
 {
   orxREGISTER orxCLOCK_MOD_TYPE  *peModType;
@@ -243,12 +241,8 @@ orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_p
  * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxClock_Setup
- Clock module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Clock module setup
+ */
 orxVOID orxClock_Setup()
 {
   /* Adds module dependencies */
@@ -259,12 +253,9 @@ orxVOID orxClock_Setup()
   return;
 }
 
-/***************************************************************************
- orxClock_Init
- Inits the clock module.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Inits clock module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxClock_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -313,12 +304,8 @@ orxSTATUS orxClock_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxClock_Exit
- Exits from clock module.
-
- returns: orxVOID
- ***************************************************************************/
+/** Exits from clock module
+ */
 orxVOID orxClock_Exit()
 {
   /* Initialized? */
@@ -346,12 +333,9 @@ orxVOID orxClock_Exit()
   return;
 }
 
-/***************************************************************************
- orxorxClock_Update
- Udpates all clocks.
-
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- ***************************************************************************/
+/** Updates the clock system
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxClock_Update()
 {
   orxFLOAT  fNewTime, fDT;
@@ -435,12 +419,11 @@ orxSTATUS orxClock_Update()
   return eResult;
 }
 
-/***************************************************************************
- orxClock_Create
- Creates a clock.
-
- returns: orxCLOCK * on success / NULL otherwise
- ***************************************************************************/
+/** Creates a clock
+ * @param[in]   _fTickSize                            Tick size for the clock (in seconds)
+ * @param[in]   _eType                                Type of the clock
+ * @return      orxCLOCK / orxNULL
+ */
 orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 {
   orxCLOCK *pstClock;
@@ -487,12 +470,9 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
   return pstClock;
 }
 
-/***************************************************************************
- orxClock_Delete
- Removes a clock.
-
- returns: orxVOID
- ***************************************************************************/
+/** Deletes a clock
+ * @param[in]   _pstClock                             Concerned clock
+ */
 orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 {
   /* Checks */
@@ -512,7 +492,8 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
   return;
 }
 
-/** Resync all clocks with main one */
+/** Resyncs a clock (accumulated DT => 0)
+ */
 orxVOID orxClock_Resync()
 {
   /* Checks */
@@ -536,12 +517,9 @@ orxVOID orxClock_Resync()
   return;
 }
 
-/***************************************************************************
- orxClock_Pause
- Pauses a clock.
-
- returns: nothing
- ***************************************************************************/
+/** Pauses a clock
+ * @param[in]   _pstClock                             Concerned clock
+ */
 orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
 {
   /* Checks */
@@ -554,12 +532,9 @@ orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
   return;
 }
 
-/***************************************************************************
- orxClock_Unpause
- Unpauses a clock.
-
- returns: nothing
- ***************************************************************************/
+/** Unpauses a clock
+ * @param[in]   _pstClock                             Concerned clock
+ */
 orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
 {
   /* Checks */
@@ -572,12 +547,10 @@ orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
   return;
 }
 
-/***************************************************************************
- orxClock_IsPaused
- Is a clock paused?
-
- returns: orxTRUE / orxFALSE
- ***************************************************************************/
+/** Is a clock paused?
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      orxTRUE if paused, orxFALSE otherwise
+ */
 orxBOOL orxFASTCALL orxClock_IsPaused(orxCONST orxCLOCK *_pstClock)
 {
   /* Checks */
@@ -588,12 +561,10 @@ orxBOOL orxFASTCALL orxClock_IsPaused(orxCONST orxCLOCK *_pstClock)
   return((_pstClock->u32Flags & orxCLOCK_KU32_CLOCK_FLAG_PAUSED) ? orxTRUE : orxFALSE);
 }
 
-/***************************************************************************
- orxClock_GetInfo
- Gets informations about a clock.
-
- returns: Pointer on the clock info structure
- ***************************************************************************/
+/** Gets clock info
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      orxCLOCK_INFO / orxNULL
+ */
 orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock)
 {
   orxCONST orxCLOCK_INFO *pstClockInfo = orxNULL;
@@ -609,12 +580,12 @@ orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClo
   return pstClockInfo;
 }
 
-/***************************************************************************
- orxClock_SetModifier
- Sets clock modifier.
-
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- ***************************************************************************/
+/** Sets a clock modifier
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _eModType                             Modifier type
+ * @param[in]   _fModValue                            Modifier value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -633,12 +604,13 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYP
   return eResult;
 }
 
-/***************************************************************************
- orxClock_Register
- Registers a callback function to a clock.
-
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- ***************************************************************************/
+/** Registers a callback function to a clock
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Callback to register
+ * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
+ * @param[in]   _eModuleID                            IF of the module related to this callback
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
@@ -676,12 +648,11 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
   return eResult;
 }
 
-/***************************************************************************
- orxClock_Unregister
- Unregisters a callback function from a clock.
-
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- ***************************************************************************/
+/** Unregisters a callback function from a clock
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _fnCallback                           Callback to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
@@ -713,12 +684,11 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK
   return eResult;
 }
 
-/***************************************************************************
- orxClock_GetContext
- Gets a callback function context.
-
- returns: orxVOID *
- ***************************************************************************/
+/** Gets a callback function context
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Concerned callback
+ * @return      Registered context
+ */
 orxVOID *orxFASTCALL orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
@@ -747,12 +717,12 @@ orxVOID *orxFASTCALL orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST 
   return pstContext;
 }
 
-/***************************************************************************
- orxClock_SetContext
- Sets a callback function context.
-
- returns: orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- ***************************************************************************/
+/** Sets a callback function context
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Concerned callback
+ * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
@@ -784,12 +754,11 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK
   return eResult;
 }
 
-/***************************************************************************
- orxClock_FindFirst
- Finds a clock according to its tick size and its type.
-
- returns: orxCLOCK * / orxNULL
- ***************************************************************************/
+/** Finds a clock given its tick size and its type
+ * @param[in]   _fTickSize                            Tick size of the desired clock (in seconds)
+ * @param[in]   _eType                                Type of the desired clock
+ * @return      orxCLOCK / orxNULL
+ */
 orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 {
   orxCLOCK *pstClock;
@@ -805,12 +774,10 @@ orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eTy
   return pstClock;
 }
 
-/***************************************************************************
- orxClock_FindNext
- Finds next clock of same type/tick size.
-
- returns: orxCLOCK * / orxNULL
- ***************************************************************************/
+/** Finds next clock of same type/tick size
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      orxCLOCK / orxNULL
+ */
 orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
 {
   orxCLOCK *pstClock;
@@ -826,12 +793,10 @@ orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
   return pstClock;
 }
 
-/***************************************************************************
- orxClock_GetNext
- Gets next existing clock (can be used to parse all existing clocks).
-
- returns: orxCLOCK * / orxNULL
- ***************************************************************************/
+/** Gets next existing clock in list (can be used to parse all existing clocks)
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      orxCLOCK / orxNULL
+ */
 orxCLOCK *orxFASTCALL orxClock_GetNext(orxCONST orxCLOCK *_pstClock)
 {
   /* Checks */

@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Param
+ * @addtogroup orxParam
  * 
  * Param module
  * Module that handles command line parameters
@@ -83,18 +83,21 @@ typedef struct __orxPARAM_t
 } orxPARAM;
 
 
-/** Clock module setup
+/** Setups param module
  */
 extern orxDLLAPI orxVOID                orxParam_Setup();
-/** Initialize Param Module
+
+/** Inits the param Module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS              orxParam_Init();
 
-/** Exit Param module
+/** Exits from the param module
  */
 extern orxDLLAPI orxVOID                orxParam_Exit();
 
-/** Register a new parameter
+
+/** Registers a new parameter
  * @param[in] _pstParam Informations about the option to register
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */

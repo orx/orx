@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Physics
+ * @addtogroup orxBody
  * 
  * Body Module
  * Allows to creates and handle physical bodies

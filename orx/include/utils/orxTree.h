@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Utils
+ * @addtogroup orxTree
  * 
  * Tree module
  * Module that handles trees

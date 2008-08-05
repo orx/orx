@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Render
+ * @addtogroup orxFX
  *
  * FX module
  * Allows to creates rendering special effects affecting color, scale, rotation and position of visuals.

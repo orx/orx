@@ -29,7 +29,7 @@
  */
 
 /**
- * @addtogroup Utils
+ * @addtogroup orxString
  * 
  * String module
  * Module that handles strings

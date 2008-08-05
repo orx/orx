@@ -28,14 +28,6 @@
  * - Add the required types at need.
  */
 
-/**
- * @addtogroup Base
- * 
- * Base types
- *
- * @{
- */
-
 
 #include "orxInclude.h"
 

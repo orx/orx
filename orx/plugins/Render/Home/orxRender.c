@@ -742,12 +742,12 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 /** Gets a world position from a screen one
  * @param[in]  _pvScreenPosition        Screen space position
  * @param[out] _pvWorldPosition         Corresponding world position
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return orxVECTOR / orxNULL
  */
-orxSTATUS orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxVECTOR *orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   orxVIEWPORT  *pstViewport;
-  orxSTATUS     eResult = orxSTATUS_FAILURE;
+  orxVECTOR    *pvResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
@@ -806,7 +806,7 @@ orxSTATUS orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition,
         orxVector_Set(_pvWorldPosition, stCameraFrustum.vTL.fX + (vLocalPosition.fX * (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX)), stCameraFrustum.vTL.fY + (vLocalPosition.fY * (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY)), orx2F(0.5f) * (stCameraFrustum.vBR.fZ - stCameraFrustum.vTL.fZ));
 
         /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
+        pvResult = _pvWorldPosition;
 
         break;
       }
@@ -814,7 +814,7 @@ orxSTATUS orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition,
   }
 
   /* Done! */
-  return eResult;
+  return pvResult;
 }
 
 /** Inits the Render module

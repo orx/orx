@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Plugin
+ * @addtogroup orxPlugin
  * 
  * Header that defines all IDs of the keyboard plugin
  *

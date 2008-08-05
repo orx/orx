@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Render
+ * @addtogroup orxViewport
  * 
  * Viewport module
  * Allows to creates and handle viewports.

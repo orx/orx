@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Core
+ * @addtogroup orxPlugin
  * 
  * Plugin user header
  * This header is used to define structures & functions for plugin registration.

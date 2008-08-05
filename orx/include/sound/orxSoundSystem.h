@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Sound
+ * @addtogroup orxSoundSystem
  * 
  * Sound system plugin module
  * Plugin module that handles sound system

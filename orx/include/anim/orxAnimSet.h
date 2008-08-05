@@ -30,7 +30,7 @@
  */
 
 /**
- * @addtogroup Anim
+ * @addtogroup orxAnimSet
  *
  * Animation (Set) Module.
  * Allows to creates and handle Sets of Anims.
@@ -86,6 +86,7 @@ typedef struct __orxANIMSET_LINK_TABLE_t            orxANIMSET_LINK_TABLE;
 extern orxDLLAPI orxVOID                            orxAnimSet_Setup();
 
 /** Inits the AnimSet module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS                          orxAnimSet_Init();
 

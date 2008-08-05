@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Display
+ * @addtogroup orxDisplay
  * 
  * Display plugin module
  * Module that handles display

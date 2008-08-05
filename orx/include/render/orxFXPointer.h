@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Render
+ * @addtogroup orxFXPointer
  *
  * FXPointer module
  * Allows to creates rendering special effects containers for objects.

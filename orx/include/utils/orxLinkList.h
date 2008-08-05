@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Utils
+ * @addtogroup orxLinkList
  * 
  * Linklist module
  * Module that handles linklists

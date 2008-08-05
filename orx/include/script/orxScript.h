@@ -28,10 +28,11 @@
  * @note Do not make modules that depends on it while the API is not stable enough
  *
  * @todo
+ * @deprecated WIP, not finished yet 
  */
 
 /**
- * @addtogroup Script
+ * @addtogroup orxScript
  * 
  * Script module
  * Module that handles scripts

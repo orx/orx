@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Utils
+ * @addtogroup orxHashTable
  * 
  * Hashtable module
  * Module that handles Hashtables

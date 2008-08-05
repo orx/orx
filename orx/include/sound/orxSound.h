@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Sound
+ * @addtogroup orxSound
  * 
  * Sound module
  * Module that handles sound

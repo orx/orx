@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Core
+ * @addtogroup orxSystem
  * 
  * Module file
  * Code that handles modules and their dependencies
@@ -66,7 +66,7 @@ typedef enum __orxSYSTEM_EVENT_t
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** System module setup */
+/** Setups the system module */
 extern orxDLLAPI orxVOID            orxSystem_Setup();
 
 
@@ -74,23 +74,22 @@ extern orxDLLAPI orxVOID            orxSystem_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
-/** Inits the system module.
- * @return The status of the operation.
+/** Inits the system module
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS          orxSystem_Init();
 
-/** Exits from the system module.
- * @return The status of the operation.
+/** Exits from the system module
  */
 extern orxDLLAPI orxVOID            orxSystem_Exit();
 
-/** Gets time.
- * @return Current time.
+/** Gets current time (elapsed from the beginning of the application)
+ * @return Current time
  */
 extern orxDLLAPI orxFLOAT           orxSystem_GetTime();
 
-/** Delay the program for given number of milliseconds.
- * @param[in] _fSeconds Number of seconds to wait.
+/** Delay the program for given number of seconds
+ * @param[in] _fSeconds             Number of seconds to wait
  */
 extern orxDLLAPI orxVOID            orxSystem_Delay(orxFLOAT _fSeconds);
 

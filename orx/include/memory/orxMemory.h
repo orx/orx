@@ -32,7 +32,7 @@
  */
 
 /**
- * @addtogroup Memory
+ * @addtogroup orxMemory
  * 
  * Memory module
  * Module that handles all low level allocation/free requests
@@ -69,17 +69,20 @@ typedef enum __orxMEMORY_TYPE_t
 } orxMEMORY_TYPE;
 
 
-/** Memory module setup */
+/** Setups the memory module
+ */
 extern orxDLLAPI orxVOID                orxMemory_Setup();
-/** Initialize memory allocation module
- * @todo Really initialize the memory to be managed by the module and not OS
+
+/** Inits the memory module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS              orxMemory_Init();
-/** Uninitialize memory allocation module
+
+/** Exits from the memory module
  */
 extern orxDLLAPI orxVOID                orxMemory_Exit();
 
-/** Allocate a portion of memory in the system and returns a pointer on it
+/** Allocates a portion of memory in the system and returns a pointer on it
  * @param[in]  _u32Size  Size of the memory to allocate
  * @param[in]  _eMemType Memory zone where datas will be allocated
  * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
@@ -87,20 +90,20 @@ extern orxDLLAPI orxVOID                orxMemory_Exit();
  */
 extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
 
-/** Free a portion of memory allocated with orxMemory_Allocate
+/** Frees a portion of memory allocated with orxMemory_Allocate
  * @param[in]  _pMem     Pointer on the memory allocated by orx
  * @todo Use the memory managed by orxMemory (not OS)
  */
 extern orxDLLAPI orxVOID orxFASTCALL    orxMemory_Free(orxVOID *_pMem);
 
-/** Get the an aligned data size
+/** Gets the an aligned data size
  * @param[in]  _u32OriginalValue Original value (ex: 70)
  * @param[in]  _u32AlignValue    Align size (The value has to be a power of 2 and > 0) (ex : 32)
  * @return the aligned _u32OriginalValue on _u32AlignValue (ex : will return 96 for previous values)
  */
 extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32AlignValue);
 
-/** Copy a portion of memory into another one
+/** Copies a portion of memory into another one
  * @param[out] _pDest    Destination pointer
  * @param[in]  _pSrc     Pointer of memory from where data are read
  * @param[in]  _u32Size  Size of data
@@ -109,7 +112,7 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_GetAlign(orxU32 _u32OriginalVa
  */
 extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size);
 
-/** Copy a portion of memory into another one
+/** Copies a portion of memory into another one
  * @param[out] _pDest   Destination pointer
  * @param[in]  _pSrc    Pointer of memory from where data are read
  * @param[in]  _u32Size Size of data
@@ -117,7 +120,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Copy(orxVOID *_pDest, orxCONST
  */
 extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size);
 
-/** Compare two portion of memory
+/** Compares two portion of memory
  * @param[in]  _pMem1   First potion to test
  * @param[in]  _pMem2   Second portion to test
  * @param[in]  _u32Size Size of data to test
@@ -125,7 +128,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Move(orxVOID *_pDest, orxVOID 
  */
 extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size);
 
-/** Fill a portion of memory with _u32Data
+/** Fills a portion of memory with _u32Data
  * @param[out] _pDest   Destination pointer
  * @param[in]  _u8Data  Values of the data that will fill the memory
  * @param[in]  _u32Size Size of data
@@ -133,14 +136,14 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(orxCONST orxVOID *_pMe
  */
 extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size);
 
-/** Fill a portion of memory with zeroes
+/** Fills a portion of memory with zeroes
  * @param[out] _pDest   Destination pointer
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
 extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Zero(orxVOID *_pDest, orxU32 _u32Size);
 
-/** Realloc a portion of memory if the already allocated memory is not suffisant.
+/** Reallocs a portion of memory if the already allocated memory is not suffisant.
  * @param[in] _pMem	   Memory to reallocate.
  * @param[in] _u32Size Wanted size.
  * @return The pointer reallocated.

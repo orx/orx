@@ -31,7 +31,7 @@
  */
 
 /**
- * @addtogroup Math
+ * @addtogroup orxVector
  * 
  * Vector module
  * Module that handles vectors and basic structures based on them

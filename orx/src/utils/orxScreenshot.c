@@ -43,15 +43,17 @@
 #include "memory/orxMemory.h"
 
 
-/*
- * Platform independent defines
+/** Module flags
  */
-
 #define orxSCREENSHOT_KU32_STATIC_FLAG_NONE       0x00000000
 #define orxSCREENSHOT_KU32_STATIC_FLAG_READY      0x00000001
 
-/*
- * Static structure
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Static structure
  */
 typedef struct __orxSCREENSHOT_STATIC_t
 {
@@ -63,32 +65,27 @@ typedef struct __orxSCREENSHOT_STATIC_t
 
 } orxSCREENSHOT_STATIC;
 
-/*
- * Static data
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
  */
 orxSTATIC orxSCREENSHOT_STATIC sstScreenshot;
 
 
-
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxScreenshot_Setup
- Screenshot module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Screenshot module setup
+ */
 orxVOID orxScreenshot_Setup()
 {
   /* Adds module dependencies */
@@ -99,12 +96,9 @@ orxVOID orxScreenshot_Setup()
   return;
 }
 
-/***************************************************************************
- orxScreenshot_Init
- Inits the screenshot system.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Inits the screenshot module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxScreenshot_Init()
 {
   orxCHAR zFileName[256];
@@ -164,12 +158,8 @@ orxSTATUS orxScreenshot_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxScreenshot_Exit
- Exits from the screenshot system.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Exits from the screenshot module
+ */
 orxVOID orxScreenshot_Exit()
 {
   /* Initialized? */
@@ -186,13 +176,9 @@ orxVOID orxScreenshot_Exit()
   return;
 }
 
-/***************************************************************************
- orxScreenshot_Take
- Takes a screenshot.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
-orxVOID orxScreenshot_Take()
+/** Captures a screenshot
+ */
+orxVOID orxScreenshot_Capture()
 {
   orxCHAR zName[256];
 

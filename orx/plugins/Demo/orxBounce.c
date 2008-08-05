@@ -87,7 +87,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     orxVector_Set(&vScreenPos, orxS2F(s32MouseX), orxS2F(s32MouseY), orxFLOAT_0);
 
     /* Has a matching world position? */
-    if(orxRender_GetWorldPosition(&vScreenPos, &vWorldPos) != orxSTATUS_FAILURE)
+    if(orxRender_GetWorldPosition(&vScreenPos, &vWorldPos) != orxNULL)
     {
       /* Spawn a ball under the cursor */
       pstObject = orxObject_CreateFromConfig("Ball");

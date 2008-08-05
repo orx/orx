@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Plugin
+ * @addtogroup orxPlugin
  * 
  * Header that regroups all core plugin defines.
  *

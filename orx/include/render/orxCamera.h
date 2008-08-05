@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Render
+ * @addtogroup orxCamera
  * 
  * Camera Module
  * Allows to creates and handle cameras

@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Utils
+ * @addtogroup orxFSM
  * 
  * FSM module
  * Module that handles FSMs

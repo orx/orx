@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Physics
+ * @addtogroup orxPhysics
  * 
  * Physics plugin module
  * Module that handles physics interactions

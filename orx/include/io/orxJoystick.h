@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup IO
+ * @addtogroup orxJoystick
  * 
  * Joystick plugin module
  * Plugin module that handles joystick-like peripherals

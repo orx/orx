@@ -102,7 +102,7 @@ orxSTATIC orxSTATUS orxFASTCALL orx_DefaultEventHandler(orxCONST orxEVENT *_pstE
  * @param[in]   _pfnSetup                     Main setup function (should declares dependencies)
  * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
  * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
- * @param[in]   _pfnSetup                     Main exit function (should clean all the main stuff)
+ * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
  */
 orxSTATIC orxINLINE orxVOID orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], orxCONST orxMODULE_SETUP_FUNCTION _pfnSetup, orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_RUN_FUNCTION _pfnRun, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit)
 {

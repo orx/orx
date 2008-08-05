@@ -32,7 +32,7 @@
  */
 
 /**
- * @addtogroup Plugin
+ * @addtogroup orxPlugin
  * 
  * Plugin module
  * This module provides functions for loading dynamic code into the core

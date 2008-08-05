@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Plugin
+ * @addtogroup orxPlugin
  * 
  * Plugin core header
  * This header is used to define structures & functions for core plugins info.

@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup IO
+ * @addtogroup orxFileSystem
  * 
  * File system plugin module
  * Module that handles file system access
