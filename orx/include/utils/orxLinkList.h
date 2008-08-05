@@ -35,31 +35,31 @@
  *
  * @{
  *
- * @section linklist Link List - How to.
- * This module provide an easy and powerfull interface to manipulate link lists.
+ * @section linklist Link List - How to
+ * This module provides an easy and powerful interface for manipulating linked lists.
  *
- * @subsection linklist_datadefine Data definition.
- * You can define a data to store :
+ * @subsection linklist_datadefine Data definition
+ * Using this data structure as an example:
  * @code
  * typedef struct __orxFOO_t
  * {
- *   orxU32 u32Data;        Data to store.
+ *   orxU32 u32Data;        Data
  * } orxFOO;
  * @endcode
  *
- * @subsection linklist_dataalloc Data without link.
- * You can define an allocation place to store data:
+ * @subsection linklist_dataalloc Data without link
+ * Creating a bank to allocate memory storage:
  * @code
- * orxBANK *pstBank = orxBank_Create(10, sizeof(orxFOO), 0, orxMEMORY_TYPE_MAIN);
+ * orxBANK *pstBank = orxBank_Create(10, sizeof(orxFOO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
  * @endcode
- * And you can allocate a memory cel :
+ * You can then instantiate it this way:
  * @code
- * orxTRUC *pstNode = (orxFOO *)orxBank_Allocate(pstBank);
+ * orxFOO *pstNode = (orxFOO *)orxBank_Allocate(pstBank);
  * pstNode->u32Data = 205;
  * @endcode
- * So you can allocate an manipulate data. But no link list manipulation is define.
- * @subsection linklist_realalloc Real link list item definition.
- * In order to use link list functions, you can (must) define your structure with an orxLINKLIST_NODE member at its begining :
+ * Having this basic behavior, you can add list linking to it.
+ * @subsection linklist_realalloc Linked list item definition
+ * To do so, you need to include in your structure an orxLINKLIST_NODE member as *FIRST MEMBER*:
  * @code
  * typedef struct __orxFOO_t
  * {
@@ -67,13 +67,13 @@
  *  orxU32 u32Data;
  * } orxFOO;
  * @endcode
- * @subsection linklist_realuse Use of link list.
- * Now you can use a list with your own list items :
+ * @subsection linklist_realuse Use of link list
+ * Your data structure can now be linked in lists:
  * @code
  * orxLINKLIST stList;
  * orxLinkList_AddEnd(&stList, (orxLINKLIST_NODE *)pstNode);
  * @endcode
- * @note As the first member of your item structure, you can cast your structure to orxLINKLIST_NODE and reciprocally.
+ * @note As the first member of your data structure is a linked list node, you can cast your structure to orxLINKLIST_NODE and reciprocally.
  */
 
 

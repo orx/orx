@@ -47,7 +47,7 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
-#define SCRIPT_MAX_PARAMS 16
+#define orxSCRIPT_MAX_PARAMS 16
 
 typedef enum __orxSCRIPT_TYPE_t
 {
@@ -78,7 +78,7 @@ typedef struct __orxSCRIPT_FUNCTION_t
 {
   orxSTRING zFunctionName;                          /**< String value of the function. Will be the name called from script */
   orxS32 s32NbParams;                               /**< Number of parameters */
-  orxSCRIPT_TYPE aeParamsType[SCRIPT_MAX_PARAMS];   /**< List of parameters for each exported function */
+  orxSCRIPT_TYPE aeParamsType[orxSCRIPT_MAX_PARAMS];   /**< List of parameters for each exported function */
   orxSCRIPT_FUNCTION_PTR pfnFunction;               /**< pointer on the function to call */
   orxS32 s32StackSize;                              /**< Stack size */
   
