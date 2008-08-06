@@ -62,8 +62,8 @@ orxVOID orxRender_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, orxCONST orxVECTOR *, orxVECTOR *);
 
 

@@ -409,8 +409,8 @@ orxSCRIPT_FUNCTION *orxScript_GetFunctionInfo(orxS32 _s32Index)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginInit, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginExit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginInit, orxSTATUS, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginExit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunFile, orxSTATUS, orxCONST orxSTRING);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunString, orxSTATUS, orxCONST orxSTRING);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetType, orxSCRIPT_TYPE, orxCONST orxSTRING);

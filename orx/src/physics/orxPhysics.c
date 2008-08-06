@@ -58,8 +58,8 @@ orxVOID orxPhysics_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Init, orxSTATUS, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Exit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetGravity, orxSTATUS, orxCONST orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBody, orxPHYSICS_BODY *, orxCONST orxHANDLE, orxCONST orxBODY_DEF *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBody, orxVOID, orxPHYSICS_BODY *);

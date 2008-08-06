@@ -747,7 +747,7 @@ orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, orxCONST or
     zPluginName = _azParams[i] + s32LastSeparatorIndex;
 
     /* Loads plugin */
-    orxPlugin_LoadUsingExt(_azParams[i], zPluginName) != orxHANDLE_UNDEFINED;
+    orxPlugin_LoadUsingExt(_azParams[i], zPluginName);
   }
 
   /* Done! */

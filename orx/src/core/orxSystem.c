@@ -57,10 +57,10 @@ orxVOID orxSystem_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Init, orxSTATUS, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Exit, orxVOID, orxVOID);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_GetTime, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_GetTime, orxFLOAT, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Delay, orxVOID, orxFLOAT);
 
 

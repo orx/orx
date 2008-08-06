@@ -71,8 +71,8 @@ orxBOOL orxFASTCALL orxFileSystem_Exists(orxCONST orxSTRING _zFileName)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Init, orxSTATUS, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_Exit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindFirst, orxBOOL, orxCONST orxSTRING, orxFILESYSTEM_INFO *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindNext, orxBOOL, orxFILESYSTEM_INFO *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxFileSystem_FindClose, orxVOID, orxFILESYSTEM_INFO *);

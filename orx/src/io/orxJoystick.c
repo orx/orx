@@ -50,8 +50,8 @@ orxVOID orxJoystick_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_GetAxisValue, orxFLOAT, orxU32, orxJOYSTICK_AXIS);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_IsButtonPressed, orxBOOL, orxU32, orxJOYSTICK_BUTTON);
 

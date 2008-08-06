@@ -58,8 +58,8 @@ orxVOID orxFile_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Init, orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Exit, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Init, orxSTATUS, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Exit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Open, orxFILE *, orxCONST orxSTRING, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Read, orxU32, orxVOID *, orxU32, orxU32, orxFILE *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxFile_Write, orxU32, orxVOID *, orxU32, orxU32, orxFILE *);

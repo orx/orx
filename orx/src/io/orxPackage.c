@@ -57,8 +57,8 @@ orxVOID orxPackage_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Init,      orxSTATUS);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Exit,      orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Init,      orxSTATUS,    orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Exit,      orxVOID,      orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Close,     orxSTATUS,    orxPACKAGE *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindNext,  orxBOOL,      orxPACKAGE_INFOS *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindClose, orxVOID,      orxPACKAGE_INFOS *);
