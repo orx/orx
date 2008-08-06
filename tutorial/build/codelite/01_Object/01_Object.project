@@ -2,7 +2,7 @@
 <CodeLite_Project Name="01_Object">
   <Description/>
   <VirtualDirectory Name="src">
-    <File Name="..\..\..\src\01_Object\01_Object.c"/>
+    <File Name="../../../src/01_Object/01_Object.c"/>
   </VirtualDirectory>
   <Dependencies/>
   <Settings Type="Dynamic Library">
@@ -66,4 +66,5 @@
     </Configuration>
   </Settings>
   <Dependencies Name="Win32 Dynamic Release"/>
+  <Dependencies Name="Linux Dynamic Release"/>
 </CodeLite_Project>
