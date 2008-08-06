@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="8.00"
 	Name="01_Object"
 	ProjectGUID="{CF32AE2D-5F92-4356-A35A-9BDC8292FB17}"
 	RootNamespace="My01_Object"
-	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -62,8 +61,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\lib\msvs2008\orx.lib"
-				OutputFile="..\..\..\bin\msvs2008\$(ProjectName).dll"
+				AdditionalDependencies="..\..\..\lib\msvs2005\orx.lib"
+				OutputFile="..\..\..\bin\msvs2005\$(ProjectName).dll"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
@@ -90,6 +89,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
