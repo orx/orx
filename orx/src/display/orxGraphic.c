@@ -64,6 +64,7 @@
 #define orxGRAPHIC_KZ_CONFIG_COLOR            "Color"
 #define orxGRAPHIC_KZ_CONFIG_ALPHA            "Alpha"
 #define orxGRAPHIC_KZ_CONFIG_FLIP             "Flip"
+#define orxGRAPHIC_KZ_CONFIG_REPEAT           "Repeat"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
 #define orxGRAPHIC_KZ_X                       "x"
@@ -87,8 +88,10 @@ struct __orxGRAPHIC_t
   orxFLOAT      fLeft;                      /**< Left coordinate : 56 */
   orxFLOAT      fWidth;                     /**< Width : 60 */
   orxFLOAT      fHeight;                    /**< Height : 64 */
+  orxFLOAT      fRepeatX;                   /**< X-axis repeat counter : 68 */
+  orxFLOAT      fRepeatY;                   /**< Y-axis repeat counter : 72 */
 
-  orxPAD(64)
+  orxPAD(72)
 };
 
 /** Static structure
@@ -241,6 +244,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create(orxU32 _u32Flags)
     {
       /* Clears its color */
       orxGraphic_ClearColor(pstGraphic);
+
+      /* Sets its repeat value to default */
+      orxGraphic_SetRepeat(pstGraphic, orxFLOAT_1, orxFLOAT_1);
 
       /* Updates flags */
       orxStructure_SetFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D, orxGRAPHIC_KU32_FLAG_NONE);
@@ -406,6 +412,18 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
 
               /* Updates status */
               orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+            }
+
+            /* Should repeat? */
+            if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_REPEAT) != orxFALSE)
+            {
+              orxVECTOR vRepeat;
+
+              /* Gets its value */
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_REPEAT, &vRepeat);
+
+              /* Stores it */
+              orxGraphic_SetRepeat(pstResult, vRepeat.fX, vRepeat.fY);
             }
 
             /* Updates status flags */
@@ -707,6 +725,41 @@ orxSTATUS orxFASTCALL orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxCONST orxC
   return eResult;
 }
 
+/** Sets graphic repeat (wrap) value
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _fRepeatX       X-axis repeat value
+ * @param[in]   _fRepeatY       Y-axis repeat value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_SetRepeat(orxGRAPHIC *_pstGraphic, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if((_fRepeatX > orxFLOAT_0) && (_fRepeatY > orxFLOAT_0))
+  {
+    /* Stores values */
+    _pstGraphic->fRepeatX = _fRepeatX;
+    _pstGraphic->fRepeatY = _fRepeatY;
+    
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* !!! MSG ***/
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Clears graphic color
  * @param[in]   _pstGraphic     Concerned graphic
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -781,6 +834,30 @@ orxCOLOR *orxFASTCALL orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic, orxC
 
   /* Done! */
   return pstResult;
+}
+
+/** Gets graphic repeat (wrap) values
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[out]  _pfRepeatX      X-axis repeat value
+ * @param[out]  _pfRepeatY      Y-axis repeat value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_GetRepeat(orxCONST orxGRAPHIC *_pstGraphic, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+  orxASSERT(_pfRepeatX != orxNULL);
+  orxASSERT(_pfRepeatY != orxNULL);
+
+  /* Stores values */
+  *_pfRepeatX = _pstGraphic->fRepeatX;
+  *_pfRepeatY = _pstGraphic->fRepeatY;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets graphic top

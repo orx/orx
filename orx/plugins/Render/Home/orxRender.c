@@ -130,7 +130,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     orxTEXTURE     *pstTexture;
     orxANIMPOINTER *pstAnimPointer;
     orxVECTOR       vPivot, vPosition;
-    orxFLOAT        fRotation, fScaleX, fScaleY, fClipTop, fClipLeft, fClipBottom, fClipRight;
+    orxFLOAT        fRotation, fScaleX, fScaleY, fClipTop, fClipLeft, fClipBottom, fClipRight, fWidth, fHeight, fRepeatX, fRepeatY;
 
     /* Gets animation pointer */
     pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
@@ -166,11 +166,11 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
     /* Gets its clipping corners */
-    orxGraphic_GetSize(pstGraphic, &fClipRight, &fClipBottom);
+    orxGraphic_GetSize(pstGraphic, &fWidth, &fHeight);
     fClipTop      = orxGraphic_GetTop(pstGraphic);
     fClipLeft     = orxGraphic_GetLeft(pstGraphic);
-    fClipBottom  += fClipTop;
-    fClipRight   += fClipLeft;
+    fClipBottom   = fClipTop + fHeight;
+    fClipRight    = fClipLeft + fWidth;
 
     /* Updates its clipping */
     orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipRight), orxF2U(fClipBottom));
@@ -216,8 +216,11 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
     }
 
-    /* No scale nor rotation? */
-    if((fRotation == orxFLOAT_0) && (fScaleX == orxFLOAT_1) && (fScaleY == orxFLOAT_1))
+    /* Gets repeat values */
+    orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
+
+    /* No scale nor rotation nor repeat? */
+    if((fRotation == orxFLOAT_0) && (fScaleX == orxFLOAT_1) && (fScaleY == orxFLOAT_1) && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
     {
       /* Updates position with pivot */
       orxVector_Sub(&vPosition, &vPosition, &vPivot);
@@ -232,17 +235,74 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       {
         orxBITMAP_TRANSFORM stTransform;
 
-        /* Sets transformation values */
-        stTransform.fSrcX     = vPivot.fX;
-        stTransform.fSrcY     = vPivot.fY;
-        stTransform.fDstX     = vPosition.fX;
-        stTransform.fDstY     = vPosition.fY;
-        stTransform.fScaleX   = fScaleX;
-        stTransform.fScaleY   = fScaleY;
-        stTransform.fRotation = fRotation;
+        /* No repeat? */
+        if((fRepeatX == orxFLOAT_1)  && (fRepeatY == orxFLOAT_1))
+        {
+          /* Sets transformation values */
+          stTransform.fSrcX     = vPivot.fX;
+          stTransform.fSrcY     = vPivot.fY;
+          stTransform.fDstX     = vPosition.fX;
+          stTransform.fDstY     = vPosition.fY;
+          stTransform.fScaleX   = fScaleX;
+          stTransform.fScaleY   = fScaleY;
+          stTransform.fRotation = fRotation;
 
-        /* Blits bitmap */
-        eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, 0);
+          /* Blits bitmap */
+          eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, 0);
+        }
+        else
+        {
+          orxFLOAT  fIncX, fIncY, fCos, fSin, fX, fY, fEndX, fEndY, fRemainderX, fRemainderY;
+
+          /* Gets cosine and sine of the object angle */
+          fCos = orxMath_Cos(-fRotation);
+          fSin = orxMath_Sin(-fRotation);
+
+          /* Updates scales */
+          fScaleX /= fRepeatX;
+          fScaleY /= fRepeatY;
+
+          /* Updates increments */
+          fIncX = fWidth * fScaleX;
+          fIncY = fHeight * fScaleY;
+
+          // For all lines
+          for(fY = -orx2F(0.5f) * fIncY * (fRepeatY - orxFLOAT_1), fEndY = orx2F(0.5f) * fIncY * (fRepeatY + orxFLOAT_1), fRemainderY = fRepeatY;
+              fY <= fEndY;
+              fY += fIncY, fRemainderY -= orxFLOAT_1)
+          {
+            // For all columns
+            for(fX = -orx2F(0.5f) * fIncX * (fRepeatX - orxFLOAT_1), fEndX = orx2F(0.5f) * fIncX * (fRepeatX + orxFLOAT_1), fRemainderX = fRepeatX;
+                fX <= fEndX;
+                fX += fIncX, fRemainderX -= orxFLOAT_1)
+            {
+              /* Valid? */
+              if(fRemainderX > orxFLOAT_0)
+              {
+                orxFLOAT fOffsetX, fOffsetY;
+
+                /* Updates clipping */
+                orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(orxFLOAT_1, fRemainderX) * fWidth), orxF2U(fClipTop + orxMIN(orxFLOAT_1, fRemainderY) * fHeight));
+
+                /* Computes offsets */
+                fOffsetX = fCos * fX + fSin * fY;
+                fOffsetY = -fSin * fX + fCos * fY;
+
+                /* Sets transformation values */
+                stTransform.fSrcX     = vPivot.fX;
+                stTransform.fSrcY     = vPivot.fY;
+                stTransform.fDstX     = vPosition.fX + fOffsetX;
+                stTransform.fDstY     = vPosition.fY + fOffsetY;
+                stTransform.fScaleX   = fScaleX;
+                stTransform.fScaleY   = fScaleY;
+                stTransform.fRotation = fRotation;
+
+                /* Blits bitmap */
+                eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, 0);
+              }
+            }
+          }
+        }
       }
       else
       {
