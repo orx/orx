@@ -219,47 +219,154 @@ orxSTATIC orxINLINE orxCOLOR * orxColor_Copy(orxCOLOR *_pstDst, orxCONST orxCOLO
  * Functions extended by plugins
  ***************************************************************************/
 
-extern orxDLLAPI orxSTATUS orxDisplay_Init();
+/** Inits the display module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_Init();
 
-extern orxDLLAPI orxVOID orxDisplay_Exit();
+/** Exits from the display module
+ */
+extern orxDLLAPI orxVOID    orxDisplay_Exit();
 
-extern orxDLLAPI orxSTATUS orxDisplay_Swap();
 
-extern orxDLLAPI orxSTATUS orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxCONST orxSTRING _zText);
+/** Swaps/flips bufers (display on screen the current frame)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_Swap();
 
+
+/** Draws a text
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
+ * @param[in]   _stColor                              Color to use for the text
+ * @param[in]   _zText                                Text to display
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxCONST orxSTRING _zText);
+
+
+/** Creates a bitmap
+ * @param[in]   _u32Width                             Bitmap width
+ * @param[in]   _u32Height                            Bitmap height
+ * @return orxBITMAP / orxNULL
+ */
 extern orxDLLAPI orxBITMAP *orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height);
 
-extern orxDLLAPI orxVOID orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap);
+/** Deletes a bitmap
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ */
+extern orxDLLAPI orxVOID    orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap);
 
+
+/** Gets screen bitmap
+ * @return orxBITMAP / orxNULL
+ */
 extern orxDLLAPI orxBITMAP *orxDisplay_GetScreenBitmap();
 
-extern orxDLLAPI orxSTATUS orxDisplay_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+/** Gets screen size
+ * @param[out]   _pfWidth                             Screen width
+ * @param[out]   _pfHeight                            Screen height
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
-extern orxDLLAPI orxSTATUS orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
-extern orxDLLAPI orxSTATUS orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags);
+/** Clears a bitmap
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _stColor                              Color to clear the bitmap with
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
-extern orxDLLAPI orxSTATUS orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable);
+/** Transforms (and blits onto another) a bitmap
+ * @param[in]   _pstDst                               Bitmap where to blit the result, can be screen
+ * @param[in]   _pstSrc                               Bitmap to transform and draw
+ * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
+ * @param[in]   _u32Flags                             Unused yet
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags);
 
-extern orxDLLAPI orxSTATUS orxDisplay_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
-extern orxDLLAPI orxSTATUS orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY);
+/** Sets a bitmap color key (used with non alpha transparency)
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _stColor                              Color to use as transparent one
+ * @param[in]   _bEnable                              Enable / disable transparence for this color
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable);
 
-extern orxDLLAPI orxSTATUS orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY);
+/** Sets a bitmap color (lighting/hue)
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _stColor                              Color to apply on the bitmap
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor);
 
-extern orxDLLAPI orxSTATUS orxDisplay_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFileName);
+/** Sets a bitmap clipping for blitting (both as source and destination)
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _u32TLX                               Top left X coord in pixels
+ * @param[in]   _u32TLY                               Top left Y coord in pixels
+ * @param[in]   _u32BRX                               Bottom right X coord in pixels
+ * @param[in]   _u32BRY                               Bottom right Y coord in pixels
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY);
 
+
+/** Blits a bitmap (no transformation)
+ * @param[in]   _pstFst                               Bitmap where to blit
+ * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
+ * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
+ * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY);
+
+
+/** Saves a bitmap to file
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _zFileName                            Name of the file where to store the bitmap
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFileName);
+
+/** Loads a bitmap from file
+ * @param[in]   _zFileName                            Name of the file to load
+ * @return orxBITMAP * / orxNULL
+ */
 extern orxDLLAPI orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileName);
 
-extern orxDLLAPI orxSTATUS orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
-extern orxDLLAPI orxRGBA orxDisplay_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap);
+/** Gets a bitmap size
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[out]   _pfWidth                             Bitmap width
+ * @param[out]   _pfHeight                            Bitmap height
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
-extern orxDLLAPI orxHANDLE orxDisplay_GetApplicationInput();
+/** Gets bitmap color (lighting/hue)
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @return orxRGBA
+ */
+extern orxDLLAPI orxRGBA    orxDisplay_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap);
 
-extern orxDLLAPI orxSTATUS orxDisplay_EnableVSync(orxBOOL _bEnable);
+/** Gets application input manager (if embedded with display)
+ * @return orxHANDLE / orxHANDLE_UNDEFINED
+ */
+extern orxDLLAPI orxHANDLE  orxDisplay_GetApplicationInput();
 
-extern orxDLLAPI orxBOOL orxDisplay_IsVSyncEnabled();
+/** Enables / disables vertical synchro
+ * @param[in]   _bEnable                              Enable / disable
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_EnableVSync(orxBOOL _bEnable);
+
+/** Is vertical synchro enabled?
+ * @return orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL    orxDisplay_IsVSyncEnabled();
 
 
 #endif /* _orxDISPLAY_H_ */
