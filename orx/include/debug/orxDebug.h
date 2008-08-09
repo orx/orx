@@ -178,6 +178,7 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_KEYBOARD,                    /**< Keyboard Debug */
   orxDEBUG_LEVEL_MEMORY,                      /**< Memory Debug */
   orxDEBUG_LEVEL_MOUSE,                       /**< Mouse Debug */
+  orxDEBUG_LEVEL_OBJECT,                      /**< Object Debug */
   orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
   orxDEBUG_LEVEL_PATHFINDER,                  /**< Pathfinder Debug */
   orxDEBUG_LEVEL_PHYSICS,                     /**< Physics Debug */

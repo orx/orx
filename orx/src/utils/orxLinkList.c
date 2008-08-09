@@ -29,54 +29,51 @@
 
 
 #include "utils/orxLinkList.h"
-
 #include "memory/orxMemory.h"
 
 
-/*
- * Platform independent defines
+/** Module flags
  */
+#define orxLINKLIST_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags */
 
-#define orxLINKLIST_KU32_STATIC_FLAG_NONE         0x00000000
-#define orxLINKLIST_KU32_STATIC_FLAG_READY        0x00000001
+#define orxLINKLIST_KU32_STATIC_FLAG_READY        0x00000001  /**< Ready flags */
+
+#define orxLINKLIST_KU32_STATIC_MASK_ALL          0xFFFFFFFF  /**< All mask */
 
 
-/*
- * Static structure
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Static structure
  */
 typedef struct __orxLINKLIST_STATIC_t
 {
-  /* Control flags */
-  orxU32 u32Flags;
+  orxU32 u32Flags;                                            /**< Control flags */
 
 } orxLINKLIST_STATIC;
 
-/*
- * Static data
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
  */
 orxSTATIC orxLINKLIST_STATIC sstLinkList;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
-
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxLinkList_Setup
- LinkList module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Linklist module setup
+ */
 orxVOID orxLinkList_Setup()
 {
   /* Adds module dependencies */
@@ -85,12 +82,9 @@ orxVOID orxLinkList_Setup()
   return;
 }
 
-/***************************************************************************
- orxLinkList_Init
- Inits the link list system.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Inits the linklist module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxLinkList_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -119,12 +113,8 @@ orxSTATUS orxLinkList_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxLinkList_Exit
- Exits from the link list system.
-
- returns: orxVOID
- ***************************************************************************/
+/** Exits from the linklist module
+ */
 orxVOID orxLinkList_Exit()
 {
   /* Initialized? */
@@ -141,12 +131,10 @@ orxVOID orxLinkList_Exit()
   return;
 }
 
-/***************************************************************************
- orxLinkList_Clean
- Cleans a link list.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Cleans a link list
+ * @param[in]   _pstList                        Concerned list
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
 {
   /* Checks */
@@ -182,12 +170,11 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
   return orxSTATUS_SUCCESS;
 }
 
-/***************************************************************************
- orxLinkList_AddStart
- Adds a new node at the start of the corresponding list.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Adds a node at the start of a list
+ * @param[in]   _pstList                        Concerned list
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -234,12 +221,11 @@ orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NO
   return eResult;
 }
 
-/***************************************************************************
- orxLinkList_AddEnd
- Adds a new node at the end of the corresponding list.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Adds a node at the end of a list
+ * @param[in]   _pstList                        Concerned list
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -286,12 +272,12 @@ orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE
   return eResult;
 }
 
-/***************************************************************************
- orxLinkList_AddBefore
- Adds a new node before another one.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Adds a node before another one
+ * @param[in]   _pstList                        Concerned list
+ * @param[in]   _pstRefNode                     Reference node (add before this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -357,12 +343,12 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
   return eResult;
 }
 
-/***************************************************************************
- orxLinkList_AddAfter
- Adds a new node after another one.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Adds a node after another one
+ * @param[in]   _pstList                        Concerned list
+ * @param[in]   _pstRefNode                     Reference node (add after this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -428,12 +414,10 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
   return eResult;
 }
 
-/***************************************************************************
- orxLinkList_Remove
- Removes a node from its list.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Removes a node from its list
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
 {
   orxREGISTER orxLINKLIST *pstList;

@@ -46,68 +46,89 @@
 #include "debug/orxDebug.h"
 
 
-/*
- * Tree Node structure
+/** Tree node structure
  */
-struct __orxTREE_NODE_t
+typedef struct __orxTREE_NODE_t
 {
-  /* Tree pointers : 12 */
-  struct __orxTREE_NODE_t *pstParent;
-  struct __orxTREE_NODE_t *pstChild;
-  struct __orxTREE_NODE_t *pstSibling;
-  
-  /* Associated tree : 16 */
-  struct __orxTREE_t *pstTree;
-};
+  struct __orxTREE_NODE_t *pstParent;           /**< Parent node pointer : 4 */
+  struct __orxTREE_NODE_t *pstChild;            /**< First child node pointer : 8 */
+  struct __orxTREE_NODE_t *pstSibling;          /**< Next sibling node pointer : 12 */
+  struct __orxTREE_t      *pstTree;             /**< Associated tree pointer : 16 */
 
-/*
- * Tree structure
+} orxTREE_NODE;
+
+/** Tree structure
  */
-struct __orxTREE_t
+typedef struct __orxTREE_t
 {
-  /* Tree cell pointer : 4 */
-  struct __orxTREE_NODE_t *pstRoot;
+  orxTREE_NODE *pstRoot;                        /**< Root node pointer : 4 */
+  orxU32        u32Counter;                     /**< Node counter : 8 */
 
-  /* Counter : 8 */
-  orxU32 u32Counter;
-};
-
-/* Tree types */
-typedef struct __orxTREE_t                  orxTREE;
-typedef struct __orxTREE_NODE_t             orxTREE_NODE;
+} orxTREE;
 
 
-/** Tree module setup. */
-extern orxDLLAPI orxVOID                    orxTree_Setup();
-/** Inits the object system. */
-extern orxDLLAPI orxSTATUS                  orxTree_Init();
-/** Ends the object system. */
-extern orxDLLAPI orxVOID                    orxTree_Exit();
+/** Tree module setup
+ */
+extern orxDLLAPI orxVOID                        orxTree_Setup();
 
-/** Cleans a tree. */
-extern orxDLLAPI orxSTATUS                  orxTree_Clean(orxTREE *_pstTree);
+/** Inits the tree module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                      orxTree_Init();
 
-/** Removes a node from its tree. */
-extern orxDLLAPI orxSTATUS                  orxTree_Remove(orxTREE_NODE *_pstNode);
+/** Exits from the tree module
+ */
+extern orxDLLAPI orxVOID                        orxTree_Exit();
 
-/** Adds a node at the root of the tree. */
-extern orxDLLAPI orxSTATUS                  orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode);
-/** Adds a node as a parent of another one. */
-extern orxDLLAPI orxSTATUS                  orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
-/** Adds a node as a child of another one. */
-extern orxDLLAPI orxSTATUS                  orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+/** Cleans a tree
+ * @param[in]   _pstTree                        Concerned tree
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                      orxTree_Clean(orxTREE *_pstTree);
 
-/** Removes a node from its tree. */
-extern orxDLLAPI orxSTATUS                  orxTree_Remove(orxTREE_NODE *_pstNode);
+/** Adds a node at the root of a tree
+ * @param[in]   _pstTree                        Concerned tree
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                      orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode);
 
-/** Moves as a child of another node of the same tree. */
-extern orxDLLAPI orxSTATUS                  orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+/** Adds a node as a parent of another one
+ * @param[in]   _pstRefNode                     Reference node (add as a parent of this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                      orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+
+/** Adds a node as a child of another one
+ * @param[in]   _pstRefNode                     Reference node (add as a child of this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                      orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+
+/** Moves a node as a child of another one of the same tree
+ * @param[in]   _pstRefNode                     Reference node (move as a child of this one)
+ * @param[in]   _pstNode                        Node to move
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                      orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+
+/** Removes a node from its tree
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                      orxTree_Remove(orxTREE_NODE *_pstNode);
+
 
 /* *** Tree inlined accessors *** */
 
 
-/** Gets a node tree. */
-orxSTATIC orxINLINE orxTREE                *orxTree_GetTree(orxCONST orxTREE_NODE *_pstNode)
+/** Gets a node tree
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxTREE / orxNULL
+ */
+orxSTATIC orxINLINE orxTREE *                   orxTree_GetTree(orxCONST orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -116,8 +137,11 @@ orxSTATIC orxINLINE orxTREE                *orxTree_GetTree(orxCONST orxTREE_NOD
   return(_pstNode->pstTree);
 }
 
-/** Gets a node parent. */
-orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetParent(orxCONST orxTREE_NODE *_pstNode)
+/** Gets parent node
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxTREE_NODE / orxNULL
+ */
+orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetParent(orxCONST orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -126,8 +150,11 @@ orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetParent(orxCONST orxTREE_N
   return((_pstNode->pstTree != orxNULL) ? _pstNode->pstParent : orxNULL);
 }
 
-/** Gets a node first child. */
-orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetChild(orxCONST orxTREE_NODE *_pstNode)
+/** Gets first child node
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxTREE_NODE / orxNULL
+ */
+orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetChild(orxCONST orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -136,8 +163,11 @@ orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetChild(orxCONST orxTREE_NO
   return((_pstNode->pstTree != orxNULL) ? _pstNode->pstChild : orxNULL);
 }
 
-/** Gets a node sibling. */
-orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetSibling(orxCONST orxTREE_NODE *_pstNode)
+/** Gets sibling node
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxTREE_NODE / orxNULL
+ */
+orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetSibling(orxCONST orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -147,8 +177,11 @@ orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetSibling(orxCONST orxTREE_
 }
 
 
-/** Gets a tree root. */
-orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetRoot(orxCONST orxTREE *_pstTree)
+/** Gets a tree root
+ * @param[in]   _pstTree                        Concerned tree
+ * @return orxTREE_NODE / orxNULL
+ */
+orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetRoot(orxCONST orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);
@@ -157,8 +190,11 @@ orxSTATIC orxINLINE orxTREE_NODE           *orxTree_GetRoot(orxCONST orxTREE *_p
   return(_pstTree->pstRoot);
 }
 
-/** Gets a tree counter. */
-orxSTATIC orxINLINE orxU32                  orxTree_GetCounter(orxCONST orxTREE *_pstTree)
+/** Gets a tree counter
+ * @param[in]   _pstTree                        Concerned tree
+ * @return Number of nodes in tree
+ */
+orxSTATIC orxINLINE orxU32                      orxTree_GetCounter(orxCONST orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);

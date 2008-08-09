@@ -41,4 +41,9 @@ orxCONST orxVECTOR orxVECTOR_Y      = {{orx2F(0.0f)}, {orx2F(1.0f)}, {orx2F(0.0f
 orxCONST orxVECTOR orxVECTOR_Z      = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(1.0f)}};
 
 orxCONST orxVECTOR orxVECTOR_0      = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+
+orxCONST orxVECTOR orxVECTOR_RED    = {{orx2F(255.0f)}, {orx2F(0.0f)}, {orx2F(0.0f)}};
+orxCONST orxVECTOR orxVECTOR_GREEN  = {{orx2F(0.0f)}, {orx2F(255.0f)}, {orx2F(0.0f)}};
+orxCONST orxVECTOR orxVECTOR_BLUE   = {{orx2F(0.0f)}, {orx2F(0.0f)}, {orx2F(255.0f)}};
+
 orxCONST orxVECTOR orxVECTOR_WHITE  = {{orx2F(255.0f)}, {orx2F(255.0f)}, {orx2F(255.0f)}};

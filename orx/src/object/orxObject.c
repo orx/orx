@@ -1978,8 +1978,8 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
         /* Has rotation? */
         if(fAngle != orxFLOAT_0)
         {
-          /* Rotates bouding box */
-          orxAABox_2DRotate(_pstBoundingBox, _pstBoundingBox, fAngle);
+          //! TODO : Uses rotation to find the new bounding box
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning: the bounding box computed for object <%p> will be incorrect because of its rotation (%g). This will be fixed in a later version.", _pstObject, fAngle);
         }
 
         /* Updates result */

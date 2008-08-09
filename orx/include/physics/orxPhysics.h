@@ -161,51 +161,141 @@ typedef struct __orxPHYSICS_BODY_PART_t   orxPHYSICS_BODY_PART;
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Physics module setup */
-extern orxDLLAPI orxVOID            orxPhysics_Setup();
+/** Physics module setup
+ */
+extern orxDLLAPI orxVOID                              orxPhysics_Setup();
 
 
 /***************************************************************************
  * Functions extended by plugins
  ***************************************************************************/
 
-extern orxDLLAPI orxSTATUS orxPhysics_Init();
+/** Inits the physics module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_Init();
 
-extern orxDLLAPI orxVOID orxPhysics_Exit();
+/** Exits from the physics module
+ */
+extern orxDLLAPI orxVOID                              orxPhysics_Exit();
 
-extern orxDLLAPI orxSTATUS orxPhysics_SetGravity(orxCONST orxVECTOR *_pvGravity);
 
-extern orxDLLAPI orxPHYSICS_BODY *orxPhysics_CreateBody(orxCONST orxHANDLE _hUserData, orxCONST orxBODY_DEF *_pstBodyDef);
+/** Sets physics gravity
+ * @param[in]   _pvGravity                            Gravity to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_SetGravity(orxCONST orxVECTOR *_pvGravity);
 
-extern orxDLLAPI orxVOID orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody);
 
-extern orxDLLAPI orxPHYSICS_BODY_PART *orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, orxCONST orxBODY_PART_DEF *_pstBodyPartDef);
+/** Creates a physical body
+ * @param[in]   _hUserData                            User data to associate with this physical body
+ * @param[in]   _pstBodyDef                           Physical body definition
+ * @return orxPHYSICS_BODY / orxNULL
+ */
+extern orxDLLAPI orxPHYSICS_BODY *                    orxPhysics_CreateBody(orxCONST orxHANDLE _hUserData, orxCONST orxBODY_DEF *_pstBodyDef);
 
-extern orxDLLAPI orxVOID orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart);
+/** Deletes a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ */
+extern orxDLLAPI orxVOID                              orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody);
 
-extern orxDLLAPI orxSTATUS orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvPosition);
+/** Creates a part for a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _pstBodyPartDef                       Physical body part definition
+ * @return orxPHYSICS_BODY_PART / orxNULL
+ */
+extern orxDLLAPI orxPHYSICS_BODY_PART *               orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, orxCONST orxBODY_PART_DEF *_pstBodyPartDef);
 
-extern orxDLLAPI orxSTATUS orxPhysics_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation);
+/** Deletes a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ */
+extern orxDLLAPI orxVOID                              orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart);
 
-extern orxDLLAPI orxSTATUS orxPhysics_SetSpeed(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvSpeed);
 
-extern orxDLLAPI orxSTATUS orxPhysics_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity);
+/** Sets the position of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _pvPosition                           Position to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvPosition);
 
-extern orxDLLAPI orxVECTOR *orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition);
+/** Sets the rotation of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _fRotation                            Rotation (radians) to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation);
 
-extern orxDLLAPI orxFLOAT orxPhysics_GetRotation(orxPHYSICS_BODY *_pstBody);
+/** Sets the speed of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _pvSpeed                              Speed to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_SetSpeed(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvSpeed);
 
-extern orxDLLAPI orxVECTOR *orxPhysics_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed);
+/** Sets the angular velocity of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _fVelocity                            Angular velocity (radians/seconds) to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity);
 
-extern orxDLLAPI orxFLOAT orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pstBody);
+/** Gets the position of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[out]  _pvPosition                           Position to get
+ * @return Position of the physical body
+ */
+extern orxDLLAPI orxVECTOR *                          orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition);
 
-extern orxDLLAPI orxVECTOR *orxPhysics_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter);
+/** Gets the rotation of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return Rotation (radians) of the physical body
+ */
+extern orxDLLAPI orxFLOAT                             orxPhysics_GetRotation(orxPHYSICS_BODY *_pstBody);
 
-extern orxDLLAPI orxSTATUS orxPhysics_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque);
+/** Gets the speed of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[out]  _pvSpeed                              Speed to get
+ * @return Speed of the physical body
+ */
+extern orxDLLAPI orxVECTOR *                          orxPhysics_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed);
 
-extern orxDLLAPI orxSTATUS orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint);
+/** Gets the angular velocity of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return Angular velocity (radians/seconds) of the physical body
+ */
+extern orxDLLAPI orxFLOAT                             orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pstBody);
 
-extern orxDLLAPI orxSTATUS orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
+/** Gets the center of mass of a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[out]  _pvMassCenter                         Center of mass to get
+ * @return Center of mass of the physical body
+ */
+extern orxDLLAPI orxVECTOR *                          orxPhysics_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter);
+
+
+/** Applies a torque to a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _fTorque                              Torque to apply
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque);
+
+/** Applies a force to a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _pvForce                              Force to apply
+ * @param[in]   _pvPoint                              Point of application (if null, center of mass will be used)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint);
+
+/** Applies an impulse to a physical body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _pvImpulse                            Impulse to apply
+ * @param[in]   _pvPoint                              Point of application (if null, center of mass will be used)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
 
 #endif /* _orxPHYSICS_H_ */
 

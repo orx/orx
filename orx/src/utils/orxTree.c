@@ -29,47 +29,50 @@
 
 
 #include "utils/orxTree.h"
-
 #include "memory/orxMemory.h"
 
 
-/*
- * Platform independent defines
+/** Module flags
  */
+#define orxTREE_KU32_STATIC_FLAG_NONE             0x00000000  /**< No flags */
 
-#define orxTREE_KU32_STATIC_FLAG_NONE             0x00000000
-#define orxTREE_KU32_STATIC_FLAG_READY            0x00000001
+#define orxTREE_KU32_STATIC_FLAG_READY            0x00000001  /**< Ready flags */
+
+#define orxTREE_KU32_STATIC_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
 
-/*
- * Static structure
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Static structure
  */
 typedef struct __orxTREE_STATIC_t
 {
-  /* Control flags */
-  orxU32 u32Flags;
+  orxU32 u32Flags;                                            /**< Control flags */
 
 } orxTREE_STATIC;
 
-/*
- * Static data
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
  */
 orxSTATIC orxTREE_STATIC sstTree;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
-/***************************************************************************
- orxTree_PrivateRemove
- Removes a node from its tree.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
-orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKeepRef)
+/** Removes a node from its tree
+ * @param[in]   _pstNode                        Concerned node
+ * @param[in]   _bBranchRemove                  Remove the whole branch or only the single node
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBranchRemove)
 {
   orxREGISTER orxTREE *pstTree;
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -80,8 +83,8 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
   /* Gets tree */
   pstTree = _pstNode->pstTree;
 
-  /* Keep heirs refs? */
-  if(_bKeepRef != orxFALSE)
+  /* Remove the whole branch? */
+  if(_bBranchRemove != orxFALSE)
   {
     /* Isn't root? */
     if(pstTree->pstRoot != _pstNode)
@@ -209,17 +212,11 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bKe
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxTree_Setup
- Tree module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Tree module setup
+ */
 orxVOID orxTree_Setup()
 {
   /* Adds module dependencies */
@@ -228,12 +225,9 @@ orxVOID orxTree_Setup()
   return;
 }
 
-/***************************************************************************
- orxTree_Init
- Inits the tree system.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Inits the tree module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxTree_Init()
 {
   orxSTATUS eResult;
@@ -264,12 +258,8 @@ orxSTATUS orxTree_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxTree_Exit
- Exits from the tree system.
-
- returns: orxVOID
- ***************************************************************************/
+/** Exits from the linklist module
+ */
 orxVOID orxTree_Exit()
 {
   /* Initialized? */
@@ -286,12 +276,10 @@ orxVOID orxTree_Exit()
   return;
 }
 
-/***************************************************************************
- orxTree_Clean
- Cleans a tree.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Cleans a tree
+ * @param[in]   _pstTree                        Concerned tree
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxTree_Clean(orxTREE *_pstTree)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -318,12 +306,11 @@ orxSTATUS orxTree_Clean(orxTREE *_pstTree)
   return eResult;
 }
 
-/***************************************************************************
- orxTree_AddRoot
- Adds a new node at the root of the corresponding tree.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Adds a node at the root of a tree
+ * @param[in]   _pstTree                        Concerned tree
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -372,12 +359,11 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
   return eResult;
 }
 
-/***************************************************************************
- orxTree_AddParent
- Adds a new node as parent of another one.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Adds a node as a parent of another one
+ * @param[in]   _pstRefNode                     Reference node (add as a parent of this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -461,12 +447,11 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   return eResult;
 }
 
-/***************************************************************************
- orxTree_AddChild
- Adds a new node as a child of another one.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Adds a node as a child of another one
+ * @param[in]   _pstRefNode                     Reference node (add as a child of this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -518,12 +503,11 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   return eResult;
 }
 
-/***************************************************************************
- orxTree_MoveAsChild
- Moves as a child of another node of the same tree.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Moves a node as a child of another one of the same tree
+ * @param[in]   _pstRefNode                     Reference node (move as a child of this one)
+ * @param[in]   _pstNode                        Node to move
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
   orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -588,12 +572,10 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   return eResult;
 }
 
-/***************************************************************************
- orxTree_Remove
- Removes a node from its tree.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Removes a node from its tree
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
 {
   orxREGISTER orxTREE *pstTree;

@@ -43,18 +43,51 @@
 
 #include "orxInclude.h"
 
-/* *** Maths related includes *** */
-#include <math.h>                   /* Common maths / should be removed later */
+/** Maths related includes
+ */
+#include <math.h>
 
 
-/* *** Public macro definition. *** */
+/** Public macro
+ */
 
+/** Lerps between two values given a parameter T [0, 1]
+ * @param[in]   A                               First value (will be selected for T = 0)
+ * @param[in]   B                               Second value (will be selected for T = 1)
+ * @param[in]   T                               Lerp coefficient parameter [0, 1]
+ * @return      Lerped value
+ */
 #define orxLERP(A, B, T)          ((A) + ((T) * ((B) - (A))))
 
+
+/** Gets minimum between two values
+ * @param[in]   A                               First value
+ * @param[in]   B                               Second value
+ * @return      Minimum between A & B
+ */
 #define orxMIN(A, B)              (((A) > (B)) ? (B) : (A))
+
+/** Gets maximum between two values
+ * @param[in]   A                               First value
+ * @param[in]   B                               Second value
+ * @return      Maximum between A & B
+ */
 #define orxMAX(A, B)              (((A) < (B)) ? (B) : (A))
 
+/** Gets clamped value between two boundaries
+ * @param[in]   V                               Value to clamp
+ * @param[in]   MIN                             Minimum boundary
+ * @param[in]   MAX                             Maximum boundary
+ * @return      Clamped value between MIN & MAX
+ */
 #define orxCLAMP(V, MIN, MAX)     orxMAX(orxMIN(V, MAX), MIN)
+
+/** Gets circularly clamped (for ring spaces) value between two boundaries [MIN, MAX[
+ * @param[in]   V                               Value to clamp
+ * @param[in]   MIN                             Minimum boundary
+ * @param[in]   MAX                             Maximum boundary
+ * @return      Circularly clamped value between MIN & MAX
+ */
 #define orxCIRCULAR_CLAMP_INC_MIN(V, MIN, MAX)  \
 do                                              \
 {                                               \
@@ -68,6 +101,12 @@ do                                              \
   }                                             \
 } while(orxFALSE)
 
+/** Gets circularly clamped (for ring spaces) value between two boundaries ]MIN, MAX]
+ * @param[in]   V                               Value to clamp
+ * @param[in]   MIN                             Minimum boundary
+ * @param[in]   MAX                             Maximum boundary
+ * @return      Circularly clamped value between MIN & MAX
+ */
 #define orxCIRCULAR_CLAMP_INC_MAX(V, MIN, MAX)  \
 do                                              \
 {                                               \
@@ -82,34 +121,84 @@ do                                              \
 } while(orxFALSE)
 
 
+/** Inits the random seed with an orxFLOAT
+ * @param[in]   SEEED                           Value to use as seed for random number generation
+ */
 #define orxFRAND_INIT(SEED)       srand(orxF2U(SEED))
+
+/** Gets a random orxFLOAT value
+ * @param[in]   MIN                             Minimum boundary
+ * @param[in]   MAX                             Maximum boundary
+ * @return      Random value
+ */
 #define orxFRAND(MIN, MAX)        ((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (MAX - MIN)) + MIN)
 
+/** Inits the random seed with an orxU32
+ * @param[in]   SEEED                           Value to use as seed for random number generation
+ */
 #define orxU32RAND_INIT(SEED)     srand(SEED)
+
+/** Gets a random orxU32 value
+ * @param[in]   MIN                             Minimum boundary
+ * @param[in]   MAX                             Maximum boundary
+ * @return      Random value
+ */
 #define orxU32RAND(MIN, MAX)      orxF2U((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxU2F(MAX) - orxU2F(MIN))) + orxU2F(MIN))
 
+/** Inits the random seed with an orxS32
+ * @param[in]   SEEED                           Value to use as seed for random number generation
+ */
 #define orxS32RAND_INIT(SEED)     srand(SEED)
+
+/** Gets a random orxS32 value
+ * @param[in]   MIN                             Minimum boundary
+ * @param[in]   MAX                             Maximum boundary
+ * @return      Random value
+ */
 #define orxS32RAND(MIN, MAX)      orxF2S((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxS2F(MAX) - orxS2F(MIN))) + orxS2F(MIN))
 
+/** Converts an orxFLOAT to an orxU32
+ * @param[in]   V                               Value to convert
+ * @return      Converted value
+ */
 #define orxF2U(V)                 ((orxU32)  (V))
+
+/** Converts an orxFLOAT to an orxS32
+ * @param[in]   V                               Value to convert
+ * @return      Converted value
+ */
 #define orxF2S(V)                 ((orxS32)  (V))
+
+/** Converts an orxU32 to an orxFLOAT
+ * @param[in]   V                               Value to convert
+ * @return      Converted value
+ */
 #define orxU2F(V)                 ((orxFLOAT)(V))
+
+/** Converts an orxS32 to an orxFLOAT
+ * @param[in]   V                               Value to convert
+ * @return      Converted value
+ */
 #define orxS2F(V)                 ((orxFLOAT)(V))
 
 
 /*** Math Definitions ***/
 
-#define orxMATH_KF_SQRT_2         orx2F(1.414213562f)
-#define orxMATH_KF_2_PI           orx2F(6.283185307f)
-#define orxMATH_KF_PI             orx2F(3.141592654f)
-#define orxMATH_KF_PI_BY_2        orx2F(1.570796327f)
-#define orxMATH_KF_PI_BY_4        orx2F(0.785398163f)
-#define orxMATH_KF_DEG_TO_RAD     orx2F(orxMATH_KF_PI / 180.0f)
-#define orxMATH_KF_RAD_TO_DEG     orx2F(180.0f / orxMATH_KF_PI)
+#define orxMATH_KF_SQRT_2         orx2F(1.414213562f)           /**< Sqrt(2) constant */
+#define orxMATH_KF_2_PI           orx2F(6.283185307f)           /**< 2 PI constant */
+#define orxMATH_KF_PI             orx2F(3.141592654f)           /**< PI constant */
+#define orxMATH_KF_PI_BY_2        orx2F(1.570796327f)           /**< PI / 2 constant */
+#define orxMATH_KF_PI_BY_4        orx2F(0.785398163f)           /**< PI / 4 constant */
+#define orxMATH_KF_DEG_TO_RAD     orx2F(3.141592654f / 180.0f)  /**< Degree to radian conversion constant */
+#define orxMATH_KF_RAD_TO_DEG     orx2F(180.0f / 3.141592654f)  /**< Radian to degree conversion constant */
 
 
 /*** Trigonometric function ***/
 
+/** Gets a cosine
+ * @param[in]   _fOp                            Input radian angle value
+ * @return      Cosine of the given angle
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Cos(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -130,6 +219,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Cos(orxFLOAT _fOp)
   return fResult;
 }
 
+/** Gets a sine
+ * @param[in]   _fOp                            Input radian angle value
+ * @return      Sine of the given angle
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Sin(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -150,6 +243,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Sin(orxFLOAT _fOp)
   return fResult;
 }
 
+/** Gets a tangent
+ * @param[in]   _fOp                            Input radian angle value
+ * @return      Tangent of the given angle
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Tan(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -170,6 +267,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Tan(orxFLOAT _fOp)
   return fResult;
 }
 
+/** Gets an arccosine
+ * @param[in]   _fOp                            Input radian angle value
+ * @return      Arccosine of the given angle
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_ACos(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -190,6 +291,34 @@ orxSTATIC orxINLINE orxFLOAT orxMath_ACos(orxFLOAT _fOp)
   return fResult;
 }
 
+/** Gets an arcsine
+ * @param[in]   _fOp                            Input radian angle value
+ * @return      Arcsine of the given angle
+ */
+orxSTATIC orxINLINE orxFLOAT orxMath_ASin(orxFLOAT _fOp)
+{
+  orxREGISTER orxFLOAT fResult;
+
+#ifdef __orxMSVC__
+  
+  /* Updates result */
+  fResult = asinf(_fOp);
+
+#else /* __orxMSVC__ */
+
+  /* Updates result */
+  fResult = asinf(_fOp);
+
+#endif /* __orxMSVC__ */
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets an arctangent
+ * @param[in]   _fOp                            Input radian angle value
+ * @return      Arctangent of the given angle
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
 {
   orxREGISTER orxFLOAT fResult;
@@ -213,6 +342,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
 
 /*** Misc functions ***/
 
+/** Gets a square root
+ * @param[in]   _fOp                            Input value
+ * @return      Square root of the given value
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Sqrt(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -224,6 +357,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Sqrt(orxFLOAT _fOp)
   return fResult;
 }
 
+/** Gets a floored value
+ * @param[in]   _fOp                            Input value
+ * @return      Floored value
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Floor(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -235,6 +372,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Floor(orxFLOAT _fOp)
   return fResult;
 }
 
+/** Gets a ceiled value
+ * @param[in]   _fOp                            Input value
+ * @return      Ceiled value
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Ceil(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -246,6 +387,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Ceil(orxFLOAT _fOp)
   return fResult;
 }
 
+/** Gets a rounded value
+ * @param[in]   _fOp                            Input value
+ * @return      Rounded value
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -266,6 +411,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
   return fResult;
 }
 
+/** Gets a modulo value
+ * @param[in]   _fOp                            Input value
+ * @return      Modulo value
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
 {
   orxREGISTER orxFLOAT fResult;
@@ -277,6 +426,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
   return fResult;
 }
 
+/** Gets a powed value
+ * @param[in]   _fOp                            Input value
+ * @return      Powed value
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -288,6 +441,10 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)
   return fResult;
 }
 
+/** Gets an absolute value
+ * @param[in]   _fOp                            Input value
+ * @return      Absolute value
+ */
 orxSTATIC orxINLINE orxFLOAT orxMath_Abs(orxFLOAT _fOp)
 {
   /* Done! */

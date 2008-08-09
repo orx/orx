@@ -47,7 +47,7 @@
 
 #define orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK   0x10000000  /**< Lock update flag */
 
-#define orxCLOCK_KU32_STATIC_FLAG_ALL           0xFFFFFFFF  /**< All flags */
+#define orxCLOCK_KU32_STATIC_MASK_ALL           0xFFFFFFFF  /**< All mask */
 
 
 /** orxCLOCK flags
@@ -56,7 +56,7 @@
 
 #define orxCLOCK_KU32_CLOCK_FLAG_PAUSED         0x10000000  /**< Clock is paused */
 
-#define orxCLOCK_KU32_CLOCK_FLAG_ALL            0xFFFFFFFF  /**< All flags */
+#define orxCLOCK_KU32_CLOCK_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
 
 /***************************************************************************
