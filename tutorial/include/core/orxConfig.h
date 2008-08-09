@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Core
+ * @addtogroup orxConfig
  * 
  * Config module
  * Module that handles configuration files

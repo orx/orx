@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup IO
+ * @addtogroup orxFile
  * 
  * File plugin module
  * Module that handles file access

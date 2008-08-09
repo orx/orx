@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Anim
+ * @addtogroup orxAnim
  *
  * Animation (Data) Module.
  * Allows to creates and handle Animations data.
@@ -72,9 +72,9 @@ typedef struct __orxANIM_t                    orxANIM;
  */
 typedef enum __orxANIM_EVENT_t
 {
-  orxANIM_EVENT_START = 0,
-  orxANIM_EVENT_END,
-  orxANIM_EVENT_CUT,
+  orxANIM_EVENT_START = 0,                    /**< Event sent when an animation starts */
+  orxANIM_EVENT_END,                          /**< Event sent when an animation ends */
+  orxANIM_EVENT_CUT,                          /**< Event sent when an animation is cut */
 
   orxANIM_EVENT_NUMBER,
 
@@ -86,7 +86,7 @@ typedef enum __orxANIM_EVENT_t
  */
 typedef struct __orxANIM_EVENT_PAYLOAD_t
 {
-  orxANIM *pstAnim;                          /**< Animation: 4 */
+  orxANIM *pstAnim;                          /**< Animation reference : 4 */
 
 } orxANIM_EVENT_PAYLOAD;
 

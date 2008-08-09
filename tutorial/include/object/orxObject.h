@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Object
+ * @addtogroup orxObject
  *
  * Object module
  * Allows to creates and handle objects

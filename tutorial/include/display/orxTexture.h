@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Display
+ * @addtogroup orxTexture
  * 
  * Texture module
  * Module that handles textures

@@ -31,7 +31,7 @@
  */
 
 /**
- * @addtogroup Display
+ * @addtogroup orxGraphic
  *
  * Graphic Module.
  * Allows to creates and handle 2D/3D Graphics.
@@ -145,6 +145,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetSize(orxCONST orxGRA
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxCONST orxCOLOR *_pstColor);
 
+/** Sets graphic repeat (wrap) value
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _fRepeatX       X-axis repeat value
+ * @param[in]   _fRepeatY       Y-axis repeat value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetRepeat(orxGRAPHIC *_pstGraphic, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY);
+
 /** Clears graphic color
  * @param[in]   _pstGraphic     Concerned graphic
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -163,6 +171,14 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasColor(orxCONST orxGR
  * @return      orxCOLOR / orxNULL
  */
 extern orxDLLAPI orxCOLOR *orxFASTCALL        orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic, orxCOLOR *_pstColor);
+
+/** Gets graphic repeat (wrap) values
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[out]  _pfRepeatX      X-axis repeat value
+ * @param[out]  _pfRepeatY      Y-axis repeat value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetRepeat(orxCONST orxGRAPHIC *_pstGraphic, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY);
 
 /** Gets graphic top
  * @param[in]   _pstGraphic     Concerned graphic

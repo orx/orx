@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Object
+ * @addtogroup orxStructure
  *
  * Structure module
  * Allows to creates and handle structures.

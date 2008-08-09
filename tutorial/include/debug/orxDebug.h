@@ -31,6 +31,15 @@
  * - Enhance logging, use of different log levels
  */
 
+/**
+ * @addtogroup orxDebug
+ * 
+ * Debug module
+ * Module used to output debug info and assert code
+ *
+ * @{
+ */
+
 
 #ifndef _orxDEBUG_H_
 #define _orxDEBUG_H_
@@ -169,6 +178,7 @@ typedef enum __orxDEBUG_LEVEL_t
   orxDEBUG_LEVEL_KEYBOARD,                    /**< Keyboard Debug */
   orxDEBUG_LEVEL_MEMORY,                      /**< Memory Debug */
   orxDEBUG_LEVEL_MOUSE,                       /**< Mouse Debug */
+  orxDEBUG_LEVEL_OBJECT,                      /**< Object Debug */
   orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
   orxDEBUG_LEVEL_PATHFINDER,                  /**< Pathfinder Debug */
   orxDEBUG_LEVEL_PHYSICS,                     /**< Physics Debug */
@@ -199,25 +209,32 @@ typedef enum __orxDEBUG_LEVEL_t
 
 /* *** Functions *** */
 
-/** Debug init function. */
+/** Inits the debug module
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                    _orxDebug_Init();
 
-/** Debug exit function. */
+/** Exits from the debug module */
 extern orxDLLAPI orxVOID                      _orxDebug_Exit();
 
-/** Debug output function. */
+/** Logs given debug text
+ * @param[in]   _eLevel                       Debug level associated with this output
+ * @param[in]   _zFunction                    Calling function name
+ * @param[in]   _zFile                        Calling file name
+ * @param[in]   _zFormat                      Printf formatted text
+ */
 extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...);
 
-/** Debug flag backup function. */
+/** Backups current debug flags */
 extern orxDLLAPI orxVOID                      _orxDebug_BackupFlags();
 
-/** Debug flag restore function. */
+/** Restores last backuped flags */
 extern orxDLLAPI orxVOID                      _orxDebug_RestoreFlags();
 
-/** Debug flag get/set accessor. */
+/** Sets current debug flags */
 extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove);
 
-/** Software break function. */
+/** Software break function */
 extern orxDLLAPI orxVOID                      _orxDebug_Break();
 
 #endif /* __orxDEBUG__ */

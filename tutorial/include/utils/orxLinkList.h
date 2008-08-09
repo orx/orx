@@ -28,38 +28,38 @@
  */
 
 /**
- * @addtogroup Utils
+ * @addtogroup orxLinkList
  * 
  * Linklist module
  * Module that handles linklists
  *
  * @{
  *
- * @section linklist Link List - How to.
- * This module provide an easy and powerfull interface to manipulate link lists.
+ * @section linklist Link List - How to
+ * This module provides an easy and powerful interface for manipulating linked lists.
  *
- * @subsection linklist_datadefine Data definition.
- * You can define a data to store :
+ * @subsection linklist_datadefine Data definition
+ * Using this data structure as an example:
  * @code
  * typedef struct __orxFOO_t
  * {
- *   orxU32 u32Data;        Data to store.
+ *   orxU32 u32Data;        Data
  * } orxFOO;
  * @endcode
  *
- * @subsection linklist_dataalloc Data without link.
- * You can define an allocation place to store data:
+ * @subsection linklist_dataalloc Data without link
+ * Creating a bank to allocate memory storage:
  * @code
- * orxBANK *pstBank = orxBank_Create(10, sizeof(orxFOO), 0, orxMEMORY_TYPE_MAIN);
+ * orxBANK *pstBank = orxBank_Create(10, sizeof(orxFOO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
  * @endcode
- * And you can allocate a memory cel :
+ * You can then instantiate it this way:
  * @code
- * orxTRUC *pstNode = (orxFOO *)orxBank_Allocate(pstBank);
+ * orxFOO *pstNode = (orxFOO *)orxBank_Allocate(pstBank);
  * pstNode->u32Data = 205;
  * @endcode
- * So you can allocate an manipulate data. But no link list manipulation is define.
- * @subsection linklist_realalloc Real link list item definition.
- * In order to use link list functions, you can (must) define your structure with an orxLINKLIST_NODE member at its begining :
+ * Having this basic behavior, you can add list linking to it.
+ * @subsection linklist_realalloc Linked list item definition
+ * To do so, you need to include in your structure an orxLINKLIST_NODE member as *FIRST MEMBER*:
  * @code
  * typedef struct __orxFOO_t
  * {
@@ -67,13 +67,13 @@
  *  orxU32 u32Data;
  * } orxFOO;
  * @endcode
- * @subsection linklist_realuse Use of link list.
- * Now you can use a list with your own list items :
+ * @subsection linklist_realuse Use of link list
+ * Your data structure can now be linked in lists:
  * @code
  * orxLINKLIST stList;
  * orxLinkList_AddEnd(&stList, (orxLINKLIST_NODE *)pstNode);
  * @endcode
- * @note As the first member of your item structure, you can cast your structure to orxLINKLIST_NODE and reciprocally.
+ * @note As the first member of your data structure is a linked list node, you can cast your structure to orxLINKLIST_NODE and reciprocally.
  */
 
 
@@ -86,65 +86,91 @@
 #include "debug/orxDebug.h"
 
 
-/*
- * List Node structure
+/** Node list structure
  */
-struct __orxLINKLIST_NODE_t
+typedef struct __orxLINKLIST_NODE_t
 {
-  /* List handling pointers : 8 */
-  struct __orxLINKLIST_NODE_t *pstNext;
-  struct __orxLINKLIST_NODE_t *pstPrevious;
+  struct __orxLINKLIST_NODE_t *pstNext;         /**< Next node pointer : 4 */
+  struct __orxLINKLIST_NODE_t *pstPrevious;     /**< Previous node pointer : 8 */
+  struct __orxLINKLIST_t      *pstList;         /**< Associated list pointer : 12 */
 
-  /* Associated list : 12 */
-  struct __orxLINKLIST_t *pstList;
-};
+} orxLINKLIST_NODE;
 
-/*
- * List structure
+/** List structure
  */
-struct __orxLINKLIST_t
+typedef struct __orxLINKLIST_t
 {
-  /* List node pointers : 8 */
-  struct __orxLINKLIST_NODE_t *pstFirst;
-  struct __orxLINKLIST_NODE_t *pstLast;
+  orxLINKLIST_NODE *pstFirst;                   /**< First node pointer : 4 */
+  orxLINKLIST_NODE *pstLast;                    /**< Last node pointer : 8 */
+  orxU32            u32Counter;                 /**< Node counter : 12 */
 
-  /* Counter : 12 */
-  orxU32 u32Counter;
-};
-
-/* Link list types */
-typedef struct __orxLINKLIST_t                  orxLINKLIST;
-typedef struct __orxLINKLIST_NODE_t             orxLINKLIST_NODE;
+} orxLINKLIST;
 
 
-/** LinkList module setup. */
+/** Linklist module setup
+ */
 extern orxDLLAPI orxVOID                        orxLinkList_Setup();
-/** Inits the object system. */
+
+/** Inits the linklist module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                      orxLinkList_Init();
-/** Ends the object system. */
+
+/** Exits from the linklist module
+ */
 extern orxDLLAPI orxVOID                        orxLinkList_Exit();
 
-/** Cleans a link list. */
+
+/** Cleans a linklist
+ * @param[in]   _pstList                        Concerned list
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_Clean(orxLINKLIST *_pstList);
 
-/** Adds a node at the start of the list. */
+
+/** Adds a node at the start of a list
+ * @param[in]   _pstList                        Concerned list
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode);
-/** Adds a node at the end of the list. */
+
+/** Adds a node at the end of a list
+ * @param[in]   _pstList                        Concerned list
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode);
-/** Adds a node before another one. */
+
+/** Adds a node before another one
+ * @param[in]   _pstRefNode                     Reference node (add before this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode);
-/** Adds a node after another one. */
+
+/** Adds a node after another one
+ * @param[in]   _pstRefNode                     Reference node (add after this one)
+ * @param[in]   _pstNode                        Node to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode);
 
-/** Removes a node from its list. */
+/** Removes a node from its list
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_Remove(orxLINKLIST_NODE *_pstNode);
 
 
 /* *** LinkList inlined accessors *** */
 
 
-/** Gets a node list. */
-orxSTATIC orxINLINE orxLINKLIST                *orxLinkList_GetList(orxCONST orxLINKLIST_NODE *_pstNode)
+/** Gets a node list
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxLINKLIST / orxNULL
+ */
+orxSTATIC orxINLINE orxLINKLIST *               orxLinkList_GetList(orxCONST orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -153,8 +179,11 @@ orxSTATIC orxINLINE orxLINKLIST                *orxLinkList_GetList(orxCONST orx
   return(_pstNode->pstList);
 }
 
-/** Gets a node previous. */
-orxSTATIC orxINLINE orxLINKLIST_NODE           *orxLinkList_GetPrevious(orxCONST orxLINKLIST_NODE *_pstNode)
+/** Gets previous node in list
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxLINKLIST_NODE / orxNULL
+ */
+orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetPrevious(orxCONST orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -163,8 +192,11 @@ orxSTATIC orxINLINE orxLINKLIST_NODE           *orxLinkList_GetPrevious(orxCONST
   return((_pstNode->pstList != orxNULL) ? _pstNode->pstPrevious : orxNULL);
 }
 
-/** Gets a node next. */
-orxSTATIC orxINLINE orxLINKLIST_NODE           *orxLinkList_GetNext(orxCONST orxLINKLIST_NODE *_pstNode)
+/** Gets next node in list
+ * @param[in]   _pstNode                        Concerned node
+ * @return orxLINKLIST_NODE / orxNULL
+ */
+orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetNext(orxCONST orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -174,8 +206,11 @@ orxSTATIC orxINLINE orxLINKLIST_NODE           *orxLinkList_GetNext(orxCONST orx
 }
 
 
-/** Gets a list first node. */
-orxSTATIC orxINLINE orxLINKLIST_NODE           *orxLinkList_GetFirst(orxCONST orxLINKLIST *_pstList)
+/** Gets a list first node
+ * @param[in]   _pstList                        Concerned list
+ * @return orxLINKLIST_NODE / orxNULL
+ */
+orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetFirst(orxCONST orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -184,8 +219,11 @@ orxSTATIC orxINLINE orxLINKLIST_NODE           *orxLinkList_GetFirst(orxCONST or
   return(_pstList->pstFirst);
 }
 
-/** Gets a list last node. */
-orxSTATIC orxINLINE orxLINKLIST_NODE           *orxLinkList_GetLast(orxCONST orxLINKLIST *_pstList)
+/** Gets a list last node
+ * @param[in]   _pstList                        Concerned list
+ * @return orxLINKLIST_NODE / orxNULL
+ */
+orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetLast(orxCONST orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -194,7 +232,10 @@ orxSTATIC orxINLINE orxLINKLIST_NODE           *orxLinkList_GetLast(orxCONST orx
   return(_pstList->pstLast);
 }
 
-/** Gets a list counter. */
+/** Gets a list counter
+ * @param[in]   _pstList                        Concerned list
+ * @return Number of nodes in list
+ */
 orxSTATIC orxINLINE orxU32                      orxLinkList_GetCounter(orxCONST orxLINKLIST *_pstList)
 {
   /* Checks */

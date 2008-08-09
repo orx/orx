@@ -31,7 +31,7 @@
  */
 
 /**
- * @addtogroup Math
+ * @addtogroup orxVector
  * 
  * Vector module
  * Module that handles vectors and basic structures based on them
@@ -50,45 +50,54 @@
 #include "math/orxMath.h"
 
 
-/** Public structure definition. */
+/** Public structure definition
+ */
 typedef struct __orxVECTOR_t
 {
   /** Coordinates : 12 */
   union
   {
-    orxFLOAT fX;
-    orxFLOAT fRho;
-    orxFLOAT fR;
+    orxFLOAT fX;              /**< First coordinate in the cartesian space */
+    orxFLOAT fRho;            /**< First coordinate in the spherical space */
+    orxFLOAT fR;              /**< First coordinate in the RGB color space */
   };
 
   union
   {
-    orxFLOAT fY;
-    orxFLOAT fTheta;
-    orxFLOAT fG;
+    orxFLOAT fY;              /**< Second coordinate in the cartesian space */
+    orxFLOAT fTheta;          /**< Second coordinate in the spherical space */
+    orxFLOAT fG;              /**< Second coordinate in the RGB color space */
   };
 
   union
   {
-    orxFLOAT fZ;
-    orxFLOAT fPhi;
-    orxFLOAT fB;
+    orxFLOAT fZ;              /**< Third coordinate in the cartesian space */
+    orxFLOAT fPhi;            /**< Third coordinate in the spherical space */
+    orxFLOAT fB;              /**< Third coordinate in the RGB color space */
   };
 
 } orxVECTOR;
 
-/** Public axis aligned box structure. */
+/** Public axis aligned box structure
+ */
 typedef struct __orxAABOX_t
 {
-  /* Corners : 24 */
-  orxVECTOR vTL, vBR;
+  orxVECTOR vTL; /**< Top left corner vector : 12 */
+  orxVECTOR vBR; /**< Bottom right corner vector : 24 */
+
 } orxAABOX;
 
 
 /* *** Vector inlined functions *** */
 
 
-/** Sets vector x / y / z / w values. */
+/** Sets vector XYZ values (also work for other coordinate system)
+ * @param[in]   _pvVec                        Concerned vector
+ * @param[in]   _fX                           First coordinate value
+ * @param[in]   _fY                           Second coordinate value
+ * @param[in]   _fZ                           Third coordinate value
+ * @return      Vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Set(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
 {
   /* Checks */
@@ -103,14 +112,22 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Set(orxVECTOR *_pvVec, o
   return _pvVec;
 }
 
-/** Sets value in all vector fields. */
+/** Sets all the vector coordinates with the given value
+ * @param[in]   _pvVec                        Concerned vector
+ * @param[in]   _fValue                       Value to set
+ * @return      Vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_SetAll(orxVECTOR *_pvVec, orxFLOAT _fValue)
 {
   /* Done ! */
   return(orxVector_Set(_pvVec, _fValue, _fValue, _fValue));
 }
 
-/** Copies vector values into another one. */
+/** Copies a vector onto another one
+ * @param[in]   _pvDst                        Vector to copy to (destination)
+ * @param[in]   _pvSrc                        Vector to copy from (source)
+ * @return      Destination vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Copy(orxVECTOR *_pvDst, orxCONST orxVECTOR *_pvSrc)
 {
   /* Checks */
@@ -124,7 +141,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Copy(orxVECTOR *_pvDst, 
   return _pvDst;
 }
 
-/** Adds vectors and stores result in a third one. */
+/** Adds vectors and stores result in a third one
+ * @param[in]   _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @return      Resulting vector (Op1 + Op2)
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Add(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
@@ -141,7 +163,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Add(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
-/** Subs vectors and stores result in a third one. */
+/** Substracts vectors and stores result in a third one
+ * @param[in]   _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @return      Resulting vector (Op1 - Op2)
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Sub(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
@@ -158,7 +185,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Sub(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
-/** Muls a vector by an orxFLOAT and stores result in another one. */
+/** Multiplies a vector by an orxFLOAT and stores result in another one
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _fOp2                         Second operand
+ * @return      Resulting vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Mulf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
   /* Checks */
@@ -174,7 +206,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Mulf(orxVECTOR *_pvRes, 
   return _pvRes;
 }
 
-/** Muls a vector by another vector and stores result in a third one. */
+/** Multiplies a vector by another vector and stores result in a third one
+ * @param[in]   _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @return      Resulting vector (Op1 * Op2)
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Mul(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
@@ -191,7 +228,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Mul(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
-/** Divs a vector by an orxFLOAT and stores result in another one. */
+/** Divides a vector by an orxFLOAT and stores result in another one
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _fOp2                         Second operand
+ * @return      Resulting vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Divf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
   orxREGISTER orxFLOAT fInvCoef;
@@ -213,7 +255,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Divf(orxVECTOR *_pvRes, 
   return _pvRes;
 }
 
-/** Divs a vector by another vector and stores result in a third one. */
+/** Divides a vector by another vector and stores result in a third one
+ * @param[in]   _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @return      Resulting vector (Op1 / Op2)
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Div(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
@@ -233,7 +280,13 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Div(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
-/** Lerps from one vector to another one using a coefficient */
+/** Lerps from one vector to another one using a coefficient
+ * @param[in]   _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @param[in]   _fOp                          Lerp coefficien parameter
+ * @return      Resulting vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Lerp(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2, orxFLOAT _fOp)
 {
   /* Checks */
@@ -251,7 +304,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Lerp(orxVECTOR *_pvRes, 
   return _pvRes;
 }
 
-/** Gets minimum between two vectors */
+/** Gets minimum between two vectors
+ * @param[in]   _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @return      Resulting vector MIN(Op1, Op2)
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Min(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
@@ -268,7 +326,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Min(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
-/** Gets maximum between two vectors */
+/** Gets maximum between two vectors
+ * @param[in]   _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @return      Resulting vector MAX(Op1, Op2)
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Max(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   /* Checks */
@@ -285,7 +348,13 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Max(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
-/** Clamps a vector between two others */
+/** Clamps a vector between two others
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Vector to clamp
+ * @param[in]   _pvMin                        Minimum boundary
+ * @param[in]   _pvMax                        Maximum boundary
+ * @return      Resulting vector CLAMP(Op, MIN, MAX)
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Clamp(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxCONST orxVECTOR *_pvMin, orxCONST orxVECTOR *_pvMax)
 {
   /* Checks */
@@ -303,7 +372,11 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Clamp(orxVECTOR *_pvRes,
   return _pvRes;
 }
 
-/** Negates a vector and stores result in another one */
+/** Negates a vector and stores result in another one
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Vector to negates
+ * @return      Resulting vector (-Op)
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Neg(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   /* Checks */
@@ -319,7 +392,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Neg(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
-/** Reverses a vector and stores result in another one. */
+/** Gets 1 / vector and stores the result in another one
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Input value
+ * @return      Resulting vector (1 / Op)
+ */
+
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Inv(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   /* Checks */
@@ -335,6 +413,10 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Inv(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
+/** Gets vector squared size
+ * @param[in]   _pvOp                         Input vector
+ * @return      Vector's squared size
+ */
 orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareSize(orxCONST orxVECTOR *_pvOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -349,6 +431,10 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareSize(orxCONST o
   return fResult;
 }
 
+/** Gets vector size
+ * @param[in]   _pvOp                         Input vector
+ * @return      Vector's size
+ */
 orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSize(orxCONST orxVECTOR *_pvOp)
 {
   orxREGISTER orxFLOAT fResult;
@@ -363,6 +449,11 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSize(orxCONST orxVECT
   return fResult;
 }
 
+/** Gets squared distance between 2 positions
+ * @param[in]   _pvOp1                        First position
+ * @param[in]   _pvOp2                        Second position
+ * @return      Squared distance
+ */
 orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   orxVECTOR   vTemp;
@@ -382,6 +473,11 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCON
   return fResult;
 }
 
+/** Gets distance between 2 positions
+ * @param[in]   _pvOp1                        First position
+ * @param[in]   _pvOp2                        Second position
+ * @return      Distance
+ */
 orxSTATIC orxINLINE orxFLOAT                  orxVector_GetDistance(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
   orxVECTOR   vTemp;
@@ -401,6 +497,11 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetDistance(orxCONST orx
   return fResult;
 }
 
+/** Normalizes a vector
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Vector to normalize
+ * @return      Normalized vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   orxREGISTER orxFLOAT fOp;
@@ -413,7 +514,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pv
   fOp = (_pvOp->fX * _pvOp->fX) + (_pvOp->fY * _pvOp->fY) + (_pvOp->fZ * _pvOp->fZ);
 
   /* Valid? */
-  if(fOp> orxFLOAT_0)
+  if(fOp > orxFLOAT_0)
   {
     /* Gets invert size */
     fOp = orxFLOAT_1 / fOp;
@@ -433,6 +534,12 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pv
   return _pvRes;
 }
 
+/** Rotates a 2D vector (along Z-axis)
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Vector to rotate
+ * @param[in]   _fAngle                       Angle of rotation (radians)
+ * @return      Rotated vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_2DRotate(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxFLOAT _fAngle)
 {
   orxREGISTER orxFLOAT fSin, fCos;
@@ -452,6 +559,10 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_2DRotate(orxVECTOR *_pvR
   return _pvRes;
 }
 
+/** Is vector null?
+ * @param[in]   _pvOp                         Vector to test
+ * @return      orxTRUE if vector's null, orxFALSE otherwise
+ */
 orxSTATIC orxINLINE orxBOOL                   orxVector_IsNull(orxCONST orxVECTOR *_pvOp)
 {
   orxBOOL bResult;
@@ -466,6 +577,11 @@ orxSTATIC orxINLINE orxBOOL                   orxVector_IsNull(orxCONST orxVECTO
   return bResult;
 }
 
+/** Transforms a cartesian vector into a spherical one
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Vector to transform
+ * @return      Transformed vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   /* Checks */
@@ -562,6 +678,11 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical
   return _pvRes;
 }
 
+/** Transforms a spherical vector into a cartesian one
+ * @param[in]   _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Vector to transform
+ * @return      Transformed vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_FromSphericalToCartesian(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   orxFLOAT fSinPhi, fCosPhi, fSinTheta, fCosTheta;
@@ -589,18 +710,25 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_FromSphericalToCartesian
 /* *** Vector constants *** */
 
 
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_X;
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Y;
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Z;
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_X;      /**< X-Axis unit vector */
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Y;      /**< Y-Axis unit vector */
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Z;      /**< Z-Axis unit vector */
 
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_0;
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_WHITE;
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_0;      /**< Null vector */
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_RED;    /**< Red color vector */
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_GREEN;  /**< Green color vector */
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_BLUE;   /**< Blue color vector */
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_WHITE;  /**< White color vector */
 
 
 /* *** AABox inlined functions */
 
 
-/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
+/** Tests axis aligned box intersection
+ * @param[in]   _pstBox1                      First box operand
+ * @param[in]   _pstBox2                      Second box operand
+ * @return      orxTRUE if boxes intersect, orxFALSE otherwise
+ */
 orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
 {
   orxREGISTER orxBOOL bResult = orxFALSE;
@@ -608,8 +736,6 @@ orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);
   orxASSERT(_pstBox2 != orxNULL);
-
-  /* Warning : Corners should be sorted beforehand! */
 
   /* Z intersected? */
   if((_pstBox2->vBR.fZ >= _pstBox1->vTL.fZ)
@@ -633,7 +759,11 @@ orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST
   return bResult;
 }
 
-/** Tests axis aligned box intersection given corners (if corners are not sorted, test won't work). */
+/** Tests axis aligned box 2D intersection (no Z-axis test)
+ * @param[in]   _pstBox1                      First box operand
+ * @param[in]   _pstBox2                      Second box operand
+ * @return      orxTRUE if boxes intersect in 2D, orxFALSE otherwise
+ */
 orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
 {
   orxREGISTER orxBOOL bResult = orxFALSE;
@@ -641,8 +771,6 @@ orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCON
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);
   orxASSERT(_pstBox2 != orxNULL);
-
-  /* Warning : Corners should be sorted beforehand! */
 
   /* X intersected? */
   if((_pstBox2->vBR.fX >= _pstBox1->vTL.fX)
@@ -661,9 +789,14 @@ orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCON
   return bResult;
 }
 
-/** Reorders AABox corners */
-orxSTATIC orxINLINE orxVOID                   orxAABox_Reorder(orxAABOX *_pstBox)
+/** Reorders AABox corners
+ * @param[in]   _pstBox                       Box to reorder
+ * @return      Reordered AABox
+ */
+orxSTATIC orxINLINE orxAABOX *                orxAABox_Reorder(orxAABOX *_pstBox)
 {
+  orxAABOX *pstResult = _pstBox;
+
   /* Checks */
   orxASSERT(_pstBox != orxNULL);
 
@@ -691,30 +824,14 @@ orxSTATIC orxINLINE orxVOID                   orxAABox_Reorder(orxAABOX *_pstBox
   }
 
   /* Done! */
-  return;
+  return pstResult;
 }
 
-orxSTATIC orxINLINE orxAABOX *                orxAABox_2DRotate(orxAABOX *_pstRes, orxCONST orxAABOX *_pstOp, orxFLOAT _fAngle)
-{
-  orxREGISTER orxFLOAT fSin, fCos;
-
-  /* Checks */
-  orxASSERT(_pstRes  != orxNULL);
-  orxASSERT(_pstOp != orxNULL);
-
-  /* Gets cos & sin of angle */
-  fCos = orxMath_Cos(_fAngle);
-  fSin = orxMath_Sin(_fAngle);
-
-  /* Updates result */
-  orxVector_Set(&(_pstRes->vTL), (fCos * _pstOp->vTL.fX) - (fSin * _pstOp->vTL.fY), (fSin * _pstOp->vTL.fX) + (fCos * _pstOp->vTL.fY), _pstOp->vTL.fZ);
-  orxVector_Set(&(_pstRes->vBR), (fCos * _pstOp->vBR.fX) - (fSin * _pstOp->vBR.fY), (fSin * _pstOp->vBR.fX) + (fCos * _pstOp->vBR.fY), _pstOp->vBR.fZ);
-
-  /* Done! */
-  return _pstRes;
-}
-
-/** Copies AABox values into another one. */
+/** Copies an AABox onto another one
+ * @param[in]   _pstDst                       AABox to copy to (destination)
+ * @param[in]   _pstSrx                       AABox to copy from (destination)
+ * @return      Destination AABox
+ */
 orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, orxCONST orxAABOX *_pstSrc)
 {
   /* Checks */
@@ -728,6 +845,11 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, o
   return _pstDst;
 }
 
+/** Gets AABox center poisition
+ * @param[in]   _pstOp                        Concerned AABox
+ * @param[out]  _pvRes                        Center position
+ * @return      Center position vector
+ */
 orxSTATIC orxINLINE orxVECTOR *               orxAABox_GetCenter(orxCONST orxAABOX *_pstOp, orxVECTOR *_pvRes)
 {
   /* Checks */

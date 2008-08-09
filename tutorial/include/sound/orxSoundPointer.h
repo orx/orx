@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Sound
+ * @addtogroup orxSoundPointer
  *
  * Sound pointer module
  * Allows to creates sound containers for objects.

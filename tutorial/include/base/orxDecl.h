@@ -29,7 +29,7 @@
  */
 
 /**
- * @addtogroup Base
+ * @addtogroup orxDecl
  * 
  * Base declarations
  * Allows to creates and handle Sets of Anims.

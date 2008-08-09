@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Core
+ * @addtogroup orxEvent
  * 
  * Event module
  * Module that handles internal events

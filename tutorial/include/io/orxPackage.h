@@ -25,10 +25,11 @@
  * @author bestel@arcallians.org
  *
  * @todo
+ * @deprecated WIP with no plugin implementation yet 
  */
 
 /**
- * @addtogroup IO
+ * @addtogroup orxPackage
  * 
  * Package plugin module
  * Module that handles packages

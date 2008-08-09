@@ -30,7 +30,7 @@
  */
 
 /**
- * @addtogroup Object
+ * @addtogroup orxFrame
  *
  * Frame (scene node) Module.
  * Allows to handles frame (scene nodes).
@@ -89,15 +89,16 @@ typedef enum __orxFRAME_SPACE_t
 typedef struct __orxFRAME_t                   orxFRAME;
 
 
-/** Frame module setup
+/** Setups the frame module
  */
 extern orxDLLAPI orxVOID                      orxFrame_Setup();
 
-/** Inits the frame system
+/** Inits the frame module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS                    orxFrame_Init();
 
-/** Ends the frame system
+/** Exits from the frame module
  */
 extern orxDLLAPI orxVOID                      orxFrame_Exit();
 

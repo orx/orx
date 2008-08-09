@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Anim
+ * @addtogroup orxAnimPointer
  *
  * Animation (Pointer) Module.
  * Allows to creates and handle Animation Set Pointers.
@@ -60,6 +60,7 @@ typedef struct __orxANIMPOINTER_t             orxANIMPOINTER;
 extern orxDLLAPI orxVOID                      orxAnimPointer_Setup();
 
 /** Inits the AnimPointer module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS                    orxAnimPointer_Init();
 
@@ -82,6 +83,7 @@ extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_CreateFromConfig(or
 
 /** Deletes an AnimPointer
  * @param[in]   _pstAnimPointer               AnimPointer to delete
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer);
 

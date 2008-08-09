@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Render
+ * @addtogroup orxRender
  * 
  * Render plugin module
  * Renders visible objects on screen, using active cameras/viewports.
@@ -49,7 +49,6 @@
 
 /** Misc defines
  */
-
 #define orxRENDER_KZ_CONFIG_SECTION   "Render"
 #define orxRENDER_KZ_CONFIG_SHOW_FPS  "ShowFPS"
 
@@ -58,7 +57,8 @@
  * Functions directly implemented by orx core
  ***************************************************************************/
 
-/** Render module setup */
+/** Render module setup
+ */
 extern orxDLLAPI orxVOID                orxRender_Setup();
 
 
@@ -66,9 +66,21 @@ extern orxDLLAPI orxVOID                orxRender_Setup();
  * Functions extended by plugins
  ***************************************************************************/
 
+/** Inits the render module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS  orxRender_Init();
+
+/** Exits from the render module
+ */
 extern orxDLLAPI orxVOID    orxRender_Exit();
-extern orxDLLAPI orxSTATUS  orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
+
+/** Get a world position given a screen one (absolute picking)
+ * @param[in]   _pvScreenPosition                     Concerned screen position
+ * @param[out]  _pvWorldPosition                      Concerned callback
+ * @return      orxVECTOR if found, orxNULL otherwise
+ */
+extern orxDLLAPI orxVECTOR *orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
 
 #endif /* _orxRENDER_H_ */
 

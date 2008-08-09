@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup IO
+ * @addtogroup orxMouse
  * 
  * Mouse plugin module
  * Plugin module that handles mouse-like peripherals

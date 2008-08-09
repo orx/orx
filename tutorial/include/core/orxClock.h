@@ -31,7 +31,7 @@
  */
 
 /**
- * @addtogroup Core
+ * @addtogroup orxClock
  * 
  * Clock module
  * Module that handles clocks which is the low level kernel part of orx execution.
@@ -73,8 +73,8 @@ typedef enum __orxCLOCK_TYPE_t
  */
 typedef enum __orxCLOCK_MOD_TYPE_t
 {
-  orxCLOCK_MOD_TYPE_FIXED = 0,
-  orxCLOCK_MOD_TYPE_MULTIPLY,
+  orxCLOCK_MOD_TYPE_FIXED = 0,                        /**< The given DT will always be constant (= modifier value) */
+  orxCLOCK_MOD_TYPE_MULTIPLY,                         /**< The given DT will be the real one * modifier */
 
   orxCLOCK_MOD_TYPE_NUMBER,
 
@@ -97,59 +97,129 @@ typedef struct __orxCLOCK_INFO_t
 } orxCLOCK_INFO;
 
 
-/** Clock structure. */
+/** Clock structure */
 typedef struct __orxCLOCK_t                           orxCLOCK;
 
-/** Clock callback function type to use with clock bindings. */
+/** Clock callback function type to use with clock bindings */
 typedef orxVOID (orxFASTCALL *orxCLOCK_FUNCTION)(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext);
 
 
-/** Clock module setup. */
+/** Clock module setup
+ */
 extern orxDLLAPI orxVOID                              orxClock_Setup();
-/** Inits Clock module. */
+
+/** Inits the clock module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                            orxClock_Init();
-/** Exits from Clock module. */
+
+/** Exits from the clock module
+ */
 extern orxDLLAPI orxVOID                              orxClock_Exit();
 
-/** Updates the clock system. */
+
+/** Updates the clock system
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                            orxClock_Update();
 
-/** Resync a clock (accumulated DT => 0) */
-extern orxDLLAPI orxVOID                              orxClock_Resync();
-
-/** Creates a Clock. */
+/** Creates a clock
+ * @param[in]   _fTickSize                            Tick size for the clock (in seconds)
+ * @param[in]   _eType                                Type of the clock
+ * @return      orxCLOCK / orxNULL
+ */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
-/** Deletes a Clock. */
+
+/** Deletes a clock
+ * @param[in]   _pstClock                             Concerned clock
+ */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Delete(orxCLOCK *_pstClock);
 
-/** Pauses a Clock. */
+/** Resyncs a clock (accumulated DT => 0)
+ */
+extern orxDLLAPI orxVOID                              orxClock_Resync();
+
+/** Pauses a clock
+ * @param[in]   _pstClock                             Concerned clock
+ */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Pause(orxCLOCK *_pstClock);
-/** Unpauses a Clock. */
+
+/** Unpauses a clock
+ * @param[in]   _pstClock                             Concerned clock
+ */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Unpause(orxCLOCK *_pstClock);
-/** Is a Clock paused? */
+
+/** Is a clock paused?
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      orxTRUE if paused, orxFALSE otherwise
+ */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(orxCONST orxCLOCK *_pstClock);
 
-/** Gets informations about a Clock. */
+/** Gets clock info
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      orxCLOCK_INFO / orxNULL
+ */
 extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock);
 
-/** Sets a clock modifier */
+
+/** Sets a clock modifier
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _eModType                             Modifier type
+ * @param[in]   _fModValue                            Modifier value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue);
 
-/** Registers a callback function to a clock. */
+
+/** Registers a callback function to a clock
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Callback to register
+ * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
+ * @param[in]   _eModuleID                            IF of the module related to this callback
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID);
-/** Unregisters a callback function from a clock. */
+
+/** Unregisters a callback function from a clock
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _fnCallback                           Callback to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
-/** Gets a callback function context. */
+
+/** Gets a callback function context
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Concerned callback
+ * @return      Registered context
+ */
 extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
-/** Sets a callback function context. */
+
+/** Sets a callback function context
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Concerned callback
+ * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
 
-/** Finds a clock according to its tick size and its type. */
+
+/** Finds a clock given its tick size and its type
+ * @param[in]   _fTickSize                            Tick size of the desired clock (in seconds)
+ * @param[in]   _eType                                Type of the desired clock
+ * @return      orxCLOCK / orxNULL
+ */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
-/** Finds next clock of same type/tick size. */
+
+/** Finds next clock of same type/tick size
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      orxCLOCK / orxNULL
+ */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(orxCONST orxCLOCK *_pstClock);
 
-/** Gets next existing clock (can be used to parse all existing clocks). */
+/** Gets next existing clock in list (can be used to parse all existing clocks)
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      orxCLOCK / orxNULL
+ */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(orxCONST orxCLOCK *_pstClock);
 
 

@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Debug
+ * @addtogroup orxFPS
  * 
  * FPS Module
  * Allows to compute & display FPS
@@ -43,19 +43,24 @@
 #include "orxInclude.h"
 
 
-/** FPS module setup */
+/** Setups FPS module  */
 extern orxDLLAPI orxVOID                          orxFPS_Setup();
-/** Inits the FPS system. */
+
+/** Inits the FPS module 
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS                        orxFPS_Init();
-/** Exits from the FPS system. */
+
+/** Exits from the FPS module */
 extern orxDLLAPI orxVOID                          orxFPS_Exit();
 
-/** Increases FPS counter */
+/** Increases internal frame counter */
 extern orxDLLAPI orxVOID                          orxFPS_IncreaseFrameCounter();
 
-/** Gets FPS counter */
+/** Gets current FTP value
+ * @return orxU32
+ */
 extern orxDLLAPI orxU32                           orxFPS_GetFPS();
-
 
 #endif /* _orxFPS_H_ */
 

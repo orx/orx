@@ -28,7 +28,7 @@
  */
 
 /**
- * @addtogroup Plugin
+ * @addtogroup orxPlugin
  * 
  * Plugin type header
  * This header is used to define types for plugin module.

@@ -30,7 +30,7 @@
  */
 
 /**
- * @addtogroup Utils
+ * @addtogroup orxScreenshot
  * 
  * Screenshot module
  * Module that handles screenshots
@@ -58,15 +58,22 @@
 
 /* *** Functions *** */
 
-/** Screenshot module setup. */
+/** Screenshot module setup
+ */
 extern orxDLLAPI orxVOID                orxScreenshot_Setup();
-/** Inits the screenshot system. */
+
+/** Inits the screenshot module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 extern orxDLLAPI orxSTATUS              orxScreenshot_Init();
-/** Exits from the screenshot system. */
+
+/** Exits from the screenshot module
+ */
 extern orxDLLAPI orxVOID                orxScreenshot_Exit();
 
-/** Takes a screenshot. */
-extern orxDLLAPI orxVOID                orxScreenshot_Take();
+/** Captures a screenshot
+ */
+extern orxDLLAPI orxVOID                orxScreenshot_Capture();
 
 #endif /* _orxSCREENSHOT_H_ */
 

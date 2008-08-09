@@ -29,7 +29,7 @@
  */
 
 /**
- * @addtogroup Memory
+ * @addtogroup orxBank
  * 
  * Bank module
  * Bank are used to allocate a portion of memory.
@@ -57,19 +57,20 @@ typedef struct __orxBANK_t orxBANK;
 #define orxBANK_KU32_FLAG_NONE              0x00000000  /**< No flags (default behaviour) */
 #define orxBANK_KU32_FLAG_NOT_EXPANDABLE    0x00000001  /**< The bank will not be expandable */
 
-/** Bank module setup
+/** Setups the bank module
  */
 extern orxDLLAPI orxVOID                    orxBank_Setup();
 
-/** Initialize Bank Module
+/** Inits the bank Module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS                  orxBank_Init();
 
-/** Exit bank module
+/** Exits from the bank module
  */
 extern orxDLLAPI orxVOID                    orxBank_Exit();
 
-/** Create a new bank in memory and returns a pointer on it
+/** Creates a new bank in memory and returns a pointer on it
  * @param[in] _u16NbElem  Number of elements per segments
  * @param[in] _u32Size    Size of an element
  * @param[in] _u32Flags   Flags set for this bank
@@ -78,30 +79,30 @@ extern orxDLLAPI orxVOID                    orxBank_Exit();
  */
 extern orxDLLAPI orxBANK *orxFASTCALL       orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
 
-/** Free a portion of memory allocated with orxMemory_Allocate
+/** Frees a portion of memory allocated with orxMemory_Allocate
  * @param[in] _pstBank    Pointer on the memory bank allocated by orx
  */
 extern orxDLLAPI orxVOID orxFASTCALL        orxBank_Delete(orxBANK *_pstBank);
 
-/** Allocate a new cell from the bank
+/** Allocates a new cell from the bank
  * @param[in] _pstBank    Pointer on the memory bank to use
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
 extern orxDLLAPI orxVOID *orxFASTCALL       orxBank_Allocate(orxBANK *_pstBank);
 
-/** Free an allocated cell
+/** Frees an allocated cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
  * @param[in] _pCell      Pointer on the cell to free
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
 extern orxDLLAPI orxVOID orxFASTCALL        orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell);
 
-/** Free all allocated cell from a bank
+/** Frees all allocated cell from a bank
  * @param[in] _pstBank    Bank of memory to clear
  */
 extern orxDLLAPI orxVOID orxFASTCALL        orxBank_Clear(orxBANK *_pstBank);
 
-/** Get the next cell
+/** Gets the next cell
  * @param[in] _pstBank    Bank of memory from where _pCell has been allocated
  * @param[in] _pCell      Pointer on the current cell of memory
  * @return The next cell. If _pCell is orxNULL, the first cell will be returned. Returns orxNULL when no more cell can be returned.
@@ -112,7 +113,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL       orxBank_GetNext(orxCONST orxBANK *_p
  * DEBUG FUNCTION
  ******************************************************************************/
 
-/** Print the content of a chunk bank
+/** Prints the content of a chunk bank
  * @param[in] _pstBank    Bank's pointer
  */
 extern orxDLLAPI orxVOID orxFASTCALL        orxBank_DebugPrint(orxCONST orxBANK *_pstBank);
