@@ -954,32 +954,44 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
-  /* Removes history flag */
-  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
-
-  /* Clears all data */
-  orxConfig_Clear();
-
-  /* Reloads default file */
-  eResult = orxConfig_Load(sstConfig.zBaseFile);
-
-  /* Logs */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
-
-  /* For all entries in history */
-  for(pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
-      (pzHistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
-      pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, pzHistoryEntry))
+  /* Has history? */
+  if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY))
   {
-    /* Reloads it */
-    eResult = orxConfig_Load(*pzHistoryEntry);
+    /* Removes history flag */
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
+
+    /* Clears all data */
+    orxConfig_Clear();
+
+    /* Reloads default file */
+    eResult = orxConfig_Load(sstConfig.zBaseFile);
 
     /* Logs */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", *pzHistoryEntry);
-  }
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", sstConfig.zBaseFile);
 
-  /* Restores history flag */
-  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
+    /* For all entries in history */
+    for(pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
+        (pzHistoryEntry != orxNULL) && (eResult != orxSTATUS_FAILURE);
+        pzHistoryEntry = orxBank_GetNext(sstConfig.pstHistoryBank, pzHistoryEntry))
+    {
+      /* Reloads it */
+      eResult = orxConfig_Load(*pzHistoryEntry);
+
+      /* Logs */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config file [%s] has been reloaded.", *pzHistoryEntry);
+    }
+
+    /* Restores history flag */
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config history isn't stored. Please check your config file under the [Config] section.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
