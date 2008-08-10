@@ -31,7 +31,7 @@
 #include "orx.h"
 
 
-/* This is the basic C tutorial creating a viewport and an object.
+/* This is a basic C tutorial creating a viewport and an object.
  * As we are using the default executable for this tutorial, this code
  * will be loaded and executed as a runtime plugin.
  *

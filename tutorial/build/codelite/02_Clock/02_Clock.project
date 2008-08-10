@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CodeLite_Project Name="01_Object">
+<CodeLite_Project Name="02_Clock">
   <Description/>
   <VirtualDirectory Name="src">
-    <File Name="../../../src/01_Object/01_Object.c"/>
+    <File Name="../../../src/02_Clock/02_Clock.c"/>
   </VirtualDirectory>
   <Dependencies/>
+  <Dependencies Name="Linux Dynamic Release"/>
   <Settings Type="Dynamic Library">
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/linux/01_Object.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../01_Object.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/linux/02_Clock.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../02_Clock.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxLINUX__"/>
@@ -18,25 +19,25 @@
         <LibraryPath Value="../../../lib/linux"/>
         <Library Value="orx"/>
       </Linker>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
+        <WorkingDirectory></WorkingDirectory>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/mingw/01_Object.dll" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="-c ../01_Object.ini" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/mingw/02_Clock.dll" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="-c ../02_Clock.ini" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
@@ -47,24 +48,25 @@
         <LibraryPath Value="../../../lib/mingw"/>
         <Library Value="orx"/>
       </Linker>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
+        <WorkingDirectory></WorkingDirectory>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
   </Settings>
-  <Dependencies Name="Linux Dynamic Release"/>
   <Dependencies Name="Win32 Dynamic Release"/>
 </CodeLite_Project>
