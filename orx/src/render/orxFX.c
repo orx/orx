@@ -1261,18 +1261,17 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
       /* Non absolute? */
       if(bScaleLock == orxFALSE)
       {
-        orxFLOAT fObjectScaleX, fObjectScaleY;
+        orxVECTOR vObjectScale;
 
         /* Gets object scale */
-        orxObject_GetScale(_pstObject, &fObjectScaleX, &fObjectScaleY);
+        orxObject_GetScale(_pstObject, &vObjectScale);
 
         /* Updates scale with previous one */
-        vScale.fX *= fObjectScaleX;
-        vScale.fY *= fObjectScaleY;
+        orxVector_Mul(&vScale, &vScale, &vObjectScale);
       }
 
       /* Applies it */
-      orxObject_SetScale(_pstObject, vScale.fX, vScale.fY);
+      orxObject_SetScale(_pstObject, &vScale);
     }
 
     /* Update translation? */

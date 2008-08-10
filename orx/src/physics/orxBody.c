@@ -693,19 +693,19 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_RADIUS)), orxBODY_KZ_FULL) == 0)
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_CENTER)), orxBODY_KZ_FULL) == 0))
       {
-        orxVECTOR vPivot;
-        orxFLOAT  fWidth, fHeight, fScaleX, fScaleY, fRadius;
+        orxVECTOR vPivot, vScale;
+        orxFLOAT  fWidth, fHeight, fRadius;
 
         /* Gets object size, scale & pivot */
         orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &fWidth, &fHeight);
-        orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &fScaleX, &fScaleY);
+        orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &vScale);
         orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 
         /* Gets minimal radius */
-        fRadius = orx2F(0.5f) * orxMIN(fScaleX * fWidth, fScaleY * fHeight);
+        fRadius = orx2F(0.5f) * orxMIN(vScale.fX * fWidth, vScale.fY * fHeight);
 
         /* Inits body part def */
-        orxVector_Set(&(stBodyPartDef.stSphere.vCenter), fRadius - (fScaleX * vPivot.fX), fRadius - (fScaleY * vPivot.fY), -vPivot.fZ);
+        orxVector_Set(&(stBodyPartDef.stSphere.vCenter), fRadius - (vScale.fX * vPivot.fX), fRadius - (vScale.fY * vPivot.fY), fRadius - (vScale.fZ * vPivot.fZ));
         stBodyPartDef.stSphere.fRadius = fRadius;
       }
       else
@@ -723,17 +723,17 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_TOP_LEFT)), orxBODY_KZ_FULL) == 0)
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_BOTTOM_RIGHT)), orxBODY_KZ_FULL) == 0))
       {
-        orxVECTOR vPivot;
-        orxFLOAT  fWidth, fHeight, fScaleX, fScaleY;
+        orxVECTOR vPivot, vScale;
+        orxFLOAT  fWidth, fHeight;
 
         /* Gets object size, scale & pivot */
         orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &fWidth, &fHeight);
-        orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &fScaleX, &fScaleY);
+        orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &vScale);
         orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 
         /* Inits body part def */
-        orxVector_Set(&(stBodyPartDef.stAABox.stBox.vTL), -fScaleX * vPivot.fX, -fScaleY * vPivot.fY, -vPivot.fZ);
-        orxVector_Set(&(stBodyPartDef.stAABox.stBox.vBR), fScaleX * (fWidth - vPivot.fX), fScaleY * (fHeight - vPivot.fY), -vPivot.fZ);
+        orxVector_Set(&(stBodyPartDef.stAABox.stBox.vTL), -vScale.fX * vPivot.fX, -vScale.fY * vPivot.fY, -vScale.fZ * vPivot.fZ);
+        orxVector_Set(&(stBodyPartDef.stAABox.stBox.vBR), vScale.fX * (fWidth - vPivot.fX), vScale.fY * (fHeight - vPivot.fY), vScale.fZ * -vPivot.fZ);
       }
       else
       {

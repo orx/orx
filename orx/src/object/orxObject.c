@@ -609,7 +609,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         }
 
         /* Updates object scale */
-        orxObject_SetScale(pstResult, vScale.fX, vScale.fY);
+        orxObject_SetScale(pstResult, &vScale);
       }
 
       /* Has color? */
@@ -1097,13 +1097,12 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
   return eResult;
 }
 
-/** Sets Object zoom
+/** Sets Object scale
  * @param[in]   _pstObject      Concerned Object
- * @param[in]   _fScaleX        Object X scale
- * @param[in]   _fScaleY        Object Y scale
+ * @param[in]   _pvScale        Object scale vector
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScaleX, orxFLOAT _fScaleY)
+orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvScale)
 {
   orxFRAME *pstFrame;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1111,6 +1110,7 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScale
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvScale != orxNULL);
 
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
@@ -1118,8 +1118,8 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScale
   /* Valid? */
   if(pstFrame != orxNULL)
   {
-    /* Sets Object zoom */
-    orxFrame_SetScale(pstFrame, _fScaleX, _fScaleY);
+    /* Sets frame scale */
+    orxFrame_SetScale(pstFrame, _pvScale->fX, _pvScale->fY);
   }
   else
   {
@@ -1311,20 +1311,18 @@ orxFLOAT orxFASTCALL orxObject_GetWorldRotation(orxCONST orxOBJECT *_pstObject)
 
 /** Gets object scale
  * @param[in]   _pstObject      Concerned object
- * @param[out]  _pfScaleX       Object X scale
- * @param[out]  _pfScaleY       Object Y scale
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out]  _pvScale        Object scale vector
+ * @return      Scale vector
  */
-orxSTATUS orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY)
+orxVECTOR *orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvScale)
 {
   orxFRAME *pstFrame;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxVECTOR *pvResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pfScaleX != orxNULL);
-  orxASSERT(_pfScaleY != orxNULL);
+  orxASSERT(_pvScale != orxNULL);
 
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
@@ -1333,18 +1331,27 @@ orxSTATUS orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOA
   if(pstFrame != orxNULL)
   {
     /* Gets object scale */
-    eResult = orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pfScaleX, _pfScaleY);
+    orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, &(_pvScale->fX), &(_pvScale->fY));
+
+    /* Clears scale on Z */
+    _pvScale->fZ = orxFLOAT_1;
+
+    /* Updates result */
+    pvResult = _pvScale;
   }
   else
   {
     /* !!! MSG !!! */
 
+    /* Clears vector */
+    orxVector_SetAll(_pvScale, orxFLOAT_0);
+
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    pvResult = orxNULL;
   }
 
   /* Done! */
-  return eResult;
+  return pvResult;
 }
 
 /** Gets object world scale
