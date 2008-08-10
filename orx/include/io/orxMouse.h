@@ -42,6 +42,7 @@
 
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
+#include "math/orxVector.h"
 
 
 /** Button enum
@@ -75,24 +76,23 @@ extern orxDLLAPI orxVOID                              orxMouse_Setup();
 /** Inits the mouse module
  * @return Returns the status of the operation
  */
-extern orxDLLAPI orxSTATUS orxMouse_Init();
+extern orxDLLAPI orxSTATUS    orxMouse_Init();
 
 /** Exits from the mouse module
  */
-extern orxDLLAPI orxVOID orxMouse_Exit();
+extern orxDLLAPI orxVOID      orxMouse_Exit();
 
 /** Gets mouse on screen position
- * @param[out] _ps32x   X coordinates
- * @param[out] _ps32y   Y coordinates
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out] _pvPosition  Mouse position
+ * @return orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxMouse_GetPosition(orxS32 *_s32X, orxS32 *_s32Y);
+extern orxDLLAPI orxVECTOR *  orxMouse_GetPosition(orxVECTOR *_pvPosition);
 
 /** Is mouse button pressed?
- * @param _eButton      Mouse button to check
+ * @param _eButton          Mouse button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
+extern orxDLLAPI orxBOOL      orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
 
 #endif /* _orxMOUSE_H_ */
 

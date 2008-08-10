@@ -56,9 +56,8 @@
  * This provides us with an easy way to create grouped object or complex object assembly and transform them
  * (position, scale, rotation, speed, ...) very easily.
  *
- * NB: Here we use a config value to move the parent node, as we requesting this value from the config
- * module every time we need it, we can update this from the config file on the fly.
- * To affect the current execution, just press backspace and the move speed will be updated from file.
+ * NB: If you change the viewport size and position, the function orxRender_GetWorldPosition() will still
+ * return a valid information. You can test it by changing the viewport properties in the config file.
  */
 
 
@@ -108,39 +107,12 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     orxObject_SetScale(pstParentObject, orxVector_Mulf(&vScale, orxObject_GetScale(pstParentObject, &vScale), orx2F(0.98f)));
   }
 
-  /* Selects parent object config section */
-  orxConfig_SelectSection("ParentObject");
-
-  /* Gets object position */
-  orxObject_GetPosition(pstParentObject, &vPosition);
-
-  /* Is left arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT))
+  /* Is mouse in viewport? */
+  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPosition), &vPosition))
   {
-    /* Moves it on left */
-    vPosition.fX -= orxConfig_GetFloat("MoveSpeed") * _pstClockInfo->fDT;
+    /* Updates object with mouse position */
+    orxObject_SetPosition(pstParentObject, &vPosition);
   }
-  /* Is right arrow pressed? */
-  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT))
-  {
-    /* Moves it on right */
-    vPosition.fX += orxConfig_GetFloat("MoveSpeed") * _pstClockInfo->fDT;
-  }
-  /* Is up arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_UP))
-  {
-    /* Moves it on left */
-    vPosition.fY -= orxConfig_GetFloat("MoveSpeed") * _pstClockInfo->fDT;
-  }
-  /* Is down arrow pressed? */
-  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DOWN))
-  {
-    /* Moves it on right */
-    vPosition.fY += orxConfig_GetFloat("MoveSpeed") * _pstClockInfo->fDT;
-  }
-
-  /* Updates object with new position */
-  orxObject_SetPosition(pstParentObject, &vPosition);
 }
 
 
@@ -151,7 +123,7 @@ orxSTATUS Init()
   orxCLOCK *pstClock;
 
   /* Displays a small hint in console */
-  orxLOG("\n- Left & right buttons will rotate the Parent object\n- '+' & '-' will scale it\n- Arrow keys will move it.");
+  orxLOG("\n- The parent object will follow the mouse\n- Left & right buttons will rotate it\n- '+' & '-' will scale it");
 
   /* Loads config file and selects main section */
   orxConfig_Load("../../03_Frame/03_Frame.ini");
@@ -180,6 +152,9 @@ orxSTATUS Init()
 
   /* Registers our update callback */
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN);
+
+  /* Deactivates vertical sync */
+  orxDisplay_EnableVSync(orxFALSE);
 
   /* Done! */
   return orxSTATUS_SUCCESS;

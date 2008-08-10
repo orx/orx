@@ -119,21 +119,21 @@ extern "C" orxVOID orxMouse_SFML_Exit()
   return;
 }
 
-extern "C" orxSTATUS orxMouse_SFML_GetPosition(orxS32 *_ps32X, orxS32 *_ps32Y)
+extern "C" orxVECTOR *orxMouse_SFML_GetPosition(orxVECTOR *_pvPosition)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxVECTOR *pvResult = _pvPosition;
 
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_ps32X != orxNULL);
-  orxASSERT(_ps32Y != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
 
   /* Gets mouse position */
-  *_ps32X = sstMouse.poInput->GetMouseX();
-  *_ps32Y = sstMouse.poInput->GetMouseY();
+  _pvPosition->fX = orxS2F(sstMouse.poInput->GetMouseX());
+  _pvPosition->fY = orxS2F(sstMouse.poInput->GetMouseY());
+  _pvPosition->fZ = orxFLOAT_0;
 
   /* Done! */
-  return eResult;
+  return pvResult;
 }
 
 extern "C" orxBOOL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eButton)

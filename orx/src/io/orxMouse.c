@@ -53,7 +53,7 @@ orxVOID orxMouse_Setup()
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Init, orxSTATUS, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, orxVOID, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxSTATUS, orxS32 *, orxS32 *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);
 
 
@@ -87,17 +87,16 @@ orxVOID orxMouse_Exit()
 }
 
 /** Gets mouse on screen position
- * @param[out] _ps32x   X coordinates
- * @param[out] _ps32y   Y coordinates
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out] _pvPosition  Mouse position
+ * @return orxVECTOR / orxNULL
  */
-orxSTATUS orxMouse_GetPosition(orxS32 *_s32X, orxS32 *_s32Y)
+orxVECTOR *orxMouse_GetPosition(orxVECTOR *_pvPosition)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetPosition)(_s32X, _s32Y);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetPosition)(_pvPosition);
 }
 
 /** Is mouse button pressed?
- * @param _eButton      Mouse button to check
+ * @param _eButton          Mouse button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
 orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)

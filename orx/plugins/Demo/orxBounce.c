@@ -76,15 +76,11 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   /* Clicking? */
   if((su32BallCounter < orxConfig_GetU32("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
   {
-    orxS32      s32MouseX, s32MouseY;
     orxVECTOR   vScreenPos, vWorldPos;
     orxOBJECT  *pstObject;
 
     /* Gets mouse coordinates */
-    orxMouse_GetPosition(&s32MouseX, &s32MouseY);
-
-    /* Gets on-screen position vector */
-    orxVector_Set(&vScreenPos, orxS2F(s32MouseX), orxS2F(s32MouseY), orxFLOAT_0);
+    orxMouse_GetPosition(&vScreenPos);
 
     /* Has a matching world position? */
     if(orxRender_GetWorldPosition(&vScreenPos, &vWorldPos) != orxNULL)
