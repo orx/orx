@@ -74,19 +74,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scroll", "Scroll\Scroll.vcp
 		{590A8B1B-8ED1-47F7-8986-B4D372BDF4CB} = {590A8B1B-8ED1-47F7-8986-B4D372BDF4CB}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cave", "Cave\Cave.vcproj", "{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C0EC660D-8CF7-4C8E-BEA8-372305EF344D} = {C0EC660D-8CF7-4C8E-BEA8-372305EF344D}
-		{590A8B1B-8ED1-47F7-8986-B4D372BDF4CB} = {590A8B1B-8ED1-47F7-8986-B4D372BDF4CB}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "orxSoundSystem_SFML", "orxSoundSystem_SFML\orxSoundSystem_SFML.vcproj", "{451D7877-398E-43CF-9920-B26866CF70D2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C0EC660D-8CF7-4C8E-BEA8-372305EF344D} = {C0EC660D-8CF7-4C8E-BEA8-372305EF344D}
-		{590A8B1B-8ED1-47F7-8986-B4D372BDF4CB} = {590A8B1B-8ED1-47F7-8986-B4D372BDF4CB}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1034", "1034\1034.vcproj", "{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C0EC660D-8CF7-4C8E-BEA8-372305EF344D} = {C0EC660D-8CF7-4C8E-BEA8-372305EF344D}
 		{590A8B1B-8ED1-47F7-8986-B4D372BDF4CB} = {590A8B1B-8ED1-47F7-8986-B4D372BDF4CB}
@@ -204,14 +192,6 @@ Global
 		{3C205FBE-CD22-4265-B9F1-A48EC28DF294}.Static Debug|Win32.Build.0 = Static Debug|Win32
 		{3C205FBE-CD22-4265-B9F1-A48EC28DF294}.Static Release|Win32.ActiveCfg = Static Release|Win32
 		{3C205FBE-CD22-4265-B9F1-A48EC28DF294}.Static Release|Win32.Build.0 = Static Release|Win32
-		{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}.Dynamic Debug|Win32.ActiveCfg = Dynamic Debug|Win32
-		{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}.Dynamic Debug|Win32.Build.0 = Dynamic Debug|Win32
-		{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
-		{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
-		{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}.Static Debug|Win32.ActiveCfg = Static Debug|Win32
-		{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}.Static Debug|Win32.Build.0 = Static Debug|Win32
-		{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}.Static Release|Win32.ActiveCfg = Static Release|Win32
-		{1A9A5C43-4B23-4E41-A9BA-9BFABAC92F09}.Static Release|Win32.Build.0 = Static Release|Win32
 		{451D7877-398E-43CF-9920-B26866CF70D2}.Dynamic Debug|Win32.ActiveCfg = Dynamic Debug|Win32
 		{451D7877-398E-43CF-9920-B26866CF70D2}.Dynamic Debug|Win32.Build.0 = Dynamic Debug|Win32
 		{451D7877-398E-43CF-9920-B26866CF70D2}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
@@ -220,14 +200,6 @@ Global
 		{451D7877-398E-43CF-9920-B26866CF70D2}.Static Debug|Win32.Build.0 = Static Debug|Win32
 		{451D7877-398E-43CF-9920-B26866CF70D2}.Static Release|Win32.ActiveCfg = Static Release|Win32
 		{451D7877-398E-43CF-9920-B26866CF70D2}.Static Release|Win32.Build.0 = Static Release|Win32
-		{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}.Dynamic Debug|Win32.ActiveCfg = Dynamic Debug|Win32
-		{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}.Dynamic Debug|Win32.Build.0 = Dynamic Debug|Win32
-		{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
-		{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
-		{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}.Static Debug|Win32.ActiveCfg = Static Debug|Win32
-		{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}.Static Debug|Win32.Build.0 = Static Debug|Win32
-		{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}.Static Release|Win32.ActiveCfg = Static Release|Win32
-		{F4FF548D-34AB-451B-9BA2-DEC01D0093F9}.Static Release|Win32.Build.0 = Static Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

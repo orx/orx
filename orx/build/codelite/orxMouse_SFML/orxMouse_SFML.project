@@ -8,10 +8,6 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
-  <Dependencies Name="Linux Dynamic Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-  </Dependencies>
   <Settings Type="Dynamic Library">
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/core/mouse/orxMouse_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
@@ -258,7 +254,35 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
+  <Dependencies Name="Linux Dynamic Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Linux Dynamic Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Linux Static Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Linux Static Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
   <Dependencies Name="Win32 Static Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>

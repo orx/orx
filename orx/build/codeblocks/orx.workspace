@@ -49,10 +49,6 @@
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />
 		</Project>
-		<Project filename="orxDemo\Cave.cbp">
-			<Depends filename="orxLIB\orxLIB.cbp" />
-			<Depends filename="orx\orx.cbp" />
-		</Project>
 		<Project filename="orxDemo\Scroll.cbp">
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />

@@ -8,104 +8,6 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
-  <Dependencies Name="Linux Dynamic Release">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
-  <Dependencies Name="Linux Static Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
-  <Dependencies Name="Linux Static Release">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
-  <Dependencies Name="Win32 Static Release">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
-  <Dependencies Name="Linux Dynamic Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
-  <Dependencies Name="Win32 Dynamic Release">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
-  <Dependencies Name="Win32 Dynamic Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-    <Project Name="orxDisplay_SFML"/>
-    <Project Name="orxFileSystem_LibC"/>
-    <Project Name="orxFile_LibC"/>
-    <Project Name="orxJoystick_SFML"/>
-    <Project Name="orxKeyboard_SFML"/>
-    <Project Name="orxMouse_SFML"/>
-    <Project Name="orxPhysics_Box2D"/>
-    <Project Name="orxRender_Home"/>
-    <Project Name="orxSoundSystem_SFML"/>
-    <Project Name="orxSystem_SFML"/>
-  </Dependencies>
   <Settings Type="Dynamic Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/gp2x/plugins/demo/Scrolld.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
@@ -405,6 +307,16 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
+  <Dependencies Name="GP2X Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SDL"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSystem_SDL"/>
+  </Dependencies>
   <Dependencies Name="GP2X Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
@@ -415,15 +327,89 @@
     <Project Name="orxRender_Home"/>
     <Project Name="orxSystem_SDL"/>
   </Dependencies>
-  <Dependencies Name="GP2X Debug">
+  <Dependencies Name="Linux Dynamic Debug">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
-    <Project Name="orxDisplay_SDL"/>
+    <Project Name="orxDisplay_SFML"/>
     <Project Name="orxFileSystem_LibC"/>
     <Project Name="orxFile_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxMouse_SFML"/>
     <Project Name="orxPhysics_Box2D"/>
     <Project Name="orxRender_Home"/>
-    <Project Name="orxSystem_SDL"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
+  </Dependencies>
+  <Dependencies Name="Linux Dynamic Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxMouse_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
+  </Dependencies>
+  <Dependencies Name="Linux Static Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxMouse_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
+  </Dependencies>
+  <Dependencies Name="Linux Static Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxMouse_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxMouse_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxMouse_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
   </Dependencies>
   <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
@@ -435,6 +421,20 @@
     <Project Name="orxKeyboard_SFML"/>
     <Project Name="orxPhysics_Box2D"/>
     <Project Name="orxMouse_SFML"/>
+    <Project Name="orxRender_Home"/>
+    <Project Name="orxSoundSystem_SFML"/>
+    <Project Name="orxSystem_SFML"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+    <Project Name="orxDisplay_SFML"/>
+    <Project Name="orxFile_LibC"/>
+    <Project Name="orxFileSystem_LibC"/>
+    <Project Name="orxJoystick_SFML"/>
+    <Project Name="orxKeyboard_SFML"/>
+    <Project Name="orxMouse_SFML"/>
+    <Project Name="orxPhysics_Box2D"/>
     <Project Name="orxRender_Home"/>
     <Project Name="orxSoundSystem_SFML"/>
     <Project Name="orxSystem_SFML"/>

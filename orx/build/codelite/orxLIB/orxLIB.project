@@ -185,8 +185,6 @@
     </VirtualDirectory>
   </VirtualDirectory>
   <Dependencies/>
-  <Dependencies Name="Linux Dynamic Debug"/>
-  <Dependencies Name="GP2X Debug"/>
   <Settings Type="Static Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
       <General OutputFile="../../../lib/static/gp2x/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin/gp2x" PauseExecWhenProcTerminates="no"/>
@@ -462,5 +460,14 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
+  <Dependencies Name="GP2X Debug"/>
+  <Dependencies Name="GP2X Release"/>
+  <Dependencies Name="Linux Dynamic Debug"/>
+  <Dependencies Name="Linux Dynamic Release"/>
+  <Dependencies Name="Linux Static Debug"/>
+  <Dependencies Name="Linux Static Release"/>
+  <Dependencies Name="Win32 Dynamic Debug"/>
+  <Dependencies Name="Win32 Dynamic Release"/>
   <Dependencies Name="Win32 Static Debug"/>
+  <Dependencies Name="Win32 Static Release"/>
 </CodeLite_Project>

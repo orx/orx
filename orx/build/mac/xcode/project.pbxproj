@@ -423,10 +423,6 @@
 			isa = PBXBuildFile;
 			fileRef = 000000000000000000000312;
 		};
-		00000000000000000000033d = {
-			isa = PBXBuildFile;
-			fileRef = 00000000000000000000033c;
-		};
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -606,20 +602,6 @@
 			remoteInfo = orx;
 		};
 		000000000000000000000314 = {
-			isa = PBXContainerItemProxy;
-			containerPortal = "D13A18A5-44A0-5AA2-ACD8-E6A432E28B72";
-			proxyType = 1;
-			remoteGlobalIDString = 000000000000000000000123;
-			remoteInfo = orx;
-		};
-		000000000000000000000316 = {
-			isa = PBXContainerItemProxy;
-			containerPortal = "D13A18A5-44A0-5AA2-ACD8-E6A432E28B72";
-			proxyType = 1;
-			remoteGlobalIDString = 000000000000000000000123;
-			remoteInfo = orx;
-		};
-		00000000000000000000033e = {
 			isa = PBXContainerItemProxy;
 			containerPortal = "D13A18A5-44A0-5AA2-ACD8-E6A432E28B72";
 			proxyType = 1;
@@ -1036,18 +1018,6 @@
 			path = orxScroll.c;
 			sourceTree = "<group>";
 		};
-		00000000000000000000033a = {
-			isa = PBXFileReference;
-			includeInIndex = 0;
-			lastKnownFileType = "compiled.mach-o.dylib";
-			path = Cave;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		00000000000000000000033c = {
-			isa = PBXFileReference;
-			path = orxCave.c;
-			sourceTree = "<group>";
-		};
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -1105,7 +1075,6 @@
 				0000000000000000000002ba,
 				0000000000000000000002e5,
 				000000000000000000000310,
-				00000000000000000000033a,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1354,7 +1323,6 @@
 			children = (
 				0000000000000000000002e8,
 				000000000000000000000312,
-				00000000000000000000033c,
 			);
 			path = plugins/Demo;
 			sourceTree = "<group>";
@@ -1599,21 +1567,6 @@
 			productReference = 000000000000000000000310;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		000000000000000000000318 = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 000000000000000000000339;
-			buildPhases = (
-				00000000000000000000033b,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				000000000000000000000317,
-			);
-			name = Cave;
-			productReference = 00000000000000000000033a;
-			productType = "com.apple.product-type.library.dynamic";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1641,7 +1594,6 @@
 				0000000000000000000002a8,
 				0000000000000000000002c3,
 				0000000000000000000002ee,
-				000000000000000000000318,
 			);
 		};
 /* End PBXProject section */
@@ -1863,14 +1815,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00000000000000000000033b = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00000000000000000000033d,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2003,16 +1947,6 @@
 			isa = PBXTargetDependency;
 			target = 000000000000000000000123;
 			targetProxy = 000000000000000000000314;
-		};
-		000000000000000000000317 = {
-			isa = PBXTargetDependency;
-			target = 000000000000000000000123;
-			targetProxy = 000000000000000000000316;
-		};
-		00000000000000000000033f = {
-			isa = PBXTargetDependency;
-			target = 000000000000000000000123;
-			targetProxy = 00000000000000000000033e;
 		};
 /* End PBXTargetDependency section */
 
@@ -9185,534 +9119,6 @@
 			};
 			name = "BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
 		};
-		000000000000000000000319 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000031a = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000031b = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000031c = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		00000000000000000000031d = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000031e = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000031f = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000320 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000321 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		000000000000000000000322 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000323 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		000000000000000000000324 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000325 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000326 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000327 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000328 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000329 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_static USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000032a = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000032b = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		00000000000000000000032c = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000032d = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000032e = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		00000000000000000000032f = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_static USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000330 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		000000000000000000000331 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000332 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_dynamic USE_SDL_1 USE_SFML_0 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		000000000000000000000333 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_static USE_SDL_0 USE_SFML_0 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		000000000000000000000334 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000335 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorxd -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_dynamic USE_SDL_0 USE_SFML_0 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000336 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_dynamic USE_SDL_1 USE_SFML_1 USE_BOX2D_1 USE_PLUGINS_1";
-		};
-		000000000000000000000337 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/dynamic;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -lorx -l";
-				PRODUCT_NAME = Cave;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-			};
-			name = "BUILD_release LINK_dynamic USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000338 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = ../../../bin/plugins/demo;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "__orxDEBUG__ __orxMAC__ __orxGCC__ __orxDLL__";
-				LIBRARY_SEARCH_PATHS = ../../../lib/static;
-				OTHER_CFLAGS = "-Wno-unused-parameter";
-				OTHER_LDFLAGS = " -l -l";
-				PRODUCT_NAME = Caved;
-				SYMROOT = ../../../bin/plugins/demo;
-				USER_HEADER_SEARCH_PATHS = ../../../include;
-				WARNING_CFLAGS = "-W -Wall";
-			};
-			name = "BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
 		0000000000000000000002b7 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -10327,45 +9733,6 @@
 				00000000000000000000030c,
 				00000000000000000000030d,
 				00000000000000000000030e,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";
-		};
-		000000000000000000000339 = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				000000000000000000000319,
-				00000000000000000000031a,
-				00000000000000000000031b,
-				00000000000000000000031c,
-				00000000000000000000031d,
-				00000000000000000000031e,
-				00000000000000000000031f,
-				000000000000000000000320,
-				000000000000000000000321,
-				000000000000000000000322,
-				000000000000000000000323,
-				000000000000000000000324,
-				000000000000000000000325,
-				000000000000000000000326,
-				000000000000000000000327,
-				000000000000000000000328,
-				000000000000000000000329,
-				00000000000000000000032a,
-				00000000000000000000032b,
-				00000000000000000000032c,
-				00000000000000000000032d,
-				00000000000000000000032e,
-				00000000000000000000032f,
-				000000000000000000000330,
-				000000000000000000000331,
-				000000000000000000000332,
-				000000000000000000000333,
-				000000000000000000000334,
-				000000000000000000000335,
-				000000000000000000000336,
-				000000000000000000000337,
-				000000000000000000000338,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "BUILD_debug LINK_static USE_SDL_0 USE_SFML_1 USE_BOX2D_0 USE_PLUGINS_1";

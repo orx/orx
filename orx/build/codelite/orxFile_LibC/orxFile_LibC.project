@@ -8,22 +8,6 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
-  <Dependencies Name="Linux Static Release">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-  </Dependencies>
-  <Dependencies Name="Linux Dynamic Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-  </Dependencies>
-  <Dependencies Name="Linux Static Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-  </Dependencies>
-  <Dependencies Name="GP2X Debug">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-  </Dependencies>
   <Settings Type="Dynamic Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/gp2x/plugins/core/file/orxFile_LibCd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
@@ -323,7 +307,43 @@
       </AdditionalRules>
     </Configuration>
   </Settings>
+  <Dependencies Name="GP2X Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="GP2X Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Linux Dynamic Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Linux Dynamic Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Linux Static Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Linux Static Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
   <Dependencies Name="Win32 Static Debug">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Static Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>

@@ -211,11 +211,6 @@ SCROLL_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
 	$(CPPFLAGS) $(CFLAGS)
 SCROLL_OBJECTS =  \
 	./$(BUILD)/Scroll_orxScroll.o
-CAVE_CFLAGS = $(__orxDEBUG_p) $(__orxPLATFORM_p) -D$(orxCOMPILER) \
-	-I$(srcdir)/../../../include -D__orxDLL__ $(PIC_FLAG) -Wno-unused-parameter \
-	$(CPPFLAGS) $(CFLAGS)
-CAVE_OBJECTS =  \
-	./$(BUILD)/Cave_orxCave.o
 
 ### Conditionally set variables: ###
 
@@ -302,10 +297,6 @@ COND_USE_PLUGINS_1___Scroll___depname = \
 	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 @COND_USE_PLUGINS_1@__Scroll___depname = $(COND_USE_PLUGINS_1___Scroll___depname)
 @COND_LINK_DYNAMIC@__orxEXTRALINK_p_12 = $(__orxNAME_p)
-COND_USE_PLUGINS_1___Cave___depname = \
-	$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave$(orxSUFFIX).$(SO_SUFFIX_MODULE)
-@COND_USE_PLUGINS_1@__Cave___depname = $(COND_USE_PLUGINS_1___Cave___depname)
-@COND_LINK_DYNAMIC@__orxEXTRALINK_p_13 = $(__orxNAME_p)
 @COND_BUILD_DEBUG@__orxDEBUG_p = -D__orxDEBUG__
 @COND_PLATFORM_MAC_1@__orxPLATFORM_p = -D__orxMAC__
 @COND_PLATFORM_UNIX_1@__orxPLATFORM_p = -D__orxLINUX__
@@ -317,7 +308,7 @@ COND_USE_PLUGINS_1___Cave___depname = \
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT) $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSoundSystem_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT) $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSoundSystem_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname)
 
 install: all
 
@@ -345,7 +336,6 @@ clean:
 	rm -f $(srcdir)/../../../bin/plugins/core/system/$(DLLPREFIX_MODULE)orxSystem_SFML$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Bounce$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll$(orxSUFFIX).$(SO_SUFFIX_MODULE)
-	rm -f $(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave$(orxSUFFIX).$(SO_SUFFIX_MODULE)
 
 distclean: clean
 	rm -f config.cache config.log config.status bk-deps bk-make-pch shared-ld-sh Makefile
@@ -401,9 +391,6 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 
 @COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Scroll$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
 @COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(SCROLL_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_12)
-
-@COND_USE_PLUGINS_1@$(srcdir)/../../../bin/plugins/demo/$(DLLPREFIX_MODULE)Cave$(orxSUFFIX).$(SO_SUFFIX_MODULE): $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT)
-@COND_USE_PLUGINS_1@	$(SHARED_LD_MODULE_CC) $@ $(CAVE_OBJECTS)  $(LDFLAGS)  -L$(srcdir)/../../../lib/$(LINK)   $(LIBS) $(__orxEXTRALINK_p_13)
 
 ./$(BUILD)/orxDLL_orxAnim.o: $(srcdir)/../../../src/anim/orxAnim.c
 	$(CCC) -c -o $@ $(ORXDLL_CFLAGS) $(srcdir)/../../../src/anim/orxAnim.c
@@ -716,9 +703,6 @@ $(srcdir)/../../../bin/$(orxNAME)$(EXEEXT): $(ORX_OBJECTS) $(__orxLINKDEPEND_DEP
 
 ./$(BUILD)/Scroll_orxScroll.o: $(srcdir)/../../../plugins/Demo/orxScroll.c
 	$(CCC) -c -o $@ $(SCROLL_CFLAGS) $(srcdir)/../../../plugins/Demo/orxScroll.c
-
-./$(BUILD)/Cave_orxCave.o: $(srcdir)/../../../plugins/Demo/orxCave.c
-	$(CCC) -c -o $@ $(CAVE_CFLAGS) $(srcdir)/../../../plugins/Demo/orxCave.c
 
 
 # Include dependency info, if present:

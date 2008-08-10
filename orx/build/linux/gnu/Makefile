@@ -240,11 +240,6 @@ SCROLL_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
 	-D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
 SCROLL_OBJECTS =  \
 	./$(BUILD)/Scroll_orxScroll.o
-CAVE_CFLAGS = $(__orxOPTIMIZEFLAG) $(__orxDEBUGFLAG) $(__orxDEBUG_p) \
-	-D$(orxPLATFORM) -D$(orxCOMPILER) $(__orxWARNINGFLAG) -I../../../include \
-	-D__orxDLL__ -fPIC -DPIC -Wno-unused-parameter $(CPPFLAGS) $(CFLAGS)
-CAVE_OBJECTS =  \
-	./$(BUILD)/Cave_orxCave.o
 
 ### Conditionally set variables: ###
 
@@ -381,12 +376,6 @@ endif
 ifeq ($(LINK),dynamic)
 __orxEXTRALINK_p_12 = $(__orxNAME_p)
 endif
-ifeq ($(USE_PLUGINS),1)
-__Cave___depname = ../../../bin/plugins/demo/Cave$(orxSUFFIX).so
-endif
-ifeq ($(LINK),dynamic)
-__orxEXTRALINK_p_13 = $(__orxNAME_p)
-endif
 ifeq ($(BUILD),debug)
 __orxOPTIMIZEFLAG = -O0
 endif
@@ -428,7 +417,7 @@ all: ./$(BUILD)
 
 ### Targets: ###
 
-all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/$(orxNAME) $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSoundSystem_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname) $(__Cave___depname)
+all: $(__orxDLL___depname) $(__orxLIB___depname) ../../../bin/$(orxNAME) $(__orxDisplay_SFML___depname) $(__orxRender_Home___depname) $(__orxSoundSystem_SFML___depname) $(__orxMouse_SFML___depname) $(__orxKeyboard_SFML___depname) $(__orxJoystick_SFML___depname) $(__orxFile_LibC___depname) $(__orxFileSystem_LibC___depname) $(__orxPhysics_Box2D___depname) $(__orxSystem_SDL___depname) $(__orxSystem_SFML___depname) $(__Bounce___depname) $(__Scroll___depname)
 
 install: all
 
@@ -454,7 +443,6 @@ clean:
 	rm -f ../../../bin/plugins/core/system/orxSystem_SFML$(orxSUFFIX).so
 	rm -f ../../../bin/plugins/demo/Bounce$(orxSUFFIX).so
 	rm -f ../../../bin/plugins/demo/Scroll$(orxSUFFIX).so
-	rm -f ../../../bin/plugins/demo/Cave$(orxSUFFIX).so
 
 ifeq ($(LINK),dynamic)
 ../../../lib/$(LINK)/lib$(orxNAME).so: $(ORXDLL_OBJECTS)
@@ -550,11 +538,6 @@ endif
 ifeq ($(USE_PLUGINS),1)
 ../../../bin/plugins/demo/Scroll$(orxSUFFIX).so: $(SCROLL_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
 	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(SCROLL_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_12)
-endif
-
-ifeq ($(USE_PLUGINS),1)
-../../../bin/plugins/demo/Cave$(orxSUFFIX).so: $(CAVE_OBJECTS) $(__orxLINKDEPEND_DEP) ../../../bin/$(orxNAME)
-	$(CC) $(LINK_MODULE_FLAGS) -fPIC -o $@ $(CAVE_OBJECTS) $(LDFLAGS) $(__orxDEBUGFLAG) -L../../../lib/$(LINK)   $(__orxEXTRALINK_p_13)
 endif
 
 ./$(BUILD)/orxDLL_orxAnim.o: ../../../src/anim/orxAnim.c
@@ -868,9 +851,6 @@ endif
 
 ./$(BUILD)/Scroll_orxScroll.o: ../../../plugins/Demo/orxScroll.c
 	$(CC) -c -o $@ $(SCROLL_CFLAGS) $(CPPDEPS) $<
-
-./$(BUILD)/Cave_orxCave.o: ../../../plugins/Demo/orxCave.c
-	$(CC) -c -o $@ $(CAVE_CFLAGS) $(CPPDEPS) $<
 
 .PHONY: all install uninstall clean
 

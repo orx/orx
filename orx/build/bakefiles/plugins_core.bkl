@@ -238,13 +238,4 @@
 		<sources>plugins/Demo/orxScroll.c</sources>
 	</orx-plugin>
 
-	<!-- CAVE DEMO -->
-
-	<!-- Depends on nothing -->
-	<orx-plugin id="Cave" cond="USE_PLUGINS=='1'">
-    <dllname>Cave$(orxSUFFIX)</dllname>
-		<destination>demo</destination>
-		<sources>plugins/Demo/orxCave.c</sources>
-	</orx-plugin>
-
 </bakefile>
