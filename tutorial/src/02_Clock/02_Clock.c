@@ -50,7 +50,7 @@
  * Here we register our callback on 2 different clocks for didactic purpose only. All objects
  * can of course be updated with only one clock, and the given clock context is also used here 
  * for demonstration only.
- * The first clock runs at 0.01s per tick and the second one at 0.2s per tick.
+ * The first clock runs at 0.01s per tick (100 Hz) and the second one at 0.2s per tick (5 Hz).
  * If you press numpad '+', '-' and '*', you can alter the time of the first clock.
  * It'll still be updated at the same rate, but the time information that the clock will pass
  * to the callback will be stretched.
@@ -78,7 +78,7 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   if(orxConfig_GetBool("DisplayLog"))
   {
     /* Displays info in log and console */
-    orxLOG("CLOCK<%p> : Time=%.3f / DT = %.3f", _pstClockInfo, _pstClockInfo->fTime, _pstClockInfo->fDT);
+    orxLOG("CLOCK<%p> : Time = %.3f / DT = %.3f", _pstClockInfo, _pstClockInfo->fTime, _pstClockInfo->fDT);
   }
 
 
@@ -99,13 +99,13 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Finds first user created clock (clock1) */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_USER);
 
-  /* Is'+' pressed? */
+  /* Is '+' pressed? */
   if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ADD))
   {
     /* Makes this clock go four time faster */
     orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_MULTIPLY, orx2F(4.0f));
   }
-  /* Is'-' pressed? */
+  /* Is '-' pressed? */
   else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
   {
     /* Makes this clock go four time slower */

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CodeLite_Project Name="02_Clock">
+<CodeLite_Project Name="03_Frame">
   <Description/>
   <VirtualDirectory Name="src">
-    <File Name="../../../src/02_Clock/02_Clock.c"/>
+    <File Name="../../../src/03_Frame/03_Frame.c"/>
   </VirtualDirectory>
   <Dependencies/>
   <Dependencies Name="Linux Dynamic Release"/>
   <Settings Type="Dynamic Library">
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/linux/02_Clock.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../02_Clock.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/linux/03_Frame.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../03_Frame.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxLINUX__"/>
@@ -19,25 +19,25 @@
         <LibraryPath Value="../../../lib/linux"/>
         <Library Value="orx"/>
       </Linker>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
+        <WorkingDirectory></WorkingDirectory>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild></CustomPreBuild>
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/mingw/02_Clock.dll" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="-c ../02_Clock.ini" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/mingw/03_Frame.dll" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="-c ../03_Frame.ini" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxWINDOWS__"/>
@@ -48,21 +48,23 @@
         <LibraryPath Value="../../../lib/mingw"/>
         <Library Value="orx"/>
       </Linker>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
-        <CleanCommand/>
-        <BuildCommand/>
-        <SingleFileCommand/>
-        <MakefileGenerationCommand/>
+        <CleanCommand></CleanCommand>
+        <BuildCommand></BuildCommand>
+        <SingleFileCommand></SingleFileCommand>
+        <MakefileGenerationCommand></MakefileGenerationCommand>
         <ThirdPartyToolName>None</ThirdPartyToolName>
-        <WorkingDirectory/>
+        <WorkingDirectory></WorkingDirectory>
       </CustomBuild>
       <AdditionalRules>
-        <CustomPostBuild/>
-        <CustomPreBuild/>
+        <CustomPostBuild></CustomPostBuild>
+        <CustomPreBuild>
+
+</CustomPreBuild>
       </AdditionalRules>
     </Configuration>
   </Settings>

@@ -170,11 +170,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRotation(orxOBJECT *_ps
 
 /** Sets object scale
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fScaleX        Object X scale
- * @param[in]   _fScaleY        Object Y scale
+ * @param[in]   _pvScale        Object scale vector
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetScale(orxOBJECT *_pstObject, orxFLOAT _fScaleX, orxFLOAT _fScaleY);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetScale(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvScale);
 
 /** Get object pivot
  * @param[in]   _pstObject      Concerned object
@@ -211,11 +210,10 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetWorldRotation(orxCONST 
 
 /** Get object scale
  * @param[in]   _pstObject      Concerned object
- * @param[out]  _pfScaleX       Object X scale
- * @param[out]  _pfScaleY       Object Y scale
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out]  _pvScale        Object scale vector
+ * @return      Scale vector
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvScale);
 
 /** Get object world scale
  * @param[in]   _pstObject      Concerned object
