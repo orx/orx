@@ -391,7 +391,7 @@ orxSTATUS orxClock_Update()
           pstClock->stClockInfo.fDT = fClockDT;
 
           /* Updates clock time */
-          pstClock->stClockInfo.fTime += fDT;
+          pstClock->stClockInfo.fTime += fClockDT;
 
           /* For all registered callbacks */
           for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
