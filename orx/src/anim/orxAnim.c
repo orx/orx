@@ -84,7 +84,7 @@ typedef struct __orxANIM_KEY_t
 struct __orxANIM_t
 {
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
-  orxU32        u32ID;                      /**< Anim ID : 20 */
+  orxSTRING     zName;                      /**< Anim name : 20 */
   orxANIM_KEY  *astKeyList;                 /**< Key array : 24 */
 
   orxPAD(24)
@@ -367,6 +367,9 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
     /* Inits flags */
     orxStructure_SetFlags(pstAnim, _u32Flags & orxANIM_KU32_MASK_USER_ALL, orxANIM_KU32_MASK_FLAGS);
 
+    /* Clears its name */
+    pstAnim->zName = orxSTRING_EMPTY;
+
     /* 2D Animation? */
     if(orxFLAG_TEST(_u32Flags, orxANIM_KU32_FLAG_2D))
     {
@@ -451,7 +454,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       orxU32    i;
 
       /* Stores its ID */
-      pstResult->u32ID = orxString_ToCRC(_zConfigID);
+      pstResult->zName = orxConfig_GetCurrentSection();
 
       /* Clears buffers */
       orxMemory_Zero(acID, 32 * sizeof(orxCHAR));
@@ -849,15 +852,34 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
  */
 orxU32 orxFASTCALL orxAnim_GetID(orxCONST orxANIM *_pstAnim)
 {
-  orxU32    u32Result;
+  orxU32 u32Result;
 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnim);
 
   /* Updates result */
-  u32Result = _pstAnim->u32ID;
+  u32Result = orxString_ToCRC(_pstAnim->zName);
 
   /* Done! */
   return u32Result;
+}
+
+/** Anim name get accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+orxSTRING orxFASTCALL orxAnim_GetName(orxCONST orxANIM *_pstAnim)
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnim);
+
+  /* Updates result */
+  zResult = _pstAnim->zName;
+
+  /* Done! */
+  return zResult;
 }

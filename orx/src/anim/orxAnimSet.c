@@ -120,9 +120,9 @@
  */
 typedef struct __orxLINK_UPDATE_INFO_t
 {
-  orxANIMSET_LINK_TABLE	 *pstLinkTable;								/**< Link table pointer : 4 */
-  orxU8 								 *au8LinkInfo;								/**< Link update info : 8 */
-  orxU32 									u32ByteNumber;							/**< Byte number per animation : 12 */
+  orxANIMSET_LINK_TABLE  *pstLinkTable;               /**< Link table pointer : 4 */
+  orxU8                  *au8LinkInfo;                /**< Link update info : 8 */
+  orxU32                  u32ByteNumber;              /**< Byte number per animation : 12 */
 
   orxPAD(12)
 
@@ -132,22 +132,22 @@ typedef struct __orxLINK_UPDATE_INFO_t
  */
 struct __orxANIMSET_LINK_TABLE_t
 {
-  orxU32 								 *au32LinkArray;							/**< Link array : 4 */
-  orxU8 								 *au8LoopArray;								/**< Loop array : 8 */
-  orxU16 									u16LinkCounter;							/** Link counter : 10 */
-  orxU16 									u16TableSize;								/** Table size : 12 */
-  orxU32 									u32Flags;										/** Flags : 16 */
+  orxU32                 *au32LinkArray;              /**< Link array : 4 */
+  orxU8                  *au8LoopArray;               /**< Loop array : 8 */
+  orxU16                  u16LinkCounter;             /**< Link counter : 10 */
+  orxU16                  u16TableSize;               /**< Table size : 12 */
+  orxU32                  u32Flags;                   /**< Flags : 16 */
 };
 
 /** AnimSet structure
  */
 struct __orxANIMSET_t
 {
-  orxSTRUCTURE 						stStructure;								/**< Public structure, first structure member : 16 */
-  orxANIM 							**pastAnim;										/**< Used animation pointer array : 20 */
-  orxANIMSET_LINK_TABLE  *pstLinkTable;								/**< Link table pointer : 24 */
+  orxSTRUCTURE            stStructure;                /**< Public structure, first structure member : 16 */
+  orxANIM               **pastAnim;                   /**< Used animation pointer array : 20 */
+  orxANIMSET_LINK_TABLE  *pstLinkTable;               /**< Link table pointer : 24 */
   orxHASHTABLE           *pstIDTable;                 /**< ID hash table : 28 */
-  orxU32                  u32ReferenceKey;            /**< Reference key : 32 */
+  orxSTRING               zReference;                 /**< Reference : 32 */
 
   orxPAD(32)
 };
@@ -1542,10 +1542,10 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
         }
 
         /* Stores its reference key */
-        pstResult->u32ReferenceKey = orxString_ToCRC(_zConfigID);
+        pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Adds it to reference table */
-        orxHashTable_Add(sstAnimSet.pstReferenceTable, pstResult->u32ReferenceKey, pstResult);
+        orxHashTable_Add(sstAnimSet.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, orxANIMSET_KU32_FLAG_INTERNAL | orxANIMSET_KU32_FLAG_REFERENCED, orxANIMSET_KU32_FLAG_NONE);
@@ -1590,7 +1590,7 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
     if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_REFERENCED) != orxFALSE)
     {
       /* Removes it from reference table */
-      orxHashTable_Remove(sstAnimSet.pstReferenceTable, _pstAnimSet->u32ReferenceKey);
+      orxHashTable_Remove(sstAnimSet.pstReferenceTable, orxString_ToCRC(_pstAnimSet->zReference));
     }
 
     /* Has ID table? */
@@ -2263,7 +2263,6 @@ orxANIM *orxFASTCALL orxAnimSet_GetAnim(orxCONST orxANIMSET *_pstAnimSet, orxHAN
   else
   {
     /* !!! MSG !!! */
-
   }
 
   /* Done! */

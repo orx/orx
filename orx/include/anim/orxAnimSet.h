@@ -232,8 +232,6 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(or
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetAnimHandleFromID(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32AnimID);
 
-
 #endif /* _orxANIMSET_H_ */
-
 
 /** @} */

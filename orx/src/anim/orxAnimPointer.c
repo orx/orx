@@ -181,7 +181,8 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         stEvent.eID         = (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_END;
         stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)_pstAnimPointer;
         stEvent.pstPayload  = &stPayload;
-        stPayload.pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+        stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+        stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
         /* Updates current anim handle */
         _pstAnimPointer->hCurrentAnim = hNewAnim;
@@ -201,8 +202,9 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         else
         {
           /* Inits event */
-          stEvent.eID       = orxANIM_EVENT_START;
-          stPayload.pstAnim = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+          stEvent.eID         = orxANIM_EVENT_START;
+          stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+          stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
           /* Sends it */
           orxEvent_Send(&stEvent);
