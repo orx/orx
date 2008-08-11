@@ -3,6 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01_Object", "01_Object\01_Object.vcproj", "{CF32AE2D-5F92-4356-A35A-9BDC8292FB17}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02_Clock", "02_Clock\02_Clock.vcproj", "{3E0D8E8F-3588-4184-9B75-490BF0B978D6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03_Frame", "03_Frame\03_Frame.vcproj", "{B0C1FD52-23D9-4F35-9803-9889ADA9C2D0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "04_Anim", "04_Anim\04_Anim.vcproj", "{CACC9D17-B39E-40EA-BDE8-EB9B707C5759}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Dynamic Release|Win32 = Dynamic Release|Win32
@@ -10,6 +16,12 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CF32AE2D-5F92-4356-A35A-9BDC8292FB17}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
 		{CF32AE2D-5F92-4356-A35A-9BDC8292FB17}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{3E0D8E8F-3588-4184-9B75-490BF0B978D6}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{3E0D8E8F-3588-4184-9B75-490BF0B978D6}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{B0C1FD52-23D9-4F35-9803-9889ADA9C2D0}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{B0C1FD52-23D9-4F35-9803-9889ADA9C2D0}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{CACC9D17-B39E-40EA-BDE8-EB9B707C5759}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{CACC9D17-B39E-40EA-BDE8-EB9B707C5759}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

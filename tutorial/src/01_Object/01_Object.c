@@ -65,7 +65,7 @@
 orxSTATUS Init()
 {
   /* Loads config file */
-  orxConfig_Load("../../01_Object/01_Object.ini");
+  orxConfig_Load("../01_Object.ini");
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
