@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeLite_Project Name="04_Anim">
+  <Description/>
+  <VirtualDirectory Name="src">
+    <File Name="../../../src/04_Anim/04_Anim.c"/>
+  </VirtualDirectory>
+  <Dependencies/>
+  <Dependencies Name="Linux Dynamic Release"/>
+  <Settings Type="Dynamic Library">
+    <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/linux/04_Anim.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../04_Anim.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxLINUX__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -s">
+        <LibraryPath Value="../../../lib/linux"/>
+        <Library Value="orx"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+    <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
+      <General OutputFile="../../../bin/mingw/04_Anim.dll" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="-c ../04_Anim.ini" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
+      <Compiler Required="yes" Options="-O2">
+        <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxWINDOWS__"/>
+        <Preprocessor Value="__orxGCC__"/>
+        <Preprocessor Value="__orxDLL__"/>
+      </Compiler>
+      <Linker Required="yes" Options="-fPIC -s">
+        <LibraryPath Value="../../../lib/mingw"/>
+        <Library Value="orx"/>
+      </Linker>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
+      <ResourceCompiler Required="no" Options=""/>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <CleanCommand/>
+        <BuildCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Win32 Dynamic Release"/>
+</CodeLite_Project>

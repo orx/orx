@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Workspace Name="Tutorial" Database="./Tutorial.tags">
-  <Project Name="01_Object" Path="01_Object/01_Object.project" Active="No"/>
+  <Project Name="01_Object" Path="01_Object/01_Object.project" Active="Yes"/>
   <Project Name="02_Clock" Path="02_Clock/02_Clock.project" Active="No"/>
-  <Project Name="03_Frame" Path="03_Frame/03_Frame.project" Active="Yes"/>
+  <Project Name="03_Frame" Path="03_Frame/03_Frame.project" Active="No"/>
+  <Project Name="04_Anim" Path="04_Anim/04_Anim.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="no">
       <Project Name="01_Object" ConfigName="Linux Dynamic Release"/>
       <Project Name="02_Clock" ConfigName="Linux Dynamic Release"/>
       <Project Name="03_Frame" ConfigName="Linux Dynamic Release"/>
+      <Project Name="04_Anim" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="yes">
       <Project Name="01_Object" ConfigName="Win32 Dynamic Release"/>
       <Project Name="02_Clock" ConfigName="Win32 Dynamic Release"/>
       <Project Name="03_Frame" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="04_Anim" ConfigName="Win32 Dynamic Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

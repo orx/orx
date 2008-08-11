@@ -56,6 +56,8 @@
  * to the callback will be stretched.
  * This provides an easy way of adding time distorsion and having parts
  * of your logic code updated at different frequencies.
+ * One clock can have as many callbacks registered as you want.
+ *
  * For example, the FPS displayed in the top left corner is computed with a non-stretched clock
  * of tick size = 1 second.
  */
@@ -128,7 +130,7 @@ orxSTATUS Init()
   orxOBJECT *pstObject1, *pstObject2;
 
   /* Displays a small hint in console */
-  orxLOG("Press numpad '+', '-' and '*' to stretch time for the first clock.");
+  orxLOG("\n- Press numpad '+', '-' and '*' to stretch time for the first clock");
 
   /* Loads config file and selects main section */
   orxConfig_Load("../../02_Clock/02_Clock.ini");

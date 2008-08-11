@@ -86,7 +86,8 @@ typedef enum __orxANIM_EVENT_t
  */
 typedef struct __orxANIM_EVENT_PAYLOAD_t
 {
-  orxANIM *pstAnim;                          /**< Animation reference : 4 */
+  orxANIM  *pstAnim;                          /**< Animation reference : 4 */
+  orxSTRING zAnimName;                        /**< Animation name : 8 */
 
 } orxANIM_EVENT_PAYLOAD;
 
@@ -184,6 +185,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnim_GetLength(orxCONST orxANIM
  * @return      Anim ID / orxU32_UNDEFINED
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetID(orxCONST orxANIM *_pstAnim);
+
+/** Anim name get accessor
+ * @param[in]   _pstAnim        Concerned animation
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL        orxAnim_GetName(orxCONST orxANIM *_pstAnim);
 
 
 #endif /* _orxANIM_H_ */
