@@ -153,7 +153,7 @@ orxSTATUS Init()
   orxCLOCK *pstClock;
 
   /* Displays a small hint in console */
-  orxLOG("\n- Arrow keys will change the soldier's animations");
+  orxLOG("\n- Arrow keys will change the soldier's animations\n- '+' & '-' will scale the soldier");
 
   /* Loads config file and selects main section */
   orxConfig_Load("../04_Anim.ini");
