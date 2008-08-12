@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="05_Viewport"
+	ProjectGUID="{5EFA855E-C414-491A-83FB-3A075812030A}"
 	RootNamespace="My05_Viewport"
 	>
 	<Platforms>
