@@ -36,6 +36,8 @@
 #include "plugin/orxPluginUser.h"
 #include "core/orxSystem.h"
 
+#include <time.h>
+
 #include <SDL/SDL.h>
 
 /** Module flags
@@ -146,6 +148,30 @@ orxFLOAT orxSystemSDL_GetTime()
   return(orx2F(0.001f) * orxU2F(SDL_GetTicks()));
 }
 
+/** Gets App Elapsed time.
+ * @return Returns the amount of seconds elapsed from the application start.
+ */
+orxFLOAT orxSystemSDL_GetRealTime()
+{
+  time_t    stTime;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
+
+  /* Module initialized ? */
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
+
+  /* Gets time */
+  time(&stTime);
+
+  /* Updates result */
+  fResult = orxS2F(stTime);
+
+  /* Done! */
+  return fResult;
+}
+
 /** Delay the program for given number of milliseconds.
  * @param[in] _fSystem Number of seconds to wait.
  */
@@ -169,5 +195,6 @@ orxPLUGIN_USER_CORE_FUNCTION_START(SYSTEM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_Init, SYSTEM, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_Exit, SYSTEM, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_GetTime, SYSTEM, GET_TIME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_GetRealTime, SYSTEM, GET_REAL_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystemSDL_Delay, SYSTEM, DELAY);
 orxPLUGIN_USER_CORE_FUNCTION_END();

@@ -42,6 +42,7 @@ extern "C"
 }
 
 #include <SFML/Window.hpp>
+#include <ctime>
 
 /** Module flags
  */
@@ -137,6 +138,27 @@ extern "C" orxFLOAT orxSystem_SFML_GetTime()
   return(orx2F(sstSystem.poClock->GetElapsedTime()));
 }
 
+/** Gets real time
+ * @return Returns the amount of seconds elapsed from the application start.
+ */
+extern "C" orxFLOAT orxSystem_SFML_GetRealTime()
+{
+  time_t    stTime;
+  orxFLOAT  fResult;
+
+  /* Module initialized ? */
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
+
+  /* Gets time */
+  time(&stTime);
+
+  /* Updates result */
+  fResult = orxS2F(stTime);
+
+  /* Done! */
+  return fResult;
+}
+
 /** Delay the program for given number of milliseconds.
  * @param[in] _fSeconds Number of seconds to wait.
  */
@@ -158,5 +180,6 @@ orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_Init, SYSTEM, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_Exit, SYSTEM, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_GetTime, SYSTEM, GET_TIME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_GetRealTime, SYSTEM, GET_REAL_TIME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_Delay, SYSTEM, DELAY);
 orxPLUGIN_USER_CORE_FUNCTION_END();

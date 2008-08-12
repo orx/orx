@@ -34,6 +34,8 @@
 #include "core/orxConfig.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
+#include "utils/orxHashTable.h"
+#include "utils/orxString.h"
 
 
 /** Module flags
@@ -47,6 +49,7 @@
 
 /** orxCAMERA flags / masks
  */
+#define orxCAMERA_KU32_FLAG_REFERENCED        0x10000000  /**< Referenced flag */
 #define orxCAMERA_KU32_MASK_ALL               0xFFFFFFFF  /**< All mask */
 
 
@@ -60,6 +63,8 @@
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_WIDTH     "FrustumWidth"
 #define orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT    "FrustumHeight"
 
+#define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   8           /**< Reference table size */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -69,11 +74,12 @@
  */
 struct __orxCAMERA_t
 {
-  orxSTRUCTURE        stStructure;            /**< Public structure, first structure member : 16 */
-  orxFRAME           *pstFrame;               /**< Frame : 20 */
-  orxAABOX            stFrustum;             /**< Frustum : 44 */
+  orxSTRUCTURE  stStructure;                  /**< Public structure, first structure member : 16 */
+  orxFRAME     *pstFrame;                     /**< Frame : 20 */
+  orxAABOX      stFrustum;                    /**< Frustum : 44 */
+  orxSTRING     zReference;                   /**< Reference : 48 */
 
-  orxPAD(44)
+  orxPAD(48)
 };
 
 
@@ -81,7 +87,8 @@ struct __orxCAMERA_t
  */
 typedef struct __orxCAMERA_STATIC_t
 {
-  orxU32 u32Flags;                            /**< Control flags : 4 */
+  orxU32        u32Flags;                     /**< Control flags : 4 */
+  orxHASHTABLE *pstReferenceTable;            /**< Table to avoid camera duplication when creating through config file : 8 */
 
 } orxCAMERA_STATIC;
 
@@ -135,6 +142,7 @@ orxVOID orxCamera_Setup()
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_FRAME);
+  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_HASHTABLE);
 
   return;
 }
@@ -152,8 +160,15 @@ orxSTATUS orxCamera_Init()
     /* Cleans control structure */
     orxMemory_Zero(&sstCamera, sizeof(orxCAMERA_STATIC));
 
-    /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(CAMERA, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    /* Creates reference table */
+    sstCamera.pstReferenceTable = orxHashTable_Create(orxCAMERA_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if(sstCamera.pstReferenceTable != orxNULL)
+    {
+      /* Registers structure type */
+      eResult = orxSTRUCTURE_REGISTER(CAMERA, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    }
   }
   else
   {
@@ -190,6 +205,9 @@ orxVOID orxCamera_Exit()
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_CAMERA);
+
+    /* Deletes reference table */
+    orxHashTable_Delete(sstCamera.pstReferenceTable);
 
     /* Updates flags */
     sstCamera.u32Flags &= ~orxCAMERA_KU32_STATIC_FLAG_READY;
@@ -278,71 +296,88 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
 orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 {
   orxCAMERA  *pstResult;
-  orxSTRING   zPreviousSection;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
 
-  /* Gets previous config section */
-  zPreviousSection = orxConfig_GetCurrentSection();
+  /* Search for reference */
+  pstResult = orxHashTable_Get(sstCamera.pstReferenceTable, orxString_ToCRC(_zConfigID));
 
-  /* Selects section */
-  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  /* Not already created? */
+  if(pstResult == orxNULL)
   {
-    /* Creates 2D default camera */
-    pstResult = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
+    orxSTRING zPreviousSection;
 
-    /* Valid? */
-    if(pstResult != orxNULL)
+    /* Gets previous config section */
+    zPreviousSection = orxConfig_GetCurrentSection();
+
+    /* Selects section */
+    if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
     {
-      orxVECTOR vPosition;
-      orxFLOAT  fNear, fFar, fWidth, fHeight;
+      /* Creates 2D default camera */
+      pstResult = orxCamera_Create(orxCAMERA_KU32_FLAG_2D);
 
-      /* Gets frustum info */
-      fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
-      fFar    = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_FAR);
-      fWidth  = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_WIDTH);
-      fHeight = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT);
-
-      /* Applies it */
-      orxCamera_SetFrustum(pstResult, fWidth, fHeight, fNear, fFar);
-
-      /* Has zoom? */
-      if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_ZOOM) != orxFALSE)
+      /* Valid? */
+      if(pstResult != orxNULL)
       {
-        orxFLOAT fZoom;
+        orxVECTOR vPosition;
+        orxFLOAT  fNear, fFar, fWidth, fHeight;
 
-        /* Gets config zoom */
-        fZoom = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_ZOOM);
+        /* Gets frustum info */
+        fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
+        fFar    = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_FAR);
+        fWidth  = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_WIDTH);
+        fHeight = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_HEIGHT);
 
-        /* Valid? */
-        if(fZoom > orxFLOAT_0)
+        /* Applies it */
+        orxCamera_SetFrustum(pstResult, fWidth, fHeight, fNear, fFar);
+
+        /* Has zoom? */
+        if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_ZOOM) != orxFALSE)
         {
-          /* Applies it */
-          orxCamera_SetZoom(pstResult, fZoom);
+          orxFLOAT fZoom;
+
+          /* Gets config zoom */
+          fZoom = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_ZOOM);
+
+          /* Valid? */
+          if(fZoom > orxFLOAT_0)
+          {
+            /* Applies it */
+            orxCamera_SetZoom(pstResult, fZoom);
+          }
         }
+
+        /* Has a position? */
+        if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+        {
+          /* Updates camera position */
+          orxCamera_SetPosition(pstResult, &vPosition);
+        }
+
+        /* Updates object rotation */
+        orxCamera_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_ROTATION));
+
+        /* Stores its reference key */
+        pstResult->zReference = orxConfig_GetCurrentSection();
+
+        /* Adds it to reference table */
+        orxHashTable_Add(sstCamera.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+
+        /* Updates status flags */
+        orxStructure_SetFlags(pstResult, orxCAMERA_KU32_FLAG_REFERENCED, orxCAMERA_KU32_FLAG_NONE);
       }
 
-      /* Has a position? */
-      if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
-      {
-        /* Updates camera position */
-        orxCamera_SetPosition(pstResult, &vPosition);
-      }
-
-      /* Updates object rotation */
-      orxCamera_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_ROTATION));
+      /* Restores previous section */
+      orxConfig_SelectSection(zPreviousSection);
     }
+    else
+    {
+      /* !!! MSG !!! */
 
-    /* Restores previous section */
-    orxConfig_SelectSection(zPreviousSection);
-  }
-  else
-  {
-    /* !!! MSG !!! */
-
-    /* Updates result */
-    pstResult = orxNULL;
+      /* Updates result */
+      pstResult = orxNULL;
+    }
   }
 
   /* Done! */
@@ -369,6 +404,13 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
 
     /* Deletes frame*/
     orxFrame_Delete(_pstCamera->pstFrame);
+
+    /* Is referenced? */
+    if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_REFERENCED) != orxFALSE)
+    {
+      /* Removes it from reference table */
+      orxHashTable_Remove(sstCamera.pstReferenceTable, orxString_ToCRC(_pstCamera->zReference));
+    }
 
     /* Deletes structure */
     orxStructure_Delete(_pstCamera);

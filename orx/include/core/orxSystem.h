@@ -88,6 +88,11 @@ extern orxDLLAPI orxVOID            orxSystem_Exit();
  */
 extern orxDLLAPI orxFLOAT           orxSystem_GetTime();
 
+/** Gets current real time
+ * @return Current real time
+ */
+extern orxDLLAPI orxFLOAT           orxSystem_GetRealTime();
+
 /** Delay the program for given number of seconds
  * @param[in] _fSeconds             Number of seconds to wait
  */

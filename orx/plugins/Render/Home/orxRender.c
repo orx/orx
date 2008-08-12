@@ -252,7 +252,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
         }
         else
         {
-          orxFLOAT  fIncX, fIncY, fCos, fSin, fX, fY, fEndX, fEndY, fRemainderX, fRemainderY;
+          orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fEndX, fEndY, fRemainderX, fRemainderY;
 
           /* Gets cosine and sine of the object angle */
           fCos = orxMath_Cos(-fRotation);
@@ -853,17 +853,59 @@ orxVECTOR *orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition
       && (_pvScreenPosition->fY >= stViewportBox.vTL.fY)
       && (_pvScreenPosition->fY <= stViewportBox.vBR.fY))
       {
-        orxVECTOR vLocalPosition;
+        orxVECTOR vLocalPosition, vCenter, vCameraCenter;
         orxAABOX  stCameraFrustum;
+        orxFLOAT  fZoom, fRotation;
 
-        /* Gets viewport space normalized position */
-        orxVector_Set(&vLocalPosition, (_pvScreenPosition->fX - stViewportBox.vTL.fX) / (stViewportBox.vBR.fX - stViewportBox.vTL.fX), (_pvScreenPosition->fY - stViewportBox.vTL.fY) / (stViewportBox.vBR.fY - stViewportBox.vTL.fY), orxFLOAT_0);
+        /* Gets viewport center */
+        orxVector_Mulf(&vCenter, orxVector_Add(&vCenter, &(stViewportBox.vBR), &(stViewportBox.vTL)), orx2F(0.5f));
 
         /* Gets camera frustum */
         orxCamera_GetFrustum(pstCamera, &stCameraFrustum);
 
-        /* Gets its world coordinates */
-        orxVector_Set(_pvWorldPosition, stCameraFrustum.vTL.fX + (vLocalPosition.fX * (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX)), stCameraFrustum.vTL.fY + (vLocalPosition.fY * (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY)), orx2F(0.5f) * (stCameraFrustum.vBR.fZ + stCameraFrustum.vTL.fZ));
+        /* Gets camera position */
+        orxVector_Mulf(&vCameraCenter, orxVector_Add(&vCameraCenter, &(stCameraFrustum.vBR), &(stCameraFrustum.vTL)), orx2F(0.5f));
+
+        /* Gets viewport space normalized position */
+        orxVector_Set(&vLocalPosition, (_pvScreenPosition->fX - vCenter.fX) / (stViewportBox.vBR.fX - stViewportBox.vTL.fX), (_pvScreenPosition->fY - vCenter.fY) / (stViewportBox.vBR.fY - stViewportBox.vTL.fY), orxFLOAT_0);
+
+        /* Gets camera zoom */
+        fZoom = orxCamera_GetZoom(pstCamera);
+
+        /* Has rotation */
+        if((fRotation = orxCamera_GetRotation(pstCamera)) != orxFLOAT_0)
+        {
+          orxFLOAT fCos, fSin;
+
+          /* Gets values in camera space */
+          vLocalPosition.fX *= (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX);
+          vLocalPosition.fY *= (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY);
+
+          /* Gets cosine and sine of the camera angle */
+          fCos = orxMath_Cos(-fRotation);
+          fSin = orxMath_Sin(-fRotation);
+
+          /* Gets its world coordinates */
+          orxVector_Set(_pvWorldPosition, (vCameraCenter.fX * fZoom) + (fCos * vLocalPosition.fX) + (fSin * vLocalPosition.fY), (vCameraCenter.fY * fZoom) + (-fSin * vLocalPosition.fX) + (fCos * vLocalPosition.fY), orx2F(0.5f) * (stCameraFrustum.vBR.fZ + stCameraFrustum.vTL.fZ));
+        }
+        else
+        {
+          /* Gets its world coordinates */
+          orxVector_Set(_pvWorldPosition, vCameraCenter.fX * fZoom + vLocalPosition.fX * (stCameraFrustum.vBR.fX - stCameraFrustum.vTL.fX), vCameraCenter.fY * fZoom + vLocalPosition.fY * (stCameraFrustum.vBR.fY - stCameraFrustum.vTL.fY), orx2F(0.5f) * (stCameraFrustum.vBR.fZ + stCameraFrustum.vTL.fZ));
+        }
+
+        /* Has zoom? */
+        if((fZoom = orxCamera_GetZoom(pstCamera)) != orxFLOAT_1)
+        {
+          orxFLOAT fInvZoom;
+
+          /* Gets 1 / Zoom */
+          fInvZoom = orxFLOAT_1 / fZoom;
+
+          /* Updates result */
+          _pvWorldPosition->fX *= fInvZoom;
+          _pvWorldPosition->fY *= fInvZoom;
+        }
 
         /* Updates result */
         pvResult = _pvWorldPosition;

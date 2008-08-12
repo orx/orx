@@ -138,7 +138,7 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     orxObject_SetScale(pstSoldier, orxVector_Mulf(&vScale, orxObject_GetScale(pstSoldier, &vScale), orx2F(1.02f)));
   }
   /* Is '-' pressed? */
-  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
   {
     /* Scales down the soldier */
     orxObject_SetScale(pstSoldier, orxVector_Mulf(&vScale, orxObject_GetScale(pstSoldier, &vScale), orx2F(0.98f)));
@@ -156,7 +156,7 @@ orxSTATUS Init()
   orxLOG("\n- Arrow keys will change the soldier's animations");
 
   /* Loads config file and selects main section */
-  orxConfig_Load("../../04_Anim/04_Anim.ini");
+  orxConfig_Load("../04_Anim.ini");
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");

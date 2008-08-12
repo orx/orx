@@ -912,8 +912,8 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
-  orxASSERT((_fW >= 0.0f) && (_fW <= 1.0f))
-  orxASSERT((_fH >= 0.0f) && (_fH <= 1.0f))
+  orxASSERT((_fW >= 0.0f));
+  orxASSERT((_fH >= 0.0f));
 
   /* Gets viewport texture */
   pstTexture = orxViewport_GetTexture(_pstViewport);

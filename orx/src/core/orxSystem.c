@@ -61,6 +61,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Init, orxSTATUS, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Exit, orxVOID, orxVOID);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_GetTime, orxFLOAT, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_GetRealTime, orxFLOAT, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSystem_Delay, orxVOID, orxFLOAT);
 
 
@@ -72,6 +73,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SYSTEM, INIT, orxSystem_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SYSTEM, EXIT, orxSystem_Exit)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SYSTEM, GET_TIME, orxSystem_GetTime)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SYSTEM, GET_REAL_TIME, orxSystem_GetRealTime)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SYSTEM, DELAY, orxSystem_Delay)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(SYSTEM)
@@ -92,6 +94,11 @@ orxVOID orxSystem_Exit()
 orxFLOAT orxSystem_GetTime()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetTime)();
+}
+
+orxFLOAT orxSystem_GetRealTime()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetRealTime)();
 }
 
 orxVOID orxSystem_Delay(orxFLOAT _fSeconds)

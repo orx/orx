@@ -7,7 +7,6 @@
   <Project Name="orxPhysics_Box2D" Path="orxPhysics_Box2D/orxPhysics_Box2D.project"/>
   <Project Name="orx" Path="orx/orx.project" Active="Yes"/>
   <Project Name="Bounce" Path="orxDemo/Bounce.project" Active="No"/>
-  <Project Name="Cave" Path="orxDemo/Cave.project" Active="No"/>
   <Project Name="Scroll" Path="orxDemo/Scroll.project" Active="No"/>
   <Project Name="orxDisplay_SDL" Path="orxDisplay_SDL/orxDisplay_SDL.project" Active="No"/>
   <Project Name="orxSystem_SDL" Path="orxSystem_SDL/orxSystem_SDL.project" Active="No"/>
@@ -21,7 +20,6 @@
       <Project Name="orxFile_LibC" ConfigName="GP2X Debug"/>
       <Project Name="orxFileSystem_LibC" ConfigName="GP2X Debug"/>
       <Project Name="orxDisplay_SDL" ConfigName="GP2X Debug"/>
-      <Project Name="Cave" ConfigName="GP2X Debug"/>
       <Project Name="Bounce" ConfigName="GP2X Debug"/>
       <Project Name="orx" ConfigName="GP2X Debug"/>
     </WorkspaceConfiguration>
@@ -34,7 +32,6 @@
       <Project Name="orxFile_LibC" ConfigName="GP2X Release"/>
       <Project Name="orxFileSystem_LibC" ConfigName="GP2X Release"/>
       <Project Name="orxDisplay_SDL" ConfigName="GP2X Release"/>
-      <Project Name="Cave" ConfigName="GP2X Release"/>
       <Project Name="Bounce" ConfigName="GP2X Release"/>
       <Project Name="orx" ConfigName="GP2X Release"/>
     </WorkspaceConfiguration>

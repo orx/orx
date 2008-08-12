@@ -83,6 +83,19 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     orxLOG("CLOCK<%p> : Time = %.3f / DT = %.3f", _pstClockInfo, _pstClockInfo->fTime, _pstClockInfo->fDT);
   }
 
+  /* Is 'L' pressed? */
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_L))
+  {
+    /* Activates logging */
+    orxConfig_SetBool("DisplayLog", orxTRUE);
+  }
+  /* Is 'S' pressed? */
+  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_S))
+  {
+    /* Deactivates logging */
+    orxConfig_SetBool("DisplayLog", orxFALSE);
+  }
+
 
   /* *** OBJECT UPDATE SECTION *** */
 
@@ -112,13 +125,13 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   {
     /* Makes this clock go four time slower */
     orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_MULTIPLY, orx2F(0.25f));
-  }    
+  }
   /* Is '*' pressed? */
   else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_MULTIPLY))
   {
     /* Removes modifier from this clock */
     orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_NONE, orxFLOAT_0);
-  }    
+  }
 }
 
 
@@ -130,10 +143,10 @@ orxSTATUS Init()
   orxOBJECT *pstObject1, *pstObject2;
 
   /* Displays a small hint in console */
-  orxLOG("\n- Press numpad '+', '-' and '*' to stretch time for the first clock");
+  orxLOG("\n- Press 'L' to activate log and 'S' to stop it\n- To stretch time for the first clock:\n . Press numpad '+' to stretch time 4 times faster\n . Press numpad '*' to stretch time 4 times\n . Press numpad '-' to set it back to normal");
 
   /* Loads config file and selects main section */
-  orxConfig_Load("../../02_Clock/02_Clock.ini");
+  orxConfig_Load("../02_Clock.ini");
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");

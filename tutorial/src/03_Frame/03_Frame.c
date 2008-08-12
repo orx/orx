@@ -101,7 +101,7 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     orxObject_SetScale(pstParentObject, orxVector_Mulf(&vScale, orxObject_GetScale(pstParentObject, &vScale), orx2F(1.02f)));
   }
   /* Is '-' pressed? */
-  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
   {
     /* Scales down the Parent object */
     orxObject_SetScale(pstParentObject, orxVector_Mulf(&vScale, orxObject_GetScale(pstParentObject, &vScale), orx2F(0.98f)));
@@ -126,7 +126,7 @@ orxSTATUS Init()
   orxLOG("\n- The parent object will follow the mouse\n- Left & right buttons will rotate it\n- '+' & '-' will scale it");
 
   /* Loads config file and selects main section */
-  orxConfig_Load("../../03_Frame/03_Frame.ini");
+  orxConfig_Load("../03_Frame.ini");
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");

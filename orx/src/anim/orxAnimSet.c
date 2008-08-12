@@ -48,54 +48,58 @@
 
 /** Module flags
  */
-#define orxANIMSET_KU32_STATIC_FLAG_NONE              0x00000000	/**< No flags */
+#define orxANIMSET_KU32_STATIC_FLAG_NONE              0x00000000  /**< No flags */
 
-#define orxANIMSET_KU32_STATIC_FLAG_READY             0x00000001	/**< Ready flag */
+#define orxANIMSET_KU32_STATIC_FLAG_READY             0x00000001  /**< Ready flag */
+
+#define orxANIMSET_KU32_STATIC_MASK_ALL               0xFFFFFFFF  /**< All mask*/
 
 
 /** orxANIMSET flags
  */
-#define orxANIMSET_KU32_FLAG_NONE                     0x00000000	/**< ID flag none */
+#define orxANIMSET_KU32_FLAG_NONE                     0x00000000  /**< ID flag none */
 
 #define orxANIMSET_KU32_FLAG_INTERNAL                 0x10000000  /**< Internal structure handling flag  */
 #define orxANIMSET_KU32_FLAG_REFERENCED               0x20000000  /**< Referenced flag  */
 #define orxANIMSET_KU32_FLAG_ID_TABLE                 0x40000000  /**< Has an ID table flag  */
 
-#define orxANIMSET_KU32_MASK_SIZE                     0x000000FF	/**< ID mask for size */
-#define orxANIMSET_KU32_MASK_COUNTER                  0x0000FF00	/**< ID mask for counter */
-#define orxANIMSET_KU32_MASK_FLAGS                    0xFFFF0000	/**< ID mask for flags */
+#define orxANIMSET_KU32_MASK_SIZE                     0x000000FF  /**< ID mask for size */
+#define orxANIMSET_KU32_MASK_COUNTER                  0x0000FF00  /**< ID mask for counter */
+#define orxANIMSET_KU32_MASK_FLAGS                    0xFFFF0000  /**< ID mask for flags */
 
-#define orxANIMSET_KU32_ID_SHIFT_SIZE         				0						/**< ID shift for size */
-#define orxANIMSET_KU32_ID_SHIFT_COUNTER      				8						/**< ID shift for counter */
-
-
-/* Link table link flags */
-#define orxANIMSET_KU32_LINK_FLAG_NONE        				0x00000000	/**< Link flag none */
-
-#define orxANIMSET_KU32_LINK_FLAG_PATH        				0x01000000	/**< Link flag for path */
-#define orxANIMSET_KU32_LINK_FLAG_LINK        				0x02000000	/**< Link flag for link */
-
-#define orxANIMSET_KU32_LINK_MASK_ANIM        				0x000000FF	/**< Link mask for anim */
-#define orxANIMSET_KU32_LINK_MASK_LENGTH      				0x0000FF00	/**< Link mask for length */
-#define orxANIMSET_KU32_LINK_MASK_PRIORITY    				0x000F0000	/**< Link mask for priority */
-#define orxANIMSET_KU32_LINK_MASK_FLAGS       				0xFF000000	/**< Link mask for flags */
-
-#define orxANIMSET_KU32_LINK_SHIFT_ANIM       				0						/**< Link shift for anim */
-#define orxANIMSET_KU32_LINK_SHIFT_LENGTH     				8						/**< Link shift for length */
-#define orxANIMSET_KU32_LINK_SHIFT_PRIORITY   				16					/**< Link shift for priority */
-
-#define orxANIMSET_KU32_LINK_DEFAULT_NONE     				0x00000000	/**< Link default : none */
-
-#define orxANIMSET_KU32_LINK_DEFAULT_PRIORITY 		    0x00000008	/**< Link default priority */
+#define orxANIMSET_KU32_ID_SHIFT_SIZE                 0           /**< ID shift for size */
+#define orxANIMSET_KU32_ID_SHIFT_COUNTER              8           /**< ID shift for counter */
 
 
-/* Link table (status) flags */
-#define orxANIMSET_KU32_LINK_TABLE_FLAG_NONE          0x00000000	/**< Link table flag none */
+/** Link table link flags
+ */
+#define orxANIMSET_KU32_LINK_FLAG_NONE                0x00000000  /**< Link flag none */
 
-#define orxANIMSET_KU32_LINK_TABLE_FLAG_READY         0x01000000	/**< Link table flag ready */
-#define orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY         0x02000000	/**< Link table flag dirty */
+#define orxANIMSET_KU32_LINK_FLAG_PATH                0x01000000  /**< Link flag for path */
+#define orxANIMSET_KU32_LINK_FLAG_LINK                0x02000000  /**< Link flag for link */
 
-#define orxANIMSET_KU32_LINK_TABLE_MASK_FLAGS         0xFFFF0000	/**< Link table mask flags */
+#define orxANIMSET_KU32_LINK_MASK_ANIM                0x000000FF  /**< Link mask for anim */
+#define orxANIMSET_KU32_LINK_MASK_LENGTH              0x0000FF00  /**< Link mask for length */
+#define orxANIMSET_KU32_LINK_MASK_PRIORITY            0x000F0000  /**< Link mask for priority */
+#define orxANIMSET_KU32_LINK_MASK_FLAGS               0xFF000000  /**< Link mask for flags */
+
+#define orxANIMSET_KU32_LINK_SHIFT_ANIM               0           /**< Link shift for anim */
+#define orxANIMSET_KU32_LINK_SHIFT_LENGTH             8           /**< Link shift for length */
+#define orxANIMSET_KU32_LINK_SHIFT_PRIORITY           16          /**< Link shift for priority */
+
+#define orxANIMSET_KU32_LINK_DEFAULT_NONE             0x00000000  /**< Link default : none */
+
+#define orxANIMSET_KU32_LINK_DEFAULT_PRIORITY         0x00000008  /**< Link default priority */
+
+
+/** Link table (status) flags
+ */
+#define orxANIMSET_KU32_LINK_TABLE_FLAG_NONE          0x00000000  /**< Link table flag none */
+
+#define orxANIMSET_KU32_LINK_TABLE_FLAG_READY         0x01000000  /**< Link table flag ready */
+#define orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY         0x02000000  /**< Link table flag dirty */
+
+#define orxANIMSET_KU32_LINK_TABLE_MASK_FLAGS         0xFFFF0000  /**< Link table mask flags */
 
 
 /** Misc defines
@@ -110,6 +114,7 @@
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 
 #define orxANIMSET_KU32_ID_TABLE_SIZE                 32          /**< ID table size */
+#define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          32          /**< Reference table size */
 
 
 /***************************************************************************
@@ -1263,7 +1268,7 @@ orxSTATUS orxAnimSet_Init()
     orxMemory_Zero(&sstAnimSet, sizeof(orxANIMSET_STATIC));
 
     /* Creates reference table */
-    sstAnimSet.pstReferenceTable = orxHashTable_Create(32, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstAnimSet.pstReferenceTable = orxHashTable_Create(orxANIMSET_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
     if(sstAnimSet.pstReferenceTable != orxNULL)
