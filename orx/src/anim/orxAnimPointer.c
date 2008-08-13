@@ -178,7 +178,7 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         orxMemory_Zero(&stEvent, sizeof(orxEVENT));
         orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
         stEvent.eType       = orxEVENT_TYPE_ANIM;
-        stEvent.eID         = (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_END;
+        stEvent.eID         = (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_STOP;
         stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)_pstAnimPointer;
         stEvent.pstPayload  = &stPayload;
         stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);

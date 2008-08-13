@@ -73,7 +73,7 @@ typedef struct __orxANIM_t                    orxANIM;
 typedef enum __orxANIM_EVENT_t
 {
   orxANIM_EVENT_START = 0,                    /**< Event sent when an animation starts */
-  orxANIM_EVENT_END,                          /**< Event sent when an animation ends */
+  orxANIM_EVENT_STOP,                         /**< Event sent when an animation stops */
   orxANIM_EVENT_CUT,                          /**< Event sent when an animation is cut */
 
   orxANIM_EVENT_NUMBER,

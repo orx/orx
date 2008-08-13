@@ -33,6 +33,7 @@
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 #include "core/orxClock.h"
+#include "core/orxEvent.h"
 #include "object/orxStructure.h"
 #include "object/orxObject.h"
 
@@ -180,6 +181,22 @@ orxSTATIC orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructu
         /* Is sound stopped? */
         if(orxSound_GetStatus(pstSound) == orxSOUND_STATUS_STOP)
         {
+          orxEVENT                stEvent;
+          orxSOUND_EVENT_PAYLOAD  stPayload;
+
+          /* Inits event */
+          orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+          orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+          stEvent.eType       = orxEVENT_TYPE_SOUND;
+          stEvent.eID         = orxSOUND_EVENT_STOP;
+          stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)pstSoundPointer;
+          stEvent.pstPayload  = &stPayload;
+          stPayload.pstSound  = pstSound;
+          stPayload.zSoundName= orxSound_GetName(pstSound);
+
+          /* Sends event */
+          orxEvent_Send(&stEvent);
+
           /* Removes it */
           orxSoundPointer_RemoveSound(pstSoundPointer, pstSound);
         }
@@ -203,6 +220,7 @@ orxVOID orxSoundPointer_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_SOUND);
 
   return;
@@ -412,6 +430,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
   /* Found? */
   if(u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER)
   {
+    orxEVENT                stEvent;
+    orxSOUND_EVENT_PAYLOAD  stPayload;
+
     /* Increases its reference counter */
     orxStructure_IncreaseCounter(_pstSound);
 
@@ -423,6 +444,19 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
 
     /* Stores it as last added sound */
     _pstSoundPointer->u32LastAddedIndex = u32Index;
+
+    /* Inits event */
+    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+    orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+    stEvent.eType       = orxEVENT_TYPE_SOUND;
+    stEvent.eID         = orxSOUND_EVENT_START;
+    stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)_pstSoundPointer;
+    stEvent.pstPayload  = &stPayload;
+    stPayload.pstSound  = _pstSound;
+    stPayload.zSoundName= orxSound_GetName(_pstSound);
+
+    /* Sends event */
+    orxEvent_Send(&stEvent);
 
     /* Plays it */
     eResult = orxSound_Play(_pstSound);
@@ -532,6 +566,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
     /* Valid? */
     if(pstSound != orxNULL)
     {
+      orxEVENT                stEvent;
+      orxSOUND_EVENT_PAYLOAD  stPayload;
+
       /* Increases its reference counter */
       orxStructure_IncreaseCounter(pstSound);
 
@@ -543,6 +580,19 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
 
       /* Stores it as last added sound */
       _pstSoundPointer->u32LastAddedIndex = u32Index;
+
+      /* Inits event */
+      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+      orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
+      stEvent.eType       = orxEVENT_TYPE_SOUND;
+      stEvent.eID         = orxSOUND_EVENT_START;
+      stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)_pstSoundPointer;
+      stEvent.pstPayload  = &stPayload;
+      stPayload.pstSound  = pstSound;
+      stPayload.zSoundName= orxSound_GetName(pstSound);
+
+      /* Sends event */
+      orxEvent_Send(&stEvent);
 
       /* Plays it */
       eResult = orxSound_Play(pstSound);
@@ -597,7 +647,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
     if(pstSound != orxNULL)
     {
       /* Found? */
-      if(orxSound_IsConfigID(pstSound, _zSoundConfigID) != orxFALSE)
+      if(orxString_ToCRC(_zSoundConfigID) == orxString_ToCRC(orxSound_GetName(pstSound)))
       {
         /* Decreases its reference counter */
         orxStructure_DecreaseCounter(pstSound);

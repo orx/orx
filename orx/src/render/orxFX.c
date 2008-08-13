@@ -189,7 +189,7 @@ typedef struct __orxFX_SLOT_t
 struct __orxFX_t
 {
   orxSTRUCTURE  stStructure;                            /**< Public structure, first structure member : 16 */
-  orxU32        u32ID;                                  /**< FX ID : 20 */
+  orxSTRING     zReference;                             /**< FX reference : 20 */
   orxFLOAT      fDuration;                              /**< FX duration : 24 */
   orxFX_SLOT    astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 284 */
 
@@ -633,11 +633,11 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         /* Clears buffer */
         orxMemory_Zero(acSlotID, 16 * sizeof(orxCHAR));
 
-        /* Stores its ID */
-        pstResult->u32ID = u32ID;
+        /* Stores its reference */
+        pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Adds it to reference table */
-        if(orxHashTable_Add(sstFX.pstReferenceTable, pstResult->u32ID, pstResult) != orxSTATUS_FAILURE)
+        if(orxHashTable_Add(sstFX.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
         {
           /* For all slots */
           for(i = 0; i < orxFX_KU32_SLOT_NUMBER; i++)
@@ -723,14 +723,14 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
   orxSTRUCTURE_ASSERT(_pstFX);
 
   /* Has an ID? */
-  if((_pstFX->u32ID != 0)
-  && (_pstFX->u32ID != orxU32_UNDEFINED))
+  if((_pstFX->zReference != orxNULL)
+  && (*_pstFX->zReference != *orxSTRING_EMPTY))
   {
     /* Not referenced? */
     if(orxStructure_GetRefCounter(_pstFX) == 0)
     {
       /* Removes from hashtable */
-      orxHashTable_Remove(sstFX.pstReferenceTable, _pstFX->u32ID);
+      orxHashTable_Remove(sstFX.pstReferenceTable, orxString_ToCRC(_pstFX->zReference));
 
       /* Deletes structure */
       orxStructure_Delete(_pstFX);
@@ -1667,24 +1667,32 @@ orxFLOAT orxFASTCALL orxFX_GetDuration(orxCONST orxFX *_pstFX)
   return fResult;
 }
 
-/** Tests FX config ID against given one
+/** Gets FX name
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _zConfigID      Config ID to test
- * @return      orxTRUE if it's FX one, orxFALSE otherwise
+ * @return      orxSTRING / orxSTRING_EMPTY
  */
-orxBOOL orxFASTCALL orxFX_IsConfigID(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zConfigID)
+orxSTRING orxFASTCALL orxFX_GetName(orxCONST orxFX *_pstFX)
 {
-  orxBOOL bResult;
+  orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFX);
 
-  /* Updates result */
-  bResult = (orxString_ToCRC(_zConfigID) == _pstFX->u32ID) ? orxTRUE : orxFALSE;
+  /* Has reference? */
+  if(_pstFX->zReference != orxNULL)
+  {
+    /* Updates result */
+    zResult = _pstFX->zReference;
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
 
   /* Done! */
-  return bResult;
+  return zResult;
 }
 
 /** Set FX loop property

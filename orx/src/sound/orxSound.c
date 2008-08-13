@@ -90,7 +90,7 @@ typedef struct __orxSOUND_SAMPLE_t
 struct __orxSOUND_t
 {
   orxSTRUCTURE          stStructure;                    /**< Public structure, first structure member : 16 */
-  orxU32                u32ID;                          /**< Sound ID : 20 */
+  orxSTRING             zReference;                     /**< Sound reference : 20 */
   orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 24 */
 
   /* Padding */
@@ -415,8 +415,8 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           /* Valid? */
           if(pstResult->pstData != orxNULL)
           {
-            /* Stores its ID */
-            pstResult->u32ID = pstSample->u32ID;
+            /* Stores its reference */
+            pstResult->zReference = orxConfig_GetCurrentSection();
 
             /* Should keep it in cache? */
             if(orxConfig_GetBool(orxSOUND_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
@@ -450,7 +450,7 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         pstResult->pstData = orxSoundSystem_CreateStreamFromFile(zMusicName);
 
         /* Stores its ID */
-        pstResult->u32ID = orxString_ToCRC(zMusicName);
+        pstResult->zReference = orxConfig_GetCurrentSection();
       }
 
       /* Valid? */
@@ -531,8 +531,8 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
   orxSTRUCTURE_ASSERT(_pstSound);
 
   /* Has an ID? */
-  if((_pstSound->u32ID != 0)
-  && (_pstSound->u32ID != orxU32_UNDEFINED))
+  if((_pstSound->zReference != orxNULL)
+  && (*_pstSound->zReference != *orxSTRING_EMPTY))
   {
     /* Not referenced? */
     if(orxStructure_GetRefCounter(_pstSound) == 0)
@@ -553,7 +553,7 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
         orxSOUND_SAMPLE *pstSample;
 
         /* Gets its sample */
-        pstSample = orxHashTable_Get(sstSound.pstReferenceTable, _pstSound->u32ID);
+        pstSample = orxHashTable_Get(sstSound.pstReferenceTable, orxString_ToCRC(_pstSound->zReference));
 
         /* Valid? */
         if(pstSample != orxNULL)
@@ -663,10 +663,20 @@ orxSTATUS orxFASTCALL orxSound_SetVolume(orxSOUND *_pstSound, orxFLOAT _fVolume)
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
-  orxASSERT((_fVolume >= orxFLOAT_0) && (_fVolume <= orxFLOAT_1));
 
-  /* Sets its volume */
-  eResult = orxSoundSystem_SetVolume(_pstSound->pstData, _fVolume);
+  /* Valid? */
+  if(_fVolume >= orxFLOAT_0)
+  {
+    /* Sets its volume */
+    eResult = orxSoundSystem_SetVolume(_pstSound->pstData, _fVolume);
+  }
+  else
+  {
+    /* !!! MSG !!! */
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
@@ -875,22 +885,21 @@ orxSOUND_STATUS orxFASTCALL orxSound_GetStatus(orxCONST orxSOUND *_pstSound)
   return eResult;
 }
 
-/** Tests sound config ID against given one
+/** Gets sound config name
  * @param[in]   _pstSound     Concerned sound
- * @param[in]   _zConfigID    Config ID to test
- * @return      orxTRUE if it's sound one, orxFALSE otherwise
+ * @return      orxSTRING / orxSTRING_EMPTY
  */
-orxBOOL orxFASTCALL orxSound_IsConfigID(orxCONST orxSOUND *_pstSound, orxCONST orxSTRING _zConfigID)
+orxSTRING orxFASTCALL orxSound_GetName(orxCONST orxSOUND *_pstSound)
 {
-  orxBOOL bResult;
+  orxSTRING zResult;
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
 
   /* Updates result */
-  bResult = (orxString_ToCRC(_zConfigID) == _pstSound->u32ID) ? orxTRUE : orxFALSE;
+  zResult = (_pstSound->zReference != orxNULL) ? _pstSound->zReference : orxSTRING_EMPTY;
 
   /* Done! */
-  return bResult;
+  return zResult;
 }

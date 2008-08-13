@@ -48,14 +48,19 @@
  *
  * See previous tutorials for more info about the basic object creation and clock handling.
  *
- * This tutorial aims at showing how to handle animation graphs. As graph could quickly become
- * very complex, here we only have 4 animations : IdleRight, IdleLeft, WalkRight and WalkLeft.
+ * This tutorial shows how to handle animation graphs.
+ *
+ * As graph could quickly become very complex, here we only have 4 animations here: IdleRight, IdleLeft, WalkRight and WalkLeft.
+ *
  * All the possible transitions are defined in the config file. When you request an animation
  * as target, the engine will figure out how to chain the animations to arrive at the requested one.
  * In the same way, if no animation are requested, it'll follow the links according to their priorities.
+ *
  * There's also loop and random control as WIP, so they won't be described in this tutorial.
+ *
  * As for an example, if the soldier was in WalkRight and you stop pressing keys, it'll know
  * he has to go immediately to IdleRight, without having code to give this order.
+ *
  * We also show how to subscribe to the animation events so as to know when animations are started, stopped or cut.
  */
 
@@ -85,10 +90,10 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
       break;
     }
 
-    case orxANIM_EVENT_END:
+    case orxANIM_EVENT_STOP:
     {
       /* Logs info */
-      orxLOG("Animation <%s> has ended!", pstPayload->zAnimName);
+      orxLOG("Animation <%s> has stoped!", pstPayload->zAnimName);
 
       break;
     }

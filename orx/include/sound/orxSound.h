@@ -65,6 +65,29 @@ typedef enum __orxSOUND_STATUS_t
 typedef struct __orxSOUND_t                   orxSOUND;
 
 
+/** Event enum
+ */
+typedef enum __orxSOUND_EVENT_t
+{
+  orxSOUND_EVENT_START = 0,                   /**< Event sent when a sound starts */
+  orxSOUND_EVENT_STOP,                        /**< Event sent when a sound stops */
+
+  orxSOUND_EVENT_NUMBER,
+
+  orxSOUND_EVENT_NONE = orxENUM_NONE
+
+} orxSOUND_EVENT;
+
+/** Sound event payload
+ */
+typedef struct __orxSOUND_EVENT_PAYLOAD_t
+{
+  orxSOUND *pstSound;                         /**< Sound reference : 4 */
+  orxSTRING zSoundName;                       /**< Sound name : 8 */
+
+} orxSOUND_EVENT_PAYLOAD;
+
+
 /** Sound module setup
  */
 extern orxDLLAPI orxVOID                      orxSound_Setup();
@@ -178,12 +201,11 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetDuration(orxCONST orxS
  */
 extern orxDLLAPI orxSOUND_STATUS orxFASTCALL  orxSound_GetStatus(orxCONST orxSOUND *_pstSound);
 
-/** Tests sound config ID against given one
+/** Gets sound config name
  * @param[in]   _pstSound     Concerned sound
- * @param[in]   _zConfigID    Config ID to test
- * @return      orxTRUE if it's sound one, orxFALSE otherwise
+ * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxSound_IsConfigID(orxCONST orxSOUND *_pstSound, orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxSTRING orxFASTCALL        orxSound_GetName(orxCONST orxSOUND *_pstSound);
 
 #endif /*_orxSOUND_H_*/
 

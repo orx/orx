@@ -116,9 +116,10 @@ struct __orxOBJECT_t
   orxCOLOR          stColor;                    /**< Object color: 80 */
   orxVECTOR         vSpeed;                     /**< Object speed: 92 */
   orxVOID          *pUserData;                  /**< User data : 96 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 100 */
 
   /* Padding */
-  orxPAD(96)
+  orxPAD(100)
 };
 
 /** Static structure
@@ -234,6 +235,9 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 
           /* Gets its new position */
           orxVector_Add(&vPosition, &vPosition, &vMove);
+
+          /* Updates its rotation */
+          orxFrame_SetRotation(pstFrame, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (pstObject->fAngularVelocity * _pstClockInfo->fDT));
 
           /* Stores it */
           orxFrame_SetPosition(pstFrame, &vPosition);
@@ -1713,10 +1717,11 @@ orxSTATUS orxFASTCALL orxObject_SetAngularVelocity(orxOBJECT *_pstObject, orxFLO
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Stores it */
+    _pstObject->fAngularVelocity = _fVelocity;
 
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    eResult = orxTRUE;
   }
 
   /* Done! */
@@ -1784,10 +1789,8 @@ orxFLOAT orxFASTCALL orxObject_GetAngularVelocity(orxOBJECT *_pstObject)
   }
   else
   {
-    /* !!! MSG !!! */
-
     /* Updates result */
-    fResult = orxFLOAT_0;
+    fResult = _pstObject->fAngularVelocity;
   }
 
   /* Done! */
@@ -2113,8 +2116,12 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING 
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
 
-  /* Adds FX */
-  eResult = orxObject_AddDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    /* Adds FX */
+    eResult = orxObject_AddDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
+  }
 
   /* Done! */
   return eResult;
@@ -2137,36 +2144,40 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orx
   orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
   orxASSERT(_fDelay >= orxFLOAT_0);
 
-  /* Gets its FXPointer */
-  pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
-
-  /* Doesn't exist? */
-  if(pstFXPointer == orxNULL)
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
   {
-    /* Creates one */
-    pstFXPointer = orxFXPointer_Create();
+    /* Gets its FXPointer */
+    pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
 
-    /* Valid? */
-    if(pstFXPointer != orxNULL)
+    /* Doesn't exist? */
+    if(pstFXPointer == orxNULL)
     {
-      /* Links it */
-      eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstFXPointer));
+      /* Creates one */
+      pstFXPointer = orxFXPointer_Create();
 
       /* Valid? */
-      if(eResult != orxSTATUS_FAILURE)
+      if(pstFXPointer != orxNULL)
       {
-        /* Updates flags */
-        orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+        /* Links it */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstFXPointer));
 
-        /* Adds FX from config */
-        eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+        /* Valid? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates flags */
+          orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Adds FX from config */
+          eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+        }
       }
     }
-  }
-  else
-  {
-    /* Adds FX from config */
-    eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+    else
+    {
+      /* Adds FX from config */
+      eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+    }
   }
 
   /* Done! */
@@ -2216,36 +2227,40 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, orxCONST orxSTRI
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zSoundConfigID != orxNULL) && (*_zSoundConfigID != *orxSTRING_EMPTY));
 
-  /* Gets its SoundPointer */
-  pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
-
-  /* Doesn't exist? */
-  if(pstSoundPointer == orxNULL)
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
   {
-    /* Creates one */
-    pstSoundPointer = orxSoundPointer_Create();
+    /* Gets its SoundPointer */
+    pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
 
-    /* Valid? */
-    if(pstSoundPointer != orxNULL)
+    /* Doesn't exist? */
+    if(pstSoundPointer == orxNULL)
     {
-      /* Links it */
-      eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstSoundPointer));
+      /* Creates one */
+      pstSoundPointer = orxSoundPointer_Create();
 
       /* Valid? */
-      if(eResult != orxSTATUS_FAILURE)
+      if(pstSoundPointer != orxNULL)
       {
-        /* Updates flags */
-        orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_SOUNDPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+        /* Links it */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstSoundPointer));
 
-        /* Adds sound from config */
-        eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+        /* Valid? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates flags */
+          orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_SOUNDPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Adds sound from config */
+          eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+        }
       }
     }
-  }
-  else
-  {
-    /* Adds sound from config */
-    eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+    else
+    {
+      /* Adds sound from config */
+      eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+    }
   }
 
   /* Done! */

@@ -3,7 +3,7 @@ Orx authors:
   Architecture and all core features except memory management, script, package and file handling:
     Romain Killian
 
-  Memory management, script, package and file handling:
+  Memory management, script (WIP), package (WIP) and file handling:
     Nicolas Antoniazzi
 
   Tools:

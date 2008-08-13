@@ -71,6 +71,29 @@
 typedef struct __orxFX_t                        orxFX;
 
 
+/** Event enum
+ */
+typedef enum __orxFX_EVENT_t
+{
+  orxFX_EVENT_START = 0,                        /**< Event sent when a FX starts */
+  orxFX_EVENT_STOP,                             /**< Event sent when a FX stops */
+
+  orxFX_EVENT_NUMBER,
+
+  orxFX_EVENT_NONE = orxENUM_NONE
+
+} orxFX_EVENT;
+
+/** FX event payload
+ */
+typedef struct __orxFX_EVENT_PAYLOAD_t
+{
+  orxFX    *pstFX;                              /**< FX reference : 4 */
+  orxSTRING zFXName;                            /**< FX name : 8 */
+
+} orxFX_EVENT_PAYLOAD;
+
+
 /** FX module setup
  */
 extern orxDLLAPI orxVOID                        orxFX_Setup();
@@ -208,12 +231,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddTranslation(orxFX *_pst
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetDuration(orxCONST orxFX *_pstFX);
 
-/** Tests FX config ID against given one
+/** Gets FX name
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _zConfigID      Config ID to test
- * @return      orxTRUE if it's FX one, orxFALSE otherwise
+ * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsConfigID(orxCONST orxFX *_pstFX, orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxSTRING orxFASTCALL          orxFX_GetName(orxCONST orxFX *_pstFX);
 
 /** Set FX loop property
  * @param[in]   _pstFX          Concerned FX

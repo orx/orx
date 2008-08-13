@@ -77,6 +77,9 @@
  * For example, object auto-following can be achieved by setting object's frame as camera's frame parent.
  */
 
+
+/** Tutorial objects
+ */
 orxOBJECT   *pstSoldier;
 orxVIEWPORT *pstViewport;
 
