@@ -36,6 +36,7 @@
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
 #include "core/orxClock.h"
+#include "object/orxObject.h"
 
 
 #ifdef __orxMSVC__
@@ -89,8 +90,9 @@ struct __orxANIMPOINTER_t
   orxFLOAT                fTime;                      /**< Current Time (Absolute) : 40 */
   orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
   orxU32                  u32CurrentKey;              /**< Current animation key : 48 */
+  orxCONST orxSTRUCTURE  *pstOwner;                   /**< Owner structure : 52 */
 
-  orxPAD(48)
+  orxPAD(52)
 };
 
 
@@ -178,7 +180,7 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
         stEvent.eType       = orxEVENT_TYPE_ANIM;
         stEvent.eID         = (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_STOP;
-        stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)_pstAnimPointer;
+        stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(_pstAnimPointer->pstOwner);
         stEvent.pstPayload  = &stPayload;
         stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
         stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
@@ -331,15 +333,17 @@ orxVOID orxAnimPointer_Exit()
 }
 
 /** Creates an empty AnimPointer
+ * @param[in]   _pstOwner                     AnimPointer's owner used for event callbacks (usually an orxOBJECT)
  * @param[in]   _pstAnimSet                   AnimationSet reference
  * @return      Created orxANIMPOINTER / orxNULL
  */
-orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
+orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxCONST orxSTRUCTURE *_pstOwner, orxANIMSET *_pstAnimSet)
 {
   orxANIMPOINTER *pstAnimPointer = orxNULL;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxASSERT(orxOBJECT(_pstOwner));
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Creates animpointer */
@@ -364,6 +368,9 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
     pstAnimPointer->fTime             = orxFLOAT_0;
     pstAnimPointer->hTargetAnim       = orxHANDLE_UNDEFINED;
 
+    /* Stores owner */
+    pstAnimPointer->pstOwner          = _pstOwner;
+
     /* Is animset link table non-static? */
     if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_LINK_STATIC) == orxFALSE)
     {
@@ -387,10 +394,11 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxANIMSET *_pstAnimSet)
 }
 
 /** Creates an animation pointer from config
+ * @param[in]   _pstOwner                     AnimPointer's owner used for event callbacks (usually an orxOBJECT)
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMPOINTER / orxNULL
  */
-orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxSTRING _zConfigID)
 {
   orxSTRING       zPreviousSection;
   orxANIMPOINTER *pstResult = orxNULL;
@@ -413,7 +421,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRING _
     if(pstAnimSet != orxNULL)
     {
       /* Creates animation pointer from it */
-      pstResult = orxAnimPointer_Create(pstAnimSet);
+      pstResult = orxAnimPointer_Create(_pstOwner, pstAnimSet);
 
       /* Valid? */
       if(pstResult != orxNULL)
@@ -447,6 +455,25 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRING _
     /* Updates result */
     pstResult = orxNULL;
   }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets an AnimPointer owner
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      orxSTRUCTURE / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetOwner(orxCONST orxANIMPOINTER *_pstAnimPointer)
+{
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Updates result */
+  pstResult = orxSTRUCTURE(_pstAnimPointer->pstOwner);
 
   /* Done! */
   return pstResult;

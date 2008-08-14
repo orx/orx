@@ -24,7 +24,7 @@
  * @date 12/08/2008
  * @author iarwain@orx-project.org
  *
- * Viewport tutorial
+ * Sound tutorial
  */
 
 
@@ -46,7 +46,7 @@
  * - Backspace to reload all configuration files (provided that config history is turned on)
  * It also exits if the orxSYSTEM_EVENT_CLOSE signal is sent.
  *
- * See previous tutorials for more info about the basic object creation, clock and animation handling.
+ * See previous tutorials for more info about the basic object creation, clock, animation and viewport handling.
  *
  * This tutorial shows how to play sounds (samples) and musics (streams).
  * As with other features from previous behavior, it only requires, most of the time,
@@ -82,8 +82,6 @@
  *
  * We also register to the sound events to display when sound effects are played and stopped.
  * These events are only sent for sound effects played on objects.
- * The sound structure pointer is displayed in our callback to show that orx will always reuse
- * the same instance if available.
  */
 
 
@@ -108,7 +106,7 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
     case orxSOUND_EVENT_START:
     {
       /* Logs info */
-      orxLOG("Sound <%s> (%p) has started!", pstPayload->zSoundName, pstPayload->pstSound);
+      orxLOG("Sound <%s>@<%s> has started!", pstPayload->zSoundName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
       break;
     }
@@ -116,7 +114,7 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
     case orxSOUND_EVENT_STOP:
     {
       /* Logs info */
-      orxLOG("Sound <%s> (%p) has stoped!", pstPayload->zSoundName, pstPayload->pstSound);
+      orxLOG("Sound <%s>@<%s> has stoped!", pstPayload->zSoundName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
       break;
     }

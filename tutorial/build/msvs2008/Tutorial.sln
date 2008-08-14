@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05_Viewport", "05_Viewport\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "06_Sound", "06_Sound\06_Sound.vcproj", "{87B32397-204E-438D-A80E-B8BCC078D503}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07_FX", "07_FX\07_FX.vcproj", "{C78BCD08-E94B-474C-B08C-43C307E0C3F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Dynamic Release|Win32 = Dynamic Release|Win32
@@ -30,6 +32,8 @@ Global
 		{46202292-C842-40E3-AF6D-78AA5286B330}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 		{87B32397-204E-438D-A80E-B8BCC078D503}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
 		{87B32397-204E-438D-A80E-B8BCC078D503}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{C78BCD08-E94B-474C-B08C-43C307E0C3F9}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{C78BCD08-E94B-474C-B08C-43C307E0C3F9}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,6 +6,7 @@
   <Project Name="04_Anim" Path="04_Anim/04_Anim.project" Active="No"/>
   <Project Name="05_Viewport" Path="05_Viewport/05_Viewport.project" Active="No"/>
   <Project Name="06_Sound" Path="06_Sound/06_Sound.project" Active="No"/>
+  <Project Name="07_FX" Path="07_FX/07_FX.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="no">
       <Project Name="01_Object" ConfigName="Linux Dynamic Release"/>
@@ -14,6 +15,7 @@
       <Project Name="04_Anim" ConfigName="Linux Dynamic Release"/>
       <Project Name="05_Viewport" ConfigName="Linux Dynamic Release"/>
       <Project Name="06_Sound" ConfigName="Linux Dynamic Release"/>
+      <Project Name="07_FX" ConfigName="Linux Dynamic Release"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="yes">
       <Project Name="01_Object" ConfigName="Win32 Dynamic Release"/>
@@ -22,6 +24,7 @@
       <Project Name="04_Anim" ConfigName="Win32 Dynamic Release"/>
       <Project Name="05_Viewport" ConfigName="Win32 Dynamic Release"/>
       <Project Name="06_Sound" ConfigName="Win32 Dynamic Release"/>
+      <Project Name="07_FX" ConfigName="Win32 Dynamic Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

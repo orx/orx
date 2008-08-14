@@ -88,12 +88,13 @@ typedef struct __orxFXPOINTER_HOLDER_t
  */
 struct __orxFXPOINTER_t
 {
-  orxSTRUCTURE        stStructure;                          /**< Public structure, first structure member : 16 */
-  orxFXPOINTER_HOLDER astFXList[orxFXPOINTER_KU32_FX_NUMBER];/**< FX list : 64 */
-  orxFLOAT            fTime;                                /**< Time stamp : 68 */
+  orxSTRUCTURE            stStructure;                      /**< Public structure, first structure member : 16 */
+  orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER];/**< FX list : 64 */
+  orxFLOAT                fTime;                            /**< Time stamp : 68 */
+  orxCONST orxSTRUCTURE  *pstOwner;                         /**< Owner structure : 72 */
 
   /* Padding */
-  orxPAD(68)
+  orxPAD(72)
 };
 
 /** Static structure
@@ -217,7 +218,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
             orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
             stEvent.eType       = orxEVENT_TYPE_FX;
             stEvent.eID         = orxFX_EVENT_STOP;
-            stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)pstFXPointer;
+            stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(pstFXPointer->pstOwner);
             stEvent.pstPayload  = &stPayload;
             stPayload.pstFX     = pstFX;
             stPayload.zFXName   = orxFX_GetName(pstFX);
@@ -325,7 +326,7 @@ orxVOID orxFXPointer_Exit()
 /** Creates an empty FXPointer
  * @return      Created orxFXPOINTER / orxNULL
  */
-orxFXPOINTER *orxFXPointer_Create()
+orxFXPOINTER *orxFXPointer_Create(orxCONST orxSTRUCTURE *_pstOwner)
 {
   orxFXPOINTER *pstResult;
 
@@ -338,6 +339,9 @@ orxFXPOINTER *orxFXPointer_Create()
   /* Created? */
   if(pstResult != orxNULL)
   {
+    /* Stores owner */
+    pstResult->pstOwner = _pstOwner;
+
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxFXPOINTER_KU32_FLAG_ENABLED, orxFXPOINTER_KU32_MASK_ALL);
   }
@@ -398,6 +402,25 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets an FXPointer owner
+ * @param[in]   _pstFXPointer   Concerned FXPointer
+ * @return      orxSTRUCTURE / orxNULL
+ */
+orxSTRUCTURE *orxFASTCALL orxFXPointer_GetOwner(orxCONST orxFXPOINTER *_pstFXPointer)
+{
+  orxSTRUCTURE *pstResult;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+
+  /* Updates result */
+  pstResult = orxSTRUCTURE(_pstFXPointer->pstOwner);
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Enables/disables an FXPointer
@@ -503,7 +526,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
     orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
     stEvent.eType       = orxEVENT_TYPE_FX;
     stEvent.eID         = orxFX_EVENT_START;
-    stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)_pstFXPointer;
+    stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(_pstFXPointer->pstOwner);
     stEvent.pstPayload  = &stPayload;
     stPayload.pstFX     = _pstFX;
     stPayload.zFXName   = orxFX_GetName(_pstFX);
@@ -652,7 +675,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
       orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
       stEvent.eType       = orxEVENT_TYPE_FX;
       stEvent.eID         = orxFX_EVENT_START;
-      stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)_pstFXPointer;
+      stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(_pstFXPointer->pstOwner);
       stEvent.pstPayload  = &stPayload;
       stPayload.pstFX     = pstFX;
       stPayload.zFXName   = orxFX_GetName(pstFX);

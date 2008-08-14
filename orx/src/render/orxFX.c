@@ -92,16 +92,8 @@
 #define orxFX_KZ_CONFIG_END_TIME                "EndTime"
 #define orxFX_KZ_CONFIG_PERIOD                  "Period"
 #define orxFX_KZ_CONFIG_PHASIS                  "Phasis"
-#define orxFX_KZ_CONFIG_START_ALPHA             "StartAlpha"
-#define orxFX_KZ_CONFIG_END_ALPHA               "EndAlpha"
-#define orxFX_KZ_CONFIG_START_COLOR             "StartColor"
-#define orxFX_KZ_CONFIG_END_COLOR               "EndColor"
-#define orxFX_KZ_CONFIG_START_ROTATION          "StartRotation"
-#define orxFX_KZ_CONFIG_END_ROTATION            "EndRotation"
-#define orxFX_KZ_CONFIG_START_SCALE             "StartScale"
-#define orxFX_KZ_CONFIG_END_SCALE               "EndScale"
-#define orxFX_KZ_CONFIG_START_POSITION          "StartPosition"
-#define orxFX_KZ_CONFIG_END_POSITION            "EndPosition"
+#define orxFX_KZ_CONFIG_START_VALUE             "StartValue"
+#define orxFX_KZ_CONFIG_END_VALUE               "EndValue"
 #define orxFX_KZ_CONFIG_KEEP_IN_CACHE           "KeepInCache"
 
 #define orxFX_KZ_LINEAR                         "linear"
@@ -111,7 +103,7 @@
 #define orxFX_KZ_COLOR                          "color"
 #define orxFX_KZ_ROTATION                       "rotation"
 #define orxFX_KZ_SCALE                          "scale"
-#define orxFX_KZ_TRANSLATION                    "translation"
+#define orxFX_KZ_POSITION                       "position"
 
 
 /***************************************************************************
@@ -175,9 +167,9 @@ typedef struct __orxFX_SLOT_t
 
     struct
     {
-      orxVECTOR vStartPosition;                 /**< Translation vector : 36 */
-      orxVECTOR vEndPosition;                   /**< Translation end position : 48 */
-    };                                          /**< Translation : 48 */
+      orxVECTOR vStartPosition;                 /**< Position start vector : 36 */
+      orxVECTOR vEndPosition;                   /**< Position end position : 48 */
+    };                                          /**< Position : 48 */
   };
 
   orxU32 u32Flags;                              /**< Flags : 52 */
@@ -355,8 +347,8 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         orxFLOAT fStartAlpha, fEndAlpha;
 
         /* Gets alpha values */
-        fStartAlpha = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_ALPHA);
-        fEndAlpha   = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_ALPHA);
+        fStartAlpha = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE);
+        fEndAlpha   = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
 
         /* Adds alpha fade slot */
         eResult = orxFX_AddAlphaFade(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, fStartAlpha, fEndAlpha, eCurve, fPow, u32Flags);
@@ -367,8 +359,8 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         orxVECTOR vStartColor, vEndColor;
 
         /* Gets color values */
-        orxConfig_GetVector(orxFX_KZ_CONFIG_START_COLOR, &vStartColor);
-        orxConfig_GetVector(orxFX_KZ_CONFIG_END_COLOR, &vEndColor);
+        orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor);
+        orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor);
 
         /* Adds color blend slot */
         eResult = orxFX_AddColorBlend(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
@@ -379,8 +371,8 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         orxFLOAT fStartRotation, fEndRotation;
 
         /* Gets rotation values */
-        fStartRotation  = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_ROTATION);
-        fEndRotation    = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_ROTATION);
+        fStartRotation  = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE);
+        fEndRotation    = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
 
         /* Adds rotation slot */
         eResult = orxFX_AddRotation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, orxMATH_KF_DEG_TO_RAD * fStartRotation, orxMATH_KF_DEG_TO_RAD * fEndRotation, eCurve, fPow, u32Flags);
@@ -391,24 +383,24 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         orxVECTOR vStartScale, vEndScale;
 
         /* Is config start scale not a vector? */
-        if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_SCALE, &vStartScale) == orxNULL)
+        if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartScale) == orxNULL)
         {
           orxFLOAT fScale;
 
           /* Gets config uniformed scale */
-          fScale = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_SCALE);
+          fScale = orxConfig_GetFloat(orxFX_KZ_CONFIG_START_VALUE);
 
           /* Updates vector */
           orxVector_SetAll(&vStartScale, fScale);
         }
 
         /* Is config end scale not a vector? */
-        if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_SCALE, &vEndScale) == orxNULL)
+        if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndScale) == orxNULL)
         {
           orxFLOAT fScale;
 
           /* Gets config uniformed scale */
-          fScale = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_SCALE);
+          fScale = orxConfig_GetFloat(orxFX_KZ_CONFIG_END_VALUE);
 
           /* Updates vector */
           orxVector_SetAll(&vEndScale, fScale);
@@ -417,14 +409,14 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
         /* Adds scale slot */
         eResult = orxFX_AddScale(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartScale, &vEndScale, eCurve, fPow, u32Flags);
       }
-      /* Translation? */
-      else if(orxString_Compare(zType, orxFX_KZ_TRANSLATION) == 0)
+      /* Position? */
+      else if(orxString_Compare(zType, orxFX_KZ_POSITION) == 0)
       {
         orxVECTOR vStartPosition, vEndPosition;
 
         /* Gets scalevalues */
-        orxConfig_GetVector(orxFX_KZ_CONFIG_START_POSITION, &vStartPosition);
-        orxConfig_GetVector(orxFX_KZ_CONFIG_END_POSITION, &vEndPosition);
+        orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartPosition);
+        orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndPosition);
 
         /* Adds scale slot */
         eResult = orxFX_AddTranslation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartPosition, &vEndPosition, eCurve, fPow, u32Flags);
@@ -819,8 +811,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
         orxFLOAT fStartTime, fEndTime, fPeriod, fFrequency, fStartCoef, fEndCoef;
 
         /* Gets corrected start and end time */
-        fStartTime  = orxMAX(_fStartTime, pstFXSlot->fStartTime);
-        fEndTime    = orxMIN(_fEndTime, pstFXSlot->fEndTime);
+        fStartTime  = orxMAX(_fStartTime, pstFXSlot->fStartTime) - pstFXSlot->fStartTime;
+        fEndTime    = orxMIN(_fEndTime, pstFXSlot->fEndTime) - pstFXSlot->fStartTime;
 
         /* Updates first call status */
         bFirstCall = (fStartTime == pstFXSlot->fStartTime) ? orxTRUE : orxFALSE;

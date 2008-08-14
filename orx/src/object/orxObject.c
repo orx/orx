@@ -475,6 +475,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Defaults to 2D flags */
       orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_2D, orxOBJECT_KU32_FLAG_NONE);
 
+      /* Stores reference */
+      pstResult->zReference = orxConfig_GetCurrentSection();
+
       /* *** Frame *** */
 
       /* Gets auto scrolling value */
@@ -583,7 +586,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxANIMPOINTER *pstAnimPointer;
 
         /* Creates animation pointer from it */
-        pstAnimPointer = orxAnimPointer_CreateFromConfig(zAnimPointerName);
+        pstAnimPointer = orxAnimPointer_CreateFromConfig(orxSTRUCTURE(pstResult), zAnimPointerName);
 
         /* Valid? */
         if(pstAnimPointer != orxNULL)
@@ -693,9 +696,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         /* Adds it */
         orxObject_AddFX(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_FX));
       }
-
-      /* Stores reference */
-      pstResult->zReference = orxConfig_GetCurrentSection();
     }
 
     /* Restores previous section */
@@ -1487,7 +1487,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
   orxSTRUCTURE_ASSERT(_pstAnimSet);
 
   /* Creates animation pointer from animation set */
-  pstAnimPointer = orxAnimPointer_Create(_pstAnimSet);
+  pstAnimPointer = orxAnimPointer_Create(orxSTRUCTURE(_pstObject), _pstAnimSet);
 
   /* Valid? */
   if(pstAnimPointer != NULL)
@@ -2200,7 +2200,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orx
     if(pstFXPointer == orxNULL)
     {
       /* Creates one */
-      pstFXPointer = orxFXPointer_Create();
+      pstFXPointer = orxFXPointer_Create(orxSTRUCTURE(_pstObject));
 
       /* Valid? */
       if(pstFXPointer != orxNULL)
@@ -2283,7 +2283,7 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, orxCONST orxSTRI
     if(pstSoundPointer == orxNULL)
     {
       /* Creates one */
-      pstSoundPointer = orxSoundPointer_Create();
+      pstSoundPointer = orxSoundPointer_Create(orxSTRUCTURE(_pstObject));
 
       /* Valid? */
       if(pstSoundPointer != orxNULL)

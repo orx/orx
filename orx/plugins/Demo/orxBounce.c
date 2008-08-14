@@ -49,7 +49,7 @@ orxSTATIC orxFASTCALL orxSTATUS orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
   if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
   {
     /* Deletes corresponding object */
-    orxObject_Delete(orxOBJECT(orxBody_GetOwner(orxBODY(_pstEvent->hSender))));
+    orxObject_Delete(orxOBJECT(_pstEvent->hSender));
 
     /* Updates ball counter */
     su32BallCounter--;
@@ -58,8 +58,8 @@ orxSTATIC orxFASTCALL orxSTATUS orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
   else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
   {
     /* Adds bump FX on both objects */
-    orxObject_AddFX(orxOBJECT(orxBody_GetOwner(orxBODY(_pstEvent->hSender))), "Bump");
-    orxObject_AddFX(orxOBJECT(orxBody_GetOwner(orxBODY(_pstEvent->hRecipient))), "Bump");
+    orxObject_AddFX(orxOBJECT(_pstEvent->hSender), "Bump");
+    orxObject_AddFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
   }
 
   /* Done! */

@@ -308,7 +308,7 @@ orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
       {
         /* Inits event */
         stEvent.eID         = orxPHYSICS_EVENT_OUT_OF_WORLD;
-        stEvent.hRecipient  = stEvent.hSender = (orxHANDLE)pstEventStorage->poSource->GetUserData();
+        stEvent.hRecipient  = stEvent.hSender = (orxHANDLE)orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData()));
         stEvent.pstPayload  = orxNULL;
 
         /* Sends it */
@@ -323,8 +323,8 @@ orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
       {
         /* Inits event */
         stEvent.eID         = pstEventStorage->eID;
-        stEvent.hSender     = (orxHANDLE)pstEventStorage->poSource->GetUserData();
-        stEvent.hRecipient  = (orxHANDLE)pstEventStorage->poDestination->GetUserData();
+        stEvent.hSender     = (orxHANDLE)orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData()));
+        stEvent.hRecipient  = (orxHANDLE)orxBody_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData()));
         stEvent.pstPayload  = &(pstEventStorage->stPayload);
 
         /* Sends it */

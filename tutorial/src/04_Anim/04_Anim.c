@@ -85,7 +85,7 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
     case orxANIM_EVENT_START:
     {
       /* Logs info */
-      orxLOG("Animation <%s> has started!", pstPayload->zAnimName);
+      orxLOG("Animation <%s>@<%s> has started!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
       break;
     }
@@ -93,7 +93,7 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
     case orxANIM_EVENT_STOP:
     {
       /* Logs info */
-      orxLOG("Animation <%s> has stoped!", pstPayload->zAnimName);
+      orxLOG("Animation <%s>@<%s> has stoped!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
       break;
     }
@@ -101,7 +101,7 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
     case orxANIM_EVENT_CUT:
     {
       /* Logs info */
-      orxLOG("Animation <%s> has been cut!", pstPayload->zAnimName);
+      orxLOG("Animation <%s>@<%s> has been cut!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
 
       break;
     }

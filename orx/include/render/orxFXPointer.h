@@ -43,6 +43,7 @@
 
 #include "orxInclude.h"
 #include "render/orxFX.h"
+#include "object/orxStructure.h"
 
 
 /** Internal FXPointer structure */
@@ -64,15 +65,22 @@ extern orxDLLAPI orxVOID                        orxFXPointer_Exit();
 
 
 /** Creates an empty FXPointer
+ * @param[in]   _pstOwner       FX's owner used for event callbacks (usually an orxOBJECT)
  * @return orxFXPOINTER / orxNULL
  */
-extern orxDLLAPI orxFXPOINTER *                 orxFXPointer_Create();
+extern orxDLLAPI orxFXPOINTER *                 orxFXPointer_Create(orxCONST orxSTRUCTURE *_pstOwner);
 
 /** Deletes an FXPointer
  * @param[in] _pstFXPointer     Concerned FXPointer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer);
+
+/** Gets an FXPointer owner
+ * @param[in]   _pstFXPointer   Concerned FXPointer
+ * @return      orxSTRUCTURE / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxFXPointer_GetOwner(orxCONST orxFXPOINTER *_pstFXPointer);
 
 /** Enables/disables an FXPointer
  * @param[in]   _pstFXPointer   Concerned FXPointer

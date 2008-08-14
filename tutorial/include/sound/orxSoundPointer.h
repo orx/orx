@@ -43,6 +43,7 @@
 
 #include "orxInclude.h"
 #include "sound/orxSound.h"
+#include "object/orxStructure.h"
 
 
 /** Internal SoundPointer structure */
@@ -64,15 +65,22 @@ extern orxDLLAPI orxVOID                        orxSoundPointer_Exit();
 
 
 /** Creates an empty SoundPointer
+ * @param[in]   _pstOwner           Sound's owner used for event callbacks (usually an orxOBJECT)
  * @return orxSOUNDPOINTER / orxNULL
  */
-extern orxDLLAPI orxSOUNDPOINTER *              orxSoundPointer_Create();
+extern orxDLLAPI orxSOUNDPOINTER *              orxSoundPointer_Create(orxCONST orxSTRUCTURE *_pstOwner);
 
 /** Deletes a SoundPointer
  * @param[in] _pstSoundPointer      Concerned SoundPointer
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer);
+
+/** Gets a SoundPointer owner
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxSTRUCTURE / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxSoundPointer_GetOwner(orxCONST orxSOUNDPOINTER *_pstSoundPointer);
 
 /** Enables/disables a SoundPointer
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
