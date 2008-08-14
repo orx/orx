@@ -75,7 +75,7 @@
 #define orxOBJECT_KU32_NEIGHBOR_LIST_SIZE       128
 
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
-#define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "Animation"
+#define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
@@ -87,6 +87,7 @@
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX                  "FX"
+#define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_X                          "x"
@@ -117,9 +118,10 @@ struct __orxOBJECT_t
   orxVECTOR         vSpeed;                     /**< Object speed: 92 */
   orxVOID          *pUserData;                  /**< User data : 96 */
   orxFLOAT          fAngularVelocity;           /**< Angular velocity : 100 */
+  orxSTRING         zReference;                 /**< Config reference : 104 */
 
   /* Padding */
-  orxPAD(100)
+  orxPAD(104)
 };
 
 /** Static structure
@@ -591,6 +593,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           {
             /* Updates flags */
             orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_ANIMPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+            /* Has frequency? */
+            if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FREQUENCY) != orxFALSE)
+            {
+              /* Updates animation pointer frequency */
+              orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_FREQUENCY));
+            }
           }
         }
       }
@@ -684,6 +693,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         /* Adds it */
         orxObject_AddFX(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_FX));
       }
+
+      /* Stores reference */
+      pstResult->zReference = orxConfig_GetCurrentSection();
     }
 
     /* Restores previous section */
@@ -1497,6 +1509,40 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
   {
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets an object animation frequency
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency)
+{
+  orxANIMPOINTER *pstAnimPointer;
+  orxSTATUS       eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_fFrequency >= orxFLOAT_0);
+
+  /* Gets animation pointer */
+  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+
+  /* Valid? */
+  if(pstAnimPointer != NULL)
+  {
+    /* Updates result */
+    eResult = orxAnimPointer_SetFrequency(pstAnimPointer, _fFrequency);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxFALSE;
   }
 
   /* Done! */
@@ -2320,6 +2366,25 @@ orxSOUND *orxFASTCALL orxObject_GetLastAddedSound(orxCONST orxOBJECT *_pstObject
 
   /* Done! */
   return pstResult;
+}
+
+/** Gets object config name
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+orxSTRING orxFASTCALL orxObject_GetName(orxCONST orxOBJECT *_pstObject)
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates result */
+  zResult = (_pstObject->zReference != orxNULL) ? _pstObject->zReference : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
 }
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)

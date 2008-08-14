@@ -249,6 +249,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetSize(orxCONST orxOBJECT
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_pstAnimSet);
 
 
+/** Sets an object animation frequency
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
 /** Sets current animation for object
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
@@ -414,6 +421,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveSound(orxOBJECT *_ps
  * @return      orxSOUND / orxNULL
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(orxCONST orxOBJECT *_pstObject);
+
+/** Gets object config name
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL      orxObject_GetName(orxCONST orxOBJECT *_pstObject);
 
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)

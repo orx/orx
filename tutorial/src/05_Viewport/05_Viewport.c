@@ -228,7 +228,7 @@ orxSTATUS Init()
 
   /* Displays a small hint in console */
   orxLOG("\n* Worskpaces 1 & 3 display camera 1 content"
-         "\n* Workspace 2 displays camera 2 (by default it's twice closer as the other cameras)"
+         "\n* Workspace 2 displays camera 2 (by default it's twice as close as the other cameras)"
          "\n* Workspace 3 displays camera 3"
          "\n- Soldier will be positioned (in the world) so as to be always displayed under the mouse"
          "\n- Arrow keys control camera 1 positioning, left & right buttons its rotation and '+' & '-' its zoom"

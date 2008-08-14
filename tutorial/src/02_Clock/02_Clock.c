@@ -54,7 +54,7 @@
  * If you press numpad '+', '-' and '*', you can alter the time of the first clock.
  * It'll still be updated at the same rate, but the time information that the clock will pass
  * to the callback will be stretched.
- * This provides an easy way of adding time distorsion and having parts
+ * This provides an easy way of adding time distortion and having parts
  * of your logic code updated at different frequencies.
  * One clock can have as many callbacks registered as you want.
  *

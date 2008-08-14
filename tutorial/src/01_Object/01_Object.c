@@ -47,7 +47,7 @@
  * It also exits if the orxSYSTEM_EVENT_CLOSE signal is sent.
  *
  * As orx is data driven, here we just write 2 lines of code to create a viewport
- * and an object, but all their properties can be defined in the config file (01_Object.ini).
+ * and an object. All their properties can be defined in the config file (01_Object.ini).
  * As a matter of fact, the viewport is associated with a camera implicitly created from the
  * info given in the config file. You can also set their sizes, positions, the object colors,
  * scales, rotations, animations, physical properties, and so on. You can even request
@@ -64,6 +64,11 @@
  */
 orxSTATUS Init()
 {
+  /* Displays a small hint in console */
+  orxLOG("\n* This tutorial creates a viewport/camera couple and an object"
+         "\n* You can play with the config parameters in ../01_Object.ini"
+         "\n* After changing them, relaunch the tutorial to see their effects");
+
   /* Loads config file */
   orxConfig_Load("../01_Object.ini");
 

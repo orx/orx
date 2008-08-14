@@ -67,7 +67,6 @@
 
 /** Misc defines
  */
-#define orxANIMPOINTER_KZ_CONFIG_ANIMSET              "AnimationSet"
 #define orxANIMPOINTER_KZ_CONFIG_FREQUENCY            "Frequency"
 
 #define orxANIMPOINTER_KF_FREQUENCY_DEFAULT           1.0         /**< Default animation frequency */
@@ -405,45 +404,36 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRING _
   /* Selects section */
   if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
   {
-    orxSTRING zAnimSetName;
+    orxANIMSET *pstAnimSet;
 
-    /* Gets its name */
-    zAnimSetName = orxConfig_GetString(orxANIMPOINTER_KZ_CONFIG_ANIMSET);
+    /* Creates animset from config */
+    pstAnimSet = orxAnimSet_CreateFromConfig(_zConfigID);
 
     /* Valid? */
-    if((zAnimSetName != orxNULL) && (*zAnimSetName != *orxSTRING_EMPTY))
+    if(pstAnimSet != orxNULL)
     {
-      orxANIMSET *pstAnimSet;
-
-      /* Creates animset from config */
-      pstAnimSet = orxAnimSet_CreateFromConfig(zAnimSetName);
+      /* Creates animation pointer from it */
+      pstResult = orxAnimPointer_Create(pstAnimSet);
 
       /* Valid? */
-      if(pstAnimSet != orxNULL)
+      if(pstResult != orxNULL)
       {
-        /* Creates animation pointer from it */
-        pstResult = orxAnimPointer_Create(pstAnimSet);
-
-        /* Valid? */
-        if(pstResult != orxNULL)
+        /* Has frequency? */
+        if(orxConfig_HasValue(orxANIMPOINTER_KZ_CONFIG_FREQUENCY) != orxFALSE)
         {
-          /* Has frequency? */
-          if(orxConfig_HasValue(orxANIMPOINTER_KZ_CONFIG_FREQUENCY) != orxFALSE)
-          {
-            /* Updates animation pointer frequency */
-            orxAnimPointer_SetFrequency(pstResult, orxConfig_GetFloat(orxANIMPOINTER_KZ_CONFIG_FREQUENCY));
-          }
-
-          /* Updates status flags */
-          orxStructure_SetFlags(pstResult, orxANIMPOINTER_KU32_FLAG_INTERNAL, orxANIMPOINTER_KU32_FLAG_NONE);
+          /* Updates animation pointer frequency */
+          orxAnimPointer_SetFrequency(pstResult, orxConfig_GetFloat(orxANIMPOINTER_KZ_CONFIG_FREQUENCY));
         }
-        else
-        {
-          /* !!! MSG !!! */
 
-          /* Deletes created anim set */
-          orxAnimSet_Delete(pstAnimSet);
-        }
+        /* Updates status flags */
+        orxStructure_SetFlags(pstResult, orxANIMPOINTER_KU32_FLAG_INTERNAL, orxANIMPOINTER_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* !!! MSG !!! */
+
+        /* Deletes created anim set */
+        orxAnimSet_Delete(pstAnimSet);
       }
     }
 
