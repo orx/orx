@@ -143,7 +143,11 @@ orxSTATUS Init()
   orxOBJECT *pstObject1, *pstObject2;
 
   /* Displays a small hint in console */
-  orxLOG("\n- Press 'L' to activate log and 'S' to stop it\n- To stretch time for the first clock:\n . Press numpad '+' to stretch time 4 times faster\n . Press numpad '*' to stretch time 4 times\n . Press numpad '-' to set it back to normal");
+  orxLOG("\n- Press 'L' to activate log and 'S' to stop it"
+         "\n- To stretch time for the first clock (updating the box):"
+         "\n . Press numpad '+' to set it 4 times faster"
+         "\n . Press numpad '-' to set it 4 times slower"
+         "\n . Press numpad '*' to set it back to normal");
 
   /* Loads config file and selects main section */
   orxConfig_Load("../02_Clock.ini");
