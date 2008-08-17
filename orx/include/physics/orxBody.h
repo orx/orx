@@ -171,6 +171,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPosition(orxBODY *_pstB
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation);
 
+/** Sets a body scale
+ * @param[in]   _pstBody        Concerned body
+ * @param[in]   _pvScale        Scale to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetScale(orxBODY *_pstBody, orxCONST orxVECTOR *_pvScale);
+
 /** Sets a body speed
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvSpeed        Speed to set

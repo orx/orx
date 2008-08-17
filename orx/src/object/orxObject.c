@@ -208,24 +208,8 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
       /* Has frame? */
       if((pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME)) != orxNULL)
       {
-        orxBODY *pstBody;
-
-        /* Gets its body */
-        pstBody = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
-
-        /* Valid? */
-        if(pstBody != orxNULL)
-        {
-          /* Is not a root's children frame? */
-          if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
-          {
-            orxVECTOR vPosition;
-
-            /* Updates body position with frame's one */
-            orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition));
-          }
-        }
-        else
+        /* Has no body? */
+        if(orxOBJECT_GET_STRUCTURE(pstObject, BODY) == orxNULL)
         {
           orxVECTOR vPosition, vMove;
 
@@ -1097,7 +1081,7 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
     /* Valid? */
     if(pstBody != orxNULL)
     {
-      /* Updates body position */
+      /* Updates body rotation */
       orxBody_SetRotation(pstBody, _fRotation);
     }
   }
@@ -1134,8 +1118,20 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxCONST orxVECT
   /* Valid? */
   if(pstFrame != orxNULL)
   {
+    orxBODY *pstBody;
+
     /* Sets frame scale */
     orxFrame_SetScale(pstFrame, _pvScale);
+
+    /* Gets body */
+    pstBody = orxOBJECT_GET_STRUCTURE(_pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      /* Updates body scale */
+      orxBody_SetScale(pstBody, _pvScale);
+    }
   }
   else
   {

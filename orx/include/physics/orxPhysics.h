@@ -85,26 +85,27 @@ typedef struct __orxBODY_DEF_t
  */
 typedef struct __orxBODY_PART_DEF_t
 {
-  orxFLOAT  fFriction;                      /**< Friction : 4 */
-  orxFLOAT  fRestitution;                   /**< Restitution : 8 */
-  orxFLOAT  fDensity;                       /**< Density : 12 */
-  orxU16    u16SelfFlags;                   /**< Self defining flags : 14 */
-  orxU16    u16CheckMask;                   /**< Check mask : 16 */
-  orxU32    u32Flags;                       /**< Control flags : 20 */
+  orxVECTOR vScale;                         /**< Scale : 12 */
+  orxFLOAT  fFriction;                      /**< Friction : 16 */
+  orxFLOAT  fRestitution;                   /**< Restitution : 20 */
+  orxFLOAT  fDensity;                       /**< Density : 24 */
+  orxU16    u16SelfFlags;                   /**< Self defining flags : 26 */
+  orxU16    u16CheckMask;                   /**< Check mask : 28 */
+  orxU32    u32Flags;                       /**< Control flags : 32 */
 
   union
   {
     struct
     {
-      orxVECTOR vCenter;                    /**< Sphere center : 32 */
-      orxFLOAT  fRadius;                    /**< Sphere radius : 36 */
-    } stSphere;                             /**< Sphere : 36 */
+      orxVECTOR vCenter;                    /**< Sphere center : 44 */
+      orxFLOAT  fRadius;                    /**< Sphere radius : 48 */
+    } stSphere;                             /**< Sphere : 48 */
 
     struct
     {
-      orxAABOX  stBox;                      /**< Axis aligned Box : 44 */
-    } stAABox;                              /**< Box : 44 */
-  };                                        /**< Shape : 44 */
+      orxAABOX  stBox;                      /**< Axis aligned Box : 56 */
+    } stAABox;                              /**< Box : 56 */
+  };                                        /**< Shape : 56 */
 
 } orxBODY_PART_DEF;
 
