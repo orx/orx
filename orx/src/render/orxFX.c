@@ -811,8 +811,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
         orxFLOAT fStartTime, fEndTime, fPeriod, fFrequency, fStartCoef, fEndCoef;
 
         /* Gets corrected start and end time */
-        fStartTime  = orxMAX(_fStartTime, pstFXSlot->fStartTime) - pstFXSlot->fStartTime;
-        fEndTime    = orxMIN(_fEndTime, pstFXSlot->fEndTime) - pstFXSlot->fStartTime;
+        fStartTime  = orxMAX(_fStartTime, pstFXSlot->fStartTime);
+        fEndTime    = orxMIN(_fEndTime, pstFXSlot->fEndTime);
 
         /* Updates first call status */
         bFirstCall = (fStartTime == pstFXSlot->fStartTime) ? orxTRUE : orxFALSE;
@@ -822,8 +822,12 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
         {
           orxFX_TYPE eFXType;
 
+          /* Gets slot local time stamps */
+          fStartTime -= pstFXSlot->fStartTime;
+          fEndTime   -= pstFXSlot->fStartTime;
+
           /* Gets 1.0 / duration */
-          fInvDuration = orxFLOAT_1 / (pstFXSlot->fEndTime - pstFXSlot->fStartTime);
+          fInvDuration = orxFLOAT_1 / pstFXSlot->fEndTime;
 
           /* Gets FX type */
           eFXType = orxFX_GetSlotType(pstFXSlot);
@@ -943,8 +947,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               orxFLOAT fStartAmplification, fEndAmplification;
 
               /* Gets amplification coefs */
-              fStartAmplification = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, (fStartTime - pstFXSlot->fStartTime) * fInvDuration);
-              fEndAmplification   = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, (fEndTime - pstFXSlot->fStartTime) * fInvDuration);
+              fStartAmplification = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, fStartTime * fInvDuration);
+              fEndAmplification   = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, fEndTime * fInvDuration);
 
               /* Updates the coefs */
               fStartCoef *= fStartAmplification;
