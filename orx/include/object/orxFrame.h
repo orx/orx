@@ -154,10 +154,9 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxFrame_SetRotation(orxFRAME *_ps
 
 /** Sets a frame scale
  * @param[in]   _pstFrame       Concerned frame
- * @param[in]   _fScaleX        Scale (X) to set
- * @param[in]   _fScaleY        Scale (Y) to set
+ * @param[in]   _pvScale        Scale to set
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxFrame_SetScale(orxFRAME *_pstFrame, orxFLOAT _fScaleX, orxFLOAT _fScaleY);
+extern orxDLLAPI orxVOID orxFASTCALL          orxFrame_SetScale(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvScale);
 
 
 /** Gets a frame position
@@ -177,11 +176,10 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxFrame_GetRotation(orxFRAME *_ps
 /** Gets a frame scale
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _eSpace         Coordinate space system to use
- * @param[out]  _pfScaleX       Scale (X)
- * @param[out]  _pfScaleY       Scale (Y)
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out]  _pvScale        Scale
+ * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxFrame_GetScale(orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvScale);
 
 #endif /* _orxFRAME_H_ */
 

@@ -97,8 +97,9 @@
 struct __orxBODY_PART_t
 {
   orxPHYSICS_BODY_PART *pstData;                                /**< Data structure : 4 */
+  orxBODY_PART_DEF      stDef;                                  /**< Definition : 48 */
 
-  orxPAD(4)
+  orxPAD(48)
 };
 
 /** Body structure
@@ -106,11 +107,11 @@ struct __orxBODY_PART_t
 struct __orxBODY_t
 {
   orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
-  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 32 */
-  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 36 */
-  orxCONST orxSTRUCTURE  *pstOwner;                                   /**< Owner structure : 40 */
+  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 20 */
+  orxCONST orxSTRUCTURE  *pstOwner;                                   /**< Owner structure : 24 */
+  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 216 */
 
-  orxPAD(40)
+  orxPAD(216)
 };
 
 /** Static structure
@@ -629,6 +630,9 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
     {
       /* Stores it */
       _pstBody->astPartList[_u32Index].pstData = pstBodyPart;
+
+      /* Stores its definition */
+      orxMemory_Copy(&(_pstBody->astPartList[_u32Index].stDef), pstSelectedPartDef, sizeof(orxBODY_PART_DEF));
     }
     else
     {
@@ -693,16 +697,16 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_RADIUS)), orxBODY_KZ_FULL) == 0)
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_CENTER)), orxBODY_KZ_FULL) == 0))
       {
-        orxVECTOR vPivot, vScale;
-        orxFLOAT  fWidth, fHeight, fRadius;
+        orxVECTOR vPivot, vScale, vSize;
+        orxFLOAT  fRadius;
 
         /* Gets object size, scale & pivot */
-        orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &fWidth, &fHeight);
+        orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &vSize);
         orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &vScale);
         orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 
         /* Gets minimal radius */
-        fRadius = orx2F(0.5f) * orxMIN(vScale.fX * fWidth, vScale.fY * fHeight);
+        fRadius = orx2F(0.5f) * orxMIN(vScale.fX * vSize.fX, vScale.fY * vSize.fY);
 
         /* Inits body part def */
         orxVector_Set(&(stBodyPartDef.stSphere.vCenter), fRadius - (vScale.fX * vPivot.fX), fRadius - (vScale.fY * vPivot.fY), fRadius - (vScale.fZ * vPivot.fZ));
@@ -723,17 +727,16 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_TOP_LEFT)), orxBODY_KZ_FULL) == 0)
       || (orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_BOTTOM_RIGHT)), orxBODY_KZ_FULL) == 0))
       {
-        orxVECTOR vPivot, vScale;
-        orxFLOAT  fWidth, fHeight;
+        orxVECTOR vPivot, vScale, vSize;
 
         /* Gets object size, scale & pivot */
-        orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &fWidth, &fHeight);
+        orxObject_GetSize(orxOBJECT(_pstBody->pstOwner), &vSize);
         orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &vScale);
         orxObject_GetPivot(orxOBJECT(_pstBody->pstOwner), &vPivot);
 
         /* Inits body part def */
         orxVector_Set(&(stBodyPartDef.stAABox.stBox.vTL), -vScale.fX * vPivot.fX, -vScale.fY * vPivot.fY, -vScale.fZ * vPivot.fZ);
-        orxVector_Set(&(stBodyPartDef.stAABox.stBox.vBR), vScale.fX * (fWidth - vPivot.fX), vScale.fY * (fHeight - vPivot.fY), vScale.fZ * -vPivot.fZ);
+        orxVector_Set(&(stBodyPartDef.stAABox.stBox.vBR), vScale.fX * (vSize.fX - vPivot.fX), vScale.fY * (vSize.fY - vPivot.fY), vScale.fZ * (vSize.fZ - vPivot.fZ));
       }
       else
       {

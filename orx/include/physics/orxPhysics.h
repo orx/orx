@@ -71,13 +71,13 @@
  */
 typedef struct __orxBODY_DEF_t
 {
-  orxVECTOR vPosition;                      /**< Position */
-  orxFLOAT  fRotation;                      /**< Rotation */
-  orxFLOAT  fInertia;                       /**< Inertia */
-  orxFLOAT  fMass;                          /**< Mass */
-  orxFLOAT  fLinearDamping;                 /**< Linear damping */
-  orxFLOAT  fAngularDamping;                /**< Angular damping */
-  orxU32    u32Flags;                       /**< Control flags */
+  orxVECTOR vPosition;                      /**< Position : 12 */
+  orxFLOAT  fRotation;                      /**< Rotation : 16 */
+  orxFLOAT  fInertia;                       /**< Inertia : 20 */
+  orxFLOAT  fMass;                          /**< Mass : 24 */
+  orxFLOAT  fLinearDamping;                 /**< Linear damping : 28 */
+  orxFLOAT  fAngularDamping;                /**< Angular damping : 32 */
+  orxU32    u32Flags;                       /**< Control flags : 36 */
 
 } orxBODY_DEF;
 
@@ -85,26 +85,26 @@ typedef struct __orxBODY_DEF_t
  */
 typedef struct __orxBODY_PART_DEF_t
 {
-  orxFLOAT  fFriction;                      /**< Friction */
-  orxFLOAT  fRestitution;                   /**< Restitution */
-  orxFLOAT  fDensity;                       /**< Density */
-  orxU16    u16SelfFlags;                   /**< Self defining flags */
-  orxU16    u16CheckMask;                   /**< Check mask */
-  orxU32    u32Flags;                       /**< Control flags */
+  orxFLOAT  fFriction;                      /**< Friction : 4 */
+  orxFLOAT  fRestitution;                   /**< Restitution : 8 */
+  orxFLOAT  fDensity;                       /**< Density : 12 */
+  orxU16    u16SelfFlags;                   /**< Self defining flags : 14 */
+  orxU16    u16CheckMask;                   /**< Check mask : 16 */
+  orxU32    u32Flags;                       /**< Control flags : 20 */
 
   union
   {
     struct
     {
-      orxVECTOR vCenter;                    /**< Sphere center */
-      orxFLOAT  fRadius;                    /**< Sphere radius */
-    } stSphere;
+      orxVECTOR vCenter;                    /**< Sphere center : 32 */
+      orxFLOAT  fRadius;                    /**< Sphere radius : 36 */
+    } stSphere;                             /**< Sphere : 36 */
 
     struct
     {
-      orxAABOX  stBox;                      /**< Axis aligned Box */
-    } stAABox;
-  };
+      orxAABOX  stBox;                      /**< Axis aligned Box : 44 */
+    } stAABox;                              /**< Box : 44 */
+  };                                        /**< Shape : 44 */
 
 } orxBODY_PART_DEF;
 

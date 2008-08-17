@@ -215,13 +215,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetWorldRotation(orxCONST 
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvScale);
 
-/** Get object world scale
+/** Gets object world scale
  * @param[in]   _pstObject      Concerned object
- * @param[out]  _pfScaleX       Object world X scale
- * @param[out]  _pfScaleY       Object world Y scale
+ * @param[out]  _pvScale        Object world scale
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvScale);
 
 
 /** Sets an object parent
@@ -234,11 +233,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstO
 
 /** Gets object size
  * @param[in]   _pstObject      Concerned object
- * @param[out]  _pfWidth        Object's width
- * @param[out]  _pfHeight       Object's height
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out]  _pvSize         Object's size
+ * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvSize);
 
 
 /** Sets an object animset

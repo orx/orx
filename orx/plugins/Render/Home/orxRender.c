@@ -129,8 +129,8 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     orxBITMAP      *pstBitmap;
     orxTEXTURE     *pstTexture;
     orxANIMPOINTER *pstAnimPointer;
-    orxVECTOR       vPivot, vPosition;
-    orxFLOAT        fRotation, fScaleX, fScaleY, fClipTop, fClipLeft, fClipBottom, fClipRight, fWidth, fHeight, fRepeatX, fRepeatY;
+    orxVECTOR       vPivot, vPosition, vSize, vScale;
+    orxFLOAT        fRotation, fClipTop, fClipLeft, fClipBottom, fClipRight, fRepeatX, fRepeatY;
 
     /* Gets animation pointer */
     pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
@@ -162,15 +162,15 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
 
     /* Gets rendering frame's position, rotation & scale */
     fRotation = orxFrame_GetRotation(_pstRenderFrame, orxFALSE);
-    orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &fScaleX, &fScaleY);
+    orxFrame_GetScale(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vScale);
     orxFrame_GetPosition(_pstRenderFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
 
     /* Gets its clipping corners */
-    orxGraphic_GetSize(pstGraphic, &fWidth, &fHeight);
+    orxGraphic_GetSize(pstGraphic, &vSize);
     fClipTop      = orxGraphic_GetTop(pstGraphic);
     fClipLeft     = orxGraphic_GetLeft(pstGraphic);
-    fClipBottom   = fClipTop + fHeight;
-    fClipRight    = fClipLeft + fWidth;
+    fClipBottom   = fClipTop + vSize.fY;
+    fClipRight    = fClipLeft + vSize.fX;
 
     /* Updates its clipping */
     orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipRight), orxF2U(fClipBottom));
@@ -182,14 +182,14 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_X) != orxFALSE)
       {
         /* Updates render scale */
-        fScaleX = -fScaleX;
+        vScale.fX = -vScale.fX;
       }
 
       /* Y-axis flip? */
       if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_Y) != orxFALSE)
       {
         /* Updates render scale */
-        fScaleY = -fScaleY;
+        vScale.fY = -vScale.fY;
       }
     }
 
@@ -220,7 +220,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
 
     /* No scale nor rotation nor repeat? */
-    if((fRotation == orxFLOAT_0) && (fScaleX == orxFLOAT_1) && (fScaleY == orxFLOAT_1) && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
+    if((fRotation == orxFLOAT_0) && (vScale.fX == orxFLOAT_1) && (vScale.fY == orxFLOAT_1) && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
     {
       /* Updates position with pivot */
       orxVector_Sub(&vPosition, &vPosition, &vPivot);
@@ -231,7 +231,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     else
     {
       /* Valid scale? */
-      if((fScaleX != orxFLOAT_0) && (fScaleY != orxFLOAT_0))
+      if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
       {
         orxBITMAP_TRANSFORM stTransform;
 
@@ -243,8 +243,8 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
           stTransform.fSrcY     = vPivot.fY;
           stTransform.fDstX     = vPosition.fX;
           stTransform.fDstY     = vPosition.fY;
-          stTransform.fScaleX   = fScaleX;
-          stTransform.fScaleY   = fScaleY;
+          stTransform.fScaleX   = vScale.fX;
+          stTransform.fScaleY   = vScale.fY;
           stTransform.fRotation = fRotation;
 
           /* Blits bitmap */
@@ -259,12 +259,12 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
           fSin = orxMath_Sin(-fRotation);
 
           /* Updates scales */
-          fScaleX /= fRepeatX;
-          fScaleY /= fRepeatY;
+          vScale.fX /= fRepeatX;
+          vScale.fY /= fRepeatY;
 
           /* Updates increments */
-          fIncX = fWidth * fScaleX;
-          fIncY = fHeight * fScaleY;
+          fIncX = vSize.fX * vScale.fX;
+          fIncY = vSize.fY * vScale.fY;
 
           // For all lines
           for(fY = -orx2F(0.5f) * fIncY * (fRepeatY - orxFLOAT_1), fEndY = orx2F(0.5f) * fIncY * (fRepeatY + orxFLOAT_1), fRemainderY = fRepeatY;
@@ -282,7 +282,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
                 orxFLOAT fOffsetX, fOffsetY;
 
                 /* Updates clipping */
-                orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(orxFLOAT_1, fRemainderX) * fWidth), orxF2U(fClipTop + orxMIN(orxFLOAT_1, fRemainderY) * fHeight));
+                orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(orxFLOAT_1, fRemainderX) * vSize.fX), orxF2U(fClipTop + orxMIN(orxFLOAT_1, fRemainderY) * vSize.fY));
 
                 /* Computes offsets */
                 fOffsetX = fCos * fX + fSin * fY;
@@ -293,8 +293,8 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
                 stTransform.fSrcY     = vPivot.fY;
                 stTransform.fDstX     = vPosition.fX + fOffsetX;
                 stTransform.fDstY     = vPosition.fY + fOffsetY;
-                stTransform.fScaleX   = fScaleX;
-                stTransform.fScaleY   = fScaleY;
+                stTransform.fScaleX   = vScale.fX;
+                stTransform.fScaleY   = vScale.fY;
                 stTransform.fRotation = fRotation;
 
                 /* Blits bitmap */
@@ -502,20 +502,21 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                       /* Is object in Z frustum? */
                       if((vObjectPos.fZ > vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
                       {
-                        orxFLOAT fWidth, fHeight, fObjectScaleX, fObjectScaleY, fObjectSqrBoundingRadius, fSqrDist;
+                        orxFLOAT  fObjectSqrBoundingRadius, fSqrDist;
+                        orxVECTOR vSize, vObjectScale;
 
                         /* Gets its size */
-                        orxGraphic_GetSize(pstGraphic, &fWidth, &fHeight);
+                        orxGraphic_GetSize(pstGraphic, &vSize);
 
                         /* Gets object's scales */
-                        orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &fObjectScaleX, &fObjectScaleY);
+                        orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectScale);
 
                         /* Updates it with object scale */
-                        fWidth  *= fObjectScaleX;
-                        fHeight *= fObjectScaleY;
+                        vSize.fX *= vObjectScale.fX;
+                        vSize.fY *= vObjectScale.fY;
 
                         /* Gets object square bounding radius */
-                        fObjectSqrBoundingRadius = orx2F(1.5f) * ((fWidth * fWidth) + (fHeight * fHeight));
+                        fObjectSqrBoundingRadius = orx2F(1.5f) * ((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
 
                         /* Gets 2D square distance to camera */
                         fSqrDist = orxVector_GetSquareDistance(&vObjectPos, &vCameraCenter);
@@ -582,8 +583,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                   pstRenderNode = (orxRENDER_NODE *)orxLinkList_GetNext((orxLINKLIST_NODE *)pstRenderNode))
               {
                 orxFRAME *pstFrame;
-                orxVECTOR vObjectPos, vRenderPos;
-                orxFLOAT  fObjectScaleX, fObjectScaleY, fObjectRotation;
+                orxVECTOR vObjectPos, vRenderPos, vObjectScale;
+                orxFLOAT  fObjectRotation;
 
                 /* Gets object */
                 pstObject = pstRenderNode->pstObject;
@@ -595,7 +596,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
 
                 /* Gets object's scales */
-                orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &fObjectScaleX, &fObjectScaleY);
+                orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectScale);
 
                 /* Gets object's rotation */
                 fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
@@ -671,8 +672,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                   }
 
                   /* Updates object scales */
-                  fObjectScaleX *= fDepthScale;
-                  fObjectScaleY *= fDepthScale;
+                  vObjectScale.fX *= fDepthScale;
+                  vObjectScale.fY *= fDepthScale;
                 }
 
                 /* Has camera rotation? */
@@ -689,7 +690,9 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 /* Updates render frame */
                 orxFrame_SetPosition(pstRenderFrame, &vRenderPos);
                 orxFrame_SetRotation(pstRenderFrame, fObjectRotation - fRenderRotation);
-                orxFrame_SetScale(pstRenderFrame, fRenderScaleX * fObjectScaleX, fRenderScaleY * fObjectScaleY);
+                vObjectScale.fX *= fRenderScaleX;
+                vObjectScale.fY *= fRenderScaleY;
+                orxFrame_SetScale(pstRenderFrame, &vObjectScale);
 
                 /* Renders it */
                 if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame) != orxSTATUS_SUCCESS)

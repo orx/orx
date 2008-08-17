@@ -500,7 +500,7 @@ orxSTATUS orxFASTCALL orxCamera_SetRotation(orxCAMERA *_pstCamera, orxFLOAT _fRo
  */
 orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
 {
-  orxFLOAT  fInvZoom;
+  orxVECTOR vInvZoom;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -509,10 +509,10 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
   orxSTRUCTURE_ASSERT(_pstCamera);
 
   /* Gets inverse zoom */
-  fInvZoom = orxFLOAT_1 / _fZoom;
+  orxVector_SetAll(&vInvZoom, orxFLOAT_1 / _fZoom);
 
   /* Sets camera zoom */
-  orxFrame_SetScale(_pstCamera->pstFrame, fInvZoom, fInvZoom);
+  orxFrame_SetScale(_pstCamera->pstFrame, &vInvZoom);
 
   /* Done! */
   return eResult;
@@ -577,17 +577,17 @@ orxFLOAT orxFASTCALL orxCamera_GetRotation(orxCONST orxCAMERA *_pstCamera)
  */
 orxFLOAT orxFASTCALL orxCamera_GetZoom(orxCONST orxCAMERA *_pstCamera)
 {
-  orxFLOAT fScale, fDummy;
+  orxVECTOR vScale;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
 
   /* Gets camera scale */
-  orxFrame_GetScale(_pstCamera->pstFrame, orxFRAME_SPACE_LOCAL, &fScale, &fDummy);
+  orxFrame_GetScale(_pstCamera->pstFrame, orxFRAME_SPACE_LOCAL, &vScale);
 
   /* Done! */
-  return(orxFLOAT_1 / fScale);
+  return(orxFLOAT_1 / vScale.fX);
 }
 
 /** Gets camera frame

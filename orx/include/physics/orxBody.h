@@ -51,7 +51,7 @@
 
 /** Misc defines
  */
-#define orxBODY_KU32_PART_MAX_NUMBER          8
+#define orxBODY_KU32_PART_MAX_NUMBER          4
 
 
 /** Internal Body structure

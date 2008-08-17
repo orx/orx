@@ -1135,7 +1135,7 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxCONST orxVECT
   if(pstFrame != orxNULL)
   {
     /* Sets frame scale */
-    orxFrame_SetScale(pstFrame, _pvScale->fX, _pvScale->fY);
+    orxFrame_SetScale(pstFrame, _pvScale);
   }
   else
   {
@@ -1347,7 +1347,7 @@ orxVECTOR *orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVEC
   if(pstFrame != orxNULL)
   {
     /* Gets object scale */
-    orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, &(_pvScale->fX), &(_pvScale->fY));
+    orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
 
     /* Clears scale on Z */
     _pvScale->fZ = orxFLOAT_1;
@@ -1372,20 +1372,18 @@ orxVECTOR *orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVEC
 
 /** Gets object world scale
  * @param[in]   _pstObject      Concerned object
- * @param[out]  _pfScaleX       Object world X scale
- * @param[out]  _pfScaleY       Object world Y scale
+ * @param[out]  _pvScale        Object world scale
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfScaleX, orxFLOAT *_pfScaleY)
+orxVECTOR *orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvScale)
 {
-  orxFRAME *pstFrame;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxFRAME  *pstFrame;
+  orxVECTOR *pvResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pfScaleX != orxNULL);
-  orxASSERT(_pfScaleY != orxNULL);
+  orxASSERT(_pvScale != orxNULL);
 
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
@@ -1394,18 +1392,21 @@ orxSTATUS orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, or
   if(pstFrame != orxNULL)
   {
     /* Gets object scale */
-    eResult = orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, _pfScaleX, _pfScaleY);
+    pvResult = orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, _pvScale);
   }
   else
   {
     /* !!! MSG !!! */
 
+    /* Clears scale */
+    orxVector_Copy(_pvScale, &orxVECTOR_0);
+
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    pvResult = orxNULL;
   }
 
   /* Done! */
-  return eResult;
+  return pvResult;
 }
 
 /** Sets an object parent
@@ -1434,20 +1435,18 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pst
 
 /** Gets object size
  * @param[in]   _pstObject      Concerned object
- * @param[out]  _pfWidth        Object's width
- * @param[out]  _pfHeight       Object's height
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out]  _pvSize         Object's size
+ * @return      orxVECTOR / orxNULL
  */
-orxSTATUS orxFASTCALL orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxVECTOR *orxFASTCALL orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvSize)
 {
   orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult;
+  orxVECTOR  *pvResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pfWidth != orxNULL);
-  orxASSERT(_pfHeight != orxNULL);
+  orxASSERT(_pvSize != orxNULL);
 
   /* Gets graphic */
   pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
@@ -1456,19 +1455,19 @@ orxSTATUS orxFASTCALL orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxFLOAT
   if(pstGraphic != orxNULL)
   {
     /* Gets its size */
-    eResult = orxGraphic_GetSize(pstGraphic, _pfWidth, _pfHeight);
+    pvResult = orxGraphic_GetSize(pstGraphic, _pvSize);
   }
   else
   {
     /* No size */
-    *_pfWidth  = *_pfHeight = orx2F(-1.0f);
+    orxVector_SetAll(_pvSize, orx2F(-1.0f));
 
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    pvResult = orxNULL;
   }
 
   /* Done! */
-  return eResult;
+  return pvResult;
 }
 
 /** Sets an object animset
@@ -2013,23 +2012,23 @@ orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, o
     /* Has graphic? */
     if((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
     {
-      orxFLOAT fWidth, fHeight;
+      orxVECTOR vSize;
 
       /* Gets size */
-      if(orxGraphic_GetSize(pstGraphic, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+      if(orxGraphic_GetSize(pstGraphic, &vSize) != orxNULL)
       {
-        orxVECTOR vPivot, vPosition;
-        orxFLOAT  fAngle, fScaleX, fScaleY;
+        orxVECTOR vPivot, vPosition, vScale;
+        orxFLOAT  fAngle;
 
         /* Gets pivot, positionm scale & rotation */
         orxObject_GetPivot(_pstObject, &vPivot);
         orxObject_GetWorldPosition(_pstObject, &vPosition);
-        orxObject_GetWorldScale(_pstObject, &fScaleX, &fScaleY);
+        orxObject_GetWorldScale(_pstObject, &vScale);
         fAngle = orxObject_GetWorldRotation(_pstObject);
 
         /* Updates box */
         orxVector_Sub(&(_pstBoundingBox->vTL), &vPosition, &vPivot);
-        orxVector_Set(&(_pstBoundingBox->vBR), _pstBoundingBox->vTL.fX + (fScaleX * fWidth), _pstBoundingBox->vTL.fY + (fScaleY * fHeight), _pstBoundingBox->vTL.fZ);
+        orxVector_Set(&(_pstBoundingBox->vBR), _pstBoundingBox->vTL.fX + (vScale.fX * vSize.fX), _pstBoundingBox->vTL.fY + (vScale.fY * vSize.fY), _pstBoundingBox->vTL.fZ + (vScale.fZ * vSize.fZ));
 
         /* Has rotation? */
         if(fAngle != orxFLOAT_0)

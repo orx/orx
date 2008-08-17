@@ -132,11 +132,10 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetPivot(orxCONST orxGR
 
 /** Gets graphic size
  * @param[in]   _pstGraphic     Concerned graphic
- * @param[out]  _pfWidth        Object's width
- * @param[out]  _pfHeight       Object's height
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out]  _pvSize         Object's size
+ * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvSize);
 
 /** Sets graphic color
  * @param[in]   _pstGraphic     Concerned graphic

@@ -337,13 +337,13 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             /* Uses centered pivot? */
             if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT)), orxGRAPHIC_KZ_CENTERED_PIVOT) == 0)
             {
-              orxFLOAT fWidth, fHeight;
+              orxVECTOR vSize;
 
               /* Gets object size */
-              if(orxGraphic_GetSize(pstResult, &fWidth, &fHeight) != orxSTATUS_FAILURE)
+              if(orxGraphic_GetSize(pstResult, &vSize) != orxNULL)
               {
                 /* Inits pivot */
-                orxVector_Set(&vPivot, orx2F(0.5f) * fWidth, orx2F(0.5f) * fHeight, orxFLOAT_0);
+                orxVector_Set(&vPivot, orx2F(0.5f) * vSize.fX, orx2F(0.5f) * vSize.fY, orxFLOAT_0);
               }
               else
               {
@@ -664,41 +664,38 @@ orxVECTOR *orxFASTCALL orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orx
 
 /** Gets graphic size
  * @param[in]   _pstGraphic     Concerned graphic
- * @param[out]  _pfWidth        Object's width
- * @param[out]  _pfHeight       Object's height
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[out]  _pvSize         Object's size
+ * @return      orxVECTOR / orxNULL
  */
-orxSTATUS orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxVECTOR *orxFASTCALL orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvSize)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxVECTOR *pvResult;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
-  orxASSERT(_pfWidth != orxNULL);
-  orxASSERT(_pfHeight != orxNULL);
+  orxASSERT(_pvSize != orxNULL);
 
   /* Valid 2D data? */
   if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
   {
     /* Gets its size */
-    *_pfWidth   = _pstGraphic->fWidth;
-    *_pfHeight  = _pstGraphic->fHeight;
+    orxVector_Set(_pvSize, _pstGraphic->fWidth, _pstGraphic->fHeight, orxFLOAT_0);
 
     /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    pvResult = _pvSize;
   }
   else
   {
     /* No size */
-    *_pfWidth  = *_pfHeight = orx2F(-1.0f);
+    orxVector_SetAll(_pvSize, orx2F(-1.0f));
 
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    pvResult = orxNULL;
   }
 
   /* Done! */
-  return eResult;
+  return pvResult;
 }
 
 /** Sets graphic color
