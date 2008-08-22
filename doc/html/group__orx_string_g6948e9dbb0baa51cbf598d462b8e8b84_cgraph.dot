@@ -1,0 +1,14 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  rankdir=LR;
+  Node1 [label="orxString_ToBool",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node2 [label="orxString_GetLength",height=0.2,width=0.4,color="black",URL="$group__orx_string.html#ga67d6235d50480639616e8c51552e736"];
+  Node1 -> Node3 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node3 [label="orxString_NCompare",height=0.2,width=0.4,color="black",URL="$group__orx_string.html#g1598022635b68c527f2b3197163d495e"];
+  Node1 -> Node4 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node4 [label="orxString_ToS32Base",height=0.2,width=0.4,color="black",URL="$group__orx_string.html#gdf4c64841d36d1d5df1a23b8e6e59f40"];
+}

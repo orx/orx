@@ -1,0 +1,28 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  rankdir=LR;
+  Node1 [label="orx_Execute",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node2 [label="orx_DefaultEventHandler",height=0.2,width=0.4,color="black",URL="$group___orx.html#g6cdd2d14420949b68a64dd3610ebebf3"];
+  Node1 -> Node3 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node3 [label="orxClock_Update",height=0.2,width=0.4,color="black",URL="$group__orx_clock.html#g3cbf6d1e245d788039e70f1af4e538cd"];
+  Node1 -> Node4 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node4 [label="orxEvent_AddHandler",height=0.2,width=0.4,color="black",URL="$group__orx_event.html#gfa506b8e928baf9e46a4ff20ccaa23c0"];
+  Node1 -> Node5 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node5 [label="orxModule_Exit",height=0.2,width=0.4,color="black",URL="$group__orx_module.html#g2f1bb6325e1fe48f9297362c9cc7c7e3"];
+  Node1 -> Node6 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node6 [label="orxModule_ExitAll",height=0.2,width=0.4,color="black",URL="$group__orx_module.html#g1f06014f952ddd0cbd287df593434ff8"];
+  Node1 -> Node7 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node7 [label="orxModule_Init",height=0.2,width=0.4,color="black",URL="$group__orx_module.html#ge6568b5f2c3ed7f4eb64ee81f76f9350"];
+  Node1 -> Node8 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node8 [label="orxModule_Register",height=0.2,width=0.4,color="black",URL="$group__orx_module.html#g8064c329a11c7b582632ee372992c06c"];
+  Node1 -> Node9 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node9 [label="orxModule_RegisterAll",height=0.2,width=0.4,color="black",URL="$group__orx_module.html#g7d2d18752f4f435ac0fa755f4dc5fb6d"];
+  Node1 -> Node10 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node10 [label="orxModule_SetupAll",height=0.2,width=0.4,color="black",URL="$group__orx_module.html#g52cd1c7c080c32c9922522681c5c6460"];
+  Node1 -> Node11 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node11 [label="orxParam_SetArgs",height=0.2,width=0.4,color="black",URL="$group__orx_param.html#gaa54334e7382d583238b892bcb8f97ff"];
+}

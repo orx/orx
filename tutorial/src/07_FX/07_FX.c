@@ -191,6 +191,12 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     /* Selects move FX */
     zSelectedFX = "MoveFX";
   }
+  /* Is numpad 6 pressed? */
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_NUMPAD6))
+  {
+    /* Selects flip FX */
+    zSelectedFX = "FlipFX";
+  }
 
   /* Soldier not locked? */
   if(!((MyObject *)orxObject_GetUserData(pstSoldier))->bLock)
@@ -213,7 +219,7 @@ orxSTATUS Init()
   MyObject *pstMyObject;
 
   /* Displays a small hint in console */
-  orxLOG("\n- Numpad 1-5 selects an FX to apply (Wobble, Circle, Fade, Color Flash & Move)"
+  orxLOG("\n- Numpad 1-6 selects an FX to apply (Wobble, Circle, Fade, Color, Move & Flip)"
          "\n- Numpad 0 will apply the MultiFX containing the slots of 4 of the above FXs"
          "\n- Space will apply the current selected FX on soldier"
          "\n* Only once FX will be applied at a time in this tutorial"

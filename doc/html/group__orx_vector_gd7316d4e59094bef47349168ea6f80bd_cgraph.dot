@@ -1,0 +1,12 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  rankdir=LR;
+  Node1 [label="orxAABox_GetCenter",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node2 [label="orxVector_Add",height=0.2,width=0.4,color="black",URL="$group__orx_vector.html#ge93b3564e3934837ac925d7aea554746"];
+  Node1 -> Node3 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node3 [label="orxVector_Mulf",height=0.2,width=0.4,color="black",URL="$group__orx_vector.html#g849142dbc2fd3d4e4371f47bae051120"];
+}

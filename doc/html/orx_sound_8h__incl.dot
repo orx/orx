@@ -1,0 +1,29 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  Node1 [label="F:/workspace/code/orx/include/sound/orxSound.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node2 [label="orxInclude.h",height=0.2,width=0.4,color="black",URL="$orx_include_8h.html"];
+  Node2 -> Node3 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node3 [label="base/orxModule.h",height=0.2,width=0.4,color="black",URL="$orx_module_8h.html"];
+  Node3 -> Node4 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node4 [label="base/orxType.h",height=0.2,width=0.4,color="black",URL="$orx_type_8h.html"];
+  Node4 -> Node5 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node5 [label="base/orxDecl.h",height=0.2,width=0.4,color="black",URL="$orx_decl_8h.html"];
+  Node1 -> Node6 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node6 [label="math/orxVector.h",height=0.2,width=0.4,color="black",URL="$orx_vector_8h.html"];
+  Node6 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node6 -> Node7 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node7 [label="debug/orxDebug.h",height=0.2,width=0.4,color="black",URL="$orx_debug_8h.html"];
+  Node7 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node6 -> Node8 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node8 [label="memory/orxMemory.h",height=0.2,width=0.4,color="black",URL="$orx_memory_8h.html"];
+  Node8 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node6 -> Node9 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node9 [label="math/orxMath.h",height=0.2,width=0.4,color="black",URL="$orx_math_8h.html"];
+  Node9 -> Node2 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node9 -> Node10 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node10 [label="math.h",height=0.2,width=0.4,color="grey75"];
+}
