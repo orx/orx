@@ -349,11 +349,11 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
-  <Dependencies Name="Win32 Static Release">
+  <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
-  <Dependencies Name="Win32 Static Debug">
+  <Dependencies Name="Win32 Static Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
