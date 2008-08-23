@@ -49,8 +49,6 @@
 #include "utils/orxScreenshot.h"
 #include "utils/orxString.h"
 #include "utils/orxTree.h"
-#include "utils/pathfinder.h"
-
 
 #endif /* _orxUTILS_H_*/
 
