@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>orx: F:/workspace/code/orx/include/display/orxDisplay.h File Reference</title>
+<title>orx: include/display/orxDisplay.h File Reference</title>
 <link href="doxygen.css" rel="stylesheet" type="text/css">
 <link href="tabs.css" rel="stylesheet" type="text/css">
 </head><body>
@@ -17,7 +17,7 @@
   </div>
 </div>
 <div class="contents">
-<h1>F:/workspace/code/orx/include/display/orxDisplay.h File Reference</h1><code>#include &quot;<a class="el" href="orx_include_8h.html">orxInclude.h</a>&quot;</code><br>
+<h1>include/display/orxDisplay.h File Reference</h1><code>#include &quot;<a class="el" href="orx_include_8h.html">orxInclude.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="orx_plugin_core_8h.html">plugin/orxPluginCore.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="orx_vector_8h.html">math/orxVector.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="orx_string_8h.html">utils/orxString.h</a>&quot;</code><br>
@@ -63,7 +63,21 @@ This graph shows which files directly or indirectly include this file:</div>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <br>
 <a class="el" href="struct____orx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m__t.html">__orxBITMAP_TRANSFORM_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gc5485325d7ff3579da067a20da7738d7">orxBITMAP_TRANSFORM</a></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <br>
+<a class="el" href="group__orx_display.html#g334f9861c2bd6bc23157095e392060db">__orxDISPLAY_SMOOTHING_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a></td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <a class="el" href="struct____orx_c_o_l_o_r__t.html">__orxCOLOR_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4c646f4a2c8a9927ad328d725600abd2">orxCOLOR</a></td></tr>
+
+<tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g334f9861c2bd6bc23157095e392060db">__orxDISPLAY_SMOOTHING_t</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_display.html#gg334f9861c2bd6bc23157095e392060dbd3caa8b13c52378a4e39235285f82be1">orxDISPLAY_SMOOTHING_DEFAULT</a> =  0, 
+<a class="el" href="group__orx_display.html#gg334f9861c2bd6bc23157095e392060db01a725709f5f8b09ea2ecb4ba518d8a0">orxDISPLAY_SMOOTHING_ON</a>, 
+<a class="el" href="group__orx_display.html#gg334f9861c2bd6bc23157095e392060dbfb3f9ebd6c222fb730dde752f4245dc2">orxDISPLAY_SMOOTHING_OFF</a>, 
+<a class="el" href="group__orx_display.html#gg334f9861c2bd6bc23157095e392060dbc7f92477b27e765e6f34ae20b871b713">orxDISPLAY_SMOOTHING_NUMBER</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_display.html#gg334f9861c2bd6bc23157095e392060dbd951083cb25c45a525052b1a3c180528">orxDISPLAY_SMOOTHING_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ge99a4de432a0868ae8620ad3d8ac7914">orxDisplay_Setup</a> ()</td></tr>
@@ -98,7 +112,7 @@ This graph shows which files directly or indirectly include this file:</div>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g17ee1f1e8a3813e2dce41dc470f7a8e8">orxDisplay_ClearBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxRGBA _stColor)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga191e5b898f821f64b2dc752b4276f42">orxDisplay_TransformBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxCONST <a class="el" href="struct____orx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m__t.html">orxBITMAP_TRANSFORM</a> *_pstTransform, orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ge591798a65d77303bc32c1430fffd570">orxDisplay_TransformBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxCONST <a class="el" href="struct____orx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m__t.html">orxBITMAP_TRANSFORM</a> *_pstTransform, <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> _eSmoothing)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g5c5d0a39d6ef154625c071269e1c203a">orxDisplay_SetBitmapColorKey</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)</td></tr>
 
@@ -128,7 +142,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <dl class="author" compact><dt><b>Author:</b></dt><dd><a href="mailto:iarwain@orx-project.org">iarwain@orx-project.org</a></dd></dl>
 <dl compact><dt><b><a class="el" href="todo.html#_todo000013">Todo:</a></b></dt><dd></dd></dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Aug 21 22:26:37 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 23 02:30:40 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

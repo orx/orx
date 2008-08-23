@@ -51,6 +51,8 @@
 #define orxGRAPHIC_KU32_FLAG_INTERNAL         0x10000000  /**< Internal structure handling flag  */
 #define orxGRAPHIC_KU32_FLAG_HAS_COLOR        0x20000000  /**< Has color flag  */
 #define orxGRAPHIC_KU32_FLAG_HAS_PIVOT        0x40000000  /**< Has pivot flag  */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON     0x01000000  /**< Smoothing on flag  */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF    0x02000000  /**< Smoothing off flag  */
 
 #define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
 
@@ -65,6 +67,7 @@
 #define orxGRAPHIC_KZ_CONFIG_ALPHA            "Alpha"
 #define orxGRAPHIC_KZ_CONFIG_FLIP             "Flip"
 #define orxGRAPHIC_KZ_CONFIG_REPEAT           "Repeat"
+#define orxGRAPHIC_KZ_CONFIG_SMOOTHING        "Smoothing"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
 #define orxGRAPHIC_KZ_X                       "x"
@@ -424,6 +427,13 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
 
               /* Stores it */
               orxGraphic_SetRepeat(pstResult, vRepeat.fX, vRepeat.fY);
+            }
+
+            /* Has smoothing value? */
+            if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_SMOOTHING) != orxFALSE)
+            {
+              /* Updates flags */
+              u32Flags |= (orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_SMOOTHING) != orxFALSE) ? orxGRAPHIC_KU32_FLAG_SMOOTHING_ON : orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF;
             }
 
             /* Updates status flags */
@@ -893,4 +903,77 @@ orxFLOAT orxFASTCALL orxGraphic_GetLeft(orxCONST orxGRAPHIC *_pstGraphic)
 
   /* Done! */
   return fResult;
+}
+
+/** Sets graphic smoothing
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_SetSmoothing(orxGRAPHIC *_pstGraphic, orxDISPLAY_SMOOTHING _eSmoothing)
+{
+  orxU32    u32Flags;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Depending on smoothing type */
+  switch(_eSmoothing)
+  {
+    case orxDISPLAY_SMOOTHING_ON:
+    {
+      /* Updates flags */
+      u32Flags = orxGRAPHIC_KU32_FLAG_SMOOTHING_ON;
+
+      break;
+    }
+
+    case orxDISPLAY_SMOOTHING_OFF:
+    {
+      /* Updates flags */
+      u32Flags = orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF;
+
+      break;
+    }
+
+    default:
+    case orxDISPLAY_SMOOTHING_DEFAULT:
+    {
+      /* Updates flags */
+      u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
+
+      break;
+    }
+  }
+
+  /* Updates status */
+  orxStructure_SetFlags(_pstGraphic, u32Flags, orxGRAPHIC_KU32_FLAG_SMOOTHING_ON|orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets graphic smoothing
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return Smoothing type (enabled, default or none)
+ */
+orxDISPLAY_SMOOTHING orxFASTCALL orxGraphic_GetSmoothing(orxCONST orxGRAPHIC *_pstGraphic)
+{
+  orxDISPLAY_SMOOTHING eResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  eResult = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_SMOOTHING_ON)
+            ? orxDISPLAY_SMOOTHING_ON
+            : orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF)
+              ? orxDISPLAY_SMOOTHING_OFF
+              : orxDISPLAY_SMOOTHING_DEFAULT;
+
+  /* Done! */
+  return eResult;
 }

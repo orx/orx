@@ -74,6 +74,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gacaeab15a8e8983cd9cd8e614b069eba">orxGraphic_GetLeft</a> (orxCONST <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g2ff28e37c696cded16d31036b708e934">orxGraphic_SetSmoothing</a> (<a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic, <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> _eSmoothing)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g7aa20b8c036a6a7360f1543330c0cc5e">orxGraphic_GetSmoothing</a> (orxCONST <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Graphic Module. Allows to creates and handle 2D/3D Graphics. They are used as texture/animation container, with associated properties. 2D Graphics are used by objects. They thus can be referenced by objects as structures. <hr><h2>Define Documentation</h2>
@@ -509,6 +514,32 @@ Gets graphic size <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g7aa20b8c036a6a7360f1543330c0cc5e"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_GetSmoothing" ref="g7aa20b8c036a6a7360f1543330c0cc5e" args="(orxCONST orxGRAPHIC *_pstGraphic)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> orxFASTCALL orxGraphic_GetSmoothing           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstGraphic</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets graphic smoothing <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstGraphic</em>&nbsp;</td><td>Concerned graphic </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Smoothing type (enabled, default or none) </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gf77e9b35a2bbc355bd69c7e9f0cc2b90"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_GetTop" ref="gf77e9b35a2bbc355bd69c7e9f0cc2b90" args="(orxCONST orxGRAPHIC *_pstGraphic)" -->
 <div class="memitem">
 <div class="memproto">
@@ -731,6 +762,42 @@ Sets graphic repeat (wrap) value <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g2ff28e37c696cded16d31036b708e934"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_SetSmoothing" ref="g2ff28e37c696cded16d31036b708e934" args="(orxGRAPHIC *_pstGraphic, orxDISPLAY_SMOOTHING _eSmoothing)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxGraphic_SetSmoothing           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstGraphic</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a>&nbsp;</td>
+          <td class="paramname"> <em>_eSmoothing</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets graphic smoothing <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstGraphic</em>&nbsp;</td><td>Concerned graphic </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eSmoothing</em>&nbsp;</td><td>Smoothing type (enabled, default or none) </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gf8d0fb1a5b69ef408e1b6304f6a08151"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_Setup" ref="gf8d0fb1a5b69ef408e1b6304f6a08151" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -751,7 +818,7 @@ Graphic module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Aug 21 22:26:40 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 23 02:30:43 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

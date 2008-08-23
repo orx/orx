@@ -60,6 +60,20 @@ typedef struct __orxBITMAP_TRANSFORM_t
 
 } orxBITMAP_TRANSFORM;
 
+/** Bitmap smoothing enum
+ */
+typedef enum __orxDISPLAY_SMOOTHING_t
+{
+  orxDISPLAY_SMOOTHING_DEFAULT = 0,
+  orxDISPLAY_SMOOTHING_ON,
+  orxDISPLAY_SMOOTHING_OFF,
+
+  orxDISPLAY_SMOOTHING_NUMBER,
+
+  orxDISPLAY_SMOOTHING_NONE = orxENUM_NONE
+
+} orxDISPLAY_SMOOTHING;
+
 /** Color structure
  */
 typedef struct __orxCOLOR_t
@@ -283,10 +297,10 @@ extern orxDLLAPI orxSTATUS  orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGB
  * @param[in]   _pstDst                               Bitmap where to blit the result, can be screen
  * @param[in]   _pstSrc                               Bitmap to transform and draw
  * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
- * @param[in]   _u32Flags                             Unused yet
+ * @param[in]   _eSmoothing                           Bitmap smoothing type
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing);
 
 
 /** Sets a bitmap color key (used with non alpha transparency)

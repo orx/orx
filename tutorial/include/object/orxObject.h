@@ -438,6 +438,20 @@ extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(orxCONS
  */
 extern orxDLLAPI orxVOID orxFASTCALL        orxObject_DeleteNeighborList(orxBANK *_pstObjectList);
 
+
+/** Sets object smoothing
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing);
+
+/** Gets object smoothing
+ * @param[in]   _pstObject     Concerned object
+ * @return Smoothing type (enabled, default or none)
+ */
+extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(orxCONST orxOBJECT *_pstObject);
+
 #endif /* _orxOBJECT_H_ */
 
 /** @} */

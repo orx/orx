@@ -411,7 +411,7 @@
     <Project Name="orxSystem_SFML"/>
     <Project Name="orxSoundSystem_SFML"/>
   </Dependencies>
-  <Dependencies Name="Win32 Static Debug">
+  <Dependencies Name="Win32 Static Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
     <Project Name="orxDisplay_SFML"/>
@@ -425,7 +425,7 @@
     <Project Name="orxSoundSystem_SFML"/>
     <Project Name="orxSystem_SFML"/>
   </Dependencies>
-  <Dependencies Name="Win32 Static Release">
+  <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
     <Project Name="orxDisplay_SFML"/>

@@ -191,6 +191,20 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetTop(orxCONST orxGRAP
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetLeft(orxCONST orxGRAPHIC *_pstGraphic);
 
+/** Sets graphic smoothing
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetSmoothing(orxGRAPHIC *_pstGraphic, orxDISPLAY_SMOOTHING _eSmoothing);
+
+/** Gets graphic smoothing
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return Smoothing type (enabled, default or none)
+ */
+extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxGraphic_GetSmoothing(orxCONST orxGRAPHIC *_pstGraphic);
+
+
 #endif /* _orxGRAPHIC_H_ */
 
 

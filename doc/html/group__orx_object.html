@@ -136,6 +136,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g007a1f5db868eb12a9ad10daf134d409">orxObject_DeleteNeighborList</a> (<a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstObjectList)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g3b0b13fce2f6979246d9fd16074e8390">orxObject_SetSmoothing</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> _eSmoothing)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga75719a73e6798b29391821c72821e2b">orxObject_GetSmoothing</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Object module Allows to creates and handle objects Objects are structures containers that can refer to many other structures such as frames, graphics, etc... <hr><h2>Define Documentation</h2>
@@ -1053,6 +1058,32 @@ Gets object size <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="ga75719a73e6798b29391821c72821e2b"></a><!-- doxytag: member="orxObject.h::orxObject_GetSmoothing" ref="ga75719a73e6798b29391821c72821e2b" args="(orxCONST orxOBJECT *_pstObject)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> orxFASTCALL orxObject_GetSmoothing           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets object smoothing <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Smoothing type (enabled, default or none) </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g1011ead8d15193c341771c715852ca04"></a><!-- doxytag: member="orxObject.h::orxObject_GetSpeed" ref="g1011ead8d15193c341771c715852ca04" args="(orxOBJECT *_pstObject, orxVECTOR *_pvSpeed)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1825,6 +1856,42 @@ Sets object scale <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g3b0b13fce2f6979246d9fd16074e8390"></a><!-- doxytag: member="orxObject.h::orxObject_SetSmoothing" ref="g3b0b13fce2f6979246d9fd16074e8390" args="(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxObject_SetSmoothing           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a>&nbsp;</td>
+          <td class="paramname"> <em>_eSmoothing</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets object smoothing <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eSmoothing</em>&nbsp;</td><td>Smoothing type (enabled, default or none) </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gf95a2a64aa6587662ded02fbd00ba31c"></a><!-- doxytag: member="orxObject.h::orxObject_SetSpeed" ref="gf95a2a64aa6587662ded02fbd00ba31c" args="(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvSpeed)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1987,7 +2054,7 @@ Unlinks structure from an object, given its structure ID <dl compact><dt><b>Para
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Aug 21 22:26:41 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 23 02:30:43 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

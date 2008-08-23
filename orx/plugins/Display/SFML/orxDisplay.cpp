@@ -456,7 +456,7 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxU32 _u32Flags)
+extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing)
 {
   sf::Sprite *poSprite;
   orxSTATUS   eResult;
@@ -464,7 +464,6 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT((_pstSrc != orxNULL) && (_pstSrc != spoScreen));
-  orxASSERT((_u32Flags == 0) && "Not used yet!")
   orxASSERT((_pstDst == spoScreen) && "Can only draw on screen with this version!");
   orxASSERT(_pstTransform != orxNULL);
 
@@ -489,6 +488,38 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
 
   /* Updates its scale */
   poSprite->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
+
+  /* Depending on smoothing type */
+  switch(_eSmoothing)
+  {
+    case orxDISPLAY_SMOOTHING_ON:
+    {
+      /* Applies smoothing */
+      const_cast<sf::Image *>(poSprite->GetImage())->SetSmooth(true);
+
+      break;
+    }
+
+    case orxDISPLAY_SMOOTHING_OFF:
+    {
+      /* Applies no smoothing */
+      const_cast<sf::Image *>(poSprite->GetImage())->SetSmooth(false);
+
+      break;
+    }
+
+    default:
+    case orxDISPLAY_SMOOTHING_DEFAULT:
+    {
+      /* Selects display section */
+      orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
+      /* Applies default smoothing */
+      const_cast<sf::Image *>(poSprite->GetImage())->SetSmooth(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH) ? true : false);
+
+      break;
+    }
+  }
 
   /* Blits it */
   eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->fDstX, _pstTransform->fDstY);

@@ -59,6 +59,8 @@
 #define orxOBJECT_KU32_FLAG_2D                  0x00000001  /**< 2D flag */
 #define orxOBJECT_KU32_FLAG_HAS_COLOR           0x00000002  /**< Has color flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
+#define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
@@ -88,6 +90,7 @@
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX                  "FX"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
+#define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_X                          "x"
@@ -453,11 +456,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     {
       orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyID;
       orxFRAME *pstFrame;
-      orxU32    u32FrameFlags;
+      orxU32    u32FrameFlags, u32Flags;
       orxVECTOR vPosition;
 
       /* Defaults to 2D flags */
-      orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_2D, orxOBJECT_KU32_FLAG_NONE);
+      u32Flags = orxOBJECT_KU32_FLAG_2D;
 
       /* Stores reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
@@ -623,8 +626,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         /* Applies it */
         orxColor_SetRGB(&(pstResult->stColor), &vColor);
 
-        /* Updates status */
-        orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_HAS_COLOR, orxOBJECT_KU32_FLAG_NONE);
+        /* Updates status flags */
+        u32Flags = orxOBJECT_KU32_FLAG_HAS_COLOR;
       }
 
       /* Has alpha? */
@@ -634,7 +637,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxColor_SetAlpha(&(pstResult->stColor), orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
 
         /* Updates status */
-        orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_HAS_COLOR, orxOBJECT_KU32_FLAG_NONE);
+        u32Flags = orxOBJECT_KU32_FLAG_HAS_COLOR;
       }
 
       /* *** Body *** */
@@ -680,6 +683,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         /* Adds it */
         orxObject_AddFX(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_FX));
       }
+
+      /* Has smoothing value? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_SMOOTHING) != orxFALSE)
+      {
+        /* Updates flags */
+        u32Flags |= (orxConfig_GetBool(orxOBJECT_KZ_CONFIG_SMOOTHING) != orxFALSE) ? orxOBJECT_KU32_FLAG_SMOOTHING_ON : orxOBJECT_KU32_FLAG_SMOOTHING_OFF;
+      }
+
+      /* Updates flags */
+      orxStructure_SetFlags(pstResult, u32Flags, orxOBJECT_KU32_FLAG_NONE);
     }
 
     /* Restores previous section */
@@ -2454,4 +2467,77 @@ orxVOID orxFASTCALL orxObject_DeleteNeighborList(orxBANK *_pstObjectList)
     /* Deletes it */
     orxBank_Delete(_pstObjectList);
   }
+}
+
+/** Sets object smoothing
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetSmoothing(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing)
+{
+  orxU32    u32Flags;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Depending on smoothing type */
+  switch(_eSmoothing)
+  {
+    case orxDISPLAY_SMOOTHING_ON:
+    {
+      /* Updates flags */
+      u32Flags = orxOBJECT_KU32_FLAG_SMOOTHING_ON;
+
+      break;
+    }
+
+    case orxDISPLAY_SMOOTHING_OFF:
+    {
+      /* Updates flags */
+      u32Flags = orxOBJECT_KU32_FLAG_SMOOTHING_OFF;
+
+      break;
+    }
+
+    default:
+    case orxDISPLAY_SMOOTHING_DEFAULT:
+    {
+      /* Updates flags */
+      u32Flags = orxOBJECT_KU32_FLAG_NONE;
+
+      break;
+    }
+  }
+
+  /* Updates status */
+  orxStructure_SetFlags(_pstObject, u32Flags, orxOBJECT_KU32_FLAG_SMOOTHING_ON | orxOBJECT_KU32_FLAG_SMOOTHING_OFF);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets object smoothing
+ * @param[in]   _pstObject     Concerned object
+ * @return Smoothing type (enabled, default or none)
+ */
+orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(orxCONST orxOBJECT *_pstObject)
+{
+  orxDISPLAY_SMOOTHING eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates result */
+  eResult = orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_SMOOTHING_ON)
+            ? orxDISPLAY_SMOOTHING_ON
+            : orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_SMOOTHING_OFF)
+              ? orxDISPLAY_SMOOTHING_OFF
+              : orxDISPLAY_SMOOTHING_DEFAULT;
+
+  /* Done! */
+  return eResult;
 }

@@ -233,7 +233,18 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       /* Valid scale? */
       if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
       {
-        orxBITMAP_TRANSFORM stTransform;
+        orxBITMAP_TRANSFORM   stTransform;
+        orxDISPLAY_SMOOTHING  eSmoothing;
+
+        /* Gets graphic smoothing */
+        eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
+
+        /* Default? */
+        if(eSmoothing == orxDISPLAY_SMOOTHING_DEFAULT)
+        {
+          /* Gets object smoothing */
+          eSmoothing = orxObject_GetSmoothing(_pstObject);
+        }
 
         /* No repeat? */
         if((fRepeatX == orxFLOAT_1)  && (fRepeatY == orxFLOAT_1))
@@ -248,7 +259,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
           stTransform.fRotation = fRotation;
 
           /* Blits bitmap */
-          eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, 0);
+          eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing);
         }
         else
         {
@@ -298,7 +309,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
                 stTransform.fRotation = fRotation;
 
                 /* Blits bitmap */
-                eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, 0);
+                eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing);
               }
             }
           }
