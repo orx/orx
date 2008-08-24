@@ -147,9 +147,6 @@ orxSTATUS orxFPS_Init()
       {
         /* Inits Flags */
         sstFPS.u32Flags = orxFPS_KU32_STATIC_FLAG_READY;
-
-        /* Success */
-        eResult = orxSTATUS_SUCCESS;
       }
       else
       {

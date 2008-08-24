@@ -84,15 +84,52 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Config value type enum
+ */
+typedef enum __orxCONFIG_VALUE_TYPE_t
+{
+  orxCONFIG_VALUE_TYPE_STRING = 0,
+  orxCONFIG_VALUE_TYPE_FLOAT,
+  orxCONFIG_VALUE_TYPE_S32,
+  orxCONFIG_VALUE_TYPE_U32,
+  orxCONFIG_VALUE_TYPE_BOOL,
+  orxCONFIG_VALUE_TYPE_VECTOR,
+
+  orxCONFIG_VALUE_TYPE_NUMBER,
+
+  orxCONFIG_VALUE_TYPE_NONE = orxENUM_NONE
+
+} orxCONFIG_VALUE_TYPE;
+
+/** Config value structure
+ */
+typedef struct __orxCONFIG_VALUE_t
+{
+  orxSTRING             zValue;             /**< Literal value : 4 */
+  orxCONFIG_VALUE_TYPE  eType;              /**< Value type : 8 */
+
+  union
+  {
+    orxVECTOR           vValue;             /**< Vector value : 20 */
+    orxBOOL             bValue;             /**< Bool value : 12 */
+    orxFLOAT            fValue;             /**< Float value : 12 */
+    orxU32              u32Value;           /**< U32 value : 12 */
+    orxS32              s32Value;           /**< S32 value : 12 */
+  };                                        /**< Union value : 20 */
+
+} orxCONFIG_VALUE;
+
 /** Config node structure
  */
 typedef struct __orxCONFIG_ENTRY_t
 {
-  orxSTRING         zKey;                   /**< Entry key: 4 */
-  orxSTRING         zValue;                 /**< Entry value : 8 */
+  orxSTRING         zKey;                   /**< Entry key : 4 */
   orxU32            u32ID;                  /**< Key ID (CRC) : 12 */
 
-  orxPAD(12)
+  orxCONFIG_VALUE   stValue;                /**< Entry value : 32 */
+
+
+  orxPAD(32)
 
 } orxCONFIG_ENTRY;
 
@@ -167,12 +204,12 @@ orxSTATIC orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
 
 /** Gets a value from the current section, using inheritance
  * @param[in] _u32KeyID         Entry key ID
- * @return                      orxSTRING / orxNULL
+ * @return                      orxCONFIG_VALUE / orxNULL
  */
-orxSTATIC orxINLINE orxSTRING orxConfig_GetValue(orxU32 _u32KeyID)
+orxSTATIC orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
 {
   orxCONFIG_ENTRY  *pstEntry;
-  orxSTRING         zResult = orxNULL;
+  orxCONFIG_VALUE  *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
@@ -184,7 +221,7 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetValue(orxU32 _u32KeyID)
   if(pstEntry != orxNULL)
   {
     /* Has local inheritance? */
-    if(*(pstEntry->zValue) == orxCONFIG_KC_INHERITANCE_SEPARATOR)
+    if(*(pstEntry->stValue.zValue) == orxCONFIG_KC_INHERITANCE_SEPARATOR)
     {
       orxCONFIG_SECTION *pstPreviousSection;
 
@@ -192,10 +229,10 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetValue(orxU32 _u32KeyID)
       pstPreviousSection = sstConfig.pstCurrentSection;
 
       /* Selects parent section */
-      orxConfig_SelectSection(pstEntry->zValue + 1);
+      orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
 
       /* Gets its inherited value */
-      zResult = orxConfig_GetValue(_u32KeyID);
+      pstResult = orxConfig_GetValue(_u32KeyID);
 
       /* Restores current section */
       sstConfig.pstCurrentSection = pstPreviousSection;
@@ -203,7 +240,7 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetValue(orxU32 _u32KeyID)
     else
     {
       /* Updates result */
-      zResult = pstEntry->zValue;
+      pstResult = &(pstEntry->stValue);
     }
   }
   else
@@ -230,7 +267,7 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetValue(orxU32 _u32KeyID)
           sstConfig.pstCurrentSection = pstSection;
 
           /* Gets inherited value */
-          zResult = orxConfig_GetValue(_u32KeyID);
+          pstResult = orxConfig_GetValue(_u32KeyID);
 
           /* Restores current section */
           sstConfig.pstCurrentSection = pstPreviousSection;
@@ -242,7 +279,7 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetValue(orxU32 _u32KeyID)
   }
 
   /* Done! */
-  return zResult;
+  return pstResult;
 }
 
 /** Adds an entry in the current section
@@ -268,10 +305,10 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
   if(pstEntry != orxNULL)
   {
     /* Stores value */
-    pstEntry->zValue = orxString_Duplicate(_zValue);
+    pstEntry->stValue.zValue = orxString_Duplicate(_zValue);
 
     /* Valid? */
-    if(pstEntry->zValue != orxNULL)
+    if(pstEntry->stValue.zValue != orxNULL)
     {
       /* Stores key */
       pstEntry->zKey = orxString_Duplicate(_zKey);
@@ -282,6 +319,9 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
         /* Sets its ID */
         pstEntry->u32ID = orxString_ToCRC(pstEntry->zKey);
 
+        /* Inits its type */
+        pstEntry->stValue.eType = orxCONFIG_VALUE_TYPE_STRING;
+
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
@@ -290,7 +330,7 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
         /* !!! MSG !!! */
 
         /* Deletes allocated string */
-        orxString_Delete(pstEntry->zValue);
+        orxString_Delete(pstEntry->stValue.zValue);
 
         /* Deletes entry */
         orxBank_Free(sstConfig.pstCurrentSection->pstBank, pstEntry);
@@ -320,7 +360,7 @@ orxSTATIC orxINLINE orxVOID orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection
 
   /* Deletes key & value */
   orxString_Delete(_pstEntry->zKey);
-  orxString_Delete(_pstEntry->zValue);
+  orxString_Delete(_pstEntry->stValue.zValue);
 
   /* Deletes the entry */
   orxBank_Free(_pstSection->pstBank, _pstEntry);
@@ -780,7 +820,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             if((pstEntry = orxConfig_GetEntry(u32KeyID)) != orxNULL)
             {
               /* Logs */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->zValue, pcValueStart, _zFileName);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Config entry [%s::%s]: Replacing value \"%s\" with new value \"%s\" from <%s>.", sstConfig.pstCurrentSection->zName, pstEntry->zKey, pstEntry->stValue.zValue, pcValueStart, _zFileName);
 
               /* Deletes entry */
               orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
@@ -1046,7 +1086,7 @@ orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
           pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
       {
         /* Writes it */
-        fprintf(pstFile, "%s%c%s%c\n", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->zValue, orxCONFIG_KC_COMMENT);
+        fprintf(pstFile, "%s%c%s%c\n", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxCONFIG_KC_COMMENT);
       }
 
       /* Adds a new line */
@@ -1129,8 +1169,8 @@ orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
  */
 orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
 {
-  orxSTRING zValue;
-  orxS32    s32Result = 0;
+  orxCONFIG_VALUE  *pstValue;
+  orxS32            s32Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1138,33 +1178,49 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  zValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Found? */
-  if(zValue != orxNULL)
+  if(pstValue != orxNULL)
   {
-    orxS32    s32Value;
-    orxSTRING zRemainder;
-
-    /* Gets value */
-    if(orxString_ToS32(zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
+    /* Is it cached? */
+    if(pstValue->eType == orxCONFIG_VALUE_TYPE_S32)
     {
-      orxS32 s32RandomSeparatorIndex, s32OtherValue;
+      /* Updates result */
+      s32Result = pstValue->s32Value;
+    }
+    else
+    {
+      orxS32    s32Value;
+      orxSTRING zRemainder;
 
-      /* Searches for the random separator */
-      s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+      /* Gets value */
+      if(orxString_ToS32(pstValue->zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
+      {
+        orxS32 s32RandomSeparatorIndex, s32OtherValue;
 
-      /* Found and has another value? */
-      if((s32RandomSeparatorIndex >= 0)
-      && (orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
-      {
-        /* Updates result */
-        s32Result = orxS32RAND(s32Value, s32OtherValue);
-      }
-      else
-      {
-        /* Updates result */
-        s32Result = s32Value;
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Found and has another value? */
+        if((s32RandomSeparatorIndex >= 0)
+        && (orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+        {
+          /* Updates result */
+          s32Result = orxS32RAND(s32Value, s32OtherValue);
+
+          /* Clears cache */
+          pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+        }
+        else
+        {
+          /* Updates cache */
+          pstValue->eType     = orxCONFIG_VALUE_TYPE_S32;
+          pstValue->s32Value  = s32Value;
+
+          /* Updates result */
+          s32Result = s32Value;
+        }
       }
     }
   }
@@ -1180,8 +1236,8 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
  */
 orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
 {
-  orxSTRING zValue;
-  orxU32    u32Result = 0;
+  orxCONFIG_VALUE  *pstValue;
+  orxU32            u32Result = 0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1189,34 +1245,50 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  zValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Found? */
-  if(zValue != orxNULL)
+  if(pstValue != orxNULL)
   {
-    orxU32    u32Value;
-    orxSTRING zRemainder;
-
-    /* Gets value */
-    if(orxString_ToU32(zValue, &u32Value, &zRemainder) != orxSTATUS_FAILURE)
+    /* Is it cached? */
+    if(pstValue->eType == orxCONFIG_VALUE_TYPE_U32)
     {
-      orxS32 s32RandomSeparatorIndex;
-      orxU32 u32OtherValue;
+      /* Updates result */
+      u32Result = pstValue->u32Value;
+    }
+    else
+    {
+      orxU32    u32Value;
+      orxSTRING zRemainder;
 
-      /* Searches for the random separator */
-      s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+      /* Gets value */
+      if(orxString_ToU32(pstValue->zValue, &u32Value, &zRemainder) != orxSTATUS_FAILURE)
+      {
+        orxS32 s32RandomSeparatorIndex;
+        orxU32 u32OtherValue;
 
-      /* Found and has another value? */
-      if((s32RandomSeparatorIndex >= 0)
-      && (orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
-      {
-        /* Updates result */
-        u32Result = orxU32RAND(u32Value, u32OtherValue);
-      }
-      else
-      {
-        /* Updates result */
-        u32Result = u32Value;
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Found and has another value? */
+        if((s32RandomSeparatorIndex >= 0)
+        && (orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+        {
+          /* Updates result */
+          u32Result = orxU32RAND(u32Value, u32OtherValue);
+
+          /* Clears cache */
+          pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+        }
+        else
+        {
+          /* Updates cache */
+          pstValue->eType     = orxCONFIG_VALUE_TYPE_U32;
+          pstValue->u32Value  = u32Value;
+
+          /* Updates result */
+          u32Result = u32Value;
+        }
       }
     }
   }
@@ -1232,8 +1304,8 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
  */
 orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
 {
-  orxSTRING zValue;
-  orxFLOAT  fResult = orxFLOAT_0;
+  orxCONFIG_VALUE  *pstValue;
+  orxFLOAT          fResult = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1241,34 +1313,50 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  zValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Found? */
-  if(zValue != orxNULL)
+  if(pstValue != orxNULL)
   {
-    orxFLOAT  fValue;
-    orxSTRING zRemainder;
-
-    /* Gets value */
-    if(orxString_ToFloat(zValue, &fValue, &zRemainder) != orxSTATUS_FAILURE)
+    /* Is it cached? */
+    if(pstValue->eType == orxCONFIG_VALUE_TYPE_FLOAT)
     {
-      orxS32    s32RandomSeparatorIndex;
-      orxFLOAT  fOtherValue;
+      /* Updates result */
+      fResult = pstValue->fValue;
+    }
+    else
+    {
+      orxFLOAT  fValue;
+      orxSTRING zRemainder;
 
-      /* Searches for the random separator */
-      s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+      /* Gets value */
+      if(orxString_ToFloat(pstValue->zValue, &fValue, &zRemainder) != orxSTATUS_FAILURE)
+      {
+        orxS32    s32RandomSeparatorIndex;
+        orxFLOAT  fOtherValue;
 
-      /* Found and has another value? */
-      if((s32RandomSeparatorIndex >= 0)
-      && (orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
-      {
-        /* Updates result */
-        fResult = orxFRAND(fValue, fOtherValue);
-      }
-      else
-      {
-        /* Updates result */
-        fResult = fValue;
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Found and has another value? */
+        if((s32RandomSeparatorIndex >= 0)
+        && (orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
+        {
+          /* Updates result */
+          fResult = orxFRAND(fValue, fOtherValue);
+
+          /* Clears cache */
+          pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+        }
+        else
+        {
+          /* Updates cache */
+          pstValue->eType     = orxCONFIG_VALUE_TYPE_FLOAT;
+          pstValue->fValue  = fValue;
+
+          /* Updates result */
+          fResult = fValue;
+        }
       }
     }
   }
@@ -1284,7 +1372,8 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
  */
 orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
 {
-  orxSTRING zValue, zResult = orxSTRING_EMPTY;
+  orxCONFIG_VALUE  *pstValue;
+  orxSTRING         zResult = orxSTRING_EMPTY;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1292,13 +1381,13 @@ orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  zValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Found? */
-  if(zValue != orxNULL)
+  if(pstValue != orxNULL)
   {
     /* Updates result */
-    zResult = zValue;
+    zResult = pstValue->zValue;
   }
 
   /* Done! */
@@ -1312,8 +1401,8 @@ orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
  */
 orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
 {
-  orxSTRING zValue;
-  orxBOOL   bResult = orxFALSE;
+  orxCONFIG_VALUE  *pstValue;
+  orxBOOL           bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1321,18 +1410,31 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
   orxASSERT(*_zKey != *orxSTRING_EMPTY);
 
   /* Gets corresponding value */
-  zValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Found? */
-  if(zValue != orxNULL)
+  if(pstValue != orxNULL)
   {
-    orxBOOL bValue;
-
-    /* Gets value */
-    if(orxString_ToBool(zValue, &bValue, orxNULL) != orxSTATUS_FAILURE)
+    /* Is it cached? */
+    if(pstValue->eType == orxCONFIG_VALUE_TYPE_BOOL)
     {
       /* Updates result */
-      bResult = bValue;
+      bResult = pstValue->bValue;
+    }
+    else
+    {
+      orxBOOL bValue;
+
+      /* Gets value */
+      if(orxString_ToBool(pstValue->zValue, &bValue, orxNULL) != orxSTATUS_FAILURE)
+      {
+        /* Updates cache */
+        pstValue->eType   = orxCONFIG_VALUE_TYPE_BOOL;
+        pstValue->bValue  = bValue;
+
+        /* Updates result */
+        bResult = bValue;
+      }
     }
   }
 
@@ -1347,8 +1449,8 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
  */
 orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pvVector)
 {
-  orxSTRING   zValue;
-  orxVECTOR  *pvResult = orxNULL;
+  orxCONFIG_VALUE  *pstValue;
+  orxVECTOR        *pvResult = orxNULL;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1357,34 +1459,55 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
   orxASSERT(_pvVector != orxNULL);
 
   /* Gets corresponding value */
-  zValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Found? */
-  if(zValue != orxNULL)
+  if(pstValue != orxNULL)
   {
-    orxSTRING zRemainder;
-
-    /* Gets value */
-    if(orxString_ToVector(zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
+    /* Is it cached? */
+    if(pstValue->eType == orxCONFIG_VALUE_TYPE_VECTOR)
     {
-      orxS32 s32RandomSeparatorIndex;
-      orxVECTOR vOtherValue;
-
-      /* Searches for the random separator */
-      s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-      /* Found and has another value? */
-      if((s32RandomSeparatorIndex >= 0)
-      && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
-      {
-        /* Updates result */
-        _pvVector->fX = orxFRAND(_pvVector->fX, vOtherValue.fX);
-        _pvVector->fY = orxFRAND(_pvVector->fY, vOtherValue.fY);
-        _pvVector->fZ = orxFRAND(_pvVector->fZ, vOtherValue.fZ);
-      }
+      /* Copies value from cache */
+      orxVector_Copy(_pvVector, &(pstValue->vValue));
 
       /* Updates result */
       pvResult = _pvVector;
+    }
+    else
+    {
+      orxSTRING zRemainder;
+
+      /* Gets value */
+      if(orxString_ToVector(pstValue->zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
+      {
+        orxS32 s32RandomSeparatorIndex;
+        orxVECTOR vOtherValue;
+
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Found and has another value? */
+        if((s32RandomSeparatorIndex >= 0)
+        && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+        {
+          /* Updates result */
+          _pvVector->fX = orxFRAND(_pvVector->fX, vOtherValue.fX);
+          _pvVector->fY = orxFRAND(_pvVector->fY, vOtherValue.fY);
+          _pvVector->fZ = orxFRAND(_pvVector->fZ, vOtherValue.fZ);
+
+          /* Clears cache */
+          pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+        }
+        else
+        {
+          /* Updates cache */
+          pstValue->eType = orxCONFIG_VALUE_TYPE_VECTOR;
+          orxVector_Copy(&(pstValue->vValue), _pvVector);
+        }
+
+        /* Updates result */
+        pvResult = _pvVector;
+      }
     }
   }
 
