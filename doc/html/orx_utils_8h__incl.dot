@@ -59,6 +59,4 @@ digraph G
   Node21 [label="utils/orxTree.h",height=0.2,width=0.4,color="black",URL="$orx_tree_8h.html"];
   Node21 -> Node3 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
   Node21 -> Node10 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
-  Node1 -> Node22 [color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
-  Node22 [label="utils/pathfinder.h",height=0.2,width=0.4,color="grey75"];
 }

@@ -110,14 +110,14 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT))
   {
     /* Rotates camera CCW */
-    orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + orx2F(-4.0f) * _pstClockInfo->fDT);    
-  }    
+    orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + orx2F(-4.0f) * _pstClockInfo->fDT);
+  }
   /* Is right button pressed? */
   if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT))
   {
     /* Rotates camera CW */
-    orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + orx2F(4.0f) * _pstClockInfo->fDT);    
-  }    
+    orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + orx2F(4.0f) * _pstClockInfo->fDT);
+  }
 
   /* Is '+' pressed? */
   if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ADD))

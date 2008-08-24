@@ -246,7 +246,7 @@ orxSTATUS Init()
   /* Loads config file and selects main section */
   orxConfig_Load("../06_Sound.ini");
 
-  /* Creates all viewports */
+  /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
 
   /* Creates soldier */

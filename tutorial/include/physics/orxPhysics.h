@@ -187,6 +187,12 @@ extern orxDLLAPI orxVOID                              orxPhysics_Exit();
  */
 extern orxDLLAPI orxSTATUS                            orxPhysics_SetGravity(orxCONST orxVECTOR *_pvGravity);
 
+/** Gets physics gravity
+ * @param[in]   _pvGravity                            Gravity to get
+ * @return orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *                          orxPhysics_GetGravity(orxVECTOR *_pvGravity);
+
 
 /** Creates a physical body
  * @param[in]   _hUserData                            User data to associate with this physical body

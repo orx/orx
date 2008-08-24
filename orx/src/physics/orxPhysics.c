@@ -61,6 +61,7 @@ orxVOID orxPhysics_Setup()
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Init, orxSTATUS, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Exit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetGravity, orxSTATUS, orxCONST orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetGravity, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBody, orxPHYSICS_BODY *, orxCONST orxHANDLE, orxCONST orxBODY_DEF *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteBody, orxVOID, orxPHYSICS_BODY *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_CreateBodyPart, orxPHYSICS_BODY_PART *, orxPHYSICS_BODY *, orxCONST orxBODY_PART_DEF *);
@@ -86,6 +87,7 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(PHYSICS)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, INIT, orxPhysics_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, EXIT, orxPhysics_Exit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_GRAVITY, orxPhysics_SetGravity)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_GRAVITY, orxPhysics_GetGravity)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY, orxPhysics_CreateBody)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, DELETE_BODY, orxPhysics_DeleteBody)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, CREATE_BODY_PART, orxPhysics_CreateBodyPart)
@@ -121,6 +123,11 @@ orxVOID orxPhysics_Exit()
 orxSTATUS orxPhysics_SetGravity(orxCONST orxVECTOR *_pvGravity)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetGravity)(_pvGravity);
+}
+
+orxVECTOR *orxPhysics_GetGravity(orxVECTOR *_pvGravity)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetGravity)(_pvGravity);
 }
 
 orxPHYSICS_BODY *orxPhysics_CreateBody(orxCONST orxHANDLE _hUserData, orxCONST orxBODY_DEF *_pstBodyDef)

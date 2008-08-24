@@ -229,7 +229,7 @@ orxSTATUS Init()
   /* Loads config file and selects main section */
   orxConfig_Load("../07_FX.ini");
 
-  /* Creates all viewports */
+  /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
 
   /* Creates a 100 Hz clock */

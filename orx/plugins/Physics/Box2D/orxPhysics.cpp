@@ -372,7 +372,7 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxHANDLE _hUse
     if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
     {
       /* Stores mass properties */
-      stBodyDef.massData.I      = _pstBodyDef->fInertia;
+      stBodyDef.massData.I      = (_pstBodyDef->fInertia != 0.0f) ? _pstBodyDef->fInertia : 1.0f;
       stBodyDef.massData.mass   = _pstBodyDef->fMass;
 
       /* Creates dynamic body */
@@ -455,7 +455,7 @@ extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY
   /* Inits shape definition */
   pstShapeDef->friction             = _pstBodyPartDef->fFriction;
   pstShapeDef->restitution          = _pstBodyPartDef->fRestitution;
-  pstShapeDef->density              = _pstBodyPartDef->fDensity;
+  pstShapeDef->density              = (poBody->GetInertia() != 0.0f) ? _pstBodyPartDef->fDensity : 0.0f;
   pstShapeDef->filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
   pstShapeDef->filter.maskBits      = _pstBodyPartDef->u16CheckMask;
   pstShapeDef->filter.groupIndex    = (orxU16)(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fZ);
@@ -492,9 +492,6 @@ extern "C" orxVOID orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBod
 
   /* Deletes its part */
   poBody->DestroyShape(poShape);
-
-  /* Computes body's mass */
-  poBody->SetMassFromShapes();
 
   return;
 }
@@ -798,6 +795,22 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetGravity(orxCONST orxVECTOR *_pvGravity)
   return eResult;
 }
 
+extern "C" orxVECTOR *orxPhysics_Box2D_GetGravity(orxVECTOR *_pvGravity)
+{
+  b2Vec2    vGravity;
+  orxVECTOR *pvResult = _pvGravity;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvGravity != orxNULL);
+
+  /* Gets gravity vector */
+  orxVector_Set(_pvGravity, sstPhysics.poWorld->m_gravity.x, sstPhysics.poWorld->m_gravity.y, orxFLOAT_0);
+
+  /* Done! */
+  return pvResult;
+}
+
 extern "C" orxSTATUS orxPhysics_Box2D_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -987,6 +1000,7 @@ orxPLUGIN_USER_CORE_FUNCTION_START(PHYSICS);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Init, PHYSICS, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Exit, PHYSICS, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetGravity, PHYSICS, SET_GRAVITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetGravity, PHYSICS, GET_GRAVITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBody, PHYSICS, CREATE_BODY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBody, PHYSICS, DELETE_BODY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBodyPart, PHYSICS, CREATE_BODY_PART);

@@ -263,7 +263,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
         }
         else
         {
-          orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fEndX, fEndY, fRemainderX, fRemainderY;
+          orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fEndX, fEndY, fRemainderX, fRemainderY, fRelativePivotX, fRelativePivotY;
 
           /* Gets cosine and sine of the object angle */
           fCos = orxMath_Cos(-fRotation);
@@ -277,13 +277,16 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
           fIncX = vSize.fX * vScale.fX;
           fIncY = vSize.fY * vScale.fY;
 
-          // For all lines
-          for(fY = -orx2F(0.5f) * fIncY * (fRepeatY - orxFLOAT_1), fEndY = orx2F(0.5f) * fIncY * (fRepeatY + orxFLOAT_1), fRemainderY = fRepeatY;
+          fRelativePivotX = vPivot.fX / vSize.fX;
+          fRelativePivotY = vPivot.fY / vSize.fY;
+
+          /* For all lines */
+          for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fEndY = (orxFLOAT_1 - fRelativePivotY) * fIncY * fRepeatY, fRemainderY = fRepeatY;
               fY <= fEndY;
               fY += fIncY, fRemainderY -= orxFLOAT_1)
           {
-            // For all columns
-            for(fX = -orx2F(0.5f) * fIncX * (fRepeatX - orxFLOAT_1), fEndX = orx2F(0.5f) * fIncX * (fRepeatX + orxFLOAT_1), fRemainderX = fRepeatX;
+            /* For all columns */
+            for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fEndX = (orxFLOAT_1 - fRelativePivotX) * fIncX * fRepeatX, fRemainderX = fRepeatX;
                 fX <= fEndX;
                 fX += fIncX, fRemainderX -= orxFLOAT_1)
             {

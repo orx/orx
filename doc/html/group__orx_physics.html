@@ -103,6 +103,8 @@ __orxPHYSICS_BODY_PART_t&nbsp;</td><td class="memItemRight" valign="bottom"><a c
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g2abd36989d298ee2d5d39c82ac507367">orxPhysics_SetGravity</a> (orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvGravity)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g6c049bccd099ce59a53727248e9b51a0">orxPhysics_GetGravity</a> (<a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvGravity)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga3b1cb76d357ca5d77f0d9464d369428">orxPhysics_CreateBody</a> (orxCONST orxHANDLE _hUserData, orxCONST <a class="el" href="struct____orx_b_o_d_y___d_e_f__t.html">orxBODY_DEF</a> *_pstBodyDef)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g84f24c237d6f045a0602f87c470b6e82">orxPhysics_DeleteBody</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody)</td></tr>
@@ -851,6 +853,32 @@ Gets the angular velocity of a physical body <dl compact><dt><b>Parameters:</b><
 
 </div>
 </div><p>
+<a class="anchor" name="g6c049bccd099ce59a53727248e9b51a0"></a><!-- doxytag: member="orxPhysics.h::orxPhysics_GetGravity" ref="g6c049bccd099ce59a53727248e9b51a0" args="(orxVECTOR *_pvGravity)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxPhysics_GetGravity           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvGravity</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets physics gravity <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvGravity</em>&nbsp;</td><td>Gravity to get </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxVECTOR / orxNULL </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g1a806318b9d1160ee840ffc0024e2e95"></a><!-- doxytag: member="orxPhysics.h::orxPhysics_GetMassCenter" ref="g1a806318b9d1160ee840ffc0024e2e95" args="(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1195,7 +1223,7 @@ Physics module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Aug 23 02:30:43 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Aug 24 07:08:50 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

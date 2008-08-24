@@ -715,6 +715,8 @@ extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Y;      /**< Y-Axis unit vector */
 extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Z;      /**< Z-Axis unit vector */
 
 extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_0;      /**< Null vector */
+extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_1;      /**< Vector filled with 1s */
+
 extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_RED;    /**< Red color vector */
 extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_GREEN;  /**< Green color vector */
 extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_BLUE;   /**< Blue color vector */
