@@ -459,6 +459,7 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
 extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing)
 {
   sf::Sprite *poSprite;
+  bool        bSmooth;
   orxSTATUS   eResult;
 
   /* Checks */
@@ -495,7 +496,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
     case orxDISPLAY_SMOOTHING_ON:
     {
       /* Applies smoothing */
-      const_cast<sf::Image *>(poSprite->GetImage())->SetSmooth(true);
+      bSmooth = true;
 
       break;
     }
@@ -503,7 +504,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
     case orxDISPLAY_SMOOTHING_OFF:
     {
       /* Applies no smoothing */
-      const_cast<sf::Image *>(poSprite->GetImage())->SetSmooth(false);
+      bSmooth = false;
 
       break;
     }
@@ -515,10 +516,17 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
       orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
       /* Applies default smoothing */
-      const_cast<sf::Image *>(poSprite->GetImage())->SetSmooth(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH) ? true : false);
+      bSmooth = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH) ? true : false;
 
       break;
     }
+  }
+
+  /* Should update smoothing? */
+  if(bSmooth != poSprite->GetImage()->IsSmooth())
+  {
+    /* Updates it */
+    const_cast<sf::Image *>(poSprite->GetImage())->SetSmooth(bSmooth);
   }
 
   /* Blits it */
