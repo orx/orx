@@ -412,7 +412,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
           orxMemory_Zero(pstStructure, sstStructure.astInfo[_eStructureID].u32Size);
 
           /* Stores ID with magic number */
-          pstStructure->eID           = _eStructureID | orxSTRUCTURE_MAGIC_NUMBER;
+          pstStructure->eID           = _eStructureID ^ orxSTRUCTURE_MAGIC_NUMBER;
 
           /* Stores storage handle */
           pstStructure->hStorageNode  = (orxHANDLE)pstNode;
