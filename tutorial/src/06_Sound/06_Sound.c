@@ -196,7 +196,7 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     orxSound_SetPitch(pstMusic, orxSound_GetPitch(pstMusic) + orx2F(0.01f));
 
     /* Rotates soldier CW */
-    orxObject_SetRotation(pstSoldier, orxObject_GetRotation(pstSoldier) + orx2F(4.0f) * _pstClockInfo->fDT);    
+    orxObject_SetRotation(pstSoldier, orxObject_GetRotation(pstSoldier) + orx2F(4.0f) * _pstClockInfo->fDT);
   }
   /* Is left arrow pressed? */
   if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT))
@@ -205,7 +205,7 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     orxSound_SetPitch(pstMusic, orxSound_GetPitch(pstMusic) - orx2F(0.01f));
 
     /* Rotates soldier CCW */
-    orxObject_SetRotation(pstSoldier, orxObject_GetRotation(pstSoldier) - orx2F(4.0f) * _pstClockInfo->fDT);    
+    orxObject_SetRotation(pstSoldier, orxObject_GetRotation(pstSoldier) - orx2F(4.0f) * _pstClockInfo->fDT);
   }
   /* Is down arrow pressed? */
   if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DOWN))

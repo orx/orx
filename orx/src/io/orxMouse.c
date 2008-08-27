@@ -55,6 +55,8 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Init, orxSTATUS, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetMoveDelta, orxVECTOR *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetWheelDelta, orxFLOAT);
 
 
 /* *** Core function info array *** */
@@ -65,6 +67,8 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, INIT, orxMouse_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, EXIT, orxMouse_Exit)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_POSITION, orxMouse_GetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, IS_BUTTON_PRESSED, orxMouse_IsButtonPressed)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_MOVE_DELTA, orxMouse_GetMoveDelta)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_WHEEL_DELTA, orxMouse_GetWheelDelta)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
 
@@ -102,4 +106,21 @@ orxVECTOR *orxMouse_GetPosition(orxVECTOR *_pvPosition)
 orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_IsButtonPressed)(_eButton);
+}
+
+/** Gets mouse move delta (since last call)
+ * @param[out] _pvMoveDelta Mouse move delta
+ * @return orxVECTOR / orxNULL
+ */
+orxVECTOR *orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetMoveDelta)(_pvMoveDelta);
+}
+
+/** Gets mouse wheel delta (since last call)
+ * @return Mouse wheel delta
+ */
+orxFLOAT orxMouse_GetWheelDelta()
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetWheelDelta)();
 }

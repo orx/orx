@@ -94,6 +94,17 @@ extern orxDLLAPI orxVECTOR *  orxMouse_GetPosition(orxVECTOR *_pvPosition);
  */
 extern orxDLLAPI orxBOOL      orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
 
+/** Gets mouse move delta (since last call)
+ * @param[out] _pvMoveDelta Mouse move delta
+ * @return orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *  orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta);
+
+/** Gets mouse wheel delta (since last call)
+ * @return Mouse wheel delta
+ */
+extern orxDLLAPI orxFLOAT     orxMouse_GetWheelDelta();
+
 #endif /* _orxMOUSE_H_ */
 
 /** @} */

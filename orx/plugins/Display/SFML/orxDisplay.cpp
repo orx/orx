@@ -348,6 +348,21 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
         break;
       }
 
+      case sf::Event::MouseMoved:
+      case sf::Event::MouseWheelMoved:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + oEvent.Type);
+        stEvent.eID         = oEvent.Type;
+        stEvent.pstPayload  = &oEvent;
+
+        /* Sends reserved event */
+        orxEvent_Send(&stEvent);
+      }
+
       default:
       {
         break;

@@ -167,7 +167,6 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
-  orxASSERT(_eEventType < orxEVENT_TYPE_MAX_NUMBER);
   orxASSERT(_pfnEventHandler != orxNULL);
 
   /* Gets corresponding bank */
@@ -226,7 +225,6 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxCONST orxEVENT *_pstEvent)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
   orxASSERT(_pstEvent != orxNULL);
-  orxASSERT(_pstEvent->eType < orxEVENT_TYPE_MAX_NUMBER);
 
   /* Gets corresponding bank */
   pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _pstEvent->eType);
@@ -268,7 +266,6 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
-  orxASSERT(_eEventType < orxEVENT_TYPE_MAX_NUMBER);
   orxASSERT(_pfnEventHandler != orxNULL);
 
   /* Gets corresponding bank */

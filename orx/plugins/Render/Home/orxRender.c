@@ -517,7 +517,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                       if((vObjectPos.fZ > vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
                       {
                         orxFLOAT  fObjectSqrBoundingRadius, fSqrDist;
-                        orxVECTOR vSize, vObjectScale;
+                        orxVECTOR vSize, vObjectScale, vDist;
 
                         /* Gets its size */
                         orxGraphic_GetSize(pstGraphic, &vSize);
@@ -532,8 +532,12 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                         /* Gets object square bounding radius */
                         fObjectSqrBoundingRadius = orx2F(1.5f) * ((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
 
+                        /* Gets 2D distance vector */
+                        orxVector_Sub(&vDist, &vObjectPos, &vCameraCenter);
+                        vDist.fZ = orxFLOAT_0;
+
                         /* Gets 2D square distance to camera */
-                        fSqrDist = orxVector_GetSquareDistance(&vObjectPos, &vCameraCenter);
+                        fSqrDist = orxVector_GetSquareSize(&vDist);
 
                         /* Circle test between object & camera */
                         if(fSqrDist * (fZoom * fZoom) <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius))
