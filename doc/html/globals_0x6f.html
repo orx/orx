@@ -743,10 +743,10 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe830fb817733e3b2e80de4040437fc1f0a">orxEvent.h</a>
 <li>orxEVENT_TYPE_CORE_NUMBER
 : <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8392c55af75cd4dc15dc9d5c875ad7216">orxEvent.h</a>
+<li>orxEVENT_TYPE_FIRST_RESERVED
+: <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe87fc44ce327d3d4216f00d48b372af84b">orxEvent.h</a>
 <li>orxEVENT_TYPE_FX
 : <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe804b5c9940197f092b41f02bae8e9b5c8">orxEvent.h</a>
-<li>orxEVENT_TYPE_MAX_NUMBER
-: <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8509bdc4a76d80cfd091c7266dcb16afd">orxEvent.h</a>
 <li>orxEVENT_TYPE_NONE
 : <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8031700e9ae9f2a6970c872938b17a9b1">orxEvent.h</a>
 <li>orxEVENT_TYPE_PHYSICS
@@ -759,6 +759,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8c55cb742a3efb2ade2800b259def35f8">orxEvent.h</a>
 <li>orxEVENT_TYPE_USER_DEFINED
 : <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8f2e660591f643abe7403c5898ba88928">orxEvent.h</a>
+<li>orxEVENT_TYPE_USER_MAX_NUMBER
+: <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe84d6b0bef0bd916c45be50ae491bbe3f2">orxEvent.h</a>
 <li>orxF2S
 : <a class="el" href="group__orx_math.html#gbb0d42bcd5c9cc2425cdf4cef5102298">orxMath.h</a>
 <li>orxF2U
@@ -1721,8 +1723,12 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_mouse.html#gge29923a2bcec4deccf604fd343c9718c6d1e93373e0f8f4e6954a6cf013d1cdc">orxMouse.h</a>
 <li>orxMouse_Exit()
 : <a class="el" href="group__orx_mouse.html#gbde6133447bb6baa1fb710311021ad65">orxMouse.h</a>
+<li>orxMouse_GetMoveDelta()
+: <a class="el" href="group__orx_mouse.html#g61aab1f5bc3d2447936e94d281c33835">orxMouse.h</a>
 <li>orxMouse_GetPosition()
 : <a class="el" href="group__orx_mouse.html#g1727248c988eb55da87a45d9c22bc4e8">orxMouse.h</a>
+<li>orxMouse_GetWheelDelta()
+: <a class="el" href="group__orx_mouse.html#g27fecc9cb5c0e610b5f66a0eb78cacb6">orxMouse.h</a>
 <li>orxMouse_Init()
 : <a class="el" href="group__orx_mouse.html#gc4673be4653a3e1eb63f5b8ba0d02cdc">orxMouse.h</a>
 <li>orxMouse_IsButtonPressed()
@@ -2030,8 +2036,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ggc69b747224c1fe3009d8ddf3315fac183d08692d299c57720095dedc823f7460">orxPlugin_CoreID.h</a>
 <li>orxPLUGIN_CORE_REGISTER_FUNCTION_NAME
 : <a class="el" href="group__orx_plugin.html#g87c12bc67d2607a888c7d01cb1199676">orxPlugin_CoreDefine.h</a>
-<li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION
-: <a class="el" href="group__orx_plugin.html#g8dad35f3108817818eb52f76fad9ee7b">orxPlugin_CoreDefine.h</a>
+<li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION()
+: <a class="el" href="group__orx_plugin.html#g7c87bfb197b3e3257374b0a5e2744499">orxPlugin_CoreDefine.h</a>
 <li>orxPLUGIN_DECLARE_ENTRY_POINT
 : <a class="el" href="group__orx_plugin.html#g071a2272df71ff393d741088a9537fd4">orxPluginUser.h</a>
 <li>orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE
@@ -2180,8 +2186,12 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#g6760ee8b9e62d968ad72977574e2a55e">orxPlugin_Mouse.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_MOUSE_EXIT
 : <a class="el" href="group__orx_plugin.html#ggc6273e688306081b1a8083ac3579f0a1e303ab1c23353c7c644729e246d7d9c8">orxPlugin_Mouse.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_MOVE_DELTA
+: <a class="el" href="group__orx_plugin.html#ggc6273e688306081b1a8083ac3579f0a1c4d022ca5885e333f2eea1c3a57e4bb1">orxPlugin_Mouse.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_POSITION
 : <a class="el" href="group__orx_plugin.html#ggc6273e688306081b1a8083ac3579f0a195aabe314b23bdcff7513fdd835e544f">orxPlugin_Mouse.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_WHEEL_DELTA
+: <a class="el" href="group__orx_plugin.html#ggc6273e688306081b1a8083ac3579f0a1eb893f1ccbdc3f50d1663eec04350e0c">orxPlugin_Mouse.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_MOUSE_INIT
 : <a class="el" href="group__orx_plugin.html#ggc6273e688306081b1a8083ac3579f0a1081dde4592a702bec680d79024e45d89">orxPlugin_Mouse.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_MOUSE_IS_BUTTON_PRESSED
@@ -2525,8 +2535,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSDKAPI
 : <a class="el" href="group__orx_decl.html#g8c6130ce81f9606356f4baf7f6ea30c9">orxDecl.h</a>
 <li>orxSOUND
-: <a class="el" href="group__orx_structure.html#g2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
-, <a class="el" href="group__orx_sound.html#g58e0a61f287672d13130384705fe6c87">orxSound.h</a>
+: <a class="el" href="group__orx_sound.html#g58e0a61f287672d13130384705fe6c87">orxSound.h</a>
+, <a class="el" href="group__orx_structure.html#g2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
 <li>orxSound_CreateFromConfig()
 : <a class="el" href="group__orx_sound.html#g8c2a70825d434ab39b725ab83df439f6">orxSound.h</a>
 <li>orxSound_Delete()
@@ -2836,10 +2846,10 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_structure.html#gd6b31f9352f2a6068198878128e9f369">orxStructure.h</a>
 <li>orxSTRUCTURE_MAGIC_NUMBER
 : <a class="el" href="group__orx_structure.html#gc4d874a886d06fd3885d696a2df85a78">orxStructure.h</a>
-<li>orxSTRUCTURE_REGISTER
-: <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
 <li>orxStructure_Register()
 : <a class="el" href="group__orx_structure.html#g908664072559b29d53ca30addf65b552">orxStructure.h</a>
+<li>orxSTRUCTURE_REGISTER
+: <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
 <li>orxStructure_SetFlags()
 : <a class="el" href="group__orx_structure.html#g6889909153aad48d6e7acd879d2bdc2d">orxStructure.h</a>
 <li>orxStructure_SetParent()
@@ -3110,7 +3120,7 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_viewport.html#g9c8e48d42c010f1b27c7553684e3a5ca">orxViewport.h</a>
 </ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Aug 24 07:08:50 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Aug 28 01:58:14 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

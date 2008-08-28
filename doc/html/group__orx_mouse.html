@@ -44,6 +44,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_mouse.html#ged6e693c54b9e03b4aee1e2f1520a4ed">orxMouse_IsButtonPressed</a> (<a class="el" href="group__orx_mouse.html#gba298de6720e4d50f55152d8bdd8e97d">orxMOUSE_BUTTON</a> _eButton)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_mouse.html#g61aab1f5bc3d2447936e94d281c33835">orxMouse_GetMoveDelta</a> (<a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvMoveDelta)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_mouse.html#g27fecc9cb5c0e610b5f66a0eb78cacb6">orxMouse_GetWheelDelta</a> ()</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Mouse plugin module Plugin module that handles mouse-like peripherals <hr><h2>Typedef Documentation</h2>
@@ -112,6 +116,32 @@ Button enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 Exits from the mouse module 
 </div>
 </div><p>
+<a class="anchor" name="g61aab1f5bc3d2447936e94d281c33835"></a><!-- doxytag: member="orxMouse.h::orxMouse_GetMoveDelta" ref="g61aab1f5bc3d2447936e94d281c33835" args="(orxVECTOR *_pvMoveDelta)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxMouse_GetMoveDelta           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvMoveDelta</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets mouse move delta (since last call) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pvMoveDelta</em>&nbsp;</td><td>Mouse move delta </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxVECTOR / orxNULL </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g1727248c988eb55da87a45d9c22bc4e8"></a><!-- doxytag: member="orxMouse.h::orxMouse_GetPosition" ref="g1727248c988eb55da87a45d9c22bc4e8" args="(orxVECTOR *_pvPosition)" -->
 <div class="memitem">
 <div class="memproto">
@@ -135,6 +165,26 @@ Gets mouse on screen position <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxVECTOR / orxNULL </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g27fecc9cb5c0e610b5f66a0eb78cacb6"></a><!-- doxytag: member="orxMouse.h::orxMouse_GetWheelDelta" ref="g27fecc9cb5c0e610b5f66a0eb78cacb6" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxFLOAT orxMouse_GetWheelDelta           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets mouse wheel delta (since last call) <dl class="return" compact><dt><b>Returns:</b></dt><dd>Mouse wheel delta </dd></dl>
 
 </div>
 </div><p>
@@ -204,7 +254,7 @@ Mouse module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Aug 24 07:08:49 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Aug 28 01:58:13 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
