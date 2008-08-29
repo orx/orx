@@ -65,6 +65,7 @@
 #define orxCONFIG_KC_COMMENT                ';'         /**< Comment character */
 #define orxCONFIG_KC_RANDOM_SEPARATOR       '~'         /**< Random number separator character */
 #define orxCONFIG_KC_INHERITANCE_SEPARATOR  '@'         /**< Inheritance separator character */
+#define orxCONFIG_KC_BLOCK                  '"'         /**< Block delimiter character */
 
 #define orxCONFIG_KZ_CONFIG_SECTION         "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_HISTORY         "History"   /**< History config entry name */
@@ -788,15 +789,19 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
         u32Size > 0;
         u32Size = (orxU32)fread(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset)
     {
-      orxCHAR *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
+      orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
+      orxBOOL   bBlockMode;
 
       /* For all buffered characters */
-      for(pc = pcLineStart = acBuffer, pcKeyEnd = pcValueStart = orxNULL;
+      for(pc = pcLineStart = acBuffer, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE;
           pc < acBuffer + u32Size;
           pc++)
       {
-        /* Comment character? */
-        if(*pc == orxCONFIG_KC_COMMENT)
+        /* Comment character out of block mode or block character in block mode? */
+        if(((*pc == orxCONFIG_KC_COMMENT)
+         && (bBlockMode == orxFALSE))
+        || ((bBlockMode != orxFALSE)
+         && (*pc == orxCONFIG_KC_BLOCK)))
         {
           /* Has key & value? */
           if((pcKeyEnd != orxNULL) && (pcValueStart != orxNULL))
@@ -833,14 +838,14 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             pcKeyEnd = pcValueStart = orxNULL;
           }
 
-          /* Sets temporary line start */
-          pcLineStart = pc;
-
           /* Skips the whole line */
           while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
           {
             pc++;
           }
+
+          /* Resets block mode */
+          bBlockMode = orxFALSE;
 
           /* Updates line start pointer */
           pcLineStart = pc + 1;
@@ -935,6 +940,31 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
               for(pcValueStart = pc + 1;
                   (pcValueStart < acBuffer + u32Size) && ((*pcValueStart == ' ') || (*pcValueStart == '\t') || (*pcValueStart == orxCHAR_CR) || (*pcValueStart == orxCHAR_LF));
                   pcValueStart++);
+
+              /* Valid? */
+              if(pcValueStart < acBuffer + u32Size)
+              {
+                /* Is it a block delimiter character? */
+                if(*pcValueStart == orxCONFIG_KC_BLOCK)
+                {
+                  /* Updates value start pointer */
+                  pcValueStart++;
+
+                  /* Valid? */
+                  if(pcValueStart < acBuffer + u32Size)
+                  {
+                    /* Is not a block delimiter? */
+                    if(*pcValueStart != orxCONFIG_KC_BLOCK)
+                    {
+                      /* Activates block mode */
+                      bBlockMode = orxTRUE;
+                    }
+                  }
+                }
+              }
+
+              /* Updates current character */
+              pc = pcValueStart;
             }
           }
         }
