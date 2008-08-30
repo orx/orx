@@ -961,7 +961,7 @@ orxSTATUS orxRender_Home_Init()
     {
       /* Creates rendering clock */
       sstRender.pstClock = orxClock_Create(orxFLOAT_0, orxCLOCK_TYPE_RENDER);
-      orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_FIXED, orxRENDER_KF_TICK_SIZE);
+      orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_MAXED, orxRENDER_KF_TICK_SIZE);
 
       /* Valid? */
       if(sstRender.pstClock != orxNULL)

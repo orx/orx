@@ -75,6 +75,7 @@ typedef enum __orxCLOCK_MOD_TYPE_t
 {
   orxCLOCK_MOD_TYPE_FIXED = 0,                        /**< The given DT will always be constant (= modifier value) */
   orxCLOCK_MOD_TYPE_MULTIPLY,                         /**< The given DT will be the real one * modifier */
+  orxCLOCK_MOD_TYPE_MAXED,                            /**< The given DT will be the real one maxed by the modifier value */
 
   orxCLOCK_MOD_TYPE_NUMBER,
 

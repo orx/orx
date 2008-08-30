@@ -220,6 +220,13 @@ orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_p
       break;
     }
 
+    case orxCLOCK_MOD_TYPE_MAXED:
+    {
+      /* Updates DT value */
+      fNewDT = orxMIN(*pfModValue, _fDT);
+      break;
+    }
+
     case orxCLOCK_MOD_TYPE_NONE:
     {
       break;
