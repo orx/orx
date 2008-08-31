@@ -84,10 +84,10 @@ extern orxDLLAPI orxVOID                      orxFSM_Exit();
  ***************************************************************************/
 
 /**Action pointer for state machines. */
-typedef orxVOID (*orxFSM_ACTION_FUNCTION)(orxVOID);
+typedef orxVOID (*orxFSM_ACTION_FUNCTION)();
 
 /**condition pointer for state machines. */
-typedef orxBOOL (*orxFSM_CONDITION_FUNCTION)(orxVOID);
+typedef orxBOOL (*orxFSM_CONDITION_FUNCTION)();
 
 
 /***************************************************************************

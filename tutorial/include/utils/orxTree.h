@@ -147,7 +147,7 @@ orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetParent(orxCONST orxTR
   orxASSERT(_pstNode != orxNULL);
 
   /* Returns it */
-  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstParent : orxNULL);
+  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstParent : (orxTREE_NODE *)orxNULL);
 }
 
 /** Gets first child node
@@ -160,7 +160,7 @@ orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetChild(orxCONST orxTRE
   orxASSERT(_pstNode != orxNULL);
 
   /* Returns it */
-  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstChild : orxNULL);
+  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstChild : (orxTREE_NODE *)orxNULL);
 }
 
 /** Gets sibling node
@@ -173,7 +173,7 @@ orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetSibling(orxCONST orxT
   orxASSERT(_pstNode != orxNULL);
 
   /* Returns it */
-  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstSibling : orxNULL);
+  return((_pstNode->pstTree != orxNULL) ? _pstNode->pstSibling : (orxTREE_NODE *)orxNULL);
 }
 
 
