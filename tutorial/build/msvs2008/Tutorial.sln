@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_Physics", "08_Physics\08
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09_Scrolling", "09_Scrolling\09_Scrolling.vcproj", "{12A5E8FA-5BDA-4CCE-8A8B-695B26AF9B35}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_StandAlone", "10_StandAlone\10_StandAlone.vcproj", "{A350CE42-F198-4558-80C1-7257528C3B1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Dynamic Release|Win32 = Dynamic Release|Win32
@@ -42,6 +44,8 @@ Global
 		{C7B7FE32-8C22-4D0E-A6DE-3E68875EE5E3}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 		{12A5E8FA-5BDA-4CCE-8A8B-695B26AF9B35}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
 		{12A5E8FA-5BDA-4CCE-8A8B-695B26AF9B35}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{A350CE42-F198-4558-80C1-7257528C3B1B}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{A350CE42-F198-4558-80C1-7257528C3B1B}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

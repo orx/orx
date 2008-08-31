@@ -20,11 +20,11 @@
  */
 
 /**
- * @file 00_Scrolling.c
+ * @file 09_Scrolling.c
  * @date 26/08/2008
  * @author iarwain@orx-project.org
  *
- * Physics tutorial
+ * Scrolling tutorial
  */
 
 

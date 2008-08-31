@@ -99,7 +99,7 @@ orxCAMERA *pstCamera;
 
 /** Event handler
  */
-orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 {
   /* Is a new contact? */
   if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)

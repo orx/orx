@@ -72,7 +72,7 @@ orxOBJECT *pstSoldier;
 
 /** Event handler
  */
-orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 {
   orxANIM_EVENT_PAYLOAD *pstPayload;
 

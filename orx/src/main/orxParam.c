@@ -626,21 +626,33 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
   sstParam.u32ParamNumber = _u32NbParams;
   sstParam.azParams       = _azParams;
 
-  /* Has base name a '.'? */
-  if((u32Index = orxString_SearchCharIndex(sstParam.azParams[0], '.', 0)) >= 0)
+  /* Has parameters? */
+  if((_u32NbParams > 0) && (_azParams != orxNULL))
   {
-    /* Ends basename here */
-    *(sstParam.azParams[0] + u32Index) = orxCHAR_NULL;
-  }
+    orxSTRING zLocalName = orxNULL;
 
-  /* Stores base name for config */
-  orxConfig_SetBaseName(sstParam.azParams[0]);
+    /* Has base name a '.'? */
+    if((u32Index = orxString_SearchCharIndex(sstParam.azParams[0], '.', 0)) >= 0)
+    {
+      /* Duplicates it */
+      zLocalName = orxString_Duplicate(sstParam.azParams[0]);
 
-  /* Had a '.' in basename? */
-  if(u32Index >= 0)
-  {
-    /* Restores it */
-    *(sstParam.azParams[0] + u32Index) = '.';
+      /* Ends basename here */
+      *(zLocalName + u32Index) = orxCHAR_NULL;
+    }
+
+    /* Stores base name for config */
+    orxConfig_SetBaseName(zLocalName);
+
+    /* Had a '.' in basename? */
+    if(u32Index >= 0)
+    {
+      /* Restores it */
+      *(zLocalName + u32Index) = '.';
+
+      /* Deletes it */
+      orxString_Delete(zLocalName);
+    }
   }
 
   /* Done! */

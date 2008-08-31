@@ -99,7 +99,7 @@ orxSTRING zSelectedFX = "WobbleFX";
 
 /** Event handler
  */
-orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 {
   orxFX_EVENT_PAYLOAD *pstPayload;
   orxOBJECT           *pstObject;

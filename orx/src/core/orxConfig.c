@@ -55,7 +55,7 @@
 #define orxCONFIG_KU32_SECTION_BANK_SIZE    16          /**< Default section bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE      16          /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE    4           /**< Default history bank size */
-#define orxCONFIG_KU32_BASE_FILENAME_LENGTH 64          /**< Base file name length */
+#define orxCONFIG_KU32_BASE_FILENAME_LENGTH 256         /**< Base file name length */
 
 #define orxCONFIG_KU32_BUFFER_SIZE          4096        /**< Buffer size */
 

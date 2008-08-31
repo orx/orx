@@ -93,7 +93,7 @@ orxSOUND  *pstMusic;
 
 /** Event handler
  */
-orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 {
   orxSOUND_EVENT_PAYLOAD *pstPayload;
 
