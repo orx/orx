@@ -84,7 +84,7 @@
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
-        <Library Value="box2Dd"/>
+        <Library Value="Box2Dd"/>
       </Linker>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>
@@ -206,7 +206,7 @@
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
-        <Library Value="box2Dd"/>
+        <Library Value="Box2Dd"/>
       </Linker>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
       <ResourceCompiler Required="no" Options=""/>

@@ -189,7 +189,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetPrevious(orxCONST
   orxASSERT(_pstNode != orxNULL);
 
   /* Returns it */
-  return((_pstNode->pstList != orxNULL) ? _pstNode->pstPrevious : orxNULL);
+  return((_pstNode->pstList != orxNULL) ? _pstNode->pstPrevious : (orxLINKLIST_NODE *)orxNULL);
 }
 
 /** Gets next node in list
@@ -202,7 +202,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetNext(orxCONST orx
   orxASSERT(_pstNode != orxNULL);
 
   /* Returns it */
-  return((_pstNode->pstList != orxNULL) ? _pstNode->pstNext : orxNULL);
+  return((_pstNode->pstList != orxNULL) ? _pstNode->pstNext : (orxLINKLIST_NODE *)orxNULL);
 }
 
 

@@ -40,9 +40,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxFSM_INSTANCE_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#g6d840c617a4a2bc5fd0b9a1c62b99539">orxFSM_INSTANCE</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxVOID(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#g6d0c4c121ad4e6afc0f4c7a9704285c5">orxFSM_ACTION_FUNCTION</a> )(orxVOID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxVOID(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#g97ee22251de6dc009836890700b000b3">orxFSM_ACTION_FUNCTION</a> )()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxBOOL(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#gea930101f05dcb57634eaa16c5746625">orxFSM_CONDITION_FUNCTION</a> )(orxVOID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxBOOL(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#gc3fc617307f269c1c9253cd559ac8f82">orxFSM_CONDITION_FUNCTION</a> )()</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#gd903da649919c8a464b3b3d1a9abca40">orxFSM_Create</a> (orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU32 _u32NbInstances, orxU32 _u32Flags, <a class="el" href="group__orx_memory.html#gc7def09bae60ac239474ab7d78a8bcc9">orxMEMORY_TYPE</a> _eMemType)</td></tr>
@@ -51,7 +51,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#g9297a9eed5d9da552761b5cca12a4559">orxFSM_Clear</a> (<a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *_pstStateMachine)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#g60ab892a2e4f0fba6740f746a38ab70f">orxFSM_AddState</a> (<a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *_pstStateMachine, orxU16 _u16Id, orxCONST <a class="el" href="group__orx_f_s_m.html#g6d0c4c121ad4e6afc0f4c7a9704285c5">orxFSM_ACTION_FUNCTION</a> _pfnInit, orxCONST <a class="el" href="group__orx_f_s_m.html#g6d0c4c121ad4e6afc0f4c7a9704285c5">orxFSM_ACTION_FUNCTION</a> _pfnExecute, orxCONST <a class="el" href="group__orx_f_s_m.html#g6d0c4c121ad4e6afc0f4c7a9704285c5">orxFSM_ACTION_FUNCTION</a> _pfnExit)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#g60ab892a2e4f0fba6740f746a38ab70f">orxFSM_AddState</a> (<a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *_pstStateMachine, orxU16 _u16Id, orxCONST <a class="el" href="group__orx_f_s_m.html#g97ee22251de6dc009836890700b000b3">orxFSM_ACTION_FUNCTION</a> _pfnInit, orxCONST <a class="el" href="group__orx_f_s_m.html#g97ee22251de6dc009836890700b000b3">orxFSM_ACTION_FUNCTION</a> _pfnExecute, orxCONST <a class="el" href="group__orx_f_s_m.html#g97ee22251de6dc009836890700b000b3">orxFSM_ACTION_FUNCTION</a> _pfnExit)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#g267d077a83448394a3a662f2c1535df5">orxFSM_SetInitState</a> (<a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *_pstStateMachine, <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *_pstInitialState)</td></tr>
 
@@ -61,7 +61,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#g7b849b2182a46a95381c07d352c46003">orxFSM_RemoveState</a> (<a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *_pstStateMachine, <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *_pstState, orxBOOL _bRemoveLinks)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_f_s_m.html#g81aac2a75c3e05fe080b522255cd012c">orxFSM_LINK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#gf043e59e35f934b59db8aa3dfa0bfb76">orxFSM_AddLink</a> (<a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *_pstStateMachine, <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *_pstBeginningState, <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *_pstEndingState, orxCONST <a class="el" href="group__orx_f_s_m.html#gea930101f05dcb57634eaa16c5746625">orxFSM_CONDITION_FUNCTION</a> _pfnCondition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_f_s_m.html#g81aac2a75c3e05fe080b522255cd012c">orxFSM_LINK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#gf043e59e35f934b59db8aa3dfa0bfb76">orxFSM_AddLink</a> (<a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *_pstStateMachine, <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *_pstBeginningState, <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *_pstEndingState, orxCONST <a class="el" href="group__orx_f_s_m.html#gc3fc617307f269c1c9253cd559ac8f82">orxFSM_CONDITION_FUNCTION</a> _pfnCondition)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_f_s_m.html#g81aac2a75c3e05fe080b522255cd012c">orxFSM_LINK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_s_m.html#geb25aefd4dec0e4a66e46614ffde8254">orxFSM_GetLink</a> (orxCONST <a class="el" href="group__orx_f_s_m.html#g54582f480d3a6bf96b48c302f1ccc85c">orxFSM</a> *_pstStateMachine, orxCONST <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *_pstBeginningState, orxCONST <a class="el" href="group__orx_f_s_m.html#g659554a0ca7720ac377e17969549bf8e">orxFSM_STATE</a> *_pstEndingState)</td></tr>
 
@@ -131,12 +131,12 @@ The state machine will not be expandable
 
 </div>
 </div><p>
-<a class="anchor" name="g6d0c4c121ad4e6afc0f4c7a9704285c5"></a><!-- doxytag: member="orxFSM.h::orxFSM_ACTION_FUNCTION" ref="g6d0c4c121ad4e6afc0f4c7a9704285c5" args=")(orxVOID)" -->
+<a class="anchor" name="g97ee22251de6dc009836890700b000b3"></a><!-- doxytag: member="orxFSM.h::orxFSM_ACTION_FUNCTION" ref="g97ee22251de6dc009836890700b000b3" args=")()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef orxVOID(* <a class="el" href="group__orx_f_s_m.html#g6d0c4c121ad4e6afc0f4c7a9704285c5">orxFSM_ACTION_FUNCTION</a>)(orxVOID)          </td>
+          <td class="memname">typedef orxVOID(* <a class="el" href="group__orx_f_s_m.html#g97ee22251de6dc009836890700b000b3">orxFSM_ACTION_FUNCTION</a>)()          </td>
         </tr>
       </table>
 </div>
@@ -146,12 +146,12 @@ The state machine will not be expandable
 Action pointer for state machines. 
 </div>
 </div><p>
-<a class="anchor" name="gea930101f05dcb57634eaa16c5746625"></a><!-- doxytag: member="orxFSM.h::orxFSM_CONDITION_FUNCTION" ref="gea930101f05dcb57634eaa16c5746625" args=")(orxVOID)" -->
+<a class="anchor" name="gc3fc617307f269c1c9253cd559ac8f82"></a><!-- doxytag: member="orxFSM.h::orxFSM_CONDITION_FUNCTION" ref="gc3fc617307f269c1c9253cd559ac8f82" args=")()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef orxBOOL(* <a class="el" href="group__orx_f_s_m.html#gea930101f05dcb57634eaa16c5746625">orxFSM_CONDITION_FUNCTION</a>)(orxVOID)          </td>
+          <td class="memname">typedef orxBOOL(* <a class="el" href="group__orx_f_s_m.html#gc3fc617307f269c1c9253cd559ac8f82">orxFSM_CONDITION_FUNCTION</a>)()          </td>
         </tr>
       </table>
 </div>
@@ -232,7 +232,7 @@ condition pointer for state machines.
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_f_s_m.html#gea930101f05dcb57634eaa16c5746625">orxFSM_CONDITION_FUNCTION</a>&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_f_s_m.html#gc3fc617307f269c1c9253cd559ac8f82">orxFSM_CONDITION_FUNCTION</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnCondition</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -276,19 +276,19 @@ Add a link. <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_f_s_m.html#g6d0c4c121ad4e6afc0f4c7a9704285c5">orxFSM_ACTION_FUNCTION</a>&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_f_s_m.html#g97ee22251de6dc009836890700b000b3">orxFSM_ACTION_FUNCTION</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnInit</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_f_s_m.html#g6d0c4c121ad4e6afc0f4c7a9704285c5">orxFSM_ACTION_FUNCTION</a>&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_f_s_m.html#g97ee22251de6dc009836890700b000b3">orxFSM_ACTION_FUNCTION</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnExecute</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_f_s_m.html#g6d0c4c121ad4e6afc0f4c7a9704285c5">orxFSM_ACTION_FUNCTION</a>&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_f_s_m.html#g97ee22251de6dc009836890700b000b3">orxFSM_ACTION_FUNCTION</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnExit</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -890,7 +890,7 @@ Update an instance of a state machine. If current state is orxNULL, it enters th
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Aug 29 23:23:10 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Aug 31 02:56:19 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
