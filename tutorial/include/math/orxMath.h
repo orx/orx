@@ -182,6 +182,23 @@ do                                              \
 #define orxS2F(V)                 ((orxFLOAT)(V))
 
 
+/*** Inlined functions *** */
+
+/** Gets the counts of bit in an orxU32
+ * @param[in]   _u32Value                       Value to process
+ * @return      Number of bits that are set in the value
+ */
+orxSTATIC orxINLINE orxU32 orxMath_GetBitCount(orxREGISTER orxU32 _u32Value)
+{
+  _u32Value -= ((_u32Value >> 1) & 0x55555555);
+  _u32Value = (((_u32Value >> 2) & 0x33333333) + (_u32Value & 0x33333333));
+  _u32Value = (((_u32Value >> 4) + _u32Value) & 0x0f0f0f0f);
+  _u32Value += (_u32Value >> 8);
+  _u32Value += (_u32Value >> 16);
+  return(_u32Value & 0x0000003f);
+}
+
+
 /*** Math Definitions ***/
 
 #define orxMATH_KF_SQRT_2         orx2F(1.414213562f)           /**< Sqrt(2) constant */
