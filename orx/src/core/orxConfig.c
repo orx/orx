@@ -1237,7 +1237,7 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
         && (orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
         {
           /* Updates result */
-          s32Result = orxS32RAND(s32Value, s32OtherValue);
+          s32Result = orxMath_GetRandomS32(s32Value, s32OtherValue);
 
           /* Clears cache */
           pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
@@ -1305,7 +1305,7 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
         && (orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
         {
           /* Updates result */
-          u32Result = orxU32RAND(u32Value, u32OtherValue);
+          u32Result = orxMath_GetRandomU32(u32Value, u32OtherValue);
 
           /* Clears cache */
           pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
@@ -1373,7 +1373,7 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
         && (orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
         {
           /* Updates result */
-          fResult = orxFRAND(fValue, fOtherValue);
+          fResult = orxMath_GetRandomFloat(fValue, fOtherValue);
 
           /* Clears cache */
           pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
@@ -1521,9 +1521,9 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
         && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
         {
           /* Updates result */
-          _pvVector->fX = orxFRAND(_pvVector->fX, vOtherValue.fX);
-          _pvVector->fY = orxFRAND(_pvVector->fY, vOtherValue.fY);
-          _pvVector->fZ = orxFRAND(_pvVector->fZ, vOtherValue.fZ);
+          _pvVector->fX = orxMath_GetRandomFloat(_pvVector->fX, vOtherValue.fX);
+          _pvVector->fY = orxMath_GetRandomFloat(_pvVector->fY, vOtherValue.fY);
+          _pvVector->fZ = orxMath_GetRandomFloat(_pvVector->fZ, vOtherValue.fZ);
 
           /* Clears cache */
           pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;

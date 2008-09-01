@@ -111,9 +111,6 @@ orxSTATIC orxSTATUS orxScroll_Init()
   /* Gets wave group number */
   s32WaveGroupNumber = orxMIN(orxConfig_GetS32("WaveGroupNumber"), 32);
 
-  /* Inits the random seed */
-  orxFRAND_INIT(orx2F(1000000.0f) * orxSystem_GetTime());
-
   /* For all wave groups */
   for(i = 0; i < s32WaveGroupNumber; i++)
   {

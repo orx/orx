@@ -32,18 +32,6 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g5f0dbc4f5e99c3d49f1ae7c1de21b9a5">orxCIRCULAR_CLAMP_INC_MAX</a>(V, MIN, MAX)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g898ec010713448fb550d2b312aa37190">orxFRAND_INIT</a>(SEED)&nbsp;&nbsp;&nbsp;srand(orxF2U(SEED))</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g2a4b59fa4474cb539820344794508bee">orxFRAND</a>(MIN, MAX)&nbsp;&nbsp;&nbsp;((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (MAX - MIN)) + MIN)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g399e4f791fb32343a055e4bf8e6fd824">orxU32RAND_INIT</a>(SEED)&nbsp;&nbsp;&nbsp;srand(SEED)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g3114d3288c0dbc4930ce073f55bcd1be">orxU32RAND</a>(MIN, MAX)&nbsp;&nbsp;&nbsp;orxF2U((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxU2F(MAX) - orxU2F(MIN))) + orxU2F(MIN))</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g96a814af76a9155f07253f0a4856ada8">orxS32RAND_INIT</a>(SEED)&nbsp;&nbsp;&nbsp;srand(SEED)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g9505469b1bebac83a191d05de163a726">orxS32RAND</a>(MIN, MAX)&nbsp;&nbsp;&nbsp;orxF2S((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxS2F(MAX) - orxS2F(MIN))) + orxS2F(MIN))</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#ga4644e7bdd17dc9c9fd6fef360dc3432">orxF2U</a>(V)&nbsp;&nbsp;&nbsp;((orxU32)  (V))</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gbb0d42bcd5c9cc2425cdf4cef5102298">orxF2S</a>(V)&nbsp;&nbsp;&nbsp;((orxS32)  (V))</td></tr>
@@ -67,6 +55,14 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g0861eef61e81d17d189e0635b746864c">orxMATH_KF_RAD_TO_DEG</a>&nbsp;&nbsp;&nbsp;orx2F(180.0f / 3.141592654f)</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g3c5465744953e0df801d012c2e3e5a65">orxMath_InitRandom</a> (orxU32 _u32Seed)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gdb393c74b87ba0fe30647dd5cb369c4d">orxMath_GetRandomFloat</a> (orxFLOAT _fMin, orxFLOAT _fMax)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g2dfdadd4bbc42980259651a593684924">orxMath_GetRandomU32</a> (orxU32 _u32Min, orxU32 _u32Max)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxS32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g06009c67dac846c3b0a092be73e2ad2c">orxMath_GetRandomS32</a> (orxS32 _s32Min, orxS32 _s32Max)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#g5374fb23e09d43f91523c22b8d62904d">orxMath_GetBitCount</a> (orxREGISTER orxU32 _u32Value)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_math.html#gf10b3c69707af146be66d3114c26545a">orxMath_Cos</a> (orxFLOAT _fOp)</td></tr>
@@ -271,61 +267,6 @@ Converts an orxFLOAT to an orxU32 <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Converted value </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g2a4b59fa4474cb539820344794508bee"></a><!-- doxytag: member="orxMath.h::orxFRAND" ref="g2a4b59fa4474cb539820344794508bee" args="(MIN, MAX)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxFRAND          </td>
-          <td>(</td>
-          <td class="paramtype">MIN,         <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">MAX&nbsp;</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (MAX - MIN)) + MIN)</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets a random orxFLOAT value <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>MIN</em>&nbsp;</td><td>Minimum boundary </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>MAX</em>&nbsp;</td><td>Maximum boundary </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Random value </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g898ec010713448fb550d2b312aa37190"></a><!-- doxytag: member="orxMath.h::orxFRAND_INIT" ref="g898ec010713448fb550d2b312aa37190" args="(SEED)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxFRAND_INIT          </td>
-          <td>(</td>
-          <td class="paramtype">SEED&nbsp;</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;srand(orxF2U(SEED))</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Inits the random seed with an orxFLOAT <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>SEEED</em>&nbsp;</td><td>Value to use as seed for random number generation </td></tr>
-  </table>
-</dl>
 
 </div>
 </div><p>
@@ -554,61 +495,6 @@ Converts an orxS32 to an orxFLOAT <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g9505469b1bebac83a191d05de163a726"></a><!-- doxytag: member="orxMath.h::orxS32RAND" ref="g9505469b1bebac83a191d05de163a726" args="(MIN, MAX)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxS32RAND          </td>
-          <td>(</td>
-          <td class="paramtype">MIN,         <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">MAX&nbsp;</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;orxF2S((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxS2F(MAX) - orxS2F(MIN))) + orxS2F(MIN))</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets a random orxS32 value <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>MIN</em>&nbsp;</td><td>Minimum boundary </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>MAX</em>&nbsp;</td><td>Maximum boundary </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Random value </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g96a814af76a9155f07253f0a4856ada8"></a><!-- doxytag: member="orxMath.h::orxS32RAND_INIT" ref="g96a814af76a9155f07253f0a4856ada8" args="(SEED)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxS32RAND_INIT          </td>
-          <td>(</td>
-          <td class="paramtype">SEED&nbsp;</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;srand(SEED)</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Inits the random seed with an orxS32 <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>SEEED</em>&nbsp;</td><td>Value to use as seed for random number generation </td></tr>
-  </table>
-</dl>
-
-</div>
-</div><p>
 <a class="anchor" name="ga71920a94ecdfe982b54d6e3e065308e"></a><!-- doxytag: member="orxMath.h::orxU2F" ref="ga71920a94ecdfe982b54d6e3e065308e" args="(V)" -->
 <div class="memitem">
 <div class="memproto">
@@ -632,61 +518,6 @@ Converts an orxU32 to an orxFLOAT <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Converted value </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g3114d3288c0dbc4930ce073f55bcd1be"></a><!-- doxytag: member="orxMath.h::orxU32RAND" ref="g3114d3288c0dbc4930ce073f55bcd1be" args="(MIN, MAX)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxU32RAND          </td>
-          <td>(</td>
-          <td class="paramtype">MIN,         <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">MAX&nbsp;</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;orxF2U((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxU2F(MAX) - orxU2F(MIN))) + orxU2F(MIN))</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets a random orxU32 value <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>MIN</em>&nbsp;</td><td>Minimum boundary </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>MAX</em>&nbsp;</td><td>Maximum boundary </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Random value </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g399e4f791fb32343a055e4bf8e6fd824"></a><!-- doxytag: member="orxMath.h::orxU32RAND_INIT" ref="g399e4f791fb32343a055e4bf8e6fd824" args="(SEED)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxU32RAND_INIT          </td>
-          <td>(</td>
-          <td class="paramtype">SEED&nbsp;</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;srand(SEED)</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Inits the random seed with an orxU32 <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>SEEED</em>&nbsp;</td><td>Value to use as seed for random number generation </td></tr>
-  </table>
-</dl>
 
 </div>
 </div><p>
@@ -908,6 +739,139 @@ Gets the counts of bit in an orxU32 <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="gdb393c74b87ba0fe30647dd5cb369c4d"></a><!-- doxytag: member="orxMath.h::orxMath_GetRandomFloat" ref="gdb393c74b87ba0fe30647dd5cb369c4d" args="(orxFLOAT _fMin, orxFLOAT _fMax)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxINLINE orxFLOAT orxMath_GetRandomFloat           </td>
+          <td>(</td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fMin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fMax</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a random orxFLOAT value <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fMin</em>&nbsp;</td><td>Minimum boundary </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fMax</em>&nbsp;</td><td>Maximum boundary </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Random value </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g06009c67dac846c3b0a092be73e2ad2c"></a><!-- doxytag: member="orxMath.h::orxMath_GetRandomS32" ref="g06009c67dac846c3b0a092be73e2ad2c" args="(orxS32 _s32Min, orxS32 _s32Max)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxINLINE orxS32 orxMath_GetRandomS32           </td>
+          <td>(</td>
+          <td class="paramtype">orxS32&nbsp;</td>
+          <td class="paramname"> <em>_s32Min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxS32&nbsp;</td>
+          <td class="paramname"> <em>_s32Max</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a random orxS32 value <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_s32Min</em>&nbsp;</td><td>Minimum boundary </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_s32Max</em>&nbsp;</td><td>Maximum boundary </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Random value </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g2dfdadd4bbc42980259651a593684924"></a><!-- doxytag: member="orxMath.h::orxMath_GetRandomU32" ref="g2dfdadd4bbc42980259651a593684924" args="(orxU32 _u32Min, orxU32 _u32Max)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxINLINE orxU32 orxMath_GetRandomU32           </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32Min</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32Max</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a random orxU32 value <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Min</em>&nbsp;</td><td>Minimum boundary </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Max</em>&nbsp;</td><td>Maximum boundary </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Random value </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g3c5465744953e0df801d012c2e3e5a65"></a><!-- doxytag: member="orxMath.h::orxMath_InitRandom" ref="g3c5465744953e0df801d012c2e3e5a65" args="(orxU32 _u32Seed)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxINLINE orxVOID orxMath_InitRandom           </td>
+          <td>(</td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32Seed</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Inits the random seed with an orxFLOAT <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Seed</em>&nbsp;</td><td>Value to use as seed for random number generation </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g371dabf01d57c928f6f62ca01f9b47ac"></a><!-- doxytag: member="orxMath.h::orxMath_Mod" ref="g371dabf01d57c928f6f62ca01f9b47ac" args="(orxFLOAT _fOp1, orxFLOAT _fOp2)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1083,7 +1047,7 @@ Gets a tangent <dl compact><dt><b>Parameters:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Sep 1 01:10:29 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Sep 1 02:49:42 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

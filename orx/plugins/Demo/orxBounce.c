@@ -107,9 +107,6 @@ orxSTATIC orxSTATUS orxBounce_Init()
   orxConfig_SelectSection("Bounce");
   orxConfig_Load(orxConfig_GetString("OverrideFile"));
 
-  /* Inits the random seed */
-  orxFRAND_INIT(orx2F(1000000.0f) * orxSystem_GetTime());
-
   /* Creates walls */
   orxObject_CreateFromConfig("Wall1");
   orxObject_CreateFromConfig("Wall2");
