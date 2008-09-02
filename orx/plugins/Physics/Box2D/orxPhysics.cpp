@@ -112,7 +112,7 @@ typedef struct __orxPHYSICS_STATIC_t
   orxU32                      u32Flags;           /**< Control flags */
   orxU32                      u32Iterations;      /**< Simulation iterations per step */
   orxFLOAT                    fDimensionRatio;    /**< Dimension ratio */
-  orxFLOAT                    fInvDimensionRatio; /**< Inverse dimension ratio */
+  orxFLOAT                    fRecDimensionRatio; /**< Reciprocal dimension ratio */
   orxCLOCK                   *pstClock;           /**< Simulation clock */
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
@@ -601,8 +601,8 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetPosition(orxPHYSICS_BODY *_pstBody, or
 
   /* Updates result */
   pvResult      = _pvPosition;
-  pvResult->fX  = sstPhysics.fInvDimensionRatio * vPosition.x;
-  pvResult->fY  = sstPhysics.fInvDimensionRatio * vPosition.y;
+  pvResult->fX  = sstPhysics.fRecDimensionRatio * vPosition.x;
+  pvResult->fY  = sstPhysics.fRecDimensionRatio * vPosition.y;
 
   /* Done! */
   return pvResult;
@@ -646,8 +646,8 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVE
 
   /* Updates result */
   pvResult      = _pvSpeed;
-  pvResult->fX  = sstPhysics.fInvDimensionRatio * vSpeed.x;
-  pvResult->fY  = sstPhysics.fInvDimensionRatio * vSpeed.y;
+  pvResult->fX  = sstPhysics.fRecDimensionRatio * vSpeed.x;
+  pvResult->fY  = sstPhysics.fRecDimensionRatio * vSpeed.y;
 
   /* Done! */
   return pvResult;
@@ -875,7 +875,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       }
 
       /* Stores inverse dimension ratio */
-      sstPhysics.fInvDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
+      sstPhysics.fRecDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
 
       /* Gets iteration per step number from config */
       u32IterationsPerStep = orxConfig_GetU32(orxPHYSICS_KZ_CONFIG_ITERATIONS);

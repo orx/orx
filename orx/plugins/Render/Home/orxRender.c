@@ -918,14 +918,14 @@ orxVECTOR *orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition
         /* Has zoom? */
         if((fZoom = orxCamera_GetZoom(pstCamera)) != orxFLOAT_1)
         {
-          orxFLOAT fInvZoom;
+          orxFLOAT fRecZoom;
 
-          /* Gets 1 / Zoom */
-          fInvZoom = orxFLOAT_1 / fZoom;
+          /* Gets reciprocal zoom */
+          fRecZoom = orxFLOAT_1 / fZoom;
 
           /* Updates result */
-          _pvWorldPosition->fX *= fInvZoom;
-          _pvWorldPosition->fY *= fInvZoom;
+          _pvWorldPosition->fX *= fRecZoom;
+          _pvWorldPosition->fY *= fRecZoom;
         }
 
         /* Updates result */

@@ -768,7 +768,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
   orxBOOL   bAlphaLock = orxFALSE, bColorBlendLock = orxFALSE, bRotationLock = orxFALSE, bScaleLock = orxFALSE, bTranslationLock = orxFALSE;
   orxBOOL   bAlphaUpdate = orxFALSE, bColorBlendUpdate = orxFALSE, bRotationUpdate = orxFALSE, bScaleUpdate = orxFALSE, bTranslationUpdate = orxFALSE;
   orxBOOL   bFirstCall;
-  orxFLOAT  fAlpha = orxFLOAT_0, fRotation = orxFLOAT_0, fInvDuration;
+  orxFLOAT  fAlpha = orxFLOAT_0, fRotation = orxFLOAT_0, fRecDuration;
   orxVECTOR vColor, vScale, vPosition;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -826,8 +826,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
           fStartTime -= pstFXSlot->fStartTime;
           fEndTime   -= pstFXSlot->fStartTime;
 
-          /* Gets 1.0 / duration */
-          fInvDuration = orxFLOAT_1 / pstFXSlot->fEndTime;
+          /* Gets reciprocal duration */
+          fRecDuration = orxFLOAT_1 / pstFXSlot->fEndTime;
 
           /* Gets FX type */
           eFXType = orxFX_GetSlotType(pstFXSlot);
@@ -947,8 +947,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               orxFLOAT fStartAmplification, fEndAmplification;
 
               /* Gets amplification coefs */
-              fStartAmplification = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, fStartTime * fInvDuration);
-              fEndAmplification   = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, fEndTime * fInvDuration);
+              fStartAmplification = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, fStartTime * fRecDuration);
+              fEndAmplification   = orxLERP(orxFLOAT_1, pstFXSlot->fAmplification, fEndTime * fRecDuration);
 
               /* Updates the coefs */
               fStartCoef *= fStartAmplification;
