@@ -17,6 +17,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07_FX", "07_FX\07_FX.vcproj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "08_Physics", "08_Physics\08_Physics.vcproj", "{673814E8-C556-48C5-83CA-F2C611F4F077}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09_Scrolling", "09_Scrolling\09_Scrolling.vcproj", "{078EAC5E-D591-4853-8B41-2B09B7CD48C3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_StandAlone", "10_StandAlone\10_StandAlone.vcproj", "{43025398-F723-4290-B079-EA3099213295}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Dynamic Release|Win32 = Dynamic Release|Win32
@@ -38,6 +42,10 @@ Global
 		{8C132071-6164-4B3E-9605-F0E70BA8886B}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 		{673814E8-C556-48C5-83CA-F2C611F4F077}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
 		{673814E8-C556-48C5-83CA-F2C611F4F077}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{078EAC5E-D591-4853-8B41-2B09B7CD48C3}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{078EAC5E-D591-4853-8B41-2B09B7CD48C3}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{43025398-F723-4290-B079-EA3099213295}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{43025398-F723-4290-B079-EA3099213295}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
