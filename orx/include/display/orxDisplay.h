@@ -74,6 +74,20 @@ typedef enum __orxDISPLAY_SMOOTHING_t
 
 } orxDISPLAY_SMOOTHING;
 
+/** Bitmap blend enum
+ */
+typedef enum __orxDISPLAY_BLEND_MODE_t
+{
+  orxDISPLAY_BLEND_MODE_ALPHA = 0,
+  orxDISPLAY_BLEND_MODE_MULTIPLY,
+  orxDISPLAY_BLEND_MODE_ADD,
+
+  orxDISPLAY_BLEND_MODE_NUMBER,
+
+  orxDISPLAY_BLEND_MODE_NONE = orxENUM_NONE
+
+} orxDISPLAY_BLEND_MODE;
+
 /** Color structure
  */
 typedef struct __orxCOLOR_t
@@ -298,9 +312,10 @@ extern orxDLLAPI orxSTATUS  orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGB
  * @param[in]   _pstSrc                               Bitmap to transform and draw
  * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
  * @param[in]   _eSmoothing                           Bitmap smoothing type
+ * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing);
+extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Sets a bitmap color key (used with non alpha transparency)
@@ -334,9 +349,10 @@ extern orxDLLAPI orxSTATUS  orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, 
  * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
  * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
  * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap
+ * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY);
+extern orxDLLAPI orxSTATUS  orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Saves a bitmap to file

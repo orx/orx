@@ -79,6 +79,12 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g7aa20b8c036a6a7360f1543330c0cc5e">orxGraphic_GetSmoothing</a> (orxCONST <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g325d3601ce4f74e9bb0a3941e2403dbc">orxGraphic_SetBlendMode</a> (<a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic, <a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <br>
+<a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g8d03f0119b63bc4a9d982ec33dfd26a0">orxGraphic_GetBlendMode</a> (orxCONST <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *_pstGraphic)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Graphic Module. Allows to creates and handle 2D/3D Graphics. They are used as texture/animation container, with associated properties. 2D Graphics are used by objects. They thus can be referenced by objects as structures. <hr><h2>Define Documentation</h2>
@@ -309,6 +315,32 @@ Deletes a graphic <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Exits from the Graphic module 
+</div>
+</div><p>
+<a class="anchor" name="g8d03f0119b63bc4a9d982ec33dfd26a0"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_GetBlendMode" ref="g8d03f0119b63bc4a9d982ec33dfd26a0" args="(orxCONST orxGRAPHIC *_pstGraphic)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> orxFASTCALL orxGraphic_GetBlendMode           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstGraphic</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets graphic blend mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstGraphic</em>&nbsp;</td><td>Concerned graphic </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Blend mode (alpha, multiply, add or none) </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="g82f365bc8a2871e3b442dfe2ad9ce5b5"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_GetColor" ref="g82f365bc8a2871e3b442dfe2ad9ce5b5" args="(orxCONST orxGRAPHIC *_pstGraphic, orxCOLOR *_pstColor)" -->
@@ -611,6 +643,42 @@ Graphic has color accessor <dl compact><dt><b>Parameters:</b></dt><dd>
 Inits the Graphic module 
 </div>
 </div><p>
+<a class="anchor" name="g325d3601ce4f74e9bb0a3941e2403dbc"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_SetBlendMode" ref="g325d3601ce4f74e9bb0a3941e2403dbc" args="(orxGRAPHIC *_pstGraphic, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxGraphic_SetBlendMode           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstGraphic</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a>&nbsp;</td>
+          <td class="paramname"> <em>_eBlendMode</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets object blend mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstGraphic</em>&nbsp;</td><td>Concerned graphic </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eBlendMode</em>&nbsp;</td><td>Blend mode (alpha, multiply, add or none) </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g71e1cdffe628343868e0ffb8f68abb93"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_SetColor" ref="g71e1cdffe628343868e0ffb8f68abb93" args="(orxGRAPHIC *_pstGraphic, orxCONST orxCOLOR *_pstColor)" -->
 <div class="memitem">
 <div class="memproto">
@@ -818,7 +886,7 @@ Graphic module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Sep 1 02:49:42 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Sep 5 00:10:50 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

@@ -58,7 +58,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g2cbe4c2a59985fc2047ef79be8b9caea">orxVector_Neg</a> (<a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvRes, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g333a7ec00e1203808ca99b239549e3b0">orxVector_Inv</a> (<a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvRes, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g8305f59e27e705be199a4ba239785ad6">orxVector_Rec</a> (<a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvRes, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#ga0ba504901eac5e88688ba02aa6ebd67">orxVector_GetSquareSize</a> (orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp)</td></tr>
 
@@ -765,42 +765,6 @@ Gets vector squared size <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g333a7ec00e1203808ca99b239549e3b0"></a><!-- doxytag: member="orxVector.h::orxVector_Inv" ref="g333a7ec00e1203808ca99b239549e3b0" args="(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxSTATIC orxINLINE <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxVector_Inv           </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pvRes</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pvOp</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets 1 / vector and stores the result in another one <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvRes</em>&nbsp;</td><td>Vector where to store result (can be the operand) </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvOp</em>&nbsp;</td><td>Input value </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Resulting vector (1 / Op) </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="gae917149e29b481b31ad2109eef3b2bd"></a><!-- doxytag: member="orxVector.h::orxVector_IsNull" ref="gae917149e29b481b31ad2109eef3b2bd" args="(orxCONST orxVECTOR *_pvOp)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1121,6 +1085,42 @@ Normalizes a vector <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g8305f59e27e705be199a4ba239785ad6"></a><!-- doxytag: member="orxVector.h::orxVector_Rec" ref="g8305f59e27e705be199a4ba239785ad6" args="(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxINLINE <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxVector_Rec           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvRes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvOp</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets reciprocal (1.0 /) vector and stores the result in another one <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvRes</em>&nbsp;</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvOp</em>&nbsp;</td><td>Input value </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Resulting vector (1 / Op) </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gc64517a8746156752ad7596fe52f75af"></a><!-- doxytag: member="orxVector.h::orxVector_Set" ref="gc64517a8746156752ad7596fe52f75af" args="(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1387,7 +1387,7 @@ Z-Axis unit vector
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Sep 1 02:49:42 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Sep 5 00:10:50 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

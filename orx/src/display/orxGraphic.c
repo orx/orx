@@ -54,6 +54,14 @@
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON     0x01000000  /**< Smoothing on flag  */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF    0x02000000  /**< Smoothing off flag  */
 
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE  0x00000000 /**< Blend mode no flags */
+
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA 0x00100000  /**< Blend mode alpha flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY 0x00200000  /**< Blend mode multiply flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD   0x00400000  /**< Blend mode add flag */
+
+#define orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL   0x00F00000  /**< Blend mode mask */
+
 #define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
 
 
@@ -68,11 +76,15 @@
 #define orxGRAPHIC_KZ_CONFIG_FLIP             "Flip"
 #define orxGRAPHIC_KZ_CONFIG_REPEAT           "Repeat"
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING        "Smoothing"
+#define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
 #define orxGRAPHIC_KZ_X                       "x"
 #define orxGRAPHIC_KZ_Y                       "y"
 #define orxGRAPHIC_KZ_BOTH                    "both"
+#define orxGRAPHIC_KZ_ALPHA                   "alpha"
+#define orxGRAPHIC_KZ_MULTIPLY                "multiply"
+#define orxGRAPHIC_KZ_ADD                     "add"
 
 
 /***************************************************************************
@@ -434,6 +446,34 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             {
               /* Updates flags */
               u32Flags |= (orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_SMOOTHING) != orxFALSE) ? orxGRAPHIC_KU32_FLAG_SMOOTHING_ON : orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF;
+            }
+
+            /* Has blend mode? */
+            if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_BLEND_MODE) != orxFALSE)
+            {
+              orxSTRING zBlendMode;
+              
+              /* Gets blend mode value */
+              zBlendMode = orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE));
+
+              /* alpha blend mode? */
+              if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_ALPHA) == 0)
+              {
+                /* Updates flags */
+                u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
+              }
+              /* Multiply blend mode? */
+              else if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_MULTIPLY) == 0)
+              {
+                /* Updates flags */
+                u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY;
+              }
+              /* Add blend mode? */
+              else if(orxString_Compare(zBlendMode, orxGRAPHIC_KZ_ADD) == 0)
+              {
+                /* Updates flags */
+                u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
+              }
             }
 
             /* Updates status flags */
@@ -973,6 +1013,114 @@ orxDISPLAY_SMOOTHING orxFASTCALL orxGraphic_GetSmoothing(orxCONST orxGRAPHIC *_p
             : orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF)
               ? orxDISPLAY_SMOOTHING_OFF
               : orxDISPLAY_SMOOTHING_DEFAULT;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets graphic blend mode
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Depending on blend mode */
+  switch(_eBlendMode)
+  {
+    case orxDISPLAY_BLEND_MODE_ALPHA:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
+    case orxDISPLAY_BLEND_MODE_MULTIPLY:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
+    case orxDISPLAY_BLEND_MODE_ADD:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
+    default:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets graphic blend mode
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return Blend mode (alpha, multiply, add or none)
+ */
+orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(orxCONST orxGRAPHIC *_pstGraphic)
+{
+  orxDISPLAY_BLEND_MODE eResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Depending on blend flags */
+  switch(orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL))
+  {
+    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_ALPHA;
+
+      break;
+    }
+
+    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
+
+      break;
+    }
+
+    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_ADD;
+
+      break;
+    }
+
+    default:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_NONE;
+
+      break;
+    }
+}
 
   /* Done! */
   return eResult;

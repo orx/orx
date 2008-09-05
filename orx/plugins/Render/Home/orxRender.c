@@ -129,6 +129,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     orxBITMAP      *pstBitmap;
     orxTEXTURE     *pstTexture;
     orxANIMPOINTER *pstAnimPointer;
+    orxDISPLAY_BLEND_MODE eBlendMode;
     orxVECTOR       vPivot, vPosition, vSize, vScale;
     orxFLOAT        fRotation, fClipTop, fClipLeft, fClipBottom, fClipRight, fRepeatX, fRepeatY;
 
@@ -219,6 +220,16 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
     /* Gets repeat values */
     orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
 
+    /* Gets graphic blend mode */
+    eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
+
+    /* None? */
+    if(eBlendMode == orxDISPLAY_BLEND_MODE_NONE)
+    {
+      /* Gets object blend mode */
+      eBlendMode = orxObject_GetBlendMode(_pstObject);
+    }
+
     /* No scale nor rotation nor repeat? */
     if((fRotation == orxFLOAT_0) && (vScale.fX == orxFLOAT_1) && (vScale.fY == orxFLOAT_1) && (fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
     {
@@ -226,7 +237,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       orxVector_Sub(&vPosition, &vPosition, &vPivot);
 
       /* Blits bitmap */
-      eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, vPosition.fX, vPosition.fY);
+      eResult = orxDisplay_BlitBitmap(_pstRenderBitmap, pstBitmap, vPosition.fX, vPosition.fY, eBlendMode);
     }
     else
     {
@@ -259,7 +270,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
           stTransform.fRotation = fRotation;
 
           /* Blits bitmap */
-          eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing);
+          eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing, eBlendMode);
         }
         else
         {
@@ -312,7 +323,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
                 stTransform.fRotation = fRotation;
 
                 /* Blits bitmap */
-                eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing);
+                eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing, eBlendMode);
               }
             }
           }

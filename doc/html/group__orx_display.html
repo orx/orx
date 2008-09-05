@@ -50,6 +50,9 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <br>
 <a class="el" href="group__orx_display.html#g334f9861c2bd6bc23157095e392060db">__orxDISPLAY_SMOOTHING_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a></td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <br>
+<a class="el" href="group__orx_display.html#g7f286f76fc84008f482665d7446c6b86">__orxDISPLAY_BLEND_MODE_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a></td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <a class="el" href="struct____orx_c_o_l_o_r__t.html">__orxCOLOR_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4c646f4a2c8a9927ad328d725600abd2">orxCOLOR</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
@@ -60,6 +63,16 @@
 <a class="el" href="group__orx_display.html#gg334f9861c2bd6bc23157095e392060dbc7f92477b27e765e6f34ae20b871b713">orxDISPLAY_SMOOTHING_NUMBER</a>, 
 <br>
 &nbsp;&nbsp;<a class="el" href="group__orx_display.html#gg334f9861c2bd6bc23157095e392060dbd951083cb25c45a525052b1a3c180528">orxDISPLAY_SMOOTHING_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g7f286f76fc84008f482665d7446c6b86">__orxDISPLAY_BLEND_MODE_t</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_display.html#gg7f286f76fc84008f482665d7446c6b86109031a2954c14e60394b49532675c84">orxDISPLAY_BLEND_MODE_ALPHA</a> =  0, 
+<a class="el" href="group__orx_display.html#gg7f286f76fc84008f482665d7446c6b86261a25b5ba1e31c61fe52dfbbc6ed3a8">orxDISPLAY_BLEND_MODE_MULTIPLY</a>, 
+<a class="el" href="group__orx_display.html#gg7f286f76fc84008f482665d7446c6b86a280c24899a96b50fad2cb3359df0eea">orxDISPLAY_BLEND_MODE_ADD</a>, 
+<a class="el" href="group__orx_display.html#gg7f286f76fc84008f482665d7446c6b8657ef77a9ca5752adf6295bd6f9270f23">orxDISPLAY_BLEND_MODE_NUMBER</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_display.html#gg7f286f76fc84008f482665d7446c6b86106d823cb026561c0ceb34f18ff0d820">orxDISPLAY_BLEND_MODE_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
@@ -96,7 +109,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g17ee1f1e8a3813e2dce41dc470f7a8e8">orxDisplay_ClearBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxRGBA _stColor)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ge591798a65d77303bc32c1430fffd570">orxDisplay_TransformBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxCONST <a class="el" href="struct____orx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m__t.html">orxBITMAP_TRANSFORM</a> *_pstTransform, <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> _eSmoothing)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g2696cbc59bf7442c586c19562a850ee2">orxDisplay_TransformBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxCONST <a class="el" href="struct____orx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m__t.html">orxBITMAP_TRANSFORM</a> *_pstTransform, <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> _eSmoothing, <a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g5c5d0a39d6ef154625c071269e1c203a">orxDisplay_SetBitmapColorKey</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)</td></tr>
 
@@ -104,7 +117,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g1821a2a4c5a66e16b26410a2d19d64a2">orxDisplay_SetBitmapClipping</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g196e3c42831153fa72d82949cc99d0a1">orxDisplay_BlitBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g01d5f3e91c760cb218a1de9733139135">orxDisplay_BlitBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, <a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g86abd5e812a53ceb5cb7dc4ea52ba8ba">orxDisplay_SaveBitmap</a> (orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxCONST orxSTRING _zFileName)</td></tr>
 
@@ -289,6 +302,21 @@ Transform structure
 Color structure 
 </div>
 </div><p>
+<a class="anchor" name="g302d29e0b0a29aa5d42a17c426f60365"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_BLEND_MODE" ref="g302d29e0b0a29aa5d42a17c426f60365" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef enum <a class="el" href="group__orx_display.html#g7f286f76fc84008f482665d7446c6b86">__orxDISPLAY_BLEND_MODE_t</a>  <a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Bitmap blend enum 
+</div>
+</div><p>
 <a class="anchor" name="gfc2ccab028bed60ff522c5c2d57eb173"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_SMOOTHING" ref="gfc2ccab028bed60ff522c5c2d57eb173" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -305,6 +333,35 @@ Bitmap smoothing enum
 </div>
 </div><p>
 <hr><h2>Enumeration Type Documentation</h2>
+<a class="anchor" name="g7f286f76fc84008f482665d7446c6b86"></a><!-- doxytag: member="orxDisplay.h::__orxDISPLAY_BLEND_MODE_t" ref="g7f286f76fc84008f482665d7446c6b86" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_display.html#g7f286f76fc84008f482665d7446c6b86">__orxDISPLAY_BLEND_MODE_t</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Bitmap blend enum <dl compact><dt><b>Enumerator: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="gg7f286f76fc84008f482665d7446c6b86109031a2954c14e60394b49532675c84"></a><!-- doxytag: member="orxDISPLAY_BLEND_MODE_ALPHA" ref="gg7f286f76fc84008f482665d7446c6b86109031a2954c14e60394b49532675c84" args="" -->orxDISPLAY_BLEND_MODE_ALPHA</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg7f286f76fc84008f482665d7446c6b86261a25b5ba1e31c61fe52dfbbc6ed3a8"></a><!-- doxytag: member="orxDISPLAY_BLEND_MODE_MULTIPLY" ref="gg7f286f76fc84008f482665d7446c6b86261a25b5ba1e31c61fe52dfbbc6ed3a8" args="" -->orxDISPLAY_BLEND_MODE_MULTIPLY</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg7f286f76fc84008f482665d7446c6b86a280c24899a96b50fad2cb3359df0eea"></a><!-- doxytag: member="orxDISPLAY_BLEND_MODE_ADD" ref="gg7f286f76fc84008f482665d7446c6b86a280c24899a96b50fad2cb3359df0eea" args="" -->orxDISPLAY_BLEND_MODE_ADD</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg7f286f76fc84008f482665d7446c6b8657ef77a9ca5752adf6295bd6f9270f23"></a><!-- doxytag: member="orxDISPLAY_BLEND_MODE_NUMBER" ref="gg7f286f76fc84008f482665d7446c6b8657ef77a9ca5752adf6295bd6f9270f23" args="" -->orxDISPLAY_BLEND_MODE_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg7f286f76fc84008f482665d7446c6b86106d823cb026561c0ceb34f18ff0d820"></a><!-- doxytag: member="orxDISPLAY_BLEND_MODE_NONE" ref="gg7f286f76fc84008f482665d7446c6b86106d823cb026561c0ceb34f18ff0d820" args="" -->orxDISPLAY_BLEND_MODE_NONE</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g334f9861c2bd6bc23157095e392060db"></a><!-- doxytag: member="orxDisplay.h::__orxDISPLAY_SMOOTHING_t" ref="g334f9861c2bd6bc23157095e392060db" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -547,7 +604,7 @@ Gets orxRGBA from an orxCOLOR <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g196e3c42831153fa72d82949cc99d0a1"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_BlitBitmap" ref="g196e3c42831153fa72d82949cc99d0a1" args="(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY)" -->
+<a class="anchor" name="g01d5f3e91c760cb218a1de9733139135"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_BlitBitmap" ref="g01d5f3e91c760cb218a1de9733139135" args="(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -573,7 +630,13 @@ Gets orxRGBA from an orxCOLOR <dl compact><dt><b>Parameters:</b></dt><dd>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxFLOAT&nbsp;</td>
-          <td class="paramname"> <em>_fPosY</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>_fPosY</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a>&nbsp;</td>
+          <td class="paramname"> <em>_eBlendMode</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -591,6 +654,7 @@ Blits a bitmap (no transformation) <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Bitmap to blit (will begin at top left corner) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fPosX</em>&nbsp;</td><td>X-axis value of the position where to blit the source bitmap </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fPosY</em>&nbsp;</td><td>Y-axis value of the position where to blit the source bitmap </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eBlendMode</em>&nbsp;</td><td>Blend mode </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
@@ -1211,7 +1275,7 @@ Swaps/flips bufers (display on screen the current frame) <dl class="return" comp
 
 </div>
 </div><p>
-<a class="anchor" name="ge591798a65d77303bc32c1430fffd570"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_TransformBitmap" ref="ge591798a65d77303bc32c1430fffd570" args="(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing)" -->
+<a class="anchor" name="g2696cbc59bf7442c586c19562a850ee2"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_TransformBitmap" ref="g2696cbc59bf7442c586c19562a850ee2" args="(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1237,7 +1301,13 @@ Swaps/flips bufers (display on screen the current frame) <dl class="return" comp
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a>&nbsp;</td>
-          <td class="paramname"> <em>_eSmoothing</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>_eSmoothing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a>&nbsp;</td>
+          <td class="paramname"> <em>_eBlendMode</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -1255,6 +1325,7 @@ Transforms (and blits onto another) a bitmap <dl compact><dt><b>Parameters:</b><
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Bitmap to transform and draw </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstTransform</em>&nbsp;</td><td>Transformation info (positions, scale, rotation, ...) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eSmoothing</em>&nbsp;</td><td>Bitmap smoothing type </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eBlendMode</em>&nbsp;</td><td>Blend mode </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
@@ -1262,7 +1333,7 @@ Transforms (and blits onto another) a bitmap <dl compact><dt><b>Parameters:</b><
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Sep 1 02:49:42 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Sep 5 00:10:50 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

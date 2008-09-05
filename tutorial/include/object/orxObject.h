@@ -452,6 +452,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_p
  */
 extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(orxCONST orxOBJECT *_pstObject);
 
+
+/** Sets object blend mode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Gets object blend mode
+ * @param[in]   _pstObject     Concerned object
+ * @return Blend mode (alpha, multiply, add or none)
+ */
+extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(orxCONST orxOBJECT *_pstObject);
+
 #endif /* _orxOBJECT_H_ */
 
 /** @} */

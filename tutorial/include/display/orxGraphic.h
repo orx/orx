@@ -205,6 +205,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetSmoothing(orxGRAPHIC
 extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxGraphic_GetSmoothing(orxCONST orxGRAPHIC *_pstGraphic);
 
 
+/** Sets object blend mode
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Gets graphic blend mode
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return Blend mode (alpha, multiply, add or none)
+ */
+extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(orxCONST orxGRAPHIC *_pstGraphic);
+
+
 #endif /* _orxGRAPHIC_H_ */
 
 

@@ -445,7 +445,7 @@ extern "C" orxRGBA orxDisplay_SFML_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap
   return stResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxFLOAT _fPosX, orxFLOAT _fPosY)
+extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite   *poSprite;
   sf::Vector2f  vPosition;
@@ -464,6 +464,42 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   vPosition.y = _fPosY;
   poSprite->SetPosition(vPosition);
 
+  /* Depending on its blend mode */
+  switch(_eBlendMode)
+  {
+    case orxDISPLAY_BLEND_MODE_ALPHA:
+    {
+      /* Updates sprite blend mode */
+      poSprite->SetBlendMode(sf::Blend::Alpha);
+
+      break;
+    }
+
+    case orxDISPLAY_BLEND_MODE_MULTIPLY:
+    {
+      /* Updates sprite blend mode */
+      poSprite->SetBlendMode(sf::Blend::Multiply);
+
+      break;
+    }
+
+    case orxDISPLAY_BLEND_MODE_ADD:
+    {
+      /* Updates sprite blend mode */
+      poSprite->SetBlendMode(sf::Blend::Add);
+
+      break;
+    }
+
+    default:
+    {
+      /* Updates sprite blend mode */
+      poSprite->SetBlendMode(sf::Blend::None);
+
+      break;
+    }
+  }
+
   /* Draws it */
   sstDisplay.poRenderWindow->Draw(*poSprite);
 
@@ -471,7 +507,7 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing)
+extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite *poSprite;
   bool        bSmooth;
@@ -545,7 +581,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   }
 
   /* Blits it */
-  eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->fDstX, _pstTransform->fDstY);
+  eResult = orxDisplay_SFML_BlitBitmap(_pstDst, _pstSrc, _pstTransform->fDstX, _pstTransform->fDstY, _eBlendMode);
 
   /* Resets its center */
   poSprite->SetCenter(0.0f, 0.0f);

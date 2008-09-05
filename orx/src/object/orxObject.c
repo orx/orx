@@ -56,11 +56,19 @@
  */
 #define orxOBJECT_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxOBJECT_KU32_FLAG_2D                  0x00000001  /**< 2D flag */
-#define orxOBJECT_KU32_FLAG_HAS_COLOR           0x00000002  /**< Has color flag */
+#define orxOBJECT_KU32_FLAG_2D                  0x00000010  /**< 2D flag */
+#define orxOBJECT_KU32_FLAG_HAS_COLOR           0x00000020  /**< Has color flag */
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
+
+#define orxOBJECT_KU32_FLAG_BLEND_MODE_NONE     0x00000000  /**< Blend mode no flags */
+
+#define orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA    0x00100000  /**< Blend mode alpha flag */
+#define orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY 0x00200000  /**< Blend mode multiply flag */
+#define orxOBJECT_KU32_FLAG_BLEND_MODE_ADD      0x00400000  /**< Blend mode add flag */
+
+#define orxOBJECT_KU32_MASK_BLEND_MODE_ALL      0x00F00000  /**< Blend mode mask */
 
 #define orxOBJECT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
@@ -91,11 +99,15 @@
 #define orxOBJECT_KZ_CONFIG_FX                  "FX"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
+#define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_X                          "x"
 #define orxOBJECT_KZ_Y                          "y"
 #define orxOBJECT_KZ_BOTH                       "both"
+#define orxOBJECT_KZ_ALPHA                      "alpha"
+#define orxOBJECT_KZ_MULTIPLY                   "multiply"
+#define orxOBJECT_KZ_ADD                        "add"
 
 
 /***************************************************************************
@@ -689,6 +701,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       {
         /* Updates flags */
         u32Flags |= (orxConfig_GetBool(orxOBJECT_KZ_CONFIG_SMOOTHING) != orxFALSE) ? orxOBJECT_KU32_FLAG_SMOOTHING_ON : orxOBJECT_KU32_FLAG_SMOOTHING_OFF;
+      }
+
+      /* Has blend mode? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_BLEND_MODE) != orxFALSE)
+      {
+        orxSTRING zBlendMode;
+        
+        /* Gets blend mode value */
+        zBlendMode = orxString_LowerCase(orxConfig_GetString(orxOBJECT_KZ_CONFIG_BLEND_MODE));
+
+        /* alpha blend mode? */
+        if(orxString_Compare(zBlendMode, orxOBJECT_KZ_ALPHA) == 0)
+        {
+          /* Updates flags */
+          u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA;
+        }
+        /* Multiply blend mode? */
+        else if(orxString_Compare(zBlendMode, orxOBJECT_KZ_MULTIPLY) == 0)
+        {
+          /* Updates flags */
+          u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY;
+        }
+        /* Add blend mode? */
+        else if(orxString_Compare(zBlendMode, orxOBJECT_KZ_ADD) == 0)
+        {
+          /* Updates flags */
+          u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ADD;
+        }
+      }
+      else
+      {
+        /* Defaults to alpha */
+        u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA;
       }
 
       /* Updates flags */
@@ -2537,6 +2582,114 @@ orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(orxCONST orxOBJECT *_pst
             : orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_SMOOTHING_OFF)
               ? orxDISPLAY_SMOOTHING_OFF
               : orxDISPLAY_SMOOTHING_DEFAULT;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets object blend mode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Depending on blend mode */
+  switch(_eBlendMode)
+  {
+    case orxDISPLAY_BLEND_MODE_ALPHA:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
+    case orxDISPLAY_BLEND_MODE_MULTIPLY:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
+    case orxDISPLAY_BLEND_MODE_ADD:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
+
+      break;
+    }
+
+    default:
+    {
+      /* Updates status */
+      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_BLEND_MODE_NONE, orxOBJECT_KU32_MASK_BLEND_MODE_ALL);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets object blend mode
+ * @param[in]   _pstObject     Concerned object
+ * @return Blend mode (alpha, multiply, add or none)
+ */
+orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(orxCONST orxOBJECT *_pstObject)
+{
+  orxDISPLAY_BLEND_MODE eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Depending on blend flags */
+  switch(orxStructure_GetFlags(_pstObject, orxOBJECT_KU32_MASK_BLEND_MODE_ALL))
+  {
+    case orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_ALPHA;
+
+      break;
+    }
+
+    case orxOBJECT_KU32_FLAG_BLEND_MODE_MULTIPLY:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
+
+      break;
+    }
+
+    case orxOBJECT_KU32_FLAG_BLEND_MODE_ADD:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_ADD;
+
+      break;
+    }
+
+    default:
+    {
+      /* Updates result */
+      eResult = orxDISPLAY_BLEND_MODE_NONE;
+
+      break;
+    }
+}
 
   /* Done! */
   return eResult;

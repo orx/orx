@@ -141,6 +141,12 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#gfc2ccab028bed60ff522c5c2d57eb173">orxDISPLAY_SMOOTHING</a> <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga75719a73e6798b29391821c72821e2b">orxObject_GetSmoothing</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g10d807123d929e60b41c2bfd06bab1d8">orxObject_SetBlendMode</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <br>
+<a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g2e2905fac791451b7b19c759fc0967a4">orxObject_GetBlendMode</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Object module Allows to creates and handle objects Objects are structures containers that can refer to many other structures such as frames, graphics, etc... <hr><h2>Define Documentation</h2>
@@ -725,6 +731,32 @@ Gets an object angular velocity <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Object angular velocity </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g2e2905fac791451b7b19c759fc0967a4"></a><!-- doxytag: member="orxObject.h::orxObject_GetBlendMode" ref="g2e2905fac791451b7b19c759fc0967a4" args="(orxCONST orxOBJECT *_pstObject)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> orxFASTCALL orxObject_GetBlendMode           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets object blend mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Blend mode (alpha, multiply, add or none) </dd></dl>
 
 </div>
 </div><p>
@@ -1604,6 +1636,42 @@ Sets an object animset <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g10d807123d929e60b41c2bfd06bab1d8"></a><!-- doxytag: member="orxObject.h::orxObject_SetBlendMode" ref="g10d807123d929e60b41c2bfd06bab1d8" args="(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxObject_SetBlendMode           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a>&nbsp;</td>
+          <td class="paramname"> <em>_eBlendMode</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets object blend mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eBlendMode</em>&nbsp;</td><td>Blend mode (alpha, multiply, add or none) </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="geddf02ae1f6e4c51846977486859df75"></a><!-- doxytag: member="orxObject.h::orxObject_SetColor" ref="geddf02ae1f6e4c51846977486859df75" args="(orxOBJECT *_pstObject, orxCONST orxCOLOR *_pstColor)" -->
 <div class="memitem">
 <div class="memproto">
@@ -2054,7 +2122,7 @@ Unlinks structure from an object, given its structure ID <dl compact><dt><b>Para
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Mon Sep 1 02:49:42 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Fri Sep 5 00:10:50 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
