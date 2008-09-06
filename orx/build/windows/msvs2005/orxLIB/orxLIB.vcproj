@@ -469,6 +469,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\src\object\orxSpawner.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\src\object\orxStructure.c"
 					>
 				</File>
@@ -740,6 +744,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\include\object\orxObject.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\include\object\orxSpawner.h"
 					>
 				</File>
 				<File

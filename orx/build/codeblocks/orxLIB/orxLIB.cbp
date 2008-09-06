@@ -116,6 +116,7 @@
 		<Unit filename="..\..\..\include\memory\orxMemory.h" />
 		<Unit filename="..\..\..\include\object\orxFrame.h" />
 		<Unit filename="..\..\..\include\object\orxObject.h" />
+		<Unit filename="..\..\..\include\object\orxSpawner.h" />
 		<Unit filename="..\..\..\include\object\orxStructure.h" />
 		<Unit filename="..\..\..\include\orx.h" />
 		<Unit filename="..\..\..\include\orxInclude.h" />
@@ -232,6 +233,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\object\orxObject.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\object\orxSpawner.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\object\orxStructure.c">

@@ -47,6 +47,7 @@
     <VirtualDirectory Name="object">
       <File Name="../../../src/object/orxFrame.c"/>
       <File Name="../../../src/object/orxObject.c"/>
+      <File Name="../../../src/object/orxSpawner.c"/>
       <File Name="../../../src/object/orxStructure.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="physics">
@@ -132,6 +133,7 @@
     <VirtualDirectory Name="object">
       <File Name="../../../include/object/orxFrame.h"/>
       <File Name="../../../include/object/orxObject.h"/>
+      <File Name="../../../include/object/orxSpawner.h"/>
       <File Name="../../../include/object/orxStructure.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="physics">

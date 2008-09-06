@@ -139,11 +139,13 @@
         <headers>
             include/object/orxFrame.h
             include/object/orxObject.h
+            include/object/orxSpawner.h
             include/object/orxStructure.h
         </headers>
         <sources>
             src/object/orxFrame.c
             src/object/orxObject.c
+            src/object/orxSpawner.c
             src/object/orxStructure.c
         </sources>
 
