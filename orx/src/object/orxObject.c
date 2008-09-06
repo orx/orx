@@ -33,11 +33,14 @@
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
 #include "core/orxClock.h"
+#include "core/orxEvent.h"
 #include "memory/orxMemory.h"
 #include "anim/orxAnimPointer.h"
 #include "display/orxGraphic.h"
 #include "physics/orxBody.h"
 #include "object/orxFrame.h"
+#include "object/orxSpawner.h"
+#include "render/orxCamera.h"
 #include "render/orxFXPointer.h"
 #include "sound/orxSoundPointer.h"
 
@@ -48,6 +51,7 @@
 
 #define orxOBJECT_KU32_STATIC_FLAG_READY        0x00000001
 #define orxOBJECT_KU32_STATIC_FLAG_CLOCK        0x00000002
+#define orxOBJECT_KU32_STATIC_FLAG_INTERNAL     0x00000004  /**< Internal flag */
 
 #define orxOBJECT_KU32_STATIC_MASK_ALL          0xFFFFFFFF
 
@@ -128,15 +132,15 @@ typedef struct __orxOBJECT_STORAGE_t
 struct __orxOBJECT_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
-  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 64 */
-  orxCOLOR          stColor;                    /**< Object color: 80 */
-  orxVECTOR         vSpeed;                     /**< Object speed: 92 */
-  orxVOID          *pUserData;                  /**< User data : 96 */
-  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 100 */
-  orxSTRING         zReference;                 /**< Config reference : 104 */
+  orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 72 */
+  orxCOLOR          stColor;                    /**< Object color: 88 */
+  orxVECTOR         vSpeed;                     /**< Object speed: 100 */
+  orxVOID          *pUserData;                  /**< User data : 104 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 108 */
+  orxSTRING         zReference;                 /**< Config reference : 112 */
 
   /* Padding */
-  orxPAD(104)
+  orxPAD(112)
 };
 
 /** Static structure
@@ -265,11 +269,13 @@ orxVOID orxObject_Setup()
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FRAME);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_EVENT);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FXPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SPAWNER);
 
   return;
 }
@@ -393,6 +399,21 @@ orxOBJECT *orxObject_Create()
 
     /* Inits flags */
     orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
+
+    /* Not creating it internally? */
+    if(!orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_INTERNAL))
+    {
+      orxEVENT stEvent;
+
+      /* Inits event */
+      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+      stEvent.eType   = orxEVENT_TYPE_OBJECT;
+      stEvent.eID     = orxOBJECT_EVENT_CREATE;
+      stEvent.hSender = pstObject;
+
+      /* Sends it */
+      orxEvent_Send(&stEvent);
+    }
   }
   else
   {
@@ -417,7 +438,17 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstObject) == 0)
   {
-    orxU32 i;
+    orxEVENT  stEvent;
+    orxU32    i;
+
+    /* Inits event */
+    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+    stEvent.eType   = orxEVENT_TYPE_OBJECT;
+    stEvent.eID     = orxOBJECT_EVENT_DELETE;
+    stEvent.hSender = _pstObject;
+
+    /* Sends it */
+    orxEvent_Send(&stEvent);
 
     /* Unlink all structures */
     for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
@@ -460,8 +491,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
   {
+    /* Sets internal flag */
+    orxFLAG_SET(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_INTERNAL, orxOBJECT_KU32_STATIC_FLAG_NONE);
+
     /* Creates object */
     pstResult = orxObject_Create();
+
+    /* Removes internal flag */
+    orxFLAG_SET(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_NONE, orxOBJECT_KU32_STATIC_FLAG_INTERNAL);
 
     /* Valid? */
     if(pstResult != orxNULL)
@@ -470,6 +507,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags, u32Flags;
       orxVECTOR vPosition;
+      orxEVENT  stEvent;
 
       /* Defaults to 2D flags */
       u32Flags = orxOBJECT_KU32_FLAG_2D;
@@ -738,6 +776,15 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
       /* Updates flags */
       orxStructure_SetFlags(pstResult, u32Flags, orxOBJECT_KU32_FLAG_NONE);
+
+      /* Inits event */
+      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+      stEvent.eType   = orxEVENT_TYPE_OBJECT;
+      stEvent.eID     = orxOBJECT_EVENT_CREATE;
+      stEvent.hSender = pstResult;
+
+      /* Sends it */
+      orxEvent_Send(&stEvent);
     }
 
     /* Restores previous section */
@@ -859,6 +906,12 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
         case orxSTRUCTURE_ID_SOUNDPOINTER:
         {
           orxSoundPointer_Delete(orxSOUNDPOINTER(pstStructure));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_SPAWNER:
+        {
+          orxSpawner_Delete(orxSPAWNER(pstStructure));
           break;
         }
 
@@ -1465,10 +1518,10 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, o
 
 /** Sets an object parent
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstParent      Parent object to set / orxNULL
+ * @param[in]   _pParent        Parent structure to set (object, camera or frame) / orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent)
+orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pParent)
 {
   orxFRAME   *pstFrame;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -1476,12 +1529,57 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pst
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER);
 
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
 
-  /* Updates its parent */
-  orxFrame_SetParent(pstFrame, (_pstParent != orxNULL) ? orxOBJECT_GET_STRUCTURE(_pstParent, FRAME) : orxNULL);
+  /* No parent? */
+  if(_pParent == orxNULL)
+  {
+    /* Removes parent */
+    orxFrame_SetParent(pstFrame, orxNULL);
+  }
+  else
+  {
+    /* Depending on parent ID */
+    switch(orxStructure_GetID(_pParent))
+    {
+      case orxSTRUCTURE_ID_CAMERA:
+      {
+        /* Updates its parent */
+        orxFrame_SetParent(pstFrame, orxCamera_GetFrame(orxCAMERA(_pParent)));
+
+        break;
+      }
+
+      case orxSTRUCTURE_ID_FRAME:
+      {
+        /* Updates its parent */
+        orxFrame_SetParent(pstFrame, orxFRAME(_pParent));
+
+        break;
+      }
+
+      case orxSTRUCTURE_ID_OBJECT:
+      {
+        /* Updates its parent */
+        orxFrame_SetParent(pstFrame, orxOBJECT_GET_STRUCTURE(orxOBJECT(_pParent), FRAME));
+
+        break;
+      }
+      
+      default:
+      {
+        /* !!! MSG !!! */
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+
+        break;
+      }
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -2689,7 +2787,7 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(orxCONST orxOBJECT *_ps
 
       break;
     }
-}
+  }
 
   /* Done! */
   return eResult;

@@ -56,6 +56,20 @@
 #define orxOBJECT_GET_STRUCTURE(OBJECT, TYPE) orx##TYPE(_orxObject_GetStructure(OBJECT, orxSTRUCTURE_ID_##TYPE))
 
 
+/** Event enum
+ */
+typedef enum __orxOBJECT_EVENT_t
+{
+  orxOBJECT_EVENT_CREATE = 0,
+  orxOBJECT_EVENT_DELETE,
+
+  orxOBJECT_EVENT_NUMBER,
+
+  orxOBJECT_EVENT_NONE = orxENUM_NONE
+
+} orxOBJECT_EVENT;
+
+
 /** Internal object structure */
 typedef struct __orxOBJECT_t                orxOBJECT;
 
@@ -225,10 +239,10 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(orxCONST orx
 
 /** Sets an object parent
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstParent      Parent object to set / orxNULL
+ * @param[in]   _pParent        Parent object to set (object, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, orxOBJECT *_pstParent);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pParent);
 
 
 /** Gets object size

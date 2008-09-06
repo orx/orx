@@ -23,7 +23,16 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g327727f4ebf89729d8518e90c918fddd">orxOBJECT_GET_STRUCTURE</a>(OBJECT, TYPE)&nbsp;&nbsp;&nbsp;orx##TYPE(_orxObject_GetStructure(OBJECT, orxSTRUCTURE_ID_##TYPE))</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_object.html#g41f4887dc02257855bae27807cff0913">__orxOBJECT_EVENT_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g830ce9a7b1f3603c6e6663eda726a2f3">orxOBJECT_EVENT</a></td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxOBJECT_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a></td></tr>
+
+<tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g41f4887dc02257855bae27807cff0913">__orxOBJECT_EVENT_t</a> { <a class="el" href="group__orx_object.html#gg41f4887dc02257855bae27807cff0913c7d8eaaac17797c1acdec7f1b01b1a1a">orxOBJECT_EVENT_CREATE</a> =  0, 
+<a class="el" href="group__orx_object.html#gg41f4887dc02257855bae27807cff09137758a0718fb8208481577f472793ed11">orxOBJECT_EVENT_DELETE</a>, 
+<a class="el" href="group__orx_object.html#gg41f4887dc02257855bae27807cff0913017311a08e691a452d8f709dcf7ba8a9">orxOBJECT_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_object.html#gg41f4887dc02257855bae27807cff091367c375a6b5d3f7ae7599a35a79da3449">orxOBJECT_EVENT_NONE</a> =  orxENUM_NONE
+ }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g07ce7e6c1246fda7278d43b8b0d0c7cc">orxObject_Setup</a> ()</td></tr>
@@ -76,7 +85,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g92b4c17c9fb8902baacbb894e195c417">orxObject_GetWorldScale</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvScale)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gb4eb80a8dbb9fe0adaee0a23ca491c9f">orxObject_SetParent</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstParent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gd430b5444030978462275ad874e15b52">orxObject_SetParent</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxVOID *_pParent)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gd88001bfaa0557ecae3b7085dfa86e39">orxObject_GetSize</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvSize)</td></tr>
 
@@ -187,6 +196,49 @@ Defines
 
 <p>
 Internal object structure 
+</div>
+</div><p>
+<a class="anchor" name="g830ce9a7b1f3603c6e6663eda726a2f3"></a><!-- doxytag: member="orxObject.h::orxOBJECT_EVENT" ref="g830ce9a7b1f3603c6e6663eda726a2f3" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef enum <a class="el" href="group__orx_object.html#g41f4887dc02257855bae27807cff0913">__orxOBJECT_EVENT_t</a>  <a class="el" href="group__orx_object.html#g830ce9a7b1f3603c6e6663eda726a2f3">orxOBJECT_EVENT</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Event enum 
+</div>
+</div><p>
+<hr><h2>Enumeration Type Documentation</h2>
+<a class="anchor" name="g41f4887dc02257855bae27807cff0913"></a><!-- doxytag: member="orxObject.h::__orxOBJECT_EVENT_t" ref="g41f4887dc02257855bae27807cff0913" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_object.html#g41f4887dc02257855bae27807cff0913">__orxOBJECT_EVENT_t</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="gg41f4887dc02257855bae27807cff0913c7d8eaaac17797c1acdec7f1b01b1a1a"></a><!-- doxytag: member="orxOBJECT_EVENT_CREATE" ref="gg41f4887dc02257855bae27807cff0913c7d8eaaac17797c1acdec7f1b01b1a1a" args="" -->orxOBJECT_EVENT_CREATE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg41f4887dc02257855bae27807cff09137758a0718fb8208481577f472793ed11"></a><!-- doxytag: member="orxOBJECT_EVENT_DELETE" ref="gg41f4887dc02257855bae27807cff09137758a0718fb8208481577f472793ed11" args="" -->orxOBJECT_EVENT_DELETE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg41f4887dc02257855bae27807cff0913017311a08e691a452d8f709dcf7ba8a9"></a><!-- doxytag: member="orxOBJECT_EVENT_NUMBER" ref="gg41f4887dc02257855bae27807cff0913017311a08e691a452d8f709dcf7ba8a9" args="" -->orxOBJECT_EVENT_NUMBER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg41f4887dc02257855bae27807cff091367c375a6b5d3f7ae7599a35a79da3449"></a><!-- doxytag: member="orxOBJECT_EVENT_NONE" ref="gg41f4887dc02257855bae27807cff091367c375a6b5d3f7ae7599a35a79da3449" args="" -->orxOBJECT_EVENT_NONE</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
@@ -1744,7 +1796,7 @@ Sets current animation for object <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gb4eb80a8dbb9fe0adaee0a23ca491c9f"></a><!-- doxytag: member="orxObject.h::orxObject_SetParent" ref="gb4eb80a8dbb9fe0adaee0a23ca491c9f" args="(orxOBJECT *_pstObject, orxOBJECT *_pstParent)" -->
+<a class="anchor" name="gd430b5444030978462275ad874e15b52"></a><!-- doxytag: member="orxObject.h::orxObject_SetParent" ref="gd430b5444030978462275ad874e15b52" args="(orxOBJECT *_pstObject, orxVOID *_pParent)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1757,8 +1809,8 @@ Sets current animation for object <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstParent</em></td><td>&nbsp;</td>
+          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramname"> <em>_pParent</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -1773,7 +1825,7 @@ Sets current animation for object <dl compact><dt><b>Parameters:</b></dt><dd>
 Sets an object parent <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstParent</em>&nbsp;</td><td>Parent object to set / orxNULL </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pParent</em>&nbsp;</td><td>Parent structure to set (object, camera or frame) / orxNULL </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orsSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
@@ -2122,7 +2174,7 @@ Unlinks structure from an object, given its structure ID <dl compact><dt><b>Para
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Sep 5 22:03:13 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Sep 6 19:44:25 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

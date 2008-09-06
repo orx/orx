@@ -203,8 +203,8 @@ orxSTATUS Init()
   /* Creates sky */
   pstSky = orxObject_CreateFromConfig("Sky");
 
-  /* Links its frame to the camera's one so they move together */
-  orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(pstSky, FRAME), orxCamera_GetFrame(pstCamera));
+  /* Links it to the camera so they move together */
+  orxObject_SetParent(pstSky, pstCamera);
 
   /* For all requested clouds */
   for(i = 0; i < orxConfig_GetU32("CloudNumber"); i++)

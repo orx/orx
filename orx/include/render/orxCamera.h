@@ -157,6 +157,13 @@ extern orxDLLAPI orxFLOAT orxFASTCALL   orxCamera_GetZoom(orxCONST orxCAMERA *_p
  */
 extern orxDLLAPI orxFRAME *orxFASTCALL  orxCamera_GetFrame(orxCONST orxCAMERA *_pstCamera);
 
+/** Sets camera parent
+ * @param[in]   _pstCamera      Concerned camera
+ * @param[in]   _pParent        Parent structure to set (object, camera or frame) / orxNULL
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetParent(orxCAMERA *_pstCamera, orxVOID *_pParent);
+
 #endif /* _orxCAMERA_H_ */
 
 /** @} */

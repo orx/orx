@@ -128,7 +128,6 @@ orxVOID orxSpawner_Setup()
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_STRUCTURE);
-  orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_OBJECT);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_CONFIG);
 
   return;

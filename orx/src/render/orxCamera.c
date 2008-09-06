@@ -33,6 +33,7 @@
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
 #include "memory/orxMemory.h"
+#include "object/orxObject.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -602,4 +603,73 @@ orxFRAME *orxFASTCALL orxCamera_GetFrame(orxCONST orxCAMERA *_pstCamera)
 
   /* Gets camera frame */
   return(_pstCamera->pstFrame);
+}
+
+/** Sets camera parent
+ * @param[in]   _pstCamera      Concerned camera
+ * @param[in]   _pParent        Parent structure to set (object, camera or frame) / orxNULL
+ * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, orxVOID *_pParent)
+{
+  orxFRAME   *pstFrame;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER);
+
+  /* Gets frame */
+  pstFrame = _pstCamera->pstFrame;
+
+  /* No parent? */
+  if(_pParent == orxNULL)
+  {
+    /* Removes parent */
+    orxFrame_SetParent(pstFrame, orxNULL);
+  }
+  else
+  {
+    /* Depending on parent ID */
+    switch(orxStructure_GetID(_pParent))
+    {
+      case orxSTRUCTURE_ID_CAMERA:
+      {
+        /* Updates its parent */
+        orxFrame_SetParent(pstFrame, orxCAMERA(_pParent)->pstFrame);
+
+        break;
+      }
+
+      case orxSTRUCTURE_ID_FRAME:
+      {
+        /* Updates its parent */
+        orxFrame_SetParent(pstFrame, orxFRAME(_pParent));
+
+        break;
+      }
+
+      case orxSTRUCTURE_ID_OBJECT:
+      {
+        /* Updates its parent */
+        orxFrame_SetParent(pstFrame, orxOBJECT_GET_STRUCTURE(orxOBJECT(_pParent), FRAME));
+
+        break;
+      }
+      
+      default:
+      {
+        /* !!! MSG !!! */
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }

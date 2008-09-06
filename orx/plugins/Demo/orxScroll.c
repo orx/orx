@@ -180,11 +180,11 @@ orxSTATIC orxSTATUS orxScroll_Init()
     spstCamera = orxViewport_GetCamera(pstViewport);
 
     /* Links camera to root */
-    orxFrame_SetParent(orxCamera_GetFrame(spstCamera), orxOBJECT_GET_STRUCTURE(spstRoot, FRAME));
+    orxCamera_SetParent(spstCamera, spstRoot);
 
     /* Links background & overlay to camera */
-    orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(pstBackground, FRAME), orxCamera_GetFrame(spstCamera));
-    orxFrame_SetParent(orxOBJECT_GET_STRUCTURE(spstOverlay, FRAME), orxCamera_GetFrame(spstCamera));
+    orxObject_SetParent(pstBackground, spstCamera);
+    orxObject_SetParent(spstOverlay, spstCamera);
 
     /* Gets rendering clock */
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);

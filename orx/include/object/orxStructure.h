@@ -110,6 +110,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_FXPOINTER,
   orxSTRUCTURE_ID_GRAPHIC,
   orxSTRUCTURE_ID_SOUNDPOINTER,
+  orxSTRUCTURE_ID_SPAWNER,
 
   orxSTRUCTURE_ID_LINKABLE_NUMBER,
 
@@ -121,7 +122,6 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_FX,
   orxSTRUCTURE_ID_OBJECT,
   orxSTRUCTURE_ID_SOUND,
-  orxSTRUCTURE_ID_SPAWNER,
   orxSTRUCTURE_ID_TEXTURE,
   orxSTRUCTURE_ID_VIEWPORT,
 
@@ -166,19 +166,6 @@ typedef struct __orxSTRUCTURE_t
 /** Structure update callback function type
  */
 typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
-
-
-/** Event enum
- */
-typedef enum __orxSTRUCTURE_EVENT_t
-{
-  orxSTRUCTURE_EVENT_DELETE = 0,
-
-  orxSTRUCTURE_EVENT_NUMBER,
-
-  orxSTRUCTURE_EVENT_NONE = orxENUM_NONE
-
-} orxSTRUCTURE_EVENT;
 
 
 #ifdef __orxDEBUG__

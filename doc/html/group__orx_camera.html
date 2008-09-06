@@ -60,6 +60,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_frame.html#g235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#g5d5caa05f97dfa625dadf428e3d750e8">orxCamera_GetFrame</a> (orxCONST <a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ge95baa5baafb0df10e31dc840df7afc4">orxCamera_SetParent</a> (<a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, orxVOID *_pParent)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Camera Module Allows to creates and handle cameras Camera are structures used to render graphic (2D/3D) objects They thus can be referenced by other structures <hr><h2>Define Documentation</h2>
@@ -446,6 +448,42 @@ Sets camera frustum <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="ge95baa5baafb0df10e31dc840df7afc4"></a><!-- doxytag: member="orxCamera.h::orxCamera_SetParent" ref="ge95baa5baafb0df10e31dc840df7afc4" args="(orxCAMERA *_pstCamera, orxVOID *_pParent)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxCamera_SetParent           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstCamera</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramname"> <em>_pParent</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets camera parent <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstCamera</em>&nbsp;</td><td>Concerned camera </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pParent</em>&nbsp;</td><td>Parent structure to set (object, camera or frame) / orxNULL </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orsSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g21d36f7bea89514ee574cf999ba21374"></a><!-- doxytag: member="orxCamera.h::orxCamera_SetPosition" ref="g21d36f7bea89514ee574cf999ba21374" args="(orxCAMERA *_pstCamera, orxCONST orxVECTOR *_pvPosition)" -->
 <div class="memitem">
 <div class="memproto">
@@ -574,7 +612,7 @@ Sets camera zoom <dl compact><dt><b>Parameters:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Fri Sep 5 22:03:13 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sat Sep 6 19:44:25 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
