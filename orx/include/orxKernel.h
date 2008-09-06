@@ -76,6 +76,7 @@
 
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
+#include "object/orxSpawner.h"
 #include "object/orxStructure.h"
 
 #include "plugin/orxPlugin.h"
