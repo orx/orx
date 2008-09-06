@@ -31,6 +31,7 @@
 #include "object/orxStructure.h"
 
 #include "memory/orxBank.h"
+#include "core/orxEvent.h"
 #include "utils/orxLinkList.h"
 #include "utils/orxTree.h"
 
@@ -138,6 +139,7 @@ orxVOID orxStructure_Setup()
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_LINKLIST);
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_TREE);
+  orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_EVENT);
 
   return;
 }
@@ -474,6 +476,17 @@ orxVOID orxFASTCALL orxStructure_Delete(orxVOID *_pStructure)
   /* Valid? */
   if(pstNode != orxNULL)
   {
+    orxEVENT stEvent;
+
+    /* Inits event */
+    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+    stEvent.eType   = orxEVENT_TYPE_STRUCTURE;
+    stEvent.eID     = orxSTRUCTURE_EVENT_DELETE;
+    stEvent.hSender = _pStructure;
+
+    /* Sends it */
+    orxEvent_Send(&stEvent);
+
     /* Dependig on type */
     switch(sstStructure.astStorage[orxStructure_GetID(_pStructure)].eType)
     {

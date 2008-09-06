@@ -166,6 +166,19 @@ typedef struct __orxSTRUCTURE_t
 typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
 
+/** Event enum
+ */
+typedef enum __orxSTRUCTURE_EVENT_t
+{
+  orxSTRUCTURE_EVENT_DELETE = 0,
+
+  orxSTRUCTURE_EVENT_NUMBER,
+
+  orxSTRUCTURE_EVENT_NONE = orxENUM_NONE
+
+} orxSTRUCTURE_EVENT;
+
+
 #ifdef __orxDEBUG__
 
 /** Gets structure pointer / debug mode
