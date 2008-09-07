@@ -314,7 +314,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToS32(orxCONST orxSTRING _zStr
 /** Converts a String to an unsigned int value using the given base
  * @param[in]   _zString        String To convert
  * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
- * @param[out]  _ps32OutValue   Converted value
+ * @param[out]  _pu32OutValue   Converted value
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -456,7 +456,7 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToFloat(orxCONST orxSTRING _zS
 
 /** Convert a string to a vector
  * @param[in]   _zString        String To convert
- * @param[out]  _pstOutValue    Converted value
+ * @param[out]  _pvOutValue     Converted value
  * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
  * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -765,7 +765,7 @@ orxSTATIC orxINLINE orxS32              orxString_SearchCharIndex(orxCONST orxST
 
 /** Prints a formated string to a memory buffer
  * @param[out] _zDstString  Destination string
- * @param[int] _zSrcString  Source formated string
+ * @param[in]  _zSrcString  Source formated string
  * @return The number of written characters
  */
 orxSTATIC orxINLINE orxS32 orxCDECL orxString_Print(orxSTRING _zDstString, orxSTRING _zSrcString, ...)

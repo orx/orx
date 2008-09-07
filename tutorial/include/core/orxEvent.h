@@ -53,6 +53,7 @@ typedef enum __orxEVENT_TYPE_t
   orxEVENT_TYPE_RENDER,
   orxEVENT_TYPE_PHYSICS,
   orxEVENT_TYPE_SOUND,
+  orxEVENT_TYPE_SPAWNER,
 
   orxEVENT_TYPE_CORE_NUMBER,
 
@@ -100,7 +101,7 @@ extern orxDLLAPI orxVOID                orxEvent_Exit();
 
 /** Adds an event handler
  * @param _eEventType           Concerned type of event
- * @param _pfnHandler           Event handler to add
+ * @param _pfnEventHandler      Event handler to add
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler);
@@ -113,7 +114,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(orxCONST orxEVENT *_pstEve
 
 /** Removes an event handler
  * @param _eEventType           Concerned type of event
- * @param _pfnHandler           Event handler to remove
+ * @param _pfnEventHandler      Event handler to remove
  * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler);

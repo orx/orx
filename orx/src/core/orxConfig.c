@@ -1403,7 +1403,7 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
 orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
-  orxSTRING         zResult = orxSTRING_EMPTY;
+  orxSTRING         zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1418,6 +1418,11 @@ orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
   {
     /* Updates result */
     zResult = pstValue->zValue;
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
   }
 
   /* Done! */

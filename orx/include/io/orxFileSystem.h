@@ -103,25 +103,25 @@ extern orxDLLAPI orxVOID orxFileSystem_Exit();
 
 /** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
  * @param _zSearchPattern (IN)     Pattern to find
- * @param _pstFileInfos   (OUT)    Informations about the first file found
+ * @param _pstFileInfo    (OUT)    Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFileSystem_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILESYSTEM_INFO *_pstFileInfo);
 
 /** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFileSystem_FindFirst
- * @param _pstFileInfos   (IN/OUT) Informations about the found file
+ * @param _pstFileInfo    (IN/OUT) Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo);
 
 /** Closes a search (free the memory allocated for this search).
- * @param _pstFileInfos   (IN)     Informations returned during search
+ * @param _pstFileInfo    (IN)     Informations returned during search
  */
 extern orxDLLAPI orxVOID orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo);
 
 /** Retrieves informations about a file
  * @param _zFileName      (IN)      Files used to get informations
- * @param _pstFileInfos   (OUT)     Returned file's informations
+ * @param _pstFileInfo    (OUT)     Returned file's informations
  * @return Returns the status of the operation
  */
 extern orxDLLAPI orxSTATUS orxFileSystem_Info(orxCONST orxSTRING _zFileName, orxFILESYSTEM_INFO *_pstFileInfo);

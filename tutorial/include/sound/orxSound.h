@@ -176,8 +176,8 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetVolume(orxCONST orxSOU
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetPitch(orxCONST orxSOUND *_pstSound);
 
 /** Gets sound position
- * @param[in] _pstSound       Concerned Sound
- * @param[out] _pstSound      Sound's position
+ * @param[in]  _pstSound      Concerned Sound
+ * @param[out] _pvPosition    Sound's position
  * @return orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxSound_GetPosition(orxCONST orxSOUND *_pstSound, orxVECTOR *_pvPosition);

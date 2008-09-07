@@ -25,6 +25,10 @@
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g32294488997cf908fe614ca3bd3af5f4">orxFX_SLOT_KU32_FLAG_ABSOLUTE</a>&nbsp;&nbsp;&nbsp;0x00000100</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g8bc4d5d117cdbfc4d9f50f7bca8f0ce7">orxFX_SLOT_KU32_FLAG_USE_ROTATION</a>&nbsp;&nbsp;&nbsp;0x00000200</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g6b4ea171f798ef2b5342d4f32dbeb8ac">orxFX_SLOT_KU32_FLAG_USE_SCALE</a>&nbsp;&nbsp;&nbsp;0x00000400</td></tr>
+
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_f_x.html#gaf7f8e7b42d1c95d711ab3ca40ff75f0">__orxFX_CURVE_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a></td></tr>
 
@@ -105,6 +109,36 @@ FX module Allows to creates rendering special effects affecting color, scale, ro
 
 <p>
 Slot flags Absolute flag 
+</div>
+</div><p>
+<a class="anchor" name="g8bc4d5d117cdbfc4d9f50f7bca8f0ce7"></a><!-- doxytag: member="orxFX.h::orxFX_SLOT_KU32_FLAG_USE_ROTATION" ref="g8bc4d5d117cdbfc4d9f50f7bca8f0ce7" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFX_SLOT_KU32_FLAG_USE_ROTATION&nbsp;&nbsp;&nbsp;0x00000200          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Use rotation flag 
+</div>
+</div><p>
+<a class="anchor" name="g6b4ea171f798ef2b5342d4f32dbeb8ac"></a><!-- doxytag: member="orxFX.h::orxFX_SLOT_KU32_FLAG_USE_SCALE" ref="g6b4ea171f798ef2b5342d4f32dbeb8ac" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFX_SLOT_KU32_FLAG_USE_SCALE&nbsp;&nbsp;&nbsp;0x00000400          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Use scale flag 
 </div>
 </div><p>
 <hr><h2>Typedef Documentation</h2>
@@ -710,8 +744,8 @@ Adds translation to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fCyclePeriod</em>&nbsp;</td><td>Cycle period </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fCyclePhasis</em>&nbsp;</td><td>Cycle phasis (at start) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fAmplification</em>&nbsp;</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvStartPosition</em>&nbsp;</td><td>Starting position value </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvEndPosition</em>&nbsp;</td><td>Ending position value </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvStartTranslation</em>&nbsp;</td><td>Starting position value </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvEndTranslation</em>&nbsp;</td><td>Ending position value </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eCurve</em>&nbsp;</td><td>Blending curve type </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fPow</em>&nbsp;</td><td>Blending curve exponent </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Flags</em>&nbsp;</td><td>Param flags </td></tr>
@@ -1076,7 +1110,7 @@ FX module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Sep 6 19:44:25 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 7 04:54:55 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

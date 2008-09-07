@@ -159,7 +159,7 @@ extern orxDLLAPI orxFRAME *orxFASTCALL  orxCamera_GetFrame(orxCONST orxCAMERA *_
 
 /** Sets camera parent
  * @param[in]   _pstCamera      Concerned camera
- * @param[in]   _pParent        Parent structure to set (object, camera or frame) / orxNULL
+ * @param[in]   _pParent        Parent structure to set (object, spawner, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetParent(orxCAMERA *_pstCamera, orxVOID *_pParent);

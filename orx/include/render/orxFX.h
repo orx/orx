@@ -49,6 +49,8 @@
 /** Slot flags
  */
 #define orxFX_SLOT_KU32_FLAG_ABSOLUTE           0x00000100  /**< Absolute flag */
+#define orxFX_SLOT_KU32_FLAG_USE_ROTATION       0x00000200  /**< Use rotation flag */
+#define orxFX_SLOT_KU32_FLAG_USE_SCALE          0x00000400  /**< Use scale flag */
 
 
 /** FX curve enum
@@ -216,8 +218,8 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, or
  * @param[in]   _fCyclePeriod   Cycle period
  * @param[in]   _fCyclePhasis   Cycle phasis (at start)
  * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _pvStartPosition Starting position value
- * @param[in]   _pvEndPosition  Ending position value
+ * @param[in]   _pvStartTranslation Starting position value
+ * @param[in]   _pvEndTranslation Ending position value
  * @param[in]   _eCurve         Blending curve type
  * @param[in]   _fPow           Blending curve exponent
  * @param[in]   _u32Flags       Param flags

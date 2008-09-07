@@ -91,6 +91,7 @@
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_BODY                "Body"
+#define orxOBJECT_KZ_CONFIG_SPAWNER             "Spawner"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
 #define orxOBJECT_KZ_CONFIG_AUTO_SCROLL         "AutoScroll"
 #define orxOBJECT_KZ_CONFIG_FLIP                "Flip"
@@ -98,7 +99,9 @@
 #define orxOBJECT_KZ_CONFIG_ALPHA               "Alpha"
 #define orxOBJECT_KZ_CONFIG_DEPTH_SCALE         "DepthScale"
 #define orxOBJECT_KZ_CONFIG_POSITION            "Position"
+#define orxOBJECT_KZ_CONFIG_SPEED               "Speed"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
+#define orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY    "AngularVelocity"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX                  "FX"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
@@ -133,14 +136,15 @@ struct __orxOBJECT_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 72 */
-  orxCOLOR          stColor;                    /**< Object color: 88 */
-  orxVECTOR         vSpeed;                     /**< Object speed: 100 */
+  orxCOLOR          stColor;                    /**< Object color : 88 */
+  orxVECTOR         vSpeed;                     /**< Object speed : 100 */
   orxVOID          *pUserData;                  /**< User data : 104 */
-  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 108 */
-  orxSTRING         zReference;                 /**< Config reference : 112 */
+  orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 108 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 112 */
+  orxSTRING         zReference;                 /**< Config reference : 116 */
 
   /* Padding */
-  orxPAD(112)
+  orxPAD(116)
 };
 
 /** Static structure
@@ -503,10 +507,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyID;
+      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyName, zSpawnerName;
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags, u32Flags;
-      orxVECTOR vPosition;
+      orxVECTOR vValue;
       orxEVENT  stEvent;
 
       /* Defaults to 2D flags */
@@ -647,10 +651,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Has scale? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_SCALE) != orxFALSE)
       {
-        orxVECTOR vScale;
-
         /* Is config scale not a vector? */
-        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vScale) == orxNULL)
+        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SCALE, &vValue) == orxNULL)
         {
           orxFLOAT fScale;
 
@@ -658,11 +660,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           fScale = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_SCALE);
 
           /* Updates vector */
-          orxVector_SetAll(&vScale, fScale);
+          orxVector_SetAll(&vValue, fScale);
         }
 
         /* Updates object scale */
-        orxObject_SetScale(pstResult, &vScale);
+        orxObject_SetScale(pstResult, &vValue);
       }
 
       /* Has color? */
@@ -692,16 +694,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
       /* *** Body *** */
 
-      /* Gets body ID */
-      zBodyID = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BODY);
+      /* Gets body name */
+      zBodyName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BODY);
 
       /* Valid? */
-      if((zBodyID != orxNULL) && (*zBodyID != *orxSTRING_EMPTY))
+      if((zBodyName != orxNULL) && (*zBodyName != *orxSTRING_EMPTY))
       {
         orxBODY *pstBody;
 
         /* Creates body */
-        pstBody = orxBody_CreateFromConfig(orxSTRUCTURE(pstResult), zBodyID);
+        pstBody = orxBody_CreateFromConfig(orxSTRUCTURE(pstResult), zBodyName);
 
         /* Valid? */
         if(pstBody != orxNULL)
@@ -715,17 +717,55 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         }
       }
 
+      /* *** Spawner *** */
+
+      /* Gets spawner name */
+      zSpawnerName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_SPAWNER);
+
+      /* Valid? */
+      if((zSpawnerName != orxNULL) && (*zSpawnerName != *orxSTRING_EMPTY))
+      {
+        orxSPAWNER *pstSpawner;
+
+        /* Creates spawner */
+        pstSpawner = orxSpawner_CreateFromConfig(zSpawnerName);
+
+        /* Valid? */
+        if(pstSpawner != orxNULL)
+        {
+          /* Links it */
+          if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstSpawner)) != orxSTATUS_FAILURE)
+          {
+            /* Sets object as parent */
+            orxSpawner_SetParent(pstSpawner, pstResult);
+
+            /* Updates flags */
+            orxFLAG_SET(pstResult->astStructure[orxSTRUCTURE_ID_SPAWNER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+          }
+        }
+      }
+
       /* *** Misc *** */
 
       /* Has a position? */
-      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
       {
         /* Updates object position */
-        orxObject_SetPosition(pstResult, &vPosition);
+        orxObject_SetPosition(pstResult, &vValue);
       }
 
       /* Updates object rotation */
       orxObject_SetRotation(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ROTATION));
+
+      /* Has speed? */
+      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SPEED, &vValue) != orxNULL)
+      {
+        /* Updates object speed */
+        orxObject_SetSpeed(pstResult, &vValue);
+      }
+
+      /* Sets angular velocity? */
+      orxObject_SetAngularVelocity(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY));
 
       /* Has FX? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FX) != orxFALSE)
@@ -1019,7 +1059,7 @@ orxVOID orxFASTCALL orxObject_SetUserData(orxOBJECT *_pstObject, orxVOID *_pUser
  * @param[in]   _pstObject    Concerned object
  * @return      Storeduser data / orxNULL
  */
-orxVOID *orxFASTCALL orxObject_GetUserData(orxOBJECT *_pstObject)
+orxVOID *orxFASTCALL orxObject_GetUserData(orxCONST orxOBJECT *_pstObject)
 {
   orxVOID *pResult;
 
@@ -1029,6 +1069,56 @@ orxVOID *orxFASTCALL orxObject_GetUserData(orxOBJECT *_pstObject)
 
   /* Gets user data */
   pResult = _pstObject->pUserData;
+
+  /* Done! */
+  return pResult;
+}
+
+/** Sets owner for an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pOwner       Owner to set / orxNULL
+ */
+orxVOID orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, orxVOID *_pOwner)
+{
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_pOwner == orxNULL) || (((orxSTRUCTURE *)(_pOwner))->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER);
+
+  /* Had an owner? */
+  if(_pstObject->pstOwner != orxNULL)
+  {
+    /* Decreases its ref counter */
+    orxStructure_DecreaseCounter(_pstObject->pstOwner);
+  }
+
+  /* Sets new owner */
+  _pstObject->pstOwner = orxSTRUCTURE(_pOwner);
+
+  /* Has new owner */
+  if(_pstObject->pstOwner != orxNULL)
+  {
+    /* Increases its ref counter */
+    orxStructure_IncreaseCounter(_pstObject->pstOwner);
+  }
+
+  return;
+}
+
+/** Gets object's owner
+ * @param[in]   _pstObject    Concerned object
+ * @return      Owner / orxNULL
+ */
+orxVOID *orxFASTCALL orxObject_GetOwner(orxOBJECT *_pstObject)
+{
+  orxVOID *pResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets owner */
+  pResult = _pstObject->pstOwner;
 
   /* Done! */
   return pResult;
@@ -1314,7 +1404,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orx
   if(pstFrame != orxNULL)
   {
     /* Gets object position */
-     pvResult = orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
+    pvResult = orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, _pvPosition);
   }
   else
   {
@@ -1350,7 +1440,7 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldPosition(orxCONST orxOBJECT *_pstObject
   if(pstFrame != orxNULL)
   {
     /* Gets object position */
-     pvResult = orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, _pvPosition);
+    pvResult = orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, _pvPosition);
   }
   else
   {
@@ -1518,7 +1608,7 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, o
 
 /** Sets an object parent
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pParent        Parent structure to set (object, camera or frame) / orxNULL
+ * @param[in]   _pParent        Parent structure to set (object, spawner, camera or frame) / orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pParent)
@@ -1568,7 +1658,15 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pPare
 
         break;
       }
-      
+
+      case orxSTRUCTURE_ID_SPAWNER:
+      {
+        /* Updates its parent */
+        orxFrame_SetParent(pstFrame, orxSpawner_GetFrame(orxSPAWNER(_pParent)));
+
+        break;
+      }
+
       default:
       {
         /* !!! MSG !!! */

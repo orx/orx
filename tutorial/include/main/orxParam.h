@@ -109,8 +109,8 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Register(orxCONST orxPARAM *_ps
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_DisplayHelp();
 
 /** Sets the command line arguments
- * @param[in] _u32NbParam Number of read parameters
- * @param[in] _azParams   List of parameters
+ * @param[in] _u32NbParams  Number of read parameters
+ * @param[in] _azParams     List of parameters
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[]);

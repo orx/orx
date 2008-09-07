@@ -166,7 +166,7 @@ extern orxDLLAPI orxSCRIPT_TYPE orxScript_GetType(orxCONST orxSTRING _zVar);
 
 /** Gets a global script variable value
  * @param _zVar       (IN)  Variable name
- * @param _bOutValue  (OUT) Signed 32 bits returns value
+ * @param _s32OutValue (OUT) Signed 32 bits returns value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxScript_GetS32Value(orxCONST orxSTRING _zVar, orxS32 *_s32OutValue);

@@ -236,20 +236,20 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Mul(orxVECTOR *_pvRes, o
  */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Divf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
-  orxREGISTER orxFLOAT fInvCoef;
+  orxREGISTER orxFLOAT fRecCoef;
 
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
   orxASSERT(_pvOp1 != orxNULL);
   orxASSERT(_fOp2 != orxFLOAT_0);
 
-  /* Gets coef */
-  fInvCoef = orxFLOAT_1 / _fOp2;
+  /* Gets reciprocal coef */
+  fRecCoef = orxFLOAT_1 / _fOp2;
 
   /* Muls all */
-  _pvRes->fX = _pvOp1->fX * fInvCoef;
-  _pvRes->fY = _pvOp1->fY * fInvCoef;
-  _pvRes->fZ = _pvOp1->fZ * fInvCoef;
+  _pvRes->fX = _pvOp1->fX * fRecCoef;
+  _pvRes->fY = _pvOp1->fY * fRecCoef;
+  _pvRes->fZ = _pvOp1->fZ * fRecCoef;
 
   /* Done! */
   return _pvRes;
@@ -392,13 +392,13 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Neg(orxVECTOR *_pvRes, o
   return _pvRes;
 }
 
-/** Gets 1 / vector and stores the result in another one
+/** Gets reciprocal (1.0 /) vector and stores the result in another one
  * @param[in]   _pvRes                        Vector where to store result (can be the operand)
  * @param[in]   _pvOp                         Input value
  * @return      Resulting vector (1 / Op)
  */
 
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Inv(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+orxSTATIC orxINLINE orxVECTOR *               orxVector_Rec(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -516,7 +516,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pv
   /* Valid? */
   if(fOp > orxFLOAT_0)
   {
-    /* Gets invert size */
+    /* Gets reciprocal size */
     fOp = orxFLOAT_1 / fOp;
 
     /* Updates result */
@@ -831,7 +831,7 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Reorder(orxAABOX *_pstBox
 
 /** Copies an AABox onto another one
  * @param[in]   _pstDst                       AABox to copy to (destination)
- * @param[in]   _pstSrx                       AABox to copy from (destination)
+ * @param[in]   _pstSrc                       AABox to copy from (destination)
  * @return      Destination AABox
  */
 orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, orxCONST orxAABOX *_pstSrc)

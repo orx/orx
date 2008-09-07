@@ -128,8 +128,8 @@ extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_RemoveReference(o
  */
 extern orxDLLAPI orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(orxCONST orxANIMSET *_pstAnimSet);
 
-/** Deletes a Link Table
- * @param[in]		_pstAnimSet													AnimSet to delete (should have been created using the clone function)
+/** Deletes a Link table
+ * @param[in]		_pstLinkTable											  Link table to delete (should have been created using the clone function)
  */
 extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable);
 
@@ -182,7 +182,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(orxCONST 
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @param[in]		_hLinkHandle												Handle of the concerned link
  * @param[in]		_u32Property												ID of the property to set
- * @param[in]		_32Value														Value of the property to set
+ * @param[in]		_u32Value                           Value of the property to set
  * @return			orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_SetLinkProperty(orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property, orxU32 _u32Value);

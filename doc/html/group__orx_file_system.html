@@ -416,7 +416,7 @@ Uninitialize the File Module
 <p>
 Closes a search (free the memory allocated for this search). <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfos</em>&nbsp;</td><td>(IN) Informations returned during search </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(IN) Informations returned during search </td></tr>
   </table>
 </dl>
 
@@ -451,7 +451,7 @@ Closes a search (free the memory allocated for this search). <dl compact><dt><b>
 Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*) <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>_zSearchPattern</em>&nbsp;</td><td>(IN) Pattern to find </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfos</em>&nbsp;</td><td>(OUT) Informations about the first file found </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(OUT) Informations about the first file found </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if a file has been found, else orxFALSE </dd></dl>
@@ -477,7 +477,7 @@ Starts a new search. Find the first file that will match to the given pattern (e
 <p>
 Continues a search. Find the next occurence of a pattern. The search has to be started with orxFileSystem_FindFirst <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfos</em>&nbsp;</td><td>(IN/OUT) Informations about the found file </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(IN/OUT) Informations about the found file </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE, if the next file has been found, else returns orxFALSE </dd></dl>
@@ -513,7 +513,7 @@ Continues a search. Find the next occurence of a pattern. The search has to be s
 Retrieves informations about a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>(IN) Files used to get informations </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfos</em>&nbsp;</td><td>(OUT) Returned file's informations </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(OUT) Returned file's informations </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the status of the operation </dd></dl>
@@ -595,7 +595,7 @@ File module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Sep 6 19:44:25 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 7 04:54:55 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

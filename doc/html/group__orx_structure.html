@@ -23,7 +23,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">__orxSTRUCTURE_t</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TYPE)&nbsp;&nbsp;&nbsp;((orx##TYPE *)(STRUCTURE))</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TYPE)&nbsp;&nbsp;&nbsp;((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_NUMBER) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)orxNULL)</td></tr>
 
@@ -75,9 +75,9 @@
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g09e11f0c7ccba0df601b65ddc54d44c2">__orxSTRUCTURE_ID_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422">orxSTRUCTURE_ID_FRAME</a> =  0, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d">orxSTRUCTURE_ID_ANIMPOINTER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d">orxSTRUCTURE_ID_ANIMPOINTER</a> =  0, 
 <a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2a26fed6e49b5d10e79690f547bbe0fe6">orxSTRUCTURE_ID_BODY</a>, 
+<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422">orxSTRUCTURE_ID_FRAME</a>, 
 <a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c20dafce351a48bcb315a9cbb95dc95e6b">orxSTRUCTURE_ID_FXPOINTER</a>, 
 <br>
 &nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2fa383d690207c69abf6d225a37c59604">orxSTRUCTURE_ID_GRAPHIC</a>, 
@@ -107,6 +107,8 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gdee1542274822e8b80eb32b55fa69121">_orxStructure_GetPointer</a> (orxCONST orxVOID *_pStructure, <a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6b0f7d1976f2695393fdb55ce8d4137d">orxStructure_Setup</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd6b31f9352f2a6068198878128e9f369">orxStructure_Init</a> ()</td></tr>
@@ -479,7 +481,7 @@ Structure module Allows to creates and handle structures. Structures can be refe
           <td class="paramtype">TYPE&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;((orx##TYPE *)(STRUCTURE))</td>
+          <td>&nbsp;&nbsp;&nbsp;((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))</td>
         </tr>
       </table>
 </div>
@@ -586,7 +588,7 @@ Structure register macro
 <div class="memdoc">
 
 <p>
-Public struct structure (Must be first derived structure member!) 
+Public structure (Must be first derived structure member!) 
 </div>
 </div><p>
 <a class="anchor" name="g9ec3046035dbf6c1244f8e0320569250"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_ID" ref="g9ec3046035dbf6c1244f8e0320569250" args="" -->
@@ -649,11 +651,11 @@ Structure update callback function type
 <p>
 Structure IDs <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422"></a><!-- doxytag: member="orxSTRUCTURE_ID_FRAME" ref="gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422" args="" -->orxSTRUCTURE_ID_FRAME</em>&nbsp;</td><td>
-</td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d"></a><!-- doxytag: member="orxSTRUCTURE_ID_ANIMPOINTER" ref="gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d" args="" -->orxSTRUCTURE_ID_ANIMPOINTER</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2a26fed6e49b5d10e79690f547bbe0fe6"></a><!-- doxytag: member="orxSTRUCTURE_ID_BODY" ref="gg09e11f0c7ccba0df601b65ddc54d44c2a26fed6e49b5d10e79690f547bbe0fe6" args="" -->orxSTRUCTURE_ID_BODY</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422"></a><!-- doxytag: member="orxSTRUCTURE_ID_FRAME" ref="gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422" args="" -->orxSTRUCTURE_ID_FRAME</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c20dafce351a48bcb315a9cbb95dc95e6b"></a><!-- doxytag: member="orxSTRUCTURE_ID_FXPOINTER" ref="gg09e11f0c7ccba0df601b65ddc54d44c20dafce351a48bcb315a9cbb95dc95e6b" args="" -->orxSTRUCTURE_ID_FXPOINTER</em>&nbsp;</td><td>
 </td></tr>
@@ -718,6 +720,42 @@ Structure storage types <dl compact><dt><b>Enumerator: </b></dt><dd>
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
+<a class="anchor" name="gdee1542274822e8b80eb32b55fa69121"></a><!-- doxytag: member="orxStructure.h::_orxStructure_GetPointer" ref="gdee1542274822e8b80eb32b55fa69121" args="(orxCONST orxVOID *_pStructure, orxSTRUCTURE_ID _eStructureID)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxINLINE <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* _orxStructure_GetPointer           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramname"> <em>_pStructure</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramname"> <em>_eStructureID</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets structure pointer / debug mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pStructure</em>&nbsp;</td><td>Concerned structure </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStructureID</em>&nbsp;</td><td>ID to test the structure against </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Valid orxSTRUCTURE, orxNULL otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g16515a89c0ccb908f64a37b76e1fa2d3"></a><!-- doxytag: member="orxStructure.h::orxStructure_Create" ref="g16515a89c0ccb908f64a37b76e1fa2d3" args="(orxSTRUCTURE_ID _eStructureID)" -->
 <div class="memitem">
 <div class="memproto">
@@ -894,7 +932,7 @@ Gets structure tree child <dl compact><dt><b>Parameters:</b></dt><dd>
 Gets structure flags <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pStructure</em>&nbsp;</td><td>Concerned structure </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Flags</em>&nbsp;</td><td>Mask to use for getting flags </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Mask</em>&nbsp;</td><td>Mask to use for getting flags </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxU32 </dd></dl>
@@ -1228,7 +1266,7 @@ Registers a given ID <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStructureID</em>&nbsp;</td><td>Concerned structure ID </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStorageType</em>&nbsp;</td><td>Storage type to use for this structure type </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eMemoryTyp</em>&nbsp;</td><td>Memory type to store this structure type </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eMemoryType</em>&nbsp;</td><td>Memory type to store this structure type </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Size</em>&nbsp;</td><td>Structure size </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnUpdate</em>&nbsp;</td><td>Structure update function </td></tr>
   </table>
@@ -1475,7 +1513,7 @@ Updates structure if update function was registered for the structure type <dl c
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Sep 6 19:44:25 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 7 04:54:55 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

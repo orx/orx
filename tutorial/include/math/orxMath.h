@@ -336,7 +336,8 @@ orxSTATIC orxINLINE orxFLOAT orxMath_ASin(orxFLOAT _fOp)
 }
 
 /** Gets an arctangent
- * @param[in]   _fOp                            Input radian angle value
+ * @param[in]   _fOp1                           First operand
+ * @param[in]   _fOp2                           Second operand
  * @return      Arctangent of the given angle
  */
 orxSTATIC orxINLINE orxFLOAT orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
@@ -432,7 +433,8 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
 }
 
 /** Gets a modulo value
- * @param[in]   _fOp                            Input value
+ * @param[in]   _fOp1                           Input value
+ * @param[in]   _fOp2                           Modulo value
  * @return      Modulo value
  */
 orxSTATIC orxINLINE orxFLOAT orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
@@ -448,6 +450,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
 
 /** Gets a powed value
  * @param[in]   _fOp                            Input value
+ * @param[in]   _fExp                           Exponent value
  * @return      Powed value
  */
 orxSTATIC orxINLINE orxFLOAT orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)

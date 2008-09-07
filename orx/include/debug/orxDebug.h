@@ -221,6 +221,7 @@ extern orxDLLAPI orxVOID                      _orxDebug_Exit();
  * @param[in]   _eLevel                       Debug level associated with this output
  * @param[in]   _zFunction                    Calling function name
  * @param[in]   _zFile                        Calling file name
+ * @param[in]   _u32Line                      Calling file line
  * @param[in]   _zFormat                      Printf formatted text
  */
 extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...);

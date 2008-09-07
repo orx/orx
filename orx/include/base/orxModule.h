@@ -126,7 +126,7 @@ extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddDependency(orxMODULE_ID _
 
 /** Adds optional dependencies between 2 modules
  * @param[in]   _eModuleID                Concerned module ID
- * @param[in]   _eModuleID                Module ID of the optionally needed module
+ * @param[in]   _eDependID                Module ID of the optionally needed module
  */
 extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
 
@@ -161,7 +161,7 @@ extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Exit(orxMODULE_ID _eModuleID
 extern orxDLLAPI orxVOID                  orxModule_ExitAll();
 
 /** Is module initialized?
- * @param[in]   _eModulueID               Concerned module ID
+ * @param[in]   _eModuleID                Concerned module ID
  * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL      orxModule_IsInitialized(orxMODULE_ID _eModuleID);

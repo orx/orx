@@ -59,6 +59,7 @@
  *
  * FX can set absolute or relative values, depending on the attribute Absolute in its config.
  * Control over curve period, phasis, pow, amplification over time is also granted.
+ * For rotation FXs, value can use object's orientation and/or scale on demand.
  * This allows the creation of pretty elaborated and great looking visual FXs.
  *
  * FX parameters can be tweaked in the config file and reloaded on-the-fly using backspace,

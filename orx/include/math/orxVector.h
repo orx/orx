@@ -831,7 +831,7 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Reorder(orxAABOX *_pstBox
 
 /** Copies an AABox onto another one
  * @param[in]   _pstDst                       AABox to copy to (destination)
- * @param[in]   _pstSrx                       AABox to copy from (destination)
+ * @param[in]   _pstSrc                       AABox to copy from (destination)
  * @return      Destination AABox
  */
 orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, orxCONST orxAABOX *_pstSrc)

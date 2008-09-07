@@ -118,6 +118,7 @@ extern orxDLLAPI orxVOID            orxDisplay_Setup();
 
 /** Sets all components from an orxRGBA
  * @param[in]   _pstColor       Concerned color
+ * @param[in]   _stRGBA         RGBA values to set
  * @return      orxCOLOR
  */
 orxSTATIC orxINLINE orxCOLOR *      orxColor_SetRGBA(orxCOLOR *_pstColor, orxRGBA _stRGBA)
@@ -345,7 +346,7 @@ extern orxDLLAPI orxSTATUS  orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, 
 
 
 /** Blits a bitmap (no transformation)
- * @param[in]   _pstFst                               Bitmap where to blit
+ * @param[in]   _pstDst                               Bitmap where to blit
  * @param[in]   _pstSrc                               Bitmap to blit (will begin at top left corner)
  * @param[in]   _fPosX                                X-axis value of the position where to blit the source bitmap
  * @param[in]   _fPosY                                Y-axis value of the position where to blit the source bitmap

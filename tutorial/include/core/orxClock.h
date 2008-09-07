@@ -183,7 +183,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK
 
 /** Unregisters a callback function from a clock
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _fnCallback                           Callback to remove
+ * @param[in]   _pfnCallback                          Callback to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);

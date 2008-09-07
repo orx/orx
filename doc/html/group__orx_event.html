@@ -39,12 +39,14 @@
 &nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8b79eabe1d47047e4698b31e03b05f91c">orxEVENT_TYPE_RENDER</a>, 
 <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8707ba32273ced7fa1dba95fcb8836d4b">orxEVENT_TYPE_PHYSICS</a>, 
 <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8871a91df2463417ce5acc81bb4a20448">orxEVENT_TYPE_SOUND</a>, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8392c55af75cd4dc15dc9d5c875ad7216">orxEVENT_TYPE_CORE_NUMBER</a>, 
+<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe83f6047dad21b480b5a982b8223e6a2e9">orxEVENT_TYPE_SPAWNER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8f2e660591f643abe7403c5898ba88928">orxEVENT_TYPE_USER_DEFINED</a> =  orxEVENT_TYPE_CORE_NUMBER, 
+&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8392c55af75cd4dc15dc9d5c875ad7216">orxEVENT_TYPE_CORE_NUMBER</a>, 
+<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8f2e660591f643abe7403c5898ba88928">orxEVENT_TYPE_USER_DEFINED</a> =  orxEVENT_TYPE_CORE_NUMBER, 
 <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe84d6b0bef0bd916c45be50ae491bbe3f2">orxEVENT_TYPE_USER_MAX_NUMBER</a> =  256, 
 <a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe87fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a>, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8031700e9ae9f2a6970c872938b17a9b1">orxEVENT_TYPE_NONE</a> =  orxENUM_NONE
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8031700e9ae9f2a6970c872938b17a9b1">orxEVENT_TYPE_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
@@ -138,6 +140,8 @@ Event type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8871a91df2463417ce5acc81bb4a20448"></a><!-- doxytag: member="orxEVENT_TYPE_SOUND" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8871a91df2463417ce5acc81bb4a20448" args="" -->orxEVENT_TYPE_SOUND</em>&nbsp;</td><td>
 </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe83f6047dad21b480b5a982b8223e6a2e9"></a><!-- doxytag: member="orxEVENT_TYPE_SPAWNER" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe83f6047dad21b480b5a982b8223e6a2e9" args="" -->orxEVENT_TYPE_SPAWNER</em>&nbsp;</td><td>
+</td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8392c55af75cd4dc15dc9d5c875ad7216"></a><!-- doxytag: member="orxEVENT_TYPE_CORE_NUMBER" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8392c55af75cd4dc15dc9d5c875ad7216" args="" -->orxEVENT_TYPE_CORE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8f2e660591f643abe7403c5898ba88928"></a><!-- doxytag: member="orxEVENT_TYPE_USER_DEFINED" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8f2e660591f643abe7403c5898ba88928" args="" -->orxEVENT_TYPE_USER_DEFINED</em>&nbsp;</td><td>
@@ -183,7 +187,7 @@ Event type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 Adds an event handler <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>_eEventType</em>&nbsp;</td><td>Concerned type of event </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pfnHandler</em>&nbsp;</td><td>Event handler to add </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>_pfnEventHandler</em>&nbsp;</td><td>Event handler to add </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
@@ -258,7 +262,7 @@ Initializes the event Module <dl class="return" compact><dt><b>Returns:</b></dt>
 Removes an event handler <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"></td><td valign="top"><em>_eEventType</em>&nbsp;</td><td>Concerned type of event </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pfnHandler</em>&nbsp;</td><td>Event handler to remove return orxSTATUS_SUCCESS / orxSTATUS_FAILURE </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>_pfnEventHandler</em>&nbsp;</td><td>Event handler to remove return orxSTATUS_SUCCESS / orxSTATUS_FAILURE </td></tr>
   </table>
 </dl>
 
@@ -310,7 +314,7 @@ Event module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Sep 6 19:44:25 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 7 04:54:55 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

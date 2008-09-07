@@ -27,7 +27,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">__orxSTRUCTURE_t</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TYPE)&nbsp;&nbsp;&nbsp;((orx##TYPE *)(STRUCTURE))</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TYPE)&nbsp;&nbsp;&nbsp;((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_NUMBER) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)orxNULL)</td></tr>
 
@@ -79,9 +79,9 @@
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g09e11f0c7ccba0df601b65ddc54d44c2">__orxSTRUCTURE_ID_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422">orxSTRUCTURE_ID_FRAME</a> =  0, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d">orxSTRUCTURE_ID_ANIMPOINTER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d">orxSTRUCTURE_ID_ANIMPOINTER</a> =  0, 
 <a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2a26fed6e49b5d10e79690f547bbe0fe6">orxSTRUCTURE_ID_BODY</a>, 
+<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422">orxSTRUCTURE_ID_FRAME</a>, 
 <a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c20dafce351a48bcb315a9cbb95dc95e6b">orxSTRUCTURE_ID_FXPOINTER</a>, 
 <br>
 &nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2fa383d690207c69abf6d225a37c59604">orxSTRUCTURE_ID_GRAPHIC</a>, 
@@ -111,6 +111,8 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gdee1542274822e8b80eb32b55fa69121">_orxStructure_GetPointer</a> (orxCONST orxVOID *_pStructure, <a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6b0f7d1976f2695393fdb55ce8d4137d">orxStructure_Setup</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd6b31f9352f2a6068198878128e9f369">orxStructure_Init</a> ()</td></tr>
@@ -171,7 +173,7 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="author" compact><dt><b>Author:</b></dt><dd><a href="mailto:iarwain@orx-project.org">iarwain@orx-project.org</a></dd></dl>
 <dl compact><dt><b><a class="el" href="todo.html#_todo000032">Todo:</a></b></dt><dd></dd></dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Sep 6 19:44:24 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 7 04:54:54 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

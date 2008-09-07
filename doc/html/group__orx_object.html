@@ -53,7 +53,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g0697e18f26d0fc858ebfd64ac5f1bfc5">orxObject_SetUserData</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxVOID *_pUserData)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g1c4bd72d8448072b3cb7437adcea3d92">orxObject_GetUserData</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g587942a72169f4ad6272a4afaa41b301">orxObject_GetUserData</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g7fe8ca519a65ab244aa5707a602f8d38">orxObject_SetOwner</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxVOID *_pOwner)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g987a299c280b6ebff036e7785d94fc49">orxObject_GetOwner</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g11cb5defe143721910db791c2432bb4d">orxObject_LinkStructure</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *_pstStructure)</td></tr>
 
@@ -972,6 +976,32 @@ Gets object config name <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g987a299c280b6ebff036e7785d94fc49"></a><!-- doxytag: member="orxObject.h::orxObject_GetOwner" ref="g987a299c280b6ebff036e7785d94fc49" args="(orxOBJECT *_pstObject)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxVOID* orxFASTCALL orxObject_GetOwner           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets object's owner <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Owner / orxNULL </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g9417909f1d833826654aef4aac0e08b6"></a><!-- doxytag: member="orxObject.h::orxObject_GetPivot" ref="g9417909f1d833826654aef4aac0e08b6" args="(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPivot)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1204,14 +1234,14 @@ Gets an object speed <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g1c4bd72d8448072b3cb7437adcea3d92"></a><!-- doxytag: member="orxObject.h::orxObject_GetUserData" ref="g1c4bd72d8448072b3cb7437adcea3d92" args="(orxOBJECT *_pstObject)" -->
+<a class="anchor" name="g587942a72169f4ad6272a4afaa41b301"></a><!-- doxytag: member="orxObject.h::orxObject_GetUserData" ref="g587942a72169f4ad6272a4afaa41b301" args="(orxCONST orxOBJECT *_pstObject)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI orxVOID* orxFASTCALL orxObject_GetUserData           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstObject</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1226,7 +1256,7 @@ Gets object's user data <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Storeduser data / orxNULL </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Stored user data / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -1796,6 +1826,41 @@ Sets current animation for object <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g7fe8ca519a65ab244aa5707a602f8d38"></a><!-- doxytag: member="orxObject.h::orxObject_SetOwner" ref="g7fe8ca519a65ab244aa5707a602f8d38" args="(orxOBJECT *_pstObject, orxVOID *_pOwner)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxObject_SetOwner           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramname"> <em>_pOwner</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets owner for an object <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pOwner</em>&nbsp;</td><td>Owner to set / orxNULL </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gd430b5444030978462275ad874e15b52"></a><!-- doxytag: member="orxObject.h::orxObject_SetParent" ref="gd430b5444030978462275ad874e15b52" args="(orxOBJECT *_pstObject, orxVOID *_pParent)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1825,7 +1890,7 @@ Sets current animation for object <dl compact><dt><b>Parameters:</b></dt><dd>
 Sets an object parent <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pParent</em>&nbsp;</td><td>Parent structure to set (object, camera or frame) / orxNULL </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pParent</em>&nbsp;</td><td>Parent structure to set (object, spawner, camera or frame) / orxNULL </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orsSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
@@ -2174,7 +2239,7 @@ Unlinks structure from an object, given its structure ID <dl compact><dt><b>Para
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sat Sep 6 19:44:25 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 7 04:54:55 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

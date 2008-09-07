@@ -95,6 +95,8 @@
 #define orxFX_KZ_CONFIG_START_VALUE             "StartValue"
 #define orxFX_KZ_CONFIG_END_VALUE               "EndValue"
 #define orxFX_KZ_CONFIG_KEEP_IN_CACHE           "KeepInCache"
+#define orxFX_KZ_CONFIG_USE_ROTATION            "UseRotation"
+#define orxFX_KZ_CONFIG_USE_SCALE               "UseScale"
 
 #define orxFX_KZ_LINEAR                         "linear"
 #define orxFX_KZ_SAW                            "saw"
@@ -413,13 +415,33 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
       else if(orxString_Compare(zType, orxFX_KZ_POSITION) == 0)
       {
         orxVECTOR vStartPosition, vEndPosition;
+        orxU32    u32LocalFlags;
 
         /* Gets scalevalues */
         orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartPosition);
         orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndPosition);
 
+        /* Use rotation? */
+        if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_ROTATION) != orxFALSE)
+        {
+          /* Updates local flags */
+          u32LocalFlags = orxFX_SLOT_KU32_FLAG_USE_ROTATION;
+        }
+        else
+        {
+          /* Updates local flags */
+          u32LocalFlags = orxFX_SLOT_KU32_FLAG_NONE;
+        }
+
+        /* Use scale? */
+        if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_SCALE) != orxFALSE)
+        {
+          /* Updates local flags */
+          u32LocalFlags |= orxFX_SLOT_KU32_FLAG_USE_SCALE;
+        }
+
         /* Adds scale slot */
-        eResult = orxFX_AddTranslation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartPosition, &vEndPosition, eCurve, fPow, u32Flags);
+        eResult = orxFX_AddTranslation(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhasis, fAmplification, &vStartPosition, &vEndPosition, eCurve, fPow, u32Flags | u32LocalFlags);
       }
     }
 
@@ -1101,7 +1123,6 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
 
                   /* Locks it */
                   bScaleLock = orxTRUE;
-
                 }
                 else
                 {
@@ -1143,9 +1164,24 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
                   /* Overrides values */
                   orxVector_Lerp(&vPosition, &(pstFXSlot->vStartPosition), &(pstFXSlot->vEndPosition), fEndCoef);
 
+                  /* Use rotation? */
+                  if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_ROTATION))
+                  {
+                    /* Updates vector */
+                    orxVector_2DRotate(&vPosition, &vPosition, orxObject_GetRotation(_pstObject));
+                  }
+
+                  /* Use scale? */
+                  if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_SCALE))
+                  {
+                    orxVECTOR vScale;
+
+                    /* Updates vector */
+                    orxVector_Mul(&vPosition, &vPosition, orxObject_GetScale(_pstObject, &vScale));
+                  }
+
                   /* Locks it */
                   bTranslationLock = orxTRUE;
-
                 }
                 else
                 {
@@ -1166,8 +1202,27 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
                   /* Gets end value */
                   orxVector_Lerp(&vEndPosition, &(pstFXSlot->vStartPosition), &(pstFXSlot->vEndPosition), fEndCoef);
 
+                  /* Gets delta value */
+                  orxVector_Sub(&vEndPosition, &vEndPosition, &vStartPosition);
+
+                  /* Use rotation? */
+                  if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_ROTATION))
+                  {
+                    /* Updates vector */
+                    orxVector_2DRotate(&vEndPosition, &vEndPosition, orxObject_GetRotation(_pstObject));
+                  }
+
+                  /* Use scale? */
+                  if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_SCALE))
+                  {
+                    orxVECTOR vScale;
+
+                    /* Updates vector */
+                    orxVector_Mul(&vEndPosition, &vEndPosition, orxObject_GetScale(_pstObject, &vScale));
+                  }
+
                   /* Updates global position value */
-                  orxVector_Add(&vPosition, &vPosition, orxVector_Sub(&vEndPosition, &vEndPosition, &vStartPosition));
+                  orxVector_Add(&vPosition, &vPosition, &vEndPosition);
                 }
 
                 /* Updates translation status */

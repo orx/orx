@@ -209,8 +209,8 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetSize(orxCONST orxVI
 
 /** Gets a viewport relative size
  * @param[in]   _pstViewport    Concerned viewport
- * @param[out]  _fWidth         Relative width
- * @param[out]  _fHeight        Relative height
+ * @param[out]  _pfWidth        Relative width
+ * @param[out]  _pfHeight       Relative height
  */
 extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 

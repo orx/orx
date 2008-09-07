@@ -91,7 +91,7 @@ extern orxDLLAPI orxSTATUS                            orxSoundSystem_Init();
 extern orxDLLAPI orxVOID                              orxSoundSystem_Exit();
 
 /** Loads a sound sample from file (cannot be played directly)
- * @param[in]   _zFileName                            Name of the file to load as a sample (completely loaded in memory, useful for sound effects)
+ * @param[in]   _zFilename                            Name of the file to load as a sample (completely loaded in memory, useful for sound effects)
  * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *              orxSoundSystem_LoadSample(orxCONST orxSTRING _zFilename);
@@ -108,7 +108,7 @@ extern orxDLLAPI orxVOID                              orxSoundSystem_UnloadSampl
 extern orxDLLAPI orxSOUNDSYSTEM_SOUND *               orxSoundSystem_CreateFromSample(orxCONST orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
 /** Creates a streamed sound from file (can be played directy)
- * @param[in]   _zFileName                            Name of the file to load as a stream (won't be completely loaded in memory, useful for musics)
+ * @param[in]   _zFilename                            Name of the file to load as a stream (won't be completely loaded in memory, useful for musics)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SOUND *               orxSoundSystem_CreateStreamFromFile(orxCONST orxSTRING _zFilename);
@@ -196,7 +196,7 @@ extern orxDLLAPI orxBOOL                              orxSoundSystem_IsLooping(o
 extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetDuration(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Gets a sound status (play/pause/stop)
- * @param[in]   _pstSample                            Concerned sound
+ * @param[in]   _pstSound                             Concerned sound
  * @return orxSOUNDSYSTEM_STATUS
  */
 extern orxDLLAPI orxSOUNDSYSTEM_STATUS                orxSoundSystem_GetStatus(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);

@@ -39,7 +39,10 @@
  */
 
 #define orxSTRUCTURE_KU32_STATIC_FLAG_NONE    0x00000000
+
 #define orxSTRUCTURE_KU32_STATIC_FLAG_READY   0x00000001
+
+#define orxSTRUCTURE_KU32_STATIC_MASK_ALL     0xFFFFFFFF
 
 
 /** Defines
@@ -58,16 +61,13 @@
 typedef struct __orxSTRUCTURE_STORAGE_t
 {
   orxSTRUCTURE_STORAGE_TYPE eType;            /**< Storage type : 4 */
-  orxBANK *pstNodeBank;                       /**< Associated node bank : 8 */
-  orxBANK *pstStructureBank;                  /**< Associated structure bank : 12 */
+  orxBANK                  *pstNodeBank;      /**< Associated node bank : 8 */
+  orxBANK                  *pstStructureBank; /**< Associated structure bank : 12 */
 
   union
   {
-    /* Link List */
-    orxLINKLIST stLinkList;
-
-    /* Tree */
-    orxTREE stTree;
+    orxLINKLIST             stLinkList;       /**< Linklist : 24 */
+    orxTREE                 stTree;           /**< Tree : 20 */
   };                                          /**< Storage union : 24 */
 
 } orxSTRUCTURE_STORAGE;
@@ -76,10 +76,10 @@ typedef struct __orxSTRUCTURE_STORAGE_t
  */
 typedef struct __orxSTRUCTURE_REGISTER_INFO_t
 {
-  orxSTRUCTURE_STORAGE_TYPE eStorageType;     /**< Structure storage type : 4 */
-  orxU32 u32Size;                             /**< Structure storage size : 8 */
-  orxMEMORY_TYPE eMemoryType;                 /**< Structure storage memory type : 12 */
-  orxSTRUCTURE_UPDATE_FUNCTION pfnUpdate;     /**< Structure update callbacks : 16 */
+  orxSTRUCTURE_STORAGE_TYPE     eStorageType; /**< Structure storage type : 4 */
+  orxU32                        u32Size;      /**< Structure storage size : 8 */
+  orxMEMORY_TYPE                eMemoryType;  /**< Structure storage memory type : 12 */
+  orxSTRUCTURE_UPDATE_FUNCTION  pfnUpdate;    /**< Structure update callbacks : 16 */
 
 } orxSTRUCTURE_REGISTER_INFO;
 
@@ -89,11 +89,8 @@ typedef struct __orxSTRUCTURE_STORAGE_NODE_t
 {
   union
   {
-    /* Link list node */
-    orxLINKLIST_NODE stLinkListNode;
-
-    /* Tree node */
-    orxTREE_NODE stTreeNode;
+    orxLINKLIST_NODE stLinkListNode;          /**< Linklist node : 12 */
+    orxTREE_NODE stTreeNode;                  /**< Tree node : 16 */
   };                                          /**< Storage node union : 16 */
   orxSTRUCTURE *pstStructure;                 /**< Pointer to structure : 20 */
   orxSTRUCTURE_STORAGE_TYPE eType;            /**< Storage type : 24 */
@@ -104,9 +101,9 @@ typedef struct __orxSTRUCTURE_STORAGE_NODE_t
  */
 typedef struct __orxSTRUCTURE_STATIC_t
 {
-  orxSTRUCTURE_STORAGE astStorage[orxSTRUCTURE_ID_NUMBER];    /**< Structure banks */
-  orxSTRUCTURE_REGISTER_INFO astInfo[orxSTRUCTURE_ID_NUMBER]; /**< Structure info */
-  orxU32 u32Flags;                                            /**< Control flags */
+  orxSTRUCTURE_STORAGE        astStorage[orxSTRUCTURE_ID_NUMBER]; /**< Structure banks */
+  orxSTRUCTURE_REGISTER_INFO  astInfo[orxSTRUCTURE_ID_NUMBER];    /**< Structure info */
+  orxU32                      u32Flags;                           /**< Control flags */
 
 } orxSTRUCTURE_STATIC;
 
@@ -147,7 +144,7 @@ orxVOID orxStructure_Setup()
  */
 orxSTATUS orxStructure_Init()
 {
-  orxU32 i;
+  orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Not already Initialized? */
@@ -160,10 +157,10 @@ orxSTATUS orxStructure_Init()
     for(i = 0; i < orxSTRUCTURE_ID_NUMBER; i++)
     {
       /* Creates a bank */
-      sstStructure.astStorage[i].pstNodeBank  = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTRUCTURE_STORAGE_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstStructure.astStorage[i].pstNodeBank = orxBank_Create(orxSTRUCTURE_KU32_STORAGE_BANK_SIZE, sizeof(orxSTRUCTURE_STORAGE_NODE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Cleans storage type */
-      sstStructure.astStorage[i].eType    = orxSTRUCTURE_STORAGE_TYPE_NONE;
+      sstStructure.astStorage[i].eType = orxSTRUCTURE_STORAGE_TYPE_NONE;
     }
 
     /* All banks created? */
@@ -217,28 +214,34 @@ orxVOID orxStructure_Exit()
       switch(sstStructure.astStorage[i].eType)
       {
         case orxSTRUCTURE_STORAGE_TYPE_LINKLIST:
+        {
+          /* Empties list */
+          orxLinkList_Clean(&(sstStructure.astStorage[i].stLinkList));
 
-        /* Empties list */
-        orxLinkList_Clean(&(sstStructure.astStorage[i].stLinkList));
+          break;
+        }
 
-        break;
+        case orxSTRUCTURE_STORAGE_TYPE_TREE:
+        {
+            /* Empties tree */
+            orxTree_Clean(&(sstStructure.astStorage[i].stTree));
 
-      case orxSTRUCTURE_STORAGE_TYPE_TREE:
+            break;
+        }
 
-        /* Empties tree */
-        orxTree_Clean(&(sstStructure.astStorage[i].stTree));
-
-        break;
-
-      default:
-
-        break;
+        default:
+        {
+          break;
+        }
       }
 
-      /* Deletes banks */
+      /* Deletes node */
       orxBank_Delete(sstStructure.astStorage[i].pstNodeBank);
+
+      /* Is bank empty? */
       if(sstStructure.astStorage[i].pstStructureBank != orxNULL)
       {
+        /* Deletes it */
         orxBank_Delete(sstStructure.astStorage[i].pstStructureBank);
       }
     }

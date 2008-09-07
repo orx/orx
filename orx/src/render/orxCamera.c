@@ -34,6 +34,7 @@
 #include "core/orxConfig.h"
 #include "memory/orxMemory.h"
 #include "object/orxObject.h"
+#include "object/orxSpawner.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
@@ -658,6 +659,14 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, orxVOID *_pPare
         break;
       }
       
+      case orxSTRUCTURE_ID_SPAWNER:
+      {
+        /* Updates its parent */
+        orxFrame_SetParent(pstFrame, orxSpawner_GetFrame(orxSPAWNER(_pParent)));
+
+        break;
+      }
+
       default:
       {
         /* !!! MSG !!! */

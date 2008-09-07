@@ -50,15 +50,7 @@
 
 /** Structure pointer get helpers
  */
-#ifdef __orxDEBUG__
-
-  #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE) ((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))
-
-#else /* __orxDEBUG__ */
-
-  #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE) ((orx##TYPE *)(STRUCTURE))
-
-#endif /* __orxDEBUG__ */
+#define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE) ((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))
 
 #define orxSTRUCTURE(STRUCTURE)     (((STRUCTURE != orxNULL) && ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER)) ? (orxSTRUCTURE *)STRUCTURE : (orxSTRUCTURE *)orxNULL)
 
@@ -104,9 +96,9 @@ typedef enum __orxSTRUCTURE_ID_t
 {
   /* *** Following structures can be linked to objects *** */
 
-  orxSTRUCTURE_ID_FRAME = 0,
-  orxSTRUCTURE_ID_ANIMPOINTER,
+  orxSTRUCTURE_ID_ANIMPOINTER = 0,
   orxSTRUCTURE_ID_BODY,
+  orxSTRUCTURE_ID_FRAME,
   orxSTRUCTURE_ID_FXPOINTER,
   orxSTRUCTURE_ID_GRAPHIC,
   orxSTRUCTURE_ID_SOUNDPOINTER,
@@ -144,21 +136,14 @@ typedef enum __orxSTRUCTURE_STORAGE_TYPE_t
 
 } orxSTRUCTURE_STORAGE_TYPE;
 
-/** Public struct structure (Must be first derived structure member!)
+/** Public structure (Must be first derived structure member!)
  */
 typedef struct __orxSTRUCTURE_t
 {
-  /* Structure ID. : 4 */
-  orxSTRUCTURE_ID eID;
-
-  /* Reference counter. : 8 */
-  orxU32          u32RefCounter;
-
-  /* Flags : 12 */
-  orxU32          u32Flags;
-
-  /* Handle of internal storage node. : 16 */
-  orxHANDLE       hStorageNode;
+  orxSTRUCTURE_ID eID;            /**< Structure ID : 4 */
+  orxU32          u32RefCounter;  /**< Reference counter : 8 */
+  orxU32          u32Flags;       /**< Flags : 12 */
+  orxHANDLE       hStorageNode;   /**< Internal storage node handle : 16 */
 
 } orxSTRUCTURE;
 
@@ -167,8 +152,6 @@ typedef struct __orxSTRUCTURE_t
  */
 typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
 
-
-#ifdef __orxDEBUG__
 
 /** Gets structure pointer / debug mode
  * @param[in]   _pStructure    Concerned structure
@@ -185,8 +168,6 @@ orxSTATIC orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(orxCONST orxVOID *_pS
   /* Done! */
   return pstResult;
 }
-
-#endif /* __orxDEBUG__ */
 
 
 /** Structure module setup
@@ -206,7 +187,7 @@ extern orxDLLAPI orxVOID                                orxStructure_Exit();
 /** Registers a given ID
  * @param[in]   _eStructureID   Concerned structure ID
  * @param[in]   _eStorageType   Storage type to use for this structure type
- * @param[in]   _eMemoryTyp     Memory type to store this structure type
+ * @param[in]   _eMemoryType    Memory type to store this structure type
  * @param[in]   _u32Size        Structure size
  * @param[in]   _pfnUpdate      Structure update function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -393,7 +374,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestAllFlag
 
 /** Gets structure flags
  * @param[in]   _pStructure    Concerned structure
- * @param[in]   _u32Flags       Mask to use for getting flags
+ * @param[in]   _u32Mask       Mask to use for getting flags
  * @return      orxU32
  */
 orxSTATIC orxINLINE orxU32                              orxStructure_GetFlags(orxCONST orxVOID *_pStructure, orxU32 _u32Mask)

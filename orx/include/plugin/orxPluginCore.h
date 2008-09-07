@@ -72,9 +72,11 @@ typedef struct __orxPLUGIN_CORE_FUNCTION_t
 
 /** Adds an info structure for the given core module.
  * Has to be called during a core module init.
- * \param ePluginCoreID the numeric id of the core plugin
- * \param _astCoreFunction the pointer on the core functions info array
- * \return nothing.
+ * @param[in] _ePluginCoreID          The numeric id of the core plugin
+ * @param[in] _eModuleID              Corresponding module ID
+ * @param[in] _astCoreFunction        The pointer on the core functions info array
+ * @param[in] _u32CoreFunctionNumber  Number of functions in the array
+ * @return nothing.
  */
 extern orxDLLAPI orxVOID orxFASTCALL  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
 

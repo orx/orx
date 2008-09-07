@@ -225,7 +225,7 @@ do                                                            \
 
 /** Gets flags
  * @param[in] X Flag container
- * @param[in] F Flags to test
+ * @param[in] M Filtering mask
  * @return Masked flags
  */
 #define orxFLAG_GET(X, M) ((X) & (M))

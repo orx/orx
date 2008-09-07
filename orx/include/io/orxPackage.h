@@ -91,7 +91,7 @@ extern orxDLLAPI orxVOID orxPackage_Exit();
 extern orxDLLAPI orxPACKAGE *orxPackage_Open(orxCONST orxSTRING _zDirPath, orxCONST orxSTRING _zPackageName, orxU32 _u32OpenFlags);
 
 /** Closes a package
- * @param _zPackage         (IN)     Package to close
+ * @param _pstPackage       (IN)     Package to close
  */
 extern orxDLLAPI orxVOID orxPackage_Close(orxPACKAGE *_pstPackage);
 

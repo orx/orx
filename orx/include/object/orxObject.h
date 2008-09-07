@@ -124,9 +124,22 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxObject_SetUserData(orxOBJECT *_ps
 
 /** Gets object's user data
  * @param[in]   _pstObject    Concerned object
- * @return      Storeduser data / orxNULL
+ * @return      Stored user data / orxNULL
  */
-extern orxDLLAPI orxVOID *orxFASTCALL       orxObject_GetUserData(orxOBJECT *_pstObject);
+extern orxDLLAPI orxVOID *orxFASTCALL       orxObject_GetUserData(orxCONST orxOBJECT *_pstObject);
+
+/** Sets owner for an object
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pOwner       Owner to set / orxNULL
+ */
+extern orxDLLAPI orxVOID orxFASTCALL        orxObject_SetOwner(orxOBJECT *_pstObject, orxVOID *_pOwner);
+
+/** Gets object's owner
+ * @param[in]   _pstObject    Concerned object
+ * @return      Owner / orxNULL
+ */
+extern orxDLLAPI orxVOID *orxFASTCALL       orxObject_GetOwner(orxOBJECT *_pstObject);
+
 
 /** Links a structure to an object
  * @param[in]   _pstObject      Concerned object
@@ -239,7 +252,7 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(orxCONST orx
 
 /** Sets an object parent
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pParent        Parent structure to set (object, camera or frame) / orxNULL
+ * @param[in]   _pParent        Parent structure to set (object, spawner, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pParent);

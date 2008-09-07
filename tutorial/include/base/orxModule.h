@@ -78,11 +78,12 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_PHYSICS,
   orxMODULE_ID_PLUGIN,
   orxMODULE_ID_RENDER,
+  orxMODULE_ID_SCREENSHOT,
   orxMODULE_ID_SCRIPT,
   orxMODULE_ID_SOUND,
   orxMODULE_ID_SOUNDPOINTER,
   orxMODULE_ID_SOUNDSYSTEM,
-  orxMODULE_ID_SCREENSHOT,
+  orxMODULE_ID_SPAWNER,
   orxMODULE_ID_STRUCTURE,
   orxMODULE_ID_SYSTEM,
   orxMODULE_ID_TEXTURE,
@@ -125,7 +126,7 @@ extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddDependency(orxMODULE_ID _
 
 /** Adds optional dependencies between 2 modules
  * @param[in]   _eModuleID                Concerned module ID
- * @param[in]   _eModuleID                Module ID of the optionally needed module
+ * @param[in]   _eDependID                Module ID of the optionally needed module
  */
 extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
 
@@ -160,7 +161,7 @@ extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Exit(orxMODULE_ID _eModuleID
 extern orxDLLAPI orxVOID                  orxModule_ExitAll();
 
 /** Is module initialized?
- * @param[in]   _eModulueID               Concerned module ID
+ * @param[in]   _eModuleID                Concerned module ID
  * @return      orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL      orxModule_IsInitialized(orxMODULE_ID _eModuleID);
