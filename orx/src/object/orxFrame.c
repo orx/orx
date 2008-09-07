@@ -87,10 +87,10 @@ typedef struct __orxFRAME_DATA_2D_t
  */
 struct __orxFRAME_t
 {
-  orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
-  orxVOID      *pstData;                    /**< Frame data : 20 */
+  orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 16 */
+  orxFRAME_DATA_2D  stData;                    /**< Frame data : 76 */
 
-  orxPAD(20)
+  orxPAD(76)
 };
 
 /** Static structure
@@ -133,14 +133,14 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST 
   {
     case orxFRAME_SPACE_GLOBAL:
     {
-      orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos), _pvPos);
+      orxVector_Copy(&(_pstFrame->stData.vGlobalPos), _pvPos);
 
       break;
     }
 
     case orxFRAME_SPACE_LOCAL:
     {
-      orxVector_Copy(&(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalPos), _pvPos);
+      orxVector_Copy(&(_pstFrame->stData.vLocalPos), _pvPos);
 
       break;
     }
@@ -172,14 +172,14 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT 
   {
     case orxFRAME_SPACE_GLOBAL:
     {
-      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalAngle  = _fAngle;
+      _pstFrame->stData.fGlobalAngle  = _fAngle;
 
       break;
     }
 
     case orxFRAME_SPACE_LOCAL:
     {
-      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalAngle   = _fAngle;
+      _pstFrame->stData.fLocalAngle   = _fAngle;
 
       break;
     }
@@ -212,15 +212,15 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxCONST orx
   {
     case orxFRAME_SPACE_GLOBAL:
 
-      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScaleX = _pvScale->fX;
-      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScaleY = _pvScale->fY;
+      _pstFrame->stData.fGlobalScaleX = _pvScale->fX;
+      _pstFrame->stData.fGlobalScaleY = _pvScale->fY;
 
       break;
 
     case orxFRAME_SPACE_LOCAL:
 
-      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScaleX = _pvScale->fX;
-      ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScaleY = _pvScale->fY;
+      _pstFrame->stData.fLocalScaleX = _pvScale->fX;
+      _pstFrame->stData.fLocalScaleY = _pvScale->fY;
 
       break;
 
@@ -242,7 +242,7 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxCONST orx
  */
 orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
-  orxVECTOR *pvResult = orxNULL;
+  orxCONST orxVECTOR *pvResult = orxNULL;
 
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -253,7 +253,7 @@ orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME 
     case orxFRAME_SPACE_GLOBAL:
     {
       /* Updates result */
-      pvResult = &(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vGlobalPos);
+      pvResult = &(_pstFrame->stData.vGlobalPos);
 
       break;
     }
@@ -261,7 +261,7 @@ orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME 
     case orxFRAME_SPACE_LOCAL:
     {
       /* Updates result */
-      pvResult = &(((orxFRAME_DATA_2D *)(_pstFrame->pstData))->vLocalPos);
+      pvResult = &(_pstFrame->stData.vLocalPos);
 
       break;
     }
@@ -296,14 +296,14 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetRotation(orxCONST orxFRAME *_pstFrame,
   {
     case orxFRAME_SPACE_GLOBAL:
     {
-      fAngle = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalAngle;
+      fAngle = _pstFrame->stData.fGlobalAngle;
 
       break;
     }
 
     case orxFRAME_SPACE_LOCAL:
     {
-      fAngle = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalAngle;
+      fAngle = _pstFrame->stData.fLocalAngle;
 
       break;
     }
@@ -343,8 +343,8 @@ orxSTATIC orxINLINE orxVECTOR *_orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, 
   {
     case orxFRAME_SPACE_GLOBAL:
     {
-      _pvScale->fX = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScaleX;
-      _pvScale->fY = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fGlobalScaleY;
+      _pvScale->fX = _pstFrame->stData.fGlobalScaleX;
+      _pvScale->fY = _pstFrame->stData.fGlobalScaleY;
 
       /* Updates result */
       pvResult = _pvScale;
@@ -354,8 +354,8 @@ orxSTATIC orxINLINE orxVECTOR *_orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, 
 
     case orxFRAME_SPACE_LOCAL:
     {
-      _pvScale->fX = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScaleX;
-      _pvScale->fY = ((orxFRAME_DATA_2D *)(_pstFrame->pstData))->fLocalScaleY;
+      _pvScale->fX = _pstFrame->stData.fLocalScaleX;
+      _pvScale->fY = _pstFrame->stData.fLocalScaleY;
 
       /* Updates result */
       pvResult = _pvScale;
@@ -685,43 +685,20 @@ orxFRAME *orxFrame_Create(orxU32 _u32Flags)
     /* Inits members */
     if(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_DATA_2D)
     {
-      orxFRAME_DATA_2D *pstData;
-
       /* Updates flags */
       orxStructure_SetFlags(pstFrame, orxFRAME_KU32_FLAG_DATA_2D, orxFRAME_KU32_FLAG_NONE);
 
-      /* Allocates data memory */
-      pstData = (orxFRAME_DATA_2D *) orxMemory_Allocate(sizeof(orxFRAME_DATA_2D), orxMEMORY_TYPE_MAIN);
+      /* Inits values */
+      pstFrame->stData.fGlobalScaleX  = orxFLOAT_1;
+      pstFrame->stData.fGlobalScaleY  = orxFLOAT_1;
+      pstFrame->stData.fLocalScaleX   = orxFLOAT_1;
+      pstFrame->stData.fLocalScaleY   = orxFLOAT_1;
 
-      /* Inits & assigns it */
-      if(pstData != orxNULL)
+      /* Has already a root? */
+      if(sstFrame.pstRoot != orxNULL)
       {
-        /* Cleans it */
-        orxMemory_Zero(pstData, sizeof(orxFRAME_DATA_2D));
-
-        /* Inits values */
-        pstData->fGlobalScaleX  = orxFLOAT_1;
-        pstData->fGlobalScaleY  = orxFLOAT_1;
-        pstData->fLocalScaleX   = orxFLOAT_1;
-        pstData->fLocalScaleY   = orxFLOAT_1;
-
-        /* Links data to frame */
-        pstFrame->pstData = pstData;
-
-        /* Has already a root? */
-        if(sstFrame.pstRoot != orxNULL)
-        {
-          /* Sets frame to root */
-          orxFrame_SetParent(pstFrame, sstFrame.pstRoot);
-        }
-      }
-      else
-      {
-        /* Deletes partially created frame */
-        orxStructure_Delete(pstFrame);
-
-        /* Not created */
-        pstFrame = orxNULL;
+        /* Sets frame to root */
+        orxFrame_SetParent(pstFrame, sstFrame.pstRoot);
       }
     }
     else
@@ -753,13 +730,6 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstFrame) == 0)
   {
-    /* Cleans data */
-    if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
-    {
-      /* Frees frame data memory */
-      orxMemory_Free(_pstFrame->pstData);
-    }
-
     /* Deletes structure */
     orxStructure_Delete(_pstFrame);
   }
