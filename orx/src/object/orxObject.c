@@ -460,6 +460,9 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
       orxObject_UnlinkStructure(_pstObject, (orxSTRUCTURE_ID)i);
     }
 
+    /* Removes owner */
+    orxObject_SetOwner(_pstObject, orxNULL);
+
     /* Deletes structure */
     orxStructure_Delete(_pstObject);
   }
@@ -1083,24 +1086,10 @@ orxVOID orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, orxVOID *_pOwner)
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_pOwner == orxNULL) || (((orxSTRUCTURE *)(_pOwner))->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER);
-
-  /* Had an owner? */
-  if(_pstObject->pstOwner != orxNULL)
-  {
-    /* Decreases its ref counter */
-    orxStructure_DecreaseCounter(_pstObject->pstOwner);
-  }
+  orxASSERT((_pOwner == orxNULL) || (((orxSTRUCTURE *)(_pOwner))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
 
   /* Sets new owner */
   _pstObject->pstOwner = orxSTRUCTURE(_pOwner);
-
-  /* Has new owner */
-  if(_pstObject->pstOwner != orxNULL)
-  {
-    /* Increases its ref counter */
-    orxStructure_IncreaseCounter(_pstObject->pstOwner);
-  }
 
   return;
 }
@@ -1619,7 +1608,7 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pPare
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
 
   /* Gets frame */
   pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);

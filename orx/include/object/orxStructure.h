@@ -52,7 +52,7 @@
  */
 #define orxSTRUCTURE_GET_POINTER(STRUCTURE, TYPE) ((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))
 
-#define orxSTRUCTURE(STRUCTURE)     (((STRUCTURE != orxNULL) && ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER)) ? (orxSTRUCTURE *)STRUCTURE : (orxSTRUCTURE *)orxNULL)
+#define orxSTRUCTURE(STRUCTURE)     (((STRUCTURE != orxNULL) && ((((orxSTRUCTURE *)STRUCTURE)->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER)) ? (orxSTRUCTURE *)STRUCTURE : (orxSTRUCTURE *)orxNULL)
 
 #define orxANIM(STRUCTURE)          orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIM)
 #define orxANIMPOINTER(STRUCTURE)   orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIMPOINTER)
@@ -79,15 +79,17 @@
  */
 #define orxSTRUCTURE_ASSERT(STRUCTURE)                          \
   orxASSERT((STRUCTURE) != orxNULL);                            \
-  orxASSERT((((orxSTRUCTURE *)(STRUCTURE))->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((((orxSTRUCTURE *)(STRUCTURE))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
 
 /** Structure magic number
  */
 #ifdef __orxDEBUG__
-  #define orxSTRUCTURE_MAGIC_NUMBER   0xDEFACED0
+  #define orxSTRUCTURE_MAGIC_TAG_ACTIVE   0xDEFACED0
 #else
-  #define orxSTRUCTURE_MAGIC_NUMBER   0x00000000
+  #define orxSTRUCTURE_MAGIC_TAG_ACTIVE   0x00000000
 #endif
+
+#define orxSTRUCTURE_MAGIC_TAG_DELETED    0xDEADC0DE
 
 
 /** Structure IDs
@@ -163,7 +165,7 @@ orxSTATIC orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(orxCONST orxVOID *_pS
   orxSTRUCTURE *pstResult;
 
   /* Updates result */
-  pstResult = ((_pStructure != orxNULL) && (((orxSTRUCTURE *)_pStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER) == _eStructureID) ? (orxSTRUCTURE *)_pStructure : (orxSTRUCTURE *)orxNULL;
+  pstResult = ((_pStructure != orxNULL) && (((orxSTRUCTURE *)_pStructure)->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) == _eStructureID) ? (orxSTRUCTURE *)_pStructure : (orxSTRUCTURE *)orxNULL;
 
   /* Done! */
   return pstResult;
@@ -341,7 +343,7 @@ orxSTATIC orxINLINE orxSTRUCTURE_ID                     orxStructure_GetID(orxCO
   orxSTRUCTURE_ASSERT(_pStructure);
 
   /* Returns it */
-  return((orxSTRUCTURE_ID)(orxSTRUCTURE(_pStructure)->eID ^ orxSTRUCTURE_MAGIC_NUMBER));
+  return((orxSTRUCTURE_ID)(orxSTRUCTURE(_pStructure)->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE));
 }
 
 /** Tests flags against structure ones

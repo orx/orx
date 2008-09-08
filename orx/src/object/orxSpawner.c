@@ -402,8 +402,15 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
       /* Checks */
       orxASSERT(u32Value <= 0xFFFF);
 
-      /* Sets it */
-      pstResult->u16TotalObjectLimit = (orxU16)u32Value;
+      /* Has limit? */
+      if(u32Value > 0)
+      {
+        /* Sets it */
+        pstResult->u16TotalObjectLimit = (orxU16)u32Value;
+
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT, orxSPAWNER_KU32_FLAG_NONE);
+      }
 
       /* Gets active limit */
       u32Value = orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_ACTIVE_OBJECT);
@@ -411,8 +418,15 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
       /* Checks */
       orxASSERT(u32Value <= 0xFFFF);
 
-      /* Sets it */
-      pstResult->u16ActiveObjectLimit = (orxU16)u32Value;
+      /* Has limit? */
+      if(u32Value > 0)
+      {
+        /* Sets it */
+        pstResult->u16ActiveObjectLimit = (orxU16)u32Value;
+
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT, orxSPAWNER_KU32_FLAG_NONE);
+      }
 
       /* Has a position? */
       if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_POSITION, &vValue) != orxNULL)
@@ -488,7 +502,8 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstSpawner) == 0)
   {
-    orxEVENT stEvent;
+    orxOBJECT  *pstObject;
+    orxEVENT    stEvent;
 
     /* Inits event */
     orxMemory_Zero(&stEvent, sizeof(orxEVENT));
@@ -498,6 +513,19 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
 
     /* Sends it */
     orxEvent_Send(&stEvent);
+
+    /* For all objects */
+    for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+        pstObject != orxNULL;
+        pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+    {
+      /* Is spawner the owner */
+      if(orxObject_GetOwner(pstObject) == _pstSpawner)
+      {
+        /* Removes it */
+        orxObject_SetOwner(pstObject, orxNULL);
+      }
+    }
 
     /* Decreases frame's ref counter */
     orxStructure_DecreaseCounter(_pstSpawner->pstFrame);
@@ -564,15 +592,12 @@ orxBOOL orxFASTCALL orxSpawner_IsEnabled(orxCONST orxSPAWNER *_pstSpawner)
  */
 orxVOID orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
 {
-  orxEVENT stEvent;
+  orxOBJECT  *pstObject;
+  orxEVENT    stEvent;
   
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
-
-  /* Resets counters */
-  _pstSpawner->u16ActiveObjectCounter = _pstSpawner->u16ActiveObjectLimit;
-  _pstSpawner->u16TotalObjectCounter  = _pstSpawner->u16TotalObjectLimit;
 
   /* Updates status */
   orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_FLAG_NONE);
@@ -585,6 +610,23 @@ orxVOID orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
 
   /* Sends it */
   orxEvent_Send(&stEvent);
+
+  /* Resets counters */
+  _pstSpawner->u16ActiveObjectCounter = 0;
+  _pstSpawner->u16TotalObjectCounter  = 0;
+
+  /* For all objects */
+  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+      pstObject != orxNULL;
+      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+  {
+    /* Is spawner the owner */
+    if(orxObject_GetOwner(pstObject) == _pstSpawner)
+    {
+      /* Removes it */
+      orxObject_SetOwner(pstObject, orxNULL);
+    }
+  }
 
   return;
 }
@@ -655,7 +697,7 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
       /* Valid? */
       if(pstObject != orxNULL)
       {
-        orxVECTOR vPosition, vSpawnerPosition;
+        orxVECTOR vPosition, vSpawnerPosition, vScale, vSpawnerScale;
         orxFLOAT  fSpawnerRotation;
 
         /* Updates active object counter */
@@ -673,8 +715,11 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         /* Updates object rotation */
         orxObject_SetRotation(pstObject, orxObject_GetRotation(pstObject) + fSpawnerRotation);
 
+        /* Updates object scale */
+        orxObject_SetScale(pstObject, orxVector_Mul(&vScale, orxObject_GetScale(pstObject, &vScale), orxSpawner_GetWorldScale(_pstSpawner, &vSpawnerScale)));
+
         /* Updates object position */
-        orxObject_SetPosition(pstObject, orxVector_Add(&vPosition, orxVector_2DRotate(&vPosition, orxObject_GetPosition(pstObject, &vPosition), fSpawnerRotation), orxSpawner_GetWorldPosition(_pstSpawner, &vSpawnerPosition)));
+        orxObject_SetPosition(pstObject, orxVector_Add(&vPosition, orxVector_2DRotate(&vPosition, orxVector_Mul(&vPosition, orxObject_GetPosition(pstObject, &vPosition), &vSpawnerScale), fSpawnerRotation), orxSpawner_GetWorldPosition(_pstSpawner, &vSpawnerPosition)));
 
         /* Updates result */
         u32Result++;
@@ -937,7 +982,7 @@ orxSTATUS orxFASTCALL orxSpawner_SetParent(orxSPAWNER *_pstSpawner, orxVOID *_pP
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSpawner);
-  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
 
   /* Gets frame */
   pstFrame = _pstSpawner->pstFrame;

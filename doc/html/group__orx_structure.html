@@ -25,7 +25,7 @@
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TYPE)&nbsp;&nbsp;&nbsp;((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_NUMBER) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)orxNULL)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)orxNULL)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gfed02c22755889a77177dfcfe6b0e263">orxANIM</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIM)</td></tr>
 
@@ -61,7 +61,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(STRUCTURE)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gc4d874a886d06fd3885d696a2df85a78">orxSTRUCTURE_MAGIC_NUMBER</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxSTRUCTURE_MAGIC_TAG_ACTIVE</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gb94740c722d3469c182b3c2806a574f9">orxSTRUCTURE_MAGIC_TAG_DELETED</a>&nbsp;&nbsp;&nbsp;0xDEADC0DE</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_structure.html#g09e11f0c7ccba0df601b65ddc54d44c2">__orxSTRUCTURE_ID_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a></td></tr>
@@ -436,7 +438,7 @@ Structure module Allows to creates and handle structures. Structures can be refe
           <td class="paramtype">STRUCTURE&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_NUMBER) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)orxNULL)</td>
+          <td>&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)orxNULL)</td>
         </tr>
       </table>
 </div>
@@ -464,7 +466,7 @@ Structure module Allows to creates and handle structures. Structures can be refe
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="group__orx_debug.html#g43a57c2b488159e444cf486af7ded87a">orxASSERT</a>((STRUCTURE) != orxNULL);                            \
-  <a class="code" href="group__orx_debug.html#g43a57c2b488159e444cf486af7ded87a">orxASSERT</a>((((<a class="code" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)(STRUCTURE))-&gt;eID ^ <a class="code" href="group__orx_structure.html#gc4d874a886d06fd3885d696a2df85a78">orxSTRUCTURE_MAGIC_NUMBER</a>) &lt; <a class="code" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>);
+  <a class="code" href="group__orx_debug.html#g43a57c2b488159e444cf486af7ded87a">orxASSERT</a>((((<a class="code" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)(STRUCTURE))-&gt;eID ^ <a class="code" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxSTRUCTURE_MAGIC_TAG_ACTIVE</a>) &lt; <a class="code" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>);
 </pre></div>Structure assert 
 </div>
 </div><p>
@@ -491,12 +493,12 @@ Structure module Allows to creates and handle structures. Structures can be refe
 Structure pointer get helpers 
 </div>
 </div><p>
-<a class="anchor" name="gc4d874a886d06fd3885d696a2df85a78"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_MAGIC_NUMBER" ref="gc4d874a886d06fd3885d696a2df85a78" args="" -->
+<a class="anchor" name="gc4d77ad4d92518b61d13d70703821fac"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_MAGIC_TAG_ACTIVE" ref="gc4d77ad4d92518b61d13d70703821fac" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxSTRUCTURE_MAGIC_NUMBER&nbsp;&nbsp;&nbsp;0x00000000          </td>
+          <td class="memname">#define orxSTRUCTURE_MAGIC_TAG_ACTIVE&nbsp;&nbsp;&nbsp;0x00000000          </td>
         </tr>
       </table>
 </div>
@@ -504,6 +506,21 @@ Structure pointer get helpers
 
 <p>
 Structure magic number 
+</div>
+</div><p>
+<a class="anchor" name="gb94740c722d3469c182b3c2806a574f9"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_MAGIC_TAG_DELETED" ref="gb94740c722d3469c182b3c2806a574f9" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSTRUCTURE_MAGIC_TAG_DELETED&nbsp;&nbsp;&nbsp;0xDEADC0DE          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
 </div>
 </div><p>
 <a class="anchor" name="gfb154568e5f92f5d65109b4dc3a0a3fb"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_REGISTER" ref="gfb154568e5f92f5d65109b4dc3a0a3fb" args="(TYPE, STORAGE_TYPE, MEMORY_TYPE, UPDATE_FUNCTION)" -->
@@ -1513,7 +1530,7 @@ Updates structure if update function was registered for the structure type <dl c
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 7 04:54:55 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Mon Sep 8 02:28:04 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

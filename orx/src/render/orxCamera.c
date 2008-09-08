@@ -619,7 +619,7 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, orxVOID *_pPare
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstCamera);
-  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_NUMBER) < orxSTRUCTURE_ID_NUMBER);
+  orxASSERT((_pParent == orxNULL) || (((orxSTRUCTURE *)(_pParent))->eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) < orxSTRUCTURE_ID_NUMBER);
 
   /* Gets frame */
   pstFrame = _pstCamera->pstFrame;
