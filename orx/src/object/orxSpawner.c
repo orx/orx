@@ -81,15 +81,16 @@
 struct __orxSPAWNER_t
 {
   orxSTRUCTURE        stStructure;                /**< Public structure, first structure member : 16 */
-  orxU16              u16TotalObjectLimit;        /**< Limit of objects that can be spawned, 0 for unlimited stock : 18 */
-  orxU16              u16ActiveObjectLimit;       /**< Limit of active objects at the same time, 0 for unlimited : 20 */
-  orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 22 */
-  orxU16              u16ActiveObjectCounter;     /**< Active objects counter : 24 */
-  orxSTRING           zObjectName;                /**< Object name : 28 */
-  orxFRAME           *pstFrame;                   /**< Frame : 32 */
+  orxSTRING           zReference;                 /**< Spawner reference : 20 */
+  orxU16              u16TotalObjectLimit;        /**< Limit of objects that can be spawned, 0 for unlimited stock : 22 */
+  orxU16              u16ActiveObjectLimit;       /**< Limit of active objects at the same time, 0 for unlimited : 24 */
+  orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 26 */
+  orxU16              u16ActiveObjectCounter;     /**< Active objects counter : 28 */
+  orxSTRING           zObjectName;                /**< Object name : 32 */
+  orxFRAME           *pstFrame;                   /**< Frame : 36 */
 
   /* Padding */
-  orxPAD(32)
+  orxPAD(36)
 };
 
 /** Static structure
@@ -392,6 +393,9 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
     {
       orxVECTOR vValue;
       orxU32    u32Value;
+
+      /* Stores its reference */
+      pstResult->zReference = orxConfig_GetCurrentSection();
 
       /* Sets object name */
       pstResult->zObjectName = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT);
@@ -1044,4 +1048,32 @@ orxSTATUS orxFASTCALL orxSpawner_SetParent(orxSPAWNER *_pstSpawner, orxVOID *_pP
 
   /* Done! */
   return eResult;
+}
+
+/** Gets spawner name
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+orxSTRING orxFASTCALL orxSpawner_GetName(orxCONST orxSPAWNER *_pstSpawner)
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+
+  /* Has reference? */
+  if(_pstSpawner->zReference != orxNULL)
+  {
+    /* Updates result */
+    zResult = _pstSpawner->zReference;
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return zResult;
 }

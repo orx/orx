@@ -201,6 +201,13 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetWorldScale(orxCONST or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetParent(orxSPAWNER *_pstSpawner, orxVOID *_pParent);
 
+
+/** Gets spawner name
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL      orxSpawner_GetName(orxCONST orxSPAWNER *_pstSpawner);
+
 #endif /* _orxSPAWNER_H_ */
 
 /** @} */
