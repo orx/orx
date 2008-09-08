@@ -56,7 +56,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, orxVOID, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetMoveDelta, orxVECTOR *, orxVECTOR *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetWheelDelta, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetWheelDelta, orxFLOAT, orxVOID);
 
 
 /* *** Core function info array *** */
