@@ -52,10 +52,15 @@
 #define orxSPAWNER_KU32_FLAG_NONE                 0x00000000  /**< No flags */
 
 #define orxSPAWNER_KU32_FLAG_ENABLED              0x10000000  /**< Enabled flag */
-#define orxSPAWNER_KU32_FLAG_AUTO_DELETE          0x20000000  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_AUTO_RESET           0x40000000  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_TOTAL_LIMIT          0x01000000  /**< Total limit flag */
-#define orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT         0x02000000  /**< Active limit flag */
+#define orxSPAWNER_KU32_FLAG_TOTAL_LIMIT          0x20000000  /**< Total limit flag */
+#define orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT         0x40000000  /**< Active limit flag */
+#define orxSPAWNER_KU32_FLAG_WAVE_MODE            0x80000000  /**< Wave mode flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_DELETE          0x01000000  /**< Auto delete flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_RESET           0x02000000  /**< Auto delete flag */
+#define orxSPAWNER_KU32_FLAG_USE_ALPHA            0x04000000  /**< Use alpha flag */
+#define orxSPAWNER_KU32_FLAG_USE_COLOR            0x08000000  /**< Use color flag */
+#define orxSPAWNER_KU32_FLAG_OBJECT_SPEED         0x00100000  /**< Speed flag */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00200000  /**< Use relative speed flag */
 
 #define orxSPAWNER_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
@@ -68,8 +73,14 @@
 #define orxSPAWNER_KZ_CONFIG_SCALE                "Scale"
 #define orxSPAWNER_KZ_CONFIG_TOTAL_OBJECT         "TotalObject"
 #define orxSPAWNER_KZ_CONFIG_ACTIVE_OBJECT        "ActiveObject"
+#define orxSPAWNER_KZ_CONFIG_WAVE_NUMBER          "WaveNumber"
+#define orxSPAWNER_KZ_CONFIG_WAVE_DELAY           "WaveDelay"
 #define orxSPAWNER_KZ_CONFIG_AUTO_DELETE          "AutoDelete"
 #define orxSPAWNER_KZ_CONFIG_AUTO_RESET           "AutoReset"
+#define orxSPAWNER_KZ_CONFIG_USE_ALPHA            "UseAlpha"
+#define orxSPAWNER_KZ_CONFIG_USE_COLOR            "UseColor"
+#define orxSPAWNER_KZ_CONFIG_OBJECT_SPEED         "ObjectSpeed"
+#define orxSPAWNER_KZ_CONFIG_USE_RELATIVE_SPEED   "UseRelativeSpeed"
 
 
 /***************************************************************************
@@ -81,23 +92,28 @@
 struct __orxSPAWNER_t
 {
   orxSTRUCTURE        stStructure;                /**< Public structure, first structure member : 16 */
-  orxSTRING           zReference;                 /**< Spawner reference : 20 */
-  orxU16              u16TotalObjectLimit;        /**< Limit of objects that can be spawned, 0 for unlimited stock : 22 */
-  orxU16              u16ActiveObjectLimit;       /**< Limit of active objects at the same time, 0 for unlimited : 24 */
-  orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 26 */
-  orxU16              u16ActiveObjectCounter;     /**< Active objects counter : 28 */
-  orxSTRING           zObjectName;                /**< Object name : 32 */
-  orxFRAME           *pstFrame;                   /**< Frame : 36 */
+  orxVECTOR           vSpeed;                     /**< Speed : 28 */
+  orxSTRING           zReference;                 /**< Spawner reference : 32 */
+  orxU16              u16TotalObjectLimit;        /**< Limit of objects that can be spawned, 0 for unlimited stock : 34 */
+  orxU16              u16ActiveObjectLimit;       /**< Limit of active objects at the same time, 0 for unlimited : 36 */
+  orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 38 */
+  orxU16              u16ActiveObjectCounter;     /**< Active objects counter : 40 */
+  orxSTRING           zObjectName;                /**< Object name : 44 */
+  orxFRAME           *pstFrame;                   /**< Frame : 48 */
+  orxFLOAT            fWaveTimeStamp;             /**< Wave time stamp : 52 */
+  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 56 */
+  orxU32              u32WaveNumber;              /**< Total spawned objects counter : 60 */
 
   /* Padding */
-  orxPAD(36)
+  orxPAD(60)
 };
 
 /** Static structure
  */
 typedef struct __orxSPAWNER_STATIC_t
 {
-  orxU32 u32Flags;                                /**< Control flags */
+  orxU32      u32Flags;                           /**< Control flags */
+  orxOBJECT  *pstWaveParent;                      /**< Wave parent object */
 
 } orxSPAWNER_STATIC;
 
@@ -124,33 +140,117 @@ orxSTATIC orxSTATUS orxFASTCALL orxSpawner_EventHandler(orxCONST orxEVENT *_pstE
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_OBJECT) || (_pstEvent->eType == orxEVENT_TYPE_SPAWNER));
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
+  /* Depending on type */
+  switch(_pstEvent->eType)
   {
-    /* Delete event */
-    case orxOBJECT_EVENT_DELETE:
+    case orxEVENT_TYPE_OBJECT:
     {
-      orxOBJECT  *pstObject;
-      orxSPAWNER *pstSpawner;
-
-      /* Gets corresponding object */
-      pstObject = orxOBJECT(_pstEvent->hSender);
-
-      /* Gets owner */
-      pstSpawner = orxSPAWNER(orxObject_GetOwner(pstObject));
-
-      /* Is a spawner linked to it? */
-      if(pstSpawner != orxNULL)
+      /* Depending on event ID */
+      switch(_pstEvent->eID)
       {
-        /* Checks */
-        orxASSERT(pstSpawner->u16ActiveObjectCounter > 0);
+        /* Delete event */
+        case orxOBJECT_EVENT_DELETE:
+        {
+          orxOBJECT  *pstObject;
+          orxSPAWNER *pstSpawner;
 
-        /* Decreases its active objects counter */
-        pstSpawner->u16ActiveObjectCounter--;
+          /* Gets corresponding object */
+          pstObject = orxOBJECT(_pstEvent->hSender);
 
-        break;
+          /* Gets owner */
+          pstSpawner = orxSPAWNER(orxObject_GetOwner(pstObject));
+
+          /* Is a spawner linked to it? */
+          if(pstSpawner != orxNULL)
+          {
+            /* Checks */
+            orxASSERT(pstSpawner->u16ActiveObjectCounter > 0);
+
+            /* Decreases its active objects counter */
+            pstSpawner->u16ActiveObjectCounter--;
+
+            break;
+          }
+
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
+
+      break;
+    }
+
+    case orxEVENT_TYPE_SPAWNER:
+    {
+      /* Is a spawn event? */
+      if(_pstEvent->eID == orxSPAWNER_EVENT_SPAWN)
+      {
+        orxSPAWNER *pstSpawner;
+
+        /* Gets spawner */
+        pstSpawner = orxSPAWNER(_pstEvent->hSender);
+
+        /* Should apply color or alpha? */
+        if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_USE_ALPHA | orxSPAWNER_KU32_FLAG_USE_COLOR))
+        {
+          orxCOLOR    stColor, stTemp;
+          orxOBJECT  *pstObject;
+
+          /* Inits color */
+          orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
+
+          /* Gets spawned object */
+          pstObject = orxOBJECT(_pstEvent->hRecipient);
+
+          /* Should apply color? */
+          if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_USE_COLOR))
+          {
+            /* Has color? */
+            if(orxObject_HasColor(sstSpawner.pstWaveParent) != orxFALSE)
+            {
+              /* Gets it */
+              orxObject_GetColor(sstSpawner.pstWaveParent, &stColor);
+            }
+          }
+          else
+          {
+            /* Has color? */
+            if(orxObject_HasColor(pstObject) != orxFALSE)
+            {
+              /* Uses object's one */
+              orxObject_GetColor(pstObject, &stColor);
+            }
+          }
+
+          /* Should apply alpha? */
+          if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_USE_ALPHA))
+          {
+            /* Has color? */
+            if(orxObject_HasColor(sstSpawner.pstWaveParent) != orxFALSE)
+            {
+              /* Stores it */
+              stColor.fAlpha = orxObject_GetColor(sstSpawner.pstWaveParent, &stTemp)->fAlpha;
+            }
+          }
+          else
+          {
+            /* Has color? */
+            if(orxObject_HasColor(pstObject) != orxFALSE)
+            {
+              /* Uses object's alpha */
+              stColor.fAlpha = orxObject_GetColor(pstObject, &stTemp)->fAlpha;
+            }
+          }
+
+          /* Applies new value */
+          orxObject_SetColor(pstObject, &stColor);
+        }
       }
 
       break;
@@ -214,7 +314,42 @@ orxSTATIC orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, o
   /* Is enabled? */
   if(orxSpawner_IsEnabled(pstSpawner) != orxFALSE)
   {
-    //! TODO
+    /* Should spawn a new wave? */
+    if(_pstClockInfo->fTime >= pstSpawner->fWaveTimeStamp)
+    {
+      orxEVENT stEvent;
+
+      /* Inits event */
+      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+      stEvent.eType   = orxEVENT_TYPE_SPAWNER;
+      stEvent.eID     = orxSPAWNER_EVENT_WAVE_START;
+      stEvent.hSender = pstSpawner;
+
+      /* Sends wave start event */
+      orxEvent_Send(&stEvent);
+
+      /* Stores wave parent */
+      sstSpawner.pstWaveParent = pstObject;
+
+      /* Adds event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
+
+      /* Spawn the wave */
+      orxSpawner_Spawn(pstSpawner, pstSpawner->u32WaveNumber);
+
+      /* Removes wave parent */
+      sstSpawner.pstWaveParent = orxNULL;
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SPAWNER, orxSpawner_EventHandler);
+
+      /* Updates wave time stamp */
+      pstSpawner->fWaveTimeStamp = _pstClockInfo->fTime + pstSpawner->fWaveDelay;
+
+      /* Sends wave stop event */
+      stEvent.eID = orxSPAWNER_EVENT_WAVE_STOP;
+      orxEvent_Send(&stEvent);
+    }
   }
 
   /* Done! */
@@ -432,6 +567,23 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
         orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT, orxSPAWNER_KU32_FLAG_NONE);
       }
 
+      /* Gets wave number */
+      pstResult->u32WaveNumber = orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_WAVE_NUMBER);
+
+      /* Has defined wave? */
+      if(pstResult->u32WaveNumber > 0)
+      {
+        /* Gets wave delay */
+        pstResult->fWaveDelay = orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_WAVE_DELAY);
+
+        /* Valid? */
+        if(pstResult->fWaveDelay >= orxFLOAT_0)
+        {
+          /* Updates status */
+          orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_WAVE_MODE, orxSPAWNER_KU32_FLAG_NONE);
+        }
+      }
+
       /* Has a position? */
       if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_POSITION, &vValue) != orxNULL)
       {
@@ -461,6 +613,22 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
         orxSpawner_SetScale(pstResult, &vValue);
       }
 
+      /* Has speed? */
+      if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(pstResult->vSpeed)) != orxNULL)
+      {
+        /* Use relative speed? */
+        if(orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_RELATIVE_SPEED) != orxFALSE)
+        {
+          /* Updates status */
+          orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_OBJECT_SPEED | orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED, orxSPAWNER_KU32_FLAG_NONE);
+        }
+        else
+        {
+          /* Updates status */
+          orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
+        }
+      }
+
       /* Auto delete? */
       if(orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_AUTO_DELETE) != orxFALSE)
       {
@@ -473,6 +641,20 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
       {
         /* Updates status */
         orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_AUTO_RESET, orxSPAWNER_KU32_FLAG_NONE);
+      }
+
+      /* Use alpha? */
+      if(orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_ALPHA) != orxFALSE)
+      {
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_ALPHA, orxSPAWNER_KU32_FLAG_NONE);
+      }
+
+      /* Use color? */
+      if(orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_COLOR) != orxFALSE)
+      {
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_COLOR, orxSPAWNER_KU32_FLAG_NONE);
       }
     }
 
@@ -635,6 +817,110 @@ orxVOID orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
   return;
 }
 
+/** Sets spawner total object limit
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _u32TotalObjectLimit Total object limit, 0 for unlimited
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSpawner_SetTotalObjectLimit(orxSPAWNER *_pstSpawner, orxU32 _u32TotalObjectLimit)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+  orxASSERT(_u32TotalObjectLimit <= 0xFFFF);
+
+  /* Has limit? */
+  if(_u32TotalObjectLimit > 0)
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT, orxSPAWNER_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT);
+  }
+
+  /* Sets it */
+  _pstSpawner->u16TotalObjectLimit = (orxU16)_u32TotalObjectLimit;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets spawner active object limit
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _u32ActiveObjectLimit Active object limit, 0 for unlimited
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSpawner_SetActiveObjectLimit(orxSPAWNER *_pstSpawner, orxU32 _u32ActiveObjectLimit)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSpawner);
+  orxASSERT(_u32ActiveObjectLimit <= 0xFFFF);
+
+  /* Has limit? */
+  if(_u32ActiveObjectLimit > 0)
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT, orxSPAWNER_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT);
+  }
+
+  /* Sets it */
+  _pstSpawner->u16ActiveObjectLimit = (orxU16)_u32ActiveObjectLimit;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets spawner total object limit
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Total object limit, 0 for unlimited
+ */
+orxU32 orxFASTCALL orxSpawner_GetTotalObjectLimit(orxCONST orxSPAWNER *_pstSpawner)
+{
+  orxU32 u32Result = 0;
+
+  /* Has limit */
+  if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
+  {
+    /* Updates result */
+    u32Result = (orxU32)_pstSpawner->u16TotalObjectLimit;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Gets spawner active object limit
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Active object limit, 0 for unlimited
+ */
+orxU32 orxFASTCALL orxSpawner_GetActiveObjectLimit(orxCONST orxSPAWNER *_pstSpawner)
+{
+  orxU32 u32Result = 0;
+
+  /* Has limit */
+  if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ACTIVE_LIMIT))
+  {
+    /* Updates result */
+    u32Result = (orxU32)_pstSpawner->u16ActiveObjectLimit;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Spawns objects
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _u32Number      Number of objects to spawn
@@ -724,6 +1010,24 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
 
         /* Updates object position */
         orxObject_SetPosition(pstObject, orxVector_Add(&vPosition, orxVector_2DRotate(&vPosition, orxVector_Mul(&vPosition, orxObject_GetPosition(pstObject, &vPosition), &vSpawnerScale), fSpawnerRotation), orxSpawner_GetWorldPosition(_pstSpawner, &vSpawnerPosition)));
+
+        /* Should apply speed? */
+        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED))
+        {
+          /* Use relative speed? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED))
+          {
+            orxVECTOR vSpeed;
+
+            /* Applies relative speed */
+            orxObject_SetSpeed(pstObject, orxVector_2DRotate(&vSpeed, &(_pstSpawner->vSpeed), fSpawnerRotation));
+          }
+          else
+          {
+            /* Applies speed */
+            orxObject_SetSpeed(pstObject, &(_pstSpawner->vSpeed));
+          }
+        }
 
         /* Updates result */
         u32Result++;

@@ -56,6 +56,8 @@ typedef enum __orxSPAWNER_EVENT_t
   orxSPAWNER_EVENT_DELETE,
   orxSPAWNER_EVENT_RESET,
   orxSPAWNER_EVENT_EMPTY,
+  orxSPAWNER_EVENT_WAVE_START,
+  orxSPAWNER_EVENT_WAVE_STOP,
 
   orxSPAWNER_EVENT_NUMBER,
 
@@ -115,6 +117,32 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxSpawner_IsEnabled(orxCONST orxSPA
  * @param[in]   _pstSpawner     Concerned spawner
  */
 extern orxDLLAPI orxVOID orxFASTCALL        orxSpawner_Reset(orxSPAWNER *_pstSpawner);
+
+/** Sets spawner total object limit
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _u32TotalObjectLimit Total object limit, 0 for unlimited
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetTotalObjectLimit(orxSPAWNER *_pstSpawner, orxU32 _u32TotalObjectLimit);
+
+/** Sets spawner active object limit
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _u32ActiveObjectLimit Active object limit, 0 for unlimited
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetActiveObjectLimit(orxSPAWNER *_pstSpawner, orxU32 _u32ActiveObjectLimit);
+
+/** Gets spawner total object limit
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Total object limit, 0 for unlimited
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetTotalObjectLimit(orxCONST orxSPAWNER *_pstSpawner);
+
+/** Gets spawner active object limit
+ * @param[in]   _pstSpawner     Concerned spawner
+ * @return      Active object limit, 0 for unlimited
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetActiveObjectLimit(orxCONST orxSPAWNER *_pstSpawner);
 
 
 /** Spawns items

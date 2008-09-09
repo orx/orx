@@ -816,7 +816,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
     else
     {
       /* Clears color */
-      orxColor_Set(&stColor, &orxVECTOR_WHITE, orx2F(255.0f));
+      orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
     }
 
     /* For all slots */
