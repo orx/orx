@@ -104,6 +104,7 @@
 #define orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY    "AngularVelocity"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX                  "FX"
+#define orxOBJECT_KZ_CONFIG_SOUND               "Sound"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
@@ -775,6 +776,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       {
         /* Adds it */
         orxObject_AddFX(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_FX));
+      }
+
+      /* Has sound? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_SOUND) != orxFALSE)
+      {
+        /* Adds it */
+        orxObject_AddSound(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_SOUND));
       }
 
       /* Has smoothing value? */
