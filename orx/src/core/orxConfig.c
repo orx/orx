@@ -69,7 +69,7 @@
 #define orxCONFIG_KC_ASSIGN                 '='         /**< Assign character */
 #define orxCONFIG_KC_COMMENT                ';'         /**< Comment character */
 #define orxCONFIG_KC_RANDOM_SEPARATOR       '~'         /**< Random number separator character */
-#define orxCONFIG_KC_INHERITANCE_SEPARATOR  '@'         /**< Inheritance separator character */
+#define orxCONFIG_KC_INHERITANCE_MARKER     '@'         /**< Inheritance marker character */
 #define orxCONFIG_KC_BLOCK                  '"'         /**< Block delimiter character */
 
 #define orxCONFIG_KZ_CONFIG_SECTION         "Config"    /**< Config section name */
@@ -227,7 +227,7 @@ orxSTATIC orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
   if(pstEntry != orxNULL)
   {
     /* Has local inheritance? */
-    if(*(pstEntry->stValue.zValue) == orxCONFIG_KC_INHERITANCE_SEPARATOR)
+    if(*(pstEntry->stValue.zValue) == orxCONFIG_KC_INHERITANCE_MARKER)
     {
       orxCONFIG_SECTION *pstPreviousSection;
 
@@ -659,7 +659,7 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
     orxS32              s32MarkerIndex;
 
     /* Looks for inheritance index */
-    s32MarkerIndex = orxString_SearchCharIndex(_zSectionName, orxCONFIG_KC_INHERITANCE_SEPARATOR, 0);
+    s32MarkerIndex = orxString_SearchCharIndex(_zSectionName, orxCONFIG_KC_INHERITANCE_MARKER, 0);
 
     /* Found? */
     if(s32MarkerIndex >= 0)
@@ -725,7 +725,7 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
     if(s32MarkerIndex >= 0)
     {
       /* Restores it */
-      *(_zSectionName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_SEPARATOR;
+      *(_zSectionName + s32MarkerIndex) = orxCONFIG_KC_INHERITANCE_MARKER;
     }
   }
   else
@@ -865,8 +865,60 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             pcLineStart++, pc++;
           }
 
+          /* Inheritance marker? */
+          if(*pc == orxCONFIG_KC_INHERITANCE_MARKER)
+          {
+            /* Updates pointer */
+            pc++;
+
+            /* Finds section end */
+            while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_INHERITANCE_MARKER))
+            {
+              /* End of line? */
+              if(*pc == orxCHAR_EOL)
+              {
+                /* !!! MSG !!! */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "File name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+
+                /* Updates new line start */
+                pcLineStart = pc + 1;
+
+                break;
+              }
+
+              /* Updates pointer */
+              pc++;
+            }
+
+            /* Valid? */
+            if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_INHERITANCE_MARKER))
+            {
+              orxCONFIG_SECTION *pstCurrentSection;
+              
+              /* Gets current section */
+              pstCurrentSection = sstConfig.pstCurrentSection;
+
+              /* Cuts string */
+              *pc = orxCHAR_NULL;
+
+              /* Loads file */
+              orxConfig_Load(pcLineStart + 1);
+
+              /* Restores current section */
+              sstConfig.pstCurrentSection = pstCurrentSection;
+
+              /* Skips the whole line */
+              while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+              {
+                pc++;
+              }
+
+              /* Updates line start pointer */
+              pcLineStart = pc + 1;
+            }
+          }
           /* Section start? */
-          if(*pc == orxCONFIG_KC_SECTION_START)
+          else if(*pc == orxCONFIG_KC_SECTION_START)
           {
             /* Finds section end */
             while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_SECTION_END))

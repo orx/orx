@@ -105,7 +105,6 @@ orxSTATIC orxSTATUS orxBounce_Init()
   /* Loads config file and selects its section */
   orxConfig_Load("Bounce.ini");
   orxConfig_SelectSection("Bounce");
-  orxConfig_Load(orxConfig_GetString("OverrideFile"));
 
   /* Creates walls */
   orxObject_CreateFromConfig("Wall1");
