@@ -62,8 +62,10 @@
 
 
 #define orxSTRING_KC_VECTOR_START       '{'
+#define orxSTRING_KC_VECTOR_START_ALT   '('
 #define orxSTRING_KC_VECTOR_SEPARATOR   ','
 #define orxSTRING_KC_VECTOR_END         '}'
+#define orxSTRING_KC_VECTOR_END_ALT     ')'
 
 
 /** Continues a CRC with a string one
@@ -480,7 +482,8 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _z
   zString = orxString_SkipWhiteSpaces(_zString);
 
   /* Is a vector start character? */
-  if(*zString == orxSTRING_KC_VECTOR_START)
+  if((*zString == orxSTRING_KC_VECTOR_START)
+  || (*zString == orxSTRING_KC_VECTOR_START_ALT))
   {
     /* Skips all white spaces */
     zString = orxString_SkipWhiteSpaces(zString + 1);
@@ -525,7 +528,8 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _z
               zString = orxString_SkipWhiteSpaces(zString);
 
               /* Is not a vector end character? */
-              if(*zString != orxSTRING_KC_VECTOR_END)
+              if((*zString != orxSTRING_KC_VECTOR_END)
+              && (*zString != orxSTRING_KC_VECTOR_END_ALT))
               {
                 /* Updates result */
                 eResult = orxSTATUS_FAILURE;
