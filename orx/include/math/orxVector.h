@@ -577,6 +577,26 @@ orxSTATIC orxINLINE orxBOOL                   orxVector_IsNull(orxCONST orxVECTO
   return bResult;
 }
 
+/** Are vectors equal?
+ * @param[in]   _pvOp1                        First vector to compare
+ * @param[in]   _pvOp2                        Second vector to compare
+ * @return      orxTRUE if both vectors are equal, orxFALSE otherwise
+ */
+orxSTATIC orxINLINE orxBOOL                   orxVector_AreEqual(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(_pvOp1  != orxNULL);
+  orxASSERT(_pvOp2  != orxNULL);
+
+  /* Updates result */
+  bResult = ((_pvOp1->fX == _pvOp2->fX) && (_pvOp1->fY == _pvOp2->fY) && (_pvOp1->fZ == _pvOp2->fZ)) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 /** Transforms a cartesian vector into a spherical one
  * @param[in]   _pvRes                        Vector where to store result (can be the operand)
  * @param[in]   _pvOp                         Vector to transform

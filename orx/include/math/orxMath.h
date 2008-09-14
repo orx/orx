@@ -279,7 +279,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Tan(orxFLOAT _fOp)
 #else /* __orxMSVC__ */
 
   /* Updates result */
-  fResult = tan(_fOp);
+  fResult = tanf(_fOp);
 
 #endif /* __orxMSVC__ */
 
