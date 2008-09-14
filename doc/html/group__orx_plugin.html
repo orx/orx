@@ -450,7 +450,7 @@ Header that defines all IDs of the render plugin<p>
 Header that defines all IDs of the script plugin<p>
 Header that defines all IDs of the sound system plugin<p>
 Header that defines all IDs of the system plugin<p>
-Plugin module This module provides functions for loading dynamic code into the core engine and finding symbols within the dynamic modules.<p>
+Plugin module This module provides functions for loading dynamic code into the core engine and finding symbols within the dynamic modules<p>
 Plugin core header This header is used to define structures &amp; functions for core plugins info.<p>
 Plugin type header This header is used to define types for plugin module.<p>
 Plugin user header This header is used to define structures &amp; functions for plugin registration. <hr><h2>Define Documentation</h2>
@@ -2269,8 +2269,7 @@ Default core plugin function. Needs to be referenced by all core functions at mo
 <div class="memdoc">
 
 <p>
-Shuts down the plugin management engine. <dl class="return" compact><dt><b>Returns:</b></dt><dd>nothing. </dd></dl>
-
+Exits from the plugin module 
 </div>
 </div><p>
 <a class="anchor" name="g5ddcb998b1f5f12adc06d368d4a3f52e"></a><!-- doxytag: member="orxPlugin.h::orxPlugin_GetFunction" ref="g5ddcb998b1f5f12adc06d368d4a3f52e" args="(orxHANDLE _hPluginHandle, orxCONST orxSTRING _zFunctionName)" -->
@@ -2299,13 +2298,13 @@ Shuts down the plugin management engine. <dl class="return" compact><dt><b>Retur
 <div class="memdoc">
 
 <p>
-Gets a function from a plugin. <dl compact><dt><b>Parameters:</b></dt><dd>
+Gets a function from a plugin <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_hPluginHandle</em>&nbsp;</td><td>The plugin handle. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_zFunctionName</em>&nbsp;</td><td>The name of the function to find. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hPluginHandle</em>&nbsp;</td><td>The plugin handle </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFunctionName</em>&nbsp;</td><td>The name of the function to find </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxPLUGIN_FUNCTION / orxNULL. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxPLUGIN_FUNCTION / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -2326,9 +2325,9 @@ Gets a function from a plugin. <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Gets the handle of a plugin given its name. <dl compact><dt><b>Parameters:</b></dt><dd>
+Gets the handle of a plugin given its name <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zPluginName</em>&nbsp;</td><td>The plugin name. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zPluginName</em>&nbsp;</td><td>The plugin name </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Its orxHANDLE / orxHANDLE_UNDEFINED </dd></dl>
@@ -2352,12 +2351,12 @@ Gets the handle of a plugin given its name. <dl compact><dt><b>Parameters:</b></
 <div class="memdoc">
 
 <p>
-Gets the name of a plugin given its handle. <dl compact><dt><b>Parameters:</b></dt><dd>
+Gets the name of a plugin given its handle <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_hPluginHandle</em>&nbsp;</td><td>The plugin handle. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hPluginHandle</em>&nbsp;</td><td>The plugin handle </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>The plugin name / empty string if not found. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>The plugin name / orxSTRING_EMPTY </dd></dl>
 
 </div>
 </div><p>
@@ -2377,7 +2376,7 @@ Gets the name of a plugin given its handle. <dl compact><dt><b>Parameters:</b></
 <div class="memdoc">
 
 <p>
-Initializes the plugin management engine. <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS/orxSTATUS_FAILURE </dd></dl>
+Inits the plugin module <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
@@ -2407,13 +2406,13 @@ Initializes the plugin management engine. <dl class="return" compact><dt><b>Retu
 <div class="memdoc">
 
 <p>
-Loads a plugin. <dl compact><dt><b>Parameters:</b></dt><dd>
+Loads a plugin (using its exact complete) <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zPluginFileName</em>&nbsp;</td><td>The complete path of the plugin file, including its extension. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_zPluginName</em>&nbsp;</td><td>The name that the plugin will be given in the plugin list. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zPluginFileName</em>&nbsp;</td><td>The complete path of the plugin file, including its extension </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zPluginName</em>&nbsp;</td><td>The name that the plugin will be given in the plugin list </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>The plugin handle on success, orxHANDLE_UNDEFINED on failure. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>The plugin handle on success, orxHANDLE_UNDEFINED on failure </dd></dl>
 
 </div>
 </div><p>
@@ -2443,13 +2442,13 @@ Loads a plugin. <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Loads a plugin using OS common library extension. <dl compact><dt><b>Parameters:</b></dt><dd>
+Loads a plugin using OS common library extension + release/debug suffixes <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zPluginFileName</em>&nbsp;</td><td>The complete path of the plugin file, without its library extension. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_zPluginName</em>&nbsp;</td><td>The name that the plugin will be given in the plugin list. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zPluginFileName</em>&nbsp;</td><td>The complete path of the plugin file, without its library extension </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zPluginName</em>&nbsp;</td><td>The name that the plugin will be given in the plugin list </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>The plugin handle on success, orxHANDLE_UNDEFINED on failure. </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>The plugin handle on success, orxHANDLE_UNDEFINED on failure </dd></dl>
 
 </div>
 </div><p>
@@ -2488,8 +2487,7 @@ Loads a plugin using OS common library extension. <dl compact><dt><b>Parameters:
 <div class="memdoc">
 
 <p>
-Clock module setup. <dl class="return" compact><dt><b>Returns:</b></dt><dd>nothing. </dd></dl>
-
+Plugin module setup 
 </div>
 </div><p>
 <a class="anchor" name="g230eab1bb1033f4e1984d444f4cb7e92"></a><!-- doxytag: member="orxPlugin.h::orxPlugin_Unload" ref="g230eab1bb1033f4e1984d444f4cb7e92" args="(orxHANDLE _hPluginHandle)" -->
@@ -2509,17 +2507,17 @@ Clock module setup. <dl class="return" compact><dt><b>Returns:</b></dt><dd>nothi
 <div class="memdoc">
 
 <p>
-Unloads a plugin. <dl compact><dt><b>Parameters:</b></dt><dd>
+Unloads a plugin <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_hPluginHandle</em>&nbsp;</td><td>The handle of the plugin to unload. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hPluginHandle</em>&nbsp;</td><td>The handle of the plugin to unload </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS/orxSTATUS_FAILURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 14 04:43:21 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 14 08:45:07 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

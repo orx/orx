@@ -74,6 +74,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#gae917149e29b481b31ad2109eef3b2bd">orxVector_IsNull</a> (orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g3dabb5a46c039ab3b177affc1fa53709">orxVector_AreEqual</a> (orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp1, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp2)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#gb14991ccd4e6c22a2d1ebdf5d3a799f2">orxVector_FromCartesianToSpherical</a> (<a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvRes, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g39bdbfd9139d59a10b642dbc2de0a29a">orxVector_FromSphericalToCartesian</a> (<a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvRes, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvOp)</td></tr>
@@ -394,6 +396,42 @@ Adds vectors and stores result in a third one <dl compact><dt><b>Parameters:</b>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Resulting vector (Op1 + Op2) </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g3dabb5a46c039ab3b177affc1fa53709"></a><!-- doxytag: member="orxVector.h::orxVector_AreEqual" ref="g3dabb5a46c039ab3b177affc1fa53709" args="(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxINLINE orxBOOL orxVector_AreEqual           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvOp1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvOp2</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Are vectors equal? <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvOp1</em>&nbsp;</td><td>First vector to compare </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvOp2</em>&nbsp;</td><td>Second vector to compare </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if both vectors are equal, orxFALSE otherwise </dd></dl>
 
 </div>
 </div><p>
@@ -1387,7 +1425,7 @@ Z-Axis unit vector
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 14 04:43:21 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Sun Sep 14 08:45:07 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
