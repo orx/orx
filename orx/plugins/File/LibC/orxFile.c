@@ -35,6 +35,12 @@
 #include "debug/orxDebug.h"
 #include "io/orxFile.h"
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+#endif /* __orxMSVC__ */
+
 #include <stdio.h>
 
 
@@ -320,3 +326,9 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Write, FILE, WRITE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_ReadLine, FILE, READ_LINE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxFile_LibC_Close, FILE, CLOSE);
 orxPLUGIN_USER_CORE_FUNCTION_END();
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4996)
+
+#endif /* __orxMSVC__ */

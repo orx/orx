@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib box2d.lib"
+				AdditionalDependencies="..\..\..\..\lib\dynamic\orxd.lib box2dd.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\physics\orxPhysics_Box2Dd.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"
@@ -233,7 +233,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib box2d.lib"
+				AdditionalDependencies="..\..\..\..\lib\static\imporxd.lib box2dd.lib"
 				OutputFile="..\..\..\..\bin\plugins\core\physics\orxPhysics_Box2Dd.dll"
 				LinkIncremental="2"
 				GenerateManifest="false"

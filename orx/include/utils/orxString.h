@@ -46,6 +46,12 @@
 #include "memory/orxMemory.h"
 #include "math/orxVector.h"
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+#endif /* __orxMSVC__ */
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -785,6 +791,12 @@ orxSTATIC orxINLINE orxS32 orxCDECL orxString_Print(orxSTRING _zDstString, orxST
   /* Done! */
   return s32Result;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4996)
+
+#endif /* __orxMSVC__ */
 
 #endif /* _orxSTRING_H_ */
 

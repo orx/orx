@@ -28,9 +28,6 @@
  */
 
 
-#include<stdio.h>
-
-
 #include "orxInclude.h"
 
 #include "core/orxConfig.h"
@@ -38,6 +35,14 @@
 #include "memory/orxBank.h"
 #include "math/orxMath.h"
 #include "utils/orxString.h"
+
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+#endif /* __orxMSVC__ */
+
+#include<stdio.h>
 
 
 /** Module flags
@@ -1771,3 +1776,9 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orx
   /* Done! */
   return eResult;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4996)
+
+#endif /* __orxMSVC__ */

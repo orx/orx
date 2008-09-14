@@ -32,12 +32,18 @@
  */
 
 
+#include "debug/orxDebug.h"
+
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+#endif /* __orxMSVC__ */
+
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
-
-#include "debug/orxDebug.h"
 
 
 /** Platform independant defines
@@ -401,3 +407,9 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   /* Done */
   return;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4996)
+
+#endif /* __orxMSVC__ */
