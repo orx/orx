@@ -18,6 +18,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="imporxd" />
+					<Add library="Box2Dd" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
@@ -33,6 +34,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add library="imporx" />
+					<Add library="Box2D" />
 					<Add directory="..\..\..\lib\static" />
 				</Linker>
 			</Target>
@@ -48,6 +50,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="orxd" />
+					<Add library="Box2Dd" />
 					<Add directory="..\..\..\lib\dynamic" />
 				</Linker>
 			</Target>
@@ -63,6 +66,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add library="orx" />
+					<Add library="Box2D" />
 					<Add directory="..\..\..\lib\dynamic" />
 				</Linker>
 			</Target>
@@ -72,10 +76,11 @@
 			<Add option="-D__orxGCC__" />
 			<Add option="-D__orxDLL__" />
 			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\..\extern\Box2D_2.0.1\Orx\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-fPIC" />
-      <Add library="Box2D" />
+			<Add directory="..\..\..\..\extern\Box2D_2.0.1\Orx\lib\mingw" />
 		</Linker>
 		<Unit filename="..\..\..\plugins\Physics\Box2D\orxPhysics.cpp" />
 		<Extensions>
