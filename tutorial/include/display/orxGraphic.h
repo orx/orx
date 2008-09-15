@@ -58,9 +58,15 @@
 
 #define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic flag  */
 
-#define orxGRAPHIC_KU32_FLAG_FLIP_X           0x00000010  /**< X axis flipping flag */
-#define orxGRAPHIC_KU32_FLAG_FLIP_Y           0x00000020  /**< Y axis flipping flag */
-#define orxGRAPHIC_KU32_MASK_FLIP_BOTH        0x00000030  /**< Both axis flippinf mask */
+#define orxGRAPHIC_KU32_FLAG_FLIP_X           0x00000002  /**< X axis flipping flag */
+#define orxGRAPHIC_KU32_FLAG_FLIP_Y           0x00000004  /**< Y axis flipping flag */
+#define orxGRAPHIC_KU32_MASK_FLIP_BOTH        0x00000006  /**< Both axis flipping mask */
+
+#define orxGRAPHIC_KU32_FLAG_ALIGN_CENTER     0x00000000  /**< Center vertical / horizontal alignment */
+#define orxGRAPHIC_KU32_FLAG_ALIGN_LEFT       0x00000010  /**< Left horizontal alignment */
+#define orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT      0x00000020  /**< Right horizontal alignment */
+#define orxGRAPHIC_KU32_FLAG_ALIGN_TOP        0x00000040  /**< Top vertical alignment */
+#define orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM     0x00000080  /**< Bottom vertical alignment */
 
 #define orxGRAPHIC_KU32_MASK_USER_ALL         0x000000FF  /**< User all ID mask */
 
@@ -121,6 +127,13 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxGraphic_GetData(orxCONST orxGRA
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxVECTOR *_pvPivot);
+
+/** Sets relative graphic pivot
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @param[in]   _u32AlignFlags  Alignment flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU32 _u32AlignFlags);
 
 /** Gets graphic pivot
  * @param[in]   _pstGraphic     Concerned graphic

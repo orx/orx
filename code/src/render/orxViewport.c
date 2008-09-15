@@ -782,6 +782,7 @@ orxVOID orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT 
 /** Sets a viewport relative position
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _u32AlignFlags  Alignment flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)
 {
