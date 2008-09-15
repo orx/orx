@@ -13,6 +13,7 @@
       <General OutputFile="../../../bin/gp2x/plugins/core/physics/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxGP2X__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -21,6 +22,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static/gp2x"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/gp2x"/>
         <Library Value="orxd"/>
         <Library Value="Box2Dd"/>
       </Linker>
@@ -45,6 +47,7 @@
       <General OutputFile="../../../bin/gp2x/plugins/core/physics/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxGP2X__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -52,6 +55,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static/gp2x"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/gp2x"/>
         <Library Value="orx"/>
         <Library Value="Box2D"/>
       </Linker>
@@ -76,6 +80,7 @@
       <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -83,6 +88,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="Box2Dd"/>
       </Linker>
@@ -107,12 +113,14 @@
       <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="Box2D"/>
       </Linker>
@@ -137,6 +145,7 @@
       <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -144,6 +153,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="Box2Dd"/>
       </Linker>
@@ -168,12 +178,14 @@
       <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="Box2D"/>
       </Linker>
@@ -198,6 +210,7 @@
       <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -205,6 +218,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="orxd"/>
         <Library Value="Box2Dd"/>
       </Linker>
@@ -229,12 +243,14 @@
       <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="orx"/>
         <Library Value="Box2D"/>
       </Linker>
@@ -259,6 +275,7 @@
       <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -266,6 +283,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="Box2Dd"/>
         <Library Value="imporxd"/>
       </Linker>
@@ -290,12 +308,14 @@
       <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
+        <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
+        <LibraryPath Value="../../../../extern/Box2D_2.0.1/Orx/lib/mingw"/>
         <Library Value="Box2D"/>
         <Library Value="imporx"/>
       </Linker>
@@ -345,15 +365,15 @@
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
-  <Dependencies Name="Win32 Dynamic Release">
-    <Project Name="orxLIB"/>
-    <Project Name="orx"/>
-  </Dependencies>
   <Dependencies Name="Win32 Static Debug">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
   <Dependencies Name="Win32 Static Release">
+    <Project Name="orxLIB"/>
+    <Project Name="orx"/>
+  </Dependencies>
+  <Dependencies Name="Win32 Dynamic Release">
     <Project Name="orxLIB"/>
     <Project Name="orx"/>
   </Dependencies>
