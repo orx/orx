@@ -34,17 +34,26 @@
 #include "core/orxClock.h"
 #include "memory/orxMemory.h"
 
-/*
- * Platform independent defines
- */
 
+/** Module flags
+ */
 #define orxFPS_KU32_STATIC_FLAG_NONE        0x00000000
+
 #define orxFPS_KU32_STATIC_FLAG_READY       0x00000001
 
+#define orxFPS_KU32_STATIC_MASK_ALL         0xFFFFFFFF
+
+
+/** Misc defines
+ */
 #define orxFPS_KU32_CLOCK_TICKSIZE          orxFLOAT_1
 
-/*
- * Static structure
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Static structure
  */
 typedef struct __orxFPS_STATIC_t
 {
@@ -63,24 +72,23 @@ typedef struct __orxFPS_STATIC_t
 } orxFPS_STATIC;
 
 
-/*
- * Static data
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
  */
 orxSTATIC volatile orxFPS_STATIC sstFPS;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
-/***************************************************************************
- orxFPS_Update
- Updates current FPS value.
-
- returns: orxVOID
- ***************************************************************************/
+/** Updates FPS counter
+ * @param[in] _pstClockInfo       Clock information where this callback has been registered
+ * @param[in] _pstContext         User defined context
+ */
 orxSTATIC orxVOID orxFASTCALL orxFPS_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   /* Checks */
@@ -97,17 +105,10 @@ orxSTATIC orxVOID orxFASTCALL orxFPS_Update(orxCONST orxCLOCK_INFO *_pstClockInf
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxFPS_Setup
- FPS module setup.
-
- returns: nothing
- ***************************************************************************/
+/** Setups FPS module */
 orxVOID orxFPS_Setup()
 {
   /* Adds module dependencies */
@@ -117,12 +118,9 @@ orxVOID orxFPS_Setup()
   return;
 }
 
-/***************************************************************************
- orxFPS_Init
- Inits FPS system.
-
- returns: orxSTATUS_SUCCESS/orxSTATUS_FAILURE
- ***************************************************************************/
+/** Inits the FPS module 
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS orxFPS_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -176,12 +174,7 @@ orxSTATUS orxFPS_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxFPS_Exit
- Exits from the FPS system.
-
- returns: orxVOID
- ***************************************************************************/
+/** Exits from the FPS module */
 orxVOID orxFPS_Exit()
 {
   /* Initialized? */
@@ -204,12 +197,7 @@ orxVOID orxFPS_Exit()
   return;
 }
 
-/***************************************************************************
- orxFPS_IncreaseFrameCounter
- Increases frame counter.
-
- returns: orxVOID
- ***************************************************************************/
+/** Increases internal frame counter */
 orxVOID orxFPS_IncreaseFrameCounter()
 {
   /* Checks */
@@ -221,12 +209,9 @@ orxVOID orxFPS_IncreaseFrameCounter()
   return;
 }
 
-/***************************************************************************
- orxFPS_GetFPS
- Gets FPS value/
-
- returns: orxU32 FPS value
- ***************************************************************************/
+/** Gets current FTP value
+ * @return orxU32
+ */
 orxU32 orxFPS_GetFPS()
 {
   /* Checks */

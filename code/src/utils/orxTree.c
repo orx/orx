@@ -114,7 +114,8 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBr
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node isn't root.");
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -140,7 +141,8 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBr
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is not last one in tree.");
 
         /* Can't process */
         eResult = orxSTATUS_FAILURE;
@@ -248,7 +250,8 @@ orxSTATUS orxTree_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize Tree module when it was already loaded.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -270,7 +273,8 @@ orxVOID orxTree_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit from Tree module when it wasn't loaded.");
   }
 
   return;
@@ -349,7 +353,8 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is already in a tree, remove it from there first.");
 
     /* Already in a tree */
     eResult = orxSTATUS_FAILURE;
@@ -429,7 +434,8 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Parent node's tree is invalid.");
 
       /* No tree found */
       eResult = orxSTATUS_FAILURE;
@@ -437,7 +443,8 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is already in a tree, use MoveAsChild instead.");
 
     /* Already in a tree */
     eResult = orxSTATUS_FAILURE;
@@ -485,7 +492,8 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Destination's tree is invalid.");
 
       /* No tree found */
       eResult = orxSTATUS_FAILURE;
@@ -493,7 +501,8 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is already in a tree, use MoveAsChild instead.");
 
     /* Already in a tree */
     eResult = orxSTATUS_FAILURE;
@@ -549,12 +558,14 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to remove node from current tree when attempting to move.");
       }
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Graph cycle found, invalid move.");
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -562,7 +573,8 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Attempted to move node into tree its already in.");
 
     /* Not already in the tree */
     eResult = orxSTATUS_FAILURE;
@@ -599,7 +611,8 @@ orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Referenced object for removing node is not a tree.");
 
     /* Not in a tree */
     eResult = orxSTATUS_FAILURE;

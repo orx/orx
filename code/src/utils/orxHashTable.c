@@ -140,7 +140,8 @@ orxSTATUS orxHashTable_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize HashTable module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -159,6 +160,11 @@ orxVOID orxHashTable_Exit()
   {
     /* Module not ready now */
     sstHashTable.u32Flags = orxHASHTABLE_KU32_STATIC_FLAG_NONE;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit HashTable module when it wasn't initialized.");
   }
 
   return;

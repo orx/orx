@@ -120,7 +120,8 @@ orxSTATUS orxEvent_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Event module failed to create hash table.");
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -128,7 +129,8 @@ orxSTATUS orxEvent_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Event module already loaded.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;

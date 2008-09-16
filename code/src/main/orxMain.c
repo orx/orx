@@ -174,7 +174,8 @@ orxSTATUS orxMain_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Attempted to initialize Main module when already loaded.");
   }
 
   /* Done! */

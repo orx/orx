@@ -326,7 +326,8 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTab
       /* Invalid */
       default :
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid link flag.");
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -344,7 +345,8 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTab
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table not linked at index %i.", _u32LinkIndex);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -384,7 +386,8 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
         }
         else
         {
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table element with index %i does not have counter property.", _u32LinkIndex);
 
           u32Value = orxU32_UNDEFINED;
         }
@@ -402,7 +405,8 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
         }
         else
         {
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table element with index %i does not have priority property.", _u32LinkIndex);
 
           u32Value = (orxU32)orxANIMSET_KU32_LINK_DEFAULT_PRIORITY;
         }
@@ -421,7 +425,8 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
       /* Invalid */
       default :
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid property while looking in link table element %i.", _u32LinkIndex);
 
         /* Undefined result */
         u32Value = orxU32_UNDEFINED;
@@ -432,7 +437,8 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid link index %i.", _u32LinkIndex);
 
     /* Undefined result */
     u32Value = orxU32_UNDEFINED;
@@ -757,7 +763,8 @@ orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_T
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link info array failed to allocate.");
 
       /* Frees previously allocated memory */
       orxMemory_Free(pstInfo);
@@ -768,7 +775,8 @@ orxSTATIC orxLINK_UPDATE_INFO *orxAnimSet_CreateLinkUpdateInfo(orxANIMSET_LINK_T
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link Update Info structure failed to allocate.");
 
     /* Not created */
     pstInfo = orxNULL;
@@ -883,7 +891,8 @@ orxSTATIC orxANIMSET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Loop table failed to allocate.");
 
         /* Frees previously allocated memory */
         orxMemory_Free(pstLinkTable->au32LinkArray);
@@ -895,7 +904,8 @@ orxSTATIC orxANIMSET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link array failed to allocate.");
 
       /* Frees link table */
       orxMemory_Free(pstLinkTable);
@@ -906,7 +916,8 @@ orxSTATIC orxANIMSET_LINK_TABLE *orxAnimSet_CreateLinkTable(orxU32 _u32Size)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table failed to allocate.");
 
     /* Not created */
     pstLinkTable = orxNULL;
@@ -1216,7 +1227,8 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link Update Info failed to allocate.");
 
         /* Failed */
         eResult = orxSTATUS_FAILURE;
@@ -1224,7 +1236,8 @@ orxSTATUS orxAnimSet_ComputeLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table does not have a ready link structure.");
 
       /* Failed */
       eResult = orxSTATUS_FAILURE;
@@ -1279,7 +1292,8 @@ orxSTATUS orxAnimSet_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Already loaded AnimSet module.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -1293,7 +1307,8 @@ orxSTATUS orxAnimSet_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to register AnimSet module.");
   }
 
   /* Done! */

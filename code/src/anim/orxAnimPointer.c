@@ -221,7 +221,8 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Cannot process animation pointer without a current animation.");
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -290,7 +291,8 @@ orxSTATUS orxAnimPointer_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimPointer module already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -304,7 +306,8 @@ orxSTATUS orxAnimPointer_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to register AnimPointer module.");
   }
 
   /* Done! */
@@ -383,7 +386,8 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxCONST orxSTRUCTURE *_pstOwn
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed creating Anim pointer.");
 
     /* Not created */
     pstAnimPointer = orxNULL;
@@ -438,7 +442,8 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRUCTUR
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed creating Anim pointer.");
 
         /* Deletes created anim set */
         orxAnimSet_Delete(pstAnimSet);
@@ -450,7 +455,8 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRUCTUR
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "\"%s\" does not exist in config.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -520,7 +526,8 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Pointer does not reference any Anims.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -549,7 +556,8 @@ orxANIMSET *orxFASTCALL orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstA
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have Anim set.");
   }
 
   /* Done! */
@@ -576,7 +584,8 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnimHandle(orxCONST orxANIMPOINTE
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
   }
 
   /* Done! */
@@ -604,7 +613,8 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnimHandle(orxCONST orxANIMPOINTER
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
   }
 
   /* Done! */
@@ -641,7 +651,8 @@ orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAn
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
   }
 
   /* Done! */
@@ -678,7 +689,8 @@ orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(orxCONST orxANIMPOINTER *_pstAni
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
   }
 
   /* Done! */
@@ -741,7 +753,8 @@ orxFLOAT orxFASTCALL orxAnimPointer_GetCurrentTime(orxCONST orxANIMPOINTER *_pst
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
   }
 
   /* Done! */
@@ -795,7 +808,8 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%i is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -803,7 +817,8 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
 
     /* Can't process */
     eResult = orxSTATUS_FAILURE;
@@ -849,7 +864,8 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%i is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -860,7 +876,8 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
     /* Clears it */
     _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
 
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim pointer does not have a current anim.");
 
     /* Can't process */
     eResult = orxSTATUS_FAILURE;

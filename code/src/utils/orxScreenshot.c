@@ -140,7 +140,8 @@ orxSTATUS orxScreenshot_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Can not find screenshot directory.");
 
       /* Can't find folder */
       eResult = orxSTATUS_FAILURE;
@@ -148,7 +149,8 @@ orxSTATUS orxScreenshot_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Tried to initalize Screenshot module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -170,7 +172,8 @@ orxVOID orxScreenshot_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Tried to exit from Screenshot module when it wasn't initialized.");
   }
 
   return;

@@ -103,7 +103,8 @@ orxSTATUS orxLinkList_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize LinkList module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -125,7 +126,8 @@ orxVOID orxLinkList_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit LinkList module when it wasn't initialized.");
   }
 
   return;
@@ -211,7 +213,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NO
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is already linked. Remove it before trying to add it to another.");
 
     /* Not linked */
     eResult = orxSTATUS_FAILURE;
@@ -262,7 +265,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is already linked. Remove it before trying to add it to another.");
 
     /* Not linked */
     eResult = orxSTATUS_FAILURE;
@@ -325,7 +329,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Target's list is not valid.");
 
       /* No list found */
       eResult = orxSTATUS_FAILURE;
@@ -333,7 +338,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is already linked. Remove it before trying to add it to another.");
 
     /* Already linked */
     eResult = orxSTATUS_FAILURE;
@@ -396,7 +402,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Target node's list is not valid.");
 
       /* No list found */
       eResult = orxSTATUS_FAILURE;
@@ -404,7 +411,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Node is already linked. Remove it before trying to add it to another.");
 
     /* Already linked */
     eResult = orxSTATUS_FAILURE;
@@ -479,7 +487,8 @@ orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Target's list is not valid.");
 
     /* Failed */
     eResult = orxSTATUS_FAILURE;

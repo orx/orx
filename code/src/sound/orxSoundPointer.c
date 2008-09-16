@@ -251,12 +251,14 @@ orxSTATUS orxSoundPointer_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to register structure for Sound Pointer module.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Tried to initialize Sound Pointer module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -284,7 +286,8 @@ orxVOID orxSoundPointer_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Tried to exit Sound Pointer module when it wasn't initialized.");
   }
 
   return;
@@ -319,7 +322,8 @@ orxSOUNDPOINTER *orxSoundPointer_Create(orxCONST orxSTRUCTURE *_pstOwner)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to create Sound Pointer structure.");
   }
 
   /* Done! */
@@ -366,7 +370,8 @@ orxSTATUS orxFASTCALL orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Sound Pointer is still referenced by others. Not deleting.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -488,7 +493,8 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Could not lookup sound from pointer. Invalid index.");
 
     /* Clears last added sound index */
     _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
@@ -624,7 +630,8 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Could not find object named '%s' in config.", _zSoundConfigID);
 
       /* Clears last added sound index */
       _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
@@ -635,7 +642,8 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to find an empty slot to put sound into.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

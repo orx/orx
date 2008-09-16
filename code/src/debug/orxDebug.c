@@ -56,6 +56,10 @@
 #define orxDEBUG_KU32_STATIC_MASK_ALL           0xFFFFFFFF
 
 
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
 /** Static structure
  */
 typedef struct __orxDEBUG_STATIC_t
@@ -72,36 +76,29 @@ typedef struct __orxDEBUG_STATIC_t
   /* Backup debug flags : 16 */
   orxU32 u32BackupDebugFlags;
 
-  /* Current buffer : 528 */
-  orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE];
-
-  /* Current log : 1040 */
-  orxCHAR zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE];
-
   /* Control flags : 1044 */
   orxU32 u32Flags;
 
 } orxDEBUG_STATIC;
 
 
-/*
- * Static data
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
  */
 orxSTATIC orxDEBUG_STATIC sstDebug;
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       LOCAL FUNCTIONS                         ******
- ***************************************************************************
+ * Private functions                                                       *
  ***************************************************************************/
 
-/***************************************************************************
- orxDebug_GetLevelString
- Deletes all cameras.
-
- returns: orxCONST orxSTRING level string
- ***************************************************************************/
+/** Gets debug level name
+ * @param[in]   _eLevel                       Concerned debug level
+  *@return      Corresponding literal string
+ */
 orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
   orxSTRING zResult;
@@ -111,6 +108,7 @@ orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
   /* Depending on level */
   switch(_eLevel)
   {
+    orxDEBUG_DECLARE_LEVEL_ENTRY(ANIM);
     orxDEBUG_DECLARE_LEVEL_ENTRY(CLOCK);
     orxDEBUG_DECLARE_LEVEL_ENTRY(DISPLAY);
     orxDEBUG_DECLARE_LEVEL_ENTRY(FILE);
@@ -146,17 +144,12 @@ orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 
 
 /***************************************************************************
- ***************************************************************************
- ******                       PUBLIC FUNCTIONS                        ******
- ***************************************************************************
+ * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- _orxDebug_Init
- Inits module.
-
- returns: orxSTATUS_FAILURE/orxSTATUS_SUCCESS
- ***************************************************************************/
+/** Inits the debug module
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
 orxSTATUS _orxDebug_Init()
 {
   orxU32 i;
@@ -205,12 +198,7 @@ orxSTATUS _orxDebug_Init()
   return eResult;
 }
 
-/***************************************************************************
- orxDebug_Exit
- Exits from the debug system.
-
- returns: orxVOID
- ***************************************************************************/
+/** Exits from the debug module */
 orxVOID _orxDebug_Exit()
 {
   /* Initialized? */
@@ -227,12 +215,7 @@ orxVOID _orxDebug_Exit()
   return;
 }
 
-/***************************************************************************
- _orxDebug_Break
- Breaks.
-
- returns: orxVOID
- ***************************************************************************/
+/** Software break function */
 orxVOID _orxDebug_Break()
 {
   /* Windows / Linux */
@@ -243,6 +226,8 @@ orxVOID _orxDebug_Break()
   #ifdef __orxGCC__
   
     #ifdef __orxGP2X__
+
+    //! TODO: Add GP2X software break code
 
     #else /* __orxGP2X__ */
 
@@ -261,12 +246,7 @@ orxVOID _orxDebug_Break()
   return;
 }
 
-/***************************************************************************
- _orxDebug_BackupFlags
- Backups flags.
-
- returns: orxVOID
- ***************************************************************************/
+/** Backups current debug flags */
 orxVOID _orxDebug_BackupFlags()
 {
   /* Checks */
@@ -278,12 +258,7 @@ orxVOID _orxDebug_BackupFlags()
   return;
 }
 
-/***************************************************************************
- _orxDebug_RestoreFlags
- Restores flags.
-
- returns: orxVOID
- ***************************************************************************/
+/** Restores last backuped flags */
 orxVOID _orxDebug_RestoreFlags()
 {
   /* Checks */
@@ -295,12 +270,7 @@ orxVOID _orxDebug_RestoreFlags()
   return;
 }
 
-/***************************************************************************
- _orxDebug_SetFlag
- Sets flags.
-
- returns: orxVOID
- ***************************************************************************/
+/** Sets current debug flags */
 orxVOID orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 {
   /* Checks */
@@ -313,21 +283,24 @@ orxVOID orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
   return;
 }
 
-/***************************************************************************
- _orxDEBUG_LOG
- Logs a debug string.
-
- returns: orxVOID
- ***************************************************************************/
+/** Logs given debug text
+ * @param[in]   _eLevel                       Debug level associated with this output
+ * @param[in]   _zFunction                    Calling function name
+ * @param[in]   _zFile                        Calling file name
+ * @param[in]   _u32Line                      Calling file line
+ * @param[in]   _zFormat                      Printf formatted text
+ */
 orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...)
 {
   va_list stArgs;
-  FILE *pstFile = orxNULL;
+  FILE   *pstFile = orxNULL;
+  orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE];
+
 
   /* TODO : Checks log mask if display is enable for this level */
 
   /* Empties current buffer */
-  sstDebug.zBuffer[0] = orxCHAR_NULL;
+  zBuffer[0] = orxCHAR_NULL;
 
   /* Time Stamp? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP)
@@ -337,13 +310,13 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
     /* Inits Log Time */
     time(&u32Time);
 
-    strftime(sstDebug.zBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&u32Time));
+    strftime(zBuffer, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE, orxDEBUG_KZ_DATE_FORMAT, localtime(&u32Time));
   }
 
   /* Log Type? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TYPE)
   {
-    sprintf(sstDebug.zBuffer, "%s <%s>", sstDebug.zBuffer, orxDebug_GetLevelString(_eLevel));
+    sprintf(zBuffer, "%s <%s>", zBuffer, orxDebug_GetLevelString(_eLevel));
   }
 
   /* Log FUNCTION, FILE & LINE? */
@@ -357,15 +330,15 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
         pc++);
 
     /* Writes info */
-    sprintf(sstDebug.zBuffer, "%s (%s() - %s:%ld)", sstDebug.zBuffer, _zFunction, pc, _u32Line);
+    sprintf(zBuffer, "%s (%s() - %s:%ld)", zBuffer, _zFunction, pc, _u32Line);
   }
 
   /* Debug Log */
   va_start(stArgs, _zFormat);
-  vsprintf(sstDebug.zLog, _zFormat, stArgs);
+  vsprintf(zLog, _zFormat, stArgs);
   va_end(stArgs);
 
-  sprintf(sstDebug.zBuffer, "%s %s\n", sstDebug.zBuffer, sstDebug.zLog);
+  sprintf(zBuffer, "%s %s\n", zBuffer, zLog);
 
   /* Use file? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
@@ -382,7 +355,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
     /* Valid? */
     if(pstFile != orxNULL)
     {
-      fprintf(pstFile, sstDebug.zBuffer);
+      fprintf(pstFile, zBuffer);
       fflush(pstFile);
       fclose(pstFile);
     }
@@ -400,7 +373,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
       pstFile = stderr;
     }
 
-    fprintf(pstFile, sstDebug.zBuffer);
+    fprintf(pstFile, zBuffer);
     fflush(pstFile);
   }
 

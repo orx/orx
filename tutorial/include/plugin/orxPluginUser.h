@@ -104,7 +104,8 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
   } \
   else \
   { \
-    /* !!! MSG !!! */ \
+    /* Logs message */ \
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Maximum number of plugin functions reached."); \
   }
 
 #define orxPLUGIN_USER_FUNCTION_START(STRUCTURE) \

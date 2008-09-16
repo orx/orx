@@ -40,7 +40,6 @@
 
 /** Module flags
  */
-
 #define orxGRAPHIC_KU32_STATIC_FLAG_NONE      0x00000000  /**< No flags  */
 
 #define orxGRAPHIC_KU32_STATIC_FLAG_READY     0x00000001  /**< Ready flag  */

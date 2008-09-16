@@ -150,7 +150,8 @@ orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, or
     /* Not found? */
     if(_pstAnim->astKeyList[u32Index].fTimeStamp < _fTimeStamp)
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid timestamp.");
 
       /* Not defined */
       u32Index = orxU32_UNDEFINED;
@@ -159,7 +160,8 @@ orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, or
   /* Empty animation */
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animation count is 0.");
 
     /* Not defined */
     u32Index = orxU32_UNDEFINED;
@@ -299,7 +301,8 @@ orxSTATUS orxAnim_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anim module already loaded.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -313,7 +316,8 @@ orxSTATUS orxAnim_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed registering Anim module.");
   }
 
   /* Done! */
@@ -338,7 +342,8 @@ orxVOID orxAnim_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM,"Anim module not initialized.");
   }
 
   return;
@@ -388,7 +393,8 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed allocating key list." );
 
         /* Frees partially allocated anim */
         orxStructure_Delete(pstAnim);
@@ -400,7 +406,8 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
     /* Other Animation Type? */
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently." );
 
       /* Frees partially allocated anim */
       orxStructure_Delete(pstAnim);
@@ -491,7 +498,8 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
             /* Adds it */
             if(orxAnim_AddKey(pstResult, orxSTRUCTURE(pstGraphic), fTimeStamp) == orxSTATUS_FAILURE)
             {
-              /* !!! MSG !!! */
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to add graphic to animation." );
 
               /* Deletes it */
               orxGraphic_Delete(pstGraphic);
@@ -509,7 +517,8 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "\"%s\" does not exist in config.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -545,7 +554,8 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
     /* Other Animation Type? */
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently.");
     }
 
     /* Deletes structure */
@@ -553,7 +563,8 @@ orxSTATUS orxFASTCALL orxAnim_Delete(orxANIM *_pstAnim)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Cannot delete anim structure while it is still referenced by other objects.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -608,7 +619,8 @@ orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, 
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "No room to add key into animation.");
 
     /* Updates status */
     eResult = orxSTATUS_FAILURE;
@@ -671,7 +683,8 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Insert keys before attempting to remove last key.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -692,7 +705,7 @@ orxVOID orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
 
   /* Until there are no key left */
-  while(orxAnim_RemoveLastKey(_pstAnim) != orxSTATUS_FAILURE);
+  while((orxAnim_GetKeyCounter(_pstAnim) != 0) && (orxAnim_RemoveLastKey(_pstAnim) != orxSTATUS_FAILURE));
 
   /* Done! */
   return;
@@ -729,7 +742,8 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, or
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Timestamp does not exist in animation.");
 
     /* Updates current key */
     *_pu32CurrentKey = orxU32_UNDEFINED;
@@ -768,7 +782,8 @@ orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(orxCONST orxANIM *_pstAnim, orxU32 
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Attempt made to get key data from animation outside index range.");
 
     /* Updates result */
     pstResult = orxNULL;
@@ -836,7 +851,8 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "2D animations are the only ones supported currently." );
 
     /* Updates result */
     fLength = orx2F(-1.0f);

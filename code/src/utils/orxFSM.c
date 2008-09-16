@@ -199,7 +199,8 @@ orxSTATUS orxFSM_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initalize FSM module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;

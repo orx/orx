@@ -43,7 +43,7 @@
 #include "orxInclude.h"
 
 
-/** Setups FPS module  */
+/** Setups FPS module */
 extern orxDLLAPI orxVOID                          orxFPS_Setup();
 
 /** Inits the FPS module 
