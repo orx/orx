@@ -877,7 +877,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
               /* End of line? */
               if(*pc == orxCHAR_EOL)
               {
-                /* !!! MSG !!! */
+                /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "File name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
                 /* Updates new line start */
@@ -900,6 +900,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
 
               /* Cuts string */
               *pc = orxCHAR_NULL;
+
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Processing included file %c%s%c.", orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
               /* Loads file */
               orxConfig_Load(pcLineStart + 1);

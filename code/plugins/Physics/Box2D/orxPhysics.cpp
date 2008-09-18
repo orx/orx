@@ -196,11 +196,70 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
     /* Same pair? */
     if((pstEventStorage->poSource == _poPoint->shape1->GetBody()) && (pstEventStorage->poDestination == _poPoint->shape2->GetBody()))
     {
-      /* Removes it */
-      orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+      /* Depending on old event */
+      switch(pstEventStorage->eID)
+      {
+        case orxPHYSICS_EVENT_CONTACT_ADD:
+        {
+          /* Is new one a persist? */
+          if(_eEventID == orxPHYSICS_EVENT_CONTACT_PERSIST)
+          {
+            /* Don't send event */
+            bSendEvent = orxFALSE;
+          }
+          else
+          {
+            /* Removes it */
+            orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
 
-      /* Don't send event */
-      bSendEvent = orxFALSE;
+            /* Removing it? */
+            if(_eEventID == orxPHYSICS_EVENT_CONTACT_REMOVE)
+            {
+              /* Don't send event */
+              bSendEvent = orxFALSE;
+            }
+          }
+
+          break;
+        }
+
+        case orxPHYSICS_EVENT_CONTACT_PERSIST:
+        {
+          /* Is new one a add? */
+          if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
+          {
+            /* Don't send event */
+            bSendEvent = orxFALSE;
+          }
+          else
+          {
+            /* Removes it */
+            orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+          }
+
+          break;
+        }
+
+        case orxPHYSICS_EVENT_CONTACT_REMOVE:
+        {
+          /* Removes it */
+          orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+
+          /* Is new one a add? */
+          if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
+          {
+            /* Don't send event */
+            bSendEvent = orxFALSE;
+          }
+
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
 
       break;
     }
@@ -395,9 +454,27 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxHANDLE _hUse
 
 extern "C" orxVOID orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
 {
+  orxPHYSICS_EVENT_STORAGE *pstEventStorage, *pstPreviousEventStorage;
+
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
+
+  /* For all stored events */
+  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL), pstPreviousEventStorage = orxNULL;
+      pstEventStorage != orxNULL;
+      pstPreviousEventStorage = pstEventStorage, pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, pstEventStorage))
+  {
+    /* Is part of the event? */
+    if(((b2Body *)_pstBody == pstEventStorage->poDestination) || ((b2Body *)_pstBody == pstEventStorage->poSource))
+    {
+      /* Removes event */
+      orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+
+      /* Reverts to previous */
+      pstEventStorage = pstPreviousEventStorage;
+    }
+  }
 
   /* Deletes it */
   sstPhysics.poWorld->DestroyBody((b2Body *)_pstBody);

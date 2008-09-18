@@ -65,6 +65,7 @@
 #define orxOBJECT_KU32_FLAG_ENABLED             0x10000000  /**< Enabled flag */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_ON        0x01000000  /**< Smoothing on flag  */
 #define orxOBJECT_KU32_FLAG_SMOOTHING_OFF       0x02000000  /**< Smoothing off flag  */
+#define orxOBJECT_KU32_FLAG_HAS_LIFETIME        0x04000000  /**< Has lifetime flag  */
 
 #define orxOBJECT_KU32_FLAG_BLEND_MODE_NONE     0x00000000  /**< Blend mode no flags */
 
@@ -108,6 +109,7 @@
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
+#define orxOBJECT_KZ_CONFIG_LIFETIME            "LifeTime"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_X                          "x"
@@ -142,10 +144,11 @@ struct __orxOBJECT_t
   orxVOID          *pUserData;                  /**< User data : 104 */
   orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 108 */
   orxFLOAT          fAngularVelocity;           /**< Angular velocity : 112 */
-  orxSTRING         zReference;                 /**< Config reference : 116 */
+  orxFLOAT          fLifeTime;                  /**< Life time : 116 */
+  orxSTRING         zReference;                 /**< Config reference : 120 */
 
   /* Padding */
-  orxPAD(116)
+  orxPAD(120)
 };
 
 /** Static structure
@@ -212,8 +215,32 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
       orxU32    i;
       orxFRAME *pstFrame;
 
+      /* Has life time? */
+      if(orxStructure_TestFlags(pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
+      {
+        /* Updates its life time */
+        pstObject->fLifeTime -= _pstClockInfo->fDT;
+
+        /* Should die? */
+        if(pstObject->fLifeTime <= orxFLOAT_0)
+        {
+          orxOBJECT *pstDeleteObject;
+
+          /* Stores object to delete */
+          pstDeleteObject = pstObject;
+
+          /* Reverts to previous object */
+          pstObject = orxOBJECT(orxStructure_GetPrevious(pstObject));
+
+          /* Deletes it */
+          orxObject_Delete(pstDeleteObject);
+
+          continue;
+        }
+      }
+
       /* !!! TODO !!! */
-      /* Updates culling infos before calling update subfunctions */
+      /* Updates culling info before calling update subfunctions */
 
       /* For all linked structures */
       for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
@@ -823,6 +850,25 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       {
         /* Defaults to alpha */
         u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA;
+      }
+
+      /* Has life time? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_LIFETIME) != orxFALSE)
+      {
+        orxFLOAT fLifeTime;
+
+        /* Gets it */
+        fLifeTime = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_LIFETIME);
+
+        /* Valid? */
+        if(fLifeTime >= orxFLOAT_0)
+        {
+          /* Stores it */
+          pstResult->fLifeTime = fLifeTime;
+
+          /* Updates flags */
+          u32Flags |= orxOBJECT_KU32_FLAG_HAS_LIFETIME;
+        }
       }
 
       /* Updates flags */
