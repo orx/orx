@@ -160,6 +160,10 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a class="el" href="group__orx_display.html#g302d29e0b0a29aa5d42a17c426f60365">orxDISPLAY_BLEND_MODE</a> <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g2e2905fac791451b7b19c759fc0967a4">orxObject_GetBlendMode</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gc69b4f8092aed5ac984d87990086a61d">orxObject_SetLifeTime</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fLifeTime)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g2530500ed75af2d7e7920eda4b86eea4">orxObject_GetLifeTime</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Object module Allows to creates and handle objects Objects are structures containers that can refer to many other structures such as frames, graphics, etc... <hr><h2>Define Documentation</h2>
@@ -911,6 +915,32 @@ Gets last added sound (Do *NOT* destroy it directly before removing it!!!) <dl c
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSOUND / orxNULL </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g2530500ed75af2d7e7920eda4b86eea4"></a><!-- doxytag: member="orxObject.h::orxObject_GetLifeTime" ref="g2530500ed75af2d7e7920eda4b86eea4" args="(orxCONST orxOBJECT *_pstObject)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxFLOAT orxFASTCALL orxObject_GetLifeTime           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets object lifetime <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Lifetime / negative value if none </dd></dl>
 
 </div>
 </div><p>
@@ -1826,6 +1856,42 @@ Sets current animation for object <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="gc69b4f8092aed5ac984d87990086a61d"></a><!-- doxytag: member="orxObject.h::orxObject_SetLifeTime" ref="gc69b4f8092aed5ac984d87990086a61d" args="(orxOBJECT *_pstObject, orxFLOAT _fLifeTime)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxObject_SetLifeTime           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fLifeTime</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets object lifetime <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fLifeTime</em>&nbsp;</td><td>Lifetime to set, negative value to disable it </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g7fe8ca519a65ab244aa5707a602f8d38"></a><!-- doxytag: member="orxObject.h::orxObject_SetOwner" ref="g7fe8ca519a65ab244aa5707a602f8d38" args="(orxOBJECT *_pstObject, orxVOID *_pOwner)" -->
 <div class="memitem">
 <div class="memproto">
@@ -2239,7 +2305,7 @@ Unlinks structure from an object, given its structure ID <dl compact><dt><b>Para
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Tue Sep 16 15:47:39 2008 for orx by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:03 2008 for orx by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>

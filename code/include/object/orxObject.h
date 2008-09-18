@@ -493,6 +493,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetBlendMode(orxOBJECT *_p
  */
 extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(orxCONST orxOBJECT *_pstObject);
 
+
+/** Sets object lifetime
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fLifeTime      Lifetime to set, negative value to disable it
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLifeTime);
+
+/** Gets object lifetime
+ * @param[in]   _pstObject      Concerned object
+ * @return      Lifetime / negative value if none
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(orxCONST orxOBJECT *_pstObject);
+
 #endif /* _orxOBJECT_H_ */
 
 /** @} */

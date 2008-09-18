@@ -855,20 +855,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Has life time? */
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_LIFETIME) != orxFALSE)
       {
-        orxFLOAT fLifeTime;
-
-        /* Gets it */
-        fLifeTime = orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_LIFETIME);
-
-        /* Valid? */
-        if(fLifeTime >= orxFLOAT_0)
-        {
-          /* Stores it */
-          pstResult->fLifeTime = fLifeTime;
-
-          /* Updates flags */
-          u32Flags |= orxOBJECT_KU32_FLAG_HAS_LIFETIME;
-        }
+        /* Stores it */
+        orxObject_SetLifeTime(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_LIFETIME));
       }
 
       /* Updates flags */
@@ -2932,4 +2920,55 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(orxCONST orxOBJECT *_ps
 
   /* Done! */
   return eResult;
+}
+
+/** Sets object lifetime
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fLifeTime      Lifetime to set, negative value to disable it
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLifeTime)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Is valid? */
+  if(_fLifeTime >= orxFLOAT_0)
+  {
+    /* Stores it */
+    _pstObject->fLifeTime = _fLifeTime;
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME, orxOBJECT_KU32_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_LIFETIME);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets object lifetime
+ * @param[in]   _pstObject      Concerned object
+ * @return      Lifetime / negative value if none
+ */
+orxFLOAT orxFASTCALL orxObject_GetLifeTime(orxCONST orxOBJECT *_pstObject)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates result */
+  fResult = orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_LIFETIME) ? _pstObject->fLifeTime : orx2F(-1.0f);
+
+  /* Done! */
+  return fResult;
 }
