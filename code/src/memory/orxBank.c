@@ -392,6 +392,8 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
 
       /* Set the bit as used */
       ((orxU32*)(pstCurrentSegment->pu32FreeElemBits))[u32FieldResultIndex] |= 1 << u32BitResultIndex;
+      
+#ifdef __orxDEBUG__
       {
         orxU32 r = 0, i, j;
 
@@ -406,10 +408,9 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
           }
         }
 
-        orxASSERT(r == _pstBank->u16NbCellPerSegments - pstCurrentSegment->u16NbFree);
-
-        r= 32;
+        orxASSERT(r == (orxU32)(_pstBank->u16NbCellPerSegments - pstCurrentSegment->u16NbFree));
       }
+#endif /* __orxDEBUG__ */
     }
   }
 
