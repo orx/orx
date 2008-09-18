@@ -47,23 +47,23 @@
 
 /** Graphic flags
  */
-#define orxGRAPHIC_KU32_FLAG_INTERNAL         0x10000000  /**< Internal structure handling flag  */
-#define orxGRAPHIC_KU32_FLAG_HAS_COLOR        0x20000000  /**< Has color flag  */
-#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT        0x40000000  /**< Has pivot flag  */
-#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON     0x01000000  /**< Smoothing on flag  */
-#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF    0x02000000  /**< Smoothing off flag  */
+#define orxGRAPHIC_KU32_FLAG_INTERNAL             0x10000000  /**< Internal structure handling flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_COLOR            0x20000000  /**< Has color flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT            0x40000000  /**< Has pivot flag  */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x01000000  /**< Smoothing on flag  */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x02000000  /**< Smoothing off flag  */
 
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE  0x00000000 /**< Blend mode no flags */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000 /**< Blend mode no flags */
 
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA 0x00100000  /**< Blend mode alpha flag */
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY 0x00200000  /**< Blend mode multiply flag */
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD   0x00400000  /**< Blend mode add flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA     0x00100000  /**< Blend mode alpha flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00200000  /**< Blend mode multiply flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD       0x00400000  /**< Blend mode add flag */
 
-#define orxGRAPHIC_KU32_MASK_ALIGN            0x000000F0  /**< Alignment mask */
+#define orxGRAPHIC_KU32_MASK_ALIGN                0x000000F0  /**< Alignment mask */
 
-#define orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL   0x00F00000  /**< Blend mode mask */
+#define orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL       0x00F00000  /**< Blend mode mask */
 
-#define orxGRAPHIC_KU32_MASK_ALL              0xFFFFFFFF  /**< All flags */
+#define orxGRAPHIC_KU32_MASK_ALL                  0xFFFFFFFF  /**< All flags */
 
 
 /** Misc defines
