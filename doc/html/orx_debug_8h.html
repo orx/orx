@@ -65,52 +65,50 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g791ae80ce2742470e1685066fc54503b">orxDEBUG_KZ_DATE_FORMAT</a>&nbsp;&nbsp;&nbsp;&quot;[%Y-%m-%d %H:%M:%S]&quot;</td></tr>
 
-<tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_debug.html#g40ae8dc2f6b6610d5654175cfd1d750d">__orxDEBUG_LEVEL_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#gdb2a85cc6abd63d8263a841e18826e83">orxDEBUG_LEVEL</a></td></tr>
-
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g40ae8dc2f6b6610d5654175cfd1d750d">__orxDEBUG_LEVEL_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d699428ca415508277a926f8d1df637d7">orxDEBUG_LEVEL_ANIM</a> =  0, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d2c828ed11fb87e8473dab45e3c3a165b">orxDEBUG_LEVEL_CLOCK</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d3bdb48bbeffbaa6e907d710c549a421f">orxDEBUG_LEVEL_DISPLAY</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d852436f62180f4eb2b7886bcb5daf912">orxDEBUG_LEVEL_FILE</a>, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#geb4ae42be59a5cb6239cee52d62e28bb">orxDEBUG_LEVEL</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb699428ca415508277a926f8d1df637d7">orxDEBUG_LEVEL_ANIM</a> =  0, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb2c828ed11fb87e8473dab45e3c3a165b">orxDEBUG_LEVEL_CLOCK</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb3bdb48bbeffbaa6e907d710c549a421f">orxDEBUG_LEVEL_DISPLAY</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb852436f62180f4eb2b7886bcb5daf912">orxDEBUG_LEVEL_FILE</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750dbe7b72406a025e02c21801cf1cba8875">orxDEBUG_LEVEL_INTERACTION</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d58e62391440024b089fba36e0c96dcdb">orxDEBUG_LEVEL_JOYSTICK</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d86cd6712f1e582df5ef59afe7c21dd6d">orxDEBUG_LEVEL_KEYBOARD</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750dee818761c6569e3ea53695883f51f1e4">orxDEBUG_LEVEL_MEMORY</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bbbe7b72406a025e02c21801cf1cba8875">orxDEBUG_LEVEL_INTERACTION</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb58e62391440024b089fba36e0c96dcdb">orxDEBUG_LEVEL_JOYSTICK</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb86cd6712f1e582df5ef59afe7c21dd6d">orxDEBUG_LEVEL_KEYBOARD</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bbee818761c6569e3ea53695883f51f1e4">orxDEBUG_LEVEL_MEMORY</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d1febfe226a477ab15b7920c77dd1084a">orxDEBUG_LEVEL_MOUSE</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750dfca94c6f7051ab005d43e8bef3711380">orxDEBUG_LEVEL_OBJECT</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750db7fc4af55c1ec818872257ec93be4acc">orxDEBUG_LEVEL_PARAM</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d923e85b6a392637953dd3ce2dd29a7bc">orxDEBUG_LEVEL_PATHFINDER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb1febfe226a477ab15b7920c77dd1084a">orxDEBUG_LEVEL_MOUSE</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bbfca94c6f7051ab005d43e8bef3711380">orxDEBUG_LEVEL_OBJECT</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bbb7fc4af55c1ec818872257ec93be4acc">orxDEBUG_LEVEL_PARAM</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb923e85b6a392637953dd3ce2dd29a7bc">orxDEBUG_LEVEL_PATHFINDER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d9aa230c0654ee625f8a0e96a719360bc">orxDEBUG_LEVEL_PHYSICS</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d9ec44d54308a652d42fdace958c45f1d">orxDEBUG_LEVEL_PLUGIN</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750db47fbd67b2a4ecfef2fb420dd8a5a4f9">orxDEBUG_LEVEL_RENDER</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d87423c8d257aebf0dd2e4b42b27c4cca">orxDEBUG_LEVEL_SCREENSHOT</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb9aa230c0654ee625f8a0e96a719360bc">orxDEBUG_LEVEL_PHYSICS</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb9ec44d54308a652d42fdace958c45f1d">orxDEBUG_LEVEL_PLUGIN</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bbb47fbd67b2a4ecfef2fb420dd8a5a4f9">orxDEBUG_LEVEL_RENDER</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb87423c8d257aebf0dd2e4b42b27c4cca">orxDEBUG_LEVEL_SCREENSHOT</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750dc640e03bf13fa6e65a13ba8f55b133f3">orxDEBUG_LEVEL_SOUND</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d31c29b3ddd36993dc1cc60d45e6a5b89">orxDEBUG_LEVEL_TIMER</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d13e70883bc3e18daa08d7bf12b5176f6">orxDEBUG_LEVEL_LOG</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bbc640e03bf13fa6e65a13ba8f55b133f3">orxDEBUG_LEVEL_SOUND</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb0eeeef87ebd331ae7ad5bc055ea54e02">orxDEBUG_LEVEL_SYSTEM</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb31c29b3ddd36993dc1cc60d45e6a5b89">orxDEBUG_LEVEL_TIMER</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bba6acba1b9a9e4132847ac669ddb6b5e7">orxDEBUG_LEVEL_USER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750da311745b210c357e432cecc2d177259f">orxDEBUG_LEVEL_ASSERT</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d8186ce4ec7325652fe24710ac6c37676">orxDEBUG_LEVEL_CRITICAL_ASSERT</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d3b7e9c7510e3a00cedba52f567f09d62">orxDEBUG_LEVEL_NUMBER</a>, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d8ccf1acaf74441c5e6c569004626bd36">orxDEBUG_LEVEL_MAX_NUMBER</a> =  32, 
+&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb13e70883bc3e18daa08d7bf12b5176f6">orxDEBUG_LEVEL_LOG</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bba311745b210c357e432cecc2d177259f">orxDEBUG_LEVEL_ASSERT</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb8186ce4ec7325652fe24710ac6c37676">orxDEBUG_LEVEL_CRITICAL_ASSERT</a>, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb3b7e9c7510e3a00cedba52f567f09d62">orxDEBUG_LEVEL_NUMBER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750ddfe0a9e931b14d89859d7c0a4a1e71b6">orxDEBUG_LEVEL_ALL</a> =  0xFFFFFFFE, 
-<a class="el" href="group__orx_debug.html#gg40ae8dc2f6b6610d5654175cfd1d750d3038cd09806b268dc26143f20b32cf8b">orxDEBUG_LEVEL_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb8ccf1acaf74441c5e6c569004626bd36">orxDEBUG_LEVEL_MAX_NUMBER</a> =  32, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bbdfe0a9e931b14d89859d7c0a4a1e71b6">orxDEBUG_LEVEL_ALL</a> =  0xFFFFFFFE, 
+<a class="el" href="group__orx_debug.html#ggeb4ae42be59a5cb6239cee52d62e28bb3038cd09806b268dc26143f20b32cf8b">orxDEBUG_LEVEL_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g570d57c0cb01929f52c506b9079d3294">_orxDebug_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g570d57c0cb01929f52c506b9079d3294">_orxDebug_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#ge99527c2dd7d4ef1e07869dcb0cdb3ca">_orxDebug_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g206ee5fd2c70671d39b5d9bd960abe1f">_orxDebug_Log</a> (<a class="el" href="group__orx_debug.html#gdb2a85cc6abd63d8263a841e18826e83">orxDEBUG_LEVEL</a> _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat,...)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g206ee5fd2c70671d39b5d9bd960abe1f">_orxDebug_Log</a> (<a class="el" href="group__orx_debug.html#geb4ae42be59a5cb6239cee52d62e28bb">orxDEBUG_LEVEL</a> _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat,...)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g58e0c677e486821feb36ea9a29663db0">_orxDebug_BackupFlags</a> ()</td></tr>
 
@@ -128,8 +126,7 @@
 <li>Add mask test for level displaying</li><li>Add graphical debug from outside, using a shared debug info array</li><li>Add Assert/Assert after code</li><li>Enhance logging, use of different log levels </li></ul>
 </dd></dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:02 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

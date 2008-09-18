@@ -20,7 +20,7 @@
 <h1>OrxPackage</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">__orxPACKAGE_INFO_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_p_a_c_k_a_g_e___i_n_f_o_s.html">orxPACKAGE_INFOS</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g9a85f6d98e44336bec1c158dd3247b07">orxPACKAGE_KU32_FLAG_LOCATION_INTERN</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
@@ -32,14 +32,12 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#gd3acabf206bc28ceed283adca92578b4">orxPACKAGE_KU32_FLAG_OPEN_WRITE</a>&nbsp;&nbsp;&nbsp;0x00000008</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">__orxPACKAGE_INFO_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g81f725305fd2fb9c4b76b76186d73c9d">orxPACKAGE_INFOS</a></td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxPACKAGE_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g5bbdacfd730d23b9bfa665d6e22282ac">orxPackage_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g6a2358665f4a9013c743e859730f73cd">orxPackage_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g6a2358665f4a9013c743e859730f73cd">orxPackage_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#gb7a6b1cde3ccbfc69ea4830e05f194bf">orxPackage_Exit</a> ()</td></tr>
 
@@ -51,15 +49,15 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#gf06e0e94c238da80e98ab359b765de57">orxPackage_TestFlags</a> (<a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *_pstPackage, orxU32 _u32FlagsToTest)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g053165eb0169835b611d88ff4b217af0">orxPackage_Commit</a> (<a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *_pstPackage, orxCONST orxSTRING _zFileName)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g053165eb0169835b611d88ff4b217af0">orxPackage_Commit</a> (<a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *_pstPackage, orxCONST orxSTRING _zFileName)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#gaeba46efa34ba44cbb5909380fb4a4bf">orxPackage_Extract</a> (<a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *_pstPackage, orxCONST orxSTRING _zFileName)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#gaeba46efa34ba44cbb5909380fb4a4bf">orxPackage_Extract</a> (<a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *_pstPackage, orxCONST orxSTRING _zFileName)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g54ff2cafb5b8283c735700f6f01626db">orxPackage_FindFirst</a> (<a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *_pstPackage, orxCONST orxSTRING _zSearchPattern, <a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">orxPACKAGE_INFOS</a> *_pstFileInfos)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g54ff2cafb5b8283c735700f6f01626db">orxPackage_FindFirst</a> (<a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *_pstPackage, orxCONST orxSTRING _zSearchPattern, <a class="el" href="structorx_p_a_c_k_a_g_e___i_n_f_o_s.html">orxPACKAGE_INFOS</a> *_pstFileInfos)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g246dd18376f8406996b912bab266e353">orxPackage_FindNext</a> (<a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">orxPACKAGE_INFOS</a> *_pstFileInfos)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g246dd18376f8406996b912bab266e353">orxPackage_FindNext</a> (<a class="el" href="structorx_p_a_c_k_a_g_e___i_n_f_o_s.html">orxPACKAGE_INFOS</a> *_pstFileInfos)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g2e2551705971ef3e3dd901e8a9e65044">orxPackage_FindClose</a> (<a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">orxPACKAGE_INFOS</a> *_pstFileInfos)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g2e2551705971ef3e3dd901e8a9e65044">orxPackage_FindClose</a> (<a class="el" href="structorx_p_a_c_k_a_g_e___i_n_f_o_s.html">orxPACKAGE_INFOS</a> *_pstFileInfos)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_package.html#g20378be6df322ad1019d34fa60c94752">orxPackage_Read</a> (orxVOID *_pDataToWrite, orxU32 _u32FileSize, <a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *_pstPackage, orxCONST orxSTRING _zFileName)</td></tr>
 
@@ -142,21 +140,6 @@ package opened in write mode
 
 </div>
 </div><p>
-<a class="anchor" name="g81f725305fd2fb9c4b76b76186d73c9d"></a><!-- doxytag: member="orxPackage.h::orxPACKAGE_INFOS" ref="g81f725305fd2fb9c4b76b76186d73c9d" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">__orxPACKAGE_INFO_t</a>  <a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">orxPACKAGE_INFOS</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Store datas about the current file. 
-</div>
-</div><p>
 <hr><h2>Function Documentation</h2>
 <a class="anchor" name="g02b6efaccbc27c759be3efaea866adda"></a><!-- doxytag: member="orxPackage.h::orxPackage_Close" ref="g02b6efaccbc27c759be3efaea866adda" args="(orxPACKAGE *_pstPackage)" -->
 <div class="memitem">
@@ -188,7 +171,7 @@ Closes a package <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPackage_Commit           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPackage_Commit           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstPackage</em>, </td>
@@ -243,7 +226,7 @@ Uninitializes the Package Module
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPackage_Extract           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPackage_Extract           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_package.html#gb8628844548367942490e4f767b3af95">orxPACKAGE</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstPackage</em>, </td>
@@ -281,7 +264,7 @@ Extracts a file from a package <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="memname">orxDLLAPI orxVOID orxPackage_FindClose           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">orxPACKAGE_INFOS</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_p_a_c_k_a_g_e___i_n_f_o_s.html">orxPACKAGE_INFOS</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFileInfos</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -318,7 +301,7 @@ Closes a search (free the memory allocated for this search) <dl compact><dt><b>P
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">orxPACKAGE_INFOS</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_p_a_c_k_a_g_e___i_n_f_o_s.html">orxPACKAGE_INFOS</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFileInfos</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -349,7 +332,7 @@ Starts a new search. Find the first file that will match to the given pattern in
         <tr>
           <td class="memname">orxDLLAPI orxBOOL orxPackage_FindNext           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="struct____orx_p_a_c_k_a_g_e___i_n_f_o__t.html">orxPACKAGE_INFOS</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_p_a_c_k_a_g_e___i_n_f_o_s.html">orxPACKAGE_INFOS</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFileInfos</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -373,7 +356,7 @@ Continues a search. Find the next occurence of a pattern. The search has to be s
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPackage_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPackage_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -579,8 +562,7 @@ Tests package flags <dl compact><dt><b>Parameters:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:03 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

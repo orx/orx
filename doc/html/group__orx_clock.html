@@ -20,7 +20,7 @@
 <h1>OrxClock</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">__orxCLOCK_INFO_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g930256bcb28f6e8132eb9e17a37f7068">orxCLOCK_KU32_CLOCK_BANK_SIZE</a>&nbsp;&nbsp;&nbsp;16</td></tr>
@@ -28,49 +28,43 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gcf7c640799de113b93a02b540befe4d7">orxCLOCK_KU32_FUNCTION_BANK_SIZE</a>&nbsp;&nbsp;&nbsp;16</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_clock.html#gb5c95d8fd374da6a6499c24a8cf3ad59">__orxCLOCK_TYPE_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g1905ae6e7e7875b033bc85724fdf269b">orxCLOCK_TYPE</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_clock.html#g3549629851d73f5925fd26e22dba463f">__orxCLOCK_MOD_TYPE_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g314d2d4496e5ffbd381b2c4751e6b747">orxCLOCK_MOD_TYPE</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">__orxCLOCK_INFO_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gfb8bf2477a2704a3cb021ff61af45bff">orxCLOCK_INFO</a></td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxCLOCK_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxVOID(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> )(orxCONST <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a> *_pstClockInfo, orxVOID *_pstContext)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxVOID(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> )(orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo, orxVOID *_pstContext)</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gb5c95d8fd374da6a6499c24a8cf3ad59">__orxCLOCK_TYPE_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#ggb5c95d8fd374da6a6499c24a8cf3ad59e66b3023f59d135e96002c29650969ff">orxCLOCK_TYPE_CORE</a> =  0, 
-<a class="el" href="group__orx_clock.html#ggb5c95d8fd374da6a6499c24a8cf3ad59b01a9f2bbb9ff2ada84fb348f9e6c7cb">orxCLOCK_TYPE_RENDER</a>, 
-<a class="el" href="group__orx_clock.html#ggb5c95d8fd374da6a6499c24a8cf3ad59a3a8311475d96e286b76e1e514a723e1">orxCLOCK_TYPE_PHYSICS</a>, 
-<a class="el" href="group__orx_clock.html#ggb5c95d8fd374da6a6499c24a8cf3ad596c31ce89039d103b99a6ba57c8c24282">orxCLOCK_TYPE_USER</a>, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g8e27772673f124fc5d31b8596539e8d7">orxCLOCK_TYPE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7e66b3023f59d135e96002c29650969ff">orxCLOCK_TYPE_CORE</a> =  0, 
+<a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7b01a9f2bbb9ff2ada84fb348f9e6c7cb">orxCLOCK_TYPE_RENDER</a>, 
+<a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7a3a8311475d96e286b76e1e514a723e1">orxCLOCK_TYPE_PHYSICS</a>, 
+<a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d76c31ce89039d103b99a6ba57c8c24282">orxCLOCK_TYPE_USER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#ggb5c95d8fd374da6a6499c24a8cf3ad59adbaec96d1f059b7735e9bab3b1e3d52">orxCLOCK_TYPE_SECOND</a>, 
-<a class="el" href="group__orx_clock.html#ggb5c95d8fd374da6a6499c24a8cf3ad59789ac9e1f4746dfa1ec2b03cf0bbe2cb">orxCLOCK_TYPE_NUMBER</a>, 
-<a class="el" href="group__orx_clock.html#ggb5c95d8fd374da6a6499c24a8cf3ad59b1f10735dae8ed95572b041836f98744">orxCLOCK_TYPE_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7adbaec96d1f059b7735e9bab3b1e3d52">orxCLOCK_TYPE_SECOND</a>, 
+<a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7789ac9e1f4746dfa1ec2b03cf0bbe2cb">orxCLOCK_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7b1f10735dae8ed95572b041836f98744">orxCLOCK_TYPE_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g3549629851d73f5925fd26e22dba463f">__orxCLOCK_MOD_TYPE_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#gg3549629851d73f5925fd26e22dba463f74c26cf7b6b21979a1a0f31fe0143f04">orxCLOCK_MOD_TYPE_FIXED</a> =  0, 
-<a class="el" href="group__orx_clock.html#gg3549629851d73f5925fd26e22dba463f91a1e4a5a03c64c4a233db8456a7d02a">orxCLOCK_MOD_TYPE_MULTIPLY</a>, 
-<a class="el" href="group__orx_clock.html#gg3549629851d73f5925fd26e22dba463f3b637987f220412994ea5054ae595f24">orxCLOCK_MOD_TYPE_MAXED</a>, 
-<a class="el" href="group__orx_clock.html#gg3549629851d73f5925fd26e22dba463f05e7b2ff66c68204456d1860fca9ace7">orxCLOCK_MOD_TYPE_NUMBER</a>, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gda60c0d5d6014d13f9822cb81391e38d">orxCLOCK_MOD_TYPE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#ggda60c0d5d6014d13f9822cb81391e38d74c26cf7b6b21979a1a0f31fe0143f04">orxCLOCK_MOD_TYPE_FIXED</a> =  0, 
+<a class="el" href="group__orx_clock.html#ggda60c0d5d6014d13f9822cb81391e38d91a1e4a5a03c64c4a233db8456a7d02a">orxCLOCK_MOD_TYPE_MULTIPLY</a>, 
+<a class="el" href="group__orx_clock.html#ggda60c0d5d6014d13f9822cb81391e38d3b637987f220412994ea5054ae595f24">orxCLOCK_MOD_TYPE_MAXED</a>, 
+<a class="el" href="group__orx_clock.html#ggda60c0d5d6014d13f9822cb81391e38d05e7b2ff66c68204456d1860fca9ace7">orxCLOCK_MOD_TYPE_NUMBER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#gg3549629851d73f5925fd26e22dba463f58a11437216d0ba61fe5927e14b4713b">orxCLOCK_MOD_TYPE_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#ggda60c0d5d6014d13f9822cb81391e38d58a11437216d0ba61fe5927e14b4713b">orxCLOCK_MOD_TYPE_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g8d7b4c4435e7f44ead0765660f9fc171">orxClock_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g04499e44b36bb270e308185599d6f4a6">orxClock_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g04499e44b36bb270e308185599d6f4a6">orxClock_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g4bb34ed722d6eb9853ccacf2a59f3f05">orxClock_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g3cbf6d1e245d788039e70f1af4e538cd">orxClock_Update</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g3cbf6d1e245d788039e70f1af4e538cd">orxClock_Update</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#geaddca772571521857434876f61aea0e">orxClock_Create</a> (orxFLOAT _fTickSize, <a class="el" href="group__orx_clock.html#g1905ae6e7e7875b033bc85724fdf269b">orxCLOCK_TYPE</a> _eType)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#geaddca772571521857434876f61aea0e">orxClock_Create</a> (orxFLOAT _fTickSize, <a class="el" href="group__orx_clock.html#g8e27772673f124fc5d31b8596539e8d7">orxCLOCK_TYPE</a> _eType)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g850bafdcd53b999f1aa39bb2471da5c6">orxClock_Delete</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
@@ -83,19 +77,19 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g07f31315769bfec9f587635e0be93e74">orxClock_IsPaused</a> (orxCONST <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxCONST <br>
-<a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g7dce5556d7c551cf664dd77f43420c71">orxClock_GetInfo</a> (orxCONST <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
+<a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g7dce5556d7c551cf664dd77f43420c71">orxClock_GetInfo</a> (orxCONST <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g55a74c9309e565e375d1e8b2b2775b0c">orxClock_SetModifier</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, <a class="el" href="group__orx_clock.html#g314d2d4496e5ffbd381b2c4751e6b747">orxCLOCK_MOD_TYPE</a> _eModType, orxFLOAT _fModValue)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g55a74c9309e565e375d1e8b2b2775b0c">orxClock_SetModifier</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, <a class="el" href="group__orx_clock.html#gda60c0d5d6014d13f9822cb81391e38d">orxCLOCK_MOD_TYPE</a> _eModType, orxFLOAT _fModValue)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g2904597cbcbe54e6f92b4e88c89757f4">orxClock_Register</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, orxCONST <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> _pfnCallback, orxVOID *_pstContext, <a class="el" href="group__orx_module.html#gadf95b03a5e1feb382f435a4c036c62a">orxMODULE_ID</a> _eModuleID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g2904597cbcbe54e6f92b4e88c89757f4">orxClock_Register</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, orxCONST <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> _pfnCallback, orxVOID *_pstContext, <a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g49404873bfb28e4ed0864ded6d0a2890">orxClock_Unregister</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, orxCONST <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> _pfnCallback)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g49404873bfb28e4ed0864ded6d0a2890">orxClock_Unregister</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, orxCONST <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> _pfnCallback)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g81e1968ab006dde97fae72b9de727139">orxClock_GetContext</a> (orxCONST <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, orxCONST <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> _pfnCallback)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g59a4cceade3c319791aaa1a5cb0b6984">orxClock_SetContext</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, orxCONST <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> _pfnCallback, orxVOID *_pstContext)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g59a4cceade3c319791aaa1a5cb0b6984">orxClock_SetContext</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, orxCONST <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a> _pfnCallback, orxVOID *_pstContext)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ge0e97d173bb7d9dfc6050f39fe071627">orxClock_FindFirst</a> (orxFLOAT _fTickSize, <a class="el" href="group__orx_clock.html#g1905ae6e7e7875b033bc85724fdf269b">orxCLOCK_TYPE</a> _eType)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ge0e97d173bb7d9dfc6050f39fe071627">orxClock_FindFirst</a> (orxFLOAT _fTickSize, <a class="el" href="group__orx_clock.html#g8e27772673f124fc5d31b8596539e8d7">orxCLOCK_TYPE</a> _eType)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g2e6d207c7caf4c0c573106d1ec3683bd">orxClock_FindNext</a> (orxCONST <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
@@ -155,7 +149,7 @@ Clock structure
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef orxVOID(orxFASTCALL * <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a>)(orxCONST <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a> *_pstClockInfo, orxVOID *_pstContext)          </td>
+          <td class="memname">typedef orxVOID(orxFASTCALL * <a class="el" href="group__orx_clock.html#g2f2ec5fb1f4d85d9912af6e110dbe7e7">orxCLOCK_FUNCTION</a>)(orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo, orxVOID *_pstContext)          </td>
         </tr>
       </table>
 </div>
@@ -165,58 +159,13 @@ Clock structure
 Clock callback function type to use with clock bindings 
 </div>
 </div><p>
-<a class="anchor" name="gfb8bf2477a2704a3cb021ff61af45bff"></a><!-- doxytag: member="orxClock.h::orxCLOCK_INFO" ref="gfb8bf2477a2704a3cb021ff61af45bff" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">__orxCLOCK_INFO_t</a>  <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Clock info structure 
-</div>
-</div><p>
-<a class="anchor" name="g314d2d4496e5ffbd381b2c4751e6b747"></a><!-- doxytag: member="orxClock.h::orxCLOCK_MOD_TYPE" ref="g314d2d4496e5ffbd381b2c4751e6b747" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="group__orx_clock.html#g3549629851d73f5925fd26e22dba463f">__orxCLOCK_MOD_TYPE_t</a>  <a class="el" href="group__orx_clock.html#g314d2d4496e5ffbd381b2c4751e6b747">orxCLOCK_MOD_TYPE</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Clock mod type enum 
-</div>
-</div><p>
-<a class="anchor" name="g1905ae6e7e7875b033bc85724fdf269b"></a><!-- doxytag: member="orxClock.h::orxCLOCK_TYPE" ref="g1905ae6e7e7875b033bc85724fdf269b" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="group__orx_clock.html#gb5c95d8fd374da6a6499c24a8cf3ad59">__orxCLOCK_TYPE_t</a>  <a class="el" href="group__orx_clock.html#g1905ae6e7e7875b033bc85724fdf269b">orxCLOCK_TYPE</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Clock type enum 
-</div>
-</div><p>
 <hr><h2>Enumeration Type Documentation</h2>
-<a class="anchor" name="g3549629851d73f5925fd26e22dba463f"></a><!-- doxytag: member="orxClock.h::__orxCLOCK_MOD_TYPE_t" ref="g3549629851d73f5925fd26e22dba463f" args="" -->
+<a class="anchor" name="gda60c0d5d6014d13f9822cb81391e38d"></a><!-- doxytag: member="orxClock.h::orxCLOCK_MOD_TYPE" ref="gda60c0d5d6014d13f9822cb81391e38d" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__orx_clock.html#g3549629851d73f5925fd26e22dba463f">__orxCLOCK_MOD_TYPE_t</a>          </td>
+          <td class="memname">enum <a class="el" href="group__orx_clock.html#gda60c0d5d6014d13f9822cb81391e38d">orxCLOCK_MOD_TYPE</a>          </td>
         </tr>
       </table>
 </div>
@@ -225,27 +174,27 @@ Clock type enum
 <p>
 Clock mod type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="gg3549629851d73f5925fd26e22dba463f74c26cf7b6b21979a1a0f31fe0143f04"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_FIXED" ref="gg3549629851d73f5925fd26e22dba463f74c26cf7b6b21979a1a0f31fe0143f04" args="" -->orxCLOCK_MOD_TYPE_FIXED</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="ggda60c0d5d6014d13f9822cb81391e38d74c26cf7b6b21979a1a0f31fe0143f04"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_FIXED" ref="ggda60c0d5d6014d13f9822cb81391e38d74c26cf7b6b21979a1a0f31fe0143f04" args="" -->orxCLOCK_MOD_TYPE_FIXED</em>&nbsp;</td><td>
 The given DT will always be constant (= modifier value) </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg3549629851d73f5925fd26e22dba463f91a1e4a5a03c64c4a233db8456a7d02a"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_MULTIPLY" ref="gg3549629851d73f5925fd26e22dba463f91a1e4a5a03c64c4a233db8456a7d02a" args="" -->orxCLOCK_MOD_TYPE_MULTIPLY</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="ggda60c0d5d6014d13f9822cb81391e38d91a1e4a5a03c64c4a233db8456a7d02a"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_MULTIPLY" ref="ggda60c0d5d6014d13f9822cb81391e38d91a1e4a5a03c64c4a233db8456a7d02a" args="" -->orxCLOCK_MOD_TYPE_MULTIPLY</em>&nbsp;</td><td>
 The given DT will be the real one * modifier </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg3549629851d73f5925fd26e22dba463f3b637987f220412994ea5054ae595f24"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_MAXED" ref="gg3549629851d73f5925fd26e22dba463f3b637987f220412994ea5054ae595f24" args="" -->orxCLOCK_MOD_TYPE_MAXED</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="ggda60c0d5d6014d13f9822cb81391e38d3b637987f220412994ea5054ae595f24"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_MAXED" ref="ggda60c0d5d6014d13f9822cb81391e38d3b637987f220412994ea5054ae595f24" args="" -->orxCLOCK_MOD_TYPE_MAXED</em>&nbsp;</td><td>
 The given DT will be the real one maxed by the modifier value </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg3549629851d73f5925fd26e22dba463f05e7b2ff66c68204456d1860fca9ace7"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_NUMBER" ref="gg3549629851d73f5925fd26e22dba463f05e7b2ff66c68204456d1860fca9ace7" args="" -->orxCLOCK_MOD_TYPE_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="ggda60c0d5d6014d13f9822cb81391e38d05e7b2ff66c68204456d1860fca9ace7"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_NUMBER" ref="ggda60c0d5d6014d13f9822cb81391e38d05e7b2ff66c68204456d1860fca9ace7" args="" -->orxCLOCK_MOD_TYPE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg3549629851d73f5925fd26e22dba463f58a11437216d0ba61fe5927e14b4713b"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_NONE" ref="gg3549629851d73f5925fd26e22dba463f58a11437216d0ba61fe5927e14b4713b" args="" -->orxCLOCK_MOD_TYPE_NONE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="ggda60c0d5d6014d13f9822cb81391e38d58a11437216d0ba61fe5927e14b4713b"></a><!-- doxytag: member="orxCLOCK_MOD_TYPE_NONE" ref="ggda60c0d5d6014d13f9822cb81391e38d58a11437216d0ba61fe5927e14b4713b" args="" -->orxCLOCK_MOD_TYPE_NONE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="gb5c95d8fd374da6a6499c24a8cf3ad59"></a><!-- doxytag: member="orxClock.h::__orxCLOCK_TYPE_t" ref="gb5c95d8fd374da6a6499c24a8cf3ad59" args="" -->
+<a class="anchor" name="g8e27772673f124fc5d31b8596539e8d7"></a><!-- doxytag: member="orxClock.h::orxCLOCK_TYPE" ref="g8e27772673f124fc5d31b8596539e8d7" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__orx_clock.html#gb5c95d8fd374da6a6499c24a8cf3ad59">__orxCLOCK_TYPE_t</a>          </td>
+          <td class="memname">enum <a class="el" href="group__orx_clock.html#g8e27772673f124fc5d31b8596539e8d7">orxCLOCK_TYPE</a>          </td>
         </tr>
       </table>
 </div>
@@ -254,19 +203,19 @@ The given DT will be the real one maxed by the modifier value </td></tr>
 <p>
 Clock type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="ggb5c95d8fd374da6a6499c24a8cf3ad59e66b3023f59d135e96002c29650969ff"></a><!-- doxytag: member="orxCLOCK_TYPE_CORE" ref="ggb5c95d8fd374da6a6499c24a8cf3ad59e66b3023f59d135e96002c29650969ff" args="" -->orxCLOCK_TYPE_CORE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg8e27772673f124fc5d31b8596539e8d7e66b3023f59d135e96002c29650969ff"></a><!-- doxytag: member="orxCLOCK_TYPE_CORE" ref="gg8e27772673f124fc5d31b8596539e8d7e66b3023f59d135e96002c29650969ff" args="" -->orxCLOCK_TYPE_CORE</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggb5c95d8fd374da6a6499c24a8cf3ad59b01a9f2bbb9ff2ada84fb348f9e6c7cb"></a><!-- doxytag: member="orxCLOCK_TYPE_RENDER" ref="ggb5c95d8fd374da6a6499c24a8cf3ad59b01a9f2bbb9ff2ada84fb348f9e6c7cb" args="" -->orxCLOCK_TYPE_RENDER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg8e27772673f124fc5d31b8596539e8d7b01a9f2bbb9ff2ada84fb348f9e6c7cb"></a><!-- doxytag: member="orxCLOCK_TYPE_RENDER" ref="gg8e27772673f124fc5d31b8596539e8d7b01a9f2bbb9ff2ada84fb348f9e6c7cb" args="" -->orxCLOCK_TYPE_RENDER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggb5c95d8fd374da6a6499c24a8cf3ad59a3a8311475d96e286b76e1e514a723e1"></a><!-- doxytag: member="orxCLOCK_TYPE_PHYSICS" ref="ggb5c95d8fd374da6a6499c24a8cf3ad59a3a8311475d96e286b76e1e514a723e1" args="" -->orxCLOCK_TYPE_PHYSICS</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg8e27772673f124fc5d31b8596539e8d7a3a8311475d96e286b76e1e514a723e1"></a><!-- doxytag: member="orxCLOCK_TYPE_PHYSICS" ref="gg8e27772673f124fc5d31b8596539e8d7a3a8311475d96e286b76e1e514a723e1" args="" -->orxCLOCK_TYPE_PHYSICS</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggb5c95d8fd374da6a6499c24a8cf3ad596c31ce89039d103b99a6ba57c8c24282"></a><!-- doxytag: member="orxCLOCK_TYPE_USER" ref="ggb5c95d8fd374da6a6499c24a8cf3ad596c31ce89039d103b99a6ba57c8c24282" args="" -->orxCLOCK_TYPE_USER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg8e27772673f124fc5d31b8596539e8d76c31ce89039d103b99a6ba57c8c24282"></a><!-- doxytag: member="orxCLOCK_TYPE_USER" ref="gg8e27772673f124fc5d31b8596539e8d76c31ce89039d103b99a6ba57c8c24282" args="" -->orxCLOCK_TYPE_USER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggb5c95d8fd374da6a6499c24a8cf3ad59adbaec96d1f059b7735e9bab3b1e3d52"></a><!-- doxytag: member="orxCLOCK_TYPE_SECOND" ref="ggb5c95d8fd374da6a6499c24a8cf3ad59adbaec96d1f059b7735e9bab3b1e3d52" args="" -->orxCLOCK_TYPE_SECOND</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg8e27772673f124fc5d31b8596539e8d7adbaec96d1f059b7735e9bab3b1e3d52"></a><!-- doxytag: member="orxCLOCK_TYPE_SECOND" ref="gg8e27772673f124fc5d31b8596539e8d7adbaec96d1f059b7735e9bab3b1e3d52" args="" -->orxCLOCK_TYPE_SECOND</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggb5c95d8fd374da6a6499c24a8cf3ad59789ac9e1f4746dfa1ec2b03cf0bbe2cb"></a><!-- doxytag: member="orxCLOCK_TYPE_NUMBER" ref="ggb5c95d8fd374da6a6499c24a8cf3ad59789ac9e1f4746dfa1ec2b03cf0bbe2cb" args="" -->orxCLOCK_TYPE_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg8e27772673f124fc5d31b8596539e8d7789ac9e1f4746dfa1ec2b03cf0bbe2cb"></a><!-- doxytag: member="orxCLOCK_TYPE_NUMBER" ref="gg8e27772673f124fc5d31b8596539e8d7789ac9e1f4746dfa1ec2b03cf0bbe2cb" args="" -->orxCLOCK_TYPE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggb5c95d8fd374da6a6499c24a8cf3ad59b1f10735dae8ed95572b041836f98744"></a><!-- doxytag: member="orxCLOCK_TYPE_NONE" ref="ggb5c95d8fd374da6a6499c24a8cf3ad59b1f10735dae8ed95572b041836f98744" args="" -->orxCLOCK_TYPE_NONE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg8e27772673f124fc5d31b8596539e8d7b1f10735dae8ed95572b041836f98744"></a><!-- doxytag: member="orxCLOCK_TYPE_NONE" ref="gg8e27772673f124fc5d31b8596539e8d7b1f10735dae8ed95572b041836f98744" args="" -->orxCLOCK_TYPE_NONE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
@@ -287,7 +236,7 @@ Clock type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_clock.html#g1905ae6e7e7875b033bc85724fdf269b">orxCLOCK_TYPE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_clock.html#g8e27772673f124fc5d31b8596539e8d7">orxCLOCK_TYPE</a>&nbsp;</td>
           <td class="paramname"> <em>_eType</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -367,7 +316,7 @@ Exits from the clock module
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_clock.html#g1905ae6e7e7875b033bc85724fdf269b">orxCLOCK_TYPE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_clock.html#g8e27772673f124fc5d31b8596539e8d7">orxCLOCK_TYPE</a>&nbsp;</td>
           <td class="paramname"> <em>_eType</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -457,7 +406,7 @@ Gets a callback function context <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxCONST <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a>* orxFASTCALL orxClock_GetInfo           </td>
+          <td class="memname">orxDLLAPI orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a>* orxFASTCALL orxClock_GetInfo           </td>
           <td>(</td>
           <td class="paramtype">orxCONST <a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstClock</em>          </td>
@@ -474,7 +423,7 @@ Gets clock info <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstClock</em>&nbsp;</td><td>Concerned clock </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxCLOCK_INFO / orxNULL </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -509,7 +458,7 @@ Gets next existing clock in list (can be used to parse all existing clocks) <dl 
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxClock_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxClock_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -580,7 +529,7 @@ Pauses a clock <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxClock_Register           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxClock_Register           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstClock</em>, </td>
@@ -600,7 +549,7 @@ Pauses a clock <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_module.html#gadf95b03a5e1feb382f435a4c036c62a">orxMODULE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eModuleID</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -649,7 +598,7 @@ Resyncs a clock (accumulated DT =&gt; 0)
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxClock_SetContext           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxClock_SetContext           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstClock</em>, </td>
@@ -692,7 +641,7 @@ Sets a callback function context <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxClock_SetModifier           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxClock_SetModifier           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstClock</em>, </td>
@@ -700,7 +649,7 @@ Sets a callback function context <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_clock.html#g314d2d4496e5ffbd381b2c4751e6b747">orxCLOCK_MOD_TYPE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_clock.html#gda60c0d5d6014d13f9822cb81391e38d">orxCLOCK_MOD_TYPE</a>&nbsp;</td>
           <td class="paramname"> <em>_eModType</em>, </td>
         </tr>
         <tr>
@@ -779,7 +728,7 @@ Unpauses a clock <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxClock_Unregister           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxClock_Unregister           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstClock</em>, </td>
@@ -815,7 +764,7 @@ Unregisters a callback function from a clock <dl compact><dt><b>Parameters:</b><
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxClock_Update           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxClock_Update           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -831,8 +780,7 @@ Updates the clock system <dl class="return" compact><dt><b>Returns:</b></dt><dd>
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:02 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

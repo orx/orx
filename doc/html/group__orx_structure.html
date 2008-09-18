@@ -20,12 +20,12 @@
 <h1>OrxStructure</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">__orxSTRUCTURE_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TYPE)&nbsp;&nbsp;&nbsp;((orx##TYPE *)_orxStructure_GetPointer(STRUCTURE, orxSTRUCTURE_ID_##TYPE))</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)orxNULL)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g4a2729d59779abcb7b3a54a6b4434a99">orxSTRUCTURE</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)orxNULL)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gfed02c22755889a77177dfcfe6b0e263">orxANIM</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, ANIM)</td></tr>
 
@@ -66,88 +66,81 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gb94740c722d3469c182b3c2806a574f9">orxSTRUCTURE_MAGIC_TAG_DELETED</a>&nbsp;&nbsp;&nbsp;0xDEADC0DE</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_structure.html#g09e11f0c7ccba0df601b65ddc54d44c2">__orxSTRUCTURE_ID_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <br>
-<a class="el" href="group__orx_structure.html#g5b463846488e6215263cc0466c243e5c">__orxSTRUCTURE_STORAGE_TYPE_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g52afeb13f34bacc8d0dc21ce2b4526f5">orxSTRUCTURE_STORAGE_TYPE</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">__orxSTRUCTURE_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd3d8349d426f4658a1004b20181f9c86">orxSTRUCTURE</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a> )(<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *_pstStructure, orxCONST <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *_pstCaller, orxCONST <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a> )(<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstStructure, orxCONST <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstCaller, orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g09e11f0c7ccba0df601b65ddc54d44c2">__orxSTRUCTURE_ID_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d">orxSTRUCTURE_ID_ANIMPOINTER</a> =  0, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2a26fed6e49b5d10e79690f547bbe0fe6">orxSTRUCTURE_ID_BODY</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422">orxSTRUCTURE_ID_FRAME</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c20dafce351a48bcb315a9cbb95dc95e6b">orxSTRUCTURE_ID_FXPOINTER</a>, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320617d8f5d855cadadc71b5536a54ae39d">orxSTRUCTURE_ID_ANIMPOINTER</a> =  0, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320a26fed6e49b5d10e79690f547bbe0fe6">orxSTRUCTURE_ID_BODY</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320845d86166defbdf540347307a9ec4422">orxSTRUCTURE_ID_FRAME</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3200dafce351a48bcb315a9cbb95dc95e6b">orxSTRUCTURE_ID_FXPOINTER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2fa383d690207c69abf6d225a37c59604">orxSTRUCTURE_ID_GRAPHIC</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2554ee7e66ada830afda6e98c1745acee">orxSTRUCTURE_ID_SOUNDPOINTER</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c272b4f2d0c5c830bc42126cd2ee998d35">orxSTRUCTURE_ID_SPAWNER</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2a63d4ded8137b23e0e0c4e2de8ea172f">orxSTRUCTURE_ID_LINKABLE_NUMBER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320fa383d690207c69abf6d225a37c59604">orxSTRUCTURE_ID_GRAPHIC</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320554ee7e66ada830afda6e98c1745acee">orxSTRUCTURE_ID_SOUNDPOINTER</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32072b4f2d0c5c830bc42126cd2ee998d35">orxSTRUCTURE_ID_SPAWNER</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320a63d4ded8137b23e0e0c4e2de8ea172f">orxSTRUCTURE_ID_LINKABLE_NUMBER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2abae8c1918db82057a7faa0cf10a314c">orxSTRUCTURE_ID_ANIM</a> =  orxSTRUCTURE_ID_LINKABLE_NUMBER, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c28e26d5803fc825cfe4c3195098af6d16">orxSTRUCTURE_ID_ANIMSET</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c227a9cd17907d4b5fede3cf9d33103025">orxSTRUCTURE_ID_CAMERA</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2a53088ced29c37f0ec7f975a972efb94">orxSTRUCTURE_ID_FX</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320abae8c1918db82057a7faa0cf10a314c">orxSTRUCTURE_ID_ANIM</a> =  orxSTRUCTURE_ID_LINKABLE_NUMBER, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3208e26d5803fc825cfe4c3195098af6d16">orxSTRUCTURE_ID_ANIMSET</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32027a9cd17907d4b5fede3cf9d33103025">orxSTRUCTURE_ID_CAMERA</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320a53088ced29c37f0ec7f975a972efb94">orxSTRUCTURE_ID_FX</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c248b14df45d963b21b0ad76063b205d6b">orxSTRUCTURE_ID_OBJECT</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c200f537835d607f70ffb31363889dec8e">orxSTRUCTURE_ID_SOUND</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c26a2287c21b776f8bde356f3fc37d798b">orxSTRUCTURE_ID_TEXTURE</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2675db72a8ad9bb86cd0864f5d421d8ef">orxSTRUCTURE_ID_VIEWPORT</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32048b14df45d963b21b0ad76063b205d6b">orxSTRUCTURE_ID_OBJECT</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32000f537835d607f70ffb31363889dec8e">orxSTRUCTURE_ID_SOUND</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3206a2287c21b776f8bde356f3fc37d798b">orxSTRUCTURE_ID_TEXTURE</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320675db72a8ad9bb86cd0864f5d421d8ef">orxSTRUCTURE_ID_VIEWPORT</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>, 
-<a class="el" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c23117a67a1c0b08f8e48f5af76600f6bf">orxSTRUCTURE_ID_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3203117a67a1c0b08f8e48f5af76600f6bf">orxSTRUCTURE_ID_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g5b463846488e6215263cc0466c243e5c">__orxSTRUCTURE_STORAGE_TYPE_t</a> { <a class="el" href="group__orx_structure.html#gg5b463846488e6215263cc0466c243e5c90c550172eeacd28aec04e59807c4b46">orxSTRUCTURE_STORAGE_TYPE_LINKLIST</a> =  0, 
-<a class="el" href="group__orx_structure.html#gg5b463846488e6215263cc0466c243e5c76ed66b422d3b8a863395d26ae125f36">orxSTRUCTURE_STORAGE_TYPE_TREE</a>, 
-<a class="el" href="group__orx_structure.html#gg5b463846488e6215263cc0466c243e5cbbd853ca7009adc5b0fc0c2556051e34">orxSTRUCTURE_STORAGE_TYPE_NUMBER</a>, 
-<a class="el" href="group__orx_structure.html#gg5b463846488e6215263cc0466c243e5c0cf2ba3615a0f4705ab7907b86c5d59a">orxSTRUCTURE_STORAGE_TYPE_NONE</a> =  orxENUM_NONE
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> { <a class="el" href="group__orx_structure.html#gg04bab78daaa41a0cc0803570a9142bb990c550172eeacd28aec04e59807c4b46">orxSTRUCTURE_STORAGE_TYPE_LINKLIST</a> =  0, 
+<a class="el" href="group__orx_structure.html#gg04bab78daaa41a0cc0803570a9142bb976ed66b422d3b8a863395d26ae125f36">orxSTRUCTURE_STORAGE_TYPE_TREE</a>, 
+<a class="el" href="group__orx_structure.html#gg04bab78daaa41a0cc0803570a9142bb9bbd853ca7009adc5b0fc0c2556051e34">orxSTRUCTURE_STORAGE_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_structure.html#gg04bab78daaa41a0cc0803570a9142bb90cf2ba3615a0f4705ab7907b86c5d59a">orxSTRUCTURE_STORAGE_TYPE_NONE</a> =  orxENUM_NONE
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gdee1542274822e8b80eb32b55fa69121">_orxStructure_GetPointer</a> (orxCONST orxVOID *_pStructure, <a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gdee1542274822e8b80eb32b55fa69121">_orxStructure_GetPointer</a> (orxCONST orxVOID *_pStructure, <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6b0f7d1976f2695393fdb55ce8d4137d">orxStructure_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd6b31f9352f2a6068198878128e9f369">orxStructure_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd6b31f9352f2a6068198878128e9f369">orxStructure_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g0c3bdb1388ef1b8d0398139c6cebdda6">orxStructure_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g908664072559b29d53ca30addf65b552">orxStructure_Register</a> (<a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID, <a class="el" href="group__orx_structure.html#g52afeb13f34bacc8d0dc21ce2b4526f5">orxSTRUCTURE_STORAGE_TYPE</a> _eStorageType, <a class="el" href="group__orx_memory.html#gc7def09bae60ac239474ab7d78a8bcc9">orxMEMORY_TYPE</a> _eMemoryType, orxU32 _u32Size, orxCONST <a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a> _pfnUpdate)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g908664072559b29d53ca30addf65b552">orxStructure_Register</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID, <a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> _eStorageType, <a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemoryType, orxU32 _u32Size, orxCONST <a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a> _pfnUpdate)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g9fd41dbe4be7db4c9e0a96a8509a1f00">orxStructure_Unregister</a> (<a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g9fd41dbe4be7db4c9e0a96a8509a1f00">orxStructure_Unregister</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g16515a89c0ccb908f64a37b76e1fa2d3">orxStructure_Create</a> (<a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g16515a89c0ccb908f64a37b76e1fa2d3">orxStructure_Create</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gf4b768001a19cc31f80ce48f47d5196d">orxStructure_Delete</a> (orxVOID *_pStructure)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <br>
-<a class="el" href="group__orx_structure.html#g52afeb13f34bacc8d0dc21ce2b4526f5">orxSTRUCTURE_STORAGE_TYPE</a> <br>
-orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g92c89569bf3d75646c5ae5a9f36ac58a">orxStructure_GetStorageType</a> (<a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g92c89569bf3d75646c5ae5a9f36ac58a">orxStructure_GetStorageType</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6eeb884934388de29b421ab8d8b05b2e">orxStructure_GetNumber</a> (<a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6eeb884934388de29b421ab8d8b05b2e">orxStructure_GetNumber</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g928c78d2484536aedc3649cb8068e156">orxStructure_Update</a> (orxVOID *_pStructure, orxCONST orxVOID *_phCaller, orxCONST <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g928c78d2484536aedc3649cb8068e156">orxStructure_Update</a> (orxVOID *_pStructure, orxCONST orxVOID *_phCaller, orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g19ed685999b2338e949f1332fc27ff2f">orxStructure_GetFirst</a> (<a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g19ed685999b2338e949f1332fc27ff2f">orxStructure_GetFirst</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gc368eeddaae9c34df6c1a56f950e528b">orxStructure_GetLast</a> (<a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gc368eeddaae9c34df6c1a56f950e528b">orxStructure_GetLast</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gbb511c55ab951f2685a16919c43989e6">orxStructure_GetParent</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gbb511c55ab951f2685a16919c43989e6">orxStructure_GetParent</a> (orxCONST orxVOID *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g57ef737c65f197ebeba5e3547413207f">orxStructure_GetChild</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g57ef737c65f197ebeba5e3547413207f">orxStructure_GetChild</a> (orxCONST orxVOID *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g7990165df5695f7aee5ba50cf8820308">orxStructure_GetSibling</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g7990165df5695f7aee5ba50cf8820308">orxStructure_GetSibling</a> (orxCONST orxVOID *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g524f1e6f40576ed98d5e1ea0542775a0">orxStructure_GetPrevious</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g524f1e6f40576ed98d5e1ea0542775a0">orxStructure_GetPrevious</a> (orxCONST orxVOID *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga9be8826813ce61d50a1ea1dbb0f6660">orxStructure_GetNext</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga9be8826813ce61d50a1ea1dbb0f6660">orxStructure_GetNext</a> (orxCONST orxVOID *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g56c0868cc10d0a868b1c18102a185ad3">orxStructure_SetParent</a> (orxVOID *_pStructure, orxVOID *_phParent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g56c0868cc10d0a868b1c18102a185ad3">orxStructure_SetParent</a> (orxVOID *_pStructure, orxVOID *_phParent)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gf75400c7748770b8df4b9cb8669227aa">orxStructure_IncreaseCounter</a> (orxVOID *_pStructure)</td></tr>
 
@@ -155,7 +148,7 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gec9b00f49070ef40ae48965549da4284">orxStructure_GetRefCounter</a> (orxCONST orxVOID *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g1613c5d44dff8b0e67f2f42e57d0438b">orxStructure_GetID</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g1613c5d44dff8b0e67f2f42e57d0438b">orxStructure_GetID</a> (orxCONST orxVOID *_pStructure)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd3f6ed27a7702b1f422489aeace5fd0a">orxStructure_TestFlags</a> (orxCONST orxVOID *_pStructure, orxU32 _u32Flags)</td></tr>
 
@@ -433,12 +426,12 @@ Structure module Allows to creates and handle structures. Structures can be refe
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>          </td>
+          <td class="memname">#define <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>          </td>
           <td>(</td>
           <td class="paramtype">STRUCTURE&nbsp;</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td>&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)orxNULL)</td>
+          <td>&nbsp;&nbsp;&nbsp;(((STRUCTURE != orxNULL) &amp;&amp; ((((<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;eID ^ orxSTRUCTURE_MAGIC_TAG_ACTIVE) &lt; orxSTRUCTURE_ID_NUMBER)) ? (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)orxNULL)</td>
         </tr>
       </table>
 </div>
@@ -466,7 +459,7 @@ Structure module Allows to creates and handle structures. Structures can be refe
 
 <p>
 <b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="group__orx_debug.html#g43a57c2b488159e444cf486af7ded87a">orxASSERT</a>((STRUCTURE) != orxNULL);                            \
-  <a class="code" href="group__orx_debug.html#g43a57c2b488159e444cf486af7ded87a">orxASSERT</a>((((<a class="code" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *)(STRUCTURE))-&gt;eID ^ <a class="code" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxSTRUCTURE_MAGIC_TAG_ACTIVE</a>) &lt; <a class="code" href="group__orx_structure.html#gg09e11f0c7ccba0df601b65ddc54d44c2d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>);
+  <a class="code" href="group__orx_debug.html#g43a57c2b488159e444cf486af7ded87a">orxASSERT</a>((((<a class="code" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)(STRUCTURE))-&gt;eID ^ <a class="code" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxSTRUCTURE_MAGIC_TAG_ACTIVE</a>) &lt; <a class="code" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>);
 </pre></div>Structure assert 
 </div>
 </div><p>
@@ -593,57 +586,12 @@ Structure register macro
 </div>
 </div><p>
 <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="gd3d8349d426f4658a1004b20181f9c86"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE" ref="gd3d8349d426f4658a1004b20181f9c86" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">__orxSTRUCTURE_t</a>  <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Public structure (Must be first derived structure member!) 
-</div>
-</div><p>
-<a class="anchor" name="g9ec3046035dbf6c1244f8e0320569250"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_ID" ref="g9ec3046035dbf6c1244f8e0320569250" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="group__orx_structure.html#g09e11f0c7ccba0df601b65ddc54d44c2">__orxSTRUCTURE_ID_t</a>  <a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Structure IDs 
-</div>
-</div><p>
-<a class="anchor" name="g52afeb13f34bacc8d0dc21ce2b4526f5"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_STORAGE_TYPE" ref="g52afeb13f34bacc8d0dc21ce2b4526f5" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="group__orx_structure.html#g5b463846488e6215263cc0466c243e5c">__orxSTRUCTURE_STORAGE_TYPE_t</a>  <a class="el" href="group__orx_structure.html#g52afeb13f34bacc8d0dc21ce2b4526f5">orxSTRUCTURE_STORAGE_TYPE</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Structure storage types 
-</div>
-</div><p>
 <a class="anchor" name="ga6face7cd767465b2eb13e8c95134bc1"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_UPDATE_FUNCTION" ref="ga6face7cd767465b2eb13e8c95134bc1" args=")(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a>)(<a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *_pstStructure, orxCONST <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a> *_pstCaller, orxCONST <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a> *_pstClockInfo)          </td>
+          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a>)(<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstStructure, orxCONST <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstCaller, orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)          </td>
         </tr>
       </table>
 </div>
@@ -654,12 +602,12 @@ Structure update callback function type
 </div>
 </div><p>
 <hr><h2>Enumeration Type Documentation</h2>
-<a class="anchor" name="g09e11f0c7ccba0df601b65ddc54d44c2"></a><!-- doxytag: member="orxStructure.h::__orxSTRUCTURE_ID_t" ref="g09e11f0c7ccba0df601b65ddc54d44c2" args="" -->
+<a class="anchor" name="g559293f09cd4d21743241cc32350b320"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_ID" ref="g559293f09cd4d21743241cc32350b320" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__orx_structure.html#g09e11f0c7ccba0df601b65ddc54d44c2">__orxSTRUCTURE_ID_t</a>          </td>
+          <td class="memname">enum <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>          </td>
         </tr>
       </table>
 </div>
@@ -668,53 +616,53 @@ Structure update callback function type
 <p>
 Structure IDs <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d"></a><!-- doxytag: member="orxSTRUCTURE_ID_ANIMPOINTER" ref="gg09e11f0c7ccba0df601b65ddc54d44c2617d8f5d855cadadc71b5536a54ae39d" args="" -->orxSTRUCTURE_ID_ANIMPOINTER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320617d8f5d855cadadc71b5536a54ae39d"></a><!-- doxytag: member="orxSTRUCTURE_ID_ANIMPOINTER" ref="gg559293f09cd4d21743241cc32350b320617d8f5d855cadadc71b5536a54ae39d" args="" -->orxSTRUCTURE_ID_ANIMPOINTER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2a26fed6e49b5d10e79690f547bbe0fe6"></a><!-- doxytag: member="orxSTRUCTURE_ID_BODY" ref="gg09e11f0c7ccba0df601b65ddc54d44c2a26fed6e49b5d10e79690f547bbe0fe6" args="" -->orxSTRUCTURE_ID_BODY</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320a26fed6e49b5d10e79690f547bbe0fe6"></a><!-- doxytag: member="orxSTRUCTURE_ID_BODY" ref="gg559293f09cd4d21743241cc32350b320a26fed6e49b5d10e79690f547bbe0fe6" args="" -->orxSTRUCTURE_ID_BODY</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422"></a><!-- doxytag: member="orxSTRUCTURE_ID_FRAME" ref="gg09e11f0c7ccba0df601b65ddc54d44c2845d86166defbdf540347307a9ec4422" args="" -->orxSTRUCTURE_ID_FRAME</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320845d86166defbdf540347307a9ec4422"></a><!-- doxytag: member="orxSTRUCTURE_ID_FRAME" ref="gg559293f09cd4d21743241cc32350b320845d86166defbdf540347307a9ec4422" args="" -->orxSTRUCTURE_ID_FRAME</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c20dafce351a48bcb315a9cbb95dc95e6b"></a><!-- doxytag: member="orxSTRUCTURE_ID_FXPOINTER" ref="gg09e11f0c7ccba0df601b65ddc54d44c20dafce351a48bcb315a9cbb95dc95e6b" args="" -->orxSTRUCTURE_ID_FXPOINTER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b3200dafce351a48bcb315a9cbb95dc95e6b"></a><!-- doxytag: member="orxSTRUCTURE_ID_FXPOINTER" ref="gg559293f09cd4d21743241cc32350b3200dafce351a48bcb315a9cbb95dc95e6b" args="" -->orxSTRUCTURE_ID_FXPOINTER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2fa383d690207c69abf6d225a37c59604"></a><!-- doxytag: member="orxSTRUCTURE_ID_GRAPHIC" ref="gg09e11f0c7ccba0df601b65ddc54d44c2fa383d690207c69abf6d225a37c59604" args="" -->orxSTRUCTURE_ID_GRAPHIC</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320fa383d690207c69abf6d225a37c59604"></a><!-- doxytag: member="orxSTRUCTURE_ID_GRAPHIC" ref="gg559293f09cd4d21743241cc32350b320fa383d690207c69abf6d225a37c59604" args="" -->orxSTRUCTURE_ID_GRAPHIC</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2554ee7e66ada830afda6e98c1745acee"></a><!-- doxytag: member="orxSTRUCTURE_ID_SOUNDPOINTER" ref="gg09e11f0c7ccba0df601b65ddc54d44c2554ee7e66ada830afda6e98c1745acee" args="" -->orxSTRUCTURE_ID_SOUNDPOINTER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320554ee7e66ada830afda6e98c1745acee"></a><!-- doxytag: member="orxSTRUCTURE_ID_SOUNDPOINTER" ref="gg559293f09cd4d21743241cc32350b320554ee7e66ada830afda6e98c1745acee" args="" -->orxSTRUCTURE_ID_SOUNDPOINTER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c272b4f2d0c5c830bc42126cd2ee998d35"></a><!-- doxytag: member="orxSTRUCTURE_ID_SPAWNER" ref="gg09e11f0c7ccba0df601b65ddc54d44c272b4f2d0c5c830bc42126cd2ee998d35" args="" -->orxSTRUCTURE_ID_SPAWNER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b32072b4f2d0c5c830bc42126cd2ee998d35"></a><!-- doxytag: member="orxSTRUCTURE_ID_SPAWNER" ref="gg559293f09cd4d21743241cc32350b32072b4f2d0c5c830bc42126cd2ee998d35" args="" -->orxSTRUCTURE_ID_SPAWNER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2a63d4ded8137b23e0e0c4e2de8ea172f"></a><!-- doxytag: member="orxSTRUCTURE_ID_LINKABLE_NUMBER" ref="gg09e11f0c7ccba0df601b65ddc54d44c2a63d4ded8137b23e0e0c4e2de8ea172f" args="" -->orxSTRUCTURE_ID_LINKABLE_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320a63d4ded8137b23e0e0c4e2de8ea172f"></a><!-- doxytag: member="orxSTRUCTURE_ID_LINKABLE_NUMBER" ref="gg559293f09cd4d21743241cc32350b320a63d4ded8137b23e0e0c4e2de8ea172f" args="" -->orxSTRUCTURE_ID_LINKABLE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2abae8c1918db82057a7faa0cf10a314c"></a><!-- doxytag: member="orxSTRUCTURE_ID_ANIM" ref="gg09e11f0c7ccba0df601b65ddc54d44c2abae8c1918db82057a7faa0cf10a314c" args="" -->orxSTRUCTURE_ID_ANIM</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320abae8c1918db82057a7faa0cf10a314c"></a><!-- doxytag: member="orxSTRUCTURE_ID_ANIM" ref="gg559293f09cd4d21743241cc32350b320abae8c1918db82057a7faa0cf10a314c" args="" -->orxSTRUCTURE_ID_ANIM</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c28e26d5803fc825cfe4c3195098af6d16"></a><!-- doxytag: member="orxSTRUCTURE_ID_ANIMSET" ref="gg09e11f0c7ccba0df601b65ddc54d44c28e26d5803fc825cfe4c3195098af6d16" args="" -->orxSTRUCTURE_ID_ANIMSET</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b3208e26d5803fc825cfe4c3195098af6d16"></a><!-- doxytag: member="orxSTRUCTURE_ID_ANIMSET" ref="gg559293f09cd4d21743241cc32350b3208e26d5803fc825cfe4c3195098af6d16" args="" -->orxSTRUCTURE_ID_ANIMSET</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c227a9cd17907d4b5fede3cf9d33103025"></a><!-- doxytag: member="orxSTRUCTURE_ID_CAMERA" ref="gg09e11f0c7ccba0df601b65ddc54d44c227a9cd17907d4b5fede3cf9d33103025" args="" -->orxSTRUCTURE_ID_CAMERA</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b32027a9cd17907d4b5fede3cf9d33103025"></a><!-- doxytag: member="orxSTRUCTURE_ID_CAMERA" ref="gg559293f09cd4d21743241cc32350b32027a9cd17907d4b5fede3cf9d33103025" args="" -->orxSTRUCTURE_ID_CAMERA</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2a53088ced29c37f0ec7f975a972efb94"></a><!-- doxytag: member="orxSTRUCTURE_ID_FX" ref="gg09e11f0c7ccba0df601b65ddc54d44c2a53088ced29c37f0ec7f975a972efb94" args="" -->orxSTRUCTURE_ID_FX</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320a53088ced29c37f0ec7f975a972efb94"></a><!-- doxytag: member="orxSTRUCTURE_ID_FX" ref="gg559293f09cd4d21743241cc32350b320a53088ced29c37f0ec7f975a972efb94" args="" -->orxSTRUCTURE_ID_FX</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c248b14df45d963b21b0ad76063b205d6b"></a><!-- doxytag: member="orxSTRUCTURE_ID_OBJECT" ref="gg09e11f0c7ccba0df601b65ddc54d44c248b14df45d963b21b0ad76063b205d6b" args="" -->orxSTRUCTURE_ID_OBJECT</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b32048b14df45d963b21b0ad76063b205d6b"></a><!-- doxytag: member="orxSTRUCTURE_ID_OBJECT" ref="gg559293f09cd4d21743241cc32350b32048b14df45d963b21b0ad76063b205d6b" args="" -->orxSTRUCTURE_ID_OBJECT</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c200f537835d607f70ffb31363889dec8e"></a><!-- doxytag: member="orxSTRUCTURE_ID_SOUND" ref="gg09e11f0c7ccba0df601b65ddc54d44c200f537835d607f70ffb31363889dec8e" args="" -->orxSTRUCTURE_ID_SOUND</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b32000f537835d607f70ffb31363889dec8e"></a><!-- doxytag: member="orxSTRUCTURE_ID_SOUND" ref="gg559293f09cd4d21743241cc32350b32000f537835d607f70ffb31363889dec8e" args="" -->orxSTRUCTURE_ID_SOUND</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c26a2287c21b776f8bde356f3fc37d798b"></a><!-- doxytag: member="orxSTRUCTURE_ID_TEXTURE" ref="gg09e11f0c7ccba0df601b65ddc54d44c26a2287c21b776f8bde356f3fc37d798b" args="" -->orxSTRUCTURE_ID_TEXTURE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b3206a2287c21b776f8bde356f3fc37d798b"></a><!-- doxytag: member="orxSTRUCTURE_ID_TEXTURE" ref="gg559293f09cd4d21743241cc32350b3206a2287c21b776f8bde356f3fc37d798b" args="" -->orxSTRUCTURE_ID_TEXTURE</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2675db72a8ad9bb86cd0864f5d421d8ef"></a><!-- doxytag: member="orxSTRUCTURE_ID_VIEWPORT" ref="gg09e11f0c7ccba0df601b65ddc54d44c2675db72a8ad9bb86cd0864f5d421d8ef" args="" -->orxSTRUCTURE_ID_VIEWPORT</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320675db72a8ad9bb86cd0864f5d421d8ef"></a><!-- doxytag: member="orxSTRUCTURE_ID_VIEWPORT" ref="gg559293f09cd4d21743241cc32350b320675db72a8ad9bb86cd0864f5d421d8ef" args="" -->orxSTRUCTURE_ID_VIEWPORT</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c2d7914d023ebb5843c63e0fca45eb8487"></a><!-- doxytag: member="orxSTRUCTURE_ID_NUMBER" ref="gg09e11f0c7ccba0df601b65ddc54d44c2d7914d023ebb5843c63e0fca45eb8487" args="" -->orxSTRUCTURE_ID_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b320d7914d023ebb5843c63e0fca45eb8487"></a><!-- doxytag: member="orxSTRUCTURE_ID_NUMBER" ref="gg559293f09cd4d21743241cc32350b320d7914d023ebb5843c63e0fca45eb8487" args="" -->orxSTRUCTURE_ID_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg09e11f0c7ccba0df601b65ddc54d44c23117a67a1c0b08f8e48f5af76600f6bf"></a><!-- doxytag: member="orxSTRUCTURE_ID_NONE" ref="gg09e11f0c7ccba0df601b65ddc54d44c23117a67a1c0b08f8e48f5af76600f6bf" args="" -->orxSTRUCTURE_ID_NONE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b3203117a67a1c0b08f8e48f5af76600f6bf"></a><!-- doxytag: member="orxSTRUCTURE_ID_NONE" ref="gg559293f09cd4d21743241cc32350b3203117a67a1c0b08f8e48f5af76600f6bf" args="" -->orxSTRUCTURE_ID_NONE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="g5b463846488e6215263cc0466c243e5c"></a><!-- doxytag: member="orxStructure.h::__orxSTRUCTURE_STORAGE_TYPE_t" ref="g5b463846488e6215263cc0466c243e5c" args="" -->
+<a class="anchor" name="g04bab78daaa41a0cc0803570a9142bb9"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_STORAGE_TYPE" ref="g04bab78daaa41a0cc0803570a9142bb9" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__orx_structure.html#g5b463846488e6215263cc0466c243e5c">__orxSTRUCTURE_STORAGE_TYPE_t</a>          </td>
+          <td class="memname">enum <a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a>          </td>
         </tr>
       </table>
 </div>
@@ -723,13 +671,13 @@ Structure IDs <dl compact><dt><b>Enumerator: </b></dt><dd>
 <p>
 Structure storage types <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="gg5b463846488e6215263cc0466c243e5c90c550172eeacd28aec04e59807c4b46"></a><!-- doxytag: member="orxSTRUCTURE_STORAGE_TYPE_LINKLIST" ref="gg5b463846488e6215263cc0466c243e5c90c550172eeacd28aec04e59807c4b46" args="" -->orxSTRUCTURE_STORAGE_TYPE_LINKLIST</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg04bab78daaa41a0cc0803570a9142bb990c550172eeacd28aec04e59807c4b46"></a><!-- doxytag: member="orxSTRUCTURE_STORAGE_TYPE_LINKLIST" ref="gg04bab78daaa41a0cc0803570a9142bb990c550172eeacd28aec04e59807c4b46" args="" -->orxSTRUCTURE_STORAGE_TYPE_LINKLIST</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg5b463846488e6215263cc0466c243e5c76ed66b422d3b8a863395d26ae125f36"></a><!-- doxytag: member="orxSTRUCTURE_STORAGE_TYPE_TREE" ref="gg5b463846488e6215263cc0466c243e5c76ed66b422d3b8a863395d26ae125f36" args="" -->orxSTRUCTURE_STORAGE_TYPE_TREE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg04bab78daaa41a0cc0803570a9142bb976ed66b422d3b8a863395d26ae125f36"></a><!-- doxytag: member="orxSTRUCTURE_STORAGE_TYPE_TREE" ref="gg04bab78daaa41a0cc0803570a9142bb976ed66b422d3b8a863395d26ae125f36" args="" -->orxSTRUCTURE_STORAGE_TYPE_TREE</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg5b463846488e6215263cc0466c243e5cbbd853ca7009adc5b0fc0c2556051e34"></a><!-- doxytag: member="orxSTRUCTURE_STORAGE_TYPE_NUMBER" ref="gg5b463846488e6215263cc0466c243e5cbbd853ca7009adc5b0fc0c2556051e34" args="" -->orxSTRUCTURE_STORAGE_TYPE_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg04bab78daaa41a0cc0803570a9142bb9bbd853ca7009adc5b0fc0c2556051e34"></a><!-- doxytag: member="orxSTRUCTURE_STORAGE_TYPE_NUMBER" ref="gg04bab78daaa41a0cc0803570a9142bb9bbd853ca7009adc5b0fc0c2556051e34" args="" -->orxSTRUCTURE_STORAGE_TYPE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg5b463846488e6215263cc0466c243e5c0cf2ba3615a0f4705ab7907b86c5d59a"></a><!-- doxytag: member="orxSTRUCTURE_STORAGE_TYPE_NONE" ref="gg5b463846488e6215263cc0466c243e5c0cf2ba3615a0f4705ab7907b86c5d59a" args="" -->orxSTRUCTURE_STORAGE_TYPE_NONE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg04bab78daaa41a0cc0803570a9142bb90cf2ba3615a0f4705ab7907b86c5d59a"></a><!-- doxytag: member="orxSTRUCTURE_STORAGE_TYPE_NONE" ref="gg04bab78daaa41a0cc0803570a9142bb90cf2ba3615a0f4705ab7907b86c5d59a" args="" -->orxSTRUCTURE_STORAGE_TYPE_NONE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
@@ -742,7 +690,7 @@ Structure storage types <dl compact><dt><b>Enumerator: </b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* _orxStructure_GetPointer           </td>
+          <td class="memname">orxSTATIC orxINLINE <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* _orxStructure_GetPointer           </td>
           <td>(</td>
           <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
@@ -750,7 +698,7 @@ Structure storage types <dl compact><dt><b>Enumerator: </b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -769,7 +717,7 @@ Gets structure pointer / debug mode <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStructureID</em>&nbsp;</td><td>ID to test the structure against </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Valid orxSTRUCTURE, orxNULL otherwise </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Valid <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>, orxNULL otherwise </dd></dl>
 
 </div>
 </div><p>
@@ -778,9 +726,9 @@ Gets structure pointer / debug mode <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_Create           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_Create           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -795,7 +743,7 @@ Creates a clean structure for given type <dl compact><dt><b>Parameters:</b></dt>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStructureID</em>&nbsp;</td><td>Concerned structure ID </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRUCTURE / orxNULL </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -873,7 +821,7 @@ Exits from the structure module
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetChild           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetChild           </td>
           <td>(</td>
           <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
@@ -890,7 +838,7 @@ Gets structure tree child <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pStructure</em>&nbsp;</td><td>Concerned structure </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRUCTURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> </dd></dl>
 
 </div>
 </div><p>
@@ -899,9 +847,9 @@ Gets structure tree child <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetFirst           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetFirst           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -916,7 +864,7 @@ Gets structure tree child <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStructureID</em>&nbsp;</td><td>Concerned structure ID </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRUCTURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> </dd></dl>
 
 </div>
 </div><p>
@@ -961,7 +909,7 @@ Gets structure flags <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE <a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a> orxStructure_GetID           </td>
+          <td class="memname">orxSTATIC orxINLINE <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> orxStructure_GetID           </td>
           <td>(</td>
           <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
@@ -987,9 +935,9 @@ Gets structure ID <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetLast           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetLast           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1004,7 +952,7 @@ Gets last stored structure (last list cell or tree root depending on storage typ
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eStructureID</em>&nbsp;</td><td>Concerned structure ID </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRUCTURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> </dd></dl>
 
 </div>
 </div><p>
@@ -1013,7 +961,7 @@ Gets last stored structure (last list cell or tree root depending on storage typ
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetNext           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetNext           </td>
           <td>(</td>
           <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
@@ -1030,7 +978,7 @@ Gets structure list next <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pStructure</em>&nbsp;</td><td>Concerned structure </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRUCTURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> </dd></dl>
 
 </div>
 </div><p>
@@ -1041,7 +989,7 @@ Gets structure list next <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxStructure_GetNumber           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1065,7 +1013,7 @@ Gets given type structure number <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetParent           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetParent           </td>
           <td>(</td>
           <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
@@ -1082,7 +1030,7 @@ Gets structure tree parent <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pStructure</em>&nbsp;</td><td>Concerned structure </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRUCTURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> </dd></dl>
 
 </div>
 </div><p>
@@ -1091,7 +1039,7 @@ Gets structure tree parent <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetPrevious           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetPrevious           </td>
           <td>(</td>
           <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
@@ -1108,7 +1056,7 @@ Gets structure list previous <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pStructure</em>&nbsp;</td><td>Concerned structure </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRUCTURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> </dd></dl>
 
 </div>
 </div><p>
@@ -1143,7 +1091,7 @@ Gets structure reference counter <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_s_t_r_u_c_t_u_r_e__t.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetSibling           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetSibling           </td>
           <td>(</td>
           <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
@@ -1160,7 +1108,7 @@ Gets structure tree sibling <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pStructure</em>&nbsp;</td><td>Concerned structure </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRUCTURE </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> </dd></dl>
 
 </div>
 </div><p>
@@ -1169,9 +1117,9 @@ Gets structure tree sibling <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_structure.html#g52afeb13f34bacc8d0dc21ce2b4526f5">orxSTRUCTURE_STORAGE_TYPE</a> orxFASTCALL orxStructure_GetStorageType           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> orxFASTCALL orxStructure_GetStorageType           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1220,7 +1168,7 @@ Gets structure storage type <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxStructure_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxStructure_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -1240,21 +1188,21 @@ Initializess the structure module <dl class="return" compact><dt><b>Returns:</b>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxStructure_Register           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxStructure_Register           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g52afeb13f34bacc8d0dc21ce2b4526f5">orxSTRUCTURE_STORAGE_TYPE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a>&nbsp;</td>
           <td class="paramname"> <em>_eStorageType</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_memory.html#gc7def09bae60ac239474ab7d78a8bcc9">orxMEMORY_TYPE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a>&nbsp;</td>
           <td class="paramname"> <em>_eMemoryType</em>, </td>
         </tr>
         <tr>
@@ -1339,7 +1287,7 @@ Sets structure flags <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxStructure_SetParent           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxStructure_SetParent           </td>
           <td>(</td>
           <td class="paramtype">orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
@@ -1468,7 +1416,7 @@ Tests flags against structure ones <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxStructure_Unregister           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_structure.html#g9ec3046035dbf6c1244f8e0320569250">orxSTRUCTURE_ID</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1491,7 +1439,7 @@ Unregisters a given ID <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxStructure_Update           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxStructure_Update           </td>
           <td>(</td>
           <td class="paramtype">orxVOID *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
@@ -1505,7 +1453,7 @@ Unregisters a given ID <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_c_l_o_c_k___i_n_f_o__t.html">orxCLOCK_INFO</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstClockInfo</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -1530,8 +1478,7 @@ Updates structure if update function was registered for the structure type <dl c
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:03 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

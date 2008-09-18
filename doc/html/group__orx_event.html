@@ -20,73 +20,54 @@
 <h1>OrxEvent</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_e_v_e_n_t__t.html">__orxEVENT_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_event.html#g565f2a5e0ed5f1609d62e50d65dd3fe8">__orxEVENT_TYPE_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#ga284e6307c48241bff95f424cd745de4">orxEVENT_TYPE</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <a class="el" href="struct____orx_e_v_e_n_t__t.html">__orxEVENT_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g0a760121f8671f37d345df89043dbeda">orxEVENT</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> )(orxCONST <a class="el" href="struct____orx_e_v_e_n_t__t.html">orxEVENT</a> *_pstEvent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> )(orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g565f2a5e0ed5f1609d62e50d65dd3fe8">__orxEVENT_TYPE_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8c55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a> =  0, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe830fb817733e3b2e80de4040437fc1f0a">orxEVENT_TYPE_ANIM</a>, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe804b5c9940197f092b41f02bae8e9b5c8">orxEVENT_TYPE_FX</a>, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe89e2b65534b3062514d8aed635bb121e7">orxEVENT_TYPE_OBJECT</a>, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8c55cb742a3efb2ade2800b259def35f8">orxEVENT_TYPE_SYSTEM</a> =  0, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd830fb817733e3b2e80de4040437fc1f0a">orxEVENT_TYPE_ANIM</a>, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd804b5c9940197f092b41f02bae8e9b5c8">orxEVENT_TYPE_FX</a>, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd89e2b65534b3062514d8aed635bb121e7">orxEVENT_TYPE_OBJECT</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8b79eabe1d47047e4698b31e03b05f91c">orxEVENT_TYPE_RENDER</a>, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8707ba32273ced7fa1dba95fcb8836d4b">orxEVENT_TYPE_PHYSICS</a>, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8871a91df2463417ce5acc81bb4a20448">orxEVENT_TYPE_SOUND</a>, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe83f6047dad21b480b5a982b8223e6a2e9">orxEVENT_TYPE_SPAWNER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8b79eabe1d47047e4698b31e03b05f91c">orxEVENT_TYPE_RENDER</a>, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8707ba32273ced7fa1dba95fcb8836d4b">orxEVENT_TYPE_PHYSICS</a>, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8871a91df2463417ce5acc81bb4a20448">orxEVENT_TYPE_SOUND</a>, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd83f6047dad21b480b5a982b8223e6a2e9">orxEVENT_TYPE_SPAWNER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8392c55af75cd4dc15dc9d5c875ad7216">orxEVENT_TYPE_CORE_NUMBER</a>, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8f2e660591f643abe7403c5898ba88928">orxEVENT_TYPE_USER_DEFINED</a> =  orxEVENT_TYPE_CORE_NUMBER, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe84d6b0bef0bd916c45be50ae491bbe3f2">orxEVENT_TYPE_USER_MAX_NUMBER</a> =  256, 
-<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe87fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8392c55af75cd4dc15dc9d5c875ad7216">orxEVENT_TYPE_CORE_NUMBER</a>, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8f2e660591f643abe7403c5898ba88928">orxEVENT_TYPE_USER_DEFINED</a> =  orxEVENT_TYPE_CORE_NUMBER, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd84d6b0bef0bd916c45be50ae491bbe3f2">orxEVENT_TYPE_USER_MAX_NUMBER</a> =  256, 
+<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd87fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg565f2a5e0ed5f1609d62e50d65dd3fe8031700e9ae9f2a6970c872938b17a9b1">orxEVENT_TYPE_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8031700e9ae9f2a6970c872938b17a9b1">orxEVENT_TYPE_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g783cd657426253992d6717fc99765145">orxEvent_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g1a42913c0db622813c78a7b0e7fbc344">orxEvent_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g1a42913c0db622813c78a7b0e7fbc344">orxEvent_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g87566e6845a543353606a607e782d4c4">orxEvent_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gfa506b8e928baf9e46a4ff20ccaa23c0">orxEvent_AddHandler</a> (<a class="el" href="group__orx_event.html#ga284e6307c48241bff95f424cd745de4">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gfa506b8e928baf9e46a4ff20ccaa23c0">orxEvent_AddHandler</a> (<a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gab3c585610e6fb7c4bc78b472d10b4f4">orxEvent_Send</a> (orxCONST <a class="el" href="struct____orx_e_v_e_n_t__t.html">orxEVENT</a> *_pstEvent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gab3c585610e6fb7c4bc78b472d10b4f4">orxEvent_Send</a> (orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a> (<a class="el" href="group__orx_event.html#ga284e6307c48241bff95f424cd745de4">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a> (<a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Event module Module that handles internal events <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="g0a760121f8671f37d345df89043dbeda"></a><!-- doxytag: member="orxEvent.h::orxEVENT" ref="g0a760121f8671f37d345df89043dbeda" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="struct____orx_e_v_e_n_t__t.html">__orxEVENT_t</a>  <a class="el" href="struct____orx_e_v_e_n_t__t.html">orxEVENT</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Public event structure 
-</div>
-</div><p>
 <a class="anchor" name="gd39dc2513040e3783f7e3be6c30c2747"></a><!-- doxytag: member="orxEvent.h::orxEVENT_HANDLER" ref="gd39dc2513040e3783f7e3be6c30c2747" args=")(orxCONST orxEVENT *_pstEvent)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a>)(orxCONST <a class="el" href="struct____orx_e_v_e_n_t__t.html">orxEVENT</a> *_pstEvent)          </td>
+          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a>)(orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)          </td>
         </tr>
       </table>
 </div>
@@ -96,28 +77,13 @@ Public event structure
 Event handler type / return orxSTATUS_FAILURE if events processing should be stopped for the current event, orxSTATUS_FAILURE otherwise 
 </div>
 </div><p>
-<a class="anchor" name="ga284e6307c48241bff95f424cd745de4"></a><!-- doxytag: member="orxEvent.h::orxEVENT_TYPE" ref="ga284e6307c48241bff95f424cd745de4" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="group__orx_event.html#g565f2a5e0ed5f1609d62e50d65dd3fe8">__orxEVENT_TYPE_t</a>  <a class="el" href="group__orx_event.html#ga284e6307c48241bff95f424cd745de4">orxEVENT_TYPE</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Event type enum 
-</div>
-</div><p>
 <hr><h2>Enumeration Type Documentation</h2>
-<a class="anchor" name="g565f2a5e0ed5f1609d62e50d65dd3fe8"></a><!-- doxytag: member="orxEvent.h::__orxEVENT_TYPE_t" ref="g565f2a5e0ed5f1609d62e50d65dd3fe8" args="" -->
+<a class="anchor" name="g4576598772ee9b827a80ca5b6c9a6cd8"></a><!-- doxytag: member="orxEvent.h::orxEVENT_TYPE" ref="g4576598772ee9b827a80ca5b6c9a6cd8" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__orx_event.html#g565f2a5e0ed5f1609d62e50d65dd3fe8">__orxEVENT_TYPE_t</a>          </td>
+          <td class="memname">enum <a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>          </td>
         </tr>
       </table>
 </div>
@@ -126,31 +92,31 @@ Event type enum
 <p>
 Event type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8c55cb742a3efb2ade2800b259def35f8"></a><!-- doxytag: member="orxEVENT_TYPE_SYSTEM" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8c55cb742a3efb2ade2800b259def35f8" args="" -->orxEVENT_TYPE_SYSTEM</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd8c55cb742a3efb2ade2800b259def35f8"></a><!-- doxytag: member="orxEVENT_TYPE_SYSTEM" ref="gg4576598772ee9b827a80ca5b6c9a6cd8c55cb742a3efb2ade2800b259def35f8" args="" -->orxEVENT_TYPE_SYSTEM</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe830fb817733e3b2e80de4040437fc1f0a"></a><!-- doxytag: member="orxEVENT_TYPE_ANIM" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe830fb817733e3b2e80de4040437fc1f0a" args="" -->orxEVENT_TYPE_ANIM</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd830fb817733e3b2e80de4040437fc1f0a"></a><!-- doxytag: member="orxEVENT_TYPE_ANIM" ref="gg4576598772ee9b827a80ca5b6c9a6cd830fb817733e3b2e80de4040437fc1f0a" args="" -->orxEVENT_TYPE_ANIM</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe804b5c9940197f092b41f02bae8e9b5c8"></a><!-- doxytag: member="orxEVENT_TYPE_FX" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe804b5c9940197f092b41f02bae8e9b5c8" args="" -->orxEVENT_TYPE_FX</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd804b5c9940197f092b41f02bae8e9b5c8"></a><!-- doxytag: member="orxEVENT_TYPE_FX" ref="gg4576598772ee9b827a80ca5b6c9a6cd804b5c9940197f092b41f02bae8e9b5c8" args="" -->orxEVENT_TYPE_FX</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe89e2b65534b3062514d8aed635bb121e7"></a><!-- doxytag: member="orxEVENT_TYPE_OBJECT" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe89e2b65534b3062514d8aed635bb121e7" args="" -->orxEVENT_TYPE_OBJECT</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd89e2b65534b3062514d8aed635bb121e7"></a><!-- doxytag: member="orxEVENT_TYPE_OBJECT" ref="gg4576598772ee9b827a80ca5b6c9a6cd89e2b65534b3062514d8aed635bb121e7" args="" -->orxEVENT_TYPE_OBJECT</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8b79eabe1d47047e4698b31e03b05f91c"></a><!-- doxytag: member="orxEVENT_TYPE_RENDER" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8b79eabe1d47047e4698b31e03b05f91c" args="" -->orxEVENT_TYPE_RENDER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd8b79eabe1d47047e4698b31e03b05f91c"></a><!-- doxytag: member="orxEVENT_TYPE_RENDER" ref="gg4576598772ee9b827a80ca5b6c9a6cd8b79eabe1d47047e4698b31e03b05f91c" args="" -->orxEVENT_TYPE_RENDER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8707ba32273ced7fa1dba95fcb8836d4b"></a><!-- doxytag: member="orxEVENT_TYPE_PHYSICS" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8707ba32273ced7fa1dba95fcb8836d4b" args="" -->orxEVENT_TYPE_PHYSICS</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd8707ba32273ced7fa1dba95fcb8836d4b"></a><!-- doxytag: member="orxEVENT_TYPE_PHYSICS" ref="gg4576598772ee9b827a80ca5b6c9a6cd8707ba32273ced7fa1dba95fcb8836d4b" args="" -->orxEVENT_TYPE_PHYSICS</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8871a91df2463417ce5acc81bb4a20448"></a><!-- doxytag: member="orxEVENT_TYPE_SOUND" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8871a91df2463417ce5acc81bb4a20448" args="" -->orxEVENT_TYPE_SOUND</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd8871a91df2463417ce5acc81bb4a20448"></a><!-- doxytag: member="orxEVENT_TYPE_SOUND" ref="gg4576598772ee9b827a80ca5b6c9a6cd8871a91df2463417ce5acc81bb4a20448" args="" -->orxEVENT_TYPE_SOUND</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe83f6047dad21b480b5a982b8223e6a2e9"></a><!-- doxytag: member="orxEVENT_TYPE_SPAWNER" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe83f6047dad21b480b5a982b8223e6a2e9" args="" -->orxEVENT_TYPE_SPAWNER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd83f6047dad21b480b5a982b8223e6a2e9"></a><!-- doxytag: member="orxEVENT_TYPE_SPAWNER" ref="gg4576598772ee9b827a80ca5b6c9a6cd83f6047dad21b480b5a982b8223e6a2e9" args="" -->orxEVENT_TYPE_SPAWNER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8392c55af75cd4dc15dc9d5c875ad7216"></a><!-- doxytag: member="orxEVENT_TYPE_CORE_NUMBER" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8392c55af75cd4dc15dc9d5c875ad7216" args="" -->orxEVENT_TYPE_CORE_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd8392c55af75cd4dc15dc9d5c875ad7216"></a><!-- doxytag: member="orxEVENT_TYPE_CORE_NUMBER" ref="gg4576598772ee9b827a80ca5b6c9a6cd8392c55af75cd4dc15dc9d5c875ad7216" args="" -->orxEVENT_TYPE_CORE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8f2e660591f643abe7403c5898ba88928"></a><!-- doxytag: member="orxEVENT_TYPE_USER_DEFINED" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8f2e660591f643abe7403c5898ba88928" args="" -->orxEVENT_TYPE_USER_DEFINED</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd8f2e660591f643abe7403c5898ba88928"></a><!-- doxytag: member="orxEVENT_TYPE_USER_DEFINED" ref="gg4576598772ee9b827a80ca5b6c9a6cd8f2e660591f643abe7403c5898ba88928" args="" -->orxEVENT_TYPE_USER_DEFINED</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe84d6b0bef0bd916c45be50ae491bbe3f2"></a><!-- doxytag: member="orxEVENT_TYPE_USER_MAX_NUMBER" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe84d6b0bef0bd916c45be50ae491bbe3f2" args="" -->orxEVENT_TYPE_USER_MAX_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd84d6b0bef0bd916c45be50ae491bbe3f2"></a><!-- doxytag: member="orxEVENT_TYPE_USER_MAX_NUMBER" ref="gg4576598772ee9b827a80ca5b6c9a6cd84d6b0bef0bd916c45be50ae491bbe3f2" args="" -->orxEVENT_TYPE_USER_MAX_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe87fc44ce327d3d4216f00d48b372af84b"></a><!-- doxytag: member="orxEVENT_TYPE_FIRST_RESERVED" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe87fc44ce327d3d4216f00d48b372af84b" args="" -->orxEVENT_TYPE_FIRST_RESERVED</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd87fc44ce327d3d4216f00d48b372af84b"></a><!-- doxytag: member="orxEVENT_TYPE_FIRST_RESERVED" ref="gg4576598772ee9b827a80ca5b6c9a6cd87fc44ce327d3d4216f00d48b372af84b" args="" -->orxEVENT_TYPE_FIRST_RESERVED</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg565f2a5e0ed5f1609d62e50d65dd3fe8031700e9ae9f2a6970c872938b17a9b1"></a><!-- doxytag: member="orxEVENT_TYPE_NONE" ref="gg565f2a5e0ed5f1609d62e50d65dd3fe8031700e9ae9f2a6970c872938b17a9b1" args="" -->orxEVENT_TYPE_NONE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg4576598772ee9b827a80ca5b6c9a6cd8031700e9ae9f2a6970c872938b17a9b1"></a><!-- doxytag: member="orxEVENT_TYPE_NONE" ref="gg4576598772ee9b827a80ca5b6c9a6cd8031700e9ae9f2a6970c872938b17a9b1" args="" -->orxEVENT_TYPE_NONE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
@@ -163,9 +129,9 @@ Event type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxEvent_AddHandler           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxEvent_AddHandler           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_event.html#ga284e6307c48241bff95f424cd745de4">orxEVENT_TYPE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>&nbsp;</td>
           <td class="paramname"> <em>_eEventType</em>, </td>
         </tr>
         <tr>
@@ -218,7 +184,7 @@ Exits from the event Module
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxEvent_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxEvent_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -238,9 +204,9 @@ Initializes the event Module <dl class="return" compact><dt><b>Returns:</b></dt>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxEvent_RemoveHandler           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxEvent_RemoveHandler           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_event.html#ga284e6307c48241bff95f424cd745de4">orxEVENT_TYPE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>&nbsp;</td>
           <td class="paramname"> <em>_eEventType</em>, </td>
         </tr>
         <tr>
@@ -273,9 +239,9 @@ Removes an event handler <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxEvent_Send           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxEvent_Send           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_e_v_e_n_t__t.html">orxEVENT</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstEvent</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -314,8 +280,7 @@ Event module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:02 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

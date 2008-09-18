@@ -20,7 +20,7 @@
 <h1>OrxFX</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_f_x___e_v_e_n_t___p_a_y_l_o_a_d__t.html">__orxFX_EVENT_PAYLOAD_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_x___e_v_e_n_t___p_a_y_l_o_a_d.html">orxFX_EVENT_PAYLOAD</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g32294488997cf908fe614ca3bd3af5f4">orxFX_SLOT_KU32_FLAG_ABSOLUTE</a>&nbsp;&nbsp;&nbsp;0x00000100</td></tr>
@@ -30,36 +30,29 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g6b4ea171f798ef2b5342d4f32dbeb8ac">orxFX_SLOT_KU32_FLAG_USE_SCALE</a>&nbsp;&nbsp;&nbsp;0x00000400</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_f_x.html#gaf7f8e7b42d1c95d711ab3ca40ff75f0">__orxFX_CURVE_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a></td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxFX_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_f_x.html#gba1d24bb654be00e1fe50ec70188c505">__orxFX_EVENT_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g762df765c7f66401353cff8b5d1c621c">orxFX_EVENT</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <br>
-<a class="el" href="struct____orx_f_x___e_v_e_n_t___p_a_y_l_o_a_d__t.html">__orxFX_EVENT_PAYLOAD_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g4f05b1a8509537e60473b8ce04c9c9e1">orxFX_EVENT_PAYLOAD</a></td></tr>
-
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gaf7f8e7b42d1c95d711ab3ca40ff75f0">__orxFX_CURVE_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_f_x.html#ggaf7f8e7b42d1c95d711ab3ca40ff75f05ab587297d5674d8549e96009571716c">orxFX_CURVE_LINEAR</a> =  0, 
-<a class="el" href="group__orx_f_x.html#ggaf7f8e7b42d1c95d711ab3ca40ff75f0271b233e51677052f6ea7d166049af3e">orxFX_CURVE_SAW</a>, 
-<a class="el" href="group__orx_f_x.html#ggaf7f8e7b42d1c95d711ab3ca40ff75f05ecf55a98f7d6195596c8d050378271b">orxFX_CURVE_SINE</a>, 
-<a class="el" href="group__orx_f_x.html#ggaf7f8e7b42d1c95d711ab3ca40ff75f058d5b18aeca1876edaf13ecb9d4cb3ae">orxFX_CURVE_NUMBER</a>, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_f_x.html#gge8f2811c408370bc68644656b18066545ab587297d5674d8549e96009571716c">orxFX_CURVE_LINEAR</a> =  0, 
+<a class="el" href="group__orx_f_x.html#gge8f2811c408370bc68644656b1806654271b233e51677052f6ea7d166049af3e">orxFX_CURVE_SAW</a>, 
+<a class="el" href="group__orx_f_x.html#gge8f2811c408370bc68644656b18066545ecf55a98f7d6195596c8d050378271b">orxFX_CURVE_SINE</a>, 
+<a class="el" href="group__orx_f_x.html#gge8f2811c408370bc68644656b180665458d5b18aeca1876edaf13ecb9d4cb3ae">orxFX_CURVE_NUMBER</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_f_x.html#ggaf7f8e7b42d1c95d711ab3ca40ff75f06dd4ca4b1233e65fa7a41920d6da9627">orxFX_CURVE_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_f_x.html#gge8f2811c408370bc68644656b18066546dd4ca4b1233e65fa7a41920d6da9627">orxFX_CURVE_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gba1d24bb654be00e1fe50ec70188c505">__orxFX_EVENT_t</a> { <a class="el" href="group__orx_f_x.html#ggba1d24bb654be00e1fe50ec70188c505cbc29fadd51da81893d78360adbe4dbf">orxFX_EVENT_START</a> =  0, 
-<a class="el" href="group__orx_f_x.html#ggba1d24bb654be00e1fe50ec70188c505d0e783771174594869f0316a44ec90af">orxFX_EVENT_STOP</a>, 
-<a class="el" href="group__orx_f_x.html#ggba1d24bb654be00e1fe50ec70188c5055423d1739c57e377ee1aba4d78f7a103">orxFX_EVENT_NUMBER</a>, 
-<a class="el" href="group__orx_f_x.html#ggba1d24bb654be00e1fe50ec70188c505861ad9daad411ee3d5f90adb652b53de">orxFX_EVENT_NONE</a> =  orxENUM_NONE
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g441cf7ac90620ea72e8a285745011b24">orxFX_EVENT</a> { <a class="el" href="group__orx_f_x.html#gg441cf7ac90620ea72e8a285745011b24cbc29fadd51da81893d78360adbe4dbf">orxFX_EVENT_START</a> =  0, 
+<a class="el" href="group__orx_f_x.html#gg441cf7ac90620ea72e8a285745011b24d0e783771174594869f0316a44ec90af">orxFX_EVENT_STOP</a>, 
+<a class="el" href="group__orx_f_x.html#gg441cf7ac90620ea72e8a285745011b245423d1739c57e377ee1aba4d78f7a103">orxFX_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_f_x.html#gg441cf7ac90620ea72e8a285745011b24861ad9daad411ee3d5f90adb652b53de">orxFX_EVENT_NONE</a> =  orxENUM_NONE
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g5b05855850605b16f1f114808dfa89e2">orxFX_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gabdbe346f90b6dc42549988c1f55ceeb">orxFX_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gabdbe346f90b6dc42549988c1f55ceeb">orxFX_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gc89f012f31931593fca752a403c6bb02">orxFX_Exit</a> ()</td></tr>
 
@@ -67,29 +60,29 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gb3948a325ded792a374f0cc618de2a8a">orxFX_CreateFromConfig</a> (orxCONST orxSTRING _zConfigID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gd347030e4b5db33538155e49831b6945">orxFX_Delete</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gd347030e4b5db33538155e49831b6945">orxFX_Delete</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g9f1846c15a637b5015e3d1855418e910">orxFX_Apply</a> (orxCONST <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g9f1846c15a637b5015e3d1855418e910">orxFX_Apply</a> (orxCONST <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g0d8e98e1a109da54d85298f27351c39e">orxFX_Enable</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxBOOL _bEnable)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g3270505ab6154680aae6be09cc6a33c3">orxFX_IsEnabled</a> (orxCONST <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g46cd1bbe21e607b80c7eb12d38e01635">orxFX_AddAlphaFade</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, <a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g46cd1bbe21e607b80c7eb12d38e01635">orxFX_AddAlphaFade</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, <a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gb8b3db281a49d589b5cecb1de9d3b5d6">orxFX_AddColorBlend</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvStartColor, <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvEndColor, <a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gb8b3db281a49d589b5cecb1de9d3b5d6">orxFX_AddColorBlend</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartColor, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndColor, <a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g59562279b21c44b06e71f107b809c3f3">orxFX_AddRotation</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, <a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g59562279b21c44b06e71f107b809c3f3">orxFX_AddRotation</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, <a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gd41480d75a47c736b2624bead5de859a">orxFX_AddScale</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvStartScale, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvEndScale, <a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gd41480d75a47c736b2624bead5de859a">orxFX_AddScale</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartScale, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndScale, <a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g9a0459ae4b984c886804c00833ae7e93">orxFX_AddTranslation</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvStartTranslation, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvEndTranslation, <a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g9a0459ae4b984c886804c00833ae7e93">orxFX_AddTranslation</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhasis, orxFLOAT _fAmplification, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartTranslation, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndTranslation, <a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g99e82724d0ca60f8fbd15660da29d06a">orxFX_GetDuration</a> (orxCONST <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ge8f36da5b57591e4521f86751bbf5b78">orxFX_GetName</a> (orxCONST <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g63e696218f217101c8bab814529091b2">orxFX_Loop</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxBOOL _bLoop)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g63e696218f217101c8bab814529091b2">orxFX_Loop</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxBOOL _bLoop)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g0d21fda692031757c6ccea99c1fa3060">orxFX_IsLooping</a> (orxCONST <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
 
@@ -157,58 +150,13 @@ Use scale flag
 Internal FX structure 
 </div>
 </div><p>
-<a class="anchor" name="g99a84b14f4d8b626568ae4cc58afa43c"></a><!-- doxytag: member="orxFX.h::orxFX_CURVE" ref="g99a84b14f4d8b626568ae4cc58afa43c" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="group__orx_f_x.html#gaf7f8e7b42d1c95d711ab3ca40ff75f0">__orxFX_CURVE_t</a>  <a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-FX curve enum 
-</div>
-</div><p>
-<a class="anchor" name="g762df765c7f66401353cff8b5d1c621c"></a><!-- doxytag: member="orxFX.h::orxFX_EVENT" ref="g762df765c7f66401353cff8b5d1c621c" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="group__orx_f_x.html#gba1d24bb654be00e1fe50ec70188c505">__orxFX_EVENT_t</a>  <a class="el" href="group__orx_f_x.html#g762df765c7f66401353cff8b5d1c621c">orxFX_EVENT</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Event enum 
-</div>
-</div><p>
-<a class="anchor" name="g4f05b1a8509537e60473b8ce04c9c9e1"></a><!-- doxytag: member="orxFX.h::orxFX_EVENT_PAYLOAD" ref="g4f05b1a8509537e60473b8ce04c9c9e1" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="struct____orx_f_x___e_v_e_n_t___p_a_y_l_o_a_d__t.html">__orxFX_EVENT_PAYLOAD_t</a>  <a class="el" href="struct____orx_f_x___e_v_e_n_t___p_a_y_l_o_a_d__t.html">orxFX_EVENT_PAYLOAD</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-FX event payload 
-</div>
-</div><p>
 <hr><h2>Enumeration Type Documentation</h2>
-<a class="anchor" name="gaf7f8e7b42d1c95d711ab3ca40ff75f0"></a><!-- doxytag: member="orxFX.h::__orxFX_CURVE_t" ref="gaf7f8e7b42d1c95d711ab3ca40ff75f0" args="" -->
+<a class="anchor" name="ge8f2811c408370bc68644656b1806654"></a><!-- doxytag: member="orxFX.h::orxFX_CURVE" ref="ge8f2811c408370bc68644656b1806654" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__orx_f_x.html#gaf7f8e7b42d1c95d711ab3ca40ff75f0">__orxFX_CURVE_t</a>          </td>
+          <td class="memname">enum <a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a>          </td>
         </tr>
       </table>
 </div>
@@ -217,27 +165,27 @@ FX event payload
 <p>
 FX curve enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="ggaf7f8e7b42d1c95d711ab3ca40ff75f05ab587297d5674d8549e96009571716c"></a><!-- doxytag: member="orxFX_CURVE_LINEAR" ref="ggaf7f8e7b42d1c95d711ab3ca40ff75f05ab587297d5674d8549e96009571716c" args="" -->orxFX_CURVE_LINEAR</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gge8f2811c408370bc68644656b18066545ab587297d5674d8549e96009571716c"></a><!-- doxytag: member="orxFX_CURVE_LINEAR" ref="gge8f2811c408370bc68644656b18066545ab587297d5674d8549e96009571716c" args="" -->orxFX_CURVE_LINEAR</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggaf7f8e7b42d1c95d711ab3ca40ff75f0271b233e51677052f6ea7d166049af3e"></a><!-- doxytag: member="orxFX_CURVE_SAW" ref="ggaf7f8e7b42d1c95d711ab3ca40ff75f0271b233e51677052f6ea7d166049af3e" args="" -->orxFX_CURVE_SAW</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gge8f2811c408370bc68644656b1806654271b233e51677052f6ea7d166049af3e"></a><!-- doxytag: member="orxFX_CURVE_SAW" ref="gge8f2811c408370bc68644656b1806654271b233e51677052f6ea7d166049af3e" args="" -->orxFX_CURVE_SAW</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggaf7f8e7b42d1c95d711ab3ca40ff75f05ecf55a98f7d6195596c8d050378271b"></a><!-- doxytag: member="orxFX_CURVE_SINE" ref="ggaf7f8e7b42d1c95d711ab3ca40ff75f05ecf55a98f7d6195596c8d050378271b" args="" -->orxFX_CURVE_SINE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gge8f2811c408370bc68644656b18066545ecf55a98f7d6195596c8d050378271b"></a><!-- doxytag: member="orxFX_CURVE_SINE" ref="gge8f2811c408370bc68644656b18066545ecf55a98f7d6195596c8d050378271b" args="" -->orxFX_CURVE_SINE</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggaf7f8e7b42d1c95d711ab3ca40ff75f058d5b18aeca1876edaf13ecb9d4cb3ae"></a><!-- doxytag: member="orxFX_CURVE_NUMBER" ref="ggaf7f8e7b42d1c95d711ab3ca40ff75f058d5b18aeca1876edaf13ecb9d4cb3ae" args="" -->orxFX_CURVE_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gge8f2811c408370bc68644656b180665458d5b18aeca1876edaf13ecb9d4cb3ae"></a><!-- doxytag: member="orxFX_CURVE_NUMBER" ref="gge8f2811c408370bc68644656b180665458d5b18aeca1876edaf13ecb9d4cb3ae" args="" -->orxFX_CURVE_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggaf7f8e7b42d1c95d711ab3ca40ff75f06dd4ca4b1233e65fa7a41920d6da9627"></a><!-- doxytag: member="orxFX_CURVE_NONE" ref="ggaf7f8e7b42d1c95d711ab3ca40ff75f06dd4ca4b1233e65fa7a41920d6da9627" args="" -->orxFX_CURVE_NONE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gge8f2811c408370bc68644656b18066546dd4ca4b1233e65fa7a41920d6da9627"></a><!-- doxytag: member="orxFX_CURVE_NONE" ref="gge8f2811c408370bc68644656b18066546dd4ca4b1233e65fa7a41920d6da9627" args="" -->orxFX_CURVE_NONE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
 
 </div>
 </div><p>
-<a class="anchor" name="gba1d24bb654be00e1fe50ec70188c505"></a><!-- doxytag: member="orxFX.h::__orxFX_EVENT_t" ref="gba1d24bb654be00e1fe50ec70188c505" args="" -->
+<a class="anchor" name="g441cf7ac90620ea72e8a285745011b24"></a><!-- doxytag: member="orxFX.h::orxFX_EVENT" ref="g441cf7ac90620ea72e8a285745011b24" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__orx_f_x.html#gba1d24bb654be00e1fe50ec70188c505">__orxFX_EVENT_t</a>          </td>
+          <td class="memname">enum <a class="el" href="group__orx_f_x.html#g441cf7ac90620ea72e8a285745011b24">orxFX_EVENT</a>          </td>
         </tr>
       </table>
 </div>
@@ -246,13 +194,13 @@ FX curve enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <p>
 Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="ggba1d24bb654be00e1fe50ec70188c505cbc29fadd51da81893d78360adbe4dbf"></a><!-- doxytag: member="orxFX_EVENT_START" ref="ggba1d24bb654be00e1fe50ec70188c505cbc29fadd51da81893d78360adbe4dbf" args="" -->orxFX_EVENT_START</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg441cf7ac90620ea72e8a285745011b24cbc29fadd51da81893d78360adbe4dbf"></a><!-- doxytag: member="orxFX_EVENT_START" ref="gg441cf7ac90620ea72e8a285745011b24cbc29fadd51da81893d78360adbe4dbf" args="" -->orxFX_EVENT_START</em>&nbsp;</td><td>
 Event sent when a FX starts </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggba1d24bb654be00e1fe50ec70188c505d0e783771174594869f0316a44ec90af"></a><!-- doxytag: member="orxFX_EVENT_STOP" ref="ggba1d24bb654be00e1fe50ec70188c505d0e783771174594869f0316a44ec90af" args="" -->orxFX_EVENT_STOP</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg441cf7ac90620ea72e8a285745011b24d0e783771174594869f0316a44ec90af"></a><!-- doxytag: member="orxFX_EVENT_STOP" ref="gg441cf7ac90620ea72e8a285745011b24d0e783771174594869f0316a44ec90af" args="" -->orxFX_EVENT_STOP</em>&nbsp;</td><td>
 Event sent when a FX stops </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggba1d24bb654be00e1fe50ec70188c5055423d1739c57e377ee1aba4d78f7a103"></a><!-- doxytag: member="orxFX_EVENT_NUMBER" ref="ggba1d24bb654be00e1fe50ec70188c5055423d1739c57e377ee1aba4d78f7a103" args="" -->orxFX_EVENT_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg441cf7ac90620ea72e8a285745011b245423d1739c57e377ee1aba4d78f7a103"></a><!-- doxytag: member="orxFX_EVENT_NUMBER" ref="gg441cf7ac90620ea72e8a285745011b245423d1739c57e377ee1aba4d78f7a103" args="" -->orxFX_EVENT_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="ggba1d24bb654be00e1fe50ec70188c505861ad9daad411ee3d5f90adb652b53de"></a><!-- doxytag: member="orxFX_EVENT_NONE" ref="ggba1d24bb654be00e1fe50ec70188c505861ad9daad411ee3d5f90adb652b53de" args="" -->orxFX_EVENT_NONE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg441cf7ac90620ea72e8a285745011b24861ad9daad411ee3d5f90adb652b53de"></a><!-- doxytag: member="orxFX_EVENT_NONE" ref="gg441cf7ac90620ea72e8a285745011b24861ad9daad411ee3d5f90adb652b53de" args="" -->orxFX_EVENT_NONE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
@@ -265,7 +213,7 @@ Event sent when a FX stops </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxFX_AddAlphaFade           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddAlphaFade           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFX</em>, </td>
@@ -315,7 +263,7 @@ Event sent when a FX stops </td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&nbsp;</td>
           <td class="paramname"> <em>_eCurve</em>, </td>
         </tr>
         <tr>
@@ -364,7 +312,7 @@ Adds alpha fade to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxFX_AddColorBlend           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddColorBlend           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFX</em>, </td>
@@ -402,19 +350,19 @@ Adds alpha fade to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvStartColor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvEndColor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&nbsp;</td>
           <td class="paramname"> <em>_eCurve</em>, </td>
         </tr>
         <tr>
@@ -463,7 +411,7 @@ Adds color blend to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxFX_AddRotation           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddRotation           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFX</em>, </td>
@@ -513,7 +461,7 @@ Adds color blend to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&nbsp;</td>
           <td class="paramname"> <em>_eCurve</em>, </td>
         </tr>
         <tr>
@@ -562,7 +510,7 @@ Adds rotation to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxFX_AddScale           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddScale           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFX</em>, </td>
@@ -600,19 +548,19 @@ Adds rotation to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvStartScale</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvEndScale</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&nbsp;</td>
           <td class="paramname"> <em>_eCurve</em>, </td>
         </tr>
         <tr>
@@ -661,7 +609,7 @@ Adds scale to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxFX_AddTranslation           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddTranslation           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFX</em>, </td>
@@ -699,19 +647,19 @@ Adds scale to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvStartTranslation</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvEndTranslation</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#g99a84b14f4d8b626568ae4cc58afa43c">orxFX_CURVE</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&nbsp;</td>
           <td class="paramname"> <em>_eCurve</em>, </td>
         </tr>
         <tr>
@@ -760,7 +708,7 @@ Adds translation to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxFX_Apply           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_Apply           </td>
           <td>(</td>
           <td class="paramtype">orxCONST <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFX</em>, </td>
@@ -855,7 +803,7 @@ Creates an FX from config <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxFX_Delete           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_Delete           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFX</em>          </td>
@@ -987,7 +935,7 @@ Gets FX name <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFX_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFX_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -1059,7 +1007,7 @@ Is FX looping <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxFASTCALL orxFX_Loop           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_Loop           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstFX</em>, </td>
@@ -1110,8 +1058,7 @@ FX module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:03 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

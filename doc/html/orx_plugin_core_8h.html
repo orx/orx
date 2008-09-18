@@ -23,7 +23,7 @@
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n__t.html">__orxPLUGIN_CORE_FUNCTION_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g0ff3c377c1f92fb4bb44c32de9a59705">orxPLUGIN_CORE_FUNCTION_POINTER_NAME</a>(FUNCTION_NAME)&nbsp;&nbsp;&nbsp;_orxCoreFunctionPointer_##FUNCTION_NAME</td></tr>
@@ -40,14 +40,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g7416306ffde890b27a29471229a906d9">orxPLUGIN_END_CORE_FUNCTION_ARRAY</a>(PLUGIN_SUFFIX)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g86f73fa692ea5cbb4c4480d8d01bfaa2">orxPLUGIN_REGISTER_CORE_INFO</a>(PLUGIN_SUFFIX)&nbsp;&nbsp;&nbsp;orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxMODULE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(<a class="el" href="struct____orx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n__t.html">orxPLUGIN_CORE_FUNCTION</a>));</td></tr>
-
-<tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <br>
-<a class="el" href="struct____orx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n__t.html">__orxPLUGIN_CORE_FUNCTION_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gf10d2c2bd4b46b0fce40ec91b3242729">orxPLUGIN_CORE_FUNCTION</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g86f73fa692ea5cbb4c4480d8d01bfaa2">orxPLUGIN_REGISTER_CORE_INFO</a>(PLUGIN_SUFFIX)&nbsp;&nbsp;&nbsp;orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxMODULE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(<a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a>));</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g760fe578edf4d4f0024586bd0370af14">orxPlugin_AddCoreInfo</a> (<a class="el" href="group__orx_plugin.html#g611eff3e18a6950f959f6e8ff003be2f">orxPLUGIN_CORE_ID</a> _ePluginCoreID, <a class="el" href="group__orx_module.html#gadf95b03a5e1feb382f435a4c036c62a">orxMODULE_ID</a> _eModuleID, orxCONST <a class="el" href="struct____orx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n__t.html">orxPLUGIN_CORE_FUNCTION</a> *_astCoreFunction, orxU32 _u32CoreFunctionNumber)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g760fe578edf4d4f0024586bd0370af14">orxPlugin_AddCoreInfo</a> (<a class="el" href="group__orx_plugin.html#gc8f3a703cf9f5799bff24a129beee67e">orxPLUGIN_CORE_ID</a> _ePluginCoreID, <a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID, orxCONST <a class="el" href="structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html">orxPLUGIN_CORE_FUNCTION</a> *_astCoreFunction, orxU32 _u32CoreFunctionNumber)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gc6583d5f4560e5f094b2de28a10dd5e0">orxPlugin_DefaultCoreFunction</a> (orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line)</td></tr>
 
@@ -57,8 +53,7 @@
 <dl class="author" compact><dt><b>Author:</b></dt><dd><a href="mailto:iarwain@orx-project.org">iarwain@orx-project.org</a></dd></dl>
 <dl compact><dt><b><a class="el" href="todo.html#_todo000054">Todo:</a></b></dt><dd></dd></dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:02 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

@@ -20,11 +20,11 @@
 <h1>OrxPhysics</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_b_o_d_y___d_e_f__t.html">__orxBODY_DEF_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_b_o_d_y___d_e_f.html">orxBODY_DEF</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_b_o_d_y___p_a_r_t___d_e_f__t.html">__orxBODY_PART_DEF_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a></td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct____orx_p_h_y_s_i_c_s___c_o_n_t_a_c_t___e_v_e_n_t___p_a_y_l_o_a_d__t.html">__orxPHYSICS_CONTACT_EVENT_PAYLOAD_t</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_p_h_y_s_i_c_s___c_o_n_t_a_c_t___e_v_e_n_t___p_a_y_l_o_a_d.html">orxPHYSICS_CONTACT_EVENT_PAYLOAD</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g78a8331cc3239124751aec5db752a1cc">orxBODY_DEF_KU32_FLAG_NONE</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
@@ -68,74 +68,65 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gb61c5d8b3d6ec88135a9e76779cf09ef">orxPHYSICS_KZ_CONFIG_FIXED_DT</a>&nbsp;&nbsp;&nbsp;&quot;FixedDT&quot;</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <a class="el" href="struct____orx_b_o_d_y___d_e_f__t.html">__orxBODY_DEF_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g668cf2fa0520a75e5032bb1e137ffd8b">orxBODY_DEF</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <a class="el" href="struct____orx_b_o_d_y___p_a_r_t___d_e_f__t.html">__orxBODY_PART_DEF_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g606e36a5dc186849be1cde4d0571bbe5">orxBODY_PART_DEF</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <a class="el" href="group__orx_physics.html#g8efa2e1f6dffb93e21a6933ad022dd35">__orxPHYSICS_EVENT_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g7bd04e8ec294f498edfb0f05da0b4484">orxPHYSICS_EVENT</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <br>
-<a class="el" href="struct____orx_p_h_y_s_i_c_s___c_o_n_t_a_c_t___e_v_e_n_t___p_a_y_l_o_a_d__t.html">__orxPHYSICS_CONTACT_EVENT_PAYLOAD_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g90bc5e07968ddf5fbb9efdbcc0f9bd65">orxPHYSICS_CONTACT_EVENT_PAYLOAD</a></td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxPHYSICS_BODY_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct <br>
 __orxPHYSICS_BODY_PART_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gd6ca00ed200d20d87023b977ea980526">orxPHYSICS_BODY_PART</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g8efa2e1f6dffb93e21a6933ad022dd35">__orxPHYSICS_EVENT_t</a> { <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_physics.html#gg8efa2e1f6dffb93e21a6933ad022dd355e985e7f1f008b88a1d9d5c5e2b3a762">orxPHYSICS_EVENT_CONTACT_ADD</a> =  0, 
-<a class="el" href="group__orx_physics.html#gg8efa2e1f6dffb93e21a6933ad022dd35d7200c4f64df91f427386e5a95f29a00">orxPHYSICS_EVENT_CONTACT_PERSIST</a>, 
-<a class="el" href="group__orx_physics.html#gg8efa2e1f6dffb93e21a6933ad022dd35bd96287e1c69421f63607aad7aee16b0">orxPHYSICS_EVENT_CONTACT_REMOVE</a>, 
-<a class="el" href="group__orx_physics.html#gg8efa2e1f6dffb93e21a6933ad022dd35097298a736e685cba4e705f68bb9f1c9">orxPHYSICS_EVENT_OUT_OF_WORLD</a>, 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g1c4aaa4ece57611bd21ae6470a07a29d">orxPHYSICS_EVENT</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_physics.html#gg1c4aaa4ece57611bd21ae6470a07a29d5e985e7f1f008b88a1d9d5c5e2b3a762">orxPHYSICS_EVENT_CONTACT_ADD</a> =  0, 
+<a class="el" href="group__orx_physics.html#gg1c4aaa4ece57611bd21ae6470a07a29dd7200c4f64df91f427386e5a95f29a00">orxPHYSICS_EVENT_CONTACT_PERSIST</a>, 
+<a class="el" href="group__orx_physics.html#gg1c4aaa4ece57611bd21ae6470a07a29dbd96287e1c69421f63607aad7aee16b0">orxPHYSICS_EVENT_CONTACT_REMOVE</a>, 
+<a class="el" href="group__orx_physics.html#gg1c4aaa4ece57611bd21ae6470a07a29d097298a736e685cba4e705f68bb9f1c9">orxPHYSICS_EVENT_OUT_OF_WORLD</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_physics.html#gg8efa2e1f6dffb93e21a6933ad022dd35b29cafaf8e8cecac3431a4a88a5d5849">orxPHYSICS_EVENT_NUMBER</a>, 
-<a class="el" href="group__orx_physics.html#gg8efa2e1f6dffb93e21a6933ad022dd353021065b67e2993914310906b43c7735">orxPHYSICS_EVENT_NONE</a> =  orxENUM_NONE
+&nbsp;&nbsp;<a class="el" href="group__orx_physics.html#gg1c4aaa4ece57611bd21ae6470a07a29db29cafaf8e8cecac3431a4a88a5d5849">orxPHYSICS_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_physics.html#gg1c4aaa4ece57611bd21ae6470a07a29d3021065b67e2993914310906b43c7735">orxPHYSICS_EVENT_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gd783ca425a51088c59bbecc428597c73">orxPhysics_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gdc36f28294674500dad61d26d87438b6">orxPhysics_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gdc36f28294674500dad61d26d87438b6">orxPhysics_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g6e400af94f1aca7d5ab52c817433de36">orxPhysics_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g2abd36989d298ee2d5d39c82ac507367">orxPhysics_SetGravity</a> (orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvGravity)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g2abd36989d298ee2d5d39c82ac507367">orxPhysics_SetGravity</a> (orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvGravity)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g6c049bccd099ce59a53727248e9b51a0">orxPhysics_GetGravity</a> (<a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvGravity)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g6c049bccd099ce59a53727248e9b51a0">orxPhysics_GetGravity</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvGravity)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga3b1cb76d357ca5d77f0d9464d369428">orxPhysics_CreateBody</a> (orxCONST orxHANDLE _hUserData, orxCONST <a class="el" href="struct____orx_b_o_d_y___d_e_f__t.html">orxBODY_DEF</a> *_pstBodyDef)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ga3b1cb76d357ca5d77f0d9464d369428">orxPhysics_CreateBody</a> (orxCONST orxHANDLE _hUserData, orxCONST <a class="el" href="structorx_b_o_d_y___d_e_f.html">orxBODY_DEF</a> *_pstBodyDef)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g84f24c237d6f045a0602f87c470b6e82">orxPhysics_DeleteBody</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_physics.html#gd6ca00ed200d20d87023b977ea980526">orxPHYSICS_BODY_PART</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gb6f2aac6230ac5a9857a4c12d19f3dc4">orxPhysics_CreateBodyPart</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="struct____orx_b_o_d_y___p_a_r_t___d_e_f__t.html">orxBODY_PART_DEF</a> *_pstBodyPartDef)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_physics.html#gd6ca00ed200d20d87023b977ea980526">orxPHYSICS_BODY_PART</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gb6f2aac6230ac5a9857a4c12d19f3dc4">orxPhysics_CreateBodyPart</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a> *_pstBodyPartDef)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g62bfa863573ce0976fcb1aa01370f3a5">orxPhysics_DeleteBodyPart</a> (<a class="el" href="group__orx_physics.html#gd6ca00ed200d20d87023b977ea980526">orxPHYSICS_BODY_PART</a> *_pstBodyPart)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gc38261b7399edbd4685bd33ebd7d2da2">orxPhysics_SetPosition</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gc38261b7399edbd4685bd33ebd7d2da2">orxPhysics_SetPosition</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g02e7ecaa82708a79a7ab628941eca692">orxPhysics_SetRotation</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxFLOAT _fRotation)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g02e7ecaa82708a79a7ab628941eca692">orxPhysics_SetRotation</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxFLOAT _fRotation)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g528db0a9ab43ec7fce5a51809fc0d746">orxPhysics_SetSpeed</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvSpeed)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g528db0a9ab43ec7fce5a51809fc0d746">orxPhysics_SetSpeed</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSpeed)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g01ea5077c753cea304bff39324778d9d">orxPhysics_SetAngularVelocity</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxFLOAT _fVelocity)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g01ea5077c753cea304bff39324778d9d">orxPhysics_SetAngularVelocity</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxFLOAT _fVelocity)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g2aee991660c897ec1d2740eb3269516a">orxPhysics_GetPosition</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g2aee991660c897ec1d2740eb3269516a">orxPhysics_GetPosition</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gd3dd3b3fe128eefe7ccd98df004e1ac5">orxPhysics_GetRotation</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g93246235b7ea2f808a04597ca6f5ae6d">orxPhysics_GetSpeed</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvSpeed)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g93246235b7ea2f808a04597ca6f5ae6d">orxPhysics_GetSpeed</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSpeed)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ge2e6b90cefb9eb5bb138a337f37ca914">orxPhysics_GetAngularVelocity</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g1a806318b9d1160ee840ffc0024e2e95">orxPhysics_GetMassCenter</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvMassCenter)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g1a806318b9d1160ee840ffc0024e2e95">orxPhysics_GetMassCenter</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvMassCenter)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g3f987a5520cbdfb52d04bf14557149c6">orxPhysics_ApplyTorque</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxFLOAT _fTorque)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g3f987a5520cbdfb52d04bf14557149c6">orxPhysics_ApplyTorque</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxFLOAT _fTorque)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g0435d65be7f94104f8d880faf98141ea">orxPhysics_ApplyForce</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvForce, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvPoint)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g0435d65be7f94104f8d880faf98141ea">orxPhysics_ApplyForce</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvForce, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPoint)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gcc1f9f2d50d7d9fbc18894dd8856132c">orxPhysics_ApplyImpulse</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvImpulse, orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvPoint)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gcc1f9f2d50d7d9fbc18894dd8856132c">orxPhysics_ApplyImpulse</a> (<a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *_pstBody, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvImpulse, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPoint)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -441,36 +432,6 @@ Config defines
 </div>
 </div><p>
 <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="g668cf2fa0520a75e5032bb1e137ffd8b"></a><!-- doxytag: member="orxPhysics.h::orxBODY_DEF" ref="g668cf2fa0520a75e5032bb1e137ffd8b" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="struct____orx_b_o_d_y___d_e_f__t.html">__orxBODY_DEF_t</a>  <a class="el" href="struct____orx_b_o_d_y___d_e_f__t.html">orxBODY_DEF</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Body definition 
-</div>
-</div><p>
-<a class="anchor" name="g606e36a5dc186849be1cde4d0571bbe5"></a><!-- doxytag: member="orxPhysics.h::orxBODY_PART_DEF" ref="g606e36a5dc186849be1cde4d0571bbe5" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="struct____orx_b_o_d_y___p_a_r_t___d_e_f__t.html">__orxBODY_PART_DEF_t</a>  <a class="el" href="struct____orx_b_o_d_y___p_a_r_t___d_e_f__t.html">orxBODY_PART_DEF</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Shape definition 
-</div>
-</div><p>
 <a class="anchor" name="g4d95f1a2c67d8af72bd48522bd47aea6"></a><!-- doxytag: member="orxPhysics.h::orxPHYSICS_BODY" ref="g4d95f1a2c67d8af72bd48522bd47aea6" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -501,43 +462,13 @@ Internal physics body structure
 Internal physics shape structure 
 </div>
 </div><p>
-<a class="anchor" name="g90bc5e07968ddf5fbb9efdbcc0f9bd65"></a><!-- doxytag: member="orxPhysics.h::orxPHYSICS_CONTACT_EVENT_PAYLOAD" ref="g90bc5e07968ddf5fbb9efdbcc0f9bd65" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="struct____orx_p_h_y_s_i_c_s___c_o_n_t_a_c_t___e_v_e_n_t___p_a_y_l_o_a_d__t.html">__orxPHYSICS_CONTACT_EVENT_PAYLOAD_t</a>  <a class="el" href="struct____orx_p_h_y_s_i_c_s___c_o_n_t_a_c_t___e_v_e_n_t___p_a_y_l_o_a_d__t.html">orxPHYSICS_CONTACT_EVENT_PAYLOAD</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Contact event payload 
-</div>
-</div><p>
-<a class="anchor" name="g7bd04e8ec294f498edfb0f05da0b4484"></a><!-- doxytag: member="orxPhysics.h::orxPHYSICS_EVENT" ref="g7bd04e8ec294f498edfb0f05da0b4484" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef enum <a class="el" href="group__orx_physics.html#g8efa2e1f6dffb93e21a6933ad022dd35">__orxPHYSICS_EVENT_t</a>  <a class="el" href="group__orx_physics.html#g7bd04e8ec294f498edfb0f05da0b4484">orxPHYSICS_EVENT</a>          </td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Event enum 
-</div>
-</div><p>
 <hr><h2>Enumeration Type Documentation</h2>
-<a class="anchor" name="g8efa2e1f6dffb93e21a6933ad022dd35"></a><!-- doxytag: member="orxPhysics.h::__orxPHYSICS_EVENT_t" ref="g8efa2e1f6dffb93e21a6933ad022dd35" args="" -->
+<a class="anchor" name="g1c4aaa4ece57611bd21ae6470a07a29d"></a><!-- doxytag: member="orxPhysics.h::orxPHYSICS_EVENT" ref="g1c4aaa4ece57611bd21ae6470a07a29d" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="group__orx_physics.html#g8efa2e1f6dffb93e21a6933ad022dd35">__orxPHYSICS_EVENT_t</a>          </td>
+          <td class="memname">enum <a class="el" href="group__orx_physics.html#g1c4aaa4ece57611bd21ae6470a07a29d">orxPHYSICS_EVENT</a>          </td>
         </tr>
       </table>
 </div>
@@ -546,17 +477,17 @@ Event enum
 <p>
 Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
-<tr><td valign="top"><em><a class="anchor" name="gg8efa2e1f6dffb93e21a6933ad022dd355e985e7f1f008b88a1d9d5c5e2b3a762"></a><!-- doxytag: member="orxPHYSICS_EVENT_CONTACT_ADD" ref="gg8efa2e1f6dffb93e21a6933ad022dd355e985e7f1f008b88a1d9d5c5e2b3a762" args="" -->orxPHYSICS_EVENT_CONTACT_ADD</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg1c4aaa4ece57611bd21ae6470a07a29d5e985e7f1f008b88a1d9d5c5e2b3a762"></a><!-- doxytag: member="orxPHYSICS_EVENT_CONTACT_ADD" ref="gg1c4aaa4ece57611bd21ae6470a07a29d5e985e7f1f008b88a1d9d5c5e2b3a762" args="" -->orxPHYSICS_EVENT_CONTACT_ADD</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg8efa2e1f6dffb93e21a6933ad022dd35d7200c4f64df91f427386e5a95f29a00"></a><!-- doxytag: member="orxPHYSICS_EVENT_CONTACT_PERSIST" ref="gg8efa2e1f6dffb93e21a6933ad022dd35d7200c4f64df91f427386e5a95f29a00" args="" -->orxPHYSICS_EVENT_CONTACT_PERSIST</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg1c4aaa4ece57611bd21ae6470a07a29dd7200c4f64df91f427386e5a95f29a00"></a><!-- doxytag: member="orxPHYSICS_EVENT_CONTACT_PERSIST" ref="gg1c4aaa4ece57611bd21ae6470a07a29dd7200c4f64df91f427386e5a95f29a00" args="" -->orxPHYSICS_EVENT_CONTACT_PERSIST</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg8efa2e1f6dffb93e21a6933ad022dd35bd96287e1c69421f63607aad7aee16b0"></a><!-- doxytag: member="orxPHYSICS_EVENT_CONTACT_REMOVE" ref="gg8efa2e1f6dffb93e21a6933ad022dd35bd96287e1c69421f63607aad7aee16b0" args="" -->orxPHYSICS_EVENT_CONTACT_REMOVE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg1c4aaa4ece57611bd21ae6470a07a29dbd96287e1c69421f63607aad7aee16b0"></a><!-- doxytag: member="orxPHYSICS_EVENT_CONTACT_REMOVE" ref="gg1c4aaa4ece57611bd21ae6470a07a29dbd96287e1c69421f63607aad7aee16b0" args="" -->orxPHYSICS_EVENT_CONTACT_REMOVE</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg8efa2e1f6dffb93e21a6933ad022dd35097298a736e685cba4e705f68bb9f1c9"></a><!-- doxytag: member="orxPHYSICS_EVENT_OUT_OF_WORLD" ref="gg8efa2e1f6dffb93e21a6933ad022dd35097298a736e685cba4e705f68bb9f1c9" args="" -->orxPHYSICS_EVENT_OUT_OF_WORLD</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg1c4aaa4ece57611bd21ae6470a07a29d097298a736e685cba4e705f68bb9f1c9"></a><!-- doxytag: member="orxPHYSICS_EVENT_OUT_OF_WORLD" ref="gg1c4aaa4ece57611bd21ae6470a07a29d097298a736e685cba4e705f68bb9f1c9" args="" -->orxPHYSICS_EVENT_OUT_OF_WORLD</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg8efa2e1f6dffb93e21a6933ad022dd35b29cafaf8e8cecac3431a4a88a5d5849"></a><!-- doxytag: member="orxPHYSICS_EVENT_NUMBER" ref="gg8efa2e1f6dffb93e21a6933ad022dd35b29cafaf8e8cecac3431a4a88a5d5849" args="" -->orxPHYSICS_EVENT_NUMBER</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg1c4aaa4ece57611bd21ae6470a07a29db29cafaf8e8cecac3431a4a88a5d5849"></a><!-- doxytag: member="orxPHYSICS_EVENT_NUMBER" ref="gg1c4aaa4ece57611bd21ae6470a07a29db29cafaf8e8cecac3431a4a88a5d5849" args="" -->orxPHYSICS_EVENT_NUMBER</em>&nbsp;</td><td>
 </td></tr>
-<tr><td valign="top"><em><a class="anchor" name="gg8efa2e1f6dffb93e21a6933ad022dd353021065b67e2993914310906b43c7735"></a><!-- doxytag: member="orxPHYSICS_EVENT_NONE" ref="gg8efa2e1f6dffb93e21a6933ad022dd353021065b67e2993914310906b43c7735" args="" -->orxPHYSICS_EVENT_NONE</em>&nbsp;</td><td>
+<tr><td valign="top"><em><a class="anchor" name="gg1c4aaa4ece57611bd21ae6470a07a29d3021065b67e2993914310906b43c7735"></a><!-- doxytag: member="orxPHYSICS_EVENT_NONE" ref="gg1c4aaa4ece57611bd21ae6470a07a29d3021065b67e2993914310906b43c7735" args="" -->orxPHYSICS_EVENT_NONE</em>&nbsp;</td><td>
 </td></tr>
 </table>
 </dl>
@@ -569,7 +500,7 @@ Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_ApplyForce           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_ApplyForce           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -577,13 +508,13 @@ Event enum <dl compact><dt><b>Enumerator: </b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvForce</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvPoint</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -612,7 +543,7 @@ Applies a force to a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_ApplyImpulse           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_ApplyImpulse           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -620,13 +551,13 @@ Applies a force to a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvImpulse</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvPoint</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -655,7 +586,7 @@ Applies an impulse to a physical body <dl compact><dt><b>Parameters:</b></dt><dd
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_ApplyTorque           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_ApplyTorque           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -699,7 +630,7 @@ Applies a torque to a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_b_o_d_y___d_e_f__t.html">orxBODY_DEF</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_b_o_d_y___d_e_f.html">orxBODY_DEF</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBodyDef</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -735,7 +666,7 @@ Creates a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_b_o_d_y___p_a_r_t___d_e_f__t.html">orxBODY_PART_DEF</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBodyPartDef</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -858,9 +789,9 @@ Gets the angular velocity of a physical body <dl compact><dt><b>Parameters:</b><
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxPhysics_GetGravity           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxPhysics_GetGravity           </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvGravity</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -875,7 +806,7 @@ Gets physics gravity <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvGravity</em>&nbsp;</td><td>Gravity to get </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxVECTOR / orxNULL </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -884,7 +815,7 @@ Gets physics gravity <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxPhysics_GetMassCenter           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxPhysics_GetMassCenter           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -892,7 +823,7 @@ Gets physics gravity <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvMassCenter</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -920,7 +851,7 @@ Gets the center of mass of a physical body <dl compact><dt><b>Parameters:</b></d
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxPhysics_GetPosition           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxPhysics_GetPosition           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -928,7 +859,7 @@ Gets the center of mass of a physical body <dl compact><dt><b>Parameters:</b></d
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvPosition</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -982,7 +913,7 @@ Gets the rotation of a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxPhysics_GetSpeed           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxPhysics_GetSpeed           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -990,7 +921,7 @@ Gets the rotation of a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvSpeed</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -1018,7 +949,7 @@ Gets the speed of a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -1038,7 +969,7 @@ Inits the physics module <dl class="return" compact><dt><b>Returns:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_SetAngularVelocity           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_SetAngularVelocity           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -1074,9 +1005,9 @@ Sets the angular velocity of a physical body <dl compact><dt><b>Parameters:</b><
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_SetGravity           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_SetGravity           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvGravity</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1100,7 +1031,7 @@ Sets physics gravity <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_SetPosition           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_SetPosition           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -1108,7 +1039,7 @@ Sets physics gravity <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvPosition</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -1136,7 +1067,7 @@ Sets the position of a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_SetRotation           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_SetRotation           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -1172,7 +1103,7 @@ Sets the rotation of a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxPhysics_SetSpeed           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxPhysics_SetSpeed           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_physics.html#g4d95f1a2c67d8af72bd48522bd47aea6">orxPHYSICS_BODY</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstBody</em>, </td>
@@ -1180,7 +1111,7 @@ Sets the rotation of a physical body <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvSpeed</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -1223,8 +1154,7 @@ Physics module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:03 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

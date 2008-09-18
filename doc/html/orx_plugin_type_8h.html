@@ -29,18 +29,15 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g2fd4a16dc14944caf2511cd55cbe72a2">orxPLUGIN_KU32_MASK_FUNCTION_ID</a>&nbsp;&nbsp;&nbsp;0x000000FF</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g827e16c99bb34554b9db8c1d90d937a0">orxPLUGIN_MAKE_FUNCTION_ID</a>(PLUGIN_ID, FUNCTION_BASE_ID)&nbsp;&nbsp;&nbsp;(<a class="el" href="group__orx_plugin.html#g70afb338d72f18bb6f47f62ae8e097a4">orxPLUGIN_FUNCTION_ID</a>)(((PLUGIN_ID &lt;&lt; orxPLUGIN_KU32_SHIFT_PLUGIN_ID) &amp; orxPLUGIN_KU32_MASK_PLUGIN_ID) | (FUNCTION_BASE_ID &amp; orxPLUGIN_KU32_MASK_FUNCTION_ID))</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g827e16c99bb34554b9db8c1d90d937a0">orxPLUGIN_MAKE_FUNCTION_ID</a>(PLUGIN_ID, FUNCTION_BASE_ID)&nbsp;&nbsp;&nbsp;(<a class="el" href="group__orx_plugin.html#g0f3199fcbbf71824559b9414d5daf6eb">orxPLUGIN_FUNCTION_ID</a>)(((PLUGIN_ID &lt;&lt; orxPLUGIN_KU32_SHIFT_PLUGIN_ID) &amp; orxPLUGIN_KU32_MASK_PLUGIN_ID) | (FUNCTION_BASE_ID &amp; orxPLUGIN_KU32_MASK_FUNCTION_ID))</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gf27c27d746c6a658e421baaf68f117a2">orxPLUGIN_MAKE_CORE_FUNCTION_ID</a>(PLUGIN_CORE_ID, FUNCTION_BASE_ID)&nbsp;&nbsp;&nbsp;(<a class="el" href="group__orx_plugin.html#g70afb338d72f18bb6f47f62ae8e097a4">orxPLUGIN_FUNCTION_ID</a>)(orxPLUGIN_KU32_FLAG_CORE_ID | orxPLUGIN_MAKE_FUNCTION_ID(PLUGIN_CORE_ID, FUNCTION_BASE_ID))</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gf27c27d746c6a658e421baaf68f117a2">orxPLUGIN_MAKE_CORE_FUNCTION_ID</a>(PLUGIN_CORE_ID, FUNCTION_BASE_ID)&nbsp;&nbsp;&nbsp;(<a class="el" href="group__orx_plugin.html#g0f3199fcbbf71824559b9414d5daf6eb">orxPLUGIN_FUNCTION_ID</a>)(orxPLUGIN_KU32_FLAG_CORE_ID | orxPLUGIN_MAKE_FUNCTION_ID(PLUGIN_CORE_ID, FUNCTION_BASE_ID))</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef enum <br>
-<a class="el" href="group__orx_plugin.html#g964124efe3f7ea1c34c8617abfca8a8e">__orxPLUGIN_FUNCTION_ID_t</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g70afb338d72f18bb6f47f62ae8e097a4">orxPLUGIN_FUNCTION_ID</a></td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g16ad50808930e3d8f0a982309cf8ec31">orxPLUGIN_FUNCTION</a> )()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g16ad50808930e3d8f0a982309cf8ec31">orxPLUGIN_FUNCTION</a> )()</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g964124efe3f7ea1c34c8617abfca8a8e">__orxPLUGIN_FUNCTION_ID_t</a> { <a class="el" href="group__orx_plugin.html#gg964124efe3f7ea1c34c8617abfca8a8ee2837db3b91ba71bca5059d465a91c1d">orxPLUGIN_FUNCTION_ID_NONE</a> =  orxENUM_NONE
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g0f3199fcbbf71824559b9414d5daf6eb">orxPLUGIN_FUNCTION_ID</a> { <a class="el" href="group__orx_plugin.html#gg0f3199fcbbf71824559b9414d5daf6ebe2837db3b91ba71bca5059d465a91c1d">orxPLUGIN_FUNCTION_ID_NONE</a> =  orxENUM_NONE
  }</td></tr>
 
 </table>
@@ -49,8 +46,7 @@
 <dl class="author" compact><dt><b>Author:</b></dt><dd><a href="mailto:iarwain@orx-project.org">iarwain@orx-project.org</a></dd></dl>
 <dl compact><dt><b><a class="el" href="todo.html#_todo000055">Todo:</a></b></dt><dd></dd></dl>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:02 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>

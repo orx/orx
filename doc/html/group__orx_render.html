@@ -27,11 +27,11 @@
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_render.html#geb0f9db8d0c7dca0a51d89b864c557ef">orxRender_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_render.html#gae41cf637cb071ff61ff44fd8672aa9d">orxRender_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_render.html#gae41cf637cb071ff61ff44fd8672aa9d">orxRender_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_render.html#g8bec893a096e47b5949e83465391b172">orxRender_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_render.html#g8b04585da5e70a6b59b23313f912452c">orxRender_GetWorldPosition</a> (orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvScreenPosition, <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *_pvWorldPosition)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_render.html#g8b04585da5e70a6b59b23313f912452c">orxRender_GetWorldPosition</a> (orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvScreenPosition, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvWorldPosition)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -91,15 +91,15 @@ Exits from the render module
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a>* orxRender_GetWorldPosition           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxRender_GetWorldPosition           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvScreenPosition</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct____orx_v_e_c_t_o_r__t.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
           <td class="paramname"> <em>_pvWorldPosition</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -118,7 +118,7 @@ Get a world position given a screen one (absolute picking) <dl compact><dt><b>Pa
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pvWorldPosition</em>&nbsp;</td><td>Concerned callback </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxVECTOR if found, orxNULL otherwise </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> if found, orxNULL otherwise </dd></dl>
 
 </div>
 </div><p>
@@ -127,7 +127,7 @@ Get a world position given a screen one (absolute picking) <dl compact><dt><b>Pa
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g0fc14fe2b03e6d156f215a23c16d3e4c">orxSTATUS</a> orxRender_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxRender_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -162,8 +162,7 @@ Render module setup
 </div>
 </div><p>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Sep 18 01:37:03 2008 for orx by&nbsp;
-<a href="http://www.doxygen.org/index.html">
-<img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
+<hr size="1"><address style="text-align: right;"><small>
+Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
 </html>
