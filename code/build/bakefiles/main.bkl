@@ -11,7 +11,7 @@
   <!-- GCC : link on orx. If statically linked, import all symbols -->
   <set var="orxLDFLAGS">
     <if cond="LINK=='static' and COMPILER=='gcc'">-Wl,--export-dynamic -Wl,--whole-archive -l$(orxNAME) -Wl,--no-whole-archive -lm</if>
-    <if cond="LINK=='dynamic' and COMPILER=='gcc'">-l$(orxNAME)</if>
+    <if cond="LINK=='dynamic' and COMPILER=='gcc'">-l$(orxNAME) -Wl,--export-dynamic</if>
   </set>
 <!--  <echo>The content of the X variable is: $(orxLDFLAGS)</echo> -->
   
@@ -31,7 +31,7 @@
 
   <!-- on linux, dlopen, etc.. are inside 'dl' library -->
   <set var="orxLINKLIB">
-    <if cond="FORMAT in ['gnu', 'autoconf']">dl</if>
+    <if cond="FORMAT in ['gnu', 'autoconf']">dl -lm</if>
   </set>
 
   <!-- ************************ MAIN PROGRAMM *********************** -->

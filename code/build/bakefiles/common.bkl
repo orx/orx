@@ -102,7 +102,7 @@
 
     <!-- Disable specifics warnings -->
     <set var="orxDISABLE_WARNING">
-      <if cond="FORMAT in ['autoconf','gnu','mingw','xcode2']">-Wno-unused-parameter</if>
+      <if cond="FORMAT in ['autoconf','gnu','mingw','xcode2']">-Wno-unused-parameter -Wno-write-strings</if>
       <!-- 4100 = unreferenced formal parameter, 4206 = translation unit is empty (empty file), C4201 = nonstandard extension used : nameless struct/union -->
       <if cond="FORMAT in ['msvc','msvs2005prj']">/wd4100 /wd4206 /wd4201</if>
     </set>
@@ -129,7 +129,7 @@
         
         <!-- Warnings. -->
         <warnings>$(orxWARNINGFLAG)</warnings>
-        <cflags>$(orxDISABLE_WARNING)</cflags>
+        <cppflags>$(orxDISABLE_WARNING)</cppflags>
         
         <!-- Global include directory. -->
         <include>$(SRCDIR)$(DIRSEP)include</include>
