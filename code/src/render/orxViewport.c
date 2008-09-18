@@ -181,7 +181,8 @@ orxSTATUS orxViewport_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to initialize viewport module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -195,7 +196,8 @@ orxSTATUS orxViewport_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register linked list structure while initializing viewport module.");
   }
 
   /* Done! */
@@ -220,7 +222,8 @@ orxVOID orxViewport_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to exit from viewport module when it wasn't initialized.");
   }
 
   return;
@@ -253,7 +256,8 @@ orxVIEWPORT *orxViewport_Create()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport not created correctly.");
 
     /* Not created */
     pstViewport = orxNULL;
@@ -443,7 +447,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Config file does not contain viewport section named %s.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -494,7 +499,8 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete viewport while it is still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -851,7 +857,8 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid texture in viewport.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -931,7 +938,8 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid texture in viewport.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -988,7 +996,8 @@ orxVOID orxFASTCALL orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewpo
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid texture in viewport.");
 
     /* Empties result */
     *_pfW = orxFLOAT_0;

@@ -174,7 +174,8 @@ orxSTATUS orxCamera_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to initialize camera module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -188,7 +189,8 @@ orxSTATUS orxCamera_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register link list storage structure.");
   }
 
   /* Done! */
@@ -216,7 +218,8 @@ orxVOID orxCamera_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to exit camera module when it wasn't initialized.");
   }
 
   return;
@@ -261,7 +264,8 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Camera currently only supports 2d.");
 
         /* Fress partially allocated camera */
         orxFrame_Delete(pstFrame);
@@ -273,7 +277,8 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to create camera's frame.");
 
       /* Fress partially allocated camera */
       orxStructure_Delete(pstCamera);
@@ -284,7 +289,8 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to create camera.");
   }
 
   /* Done! */
@@ -375,7 +381,8 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot find config section named (%s).", _zConfigID);
 
       /* Updates result */
       pstResult = orxNULL;
@@ -419,7 +426,8 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete camera while it is still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -669,7 +677,8 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, orxVOID *_pPare
 
       default:
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid ID for structure.");
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;

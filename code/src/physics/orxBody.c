@@ -255,7 +255,8 @@ orxSTATUS orxBody_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Tried to initialize body module when it is already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -269,7 +270,8 @@ orxSTATUS orxBody_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to register storage link list." );
   }
 
   /* Done! */
@@ -294,7 +296,8 @@ orxVOID orxBody_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Tried to exit body module when it wasn't initialized.");
   }
 
   return;
@@ -373,7 +376,8 @@ orxBODY *orxFASTCALL orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST o
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to create body.");
 
       /* Deletes allocated structure */
       orxStructure_Delete(pstBody);
@@ -473,7 +477,8 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, 
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Cannot find config section named (%s).", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -518,7 +523,8 @@ orxSTATUS orxFASTCALL orxBody_Delete(orxBODY *_pstBody)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Cannot delete body object while it is still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -646,7 +652,8 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Failed to create body part.");
 
       /* Cleans reference */
       _pstBody->astPartList[_u32Index].pstData = orxNULL;
@@ -762,7 +769,8 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't find config section named (%s)", _zConfigID);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -977,7 +985,8 @@ orxSTATUS orxFASTCALL orxBody_SetPosition(orxBODY *_pstBody, orxCONST orxVECTOR 
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Structure does not have data.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1008,7 +1017,8 @@ orxSTATUS orxFASTCALL orxBody_SetRotation(orxBODY *_pstBody, orxFLOAT _fRotation
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Structure does not have data.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1072,7 +1082,8 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, orxCONST orxVECTOR *_p
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Structure does not have data.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1104,7 +1115,8 @@ orxSTATUS orxFASTCALL orxBody_SetSpeed(orxBODY *_pstBody, orxCONST orxVECTOR *_p
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Strcuture does not have data.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1135,7 +1147,8 @@ orxSTATUS orxFASTCALL orxBody_SetAngularVelocity(orxBODY *_pstBody, orxFLOAT _fV
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Structure does not have data.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

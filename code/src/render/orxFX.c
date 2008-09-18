@@ -304,7 +304,8 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid curve type for FX. Use %s,%s or %s", orxFX_KZ_LINEAR, orxFX_KZ_SAW, orxFX_KZ_SINE);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -450,7 +451,8 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Config file does not have section named (%s).", _zSlotID);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -527,12 +529,14 @@ orxSTATUS orxFX_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register link list storage structure.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to initialize the FX module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -570,7 +574,8 @@ orxVOID orxFX_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to exit from the FX module when it wasn't initialized.");
   }
 
   return;
@@ -597,7 +602,8 @@ orxFX *orxFX_Create()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to create FX structure.");
   }
 
   /* Done! */
@@ -693,7 +699,8 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         }
         else
         {
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to add hash table.");
 
           /* Deletes it */
           orxFX_Delete(pstResult);
@@ -708,7 +715,8 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't create FX because config section (%s) couldn't be found.", _zConfigID);
 
       /* Updates result */
       pstResult = orxNULL;
@@ -765,7 +773,8 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete FX while it is still being referenced.");
 
       /* Referenced by others */
       eResult = orxSTATUS_FAILURE;
@@ -956,7 +965,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
 
               default:
               {
-                /* !!! MSG !!! */
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid curve.");
 
                 /* Skips it */
                 continue;
@@ -1233,7 +1243,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
 
               default:
               {
-                /* !!! MSG !!! */
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid FX type when trying to apply FX.");
 
                 break;
               }

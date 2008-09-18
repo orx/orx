@@ -98,7 +98,8 @@ orxSTATUS orxMemory_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "Tried to initialize memory module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;

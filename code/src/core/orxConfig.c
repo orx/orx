@@ -333,7 +333,8 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate key string(%s).", _zKey);
 
         /* Deletes allocated string */
         orxString_Delete(pstEntry->stValue.zValue);
@@ -344,7 +345,8 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to duplicate zValue string(%s).", _zValue);
 
       /* Deletes entry */
       orxBank_Free(sstConfig.pstCurrentSection->pstBank, pstEntry);
@@ -413,7 +415,8 @@ orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRIN
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Duplicating section name failed.");
 
         /* Deletes its bank */
         orxBank_Delete(pstSection->pstBank);
@@ -427,7 +430,8 @@ orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRIN
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config bank.");
 
       /* Deletes the section */
       orxBank_Free(sstConfig.pstSectionBank, pstSection);
@@ -557,7 +561,8 @@ orxSTATUS orxConfig_Init()
         }
         else
         {
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create history bank.");
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
@@ -573,7 +578,8 @@ orxSTATUS orxConfig_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize config module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -714,7 +720,8 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config section with parameters (%s, %i, %i).", _zSectionName, u32SectionID, u32ParentID);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -730,7 +737,8 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Empty section name.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -929,7 +937,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
               /* End of line? */
               if(*pc == orxCHAR_EOL)
               {
-                /* !!! MSG !!! */
+                /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Section name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_SECTION_END);
 
                 /* Updates new line start */

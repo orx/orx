@@ -176,7 +176,8 @@ orxSTATUS orxStructure_Init()
     {
       orxU32 j;
 
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create bank with ID (%i).", i);
 
       /* For all created banks */
       for(j = 0; j < i; j++)
@@ -188,7 +189,8 @@ orxSTATUS orxStructure_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to initialize structure module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -251,7 +253,8 @@ orxVOID orxStructure_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit structure module when it wasn't initialized.");
   }
 
   return;
@@ -295,12 +298,14 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid storage bank created.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure is already registered.");
 
     /* Already registered */
     eResult = orxSTATUS_FAILURE;
@@ -332,7 +337,8 @@ orxVOID orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure is already registered.");
   }
 
   return;
@@ -402,7 +408,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 
         default:
 
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure storage type.");
 
           /* Wrong type */
           eResult = orxSTATUS_FAILURE;
@@ -425,7 +432,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         }
         else
         {
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed adding node to list.");
 
           /* Frees allocated node & structure */
           orxBank_Free(sstStructure.astStorage[_eStructureID].pstNodeBank, pstNode);
@@ -437,7 +445,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to allocate node bank.");
 
         /* Frees allocated structure */
         orxBank_Free(sstStructure.astStorage[_eStructureID].pstStructureBank, pstStructure);
@@ -448,12 +457,14 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to allocate structure bank.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure type is not registered.");
   }
 
   /* Done! */
@@ -495,7 +506,8 @@ orxVOID orxFASTCALL orxStructure_Delete(orxVOID *_pStructure)
     break;
 
       default:
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure storage type.");
         break;
     }
 
@@ -510,7 +522,8 @@ orxVOID orxFASTCALL orxStructure_Delete(orxVOID *_pStructure)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid storage node.");
   }
 
   return;
@@ -561,7 +574,8 @@ orxU32 orxFASTCALL orxStructure_GetNumber(orxSTRUCTURE_ID _eStructureID)
 
   default:
 
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure storage type.");
 
     break;
   }
@@ -596,12 +610,14 @@ orxSTATUS orxFASTCALL orxStructure_Update(orxVOID *_pStructure, orxCONST orxVOID
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Update function is not registered.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure is not registered.");
   }
 
   /* Done! */
@@ -640,7 +656,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 
   default:
 
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure storage type.");
 
     /* No node found */
     pstNode = orxNULL;
@@ -691,7 +708,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID)
 
   default:
 
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure storage type.");
 
     /* No node found */
     pstNode = orxNULL;
@@ -744,12 +762,14 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(orxCONST orxVOID *_pStructure)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Storage node is not tree type.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid storage node.");
   }
 
   /* Done! */
@@ -790,12 +810,14 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(orxCONST orxVOID *_pStructure)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Structure is not tree type.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid storage node.");
   }
 
   /* Done! */
@@ -836,12 +858,14 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(orxCONST orxVOID *_pStructure)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Storage type isn't tree.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid storage node.");
   }
 
   /* Done! */
@@ -882,12 +906,14 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(orxCONST orxVOID *_pStructure
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Storage type is not a linked list.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Not a valid storage node.");
   }
 
   /* Done! */
@@ -928,12 +954,14 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(orxCONST orxVOID *_pStructure)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Storage type is not a linked list.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid storage node.");
   }
 
   /* Done! */
@@ -970,7 +998,8 @@ orxSTATUS orxFASTCALL orxStructure_SetParent(orxVOID *_pStructure, orxVOID *_pPa
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Storage type is not tree type.");
 
       /* Not done */
       eResult = orxSTATUS_FAILURE;
@@ -978,7 +1007,8 @@ orxSTATUS orxFASTCALL orxStructure_SetParent(orxVOID *_pStructure, orxVOID *_pPa
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid parameter storage nodes.");
 
     /* Not done */
     eResult = orxSTATUS_FAILURE;

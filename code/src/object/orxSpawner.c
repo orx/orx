@@ -406,17 +406,20 @@ orxSTATUS orxSpawner_Init()
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to register link list structure.");
       }
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add spawner event handler.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to initialize spawner module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -447,7 +450,8 @@ orxVOID orxSpawner_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit spawner module when it wasn't initialized.");
   }
 
   return;
@@ -483,7 +487,8 @@ orxSPAWNER *orxSpawner_Create()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create frame for spawner.");
 
       /* Deletes spawner */
       orxStructure_Delete(pstResult);
@@ -494,7 +499,8 @@ orxSPAWNER *orxSpawner_Create()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create spawner structure.");
   }
 
   return pstResult;
@@ -663,7 +669,8 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't find config section named (%s).", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -724,7 +731,8 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to delete spawner when it was still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -1340,7 +1348,8 @@ orxSTATUS orxFASTCALL orxSpawner_SetParent(orxSPAWNER *_pstSpawner, orxVOID *_pP
 
       default:
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid parent structure ID.");
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;

@@ -162,14 +162,16 @@ orxSTATUS _orxDebug_Init()
   /* Correct parameters ? */
   if(orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Internal error. DEBUG_LEVEL_NUMBER(%i) > DEBUG_LEVEL_MAX_NUMBER(%i).", orxDEBUG_LEVEL_NUMBER, orxDEBUG_LEVEL_MAX_NUMBER);
 
     eResult = orxSTATUS_FAILURE;
   }
   else if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
     /* Already Initialized? */
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize debug module when it was already initialized.");
 
     eResult = orxSTATUS_SUCCESS;
   }
@@ -210,7 +212,8 @@ orxVOID _orxDebug_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit debug module when it wasn't initialized.");
   }
 
   return;

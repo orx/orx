@@ -284,12 +284,14 @@ orxSTATUS orxFXPointer_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register linked list structure.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to load FX pointer module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -317,7 +319,8 @@ orxVOID orxFXPointer_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to exit FX pointer module when it wasn't initialized.");
   }
 
   return;
@@ -347,7 +350,8 @@ orxFXPOINTER *orxFXPointer_Create(orxCONST orxSTRUCTURE *_pstOwner)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to create FX pointer structure.");
   }
 
   /* Done! */
@@ -394,7 +398,8 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Cannot delete FX pointer while it is still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -539,7 +544,8 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No available slots for delayed FX.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -688,7 +694,8 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Loading delayed FX from config file (%s) failed.", _zFXConfigID);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -696,7 +703,8 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No available slots for delayed FX.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

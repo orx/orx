@@ -234,7 +234,8 @@ orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_p
 
     default:
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%i).", *peModType );
       break;
     }
   }
@@ -293,7 +294,8 @@ orxSTATUS orxClock_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Failed creating clock bank.");
 
       /* Clock bank not created */
       eResult = orxSTATUS_FAILURE;
@@ -301,7 +303,8 @@ orxSTATUS orxClock_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Tried to initialize clock module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -459,7 +462,8 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't create clock function storage.");
 
       /* Releases allocated clock */
       orxBank_Free(sstClock.pstClockBank, pstClock);
@@ -470,7 +474,8 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't allocate bank for clock.");
   }
 
   /* Done! */
@@ -645,7 +650,8 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't allocate bank for function storage.");
 
     /* Not successful */
     eResult = orxSTATUS_FAILURE;
@@ -681,7 +687,8 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't find clock function storage.");
 
     /* Not found */
     eResult = orxSTATUS_FAILURE;
@@ -717,7 +724,8 @@ orxVOID *orxFASTCALL orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST 
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't find clock function storage.");
   }
 
   /* Done! */
@@ -751,7 +759,8 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't find clock function storage.");
 
     /* Not found */
     eResult = orxSTATUS_FAILURE;

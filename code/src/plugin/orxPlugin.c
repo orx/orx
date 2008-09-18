@@ -302,7 +302,8 @@ orxPLUGIN_FUNCTION_INFO *orxFASTCALL orxPlugin_CreateFunctionInfo(orxPLUGIN_INFO
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Function into failed to allocate.");
   }
 
   /* Done! */
@@ -372,12 +373,14 @@ orxSTATIC orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Function address is not already loaded.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Core plugin is not defined.");
   }
 
   /* Done! */
@@ -422,7 +425,8 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Core plugin is not defined.");
   }
 
   /* Done! */
@@ -460,7 +464,8 @@ orxSTATIC orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
       /* Invalid? */
       if(pstPluginInfo->pstFunctionTable == orxNULL)
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Invalid function hash table.");
 
         /* Frees previously allocated data */
         orxBank_Delete(pstPluginInfo->pstFunctionBank);
@@ -472,7 +477,8 @@ orxSTATIC orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Invalid function bank.");
 
       /* Frees previously allocated data */
       orxBank_Free(sstPlugin.pstPluginBank, pstPluginInfo);
@@ -640,7 +646,8 @@ orxSTATIC orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUG
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Invalid function.");
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -649,7 +656,8 @@ orxSTATIC orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUG
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get function address.");
 
     /* Can't load plugin */
     eResult = orxSTATUS_FAILURE;
@@ -800,7 +808,8 @@ orxSTATUS orxPlugin_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to create bank.");
 
       /* Bank not created */
       eResult = orxSTATUS_FAILURE;
@@ -808,7 +817,8 @@ orxSTATUS orxPlugin_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Tried to initialize plugin module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -837,7 +847,8 @@ orxVOID orxPlugin_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Tried to exit plugin module when it wasn't initialized.");
   }
 
   return;
@@ -1030,7 +1041,8 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get plugin info for handle.");
 
     /* Not found */
     eResult = orxSTATUS_FAILURE;
@@ -1067,12 +1079,14 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
     /* Not found? */
     if(pfnFunction == orxNULL)
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get function address for plugin.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get plugin info for handle.");
   }
 
   /* Done! */
@@ -1134,7 +1148,8 @@ orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get plugin info for handle.");
   }
 
   /* Done! */

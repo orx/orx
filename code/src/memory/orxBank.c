@@ -209,7 +209,8 @@ orxSTATUS orxBank_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "Tried to initialize bank module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;

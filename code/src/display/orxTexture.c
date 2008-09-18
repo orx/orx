@@ -221,7 +221,8 @@ orxSTATUS orxTexture_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to initialize texture module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -230,7 +231,8 @@ orxSTATUS orxTexture_Init()
   /* Not initialized? */
   if(eResult != orxSTATUS_SUCCESS)
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Initializing texture module failed.");
 
     /* Updates Flags */
     sstTexture.u32Flags &= ~orxTEXTURE_KU32_STATIC_FLAG_READY;
@@ -268,7 +270,8 @@ orxVOID orxTexture_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to exit texture module when it wasn't initialized.");
   }
 
   return;
@@ -294,7 +297,8 @@ orxTEXTURE *orxTexture_Create()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to create structure for texture.");
   }
 
   return pstTexture;
@@ -342,7 +346,8 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFil
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to load bitmap and link it to texture.");
 
         /* Frees allocated texture */
         orxTexture_Delete(pstTexture);
@@ -353,7 +358,8 @@ orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFil
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid texture created.");
     }
   }
 
@@ -386,7 +392,8 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to delete texture object when it was still referenced.");
 
       /* Referenced by others */
       eResult = orxSTATUS_FAILURE;
@@ -467,7 +474,8 @@ orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST or
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Texture is already linked.");
 
     /* Already linked */
     eResult = orxSTATUS_FAILURE;
@@ -521,7 +529,8 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Texture does not have bitmap.");
 
     /* No bitmap to unlink from */
     eResult = orxSTATUS_FAILURE;
@@ -582,7 +591,8 @@ orxFLOAT orxFASTCALL orxTexture_GetWidth(orxCONST orxTEXTURE *_pstTexture)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Texture's width is not set.");
 
     /* No size */
     fResult = orx2F(-1.0f);
@@ -612,7 +622,8 @@ orxFLOAT orxFASTCALL orxTexture_GetHeight(orxCONST orxTEXTURE *_pstTexture)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Texture's height is not set.");
 
     /* No size */
     fResult = orx2F(-1.0f);
@@ -666,7 +677,8 @@ orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, orxRGBA _stCo
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid bitmap in texture.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

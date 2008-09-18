@@ -1383,7 +1383,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to create link table.");
 
         /* Frees partially allocated structures */
         orxMemory_Free(pstAnimSet->pastAnim);
@@ -1395,7 +1396,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to create anim pointer array.");
 
       /* Frees partially allocated structure */
       orxStructure_Delete(pstAnimSet);
@@ -1406,7 +1408,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_Create(orxU32 _u32Size)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to create animset structure.");
 
     /* Not created */
     pstAnimSet = orxNULL;
@@ -1576,7 +1579,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Couldn't find config section named (%s).", _zConfigID);
 
       /* Updates result */
       pstResult = orxNULL;
@@ -1625,7 +1629,8 @@ orxSTATUS orxFASTCALL orxAnimSet_Delete(orxANIMSET *_pstAnimSet)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Tried to delete animset object when it was still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -1698,7 +1703,8 @@ orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(orxCONST orxANIMSET
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Failed to create link table.");
 
     /* Can't process */
     pstLinkTable = orxNULL;
@@ -1776,7 +1782,8 @@ orxHANDLE orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstA
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "No free room to add anim.");
 
       /* Can't process */
       hResult = orxHANDLE_UNDEFINED;
@@ -1784,7 +1791,8 @@ orxHANDLE orxFASTCALL orxAnimSet_AddAnim(orxANIMSET *_pstAnimSet, orxANIM *_pstA
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset is locked, can't add anim.");
 
     /* Can't process */
     hResult = orxHANDLE_UNDEFINED;
@@ -1839,7 +1847,8 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid index(%i) given.", u32AnimIndex);
 
       /* Failed */
       eResult = orxSTATUS_FAILURE;
@@ -1847,7 +1856,8 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset is locked, can't remove anim.");
 
     /* Failed */
     eResult = orxSTATUS_FAILURE;
@@ -1889,7 +1899,8 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAllAnims(orxANIMSET *_pstAnimSet)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset is locked, can't remove all anims.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1957,7 +1968,8 @@ orxHANDLE orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSr
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Already linked, can't add another.");
 
       /* Link not added */
       hResult = orxHANDLE_UNDEFINED;
@@ -1965,7 +1977,8 @@ orxHANDLE orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSr
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset is locked, can't add link.");
 
     /* Link not added */
     hResult = orxHANDLE_UNDEFINED;
@@ -2017,7 +2030,8 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "No link found to remove.");
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -2025,7 +2039,8 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveLink(orxANIMSET *_pstAnimSet, orxHANDLE _
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset is locked, can't remove link.");
 
     /* Can't process */
     eResult = orxSTATUS_FAILURE;
@@ -2242,7 +2257,8 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
         }
         else
         {
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Couldn't compute next animation.");
 
           /* Not found */
           hResult = orxHANDLE_UNDEFINED;
@@ -2282,7 +2298,8 @@ orxANIM *orxFASTCALL orxAnimSet_GetAnim(orxCONST orxANIMSET *_pstAnimSet, orxHAN
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid index in animset.");
   }
 
   /* Done! */

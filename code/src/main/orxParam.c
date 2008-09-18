@@ -484,7 +484,8 @@ orxSTATUS orxParam_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize param module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;

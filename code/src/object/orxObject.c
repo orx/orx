@@ -251,7 +251,8 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
           /* Updates it */
           if(orxStructure_Update(pstObject->astStructure[i].pstStructure, pstObject, _pstClockInfo) == orxSTATUS_FAILURE)
           {
-            /* !!! MSG !!! */
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update object structure.");
           }
         }
       }
@@ -355,12 +356,14 @@ orxSTATUS orxObject_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to register link list structure.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to initialize object module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -404,7 +407,8 @@ orxVOID orxObject_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit from object module when it wasn't initialized.");
   }
 
   return;
@@ -449,7 +453,8 @@ orxOBJECT *orxObject_Create()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create object object. hehe");
   }
 
   return pstObject;
@@ -496,7 +501,8 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to delete object when it was still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -877,7 +883,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to find config section named %s.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -920,7 +927,8 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure id(%i).", eStructureID);
 
     /* Wrong structure ID */
     eResult = orxSTATUS_FAILURE;
@@ -1004,7 +1012,8 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
         {
           orxASSERT(orxFALSE && "Can't destroy this structure type directly from an object.");
 
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid parent's structure id.");
           break;
         }
       }
@@ -1224,7 +1233,8 @@ orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, orxCONST orxVECT
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get graphic object.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1272,7 +1282,8 @@ orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, orxCONST orxV
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1319,7 +1330,8 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1367,7 +1379,8 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxCONST orxVECT
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1403,7 +1416,8 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(orxCONST orxOBJECT *_pstObject, orxVEC
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get graphic object.");
 
     /* Updates result */
     pvResult = orxNULL;
@@ -1439,7 +1453,8 @@ orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orx
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Updates result */
     pvResult = orxNULL;
@@ -1475,7 +1490,8 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldPosition(orxCONST orxOBJECT *_pstObject
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Updates result */
     pvResult = orxNULL;
@@ -1509,7 +1525,8 @@ orxFLOAT orxFASTCALL orxObject_GetRotation(orxCONST orxOBJECT *_pstObject)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Updates result */
     fResult = orxFLOAT_0;
@@ -1543,7 +1560,8 @@ orxFLOAT orxFASTCALL orxObject_GetWorldRotation(orxCONST orxOBJECT *_pstObject)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Updates result */
     fResult = orxFLOAT_0;
@@ -1585,7 +1603,8 @@ orxVECTOR *orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVEC
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Clears vector */
     orxVector_SetAll(_pvScale, orxFLOAT_0);
@@ -1624,7 +1643,8 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, o
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get frame object.");
 
     /* Clears scale */
     orxVector_Copy(_pvScale, &orxVECTOR_0);
@@ -1700,7 +1720,8 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pPare
 
       default:
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid parent's structure id.");
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -2149,7 +2170,8 @@ orxVECTOR *orxFASTCALL orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR 
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get body object.");
 
     /* Updates result */
     pvResult = orxNULL;
@@ -2184,7 +2206,8 @@ orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTo
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get body object.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2221,7 +2244,8 @@ orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, orxCONST orxVE
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get body object.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2258,7 +2282,8 @@ orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, orxCONST orx
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to get body object");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -2418,7 +2443,8 @@ orxCOLOR *orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject, orxCOLO
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Object does not have color.");
 
     /* Clears result */
     pstResult = orxNULL;
@@ -2713,7 +2739,8 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(orxCONST orxAABOX *_pstCheckBo
           }
           else
           {
-            /* !!! MSG !!! */
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to allocate new cell.");
             break;
           }
         }

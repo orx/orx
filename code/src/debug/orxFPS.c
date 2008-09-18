@@ -148,7 +148,8 @@ orxSTATUS orxFPS_Init()
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to register clock callback.");
 
         /* Deletes clock */
         orxClock_Delete(sstFPS.pstClock);
@@ -156,7 +157,8 @@ orxSTATUS orxFPS_Init()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create clock object.");
 
       /* Not initialized */
       eResult = orxSTATUS_FAILURE;
@@ -164,7 +166,8 @@ orxSTATUS orxFPS_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize FPS module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -191,7 +194,8 @@ orxVOID orxFPS_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit FPS module when it wasn't initialized.");
   }
 
   return;

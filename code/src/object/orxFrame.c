@@ -148,7 +148,8 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST 
     default:
     {
       /* Wrong space */
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
 
       break;
     }
@@ -187,7 +188,8 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT 
     default:
     {
       /* Wrong coord type */
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
 
       break;
     }
@@ -227,7 +229,8 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxCONST orx
     default:
 
       /* Wrong coord type */
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
 
       break;
   }
@@ -269,7 +272,8 @@ orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME 
     default:
     {
       /* Wrong coord type */
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
 
       break;
     }
@@ -311,7 +315,8 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetRotation(orxCONST orxFRAME *_pstFrame,
     default:
     {
       /* Wrong coord type */
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
 
       break;
     }
@@ -366,7 +371,8 @@ orxSTATIC orxINLINE orxVECTOR *_orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, 
     default:
     {
       /* Wrong coord type */
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
 
       /* Clears scale */
       orxVector_Copy(_pvScale, &orxVECTOR_0);
@@ -461,7 +467,8 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d yet.");
   }
 
   return;
@@ -627,7 +634,8 @@ orxSTATUS orxFrame_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to initialize frame mdoule when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -655,7 +663,8 @@ orxVOID orxFrame_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit frame module when it wasn't initialized.");
   }
 
   return;
@@ -703,12 +712,14 @@ orxFRAME *orxFrame_Create(orxU32 _u32Flags)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Frame does not support non-2d data yet.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create structure for frame.");
   }
 
   /* Done! */
@@ -735,7 +746,8 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to delete frame when it was still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;

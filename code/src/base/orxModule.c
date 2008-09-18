@@ -456,7 +456,8 @@ orxSTATUS orxModule_InitAll()
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to initialized module ID (%i).", eID);
     }
   }
 
@@ -466,7 +467,8 @@ orxSTATUS orxModule_InitAll()
     /* Failed */
     eResult = orxSTATUS_FAILURE;
 
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "No modules initialized.");
   }
   else
   {

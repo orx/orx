@@ -193,7 +193,8 @@ orxSTATUS orxGraphic_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to initialize graphic module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -207,7 +208,8 @@ orxSTATUS orxGraphic_Init()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed registering link list structure.");
   }
 
   /* Done! */
@@ -232,7 +234,8 @@ orxVOID orxGraphic_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to exit graphic module when it wasn't initialized.");
   }
 
   return;
@@ -524,7 +527,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
           }
           else
           {
-            /* !!! MSG !!! */
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture data to graphic.");
 
             /* Deletes structures */
             orxTexture_Delete(pstTexture);
@@ -536,7 +540,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
         }
         else
         {
-          /* !!! MSG !!! */
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't get texture for graphic.");
 
           /* Deletes structures */
           orxGraphic_Delete(pstResult);
@@ -552,7 +557,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named (%s).", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -584,7 +590,8 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to delete graphic object when it was still referenced.");
 
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
@@ -624,7 +631,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_GRAPHIC, "Non-2d graphics not supported yet.");
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -652,7 +660,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Data given is not a texture.");
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -788,7 +797,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid size retrieved from graphic.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -995,7 +1005,8 @@ orxCOLOR *orxFASTCALL orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic, orxC
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Color not set on graphic.");
 
     /* Clears result */
     pstResult = orxNULL;

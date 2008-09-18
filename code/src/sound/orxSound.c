@@ -173,7 +173,8 @@ orxSTATIC orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(orxCONST orxSTRING _zFi
         /* Updates result */
         pstResult = orxNULL;
 
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to add sound to hashtable.");
       }
     }
   }
@@ -308,17 +309,20 @@ orxSTATUS orxSound_Init()
         /* Deletes reference table */
         orxHashTable_Delete(sstSound.pstReferenceTable);
 
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to create sample bank.");
       }
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to create reference table.");
     }
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Tried to initialize sound module when it was already initialized.");
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
@@ -362,7 +366,8 @@ orxVOID orxSound_Exit()
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Tried to exit from sound module when it wasn't initialized.");
   }
 
   return;
@@ -494,7 +499,8 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       }
       else
       {
-        /* !!! MSG !!! */
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Invalid result structure data.");
 
         /* Deletes it */
         orxStructure_Delete(pstResult);
@@ -509,7 +515,8 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Couldn't find sound section (%s) in config.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -582,7 +589,8 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
     }
     else
     {
-      /* !!! MSG !!! */
+      /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Cannot delete structure while it is still referenced by others.");
 
       /* Referenced by others */
       eResult = orxSTATUS_FAILURE;
@@ -672,7 +680,8 @@ orxSTATUS orxFASTCALL orxSound_SetVolume(orxSOUND *_pstSound, orxFLOAT _fVolume)
   }
   else
   {
-    /* !!! MSG !!! */
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Volume (%f) must be > 0.", _fVolume);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
