@@ -632,7 +632,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_GRAPHIC, "Non-2d graphics not supported yet.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Non-2d graphics not supported yet.");
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
