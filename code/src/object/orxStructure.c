@@ -610,8 +610,8 @@ orxSTATUS orxFASTCALL orxStructure_Update(orxVOID *_pStructure, orxCONST orxVOID
     }
     else
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Update function is not registered.");
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
     }
   }
   else

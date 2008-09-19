@@ -737,9 +737,6 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Empty section name.");
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }

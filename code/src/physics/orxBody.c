@@ -212,6 +212,9 @@ orxSTATIC orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, orxC
       /* Updates position & rotation */
       orxFrame_SetPosition(pstFrame, &vPosition);
       orxFrame_SetRotation(pstFrame, fRotation);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 

@@ -529,9 +529,6 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Texture does not have bitmap.");
-
     /* No bitmap to unlink from */
     eResult = orxSTATUS_FAILURE;
   }

@@ -139,7 +139,7 @@ typedef struct __orxMODULE_INFO_t
 typedef struct __orxMODULE_STATIC_t
 {
   orxMODULE_INFO astModuleInfo[orxMODULE_ID_NUMBER];
-
+  orxU32 u32InitLoopCounter;
   orxU32 u32Flags;
 
 } orxMODULE_STATIC;
@@ -157,168 +157,6 @@ orxSTATIC orxMODULE_STATIC sstModule;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-/** Exits from a module recursively
- */
-orxVOID orxFASTCALL _orxModule_Exit(orxMODULE_ID _eModuleID)
-{
-  orxU64    u64Depend;
-  orxU32    u32Index;
-
-  /* Is initialized? */
-  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
-  {
-    /* Cleans flags */
-    sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP);
-
-    /* Computes dependency flag */
-    u64Depend = (orxU64)1 << _eModuleID;
-
-    /* For all modules */
-    for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
-    {
-      /* Is module dependent? */
-      if(sstModule.astModuleInfo[u32Index].u64DependFlags & u64Depend)
-      {
-        /* Exits from it */
-        _orxModule_Exit(u32Index);
-      }
-    }
-
-    /* For all optional modules */
-    for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
-    {
-      /* Is module dependent? */
-      if(sstModule.astModuleInfo[u32Index].u64OptionalDependFlags & u64Depend)
-      {
-        /* Exits from it */
-        _orxModule_Exit(u32Index);
-      }
-    }
-
-    /* Calls module exit function */
-    sstModule.astModuleInfo[_eModuleID].pfnExit();
-  }
-
-  return;
-}
-
-/** Inits a module recursively
- */
-orxSTATUS orxFASTCALL _orxModule_Init(orxMODULE_ID _eModuleID, orxBOOL _bExternCall)
-{
-  orxU64    u64Depend;
-  orxU32    u32Index;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Is module registered? */
-  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_REGISTERED)
-  {
-    /* Is not initialized? */
-    if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP)))
-    {
-      /* For all dependencies */
-      for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64DependFlags, u32Index = 0;
-          u64Depend != (orxU64)0;
-          u64Depend >>= 1, u32Index++)
-      {
-        /* Depends? */
-        if(u64Depend & (orxU64)1)
-        {
-          /* Not already initialized */
-          if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
-          {
-            /* Inits it */
-            eResult = _orxModule_Init(u32Index, orxFALSE);
-
-            /* Failed ? */
-            if(eResult != orxSTATUS_SUCCESS)
-            {
-              /* Stops init here */
-              break;
-            }
-          }
-        }
-      }
-
-      /* For all optional dependencies */
-      for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64OptionalDependFlags, u32Index = 0;
-          u64Depend != (orxU64)0;
-          u64Depend >>= 1, u32Index++)
-      {
-        /* Depends? */
-        if(u64Depend & (orxU64)1)
-        {
-          /* Not already initialized */
-          if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
-          {
-            /* Inits it */
-            _orxModule_Init(u32Index, orxFALSE);
-          }
-        }
-      }
-
-      /* All dependencies initialized? */
-      if(eResult == orxSTATUS_SUCCESS)
-      {
-        /* Updates temp flag */
-        sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_TEMP;
-
-        /* Calls module init function */
-        eResult = sstModule.astModuleInfo[_eModuleID].pfnInit();
-
-        /* Successful? */
-        if(eResult == orxSTATUS_SUCCESS)
-        {
-          /* Updates initialized flag */
-          sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_INITIALIZED;
-        }
-        else
-        {
-          /* Updates temp flag */
-          sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_TEMP;
-        }
-      }
-    }
-  }
-  else
-  {
-    /* Not initialized */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Was external call? */
-  if(_bExternCall != orxFALSE)
-  {
-    /* Failed? */
-    if(eResult != orxSTATUS_SUCCESS)
-    {
-      /* For all modules */
-      for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
-      {
-        /* Is temporary initialized? */
-        if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_TEMP)
-        {
-          /* Internal exit call */
-          _orxModule_Exit(u32Index);
-        }
-      }
-    }
-    /* Successful */
-    else
-    {
-      /* For all modules */
-      for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
-      {
-        /* Cleans temp status */
-        sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_TEMP;
-      }
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
 
 
 /***************************************************************************
@@ -422,16 +260,135 @@ orxVOID orxModule_SetupAll()
   return;
 }
 
-/** Inits a module
+/** Inits a module recursively
  */
 orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
 {
+  orxU64    u64Depend;
+  orxU32    u32Index;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(orxMODULE_ID_NUMBER <= orxMODULE_ID_MAX_NUMBER);
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
 
-  /* Calls internal init */
-  return(_orxModule_Init(_eModuleID, orxTRUE));
+  /* Increases loop counter */
+  sstModule.u32InitLoopCounter++;
+
+  /* Is module registered? */
+  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_REGISTERED)
+  {
+    /* Is not initialized? */
+    if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP)))
+    {
+      /* For all dependencies */
+      for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64DependFlags, u32Index = 0;
+          u64Depend != (orxU64)0;
+          u64Depend >>= 1, u32Index++)
+      {
+        /* Depends? */
+        if(u64Depend & (orxU64)1)
+        {
+          /* Not already initialized */
+          if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP)))
+          {
+            /* Inits it */
+            eResult = orxModule_Init(u32Index);
+
+            /* Failed ? */
+            if(eResult != orxSTATUS_SUCCESS)
+            {
+              /* Stops init here */
+              break;
+            }
+          }
+        }
+      }
+
+      /* For all optional dependencies */
+      for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64OptionalDependFlags, u32Index = 0;
+          u64Depend != (orxU64)0;
+          u64Depend >>= 1, u32Index++)
+      {
+        /* Depends? */
+        if(u64Depend & (orxU64)1)
+        {
+          /* Not already initialized */
+          if(!(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
+          {
+            /* Inits it */
+            orxModule_Init(u32Index);
+          }
+        }
+      }
+
+      /* All dependencies initialized? */
+      if(eResult == orxSTATUS_SUCCESS)
+      {
+        /* Not already initialized */
+        if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED))
+        {
+          /* Updates temp flag */
+          sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_TEMP;
+
+          /* Calls module init function */
+          eResult = sstModule.astModuleInfo[_eModuleID].pfnInit();
+
+          /* Successful? */
+          if(eResult == orxSTATUS_SUCCESS)
+          {
+            /* Updates initialized flag */
+            sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_INITIALIZED;
+          }
+          else
+          {
+            /* Updates temp flag */
+            sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_TEMP;
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    /* Not initialized */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Decreases loop counter */
+  sstModule.u32InitLoopCounter--;
+
+  /* Was external call? */
+  if(sstModule.u32InitLoopCounter == 0)
+  {
+    /* Failed? */
+    if(eResult != orxSTATUS_SUCCESS)
+    {
+      /* For all modules */
+      for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
+      {
+        /* Is temporary initialized? */
+        if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_TEMP)
+        {
+          /* Internal exit call */
+          orxModule_Exit(u32Index);
+        }
+      }
+    }
+    /* Successful */
+    else
+    {
+      /* For all modules */
+      for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
+      {
+        /* Cleans temp status */
+        sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_TEMP;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Inits all modules
@@ -480,15 +437,50 @@ orxSTATUS orxModule_InitAll()
   return eResult;
 }
 
-/** Exits from a module
+/** Exits from a module recursively
  */
 orxVOID orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
 {
+  orxU64 u64Depend;
+  orxU32 u32Index;
+
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
 
-  /* Calls internal exit */
-  _orxModule_Exit(_eModuleID);
+  /* Is initialized? */
+  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
+  {
+    /* Cleans flags */
+    sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_TEMP);
+
+    /* Computes dependency flag */
+    u64Depend = (orxU64)1 << _eModuleID;
+
+    /* For all modules */
+    for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
+    {
+      /* Is module dependent? */
+      if(sstModule.astModuleInfo[u32Index].u64DependFlags & u64Depend)
+      {
+        /* Exits from it */
+        orxModule_Exit(u32Index);
+      }
+    }
+
+    /* For all optional modules */
+    for(u32Index = 0; u32Index < orxMODULE_ID_NUMBER; u32Index++)
+    {
+      /* Is module dependent? */
+      if(sstModule.astModuleInfo[u32Index].u64OptionalDependFlags & u64Depend)
+      {
+        /* Exits from it */
+        orxModule_Exit(u32Index);
+      }
+    }
+
+    /* Calls module exit function */
+    sstModule.astModuleInfo[_eModuleID].pfnExit();
+  }
 
   return;
 }
