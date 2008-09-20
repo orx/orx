@@ -498,6 +498,9 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                   pstObject != orxNULL;
                   pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
               {
+                /* Updates its render status */
+                orxObject_SetRendered(pstObject, orxFALSE);
+
                 /* Is object enabled? */
                 if(orxObject_IsEnabled(pstObject) != orxFALSE)
                 {
@@ -727,7 +730,12 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 orxFrame_SetScale(pstRenderFrame, &vObjectScale);
 
                 /* Renders it */
-                if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame) != orxSTATUS_SUCCESS)
+                if(orxRender_RenderObject(pstObject, pstBitmap, pstRenderFrame) != orxSTATUS_FAILURE)
+                {
+                  /* Updates its render status */
+                  orxObject_SetRendered(pstObject, orxTRUE);
+                }
+                else
                 {
                   /* Prints error message */
                   orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p -> orxBITMAP %p] couldn't be rendered.", pstObject, pstBitmap);
