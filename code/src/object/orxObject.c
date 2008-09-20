@@ -236,6 +236,12 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
           /* Deletes it */
           orxObject_Delete(pstDeleteObject);
 
+          /* Is previous invalid? */
+          if(pstObject == orxNULL)
+          {
+            pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
+          }
+
           continue;
         }
       }

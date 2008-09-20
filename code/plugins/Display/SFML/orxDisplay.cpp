@@ -870,8 +870,17 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
       /* Updates status */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
 
-      /* Enables vertical sync */
-      orxDisplay_SFML_EnableVSync(orxTRUE);
+      /* Has VSync value? */
+      if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
+      {
+        /* Updates vertical sync */
+        orxDisplay_SFML_EnableVSync(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_VSYNC));
+      }
+      else
+      {
+        /* Enables vertical sync */
+        orxDisplay_SFML_EnableVSync(orxTRUE);
+      }
     }
     else
     {

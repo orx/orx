@@ -49,6 +49,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga8b6e8b0ac3bd90651ab4c2bdbc8d2fe">orxObject_IsEnabled</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gbdc6899e575eb90065baeb9034e9d67f">orxObject_SetRendered</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL _bRendered)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gd76e6be296029fa9a5553db644ae4c7e">orxObject_IsRendered</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g0697e18f26d0fc858ebfd64ac5f1bfc5">orxObject_SetUserData</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxVOID *_pUserData)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g587942a72169f4ad6272a4afaa41b301">orxObject_GetUserData</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
@@ -1479,6 +1483,32 @@ Is object enabled? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="gd76e6be296029fa9a5553db644ae4c7e"></a><!-- doxytag: member="orxObject.h::orxObject_IsRendered" ref="gd76e6be296029fa9a5553db644ae4c7e" args="(orxCONST orxOBJECT *_pstObject)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxObject_IsRendered           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Is object rendered this frame? <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if rendered, orxFALSE otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g436910469313b0b8c1bd92356d4fb711"></a><!-- doxytag: member="orxObject.h::orxObject_IsTargetAnim" ref="g436910469313b0b8c1bd92356d4fb711" args="(orxOBJECT *_pstObject, orxCONST orxSTRING _zAnimName)" -->
 <div class="memitem">
 <div class="memproto">
@@ -2015,6 +2045,41 @@ Sets object position <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gbdc6899e575eb90065baeb9034e9d67f"></a><!-- doxytag: member="orxObject.h::orxObject_SetRendered" ref="gbdc6899e575eb90065baeb9034e9d67f" args="(orxOBJECT *_pstObject, orxBOOL _bRendered)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxObject_SetRendered           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bRendered</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets render status of an object <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bRendered</em>&nbsp;</td><td>Rendered or not this frame </td></tr>
+  </table>
+</dl>
 
 </div>
 </div><p>
