@@ -79,7 +79,7 @@
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING        "Smoothing"
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
 
-#define orxGRAPHIC_KZ_CENTERED_PIVOT          "centered"
+#define orxGRAPHIC_KZ_CENTERED_PIVOT          "center"
 #define orxGRAPHIC_KZ_TOP_PIVOT               "top"
 #define orxGRAPHIC_KZ_LEFT_PIVOT              "left"
 #define orxGRAPHIC_KZ_BOTTOM_PIVOT            "bottom"
@@ -357,29 +357,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
               pstResult->fHeight  = orxTexture_GetHeight(pstTexture);
             }
 
-            /* Uses centered pivot? */
-            if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT)), orxGRAPHIC_KZ_CENTERED_PIVOT) == 0)
-            {
-              orxVECTOR vSize;
-
-              /* Gets object size */
-              if(orxGraphic_GetSize(pstResult, &vSize) != orxNULL)
-              {
-                /* Inits pivot */
-                orxVector_Set(&vPivot, orx2F(0.5f) * vSize.fX, orx2F(0.5f) * vSize.fY, orxFLOAT_0);
-              }
-              else
-              {
-                /* Defaults pivot to origin */
-                orxVector_Copy(&vPivot, &orxVECTOR_0);
-              }
-
-              /* Updates it */
-              orxGraphic_SetPivot(pstResult, &vPivot);
-
-            }
             /* Gets pivot value */
-            else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) != orxNULL)
+            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) != orxNULL)
             {
               /* Updates it */
               orxGraphic_SetPivot(pstResult, &vPivot);
@@ -419,13 +398,13 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
                 u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM;
               }
 
-              /* Applies it */
-              orxGraphic_SetRelativePivot(pstResult, u32AlignmentFlags);
-            }
-            else
-            {
-              /* Clears pivot */
-              orxGraphic_SetPivot(pstResult, orxNULL);
+              /* Valid? */
+              if((u32AlignmentFlags != orxGRAPHIC_KU32_FLAG_ALIGN_CENTER)
+                || (orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_CENTERED_PIVOT) != orxNULL))
+              {
+                /* Applies it */
+                orxGraphic_SetRelativePivot(pstResult, u32AlignmentFlags);
+              }
             }
 
             /* Gets flipping value */
@@ -791,6 +770,9 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
       /* Updates y position */
       _pstGraphic->vPivot.fY = orx2F(0.5f) * fHeight;
     }
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_PIVOT, orxGRAPHIC_KU32_FLAG_NONE);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
