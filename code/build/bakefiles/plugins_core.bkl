@@ -78,6 +78,16 @@
     <if cond="FORMAT=='mingw'">sfml-graphics -lsfml-audio -lsfml-window -lsfml-system</if>
   </set>
 
+  <set var="orxSFMLLIB_PATH">
+    <if cond="FORMAT=='mingw'">-L../../../../extern/SFML_1.3/lib/mingw</if>
+    <if cond="FORMAT=='gnu'">-L../../../../extern/SFML_1.3/lib/linux</if>
+    <if cond="FORMAT=='autoconf'">-L../../../../extern/SFML_1.3/lib/linux</if>
+  </set>
+
+  <set var="orxSFMLINC_PATH">
+    -I../../../../extern/SFML_1.3/include
+  </set>
+
   <set var="orxSFMLLIB_MSVC">
     <if cond="COMPILER=='msvc'">sfml-graphics.lib sfml-audio.lib sfml-window.lib sfml-system.lib</if>
   </set>
@@ -89,8 +99,9 @@
 
   <!-- Define the module template -->
   <template id="orxSFML">
+    <cppflags>$(orxSFMLINC_PATH)</cppflags>
+    <ldflags>$(orxSFMLLIB_PATH)</ldflags>
     <ldflags>$(orxSFMLLIB_UNIX)</ldflags>
-
     <sys-lib>$(orxSFMLLIB_MINGW)</sys-lib>
     <ldflags>$(orxSFMLLIB_MSVC)</ldflags>
   </template>
@@ -105,6 +116,15 @@
     <if cond="COMPILER=='msvc'">Box2D.lib</if>
   </set>
 
+  <set var="orxBOX2DLIB_PATH">
+    <if cond="FORMAT=='mingw'">-L../../../../extern/Box2D_2.0.1/Orx/lib/mingw</if>
+    <if cond="FORMAT=='gnu'">-L../../../../extern/Box2D_2.0.1/Orx/lib/linux</if>
+    <if cond="FORMAT=='autoconf'">-L../../../../extern/Box2D_2.0.1/Orx/lib/linux</if>
+  </set>
+
+  <set var="orxBOX2DINC_PATH">
+    -I../../../../extern/Box2D_2.0.1/Orx/include
+  </set>
 
   <set var="orxBOX2DLIB_UNIX">
     <if cond="PLATFORM_UNIX=='1'">-lBox2D</if>
@@ -112,6 +132,8 @@
 
   <!-- Define the module template -->
   <template id="orxBOX2D">
+    <cppflags>$(orxBOX2DINC_PATH)</cppflags>
+    <ldflags>$(orxBOX2DLIB_PATH)</ldflags>
     <ldflags>$(orxBOX2DLIB_UNIX)</ldflags>
     <sys-lib>$(orxBOX2DLIB_MINGW)</sys-lib>
     <ldflags>$(orxBOX2DLIB_MSVC)</ldflags>
