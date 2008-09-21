@@ -99,6 +99,12 @@ extern orxDLLAPI orxSTRING              orxConfig_GetCurrentSection();
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(orxCONST orxSTRING _zSectionName);
 
+/** Clears section
+ * @param[in] _zSectionName     Section name to clear
+ */
+extern orxDLLAPI orxSTATUS              orxConfig_ClearSection(orxCONST orxSTRING _zSectionName);
+
+
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
