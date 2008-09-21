@@ -69,6 +69,7 @@
 #define orxCONFIG_KC_ASSIGN                 '='         /**< Assign character */
 #define orxCONFIG_KC_COMMENT                ';'         /**< Comment character */
 #define orxCONFIG_KC_RANDOM_SEPARATOR       '~'         /**< Random number separator character */
+#define orxCONFIG_KC_SECTION_SEPARATOR      '.'         /**< Section separator */
 #define orxCONFIG_KC_INHERITANCE_MARKER     '@'         /**< Inheritance marker character */
 #define orxCONFIG_KC_BLOCK                  '"'         /**< Block delimiter character */
 
@@ -229,16 +230,38 @@ orxSTATIC orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
     /* Has local inheritance? */
     if(*(pstEntry->stValue.zValue) == orxCONFIG_KC_INHERITANCE_MARKER)
     {
-      orxCONFIG_SECTION *pstPreviousSection;
+      orxCONFIG_SECTION  *pstPreviousSection;
+      orxS32              s32SeparatorIndex;
 
       /* Backups current section */
       pstPreviousSection = sstConfig.pstCurrentSection;
 
-      /* Selects parent section */
-      orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
+      /* Looks for inheritance index */
+      s32SeparatorIndex = orxString_SearchCharIndex(pstEntry->stValue.zValue, orxCONFIG_KC_SECTION_SEPARATOR, 0);
 
-      /* Gets its inherited value */
-      pstResult = orxConfig_GetValue(_u32KeyID);
+      /* Found? */
+      if(s32SeparatorIndex >= 0)
+      {
+        /* Cut the name */
+        *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCHAR_NULL;
+
+        /* Selects parent section */
+        orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
+
+        /* Gets its inherited value */
+        pstResult = orxConfig_GetValue(orxString_ToCRC(pstEntry->stValue.zValue + s32SeparatorIndex + 1));
+
+        /* Cut the name */
+        *(pstEntry->stValue.zValue + s32SeparatorIndex) = orxCONFIG_KC_SECTION_SEPARATOR;
+      }
+      else
+      {
+        /* Selects parent section */
+        orxConfig_SelectSection(pstEntry->stValue.zValue + 1);
+
+        /* Gets its inherited value */
+        pstResult = orxConfig_GetValue(_u32KeyID);
+      }
 
       /* Restores current section */
       sstConfig.pstCurrentSection = pstPreviousSection;
