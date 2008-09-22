@@ -46,6 +46,12 @@
 #include "memory/orxMemory.h"
 #include "math/orxVector.h"
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+#endif /* __orxMSVC__ */
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -56,8 +62,10 @@
 
 
 #define orxSTRING_KC_VECTOR_START       '{'
+#define orxSTRING_KC_VECTOR_START_ALT   '('
 #define orxSTRING_KC_VECTOR_SEPARATOR   ','
 #define orxSTRING_KC_VECTOR_END         '}'
+#define orxSTRING_KC_VECTOR_END_ALT     ')'
 
 
 /** Continues a CRC with a string one
@@ -91,7 +99,7 @@ orxSTATIC orxINLINE orxSTRING           orxString_SkipWhiteSpaces(orxCONST orxST
   orxASSERT(_zString != NULL);
 
   /* Skips all white spaces */
-  for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++);
+  for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++) ;
 
   /* Done! */
   return zResult;
@@ -474,7 +482,8 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _z
   zString = orxString_SkipWhiteSpaces(_zString);
 
   /* Is a vector start character? */
-  if(*zString == orxSTRING_KC_VECTOR_START)
+  if((*zString == orxSTRING_KC_VECTOR_START)
+  || (*zString == orxSTRING_KC_VECTOR_START_ALT))
   {
     /* Skips all white spaces */
     zString = orxString_SkipWhiteSpaces(zString + 1);
@@ -519,7 +528,8 @@ orxSTATIC orxINLINE orxSTATUS           orxString_ToVector(orxCONST orxSTRING _z
               zString = orxString_SkipWhiteSpaces(zString);
 
               /* Is not a vector end character? */
-              if(*zString != orxSTRING_KC_VECTOR_END)
+              if((*zString != orxSTRING_KC_VECTOR_END)
+              && (*zString != orxSTRING_KC_VECTOR_END_ALT))
               {
                 /* Updates result */
                 eResult = orxSTATUS_FAILURE;
@@ -785,6 +795,12 @@ orxSTATIC orxINLINE orxS32 orxCDECL orxString_Print(orxSTRING _zDstString, orxST
   /* Done! */
   return s32Result;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4996)
+
+#endif /* __orxMSVC__ */
 
 #endif /* _orxSTRING_H_ */
 

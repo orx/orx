@@ -99,7 +99,7 @@ orxSTATIC orxINLINE orxSTRING           orxString_SkipWhiteSpaces(orxCONST orxST
   orxASSERT(_zString != NULL);
 
   /* Skips all white spaces */
-  for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++);
+  for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++) ;
 
   /* Done! */
   return zResult;

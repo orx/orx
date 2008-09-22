@@ -461,7 +461,7 @@ extern "C" orxVOID orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
   orxASSERT(_pstBody != orxNULL);
 
   /* For all stored events */
-  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL), pstPreviousEventStorage = orxNULL;
+  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL), pstPreviousEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxNULL;
       pstEventStorage != orxNULL;
       pstPreviousEventStorage = pstEventStorage, pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, pstEventStorage))
   {
