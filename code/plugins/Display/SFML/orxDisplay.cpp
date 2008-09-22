@@ -883,7 +883,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
             ulStyle = sf::Style::Fullscreen;
           }
           /* Decoration? */
-          if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
+          else if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
           || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
           {
             /* Updates flags */
