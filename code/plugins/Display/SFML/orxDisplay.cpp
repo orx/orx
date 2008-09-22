@@ -882,10 +882,17 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
             /* Updates flags */
             ulStyle = sf::Style::Fullscreen;
           }
+          /* Decoration? */
+          if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
+          || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
+          {
+            /* Updates flags */
+            ulStyle = sf::Style::Close | sf::Style::Titlebar;
+          }
           else
           {
             /* Updates flags */
-            ulStyle = sf::Style::Close;
+            ulStyle = sf::Style::None;
           }
 
           /* Not valid? */
