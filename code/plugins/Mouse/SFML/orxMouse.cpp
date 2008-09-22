@@ -37,6 +37,7 @@ extern "C"
   #include "plugin/orxPluginUser.h"
   #include "plugin/orxPlugin.h"
 
+  #include "core/orxConfig.h"
   #include "core/orxEvent.h"
   #include "core/orxSystem.h"
   #include "io/orxMouse.h"
@@ -130,6 +131,27 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
   return eResult;
 }
 
+extern "C" orxSTATUS orxMouse_SFML_ShowCursor(orxBOOL _bShow)
+{
+  orxEVENT  stEvent;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
+
+  /* Inits event */
+  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+  stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed);
+  stEvent.eID         = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed);
+  stEvent.pstPayload  = (orxVOID *)&_bShow;
+
+  /* Sends system close event */
+  eResult = orxEvent_Send(&stEvent);
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxMouse_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -154,6 +176,16 @@ extern "C" orxSTATUS orxMouse_SFML_Init()
         {
           /* Updates status */
           sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
+
+          /* Sets config section */
+          orxConfig_SelectSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+          /* Has show cursor value? */
+          if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
+          {
+            /* Updates cursor status */
+            orxMouse_SFML_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
+          }
 
           /* Updates result */
           eResult = orxSTATUS_SUCCESS;
@@ -191,6 +223,27 @@ extern "C" orxVOID orxMouse_SFML_Exit()
   }
 
   return;
+}
+
+extern "C" orxSTATUS orxMouse_SFML_SetPosition(orxCONST orxVECTOR *_pvPosition)
+{
+  orxEVENT  stEvent;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
+
+  /* Inits event */
+  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+  stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved);
+  stEvent.eID         = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved);
+  stEvent.pstPayload  = (orxVOID *)_pvPosition;
+
+  /* Sends system close event */
+  eResult = orxEvent_Send(&stEvent);
+
+  /* Done! */
+  return eResult;
 }
 
 extern "C" orxVECTOR *orxMouse_SFML_GetPosition(orxVECTOR *_pvPosition)
@@ -297,8 +350,10 @@ extern "C" orxFLOAT orxMouse_SFML_GetWheelDelta()
 orxPLUGIN_USER_CORE_FUNCTION_START(MOUSE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_Init, MOUSE, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_Exit, MOUSE, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_SetPosition, MOUSE, SET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_GetPosition, MOUSE, GET_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_IsButtonPressed, MOUSE, IS_BUTTON_PRESSED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_GetMoveDelta, MOUSE, GET_MOVE_DELTA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_GetWheelDelta, MOUSE, GET_WHEEL_DELTA);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_SFML_ShowCursor, MOUSE, SHOW_CURSOR);
 orxPLUGIN_USER_CORE_FUNCTION_END();

@@ -40,6 +40,7 @@ orxVOID orxMouse_Setup()
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_DISPLAY);
+  orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_CONFIG);
 
   return;
 }
@@ -53,10 +54,12 @@ orxVOID orxMouse_Setup()
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Init, orxSTATUS, orxVOID);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, orxVOID, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_SetPosition, orxSTATUS, orxCONST orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetMoveDelta, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetWheelDelta, orxFLOAT, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_ShowCursor, orxSTATUS, orxBOOL);
 
 
 /* *** Core function info array *** */
@@ -65,10 +68,12 @@ orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(MOUSE)
 
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, INIT, orxMouse_Init)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, EXIT, orxMouse_Exit)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, SET_POSITION, orxMouse_SetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_POSITION, orxMouse_GetPosition)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, IS_BUTTON_PRESSED, orxMouse_IsButtonPressed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_MOVE_DELTA, orxMouse_GetMoveDelta)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, GET_WHEEL_DELTA, orxMouse_GetWheelDelta)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(MOUSE, SHOW_CURSOR, orxMouse_ShowCursor)
 
 orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
 
@@ -88,6 +93,15 @@ orxSTATUS orxMouse_Init()
 orxVOID orxMouse_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Exit)();
+}
+
+/** Sets mouse position
+* @param[in] _pvPosition  Mouse position
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+orxSTATUS orxMouse_SetPosition(orxCONST orxVECTOR *_pvPosition)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_SetPosition)(_pvPosition);
 }
 
 /** Gets mouse on screen position
@@ -123,4 +137,12 @@ orxVECTOR *orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta)
 orxFLOAT orxMouse_GetWheelDelta()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetWheelDelta)();
+}
+
+/** Shows mouse cursor
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+orxSTATUS orxMouse_ShowCursor(orxBOOL _bShow)
+{
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_ShowCursor)(_bShow);
 }

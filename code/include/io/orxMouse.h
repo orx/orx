@@ -60,6 +60,10 @@ typedef enum __orxMOUSE_BUTTON_t
 } orxMOUSE_BUTTON;
 
 
+#define orxMOUSE_KZ_CONFIG_SECTION      "Mouse"
+#define orxMOUSE_KZ_CONFIG_SHOW_CURSOR  "ShowCursor"
+
+
 /***************************************************************************
  * Functions directly implemented by orx core
  ***************************************************************************/
@@ -82,7 +86,13 @@ extern orxDLLAPI orxSTATUS    orxMouse_Init();
  */
 extern orxDLLAPI orxVOID      orxMouse_Exit();
 
-/** Gets mouse on screen position
+/** Sets mouse position
+* @param[in] _pvPosition  Mouse position
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+extern orxDLLAPI orxSTATUS    orxMouse_SetPosition(orxCONST orxVECTOR *_pvPosition);
+
+/** Gets mouse position
  * @param[out] _pvPosition  Mouse position
  * @return orxVECTOR / orxNULL
  */
@@ -104,6 +114,11 @@ extern orxDLLAPI orxVECTOR *  orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta);
  * @return Mouse wheel delta
  */
 extern orxDLLAPI orxFLOAT     orxMouse_GetWheelDelta();
+
+/** Shows mouse cursor
+* @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+*/
+extern orxDLLAPI orxSTATUS    orxMouse_ShowCursor(orxBOOL _bShow);
 
 #endif /* _orxMOUSE_H_ */
 
