@@ -68,6 +68,8 @@
 #define orxSOUND_KZ_CONFIG_LOOP                         "Loop"
 #define orxSOUND_KZ_CONFIG_PITCH                        "Pitch"
 #define orxSOUND_KZ_CONFIG_VOLUME                       "Volume"
+#define orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE           "RefDistance"
+#define orxSOUND_KZ_CONFIG_ATTENUATION                  "Attenuation"
 #define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepDataInCache"
 
 
@@ -496,6 +498,30 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           /* Updates volume */
           orxSoundSystem_SetPitch(pstResult->pstData, orxFLOAT_1);
         }
+
+        /* Has attenuation? */
+        if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_ATTENUATION) != orxFALSE)
+        {
+          /* Updates volume */
+          orxSoundSystem_SetAttenuation(pstResult->pstData, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_ATTENUATION));
+        }
+        else
+        {
+          /* Updates volume */
+          orxSoundSystem_SetAttenuation(pstResult->pstData, orxFLOAT_1);
+        }
+
+        /* Has reference distance? */
+        if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE) != orxFALSE)
+        {
+          /* Updates volume */
+          orxSoundSystem_SetReferenceDistance(pstResult->pstData, orxConfig_GetFloat(orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE));
+        }
+        else
+        {
+          /* Updates volume */
+          orxSoundSystem_SetReferenceDistance(pstResult->pstData, orxFLOAT_1);
+        }
       }
       else
       {
@@ -732,6 +758,46 @@ orxSTATUS orxFASTCALL orxSound_SetPosition(orxSOUND *_pstSound, orxCONST orxVECT
   return eResult;
 }
 
+/** Sets sound attenuation
+ * @param[in] _pstSound       Concerned Sound
+ * @param[in] _fAttenuation   Desired attenuation
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_SetAttenuation(orxSOUND *_pstSound, orxFLOAT _fAttenuation)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Sets its position */
+  eResult = orxSoundSystem_SetAttenuation(_pstSound->pstData, _fAttenuation);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets sound reference distance
+ * @param[in] _pstSound       Concerned Sound
+ * @param[in] _fDistance      Within this distance, sound is perceived at its maximum volume
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSound_SetReferenceDistance(orxSOUND *_pstSound, orxFLOAT _fDistance)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Sets its position */
+  eResult = orxSoundSystem_SetReferenceDistance(_pstSound->pstData, _fDistance);
+
+  /* Done! */
+  return eResult;
+}
+
 /** Loops sound
  * @param[in] _pstSound       Concerned Sound
  * @param[in] _bLoop          orxTRUE / orxFALSE
@@ -809,6 +875,44 @@ orxVECTOR *orxFASTCALL orxSound_GetPosition(orxCONST orxSOUND *_pstSound, orxVEC
 
   /* Done! */
   return pvResult;
+}
+
+/** Gets sound attenuation
+ * @param[in] _pstSound       Concerned Sound
+ * @return orxFLOAT
+ */
+orxFLOAT orxFASTCALL orxSound_GetAttenuation(orxCONST orxSOUND *_pstSound)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Updates result */
+  fResult = orxSoundSystem_GetAttenuation(_pstSound->pstData);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets sound reference distance
+ * @param[in] _pstSound       Concerned Sound
+ * @return orxFLOAT
+ */
+orxFLOAT orxFASTCALL orxSound_GetReferenceDistance(orxCONST orxSOUND *_pstSound)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSound);
+
+  /* Updates result */
+  fResult = orxSoundSystem_GetReferenceDistance(_pstSound->pstData);
+
+  /* Done! */
+  return fResult;
 }
 
 /** Is sound looping?

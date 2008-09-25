@@ -98,6 +98,9 @@ extern "C" orxSTATUS orxSoundSystem_SFML_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
 
+    /* Sets 2D listener target */
+    sf::Listener::SetTarget(0.0f, 0.0f, 1.0f);
+
     /* Updates status */
     orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
 
@@ -400,6 +403,54 @@ extern "C" orxSTATUS orxSoundSystem_SFML_SetPosition(orxSOUNDSYSTEM_SOUND *_pstS
   return eResult;
 }
 
+extern "C" orxSTATUS orxSoundSystem_SFML_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Is a music? */
+  if(_pstSound->bIsMusic != false)
+  {
+    /* Sets its volume */
+    _pstSound->poMusic->SetAttenuation(_fAttenuation);
+  }
+  else
+  {
+    /* Sets its volume */
+    _pstSound->poSound->SetAttenuation(_fAttenuation);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxSoundSystem_SFML_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Is a music? */
+  if(_pstSound->bIsMusic != false)
+  {
+    /* Sets its volume */
+    _pstSound->poMusic->SetMinDistance(_fDistance);
+  }
+  else
+  {
+    /* Sets its volume */
+    _pstSound->poSound->SetMinDistance(_fDistance);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxSoundSystem_SFML_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -499,6 +550,54 @@ extern "C" orxVECTOR *orxSoundSystem_SFML_GetPosition(orxCONST orxSOUNDSYSTEM_SO
 
   /* Done! */
   return pvResult;
+}
+
+extern "C" orxFLOAT orxSoundSystem_SFML_GetAttenuation(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Is a music? */
+  if(_pstSound->bIsMusic != false)
+  {
+    /* Gets its volume */
+    fResult = orx2F(_pstSound->poMusic->GetAttenuation());
+  }
+  else
+  {
+    /* Gets its volume */
+    fResult = orx2F(_pstSound->poSound->GetAttenuation());
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+extern "C" orxFLOAT orxSoundSystem_SFML_GetReferenceDistance(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstSound != orxNULL);
+
+  /* Is a music? */
+  if(_pstSound->bIsMusic != false)
+  {
+    /* Gets its volume */
+    fResult = orx2F(_pstSound->poMusic->GetMinDistance());
+  }
+  else
+  {
+    /* Gets its volume */
+    fResult = orx2F(_pstSound->poSound->GetMinDistance());
+  }
+
+  /* Done! */
+  return fResult;
 }
 
 extern "C" orxBOOL orxSoundSystem_SFML_IsLooping(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
@@ -625,6 +724,69 @@ extern "C" orxSOUNDSYSTEM_STATUS orxSoundSystem_SFML_GetStatus(orxCONST orxSOUND
   return eResult;
 }
 
+extern "C" orxSTATUS orxSoundSystem_SFML_SetGlobalVolume(orxFLOAT _fVolume)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  /* Updates listener volume */
+  sf::Listener::SetGlobalVolume(100.0f * _fVolume);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxFLOAT orxSoundSystem_SFML_GetGlobalVolume()
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+
+  /* Gets listener volume */
+  fResult = orx2F(sf::Listener::GetGlobalVolume());
+
+  /* Done! */
+  return fResult;
+}
+
+extern "C" orxSTATUS orxSoundSystem_SFML_SetListenerPosition(orxCONST orxVECTOR *_pvPosition)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Updates listener position */
+  sf::Listener::SetPosition(_pvPosition->fX, _pvPosition->fY, _pvPosition->fZ);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxVECTOR *orxSoundSystem_SFML_GetListenerPosition(orxVECTOR *_pvPosition)
+{
+  sf::Vector3f vPosition;
+  orxVECTOR    *pvResult;
+
+  /* Checks */
+  orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets listener position */
+  vPosition = sf::Listener::GetPosition();
+
+  /* Updates result */
+  pvResult = _pvPosition;
+  orxVector_Set(pvResult, vPosition.x, vPosition.y, vPosition.z);
+
+  /* Done! */
+  return pvResult;
+}
+
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -644,11 +806,19 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Stop, SOUNDSYSTEM, STOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetVolume, SOUNDSYSTEM, SET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetPitch, SOUNDSYSTEM, SET_PITCH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetPosition, SOUNDSYSTEM, SET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetAttenuation, SOUNDSYSTEM, SET_ATTENUATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetReferenceDistance, SOUNDSYSTEM, SET_REFERENCE_DISTANCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_Loop, SOUNDSYSTEM, LOOP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetVolume, SOUNDSYSTEM, GET_VOLUME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetPitch, SOUNDSYSTEM, GET_PITCH);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetPosition, SOUNDSYSTEM, GET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetAttenuation, SOUNDSYSTEM, GET_ATTENUATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetReferenceDistance, SOUNDSYSTEM, GET_REFERENCE_DISTANCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_IsLooping, SOUNDSYSTEM, IS_LOOPING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetDuration, SOUNDSYSTEM, GET_DURATION);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetStatus, SOUNDSYSTEM, GET_STATUS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetGlobalVolume, SOUNDSYSTEM, SET_GLOBAL_VOLUME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetGlobalVolume, SOUNDSYSTEM, GET_GLOBAL_VOLUME);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_SetListenerPosition, SOUNDSYSTEM, SET_LISTENER_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_SFML_GetListenerPosition, SOUNDSYSTEM, GET_LISTENER_POSITION);
 orxPLUGIN_USER_CORE_FUNCTION_END();

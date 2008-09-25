@@ -157,6 +157,20 @@ extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetPitch(or
  */
 extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, orxCONST orxVECTOR *_pvPosition);
 
+/** Sets a sound attenuation
+ * @param[in] _pstSound                               Concerned Sound
+ * @param[in] _fAttenuation                           Desired attenuation
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation);
+
+/** Sets a sound reference distance
+ * @param[in] _pstSound                               Concerned Sound
+ * @param[in] _fDistance                              Within this distance, sound is perceived at its maximum volume
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance);
+
 /** Loops a sound
  * @param[in]   _pstSound                             Concerned sound
  * @param[in]   _bLoop                                Loop / no loop
@@ -183,6 +197,18 @@ extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetPitch(or
  */
 extern orxDLLAPI orxVECTOR *                          orxSoundSystem_GetPosition(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition);
 
+/** Gets a sound attenuation
+ * @param[in] _pstSound                               Concerned Sound
+ * @return Sound's attenuation
+ */
+extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetAttenuation(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+
+/** Gets a sound reference distance
+ * @param[in] _pstSound                               Concerned Sound
+ * @return Sound's reference distance
+ */
+extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetReferenceDistance(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+
 /** Is sound looping?
  * @param[in]   _pstSound                             Concerned sound
  * @return orxTRUE if looping, orxFALSE otherwise
@@ -200,6 +226,29 @@ extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetDuration
  * @return orxSOUNDSYSTEM_STATUS
  */
 extern orxDLLAPI orxSOUNDSYSTEM_STATUS                orxSoundSystem_GetStatus(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+
+/** Sets global volume
+ * @param[in] _fVolume                                Volume to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetGlobalVolume(orxFLOAT _fGlobalVolume);
+
+/** Gets global volume
+ * @return Gobal volume
+ */
+extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetGlobalVolume();
+
+/** Sets listener position
+ * @param[in] _pvPosition                             Desired position
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetListenerPosition(orxCONST orxVECTOR *_pvPosition);
+
+/** Gets listener position
+ * @param[out] _pvPosition                            Listener's position
+ * @return orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *                          orxSoundSystem_GetListenerPosition(orxVECTOR *_pvPosition);
 
 #endif /* _orxSOUNDSYSTEM_H_ */
 

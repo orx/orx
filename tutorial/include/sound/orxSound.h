@@ -155,6 +155,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPitch(orxSOUND *_pstSo
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPosition(orxSOUND *_pstSound, orxCONST orxVECTOR *_pvPosition);
 
+/** Sets sound attenuation
+ * @param[in] _pstSound       Concerned Sound
+ * @param[in] _fAttenuation   Desired attenuation
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetAttenuation(orxSOUND *_pstSound, orxFLOAT _fAttenuation);
+
+/** Sets sound reference distance
+ * @param[in] _pstSound       Concerned Sound
+ * @param[in] _fDistance      Within this distance, sound is perceived at its maximum volume
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetReferenceDistance(orxSOUND *_pstSound, orxFLOAT _fDistance);
+
 /** Loops sound
  * @param[in] _pstSound       Concerned Sound
  * @param[in] _bLoop          orxTRUE / orxFALSE
@@ -181,6 +195,18 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetPitch(orxCONST orxSOUN
  * @return orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxSound_GetPosition(orxCONST orxSOUND *_pstSound, orxVECTOR *_pvPosition);
+
+/** Gets sound attenuation
+ * @param[in] _pstSound       Concerned Sound
+ * @return orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetAttenuation(orxCONST orxSOUND *_pstSound);
+
+/** Gets sound reference distance
+ * @param[in] _pstSound       Concerned Sound
+ * @return orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetReferenceDistance(orxCONST orxSOUND *_pstSound);
 
 /** Is sound looping?
  * @param[in] _pstSound       Concerned Sound

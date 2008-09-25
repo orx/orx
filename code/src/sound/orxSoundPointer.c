@@ -201,6 +201,13 @@ orxSTATIC orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructu
           /* Removes it */
           orxSoundPointer_RemoveSound(pstSoundPointer, pstSound);
         }
+        else
+        {
+          orxVECTOR vPosition;
+
+          /* Updates its position */
+          orxSound_SetPosition(pstSound, orxObject_GetWorldPosition(pstObject, &vPosition));
+        }
       }
     }
   }
