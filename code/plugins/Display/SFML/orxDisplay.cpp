@@ -332,9 +332,6 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
   /* Clears text bank */
   orxBank_Clear(sstDisplay.pstTextBank);
 
-  /* Displays render window */
-  sstDisplay.poRenderWindow->Display();
-
   /* Handles all pending events */
   while(sstDisplay.poRenderWindow->GetEvent(oEvent))
   {
@@ -410,6 +407,9 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
       }
     }
   }
+
+  /* Displays render window */
+  sstDisplay.poRenderWindow->Display();
 
   /* Done! */
   return eResult;

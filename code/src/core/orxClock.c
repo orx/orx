@@ -37,6 +37,7 @@
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
 #include "math/orxMath.h"
+#include "utils/orxLinkList.h"
 
 
 /** Module flags
@@ -67,11 +68,13 @@
  */
 typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 {
-  orxCLOCK_FUNCTION pfnCallback;                /**< Clock function pointer : 4 */
-  orxVOID          *pstContext;                 /**< Clock function context : 8 */
-  orxMODULE_ID      eModuleID;                  /**< Clock function module ID : 12 */
+  orxLINKLIST_NODE            stNode;           /**< Linklist node : 12 */
+  orxCLOCK_FUNCTION           pfnCallback;      /**< Clock function pointer : 16 */
+  orxVOID                    *pstContext;       /**< Clock function context : 20 */
+  orxMODULE_ID                eModuleID;        /**< Clock function module ID : 24 */
+  orxCLOCK_FUNCTION_PRIORITY  ePriority;        /**< Clock function priority : 28 */
 
-  orxPAD(12)
+  orxPAD(28)
 
 } orxCLOCK_FUNCTION_STORAGE;
 
@@ -82,10 +85,11 @@ struct __orxCLOCK_t
   orxCLOCK_INFO stClockInfo;                    /**< Clock Info Structure : 24 */
   orxFLOAT      fRealTime;                      /**< Clock real time : 28 */
   orxFLOAT      fLastTick;                      /**< Clock last tick : 32 */
-  orxBANK      *pstFunctionBank;                /**< Callback bank : 36 */
-  orxU32        u32Flags;                       /**< Clock flags : 40 */
+  orxLINKLIST   stFunctionList;                 /**< Function list : 44 */
+  orxBANK      *pstFunctionBank;                /**< Function bank : 48 */
+  orxU32        u32Flags;                       /**< Clock flags : 52 */
 
-  orxPAD(40)
+  orxPAD(52)
 };
 
 
@@ -130,9 +134,9 @@ orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxC
   orxASSERT(_pfnCallback != orxNULL);
 
   /* Finds matching function storage */
-  for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(_pstClock->pstFunctionBank, orxNULL);
+  for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stFunctionList));
       pstFunctionStorage != orxNULL;
-      pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(_pstClock->pstFunctionBank, pstFunctionStorage))
+      pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
   {
     /* Match? */
     if(pstFunctionStorage->pfnCallback == _pfnCallback)
@@ -257,6 +261,7 @@ orxVOID orxClock_Setup()
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_SYSTEM);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_LINKLIST);
 
   return;
 }
@@ -404,9 +409,9 @@ orxSTATUS orxClock_Update()
           pstClock->stClockInfo.fTime += fClockDT;
 
           /* For all registered callbacks */
-          for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, orxNULL);
+          for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(pstClock->stFunctionList));
               pstFunctionStorage != orxNULL;
-              pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxBank_GetNext(pstClock->pstFunctionBank, pstFunctionStorage))
+              pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
           {
             /* Calls it */
             pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
@@ -620,10 +625,11 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYP
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Callback to register
  * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
- * @param[in]   _eModuleID                            IF of the module related to this callback
+ * @param[in]   _eModuleID                            ID of the module related to this callback
+ * @param[in]   _ePriority                            Priority for the function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID)
+orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_FUNCTION_PRIORITY _ePriority)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -639,6 +645,32 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
   /* Valid? */
   if(pstFunctionStorage != orxNULL)
   {
+    orxCLOCK_FUNCTION_STORAGE *pstRefFunctionStorage;
+
+    /* Finds correct index */
+    for(pstRefFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stFunctionList));
+        pstRefFunctionStorage != orxNULL;
+        pstRefFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstRefFunctionStorage->stNode)))
+    {
+      /* Higher priority */
+      if(_ePriority > pstRefFunctionStorage->ePriority)
+      {
+        /* Stores it */
+        orxLinkList_AddBefore(&(pstRefFunctionStorage->stNode), &(pstFunctionStorage->stNode));
+        pstFunctionStorage->ePriority = _ePriority;
+
+        break;
+      }
+    }
+
+    /* No index found? */
+    if(pstRefFunctionStorage == orxNULL)
+    {
+      /* Stores it at the end */
+      orxLinkList_AddEnd(&(_pstClock->stFunctionList), &(pstFunctionStorage->stNode));
+      pstFunctionStorage->ePriority = _ePriority;
+    }
+
     /* Stores callback */
     pstFunctionStorage->pfnCallback = _pfnCallback;
 
@@ -682,7 +714,10 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK
   /* Found? */
   if(pstFunctionStorage != orxNULL)
   {
-    /* Removes storage from bank */
+    /* Removes it from list */
+    orxLinkList_Remove(&(pstFunctionStorage->stNode));
+
+    /* Removes it from bank */
     orxBank_Free(_pstClock->pstFunctionBank, pstFunctionStorage);
   }
   else

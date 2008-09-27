@@ -262,7 +262,7 @@ orxSTATUS Init()
   orxSound_Play(pstMusic);
 
   /* Registers our update callback */
-  orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN);
+  orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_FUNCTION_PRIORITY_NORMAL);
 
   /* Registers event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_SOUND, EventHandler);

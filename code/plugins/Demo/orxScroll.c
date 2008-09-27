@@ -190,7 +190,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);
 
     /* Registers update function */
-    eResult = orxClock_Register(pstClock, orxScroll_Update, orxNULL, orxMODULE_ID_MAIN);
+    eResult = orxClock_Register(pstClock, orxScroll_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_FUNCTION_PRIORITY_NORMAL);
   }
 
   /* Done! */

@@ -167,8 +167,8 @@ orxSTATUS Init()
    * The module ID is used to skip the call to this callback if the corresponding module
    * is either not loaded or paused, which won't happen in this tutorial.
    */
-  orxClock_Register(pstClock1, Update, pstObject1, orxMODULE_ID_MAIN);
-  orxClock_Register(pstClock2, Update, pstObject2, orxMODULE_ID_MAIN);
+  orxClock_Register(pstClock1, Update, pstObject1, orxMODULE_ID_MAIN, orxCLOCK_FUNCTION_PRIORITY_NORMAL);
+  orxClock_Register(pstClock2, Update, pstObject2, orxMODULE_ID_MAIN, orxCLOCK_FUNCTION_PRIORITY_NORMAL);
 
   /* Done! */
   return orxSTATUS_SUCCESS;

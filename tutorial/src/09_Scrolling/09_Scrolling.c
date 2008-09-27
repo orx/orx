@@ -198,7 +198,7 @@ orxSTATUS Init()
   pstClock = orxClock_Create(orx2F(0.01f), orxCLOCK_TYPE_USER);
 
   /* Registers our update callback */
-  orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN);
+  orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_FUNCTION_PRIORITY_NORMAL);
 
   /* Creates sky */
   pstSky = orxObject_CreateFromConfig("Sky");
