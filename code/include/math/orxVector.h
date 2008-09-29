@@ -785,8 +785,7 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_2DDot(orxCONST orxVECTOR
  */
 orxSTATIC orxINLINE orxVECTOR *               orxVector_Cross(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
 {
-  orxFLOAT    fTemp1, fTemp2;
-  orxVECTOR  *pvResult = _pvRes;
+  orxFLOAT fTemp1, fTemp2;
 
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -794,14 +793,14 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Cross(orxVECTOR *_pvRes,
   orxASSERT(_pvOp2  != orxNULL);
 
   /* Computes cross product */
-  fTemp1        = (_pvOp1->fY * _pvOp2->fZ) - (_pvOp1->fZ * _pvOp2->fY);
-  fTemp2        = (_pvOp1->fZ * _pvOp2->fX) - (_pvOp1->fX * _pvOp2->fZ);
-  pvResult->fZ  = (_pvOp1->fX * _pvOp2->fY) - (_pvOp1->fY * _pvOp2->fX);
-  pvResult->fY  = fTemp2;
-  pvResult->fX  = fTemp1;
+  fTemp1      = (_pvOp1->fY * _pvOp2->fZ) - (_pvOp1->fZ * _pvOp2->fY);
+  fTemp2      = (_pvOp1->fZ * _pvOp2->fX) - (_pvOp1->fX * _pvOp2->fZ);
+  _pvRes->fZ  = (_pvOp1->fX * _pvOp2->fY) - (_pvOp1->fY * _pvOp2->fX);
+  _pvRes->fY  = fTemp2;
+  _pvRes->fX  = fTemp1;
 
   /* Done! */
-  return pvResult;
+  return _pvRes;
 }
 
 
@@ -830,8 +829,6 @@ extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_WHITE;  /**< White color vector */
  */
 orxSTATIC orxINLINE orxAABOX *                orxAABox_Reorder(orxAABOX *_pstBox)
 {
-  orxAABOX *pstResult = _pstBox;
-
   /* Checks */
   orxASSERT(_pstBox != orxNULL);
 
@@ -859,7 +856,7 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Reorder(orxAABOX *_pstBox
   }
 
   /* Done! */
-  return pstResult;
+  return _pstBox;
 }
 
 /** Sets axis aligned box values
@@ -870,22 +867,20 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Reorder(orxAABOX *_pstBox
  */
 orxSTATIC orxINLINE orxAABOX *                orxAABox_Set(orxAABOX *_pstRes, orxCONST orxVECTOR *_pvTL, orxCONST orxVECTOR *_pvBR)
 {
-  orxAABOX *pstResult = _pstRes;
-
   /* Checks */
   orxASSERT(_pstRes != orxNULL);
   orxASSERT(_pvTL != orxNULL);
   orxASSERT(_pvBR != orxNULL);
 
   /* Sets values */
-  orxVector_Copy(&(pstResult->vTL), _pvTL);
-  orxVector_Copy(&(pstResult->vBR), _pvBR);
+  orxVector_Copy(&(_pstRes->vTL), _pvTL);
+  orxVector_Copy(&(_pstRes->vBR), _pvBR);
 
   /* Reorders corners */
-  orxAABox_Reorder(pstResult);
+  orxAABox_Reorder(_pstRes);
 
   /* Done! */
-  return pstResult;
+  return _pstRes;
 }
 
 /** Tests axis aligned box intersection
@@ -954,7 +949,7 @@ orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCON
 }
 
 /** Copies an AABox onto another one
- * @param[in]   _pstDst                       AABox to copy to (destination)
+ * @param[out]   _pstDst                      AABox to copy to (destination)
  * @param[in]   _pstSrc                       AABox to copy from (destination)
  * @return      Destination AABox
  */
@@ -971,7 +966,7 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, o
   return _pstDst;
 }
 
-/** Gets AABox center poisition
+/** Gets AABox center position
  * @param[in]   _pstOp                        Concerned AABox
  * @param[out]  _pvRes                        Center position
  * @return      Center position vector
@@ -1005,7 +1000,6 @@ orxSTATIC orxINLINE orxVECTOR *               orxAABox_GetCenter(orxCONST orxAAB
 orxSTATIC orxOBOX *orxFASTCALL                orxOBox_2DSet(orxOBOX *_pstRes, orxCONST orxVECTOR *_pvWorldOrigin, orxCONST orxVECTOR *_pvPivot, orxCONST orxVECTOR *_pvSize, orxFLOAT _fAngle)
 {
   orxFLOAT fCos, fSin;
-  orxOBOX *pstResult = _pstRes;
 
   /* Checks */
   orxASSERT(_pstRes != orxNULL);
@@ -1017,17 +1011,53 @@ orxSTATIC orxOBOX *orxFASTCALL                orxOBox_2DSet(orxOBOX *_pstRes, or
   fSin = orxMath_Sin(_fAngle);
 
   /* Sets axis */
-  orxVector_Set(&(pstResult->vX), fCos * _pvSize->fX, fSin * _pvSize->fX, orxFLOAT_0);
-  orxVector_Set(&(pstResult->vY), -fSin * _pvSize->fY, fCos * _pvSize->fY, orxFLOAT_0);
-  orxVector_Set(&(pstResult->vZ), orxFLOAT_0, orxFLOAT_0, _pvSize->fZ);
+  orxVector_Set(&(_pstRes->vX), fCos * _pvSize->fX, fSin * _pvSize->fX, orxFLOAT_0);
+  orxVector_Set(&(_pstRes->vY), -fSin * _pvSize->fY, fCos * _pvSize->fY, orxFLOAT_0);
+  orxVector_Set(&(_pstRes->vZ), orxFLOAT_0, orxFLOAT_0, _pvSize->fZ);
 
   /* Gets box origin */
-  pstResult->vOrigin.fX = _pvWorldOrigin->fX - pstResult->vX.fX - pstResult->vY.fX;
-  pstResult->vOrigin.fY = _pvWorldOrigin->fY - pstResult->vX.fY - pstResult->vY.fY;
-  pstResult->vOrigin.fZ = _pvWorldOrigin->fZ;
+  orxVector_Set(&(_pstRes->vOrigin), _pvWorldOrigin->fX - _pstRes->vX.fX - _pstRes->vY.fX, _pvWorldOrigin->fY - _pstRes->vX.fY - _pstRes->vY.fY, _pvWorldOrigin->fZ);
 
   /* Done! */
-  return pstResult;
+  return _pstRes;
+}
+
+/** Copies an OBox onto another one
+ * @param[out]  _pstDst                       OBox to copy to (destination)
+ * @param[in]   _pstSrc                       OBox to copy from (destination)
+ * @return      Destination OBox
+ */
+orxSTATIC orxINLINE orxOBOX *                 orxOBox_Copy(orxOBOX *_pstDst, orxCONST orxOBOX *_pstSrc)
+{
+  /* Checks */
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT(_pstSrc != orxNULL);
+
+  /* Copies it */
+  orxMemory_Copy(_pstDst, _pstSrc, sizeof(orxOBOX));
+
+  /* Done! */
+  return _pstDst;
+}
+
+/** Gets OBox center position
+ * @param[in]   _pstOp                        Concerned OBox
+ * @param[out]  _pvRes                        Center position
+ * @return      Center position vector
+ */
+orxSTATIC orxINLINE orxVECTOR *               orxOBox_GetCenter(orxCONST orxOBOX *_pstOp, orxVECTOR *_pvRes)
+{
+  /* Checks */
+  orxASSERT(_pstOp != orxNULL);
+  orxASSERT(_pvRes != orxNULL);
+
+  /* Gets box center */
+  orxVector_Add(_pvRes, orxVector_Add(_pvRes, &(_pstOp->vX), &(_pstOp->vY)), &(_pstOp->vZ));
+  orxVector_Mulf(_pvRes, _pvRes, orx2F(0.5f));
+  orxVector_Add(_pvRes, _pvRes, &(_pstOp->vOrigin));
+
+  /* Done! */
+  return _pvRes;
 }
 
 #endif /* _orxVECTOR_H_ */
