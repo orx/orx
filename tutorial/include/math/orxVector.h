@@ -966,6 +966,27 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, o
   return _pstDst;
 }
 
+/** Moves an AABox
+ * @param[out]  _pstRes                       AABox where to store result
+ * @param[in]   _pstOp                        AABox to move
+ * @param[in]   _pvMove                       Move vector
+ * @return      Moved AABox
+ */
+orxSTATIC orxINLINE orxAABOX *                orxAABox_Move(orxAABOX *_pstRes, orxCONST orxAABOX *_pstOp, orxCONST orxVECTOR *_pvMove)
+{
+  /* Checks */
+  orxASSERT(_pstRes != orxNULL);
+  orxASSERT(_pstOp != orxNULL);
+  orxASSERT(_pvMove != orxNULL);
+
+  /* Updates result */
+  orxVector_Add(&(_pstRes->vTL), &(_pstOp->vTL), _pvMove);
+  orxVector_Add(&(_pstRes->vBR), &(_pstOp->vBR), _pvMove);
+
+  /* Done! */
+  return _pstRes;
+}
+
 /** Gets AABox center position
  * @param[in]   _pstOp                        Concerned AABox
  * @param[out]  _pvRes                        Center position
@@ -1058,6 +1079,52 @@ orxSTATIC orxINLINE orxVECTOR *               orxOBox_GetCenter(orxCONST orxOBOX
 
   /* Done! */
   return _pvRes;
+}
+
+/** Moves an OBox
+ * @param[out]  _pstRes                       OBox where to store result
+ * @param[in]   _pstOp                        OBox to move
+ * @param[in]   _pvMove                       Move vector
+ * @return      Moved OBox
+ */
+orxSTATIC orxINLINE orxOBOX *                 orxOBox_Move(orxOBOX *_pstRes, orxCONST orxOBOX *_pstOp, orxCONST orxVECTOR *_pvMove)
+{
+  /* Checks */
+  orxASSERT(_pstRes != orxNULL);
+  orxASSERT(_pstOp != orxNULL);
+  orxASSERT(_pvMove != orxNULL);
+
+  /* Updates result */
+  orxVector_Add(&(_pstRes->vOrigin), &(_pstOp->vOrigin), _pvMove);
+
+  /* Done! */
+  return _pstRes;
+}
+
+/** Rotates in 2D an OBox
+ * @param[out]  _pstRes                       OBox where to store result
+ * @param[in]   _pstOp                        OBox to rotate (its Z-axis vector will be unchanged)
+ * @param[in]   _fAngle                       Z-axis rotation angle
+ * @return      Rotated OBox
+ */
+orxSTATIC orxINLINE orxOBOX *                 orxOBox_2DRotate(orxOBOX *_pstRes, orxCONST orxOBOX *_pstOp, orxFLOAT _fAngle)
+{
+  orxREGISTER orxFLOAT fSin, fCos;
+
+  /* Checks */
+  orxASSERT(_pstRes != orxNULL);
+  orxASSERT(_pstOp != orxNULL);
+
+  /* Gets cos & sin of angle */
+  fCos = orxMath_Cos(_fAngle);
+  fSin = orxMath_Sin(_fAngle);
+
+  /* Updates axis */
+  orxVector_Set(&(_pstRes->vX), (fCos * _pstRes->vX.fX) - (fSin * _pstRes->vX.fY), (fSin * _pstRes->vX.fX) + (fCos * _pstRes->vX.fY), _pstRes->vX.fZ);
+  orxVector_Set(&(_pstRes->vY), (fCos * _pstRes->vY.fX) - (fSin * _pstRes->vY.fY), (fSin * _pstRes->vY.fX) + (fCos * _pstRes->vY.fY), _pstRes->vY.fZ);
+
+  /* Done! */
+  return _pstRes;
 }
 
 #endif /* _orxVECTOR_H_ */
