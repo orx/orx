@@ -117,6 +117,22 @@ typedef struct __orxCLOCK_INFO_t
 } orxCLOCK_INFO;
 
 
+/** Event enum
+ */
+typedef enum __orxCLOCK_EVENT_t
+{
+  orxCLOCK_EVENT_RESTART = 0,                         /**< Event sent when a clock restarts */
+  orxCLOCK_EVENT_RESYNC,                              /**< Event sent when a clock recyncs */
+  orxCLOCK_EVENT_PAUSE,                               /**< Event sent when a clock is paused */
+  orxCLOCK_EVENT_UNPAUSE,                             /**< Event sent when a clock is unpaused */
+
+  orxCLOCK_EVENT_NUMBER,
+
+  orxCLOCK_EVENT_NONE = orxENUM_NONE
+
+} orxCLOCK_EVENT;
+
+
 /** Clock structure */
 typedef struct __orxCLOCK_t                           orxCLOCK;
 
@@ -156,16 +172,30 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Delete(orxCLOCK *_pstClock);
 
 /** Resyncs a clock (accumulated DT => 0)
+ * @param[in]   _pstClock                             Concerned clock
  */
-extern orxDLLAPI orxVOID                              orxClock_Resync();
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Resync(orxCLOCK *_pstClock);
+
+/** Resyncs all clocks (accumulated DT => 0)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS                            orxClock_ResyncAll();
+
+/** Restarts a clock
+ * @param[in]   _pstClock                             Concerned clock
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Restart(orxCLOCK *_pstClock);
 
 /** Pauses a clock
  * @param[in]   _pstClock                             Concerned clock
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Pause(orxCLOCK *_pstClock);
 
 /** Unpauses a clock
  * @param[in]   _pstClock                             Concerned clock
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Unpause(orxCLOCK *_pstClock);
 

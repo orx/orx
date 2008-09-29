@@ -34,6 +34,7 @@
 #include "core/orxClock.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxEvent.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
 #include "math/orxMath.h"
@@ -83,13 +84,12 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 struct __orxCLOCK_t
 {
   orxCLOCK_INFO stClockInfo;                    /**< Clock Info Structure : 24 */
-  orxFLOAT      fRealTime;                      /**< Clock real time : 28 */
-  orxFLOAT      fLastTick;                      /**< Clock last tick : 32 */
+  orxFLOAT      fPartialDT;                     /**< Clock partial DT : 28 */
+  orxBANK      *pstFunctionBank;                /**< Function bank : 32 */
   orxLINKLIST   stFunctionList;                 /**< Function list : 44 */
-  orxBANK      *pstFunctionBank;                /**< Function bank : 48 */
-  orxU32        u32Flags;                       /**< Clock flags : 52 */
+  orxU32        u32Flags;                       /**< Clock flags : 48 */
 
-  orxPAD(52)
+  orxPAD(48)
 };
 
 
@@ -262,6 +262,7 @@ orxVOID orxClock_Setup()
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_SYSTEM);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_LINKLIST);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_EVENT);
 
   return;
 }
@@ -383,24 +384,21 @@ orxSTATUS orxClock_Update()
         pstClock != orxNULL;
         pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
     {
-      orxFLOAT fClockDT, fDiff;
+      orxFLOAT fClockDT;
 
       /* Is clock not paused? */
       if(orxClock_IsPaused(pstClock) == orxFALSE)
       {
-        /* Updates clock real time */
-        pstClock->fRealTime += fDT;
-
-        /* Gets time diff since last tick */
-        fDiff = pstClock->fRealTime - pstClock->fLastTick;
+        /* Updates clock real time & partial DT */
+        pstClock->fPartialDT += fDT;
 
         /* New tick happens? */
-        if(fDiff >= pstClock->stClockInfo.fTickSize)
+        if(pstClock->fPartialDT >= pstClock->stClockInfo.fTickSize)
         {
           orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
 
           /* Gets clock modified DT */
-          fClockDT = orxClock_ComputeDT(fDiff, &(pstClock->stClockInfo));
+          fClockDT = orxClock_ComputeDT(pstClock->fPartialDT, &(pstClock->stClockInfo));
 
           /* Updates clock DT */
           pstClock->stClockInfo.fDT = fClockDT;
@@ -417,8 +415,8 @@ orxSTATUS orxClock_Update()
             pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pstContext);
           }
 
-          /* Updates last tick time stamp */
-          pstClock->fLastTick = pstClock->fRealTime;
+          /* Updates partial DT */
+          pstClock->fPartialDT = orxFLOAT_0;
         }
       }
     }
@@ -510,28 +508,121 @@ orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 }
 
 /** Resyncs a clock (accumulated DT => 0)
+ * @param[in]   _pstClock                             Concerned clock
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxVOID orxClock_Resync()
+orxSTATUS orxFASTCALL orxClock_Resync(orxCLOCK *_pstClock)
 {
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstClock != orxNULL);
+
+  /* Not locked? */
+  if(!orxFLAG_TEST(sstClock.u32Flags, orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
+  {
+    orxEVENT stEvent;
+
+    /* Inits event */
+    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+    stEvent.eType       = orxEVENT_TYPE_CLOCK;
+    stEvent.eID         = orxCLOCK_EVENT_RESYNC;
+    stEvent.hSender     = (orxHANDLE)(_pstClock);
+
+    /* Sends it */
+    orxEvent_Send(&stEvent);
+
+    /* Resyncs clock */
+    _pstClock->fPartialDT = orxFLOAT_0;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't resync this clock <%P> as it's currenlty locked/in use.", _pstClock);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Resyncs all clocks (accumulated DT => 0)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxClock_ResyncAll()
+{
+  orxCLOCK *pstClock;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
 
-  /* Not locked? */
-  if((sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK) == orxCLOCK_KU32_CLOCK_FLAG_NONE)
+  /* For all clocks */
+  for(pstClock = orxBank_GetNext(sstClock.pstClockBank, orxNULL);
+      pstClock != orxNULL;
+      pstClock = orxBank_GetNext(sstClock.pstClockBank, pstClock))
   {
-    orxCLOCK *pstClock;
-
-    /* For all clocks */
-    for(pstClock = orxBank_GetNext(sstClock.pstClockBank, orxNULL);
-        pstClock != orxNULL;
-        pstClock = orxBank_GetNext(sstClock.pstClockBank, pstClock))
-    {
-      /* Resyncs clock time & real time */
-      pstClock->fLastTick = pstClock->fRealTime = sstClock.fTime;
+    /* Not already failed? */
+    if(eResult != orxSTATUS_FAILURE)
+    {    
+      /* Resyncs clock */
+      eResult = orxClock_Resync(pstClock);
     }
   }
 
-  return;
+  /* Done! */
+  return eResult;
+}
+
+/** Restarts a clock
+ * @param[in]   _pstClock                             Concerned clock
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstClock != orxNULL);
+
+  /* Not locked? */
+  if(!orxFLAG_TEST(sstClock.u32Flags, orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
+  {
+    orxEVENT stEvent;
+
+    /* Inits event */
+    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+    stEvent.eType       = orxEVENT_TYPE_CLOCK;
+    stEvent.eID         = orxCLOCK_EVENT_RESTART;
+    stEvent.hSender     = (orxHANDLE)(_pstClock);
+
+    /* Sends it */
+    orxEvent_Send(&stEvent);
+
+    /* Restarts clock */
+    _pstClock->stClockInfo.fTime = _pstClock->stClockInfo.fDT = _pstClock->fPartialDT = orxFLOAT_0;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't restart this clock <%P> as it's currenlty locked/in use.", _pstClock);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Pauses a clock
@@ -539,9 +630,20 @@ orxVOID orxClock_Resync()
  */
 orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
 {
+  orxEVENT stEvent;
+
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
+
+  /* Inits event */
+  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+  stEvent.eType       = orxEVENT_TYPE_CLOCK;
+  stEvent.eID         = orxCLOCK_EVENT_PAUSE;
+  stEvent.hSender     = (orxHANDLE)(_pstClock);
+
+  /* Sends it */
+  orxEvent_Send(&stEvent);
 
   /* Updates clock flags */
   _pstClock->u32Flags |= orxCLOCK_KU32_CLOCK_FLAG_PAUSED;
@@ -554,9 +656,20 @@ orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
  */
 orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
 {
+  orxEVENT stEvent;
+
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
+
+  /* Inits event */
+  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+  stEvent.eType       = orxEVENT_TYPE_CLOCK;
+  stEvent.eID         = orxCLOCK_EVENT_UNPAUSE;
+  stEvent.hSender     = (orxHANDLE)(_pstClock);
+
+  /* Sends it */
+  orxEvent_Send(&stEvent);
 
   /* Updates clock flags */
   _pstClock->u32Flags &= ~orxCLOCK_KU32_CLOCK_FLAG_PAUSED;

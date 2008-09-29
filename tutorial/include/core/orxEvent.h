@@ -48,6 +48,7 @@ typedef enum __orxEVENT_TYPE_t
 {
   orxEVENT_TYPE_SYSTEM = 0,
   orxEVENT_TYPE_ANIM,
+  orxEVENT_TYPE_CLOCK,
   orxEVENT_TYPE_FX,
   orxEVENT_TYPE_OBJECT,
   orxEVENT_TYPE_RENDER,

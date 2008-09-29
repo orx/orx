@@ -995,7 +995,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       }
 
       /* Resyncs clocks */
-      orxClock_Resync();
+      orxClock_ResyncAll();
 
       /* Valid? */
       if(sstPhysics.pstClock != orxNULL)

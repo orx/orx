@@ -417,6 +417,20 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_clock.html#geaddca772571521857434876f61aea0e">orxClock.h</a>
 <li>orxClock_Delete()
 : <a class="el" href="group__orx_clock.html#g850bafdcd53b999f1aa39bb2471da5c6">orxClock.h</a>
+<li>orxCLOCK_EVENT
+: <a class="el" href="group__orx_clock.html#g5d61e2fc9dcad950bc23ff7a5525791d">orxClock.h</a>
+<li>orxCLOCK_EVENT_NONE
+: <a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791dd2c2a028497b40243a3d52eb20f4b0fa">orxClock.h</a>
+<li>orxCLOCK_EVENT_NUMBER
+: <a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791d50713812454a2a348fa091d04a64ee35">orxClock.h</a>
+<li>orxCLOCK_EVENT_PAUSE
+: <a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791d2f29c49771425564483dece719f38a05">orxClock.h</a>
+<li>orxCLOCK_EVENT_RESTART
+: <a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791d41630991614af985a9d377a1e90cdc35">orxClock.h</a>
+<li>orxCLOCK_EVENT_RESYNC
+: <a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791d9148967775d49709621a41aa3c4efe97">orxClock.h</a>
+<li>orxCLOCK_EVENT_UNPAUSE
+: <a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791dddd9902df89d032e193f2de1c8da0c0f">orxClock.h</a>
 <li>orxClock_Exit()
 : <a class="el" href="group__orx_clock.html#g4bb34ed722d6eb9853ccacf2a59f3f05">orxClock.h</a>
 <li>orxClock_FindFirst()
@@ -475,8 +489,12 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_clock.html#ge1d4c920cfaccd3ba425910068fd3ebb">orxClock.h</a>
 <li>orxClock_Register()
 : <a class="el" href="group__orx_clock.html#g9b814d3a9479508daa5dcc44e55224d5">orxClock.h</a>
+<li>orxClock_Restart()
+: <a class="el" href="group__orx_clock.html#gb38bde2b21dca84dd29ef4c60531edb9">orxClock.h</a>
 <li>orxClock_Resync()
-: <a class="el" href="group__orx_clock.html#g7cbbad615915691b887b3db35c0e044c">orxClock.h</a>
+: <a class="el" href="group__orx_clock.html#g646ec2e3a995507a81f71e7ee602458e">orxClock.h</a>
+<li>orxClock_ResyncAll()
+: <a class="el" href="group__orx_clock.html#gddb51a1395d7e82e04595c145466b7d3">orxClock.h</a>
 <li>orxClock_SetContext()
 : <a class="el" href="group__orx_clock.html#g59a4cceade3c319791aaa1a5cb0b6984">orxClock.h</a>
 <li>orxClock_SetModifier()
@@ -771,6 +789,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEvent.h</a>
 <li>orxEVENT_TYPE_ANIM
 : <a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd830fb817733e3b2e80de4040437fc1f0a">orxEvent.h</a>
+<li>orxEVENT_TYPE_CLOCK
+: <a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8aa3f462f615e766d1e106016f1a3c944">orxEvent.h</a>
 <li>orxEVENT_TYPE_CORE_NUMBER
 : <a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8392c55af75cd4dc15dc9d5c875ad7216">orxEvent.h</a>
 <li>orxEVENT_TYPE_FIRST_RESERVED
@@ -2625,8 +2645,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSDKAPI
 : <a class="el" href="group__orx_decl.html#g8c6130ce81f9606356f4baf7f6ea30c9">orxDecl.h</a>
 <li>orxSOUND
-: <a class="el" href="group__orx_structure.html#g2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
-, <a class="el" href="group__orx_sound.html#g58e0a61f287672d13130384705fe6c87">orxSound.h</a>
+: <a class="el" href="group__orx_sound.html#g58e0a61f287672d13130384705fe6c87">orxSound.h</a>
+, <a class="el" href="group__orx_structure.html#g2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
 <li>orxSound_CreateFromConfig()
 : <a class="el" href="group__orx_sound.html#g8c2a70825d434ab39b725ab83df439f6">orxSound.h</a>
 <li>orxSound_Delete()
@@ -3039,10 +3059,10 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxStructure.h</a>
 <li>orxSTRUCTURE_MAGIC_TAG_DELETED
 : <a class="el" href="group__orx_structure.html#gb94740c722d3469c182b3c2806a574f9">orxStructure.h</a>
-<li>orxStructure_Register()
-: <a class="el" href="group__orx_structure.html#g908664072559b29d53ca30addf65b552">orxStructure.h</a>
 <li>orxSTRUCTURE_REGISTER
 : <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
+<li>orxStructure_Register()
+: <a class="el" href="group__orx_structure.html#g908664072559b29d53ca30addf65b552">orxStructure.h</a>
 <li>orxStructure_SetFlags()
 : <a class="el" href="group__orx_structure.html#g6889909153aad48d6e7acd879d2bdc2d">orxStructure.h</a>
 <li>orxStructure_SetParent()

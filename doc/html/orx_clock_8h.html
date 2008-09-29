@@ -72,6 +72,17 @@
 <br>
  }</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g5d61e2fc9dcad950bc23ff7a5525791d">orxCLOCK_EVENT</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791d41630991614af985a9d377a1e90cdc35">orxCLOCK_EVENT_RESTART</a> =  0, 
+<a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791d9148967775d49709621a41aa3c4efe97">orxCLOCK_EVENT_RESYNC</a>, 
+<a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791d2f29c49771425564483dece719f38a05">orxCLOCK_EVENT_PAUSE</a>, 
+<a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791dddd9902df89d032e193f2de1c8da0c0f">orxCLOCK_EVENT_UNPAUSE</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791d50713812454a2a348fa091d04a64ee35">orxCLOCK_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_clock.html#gg5d61e2fc9dcad950bc23ff7a5525791dd2c2a028497b40243a3d52eb20f4b0fa">orxCLOCK_EVENT_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
+
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g8d7b4c4435e7f44ead0765660f9fc171">orxClock_Setup</a> ()</td></tr>
 
@@ -85,7 +96,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g850bafdcd53b999f1aa39bb2471da5c6">orxClock_Delete</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g7cbbad615915691b887b3db35c0e044c">orxClock_Resync</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#g646ec2e3a995507a81f71e7ee602458e">orxClock_Resync</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gddb51a1395d7e82e04595c145466b7d3">orxClock_ResyncAll</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gb38bde2b21dca84dd29ef4c60531edb9">orxClock_Restart</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ge1d4c920cfaccd3ba425910068fd3ebb">orxClock_Pause</a> (<a class="el" href="group__orx_clock.html#gcc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock)</td></tr>
 
