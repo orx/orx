@@ -454,8 +454,8 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
     fY            = vParentScale.fY * ((fLocalX * fSin) + (fLocalY * fCos));
 
     /* Computes final global coordinates */
-    vTempPos.fX   = orxMath_Floor(fX) + pvParentPos->fX;
-    vTempPos.fY   = orxMath_Floor(fY) + pvParentPos->fY;
+    vTempPos.fX   = fX + pvParentPos->fX;
+    vTempPos.fY   = fY + pvParentPos->fY;
 
     /* Z coordinate is not affected by rotation nor scale in 2D */
     vTempPos.fZ   = pvParentPos->fZ + pvPos->fZ;
