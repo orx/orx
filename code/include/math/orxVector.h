@@ -91,10 +91,11 @@ typedef struct __orxAABOX_t
 */
 typedef struct __orxOBOX_t
 {
-    orxVECTOR vOrigin;  /**< Origin vector : 12 */
-    orxVECTOR vX;       /**< X axis vector : 24 */
-    orxVECTOR vY;       /**< Y axis vector : 36 */
-    orxVECTOR vZ;       /**< Z axis vector : 48 */
+    orxVECTOR vPosition;/**< Position vector  : 12 */
+    orxVECTOR vPivot;   /**< Pivot vector     : 24 */
+    orxVECTOR vX;       /**< X axis vector    : 36 */
+    orxVECTOR vY;       /**< Y axis vector    : 48 */
+    orxVECTOR vZ;       /**< Z axis vector    : 60 */
 
 } orxOBOX;
 
@@ -883,6 +884,41 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Set(orxAABOX *_pstRes, or
   return _pstRes;
 }
 
+/** Is position inside axis aligned box test
+ * @param[in]   _pstBox                       Box to test against position
+ * @param[in]   _pvPosition                   Position to test against the box
+ * @return      orxTRUE if position is inside the box, orxFALSE otherwise
+ */
+orxSTATIC orxINLINE orxBOOL                   orxAABox_IsInside(orxCONST orxAABOX *_pstBox, orxCONST orxVECTOR *_pvPosition)
+{
+  orxREGISTER orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(_pstBox != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Z intersected? */
+  if((_pvPosition->fZ >= _pstBox->vTL.fZ)
+  && (_pvPosition->fZ <= _pstBox->vBR.fZ))
+  {
+    /* X intersected? */
+    if((_pvPosition->fX >= _pstBox->vTL.fX)
+    && (_pvPosition->fX <= _pstBox->vBR.fX))
+    {
+      /* Y intersected? */
+      if((_pvPosition->fY >= _pstBox->vTL.fY)
+      && (_pvPosition->fY <= _pstBox->vBR.fY))
+      {
+        /* Intersects */
+        bResult = orxTRUE;
+      }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Tests axis aligned box intersection
  * @param[in]   _pstBox1                      First box operand
  * @param[in]   _pstBox2                      Second box operand
@@ -1012,19 +1048,19 @@ orxSTATIC orxINLINE orxVECTOR *               orxAABox_GetCenter(orxCONST orxAAB
 
 /** Sets 2D oriented box values
  * @param[out]  _pstRes                       OBox to set
- * @param[in]   _pvWorldOrigin                World space origin vector
+ * @param[in]   _pvWorldPosition              World space position vector
  * @param[in]   _pvPivot                      Pivot vector
  * @param[in]   _pvSize                       Size vector
  * @param[in]   _fAngle                       Z-axis angle
  * @return      orxOBOX / orxNULL
  */
-orxSTATIC orxOBOX *orxFASTCALL                orxOBox_2DSet(orxOBOX *_pstRes, orxCONST orxVECTOR *_pvWorldOrigin, orxCONST orxVECTOR *_pvPivot, orxCONST orxVECTOR *_pvSize, orxFLOAT _fAngle)
+orxSTATIC orxINLINE orxOBOX *                 orxOBox_2DSet(orxOBOX *_pstRes, orxCONST orxVECTOR *_pvWorldPosition, orxCONST orxVECTOR *_pvPivot, orxCONST orxVECTOR *_pvSize, orxFLOAT _fAngle)
 {
   orxFLOAT fCos, fSin;
 
   /* Checks */
   orxASSERT(_pstRes != orxNULL);
-  orxASSERT(_pvWorldOrigin != orxNULL);
+  orxASSERT(_pvWorldPosition != orxNULL);
   orxASSERT(_pvPivot != orxNULL);
 
   /* Gets cosine and sine */
@@ -1036,8 +1072,11 @@ orxSTATIC orxOBOX *orxFASTCALL                orxOBox_2DSet(orxOBOX *_pstRes, or
   orxVector_Set(&(_pstRes->vY), -fSin * _pvSize->fY, fCos * _pvSize->fY, orxFLOAT_0);
   orxVector_Set(&(_pstRes->vZ), orxFLOAT_0, orxFLOAT_0, _pvSize->fZ);
 
-  /* Gets box origin */
-  orxVector_Set(&(_pstRes->vOrigin), _pvWorldOrigin->fX - _pstRes->vX.fX - _pstRes->vY.fX, _pvWorldOrigin->fY - _pstRes->vX.fY - _pstRes->vY.fY, _pvWorldOrigin->fZ);
+  /* Sets pivot */
+  orxVector_Set(&(_pstRes->vPivot), (fCos * _pvPivot->fX) + (fSin * _pvPivot->fY), (fCos * _pvPivot->fY) - (fSin * _pvPivot->fX), _pvPivot->fZ);
+
+  /* Sets box position */
+  orxVector_Copy(&(_pstRes->vPosition), _pvWorldPosition);
 
   /* Done! */
   return _pstRes;
@@ -1075,7 +1114,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxOBox_GetCenter(orxCONST orxOBOX
   /* Gets box center */
   orxVector_Add(_pvRes, orxVector_Add(_pvRes, &(_pstOp->vX), &(_pstOp->vY)), &(_pstOp->vZ));
   orxVector_Mulf(_pvRes, _pvRes, orx2F(0.5f));
-  orxVector_Add(_pvRes, _pvRes, &(_pstOp->vOrigin));
+  orxVector_Sub(_pvRes, orxVector_Add(_pvRes, _pvRes, &(_pstOp->vPosition)), &(_pstOp->vPivot));
 
   /* Done! */
   return _pvRes;
@@ -1095,7 +1134,7 @@ orxSTATIC orxINLINE orxOBOX *                 orxOBox_Move(orxOBOX *_pstRes, orx
   orxASSERT(_pvMove != orxNULL);
 
   /* Updates result */
-  orxVector_Add(&(_pstRes->vOrigin), &(_pstOp->vOrigin), _pvMove);
+  orxVector_Add(&(_pstRes->vPosition), &(_pstOp->vPosition), _pvMove);
 
   /* Done! */
   return _pstRes;
@@ -1123,8 +1162,149 @@ orxSTATIC orxINLINE orxOBOX *                 orxOBox_2DRotate(orxOBOX *_pstRes,
   orxVector_Set(&(_pstRes->vX), (fCos * _pstRes->vX.fX) - (fSin * _pstRes->vX.fY), (fSin * _pstRes->vX.fX) + (fCos * _pstRes->vX.fY), _pstRes->vX.fZ);
   orxVector_Set(&(_pstRes->vY), (fCos * _pstRes->vY.fX) - (fSin * _pstRes->vY.fY), (fSin * _pstRes->vY.fX) + (fCos * _pstRes->vY.fY), _pstRes->vY.fZ);
 
+  /* Updates pivot */
+  orxVector_Set(&(_pstRes->vPivot), (fCos * _pstRes->vPivot.fX) - (fSin * _pstRes->vPivot.fY), (fSin * _pstRes->vPivot.fX) + (fCos * _pstRes->vPivot.fY), _pstRes->vPivot.fZ);
+
   /* Done! */
   return _pstRes;
+}
+
+/** Is position inside oriented box test
+ * @param[in]   _pstBox                       Box to test against position
+ * @param[in]   _pvPosition                   Position to test against the box
+ * @return      orxTRUE if position is inside the box, orxFALSE otherwise
+ */
+orxSTATIC orxINLINE orxBOOL                   orxOBox_IsInside(orxCONST orxOBOX *_pstBox, orxCONST orxVECTOR *_pvPosition)
+{
+  orxREGISTER orxBOOL bResult = orxFALSE;
+  orxFLOAT            fProj;
+  orxVECTOR           vToPos;
+
+  /* Checks */
+  orxASSERT(_pstBox != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets origin to position vector */
+  orxVector_Sub(&vToPos, _pvPosition, orxVector_Sub(&vToPos, &(_pstBox->vPosition), &(_pstBox->vPivot)));
+
+  /* Z-axis test */
+  if(((fProj = orxVector_Dot(&vToPos, &(_pstBox->vZ))) >= orxFLOAT_0)
+  && (fProj <= orxVector_GetSquareSize(&(_pstBox->vZ))))
+  {
+    /* X-axis test */
+    if(((fProj = orxVector_Dot(&vToPos, &(_pstBox->vX))) >= orxFLOAT_0)
+    && (fProj <= orxVector_GetSquareSize(&(_pstBox->vX))))
+    {
+      /* Y-axis test */
+      if(((fProj = orxVector_Dot(&vToPos, &(_pstBox->vY))) >= orxFLOAT_0)
+      && (fProj <= orxVector_GetSquareSize(&(_pstBox->vY))))
+      {
+        /* Updates result */
+        bResult = orxTRUE;
+      }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Tests oriented 2D box intersection (simple Z-axis test, to use with Z-axis aligned orxOBOX)
+ * @param[in]   _pstBox1                      First box operand
+ * @param[in]   _pstBox2                      Second box operand
+ * @return      orxTRUE if boxes intersect, orxFALSE otherwise
+ */
+orxSTATIC orxINLINE orxBOOL                   orxOBox_2DTestIntersection(orxCONST orxOBOX *_pstBox1, orxCONST orxOBOX *_pstBox2)
+{
+  orxREGISTER orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(_pstBox1 != orxNULL);
+  orxASSERT(_pstBox2 != orxNULL);
+  orxASSERT((_pstBox1->vZ.fX == orxFLOAT_0) && (_pstBox1->vZ.fX == orxFLOAT_0));
+  orxASSERT((_pstBox1->vZ.fY == orxFLOAT_0) && (_pstBox1->vZ.fY == orxFLOAT_0));
+  orxASSERT((_pstBox1->vZ.fZ >= orxFLOAT_0) && (_pstBox1->vZ.fZ >= orxFLOAT_0));
+
+  /* Z intersected? */
+  if((_pstBox2->vPosition.fZ + _pstBox2->vZ.fZ >= _pstBox1->vPosition.fZ)
+  && (_pstBox2->vPosition.fZ <= _pstBox1->vPosition.fZ + _pstBox1->vZ.fZ))
+  {
+    orxU32            i;
+    orxVECTOR         vOrigin1, vOrigin2, *pvOrigin1 = &vOrigin1, *pvOrigin2 = &vOrigin2, *pvTemp;
+    orxCONST orxOBOX *pstBox1 = _pstBox1, *pstBox2 = _pstBox2, *pstTemp;
+
+    /* Computes boxes origins */
+    vOrigin1.fX = _pstBox1->vPosition.fX - pstBox1->vPivot.fX;
+    vOrigin1.fY = _pstBox1->vPosition.fY - pstBox1->vPivot.fY;
+    vOrigin2.fX = _pstBox2->vPosition.fX - pstBox2->vPivot.fX;
+    vOrigin2.fY = _pstBox2->vPosition.fY - pstBox2->vPivot.fY;
+
+    /* Test each box against the other */
+    for(i = 2, bResult = orxTRUE;
+        i != 0;
+        i--, pstTemp = pstBox1, pstBox1 = pstBox2, pstBox2 = pstTemp, pvTemp = pvOrigin1, pvOrigin1 = pvOrigin2, pvOrigin2 = pvTemp)
+    {
+      orxVECTOR           vToCorner[4];
+      orxCONST orxVECTOR *pvAxis;
+      orxU32              j;
+
+      /* Gets to-corner vectors */
+      vToCorner[0].fX = pvOrigin2->fX - pvOrigin1->fX;
+      vToCorner[0].fY = pvOrigin2->fY - pvOrigin1->fY;
+      vToCorner[1].fX = vToCorner[0].fX + pstBox2->vX.fX;
+      vToCorner[1].fY = vToCorner[0].fY + pstBox2->vX.fY;
+      vToCorner[2].fX = vToCorner[1].fX + pstBox2->vY.fX;
+      vToCorner[2].fY = vToCorner[1].fY + pstBox2->vY.fY;
+      vToCorner[3].fX = vToCorner[0].fX + pstBox2->vY.fX;
+      vToCorner[3].fY = vToCorner[0].fY + pstBox2->vY.fY;
+
+      /* For both axis */
+      for(j = 2, pvAxis = &(pstBox1->vX);
+          j != 0;
+          j--, pvAxis++)
+      {
+        orxFLOAT  fMin, fMax, fProj;
+        orxU32    k;
+
+        /* Gets initial projected values */
+        fMin = fMax = fProj = orxVector_2DDot(&vToCorner[0], pvAxis);
+
+        /* For all remaining corners */
+        for(k = 1; k < 4; k++)
+        {
+          /* Gets projected value */
+          fProj = orxVector_2DDot(&vToCorner[k], pvAxis);
+
+          /* Updates extrema */
+          if(fProj > fMax)
+          {
+            fMax = fProj;
+          }
+          else if(fProj < fMin)
+          {
+            fMin = fProj;
+          }
+        }
+
+        /* Not intersecting? */
+        if((fMax < orxFLOAT_0)
+        || (fMin > orxVector_GetSquareSize(pvAxis)))
+        {
+          /* Updates result */
+          bResult = orxFALSE;
+          break;
+        }
+      }
+    }
+  }
+  else
+  {
+    // Updates result
+    bResult = orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
 }
 
 #endif /* _orxVECTOR_H_ */

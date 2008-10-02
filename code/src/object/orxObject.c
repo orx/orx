@@ -2339,60 +2339,53 @@ orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, orxCONST orx
   return eResult;
 }
 
-/** Gets object's bounding box
+/** Gets object's bounding box (OBB)
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstBoundingBox Bounding box result
- * @return      Bounding box
+ * @return      Bounding box / orxNULL
  */
-orxAABOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxAABOX *_pstBoundingBox)
+orxOBOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox)
 {
-  orxAABOX *pstResult = orxNULL;
+  orxVECTOR   vSize;
+  orxGRAPHIC *pstGraphic;
+  orxOBOX    *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_pstBoundingBox != orxNULL);
 
-  /* Cleans result */
-  orxMemory_Zero(_pstBoundingBox, sizeof(orxAABOX));
-
-  /* Is 2D ? */
-  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_2D))
+  /* Is 2D and has sized graphic? */
+  if((orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_2D))
+  && ((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
+  && (orxGraphic_GetSize(pstGraphic, &vSize) != orxNULL))
   {
-    orxGRAPHIC *pstGraphic;
+    orxVECTOR vPivot, vPosition, vScale;
+    orxFLOAT  fAngle;
 
-    /* Has graphic? */
-    if((pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC)) != orxNULL)
-    {
-      orxVECTOR vSize;
+    /* Gets pivot, position, scale & rotation */
+    orxObject_GetPivot(_pstObject, &vPivot);
+    orxObject_GetWorldPosition(_pstObject, &vPosition);
+    orxObject_GetWorldScale(_pstObject, &vScale);
+    fAngle = orxObject_GetWorldRotation(_pstObject);
 
-      /* Gets size */
-      if(orxGraphic_GetSize(pstGraphic, &vSize) != orxNULL)
-      {
-        orxVECTOR vPivot, vPosition, vScale;
-        orxFLOAT  fAngle;
+    /* Updates pivot & size */
+    orxVector_Mul(&vSize, &vSize, &vScale);
+    orxVector_Mul(&vPivot, &vPivot, &vScale);
 
-        /* Gets pivot, positionm scale & rotation */
-        orxObject_GetPivot(_pstObject, &vPivot);
-        orxObject_GetWorldPosition(_pstObject, &vPosition);
-        orxObject_GetWorldScale(_pstObject, &vScale);
-        fAngle = orxObject_GetWorldRotation(_pstObject);
+    /* Updates box */
+    orxOBox_2DSet(_pstBoundingBox, &vPosition, &vPivot, &vSize, fAngle);
 
-        /* Updates box */
-        orxVector_Sub(&(_pstBoundingBox->vTL), &vPosition, &vPivot);
-        orxVector_Set(&(_pstBoundingBox->vBR), _pstBoundingBox->vTL.fX + (vScale.fX * vSize.fX), _pstBoundingBox->vTL.fY + (vScale.fY * vSize.fY), _pstBoundingBox->vTL.fZ + (vScale.fZ * vSize.fZ));
+    /* Updates result */
+    pstResult = _pstBoundingBox;
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
 
-        /* Has rotation? */
-        if(fAngle != orxFLOAT_0)
-        {
-          //! TODO : Uses rotation to find the new bounding box
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning: the bounding box computed for object <%p> will be incorrect because of its rotation (%g). This will be fixed in a later version.", _pstObject, fAngle);
-        }
-
-        /* Updates result */
-        pstResult = _pstBoundingBox;
-      }
-    }
+    /* Cleans it */
+    orxMemory_Zero(_pstBoundingBox, sizeof(orxAABOX));
   }
 
   /* Done! */
@@ -2743,9 +2736,9 @@ orxSTRING orxFASTCALL orxObject_GetName(orxCONST orxOBJECT *_pstObject)
  * @param[in]   _pstCheckBox    Box to check intersection with
  * @return      orxBANK / orxNULL
  */
-orxBANK *orxFASTCALL orxObject_CreateNeighborList(orxCONST orxAABOX *_pstCheckBox)
+orxBANK *orxFASTCALL orxObject_CreateNeighborList(orxCONST orxOBOX *_pstCheckBox)
 {
-  orxAABOX    stObjectBox;
+  orxOBOX    stObjectBox;
   orxOBJECT  *pstObject;
   orxBANK    *pstResult;
 
@@ -2770,7 +2763,7 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(orxCONST orxAABOX *_pstCheckBo
       if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
       {
         /* Is intersecting? */
-        if(orxAABox_TestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
+        if(orxOBox_2DTestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
         {
           orxOBJECT **ppstObject;
 

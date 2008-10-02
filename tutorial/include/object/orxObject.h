@@ -324,12 +324,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_IsCurrentAnim(orxOBJECT *_
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_IsTargetAnim(orxOBJECT *_pstObject, orxCONST orxSTRING _zAnimName);
 
 
-/** Gets object's bounding box
+/** Gets object's bounding box (OBB)
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstBoundingBox Bounding box result
- * @return      Bounding box
+ * @return      Bounding box / orxNULL
  */
-extern orxDLLAPI orxAABOX *orxFASTCALL      orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxAABOX *_pstBoundingBox);
+extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox);
 
 
 /** Sets an object speed
@@ -472,7 +472,7 @@ extern orxDLLAPI orxSTRING orxFASTCALL      orxObject_GetName(orxCONST orxOBJECT
  * @param[in]   _pstCheckBox    Box to check intersection with
  * @return      orxBANK / orxNULL
  */
-extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(orxCONST orxAABOX *_pstCheckBox);
+extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(orxCONST orxOBOX *_pstCheckBox);
 
 /** Deletes an object list created with orxObject_CreateNeighborList
  * @param[in]   _pstObjectList  Concerned object list
