@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   id="svg2407"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="logo2.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs2409">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective2415" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="375"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="640"
+     inkscape:window-height="675"
+     inkscape:window-x="757"
+     inkscape:window-y="101" />
+  <metadata
+     id="metadata2412">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       d="M 312.12293,428.98718 L 279.43593,461.67418 L 312.12293,494.36018 L 344.80893,461.67418 L 312.12293,428.98718 z M 302.06293,461.67318 L 312.12193,451.61318 L 322.18093,461.67318 L 312.13293,471.74218 L 302.06293,461.67318 z"
+       id="path3" />
+    <polygon
+       points="425.934,311.066 447.305,289.693 414.621,257.006 360.56,311.065 371.874,322.379 414.621,279.634 424.678,289.693 403.309,311.064 435.988,343.758 447.305,332.446 425.934,311.066 "
+       id="polygon5"
+       transform="translate(-32.231071,171.98018)" />
+    <polygon
+       points="489.938,274.582 478.625,263.269 463.512,278.381 448.399,263.269 437.086,274.582 452.199,289.695 437.086,304.808 448.399,316.121 463.512,301.008 478.625,316.121 489.938,304.808 474.826,289.695 489.938,274.582 "
+       id="polygon7"
+       transform="translate(-32.231071,171.98018)" />
+  </g>
+</svg>
