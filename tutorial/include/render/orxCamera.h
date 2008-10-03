@@ -46,6 +46,7 @@
 #include "orxInclude.h"
 
 #include "object/orxFrame.h"
+#include "math/orxAABox.h"
 
 
 /** Anim flags

@@ -110,7 +110,9 @@
 		<Unit filename="..\..\..\include\io\orxMouse.h" />
 		<Unit filename="..\..\..\include\io\orxPackage.h" />
 		<Unit filename="..\..\..\include\main\orxParam.h" />
+		<Unit filename="..\..\..\include\math\orxAABox.h" />
 		<Unit filename="..\..\..\include\math\orxMath.h" />
+		<Unit filename="..\..\..\include\math\orxOBox.h" />
 		<Unit filename="..\..\..\include\math\orxVector.h" />
 		<Unit filename="..\..\..\include\memory\orxBank.h" />
 		<Unit filename="..\..\..\include\memory\orxMemory.h" />

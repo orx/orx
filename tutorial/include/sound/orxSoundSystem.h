@@ -228,7 +228,7 @@ extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetDuration
 extern orxDLLAPI orxSOUNDSYSTEM_STATUS                orxSoundSystem_GetStatus(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Sets global volume
- * @param[in] _fVolume                                Volume to set
+ * @param[in] _fGlobalVolume                          Global volume to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetGlobalVolume(orxFLOAT _fGlobalVolume);

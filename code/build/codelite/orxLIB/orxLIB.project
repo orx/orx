@@ -123,7 +123,9 @@
       <File Name="../../../include/main/orxParam.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="math">
+      <File Name="../../../include/math/orxAABox.h"/>
       <File Name="../../../include/math/orxMath.h"/>
+      <File Name="../../../include/math/orxOBox.h"/>
       <File Name="../../../include/math/orxVector.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="memory">

@@ -35,6 +35,9 @@
  * @{
  */
 
+#ifdef __cplusplus
+  extern "C" {
+#endif /* __cplusplus */
 
 #ifndef _orx_H_
 #define _orx_H_
@@ -163,5 +166,9 @@ orxSTATIC orxINLINE orxVOID orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams
 }
 
 #endif /*_orx_H_*/
+
+#ifdef __cplusplus
+  }
+#endif /* __cplusplus */
 
 /** @} */

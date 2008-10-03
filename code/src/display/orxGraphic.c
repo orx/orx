@@ -336,17 +336,17 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL) != orxFALSE)
             && (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_BR) != orxFALSE))
             {
-              orxAABOX stTextureBox;
+              orxVECTOR vTextureTL, vTextureBR;
 
               /* Gets both corners */
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL, &(stTextureBox.vTL));
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_BR, &(stTextureBox.vBR));
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL, &(vTextureTL));
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_BR, &(vTextureBR));
 
               /* Stores them */
-              pstResult->fLeft    = stTextureBox.vTL.fX;
-              pstResult->fTop     = stTextureBox.vTL.fY;
-              pstResult->fWidth   = stTextureBox.vBR.fX - stTextureBox.vTL.fX;
-              pstResult->fHeight  = stTextureBox.vBR.fY - stTextureBox.vTL.fY;
+              pstResult->fLeft    = vTextureTL.fX;
+              pstResult->fTop     = vTextureTL.fY;
+              pstResult->fWidth   = vTextureBR.fX - vTextureTL.fX;
+              pstResult->fHeight  = vTextureBR.fY - vTextureTL.fY;
             }
             else
             {

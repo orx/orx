@@ -68,7 +68,9 @@
 
 #include "main/orxParam.h"
 
+#include "math/orxAABox.h"
 #include "math/orxMath.h"
+#include "math/orxOBox.h"
 #include "math/orxVector.h"
 
 #include "memory/orxBank.h"

@@ -48,7 +48,7 @@
 #include "memory/orxBank.h"
 #include "anim/orxAnimSet.h"
 #include "display/orxDisplay.h"
-#include "math/orxVector.h"
+#include "math/orxOBox.h"
 #include "sound/orxSound.h"
 
 

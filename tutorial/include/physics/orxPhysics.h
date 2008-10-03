@@ -43,7 +43,7 @@
 
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
-#include "math/orxVector.h"
+#include "math/orxAABox.h"
 
 
 /** Body definition flags

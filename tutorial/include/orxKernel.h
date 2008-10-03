@@ -68,7 +68,9 @@
 
 #include "main/orxParam.h"
 
+#include "math/orxAABox.h"
 #include "math/orxMath.h"
+#include "math/orxOBox.h"
 #include "math/orxVector.h"
 
 #include "memory/orxBank.h"
@@ -76,6 +78,7 @@
 
 #include "object/orxFrame.h"
 #include "object/orxObject.h"
+#include "object/orxSpawner.h"
 #include "object/orxStructure.h"
 
 #include "plugin/orxPlugin.h"
