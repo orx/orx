@@ -88,7 +88,7 @@ orxSTATIC orxINLINE orxOBOX *                 orxOBox_2DSet(orxOBOX *_pstRes, or
   orxVector_Set(&(_pstRes->vZ), orxFLOAT_0, orxFLOAT_0, _pvSize->fZ);
 
   /* Sets pivot */
-  orxVector_Set(&(_pstRes->vPivot), (fCos * _pvPivot->fX) + (fSin * _pvPivot->fY), (fCos * _pvPivot->fY) - (fSin * _pvPivot->fX), _pvPivot->fZ);
+  orxVector_Set(&(_pstRes->vPivot), (fCos * _pvPivot->fX) - (fSin * _pvPivot->fY), (fSin * _pvPivot->fX) + (fCos * _pvPivot->fY), _pvPivot->fZ);
 
   /* Sets box position */
   orxVector_Copy(&(_pstRes->vPosition), _pvWorldPosition);
@@ -217,6 +217,41 @@ orxSTATIC orxINLINE orxBOOL                   orxOBox_IsInside(orxCONST orxOBOX 
         /* Updates result */
         bResult = orxTRUE;
       }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Is 2D position inside oriented box test
+ * @param[in]   _pstBox                       Box to test against position
+ * @param[in]   _pvPosition                   Position to test against the box (no Z-test)
+ * @return      orxTRUE if position is inside the box, orxFALSE otherwise
+ */
+orxSTATIC orxINLINE orxBOOL                   orxOBox_2DIsInside(orxCONST orxOBOX *_pstBox, orxCONST orxVECTOR *_pvPosition)
+{
+  orxREGISTER orxBOOL bResult = orxFALSE;
+  orxFLOAT            fProj;
+  orxVECTOR           vToPos;
+
+  /* Checks */
+  orxASSERT(_pstBox != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets origin to position vector */
+  orxVector_Sub(&vToPos, _pvPosition, orxVector_Sub(&vToPos, &(_pstBox->vPosition), &(_pstBox->vPivot)));
+
+  /* X-axis test */
+  if(((fProj = orxVector_Dot(&vToPos, &(_pstBox->vX))) >= orxFLOAT_0)
+  && (fProj <= orxVector_GetSquareSize(&(_pstBox->vX))))
+  {
+    /* Y-axis test */
+    if(((fProj = orxVector_Dot(&vToPos, &(_pstBox->vY))) >= orxFLOAT_0)
+    && (fProj <= orxVector_GetSquareSize(&(_pstBox->vY))))
+    {
+      /* Updates result */
+      bResult = orxTRUE;
     }
   }
 

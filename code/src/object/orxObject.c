@@ -723,7 +723,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxColor_SetRGB(&(pstResult->stColor), &vColor);
 
         /* Updates status flags */
-        u32Flags = orxOBJECT_KU32_FLAG_HAS_COLOR;
+        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
       }
 
       /* Has alpha? */
@@ -733,7 +733,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxColor_SetAlpha(&(pstResult->stColor), orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ALPHA));
 
         /* Updates status */
-        u32Flags = orxOBJECT_KU32_FLAG_HAS_COLOR;
+        u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;
       }
 
       /* *** Body *** */
@@ -3037,4 +3037,62 @@ orxFLOAT orxFASTCALL orxObject_GetLifeTime(orxCONST orxOBJECT *_pstObject)
 
   /* Done! */
   return fResult;
+}
+
+/** Picks the first active object with graphic "under" the given position
+ * @param[in]   _pvPosition     Position to pick from
+ * @return      orxOBJECT / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_Pick(orxCONST orxVECTOR *_pvPosition)
+{
+  orxFLOAT    fSelectedZ;
+  orxOBJECT  *pstResult = NULL, *pstObject;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* For all objects */
+  for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), fSelectedZ = _pvPosition->fZ;
+      pstObject != orxNULL;
+      pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
+  {
+    /* Is enabled? */
+    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+    {
+      orxGRAPHIC *pstGraphic;
+      
+      /* Has graphic? */
+      if((pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC)) != NULL)
+      {
+        orxVECTOR vObjectPos;
+
+        /* Gets object position */
+        orxObject_GetWorldPosition(pstObject, &vObjectPos);
+
+        /* Is last selected position? */
+        if(vObjectPos.fZ > fSelectedZ)
+        {
+          orxOBOX stObjectBox;
+
+          /* Gets its bounding box */
+          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+          {
+            /* Is position in 2D box? */
+            if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
+            {
+              /* Updates result */
+              pstResult = pstObject;
+              
+              /* Updates selected position */
+              fSelectedZ = vObjectPos.fZ;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
 }

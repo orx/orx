@@ -97,6 +97,14 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Has mouse world position? */
   if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPos), &vPos) != orxNULL)
   {
+    orxVECTOR vSoldierPos;
+
+    /* Gets object current position */
+    orxObject_GetWorldPosition(pstSoldier, &vSoldierPos);
+
+    /* Keeps Z value */
+    vPos.fZ = vSoldierPos.fZ;
+
     /* Moves the soldier under the cursor */
     orxObject_SetPosition(pstSoldier, &vPos);
   }

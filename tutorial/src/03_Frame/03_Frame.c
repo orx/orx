@@ -110,6 +110,14 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Is mouse in viewport? */
   if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vPosition), &vPosition))
   {
+    orxVECTOR vParentPosition;
+
+    /* Gets current parent position */
+    orxObject_GetWorldPosition(pstParentObject, &vParentPosition);
+
+    /* Keeps Z value */
+    vPosition.fZ = vParentPosition.fZ;
+
     /* Updates object with mouse position */
     orxObject_SetPosition(pstParentObject, &vPosition);
   }

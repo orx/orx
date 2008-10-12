@@ -74,7 +74,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
   orxConfig_SelectSection("Bounce");
 
   /* Clicking? */
-  if((su32BallCounter < orxConfig_GetU32("BallLimit")) && (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
+  if((orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT)) || (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
   {
     orxVECTOR   vScreenPos, vWorldPos;
     orxOBJECT  *pstObject;
@@ -85,12 +85,35 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     /* Has a matching world position? */
     if(orxRender_GetWorldPosition(&vScreenPos, &vWorldPos) != orxNULL)
     {
-      /* Spawn a ball under the cursor */
-      pstObject = orxObject_CreateFromConfig("Ball");
-      orxObject_SetPosition(pstObject, &vWorldPos);
+      /* Left clicking */
+      if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT))
+      {
+        /* Under limit? */
+        if(su32BallCounter < orxConfig_GetU32("BallLimit"))
+        {
+          /* Updates position */
+          vWorldPos.fZ += orxFLOAT_1;
 
-      /* Update counter */
-      su32BallCounter++;
+          /* Spawns a ball under the cursor */
+          pstObject = orxObject_CreateFromConfig("Ball");
+          orxObject_SetPosition(pstObject, &vWorldPos);
+
+          /* Update counter */
+          su32BallCounter++;
+        }
+      }
+      else
+      {
+        /* Picks object under mouse */
+        pstObject = orxObject_Pick(&vWorldPos);
+
+        /* Found and is a ball? */
+        if((pstObject) && (!orxString_Compare(orxObject_GetName(pstObject), "Ball")))
+        {
+          /* Adds FX */
+          orxObject_AddFX(pstObject, "Pick");
+        }
+      }
     }
   }
 }

@@ -521,6 +521,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLifeTime(orxOBJECT *_ps
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(orxCONST orxOBJECT *_pstObject);
 
+
+/** Picks the first active object with graphic "under" the given position
+ * @param[in]   _pvPosition     Position to pick from
+ * @return      orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(orxCONST orxVECTOR *_pvPosition);
+
 #endif /* _orxOBJECT_H_ */
 
 /** @} */

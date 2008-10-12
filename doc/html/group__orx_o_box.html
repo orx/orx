@@ -35,11 +35,49 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_o_box.html#g18f77c402b7494deeaf22c8071b71a61">orxOBox_IsInside</a> (orxCONST <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_o_box.html#g015ca439edcc9cc1acf70bd5cabf72a9">orxOBox_2DIsInside</a> (orxCONST <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_o_box.html#g5f9ed36346e903fc14c4fff8d178b567">orxOBox_2DTestIntersection</a> (orxCONST <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox1, orxCONST <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstBox2)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Oriented box module Module that handles oriented boxes <hr><h2>Function Documentation</h2>
+<a class="anchor" name="g015ca439edcc9cc1acf70bd5cabf72a9"></a><!-- doxytag: member="orxOBox.h::orxOBox_2DIsInside" ref="g015ca439edcc9cc1acf70bd5cabf72a9" args="(orxCONST orxOBOX *_pstBox, orxCONST orxVECTOR *_pvPosition)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxINLINE orxBOOL orxOBox_2DIsInside           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvPosition</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Is 2D position inside oriented box test <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBox</em>&nbsp;</td><td>Box to test against position </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvPosition</em>&nbsp;</td><td>Position to test against the box (no Z-test) </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if position is inside the box, orxFALSE otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="gc0c7ecb8a6b5252782631a1916e41063"></a><!-- doxytag: member="orxOBox.h::orxOBox_2DRotate" ref="gc0c7ecb8a6b5252782631a1916e41063" args="(orxOBOX *_pstRes, orxCONST orxOBOX *_pstOp, orxFLOAT _fAngle)" -->
 <div class="memitem">
 <div class="memproto">

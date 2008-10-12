@@ -166,6 +166,8 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g2530500ed75af2d7e7920eda4b86eea4">orxObject_GetLifeTime</a> (orxCONST <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gf3bffd6019927999043eeaee63ab32c8">orxObject_Pick</a> (orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPosition)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Object module Allows to creates and handle objects Objects are structures containers that can refer to many other structures such as frames, graphics, etc... <hr><h2>Define Documentation</h2>
@@ -1578,6 +1580,32 @@ Links a structure to an object <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gf3bffd6019927999043eeaee63ab32c8"></a><!-- doxytag: member="orxObject.h::orxObject_Pick" ref="gf3bffd6019927999043eeaee63ab32c8" args="(orxCONST orxVECTOR *_pvPosition)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a>* orxFASTCALL orxObject_Pick           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvPosition</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Picks the first active object with graphic "under" the given position <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvPosition</em>&nbsp;</td><td>Position to pick from </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxOBJECT / orxNULL </dd></dl>
 
 </div>
 </div><p>
