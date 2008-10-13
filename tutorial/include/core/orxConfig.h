@@ -45,6 +45,11 @@
 
 #include "math/orxVector.h"
 
+
+/** Config callback function type to use with save function */
+typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(orxCONST orxSTRING _zSectionName, orxCONST orxSTRING _zKeyName);
+
+
 /** Config module setup
  */
 extern orxDLLAPI orxVOID                orxConfig_Setup();
@@ -79,9 +84,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ReloadHistory();
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
+ * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxConfig_Save(orxCONST orxSTRING _zFileName);
+extern orxDLLAPI orxSTATUS              orxConfig_Save(orxCONST orxSTRING _zFileName, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
 
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select

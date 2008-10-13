@@ -1180,9 +1180,10 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
+ * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
+orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
   FILE     *pstFile;
   orxSTRING zFileName;
@@ -1216,48 +1217,56 @@ orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName)
         pstSection != orxNULL;
         pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
     {
-      orxCONFIG_SECTION *pstParentSection = orxNULL;
-      orxCONFIG_ENTRY   *pstEntry;
-
-      /* Has a parent ID? */
-      if(pstSection->u32ParentID != 0)
+      /* No callback or should save it? */
+      if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, orxNULL) != orxFALSE))
       {
-        /* For all sections */
-        for(pstParentSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
-            pstParentSection != orxNULL;
-            pstParentSection = orxBank_GetNext(sstConfig.pstSectionBank, pstParentSection))
+        orxCONFIG_SECTION *pstParentSection = orxNULL;
+        orxCONFIG_ENTRY   *pstEntry;
+
+        /* Has a parent ID? */
+        if(pstSection->u32ParentID != 0)
         {
-          /* Found? */
-          if(pstParentSection->u32ID == pstSection->u32ParentID)
+          /* For all sections */
+          for(pstParentSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+              pstParentSection != orxNULL;
+              pstParentSection = orxBank_GetNext(sstConfig.pstSectionBank, pstParentSection))
           {
-            break;
+            /* Found? */
+            if(pstParentSection->u32ID == pstSection->u32ParentID)
+            {
+              break;
+            }
           }
         }
-      }
 
-      /* Has a parent section */
-      if(pstParentSection != orxNULL)
-      {
-        /* Writes section name with inheritance */
-        fprintf(pstFile, "%c%s%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstParentSection->zName, orxCONFIG_KC_SECTION_END);
-      }
-      else
-      {
-        /* Writes section name */
-        fprintf(pstFile, "%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END);
-      }
+        /* Has a parent section */
+        if(pstParentSection != orxNULL)
+        {
+          /* Writes section name with inheritance */
+          fprintf(pstFile, "%c%s%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstParentSection->zName, orxCONFIG_KC_SECTION_END);
+        }
+        else
+        {
+          /* Writes section name */
+          fprintf(pstFile, "%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END);
+        }
 
-      /* For all entries */
-      for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
-          pstEntry != orxNULL;
-          pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
-      {
-        /* Writes it */
-        fprintf(pstFile, "%s%c%s%c\n", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxCONFIG_KC_COMMENT);
-      }
+        /* For all entries */
+        for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
+            pstEntry != orxNULL;
+            pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
+        {
+          /* No callback or should save it? */
+          if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, pstEntry->zKey) != orxFALSE))
+          {
+            /* Writes it */
+            fprintf(pstFile, "%s%c%s%c\n", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxCONFIG_KC_COMMENT);
+          }
+        }
 
-      /* Adds a new line */
-      fprintf(pstFile, "\n");
+        /* Adds a new line */
+        fprintf(pstFile, "\n");
+      }
     }
 
     /* Flushes & closes the file */

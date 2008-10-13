@@ -3070,22 +3070,26 @@ orxOBJECT *orxFASTCALL orxObject_Pick(orxCONST orxVECTOR *_pvPosition)
         /* Gets object position */
         orxObject_GetWorldPosition(pstObject, &vObjectPos);
 
-        /* Is last selected position? */
-        if(vObjectPos.fZ > fSelectedZ)
+        /* Is under position? */
+        if(vObjectPos.fZ >= _pvPosition->fZ)
         {
-          orxOBOX stObjectBox;
-
-          /* Gets its bounding box */
-          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+          /* No selection or above it? */
+          if((pstResult == NULL) || (vObjectPos.fZ < fSelectedZ))
           {
-            /* Is position in 2D box? */
-            if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
+            orxOBOX stObjectBox;
+
+            /* Gets its bounding box */
+            if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
             {
-              /* Updates result */
-              pstResult = pstObject;
-              
-              /* Updates selected position */
-              fSelectedZ = vObjectPos.fZ;
+              /* Is position in 2D box? */
+              if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
+              {
+                /* Updates result */
+                pstResult = pstObject;
+                
+                /* Updates selected position */
+                fSelectedZ = vObjectPos.fZ;
+              }
             }
           }
         }
