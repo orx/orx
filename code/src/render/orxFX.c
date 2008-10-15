@@ -1151,10 +1151,30 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
 
                     /* Neutralizes Z scale */
                     vStartScale.fZ = orxFLOAT_1;
+
+                    /* Makes sure we have valid values */
+                    if(vStartScale.fX == orxFLOAT_0)
+                    {
+                      vStartScale.fX = orx2F(0.000001f);
+                    }
+                    if(vStartScale.fY == orxFLOAT_0)
+                    {
+                      vStartScale.fY = orx2F(0.000001f);
+                    }
                   }
 
                   /* Gets end value */
                   orxVector_Lerp(&vEndScale, &(pstFXSlot->vStartScale), &(pstFXSlot->vEndScale), fEndCoef);
+
+                  /* Makes sure we have valid values */
+                  if(vEndScale.fX == orxFLOAT_0)
+                  {
+                    vEndScale.fX = orx2F(0.000001f);
+                  }
+                  if(vEndScale.fY == orxFLOAT_0)
+                  {
+                    vEndScale.fY = orx2F(0.000001f);
+                  }
 
                   /* Updates global scale value */
                   orxVector_Mul(&vScale, &vScale, orxVector_Div(&vEndScale, &vEndScale, &vStartScale));
