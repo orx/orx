@@ -46,6 +46,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g56df36ea719d5420c6d73d1bb5f15570">orxBank_GetNext</a> (orxCONST <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, orxCONST orxVOID *_pCell)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g4d27f867af43149bfb6592e0d7cb1c3c">orxBank_GetCounter</a> (orxCONST <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g505c8eef580aec1e2d656250bb9ed95c">orxBank_DebugPrint</a> (orxCONST <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
 
 </table>
@@ -301,6 +303,32 @@ Frees an allocated cell <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>a new cell of memory (orxNULL if no allocation possible) </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g4d27f867af43149bfb6592e0d7cb1c3c"></a><!-- doxytag: member="orxBank.h::orxBank_GetCounter" ref="g4d27f867af43149bfb6592e0d7cb1c3c" args="(orxCONST orxBANK *_pstBank)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxU32 orxFASTCALL orxBank_GetCounter           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBank</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets the bank allocated cell counter <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBank</em>&nbsp;</td><td>Concerned bank </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Number of allocated cells </dd></dl>
 
 </div>
 </div><p>

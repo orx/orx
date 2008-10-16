@@ -60,6 +60,7 @@ struct __orxBANK_t
   orxU32            u32ElemSize;            /**< Size of a cell */
   orxU16            u16NbCellPerSegments;   /**< Number of cells per banks */
   orxU16            u16SizeSegmentBitField; /**< Number of u32 (4 bytes) to represent a segment */
+  orxU32            u32Counter;             /**< Number of allocated cells */
 };
 
 typedef struct __orxBANK_STATIC_t
@@ -265,6 +266,7 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
     pstBank->u32ElemSize              = _u32Size;
     pstBank->u32Flags                 = _u32Flags;
     pstBank->u16NbCellPerSegments     = _u16NbElem;
+    pstBank->u32Counter               = 0;
 
     /* Compute the necessary number of 32 bits packs */
     pstBank->u16SizeSegmentBitField   = (orxU16)orxMemory_GetAlign(_u16NbElem, 32) >> 5;
@@ -391,6 +393,9 @@ orxVOID *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
       /* Decrease the number of free elements */
       pstCurrentSegment->u16NbFree--;
 
+      /* Updates bank counter */
+      _pstBank->u32Counter++;
+
       /* Set the bit as used */
       ((orxU32*)(pstCurrentSegment->pu32FreeElemBits))[u32FieldResultIndex] |= 1 << u32BitResultIndex;
       
@@ -454,6 +459,9 @@ orxVOID orxFASTCALL orxBank_Free(orxBANK *_pstBank, orxVOID *_pCell)
 
   /* Increase the number of free elements */
   pstSegment->u16NbFree++;
+
+  /* Updates bank counter */
+  _pstBank->u32Counter--;
 }
 
 /** Free all allocated cell from a bank
@@ -537,6 +545,20 @@ orxVOID *orxFASTCALL orxBank_GetNext(orxCONST orxBANK *_pstBank, orxCONST orxVOI
 
   /* Not found */
   return orxNULL;
+}
+
+/** Gets the bank allocated cell counter
+ * @param[in] _pstBank    Concerned bank
+ * @return Number of allocated cells
+ */
+orxU32 orxFASTCALL orxBank_GetCounter(orxCONST orxBANK *_pstBank)
+{
+  /* Checks */
+  orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBank != orxNULL);
+
+  /* Done! */
+  return _pstBank->u32Counter;
 }
 
 /*******************************************************************************

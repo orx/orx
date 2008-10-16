@@ -109,6 +109,12 @@ extern orxDLLAPI orxVOID orxFASTCALL        orxBank_Clear(orxBANK *_pstBank);
  */
 extern orxDLLAPI orxVOID *orxFASTCALL       orxBank_GetNext(orxCONST orxBANK *_pstBank, orxCONST orxVOID *_pCell);
 
+/** Gets the bank allocated cell counter
+ * @param[in] _pstBank    Concerned bank
+ * @return Number of allocated cells
+ */
+extern orxDLLAPI orxU32 orxFASTCALL        orxBank_GetCounter(orxCONST orxBANK *_pstBank);
+
 /*******************************************************************************
  * DEBUG FUNCTION
  ******************************************************************************/
