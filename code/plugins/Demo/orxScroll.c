@@ -182,10 +182,6 @@ orxSTATIC orxSTATUS orxScroll_Init()
     /* Links camera to root */
     orxCamera_SetParent(spstCamera, spstRoot);
 
-    /* Links background & overlay to camera */
-    orxObject_SetParent(pstBackground, spstCamera);
-    orxObject_SetParent(spstOverlay, spstCamera);
-
     /* Gets rendering clock */
     pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);
 

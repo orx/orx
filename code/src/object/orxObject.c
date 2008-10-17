@@ -111,6 +111,8 @@
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
 #define orxOBJECT_KZ_CONFIG_LIFETIME            "LifeTime"
+#define orxOBJECT_KZ_CONFIG_PARENT_CAMERA       "ParentCamera"
+#define orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE    "UseParentSpace"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
 #define orxOBJECT_KZ_X                          "x"
@@ -551,10 +553,11 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyName, zSpawnerName;
+      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyName, zSpawnerName, zCameraName;
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags, u32Flags;
-      orxVECTOR vValue;
+      orxVECTOR vValue, vParentSize;
+      orxBOOL   bHasParent = orxFALSE;
       orxEVENT  stEvent;
 
       /* Defaults to 2D flags */
@@ -635,6 +638,38 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         }
       }
 
+      /* *** Parent *** */
+
+      /* Gets camera file name */
+      zCameraName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_PARENT_CAMERA);
+
+      /* Valid? */
+      if((zCameraName != orxNULL) && (*zCameraName != *orxSTRING_EMPTY))
+      {
+        orxCAMERA *pstCamera;
+
+        /* Gets camera */
+        pstCamera = orxCamera_CreateFromConfig(zCameraName);
+
+        /* Valid? */
+        if(pstCamera != orxNULL)
+        {
+          orxAABOX stFrustum;
+
+          /* Sets it as parent */
+          orxObject_SetParent(pstResult, pstCamera);
+
+          /* Updates parent status */
+          bHasParent = orxTRUE;
+
+          /* Gets camera frustum */
+          orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+          /* Gets parent size */
+          orxVector_Sub(&vParentSize, &(stFrustum.vBR), &(stFrustum.vTL));
+        }
+      }
+
       /* *** Graphic *** */
 
       /* Gets graphic file name */
@@ -705,6 +740,15 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
           /* Updates vector */
           orxVector_SetAll(&vValue, fScale);
+        }
+
+        /* Use parent space and has a valid parent? */
+        if((bHasParent != orxFALSE)
+        && ((orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
+         || (orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) != orxFALSE)))
+        {
+          /* Gets world space values */
+          orxVector_Mul(&vValue, &vValue, &vParentSize);
         }
 
         /* Updates object scale */
@@ -794,6 +838,15 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Has a position? */
       if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_POSITION, &vValue) != orxNULL)
       {
+        /* Use parent space and has a valid parent? */
+        if((bHasParent != orxFALSE)
+        && ((orxConfig_HasValue(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) == orxFALSE)
+         || (orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE) != orxFALSE)))
+        {
+          /* Gets world space values */
+          orxVector_Mul(&vValue, &vValue, &vParentSize);
+        }
+
         /* Updates object position */
         orxObject_SetPosition(pstResult, &vValue);
       }
