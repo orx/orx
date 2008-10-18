@@ -94,9 +94,10 @@ struct __orxSOUND_t
   orxSTRUCTURE          stStructure;                    /**< Public structure, first structure member : 16 */
   orxSTRING             zReference;                     /**< Sound reference : 20 */
   orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 24 */
+  orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 28 */
 
   /* Padding */
-  orxPAD(24)
+  orxPAD(28)
 };
 
 /** Static structure
@@ -404,20 +405,19 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Is a sound? */
       if(orxConfig_HasValue(orxSOUND_KZ_CONFIG_SOUND) != orxFALSE)
       {
-        orxSOUND_SAMPLE  *pstSample;
-        orxSTRING         zSoundName;
+        orxSTRING zSoundName;
 
         /* Gets sound name */
         zSoundName = orxConfig_GetString(orxSOUND_KZ_CONFIG_SOUND);
 
         /* Loads its corresponding sample */
-        pstSample = orxSound_LoadSample(zSoundName);
+        pstResult->pstSample = orxSound_LoadSample(zSoundName);
 
         /* Valid? */
-        if(pstSample != orxNULL)
+        if(pstResult->pstSample != orxNULL)
         {
           /* Creates sound data based on it */
-          pstResult->pstData = orxSoundSystem_CreateFromSample(pstSample->pstData);
+          pstResult->pstData = orxSoundSystem_CreateFromSample(pstResult->pstSample->pstData);
 
           /* Valid? */
           if(pstResult->pstData != orxNULL)
@@ -438,7 +438,10 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           else
           {
             /* Deletes sample */
-            orxSound_UnloadSample(pstSample);
+            orxSound_UnloadSample(pstResult->pstSample);
+
+            /* Removes its reference */
+            pstResult->pstSample = orxNULL;
 
             /* Updates its status */
             orxStructure_SetFlags(pstResult, orxSOUND_KU32_FLAG_NONE, orxSOUND_KU32_MASK_ALL);
@@ -583,17 +586,8 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
       /* Has a referenced sample? */
       if(orxStructure_TestFlags(_pstSound, orxSOUND_KU32_FLAG_HAS_SAMPLE))
       {
-        orxSOUND_SAMPLE *pstSample;
-
-        /* Gets its sample */
-        pstSample = orxHashTable_Get(sstSound.pstReferenceTable, orxString_ToCRC(_pstSound->zReference));
-
-        /* Valid? */
-        if(pstSample != orxNULL)
-        {
-          /* Unloads it */
-          orxSound_UnloadSample(pstSample);
-        }
+        /* Unloads it */
+        orxSound_UnloadSample(_pstSound->pstSample);
       }
 
       /* Deletes structure */
