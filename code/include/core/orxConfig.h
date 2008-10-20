@@ -47,7 +47,7 @@
 
 
 /** Config callback function type to use with save function */
-typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(orxCONST orxSTRING _zSectionName, orxCONST orxSTRING _zKeyName);
+typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(orxCONST orxSTRING _zSectionName, orxCONST orxSTRING _zKeyName, orxBOOL _bUseEncryption);
 
 
 /** Config module setup
@@ -63,6 +63,12 @@ extern orxDLLAPI orxSTATUS              orxConfig_Init();
  */
 extern orxDLLAPI orxVOID                orxConfig_Exit();
 
+
+/** Sets encryption key
+ * @param[in] _zEncryptionKey  Encryption key to use, orxNULL to clear
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetEncryptionKey(orxCONST orxSTRING _zEncryptionKey);
 
 /** Sets config base name
  * @param[in] _zBaseName        Base name used for default config file
@@ -84,10 +90,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ReloadHistory();
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
+ * @param[in] _bUseEncryption   Use file encryption to make it human non-readable?
  * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxConfig_Save(orxCONST orxSTRING _zFileName, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
+extern orxDLLAPI orxSTATUS              orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
 
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select

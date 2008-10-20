@@ -47,12 +47,12 @@
 
 /** Module flags
  */
-#define orxCONFIG_KU32_STATIC_FLAG_NONE     0x00000000  /**< No flags */
+#define orxCONFIG_KU32_STATIC_FLAG_NONE           0x00000000  /**< No flags */
 
-#define orxCONFIG_KU32_STATIC_FLAG_READY    0x00000001  /**< Ready flag */
-#define orxCONFIG_KU32_STATIC_FLAG_HISTORY  0x00000002  /**< Keep history flag */
+#define orxCONFIG_KU32_STATIC_FLAG_READY          0x00000001  /**< Ready flag */
+#define orxCONFIG_KU32_STATIC_FLAG_HISTORY        0x00000002  /**< Keep history flag */
 
-#define orxCONFIG_KU32_STATIC_MASK_ALL      0xFFFFFFFF  /**< All mask */
+#define orxCONFIG_KU32_STATIC_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
 
 /** Defines
@@ -75,6 +75,10 @@
 
 #define orxCONFIG_KZ_CONFIG_SECTION         "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_HISTORY         "History"   /**< History config entry name */
+
+#define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY "Orx Default Encryption Key =)" /**< Orx default encryption key */
+#define orxCONFIG_KZ_ENCRYPTION_TAG         "OECF"      /**< Encryption file tag */
+#define orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH 4          /**< Encryption file tag length */
 
 #ifdef __orxDEBUG__
 
@@ -162,6 +166,9 @@ typedef struct __orxCONFIG_STATIC_t
   orxU32              u32Flags;             /**< Control flags */
   orxCHAR             zBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH]; /**< Base file name */
   orxU32              u32LoadCounter;       /**< Load counter */
+  orxSTRING           zEncryptionKey;       /**< Encryption key */
+  orxU32              u32EncryptionKeySize; /**< Encryption key size */
+  orxCHAR            *pcEncryptionChar;     /**< Current encryption char */
 
 } orxCONFIG_STATIC;
 
@@ -178,6 +185,37 @@ orxSTATIC orxCONFIG_STATIC sstConfig;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** En/De-crypts a buffer using global encryption key
+ * @param[in] _acBuffer         Buffer to en/de-crypt
+ * @param[in] _u32BufferSize    Buffer size
+ */
+orxSTATIC orxINLINE orxVOID orxConfig_CryptBuffer(orxCHAR *_acBuffer, orxU32 _u32BufferSize)
+{
+  orxCHAR *pc, *pcKey, *pcEndKey, *pcStartKey;
+
+  orxASSERT(sstConfig.zEncryptionKey != orxNULL);
+
+  /* Gets current, first and last encryption character */
+  pcKey       = sstConfig.pcEncryptionChar;
+  pcStartKey  = sstConfig.zEncryptionKey;
+  pcEndKey    = sstConfig.zEncryptionKey + sstConfig.u32EncryptionKeySize - 1;
+
+  /* For all characters */
+  for(pc = _acBuffer; pc < _acBuffer + _u32BufferSize; pc++)
+  {
+    /* En/De-crypts character */
+    *pc ^= *pcKey;
+
+    /* Updates key pointer */
+    pcKey = (pcKey == pcEndKey) ? sstConfig.zEncryptionKey : pcKey + 1;
+  }
+
+  /* Updates global current encryption character */
+  sstConfig.pcEncryptionChar = pcKey;
+
+  return;
+}
 
 /** Gets an entry from the current section
  * @param[in] _u32KeyID         Entry key ID
@@ -539,10 +577,14 @@ orxSTATUS orxConfig_Init()
   /* Not already Initialized? */
   if(!orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
   {
-    orxCHAR zBackupBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH];
+    orxCHAR   zBackupBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH];
+    orxSTRING zBackupEncryptionKey;
 
     /* Backups base file name */
     orxMemory_Copy(zBackupBaseFile, sstConfig.zBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH);
+
+    /* Backups encryption key */
+    zBackupEncryptionKey = sstConfig.zEncryptionKey;
 
     /* Cleans control structure */
     orxMemory_Zero(&sstConfig, sizeof(orxCONFIG_STATIC));
@@ -557,6 +599,20 @@ orxSTATUS orxConfig_Init()
     {
       /* Stores default base file name */
       orxString_Copy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE);
+    }
+
+    /* Valid encryption key? */
+    if(zBackupEncryptionKey != orxNULL)
+    {
+      /* Restores it */
+      sstConfig.zEncryptionKey        = zBackupEncryptionKey;
+      sstConfig.u32EncryptionKeySize  = orxString_GetLength(zBackupEncryptionKey);
+      sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
+    }
+    else
+    {
+      /* Sets default encryption key */
+      orxConfig_SetEncryptionKey(orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY);
     }
 
     /* Creates section bank */
@@ -648,6 +704,41 @@ orxVOID orxConfig_Exit()
   return;
 }
 
+/** Sets encryption key
+ * @param[in] _zEncryption key  Encryption key to use, orxNULL to clear
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(orxCONST orxSTRING _zEncryptionKey)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Had encryption key? */
+  if(sstConfig.zEncryptionKey != orxNULL)
+  {
+    /* Deletes it */
+    orxString_Delete(sstConfig.zEncryptionKey);
+  }
+
+  /* Has new key? */
+  if((_zEncryptionKey != orxNULL) && (*_zEncryptionKey != *orxSTRING_EMPTY))
+  {
+    /* Updates values */
+    sstConfig.zEncryptionKey        = orxString_Duplicate(_zEncryptionKey);
+    sstConfig.u32EncryptionKeySize  = orxString_GetLength(sstConfig.zEncryptionKey);
+    sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
+  }
+  else
+  {
+    /* Updates values */
+    sstConfig.zEncryptionKey        = orxNULL;
+    sstConfig.u32EncryptionKeySize  = 0;
+    sstConfig.pcEncryptionChar      = orxNULL;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets config base name
  * @param[in] _zBaseName        Base name used for default config file
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -734,7 +825,7 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
     if(pstSection == orxNULL)
     {
       /* Creates it */
-      pstSection = orxConfig_CreateSection(_zSectionName, u32SectionID, u32ParentID);
+      pstSection = orxConfig_CreateSection(_zSectionName, u32SectionID, (u32ParentID != orxU32_UNDEFINED) ? u32ParentID : 0);
 
       /* Success? */
       if(pstSection != orxNULL)
@@ -825,25 +916,69 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
   sstConfig.u32LoadCounter++;
 
   /* Valid file to open? */
-  if((*_zFileName != *orxSTRING_EMPTY) && ((pstFile = fopen(_zFileName, "r")) != orxNULL))
+  if((*_zFileName != *orxSTRING_EMPTY) && ((pstFile = fopen(_zFileName, "rb")) != orxNULL))
   {
-    orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
+    orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
     orxU32              u32Size, u32Offset;
+    orxBOOL             bUseEncryption, bFirstTime;
     orxCONFIG_SECTION  *pstPreviousSection;
 
     /* Gets previous config section */
     pstPreviousSection = sstConfig.pstCurrentSection;
 
+    /* Gets previous encryption character */
+    pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
+
+    /* Reinits current encryption character */
+    sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
+
     /* While file isn't empty */
-    for(u32Size = (orxU32)fread(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0;
+    for(u32Size = (orxU32)fread(acBuffer, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE, pstFile), u32Offset = 0, bFirstTime = orxTRUE;
         u32Size > 0;
-        u32Size = (orxU32)fread(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset)
+        u32Size = (orxU32)fread(acBuffer + u32Offset, sizeof(orxCHAR), orxCONFIG_KU32_BUFFER_SIZE - u32Offset, pstFile) + u32Offset, bFirstTime = orxFALSE)
     {
       orxCHAR  *pc, *pcKeyEnd, *pcValueStart, *pcLineStart;
       orxBOOL   bBlockMode;
 
+      /* First time? */
+      if(bFirstTime != orxFALSE)
+      {
+        /* Has encryption tag? */
+        if(orxString_NCompare(acBuffer, orxCONFIG_KZ_ENCRYPTION_TAG, orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH) == 0)
+        {
+          /* Updates encryption status */
+          bUseEncryption = orxTRUE;
+
+          /* Updates start of line */
+          pcLineStart = acBuffer + orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH;
+
+          /* Updates offset */
+          u32Offset = orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH;
+        }
+        else
+        {
+          /* Updates encryption status */
+          bUseEncryption = orxFALSE;
+
+          /* Updates start of line */
+          pcLineStart = acBuffer;
+        }
+      }
+      else
+      {
+        /* Updates start of line */
+        pcLineStart = acBuffer;
+      }
+
+      /* Uses encryption? */
+      if(bUseEncryption != orxFALSE)
+      {
+        /* Decrypts all new characters */
+        orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
+      }
+
       /* For all buffered characters */
-      for(pc = pcLineStart = acBuffer, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE;
+      for(pc = pcLineStart, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE;
           pc < acBuffer + u32Size;
           pc++)
       {
@@ -1115,6 +1250,9 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
 
     /* Restores previous section */
     sstConfig.pstCurrentSection = pstPreviousSection;
+
+    /* Restores previous encryption character */
+    sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
   }
 
   /* Updates load counter */
@@ -1180,10 +1318,11 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
+ * @param[in] _bUseEncryption   Use file encryption to make it human non-readable?
  * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
+orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
   FILE     *pstFile;
   orxSTRING zFileName;
@@ -1192,89 +1331,150 @@ orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName, orxCONST orxCONFIG_SAVE_
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
-  /* Is given file name valid? */
-  if((_zFileName != orxNULL) && (*_zFileName != *orxSTRING_EMPTY))
+  /* No encryption requested or has a valid key? */
+  if((_bUseEncryption == orxFALSE) || (sstConfig.zEncryptionKey != orxNULL))
   {
-    /* Uses it */
-    zFileName = _zFileName;
+    /* Is given file name valid? */
+    if((_zFileName != orxNULL) && (*_zFileName != *orxSTRING_EMPTY))
+    {
+      /* Uses it */
+      zFileName = _zFileName;
+    }
+    else
+    {
+      /* Uses default file */
+      zFileName = sstConfig.zBaseFile;
+    }
+
+    /* Opens file */
+    pstFile = fopen(zFileName, "wb+");
+
+    /* Valid? */
+    if(pstFile != orxNULL)
+    {
+      orxCONFIG_SECTION  *pstSection;
+      orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
+      orxU32              u32BufferSize;
+
+      /* Use encryption? */
+      if(_bUseEncryption != orxFALSE)
+      {
+        /* Gets previous encryption character */
+        pcPreviousEncryptionChar = sstConfig.pcEncryptionChar;
+
+        /* Resets current encryption character */
+        sstConfig.pcEncryptionChar = sstConfig.zEncryptionKey;
+
+        /* Adds encryption tag */
+        fprintf(pstFile, "%s", orxCONFIG_KZ_ENCRYPTION_TAG);
+      }
+
+      /* For all sections */
+      for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+          pstSection != orxNULL;
+          pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+      {
+        /* No callback or should save it? */
+        if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, orxNULL, _bUseEncryption) != orxFALSE))
+        {
+          orxCONFIG_SECTION *pstParentSection = orxNULL;
+          orxCONFIG_ENTRY   *pstEntry;
+
+          /* Has a parent ID? */
+          if(pstSection->u32ParentID != 0)
+          {
+            /* For all sections */
+            for(pstParentSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+                pstParentSection != orxNULL;
+                pstParentSection = orxBank_GetNext(sstConfig.pstSectionBank, pstParentSection))
+            {
+              /* Found? */
+              if(pstParentSection->u32ID == pstSection->u32ParentID)
+              {
+                break;
+              }
+            }
+          }
+
+          /* Has a parent section */
+          if(pstParentSection != orxNULL)
+          {
+            /* Writes section name with inheritance */
+            u32BufferSize = sprintf(acBuffer, "%c%s%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstParentSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+          }
+          else
+          {
+            /* Writes section name */
+            u32BufferSize = sprintf(acBuffer, "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+          }
+
+          /* Encrypt? */
+          if(_bUseEncryption != orxFALSE)
+          {
+            /* Encrypts buffer */
+            orxConfig_CryptBuffer(acBuffer, u32BufferSize);
+          }
+
+          /* Saves it */
+          fwrite(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+
+          /* For all entries */
+          for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
+              pstEntry != orxNULL;
+              pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
+          {
+            /* No callback or should save it? */
+            if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, pstEntry->zKey, _bUseEncryption) != orxFALSE))
+            {
+              /* Writes it */
+              u32BufferSize = sprintf(acBuffer, "%s%c%s%c%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxCONFIG_KC_COMMENT, orxSTRING_EOL);
+
+              /* Encrypt? */
+              if(_bUseEncryption != orxFALSE)
+              {
+                /* Encrypts buffer */
+                orxConfig_CryptBuffer(acBuffer, u32BufferSize);
+              }
+
+              /* Saves it */
+              fwrite(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+            }
+          }
+
+          /* Adds a new line */
+          u32BufferSize = sprintf(acBuffer, "%s", orxSTRING_EOL);
+
+          /* Encrypt? */
+          if(_bUseEncryption != orxFALSE)
+          {
+            /* Encrypts buffer */
+            orxConfig_CryptBuffer(acBuffer, u32BufferSize);
+          }
+
+          /* Saves it */
+          fwrite(acBuffer, sizeof(orxCHAR), u32BufferSize, pstFile);
+        }
+      }
+
+      /* Flushes & closes the file */
+      if((fflush(pstFile) == 0) && (fclose(pstFile) == 0))
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+
+      /* Use encryption? */
+      if(_bUseEncryption != orxFALSE)
+      {
+        /* Restores previous encryption character */
+        sstConfig.pcEncryptionChar = pcPreviousEncryptionChar;
+      }
+    }
   }
   else
   {
-    /* Uses default file */
-    zFileName = sstConfig.zBaseFile;
-  }
-
-  /* Opens file */
-  pstFile = fopen(zFileName, "w+");
-
-  /* Valid? */
-  if(pstFile != orxNULL)
-  {
-    orxCONFIG_SECTION *pstSection;
-
-    /* For all sections */
-    for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
-        pstSection != orxNULL;
-        pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
-    {
-      /* No callback or should save it? */
-      if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, orxNULL) != orxFALSE))
-      {
-        orxCONFIG_SECTION *pstParentSection = orxNULL;
-        orxCONFIG_ENTRY   *pstEntry;
-
-        /* Has a parent ID? */
-        if(pstSection->u32ParentID != 0)
-        {
-          /* For all sections */
-          for(pstParentSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
-              pstParentSection != orxNULL;
-              pstParentSection = orxBank_GetNext(sstConfig.pstSectionBank, pstParentSection))
-          {
-            /* Found? */
-            if(pstParentSection->u32ID == pstSection->u32ParentID)
-            {
-              break;
-            }
-          }
-        }
-
-        /* Has a parent section */
-        if(pstParentSection != orxNULL)
-        {
-          /* Writes section name with inheritance */
-          fprintf(pstFile, "%c%s%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstParentSection->zName, orxCONFIG_KC_SECTION_END);
-        }
-        else
-        {
-          /* Writes section name */
-          fprintf(pstFile, "%c%s%c\n", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END);
-        }
-
-        /* For all entries */
-        for(pstEntry = orxBank_GetNext(pstSection->pstBank, orxNULL);
-            pstEntry != orxNULL;
-            pstEntry = orxBank_GetNext(pstSection->pstBank, pstEntry))
-        {
-          /* No callback or should save it? */
-          if((_pfnSaveCallback == orxNULL) || (_pfnSaveCallback(pstSection->zName, pstEntry->zKey) != orxFALSE))
-          {
-            /* Writes it */
-            fprintf(pstFile, "%s%c%s%c\n", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxCONFIG_KC_COMMENT);
-          }
-        }
-
-        /* Adds a new line */
-        fprintf(pstFile, "\n");
-      }
-    }
-
-    /* Flushes & closes the file */
-    if((fflush(pstFile) == 0) && (fclose(pstFile) == 0))
-    {
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't save config file <%s> with encryption: no valid encryption key provided!", _zFileName);
   }
 
   /* Done! */

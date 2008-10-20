@@ -22,7 +22,7 @@
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxBOOL(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g08bfb97eb8c19f4e5f05d14fd5a48c3a">orxCONFIG_SAVE_FUNCTION</a> )(orxCONST orxSTRING _zSectionName, orxCONST orxSTRING _zKeyName)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxBOOL(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9a52cfaad8559d707e6465e4e6db496">orxCONFIG_SAVE_FUNCTION</a> )(orxCONST orxSTRING _zSectionName, orxCONST orxSTRING _zKeyName, orxBOOL _bUseEncryption)</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g6f595a0c8c74c7fffd39339a2ce9456a">orxConfig_Setup</a> ()</td></tr>
@@ -31,13 +31,15 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#geba5a340bc80a039aaafe1fa485c6a19">orxConfig_Exit</a> ()</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gb642cea80d2144b651223df1399b3c29">orxConfig_SetEncryptionKey</a> (orxCONST orxSTRING _zEncryptionKey)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g0b493fcac26b115629cb3bf238f4f065">orxConfig_SetBaseName</a> (orxCONST orxSTRING _zBaseName)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g80d60ef05259902af3ad73ed42c3c319">orxConfig_Load</a> (orxCONST orxSTRING _zFileName)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g562bf302ede01bd632e5676cc9fef764">orxConfig_ReloadHistory</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gd9d6b060b7852a097a79c6a8c9b9783c">orxConfig_Save</a> (orxCONST orxSTRING _zFileName, orxCONST <a class="el" href="group__orx_config.html#g08bfb97eb8c19f4e5f05d14fd5a48c3a">orxCONFIG_SAVE_FUNCTION</a> _pfnSaveCallback)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g6debea97e371b4bb06df56c463fdbc3c">orxConfig_Save</a> (orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption, orxCONST <a class="el" href="group__orx_config.html#ga9a52cfaad8559d707e6465e4e6db496">orxCONFIG_SAVE_FUNCTION</a> _pfnSaveCallback)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gecb0f3bd9a57e6fb412e5041cedd9cbe">orxConfig_SelectSection</a> (orxCONST orxSTRING _zSectionName)</td></tr>
 
