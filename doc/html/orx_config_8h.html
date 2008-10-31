@@ -75,11 +75,29 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gadf6fbc798654ad1b197bcf51d4595af">orxConfig_SetVector</a> (orxCONST orxSTRING _zKey, orxCONST <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvValue)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g988ee95d7d4fc5327f5444d6be9c44ed">orxConfig_IsList</a> (orxCONST orxSTRING _zKey)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g235271d390eee19b40b631cc140b6601">orxConfig_GetListCounter</a> (orxCONST orxSTRING _zKey)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g3a74f6add536119364762db3eef4a941">orxConfig_GetListS32</a> (orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g71217ef719ba0e4905451b6fb4307636">orxConfig_GetListU32</a> (orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g863eee0c2a74f07f1222fe19f4d92209">orxConfig_GetListFloat</a> (orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gdd15a3b1ba4be4b84c654129d888d109">orxConfig_GetListString</a> (orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g6dbec2e99892f64fa948efa20bd99467">orxConfig_GetListBool</a> (orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaac54a62c41f5c95bae640123f1d8ad1">orxConfig_GetListVector</a> (orxCONST orxSTRING _zKey, orxS32 _s32ListIndex, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvVector)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 <dl class="date" compact><dt><b>Date:</b></dt><dd>02/02/2008 </dd></dl>
 <dl class="author" compact><dt><b>Author:</b></dt><dd><a href="mailto:iarwain@orx-project.org">iarwain@orx-project.org</a></dd></dl>
-<dl compact><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd></dd></dl>
+<dl compact><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd><ul>
+<li>Needs to refactor value getter (lot of duplicated code to handle random and lists) </li></ul>
+</dd></dl>
 </div>
 <hr size="1"><address style="text-align: right;"><small>
 Generated for orx by&nbsp;<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>

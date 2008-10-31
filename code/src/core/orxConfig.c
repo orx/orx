@@ -127,8 +127,9 @@ typedef struct __orxCONFIG_VALUE_t
 {
   orxSTRING             zValue;             /**< Literal value : 4 */
   orxCONFIG_VALUE_TYPE  eType;              /**< Value type : 8 */
-  orxU16                u16ListCounter;     /**< List counter : 10 */
-  orxU16                u16Flags;           /**< Status flags : 12 */
+  orxU16                u16Flags;           /**< Status flags : 10 */
+  orxS8                 s8ListCounter;      /**< List counter : 11 */
+  orxS8                 s8CacheIndex;       /**< Cache index : 12 */
 
   union
   {
@@ -404,22 +405,28 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
       if(pstEntry->zKey != orxNULL)
       {
         orxCHAR  *pc;
-        orxU16    u16Counter, u16Flags;
+        orxS8     s8Counter;
+        orxU16    u16Flags;
 
         /* For all characters */
-        for(pc = pstEntry->stValue.zValue, u16Counter = 1, u16Flags = orxCONFIG_VALUE_KU16_FLAG_NONE; *pc != orxCHAR_NULL; pc++)
+        for(pc = pstEntry->stValue.zValue, s8Counter = 1, u16Flags = orxCONFIG_VALUE_KU16_FLAG_NONE; *pc != orxCHAR_NULL; pc++)
         {
           /* Is a list separator? */
           if(*pc == orxCONFIG_KC_LIST_SEPARATOR)
           {
-            /* Not doubled? */
-            if(*(pc + 1) != orxCONFIG_KC_LIST_SEPARATOR)
+            /* Not too long? */
+            if(s8Counter < 0xFF)
             {
               /* Updates list counter */
-              u16Counter++;
+              s8Counter++;
 
               /* Updates flags */
               u16Flags |= orxCONFIG_VALUE_KU16_FLAG_LIST;
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "List for <%s.%s> is too long, more than 256 values have been found.", _zKey, _zValue);
             }
           }
           else if(*pc == orxCONFIG_KC_RANDOM_SEPARATOR)
@@ -429,12 +436,8 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
           }
         }
 
-        /* Is a list? */
-        if(orxFLAG_TEST(u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
-        {
-          /* Stores its counter */
-          pstEntry->stValue.u16ListCounter = u16Counter;
-        }
+        /* Stores its counter */
+        pstEntry->stValue.s8ListCounter = s8Counter;
 
         /* Updates its flags */
         pstEntry->stValue.u16Flags = u16Flags;
@@ -607,6 +610,723 @@ orxSTATIC orxINLINE orxVOID orxConfig_Clear()
 
   return;
 }
+
+/** Reads a signed integer value from config value
+ * @param[in]   _pstValue         Concerned config value
+ * @param[in]   _s8ListIndex      List index
+ * @return The value
+ */
+orxSTATIC orxINLINE orxS32 orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue, orxS8 _s8ListIndex)
+{
+  orxS32 s32Result = 0;
+
+  /* Checks */
+  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_s8ListIndex < _pstValue->s8ListCounter);
+
+  /* Random index? */
+  if(_s8ListIndex < 0)
+  {
+    /* Not a list or first index? */
+    if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      _s8ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      _s8ListIndex = (orxS8)orxMath_GetRandomS32(0, (orxS32)_pstValue->s8ListCounter);
+    }
+  }
+
+  /* Is it cached and on the same index? */
+  if((_pstValue->eType == orxCONFIG_VALUE_TYPE_S32) && (_s8ListIndex == _pstValue->s8CacheIndex))
+  {
+    /* Random? */
+    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+    {
+      /* Updates result */
+      s32Result = orxMath_GetRandomS32(_pstValue->s32Value, _pstValue->s32AltValue);
+    }
+    else
+    {
+      /* Updates result */
+      s32Result = _pstValue->s32Value;
+    }
+  }
+  else
+  {
+    orxS32    s32Value;
+    orxSTRING zRemainder, zStart;
+
+    /* Not a list or first index? */
+    if((!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    || (_s8ListIndex == 0))
+    {
+      /* Uses whole value */
+      zStart = _pstValue->zValue;
+    }
+    else
+    {
+      orxS32 s32ListSeparatorIndex, s32Counter;
+
+      /* Gets to the correct item start */
+      for(s32ListSeparatorIndex = 0, s32Counter = (orxS32)_s8ListIndex;
+          s32Counter != 0;
+          s32ListSeparatorIndex = orxString_SearchCharIndex(_pstValue->zValue, orxCONFIG_KC_LIST_SEPARATOR, s32ListSeparatorIndex) + 1, s32Counter--);
+
+      /* Gets its string */
+      zStart = _pstValue->zValue + s32ListSeparatorIndex;
+    }
+
+    /* Gets value */
+    if(orxString_ToS32(zStart, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
+    {
+      orxS32  s32RandomSeparatorIndex = 0;
+      orxBOOL bRandom = orxFALSE;
+
+      /* Random? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Valid? */
+        if(s32RandomSeparatorIndex >= 0)
+        {
+          /* Is a list? */
+          if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+          {
+            orxS32 s32ListSeparatorIndex;
+
+            /* Gets next separator index */
+            s32ListSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_LIST_SEPARATOR, 0);
+
+            /* Not found or after random separator? */
+            if((s32ListSeparatorIndex < 0) || (s32ListSeparatorIndex > s32RandomSeparatorIndex))
+            {
+              /* Updates random status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates random status */
+            bRandom = orxTRUE;
+          }
+        }
+      }
+
+      /* Random? */
+      if(bRandom != orxFALSE)
+      {
+        orxS32 s32OtherValue;
+
+        /* Has another value? */
+        if(orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Updates cache */
+          _pstValue->eType        = orxCONFIG_VALUE_TYPE_S32;
+          _pstValue->s8CacheIndex = _s8ListIndex;
+          _pstValue->s32Value     = s32Value;
+          _pstValue->s32AltValue  = s32OtherValue;
+
+          /* Updates result */
+          s32Result = orxMath_GetRandomS32(s32Value, s32OtherValue);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 random from config value <%s>.", _pstValue->zValue);
+
+          /* Clears cache */
+          _pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+
+          /* Updates result */
+          s32Result = s32Value;
+        }
+      }
+      else
+      {
+        /* Updates cache */
+        _pstValue->eType        = orxCONFIG_VALUE_TYPE_S32;
+        _pstValue->s8CacheIndex = _s8ListIndex;
+        _pstValue->s32Value     = s32Value;
+
+        /* Updates result */
+        s32Result = s32Value;
+      }
+    }
+  }
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Reads an unsigned integer value from config value
+ * @param[in]   _pstValue         Concerned config value
+ * @param[in]   _s8ListIndex      List index
+ * @return The value
+ */
+orxSTATIC orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue, orxS8 _s8ListIndex)
+{
+  orxU32 u32Result = 0;
+
+  /* Checks */
+  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_s8ListIndex < _pstValue->s8ListCounter);
+
+  /* Random index? */
+  if(_s8ListIndex < 0)
+  {
+    /* Not a list or first index? */
+    if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      _s8ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      _s8ListIndex = (orxS8)orxMath_GetRandomS32(0, (orxS32)_pstValue->s8ListCounter);
+    }
+  }
+
+  /* Is it cached and on the same index? */
+  if((_pstValue->eType == orxCONFIG_VALUE_TYPE_U32) && (_s8ListIndex == _pstValue->s8CacheIndex))
+  {
+    /* Random? */
+    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+    {
+      /* Updates result */
+      u32Result = orxMath_GetRandomU32(_pstValue->u32Value, _pstValue->u32AltValue);
+    }
+    else
+    {
+      /* Updates result */
+      u32Result = _pstValue->u32Value;
+    }
+  }
+  else
+  {
+    orxU32    u32Value;
+    orxSTRING zRemainder, zStart;
+
+    /* Not a list or first index? */
+    if((!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    || (_s8ListIndex == 0))
+    {
+      /* Uses whole value */
+      zStart = _pstValue->zValue;
+    }
+    else
+    {
+      orxS32 s32ListSeparatorIndex, s32Counter;
+
+      /* Gets to the correct item start */
+      for(s32ListSeparatorIndex = 0, s32Counter = (orxS32)_s8ListIndex;
+          s32Counter != 0;
+          s32ListSeparatorIndex = orxString_SearchCharIndex(_pstValue->zValue, orxCONFIG_KC_LIST_SEPARATOR, s32ListSeparatorIndex) + 1, s32Counter--);
+
+      /* Gets its string */
+      zStart = _pstValue->zValue + s32ListSeparatorIndex;
+    }
+
+    /* Gets value */
+    if(orxString_ToU32(zStart, &u32Value, &zRemainder) != orxSTATUS_FAILURE)
+    {
+      orxS32  s32RandomSeparatorIndex = 0;
+      orxBOOL bRandom = orxFALSE;
+
+      /* Random? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Valid? */
+        if(s32RandomSeparatorIndex >= 0)
+        {
+          /* Is a list? */
+          if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+          {
+            orxS32 s32ListSeparatorIndex;
+
+            /* Gets next separator index */
+            s32ListSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_LIST_SEPARATOR, 0);
+
+            /* Not found or after random separator? */
+            if((s32ListSeparatorIndex < 0) || (s32ListSeparatorIndex > s32RandomSeparatorIndex))
+            {
+              /* Updates random status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates random status */
+            bRandom = orxTRUE;
+          }
+        }
+      }
+
+      /* Random? */
+      if(bRandom != orxFALSE)
+      {
+        orxU32 u32OtherValue;
+
+        /* Has another value? */
+        if(orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Updates cache */
+          _pstValue->eType        = orxCONFIG_VALUE_TYPE_U32;
+          _pstValue->s8CacheIndex = _s8ListIndex;
+          _pstValue->u32Value     = u32Value;
+          _pstValue->u32AltValue  = u32OtherValue;
+
+          /* Updates result */
+          u32Result = orxMath_GetRandomU32(u32Value, u32OtherValue);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 random from config value <%s>.", _pstValue->zValue);
+
+          /* Clears cache */
+          _pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+
+          /* Updates result */
+          u32Result = u32Value;
+        }
+      }
+      else
+      {
+        /* Updates cache */
+        _pstValue->eType        = orxCONFIG_VALUE_TYPE_U32;
+        _pstValue->s8CacheIndex = _s8ListIndex;
+        _pstValue->u32Value     = u32Value;
+
+        /* Updates result */
+        u32Result = u32Value;
+      }
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Reads a float value from config value
+ * @param[in]   _pstValue         Concerned config value
+ * @param[in]   _s8ListIndex      List index
+ * @return The value
+ */
+orxSTATIC orxINLINE orxFLOAT orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValue, orxS8 _s8ListIndex)
+{
+  orxFLOAT fResult = orxFLOAT_0;
+
+  /* Checks */
+  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_s8ListIndex < _pstValue->s8ListCounter);
+
+  /* Random index? */
+  if(_s8ListIndex < 0)
+  {
+    /* Not a list or first index? */
+    if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      _s8ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      _s8ListIndex = (orxS8)orxMath_GetRandomS32(0, (orxS32)_pstValue->s8ListCounter);
+    }
+  }
+
+  /* Is it cached and on the same index? */
+  if((_pstValue->eType == orxCONFIG_VALUE_TYPE_FLOAT) && (_s8ListIndex == _pstValue->s8CacheIndex))
+  {
+    /* Random? */
+    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+    {
+      /* Updates result */
+      fResult = orxMath_GetRandomFloat(_pstValue->fValue, _pstValue->fAltValue);
+    }
+    else
+    {
+      /* Updates result */
+      fResult = _pstValue->fValue;
+    }
+  }
+  else
+  {
+    orxFLOAT  fValue;
+    orxSTRING zRemainder, zStart;
+
+    /* Not a list or first index? */
+    if((!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    || (_s8ListIndex == 0))
+    {
+      /* Uses whole value */
+      zStart = _pstValue->zValue;
+    }
+    else
+    {
+      orxS32 s32ListSeparatorIndex, s32Counter;
+
+      /* Gets to the correct item start */
+      for(s32ListSeparatorIndex = 0, s32Counter = (orxS32)_s8ListIndex;
+          s32Counter != 0;
+          s32ListSeparatorIndex = orxString_SearchCharIndex(_pstValue->zValue, orxCONFIG_KC_LIST_SEPARATOR, s32ListSeparatorIndex) + 1, s32Counter--);
+
+      /* Gets its string */
+      zStart = _pstValue->zValue + s32ListSeparatorIndex;
+    }
+
+    /* Gets value */
+    if(orxString_ToFloat(zStart, &fValue, &zRemainder) != orxSTATUS_FAILURE)
+    {
+      orxS32  s32RandomSeparatorIndex = 0;
+      orxBOOL bRandom = orxFALSE;
+
+      /* Random? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Valid? */
+        if(s32RandomSeparatorIndex >= 0)
+        {
+          /* Is a list? */
+          if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+          {
+            orxS32 s32ListSeparatorIndex;
+
+            /* Gets next separator index */
+            s32ListSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_LIST_SEPARATOR, 0);
+
+            /* Not found or after random separator? */
+            if((s32ListSeparatorIndex < 0) || (s32ListSeparatorIndex > s32RandomSeparatorIndex))
+            {
+              /* Updates random status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates random status */
+            bRandom = orxTRUE;
+          }
+        }
+      }
+
+      /* Random? */
+      if(bRandom != orxFALSE)
+      {
+        orxFLOAT fOtherValue;
+
+        /* Has another value? */
+        if(orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Updates cache */
+          _pstValue->eType        = orxCONFIG_VALUE_TYPE_FLOAT;
+          _pstValue->s8CacheIndex = _s8ListIndex;
+          _pstValue->fValue       = fValue;
+          _pstValue->fAltValue    = fOtherValue;
+
+          /* Updates result */
+          fResult = orxMath_GetRandomFloat(fValue, fOtherValue);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT random from config value <%s>.", _pstValue->zValue);
+
+          /* Clears cache */
+          _pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+
+          /* Updates result */
+          fResult = fValue;
+        }
+      }
+      else
+      {
+        /* Updates cache */
+        _pstValue->eType        = orxCONFIG_VALUE_TYPE_FLOAT;
+        _pstValue->s8CacheIndex = _s8ListIndex;
+        _pstValue->fValue       = fValue;
+
+        /* Updates result */
+        fResult = fValue;
+      }
+    }
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Reads a string value from config value
+ * @param[in]   _pstValue         Concerned config value
+ * @param[in]   _s8ListIndex      List index
+ * @return The value
+ */
+orxSTATIC orxINLINE orxSTRING orxConfig_GetStringFromValue(orxCONFIG_VALUE *_pstValue, orxS8 _s8ListIndex)
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_s8ListIndex < _pstValue->s8ListCounter);
+
+  //! TODO: Find a graceful way of handling list of strings
+
+  /* Updates result */
+  zResult = _pstValue->zValue;
+
+  /* Done! */
+  return zResult;
+}
+
+/** Reads a boolean value from config value
+ * @param[in]   _pstValue         Concerned config value
+ * @param[in]   _s8ListIndex      List index
+ * @return The value
+ */
+orxSTATIC orxINLINE orxBOOL orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue, orxS8 _s8ListIndex)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_s8ListIndex < _pstValue->s8ListCounter);
+
+  /* Random index? */
+  if(_s8ListIndex < 0)
+  {
+    /* Not a list or first index? */
+    if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      _s8ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      _s8ListIndex = (orxS8)orxMath_GetRandomS32(0, (orxS32)_pstValue->s8ListCounter);
+    }
+  }
+
+  /* Is it cached and on the same index? */
+  if((_pstValue->eType == orxCONFIG_VALUE_TYPE_BOOL) && (_s8ListIndex == _pstValue->s8CacheIndex))
+  {
+    /* Updates result */
+    bResult = _pstValue->bValue;
+  }
+  else
+  {
+    orxBOOL   bValue;
+    orxSTRING zStart;
+
+    /* Not a list or first index? */
+    if((!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    || (_s8ListIndex == 0))
+    {
+      /* Uses whole value */
+      zStart = _pstValue->zValue;
+    }
+    else
+    {
+      orxS32 s32ListSeparatorIndex, s32Counter;
+
+      /* Gets to the correct item start */
+      for(s32ListSeparatorIndex = 0, s32Counter = (orxS32)_s8ListIndex;
+          s32Counter != 0;
+          s32ListSeparatorIndex = orxString_SearchCharIndex(_pstValue->zValue, orxCONFIG_KC_LIST_SEPARATOR, s32ListSeparatorIndex) + 1, s32Counter--);
+
+      /* Gets its string */
+      zStart = _pstValue->zValue + s32ListSeparatorIndex;
+    }
+
+    /* Gets value */
+    if(orxString_ToBool(zStart, &bValue, orxNULL) != orxSTATUS_FAILURE)
+    {
+      /* Updates cache */
+      _pstValue->eType        = orxCONFIG_VALUE_TYPE_BOOL;
+      _pstValue->s8CacheIndex = _s8ListIndex;
+      _pstValue->bValue       = bValue;
+
+      /* Updates result */
+      bResult = bValue;
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Reads a vector value from config value
+ * @param[in]   _pstValue         Concerned config value
+ * @param[in]   _s8ListIndex      List index
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value
+ */
+orxSTATIC orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstValue, orxS8 _s8ListIndex, orxVECTOR *_pvVector)
+{
+  orxVECTOR *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(_pstValue != orxNULL);
+  orxASSERT(_s8ListIndex < _pstValue->s8ListCounter);
+  orxASSERT(_pvVector != orxNULL);
+
+  /* Random index? */
+  if(_s8ListIndex < 0)
+  {
+    /* Not a list or first index? */
+    if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      _s8ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      _s8ListIndex = (orxS8)orxMath_GetRandomS32(0, (orxS32)_pstValue->s8ListCounter);
+    }
+  }
+
+  /* Is it cached and on the same index? */
+  if((_pstValue->eType == orxCONFIG_VALUE_TYPE_VECTOR) && (_s8ListIndex == _pstValue->s8CacheIndex))
+  {
+    /* Random? */
+    if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+    {
+      /* Gets random values from cache */
+      _pvVector->fX = orxMath_GetRandomFloat(_pstValue->vValue.fX, _pstValue->vAltValue.fX);
+      _pvVector->fY = orxMath_GetRandomFloat(_pstValue->vValue.fY, _pstValue->vAltValue.fY);
+      _pvVector->fZ = orxMath_GetRandomFloat(_pstValue->vValue.fZ, _pstValue->vAltValue.fZ);
+    }
+    else
+    {
+      /* Copies value from cache */
+      orxVector_Copy(_pvVector, &(_pstValue->vValue));
+    }
+
+    /* Updates result */
+    pvResult = _pvVector;
+  }
+  else
+  {
+    orxSTRING zRemainder, zStart;
+
+    /* Not a list or first index? */
+    if((!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    || (_s8ListIndex == 0))
+    {
+      /* Uses whole value */
+      zStart = _pstValue->zValue;
+    }
+    else
+    {
+      orxS32 s32ListSeparatorIndex, s32Counter;
+
+      /* Gets to the correct item start */
+      for(s32ListSeparatorIndex = 0, s32Counter = (orxS32)_s8ListIndex;
+          s32Counter != 0;
+          s32ListSeparatorIndex = orxString_SearchCharIndex(_pstValue->zValue, orxCONFIG_KC_LIST_SEPARATOR, s32ListSeparatorIndex) + 1, s32Counter--);
+
+      /* Gets its string */
+      zStart = _pstValue->zValue + s32ListSeparatorIndex;
+    }
+
+    /* Gets value */
+    if(orxString_ToVector(zStart, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
+    {
+      orxS32  s32RandomSeparatorIndex = 0;
+      orxBOOL bRandom = orxFALSE;
+
+      /* Random? */
+      if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Searches for the random separator */
+        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+        /* Valid? */
+        if(s32RandomSeparatorIndex >= 0)
+        {
+          /* Is a list? */
+          if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+          {
+            orxS32 s32ListSeparatorIndex;
+
+            /* Gets next separator index */
+            s32ListSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_LIST_SEPARATOR, 0);
+
+            /* Not found or after random separator? */
+            if((s32ListSeparatorIndex < 0) || (s32ListSeparatorIndex > s32RandomSeparatorIndex))
+            {
+              /* Updates random status */
+              bRandom = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Updates random status */
+            bRandom = orxTRUE;
+          }
+        }
+      }
+
+      /* Random? */
+      if(bRandom != orxFALSE)
+      {
+        orxVECTOR vOtherValue;
+
+        /* Has another value? */
+        if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE)
+        {
+          /* Updates cache */
+          _pstValue->eType        = orxCONFIG_VALUE_TYPE_VECTOR;
+          _pstValue->s8CacheIndex = _s8ListIndex;
+          orxVector_Copy(&(_pstValue->vValue), _pvVector);
+          orxVector_Copy(&(_pstValue->vAltValue), &vOtherValue);
+
+          /* Updates result */
+          _pvVector->fX = orxMath_GetRandomFloat(_pvVector->fX, vOtherValue.fX);
+          _pvVector->fY = orxMath_GetRandomFloat(_pvVector->fY, vOtherValue.fY);
+          _pvVector->fZ = orxMath_GetRandomFloat(_pvVector->fZ, vOtherValue.fZ);
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get VECTOR random from config value <%s>.", _pstValue->zValue);
+
+          /* Clears cache */
+          _pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+        }
+      }
+      else
+      {
+        /* Updates cache */
+        _pstValue->eType        = orxCONFIG_VALUE_TYPE_VECTOR;
+        _pstValue->s8CacheIndex = _s8ListIndex;
+        orxVector_Copy(&(_pstValue->vValue), _pvVector);
+      }
+
+      /* Updates result */
+      pvResult = _pvVector;
+    }
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -1633,15 +2353,14 @@ orxSTATUS orxConfig_ClearSection(orxCONST orxSTRING _zSectionName)
   return eResult;
 }
 
-/** Reads a signed integer value from config
+/** Reads a signed integer value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
- * @param[in] _s32DefaultValue  Default value if key is not found
  * @return The value
  */
 orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
-  orxS32            s32Result = 0;
+  orxS32            s32Result;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1654,87 +2373,27 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
   /* Found? */
   if(pstValue != orxNULL)
   {
-    /* Is it cached? */
-    if(pstValue->eType == orxCONFIG_VALUE_TYPE_S32)
-    {
-      /* Random? */
-      if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Updates result */
-        s32Result = orxMath_GetRandomS32(pstValue->s32Value, pstValue->s32AltValue);
-      }
-      else
-      {
-        /* Updates result */
-        s32Result = pstValue->s32Value;
-      }
-    }
-    else
-    {
-      orxS32    s32Value;
-      orxSTRING zRemainder;
-
-      /* Gets value */
-      if(orxString_ToS32(pstValue->zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
-      {
-        /* Random? */
-        if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-        {
-          orxS32 s32RandomSeparatorIndex, s32OtherValue;
-
-          /* Searches for the random separator */
-          s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-          /* Found and has another value? */
-          if((s32RandomSeparatorIndex >= 0)
-          && (orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
-          {
-            /* Updates cache */
-            pstValue->eType       = orxCONFIG_VALUE_TYPE_S32;
-            pstValue->s32Value    = s32Value;
-            pstValue->s32AltValue = s32OtherValue;
-
-            /* Updates result */
-            s32Result = orxMath_GetRandomS32(s32Value, s32OtherValue);
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 random from config value [%s::%s].", _zKey, pstValue->zValue);
-
-            /* Clears cache */
-            pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
-
-            /* Updates result */
-            s32Result = s32Value;
-          }
-        }
-        else
-        {
-          /* Updates cache */
-          pstValue->eType     = orxCONFIG_VALUE_TYPE_S32;
-          pstValue->s32Value  = s32Value;
-
-          /* Updates result */
-          s32Result = s32Value;
-        }
-      }
-    }
+    /* Updates result */
+    s32Result = orxConfig_GetS32FromValue(pstValue, -1);
+  }
+  else
+  {
+    /* Updates result */
+    s32Result = 0;
   }
 
   /* Done! */
   return s32Result;
 }
 
-/** Reads an unsigned integer value from config
+/** Reads an unsigned integer value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
- * @param[in] _s32DefaultValue  Default value if key is not found
  * @return The value
  */
 orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
-  orxU32            u32Result = 0;
+  orxU32            u32Result;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1747,88 +2406,27 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
   /* Found? */
   if(pstValue != orxNULL)
   {
-    /* Is it cached? */
-    if(pstValue->eType == orxCONFIG_VALUE_TYPE_U32)
-    {
-      /* Random? */
-      if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Updates result */
-        u32Result = orxMath_GetRandomU32(pstValue->u32Value, pstValue->u32AltValue);
-      }
-      else
-      {
-        /* Updates result */
-        u32Result = pstValue->u32Value;
-      }
-    }
-    else
-    {
-      orxU32    u32Value;
-      orxSTRING zRemainder;
-
-      /* Gets value */
-      if(orxString_ToU32(pstValue->zValue, &u32Value, &zRemainder) != orxSTATUS_FAILURE)
-      {
-        /* Random? */
-        if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-        {
-          orxS32 s32RandomSeparatorIndex;
-          orxU32 u32OtherValue;
-
-          /* Searches for the random separator */
-          s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-          /* Found and has another value? */
-          if((s32RandomSeparatorIndex >= 0)
-          && (orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
-          {
-            /* Updates cache */
-            pstValue->eType       = orxCONFIG_VALUE_TYPE_U32;
-            pstValue->u32Value    = u32Value;
-            pstValue->u32AltValue = u32OtherValue;
-
-            /* Updates result */
-            u32Result = orxMath_GetRandomU32(u32Value, u32OtherValue);
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 random from config value [%s::%s].", _zKey, pstValue->zValue);
-
-            /* Clears cache */
-            pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
-
-            /* Updates result */
-            u32Result = u32Value;
-          }
-        }
-        else
-        {
-          /* Updates cache */
-          pstValue->eType     = orxCONFIG_VALUE_TYPE_U32;
-          pstValue->u32Value  = u32Value;
-
-          /* Updates result */
-          u32Result = u32Value;
-        }
-      }
-    }
+    /* Updates result */
+    u32Result = orxConfig_GetU32FromValue(pstValue, -1);
+  }
+  else
+  {
+    /* Updates result */
+    u32Result = 0;
   }
 
   /* Done! */
   return u32Result;
 }
 
-/** Reads a float value from config
+/** Reads a float value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
- * @param[in] _fDefaultValue    Default value if key is not found
  * @return The value
  */
 orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
-  orxFLOAT          fResult = orxFLOAT_0;
+  orxFLOAT          fResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1841,82 +2439,21 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
   /* Found? */
   if(pstValue != orxNULL)
   {
-    /* Is it cached? */
-    if(pstValue->eType == orxCONFIG_VALUE_TYPE_FLOAT)
-    {
-      /* Random? */
-      if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Updates result */
-        fResult = orxMath_GetRandomFloat(pstValue->fValue, pstValue->fAltValue);
-      }
-      else
-      {
-        /* Updates result */
-        fResult = pstValue->fValue;
-      }
-    }
-    else
-    {
-      orxFLOAT  fValue;
-      orxSTRING zRemainder;
-
-      /* Gets value */
-      if(orxString_ToFloat(pstValue->zValue, &fValue, &zRemainder) != orxSTATUS_FAILURE)
-      {
-        /* Random? */
-        if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-        {
-          orxS32    s32RandomSeparatorIndex;
-          orxFLOAT  fOtherValue;
-
-          /* Searches for the random separator */
-          s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-          /* Found and has another value? */
-          if((s32RandomSeparatorIndex >= 0)
-          && (orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
-          {
-            /* Updates cache */
-            pstValue->eType     = orxCONFIG_VALUE_TYPE_FLOAT;
-            pstValue->fValue    = fValue;
-            pstValue->fAltValue = fOtherValue;
-
-            /* Updates result */
-            fResult = orxMath_GetRandomFloat(fValue, fOtherValue);
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT random from config value [%s::%s].", _zKey, pstValue->zValue);
-
-            /* Clears cache */
-            pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
-
-            /* Updates result */
-            fResult = fValue;
-          }
-        }
-        else
-        {
-          /* Updates cache */
-          pstValue->eType   = orxCONFIG_VALUE_TYPE_FLOAT;
-          pstValue->fValue  = fValue;
-
-          /* Updates result */
-          fResult = fValue;
-        }
-      }
-    }
+    /* Updates result */
+    fResult = orxConfig_GetFloatFromValue(pstValue, -1);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = orxFLOAT_0;
   }
 
   /* Done! */
   return fResult;
 }
 
-/** Reads a string value from config
+/** Reads a string value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
- * @param[in] _zDefaultValue    Default value if key is not found
  * @return The value
  */
 orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
@@ -1936,7 +2473,7 @@ orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
   if(pstValue != orxNULL)
   {
     /* Updates result */
-    zResult = pstValue->zValue;
+    zResult = orxConfig_GetStringFromValue(pstValue, 0);
   }
   else
   {
@@ -1948,15 +2485,14 @@ orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
   return zResult;
 }
 
-/** Reads a boolean value from config
+/** Reads a boolean value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
- * @param[in] _bDefaultValue    Default value if key is not found
  * @return The value
  */
 orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
-  orxBOOL           bResult = orxFALSE;
+  orxBOOL           bResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1969,34 +2505,20 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
   /* Found? */
   if(pstValue != orxNULL)
   {
-    /* Is it cached? */
-    if(pstValue->eType == orxCONFIG_VALUE_TYPE_BOOL)
-    {
-      /* Updates result */
-      bResult = pstValue->bValue;
-    }
-    else
-    {
-      orxBOOL bValue;
-
-      /* Gets value */
-      if(orxString_ToBool(pstValue->zValue, &bValue, orxNULL) != orxSTATUS_FAILURE)
-      {
-        /* Updates cache */
-        pstValue->eType   = orxCONFIG_VALUE_TYPE_BOOL;
-        pstValue->bValue  = bValue;
-
-        /* Updates result */
-        bResult = bValue;
-      }
-    }
+    /* Updates result */
+    bResult = orxConfig_GetBoolFromValue(pstValue, -1);
+  }
+  else
+  {
+    /* Updates result */
+    bResult = orxFALSE;
   }
 
   /* Done! */
   return bResult;
 }
 
-/** Reads a vector value from config
+/** Reads a vector value from config (will take a random value if a list is provided for this key)
  * @param[in]   _zKey             Key name
  * @param[out]  _pvVector         Storage for vector value
  * @return The value
@@ -2004,7 +2526,7 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
 orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pvVector)
 {
   orxCONFIG_VALUE  *pstValue;
-  orxVECTOR        *pvResult = orxNULL;
+  orxVECTOR        *pvResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -2018,76 +2540,13 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
   /* Found? */
   if(pstValue != orxNULL)
   {
-    /* Is it cached? */
-    if(pstValue->eType == orxCONFIG_VALUE_TYPE_VECTOR)
-    {
-      /* Random? */
-      if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-      {
-        /* Gets random values from cache */
-        _pvVector->fX = orxMath_GetRandomFloat(pstValue->vValue.fX, pstValue->vAltValue.fX);
-        _pvVector->fY = orxMath_GetRandomFloat(pstValue->vValue.fY, pstValue->vAltValue.fY);
-        _pvVector->fZ = orxMath_GetRandomFloat(pstValue->vValue.fZ, pstValue->vAltValue.fZ);
-      }
-      else
-      {
-        /* Copies value from cache */
-        orxVector_Copy(_pvVector, &(pstValue->vValue));
-      }
-
-      /* Updates result */
-      pvResult = _pvVector;
-    }
-    else
-    {
-      orxSTRING zRemainder;
-
-      /* Gets value */
-      if(orxString_ToVector(pstValue->zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
-      {
-        /* Random? */
-        if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
-        {
-          orxS32    s32RandomSeparatorIndex;
-          orxVECTOR vOtherValue;
-
-          /* Searches for the random separator */
-          s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-          /* Found and has another value? */
-          if((s32RandomSeparatorIndex >= 0)
-          && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
-          {
-            /* Updates cache */
-            pstValue->eType = orxCONFIG_VALUE_TYPE_VECTOR;
-            orxVector_Copy(&(pstValue->vValue), _pvVector);
-            orxVector_Copy(&(pstValue->vAltValue), &vOtherValue);
-
-            /* Updates result */
-            _pvVector->fX = orxMath_GetRandomFloat(_pvVector->fX, vOtherValue.fX);
-            _pvVector->fY = orxMath_GetRandomFloat(_pvVector->fY, vOtherValue.fY);
-            _pvVector->fZ = orxMath_GetRandomFloat(_pvVector->fZ, vOtherValue.fZ);
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get VECTOR random from config value [%s::%s].", _zKey, pstValue->zValue);
-
-            /* Clears cache */
-            pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
-          }
-        }
-        else
-        {
-          /* Updates cache */
-          pstValue->eType = orxCONFIG_VALUE_TYPE_VECTOR;
-          orxVector_Copy(&(pstValue->vValue), _pvVector);
-        }
-
-        /* Updates result */
-        pvResult = _pvVector;
-      }
-    }
+    /* Updates result */
+    pvResult = orxConfig_GetVectorFromValue(pstValue, -1, _pvVector);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
   }
 
   /* Done! */
@@ -2314,6 +2773,297 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orx
 
   /* Done! */
   return eResult;
+}
+
+/** Is value a list for the given key?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_IsList(orxCONST orxSTRING _zKey)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxBOOL           bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+
+  /* Gets associated value */
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstValue != orxNULL)
+  {
+    /* Updates result */
+    bResult = orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST) ? orxTRUE : orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets list counter for a given key
+ * @param[in] _zKey             Key name
+ * @return List counter if it's a valid list, 0 otherwise
+ */
+orxS32 orxFASTCALL orxConfig_GetListCounter(orxCONST orxSTRING _zKey)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxS32            s32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+
+  /* Gets associated value */
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstValue != orxNULL)
+  {
+    /* Updates result */
+    s32Result = (orxS32)pstValue->s8ListCounter;
+  }
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Reads a signed integer value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+orxS32 orxFASTCALL orxConfig_GetListS32(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxS32            s32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_s32ListIndex < 0xFF);
+
+  /* Gets value */
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstValue != NULL)
+  {
+    /* Is index valid? */
+    if((orxS8)_s32ListIndex < pstValue->s8ListCounter)
+    {
+      /* Updates result */
+      s32Result = orxConfig_GetS32FromValue(pstValue, (orxS8)_s32ListIndex);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 list item value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->s8ListCounter);
+    }
+  }
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Reads an unsigned integer value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+orxU32 orxFASTCALL orxConfig_GetListU32(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxU32            u32Result = 0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_s32ListIndex < 0xFF);
+
+  /* Gets value */
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstValue != NULL)
+  {
+    /* Is index valid? */
+    if((orxS8)_s32ListIndex < pstValue->s8ListCounter)
+    {
+      /* Updates result */
+      u32Result = orxConfig_GetU32FromValue(pstValue, (orxS8)_s32ListIndex);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->s8ListCounter);
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Reads a float value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+orxFLOAT orxFASTCALL orxConfig_GetListFloat(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxFLOAT          fResult = orxFLOAT_0;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_s32ListIndex < 0xFF);
+
+  /* Gets value */
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstValue != NULL)
+  {
+    /* Is index valid? */
+    if((orxS8)_s32ListIndex < pstValue->s8ListCounter)
+    {
+      /* Updates result */
+      fResult = orxConfig_GetFloatFromValue(pstValue, (orxS8)_s32ListIndex);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->s8ListCounter);
+    }
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Reads a string value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+orxSTRING orxFASTCALL orxConfig_GetListString(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxSTRING         zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_s32ListIndex < 0xFF);
+
+  /* Gets value */
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstValue != NULL)
+  {
+    /* Is index valid? */
+    if((orxS8)_s32ListIndex < pstValue->s8ListCounter)
+    {
+      /* Updates result */
+      zResult = orxConfig_GetStringFromValue(pstValue, (orxS8)_s32ListIndex);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get STRING list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->s8ListCounter);
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Reads a boolean value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+orxBOOL orxFASTCALL orxConfig_GetListBool(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxBOOL           bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_s32ListIndex < 0xFF);
+
+  /* Gets value */
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstValue != NULL)
+  {
+    /* Is index valid? */
+    if((orxS8)_s32ListIndex < pstValue->s8ListCounter)
+    {
+      /* Updates result */
+      bResult = orxConfig_GetBoolFromValue(pstValue, (orxS8)_s32ListIndex);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get BOOL list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->s8ListCounter);
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Reads a vector value from config list
+ * @param[in]   _zKey             Key name
+ * @param[in]   _s32ListIndex     Index of desired item in list / -1 for random
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value
+ */
+orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxVECTOR        *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_s32ListIndex < 0xFF);
+
+  /* Gets value */
+  pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
+
+  /* Valid? */
+  if(pstValue != NULL)
+  {
+    /* Is index valid? */
+    if((orxS8)_s32ListIndex < pstValue->s8ListCounter)
+    {
+      /* Updates result */
+      pvResult = orxConfig_GetVectorFromValue(pstValue, (orxS8)_s32ListIndex, _pvVector);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->s8ListCounter);
+    }
+  }
+
+  /* Done! */
+  return pvResult;
 }
 
 #ifdef __orxMSVC__
