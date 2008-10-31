@@ -25,6 +25,7 @@
  * @author iarwain@orx-project.org
  *
  * @todo
+ * - Needs to refactor value getter (lot of duplicated code to handle random and lists)
  */
 
 /**
@@ -65,7 +66,7 @@ extern orxDLLAPI orxVOID                orxConfig_Exit();
 
 
 /** Sets encryption key
- * @param[in] _zEncryption key  Encryption key to use, orxNULL to clear
+ * @param[in] _zEncryptionKey  Encryption key to use, orxNULL to clear
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetEncryptionKey(orxCONST orxSTRING _zEncryptionKey);
@@ -124,37 +125,37 @@ extern orxDLLAPI orxSTATUS              orxConfig_ClearSection(orxCONST orxSTRIN
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasValue(orxCONST orxSTRING _zKey);
 
-/** Reads a signed integer value from config
+/** Reads a signed integer value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
 extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetS32(orxCONST orxSTRING _zKey);
 
-/** Reads an unsigned integer value from config
+/** Reads an unsigned integer value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
 extern orxDLLAPI orxU32 orxFASTCALL     orxConfig_GetU32(orxCONST orxSTRING _zKey);
 
-/** Reads a float value from config
+/** Reads a float value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL   orxConfig_GetFloat(orxCONST orxSTRING _zKey);
 
-/** Reads a string value from config
+/** Reads a string value from config (will ignore lists and consider them as a whole string)
  * @param[in] _zKey             Key name
  * @return The value
  */
 extern orxDLLAPI orxSTRING orxFASTCALL  orxConfig_GetString(orxCONST orxSTRING _zKey);
 
-/** Reads a boolean value from config
+/** Reads a boolean value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetBool(orxCONST orxSTRING _zKey);
 
-/** Reads a vector value from config
+/** Reads a vector value from config (will take a random value if a list is provided for this key)
  * @param[in]   _zKey             Key name
  * @param[out]  _pvVector         Storage for vector value
  * @return The value
@@ -203,6 +204,63 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBool(orxCONST orxSTRING _zK
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pvValue);
+
+
+/** Is value a list for the given key?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_IsList(orxCONST orxSTRING _zKey);
+
+/** Gets list counter for a given key
+ * @param[in] _zKey             Key name
+ * @return List counter if it's a valid list, 0 otherwise
+ */
+extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetListCounter(orxCONST orxSTRING _zKey);
+
+/** Reads a signed integer value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetListS32(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex);
+
+/** Reads an unsigned integer value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+extern orxDLLAPI orxU32 orxFASTCALL     orxConfig_GetListU32(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex);
+
+/** Reads a float value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL   orxConfig_GetListFloat(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex);
+
+/** Reads a string value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL  orxConfig_GetListString(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex);
+
+/** Reads a boolean value from config list
+ * @param[in] _zKey             Key name
+ * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
+ * @return The value
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetListBool(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex);
+
+/** Reads a vector value from config list
+ * @param[in]   _zKey             Key name
+ * @param[in]   _s32ListIndex     Index of desired item in list / -1 for random
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector);
+
 
 #endif /*_orxCONFIG_H_*/
 
