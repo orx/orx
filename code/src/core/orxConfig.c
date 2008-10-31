@@ -55,6 +55,14 @@
 #define orxCONFIG_KU32_STATIC_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
 
+/** Config value flags */
+#define orxCONFIG_VALUE_KU16_FLAG_NONE            0x0000      /** No flags */
+
+#define orxCONFIG_VALUE_KU16_FLAG_LIST            0x0001      /** List flag */
+#define orxCONFIG_VALUE_KU16_FLAG_RANDOM          0x0002      /** Random flag */
+
+#define orxCONFIG_VALUE_KU16_MASK_ALL             0xFFFF      /** All mask */
+
 /** Defines
  */
 #define orxCONFIG_KU32_SECTION_BANK_SIZE    16          /**< Default section bank size */
@@ -69,6 +77,7 @@
 #define orxCONFIG_KC_ASSIGN                 '='         /**< Assign character */
 #define orxCONFIG_KC_COMMENT                ';'         /**< Comment character */
 #define orxCONFIG_KC_RANDOM_SEPARATOR       '~'         /**< Random number separator character */
+#define orxCONFIG_KC_LIST_SEPARATOR         '#'         /**< List separator */
 #define orxCONFIG_KC_SECTION_SEPARATOR      '.'         /**< Section separator */
 #define orxCONFIG_KC_INHERITANCE_MARKER     '@'         /**< Inheritance marker character */
 #define orxCONFIG_KC_BLOCK                  '"'         /**< Block delimiter character */
@@ -118,15 +127,26 @@ typedef struct __orxCONFIG_VALUE_t
 {
   orxSTRING             zValue;             /**< Literal value : 4 */
   orxCONFIG_VALUE_TYPE  eType;              /**< Value type : 8 */
+  orxU16                u16ListCounter;     /**< List counter : 10 */
+  orxU16                u16Flags;           /**< Status flags : 12 */
 
   union
   {
-    orxVECTOR           vValue;             /**< Vector value : 20 */
-    orxBOOL             bValue;             /**< Bool value : 12 */
-    orxFLOAT            fValue;             /**< Float value : 12 */
-    orxU32              u32Value;           /**< U32 value : 12 */
-    orxS32              s32Value;           /**< S32 value : 12 */
-  };                                        /**< Union value : 20 */
+    orxVECTOR           vValue;             /**< Vector value : 24 */
+    orxBOOL             bValue;             /**< Bool value : 16 */
+    orxFLOAT            fValue;             /**< Float value : 16 */
+    orxU32              u32Value;           /**< U32 value : 16 */
+    orxS32              s32Value;           /**< S32 value : 16 */
+  };                                        /**< Union value : 24 */
+
+  union
+  {
+    orxVECTOR           vAltValue;          /**< Alternate vector value : 36 */
+    orxBOOL             bAltValue;          /**< Alternate bool value : 28 */
+    orxFLOAT            fAltValue;          /**< Alternate float value : 28 */
+    orxU32              u32AltValue;        /**< Alternate U32 value : 28 */
+    orxS32              s32AltValue;        /**< Alternate S32 value : 28 */
+  };                                        /**< Union value : 36 */
 
 } orxCONFIG_VALUE;
 
@@ -135,11 +155,11 @@ typedef struct __orxCONFIG_VALUE_t
 typedef struct __orxCONFIG_ENTRY_t
 {
   orxSTRING         zKey;                   /**< Entry key : 4 */
-  orxU32            u32ID;                  /**< Key ID (CRC) : 12 */
+  orxU32            u32ID;                  /**< Key ID (CRC) : 8 */
 
-  orxCONFIG_VALUE   stValue;                /**< Entry value : 32 */
+  orxCONFIG_VALUE   stValue;                /**< Entry value : 44 */
 
-  orxPAD(32)
+  orxPAD(44)
 
 } orxCONFIG_ENTRY;
 
@@ -383,6 +403,42 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
       /* Valid? */
       if(pstEntry->zKey != orxNULL)
       {
+        orxCHAR  *pc;
+        orxU16    u16Counter, u16Flags;
+
+        /* For all characters */
+        for(pc = pstEntry->stValue.zValue, u16Counter = 1, u16Flags = orxCONFIG_VALUE_KU16_FLAG_NONE; *pc != orxCHAR_NULL; pc++)
+        {
+          /* Is a list separator? */
+          if(*pc == orxCONFIG_KC_LIST_SEPARATOR)
+          {
+            /* Not doubled? */
+            if(*(pc + 1) != orxCONFIG_KC_LIST_SEPARATOR)
+            {
+              /* Updates list counter */
+              u16Counter++;
+
+              /* Updates flags */
+              u16Flags |= orxCONFIG_VALUE_KU16_FLAG_LIST;
+            }
+          }
+          else if(*pc == orxCONFIG_KC_RANDOM_SEPARATOR)
+          {
+            /* Updates flags */
+            u16Flags |= orxCONFIG_VALUE_KU16_FLAG_RANDOM;
+          }
+        }
+
+        /* Is a list? */
+        if(orxFLAG_TEST(u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+        {
+          /* Stores its counter */
+          pstEntry->stValue.u16ListCounter = u16Counter;
+        }
+
+        /* Updates its flags */
+        pstEntry->stValue.u16Flags = u16Flags;
+
         /* Sets its ID */
         pstEntry->u32ID = orxString_ToCRC(pstEntry->zKey);
 
@@ -1601,8 +1657,17 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
     /* Is it cached? */
     if(pstValue->eType == orxCONFIG_VALUE_TYPE_S32)
     {
-      /* Updates result */
-      s32Result = pstValue->s32Value;
+      /* Random? */
+      if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Updates result */
+        s32Result = orxMath_GetRandomS32(pstValue->s32Value, pstValue->s32AltValue);
+      }
+      else
+      {
+        /* Updates result */
+        s32Result = pstValue->s32Value;
+      }
     }
     else
     {
@@ -1612,20 +1677,37 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
       /* Gets value */
       if(orxString_ToS32(pstValue->zValue, &s32Value, &zRemainder) != orxSTATUS_FAILURE)
       {
-        orxS32 s32RandomSeparatorIndex, s32OtherValue;
-
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-        /* Found and has another value? */
-        if((s32RandomSeparatorIndex >= 0)
-        && (orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+        /* Random? */
+        if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
         {
-          /* Updates result */
-          s32Result = orxMath_GetRandomS32(s32Value, s32OtherValue);
+          orxS32 s32RandomSeparatorIndex, s32OtherValue;
 
-          /* Clears cache */
-          pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+          /* Searches for the random separator */
+          s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+          /* Found and has another value? */
+          if((s32RandomSeparatorIndex >= 0)
+          && (orxString_ToS32(zRemainder + s32RandomSeparatorIndex + 1, &s32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+          {
+            /* Updates cache */
+            pstValue->eType       = orxCONFIG_VALUE_TYPE_S32;
+            pstValue->s32Value    = s32Value;
+            pstValue->s32AltValue = s32OtherValue;
+
+            /* Updates result */
+            s32Result = orxMath_GetRandomS32(s32Value, s32OtherValue);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 random from config value [%s::%s].", _zKey, pstValue->zValue);
+
+            /* Clears cache */
+            pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+
+            /* Updates result */
+            s32Result = s32Value;
+          }
         }
         else
         {
@@ -1668,8 +1750,17 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
     /* Is it cached? */
     if(pstValue->eType == orxCONFIG_VALUE_TYPE_U32)
     {
-      /* Updates result */
-      u32Result = pstValue->u32Value;
+      /* Random? */
+      if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Updates result */
+        u32Result = orxMath_GetRandomU32(pstValue->u32Value, pstValue->u32AltValue);
+      }
+      else
+      {
+        /* Updates result */
+        u32Result = pstValue->u32Value;
+      }
     }
     else
     {
@@ -1679,21 +1770,38 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
       /* Gets value */
       if(orxString_ToU32(pstValue->zValue, &u32Value, &zRemainder) != orxSTATUS_FAILURE)
       {
-        orxS32 s32RandomSeparatorIndex;
-        orxU32 u32OtherValue;
-
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-        /* Found and has another value? */
-        if((s32RandomSeparatorIndex >= 0)
-        && (orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+        /* Random? */
+        if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
         {
-          /* Updates result */
-          u32Result = orxMath_GetRandomU32(u32Value, u32OtherValue);
+          orxS32 s32RandomSeparatorIndex;
+          orxU32 u32OtherValue;
 
-          /* Clears cache */
-          pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+          /* Searches for the random separator */
+          s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+          /* Found and has another value? */
+          if((s32RandomSeparatorIndex >= 0)
+          && (orxString_ToU32(zRemainder + s32RandomSeparatorIndex + 1, &u32OtherValue, orxNULL) != orxSTATUS_FAILURE))
+          {
+            /* Updates cache */
+            pstValue->eType       = orxCONFIG_VALUE_TYPE_U32;
+            pstValue->u32Value    = u32Value;
+            pstValue->u32AltValue = u32OtherValue;
+
+            /* Updates result */
+            u32Result = orxMath_GetRandomU32(u32Value, u32OtherValue);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 random from config value [%s::%s].", _zKey, pstValue->zValue);
+
+            /* Clears cache */
+            pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+
+            /* Updates result */
+            u32Result = u32Value;
+          }
         }
         else
         {
@@ -1736,8 +1844,17 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
     /* Is it cached? */
     if(pstValue->eType == orxCONFIG_VALUE_TYPE_FLOAT)
     {
-      /* Updates result */
-      fResult = pstValue->fValue;
+      /* Random? */
+      if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Updates result */
+        fResult = orxMath_GetRandomFloat(pstValue->fValue, pstValue->fAltValue);
+      }
+      else
+      {
+        /* Updates result */
+        fResult = pstValue->fValue;
+      }
     }
     else
     {
@@ -1747,26 +1864,43 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
       /* Gets value */
       if(orxString_ToFloat(pstValue->zValue, &fValue, &zRemainder) != orxSTATUS_FAILURE)
       {
-        orxS32    s32RandomSeparatorIndex;
-        orxFLOAT  fOtherValue;
-
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-        /* Found and has another value? */
-        if((s32RandomSeparatorIndex >= 0)
-        && (orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
+        /* Random? */
+        if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
         {
-          /* Updates result */
-          fResult = orxMath_GetRandomFloat(fValue, fOtherValue);
+          orxS32    s32RandomSeparatorIndex;
+          orxFLOAT  fOtherValue;
 
-          /* Clears cache */
-          pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+          /* Searches for the random separator */
+          s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+          /* Found and has another value? */
+          if((s32RandomSeparatorIndex >= 0)
+          && (orxString_ToFloat(zRemainder + s32RandomSeparatorIndex + 1, &fOtherValue, orxNULL) != orxSTATUS_FAILURE))
+          {
+            /* Updates cache */
+            pstValue->eType     = orxCONFIG_VALUE_TYPE_FLOAT;
+            pstValue->fValue    = fValue;
+            pstValue->fAltValue = fOtherValue;
+
+            /* Updates result */
+            fResult = orxMath_GetRandomFloat(fValue, fOtherValue);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT random from config value [%s::%s].", _zKey, pstValue->zValue);
+
+            /* Clears cache */
+            pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+
+            /* Updates result */
+            fResult = fValue;
+          }
         }
         else
         {
           /* Updates cache */
-          pstValue->eType     = orxCONFIG_VALUE_TYPE_FLOAT;
+          pstValue->eType   = orxCONFIG_VALUE_TYPE_FLOAT;
           pstValue->fValue  = fValue;
 
           /* Updates result */
@@ -1887,8 +2021,19 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
     /* Is it cached? */
     if(pstValue->eType == orxCONFIG_VALUE_TYPE_VECTOR)
     {
-      /* Copies value from cache */
-      orxVector_Copy(_pvVector, &(pstValue->vValue));
+      /* Random? */
+      if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+      {
+        /* Gets random values from cache */
+        _pvVector->fX = orxMath_GetRandomFloat(pstValue->vValue.fX, pstValue->vAltValue.fX);
+        _pvVector->fY = orxMath_GetRandomFloat(pstValue->vValue.fY, pstValue->vAltValue.fY);
+        _pvVector->fZ = orxMath_GetRandomFloat(pstValue->vValue.fZ, pstValue->vAltValue.fZ);
+      }
+      else
+      {
+        /* Copies value from cache */
+        orxVector_Copy(_pvVector, &(pstValue->vValue));
+      }
 
       /* Updates result */
       pvResult = _pvVector;
@@ -1900,23 +2045,37 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
       /* Gets value */
       if(orxString_ToVector(pstValue->zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
       {
-        orxS32 s32RandomSeparatorIndex;
-        orxVECTOR vOtherValue;
-
-        /* Searches for the random separator */
-        s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
-
-        /* Found and has another value? */
-        if((s32RandomSeparatorIndex >= 0)
-        && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+        /* Random? */
+        if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
         {
-          /* Updates result */
-          _pvVector->fX = orxMath_GetRandomFloat(_pvVector->fX, vOtherValue.fX);
-          _pvVector->fY = orxMath_GetRandomFloat(_pvVector->fY, vOtherValue.fY);
-          _pvVector->fZ = orxMath_GetRandomFloat(_pvVector->fZ, vOtherValue.fZ);
+          orxS32    s32RandomSeparatorIndex;
+          orxVECTOR vOtherValue;
 
-          /* Clears cache */
-          pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+          /* Searches for the random separator */
+          s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+          /* Found and has another value? */
+          if((s32RandomSeparatorIndex >= 0)
+          && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+          {
+            /* Updates cache */
+            pstValue->eType = orxCONFIG_VALUE_TYPE_VECTOR;
+            orxVector_Copy(&(pstValue->vValue), _pvVector);
+            orxVector_Copy(&(pstValue->vAltValue), &vOtherValue);
+
+            /* Updates result */
+            _pvVector->fX = orxMath_GetRandomFloat(_pvVector->fX, vOtherValue.fX);
+            _pvVector->fY = orxMath_GetRandomFloat(_pvVector->fY, vOtherValue.fY);
+            _pvVector->fZ = orxMath_GetRandomFloat(_pvVector->fZ, vOtherValue.fZ);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get VECTOR random from config value [%s::%s].", _zKey, pstValue->zValue);
+
+            /* Clears cache */
+            pstValue->eType = orxCONFIG_VALUE_TYPE_STRING;
+          }
         }
         else
         {
