@@ -143,7 +143,7 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxConfig_GetU32(orxCONST orxSTRING _zKe
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL   orxConfig_GetFloat(orxCONST orxSTRING _zKey);
 
-/** Reads a string value from config (will ignore lists and consider them as a whole string)
+/** Reads a string value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value
  */
