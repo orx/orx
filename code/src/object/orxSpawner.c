@@ -98,14 +98,13 @@ struct __orxSPAWNER_t
   orxU16              u16ActiveObjectLimit;       /**< Limit of active objects at the same time, 0 for unlimited : 36 */
   orxU16              u16TotalObjectCounter;      /**< Total spawned objects counter : 38 */
   orxU16              u16ActiveObjectCounter;     /**< Active objects counter : 40 */
-  orxSTRING           zObjectName;                /**< Object name : 44 */
-  orxFRAME           *pstFrame;                   /**< Frame : 48 */
-  orxFLOAT            fWaveTimeStamp;             /**< Wave time stamp : 52 */
-  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 56 */
-  orxU32              u32WaveNumber;              /**< Total spawned objects counter : 60 */
+  orxFRAME           *pstFrame;                   /**< Frame : 44 */
+  orxFLOAT            fWaveTimeStamp;             /**< Wave time stamp : 48 */
+  orxFLOAT            fWaveDelay;                 /**< Active objects counter : 52 */
+  orxU32              u32WaveNumber;              /**< Total spawned objects counter : 56 */
 
   /* Padding */
-  orxPAD(60)
+  orxPAD(56)
 };
 
 /** Static structure
@@ -538,9 +537,6 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
       /* Stores its reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
 
-      /* Sets object name */
-      pstResult->zObjectName = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT);
-
       /* Gets total limit */
       u32Value = orxConfig_GetU32(orxSPAWNER_KZ_CONFIG_TOTAL_OBJECT);
 
@@ -948,6 +944,7 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
   {
     orxEVENT  stEvent;
     orxU32    u32SpawnNumber, i;
+    orxSTRING   zPreviousSection;
 
     /* Inits event */
     orxMemory_Zero(&stEvent, sizeof(orxEVENT));
@@ -984,13 +981,19 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
       u32SpawnNumber = orxMIN(u32SpawnNumber, u32AvailableNumber);
     }
 
+    /* Backups current section */
+    zPreviousSection = orxConfig_GetCurrentSection();
+
+    /* Selects section */
+    orxConfig_SelectSection(_pstSpawner->zReference);
+
     /* For all objects to spawn */
     for(i = 0; i < u32SpawnNumber; i++)
     {
       orxOBJECT *pstObject;
 
       /* Creates object */
-      pstObject = orxObject_CreateFromConfig(_pstSpawner->zObjectName);
+      pstObject = orxObject_CreateFromConfig(orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT));
 
       /* Valid? */
       if(pstObject != orxNULL)
@@ -1047,6 +1050,9 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         orxEvent_Send(&stEvent);
       }
     }
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
 
     /* Has a total limit? */
     if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
