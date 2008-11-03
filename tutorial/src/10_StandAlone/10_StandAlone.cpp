@@ -255,19 +255,6 @@ orxSTATUS orxFASTCALL StandAlone::EventHandler(orxCONST orxEVENT *_pstEvent)
   return eResult;
 }
 
-// Setup function
-orxVOID StandAlone::Setup()
-{
-  // Here we add dependencies for the main module (our code).
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
-
-  return;
-}
-
 // Init function
 orxSTATUS StandAlone::Init()
 {
@@ -328,7 +315,7 @@ orxSTATUS StandAlone::Run()
 int main(int argc, char **argv)
 {
   // Inits and runs orx using our self-defined functions
-  orx_Execute(argc, argv, StandAlone::Setup, StandAlone::Init, StandAlone::Run, StandAlone::Exit);
+  orx_Execute(argc, argv, StandAlone::Init, StandAlone::Run, StandAlone::Exit);
 
   // Done!
   return EXIT_SUCCESS;
@@ -348,7 +335,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   };
 
   // Inits and executes orx
-  orx_Execute(1, az, StandAlone::Setup, StandAlone::Init, StandAlone::Run, StandAlone::Exit);
+  orx_Execute(1, az, StandAlone::Init, StandAlone::Run, StandAlone::Exit);
 
   // Done!
   return EXIT_SUCCESS;
