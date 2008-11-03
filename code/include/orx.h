@@ -99,15 +99,28 @@ orxSTATIC orxSTATUS orxFASTCALL orx_DefaultEventHandler(orxCONST orxEVENT *_pstE
   return eResult;
 }
 
+/** Default main setup (module dependencies)
+*/
+orxSTATIC orxVOID orx_MainSetup()
+{
+    /* Adds module dependencies */
+    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
+    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
+    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
+    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
+    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
+
+    return;
+}
+
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
  * @param[in]   _azParams                     Main function parameter list (argv)
- * @param[in]   _pfnSetup                     Main setup function (should declares dependencies)
  * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
  * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
  * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
  */
-orxSTATIC orxINLINE orxVOID orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], orxCONST orxMODULE_SETUP_FUNCTION _pfnSetup, orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_RUN_FUNCTION _pfnRun, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit)
+orxSTATIC orxINLINE orxVOID orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_RUN_FUNCTION _pfnRun, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit)
 {
   /* Inits the Debug System */
   orxDEBUG_INIT();
@@ -115,13 +128,12 @@ orxSTATIC orxINLINE orxVOID orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams
   /* Checks */
   orxASSERT(_u32NbParams > 0);
   orxASSERT(_azParams != orxNULL);
-  orxASSERT(_pfnSetup != orxNULL);
   orxASSERT(_pfnInit != orxNULL);
   orxASSERT(_pfnRun != orxNULL);
   orxASSERT(_pfnExit != orxNULL);
 
   /* Registers main module */
-  orxModule_Register(orxMODULE_ID_MAIN, _pfnSetup, _pfnInit, _pfnExit);
+  orxModule_Register(orxMODULE_ID_MAIN, orx_MainSetup, _pfnInit, _pfnExit);
 
   /* Registers all other modules */
   orxModule_RegisterAll();

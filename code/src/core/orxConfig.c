@@ -239,46 +239,28 @@ orxSTATIC orxINLINE orxVOID orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstV
     /* Is a list separator? */
     if(*pc == orxCONFIG_KC_LIST_SEPARATOR)
     {
-      /* Not doubled? */
-      if(*(pc + 1) != orxCONFIG_KC_LIST_SEPARATOR)
+      /* Not too long? */
+      if(u8Counter < 0xFF)
       {
-        /* Not too long? */
-        if(u8Counter < 0xFF)
-        {
-          /* Sets an end of string here */
-          *pc = orxCHAR_NULL;
+        /* Sets an end of string here */
+        *pc = orxCHAR_NULL;
 
-          /* Updates list counter */
-          u8Counter++;
+        /* Updates list counter */
+        u8Counter++;
 
-          /* Updates flags */
-          u16Flags |= orxCONFIG_VALUE_KU16_FLAG_LIST;
-        }
-        else
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "List for value <%s> is too long, more than 256 values have been found.", _pstValue->zValue);
-        }
+        /* Updates flags */
+        u16Flags |= orxCONFIG_VALUE_KU16_FLAG_LIST;
       }
       else
       {
-        /* Skips doubled separator */
-        pc++;
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "List for value <%s> is too long, more than 255 values have been found.", _pstValue->zValue);
       }
     }
     else if(*pc == orxCONFIG_KC_RANDOM_SEPARATOR)
     {
-      /* Not doubled? */
-      if(*(pc + 1) != orxCONFIG_KC_RANDOM_SEPARATOR)
-      {
-        /* Updates flags */
-        u16Flags |= orxCONFIG_VALUE_KU16_FLAG_RANDOM;
-      }
-      else
-      {
-        /* Skips doubled separator */
-        pc++;
-      }
+      /* Updates flags */
+      u16Flags |= orxCONFIG_VALUE_KU16_FLAG_RANDOM;
     }
   }
 
@@ -514,9 +496,10 @@ orxSTATIC orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
 /** Adds an entry in the current section
  * @param[in] _zKey             Entry key
  * @param[in] _zValue           Entry value
+ * @param[in] _bBlockMode       Block mode (ie. ignore special characters)?
  * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue)
+orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue, orxBOOL _bBlockMode)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
@@ -545,8 +528,18 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
       /* Valid? */
       if(pstEntry->zKey != orxNULL)
       {
-        /* Computes working value */
-        orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+        /* Not in block mode? */
+        if(_bBlockMode == orxFALSE)
+        {
+          /* Computes working value */
+          orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
+        }
+        else
+        {
+          /* No list nor random allowed */
+          pstEntry->stValue.u16Flags      = orxCONFIG_VALUE_KU16_FLAG_NONE;
+          pstEntry->stValue.u8ListCounter = 1;
+        }
 
         /* Sets its ID */
         pstEntry->u32ID = orxString_ToCRC(pstEntry->zKey);
@@ -1771,7 +1764,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             }
 
             /* Adds entry */
-            orxConfig_AddEntry(pcLineStart, pcValueStart);
+            orxConfig_AddEntry(pcLineStart, pcValueStart, bBlockMode);
 
             /* Updates pointers */
             pcKeyEnd = pcValueStart = orxNULL;
@@ -2570,7 +2563,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Valu
   }
 
   /* Adds new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue);
+  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -2609,7 +2602,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU32(orxCONST orxSTRING _zKey, orxU32 _u32Valu
   }
 
   /* Adds new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue);
+  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -2648,7 +2641,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fVa
   }
 
   /* Adds new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue);
+  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -2681,7 +2674,7 @@ orxSTATUS orxFASTCALL orxConfig_SetString(orxCONST orxSTRING _zKey, orxCONST orx
   }
 
   /* Adds new entry */
-  eResult = orxConfig_AddEntry(_zKey, _zValue);
+  eResult = orxConfig_AddEntry(_zKey, _zValue, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -2713,7 +2706,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValu
   }
 
   /* Adds new entry */
-  eResult = orxConfig_AddEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE);
+  eResult = orxConfig_AddEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE, orxFALSE);
 
   /* Done! */
   return eResult;
@@ -2753,7 +2746,7 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orx
   }
 
   /* Adds new entry */
-  eResult = orxConfig_AddEntry(_zKey, zValue);
+  eResult = orxConfig_AddEntry(_zKey, zValue, orxFALSE);
 
   /* Done! */
   return eResult;

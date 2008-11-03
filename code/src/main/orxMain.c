@@ -111,20 +111,6 @@ orxSTATIC orxSTATUS orxFASTCALL orxMain_EventHandler(orxCONST orxEVENT *_pstEven
   return eResult;
 }
 
-/** Main module setup
- */
-orxVOID orxMain_Setup()
-{
-  /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
-
-  return;
-}
-
 /** Inits the main module
  */
 orxSTATUS orxMain_Init()
@@ -288,7 +274,7 @@ orxSTATUS orxMain_Run()
 int main(int argc, char **argv)
 {
   /* Executes orx */
-  orx_Execute(argc, argv, orxMain_Setup, orxMain_Init, orxMain_Run, orxMain_Exit);
+  orx_Execute(argc, argv, orxMain_Init, orxMain_Run, orxMain_Exit);
 
   /* Done! */
   return EXIT_SUCCESS;
