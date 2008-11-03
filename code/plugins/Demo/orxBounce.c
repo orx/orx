@@ -32,7 +32,8 @@
 
 #include "orx.h"
 
-orxSTATIC orxU32 su32BallCounter = 0;
+orxSTATIC orxU32      su32BallCounter = 0;
+orxSTATIC orxOBJECT  *spoParticleSpawner;
 
 /** Bounce event handler
  * @param[in]   _pstEvent                     Sent event
@@ -70,21 +71,30 @@ orxSTATIC orxFASTCALL orxSTATUS orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
  */
 orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
-  /* Selects config section */
-  orxConfig_SelectSection("Bounce");
+  orxVECTOR vMousePos;
+  orxBOOL   bInViewport;
 
-  /* Clicking? */
-  if((orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT)) || (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
+  /* Gets mouse world position */
+  bInViewport = (orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), &vMousePos) != orxNULL) ? orxTRUE : orxFALSE;
+
+  /* Is mouse in a viewport? */
+  if(bInViewport != orxFALSE)
   {
-    orxVECTOR   vScreenPos, vWorldPos;
-    orxOBJECT  *pstObject;
+    /* Selects config section */
+    orxConfig_SelectSection("Bounce");
 
-    /* Gets mouse coordinates */
-    orxMouse_GetPosition(&vScreenPos);
-
-    /* Has a matching world position? */
-    if(orxRender_GetWorldPosition(&vScreenPos, &vWorldPos) != orxNULL)
+    /* Has particle spawner? */
+    if(spoParticleSpawner != orxNULL)
     {
+      /* Updates its position */
+      orxObject_SetPosition(spoParticleSpawner, &vMousePos);
+    }
+
+    /* Clicking? */
+    if((orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT)) || (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
+    {
+      orxOBJECT *pstObject;
+
       /* Left clicking */
       if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT))
       {
@@ -92,11 +102,11 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
         if(su32BallCounter < orxConfig_GetU32("BallLimit"))
         {
           /* Updates position */
-          vWorldPos.fZ += orxFLOAT_1;
+          vMousePos.fZ += orxFLOAT_1;
 
           /* Spawns a ball under the cursor */
           pstObject = orxObject_CreateFromConfig("Ball");
-          orxObject_SetPosition(pstObject, &vWorldPos);
+          orxObject_SetPosition(pstObject, &vMousePos);
 
           /* Update counter */
           su32BallCounter++;
@@ -105,7 +115,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
       else
       {
         /* Picks object under mouse */
-        pstObject = orxObject_Pick(&vWorldPos);
+        pstObject = orxObject_Pick(&vMousePos);
 
         /* Found and is a ball? */
         if((pstObject) && (!orxString_Compare(orxObject_GetName(pstObject), "Ball")))
@@ -134,6 +144,9 @@ orxSTATIC orxSTATUS orxBounce_Init()
   orxObject_CreateFromConfig("Wall2");
   orxObject_CreateFromConfig("Wall3");
   orxObject_CreateFromConfig("Wall4");
+
+  /* Creates particle spawner */
+  spoParticleSpawner = orxObject_CreateFromConfig("ParticleSpawner");
 
   /* Creates viewport on screen */
   orxViewport_CreateFromConfig("BounceViewport");
