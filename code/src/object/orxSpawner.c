@@ -61,6 +61,7 @@
 #define orxSPAWNER_KU32_FLAG_USE_COLOR            0x08000000  /**< Use color flag */
 #define orxSPAWNER_KU32_FLAG_OBJECT_SPEED         0x00100000  /**< Speed flag */
 #define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED   0x00200000  /**< Use relative speed flag */
+#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT   0x00400000  /**< Use self as parent flag */
 
 #define orxSPAWNER_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
@@ -81,6 +82,7 @@
 #define orxSPAWNER_KZ_CONFIG_USE_COLOR            "UseColor"
 #define orxSPAWNER_KZ_CONFIG_OBJECT_SPEED         "ObjectSpeed"
 #define orxSPAWNER_KZ_CONFIG_USE_RELATIVE_SPEED   "UseRelativeSpeed"
+#define orxSPAWNER_KZ_CONFIG_USE_SELF_AS_PARENT   "UseSelfAsParent"
 
 
 /***************************************************************************
@@ -615,6 +617,13 @@ orxSPAWNER *orxFASTCALL orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigI
         orxSpawner_SetScale(pstResult, &vValue);
       }
 
+      /* Should use self as parent? */
+      if(orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_USE_SELF_AS_PARENT) != orxFALSE)
+      {
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT, orxSPAWNER_KU32_FLAG_NONE);
+      }
+
       /* Has speed? */
       if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED, &(pstResult->vSpeed)) != orxNULL)
       {
@@ -1009,6 +1018,13 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
 
         /* Sets spawner as owner */
         orxObject_SetOwner(pstObject, _pstSpawner);
+
+        /* Should use self as parent? */
+        if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT))
+        {
+          /* Updates spawned object's parent */
+          orxObject_SetParent(pstObject, _pstSpawner);
+        }
 
         /* Gets spawner rotation */
         fSpawnerRotation = orxSpawner_GetWorldRotation(_pstSpawner);

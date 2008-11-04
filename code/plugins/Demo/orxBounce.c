@@ -86,9 +86,15 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     /* Has particle spawner? */
     if(spoParticleSpawner != orxNULL)
     {
+      /* Updates position */
+      vMousePos.fZ += orx2F(0.5f);
+
       /* Updates its position */
       orxObject_SetPosition(spoParticleSpawner, &vMousePos);
     }
+
+    /* Updates position */
+    vMousePos.fZ += orxFLOAT_1;
 
     /* Clicking? */
     if((orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT)) || (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
@@ -101,9 +107,6 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
         /* Under limit? */
         if(su32BallCounter < orxConfig_GetU32("BallLimit"))
         {
-          /* Updates position */
-          vMousePos.fZ += orxFLOAT_1;
-
           /* Spawns a ball under the cursor */
           pstObject = orxObject_CreateFromConfig("Ball");
           orxObject_SetPosition(pstObject, &vMousePos);
@@ -138,6 +141,12 @@ orxSTATIC orxSTATUS orxBounce_Init()
   /* Loads config file and selects its section */
   orxConfig_Load("Bounce.ini");
   orxConfig_SelectSection("Bounce");
+
+  /* Should hide cursor */
+  if(orxConfig_GetBool("ShowCursor") == orxFALSE)
+  {
+    orxMouse_ShowCursor(orxFALSE);
+  }
 
   /* Creates walls */
   orxObject_CreateFromConfig("Wall1");
