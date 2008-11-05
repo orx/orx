@@ -112,6 +112,7 @@
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
 #define orxOBJECT_KZ_CONFIG_LIFETIME            "LifeTime"
 #define orxOBJECT_KZ_CONFIG_PARENT_CAMERA       "ParentCamera"
+#define orxOBJECT_KZ_CONFIG_USE_RELATIVE_SPEED  "UseRelativeSpeed"
 #define orxOBJECT_KZ_CONFIG_USE_PARENT_SPACE    "UseParentSpace"
 
 #define orxOBJECT_KZ_CENTERED_PIVOT             "centered"
@@ -857,8 +858,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Has speed? */
       if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SPEED, &vValue) != orxNULL)
       {
-        /* Updates object speed */
-        orxObject_SetSpeed(pstResult, &vValue);
+        /* Uses relative speed? */
+        if(orxConfig_GetBool(orxOBJECT_KZ_CONFIG_USE_RELATIVE_SPEED) != orxFALSE)
+        {
+          /* Updates object relative speed */
+          orxObject_SetRelativeSpeed(pstResult, &vValue);
+        }
+        else
+        {
+          /* Updates object speed */
+          orxObject_SetSpeed(pstResult, &vValue);
+        }
       }
 
       /* Sets angular velocity? */
@@ -1695,6 +1705,7 @@ orxVECTOR *orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVEC
     orxFrame_GetScale(pstFrame, orxFRAME_SPACE_LOCAL, _pvScale);
 
     /* Clears scale on Z */
+
     _pvScale->fZ = orxFLOAT_1;
 
     /* Updates result */
@@ -2138,6 +2149,31 @@ orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECT
   return eResult;
 }
 
+/** Sets an object speed relative to its rotation/scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvSpeed        Relative speed to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetRelativeSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvRelativeSpeed)
+{
+  orxVECTOR vSpeed, vObjectScale;
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvRelativeSpeed != orxNULL);
+
+  /* Gets global speed */
+  orxVector_Mul(&vSpeed, orxVector_2DRotate(&vSpeed, _pvRelativeSpeed, orxObject_GetRotation(_pstObject)), orxObject_GetScale(_pstObject, &vObjectScale));
+
+  /* Applies it */
+  eResult = orxObject_SetSpeed(_pstObject, &vSpeed);
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets an object angular velocity
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fVelocity      Angular velocity to set
@@ -2205,6 +2241,34 @@ orxVECTOR *orxFASTCALL orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvS
 
     /* Updates result */
     pvResult = _pvSpeed;
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Gets an object relative speed
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvRelativeSpeed Relative speed to get
+ * @return      Object relative speed / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetRelativeSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvRelativeSpeed)
+{
+  orxVECTOR vObjectScale, *pvResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvRelativeSpeed != orxNULL);
+
+  /* Gets objects speed */
+  pvResult = orxObject_GetSpeed(_pstObject, _pvRelativeSpeed);
+
+  /* Valid? */
+  if(pvResult != orxNULL)
+  {
+    /* Gets relative speed */
+    orxVector_Div(pvResult, orxVector_2DRotate(pvResult, pvResult, -orxObject_GetRotation(_pstObject)), orxObject_GetScale(_pstObject, &vObjectScale));
   }
 
   /* Done! */

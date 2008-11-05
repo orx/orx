@@ -339,6 +339,13 @@ extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(orxCONST or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvSpeed);
 
+/** Sets an object speed relative to its rotation/scale
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pvRelativeSpeed Relative speed to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRelativeSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvRelativeSpeed);
+
 /** Sets an object angular velocity
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fVelocity      Angular velocity to set
@@ -352,6 +359,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAngularVelocity(orxOBJE
  * @return      Object speed / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvSpeed);
+
+/** Gets an object relative speed
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvRelativeSpeed Relative speed to get
+ * @return      Object relative speed / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetRelativeSpeed(orxOBJECT *_pstObject, orxVECTOR *_pvRelativeSpeed);
 
 /** Gets an object angular velocity
  * @param[in]   _pstObject      Concerned object
