@@ -148,6 +148,7 @@ orxSTATIC orxVOID orxAnimPointer_DeleteAll()
 orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fDT)
 {
   orxHANDLE hNewAnim;
+  orxFLOAT  fTimeBackup;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -165,6 +166,9 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
       /* Updates Times */
       _pstAnimPointer->fTime += _fDT * _pstAnimPointer->fFrequency;
       _pstAnimPointer->fCurrentAnimTime += _fDT * _pstAnimPointer->fFrequency;
+
+      /* Gets a backup of current time */
+      fTimeBackup = _pstAnimPointer->fCurrentAnimTime;
 
       /* Computes & updates anim*/
       hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hTargetAnim, &(_pstAnimPointer->fCurrentAnimTime), _pstAnimPointer->pstLinkTable, &bCut);
@@ -204,6 +208,28 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         {
           /* Inits event */
           stEvent.eID         = orxANIM_EVENT_START;
+          stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
+          stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
+
+          /* Sends it */
+          orxEvent_Send(&stEvent);
+        }
+      }
+      else
+      {
+        /* Looped? */
+        if(_pstAnimPointer->fCurrentAnimTime < fTimeBackup)
+        {
+          orxEVENT              stEvent;
+          orxANIM_EVENT_PAYLOAD stPayload;
+
+          /* Inits event */
+          orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+          orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
+          stEvent.eType       = orxEVENT_TYPE_ANIM;
+          stEvent.eID         = orxANIM_EVENT_LOOP;
+          stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(_pstAnimPointer->pstOwner);
+          stEvent.pstPayload  = &stPayload;
           stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
           stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 

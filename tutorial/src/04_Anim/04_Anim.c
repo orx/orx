@@ -105,6 +105,14 @@ orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 
       break;
     }
+
+    case orxANIM_EVENT_LOOP:
+    {
+      /* Logs info */
+      orxLOG("Animation <%s>@<%s> has looped!", pstPayload->zAnimName, orxObject_GetName(orxOBJECT(_pstEvent->hRecipient)));
+
+      break;
+    }
   }
 
   /* Done! */

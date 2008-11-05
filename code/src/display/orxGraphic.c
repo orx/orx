@@ -69,8 +69,8 @@
 /** Misc defines
  */
 #define orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME     "Texture"
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_TL       "TextureTL"
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_BR       "TextureBR"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER   "TextureCorner"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE     "TextureSize"
 #define orxGRAPHIC_KZ_CONFIG_PIVOT            "Pivot"
 #define orxGRAPHIC_KZ_CONFIG_COLOR            "Color"
 #define orxGRAPHIC_KZ_CONFIG_ALPHA            "Alpha"
@@ -333,20 +333,20 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_2D;
 
             /* Has corners? */
-            if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL) != orxFALSE)
-            && (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_BR) != orxFALSE))
+            if((orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER) != orxFALSE)
+            && (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE) != orxFALSE))
             {
-              orxVECTOR vTextureTL, vTextureBR;
+              orxVECTOR vTextureCorner, vTextureSize;
 
               /* Gets both corners */
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_TL, &(vTextureTL));
-              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_BR, &(vTextureBR));
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &(vTextureCorner));
+              orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &(vTextureSize));
 
               /* Stores them */
-              pstResult->fLeft    = vTextureTL.fX;
-              pstResult->fTop     = vTextureTL.fY;
-              pstResult->fWidth   = vTextureBR.fX - vTextureTL.fX;
-              pstResult->fHeight  = vTextureBR.fY - vTextureTL.fY;
+              pstResult->fLeft    = vTextureCorner.fX;
+              pstResult->fTop     = vTextureCorner.fY;
+              pstResult->fWidth   = vTextureSize.fX;
+              pstResult->fHeight  = vTextureSize.fY;
             }
             else
             {

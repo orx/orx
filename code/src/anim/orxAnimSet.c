@@ -386,9 +386,6 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
         }
         else
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table element with index %i does not have counter property.", _u32LinkIndex);
-
           u32Value = orxU32_UNDEFINED;
         }
 
@@ -405,9 +402,6 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
         }
         else
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table element with index %i does not have priority property.", _u32LinkIndex);
-
           u32Value = (orxU32)orxANIMSET_KU32_LINK_DEFAULT_PRIORITY;
         }
 
