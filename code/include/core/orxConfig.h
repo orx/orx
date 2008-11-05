@@ -261,6 +261,14 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetListBool(orxCONST orxSTRING
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector);
 
+/** Writes a list of string values to config
+ * @param[in] _zKey             Key name
+ * @param[in] _azValue          Values
+ * @param[in] _u32Number        Number of values
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetStringList(orxCONST orxSTRING _zKey, orxCONST orxSTRING _azValue[], orxU32 _u32Number);
+
 #endif /*_orxCONFIG_H_*/
 
 /** @} */

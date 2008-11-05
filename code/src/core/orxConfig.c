@@ -3043,6 +3043,73 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 
   return pvResult;
 }
 
+/** Writes a list of string values to config
+ * @param[in] _zKey             Key name
+ * @param[in] _azValue          Values
+ * @param[in] _u32Number        Number of values
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetStringList(orxCONST orxSTRING _zKey, orxCONST orxSTRING _azValue[], orxU32 _u32Number)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxCHAR           acBuffer[orxCONFIG_KU32_BUFFER_SIZE];
+  orxU32            u32Index, i;
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+  orxASSERT(_azValue != orxNULL);
+
+  /* Valid? */
+  if(_u32Number > 0)
+  {
+    /* Gets entry */
+    pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+
+    /* Found? */
+    if(pstEntry != orxNULL)
+    {
+      /* Deletes it */
+      orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+    }
+
+    /* For all values */
+    for(i = 0, u32Index = 0; i < _u32Number; i++)
+    {
+      orxCHAR *pc;
+
+      /* For all characters */
+      for(pc = _azValue[i]; *pc != orxCHAR_NULL; pc++)
+      {
+        /* Copies it */
+        acBuffer[u32Index++] = *pc;
+      }
+
+      /* Adds separator */
+      acBuffer[u32Index++] = orxCONFIG_KC_LIST_SEPARATOR;
+    }
+
+    /* Removes last separator */
+    acBuffer[u32Index - 1] = orxCHAR_NULL;
+
+    /* Adds new entry */
+    eResult = orxConfig_AddEntry(_zKey, acBuffer, orxFALSE);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cannot write config string list as no item is provided.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 #ifdef __orxMSVC__
 
   #pragma warning(default : 4996)
