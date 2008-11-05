@@ -22,7 +22,9 @@
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#g6cdd2d14420949b68a64dd3610ebebf3">orx_DefaultEventHandler</a> (orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#g9f9f5cc7438c91a3e6f1294fb1c1f0c7">orx_Execute</a> (orxU32 _u32NbParams, orxSTRING _azParams[], orxCONST <a class="el" href="group__orx_module.html#g368f612e1712fd0a53481fdef5f80cea">orxMODULE_SETUP_FUNCTION</a> _pfnSetup, orxCONST <a class="el" href="group__orx_module.html#g460732d2989b3d8b91f03f1350d38fd5">orxMODULE_INIT_FUNCTION</a> _pfnInit, orxCONST <a class="el" href="group__orx_module.html#gf5084efa5285edca99bf85fceac3a91e">orxMODULE_RUN_FUNCTION</a> _pfnRun, orxCONST <a class="el" href="group__orx_module.html#g03471277f6cf82d59af2cfa426e812db">orxMODULE_EXIT_FUNCTION</a> _pfnExit)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#g4cc06ad103c27c8e9d26897a6a0a031b">orx_MainSetup</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#g54a2e4bac2d5b923f90c54a8fb96253f">orx_Execute</a> (orxU32 _u32NbParams, orxSTRING _azParams[], orxCONST <a class="el" href="group__orx_module.html#g460732d2989b3d8b91f03f1350d38fd5">orxMODULE_INIT_FUNCTION</a> _pfnInit, orxCONST <a class="el" href="group__orx_module.html#gf5084efa5285edca99bf85fceac3a91e">orxMODULE_RUN_FUNCTION</a> _pfnRun, orxCONST <a class="el" href="group__orx_module.html#g03471277f6cf82d59af2cfa426e812db">orxMODULE_EXIT_FUNCTION</a> _pfnExit)</td></tr>
 
 <tr><td colspan="2"><br><h2>Variables</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___orx.html#g469877b1e21044186a87c64fead97dca">sbStopByEvent</a> = 0</td></tr>
@@ -59,7 +61,7 @@ Orx default basic event handler <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g9f9f5cc7438c91a3e6f1294fb1c1f0c7"></a><!-- doxytag: member="orx.h::orx_Execute" ref="g9f9f5cc7438c91a3e6f1294fb1c1f0c7" args="(orxU32 _u32NbParams, orxSTRING _azParams[], orxCONST orxMODULE_SETUP_FUNCTION _pfnSetup, orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_RUN_FUNCTION _pfnRun, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit)" -->
+<a class="anchor" name="g54a2e4bac2d5b923f90c54a8fb96253f"></a><!-- doxytag: member="orx.h::orx_Execute" ref="g54a2e4bac2d5b923f90c54a8fb96253f" args="(orxU32 _u32NbParams, orxSTRING _azParams[], orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_RUN_FUNCTION _pfnRun, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -74,12 +76,6 @@ Orx default basic event handler <dl compact><dt><b>Parameters:</b></dt><dd>
           <td></td>
           <td class="paramtype">orxSTRING&nbsp;</td>
           <td class="paramname"> <em>_azParams</em>[], </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_module.html#g368f612e1712fd0a53481fdef5f80cea">orxMODULE_SETUP_FUNCTION</a>&nbsp;</td>
-          <td class="paramname"> <em>_pfnSetup</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -113,13 +109,31 @@ Orx main execution function <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32NbParams</em>&nbsp;</td><td>Main function parameters number (argc) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_azParams</em>&nbsp;</td><td>Main function parameter list (argv) </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnSetup</em>&nbsp;</td><td>Main setup function (should declares dependencies) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnInit</em>&nbsp;</td><td>Main init function (should init all the main stuff and register the main event handler to override the default one) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnRun</em>&nbsp;</td><td>Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnExit</em>&nbsp;</td><td>Main exit function (should clean all the main stuff) </td></tr>
   </table>
 </dl>
 
+</div>
+</div><p>
+<a class="anchor" name="g4cc06ad103c27c8e9d26897a6a0a031b"></a><!-- doxytag: member="orx.h::orx_MainSetup" ref="g4cc06ad103c27c8e9d26897a6a0a031b" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxSTATIC orxVOID orx_MainSetup           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Default main setup (module dependencies) 
 </div>
 </div><p>
 <hr><h2>Variable Documentation</h2>

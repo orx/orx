@@ -30,7 +30,17 @@
 
 #include "io/orxMouse.h"
 #include "plugin/orxPluginCore.h"
+#include "debug/orxDebug.h"
 
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+
+/***************************************************************************
+ * Public functions                                                        *
+ ***************************************************************************/
 
 /** Mouse module setup
  */
@@ -43,6 +53,40 @@ orxVOID orxMouse_Setup()
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_CONFIG);
 
   return;
+}
+
+/** Gets button literal name
+ * @param _eButton          Concerned button
+ * @return Button's name
+ */
+orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
+{
+  orxSTRING zResult;
+
+#define orxMOUSE_DECLARE_BUTTON_NAME(BUTTON)   case orxMOUSE_##BUTTON: zResult = #BUTTON; break
+
+  /* Checks */
+  orxASSERT(_eButton < orxMOUSE_BUTTON_NUMBER);
+
+  /* Depending on button */
+  switch(_eButton)
+  {
+    orxMOUSE_DECLARE_BUTTON_NAME(BUTTON_LEFT);
+    orxMOUSE_DECLARE_BUTTON_NAME(BUTTON_RIGHT);
+    orxMOUSE_DECLARE_BUTTON_NAME(BUTTON_MIDDLE);
+
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "No name defined for button #%ld.", _eButton);
+
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 

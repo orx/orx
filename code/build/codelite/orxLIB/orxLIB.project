@@ -29,6 +29,7 @@
     <VirtualDirectory Name="io">
       <File Name="../../../src/io/orxFile.c"/>
       <File Name="../../../src/io/orxFileSystem.c"/>
+      <File Name="../../../src/io/orxInput.c"/>
       <File Name="../../../src/io/orxJoystick.c"/>
       <File Name="../../../src/io/orxKeyboard.c"/>
       <File Name="../../../src/io/orxMouse.c"/>
@@ -114,6 +115,7 @@
     <VirtualDirectory Name="io">
       <File Name="../../../include/io/orxFile.h"/>
       <File Name="../../../include/io/orxFileSystem.h"/>
+      <File Name="../../../include/io/orxInput.h"/>
       <File Name="../../../include/io/orxJoystick.h"/>
       <File Name="../../../include/io/orxKeyboard.h"/>
       <File Name="../../../include/io/orxMouse.h"/>

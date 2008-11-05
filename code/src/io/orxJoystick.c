@@ -30,7 +30,17 @@
 
 #include "io/orxJoystick.h"
 #include "plugin/orxPluginCore.h"
+#include "debug//orxDebug.h"
 
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+
+/***************************************************************************
+ * Public functions                                                        *
+ ***************************************************************************/
 
 /** Joystick module setup
  */
@@ -41,6 +51,91 @@ orxVOID orxJoystick_Setup()
   orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_MEMORY);
 
   return;
+}
+
+/** Gets axis literal name
+ * @param _eAxis        Concerned axis
+ * @return Axis's name
+ */
+orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
+{
+  orxSTRING zResult;
+
+#define orxJOYSTICK_DECLARE_AXIS_NAME(AXIS) case orxJOYSTICK_##AXIS: zResult = #AXIS; break
+
+  /* Checks */
+  orxASSERT(_eAxis < orxJOYSTICK_AXIS_NUMBER);
+
+  /* Depending on axis */
+  switch(_eAxis)
+  {
+    orxJOYSTICK_DECLARE_AXIS_NAME(AXIS_X);
+    orxJOYSTICK_DECLARE_AXIS_NAME(AXIS_Y);
+    orxJOYSTICK_DECLARE_AXIS_NAME(AXIS_Z);
+    orxJOYSTICK_DECLARE_AXIS_NAME(AXIS_R);
+    orxJOYSTICK_DECLARE_AXIS_NAME(AXIS_U);
+    orxJOYSTICK_DECLARE_AXIS_NAME(AXIS_V);
+    orxJOYSTICK_DECLARE_AXIS_NAME(AXIS_POV);
+
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for axis #%ld.", _eAxis);
+
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets button literal name
+ * @param _eButton      Concerned button
+ * @return Button's name
+ */
+orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton)
+{
+  orxSTRING zResult;
+
+#define orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON) case orxJOYSTICK_##BUTTON: zResult = #BUTTON; break
+
+  /* Checks */
+  orxASSERT(_eButton < orxJOYSTICK_BUTTON_NUMBER);
+
+  /* Depending on button */
+  switch(_eButton)
+  {
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_1);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_2);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_3);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_4);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_5);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_6);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_7);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_8);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_9);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_10);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_11);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_12);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_13);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_14);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_15);
+    orxJOYSTICK_DECLARE_BUTTON_NAME(BUTTON_16);
+
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "No name defined for button #%ld.", _eButton);
+
+      /* Updates result */
+      zResult = orxSTRING_EMPTY;
+    }
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 

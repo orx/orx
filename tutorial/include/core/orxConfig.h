@@ -261,7 +261,6 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_GetListBool(orxCONST orxSTRING
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector);
 
-
 #endif /*_orxCONFIG_H_*/
 
 /** @} */

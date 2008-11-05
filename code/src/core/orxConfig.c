@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -1664,7 +1664,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
   {
     orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
     orxU32              u32Size, u32Offset;
-    orxBOOL             bUseEncryption, bFirstTime;
+    orxBOOL             bUseEncryption = orxFALSE, bFirstTime;
     orxCONFIG_SECTION  *pstPreviousSection;
 
     /* Gets previous config section */
@@ -1821,7 +1821,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             if((pc < acBuffer + u32Size) && (*pc == orxCONFIG_KC_INHERITANCE_MARKER))
             {
               orxCONFIG_SECTION *pstCurrentSection;
-              
+
               /* Gets current section */
               pstCurrentSection = sstConfig.pstCurrentSection;
 
@@ -2100,7 +2100,7 @@ orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption,
     if(pstFile != orxNULL)
     {
       orxCONFIG_SECTION  *pstSection;
-      orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar;
+      orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar = orxNULL;
       orxU32              u32BufferSize;
 
       /* Use encryption? */

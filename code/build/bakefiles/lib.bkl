@@ -98,6 +98,7 @@
         <headers>
             include/io/orxFile.h
             include/io/orxFileSystem.h
+            include/io/orxInput.h
             include/io/orxJoystick.h
             include/io/orxKeyboard.h
             include/io/orxMouse.h
@@ -106,6 +107,7 @@
         <sources>
             src/io/orxFile.c
             src/io/orxFileSystem.c
+            src/io/orxInput.c
             src/io/orxJoystick.c
             src/io/orxKeyboard.c
             src/io/orxMouse.c

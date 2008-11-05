@@ -162,7 +162,7 @@ typedef enum __orxKEYBOARD_KEY_t
 
 /** Keyboard module setup
  */
-extern orxDLLAPI orxVOID                              orxKeyboard_Setup();
+extern orxDLLAPI orxVOID                orxKeyboard_Setup();
 
 
 /***************************************************************************
@@ -171,31 +171,38 @@ extern orxDLLAPI orxVOID                              orxKeyboard_Setup();
 
 /** Inits the keyboard module
  */
-extern orxDLLAPI orxSTATUS orxKeyboard_Init();
+extern orxDLLAPI orxSTATUS              orxKeyboard_Init();
 
 /** Exits from the keyboard module
  */
-extern orxDLLAPI orxVOID orxKeyboard_Exit();
+extern orxDLLAPI orxVOID                orxKeyboard_Exit();
 
 /** Is key pressed?
  * @param _eKey       Key to check
- * @return orxTRUE if presse / orxFALSE otherwise
+ * @return orxTRUE if pressed / orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey);
+extern orxDLLAPI orxBOOL                orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey);
 
 /** Returns orxTRUE if there are keypresses waiting in the input buffer.
  * @return orxTRUE if keys have been pressed, else orxFALSE
  */
-extern orxDLLAPI orxBOOL orxKeyboard_Hit();
+extern orxDLLAPI orxBOOL                orxKeyboard_Hit();
 
 /** Gets the next character from the keyboard buffer
  * @return orxKEYBOARD_KEY
  */
-extern orxDLLAPI orxKEYBOARD_KEY orxKeyboard_Read();
+extern orxDLLAPI orxKEYBOARD_KEY        orxKeyboard_Read();
 
-/**  Empties the keyboard buffer.
+/** Empties the keyboard buffer.
  */
-extern orxDLLAPI orxVOID orxKeyboard_ClearBuffer();
+extern orxDLLAPI orxVOID                orxKeyboard_ClearBuffer();
+
+/** Gets key literal name
+ * @param _eKey       Concerned key
+ * @return Key's name
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL  orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey);
+
 
 #endif /* _orxKEYBOARD_H_ */
 

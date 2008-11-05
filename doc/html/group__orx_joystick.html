@@ -72,6 +72,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g8c18edb285f8f86bd69a323f0bcd6ffc">orxJoystick_IsButtonPressed</a> (orxU32 _u32ID, <a class="el" href="group__orx_joystick.html#gb6cecefc4e8f1578ed021880bb9cc94b">orxJOYSTICK_BUTTON</a> _eButton)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g1306a644d6e07cff2ba8fd04ee6dc0e8">orxJoystick_GetAxisName</a> (<a class="el" href="group__orx_joystick.html#gac676f97aec33fc1dad588ae845d5642">orxJOYSTICK_AXIS</a> _eAxis)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_joystick.html#g48dfa3db6a3db111587168acef9e208c">orxJoystick_GetButtonName</a> (<a class="el" href="group__orx_joystick.html#gb6cecefc4e8f1578ed021880bb9cc94b">orxJOYSTICK_BUTTON</a> _eButton)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Joystick plugin module Plugin module that handles joystick-like peripherals <hr><h2>Enumeration Type Documentation</h2>
@@ -187,6 +191,32 @@ Button enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 Exits from the joystick module 
 </div>
 </div><p>
+<a class="anchor" name="g1306a644d6e07cff2ba8fd04ee6dc0e8"></a><!-- doxytag: member="orxJoystick.h::orxJoystick_GetAxisName" ref="g1306a644d6e07cff2ba8fd04ee6dc0e8" args="(orxJOYSTICK_AXIS _eAxis)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxSTRING orxFASTCALL orxJoystick_GetAxisName           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_joystick.html#gac676f97aec33fc1dad588ae845d5642">orxJOYSTICK_AXIS</a>&nbsp;</td>
+          <td class="paramname"> <em>_eAxis</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets axis literal name <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>_eAxis</em>&nbsp;</td><td>Concerned axis </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Axis's name </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="ga04efa07bd269e72b70608e45cd5555b"></a><!-- doxytag: member="orxJoystick.h::orxJoystick_GetAxisValue" ref="ga04efa07bd269e72b70608e45cd5555b" args="(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)" -->
 <div class="memitem">
 <div class="memproto">
@@ -220,6 +250,32 @@ Gets mouse on screen position <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Value of the axis </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g48dfa3db6a3db111587168acef9e208c"></a><!-- doxytag: member="orxJoystick.h::orxJoystick_GetButtonName" ref="g48dfa3db6a3db111587168acef9e208c" args="(orxJOYSTICK_BUTTON _eButton)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxSTRING orxFASTCALL orxJoystick_GetButtonName           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_joystick.html#gb6cecefc4e8f1578ed021880bb9cc94b">orxJOYSTICK_BUTTON</a>&nbsp;</td>
+          <td class="paramname"> <em>_eButton</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets button literal name <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>_eButton</em>&nbsp;</td><td>Concerned button </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Button's name </dd></dl>
 
 </div>
 </div><p>

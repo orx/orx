@@ -105,6 +105,7 @@
 		<Unit filename="..\..\..\include\display\orxTexture.h" />
 		<Unit filename="..\..\..\include\io\orxFile.h" />
 		<Unit filename="..\..\..\include\io\orxFileSystem.h" />
+		<Unit filename="..\..\..\include\io\orxInput.h" />
 		<Unit filename="..\..\..\include\io\orxJoystick.h" />
 		<Unit filename="..\..\..\include\io\orxKeyboard.h" />
 		<Unit filename="..\..\..\include\io\orxMouse.h" />
@@ -205,6 +206,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\io\orxFileSystem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\io\orxInput.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\io\orxJoystick.c">

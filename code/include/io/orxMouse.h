@@ -70,7 +70,7 @@ typedef enum __orxMOUSE_BUTTON_t
 
 /** Mouse module setup
  */
-extern orxDLLAPI orxVOID                              orxMouse_Setup();
+extern orxDLLAPI orxVOID                orxMouse_Setup();
 
 
 /***************************************************************************
@@ -80,45 +80,51 @@ extern orxDLLAPI orxVOID                              orxMouse_Setup();
 /** Inits the mouse module
  * @return Returns the status of the operation
  */
-extern orxDLLAPI orxSTATUS    orxMouse_Init();
+extern orxDLLAPI orxSTATUS              orxMouse_Init();
 
 /** Exits from the mouse module
  */
-extern orxDLLAPI orxVOID      orxMouse_Exit();
+extern orxDLLAPI orxVOID                orxMouse_Exit();
 
 /** Sets mouse position
 * @param[in] _pvPosition  Mouse position
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-extern orxDLLAPI orxSTATUS    orxMouse_SetPosition(orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS              orxMouse_SetPosition(orxCONST orxVECTOR *_pvPosition);
 
 /** Gets mouse position
  * @param[out] _pvPosition  Mouse position
  * @return orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *  orxMouse_GetPosition(orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *            orxMouse_GetPosition(orxVECTOR *_pvPosition);
 
 /** Is mouse button pressed?
  * @param _eButton          Mouse button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL      orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
+extern orxDLLAPI orxBOOL                orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
 
 /** Gets mouse move delta (since last call)
  * @param[out] _pvMoveDelta Mouse move delta
  * @return orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *  orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta);
+extern orxDLLAPI orxVECTOR *            orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta);
 
 /** Gets mouse wheel delta (since last call)
  * @return Mouse wheel delta
  */
-extern orxDLLAPI orxFLOAT     orxMouse_GetWheelDelta();
+extern orxDLLAPI orxFLOAT               orxMouse_GetWheelDelta();
 
 /** Shows mouse cursor
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-extern orxDLLAPI orxSTATUS    orxMouse_ShowCursor(orxBOOL _bShow);
+extern orxDLLAPI orxSTATUS              orxMouse_ShowCursor(orxBOOL _bShow);
+
+/** Gets button literal name
+ * @param _eButton          Concerned button
+ * @return Button's name
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL  orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton);
 
 #endif /* _orxMOUSE_H_ */
 
