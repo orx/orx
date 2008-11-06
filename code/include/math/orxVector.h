@@ -506,7 +506,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pv
   if(fOp > orxFLOAT_0)
   {
     /* Gets reciprocal size */
-    fOp = orxFLOAT_1 / fOp;
+    fOp = orxFLOAT_1 / orxMath_Sqrt(fOp);
 
     /* Updates result */
     _pvRes->fX = fOp * _pvOp->fX;

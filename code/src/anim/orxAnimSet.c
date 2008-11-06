@@ -1526,31 +1526,40 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
             hSrcAnim = (orxHANDLE)((orxU32)orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zSrcAnim)) - 1);
             hDstAnim = (orxHANDLE)((orxU32)orxHashTable_Get(pstResult->pstIDTable, orxString_ToCRC(zDstAnim)) - 1);
 
-            /* Adds link */
-            hLink = orxAnimSet_AddLink(pstResult, hSrcAnim, hDstAnim);
-
             /* Valid? */
-            if(hLink != orxHANDLE_UNDEFINED)
+            if((hSrcAnim != orxHANDLE_UNDEFINED) && (hDstAnim != orxHANDLE_UNDEFINED))
             {
-              /* Gets its property ID */
-              orxString_Print(acPropertyID, "%s%d", orxANIMSET_KZ_CONFIG_LINK_PROPERTY, i);
+              /* Adds link */
+              hLink = orxAnimSet_AddLink(pstResult, hSrcAnim, hDstAnim);
 
-              /* Immediate link? */
-              if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(acPropertyID)), orxANIMSET_KZ_IMMEDIATE) == 0)
+              /* Valid? */
+              if(hLink != orxHANDLE_UNDEFINED)
               {
-                /* Updates link property */
-                orxAnimSet_SetLinkProperty(pstResult, hLink, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
-              }
+                /* Gets its property ID */
+                orxString_Print(acPropertyID, "%s%d", orxANIMSET_KZ_CONFIG_LINK_PROPERTY, i);
 
-              /* Gets its priority ID */
-              orxString_Print(acPriorityID, "%s%d", orxANIMSET_KZ_CONFIG_LINK_PRIORITY, i);
+                /* Immediate link? */
+                if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(acPropertyID)), orxANIMSET_KZ_IMMEDIATE) == 0)
+                {
+                  /* Updates link property */
+                  orxAnimSet_SetLinkProperty(pstResult, hLink, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
+                }
 
-              /* Has priority? */
-              if(orxConfig_HasValue(acPriorityID) != orxFALSE)
-              {
-                /* Updates link priority */
-                orxAnimSet_SetLinkProperty(pstResult, hLink, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetU32(acPriorityID));
+                /* Gets its priority ID */
+                orxString_Print(acPriorityID, "%s%d", orxANIMSET_KZ_CONFIG_LINK_PRIORITY, i);
+
+                /* Has priority? */
+                if(orxConfig_HasValue(acPriorityID) != orxFALSE)
+                {
+                  /* Updates link priority */
+                  orxAnimSet_SetLinkProperty(pstResult, hLink, orxANIMSET_KU32_LINK_FLAG_PRIORITY, orxConfig_GetU32(acPriorityID));
+                }
               }
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Can't add link <%s-%s>, please check the declarations of animations.", zSrcAnim, zDstAnim);
             }
 
             /* Restores link string */
