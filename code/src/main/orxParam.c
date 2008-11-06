@@ -191,7 +191,7 @@ orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azPa
                pstParamInfo->stParam.zShortName,
                orxPARAM_KZ_MODULE_LONG_PREFIX,
                pstParamInfo->stParam.zLongName,
-               pstParamInfo->stParam.zShortDesc);
+               pstParamInfo->stParam.zLongDesc);
       }
       else
       {
