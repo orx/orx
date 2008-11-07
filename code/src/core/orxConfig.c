@@ -1726,8 +1726,10 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
           pc < acBuffer + u32Size;
           pc++)
       {
-        /* Comment character out of block mode or block character in block mode? */
-        if(((*pc == orxCONFIG_KC_COMMENT)
+        /* Comment character or EOL out of block mode or block character in block mode? */
+        if((((*pc == orxCONFIG_KC_COMMENT)
+          || (*pc == orxCHAR_CR)
+          || (*pc == orxCHAR_LF))
          && (bBlockMode == orxFALSE))
         || ((bBlockMode != orxFALSE)
          && (*pc == orxCONFIG_KC_BLOCK)))
@@ -1857,10 +1859,11 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_SECTION_END))
             {
               /* End of line? */
-              if(*pc == orxCHAR_EOL)
+              if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Section name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_SECTION_END);
+                *pc = orxCHAR_NULL;
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Section name <%s> incomplete, closing character '%c' not found.", pcLineStart + 1, orxCONFIG_KC_SECTION_END);
 
                 /* Updates new line start */
                 pcLineStart = pc + 1;
@@ -1906,7 +1909,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
           else
           {
             /* Finds assign character */
-            while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_ASSIGN))
+            while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_ASSIGN) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
             {
               /* Updates pointer */
               pc++;
@@ -1955,6 +1958,12 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
 
               /* Updates current character */
               pc = pcValueStart;
+            }
+            else
+            {
+              /* Logs message */
+              *pc = orxCHAR_NULL;
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Key <%s> has no value, assign character '%c' not found.", pcLineStart, orxCONFIG_KC_ASSIGN);
             }
           }
         }
