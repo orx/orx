@@ -1961,9 +1961,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             }
             else
             {
-              /* Logs message */
-              *pc = orxCHAR_NULL;
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Key <%s> has no value, assign character '%c' not found.", pcLineStart, orxCONFIG_KC_ASSIGN);
+              /* Not at end of buffer */
+              if(pc < acBuffer + u32Size)
+              {
+                /* Logs message */
+                *pc = orxCHAR_NULL;
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Key <%s> has no value, assign character '%c' not found.", pcLineStart, orxCONFIG_KC_ASSIGN);
+              }
             }
           }
         }
