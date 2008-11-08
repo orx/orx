@@ -2343,6 +2343,42 @@ orxSTATUS orxConfig_ClearSection(orxCONST orxSTRING _zSectionName)
   return eResult;
 }
 
+/** Clears a value from current selected section
+ * @param[in] _zKey             Key name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_ClearValue(orxCONST orxSTRING _zKey)
+{
+  orxCONFIG_ENTRY  *pstEntry;
+  orxSTATUS         eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(*_zKey != *orxSTRING_EMPTY);
+
+  /* Gets entry */
+  pstEntry = orxConfig_GetEntry(orxString_ToCRC(_zKey));
+
+  /* Found? */
+  if(pstEntry != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteEntry(sstConfig.pstCurrentSection, pstEntry);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Reads a signed integer value from config (will take a random value if a list is provided for this key)
  * @param[in] _zKey             Key name
  * @return The value

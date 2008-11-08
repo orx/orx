@@ -118,6 +118,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(orxCONST orxSTRING 
  */
 extern orxDLLAPI orxSTATUS              orxConfig_ClearSection(orxCONST orxSTRING _zSectionName);
 
+/** Clears a value from current selected section
+ * @param[in] _zKey             Key name
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ClearValue(orxCONST orxSTRING _zKey);
+
 
 /** Has specified value for the given key?
  * @param[in] _zKey             Key name
