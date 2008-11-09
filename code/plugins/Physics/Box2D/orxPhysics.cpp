@@ -65,7 +65,7 @@ extern "C"
 
 orxSTATIC orxCONST orxU32   su32DefaultIterations   = 10;
 orxSTATIC orxCONST orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
-orxSTATIC orxCONST orxFLOAT sfDefaultDimensionRatio = orx2F(0.1f);
+orxSTATIC orxCONST orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
 orxSTATIC orxCONST orxU32   su32MessageBankSize     = 64;
 
 
