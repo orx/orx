@@ -988,8 +988,8 @@ orxSTATUS orxRender_Home_Init()
     if(sstRender.pstRenderBank != orxNULL)
     {
       /* Creates rendering clock */
-      sstRender.pstClock = orxClock_Create(orxFLOAT_0, orxCLOCK_TYPE_RENDER);
-      orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_MAXED, orxRENDER_KF_TICK_SIZE);
+      sstRender.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MOD_TYPE_MAXED, orxConfig_HasValue(orxRENDER_KZ_CONFIG_MAX_TICK_SIZE) ? orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MAX_TICK_SIZE) : orxRENDER_KF_TICK_SIZE);
 
       /* Valid? */
       if(sstRender.pstClock != orxNULL)
@@ -1046,9 +1046,6 @@ orxVOID orxRender_Home_Exit()
   {
     /* Unregisters rendering function */
     orxClock_Unregister(sstRender.pstClock, orxRender_RenderAll);
-
-    /* Deletes rendering clock */
-    orxClock_Delete(sstRender.pstClock);
 
     /* Deletes rendering bank */
     orxBank_Delete(sstRender.pstRenderBank);

@@ -343,7 +343,7 @@ orxSTATUS orxObject_Init()
     if(eResult == orxSTATUS_SUCCESS)
     {
       /* Creates objects clock */
-      sstObject.pstClock = orxClock_Create(orxFLOAT_0, orxCLOCK_TYPE_CORE);
+      sstObject.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
       /* Valid? */
       if(sstObject.pstClock != orxNULL)
@@ -356,11 +356,6 @@ orxSTATUS orxObject_Init()
         {
           /* Inits Flags */
           sstObject.u32Flags = orxOBJECT_KU32_STATIC_FLAG_READY | orxOBJECT_KU32_STATIC_FLAG_CLOCK;
-        }
-        else
-        {
-          /* Deletes clock */
-          orxClock_Delete(sstObject.pstClock);
         }
       }
     }
@@ -398,9 +393,6 @@ orxVOID orxObject_Exit()
     {
       /* Unregisters object update all function */
       orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
-
-      /* Deletes clock */
-      orxClock_Delete(sstObject.pstClock);
 
       /* Removes reference */
       sstObject.pstClock = orxNULL;

@@ -109,6 +109,7 @@ orxSTATIC orxVOID orx_MainSetup()
     orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
     orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
     orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
+    orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
 
     return;
 }

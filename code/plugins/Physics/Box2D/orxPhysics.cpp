@@ -64,7 +64,6 @@ extern "C"
 
 
 orxSTATIC orxCONST orxU32   su32DefaultIterations   = 10;
-orxSTATIC orxCONST orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
 orxSTATIC orxCONST orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
 orxSTATIC orxCONST orxU32   su32MessageBankSize     = 64;
 
@@ -906,7 +905,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     /* Gets gravity & allow sleep from config */
     orxConfig_SelectSection(orxPHYSICS_KZ_CONFIG_SECTION);
     orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity);
-    bAllowSleep = orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP);
+    bAllowSleep = (orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) : orxTRUE;
 
     /* Gets world corners from config */
     orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_WORLD_LOWER, &vLower);
@@ -925,7 +924,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     /* Success? */
     if(sstPhysics.poWorld != orxNULL)
     {
-      orxFLOAT  fFrequency, fTickSize, fRatio;
+      orxFLOAT  fRatio;
       orxU32    u32IterationsPerStep;
 
       /* Creates listeners */
@@ -969,30 +968,8 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
         sstPhysics.u32Iterations = su32DefaultIterations;
       }
 
-      /* Gets frequency */
-      fFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_FREQUENCY);
-
-      /* Valid? */
-      if(fFrequency > orxFLOAT_0)
-      {
-        /* Gets tick size */
-        fTickSize = orxFLOAT_1 / fFrequency;
-      }
-      else
-      {
-        /* Gets default tick size */
-        fTickSize = orxFLOAT_1 / sfDefaultFrequency;
-      }
-
       /* Creates physics clock */
-      sstPhysics.pstClock = orxClock_Create(fTickSize, orxCLOCK_TYPE_PHYSICS);
-
-      /* Has fixed DT? */
-      if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_FIXED_DT) != orxFALSE)
-      {
-        /* Sets DT as fixed */
-        orxClock_SetModifier(sstPhysics.pstClock, orxCLOCK_MOD_TYPE_FIXED, fTickSize);
-      }
+      sstPhysics.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
       /* Resyncs clocks */
       orxClock_ResyncAll();

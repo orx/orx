@@ -295,8 +295,8 @@ orxSTATUS orxClock_Init()
       /* Inits Flags */
       sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
 
-      /* Success */
-      eResult = orxSTATUS_SUCCESS;
+      /* Creates default full speed core clock */
+      eResult = (orxClock_Create(orxFLOAT_0, orxCLOCK_TYPE_CORE) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
     else
     {

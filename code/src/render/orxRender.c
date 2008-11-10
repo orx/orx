@@ -48,7 +48,6 @@ orxVOID orxRender_Setup()
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_FPS);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_STRUCTURE);
-  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_OBJECT);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_VIEWPORT);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_DISPLAY);
 

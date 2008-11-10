@@ -183,7 +183,7 @@ orxSTATIC orxSTATUS orxScroll_Init()
     orxCamera_SetParent(spstCamera, spstRoot);
 
     /* Gets rendering clock */
-    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_RENDER);
+    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
     /* Registers update function */
     eResult = orxClock_Register(pstClock, orxScroll_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_FUNCTION_PRIORITY_NORMAL);

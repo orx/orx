@@ -523,8 +523,6 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7789ac9e1f4746dfa1ec2b03cf0bbe2cb">orxClock.h</a>
 <li>orxCLOCK_TYPE_PHYSICS
 : <a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7a3a8311475d96e286b76e1e514a723e1">orxClock.h</a>
-<li>orxCLOCK_TYPE_RENDER
-: <a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7b01a9f2bbb9ff2ada84fb348f9e6c7cb">orxClock.h</a>
 <li>orxCLOCK_TYPE_SECOND
 : <a class="el" href="group__orx_clock.html#gg8e27772673f124fc5d31b8596539e8d7adbaec96d1f059b7735e9bab3b1e3d52">orxClock.h</a>
 <li>orxCLOCK_TYPE_USER
@@ -549,6 +547,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#gdda0e9e08208b4f674ab41933a0e70d9">orxDisplay.h</a>
 <li>orxConfig_ClearSection()
 : <a class="el" href="group__orx_config.html#gfc2c2859a08ba53e4c9d1ab309b642b2">orxConfig.h</a>
+<li>orxConfig_ClearValue()
+: <a class="el" href="group__orx_config.html#g4fe4bd65d788eee21b03edcebba66582">orxConfig.h</a>
 <li>orxConfig_Exit()
 : <a class="el" href="group__orx_config.html#geba5a340bc80a039aaafe1fa485c6a19">orxConfig.h</a>
 <li>orxConfig_GetBool()
@@ -2636,6 +2636,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_render.html#g8b04585da5e70a6b59b23313f912452c">orxRender.h</a>
 <li>orxRender_Init()
 : <a class="el" href="group__orx_render.html#gae41cf637cb071ff61ff44fd8672aa9d">orxRender.h</a>
+<li>orxRENDER_KZ_CONFIG_MAX_TICK_SIZE
+: <a class="el" href="group__orx_render.html#g9d00d60287f270ce7a306116681d4a44">orxRender.h</a>
 <li>orxRENDER_KZ_CONFIG_SECTION
 : <a class="el" href="group__orx_render.html#gc18069a6467cbcee0503abdaa6aaa5f6">orxRender.h</a>
 <li>orxRENDER_KZ_CONFIG_SHOW_FPS
@@ -2792,8 +2794,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSound_Stop()
 : <a class="el" href="group__orx_sound.html#g0390001e26b32b18253b9bcd3ac15e49">orxSound.h</a>
 <li>orxSOUNDPOINTER
-: <a class="el" href="group__orx_structure.html#gc20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
-, <a class="el" href="group__orx_sound_pointer.html#g9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
+: <a class="el" href="group__orx_sound_pointer.html#g9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
+, <a class="el" href="group__orx_structure.html#gc20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
 <li>orxSoundPointer_AddSound()
 : <a class="el" href="group__orx_sound_pointer.html#g0188b5336738367bfb210e8907bdfcbb">orxSoundPointer.h</a>
 <li>orxSoundPointer_AddSoundFromConfig()
@@ -2895,8 +2897,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSoundSystem_UnloadSample()
 : <a class="el" href="group__orx_sound_system.html#gd007eeeb5e8c1c20435d60b220cc7231">orxSoundSystem.h</a>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
-, <a class="el" href="group__orx_structure.html#gae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#gae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
+, <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#g3bd0e8e0fc47acfdf8bec9c2c197b8bf">orxSpawner.h</a>
 <li>orxSpawner_CreateFromConfig()
@@ -3135,10 +3137,10 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_structure.html#gc4d77ad4d92518b61d13d70703821fac">orxStructure.h</a>
 <li>orxSTRUCTURE_MAGIC_TAG_DELETED
 : <a class="el" href="group__orx_structure.html#gb94740c722d3469c182b3c2806a574f9">orxStructure.h</a>
-<li>orxSTRUCTURE_REGISTER
-: <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
 <li>orxStructure_Register()
 : <a class="el" href="group__orx_structure.html#g908664072559b29d53ca30addf65b552">orxStructure.h</a>
+<li>orxSTRUCTURE_REGISTER
+: <a class="el" href="group__orx_structure.html#gfb154568e5f92f5d65109b4dc3a0a3fb">orxStructure.h</a>
 <li>orxStructure_SetFlags()
 : <a class="el" href="group__orx_structure.html#g6889909153aad48d6e7acd879d2bdc2d">orxStructure.h</a>
 <li>orxStructure_SetParent()
@@ -3339,8 +3341,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxVECTOR_Z
 : <a class="el" href="group__orx_vector.html#g4926c5d7b4a67192dbf8460be65e3fd0">orxVector.h</a>
 <li>orxVIEWPORT
-: <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
-, <a class="el" href="group__orx_structure.html#g98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#g98094cd0e989a5c13e02e5ac49c5e269">orxStructure.h</a>
+, <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxViewport.h</a>
 <li>orxViewport_Create()
 : <a class="el" href="group__orx_viewport.html#g4fc4d2792a168024b1216c0a1ca668b8">orxViewport.h</a>
 <li>orxViewport_CreateFromConfig()
