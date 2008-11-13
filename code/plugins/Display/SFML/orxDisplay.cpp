@@ -34,6 +34,7 @@ extern "C"
 {
   #include "orxInclude.h"
 
+  #include "core/orxClock.h"
   #include "core/orxConfig.h"
   #include "core/orxEvent.h"
   #include "core/orxSystem.h"
@@ -124,7 +125,7 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
     eResult = orxSTATUS_SUCCESS;
   }
   /* Is a cursor show/hide? */
-  if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed)
+  else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed)
   && (_pstEvent->eID == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed))
   {
     orxBOOL* pbShowCursor;
@@ -141,6 +142,90 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
 
   /* Done! */
   return eResult;
+}
+
+extern "C" orxVOID orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext)
+{
+  sf::Event oEvent;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Handles all pending events */
+  while(sstDisplay.poRenderWindow->GetEvent(oEvent))
+  {
+    /* Depending on type */
+    switch(oEvent.Type)
+    {
+      /* Closing? */
+      case sf::Event::Closed:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType = orxEVENT_TYPE_SYSTEM;
+        stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
+
+        /* Sends system close event */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
+      /* Gained focus? */
+      case sf::Event::GainedFocus:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType = orxEVENT_TYPE_SYSTEM;
+        stEvent.eID   = orxSYSTEM_EVENT_FOCUS_GAINED;
+
+        /* Sends system focus gained event */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
+      /* Lost focus? */
+      case sf::Event::LostFocus:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType = orxEVENT_TYPE_SYSTEM;
+        stEvent.eID   = orxSYSTEM_EVENT_FOCUS_LOST;
+
+        /* Sends system focus lost event */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
+      case sf::Event::MouseMoved:
+      case sf::Event::MouseWheelMoved:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + oEvent.Type);
+        stEvent.eID         = oEvent.Type;
+        stEvent.pstPayload  = &oEvent;
+
+        /* Sends reserved event */
+        orxEvent_Send(&stEvent);
+      }
+
+      default:
+      {
+        break;
+      }
+    }
+  }
 }
 
 extern "C" orxBITMAP *orxDisplay_SFML_GetScreen()
@@ -307,7 +392,6 @@ extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
 
 extern "C" orxSTATUS orxDisplay_SFML_Swap()
 {
-  sf::Event         oEvent;
   orxDISPLAY_TEXT  *pstText;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
@@ -331,82 +415,6 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
 
   /* Clears text bank */
   orxBank_Clear(sstDisplay.pstTextBank);
-
-  /* Handles all pending events */
-  while(sstDisplay.poRenderWindow->GetEvent(oEvent))
-  {
-    /* Depending on type */
-    switch(oEvent.Type)
-    {
-      /* Closing? */
-      case sf::Event::Closed:
-      {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType = orxEVENT_TYPE_SYSTEM;
-        stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
-
-        /* Sends system close event */
-        orxEvent_Send(&stEvent);
-
-        break;
-      }
-
-      /* Gained focus? */
-      case sf::Event::GainedFocus:
-      {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType = orxEVENT_TYPE_SYSTEM;
-        stEvent.eID   = orxSYSTEM_EVENT_FOCUS_GAINED;
-
-        /* Sends system focus gained event */
-        orxEvent_Send(&stEvent);
-
-        break;
-      }
-
-      /* Lost focus? */
-      case sf::Event::LostFocus:
-      {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType = orxEVENT_TYPE_SYSTEM;
-        stEvent.eID   = orxSYSTEM_EVENT_FOCUS_LOST;
-
-        /* Sends system focus lost event */
-        orxEvent_Send(&stEvent);
-
-        break;
-      }
-
-      case sf::Event::MouseMoved:
-      case sf::Event::MouseWheelMoved:
-      {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + oEvent.Type);
-        stEvent.eID         = oEvent.Type;
-        stEvent.pstPayload  = &oEvent;
-
-        /* Sends reserved event */
-        orxEvent_Send(&stEvent);
-      }
-
-      default:
-      {
-        break;
-      }
-    }
-  }
 
   /* Displays render window */
   sstDisplay.poRenderWindow->Display();
@@ -867,7 +875,8 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
         /* Valid? */
         if(sstDisplay.pstTextBank != orxNULL)
         {
-          orxU32 u32ConfigWidth, u32ConfigHeight, u32ConfigDepth;
+          orxU32        u32ConfigWidth, u32ConfigHeight, u32ConfigDepth;
+          orxCLOCK     *pstClock;
           unsigned long ulStyle;
 
           /* Gets resolution from config */
@@ -923,6 +932,16 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
 
           /* Updates status */
           orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
+
+          /* Gets clock */
+          pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+          /* Valid? */
+          if(pstClock != orxNULL)
+          {
+            /* Registers event update function */
+            eResult = orxClock_Register(pstClock, orxDisplay_SFML_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_FUNCTION_PRIORITY_HIGH);
+          }
 
           /* Has VSync value? */
           if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)

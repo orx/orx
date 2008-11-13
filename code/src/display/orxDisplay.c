@@ -48,6 +48,7 @@ orxVOID orxDisplay_Setup()
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_LINKLIST);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_TREE);
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_CLOCK);
 
   return;
 }

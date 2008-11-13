@@ -34,6 +34,7 @@
 #include "core/orxClock.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
@@ -59,6 +60,12 @@
 #define orxCLOCK_KU32_CLOCK_FLAG_PAUSED         0x10000000  /**< Clock is paused */
 
 #define orxCLOCK_KU32_CLOCK_MASK_ALL            0xFFFFFFFF  /**< All mask */
+
+
+/** Misc
+ */
+#define orxCLOCK_KZ_CONFIG_SECTION              "Clock"
+#define orxCLOCK_KZ_CONFIG_MAIN_CLOCK_TICK_SIZE "MainClockTickSize"
 
 
 /***************************************************************************
@@ -263,6 +270,7 @@ orxVOID orxClock_Setup()
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_SYSTEM);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_LINKLIST);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_CONFIG);
 
   return;
 }
@@ -296,7 +304,8 @@ orxSTATUS orxClock_Init()
       sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
 
       /* Creates default full speed core clock */
-      eResult = (orxClock_Create(orxFLOAT_0, orxCLOCK_TYPE_CORE) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      orxConfig_SelectSection(orxCLOCK_KZ_CONFIG_SECTION);
+      eResult = (orxClock_Create(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_TICK_SIZE) ? orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_TICK_SIZE) : orxFLOAT_0, orxCLOCK_TYPE_CORE) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
     else
     {

@@ -136,7 +136,7 @@ typedef enum __orxCLOCK_EVENT_t
 typedef struct __orxCLOCK_t                           orxCLOCK;
 
 /** Clock callback function type to use with clock bindings */
-typedef orxVOID (orxFASTCALL *orxCLOCK_FUNCTION)(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext);
+typedef orxVOID (orxFASTCALL *orxCLOCK_FUNCTION)(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext);
 
 
 /** Clock module setup
