@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -144,7 +144,7 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
   return eResult;
 }
 
-extern "C" orxVOID orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext)
+orxFASTCALL orxVOID orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext)
 {
   sf::Event oEvent;
 
@@ -796,7 +796,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   {
     /* Stores screen clipping */
     glScissor(_u32TLX, sstDisplay.u32ScreenHeight - _u32BRY, _u32BRX - _u32TLX, _u32BRY - _u32TLY);
-    
+
     /* Enables clipping */
     glEnable(GL_SCISSOR_TEST);
   }
