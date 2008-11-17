@@ -128,7 +128,7 @@ orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
   else if((_pstEvent->eType == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed)
   && (_pstEvent->eID == orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed))
   {
-    orxBOOL* pbShowCursor;
+    orxBOOL *pbShowCursor;
 
     /* Gets cursor status */
     pbShowCursor = (orxBOOL *)(_pstEvent->pstPayload);

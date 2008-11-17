@@ -532,7 +532,7 @@ orxVOID *orxFASTCALL orxBank_GetNext(orxCONST orxBANK *_pstBank, orxCONST orxVOI
     for(;u32Index32Bits < _pstBank->u16SizeSegmentBitField; u32Index32Bits++, s32IndexBit = -1)
     {
       /* Loop on bits while not found */
-      for(s32IndexBit++; s32IndexBit < 31; s32IndexBit++)
+      for(s32IndexBit++; s32IndexBit < 32; s32IndexBit++)
       {
         if(pstSegment->pu32FreeElemBits[u32Index32Bits] & ((orxU32)1 << s32IndexBit))
         {
