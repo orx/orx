@@ -995,7 +995,7 @@ orxSTATUS orxRender_Home_Init()
       if(sstRender.pstClock != orxNULL)
       {
         /* Registers rendering function */
-        eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_FUNCTION_PRIORITY_LOWEST);
+        eResult = orxClock_Register(sstRender.pstClock, orxRender_RenderAll, orxNULL, orxMODULE_ID_RENDER, orxCLOCK_PRIORITY_LOWEST);
       }
       else
       {

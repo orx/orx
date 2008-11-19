@@ -349,7 +349,7 @@ orxSTATUS orxObject_Init()
       if(sstObject.pstClock != orxNULL)
       {
         /* Registers object update function to clock */
-        eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT, orxCLOCK_FUNCTION_PRIORITY_LOW);
+        eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT, orxCLOCK_PRIORITY_LOW);
 
         /* Success? */
         if(eResult == orxSTATUS_SUCCESS)

@@ -80,7 +80,7 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
   orxCLOCK_FUNCTION           pfnCallback;      /**< Clock function pointer : 16 */
   orxVOID                    *pstContext;       /**< Clock function context : 20 */
   orxMODULE_ID                eModuleID;        /**< Clock function module ID : 24 */
-  orxCLOCK_FUNCTION_PRIORITY  ePriority;        /**< Clock function priority : 28 */
+  orxCLOCK_PRIORITY  ePriority;        /**< Clock function priority : 28 */
 
   orxPAD(28)
 
@@ -751,7 +751,7 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYP
  * @param[in]   _ePriority                            Priority for the function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_FUNCTION_PRIORITY _ePriority)
+orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_PRIORITY _ePriority)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;

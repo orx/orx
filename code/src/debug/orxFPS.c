@@ -138,7 +138,7 @@ orxSTATUS orxFPS_Init()
     if(sstFPS.pstClock != orxNULL)
     {
       /* Registers callback */
-      eResult = orxClock_Register(sstFPS.pstClock, orxFPS_Update, orxNULL, orxMODULE_ID_FPS, orxCLOCK_FUNCTION_PRIORITY_NORMAL);
+      eResult = orxClock_Register(sstFPS.pstClock, orxFPS_Update, orxNULL, orxMODULE_ID_FPS, orxCLOCK_PRIORITY_NORMAL);
 
       /* Registered? */
       if(eResult == orxSTATUS_SUCCESS)

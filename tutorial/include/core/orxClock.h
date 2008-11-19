@@ -83,23 +83,23 @@ typedef enum __orxCLOCK_MOD_TYPE_t
 } orxCLOCK_MOD_TYPE;
 
 
-/** Clock function priority
+/** Clock priority
  */
-typedef enum __orxCLOCK_FUNCTION_PRIORITY_t
+typedef enum __orxCLOCK_PRIORITY_t
 {
-  orxCLOCK_FUNCTION_PRIORITY_LOWEST = 0,
-  orxCLOCK_FUNCTION_PRIORITY_LOWER,
-  orxCLOCK_FUNCTION_PRIORITY_LOW,
-  orxCLOCK_FUNCTION_PRIORITY_NORMAL,
-  orxCLOCK_FUNCTION_PRIORITY_HIGH,
-  orxCLOCK_FUNCTION_PRIORITY_HIGHER,
-  orxCLOCK_FUNCTION_PRIORITY_HIGHEST,
+  orxCLOCK_PRIORITY_LOWEST = 0,
+  orxCLOCK_PRIORITY_LOWER,
+  orxCLOCK_PRIORITY_LOW,
+  orxCLOCK_PRIORITY_NORMAL,
+  orxCLOCK_PRIORITY_HIGH,
+  orxCLOCK_PRIORITY_HIGHER,
+  orxCLOCK_PRIORITY_HIGHEST,
 
-  orxCLOCK_FUNCTION_PRIORITY_NUMBER,
+  orxCLOCK_PRIORITY_NUMBER,
 
-  orxCLOCK_FUNCTION_PRIORITY_NONE = orxENUM_NONE,
+  orxCLOCK_PRIORITY_NONE = orxENUM_NONE,
 
-} orxCLOCK_FUNCTION_PRIORITY;
+} orxCLOCK_PRIORITY;
 
 
 /** Clock info structure
@@ -228,7 +228,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetModifier(orxCL
  * @param[in]   _ePriority                            Priority for the function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_FUNCTION_PRIORITY _ePriority);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_PRIORITY _ePriority);
 
 /** Unregisters a callback function from a clock
  * @param[in]   _pstClock                             Concerned clock
