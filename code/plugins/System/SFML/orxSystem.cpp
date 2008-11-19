@@ -141,22 +141,19 @@ extern "C" orxFLOAT orxSystem_SFML_GetTime()
 /** Gets real time
  * @return Returns the amount of seconds elapsed from the application start.
  */
-extern "C" orxFLOAT orxSystem_SFML_GetRealTime()
+extern "C" orxS32 orxSystem_SFML_GetRealTime()
 {
-  time_t    stTime;
-  orxFLOAT  fResult;
+  time_t  stTime;
+  orxS32  s32Result;
 
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Gets time */
-  time(&stTime);
-
-  /* Updates result */
-  fResult = orxS2F(stTime);
+  s32Result = (orxS32)time(&stTime);
 
   /* Done! */
-  return fResult;
+  return s32Result;
 }
 
 /** Delay the program for given number of milliseconds.
