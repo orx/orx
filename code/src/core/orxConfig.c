@@ -1756,6 +1756,12 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
                 (pcValueEnd > pcValueStart) && ((*pcValueEnd == ' ') || (*pcValueEnd == '\t') || (*pcValueEnd == orxCHAR_CR) || (*pcValueEnd == orxCHAR_LF));
                 pcValueEnd--);
 
+            /* Skips the whole line */
+            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+            {
+              pc++;
+            }
+
             /* Cuts the strings */
             *pcKeyEnd = *(++pcValueEnd) = orxCHAR_NULL;
 
@@ -1781,11 +1787,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             /* Updates pointers */
             pcKeyEnd = pcValueStart = orxNULL;
           }
-
-          /* Skips the whole line */
-          while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+          else
           {
-            pc++;
+            /* Skips the whole line */
+            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+            {
+              pc++;
+            }
           }
 
           /* Resets block mode */
