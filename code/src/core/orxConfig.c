@@ -1550,19 +1550,29 @@ orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
     /* Gets the section ID */
     u32SectionID = orxString_ToCRC(_zSectionName);
 
-    /* For all the sections */
-    for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
-        pstSection != orxNULL;
-        pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
+    /* Not already selected? */
+    if((sstConfig.pstCurrentSection == orxNULL)
+    || (sstConfig.pstCurrentSection->u32ID != u32SectionID))
     {
-      /* Found? */
-      if(pstSection->u32ID == u32SectionID)
+      /* For all the sections */
+      for(pstSection = orxBank_GetNext(sstConfig.pstSectionBank, orxNULL);
+          pstSection != orxNULL;
+          pstSection = orxBank_GetNext(sstConfig.pstSectionBank, pstSection))
       {
-        /* Selects it */
-        sstConfig.pstCurrentSection = pstSection;
+        /* Found? */
+        if(pstSection->u32ID == u32SectionID)
+        {
+          /* Selects it */
+          sstConfig.pstCurrentSection = pstSection;
 
-        break;
+          break;
+        }
       }
+    }
+    else
+    {
+      /* Updates selection */
+      pstSection = sstConfig.pstCurrentSection;
     }
 
     /* Not found? */
