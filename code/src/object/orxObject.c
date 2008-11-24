@@ -1893,7 +1893,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_p
   pstAnimPointer = orxAnimPointer_Create(orxSTRUCTURE(_pstObject), _pstAnimSet);
 
   /* Valid? */
-  if(pstAnimPointer != NULL)
+  if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -1937,7 +1937,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT
   pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
   /* Valid? */
-  if(pstAnimPointer != NULL)
+  if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
     eResult = orxAnimPointer_SetFrequency(pstAnimPointer, _fFrequency);
@@ -1971,7 +1971,7 @@ orxSTATUS orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, orxCONST or
   pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
   /* Valid? */
-  if(pstAnimPointer != NULL)
+  if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
     bResult = (orxAnimPointer_GetCurrentAnim(pstAnimPointer) == orxString_ToCRC(_zAnimName)) ? orxTRUE : orxFALSE;
@@ -2005,7 +2005,7 @@ orxSTATUS orxFASTCALL orxObject_IsTargetAnim(orxOBJECT *_pstObject, orxCONST orx
   pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
   /* Valid? */
-  if(pstAnimPointer != NULL)
+  if(pstAnimPointer != orxNULL)
   {
     /* Updates result */
     bResult = (orxAnimPointer_GetTargetAnim(pstAnimPointer) == orxString_ToCRC(_zAnimName)) ? orxTRUE : orxFALSE;
@@ -2038,7 +2038,7 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxCONST o
   pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
   /* Valid? */
-  if(pstAnimPointer != NULL)
+  if(pstAnimPointer != orxNULL)
   {
     /* Is string null or empty? */
     if((_zAnimName == orxNULL) || (*_zAnimName == *orxSTRING_EMPTY))
@@ -2080,7 +2080,7 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxCONST or
   pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
 
   /* Valid? */
-  if(pstAnimPointer != NULL)
+  if(pstAnimPointer != orxNULL)
   {
     /* Is string null or empty? */
     if((_zAnimName == orxNULL) || (*_zAnimName == *orxSTRING_EMPTY))
@@ -3155,7 +3155,7 @@ orxFLOAT orxFASTCALL orxObject_GetLifeTime(orxCONST orxOBJECT *_pstObject)
 orxOBJECT *orxFASTCALL orxObject_Pick(orxCONST orxVECTOR *_pvPosition)
 {
   orxFLOAT    fSelectedZ;
-  orxOBJECT  *pstResult = NULL, *pstObject;
+  orxOBJECT  *pstResult = orxNULL, *pstObject;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -3172,7 +3172,7 @@ orxOBJECT *orxFASTCALL orxObject_Pick(orxCONST orxVECTOR *_pvPosition)
       orxGRAPHIC *pstGraphic;
       
       /* Has graphic? */
-      if((pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC)) != NULL)
+      if((pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC)) != orxNULL)
       {
         orxVECTOR vObjectPos;
 
@@ -3183,7 +3183,7 @@ orxOBJECT *orxFASTCALL orxObject_Pick(orxCONST orxVECTOR *_pvPosition)
         if(vObjectPos.fZ >= _pvPosition->fZ)
         {
           /* No selection or above it? */
-          if((pstResult == NULL) || (vObjectPos.fZ < fSelectedZ))
+          if((pstResult == orxNULL) || (vObjectPos.fZ < fSelectedZ))
           {
             orxOBOX stObjectBox;
 

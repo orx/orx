@@ -348,7 +348,7 @@ orxBOOL orxFileSystem_LibC_FindFirst(orxCONST orxSTRING _zSearchPattern, orxFILE
   DIR *pDir = opendir(_pstFileInfo->zPath);
 
   /* Valid ? */
-  if(pDir != NULL)
+  if(pDir != orxNULL)
   {
     /* Stores the DIR handle */
     _pstFileInfo->hInternal = (orxHANDLE) pDir;

@@ -553,13 +553,13 @@ orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHAND
   /* Correct parameters ? */
   orxASSERT(_pstHashTable != orxNULL && _hIterator != orxHANDLE_UNDEFINED);
 
-  if(pIter->pstNext!=NULL)
+  if(pIter->pstNext != orxNULL)
 	{
-		if(_pu32Key!=orxNULL)
+		if(_pu32Key != orxNULL)
 		{
 			*_pu32Key = pIter->pstNext->u32Key;
 		}
-		if(_ppData!=orxNULL)
+		if(_ppData != orxNULL)
 		{
 			*_ppData = pIter->pstNext->pData;
 		}

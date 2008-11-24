@@ -2895,7 +2895,7 @@ orxS32 orxFASTCALL orxConfig_GetListS32(orxCONST orxSTRING _zKey, orxS32 _s32Lis
   pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Valid? */
-  if(pstValue != NULL)
+  if(pstValue != orxNULL)
   {
     /* Is index valid? */
     if(_s32ListIndex < (orxS32)pstValue->u8ListCounter)
@@ -2934,7 +2934,7 @@ orxU32 orxFASTCALL orxConfig_GetListU32(orxCONST orxSTRING _zKey, orxS32 _s32Lis
   pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Valid? */
-  if(pstValue != NULL)
+  if(pstValue != orxNULL)
   {
     /* Is index valid? */
     if(_s32ListIndex < (orxS32)pstValue->u8ListCounter)
@@ -2973,7 +2973,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(orxCONST orxSTRING _zKey, orxS32 _s3
   pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Valid? */
-  if(pstValue != NULL)
+  if(pstValue != orxNULL)
   {
     /* Is index valid? */
     if(_s32ListIndex < (orxS32)pstValue->u8ListCounter)
@@ -3012,7 +3012,7 @@ orxSTRING orxFASTCALL orxConfig_GetListString(orxCONST orxSTRING _zKey, orxS32 _
   pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Valid? */
-  if(pstValue != NULL)
+  if(pstValue != orxNULL)
   {
     /* Is index valid? */
     if(_s32ListIndex < (orxS32)pstValue->u8ListCounter)
@@ -3051,7 +3051,7 @@ orxBOOL orxFASTCALL orxConfig_GetListBool(orxCONST orxSTRING _zKey, orxS32 _s32L
   pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Valid? */
-  if(pstValue != NULL)
+  if(pstValue != orxNULL)
   {
     /* Is index valid? */
     if(_s32ListIndex < (orxS32)pstValue->u8ListCounter)
@@ -3091,7 +3091,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 
   pstValue = orxConfig_GetValue(orxString_ToCRC(_zKey));
 
   /* Valid? */
-  if(pstValue != NULL)
+  if(pstValue != orxNULL)
   {
     /* Is index valid? */
     if(_s32ListIndex < (orxS32)pstValue->u8ListCounter)
