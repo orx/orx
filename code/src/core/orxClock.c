@@ -727,17 +727,66 @@ orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClo
  */
 orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
   orxASSERT(_eModType < orxCLOCK_MOD_TYPE_NUMBER);
-  orxASSERT(_fModValue >= orxFLOAT_0);
 
-  /* Updates clock modifier */
-  _pstClock->stClockInfo.eModType   = _eModType;
-  _pstClock->stClockInfo.fModValue  = _fModValue;
+  /* Valid modifier value? */
+  if(_fModValue >= orxFLOAT_0)
+  {
+    /* Updates clock modifier */
+    _pstClock->stClockInfo.eModType   = _eModType;
+    _pstClock->stClockInfo.fModValue  = _fModValue;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "<%g> is an invalid modifier value.", _fModValue);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a clock tick size
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _fTickSize                            Tick size
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickSize)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstClock != orxNULL);
+
+  /* Valid modifier value? */
+  if(_fTickSize >= orxFLOAT_0)
+  {
+    /* Updates clock tick size*/
+    _pstClock->stClockInfo.fTickSize = _fTickSize;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "<%g> is an invalid tick size.", _fTickSize);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;

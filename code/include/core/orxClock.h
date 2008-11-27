@@ -219,6 +219,13 @@ extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue);
 
+/** Sets a clock tick size
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _fTickSize                            Tick size
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickSize);
+
 
 /** Registers a callback function to a clock
  * @param[in]   _pstClock                             Concerned clock
