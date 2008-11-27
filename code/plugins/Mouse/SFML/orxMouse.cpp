@@ -295,6 +295,20 @@ extern "C" orxBOOL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eButton)
       break;
     }
 
+    case orxMOUSE_BUTTON_EXTRA_1:
+    {
+      /* Updates result */
+      bResult = sstMouse.poInput->IsMouseButtonDown(sf::Mouse::XButton1) ? orxTRUE : orxFALSE;
+      break;
+    }
+
+    case orxMOUSE_BUTTON_EXTRA_2:
+    {
+      /* Updates result */
+      bResult = sstMouse.poInput->IsMouseButtonDown(sf::Mouse::XButton2) ? orxTRUE : orxFALSE;
+      break;
+    }
+
     default:
     {
       /* Updates result */
