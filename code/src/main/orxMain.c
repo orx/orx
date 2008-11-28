@@ -197,15 +197,8 @@ orxSTATUS orxMain_Run()
     /* Is escape pressed? */
     if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)
     {
-      orxEVENT stEvent;
-
-      /* Inits event */
-      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-      stEvent.eType = orxEVENT_TYPE_SYSTEM;
-      stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
-
       /* Sends system close event */
-      orxEvent_Send(&stEvent);
+      orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
     }
 
     /* Was backspace pressed? */

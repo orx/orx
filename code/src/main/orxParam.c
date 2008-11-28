@@ -343,15 +343,8 @@ orxSTATIC orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
         /* Stop on error? */
         else if(orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_STOP_ON_ERROR))
         {
-          orxEVENT stEvent;
-
           /* Send the Exit Event to the engine */
-          orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-          stEvent.eType = orxEVENT_TYPE_SYSTEM;
-          stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
-
-          /* Sends system close event */
-          orxEvent_Send(&stEvent);
+          orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;

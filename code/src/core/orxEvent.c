@@ -216,46 +216,6 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
   return eResult;
 }
 
-/** Sends an event
- * @param _pstEvent             Event to send
- */
-orxSTATUS orxFASTCALL orxEvent_Send(orxCONST orxEVENT *_pstEvent)
-{
-  orxBANK  *pstBank;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
-  orxASSERT(_pstEvent != orxNULL);
-
-  /* Gets corresponding bank */
-  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _pstEvent->eType);
-
-  /* Valid? */
-  if(pstBank != orxNULL)
-  {
-    orxEVENT_HANDLER *ppfnHandler;
-
-    /* For all handler */
-    for(ppfnHandler = orxBank_GetNext(pstBank, orxNULL);
-        ppfnHandler != orxNULL;
-        ppfnHandler = orxBank_GetNext(pstBank, ppfnHandler))
-    {
-      /* Calls handler */
-      if((*ppfnHandler)(_pstEvent) != orxSTATUS_FAILURE)
-      {
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-
-        break;
-      }
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Removes an event handler
  * @param _eEventType           Concerned type of event
  * @param _pfnHandler           Event handler to remove
@@ -300,6 +260,93 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
   {
     /* Defaults to success */
     eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sends an event
+ * @param _pstEvent             Event to send
+ */
+orxSTATUS orxFASTCALL orxEvent_Send(orxCONST orxEVENT *_pstEvent)
+{
+  orxBANK  *pstBank;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_pstEvent != orxNULL);
+
+  /* Gets corresponding bank */
+  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _pstEvent->eType);
+
+  /* Valid? */
+  if(pstBank != orxNULL)
+  {
+    orxEVENT_HANDLER *ppfnHandler;
+
+    /* For all handler */
+    for(ppfnHandler = orxBank_GetNext(pstBank, orxNULL);
+        ppfnHandler != orxNULL;
+        ppfnHandler = orxBank_GetNext(pstBank, ppfnHandler))
+    {
+      /* Calls handler */
+      if((*ppfnHandler)(_pstEvent) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sends a simple event
+ * @param _eEventType           Event type
+ * @param _eEventID             Event ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxEvent_SendSimple(orxEVENT_TYPE _eEventType, orxENUM _eEventID)
+{
+  orxEVENT stEvent;
+  orxBANK  *pstBank;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY));
+
+  /* Inits event */
+  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+  stEvent.eType = _eEventType;
+  stEvent.eID   = _eEventID;
+
+  /* Gets corresponding bank */
+  pstBank = (orxBANK *)orxHashTable_Get(sstEvent.pstHandlerTable, _eEventType);
+
+  /* Valid? */
+  if(pstBank != orxNULL)
+  {
+    orxEVENT_HANDLER *ppfnHandler;
+
+    /* For all handler */
+    for(ppfnHandler = orxBank_GetNext(pstBank, orxNULL);
+        ppfnHandler != orxNULL;
+        ppfnHandler = orxBank_GetNext(pstBank, ppfnHandler))
+    {
+      /* Calls handler */
+      if((*ppfnHandler)(&stEvent) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
   }
 
   /* Done! */
