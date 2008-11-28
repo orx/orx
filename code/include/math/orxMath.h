@@ -146,46 +146,36 @@ do                                              \
 #define orxS2F(V)                 ((orxFLOAT)(V))
 
 
-/*** Inlined functions *** */
+/*** Module functions *** */
 
 /** Inits the random seed with an orxFLOAT
  * @param[in]   _u32Seed                        Value to use as seed for random number generation
  */
-orxSTATIC orxINLINE orxVOID orxMath_InitRandom(orxU32 _u32Seed)
-{
-  /* Inits random seed */
-  srand(_u32Seed);
-}
+extern orxDLLAPI orxVOID orxFASTCALL  orxMath_InitRandom(orxU32 _u32Seed);
 
 /** Gets a random orxFLOAT value
  * @param[in]   _fMin                           Minimum boundary
  * @param[in]   _fMax                           Maximum boundary
  * @return      Random value
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
-{
-  return((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (_fMax - _fMin)) + _fMin);
-}
+extern orxDLLAPI orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax);
 
 /** Gets a random orxU32 value
  * @param[in]   _u32Min                         Minimum boundary
  * @param[in]   _u32Max                         Maximum boundary
  * @return      Random value
  */
-orxSTATIC orxINLINE orxU32 orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
-{
-  return (orxF2U((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxU2F(_u32Max) - orxU2F(_u32Min))) + orxU2F(_u32Min)));
-}
+extern orxDLLAPI orxU32 orxFASTCALL   orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max);
 
 /** Gets a random orxS32 value
  * @param[in]   _s32Min                         Minimum boundary
  * @param[in]   _s32Max                         Maximum boundary
  * @return      Random value
  */
-orxSTATIC orxINLINE orxS32 orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max)
-{
-  return (orxF2S((orx2F(rand()) * (orx2F(1.0f / RAND_MAX)) * (orxS2F(_s32Max) - orxS2F(_s32Min))) + orxS2F(_s32Min)));
-}
+extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max);
+
+
+/*** Inlined functions *** */
 
 /** Gets the counts of bit in an orxU32
  * @param[in]   _u32Value                       Value to process

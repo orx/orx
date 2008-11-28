@@ -39,6 +39,7 @@
       <File Name="../../../src/main/orxParam.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="math">
+      <File Name="../../../src/math/orxMath.c"/>
       <File Name="../../../src/math/orxVector.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="memory">

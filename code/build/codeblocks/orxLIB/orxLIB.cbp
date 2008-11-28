@@ -226,6 +226,9 @@
 		<Unit filename="..\..\..\src\main\orxParam.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="..\..\..\src\math\orxMath.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="..\..\..\src\math\orxVector.c">
 			<Option compilerVar="CC" />
 		</Unit>
