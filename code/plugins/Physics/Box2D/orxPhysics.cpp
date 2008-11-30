@@ -280,10 +280,10 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
       pstEventStorage->u32Key                             = _poPoint->id.key;
       pstEventStorage->poSource                           = _poPoint->shape1->GetBody();
       pstEventStorage->poDestination                      = _poPoint->shape2->GetBody();
-      pstEventStorage->stPayload.fPenetration             = -_poPoint->separation;
+      pstEventStorage->stPayload.fPenetration             = -sstPhysics.fRecDimensionRatio * _poPoint->separation;
       pstEventStorage->stPayload.u32SourcePartIndex       = orxPhysics_Box2D_GetShapeIndex(pstEventStorage->poSource, _poPoint->shape1);
       pstEventStorage->stPayload.u32DestinationPartIndex  = orxPhysics_Box2D_GetShapeIndex(pstEventStorage->poDestination, _poPoint->shape2);
-      orxVector_Set(&(pstEventStorage->stPayload.vPosition), _poPoint->position.x, _poPoint->position.y, orxFLOAT_0);
+      orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * _poPoint->position.x, sstPhysics.fRecDimensionRatio * _poPoint->position.y, orxFLOAT_0);
       orxVector_Set(&(pstEventStorage->stPayload.vNormal), _poPoint->normal.x, _poPoint->normal.y, orxFLOAT_0);
     }
   }
@@ -424,7 +424,7 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(orxCONST orxHANDLE _hUse
     stBodyDef.angularDamping  = _pstBodyDef->fAngularDamping;
     stBodyDef.isBullet        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
     stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
-    stBodyDef.position.Set(_pstBodyDef->vPosition.fX, _pstBodyDef->vPosition.fY);
+    stBodyDef.position.Set(sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fX, sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fY);
 
     /* Is dynamic? */
     if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
@@ -766,8 +766,8 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetMassCenter(orxPHYSICS_BODY *_pstBody, 
   vMassCenter = poBody->GetWorldCenter();
 
   /* Transfer values */
-  _pvMassCenter->fX = vMassCenter.x;
-  _pvMassCenter->fY = vMassCenter.y;
+  _pvMassCenter->fX = sstPhysics.fRecDimensionRatio * vMassCenter.x;
+  _pvMassCenter->fY = sstPhysics.fRecDimensionRatio * vMassCenter.y;
   _pvMassCenter->fZ = orxFLOAT_0;
 
   /* Updates result */
@@ -815,7 +815,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, orxC
   vForce.Set(_pvForce->fX, _pvForce->fY);
 
   /* Sets point */
-  vPoint.Set(_pvPoint->fX, _pvPoint->fY);
+  vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
 
   /* Applies force */
   poBody->ApplyForce(vForce, vPoint);
@@ -843,7 +843,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, or
   vImpulse.Set(_pvImpulse->fX, _pvImpulse->fY);
 
   /* Sets point */
-  vPoint.Set(_pvPoint->fX, _pvPoint->fY);
+  vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
 
   /* Applies force */
   poBody->ApplyImpulse(vImpulse, vPoint);
@@ -895,6 +895,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
   if(!(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY))
   {
     orxBOOL   bAllowSleep;
+    orxFLOAT  fRatio;
     orxVECTOR vGravity, vLower, vUpper;
     b2AABB    stWorldAABB;
     b2Vec2    vWorldGravity;
@@ -907,13 +908,28 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity);
     bAllowSleep = (orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) : orxTRUE;
 
+    /* Gets dimension ratio */
+    fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
+
+    /* Valid? */
+    if(fRatio > orxFLOAT_0)
+    {
+      /* Stores it */
+      sstPhysics.fDimensionRatio = fRatio;
+    }
+    else
+    {
+      /* Stores default one */
+      sstPhysics.fDimensionRatio = sfDefaultDimensionRatio;
+    }
+
     /* Gets world corners from config */
     orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_WORLD_LOWER, &vLower);
     orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_WORLD_UPPER, &vUpper);
 
     /* Inits world AABB */
-    stWorldAABB.lowerBound.Set(vLower.fX, vLower.fY);
-    stWorldAABB.upperBound.Set(vUpper.fX, vUpper.fY);
+    stWorldAABB.lowerBound.Set(sstPhysics.fDimensionRatio * vLower.fX, sstPhysics.fDimensionRatio * vLower.fY);
+    stWorldAABB.upperBound.Set(sstPhysics.fDimensionRatio * vUpper.fX, sstPhysics.fDimensionRatio * vUpper.fY);
 
     /* Inits world gravity */
     vWorldGravity.Set(vGravity.fX, vGravity.fY);
@@ -924,8 +940,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
     /* Success? */
     if(sstPhysics.poWorld != orxNULL)
     {
-      orxFLOAT  fRatio;
-      orxU32    u32IterationsPerStep;
+      orxU32 u32IterationsPerStep;
 
       /* Creates listeners */
       sstPhysics.poContactListener  = new orxPhysicsContactListener();
@@ -934,21 +949,6 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       /* Registers them */
       sstPhysics.poWorld->SetContactListener(sstPhysics.poContactListener);
       sstPhysics.poWorld->SetBoundaryListener(sstPhysics.poBoundaryListener);
-
-      /* Gets dimension ratio */
-      fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
-
-      /* Valid? */
-      if(fRatio > orxFLOAT_0)
-      {
-        /* Stores it */
-        sstPhysics.fDimensionRatio = fRatio;
-      }
-      else
-      {
-        /* Stores default one */
-        sstPhysics.fDimensionRatio = sfDefaultDimensionRatio;
-      }
 
       /* Stores inverse dimension ratio */
       sstPhysics.fRecDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
