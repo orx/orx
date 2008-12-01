@@ -81,6 +81,7 @@ typedef enum __orxFX_EVENT_t
   orxFX_EVENT_STOP,                             /**< Event sent when a FX stops */
   orxFX_EVENT_ADD,                              /**< Event sent when a FX is added */
   orxFX_EVENT_REMOVE,                           /**< Event sent when a FX is removed */
+  orxFX_EVENT_LOOP,                             /**< Event sent when a FX is looping */
 
   orxFX_EVENT_NUMBER,
 

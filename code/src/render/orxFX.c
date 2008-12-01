@@ -858,7 +858,8 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
           fEndTime   -= pstFXSlot->fStartTime;
 
           /* Gets reciprocal duration */
-          fRecDuration = orxFLOAT_1 / pstFXSlot->fEndTime;
+          fRecDuration = pstFXSlot->fEndTime - pstFXSlot->fStartTime;
+          fRecDuration = (fRecDuration > orxFLOAT_0) ? orxFLOAT_1 / fRecDuration : orxFLOAT_1;
 
           /* Gets FX type */
           eFXType = orxFX_GetSlotType(pstFXSlot);
@@ -882,8 +883,21 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
               fPeriod = pstFXSlot->fEndTime - pstFXSlot->fStartTime;
             }
 
-            /* Gets its corresponding frequency */
-            fFrequency = (fPeriod != orxFLOAT_0) ? (orxFLOAT_1 / fPeriod) : orxFLOAT_1;
+            /* Instant update? */
+            if(fPeriod == orxFLOAT_0)
+            {
+              /* Gets fake period and frequency */
+              fPeriod = fFrequency = orxFLOAT_1;
+
+              /* Updates times */
+              fStartTime  = orxFLOAT_0;
+              fEndTime    = orxFLOAT_1;
+            }
+            else
+            {
+              /* Gets its corresponding frequency */
+              fFrequency = orxFLOAT_1 / fPeriod;
+            }
 
             /* Depending on blend curve */
             switch(pstFXSlot->u32Flags & orxFX_SLOT_KU32_MASK_BLEND_CURVE)

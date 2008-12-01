@@ -220,34 +220,38 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
         /* Applies FX from last time to now */
         if(orxFX_Apply(pstFX, pstObject, fFXLocalStartTime, fFXLocalEndTime) == orxSTATUS_FAILURE)
         {
+          orxEVENT            stEvent;
+          orxFX_EVENT_PAYLOAD stPayload;
+
+          /* Inits event */
+          orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+          orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
+          stEvent.eType       = orxEVENT_TYPE_FX;
+          stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(pstFXPointer->pstOwner);
+          stEvent.pstPayload  = &stPayload;
+          stPayload.pstFX     = pstFX;
+          stPayload.zFXName   = orxFX_GetName(pstFX);
+
           /* Is a looping FX? */
           if(orxFX_IsLooping(pstFX) != orxFALSE)
           {
+            /* Updates and sends event */
+            stEvent.eID = orxFX_EVENT_LOOP;
+            orxEvent_Send(&stEvent);
+
             /* Updates its start time */
             pstFXPointer->astFXList[i].fStartTime = pstFXPointer->fTime;
           }
           else
           {
-            orxEVENT              stEvent;
-            orxFX_EVENT_PAYLOAD   stPayload;
-
             /* Decreases its reference counter */
             orxStructure_DecreaseCounter(pstFX);
 
             /* Removes its reference */
             pstFXPointer->astFXList[i].pstFX = orxNULL;
 
-            /* Inits event */
-            orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-            orxMemory_Zero(&stPayload, sizeof(orxFX_EVENT_PAYLOAD));
-            stEvent.eType       = orxEVENT_TYPE_FX;
-            stEvent.eID         = orxFX_EVENT_STOP;
-            stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(pstFXPointer->pstOwner);
-            stEvent.pstPayload  = &stPayload;
-            stPayload.pstFX     = pstFX;
-            stPayload.zFXName   = orxFX_GetName(pstFX);
-
-            /* Sends event */
+            /* Updates and sends event */
+            stEvent.eID = orxFX_EVENT_STOP;
             orxEvent_Send(&stEvent);
 
             /* Is internal? */
