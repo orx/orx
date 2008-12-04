@@ -67,12 +67,11 @@
 struct __orxTEXT_t
 {
   orxSTRUCTURE  stStructure;                    /**< Public structure, first structure member : 16 */
-  orxSTRING     zString;                        /**< Content string : 20 */
-  orxSTRING     zFont;                          /**< Font name : 24 */
-  orxSTRING     zReference;                     /**< Config reference : 28 */
+  orxHANDLE     hData;                          /**< Data : 20 */
+  orxSTRING     zReference;                     /**< Config reference : 24 */
 
   /* Padding */
-  orxPAD(28)
+  orxPAD(24)
 };
 
 /** Static structure
@@ -223,8 +222,24 @@ orxTEXT *orxText_Create()
   /* Created? */
   if(pstResult != orxNULL)
   {
-    /* Inits flags */
-    orxStructure_SetFlags(pstResult, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_MASK_ALL);
+    /* Creates internal data */
+    pstResult->hData = orxDisplay_CreateText();
+
+    /* Valid? */
+    if(pstResult->hData != orxNULL)
+    {
+      /* Inits flags */
+      orxStructure_SetFlags(pstResult, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_MASK_ALL);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to create internal data for text.");
+
+      /* Deletes structure */
+      orxStructure_Delete(pstResult);
+      pstResult = orxNULL;
+    }
   }
   else
   {
@@ -310,6 +325,9 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstText) == 0)
   {
+    /* Deletes internal data */
+    orxDisplay_DeleteText(_pstText->hData);
+
     /* Deletes structure */
     orxStructure_Delete(_pstText);
   }
@@ -342,8 +360,8 @@ orxSTATUS orxFASTCALL orxText_GetSize(orxCONST orxTEXT *_pstText, orxFLOAT *_pfW
   orxASSERT(_pfWidth != orxNULL);
   orxASSERT(_pfHeight != orxNULL);
 
-  // Gets text size
-  orxDisplay_GetTextSize(_pstText->zString, _pstText->zFont, _pfWidth, _pfHeight);
+  /* Gets text size */
+  eResult = orxDisplay_GetTextSize(_pstText->hData, _pfWidth, _pfHeight);
 
   /* Done! */
   return eResult;
@@ -381,7 +399,11 @@ orxSTRING orxFASTCALL orxText_GetString(orxCONST orxTEXT *_pstText)
   orxSTRUCTURE_ASSERT(_pstText);
 
   /* Gets result */
-  zResult = (_pstText->zString != orxNULL) ? _pstText->zString : orxSTRING_EMPTY;
+  zResult = orxDisplay_GetTextString(_pstText->hData);
+  if(zResult == orxNULL)
+  {
+    zResult = orxSTRING_EMPTY;
+  }
 
   /* Done! */
   return zResult;
@@ -400,10 +422,29 @@ orxSTRING orxFASTCALL orxText_GetFont(orxCONST orxTEXT *_pstText)
   orxSTRUCTURE_ASSERT(_pstText);
 
   /* Gets result */
-  zResult = _pstText->zFont;
+  zResult = orxDisplay_GetTextFont(_pstText->hData);
 
   /* Done! */
   return zResult;
+}
+
+/** Gets text data
+ * @param[in]   _pstText      Concerned text
+ * @return      orxDISPLAY_TEXT / orxNULL
+ */
+orxDISPLAY_TEXT *orxFASTCALL orxText_GetData(orxCONST orxTEXT *_pstText)
+{
+  orxDISPLAY_TEXT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstText);
+
+  /* Gets result */
+  pstResult = (orxDISPLAY_TEXT *)(_pstText->hData);
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Sets text string 
@@ -413,29 +454,33 @@ orxSTRING orxFASTCALL orxText_GetFont(orxCONST orxTEXT *_pstText)
  */
 orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, orxCONST orxSTRING _zString)
 {
+  orxSTRING zString;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstText);
 
-  /* Had a previous string? */
-  if(_pstText->zString != orxNULL)
+  /* Gets current string */
+  zString = orxDisplay_GetTextString(_pstText->hData);
+
+  /* Valid? */
+  if(zString != orxNULL)
   {
     /* Deletes it */
-    orxString_Delete(_pstText->zString);
+    orxString_Delete(zString);
   }
 
   /* Has new string? */
   if(_zString != orxNULL)
   {
     /* Stores a duplicate */
-    _pstText->zString = orxString_Duplicate(_zString);
+    orxDisplay_SetTextString(_pstText->hData, orxString_Duplicate(_zString));
   }
   else
   {
     /* Clears string */
-    _pstText->zString = orxNULL;
+    orxDisplay_SetTextString(_pstText->hData, orxNULL);
   }
 
   /* Done! */
@@ -449,29 +494,33 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, orxCONST orxSTRING _z
  */
 orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxCONST orxSTRING _zFont)
 {
+  orxSTRING zFont;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstText);
 
-  /* Had a previous font? */
-  if(_pstText->zFont != orxNULL)
+  /* Gets current font */
+  zFont = orxDisplay_GetTextFont(_pstText->hData);
+
+  /* Valid? */
+  if(zFont != orxNULL)
   {
     /* Deletes it */
-    orxString_Delete(_pstText->zFont);
+    orxString_Delete(zFont);
   }
 
   /* Has new font? */
   if((_zFont != orxNULL) && (_zFont != orxSTRING_EMPTY))
   {
     /* Stores a duplicate */
-    _pstText->zFont = orxString_Duplicate(_zFont);
+    orxDisplay_SetTextFont(_pstText->hData, orxString_Duplicate(_zFont));
   }
   else
   {
     /* Clears string */
-    _pstText->zFont = orxNULL;
+    orxDisplay_SetTextFont(_pstText->hData, orxNULL);
   }
 
   /* Done! */

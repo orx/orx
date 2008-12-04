@@ -43,6 +43,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gb1f1c40cfdc029a94562b13a93860225">orxText_GetFont</a> (orxCONST <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> <br>
+*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g41c3703167a89c4580f65842a71cd1cd">orxText_GetData</a> (orxCONST <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gc4ba2c95156894f07450d2a38fe0ccc2">orxText_SetString</a> (<a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, orxCONST orxSTRING _zString)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g8b2bd0a3492ab03f0ba02988a9cec8ff">orxText_SetFont</a> (<a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, orxCONST orxSTRING _zFont)</td></tr>
@@ -155,6 +158,32 @@ Deletes a text <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Exits from the text module 
+</div>
+</div><p>
+<a class="anchor" name="g41c3703167a89c4580f65842a71cd1cd"></a><!-- doxytag: member="orxText.h::orxText_GetData" ref="g41c3703167a89c4580f65842a71cd1cd" args="(orxCONST orxTEXT *_pstText)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a>* orxFASTCALL orxText_GetData           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstText</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets text data <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstText</em>&nbsp;</td><td>Concerned text </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxDISPLAY_TEXT / orxNULL </dd></dl>
+
 </div>
 </div><p>
 <a class="anchor" name="gb1f1c40cfdc029a94562b13a93860225"></a><!-- doxytag: member="orxText.h::orxText_GetFont" ref="gb1f1c40cfdc029a94562b13a93860225" args="(orxCONST orxTEXT *_pstText)" -->

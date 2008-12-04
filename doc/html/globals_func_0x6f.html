@@ -433,10 +433,12 @@
 : <a class="el" href="group__orx_display.html#g17ee1f1e8a3813e2dce41dc470f7a8e8">orxDisplay.h</a>
 <li>orxDisplay_CreateBitmap()
 : <a class="el" href="group__orx_display.html#g10d02ff995e6b3e30ef4b1d1051620bb">orxDisplay.h</a>
+<li>orxDisplay_CreateText()
+: <a class="el" href="group__orx_display.html#g0c297bdbf33fe39dc7c53fdab278c2b2">orxDisplay.h</a>
 <li>orxDisplay_DeleteBitmap()
 : <a class="el" href="group__orx_display.html#g2ea78f28c6abca1e52156dd17659de40">orxDisplay.h</a>
-<li>orxDisplay_DrawText()
-: <a class="el" href="group__orx_display.html#g301eb22cdda4152de72eec47ef924245">orxDisplay.h</a>
+<li>orxDisplay_DeleteText()
+: <a class="el" href="group__orx_display.html#g0873a2b693187cb0278833049fec68ae">orxDisplay.h</a>
 <li>orxDisplay_EnableVSync()
 : <a class="el" href="group__orx_display.html#g4b3bb77b30baed2b49fdcff79f7cfaaa">orxDisplay.h</a>
 <li>orxDisplay_Exit()
@@ -451,14 +453,20 @@
 : <a class="el" href="group__orx_display.html#g09a191f3a888e054cf3315b3797c0e28">orxDisplay.h</a>
 <li>orxDisplay_GetScreenSize()
 : <a class="el" href="group__orx_display.html#g5a92698da4671091443cab2c885f530d">orxDisplay.h</a>
+<li>orxDisplay_GetTextFont()
+: <a class="el" href="group__orx_display.html#gdaf1f57083eef70d539ee49623ce7a54">orxDisplay.h</a>
 <li>orxDisplay_GetTextSize()
-: <a class="el" href="group__orx_display.html#g9268d2050b4fc0726a786e60e45afae8">orxDisplay.h</a>
+: <a class="el" href="group__orx_display.html#g8c3ea332a7ef2a444b94e11446565cb6">orxDisplay.h</a>
+<li>orxDisplay_GetTextString()
+: <a class="el" href="group__orx_display.html#g212a39b0533a9b2454fa1b5d40328fce">orxDisplay.h</a>
 <li>orxDisplay_Init()
 : <a class="el" href="group__orx_display.html#g20dd5e3b0ffda72d1bdedbd652898c5d">orxDisplay.h</a>
 <li>orxDisplay_IsVSyncEnabled()
 : <a class="el" href="group__orx_display.html#g44e1307e5419f3a1796269ea40bc218f">orxDisplay.h</a>
 <li>orxDisplay_LoadBitmap()
 : <a class="el" href="group__orx_display.html#g2e53e515f96385c9aa2066333fc40ce3">orxDisplay.h</a>
+<li>orxDisplay_PrintString()
+: <a class="el" href="group__orx_display.html#g6efc4525bcf8b167f97756185085d0f9">orxDisplay.h</a>
 <li>orxDisplay_SaveBitmap()
 : <a class="el" href="group__orx_display.html#g86abd5e812a53ceb5cb7dc4ea52ba8ba">orxDisplay.h</a>
 <li>orxDisplay_SetBitmapClipping()
@@ -467,12 +475,18 @@
 : <a class="el" href="group__orx_display.html#g02e148e1092a50096206d85ac1530156">orxDisplay.h</a>
 <li>orxDisplay_SetBitmapColorKey()
 : <a class="el" href="group__orx_display.html#g5c5d0a39d6ef154625c071269e1c203a">orxDisplay.h</a>
+<li>orxDisplay_SetTextFont()
+: <a class="el" href="group__orx_display.html#g9a0a5bd3da62dd644d83f672da7b5479">orxDisplay.h</a>
+<li>orxDisplay_SetTextString()
+: <a class="el" href="group__orx_display.html#g3c4c6a232ee7996fea549bede13b751a">orxDisplay.h</a>
 <li>orxDisplay_Setup()
 : <a class="el" href="group__orx_display.html#ge99a4de432a0868ae8620ad3d8ac7914">orxDisplay.h</a>
 <li>orxDisplay_Swap()
 : <a class="el" href="group__orx_display.html#gd2456f23e8e2b05130f34bfd3d7b2a74">orxDisplay.h</a>
 <li>orxDisplay_TransformBitmap()
-: <a class="el" href="group__orx_display.html#g2696cbc59bf7442c586c19562a850ee2">orxDisplay.h</a>
+: <a class="el" href="group__orx_display.html#g5bcba55cc46f9f39ee9720466230a9fc">orxDisplay.h</a>
+<li>orxDisplay_TransformText()
+: <a class="el" href="group__orx_display.html#g135595f0eae87b59581d8f25c270a050">orxDisplay.h</a>
 <li>orxEvent_AddHandler()
 : <a class="el" href="group__orx_event.html#gfa506b8e928baf9e46a4ff20ccaa23c0">orxEvent.h</a>
 <li>orxEvent_Exit()
@@ -1160,7 +1174,7 @@
 <li>orxPlugin_AddCoreInfo()
 : <a class="el" href="group__orx_plugin.html#g760fe578edf4d4f0024586bd0370af14">orxPluginCore.h</a>
 <li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION()
-: <a class="el" href="group__orx_plugin.html#gd28aab12a50da506470a18d98116b43a">orxPlugin_CoreDefine.h</a>
+: <a class="el" href="group__orx_plugin.html#g1288133f79862af337868a38f214beec">orxPlugin_CoreDefine.h</a>
 <li>orxPlugin_DefaultCoreFunction()
 : <a class="el" href="group__orx_plugin.html#gc6583d5f4560e5f094b2de28a10dd5e0">orxPluginCore.h</a>
 <li>orxPlugin_Exit()
@@ -1539,6 +1553,8 @@
 : <a class="el" href="group__orx_text.html#gf95fd8ed766cf9cd9ae3ba3f87881259">orxText.h</a>
 <li>orxText_Exit()
 : <a class="el" href="group__orx_text.html#gc73f7a3531b142c065b553ee96a90b7b">orxText.h</a>
+<li>orxText_GetData()
+: <a class="el" href="group__orx_text.html#g41c3703167a89c4580f65842a71cd1cd">orxText.h</a>
 <li>orxText_GetFont()
 : <a class="el" href="group__orx_text.html#gb1f1c40cfdc029a94562b13a93860225">orxText.h</a>
 <li>orxText_GetName()

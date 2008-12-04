@@ -252,7 +252,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
         /* Valid scale? */
         if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
         {
-          orxBITMAP_TRANSFORM   stTransform;
+          orxDISPLAY_TRANSFORM  stTransform;
           orxDISPLAY_SMOOTHING  eSmoothing;
 
           /* Gets graphic smoothing */
@@ -424,7 +424,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
       /* Valid scale? */
       if((vScale.fX != orxFLOAT_0) && (vScale.fY != orxFLOAT_0))
       {
-        orxBITMAP_TRANSFORM stTransform;
+        orxDISPLAY_TRANSFORM stTransform;
 
         /* Sets transformation values */
         stTransform.fSrcX     = vPivot.fX;
@@ -436,7 +436,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
         stTransform.fRotation = fRotation;
 
         /* Draws text */
-        eResult = orxDisplay_DrawText(_pstRenderBitmap, orxText_GetString(pstText), orxText_GetFont(pstText), &stTransform, stRGBA, eBlendMode);
+        eResult = orxDisplay_TransformText(_pstRenderBitmap, orxText_GetData(pstText), &stTransform, stRGBA, eBlendMode);
       }
       else
       {
@@ -922,11 +922,11 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
   /* Should display FPS? */
   if(orxConfig_GetBool(orxRENDER_KZ_CONFIG_SHOW_FPS) != orxFALSE)
   {
-    orxBITMAP_TRANSFORM stTextTransform;
+    orxDISPLAY_TRANSFORM stTextTransform;
     orxCHAR             acText[16];
 
     /* Clears text transform */
-    orxMemory_Zero(&stTextTransform, sizeof(orxBITMAP_TRANSFORM));
+    orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
     /* Inits it */
     stTextTransform.fScaleX = stTextTransform.fScaleY = orx2F(0.8f);
@@ -936,7 +936,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
     orxString_Print(acText, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
 
     /* Display FPS */
-    orxDisplay_DrawText(orxDisplay_GetScreenBitmap(), acText, orxNULL, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
   }
 
   /* Swap buffers */

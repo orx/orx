@@ -20,7 +20,7 @@
 <h1>OrxDisplay</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Data Structures</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m.html">orxBITMAP_TRANSFORM</a></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a></td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_c_o_l_o_r.html">orxCOLOR</a></td></tr>
 
@@ -47,6 +47,8 @@
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxBITMAP_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxDISPLAY_TEXT_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> { <br>
@@ -90,9 +92,23 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gd2456f23e8e2b05130f34bfd3d7b2a74">orxDisplay_Swap</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g301eb22cdda4152de72eec47ef924245">orxDisplay_DrawText</a> (orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxCONST <a class="el" href="structorx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m.html">orxBITMAP_TRANSFORM</a> *_pstTransform, orxRGBA _stColor, <a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g0c297bdbf33fe39dc7c53fdab278c2b2">orxDisplay_CreateText</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g9268d2050b4fc0726a786e60e45afae8">orxDisplay_GetTextSize</a> (orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g0873a2b693187cb0278833049fec68ae">orxDisplay_DeleteText</a> (<a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *_pstText)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g135595f0eae87b59581d8f25c270a050">orxDisplay_TransformText</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *_pstText, orxCONST <a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *_pstTransform, orxRGBA _stColor, <a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g3c4c6a232ee7996fea549bede13b751a">orxDisplay_SetTextString</a> (<a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *_pstText, orxCONST orxSTRING _zString)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g9a0a5bd3da62dd644d83f672da7b5479">orxDisplay_SetTextFont</a> (<a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *_pstText, orxCONST orxSTRING _zFont)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g212a39b0533a9b2454fa1b5d40328fce">orxDisplay_GetTextString</a> (orxCONST <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *_pstText)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gdaf1f57083eef70d539ee49623ce7a54">orxDisplay_GetTextFont</a> (orxCONST <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *_pstText)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g8c3ea332a7ef2a444b94e11446565cb6">orxDisplay_GetTextSize</a> (orxCONST <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g6efc4525bcf8b167f97756185085d0f9">orxDisplay_PrintString</a> (orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxCONST orxSTRING _zString, orxCONST <a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *_pstTransform, orxRGBA _stColor)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g10d02ff995e6b3e30ef4b1d1051620bb">orxDisplay_CreateBitmap</a> (orxU32 _u32Width, orxU32 _u32Height)</td></tr>
 
@@ -104,7 +120,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g17ee1f1e8a3813e2dce41dc470f7a8e8">orxDisplay_ClearBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxRGBA _stColor)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g2696cbc59bf7442c586c19562a850ee2">orxDisplay_TransformBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxCONST <a class="el" href="structorx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m.html">orxBITMAP_TRANSFORM</a> *_pstTransform, <a class="el" href="group__orx_display.html#g06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> _eSmoothing, <a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g5bcba55cc46f9f39ee9720466230a9fc">orxDisplay_TransformBitmap</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstDst, orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstSrc, orxCONST <a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *_pstTransform, <a class="el" href="group__orx_display.html#g06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> _eSmoothing, <a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g5c5d0a39d6ef154625c071269e1c203a">orxDisplay_SetBitmapColorKey</a> (<a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)</td></tr>
 
@@ -288,6 +304,21 @@ Display plugin module Module that handles display <hr><h2>Define Documentation</
       <table class="memname">
         <tr>
           <td class="memname">typedef struct __orxBITMAP_t <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a>          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="g220520dd4fed2744399381dac421233e"></a><!-- doxytag: member="orxDisplay.h::orxDISPLAY_TEXT" ref="g220520dd4fed2744399381dac421233e" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct __orxDISPLAY_TEXT_t <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a>          </td>
         </tr>
       </table>
 </div>
@@ -699,6 +730,26 @@ Creates a bitmap <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g0c297bdbf33fe39dc7c53fdab278c2b2"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_CreateText" ref="g0c297bdbf33fe39dc7c53fdab278c2b2" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a>* orxDisplay_CreateText           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Creates an empty text <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxDISPLAY_TEXT / orxNULL </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g2ea78f28c6abca1e52156dd17659de40"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_DeleteBitmap" ref="g2ea78f28c6abca1e52156dd17659de40" args="(orxBITMAP *_pstBitmap)" -->
 <div class="memitem">
 <div class="memproto">
@@ -724,67 +775,28 @@ Deletes a bitmap <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g301eb22cdda4152de72eec47ef924245"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_DrawText" ref="g301eb22cdda4152de72eec47ef924245" args="(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
+<a class="anchor" name="g0873a2b693187cb0278833049fec68ae"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_DeleteText" ref="g0873a2b693187cb0278833049fec68ae" args="(orxDISPLAY_TEXT *_pstText)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_DrawText           </td>
+          <td class="memname">orxDLLAPI orxVOID orxDisplay_DeleteText           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstBitmap</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstText</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
           <td></td>
-          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zText</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zFont</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="structorx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m.html">orxBITMAP_TRANSFORM</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstTransform</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxRGBA&nbsp;</td>
-          <td class="paramname"> <em>_stColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a>&nbsp;</td>
-          <td class="paramname"> <em>_eBlendMode</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Draws a text <dl compact><dt><b>Parameters:</b></dt><dd>
+Deletes a text <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBitmap</em>&nbsp;</td><td>Concerned bitmap </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zText</em>&nbsp;</td><td>Text to display </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFont</em>&nbsp;</td><td>Font to use, orxNULL to use default </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstTransform</em>&nbsp;</td><td>Transformation info (positions, scale, rotation, ...) </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_stColor</em>&nbsp;</td><td>Color to use for the text </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eBlendMode</em>&nbsp;</td><td>Blend mode </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstText</em>&nbsp;</td><td>Concerned text </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
@@ -978,21 +990,41 @@ Gets screen size <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g9268d2050b4fc0726a786e60e45afae8"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_GetTextSize" ref="g9268d2050b4fc0726a786e60e45afae8" args="(orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)" -->
+<a class="anchor" name="gdaf1f57083eef70d539ee49623ce7a54"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_GetTextFont" ref="gdaf1f57083eef70d539ee49623ce7a54" args="(orxCONST orxDISPLAY_TEXT *_pstText)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxSTRING orxDisplay_GetTextFont           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstText</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a text font <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstText</em>&nbsp;</td><td>Concerned text </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRING / orxNULL </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g8c3ea332a7ef2a444b94e11446565cb6"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_GetTextSize" ref="g8c3ea332a7ef2a444b94e11446565cb6" args="(orxCONST orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_GetTextSize           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zText</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zFont</em>, </td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstText</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1018,13 +1050,38 @@ Gets screen size <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Gets a text size <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zText</em>&nbsp;</td><td>Concerned text </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFont</em>&nbsp;</td><td>Font to use, orxNULL to use default </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstText</em>&nbsp;</td><td>Concerned text </td></tr>
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pfWidth</em>&nbsp;</td><td>Text's width </td></tr>
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pfHeight</em>&nbsp;</td><td>Text's height </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g212a39b0533a9b2454fa1b5d40328fce"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_GetTextString" ref="g212a39b0533a9b2454fa1b5d40328fce" args="(orxCONST orxDISPLAY_TEXT *_pstText)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxSTRING orxDisplay_GetTextString           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstText</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets a text string <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstText</em>&nbsp;</td><td>Concerned text </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRING / orxNULL </dd></dl>
 
 </div>
 </div><p>
@@ -1091,6 +1148,56 @@ Loads a bitmap from file <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxBITMAP * / orxNULL </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g6efc4525bcf8b167f97756185085d0f9"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_PrintString" ref="g6efc4525bcf8b167f97756185085d0f9" args="(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_PrintString           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstBitmap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstTransform</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxRGBA&nbsp;</td>
+          <td class="paramname"> <em>_stColor</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Prints a string <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBitmap</em>&nbsp;</td><td>Concerned bitmap </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>String to display </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstTransform</em>&nbsp;</td><td>Transformation info (positions, scale, rotation, ...) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_stColor</em>&nbsp;</td><td>Color to use for the text </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
@@ -1266,6 +1373,78 @@ Sets a bitmap color key (used with non alpha transparency) <dl compact><dt><b>Pa
 
 </div>
 </div><p>
+<a class="anchor" name="g9a0a5bd3da62dd644d83f672da7b5479"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetTextFont" ref="g9a0a5bd3da62dd644d83f672da7b5479" args="(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zFont)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_SetTextFont           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstText</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zFont</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets a text font <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstText</em>&nbsp;</td><td>Concerned text </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFont</em>&nbsp;</td><td>Font to set </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g3c4c6a232ee7996fea549bede13b751a"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetTextString" ref="g3c4c6a232ee7996fea549bede13b751a" args="(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zString)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_SetTextString           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstText</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zString</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets a text string <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstText</em>&nbsp;</td><td>Concerned text </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>String to set </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="ge99a4de432a0868ae8620ad3d8ac7914"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_Setup" ref="ge99a4de432a0868ae8620ad3d8ac7914" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -1305,7 +1484,7 @@ Swaps/flips bufers (display on screen the current frame) <dl class="return" comp
 
 </div>
 </div><p>
-<a class="anchor" name="g2696cbc59bf7442c586c19562a850ee2"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_TransformBitmap" ref="g2696cbc59bf7442c586c19562a850ee2" args="(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
+<a class="anchor" name="g5bcba55cc46f9f39ee9720466230a9fc"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_TransformBitmap" ref="g5bcba55cc46f9f39ee9720466230a9fc" args="(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1324,7 +1503,7 @@ Swaps/flips bufers (display on screen the current frame) <dl class="return" comp
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="structorx_b_i_t_m_a_p___t_r_a_n_s_f_o_r_m.html">orxBITMAP_TRANSFORM</a> *&nbsp;</td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstTransform</em>, </td>
         </tr>
         <tr>
@@ -1355,6 +1534,63 @@ Transforms (and blits onto another) a bitmap <dl compact><dt><b>Parameters:</b><
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstSrc</em>&nbsp;</td><td>Bitmap to transform and draw </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstTransform</em>&nbsp;</td><td>Transformation info (positions, scale, rotation, ...) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eSmoothing</em>&nbsp;</td><td>Bitmap smoothing type </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eBlendMode</em>&nbsp;</td><td>Blend mode </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g135595f0eae87b59581d8f25c270a050"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_TransformText" ref="g135595f0eae87b59581d8f25c270a050" args="(orxBITMAP *_pstDst, orxCONST orxDISPLAY_TEXT *_pstText, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_TransformText           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstDst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstText</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxCONST <a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstTransform</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxRGBA&nbsp;</td>
+          <td class="paramname"> <em>_stColor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a>&nbsp;</td>
+          <td class="paramname"> <em>_eBlendMode</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Transforms a text (on a bitmap) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstDst</em>&nbsp;</td><td>Destination bitmap </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstText</em>&nbsp;</td><td>Text to transform (display) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstTransform</em>&nbsp;</td><td>Transformation info (positions, scale, rotation, ...) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_stColor</em>&nbsp;</td><td>Color to use </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eBlendMode</em>&nbsp;</td><td>Blend mode </td></tr>
   </table>
 </dl>

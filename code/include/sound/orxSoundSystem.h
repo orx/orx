@@ -107,7 +107,7 @@ extern orxDLLAPI orxVOID                              orxSoundSystem_UnloadSampl
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SOUND *               orxSoundSystem_CreateFromSample(orxCONST orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
-/** Creates a streamed sound from file (can be played directy)
+/** Creates a streamed sound from file (can be played directly)
  * @param[in]   _zFilename                            Name of the file to load as a stream (won't be completely loaded in memory, useful for musics)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */

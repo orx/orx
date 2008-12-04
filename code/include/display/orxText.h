@@ -108,6 +108,12 @@ extern orxDLLAPI orxSTRING orxFASTCALL    orxText_GetString(orxCONST orxTEXT *_p
  */
 extern orxDLLAPI orxSTRING orxFASTCALL    orxText_GetFont(orxCONST orxTEXT *_pstText);
 
+/** Gets text data
+ * @param[in]   _pstText      Concerned text
+ * @return      orxDISPLAY_TEXT / orxNULL
+ */
+extern orxDLLAPI orxDISPLAY_TEXT *orxFASTCALL orxText_GetData(orxCONST orxTEXT *_pstText);
+
 /** Sets text string 
  * @param[in]   _pstText      Concerned text
  * @param[in]   _zString      String to contain

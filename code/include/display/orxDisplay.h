@@ -48,17 +48,18 @@
 
 
 typedef struct __orxBITMAP_t            orxBITMAP;
+typedef struct __orxDISPLAY_TEXT_t      orxDISPLAY_TEXT;
 
 /** Transform structure
  */
-typedef struct __orxBITMAP_TRANSFORM_t
+typedef struct __orxDISPLAY_TRANSFORM_t
 {
   orxFLOAT  fSrcX, fSrcY, fDstX, fDstY;
   orxFLOAT  fRotation;
   orxFLOAT  fScaleX;
   orxFLOAT  fScaleY;
 
-} orxBITMAP_TRANSFORM;
+} orxDISPLAY_TRANSFORM;
 
 /** Bitmap smoothing enum
  */
@@ -267,25 +268,70 @@ extern orxDLLAPI orxVOID    orxDisplay_Exit();
 extern orxDLLAPI orxSTATUS  orxDisplay_Swap();
 
 
-/** Draws a text
- * @param[in]   _pstBitmap                            Concerned bitmap
- * @param[in]   _zText                                Text to display
- * @param[in]   _zFont                                Font to use, orxNULL to use default
+/** Creates an empty text
+ * @return orxDISPLAY_TEXT / orxNULL
+ */
+extern orxDLLAPI orxDISPLAY_TEXT *orxDisplay_CreateText();
+
+/** Deletes a text
+ * @param[in]   _pstText                              Concerned text
+ */
+extern orxDLLAPI orxVOID    orxDisplay_DeleteText(orxDISPLAY_TEXT *_pstText);
+
+/** Transforms a text (on a bitmap)
+ * @param[in]   _pstDst                               Destination bitmap
+ * @param[in]   _pstText                              Text to transform (display)
  * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
- * @param[in]   _stColor                              Color to use for the text
+ * @param[in]   _stColor                              Color to use
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS  orxDisplay_TransformText(orxBITMAP *_pstDst, orxCONST orxDISPLAY_TEXT *_pstText, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Sets a text string
+ * @param[in]   _pstText                              Concerned text
+ * @param[in]   _zString                              String to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SetTextString(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zString);
+
+/** Sets a text font
+ * @param[in]   _pstText                              Concerned text
+ * @param[in]   _zFont                                Font to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SetTextFont(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zFont);
+
+/** Gets a text string
+ * @param[in]   _pstText                              Concerned text
+ * @return orxSTRING / orxNULL
+ */
+extern orxDLLAPI orxSTRING  orxDisplay_GetTextString(orxCONST orxDISPLAY_TEXT *_pstText);
+
+/** Gets a text font
+ * @param[in]   _pstText                              Concerned text
+ * @return orxSTRING / orxNULL
+ */
+extern orxDLLAPI orxSTRING  orxDisplay_GetTextFont(orxCONST orxDISPLAY_TEXT *_pstText);
 
 /** Gets a text size
- * @param[in]   _zText                                Concerned text
- * @param[in]   _zFont                                Font to use, orxNULL to use default
+ * @param[in]   _pstText                              Concerned text
  * @param[out]  _pfWidth                              Text's width
  * @param[out]  _pfHeight                             Text's height
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_GetTextSize(orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxSTATUS  orxDisplay_GetTextSize(orxCONST orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+
+
+/** Prints a string
+ * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _zString                              String to display
+ * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
+ * @param[in]   _stColor                              Color to use for the text
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_PrintString(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor);
+
 
 /** Creates a bitmap
  * @param[in]   _u32Width                             Bitmap width
@@ -328,7 +374,7 @@ extern orxDLLAPI orxSTATUS  orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGB
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Sets a bitmap color key (used with non alpha transparency)

@@ -107,7 +107,125 @@ orxBITMAP *orxDisplay_SDL_GetScreen()
   return((orxBITMAP *)sstDisplay.pstScreen);
 }
 
-orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxSTRING _zFont, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxDISPLAY_TEXT *orxDisplay_SDL_CreateText()
+{
+  orxDISPLAY_TEXT *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Not yet implemented */
+  orxLOG("Not yet implemented!");
+
+  /* Done! */
+  return pstResult;
+}
+
+orxVOID orxDisplay_SDL_DeleteText(orxDISPLAY_TEXT *_pstText)
+{
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstText != orxNULL);
+
+  /* Not yet implemented */
+  orxLOG("Not yet implemented!");
+}
+
+orxSTATUS orxDisplay_SDL_TransformText(orxBITMAP *_pstDst, orxCONST orxDISPLAY_TEXT *_pstText, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstDst != orxNULL);
+  orxASSERT(_pstText != orxNULL);
+  orxASSERT(_pstTransform != orxNULL);
+
+  /* Not yet implemented */
+  orxLOG("Not yet implemented!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxDisplay_SDL_SetTextString(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zString)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstText != orxNULL);
+
+  /* Not yet implemented */
+  orxLOG("Not yet implemented!");
+
+/* Done! */
+  return eResult;
+}
+
+orxSTATUS orxDisplay_SDL_SetTextFont(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zFont)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstText != orxNULL);
+
+  /* Not yet implemented */
+  orxLOG("Not yet implemented!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTRING orxDisplay_SDL_GetTextString(orxCONST orxDISPLAY_TEXT *_pstText)
+{
+  orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstText != orxNULL);
+
+  /* Not yet implemented */
+  orxLOG("Not yet implemented!");
+
+  /* Done! */
+  return zResult;
+}
+
+orxSTRING orxDisplay_SDL_GetTextFont(orxCONST orxDISPLAY_TEXT *_pstText)
+{
+  orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstText != orxNULL);
+
+  /* Not yet implemented */
+  orxLOG("Not yet implemented!");
+
+  /* Done! */
+  return zResult;
+}
+
+orxSTATUS orxDisplay_SDL_GetTextSize(orxCONST orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstText != orxNULL);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
+
+  /* Not yet implemented */
+  orxLOG("Not yet implemented!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxDisplay_SDL_PrintString(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -115,7 +233,6 @@ orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxST
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBitmap != orxNULL);
   orxASSERT(_pstTransform != orxNULL);
-  orxASSERT(_zString != orxNULL);
 
   /* TODO :
    * Write the string onto screen, using char per char pixel writing
@@ -357,7 +474,7 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   SDL_Surface  *pstSurface;
   orxSTATUS     eResult;
@@ -669,7 +786,16 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_BlitBitmap, DISPLAY, BLIT_BITMAP
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColorKey, DISPLAY, SET_BITMAP_COLOR_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DrawText, DISPLAY, DRAW_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateText, DISPLAY, CREATE_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteText, DISPLAY, DELETE_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_TransformText, DISPLAY, TRANSFORM_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetTextString, DISPLAY, SET_TEXT_STRING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetTextFont, DISPLAY, SET_TEXT_FONT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextString, DISPLAY, GET_TEXT_STRING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextFont, DISPLAY, GET_TEXT_FONT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextSize, DISPLAY, GET_TEXT_SIZE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_PrintString, DISPLAY, PRINT_STRING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextSize, DISPLAY, GET_TEXT_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
