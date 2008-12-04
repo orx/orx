@@ -107,18 +107,25 @@ extern orxDLLAPI orxVOID                orxEvent_Exit();
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler);
 
-/** Sends an event
- * @param _pstEvent             Event to send
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(orxCONST orxEVENT *_pstEvent);
-
 /** Removes an event handler
  * @param _eEventType           Concerned type of event
  * @param _pfnEventHandler      Event handler to remove
  * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler);
+
+/** Sends an event
+ * @param _pstEvent             Event to send
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(orxCONST orxEVENT *_pstEvent);
+
+/** Sends a simple event
+ * @param _eEventType           Event type
+ * @param _eEventID             Event ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_SendSimple(orxEVENT_TYPE _eEventType, orxENUM _eEventID);
 
 
 #endif /*_orxEVENT_H_*/

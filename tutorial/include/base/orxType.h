@@ -184,8 +184,8 @@ extern orxDLLAPI orxCONST orxFLOAT    orxFLOAT_1;
 /* *** Status defines *** */
 typedef enum __orxSTATUS_t
 {
-  orxSTATUS_FAILURE = 0,        /**< Failure status, the operation has failed */
-  orxSTATUS_SUCCESS,            /**< Success status, the operation has worked has expected */
+  orxSTATUS_SUCCESS = 0,        /**< Success status, the operation has worked has expected */
+  orxSTATUS_FAILURE,            /**< Failure status, the operation has failed */
 
   orxSTATUS_NUMBER,             /**< Sentinel : Number of status */
 

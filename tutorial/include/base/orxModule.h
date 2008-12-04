@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -87,6 +87,7 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_SPAWNER,
   orxMODULE_ID_STRUCTURE,
   orxMODULE_ID_SYSTEM,
+  orxMODULE_ID_TEXT,
   orxMODULE_ID_TEXTURE,
   orxMODULE_ID_TREE,
   orxMODULE_ID_VIEWPORT,

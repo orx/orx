@@ -102,17 +102,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_UnlinkBitmap(orxTEXTURE *_p
  */
 extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture);
 
-/** Gets texture width
+/** Gets texture size
  * @param[in]   _pstTexture     Concerned texture
- * @return      Texture's width
+ * @param[out]  _pfWidth        Texture's width
+ * @param[out]  _pfHeight       Texture's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetWidth(orxCONST orxTEXTURE *_pstTexture);
-
-/** Gets texture height
- * @param[in]   _pstTexture     Concerned texture
- * @return      Texture's height
- */
-extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetHeight(orxCONST orxTEXTURE *_pstTexture);
+extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets texture name
  * @param[in]   _pstTexture   Concerned texture

@@ -341,7 +341,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSpeed(orxOBJECT *_pstOb
 
 /** Sets an object speed relative to its rotation/scale
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pvSpeed        Relative speed to set
+ * @param[in]   _pvRelativeSpeed Relative speed to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRelativeSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvRelativeSpeed);
@@ -379,6 +379,14 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(orxOBJE
  * @return      Mass center / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter);
+
+
+/** Sets object text string, if object is associated to a text
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zString        String to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTextString(orxOBJECT *_pstObject, orxCONST orxSTRING _zString);
 
 
 /** Applies a torque

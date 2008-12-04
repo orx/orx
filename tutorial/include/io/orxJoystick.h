@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -29,7 +29,7 @@
 
 /**
  * @addtogroup orxJoystick
- * 
+ *
  * Joystick plugin module
  * Plugin module that handles joystick-like peripherals
  *
@@ -49,7 +49,24 @@
 typedef enum __orxJOYSTICK_BUTTON_t
 {
   #ifdef __orxGP2X__
-  
+
+    orxJOYSTICK_BUTTON_1 = 0,
+    orxJOYSTICK_BUTTON_2,
+    orxJOYSTICK_BUTTON_3,
+    orxJOYSTICK_BUTTON_4,
+    orxJOYSTICK_BUTTON_5,
+    orxJOYSTICK_BUTTON_6,
+    orxJOYSTICK_BUTTON_7,
+    orxJOYSTICK_BUTTON_8,
+    orxJOYSTICK_BUTTON_9,
+    orxJOYSTICK_BUTTON_10,
+    orxJOYSTICK_BUTTON_11,
+    orxJOYSTICK_BUTTON_12,
+    orxJOYSTICK_BUTTON_13,
+    orxJOYSTICK_BUTTON_14,
+    orxJOYSTICK_BUTTON_15,
+    orxJOYSTICK_BUTTON_16,
+
   #else /* __orxGP2X__ */
 
     orxJOYSTICK_BUTTON_1 = 0,
@@ -83,7 +100,15 @@ typedef enum __orxJOYSTICK_BUTTON_t
 typedef enum __orxJOYSTICK_AXIS_t
 {
   #ifdef __orxGP2X__
-  
+
+    orxJOYSTICK_AXIS_X = 0,
+    orxJOYSTICK_AXIS_Y,
+    orxJOYSTICK_AXIS_Z,
+    orxJOYSTICK_AXIS_R,
+    orxJOYSTICK_AXIS_U,
+    orxJOYSTICK_AXIS_V,
+    orxJOYSTICK_AXIS_POV,
+
   #else /* __orxGP2X__ */
 
     orxJOYSTICK_AXIS_X = 0,
@@ -108,7 +133,7 @@ typedef enum __orxJOYSTICK_AXIS_t
  ***************************************************************************/
 
 /** Mouse module setup
- */ 
+ */
 extern orxDLLAPI orxVOID                orxJoystick_Setup();
 
 

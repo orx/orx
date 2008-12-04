@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -29,7 +29,7 @@
 
 /**
  * @addtogroup Orx
- * 
+ *
  * Kernel include file
  *
  * @{
@@ -57,6 +57,7 @@
 
 #include "display/orxGraphic.h"
 #include "display/orxDisplay.h"
+#include "display/orxText.h"
 #include "display/orxTexture.h"
 
 #include "io/orxFile.h"

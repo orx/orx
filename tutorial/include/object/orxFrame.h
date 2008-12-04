@@ -37,7 +37,7 @@
  * It consists in a nodes (arranged in a hierarchical tree)
  * having their position given in their parent local coordinate subsystem
  * and caching their global one (in the root coordinate system).
- * They're used to give position, orientation & scale to an object or a group of objects.
+ * They're used to give position, rotation & scale to an object or a group of objects.
  * Frames are structures.
  * They thus can be referenced by Object Module.
  *
