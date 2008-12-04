@@ -303,7 +303,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
     if(pstResult != orxNULL)
     {
       orxSTRING zName;
-      orxU32    u32Flags;
+      orxU32    u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
 
       /* Gets texture name */
       zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
@@ -1110,7 +1110,7 @@ orxFLOAT orxFASTCALL orxGraphic_GetLeft(orxCONST orxGRAPHIC *_pstGraphic)
  */
 orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
 {
-  orxFLOAT  fPreviousWidth, fPreviousHeight;
+  orxFLOAT  fPreviousWidth = orxFLOAT_0, fPreviousHeight = orxFLOAT_0;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
