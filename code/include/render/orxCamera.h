@@ -155,7 +155,13 @@ extern orxDLLAPI orxFLOAT orxFASTCALL   orxCamera_GetZoom(orxCONST orxCAMERA *_p
  * @param[in]   _pstCamera      Concerned camera
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxSTRING orxFASTCALL      orxCamera_GetName(orxCONST orxCAMERA *_pstCamera);
+extern orxDLLAPI orxSTRING orxFASTCALL  orxCamera_GetName(orxCONST orxCAMERA *_pstCamera);
+
+/** Gets camera given its name
+ * @param[in]   _zName          Camera name
+ * @return      orxCAMERA / orxNULL
+ */
+extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_Get(orxCONST orxSTRING _zName);
 
 
 /** Gets camera frame

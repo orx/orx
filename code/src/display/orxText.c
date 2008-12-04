@@ -263,8 +263,8 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
-  /* Search for reference */
-  pstResult = orxHashTable_Get(sstText.pstReferenceTable, orxString_ToCRC(_zConfigID));
+  /* Search for text */
+  pstResult = orxText_Get(_zConfigID);
 
   /* Not already created? */
   if(pstResult == orxNULL)
@@ -398,6 +398,25 @@ orxSTRING orxFASTCALL orxText_GetName(orxCONST orxTEXT *_pstText)
 
   /* Done! */
   return zResult;
+}
+
+/** Gets text given its name
+ * @param[in]   _zName        Text name
+ * @return      orxTEXT / orxNULL
+ */
+orxTEXT *orxFASTCALL orxText_Get(orxCONST orxSTRING _zName)
+{
+  orxTEXT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = orxHashTable_Get(sstText.pstReferenceTable, orxString_ToCRC(_zName));
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets text string 

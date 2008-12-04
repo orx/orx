@@ -308,8 +308,8 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
 
-  /* Search for reference */
-  pstResult = orxHashTable_Get(sstCamera.pstReferenceTable, orxString_ToCRC(_zConfigID));
+  /* Search for camera */
+  pstResult = orxCamera_Get(_zConfigID);
 
   /* Not already created? */
   if(pstResult == orxNULL)
@@ -617,6 +617,25 @@ orxSTRING orxFASTCALL orxCamera_GetName(orxCONST orxCAMERA *_pstCamera)
 
   /* Done! */
   return zResult;
+}
+
+/** Gets camera given its name
+ * @param[in]   _zName          Camera name
+ * @return      orxCAMERA / orxNULL
+ */
+orxCAMERA *orxFASTCALL orxCamera_Get(orxCONST orxSTRING _zName)
+{
+  orxCAMERA *pstResult;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = orxHashTable_Get(sstCamera.pstReferenceTable, orxString_ToCRC(_zName));
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets camera frame

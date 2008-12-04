@@ -37,6 +37,7 @@
 #include "memory/orxMemory.h"
 #include "anim/orxAnimPointer.h"
 #include "display/orxGraphic.h"
+#include "display/orxText.h"
 #include "physics/orxBody.h"
 #include "object/orxFrame.h"
 #include "object/orxSpawner.h"
@@ -2836,6 +2837,36 @@ orxSTRING orxFASTCALL orxObject_GetName(orxCONST orxOBJECT *_pstObject)
 
   /* Updates result */
   zResult = (_pstObject->zReference != orxNULL) ? _pstObject->zReference : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
+}
+
+/** Gets text name, if linked to one
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+orxSTRING orxFASTCALL orxObject_GetTextName(orxCONST orxOBJECT *_pstObject)
+{
+  orxTEXT    *pstText;
+  orxSTRING   zResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Has text graphic? */
+  if((_pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].pstStructure != orxNULL)
+  && (pstText = orxTEXT(orxGraphic_GetData(orxGRAPHIC(_pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].pstStructure)))) != orxNULL)
+  {
+    /* Updates result */
+    zResult = orxText_GetName(pstText);
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
 
   /* Done! */
   return zResult;

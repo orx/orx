@@ -481,6 +481,12 @@ extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(orxCONST
  */
 extern orxDLLAPI orxSTRING orxFASTCALL      orxObject_GetName(orxCONST orxOBJECT *_pstObject);
 
+/** Gets text name, if linked to one
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL      orxObject_GetTextName(orxCONST orxOBJECT *_pstObject);
+
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
  * @param[in]   _pstCheckBox    Box to check intersection with
