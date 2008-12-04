@@ -52,6 +52,7 @@
 #define orxGRAPHIC_KU32_FLAG_INTERNAL             0x10000000  /**< Internal structure handling flag  */
 #define orxGRAPHIC_KU32_FLAG_HAS_COLOR            0x20000000  /**< Has color flag  */
 #define orxGRAPHIC_KU32_FLAG_HAS_PIVOT            0x40000000  /**< Has pivot flag  */
+#define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x80000000  /**< Relative pivot flag */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x01000000  /**< Smoothing on flag  */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x02000000  /**< Smoothing off flag  */
 
@@ -342,10 +343,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
             }
             else
             {
-              /* Inits full coordinates */
-              pstResult->fLeft    = orxFLOAT_0;
-              pstResult->fTop     = orxFLOAT_0;
-              orxTexture_GetSize(pstTexture, &(pstResult->fWidth), &(pstResult->fHeight));
+              /* Updates size */
+              orxGraphic_UpdateSize(pstResult);
             }
           }
           else
@@ -382,10 +381,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigI
               /* Inits default text flags */
               u32Flags = orxGRAPHIC_KU32_FLAG_INTERNAL | orxGRAPHIC_KU32_FLAG_TEXT;
 
-              /* Inits full coordinates */
-              pstResult->fLeft    = orxFLOAT_0;
-              pstResult->fTop     = orxFLOAT_0;
-              orxText_GetSize(pstText, &(pstResult->fWidth), &(pstResult->fHeight));
+              /* Updates size */
+              orxGraphic_UpdateSize(pstResult);
             }
             else
             {
@@ -739,7 +736,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxV
     orxVector_Copy(&(_pstGraphic->vPivot), _pvPivot);
 
     /* Updates status */
-    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_PIVOT, orxGRAPHIC_KU32_FLAG_NONE);
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_PIVOT, orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT);
   }
   else
   {
@@ -747,7 +744,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxV
     orxVector_Copy(&(_pstGraphic->vPivot), &orxVECTOR_0);
 
     /* Updates status */
-    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_HAS_PIVOT);
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT);
   }
 
   /* Done! */
@@ -819,7 +816,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
     }
 
     /* Updates status */
-    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_PIVOT, orxGRAPHIC_KU32_FLAG_NONE);
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_FLAG_NONE);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -1105,6 +1102,60 @@ orxFLOAT orxFASTCALL orxGraphic_GetLeft(orxCONST orxGRAPHIC *_pstGraphic)
 
   /* Done! */
   return fResult;
+}
+
+/** Updates graphic size (recompute)
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
+{
+  orxFLOAT  fPreviousWidth, fPreviousHeight;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Has relative pivot? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT))
+  {
+    /* Stores current size */
+    fPreviousWidth  = _pstGraphic->fWidth;
+    fPreviousHeight = _pstGraphic->fHeight;
+  }
+
+  /* Is data a texture? */
+  if(orxTEXTURE(_pstGraphic->pstData) != orxNULL)
+  {
+    /* Updates coordinates */
+    orxTexture_GetSize(orxTEXTURE(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
+  }
+  /* Is data a text? */
+  else if(orxTEXT(_pstGraphic->pstData) != orxNULL)
+  {
+    /* Inits full coordinates */
+    orxText_GetSize(orxTEXT(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
+  }
+  else
+  {
+    /* Failure */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Valid and has a relative pivot? */
+  if((eResult == orxSTATUS_SUCCESS)
+  && (orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT))
+  && (fPreviousWidth != orxFLOAT_0)
+  && (fPreviousHeight != orxFLOAT_0))
+  {
+    /* Updates pivot */
+    _pstGraphic->vPivot.fX *= _pstGraphic->fWidth / fPreviousWidth;
+    _pstGraphic->vPivot.fY *= _pstGraphic->fHeight / fPreviousHeight;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Sets graphic smoothing

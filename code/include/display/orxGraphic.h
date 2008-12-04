@@ -206,6 +206,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetTop(orxCONST orxGRAP
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetLeft(orxCONST orxGRAPHIC *_pstGraphic);
 
+/** Updates graphic size (recompute)
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic);
+
 /** Sets graphic smoothing
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)

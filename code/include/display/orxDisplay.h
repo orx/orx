@@ -278,6 +278,14 @@ extern orxDLLAPI orxSTATUS  orxDisplay_Swap();
  */
 extern orxDLLAPI orxSTATUS  orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode);
 
+/** Gets a text size
+ * @param[in]   _zText                                Concerned text
+ * @param[in]   _zFont                                Font to use, orxNULL to use default
+ * @param[out]  _pfWidth                              Text's width
+ * @param[out]  _pfHeight                             Text's height
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_GetTextSize(orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Creates a bitmap
  * @param[in]   _u32Width                             Bitmap width

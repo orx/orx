@@ -49,8 +49,6 @@
  */
 #define orxTEXT_KU32_FLAG_NONE                0x00000000  /**< No flags */
 
-#define orxTEXT_KU32_FLAG_REFERENCED          0x10000000  /**< Referenced flag */
-
 #define orxTEXT_KU32_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
 
@@ -58,8 +56,6 @@
  */
 #define orxTEXT_KZ_CONFIG_STRING              "String"
 #define orxTEXT_KZ_CONFIG_FONT                "Font"
-
-#define orxTEXT_KU32_REFERENCE_TABLE_SIZE     16          /**< Reference table size */
 
 
 /***************************************************************************
@@ -84,7 +80,6 @@ struct __orxTEXT_t
 typedef struct __orxTEXT_STATIC_t
 {
   orxU32        u32Flags;                       /**< Control flags : 4 */
-  orxHASHTABLE *pstReferenceTable;              /**< Table to avoid text duplication when creating through config file : 8 */
 
 } orxTEXT_STATIC;
 
@@ -154,21 +149,14 @@ orxSTATUS orxText_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstText, sizeof(orxTEXT_STATIC));
 
-    /* Creates reference table */
-    sstText.pstReferenceTable = orxHashTable_Create(orxTEXT_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    /* Registers structure type */
+    eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
 
-    /* Valid? */
-    if(sstText.pstReferenceTable != orxNULL)
+    /* Success? */
+    if(eResult == orxSTATUS_SUCCESS)
     {
-      /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
-
-      /* Success? */
-      if(eResult == orxSTATUS_SUCCESS)
-      {
-        /* Updates flags for screen text creation */
-        sstText.u32Flags = orxTEXT_KU32_STATIC_FLAG_READY;
-      }
+      /* Updates flags for screen text creation */
+      sstText.u32Flags = orxTEXT_KU32_STATIC_FLAG_READY;
     }
   }
   else
@@ -206,9 +194,6 @@ orxVOID orxText_Exit()
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_TEXT);
-
-    /* Deletes reference table */
-    orxHashTable_Delete(sstText.pstReferenceTable);
 
     /* Updates flags */
     sstText.u32Flags &= ~orxTEXT_KU32_STATIC_FLAG_READY;
@@ -263,57 +248,47 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(orxCONST orxSTRING _zConfigID)
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
-  /* Search for text */
-  pstResult = orxText_Get(_zConfigID);
+  /* Gets previous config section */
+  zPreviousSection = orxConfig_GetCurrentSection();
 
-  /* Not already created? */
-  if(pstResult == orxNULL)
+  /* Selects section */
+  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    /* Gets previous config section */
-    zPreviousSection = orxConfig_GetCurrentSection();
+    /* Creates text */
+    pstResult = orxText_Create();
 
-    /* Selects section */
-    if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-    && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
+    /* Valid? */
+    if(pstResult != orxNULL)
     {
-      /* Creates text */
-      pstResult = orxText_Create();
+      orxU32 u32Flags;
 
-      /* Valid? */
-      if(pstResult != orxNULL)
-      {
-        orxU32 u32Flags;
+      /* Inits flags */
+      u32Flags = orxTEXT_KU32_FLAG_NONE;
 
-        /* Inits flags */
-        u32Flags = orxTEXT_KU32_FLAG_REFERENCED;
+      /* Stores text */
+      orxText_SetString(pstResult, orxConfig_GetString(orxTEXT_KZ_CONFIG_STRING));
 
-        /* Stores text */
-        orxText_SetString(pstResult, orxConfig_GetString(orxTEXT_KZ_CONFIG_STRING));
+      /* Stores font */
+      orxText_SetFont(pstResult, orxConfig_GetString(orxTEXT_KZ_CONFIG_FONT));
 
-        /* Stores font */
-        orxText_SetFont(pstResult, orxConfig_GetString(orxTEXT_KZ_CONFIG_FONT));
+      /* Stores its reference key */
+      pstResult->zReference = orxConfig_GetCurrentSection();
 
-        /* Stores its reference key */
-        pstResult->zReference = orxConfig_GetCurrentSection();
-
-        /* Adds it to reference table */
-        orxHashTable_Add(sstText.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
-
-        /* Stores flags */
-        orxStructure_SetFlags(pstResult, u32Flags, orxTEXT_KU32_FLAG_NONE);
-      }
-
-      /* Restores previous section */
-      orxConfig_SelectSection(zPreviousSection);
+      /* Stores flags */
+      orxStructure_SetFlags(pstResult, u32Flags, orxTEXT_KU32_FLAG_NONE);
     }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named (%s).", _zConfigID);
 
-      /* Updates result */
-      pstResult = orxNULL;
-    }
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named (%s).", _zConfigID);
+
+    /* Updates result */
+    pstResult = orxNULL;
   }
 
   /* Done! */
@@ -335,13 +310,6 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstText) == 0)
   {
-    /* Is referenced? */
-    if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_REFERENCED) != orxFALSE)
-    {
-      /* Removes it from reference table */
-      orxHashTable_Remove(sstText.pstReferenceTable, orxString_ToCRC(_pstText->zReference));
-    }
-
     /* Deletes structure */
     orxStructure_Delete(_pstText);
   }
@@ -374,8 +342,8 @@ orxSTATUS orxFASTCALL orxText_GetSize(orxCONST orxTEXT *_pstText, orxFLOAT *_pfW
   orxASSERT(_pfWidth != orxNULL);
   orxASSERT(_pfHeight != orxNULL);
 
-  //! TODO: Returns real extent
-  *_pfWidth = *_pfHeight = orxFLOAT_1;
+  // Gets text size
+  orxDisplay_GetTextSize(_pstText->zString, _pstText->zFont, _pfWidth, _pfHeight);
 
   /* Done! */
   return eResult;
@@ -398,25 +366,6 @@ orxSTRING orxFASTCALL orxText_GetName(orxCONST orxTEXT *_pstText)
 
   /* Done! */
   return zResult;
-}
-
-/** Gets text given its name
- * @param[in]   _zName        Text name
- * @return      orxTEXT / orxNULL
- */
-orxTEXT *orxFASTCALL orxText_Get(orxCONST orxSTRING _zName)
-{
-  orxTEXT *pstResult;
-
-  /* Checks */
-  orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zName != orxNULL);
-
-  /* Updates result */
-  pstResult = orxHashTable_Get(sstText.pstReferenceTable, orxString_ToCRC(_zName));
-
-  /* Done! */
-  return pstResult;
 }
 
 /** Gets text string 

@@ -86,6 +86,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32            u32ScreenWidth, u32ScreenHeight;
   sf::RenderWindow *poRenderWindow;
   sf::Font         *poDefaultFont;
+  sf::String       *poTestString;
 
   orxBANK          *pstTextBank;
   orxHASHTABLE     *pstFontTable;
@@ -299,10 +300,68 @@ extern "C" orxBITMAP *orxDisplay_SFML_GetScreen()
   return const_cast<orxBITMAP *>(spoScreen);
 }
 
+extern "C" orxSTATUS orxDisplay_SFML_GetTextSize(orxCONST orxSTRING _zString, orxCONST orxSTRING _zFont, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
+
+  /* Valid? */
+  if(_zString != orxNULL)
+  {
+    /* Empty string? */
+    if(_zString == orxSTRING_EMPTY)
+    {
+      /* No size */
+      *_pfWidth = *_pfHeight = orxFLOAT_0;
+    }
+    else
+    {
+      sf::Font     *poFont;
+      sf::FloatRect stRect;
+
+      /* Has specific font? */
+      if((_zFont != orxNULL) && (_zFont != orxSTRING_EMPTY))
+      {
+        poFont = orxDisplay_SFML_LoadFont(_zFont);
+      }
+      else
+      {
+        poFont = sstDisplay.poDefaultFont;
+      }
+
+      /* Has font? */
+      if(poFont != orxNULL)
+      {
+        /* Updates test string font */
+        sstDisplay.poTestString->SetFont(*poFont);
+      }
+
+      /* Updates test string text */
+      sstDisplay.poTestString->SetText(_zString);
+
+      /* Gets its size */
+      stRect = sstDisplay.poTestString->GetRect();
+
+      /* Stores values */
+      *_pfWidth   = stRect.Right - stRect.Left;
+      *_pfHeight  = stRect.Bottom - stRect.Top;
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxSTRING _zFont, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
-  orxDISPLAY_TEXT  *pstText;
-  orxSTATUS         eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -319,6 +378,8 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
     }
     else
     {
+      orxDISPLAY_TEXT *pstText;
+
       /* Gets a new text from bank */
       pstText = (orxDISPLAY_TEXT *)orxBank_Allocate(sstDisplay.pstTextBank);
 
@@ -327,9 +388,6 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
       {
         sf::Font     *poFont;
         sf::Vector2f  vPosition;
-
-        /* Sets config section */
-        orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
         /* Has specific font? */
         if((_zFont != orxNULL) && (_zFont != orxSTRING_EMPTY))
@@ -369,8 +427,8 @@ extern "C" orxSTATUS orxDisplay_SFML_DrawText(orxCONST orxBITMAP *_pstBitmap, or
         pstText->poString->SetBlendMode(orxDisplay_SFML_GetBlendMode(_eBlendMode));
 
         /* Sets its position */
-        vPosition.x = _pstTransform->fDstX - _pstTransform->fSrcX;
-        vPosition.y = _pstTransform->fDstY - _pstTransform->fSrcY;
+        vPosition.x = _pstTransform->fDstX;
+        vPosition.y = _pstTransform->fDstY;
         pstText->poString->SetPosition(vPosition);
 
         /* Updates result */
@@ -948,6 +1006,9 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
             orxCLOCK     *pstClock;
             unsigned long ulStyle;
 
+            /* Creates test text */
+            sstDisplay.poTestString = new sf::String(orxSTRING_EMPTY);
+
             /* Gets resolution from config */
             orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
             u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
@@ -1065,6 +1126,9 @@ extern "C" orxVOID orxDisplay_SFML_Exit()
     /* Deletes text bank */
     orxBank_Delete(sstDisplay.pstTextBank);
 
+    /* Deletes test string */
+    delete sstDisplay.poTestString;
+
     /* Deletes rendering window */
     delete sstDisplay.poRenderWindow;
 
@@ -1107,6 +1171,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColorKey, DISPLAY, SET
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetBitmapColor, DISPLAY, SET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetBitmapColor, DISPLAY, GET_BITMAP_COLOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DrawText, DISPLAY, DRAW_TEXT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetTextSize, DISPLAY, GET_TEXT_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);

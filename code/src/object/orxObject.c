@@ -2337,6 +2337,50 @@ orxVECTOR *orxFASTCALL orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR 
   return pvResult;
 }
 
+/** Sets object text string, if object is associated to a text
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zString        String to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetTextString(orxOBJECT *_pstObject, orxCONST orxSTRING _zString)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxGRAPHIC(_pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].pstStructure);
+
+  /* Valid text graphic? */
+  if((pstGraphic != orxNULL) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
+  {
+    orxTEXT *pstText;
+
+    /* Gets text */
+    pstText = orxTEXT(orxGraphic_GetData(pstGraphic));
+
+    /* Valid? */
+    if(pstText != orxNULL)
+    {
+      /* Updates its string */
+      eResult = orxText_SetString(pstText, _zString);
+
+      /* Valid */
+      if(eResult == orxSTATUS_SUCCESS)
+      {
+        /* Updates graphic */
+        orxGraphic_UpdateSize(pstGraphic);
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Applies a torque
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fTorque        Torque to apply
@@ -2837,36 +2881,6 @@ orxSTRING orxFASTCALL orxObject_GetName(orxCONST orxOBJECT *_pstObject)
 
   /* Updates result */
   zResult = (_pstObject->zReference != orxNULL) ? _pstObject->zReference : orxSTRING_EMPTY;
-
-  /* Done! */
-  return zResult;
-}
-
-/** Gets text name, if linked to one
- * @param[in]   _pstObject      Concerned object
- * @return      orxSTRING / orxSTRING_EMPTY
- */
-orxSTRING orxFASTCALL orxObject_GetTextName(orxCONST orxOBJECT *_pstObject)
-{
-  orxTEXT    *pstText;
-  orxSTRING   zResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Has text graphic? */
-  if((_pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].pstStructure != orxNULL)
-  && (pstText = orxTEXT(orxGraphic_GetData(orxGRAPHIC(_pstObject->astStructure[orxSTRUCTURE_ID_GRAPHIC].pstStructure)))) != orxNULL)
-  {
-    /* Updates result */
-    zResult = orxText_GetName(pstText);
-  }
-  else
-  {
-    /* Updates result */
-    zResult = orxSTRING_EMPTY;
-  }
 
   /* Done! */
   return zResult;

@@ -95,12 +95,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetSize(orxCONST orxTEXT *_pst
  */
 extern orxDLLAPI orxSTRING orxFASTCALL    orxText_GetName(orxCONST orxTEXT *_pstText);
 
-/** Gets text given its name
- * @param[in]   _zName        Text name
- * @return      orxTEXT / orxNULL
- */
-extern orxDLLAPI orxTEXT *orxFASTCALL     orxText_Get(orxCONST orxSTRING _zName);
-
 
 /** Gets text string 
  * @param[in]   _pstText      Concerned text

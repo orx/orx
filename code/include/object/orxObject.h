@@ -381,6 +381,14 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAngularVelocity(orxOBJE
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR *_pvMassCenter);
 
 
+/** Sets object text string, if object is associated to a text
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zString        String to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTextString(orxOBJECT *_pstObject, orxCONST orxSTRING _zString);
+
+
 /** Applies a torque
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fTorque        Torque to apply
@@ -480,12 +488,6 @@ extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(orxCONST
  * @return      orxSTRING / orxSTRING_EMPTY
  */
 extern orxDLLAPI orxSTRING orxFASTCALL      orxObject_GetName(orxCONST orxOBJECT *_pstObject);
-
-/** Gets text name, if linked to one
- * @param[in]   _pstObject      Concerned object
- * @return      orxSTRING / orxSTRING_EMPTY
- */
-extern orxDLLAPI orxSTRING orxFASTCALL      orxObject_GetTextName(orxCONST orxOBJECT *_pstObject);
 
 
 /** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box)
