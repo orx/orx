@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -48,8 +48,8 @@
 
 #include "orxInclude.h"
 
-#include "display/orxTexture.h"
 #include "object/orxStructure.h"
+#include "display/orxDisplay.h"
 
 
 /** Graphic flags
@@ -57,10 +57,13 @@
 #define orxGRAPHIC_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
 #define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic flag  */
+#define orxGRAPHIC_KU32_FLAG_TEXT             0x00000002  /**< Text type graphic flag  */
 
-#define orxGRAPHIC_KU32_FLAG_FLIP_X           0x00000002  /**< X axis flipping flag */
-#define orxGRAPHIC_KU32_FLAG_FLIP_Y           0x00000004  /**< Y axis flipping flag */
-#define orxGRAPHIC_KU32_MASK_FLIP_BOTH        0x00000006  /**< Both axis flipping mask */
+#define orxGRAPHIC_KU32_MASK_TYPE             0x00000003  /**< Type mask */
+
+#define orxGRAPHIC_KU32_FLAG_FLIP_X           0x00000004  /**< X axis flipping flag */
+#define orxGRAPHIC_KU32_FLAG_FLIP_Y           0x00000008  /**< Y axis flipping flag */
+#define orxGRAPHIC_KU32_MASK_FLIP_BOTH        0x0000000C  /**< Both axis flipping mask */
 
 #define orxGRAPHIC_KU32_FLAG_ALIGN_CENTER     0x00000000  /**< Center vertical / horizontal alignment */
 #define orxGRAPHIC_KU32_FLAG_ALIGN_LEFT       0x00000010  /**< Left horizontal alignment */
@@ -90,10 +93,9 @@ extern orxDLLAPI orxVOID                      orxGraphic_Exit();
 
 
 /** Creates an empty graphic
- * @param[in]   _u32Flags                     Graphic flags (2D / ...)
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Create(orxU32 _u32Flags);
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Create();
 
 /** Creates a graphic from config
  * @param[in]   _zConfigID            Config ID

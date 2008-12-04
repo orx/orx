@@ -387,7 +387,7 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
-  orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
+  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets previous config section */
   zPreviousSection = orxConfig_GetCurrentSection();
@@ -568,7 +568,7 @@ orxSTATUS orxFASTCALL orxSound_Delete(orxSOUND *_pstSound)
 
   /* Has an ID? */
   if((_pstSound->zReference != orxNULL)
-  && (*_pstSound->zReference != *orxSTRING_EMPTY))
+  && (_pstSound->zReference != orxSTRING_EMPTY))
   {
     /* Not referenced? */
     if(orxStructure_GetRefCounter(_pstSound) == 0)

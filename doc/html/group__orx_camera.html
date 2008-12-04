@@ -58,6 +58,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#gfa0f8c1680337477c7fd1d5e95a86e4e">orxCamera_GetZoom</a> (orxCONST <a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#g270a087e37a0e6ce36d36dbbc58d25da">orxCamera_GetName</a> (orxCONST <a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_frame.html#g235cfd3a7a747961a8fce204679f6b70">orxFRAME</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#g5d5caa05f97dfa625dadf428e3d750e8">orxCamera_GetFrame</a> (orxCONST <a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_camera.html#ge95baa5baafb0df10e31dc840df7afc4">orxCamera_SetParent</a> (<a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *_pstCamera, orxVOID *_pParent)</td></tr>
@@ -281,6 +283,32 @@ Gets camera frustum (3D box for 2D camera) <dl compact><dt><b>Parameters:</b></d
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pstFrustum</em>&nbsp;</td><td>Frustum box </td></tr>
   </table>
 </dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g270a087e37a0e6ce36d36dbbc58d25da"></a><!-- doxytag: member="orxCamera.h::orxCamera_GetName" ref="g270a087e37a0e6ce36d36dbbc58d25da" args="(orxCONST orxCAMERA *_pstCamera)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxSTRING orxFASTCALL orxCamera_GetName           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST <a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstCamera</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets camera config name <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstCamera</em>&nbsp;</td><td>Concerned camera </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRING / orxSTRING_EMPTY </dd></dl>
 
 </div>
 </div><p>

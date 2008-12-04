@@ -600,6 +600,25 @@ orxFLOAT orxFASTCALL orxCamera_GetZoom(orxCONST orxCAMERA *_pstCamera)
   return(orxFLOAT_1 / vScale.fX);
 }
 
+/** Gets camera config name
+ * @param[in]   _pstCamera      Concerned camera
+ * @return      orxSTRING / orxSTRING_EMPTY
+ */
+orxSTRING orxFASTCALL orxCamera_GetName(orxCONST orxCAMERA *_pstCamera)
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+
+  /* Updates result */
+  zResult = (_pstCamera->zReference != orxNULL) ? _pstCamera->zReference : orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
+}
+
 /** Gets camera frame
  * @param[in]   _pstCamera      Concerned camera
  * @return      orxFRAME

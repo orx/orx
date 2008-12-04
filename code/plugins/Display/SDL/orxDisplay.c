@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -107,7 +107,7 @@ orxBITMAP *orxDisplay_SDL_GetScreen()
   return((orxBITMAP *)sstDisplay.pstScreen);
 }
 
-orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxCONST orxSTRING _zString)
+orxSTATUS orxDisplay_SDL_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxSTRING _zFont, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -608,7 +608,7 @@ orxSTATUS orxDisplay_SDL_Init()
   }
 
   /* Done! */
-  return eResult;  
+  return eResult;
 }
 
 orxVOID orxDisplay_SDL_Exit()

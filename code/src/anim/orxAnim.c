@@ -479,7 +479,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         zDataName = orxConfig_GetString(acID);
 
         /* Valid? */
-        if((zDataName != orxNULL) && (*zDataName != *orxSTRING_EMPTY))
+        if((zDataName != orxNULL) && (zDataName != orxSTRING_EMPTY))
         {
           orxGRAPHIC *pstGraphic;
 

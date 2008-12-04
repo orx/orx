@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -80,6 +80,7 @@ orxVOID orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SPAWNER, orxSpawner);
   orxMODULE_REGISTER(orxMODULE_ID_STRUCTURE, orxStructure);
   orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);
+  orxMODULE_REGISTER(orxMODULE_ID_TEXT, orxText);
   orxMODULE_REGISTER(orxMODULE_ID_TEXTURE, orxTexture);
   orxMODULE_REGISTER(orxMODULE_ID_TREE, orxTree);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);

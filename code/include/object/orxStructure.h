@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -67,6 +67,7 @@
 #define orxSOUND(STRUCTURE)         orxSTRUCTURE_GET_POINTER(STRUCTURE, SOUND)
 #define orxSOUNDPOINTER(STRUCTURE)  orxSTRUCTURE_GET_POINTER(STRUCTURE, SOUNDPOINTER)
 #define orxSPAWNER(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, SPAWNER)
+#define orxTEXT(STRUCTURE)          orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXT)
 #define orxTEXTURE(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXTURE)
 #define orxVIEWPORT(STRUCTURE)      orxSTRUCTURE_GET_POINTER(STRUCTURE, VIEWPORT)
 
@@ -116,6 +117,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_FX,
   orxSTRUCTURE_ID_OBJECT,
   orxSTRUCTURE_ID_SOUND,
+  orxSTRUCTURE_ID_TEXT,
   orxSTRUCTURE_ID_TEXTURE,
   orxSTRUCTURE_ID_VIEWPORT,
 

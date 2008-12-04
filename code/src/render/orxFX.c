@@ -266,7 +266,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFX);
-  orxASSERT((_zSlotID != orxNULL) && (*_zSlotID != *orxSTRING_EMPTY));
+  orxASSERT((_zSlotID != orxNULL) && (_zSlotID != orxSTRING_EMPTY));
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFX);
@@ -621,7 +621,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
-  orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
+  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets FX ID */
   u32ID = orxString_ToCRC(_zConfigID);
@@ -671,7 +671,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
             zSlotName = orxConfig_GetString(acSlotID);
 
             /* Valid? */
-            if((zSlotName != orxNULL) && (*zSlotName != *orxSTRING_EMPTY))
+            if((zSlotName != orxNULL) && (zSlotName != orxSTRING_EMPTY))
             {
               /* Adds slot from config */
               orxFX_AddSlotFromConfig(pstResult, zSlotName);
@@ -746,7 +746,7 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
 
   /* Has an ID? */
   if((_pstFX->zReference != orxNULL)
-  && (*_pstFX->zReference != *orxSTRING_EMPTY))
+  && (_pstFX->zReference != orxSTRING_EMPTY))
   {
     /* Not referenced? */
     if(orxStructure_GetRefCounter(_pstFX) == 0)

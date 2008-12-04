@@ -18,8 +18,8 @@
 </div>
 <div class="contents">
 <h1>include/display/orxGraphic.h File Reference</h1><code>#include &quot;<a class="el" href="orx_include_8h.html">orxInclude.h</a>&quot;</code><br>
-<code>#include &quot;<a class="el" href="orx_texture_8h.html">display/orxTexture.h</a>&quot;</code><br>
 <code>#include &quot;<a class="el" href="orx_structure_8h.html">object/orxStructure.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="orx_display_8h.html">display/orxDisplay.h</a>&quot;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
@@ -27,11 +27,15 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g4052190ffa545c60c6391940b189b269">orxGRAPHIC_KU32_FLAG_2D</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g8859736ea173e43e859dd14aa18206ba">orxGRAPHIC_KU32_FLAG_FLIP_X</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g429feecaa5e1169e1facf295b8204a2f">orxGRAPHIC_KU32_FLAG_TEXT</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gc0105b93b7499249af3d967fcefb21d7">orxGRAPHIC_KU32_FLAG_FLIP_Y</a>&nbsp;&nbsp;&nbsp;0x00000004</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g9927d2032328f4f33900b365cdb1101a">orxGRAPHIC_KU32_MASK_TYPE</a>&nbsp;&nbsp;&nbsp;0x00000003</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gc11cc36b783832c0d1d32d44c741d49f">orxGRAPHIC_KU32_MASK_FLIP_BOTH</a>&nbsp;&nbsp;&nbsp;0x00000006</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g8859736ea173e43e859dd14aa18206ba">orxGRAPHIC_KU32_FLAG_FLIP_X</a>&nbsp;&nbsp;&nbsp;0x00000004</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gc0105b93b7499249af3d967fcefb21d7">orxGRAPHIC_KU32_FLAG_FLIP_Y</a>&nbsp;&nbsp;&nbsp;0x00000008</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gc11cc36b783832c0d1d32d44c741d49f">orxGRAPHIC_KU32_MASK_FLIP_BOTH</a>&nbsp;&nbsp;&nbsp;0x0000000C</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g8740ea5b0c094102f8a04cf4ab95423f">orxGRAPHIC_KU32_FLAG_ALIGN_CENTER</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
 
@@ -55,7 +59,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g840e38ce257c368a3d8cfb0ab0fa8976">orxGraphic_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g172dca2ba8fc07fda5512a7d7e64f6ea">orxGraphic_Create</a> (orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g507654f360017d1eb9f440bf11b185d1">orxGraphic_Create</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g0ddcbdd68aa3f0adefe1b4260fc005a6">orxGraphic_CreateFromConfig</a> (orxCONST orxSTRING _zConfigID)</td></tr>
 

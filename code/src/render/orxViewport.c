@@ -278,7 +278,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
+  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets previous config section */
   zPreviousSection = orxConfig_GetCurrentSection();
@@ -300,7 +300,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
       zTextureName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME);
 
       /* Valid? */
-      if((zTextureName != orxNULL) && (*zTextureName != *orxSTRING_EMPTY))
+      if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
       {
         orxTEXTURE *pstTexture;
 
@@ -324,7 +324,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfi
       zCameraName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_CAMERA);
 
       /* Valid? */
-      if((zCameraName != orxNULL) && (*zCameraName != *orxSTRING_EMPTY))
+      if((zCameraName != orxNULL) && (zCameraName != orxSTRING_EMPTY))
       {
         orxCAMERA *pstCamera;
 
@@ -811,8 +811,7 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
     orxFLOAT fHeight, fWidth;
 
     /* Gets texture size */
-    fWidth  = orxTexture_GetWidth(pstTexture);
-    fHeight = orxTexture_GetHeight(pstTexture);
+    orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
 
     /* Align left? */
     if(_u32AlignFlags & orxVIEWPORT_KU32_FLAG_ALIGN_LEFT)
@@ -930,8 +929,9 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
   if(pstTexture != orxNULL)
   {
     /* Updates viewport size */
-    _pstViewport->fWidth  = orxTexture_GetWidth(pstTexture) * _fW;
-    _pstViewport->fHeight = orxTexture_GetHeight(pstTexture) * _fH;
+    orxTexture_GetSize(pstTexture, &(_pstViewport->fWidth), &(_pstViewport->fHeight));
+    _pstViewport->fWidth   *= _fW;
+    _pstViewport->fHeight  *= _fH;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -991,8 +991,9 @@ orxVOID orxFASTCALL orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewpo
   if(pstTexture != orxNULL)
   {
     /* Gets relative size */
-    *_pfW = _pstViewport->fWidth / orxTexture_GetWidth(pstTexture);
-    *_pfH = _pstViewport->fHeight / orxTexture_GetHeight(pstTexture);
+    orxTexture_GetSize(pstTexture, _pfW, _pfH);
+    *_pfW = _pstViewport->fWidth / *_pfW;
+    *_pfH = _pstViewport->fHeight / *_pfH;
   }
   else
   {

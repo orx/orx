@@ -525,7 +525,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT((_zConfigID != orxNULL) && (*_zConfigID != *orxSTRING_EMPTY));
+  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
 
   /* Gets previous config section */
   zPreviousSection = orxConfig_GetCurrentSection();
@@ -637,7 +637,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       zCameraName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_PARENT_CAMERA);
 
       /* Valid? */
-      if((zCameraName != orxNULL) && (*zCameraName != *orxSTRING_EMPTY))
+      if((zCameraName != orxNULL) && (zCameraName != orxSTRING_EMPTY))
       {
         orxCAMERA *pstCamera;
 
@@ -669,7 +669,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       zGraphicFileName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_NAME);
 
       /* Valid? */
-      if((zGraphicFileName != orxNULL) && (*zGraphicFileName != *orxSTRING_EMPTY))
+      if((zGraphicFileName != orxNULL) && (zGraphicFileName != orxSTRING_EMPTY))
       {
         orxGRAPHIC *pstGraphic;
 
@@ -694,7 +694,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       zAnimPointerName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME);
 
       /* Valid? */
-      if((zAnimPointerName != orxNULL) && (*zAnimPointerName != *orxSTRING_EMPTY))
+      if((zAnimPointerName != orxNULL) && (zAnimPointerName != orxSTRING_EMPTY))
       {
         orxANIMPOINTER *pstAnimPointer;
 
@@ -779,7 +779,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       zBodyName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BODY);
 
       /* Valid? */
-      if((zBodyName != orxNULL) && (*zBodyName != *orxSTRING_EMPTY))
+      if((zBodyName != orxNULL) && (zBodyName != orxSTRING_EMPTY))
       {
         orxBODY *pstBody;
 
@@ -804,7 +804,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       zSpawnerName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_SPAWNER);
 
       /* Valid? */
-      if((zSpawnerName != orxNULL) && (*zSpawnerName != *orxSTRING_EMPTY))
+      if((zSpawnerName != orxNULL) && (zSpawnerName != orxSTRING_EMPTY))
       {
         orxSPAWNER *pstSpawner;
 
@@ -891,7 +891,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_BLEND_MODE) != orxFALSE)
       {
         orxSTRING zBlendMode;
-        
+
         /* Gets blend mode value */
         zBlendMode = orxString_LowerCase(orxConfig_GetString(orxOBJECT_KZ_CONFIG_BLEND_MODE));
 
@@ -1965,7 +1965,7 @@ orxSTATUS orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, orxCONST or
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zAnimName != orxNULL) && (*_zAnimName != *orxSTRING_EMPTY));
+  orxASSERT((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY));
 
   /* Gets animation pointer */
   pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
@@ -1999,7 +1999,7 @@ orxSTATUS orxFASTCALL orxObject_IsTargetAnim(orxOBJECT *_pstObject, orxCONST orx
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zAnimName != orxNULL) && (*_zAnimName != *orxSTRING_EMPTY));
+  orxASSERT((_zAnimName != orxNULL) && (_zAnimName != orxSTRING_EMPTY));
 
   /* Gets animation pointer */
   pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
@@ -2041,7 +2041,7 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxCONST o
   if(pstAnimPointer != orxNULL)
   {
     /* Is string null or empty? */
-    if((_zAnimName == orxNULL) || (*_zAnimName == *orxSTRING_EMPTY))
+    if((_zAnimName == orxNULL) || (_zAnimName == orxSTRING_EMPTY))
     {
       /* Resets current animation */
       eResult = orxAnimPointer_SetCurrentAnim(pstAnimPointer, orxU32_UNDEFINED);
@@ -2083,7 +2083,7 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxCONST or
   if(pstAnimPointer != orxNULL)
   {
     /* Is string null or empty? */
-    if((_zAnimName == orxNULL) || (*_zAnimName == *orxSTRING_EMPTY))
+    if((_zAnimName == orxNULL) || (_zAnimName == orxSTRING_EMPTY))
     {
       /* Resets target animation */
       eResult = orxAnimPointer_SetTargetAnim(pstAnimPointer, orxU32_UNDEFINED);
@@ -2614,7 +2614,7 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
+  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
@@ -2641,7 +2641,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orx
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != *orxSTRING_EMPTY));
+  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
   orxASSERT(_fDelay >= orxFLOAT_0);
 
   /* Is object active? */
@@ -2725,7 +2725,7 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, orxCONST orxSTRI
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zSoundConfigID != orxNULL) && (*_zSoundConfigID != *orxSTRING_EMPTY));
+  orxASSERT((_zSoundConfigID != orxNULL) && (_zSoundConfigID != orxSTRING_EMPTY));
 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
@@ -3170,7 +3170,7 @@ orxOBJECT *orxFASTCALL orxObject_Pick(orxCONST orxVECTOR *_pvPosition)
     if(orxObject_IsEnabled(pstObject) != orxFALSE)
     {
       orxGRAPHIC *pstGraphic;
-      
+
       /* Has graphic? */
       if((pstGraphic = orxOBJECT_GET_STRUCTURE(pstObject, GRAPHIC)) != orxNULL)
       {
@@ -3195,7 +3195,7 @@ orxOBJECT *orxFASTCALL orxObject_Pick(orxCONST orxVECTOR *_pvPosition)
               {
                 /* Updates result */
                 pstResult = pstObject;
-                
+
                 /* Updates selected position */
                 fSelectedZ = vObjectPos.fZ;
               }

@@ -53,6 +53,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gae994bc4ff855d207bac0f7b8bc2cf99">orxSPAWNER</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, SPAWNER)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g796d7432fb8b158eac03b6d6aea5f6fa">orxTEXT</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXT)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ge682e499ff6fb12878575a10c1e8e59d">orxTEXTURE</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXTURE)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g98094cd0e989a5c13e02e5ac49c5e269">orxVIEWPORT</a>(STRUCTURE)&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, VIEWPORT)</td></tr>
@@ -87,10 +89,11 @@
 <br>
 &nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32048b14df45d963b21b0ad76063b205d6b">orxSTRUCTURE_ID_OBJECT</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32000f537835d607f70ffb31363889dec8e">orxSTRUCTURE_ID_SOUND</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b32096a8495780ac77abc0ed48a901ed8744">orxSTRUCTURE_ID_TEXT</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3206a2287c21b776f8bde356f3fc37d798b">orxSTRUCTURE_ID_TEXTURE</a>, 
-<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320675db72a8ad9bb86cd0864f5d421d8ef">orxSTRUCTURE_ID_VIEWPORT</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320675db72a8ad9bb86cd0864f5d421d8ef">orxSTRUCTURE_ID_VIEWPORT</a>, 
+<a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b320d7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>, 
 <a class="el" href="group__orx_structure.html#gg559293f09cd4d21743241cc32350b3203117a67a1c0b08f8e48f5af76600f6bf">orxSTRUCTURE_ID_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
@@ -545,6 +548,26 @@ Structure magic number
 Structure register macro 
 </div>
 </div><p>
+<a class="anchor" name="g796d7432fb8b158eac03b6d6aea5f6fa"></a><!-- doxytag: member="orxStructure.h::orxTEXT" ref="g796d7432fb8b158eac03b6d6aea5f6fa" args="(STRUCTURE)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a>          </td>
+          <td>(</td>
+          <td class="paramtype">STRUCTURE&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td>&nbsp;&nbsp;&nbsp;orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXT)</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
 <a class="anchor" name="ge682e499ff6fb12878575a10c1e8e59d"></a><!-- doxytag: member="orxStructure.h::orxTEXTURE" ref="ge682e499ff6fb12878575a10c1e8e59d" args="(STRUCTURE)" -->
 <div class="memitem">
 <div class="memproto">
@@ -643,6 +666,8 @@ Structure IDs <dl compact><dt><b>Enumerator: </b></dt><dd>
 <tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b32048b14df45d963b21b0ad76063b205d6b"></a><!-- doxytag: member="orxSTRUCTURE_ID_OBJECT" ref="gg559293f09cd4d21743241cc32350b32048b14df45d963b21b0ad76063b205d6b" args="" -->orxSTRUCTURE_ID_OBJECT</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b32000f537835d607f70ffb31363889dec8e"></a><!-- doxytag: member="orxSTRUCTURE_ID_SOUND" ref="gg559293f09cd4d21743241cc32350b32000f537835d607f70ffb31363889dec8e" args="" -->orxSTRUCTURE_ID_SOUND</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b32096a8495780ac77abc0ed48a901ed8744"></a><!-- doxytag: member="orxSTRUCTURE_ID_TEXT" ref="gg559293f09cd4d21743241cc32350b32096a8495780ac77abc0ed48a901ed8744" args="" -->orxSTRUCTURE_ID_TEXT</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="gg559293f09cd4d21743241cc32350b3206a2287c21b776f8bde356f3fc37d798b"></a><!-- doxytag: member="orxSTRUCTURE_ID_TEXTURE" ref="gg559293f09cd4d21743241cc32350b3206a2287c21b776f8bde356f3fc37d798b" args="" -->orxSTRUCTURE_ID_TEXTURE</em>&nbsp;</td><td>
 </td></tr>

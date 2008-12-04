@@ -568,23 +568,31 @@ orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
   return pstBitmap;
 }
 
-/** Gets texture width
+/** Gets texture size
  * @param[in]   _pstTexture     Concerned texture
- * @return      Texture's width
+ * @param[out]  _pfWidth        Texture's width
+ * @param[out]  _pfHeight       Texture's height
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxFLOAT orxFASTCALL orxTexture_GetWidth(orxCONST orxTEXTURE *_pstTexture)
+orxFLOAT orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
-  orxFLOAT fResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTexture);
+  orxASSERT(_pfWidth != orxNULL);
+  orxASSERT(_pfHeight != orxNULL);
 
   /* Has size? */
   if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
   {
+    /* Stores values */
+    *_pfWidth   = _pstTexture->fWidth;
+    *_pfHeight  = _pstTexture->fHeight;
+
     /* Updates result */
-    fResult = _pstTexture->fWidth;
+    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -592,42 +600,14 @@ orxFLOAT orxFASTCALL orxTexture_GetWidth(orxCONST orxTEXTURE *_pstTexture)
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Texture's width is not set.");
 
     /* No size */
-    fResult = orx2F(-1.0f);
-  }
+    *_pfWidth = *_pfHeight = orx2F(-1.0f);
 
-  /* Done! */
-  return fResult;
-}
-
-/** Gets texture height
- * @param[in]   _pstTexture     Concerned texture
- * @return      Texture's height
- */
-orxFLOAT orxFASTCALL orxTexture_GetHeight(orxCONST orxTEXTURE *_pstTexture)
-{
-  orxFLOAT fResult;
-
-  /* Checks */
-  orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstTexture);
-
-  /* Has size? */
-  if(orxStructure_TestFlags(_pstTexture, orxTEXTURE_KU32_FLAG_SIZE) != orxFALSE)
-  {
     /* Updates result */
-    fResult = _pstTexture->fHeight;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Texture's height is not set.");
-
-    /* No size */
-    fResult = orx2F(-1.0f);
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
-  return fResult;
+  return eResult;
 }
 
 /** Gets texture name

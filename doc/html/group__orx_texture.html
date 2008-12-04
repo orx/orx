@@ -41,9 +41,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gf79113dcd1139f34e20196481f713df6">orxTexture_GetBitmap</a> (orxCONST <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#ga5fc78f06a066a92d7449dbb62bf3306">orxTexture_GetWidth</a> (orxCONST <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g001ca8d7c88a8b2b835a032b18731eaf">orxTexture_GetHeight</a> (orxCONST <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g4172de5b6933c4e8a4565d62496742cc">orxTexture_GetSize</a> (orxCONST <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gfe6401434a8ae91cacbb02bb92074474">orxTexture_GetName</a> (orxCONST <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture)</td></tr>
 
@@ -187,32 +185,6 @@ Gets texture bitmap <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g001ca8d7c88a8b2b835a032b18731eaf"></a><!-- doxytag: member="orxTexture.h::orxTexture_GetHeight" ref="g001ca8d7c88a8b2b835a032b18731eaf" args="(orxCONST orxTEXTURE *_pstTexture)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI orxFLOAT orxFASTCALL orxTexture_GetHeight           </td>
-          <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstTexture</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets texture height <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstTexture</em>&nbsp;</td><td>Concerned texture </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Texture's height </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="gfe6401434a8ae91cacbb02bb92074474"></a><!-- doxytag: member="orxTexture.h::orxTexture_GetName" ref="gfe6401434a8ae91cacbb02bb92074474" args="(orxCONST orxTEXTURE *_pstTexture)" -->
 <div class="memitem">
 <div class="memproto">
@@ -259,29 +231,46 @@ Gets screen texture <dl class="return" compact><dt><b>Returns:</b></dt><dd>Scree
 
 </div>
 </div><p>
-<a class="anchor" name="ga5fc78f06a066a92d7449dbb62bf3306"></a><!-- doxytag: member="orxTexture.h::orxTexture_GetWidth" ref="ga5fc78f06a066a92d7449dbb62bf3306" args="(orxCONST orxTEXTURE *_pstTexture)" -->
+<a class="anchor" name="g4172de5b6933c4e8a4565d62496742cc"></a><!-- doxytag: member="orxTexture.h::orxTexture_GetSize" ref="g4172de5b6933c4e8a4565d62496742cc" args="(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxFLOAT orxFASTCALL orxTexture_GetWidth           </td>
+          <td class="memname">orxDLLAPI orxFLOAT orxFASTCALL orxTexture_GetSize           </td>
           <td>(</td>
           <td class="paramtype">orxCONST <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstTexture</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
+          <td class="paramname"> <em>_pstTexture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">orxFLOAT *&nbsp;</td>
+          <td class="paramname"> <em>_pfWidth</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT *&nbsp;</td>
+          <td class="paramname"> <em>_pfHeight</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
 <p>
-Gets texture width <dl compact><dt><b>Parameters:</b></dt><dd>
+Gets texture size <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstTexture</em>&nbsp;</td><td>Concerned texture </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pfWidth</em>&nbsp;</td><td>Texture's width </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pfHeight</em>&nbsp;</td><td>Texture's height </td></tr>
   </table>
 </dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Texture's width </dd></dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>

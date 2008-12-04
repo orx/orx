@@ -111,7 +111,7 @@
       <Project Name="Bounce" ConfigName="Win32 Static Release"/>
       <Project Name="orx" ConfigName="Win32 Static Release"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Win32 Dynamic Debug" Selected="no">
+    <WorkspaceConfiguration Name="Win32 Dynamic Debug" Selected="yes">
       <Project Name="orxSystem_SFML" ConfigName="Win32 Dynamic Debug"/>
       <Project Name="orxRender_Home" ConfigName="Win32 Dynamic Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="Win32 Dynamic Debug"/>
@@ -127,7 +127,7 @@
       <Project Name="orxJoystick_SFML" ConfigName="Win32 Dynamic Debug"/>
       <Project Name="orxSoundSystem_SFML" ConfigName="Win32 Dynamic Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="yes">
+    <WorkspaceConfiguration Name="Win32 Dynamic Release" Selected="no">
       <Project Name="orxSystem_SFML" ConfigName="Win32 Dynamic Release"/>
       <Project Name="Scroll" ConfigName="Win32 Dynamic Release"/>
       <Project Name="orxRender_Home" ConfigName="Win32 Dynamic Release"/>

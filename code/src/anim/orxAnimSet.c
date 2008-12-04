@@ -1477,7 +1477,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
           zAnimName = orxConfig_GetString(acID);
 
           /* Valid? */
-          if((zAnimName != orxNULL) && (*zAnimName != *orxSTRING_EMPTY))
+          if((zAnimName != orxNULL) && (zAnimName != orxSTRING_EMPTY))
           {
             orxANIM  *pstAnim;
             orxHANDLE hAnimHandle;
@@ -1512,7 +1512,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
           zLinkValue = orxConfig_GetString(acID);
 
           /* Valid? */
-          if((zLinkValue != orxNULL) && (*zLinkValue != *orxSTRING_EMPTY) && ((zSeparator = orxString_SearchChar(zLinkValue, orxANIMSET_KC_CONFIG_LINK_SEPARATOR)) != orxNULL))
+          if((zLinkValue != orxNULL) && (zLinkValue != orxSTRING_EMPTY) && ((zSeparator = orxString_SearchChar(zLinkValue, orxANIMSET_KC_CONFIG_LINK_SEPARATOR)) != orxNULL))
           {
             orxSTRING zSrcAnim, zDstAnim;
             orxHANDLE hSrcAnim, hDstAnim, hLink;

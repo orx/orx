@@ -102,6 +102,7 @@
 		<Unit filename="..\..\..\include\debug\orxFPS.h" />
 		<Unit filename="..\..\..\include\display\orxDisplay.h" />
 		<Unit filename="..\..\..\include\display\orxGraphic.h" />
+		<Unit filename="..\..\..\include\display\orxText.h" />
 		<Unit filename="..\..\..\include\display\orxTexture.h" />
 		<Unit filename="..\..\..\include\io\orxFile.h" />
 		<Unit filename="..\..\..\include\io\orxFileSystem.h" />
@@ -197,6 +198,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\display\orxGraphic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\display\orxText.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\display\orxTexture.c">

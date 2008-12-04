@@ -24,11 +24,15 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g4052190ffa545c60c6391940b189b269">orxGRAPHIC_KU32_FLAG_2D</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g8859736ea173e43e859dd14aa18206ba">orxGRAPHIC_KU32_FLAG_FLIP_X</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g429feecaa5e1169e1facf295b8204a2f">orxGRAPHIC_KU32_FLAG_TEXT</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gc0105b93b7499249af3d967fcefb21d7">orxGRAPHIC_KU32_FLAG_FLIP_Y</a>&nbsp;&nbsp;&nbsp;0x00000004</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g9927d2032328f4f33900b365cdb1101a">orxGRAPHIC_KU32_MASK_TYPE</a>&nbsp;&nbsp;&nbsp;0x00000003</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gc11cc36b783832c0d1d32d44c741d49f">orxGRAPHIC_KU32_MASK_FLIP_BOTH</a>&nbsp;&nbsp;&nbsp;0x00000006</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g8859736ea173e43e859dd14aa18206ba">orxGRAPHIC_KU32_FLAG_FLIP_X</a>&nbsp;&nbsp;&nbsp;0x00000004</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gc0105b93b7499249af3d967fcefb21d7">orxGRAPHIC_KU32_FLAG_FLIP_Y</a>&nbsp;&nbsp;&nbsp;0x00000008</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gc11cc36b783832c0d1d32d44c741d49f">orxGRAPHIC_KU32_MASK_FLIP_BOTH</a>&nbsp;&nbsp;&nbsp;0x0000000C</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g8740ea5b0c094102f8a04cf4ab95423f">orxGRAPHIC_KU32_FLAG_ALIGN_CENTER</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
 
@@ -52,7 +56,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g840e38ce257c368a3d8cfb0ab0fa8976">orxGraphic_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g172dca2ba8fc07fda5512a7d7e64f6ea">orxGraphic_Create</a> (orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g507654f360017d1eb9f440bf11b185d1">orxGraphic_Create</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g0ddcbdd68aa3f0adefe1b4260fc005a6">orxGraphic_CreateFromConfig</a> (orxCONST orxSTRING _zConfigID)</td></tr>
 
@@ -195,7 +199,7 @@ Top vertical alignment
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxGRAPHIC_KU32_FLAG_FLIP_X&nbsp;&nbsp;&nbsp;0x00000002          </td>
+          <td class="memname">#define orxGRAPHIC_KU32_FLAG_FLIP_X&nbsp;&nbsp;&nbsp;0x00000004          </td>
         </tr>
       </table>
 </div>
@@ -210,7 +214,7 @@ X axis flipping flag
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxGRAPHIC_KU32_FLAG_FLIP_Y&nbsp;&nbsp;&nbsp;0x00000004          </td>
+          <td class="memname">#define orxGRAPHIC_KU32_FLAG_FLIP_Y&nbsp;&nbsp;&nbsp;0x00000008          </td>
         </tr>
       </table>
 </div>
@@ -235,12 +239,27 @@ Y axis flipping flag
 Graphic flags No flags 
 </div>
 </div><p>
+<a class="anchor" name="g429feecaa5e1169e1facf295b8204a2f"></a><!-- doxytag: member="orxGraphic.h::orxGRAPHIC_KU32_FLAG_TEXT" ref="g429feecaa5e1169e1facf295b8204a2f" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxGRAPHIC_KU32_FLAG_TEXT&nbsp;&nbsp;&nbsp;0x00000002          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Text type graphic flag 
+</div>
+</div><p>
 <a class="anchor" name="gc11cc36b783832c0d1d32d44c741d49f"></a><!-- doxytag: member="orxGraphic.h::orxGRAPHIC_KU32_MASK_FLIP_BOTH" ref="gc11cc36b783832c0d1d32d44c741d49f" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxGRAPHIC_KU32_MASK_FLIP_BOTH&nbsp;&nbsp;&nbsp;0x00000006          </td>
+          <td class="memname">#define orxGRAPHIC_KU32_MASK_FLIP_BOTH&nbsp;&nbsp;&nbsp;0x0000000C          </td>
         </tr>
       </table>
 </div>
@@ -248,6 +267,21 @@ Graphic flags No flags
 
 <p>
 Both axis flipping mask 
+</div>
+</div><p>
+<a class="anchor" name="g9927d2032328f4f33900b365cdb1101a"></a><!-- doxytag: member="orxGraphic.h::orxGRAPHIC_KU32_MASK_TYPE" ref="g9927d2032328f4f33900b365cdb1101a" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxGRAPHIC_KU32_MASK_TYPE&nbsp;&nbsp;&nbsp;0x00000003          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Type mask 
 </div>
 </div><p>
 <a class="anchor" name="gf2ee05ab7323f433c9a195c382532d49"></a><!-- doxytag: member="orxGraphic.h::orxGRAPHIC_KU32_MASK_USER_ALL" ref="gf2ee05ab7323f433c9a195c382532d49" args="" -->
@@ -308,15 +342,14 @@ Clears graphic color <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g172dca2ba8fc07fda5512a7d7e64f6ea"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_Create" ref="g172dca2ba8fc07fda5512a7d7e64f6ea" args="(orxU32 _u32Flags)" -->
+<a class="anchor" name="g507654f360017d1eb9f440bf11b185d1"></a><!-- doxytag: member="orxGraphic.h::orxGraphic_Create" ref="g507654f360017d1eb9f440bf11b185d1" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a>* orxFASTCALL orxGraphic_Create           </td>
           <td>(</td>
-          <td class="paramtype">orxU32&nbsp;</td>
-          <td class="paramname"> <em>_u32Flags</em>          </td>
+          <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
@@ -325,12 +358,7 @@ Clears graphic color <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Creates an empty graphic <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Flags</em>&nbsp;</td><td>Graphic flags (2D / ...) </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>Created orxGRAPHIC / orxNULL </dd></dl>
+Creates an empty graphic <dl class="return" compact><dt><b>Returns:</b></dt><dd>Created orxGRAPHIC / orxNULL </dd></dl>
 
 </div>
 </div><p>

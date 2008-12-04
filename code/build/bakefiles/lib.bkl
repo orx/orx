@@ -87,11 +87,13 @@
         <headers>
             include/display/orxGraphic.h
             include/display/orxDisplay.h
+            include/display/orxText.h
             include/display/orxTexture.h
         </headers>
         <sources>
             src/display/orxGraphic.c
             src/display/orxDisplay.c
+            src/display/orxText.c
             src/display/orxTexture.c
         </sources>
 

@@ -269,12 +269,14 @@ extern orxDLLAPI orxSTATUS  orxDisplay_Swap();
 
 /** Draws a text
  * @param[in]   _pstBitmap                            Concerned bitmap
+ * @param[in]   _zText                                Text to display
+ * @param[in]   _zFont                                Font to use, orxNULL to use default
  * @param[in]   _pstTransform                         Transformation info (positions, scale, rotation, ...)
  * @param[in]   _stColor                              Color to use for the text
- * @param[in]   _zText                                Text to display
+ * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxCONST orxSTRING _zText);
+extern orxDLLAPI orxSTATUS  orxDisplay_DrawText(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zText, orxCONST orxSTRING _zFont, orxCONST orxBITMAP_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Creates a bitmap
