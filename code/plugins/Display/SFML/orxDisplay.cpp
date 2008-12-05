@@ -383,8 +383,8 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformText(orxBITMAP *_pstDst, orxCONST 
       /* Sets its rotation */
       _pstText->poString->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
 
-      /* Sets its scale */
-      _pstText->poString->SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
+      /* Updates its scale */
+      _pstText->poString->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
 
       /* Sets its blend mode */
       _pstText->poString->SetBlendMode(orxDisplay_SFML_GetBlendMode(_eBlendMode));
@@ -553,8 +553,8 @@ extern "C" orxSTATUS orxDisplay_SFML_PrintString(orxCONST orxBITMAP *_pstBitmap,
         /* Sets its rotation */
         pstText->poString->SetRotation(-orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation);
 
-        /* Sets its scale */
-        pstText->poString->SetScale(_pstTransform->fScaleX, _pstTransform->fScaleY);
+        /* Updates its scale */
+        pstText->poString->SetScale(orxMath_Abs(_pstTransform->fScaleX), orxMath_Abs(_pstTransform->fScaleY));
 
         /* Sets its position */
         vPosition.x = _pstTransform->fDstX;
