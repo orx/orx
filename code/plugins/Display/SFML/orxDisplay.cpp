@@ -116,7 +116,7 @@ orxSTATIC orxDISPLAY_STATIC sstDisplay;
 orxSTATIC orxINLINE sf::Font *orxDisplay_SFML_LoadFont(orxCONST orxSTRING _zFontName)
 {
   orxU32    u32Key;
-  sf::Font *poResult = orxNULL;
+  sf::Font *poResult = (sf::Font *)orxNULL;
 
   /* Valid? */
   if((_zFontName != orxNULL) && (_zFontName != orxSTRING_EMPTY))
@@ -140,7 +140,7 @@ orxSTATIC orxINLINE sf::Font *orxDisplay_SFML_LoadFont(orxCONST orxSTRING _zFont
       {
         /* Deletes it */
         delete poResult;
-        poResult = orxNULL;
+        poResult = (sf::Font *)orxNULL;
       }
     }
   }
@@ -330,8 +330,8 @@ extern "C" orxDISPLAY_TEXT *orxDisplay_SFML_CreateText()
     }
 
     /* No string nor font */
-    pstResult->zFont    = orxNULL;
-    pstResult->zString  = orxNULL;
+    pstResult->zFont    = (orxSTRING)orxNULL;
+    pstResult->zString  = (orxSTRING)orxNULL;
   }
 
   /* Done! */
