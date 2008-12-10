@@ -84,11 +84,11 @@
 			<Add option="-D__orxGCC__" />
 			<Add option="-D__orxDLL__" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\..\extern\SFML_1.3\include" />
+			<Add directory="..\..\..\..\extern\SFML_1.4\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-fPIC" />
-			<Add directory="..\..\..\..\extern\SFML_1.3\lib\mingw" />
+			<Add directory="..\..\..\..\extern\SFML_1.4\lib\mingw" />
 		</Linker>
 		<Unit filename="..\..\..\plugins\Display\SFML\orxDisplay.cpp" />
 		<Extensions>

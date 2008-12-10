@@ -41,7 +41,7 @@
       <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -49,7 +49,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML_1.4/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="sfml-graphics"/>
         <Library Value="sfml-window"/>
@@ -76,14 +76,14 @@
       <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SFML.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML_1.4/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="sfml-graphics"/>
         <Library Value="sfml-window"/>
@@ -110,7 +110,7 @@
       <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -118,7 +118,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML_1.4/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="sfml-graphics"/>
         <Library Value="sfml-window"/>
@@ -145,14 +145,14 @@
       <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SFML.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML_1.4/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="sfml-graphics"/>
         <Library Value="sfml-window"/>
@@ -179,7 +179,7 @@
       <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -187,7 +187,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
         <Library Value="orxd"/>
         <Library Value="sfml-graphics-d"/>
         <Library Value="sfml-window-d"/>
@@ -214,14 +214,14 @@
       <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SFML.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
         <Library Value="orx"/>
         <Library Value="sfml-graphics"/>
         <Library Value="sfml-window"/>
@@ -250,7 +250,7 @@
       <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -258,7 +258,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
         <Library Value="sfml-graphics-d"/>
         <Library Value="sfml-window-d"/>
         <Library Value="sfml-system-d"/>
@@ -285,14 +285,14 @@
       <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SFML.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxWINDOWS__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.3/lib/mingw"/>
+        <LibraryPath Value="../../../../extern/SFML_1.4/lib/mingw"/>
         <Library Value="sfml-graphics"/>
         <Library Value="sfml-window"/>
         <Library Value="sfml-system"/>

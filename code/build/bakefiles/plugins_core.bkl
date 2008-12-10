@@ -79,13 +79,13 @@
   </set>
 
   <set var="orxSFMLLIB_PATH">
-    <if cond="FORMAT=='mingw'">-L../../../../extern/SFML_1.3/lib/mingw</if>
-    <if cond="FORMAT=='gnu'">-L../../../../extern/SFML_1.3/lib/linux</if>
-    <if cond="FORMAT=='autoconf'">-L../../../../extern/SFML_1.3/lib/linux</if>
+    <if cond="FORMAT=='mingw'">-L../../../../extern/SFML_1.4/lib/mingw</if>
+    <if cond="FORMAT=='gnu'">-L../../../../extern/SFML_1.4/lib/linux</if>
+    <if cond="FORMAT=='autoconf'">-L../../../../extern/SFML_1.4/lib/linux</if>
   </set>
 
   <set var="orxSFMLINC_PATH">
-    -I../../../../extern/SFML_1.3/include
+    -I../../../../extern/SFML_1.4/include
   </set>
 
   <set var="orxSFMLLIB_MSVC">
