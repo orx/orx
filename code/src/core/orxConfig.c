@@ -1757,7 +1757,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
                 pcValueEnd--);
 
             /* Skips the whole line */
-            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
             {
               pc++;
             }
@@ -1790,7 +1790,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
           else
           {
             /* Skips the whole line */
-            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
             {
               pc++;
             }
@@ -1822,7 +1822,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
             while((pc < acBuffer + u32Size) && (*pc != orxCONFIG_KC_INHERITANCE_MARKER))
             {
               /* End of line? */
-              if(*pc == orxCHAR_EOL)
+              if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
               {
                 /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "File name <%*s> incomplete, closing character '%c' not found.", pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
@@ -1861,7 +1861,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
               sstConfig.pstCurrentSection = pstCurrentSection;
 
               /* Skips the whole line */
-              while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+              while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
               {
                 pc++;
               }
@@ -1903,7 +1903,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
               orxConfig_SelectSection(pcLineStart + 1);
 
               /* Skips the whole line */
-              while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+              while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
               {
                 pc++;
               }
@@ -1916,7 +1916,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
           else if(*pc == orxCONFIG_KC_COMMENT)
           {
             /* Skips the whole line */
-            while((pc < acBuffer + u32Size) && (*pc != orxCHAR_EOL))
+            while((pc < acBuffer + u32Size)  && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
             {
               pc++;
             }
