@@ -100,6 +100,7 @@
 
 #define orxFX_KZ_LINEAR                         "linear"
 #define orxFX_KZ_SAW                            "saw"
+#define orxFX_KZ_SQUARE                         "square"
 #define orxFX_KZ_SINE                           "sine"
 #define orxFX_KZ_ALPHA                          "alpha"
 #define orxFX_KZ_COLOR                          "color"
@@ -296,6 +297,12 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
       /* Updates its curve */
       eCurve = orxFX_CURVE_SAW;
     }
+    /* Square curve? */
+    else if(orxString_Compare(zCurveType, orxFX_KZ_SQUARE) == 0)
+    {
+        /* Updates its curve */
+        eCurve = orxFX_CURVE_SQUARE;
+    }
     /* Sine curve? */
     else if(orxString_Compare(zCurveType, orxFX_KZ_SINE) == 0)
     {
@@ -305,7 +312,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid curve type for FX. Use %s,%s or %s", orxFX_KZ_LINEAR, orxFX_KZ_SAW, orxFX_KZ_SINE);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Invalid curve type for FX. Use %s, %s, %s or %s", orxFX_KZ_LINEAR, orxFX_KZ_SAW, orxFX_KZ_SQUARE, orxFX_KZ_SINE);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -961,6 +968,55 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
                 if(fEndCoef > orxFLOAT_1)
                 {
                   fEndCoef = orx2F(2.0f) - fEndCoef;
+                }
+
+                break;
+              }
+
+              case orxFX_CURVE_SQUARE:
+              {
+                /* Gets linear start coef in period [0.0; 1.0] starting at given phase */
+                fStartCoef = (fStartTime * fFrequency) + pstFXSlot->fCyclePhase;
+
+                /* Non zero? */
+                if(fStartCoef != orxFLOAT_0)
+                {
+                    /* Gets its modulo */
+                    fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
+
+                    /* Zero or second half? */
+                    if((fStartCoef == orxFLOAT_0) || (fStartCoef > orx2F(0.5f)))
+                    {
+                        /* Sets it at max value */
+                        fStartCoef = orxFLOAT_1;
+                    }
+                    else
+                    {
+                        /* Sets it at min value */
+                        fStartCoef = orxFLOAT_0;
+                    }
+                }
+
+                /* Gets linear End coef in period [0.0; 1.0] Ending at given phase */
+                fEndCoef = (fEndTime * fFrequency) + pstFXSlot->fCyclePhase;
+
+                /* Non zero? */
+                if(fEndCoef != orxFLOAT_0)
+                {
+                    /* Gets its modulo */
+                    fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
+
+                    /* Zero or second half? */
+                    if((fEndCoef == orxFLOAT_0) || (fEndCoef > orx2F(0.5f)))
+                    {
+                        /* Sets it at max value */
+                        fEndCoef = orxFLOAT_1;
+                    }
+                    else
+                    {
+                        /* Sets it at min value */
+                        fEndCoef = orxFLOAT_0;
+                    }
                 }
 
                 break;
