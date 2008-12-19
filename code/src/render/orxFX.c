@@ -984,8 +984,9 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
                     /* Gets its modulo */
                     fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
 
-                    /* Zero or second half? */
-                    if((fStartCoef == orxFLOAT_0) || (fStartCoef > orx2F(0.5f)))
+                    /* High section? */
+                    if((fStartCoef >= orx2F(0.25f))
+                    && (fStartCoef < orx2F(0.75f)))
                     {
                         /* Sets it at max value */
                         fStartCoef = orxFLOAT_1;
@@ -1006,8 +1007,9 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
                     /* Gets its modulo */
                     fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
 
-                    /* Zero or second half? */
-                    if((fEndCoef == orxFLOAT_0) || (fEndCoef > orx2F(0.5f)))
+                    /* High section? */
+                    if((fEndCoef >= orx2F(0.25f))
+                    && (fEndCoef < orx2F(0.75f)))
                     {
                         /* Sets it at max value */
                         fEndCoef = orxFLOAT_1;
