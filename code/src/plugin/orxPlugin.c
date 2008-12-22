@@ -75,7 +75,7 @@
   orxSTATIC orxCONST orxSTRING                            szPluginLibraryExt = "dll";
 
 /* OTHERS */
-#else
+#else /* __orxWINDOWS__ */
 
   typedef orxVOID *                                       orxSYSPLUGIN;
 
@@ -83,9 +83,17 @@
   #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
   #define orxPLUGIN_CLOSE(PLUGIN)                         dlclose(PLUGIN)
 
+#ifdef __orxMAC__
+
   orxSTATIC orxCONST orxSTRING                            szPluginLibraryExt = "so";
 
-#endif
+#else /* __orxMAC__ */
+
+  orxSTATIC orxCONST orxSTRING                            szPluginLibraryExt = "so";
+
+#endif /* __orxMAC__ */
+
+#endif /* __orxWINDOWS__ */
 
 
 
