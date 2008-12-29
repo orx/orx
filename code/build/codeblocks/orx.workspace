@@ -9,14 +9,6 @@
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />
 		</Project>
-		<Project filename="orxFile_LibC\orxFile_LibC.cbp">
-			<Depends filename="orxLIB\orxLIB.cbp" />
-			<Depends filename="orx\orx.cbp" />
-		</Project>
-		<Project filename="orxFile_LibC\orxFileSystem_LibC.cbp">
-			<Depends filename="orxLIB\orxLIB.cbp" />
-			<Depends filename="orx\orx.cbp" />
-		</Project>
 		<Project filename="orxJoystick_SFML\orxJoystick_SFML.cbp">
 			<Depends filename="orxLIB\orxLIB.cbp" />
 			<Depends filename="orx\orx.cbp" />
