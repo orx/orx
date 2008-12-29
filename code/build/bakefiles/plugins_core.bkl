@@ -197,24 +197,6 @@
 	    <sources>plugins/Joystick/SFML/orxJoystick.cpp</sources>
 	  </orx-plugin>
 
-	<!-- FILE -->
-
-	<!-- Depends on nothing -->
-    <orx-plugin id="orxFile_LibC" cond="USE_PLUGINS=='1'">
-      <dllname>orxFile_LibC$(orxSUFFIX)</dllname>
-      <destination>core/file</destination>
-      <sources>plugins/File/LibC/orxFile.c</sources>
-    </orx-plugin>
-
-	<!-- FILE_SYSTEM -->
-
-	<!-- Depends on nothing -->
-    <orx-plugin id="orxFileSystem_LibC" cond="USE_PLUGINS=='1'">
-      <dllname>orxFileSystem_LibC$(orxSUFFIX)</dllname>
-      <destination>core/file</destination>
-      <sources>plugins/File/LibC/orxFileSystem.c</sources>
-    </orx-plugin>
-
 	<!-- PACKAGE -->
 
 	<!-- PHYSICS -->

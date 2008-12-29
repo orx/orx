@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CodeLite_Workspace Name="orx_gp2x" Database="./orx_gp2x.tags">
-  <Project Name="orxFileSystem_LibC" Path="orxFileSystem_LibC/orxFileSystem_LibC.project" Active="No"/>
   <Project Name="orxRender_Home" Path="orxRender_Home/orxRender_Home.project"/>
   <Project Name="orxLIB" Path="orxLIB/orxLIB.project" Active="No"/>
-  <Project Name="orxFile_LibC" Path="orxFile_LibC/orxFile_LibC.project"/>
   <Project Name="orxPhysics_Box2D" Path="orxPhysics_Box2D/orxPhysics_Box2D.project"/>
   <Project Name="orx" Path="orx/orx.project" Active="Yes"/>
   <Project Name="Bounce" Path="orxDemo/Bounce.project" Active="No"/>
@@ -17,8 +15,6 @@
       <Project Name="orxRender_Home" ConfigName="GP2X Debug"/>
       <Project Name="orxPhysics_Box2D" ConfigName="GP2X Debug"/>
       <Project Name="orxLIB" ConfigName="GP2X Debug"/>
-      <Project Name="orxFile_LibC" ConfigName="GP2X Debug"/>
-      <Project Name="orxFileSystem_LibC" ConfigName="GP2X Debug"/>
       <Project Name="orxDisplay_SDL" ConfigName="GP2X Debug"/>
       <Project Name="Bounce" ConfigName="GP2X Debug"/>
       <Project Name="orx" ConfigName="GP2X Debug"/>
@@ -29,8 +25,6 @@
       <Project Name="orxRender_Home" ConfigName="GP2X Release"/>
       <Project Name="orxPhysics_Box2D" ConfigName="GP2X Release"/>
       <Project Name="orxLIB" ConfigName="GP2X Release"/>
-      <Project Name="orxFile_LibC" ConfigName="GP2X Release"/>
-      <Project Name="orxFileSystem_LibC" ConfigName="GP2X Release"/>
       <Project Name="orxDisplay_SDL" ConfigName="GP2X Release"/>
       <Project Name="Bounce" ConfigName="GP2X Release"/>
       <Project Name="orx" ConfigName="GP2X Release"/>

@@ -30,6 +30,7 @@
 
 #include "io/orxPackage.h"
 #include "debug/orxDebug.h"
+#include "plugin/orxPluginCore.h"
 
 
 /***************************************************************************
