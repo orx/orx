@@ -89,8 +89,7 @@ extern "C" orxSTATUS orxSystem_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-
-  /* Was already initialized. */
+  /* Was not already initialized? */
   if(!(sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
@@ -139,7 +138,7 @@ extern "C" orxFLOAT orxSystem_SFML_GetTime()
 }
 
 /** Gets real time
- * @return Returns the amount of seconds elapsed from the application start.
+ * @return Returns the amount of seconds elapsed since reference time
  */
 extern "C" orxS32 orxSystem_SFML_GetRealTime()
 {
@@ -156,7 +155,7 @@ extern "C" orxS32 orxSystem_SFML_GetRealTime()
   return s32Result;
 }
 
-/** Delay the program for given number of milliseconds.
+/** Delays the program for given number of seconds.
  * @param[in] _fSeconds Number of seconds to wait.
  */
 extern "C" orxVOID orxSystem_SFML_Delay(orxFLOAT _fSeconds)

@@ -42,9 +42,8 @@
 #include "display/orxDisplay.h"
 
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_rotozoom.h>
+#include <SDL.h>
+#include <SDL_image.h>
 
 
 /** Module flags
@@ -460,8 +459,8 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
   stSrcRect.y = 0;
   stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
   stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-  stDstRect.x = orxF2U(_fPosX);
-  stDstRect.y = orxF2U(_fPosY);
+  stDstRect.x = (orxS16)orxF2S(_fPosX);
+  stDstRect.y = (orxS16)orxF2S(_fPosY);
   stDstRect.w = 0;
   stDstRect.h = 0;
 
@@ -486,7 +485,7 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
   orxASSERT(_pstTransform != orxNULL);
 
   /* Creates transformed surface */
-  pstSurface = rotozoomSurface((SDL_Surface *)_pstSrc, _pstTransform->fRotation, _pstTransform->fScaleX, 0);
+  pstSurface = (SDL_Surface *)_pstSrc; //rotozoomSurface((SDL_Surface *)_pstSrc, _pstTransform->fRotation, _pstTransform->fScaleX, 0);
 
   /* Valid? */
   if(pstSurface != orxNULL)
@@ -494,12 +493,12 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
     SDL_Rect stSrcRect, stDstRect;
 
     /* Inits blitting rectangles */
-    stSrcRect.x = orxF2U(_pstTransform->fSrcX);
-    stSrcRect.y = orxF2U(_pstTransform->fSrcX);
+    stSrcRect.x = (orxS16)orxF2S(_pstTransform->fSrcX);
+    stSrcRect.y = (orxS16)orxF2S(_pstTransform->fSrcX);
     stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
     stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
-    stDstRect.x = orxF2U(_pstTransform->fDstX);
-    stDstRect.y = orxF2U(_pstTransform->fDstX);
+    stDstRect.x = (orxS16)orxF2S(_pstTransform->fDstX);
+    stDstRect.y = (orxS16)orxF2S(_pstTransform->fDstX);
     stDstRect.w = 0;
     stDstRect.h = 0;
 
@@ -509,7 +508,7 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
               : orxSTATUS_FAILURE;
 
     /* Deletes transformed surface */
-    SDL_FreeSurface(pstSurface);
+    //SDL_FreeSurface(pstSurface);
   }
   else
   {
@@ -596,10 +595,10 @@ orxSTATUS orxDisplay_SDL_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Gets SDL clip rectangle */
-  stClipRect.x = _u32TLX;
-  stClipRect.y = _u32TLY;
-  stClipRect.w = _u32BRX - _u32TLX;
-  stClipRect.h = _u32BRY - _u32TLY;
+  stClipRect.x = (orxS16)_u32TLX;
+  stClipRect.y = (orxS16)_u32TLY;
+  stClipRect.w = (orxS16)(_u32BRX - _u32TLX);
+  stClipRect.h = (orxS16)(_u32BRY - _u32TLY);
 
   /* Applies it */
   SDL_SetClipRect((SDL_Surface *)_pstBitmap, &stClipRect);
@@ -629,7 +628,8 @@ orxBOOL orxDisplay_SDL_IsVSyncEnabled()
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-  //! TODO: Writes its implementation
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
 
   /* Done! */
   return bResult;
@@ -795,7 +795,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextString, DISPLAY, GET_TEXT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextFont, DISPLAY, GET_TEXT_FONT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextSize, DISPLAY, GET_TEXT_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_PrintString, DISPLAY, PRINT_STRING);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextSize, DISPLAY, GET_TEXT_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);

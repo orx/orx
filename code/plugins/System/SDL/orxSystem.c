@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -38,7 +38,7 @@
 
 #include <time.h>
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 /** Module flags
  */
@@ -104,7 +104,7 @@ orxSTATUS orxSystemSDL_Init()
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Sets module as ready */
-      sstSystem.u32Flags = orxSYSTEM_KU32_STATIC_FLAG_READY;
+      sstSystem.u32Flags |= orxSYSTEM_KU32_STATIC_FLAG_READY;
     }
   }
 
@@ -149,30 +149,24 @@ orxFLOAT orxSystemSDL_GetTime()
 }
 
 /** Gets App Elapsed time.
- * @return Returns the amount of seconds elapsed from the application start.
+ * @return Returns the amount of seconds elapsed since reference time
  */
-orxFLOAT orxSystemSDL_GetRealTime()
+orxS32 orxSystemSDL_GetRealTime()
 {
-  time_t    stTime;
-  orxFLOAT  fResult;
-
-  /* Checks */
-  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
+  time_t  stTime;
+  orxS32  s32Result;
 
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Gets time */
-  time(&stTime);
-
-  /* Updates result */
-  fResult = orxS2F(stTime);
+  s32Result = (orxS32)time(&stTime);
 
   /* Done! */
-  return fResult;
+  return s32Result;
 }
 
-/** Delay the program for given number of milliseconds.
+/** Delays the program for given number of seconds.
  * @param[in] _fSystem Number of seconds to wait.
  */
 orxVOID orxSystemSDL_Delay(orxFLOAT _fSeconds)
