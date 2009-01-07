@@ -317,15 +317,8 @@ orxSTATUS orxDisplay_SDL_Swap()
       /* Closing? */
       case SDL_QUIT:
       {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType = orxEVENT_TYPE_SYSTEM;
-        stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
-
         /* Sends system close event */
-        orxEvent_Send(&stEvent);
+        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
 
         break;
       }
@@ -333,46 +326,36 @@ orxSTATUS orxDisplay_SDL_Swap()
       /* Gained/Lost focus? */
       case SDL_ACTIVEEVENT:
       {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType = orxEVENT_TYPE_SYSTEM;
-        stEvent.eID   = (stSDLEvent.active.gain) ? orxSYSTEM_EVENT_FOCUS_GAINED : orxSYSTEM_EVENT_FOCUS_LOST;
-
         /* Sends system focus gained event */
-        orxEvent_Send(&stEvent);
+        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, (stSDLEvent.active.gain) ? orxSYSTEM_EVENT_FOCUS_GAINED : orxSYSTEM_EVENT_FOCUS_LOST);
 
         break;
       }
 
-      /* Key pressed? */
-      case SDL_KEYDOWN:
+      case SDL_MOUSEBUTTONDOWN:
       {
-        /* Depending on key */
-        switch(stSDLEvent.key.keysym.sym)
+        /* Not a wheel move? */
+        if((stSDLEvent.button.button != SDL_BUTTON_WHEELDOWN)
+        && (stSDLEvent.button.button != SDL_BUTTON_WHEELUP))
         {
-          /* Escape */
-          case SDLK_ESCAPE:
-          {
-            orxEVENT stEvent;
-
-            /* Inits event */
-            orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-            stEvent.eType = orxEVENT_TYPE_SYSTEM;
-            stEvent.eID   = orxSYSTEM_EVENT_CLOSE;
-
-            /* Sends system close event */
-            orxEvent_Send(&stEvent);
-
-            break;
-          }
-
-          default:
-          {
-            break;
-          }
+          /* Stops */
+          break;
         }
+      }
+      case SDL_MOUSEMOTION:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + stSDLEvent.type);
+        stEvent.eID         = stSDLEvent.type;
+        stEvent.pstPayload  = &stSDLEvent;
+
+        /* Sends reserved event */
+        orxEvent_Send(&stEvent);
+
+        break;
       }
 
       default:
@@ -493,8 +476,8 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
     SDL_Rect stSrcRect, stDstRect;
 
     /* Inits blitting rectangles */
-    stSrcRect.x = (orxS16)orxF2S(_pstTransform->fSrcX);
-    stSrcRect.y = (orxS16)orxF2S(_pstTransform->fSrcX);
+    stSrcRect.x = 0;//(orxS16)orxF2S(_pstTransform->fSrcX);
+    stSrcRect.y = 0;//(orxS16)orxF2S(_pstTransform->fSrcX);
     stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
     stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
     stDstRect.x = (orxS16)orxF2S(_pstTransform->fDstX);
