@@ -475,7 +475,7 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
   orxASSERT(_pstTransform != orxNULL);
 
   /* Creates transformed surface */
-  pstSurface = (SDL_Surface *)_pstSrc; //rotozoomSurface((SDL_Surface *)_pstSrc, _pstTransform->fRotation, _pstTransform->fScaleX, 0);
+  pstSurface = (SDL_Surface *)_pstSrc;//rotozoomSurface((SDL_Surface *)_pstSrc, -orxMATH_KF_RAD_TO_DEG * _pstTransform->fRotation, _pstTransform->fScaleX, 0);
 
   /* Valid? */
   if(pstSurface != orxNULL)
@@ -488,7 +488,7 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
     stSrcRect.w = ((SDL_Surface *)_pstSrc)->w;
     stSrcRect.h = ((SDL_Surface *)_pstSrc)->h;
     stDstRect.x = (orxS16)orxF2S(_pstTransform->fDstX);
-    stDstRect.y = (orxS16)orxF2S(_pstTransform->fDstX);
+    stDstRect.y = (orxS16)orxF2S(_pstTransform->fDstY);
     stDstRect.w = 0;
     stDstRect.h = 0;
 
@@ -731,7 +731,14 @@ orxSTATUS orxDisplay_SDL_Init()
         || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "This plugin can't remove window decorations.");
+          orxLOG("This plugin can't remove window decorations.");
+        }
+
+        /* Has VSync value? */
+        if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_VSYNC) != orxFALSE)
+        {
+          /* Logs message */
+          orxLOG("This plugin can't handle vsync.");
         }
 
         /* Updates its title */
