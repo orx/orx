@@ -161,7 +161,10 @@ orxVOID orxJoystick_SDL_Exit()
     }
 
     /* Frees info memory */
-    orxMemory_Free(sstJoystick.apstJoystickList);
+    if(sstJoystick.apstJoystickList != orxNULL)
+    {
+      orxMemory_Free(sstJoystick.apstJoystickList);
+    }
 
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
