@@ -20,7 +20,7 @@
  */
 
 /**
- * @file orxMouse.cpp
+ * @file orxMouse.c
  * @date 06/01/2009
  * @author iarwain@orx-project.org
  *
@@ -194,14 +194,14 @@ orxSTATUS orxMouse_SDL_Init()
             /* Updates cursor status */
             orxMouse_SDL_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
           }
-
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
         }
         else
         {
           /* Removes event handler */
           orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEMOTION), EventHandler);
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
         }
       }
     }

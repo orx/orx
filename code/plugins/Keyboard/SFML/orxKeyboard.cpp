@@ -246,8 +246,20 @@ extern "C" orxBOOL orxKeyboard_SFML_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   /* Gets SFML key enum */
   eSFMLKey = orxKeyboard_SFML_GetSFMLKey(_eKey);
 
-  /* Updates result */
-  bResult = sstKeyboard.poInput->IsKeyDown(eSFMLKey) ? orxTRUE : orxFALSE;
+  /* Valid? */
+  if(eSFMLKey < sf::Key::Count)
+  {
+    /* Updates result */
+    bResult = sstKeyboard.poInput->IsKeyDown(eSFMLKey) ? orxTRUE : orxFALSE;
+  }
+  else
+  {
+    /* Logs message */
+    orxLOG("Key <%ld> is not handled by this plugin.");
+
+    /* Updates result */
+    bResult = orxFALSE;
+  }
 
   /* Done! */
   return bResult;

@@ -43,13 +43,11 @@
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g223e6d069598331f1a02fb546f78f46a">orxFileSystem_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#ge20ca739436b482a4bad953521eac760">orxFileSystem_Deltree</a> (orxCONST orxSTRING _zDirectory)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g54777c01a62b2a2332717433a83a6ad1">orxFileSystem_Exists</a> (orxCONST orxSTRING _zFileName)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#gdb0f9e2fe4edf4667b14a18e7a48ebaa">orxFileSystem_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g2d366ef47690f9ffc12a5226239bbf52">orxFileSystem_Exit</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g54777c01a62b2a2332717433a83a6ad1">orxFileSystem_Exists</a> (orxCONST orxSTRING _zFileName)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file_system.html#g0c8c052d7c3c9d44016900c723ee8d20">orxFileSystem_FindFirst</a> (orxCONST orxSTRING _zSearchPattern, <a class="el" href="structorx_f_i_l_e_s_y_s_t_e_m___i_n_f_o.html">orxFILESYSTEM_INFO</a> *_pstFileInfo)</td></tr>
 
@@ -71,7 +69,7 @@
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-File system plugin module Module that handles file system access <hr><h2>Define Documentation</h2>
+File system module Module that handles file system access <hr><h2>Define Documentation</h2>
 <a class="anchor" name="g2e11b19e633307c2d648b4c7053df9be"></a><!-- doxytag: member="orxFileSystem.h::orxFILESYSTEM_KU32_FLAG_INFO_DIR" ref="g2e11b19e633307c2d648b4c7053df9be" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -190,7 +188,7 @@ opened for write
 <div class="memdoc">
 
 <p>
-
+Internal FileSystem structure 
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
@@ -308,32 +306,6 @@ Removes an empty directory <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="ge20ca739436b482a4bad953521eac760"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_Deltree" ref="ge20ca739436b482a4bad953521eac760" args="(orxCONST orxSTRING _zDirectory)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFileSystem_Deltree           </td>
-          <td>(</td>
-          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zDirectory</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Delete recursively a direcory and all its subfolders. <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zDirectory</em>&nbsp;</td><td>(IN) Name of the directory directory to remove (with subfolders) </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>status of the operation (orxSTATUS_FAILURE or orxSTATUS_SUCCESS) </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="g54777c01a62b2a2332717433a83a6ad1"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_Exists" ref="g54777c01a62b2a2332717433a83a6ad1" args="(orxCONST orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
@@ -376,7 +348,7 @@ Returns orxTRUE if a file exists, else orxFALSE. <dl compact><dt><b>Parameters:<
 <div class="memdoc">
 
 <p>
-Uninitialize the File Module 
+Exits from the FileSystem Module 
 </div>
 </div><p>
 <a class="anchor" name="g9463989687a4c8e911aee112fc6a2a70"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_FindClose" ref="g9463989687a4c8e911aee112fc6a2a70" args="(orxFILESYSTEM_INFO *_pstFileInfo)" -->
@@ -518,7 +490,7 @@ Retrieves informations about a file <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Initialize the File Module 
+Inits the FileSystem Module 
 </div>
 </div><p>
 <a class="anchor" name="gbdcb26db2c3482e4e2378dd675db90a8"></a><!-- doxytag: member="orxFileSystem.h::orxFileSystem_Rename" ref="gbdcb26db2c3482e4e2378dd675db90a8" args="(orxCONST orxSTRING _zSource, orxCONST orxSTRING _zDest)" -->
@@ -573,7 +545,7 @@ Renames a file <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-File module setup 
+FileSystem module setup 
 </div>
 </div><p>
 </div>
