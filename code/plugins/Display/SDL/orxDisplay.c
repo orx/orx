@@ -34,6 +34,7 @@
 #include "orxInclude.h"
 
 #include "core/orxConfig.h"
+#include "core/orxClock.h"
 #include "core/orxEvent.h"
 #include "core/orxSystem.h"
 #include "math/orxMath.h"
@@ -96,6 +97,70 @@ orxSTATIC orxDISPLAY_STATIC sstDisplay;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+orxFASTCALL orxVOID orxDisplay_SDL_EventUpdate(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext)
+{
+  SDL_Event stSDLEvent;
+
+  /* Handles all pending events */
+  while(SDL_PollEvent(&stSDLEvent))
+  {
+    /* Depending on type */
+    switch(stSDLEvent.type)
+    {
+      /* Closing? */
+      case SDL_QUIT:
+      {
+        /* Sends system close event */
+        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+
+        break;
+      }
+
+      /* Gained/Lost focus? */
+      case SDL_ACTIVEEVENT:
+      {
+        /* Sends system focus gained event */
+        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, (stSDLEvent.active.gain) ? orxSYSTEM_EVENT_FOCUS_GAINED : orxSYSTEM_EVENT_FOCUS_LOST);
+
+        break;
+      }
+
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        /* Not a wheel move? */
+        if((stSDLEvent.button.button != SDL_BUTTON_WHEELDOWN)
+        && (stSDLEvent.button.button != SDL_BUTTON_WHEELUP))
+        {
+          /* Stops */
+          break;
+        }
+      }
+      case SDL_MOUSEMOTION:
+      {
+        orxEVENT stEvent;
+
+        /* Inits event */
+        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + stSDLEvent.type);
+        stEvent.eID         = stSDLEvent.type;
+        stEvent.pstPayload  = &stSDLEvent;
+
+        /* Sends reserved event */
+        orxEvent_Send(&stEvent);
+
+        break;
+      }
+
+      default:
+      {
+        break;
+      }
+    }
+  }
+
+  return;
+}
 
 orxBITMAP *orxDisplay_SDL_GetScreen()
 {
@@ -299,7 +364,6 @@ orxSTATUS orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 
 orxSTATUS orxDisplay_SDL_Swap()
 {
-  SDL_Event stSDLEvent;
   orxSTATUS eResult;
 
   /* Checks */
@@ -307,63 +371,6 @@ orxSTATUS orxDisplay_SDL_Swap()
 
   /* Updates result */
   eResult = (SDL_Flip(sstDisplay.pstScreen) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-  /* Handles all pending events */
-  while(SDL_PollEvent(&stSDLEvent))
-  {
-    /* Depending on type */
-    switch(stSDLEvent.type)
-    {
-      /* Closing? */
-      case SDL_QUIT:
-      {
-        /* Sends system close event */
-        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-
-        break;
-      }
-
-      /* Gained/Lost focus? */
-      case SDL_ACTIVEEVENT:
-      {
-        /* Sends system focus gained event */
-        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, (stSDLEvent.active.gain) ? orxSYSTEM_EVENT_FOCUS_GAINED : orxSYSTEM_EVENT_FOCUS_LOST);
-
-        break;
-      }
-
-      case SDL_MOUSEBUTTONDOWN:
-      {
-        /* Not a wheel move? */
-        if((stSDLEvent.button.button != SDL_BUTTON_WHEELDOWN)
-        && (stSDLEvent.button.button != SDL_BUTTON_WHEELUP))
-        {
-          /* Stops */
-          break;
-        }
-      }
-      case SDL_MOUSEMOTION:
-      {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + stSDLEvent.type);
-        stEvent.eID         = stSDLEvent.type;
-        stEvent.pstPayload  = &stSDLEvent;
-
-        /* Sends reserved event */
-        orxEvent_Send(&stEvent);
-
-        break;
-      }
-
-      default:
-      {
-        break;
-      }
-    }
-  }
 
   /* Done! */
   return eResult;
@@ -701,6 +708,35 @@ orxSTATUS orxDisplay_SDL_Init()
       /* Valid? */
       if(eResult != orxSTATUS_FAILURE)
       {
+        orxCLOCK *pstClock;
+
+        /* Gets clock */
+        pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+        /* Valid? */
+        if(pstClock != orxNULL)
+        {
+          /* Registers event update function */
+          eResult = orxClock_Register(pstClock, orxDisplay_SDL_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGH);
+        }
+
+        /* Full screen? */
+        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
+        {
+          /* Toggles full screen */
+          SDL_WM_ToggleFullScreen(sstDisplay.pstScreen);
+        }
+        /* Decoration? */
+        else if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
+        || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "This plugin can't remove window decorations.");
+        }
+
+        /* Updates its title */
+        SDL_WM_SetCaption(orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), orxNULL);
+
         /* Sets module as ready */
         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
       }
