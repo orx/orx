@@ -96,7 +96,7 @@ orxSTATUS orxJoystick_SDL_Init()
     }
     else
     {
-      /* Inits SDL with timer */
+      /* Inits SDL with joystick */
       eResult = (SDL_Init(SDL_INIT_JOYSTICK) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
     }
 
@@ -139,6 +139,20 @@ orxSTATUS orxJoystick_SDL_Init()
         /* Updates status */
         sstJoystick.u32Flags |= orxJOYSTICK_KU32_STATIC_FLAG_READY;
       }
+      else
+      {
+        /* Is joystick the only subsystem initialized? */
+        if(SDL_WasInit(SDL_INIT_EVERYTHING) == SDL_INIT_JOYSTICK)
+        {
+          /* Exits from SDL */
+          SDL_Quit();
+        }
+        else
+        {
+          /* Exits from joystick subsystem */
+          SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+        }
+      }
     }
   }
 
@@ -164,6 +178,18 @@ orxVOID orxJoystick_SDL_Exit()
     if(sstJoystick.apstJoystickList != orxNULL)
     {
       orxMemory_Free(sstJoystick.apstJoystickList);
+    }
+
+    /* Is joystick the only subsystem initialized? */
+    if(SDL_WasInit(SDL_INIT_EVERYTHING) == SDL_INIT_JOYSTICK)
+    {
+      /* Exits from SDL */
+      SDL_Quit();
+    }
+    else
+    {
+      /* Exits from joystick subsystem */
+      SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
     }
 
     /* Cleans static controller */
