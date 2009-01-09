@@ -33,6 +33,7 @@ extern "C"
 {
   #include "orxInclude.h"
 
+  #include "core/orxConfig.h"
   #include "plugin/orxPluginUser.h"
   #include "plugin/orxPlugin.h"
 
@@ -49,6 +50,9 @@ extern "C"
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY     0x00000001 /**< Ready flag */
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL       0xFFFFFFFF /**< All mask */
+
+
+orxSTATIC orxCONST orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
 
 
 /***************************************************************************
@@ -71,6 +75,8 @@ struct __orxSOUNDSYSTEM_SOUND_t
  */
 typedef struct __orxSOUNDSYSTEM_STATIC_t
 {
+  orxFLOAT          fDimensionRatio;    /**< Dimension ratio */
+  orxFLOAT          fRecDimensionRatio; /**< Reciprocal dimension ratio */
   orxU32            u32Flags;
 
 } orxSOUNDSYSTEM_STATIC;
@@ -96,11 +102,32 @@ extern "C" orxSTATUS orxSoundSystem_SFML_Init()
   /* Was already initialized. */
   if(!(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY))
   {
+    orxFLOAT fRatio;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
 
     /* Sets 2D listener target */
     sf::Listener::SetTarget(0.0f, 0.0f, 1.0f);
+
+    /* Gets dimension ratio */
+    orxConfig_SelectSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
+    fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
+
+    /* Valid? */
+    if(fRatio > orxFLOAT_0)
+    {
+      /* Stores it */
+      sstSoundSystem.fDimensionRatio = fRatio;
+    }
+    else
+    {
+      /* Stores default one */
+      sstSoundSystem.fDimensionRatio = sfDefaultDimensionRatio;
+    }
+
+    /* Stores reciprocal dimenstion ratio */
+    sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
     /* Updates status */
     orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
@@ -392,12 +419,12 @@ extern "C" orxSTATUS orxSoundSystem_SFML_SetPosition(orxSOUNDSYSTEM_SOUND *_pstS
   if(_pstSound->bIsMusic != false)
   {
     /* Sets its position */
-    _pstSound->poMusic->SetPosition(_pvPosition->fX, _pvPosition->fY, _pvPosition->fZ);
+    _pstSound->poMusic->SetPosition(sstSoundSystem.fDimensionRatio * _pvPosition->fX, sstSoundSystem.fDimensionRatio *_pvPosition->fY, sstSoundSystem.fDimensionRatio *_pvPosition->fZ);
   }
   else
   {
     /* Sets its position */
-    _pstSound->poSound->SetPosition(_pvPosition->fX, _pvPosition->fY, _pvPosition->fZ);
+    _pstSound->poSound->SetPosition(sstSoundSystem.fDimensionRatio * _pvPosition->fX, sstSoundSystem.fDimensionRatio * _pvPosition->fY, sstSoundSystem.fDimensionRatio * _pvPosition->fZ);
   }
 
   /* Done! */
@@ -547,7 +574,7 @@ extern "C" orxVECTOR *orxSoundSystem_SFML_GetPosition(orxCONST orxSOUNDSYSTEM_SO
   }
 
   /* Updates result */
-  orxVector_Set(pvResult, vPosition.x, vPosition.y, vPosition.z);
+  orxVector_Set(pvResult, sstSoundSystem.fRecDimensionRatio * vPosition.x, sstSoundSystem.fRecDimensionRatio * vPosition.y, sstSoundSystem.fRecDimensionRatio * vPosition.z);
 
   /* Done! */
   return pvResult;
@@ -762,7 +789,7 @@ extern "C" orxSTATUS orxSoundSystem_SFML_SetListenerPosition(orxCONST orxVECTOR 
   orxASSERT(_pvPosition != orxNULL);
 
   /* Updates listener position */
-  sf::Listener::SetPosition(_pvPosition->fX, _pvPosition->fY, _pvPosition->fZ);
+  sf::Listener::SetPosition(sstSoundSystem.fDimensionRatio * _pvPosition->fX, sstSoundSystem.fDimensionRatio * _pvPosition->fY, sstSoundSystem.fDimensionRatio * _pvPosition->fZ);
 
   /* Done! */
   return eResult;
@@ -782,7 +809,7 @@ extern "C" orxVECTOR *orxSoundSystem_SFML_GetListenerPosition(orxVECTOR *_pvPosi
 
   /* Updates result */
   pvResult = _pvPosition;
-  orxVector_Set(pvResult, vPosition.x, vPosition.y, vPosition.z);
+  orxVector_Set(pvResult, sstSoundSystem.fRecDimensionRatio * vPosition.x, sstSoundSystem.fRecDimensionRatio * vPosition.y, sstSoundSystem.fRecDimensionRatio * vPosition.z);
 
   /* Done! */
   return pvResult;

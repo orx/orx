@@ -31,6 +31,7 @@
 
 #include "orxInclude.h"
 
+#include "core/orxConfig.h"
 #include "memory/orxBank.h"
 #include "plugin/orxPluginUser.h"
 #include "plugin/orxPlugin.h"
@@ -57,6 +58,7 @@
 #define orxSOUNDSYSTEM_KS32_DEFAULT_CHANNELS      2
 #define orxSOUNDSYSTEM_KS32_DEFAULT_BUFFER_SIZE   4096
 #define orxSOUNDSYSTEM_KU32_BANK_SIZE             32
+#define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO orx2F(0.01f)
 
 
 /***************************************************************************
@@ -88,8 +90,10 @@ struct __orxSOUNDSYSTEM_SOUND_t
  */
 typedef struct __orxSOUNDSYSTEM_STATIC_t
 {
-  orxBANK          *pstSoundBank;
-  orxVECTOR         vListenerPosition;
+  orxBANK          *pstSoundBank;       /**< Sound bank */
+  orxVECTOR         vListenerPosition;  /**< Listener position */
+  orxFLOAT          fDimensionRatio;    /**< Dimension ratio */
+  orxFLOAT          fRecDimensionRatio; /**< Reciprocal dimension ratio */
   orxU32            u32Flags;
 
 } orxSOUNDSYSTEM_STATIC;
@@ -139,6 +143,27 @@ orxSTATUS orxSoundSystem_SDL_Init()
       /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
+        orxFLOAT fRatio;
+
+        /* Gets dimension ratio */
+        orxConfig_SelectSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
+        fRatio = orxConfig_GetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO);
+
+        /* Valid? */
+        if(fRatio > orxFLOAT_0)
+        {
+          /* Stores it */
+          sstSoundSystem.fDimensionRatio = fRatio;
+        }
+        else
+        {
+          /* Stores default one */
+          sstSoundSystem.fDimensionRatio = orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO;
+        }
+
+        /* Stores reciprocal dimenstion ratio */
+        sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
+
         /* Creates sound bank */
         sstSoundSystem.pstSoundBank = orxBank_Create(orxSOUNDSYSTEM_KU32_BANK_SIZE, sizeof(orxSOUNDSYSTEM_SOUND), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
@@ -452,7 +477,7 @@ orxSTATUS orxSoundSystem_SDL_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, orxCON
   if(_pstSound->bIsMusic == orxFALSE)
   {
     /* Gets relative position */
-    orxVector_Sub(&vRelativePosition, _pvPosition, &(sstSoundSystem.vListenerPosition));
+    orxVector_Sub(&vRelativePosition, orxVector_Mulf(&vRelativePosition, _pvPosition, sstSoundSystem.fDimensionRatio), &(sstSoundSystem.vListenerPosition));
 
     /* Gets it in spherical coordinate */
     orxVector_FromCartesianToSpherical(&vRelativePosition, &vRelativePosition);
@@ -718,7 +743,7 @@ orxSTATUS orxSoundSystem_SDL_SetListenerPosition(orxCONST orxVECTOR *_pvPosition
   orxASSERT(_pvPosition != orxNULL);
 
   /* Stores it */
-  orxVector_Copy(&(sstSoundSystem.vListenerPosition), _pvPosition);
+  orxVector_Mulf(&(sstSoundSystem.vListenerPosition), _pvPosition, sstSoundSystem.fDimensionRatio);
 
   /* Done! */
   return eResult;
@@ -734,7 +759,7 @@ orxVECTOR *orxSoundSystem_SDL_GetListenerPosition(orxVECTOR *_pvPosition)
 
   /* Updates result */
   pvResult = _pvPosition;
-  orxVector_Copy(pvResult, &(sstSoundSystem.vListenerPosition));
+  orxVector_Mulf(pvResult, &(sstSoundSystem.vListenerPosition), sstSoundSystem.fRecDimensionRatio);
 
   /* Done! */
   return pvResult;

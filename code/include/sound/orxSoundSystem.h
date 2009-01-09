@@ -68,6 +68,13 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
 
 } orxSOUNDSYSTEM_STATUS;
 
+
+/** Config defines
+ */
+#define orxSOUNDSYSTEM_KZ_CONFIG_SECTION  "SoundSystem"
+#define orxSOUNDSYSTEM_KZ_CONFIG_RATIO    "DimensionRatio"
+
+
 /***************************************************************************
  * Functions directly implemented by orx core
  ***************************************************************************/
