@@ -13,7 +13,7 @@
       <General OutputFile="../../../bin/plugins/core/joystick/orxJoystick_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -21,7 +21,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="sfml-window"/>
         <Library Value="sfml-system"/>
@@ -47,14 +47,14 @@
       <General OutputFile="../../../bin/plugins/core/joystick/orxJoystick_SFML.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="sfml-window"/>
         <Library Value="sfml-system"/>
@@ -80,7 +80,7 @@
       <General OutputFile="../../../bin/plugins/core/joystick/orxJoystick_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
@@ -88,7 +88,7 @@
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
         <Library Value="orxd"/>
         <Library Value="sfml-window"/>
         <Library Value="sfml-system"/>
@@ -114,14 +114,14 @@
       <General OutputFile="../../../bin/plugins/core/joystick/orxJoystick_SFML.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
+        <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
         <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
-        <LibraryPath Value="../../../../extern/SFML_1.4/lib/linux"/>
+        <LibraryPath Value="../../../../extern/SFML_1.3/lib/linux"/>
         <Library Value="orx"/>
         <Library Value="sfml-window"/>
         <Library Value="sfml-system"/>
