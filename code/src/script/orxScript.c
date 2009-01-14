@@ -258,7 +258,7 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
 
   /* Gets the stack size */
 
-#if defined(__orxGCC__) && !defined(__orxGP2X__)
+#if defined(__orxGCC__) && !defined(__orxGP2X__) && !defined(__orxPPC__)
     /* GCC Use old AT&T convention to write ASM :( */
     asm("#esp");
 
@@ -267,10 +267,10 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
 
     /* Stores the current ESP (stack pointer address) into s32StackPointer */
     asm("movl    %esp, -8(%ebp)");
-#else /* __orxGCC__ && !__orxGP2X__ */
+#else /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
     /* Use Intel instruction */
     //! asm("");
-#endif /* __orxGCC__ && !__orxGP2X__ */ /* __orxGCC__ && !__orxGP2X__ */
+#endif /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
 
   /* Go through the list of inputs */
   for(s32Index = 0; s32Index < _pstFunctionInfo->s32NbParams - 1; s32Index++)
@@ -280,22 +280,22 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
     switch(_pstFunctionInfo->aeParamsType[s32Index])
     {
       case orxSCRIPT_TYPE_POINTER:
-#if defined(__orxGCC__) && !defined(__orxGP2X__)
+#if defined(__orxGCC__) && !defined(__orxGP2X__) && !defined(__orxPPC__)
     /* GCC Use old AT&T convention to write ASM :( */
 
     // Push elements on the stack
     asm("#POINTER");
-#else /* __orxGCC__ && !__orxGP2X__ */
+#else /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
     /* Use Intel instruction */
     //! asm("");
-#endif /* __orxGCC__ && !__orxGP2X__ */ /* __orxGCC__ && !__orxGP2X__ */
+#endif /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
 
         break;
 
       case orxSCRIPT_TYPE_S32:
       case orxSCRIPT_TYPE_FLOAT:
 
-#if defined(__orxGCC__) && !defined(__orxGP2X__)
+#if defined(__orxGCC__) && !defined(__orxGP2X__) && !defined(__orxPPC__)
         /* GCC Use old AT&T convention to write ASM :( */
 
         // Push elements on the stack
@@ -327,23 +327,23 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
         /* Push the input value on the stack */
         asm("movl     %eax,   (%ebx)");
 
-#else /* __orxGCC__ && !__orxGP2X__ */
+#else /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
     /* Use Intel instruction */
     //! asm("");
-#endif /* __orxGCC__ && !__orxGP2X__ */ /* __orxGCC__ && !__orxGP2X__ */
+#endif /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
 
         break;
 
       case orxSCRIPT_TYPE_DOUBLE:
-#if defined(__orxGCC__) && !defined(__orxGP2X__)
+#if defined(__orxGCC__) && !defined(__orxGP2X__) && !defined(__orxPPC__)
     /* GCC Use old AT&T convention to write ASM :( */
 
     // Push elements on the stack
     asm("#DOUBLE");
-#else /* __orxGCC__ && !__orxGP2X__ */
+#else /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
     /* Use Intel instruction */
     //! asm("");
-#endif /* __orxGCC__ && !__orxGP2X__ */ /* __orxGCC__ && !__orxGP2X__ */
+#endif /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
 
         break;
 
@@ -364,17 +364,17 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
       //orxVOID *pValue;
       //pValue = (orxVOID *)_pstOutputValue[0].ps32Value;
 
-#if defined(__orxGCC__) && !defined(__orxGP2X__)
+#if defined(__orxGCC__) && !defined(__orxGP2X__) && !defined(__orxPPC__)
     /* GCC Use old AT&T convention to write ASM :( */
 
     // Gets function result from the stack and store it in pResult
     asm("");
-#else /* __orxGCC__ && !__orxGP2X__ */
+#else /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
     /* Use Intel instruction */
 
     // Gets function result from the stack and store it in pResult
     //! asm("");
-#endif /* __orxGCC__ && !__orxGP2X__ */ /* __orxGCC__ && !__orxGP2X__ */
+#endif /* __orxGCC__ && !__orxGP2X__ && !__orxPPC__ */
     }
   }
 

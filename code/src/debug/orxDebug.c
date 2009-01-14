@@ -235,7 +235,15 @@ orxVOID _orxDebug_Break()
 
     #else /* __orxGP2X__ */
 
-      asm("int $3");
+      #ifdef __orxPPC__
+
+      //! TODO: Add GP2X software break code
+
+      #else /* __orxPPC__ */
+
+        asm("int $3");
+
+      #endif /* __orxPPC__ */
 
     #endif /* __orxGP2X__ */
 

@@ -101,7 +101,7 @@
   /* Linux / Mac */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
-    #ifdef __orxGP2X__
+    #if defined(__orxGP2X__) || defined(__orxPPC__)
 
       /** The function will be called fastly (use registers for parameters as far as possible).*/
       #define orxFASTCALL
@@ -112,7 +112,7 @@
       /** The function will be called using cdecl convention.*/
       #define orxCDECL
 
-    #else /* __orxGP2X__ */
+    #else /* __orxGP2X__ || __orxPPC__ */
 
       /** The function will be called fastly (use registers for parameters as far as possible).*/
       #define orxFASTCALL       __attribute__ ((fastcall))
@@ -123,7 +123,7 @@
       /** The function will be called using cdecl convention.*/
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxGP2X__ */
+    #endif /* __orxGP2X__ || __orxPPC__ */
 
     /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
