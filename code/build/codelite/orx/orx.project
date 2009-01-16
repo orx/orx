@@ -78,7 +78,7 @@
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
-      <Linker Required="yes" Options="-Wl,--export-dynamic">
+      <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,-rpath ./">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orxd"/>
         <Library Value="dl"/>
@@ -109,7 +109,7 @@
         <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-s -Wl,--export-dynamic">
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,-rpath ./">
         <LibraryPath Value="../../../lib/dynamic"/>
         <Library Value="orx"/>
         <Library Value="dl"/>
