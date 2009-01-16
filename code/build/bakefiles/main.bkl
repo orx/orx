@@ -31,7 +31,7 @@
 
   <!-- on linux, dlopen, etc.. are inside 'dl' library -->
   <set var="orxLINKLIB">
-    <if cond="FORMAT in ['gnu', 'autoconf']">dl -lm</if>
+    <if cond="FORMAT in ['gnu', 'autoconf']">dl -lm -Wl,-rpath ./</if>
   </set>
 
   <!-- ************************ MAIN PROGRAMM *********************** -->
