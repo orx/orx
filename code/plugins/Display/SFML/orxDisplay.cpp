@@ -65,6 +65,7 @@ orxSTATIC orxCONST orxBITMAP *spoScreen               = (orxCONST orxBITMAP *)-1
 orxSTATIC orxCONST orxU32     su32TextBankSize        = 32;
 orxSTATIC orxCONST orxU32     su32InstantTextBankSize = 4;
 orxSTATIC orxCONST orxU32     su32FontTableSize       = 4;
+orxSTATIC orxCONST orxSTRING  szPlaceHolderString     = " "; /* Prevents a weird bug when creating a sf::String with SFML 1.4 on mac OS X */
 
 
 /***************************************************************************
@@ -321,12 +322,12 @@ extern "C" orxDISPLAY_TEXT *orxDisplay_SFML_CreateText()
     if(sstDisplay.poDefaultFont != orxNULL)
     {
       /* Allocates text */
-      pstResult->poString = new sf::String(orxSTRING_EMPTY, *sstDisplay.poDefaultFont);
+      pstResult->poString = new sf::String(szPlaceHolderString, *sstDisplay.poDefaultFont);
     }
     else
     {
       /* Allocates text */
-      pstResult->poString = new sf::String(orxSTRING_EMPTY);
+      pstResult->poString = new sf::String(szPlaceHolderString);
     }
 
     /* No string nor font */
