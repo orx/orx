@@ -1497,6 +1497,33 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(orxCONST orxSTRING _zBaseName)
   /* Valid? */
   if((_zBaseName != orxNULL) && (_zBaseName != orxSTRING_EMPTY))
   {
+    /* Mac? */
+    #ifdef __orxMAC__
+
+      #include <unistd.h>
+
+      orxS32 s32Index, s32NextIndex;
+
+      /* Finds last directory separator */
+      for(s32Index = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR, 0);
+          (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(_zBaseName, orxCHAR_DIRECTORY_SEPARATOR, s32Index + 1)) > 0);
+          s32Index = s32NextIndex);
+
+      /* Found? */
+      if(s32Index > 0)
+      {
+        /* Removes it */
+        *(_zBaseName + s32Index) = orxCHAR_NULL;
+      
+        /* Sets current directory */
+        chdir(_zBaseName);
+      
+        /* Restores separator */
+        *(_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
+      }
+
+    #endif /* __orxMAC__ */
+
     /* Copies it */
     orxString_Print(sstConfig.zBaseFile, "%s.ini", _zBaseName);
   }

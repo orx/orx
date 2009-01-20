@@ -626,7 +626,7 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
 
     /* Finds last '.' */
     for(s32Index = orxString_SearchCharIndex(sstParam.azParams[0], '.', 0);
-        (s32Index > 0) && ((s32NextIndex = orxString_SearchCharIndex(sstParam.azParams[0], '.', s32Index + 1)) > 0);
+        (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(sstParam.azParams[0], '.', s32Index + 1)) > 0);
         s32Index = s32NextIndex);
 
     /* Does base name have a '.'? */
