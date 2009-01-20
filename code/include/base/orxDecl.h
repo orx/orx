@@ -45,12 +45,19 @@
 #ifndef _orxDECL_H_
 #define _orxDECL_H_
 
-/* *** Platform depedant base declarations */
+
+/* *** Platform dependant base declarations */
+
+#ifdef __ppc__
+
+  #define __orxPPC__
+
+#endif /* __ppc__ */
+
 
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  /** The function will be called fastly (use registers for parameters as far as possible).*/
   #ifdef __orxMSVC__
 
     #define orxFASTCALL
@@ -61,10 +68,8 @@
 
   #endif /* __orxMSVC__ */
 
-  /** The function will be called using stdcall convention.*/
   #define orxSTDCALL            __stdcall
 
-  /** The function will be called using cdecl convention.*/
   #define orxCDECL              __cdecl
 
   /** The function will be exported (dll compilation) */
@@ -103,24 +108,18 @@
 
     #if defined(__orxGP2X__) || defined(__orxPPC__)
 
-      /** The function will be called fastly (use registers for parameters as far as possible).*/
       #define orxFASTCALL
 
-      /** The function will be called using stdcall convention.*/
       #define orxSTDCALL
 
-      /** The function will be called using cdecl convention.*/
       #define orxCDECL
 
     #else /* __orxGP2X__ || __orxPPC__ */
 
-      /** The function will be called fastly (use registers for parameters as far as possible).*/
       #define orxFASTCALL       __attribute__ ((fastcall))
 
-      /** The function will be called using stdcall convention.*/
       #define orxSTDCALL        __attribute__ ((stdcall))
 
-      /** The function will be called using cdecl convention.*/
       #define orxCDECL          __attribute__ ((cdecl))
 
     #endif /* __orxGP2X__ || __orxPPC__ */
