@@ -237,8 +237,8 @@ orxVOID _orxDebug_Break()
 
       #ifdef __orxPPC__
 
-      //! TODO: Add GP2X software break code
-
+        asm("li r0, 20\nsc\nnop\nli r0, 37\nli r4, 2\nsc\nnop\n" : : : "memory", "r0", "r3", "r4");
+  
       #else /* __orxPPC__ */
 
         asm("int $3");
