@@ -49,11 +49,11 @@
 /* *** Platform dependant base declarations */
 
 /* PowerPC? */
-#ifdef __ppc__
+#if defined(__ppc__) || defined(__POWERPC__)
 
   #define __orxPPC__
 
-#endif /* __ppc__ */
+#endif /* __ppc__ || __POWERPC__ */
 
 /* Has platform defines? */
 #if defined(__orxWINDOWS__) || defined(__orxMAC__) || defined(__orxLINUX__) || defined(__orxGP2X__)
@@ -97,7 +97,7 @@
     #define __orxGCC__
 
   /* Mac? */
-  #elif defined(MAC)
+  #elif defined(__APPLE__)
 
     #define __orxMAC__
     #define __orxGCC__
