@@ -91,7 +91,7 @@
     #endif
 
   /* Linux? */
-  #elif defined(LINUX)
+  #elif defined(linux) || defined(__linux__)
 
     #define __orxLINUX__
     #define __orxGCC__
@@ -110,7 +110,7 @@
 
   #else
 
-    #error "Couldn't guess platform/compiler defines. Please provide them (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__) / (__orxGCC__/__orxMSVC__)
+    #error "Couldn't guess platform/compiler defines. Please provide them (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__) / (__orxGCC__/__orxMSVC__)"
 
   #endif
 
