@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@
 
 /**
  * @addtogroup orxDecl
- * 
+ *
  * Base declarations
  * Allows to creates and handle Sets of Anims.
  * It consists of a structure containing Anims and their relations.
@@ -48,11 +48,73 @@
 
 /* *** Platform dependant base declarations */
 
+/* PowerPC? */
 #ifdef __ppc__
 
   #define __orxPPC__
 
 #endif /* __ppc__ */
+
+/* Has platform defines? */
+#if defined(__orxWINDOWS__) || defined(__orxMAC__) || defined(__orxLINUX__) || defined(__orxGP2X__)
+
+  #undef __orxPLATFORM_GUESS__
+
+#else /* __orxWINDOWS__ || __orxMAC__ || __orxLINUX__ || __orxGP2X__ */
+
+  #define __orxPLATFORM_GUESS__
+
+#endif /* __orxWINDOWS__ || __orxMAC__ || __orxLINUX__ || __orxGP2X__ */
+
+
+/* Should guess platform? */
+#ifdef __orxPLATFORM_GUESS__
+
+  /* Removes compiler defines */
+  #undef __orxGCC__
+  #undef __orxMSVC__
+
+  /* Windows? */
+  #if defined(_WIN32) || defined(WIN32)
+
+    #define __orxWINDOWS__
+
+    /* GCC? */
+    #ifdef __GNUC__
+
+      #define __orxGCC__
+
+    #else /* __GNUC__ */
+
+      #define __orxMSVC__
+
+    #endif
+
+  /* Linux? */
+  #elif defined(LINUX)
+
+    #define __orxLINUX__
+    #define __orxGCC__
+
+  /* Mac? */
+  #elif defined(MAC)
+
+    #define __orxMAC__
+    #define __orxGCC__
+
+  /* GP2X? */
+  #elif defined(GP2X)
+
+    #define __orxGP2X__
+    #define __orxGCC__
+
+  #else
+
+    #error "Couldn't guess platform/compiler defines. Please provide them (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__) / (__orxGCC__/__orxMSVC__)
+
+  #endif
+
+#endif /* __orxPLATFORM_GUESS__ */
 
 
 /* Windows */
