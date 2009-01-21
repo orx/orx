@@ -75,7 +75,7 @@ orxSTATIC orxKEYBOARD_STATIC sstKeyboard;
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATIC orxFASTCALL SDLKey orxKeyboard_SDL_GetSDLKey(orxKEYBOARD_KEY _eKey)
+orxSTATIC SDLKey orxFASTCALL orxKeyboard_SDL_GetSDLKey(orxKEYBOARD_KEY _eKey)
 {
   SDLKey eResult;
 

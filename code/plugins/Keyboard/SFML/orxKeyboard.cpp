@@ -79,7 +79,7 @@ orxSTATIC orxKEYBOARD_STATIC sstKeyboard;
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATIC orxFASTCALL sf::Key::Code orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eKey)
+orxSTATIC sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eKey)
 {
   sf::Key::Code eResult;
 

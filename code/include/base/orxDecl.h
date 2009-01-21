@@ -90,6 +90,12 @@
 
     #endif
 
+  /* GP2X? */
+  #elif defined(__linux__) && defined(__arm__)
+
+    #define __orxGP2X__
+    #define __orxGCC__
+
   /* Linux? */
   #elif defined(linux) || defined(__linux__)
 
@@ -100,12 +106,6 @@
   #elif defined(__APPLE__)
 
     #define __orxMAC__
-    #define __orxGCC__
-
-  /* GP2X? */
-  #elif defined(GP2X)
-
-    #define __orxGP2X__
     #define __orxGCC__
 
   #else
@@ -120,15 +120,7 @@
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  #ifdef __orxMSVC__
-
-    #define orxFASTCALL
-
-  #else /* __orxMSVC__ */
-
-    #define orxFASTCALL         __fastcall
-
-  #endif /* __orxMSVC__ */
+  #define orxFASTCALL           __fastcall
 
   #define orxSTDCALL            __stdcall
 

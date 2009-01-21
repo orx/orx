@@ -87,7 +87,7 @@ orxSTATIC orxMOUSE_STATIC sstMouse;
 
 /** Event handler
  */
-orxFASTCALL orxSTATUS EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 

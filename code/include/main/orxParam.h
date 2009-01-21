@@ -56,7 +56,7 @@
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-typedef orxSTATUS orxFASTCALL (*orxPARAM_INIT_FUNCTION)(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[]);
+typedef orxSTATUS (orxFASTCALL *orxPARAM_INIT_FUNCTION)(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[]);
 
 /* Parameter's infos */
 typedef struct __orxPARAM_t

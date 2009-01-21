@@ -39,7 +39,7 @@ orxSTATIC orxOBJECT  *spoParticleSpawner;
  * @param[in]   _pstEvent                     Sent event
  * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
  */
-orxSTATIC orxFASTCALL orxSTATUS orxBounce_EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATIC orxSTATUS orxFASTCALL orxBounce_EventHandler(orxCONST orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
