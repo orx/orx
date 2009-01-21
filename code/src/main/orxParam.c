@@ -618,7 +618,7 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
   /* Stores info */
   sstParam.u32ParamNumber = _u32NbParams;
   sstParam.azParams       = _azParams;
-
+orxLOG("TATA");
   /* Has parameters? */
   if((_u32NbParams > 0) && (_azParams != orxNULL))
   {
