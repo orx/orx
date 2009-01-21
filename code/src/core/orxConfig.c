@@ -1514,10 +1514,10 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(orxCONST orxSTRING _zBaseName)
       {
         /* Removes it */
         *(_zBaseName + s32Index) = orxCHAR_NULL;
-      
+
         /* Sets current directory */
         chdir(_zBaseName);
-      
+
         /* Restores separator */
         *(_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
       }
