@@ -14,7 +14,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
@@ -46,7 +45,6 @@
       <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
@@ -77,7 +75,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
@@ -108,7 +105,6 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
@@ -138,7 +134,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
@@ -169,7 +164,6 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
@@ -199,7 +193,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
@@ -230,7 +223,6 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/dynamic"/>
@@ -260,7 +252,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
@@ -291,7 +282,6 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>

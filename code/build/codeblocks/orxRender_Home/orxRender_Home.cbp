@@ -73,7 +73,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-D__orxDLL__" />
 			<Add directory="..\..\..\include" />
 		</Compiler>
 		<Linker>

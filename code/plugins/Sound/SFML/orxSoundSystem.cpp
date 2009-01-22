@@ -29,7 +29,7 @@
  * @todo
  */
 
-#include "orx.h"
+#include "orxPluginAPI.h"
 
 #include <SFML/Audio.hpp>
 

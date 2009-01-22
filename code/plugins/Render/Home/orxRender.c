@@ -30,7 +30,7 @@
  */
 
 
-#include "orx.h"
+#include "orxPluginAPI.h"
 
 
 /** Module flags

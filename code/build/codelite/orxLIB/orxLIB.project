@@ -88,6 +88,7 @@
     <File Name="../../../include/orx.h"/>
     <File Name="../../../include/orxInclude.h"/>
     <File Name="../../../include/orxKernel.h"/>
+    <File Name="../../../include/orxPluginAPI.h"/>
     <File Name="../../../include/orxUtils.h"/>
     <VirtualDirectory Name="anim">
       <File Name="../../../include/anim/orxAnim.h"/>
@@ -248,7 +249,6 @@
       <General OutputFile="../../../lib/dynamic/liborxd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options=""/>
@@ -275,7 +275,6 @@
       <General OutputFile="../../../lib/dynamic/liborx.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-s"/>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>
@@ -348,7 +347,6 @@
       <General OutputFile="../../../lib/dynamic/orxd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-Wl,--out-implib=../../../lib/dynamic/liborxd.a"/>
@@ -375,7 +373,6 @@
       <General OutputFile="../../../lib/dynamic/orx.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-Wl,--out-implib=../../../lib/dynamic/liborx.a -s"/>
       <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""/>

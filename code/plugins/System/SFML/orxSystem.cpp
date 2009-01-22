@@ -30,7 +30,7 @@
  */
 
 
-#include "orx.h"
+#include "orxPluginAPI.h"
 
 #include <SFML/Window.hpp>
 #include <ctime>

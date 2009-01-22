@@ -22,7 +22,6 @@
     <sys-lib>$(orxEXTRALINK)</sys-lib>
     <ldflags>$(orxMODULE_FLAGS)</ldflags>
     <library>$(orxMSVCLINK)</library>
-    <define>__orxDLL__</define>
   </template>
 
 </bakefile>

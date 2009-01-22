@@ -30,7 +30,7 @@
  */
 
 
-#include "orx.h"
+#include "orxPluginAPI.h"
 
 orxSTATIC orxU32      su32BallCounter = 0;
 orxSTATIC orxOBJECT  *spoParticleSpawner;

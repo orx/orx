@@ -31,7 +31,7 @@
  */
 
 
-#include "orx.h"
+#include "orxPluginAPI.h"
 
 #include <time.h>
 #include <SDL.h>

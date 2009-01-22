@@ -47,7 +47,6 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
-					<Add option="-D__orxDLL__" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--out-implib=..\..\..\lib\dynamic\liborxd.a" />
@@ -69,7 +68,6 @@
 					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-Wno-strict-aliasing" />
-					<Add option="-D__orxDLL__" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -121,6 +119,7 @@
 		<Unit filename="..\..\..\include\orx.h" />
 		<Unit filename="..\..\..\include\orxInclude.h" />
 		<Unit filename="..\..\..\include\orxKernel.h" />
+		<Unit filename="..\..\..\include\orxPluginAPI.h" />
 		<Unit filename="..\..\..\include\orxUtils.h" />
 		<Unit filename="..\..\..\include\physics\orxBody.h" />
 		<Unit filename="..\..\..\include\physics\orxPhysics.h" />

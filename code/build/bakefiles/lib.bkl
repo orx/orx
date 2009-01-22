@@ -12,8 +12,6 @@
     <template id="orxLIB_BASE" template="orxBASE">
         <libname>$(orxNAME)</libname>
         
-        <define>__orxDLL__</define>
-        
         <!-- Set the directory where will be stored the library -->
         <dirname>$(orxLIBDIR)</dirname>
 

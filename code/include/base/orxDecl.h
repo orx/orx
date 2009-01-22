@@ -125,9 +125,6 @@
   /** The function will be imported (exe compilation) */
   #define orxDLLIMPORT          __declspec(dllimport)
 
-  /** The function will not be exported nor imported */
-  #define orxDLLLOCAL
-
   /** The function or the object will be constant. */
   #define orxCONST              const
   /** The function or the object will be static. */
@@ -177,9 +174,6 @@
     /** The function will be imported (exe compilation) */
     #define orxDLLIMPORT
 
-    /** The function will not be exported nor imported */
-    #define orxDLLLOCAL         __attribute__ ((visibility("hidden")))
-
     /** The function or the object will be constant. */
     #define orxCONST            const
     /** The function or the object will be static. */
@@ -197,25 +191,30 @@
 #endif /* __orxWINDOWS__ */
 
 
-/* Dynamic? */
-#ifdef __orxDLL__
+/* Plugin include? */
+#if defined(__orxPLUGIN__)
 
-  /* External include? */
-  #ifdef __orxEXTERN__
+    #define orxDLLAPI orxDLLIMPORT /* Compiling plug-in => API needs to be imported */
 
-    #define orxDLLAPI orxDLLIMPORT /* Executable / plugin compiling */
+/* External include? */
+#elif defined(__orxEXTERN__)
 
-  #else /* __orxEXTERN__ */
+  #ifdef __orxDLL__
 
-    #define orxDLLAPI orxDLLEXPORT /* library compiling */
+    #define orxDLLAPI orxDLLIMPORT /* Linking executable against orx dynamic library */
 
-  #endif /* __orxEXTERN__ */
+  #else /* __orxDLL__ */
 
-#else /* __orxDLL__ */
+    #define orxDLLAPI /* Linking executable against orx static library */
 
-  #define orxDLLAPI  /* Static linking */
+  #endif /* __orxDLL__ */
 
-#endif /* __orxDLL__ */
+/* Internal (library) include */
+#else
+
+  #define orxDLLAPI orxDLLEXPORT /* Compiling orx library => API needs to be exported */
+
+#endif
 
 
 /** Memory alignment macros */

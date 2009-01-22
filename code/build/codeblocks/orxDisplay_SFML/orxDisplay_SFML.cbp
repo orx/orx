@@ -80,7 +80,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-D__orxDLL__" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\..\extern\SFML_1.4\include" />
 		</Compiler>

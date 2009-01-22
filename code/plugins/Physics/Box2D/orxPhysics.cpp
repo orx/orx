@@ -30,7 +30,7 @@
  */
 
 
-#include "orx.h"
+#include "orxPluginAPI.h"
 
 #include <Box2D/Box2D.h>
 

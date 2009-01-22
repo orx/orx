@@ -52,6 +52,7 @@
       include/base/orxModule.h
       include/orx.h
       include/orxInclude.h
+      include/orxPluginAPI.h
       include/orxKernel.h
       include/orxUtils.h
     </headers>
