@@ -44,6 +44,12 @@
 
 #include<stdio.h>
 
+#ifdef __orxMAC__
+
+  #include <unistd.h>
+
+#endif /* __orxMAC__ */
+
 
 /** Module flags
  */
