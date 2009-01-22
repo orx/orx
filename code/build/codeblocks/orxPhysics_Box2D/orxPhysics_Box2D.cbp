@@ -72,8 +72,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-D__orxWINDOWS__" />
-			<Add option="-D__orxGCC__" />
 			<Add option="-D__orxDLL__" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\..\extern\Box2D_2.0.1\Orx\include" />

@@ -12,8 +12,6 @@
       <General OutputFile="../../../bin/gp2X/orxd.gpe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.gpe" CommandArguments="" WorkingDirectory="../../../bin/gp2x/" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxGP2X__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
@@ -43,8 +41,6 @@
       <General OutputFile="../../../bin/gp2X/orx.gpe" IntermediateDirectory="$(ConfigurationName)" Command="orx.gpe" CommandArguments="" WorkingDirectory="../../../bin/gp2x/" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxGP2X__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/gp2x/liborx.a -Wl,--no-whole-archive">
@@ -73,8 +69,6 @@
       <General OutputFile="../../../bin/orxd" IntermediateDirectory="$(ConfigurationName)" Command="orxd" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -105,8 +99,6 @@
       <General OutputFile="../../../bin/orx" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,-rpath ./">
@@ -136,8 +128,6 @@
       <General OutputFile="../../../bin/orxd" IntermediateDirectory="$(ConfigurationName)" Command="orxd" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborxd.a -Wl,--no-whole-archive">
@@ -166,7 +156,6 @@
       <General OutputFile="../../../bin/orx" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
         <Preprocessor Value="__orxGCC__"/>
       </Compiler>
       <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborx.a -Wl,--no-whole-archive">
@@ -195,8 +184,6 @@
       <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -224,8 +211,6 @@
       <General OutputFile="../../../bin/orx.exe" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-s -Wl,--export-dynamic ../../../lib/dynamic/liborx.a -Wl,--export-all-symbols">
@@ -252,8 +237,6 @@
       <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborxd.a -Wl,--no-whole-archive -Wl,--export-all-symbols -Wl,--out-implib,../../../lib/static/libimporxd.a">
@@ -280,8 +263,6 @@
       <General OutputFile="../../../bin/orx.exe" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
       </Compiler>
       <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--whole-archive ../../../lib/static/liborx.a -Wl,--no-whole-archive -Wl,--export-all-symbols -Wl,--out-implib,../../../lib/static/libimporx.a">
         <LibraryPath Value="../../../lib/static"/>

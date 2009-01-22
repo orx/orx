@@ -55,66 +55,59 @@
 
 #endif /* __ppc__ || __POWERPC__ */
 
-/* Has platform defines? */
-#if defined(__orxWINDOWS__) || defined(__orxMAC__) || defined(__orxLINUX__) || defined(__orxGP2X__)
 
-  #undef __orxPLATFORM_GUESS__
+/* No compiler defines? */
+#if !defined(__orxGCC__) && !defined(__orxMSVC__)
 
-#else /* __orxWINDOWS__ || __orxMAC__ || __orxLINUX__ || __orxGP2X__ */
+  /* GCC? */
+  #if defined(__GNUC__)
 
-  #define __orxPLATFORM_GUESS__
+    #define __orxGCC__
 
-#endif /* __orxWINDOWS__ || __orxMAC__ || __orxLINUX__ || __orxGP2X__ */
+  /* MSVC? */
+  #elif defined(_MSC_VER)
+
+    #define __orxMSVC__
+
+  #else
+
+    #error "Couldn't guess compiler define. Please provide it (__orxGCC__/__orxMSVC__)"
+
+  #endif
+
+#endif /* !__orxGCC__ && !__orxMSVC__ */
 
 
-/* Should guess platform? */
-#ifdef __orxPLATFORM_GUESS__
-
-  /* Removes compiler defines */
-  #undef __orxGCC__
-  #undef __orxMSVC__
+/* No platform defines? */
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
 
     #define __orxWINDOWS__
 
-    /* GCC? */
-    #ifdef __GNUC__
-
-      #define __orxGCC__
-
-    #else /* __GNUC__ */
-
-      #define __orxMSVC__
-
-    #endif
-
   /* GP2X? */
   #elif defined(__linux__) && defined(__arm__)
 
     #define __orxGP2X__
-    #define __orxGCC__
 
   /* Linux? */
   #elif defined(linux) || defined(__linux__)
 
     #define __orxLINUX__
-    #define __orxGCC__
 
   /* Mac? */
   #elif defined(__APPLE__)
 
     #define __orxMAC__
-    #define __orxGCC__
 
   #else
 
-    #error "Couldn't guess platform/compiler defines. Please provide them (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__) / (__orxGCC__/__orxMSVC__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__)"
 
   #endif
 
-#endif /* __orxPLATFORM_GUESS__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxGP2X__ */
 
 
 /* Windows */
@@ -203,22 +196,26 @@
 
 #endif /* __orxWINDOWS__ */
 
-/* DLL? */
-#ifdef __orxDLL__          /* orx compiled as a dynamic library */
-  #ifdef __orxDLLEXPORT__  /* export functions (orx.dll compilation) */
-    #define orxDLLAPI orxDLLEXPORT
-  #else                    /* no __orxDLLEXPORT__ */
-    #define orxDLLAPI orxDLLIMPORT
-  #endif                   /* end orxDLLEXPORT */
-#else                      /* no __orxDLL__ (it should be __orxLIB__) */
-  #define orxDLLAPI
-#endif                     /* end __orxDLL__ */
 
-#ifdef __orxDLLEXPORT__     /* export functions (orx.dll compilation) */
-  #define orxSDKAPI orxDLLEXPORT
-#else                       /* no __orxDLLEXPORT__ */
-  #define orxSDKAPI orxDLLIMPORT
-#endif                      /* end orxDLLEXPORT */
+/* Dynamic? */
+#ifdef __orxDLL__
+
+  /* External include? */
+  #ifdef __orxEXTERN__
+
+    #define orxDLLAPI orxDLLIMPORT /* Executable / plugin compiling */
+
+  #else /* __orxEXTERN__ */
+
+    #define orxDLLAPI orxDLLEXPORT /* library compiling */
+
+  #endif /* __orxEXTERN__ */
+
+#else /* __orxDLL__ */
+
+  #define orxDLLAPI  /* Static linking */
+
+#endif /* __orxDLL__ */
 
 
 /** Memory alignment macros */
@@ -234,11 +231,11 @@
 
   #ifdef orxPADDING_SIZE                /* Padding size defined */
 
-    #define orxPAD(SIZE)                /* No padding applied */
+    #define orxPAD(SIZE)                orxU8 au8Pad[_orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];
 
   #else /* orxPADDING_SIZE */           /* Padding size not defined */
 
-    #define orxPAD(SIZE)                orxU8 au8Pad[_orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];
+    #define orxPAD(SIZE)                /* No padding applied */
 
     #warning orxPADDING_SIZE is undefined : its value should be a power of 2!
     #undef __orxPADDING__

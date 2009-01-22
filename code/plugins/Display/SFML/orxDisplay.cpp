@@ -30,21 +30,7 @@
  */
 
 
-extern "C"
-{
-  #include "orxInclude.h"
-
-  #include "core/orxClock.h"
-  #include "core/orxConfig.h"
-  #include "core/orxEvent.h"
-  #include "core/orxSystem.h"
-  #include "math/orxMath.h"
-  #include "plugin/orxPluginUser.h"
-  #include "memory/orxBank.h"
-  #include "utils/orxHashTable.h"
-
-  #include "display/orxDisplay.h"
-}
+#include "orx.h"
 
 #include <SFML/Graphics.hpp>
 

@@ -29,16 +29,7 @@
  * @todo
  */
 
-extern "C"
-{
-  #include "orxInclude.h"
-
-  #include "core/orxConfig.h"
-  #include "plugin/orxPluginUser.h"
-  #include "plugin/orxPlugin.h"
-
-  #include "sound/orxSoundSystem.h"
-}
+#include "orx.h"
 
 #include <SFML/Audio.hpp>
 

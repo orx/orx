@@ -75,8 +75,6 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-D__orxWINDOWS__" />
-			<Add option="-D__orxGCC__" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--export-dynamic -Wl,--export-all-symbols" />

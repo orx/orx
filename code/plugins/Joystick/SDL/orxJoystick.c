@@ -30,13 +30,7 @@
  */
 
 
-#include "orxInclude.h"
-
-#include "plugin/orxPluginUser.h"
-#include "plugin/orxPlugin.h"
-
-#include "io/orxJoystick.h"
-#include "display/orxDisplay.h"
+#include "orx.h"
 
 #include <SDL.h>
 

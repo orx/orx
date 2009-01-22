@@ -30,24 +30,8 @@
  */
 
 
-#include "orxInclude.h"
+#include "orx.h"
 
-#include "plugin/orxPluginUser.h"
-
-#include "render/orxViewport.h"
-#include "render/orxRender.h"
-#include "core/orxConfig.h"
-#include "debug/orxFPS.h"
-#include "memory/orxBank.h"
-#include "utils/orxLinkList.h"
-#include "anim/orxAnimPointer.h"
-#include "display/orxDisplay.h"
-#include "display/orxGraphic.h"
-#include "display/orxText.h"
-#include "display/orxTexture.h"
-#include "object/orxFrame.h"
-#include "object/orxObject.h"
-#include "math/orxVector.h"
 
 /** Module flags
  */

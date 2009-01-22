@@ -13,9 +13,6 @@
       <General OutputFile="../../../bin/gp2x/plugins/core/render/orxRender_Homed.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxGP2X__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
@@ -44,9 +41,6 @@
       <General OutputFile="../../../bin/gp2x/plugins/core/render/orxRender_Home.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxGP2X__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="_REENTRANT"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
@@ -74,8 +68,6 @@
       <General OutputFile="../../../bin/plugins/core/render/orxRender_Homed.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -104,8 +96,6 @@
       <General OutputFile="../../../bin/plugins/core/render/orxRender_Home.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
@@ -133,9 +123,6 @@
       <General OutputFile="../../../bin/plugins/core/render/orxRender_Homed.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
@@ -163,9 +150,6 @@
       <General OutputFile="../../../bin/plugins/core/render/orxRender_Home.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
@@ -192,8 +176,6 @@
       <General OutputFile="../../../bin/plugins/core/render/orxRender_Homed.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -222,8 +204,6 @@
       <General OutputFile="../../../bin/plugins/core/render/orxRender_Home.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
@@ -251,9 +231,6 @@
       <General OutputFile="../../../bin/plugins/core/render/orxRender_Homed.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
@@ -281,9 +258,6 @@
       <General OutputFile="../../../bin/plugins/core/render/orxRender_Home.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>

@@ -48,7 +48,6 @@
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
 					<Add option="-D__orxDLL__" />
-					<Add option="-D__orxDLLEXPORT__" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--out-implib=..\..\..\lib\dynamic\liborxd.a" />
@@ -71,7 +70,6 @@
 					<Add option="-Wall" />
 					<Add option="-Wno-strict-aliasing" />
 					<Add option="-D__orxDLL__" />
-					<Add option="-D__orxDLLEXPORT__" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -84,8 +82,6 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-D__orxWINDOWS__" />
-			<Add option="-D__orxGCC__" />
 			<Add directory="..\..\..\include" />
 		</Compiler>
 		<Unit filename="..\..\..\include\anim\orxAnim.h" />

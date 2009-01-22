@@ -30,19 +30,7 @@
  */
 
 
-extern "C"
-{
-  #include "orxInclude.h"
-
-  #include "core/orxConfig.h"
-  #include "core/orxClock.h"
-  #include "core/orxEvent.h"
-  #include "memory/orxBank.h"
-  #include "plugin/orxPluginUser.h"
-
-  #include "physics/orxPhysics.h"
-  #include "physics/orxBody.h"
-}
+#include "orx.h"
 
 #include <Box2D/Box2D.h>
 

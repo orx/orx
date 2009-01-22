@@ -13,7 +13,6 @@
         <libname>$(orxNAME)</libname>
         
         <define>__orxDLL__</define>
-        <define>__orxDLLEXPORT__</define>
         
         <!-- Set the directory where will be stored the library -->
         <dirname>$(orxLIBDIR)</dirname>

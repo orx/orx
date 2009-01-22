@@ -30,19 +30,11 @@
  */
 
 
-extern "C"
-{
-#include "orxInclude.h"
-
-#include "memory/orxMemory.h"
-#include "math/orxMath.h"
-#include "plugin/orxPluginUser.h"
-
-#include "core/orxSystem.h"
-}
+#include "orx.h"
 
 #include <SFML/Window.hpp>
 #include <ctime>
+
 
 /** Module flags
  */

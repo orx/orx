@@ -29,14 +29,8 @@
  * @todo
  */
 
-#include "orxInclude.h"
 
-#include "core/orxConfig.h"
-#include "memory/orxBank.h"
-#include "plugin/orxPluginUser.h"
-#include "plugin/orxPlugin.h"
-
-#include "sound/orxSoundSystem.h"
+#include "orx.h"
 
 #include <SDL.h>
 #include <SDL_mixer.h>

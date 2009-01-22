@@ -31,14 +31,11 @@
  */
 
 
-#include "orxInclude.h"
-
-#include "plugin/orxPluginUser.h"
-#include "core/orxSystem.h"
+#include "orx.h"
 
 #include <time.h>
-
 #include <SDL.h>
+
 
 /** Module flags
  */

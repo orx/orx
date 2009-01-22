@@ -30,16 +30,7 @@
  */
 
 
-extern "C"
-{
-  #include "orxInclude.h"
-
-  #include "plugin/orxPluginUser.h"
-  #include "plugin/orxPlugin.h"
-
-  #include "io/orxKeyboard.h"
-  #include "display/orxDisplay.h"
-}
+#include "orx.h"
 
 #include <SFML/Graphics.hpp>
 

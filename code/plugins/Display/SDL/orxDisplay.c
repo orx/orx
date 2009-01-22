@@ -31,20 +31,11 @@
  */
 
 
-#include "orxInclude.h"
-
-#include "core/orxConfig.h"
-#include "core/orxClock.h"
-#include "core/orxEvent.h"
-#include "core/orxSystem.h"
-#include "math/orxMath.h"
-#include "plugin/orxPluginUser.h"
-
-#include "display/orxDisplay.h"
-
+#include "orx.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_opengl.h>
 
 
 /** Module flags
@@ -98,7 +89,23 @@ orxSTATIC orxDISPLAY_STATIC sstDisplay;
  * Private functions                                                       *
  ***************************************************************************/
 
-orxFASTCALL orxVOID orxDisplay_SDL_EventUpdate(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext)
+orxVOID orxFASTCALL orxDisplay_SDL_InitOpenGL()
+{
+  /* Inits openGL values */
+  glEnable(GL_TEXTURE_2D);
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  glViewport(0, 0, orxF2S(sstDisplay.fScreenWidth), orxF2S(sstDisplay.fScreenHeight));
+  glClear(GL_COLOR_BUFFER_BIT);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0.0f, sstDisplay.fScreenWidth, sstDisplay.fScreenHeight, 0.0f, -1.0f, 1.0f);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  return;
+}
+
+orxVOID orxFASTCALL orxDisplay_SDL_EventUpdate(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext)
 {
   SDL_Event stSDLEvent;
 
@@ -316,7 +323,7 @@ orxVOID orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
   orxASSERT(_pstBitmap != orxNULL);
 
   /* Deletes it */
-  SDL_FreeSurface((SDL_Surface *)_pstBitmap);
+  glDeleteTextures(1, &(GLuint)_pstBitmap);
 
   return;
 }
@@ -364,13 +371,13 @@ orxSTATUS orxDisplay_SDL_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 
 orxSTATUS orxDisplay_SDL_Swap()
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
   /* Updates result */
-  eResult = (SDL_Flip(sstDisplay.pstScreen) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  SDL_GL_SwapBuffers();
 
   /* Done! */
   return eResult;
@@ -670,23 +677,26 @@ orxSTATUS orxDisplay_SDL_Init()
         u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
         u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
 
+        /* Enables double buffering */
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+ 
         /* Full screen? */
         if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
         {
           /* Updates flags */
-          u32Flags = SDL_FULLSCREEN | SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
+          u32Flags = SDL_OPENGL | SDL_FULLSCREEN;
         }
         else
         {
           /* Updates flags */
-          u32Flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT;
+          u32Flags = SDL_OPENGL;
         }
 
         /* Inits display using config values? */
         if((sstDisplay.pstScreen = SDL_SetVideoMode(u32ConfigWidth, u32ConfigHeight, u32ConfigDepth, u32Flags)) == orxNULL)
         {
           /* Inits display using default parameters */
-          sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_ANYFORMAT);
+          sstDisplay.pstScreen = SDL_SetVideoMode(orxDISPLAY_KU32_SCREEN_WIDTH, orxDISPLAY_KU32_SCREEN_HEIGHT, orxDISPLAY_KU32_SCREEN_DEPTH, SDL_OPENGL);
 
           /* Stores values */
           sstDisplay.fScreenWidth   = orxU2F(orxDISPLAY_KU32_SCREEN_WIDTH);
@@ -710,6 +720,9 @@ orxSTATUS orxDisplay_SDL_Init()
       {
         orxCLOCK *pstClock;
 
+        /* Inits openGL values */
+        orxDisplay_SDL_InitOpenGL();
+
         /* Gets clock */
         pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
 
@@ -720,14 +733,8 @@ orxSTATUS orxDisplay_SDL_Init()
           eResult = orxClock_Register(pstClock, orxDisplay_SDL_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGH);
         }
 
-        /* Full screen? */
-        if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
-        {
-          /* Toggles full screen */
-          SDL_WM_ToggleFullScreen(sstDisplay.pstScreen);
-        }
         /* Decoration? */
-        else if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
+        if((orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DECORATION) == orxFALSE)
         || (orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_DECORATION) != orxFALSE))
         {
           /* Logs message */

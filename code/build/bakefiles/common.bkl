@@ -50,18 +50,7 @@
     
     <!-- ******************** PREPROCESSORS ******************** -->
 
-    <!-- Set the preprocessor definition for plateform. -->
-    <set var="orxPLATFORM" make_var="1">
-        <if cond="PLATFORM_WIN32=='1'">__orxWINDOWS__</if> <!-- set WINDOWS preprocessor definition if a Win32 platform is detected -->
-        <if cond="PLATFORM_UNIX=='1'">__orxLINUX__</if>    <!-- set LINUX preprocessor definition if a Unix/Linux platform is detected -->
-        <if cond="PLATFORM_MAC=='1'">__orxMAC__</if>       <!-- set MAC preprocessor definition if a Mac platform is detected -->
-    </set>
-    
-    <!-- Set the orx compiler var -->
-    <set var="orxCOMPILER" make_var="1">
-        <if cond="FORMAT in ['autoconf','gnu','mingw', 'xcode2']">__orxGCC__</if>
-        <if cond="FORMAT in ['msvc','msvs2005prj']">__orxMSVC__</if>
-    </set>
+    <!-- Set the compiler var -->
     <set var="COMPILER">
         <if cond="FORMAT in ['msvc','msvs2005prj', 'gnu','mingw', 'xcode2']">$(COMPILER)</if>
         <if cond="FORMAT == 'autoconf'">gcc</if>
@@ -124,8 +113,6 @@
         
         <!-- Preprocessor definitions. -->
         <define>$(orxDEBUG)</define>
-        <define>$(orxPLATFORM)</define>
-        <define>$(orxCOMPILER)</define>
         
         <!-- Warnings. -->
         <warnings>$(orxWARNINGFLAG)</warnings>

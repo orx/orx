@@ -28,7 +28,9 @@
  */
 
 
-#include "orx.h"
+#include "orxInclude.h"
+#include "orxKernel.h"
+#include "orxUtils.h"
 
 
 /** Module registration macro

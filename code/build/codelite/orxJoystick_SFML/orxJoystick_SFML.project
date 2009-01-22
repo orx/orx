@@ -14,8 +14,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -48,8 +46,6 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
@@ -81,9 +77,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
@@ -115,9 +108,6 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
@@ -148,8 +138,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -182,8 +170,6 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
         <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
@@ -215,9 +201,6 @@
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC">
@@ -249,9 +232,6 @@
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/static"/>
