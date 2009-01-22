@@ -1167,6 +1167,14 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
               sstDisplay.zDefaultFont   = orxConfig_GetString(orxDISPLAY_KZ_CONFIG_FONT);
               sstDisplay.poDefaultFont  = orxDisplay_SFML_LoadFont(sstDisplay.zDefaultFont);
             }
+#ifdef __orxWINDOWS__
+            else
+            {
+              //! TEMP: Prevents a crash when exiting SFML 1.4 on windows with no default font
+              sstDisplay.zDefaultFont   = "c:/windows/fonts/arial.ttf";
+              sstDisplay.poDefaultFont  = orxDisplay_SFML_LoadFont(sstDisplay.zDefaultFont);
+            }
+#endif /* __orxWINDOWS__ */
 
             /* Updates status */
             orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_READY, orxDISPLAY_KU32_STATIC_MASK_ALL);
