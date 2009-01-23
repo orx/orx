@@ -11,9 +11,6 @@
       <General OutputFile="../../../bin/linux/08_Physics.so" IntermediateDirectory="$(ConfigurationName)" Command="orx" CommandArguments="-c ../08_Physics.ini" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxLINUX__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/linux"/>
@@ -40,9 +37,6 @@
       <General OutputFile="../../../bin/mingw/08_Physics.dll" IntermediateDirectory="$(ConfigurationName)" Command="orx.exe" CommandArguments="-c ../08_Physics.ini" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
-        <Preprocessor Value="__orxWINDOWS__"/>
-        <Preprocessor Value="__orxGCC__"/>
-        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
       <Linker Required="yes" Options="-fPIC -s">
         <LibraryPath Value="../../../lib/mingw"/>

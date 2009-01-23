@@ -51,8 +51,6 @@
  * Includes all core plugin headers
  */
 #include "plugin/define/orxPlugin_Display.h"
-#include "plugin/define/orxPlugin_File.h"
-#include "plugin/define/orxPlugin_FileSystem.h"
 #include "plugin/define/orxPlugin_Joystick.h"
 #include "plugin/define/orxPlugin_Keyboard.h"
 #include "plugin/define/orxPlugin_Mouse.h"
@@ -68,8 +66,6 @@
  * Defines all core plugin register function
  */
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(DISPLAY);
-orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(FILE);
-orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(FILESYSTEM);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(JOYSTICK);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(KEYBOARD);
 orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(MOUSE);
@@ -86,8 +82,6 @@ orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(SYSTEM);
 orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCorePlugins()
 {
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(DISPLAY)();
-  orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(FILE)();
-  orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(FILESYSTEM)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(JOYSTICK)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(KEYBOARD)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(MOUSE)();

@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -30,7 +30,7 @@
 
 /**
  * @addtogroup orxDecl
- * 
+ *
  * Base declarations
  * Allows to creates and handle Sets of Anims.
  * It consists of a structure containing Anims and their relations.
@@ -45,26 +45,78 @@
 #ifndef _orxDECL_H_
 #define _orxDECL_H_
 
-/* *** Platform depedant base declarations */
+
+/* *** Platform dependant base declarations */
+
+/* PowerPC? */
+#if defined(__ppc__) || defined(__POWERPC__)
+
+  #define __orxPPC__
+
+#endif /* __ppc__ || __POWERPC__ */
+
+
+/* No compiler defines? */
+#if !defined(__orxGCC__) && !defined(__orxMSVC__)
+
+  /* GCC? */
+  #if defined(__GNUC__)
+
+    #define __orxGCC__
+
+  /* MSVC? */
+  #elif defined(_MSC_VER)
+
+    #define __orxMSVC__
+
+  #else
+
+    #error "Couldn't guess compiler define. Please provide it (__orxGCC__/__orxMSVC__)"
+
+  #endif
+
+#endif /* !__orxGCC__ && !__orxMSVC__ */
+
+
+/* No platform defines? */
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxGP2X__)
+
+  /* Windows? */
+  #if defined(_WIN32) || defined(WIN32)
+
+    #define __orxWINDOWS__
+
+  /* GP2X? */
+  #elif defined(__linux__) && defined(__arm__)
+
+    #define __orxGP2X__
+
+  /* Linux? */
+  #elif defined(linux) || defined(__linux__)
+
+    #define __orxLINUX__
+
+  /* Mac? */
+  #elif defined(__APPLE__)
+
+    #define __orxMAC__
+
+  #else
+
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxLINUX__/__orxMAC__/__orxGP2X__)"
+
+  #endif
+
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxGP2X__ */
+
 
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  /** The function will be called fastly (use registers for parameters as far as possible).*/
-  #ifdef __orxMSVC__
+  #define orxFASTCALL           __fastcall
 
-    #define orxFASTCALL
-
-  #else /* __orxMSVC__ */
-
-    #define orxFASTCALL         __fastcall
-
-  #endif /* __orxMSVC__ */
-
-  /** The function will be called using stdcall convention.*/
   #define orxSTDCALL            __stdcall
 
-  /** The function will be called using cdecl convention.*/
   #define orxCDECL              __cdecl
 
   /** The function will be exported (dll compilation) */
@@ -72,9 +124,6 @@
 
   /** The function will be imported (exe compilation) */
   #define orxDLLIMPORT          __declspec(dllimport)
-
-  /** The function will not be exported nor imported */
-  #define orxDLLLOCAL
 
   /** The function or the object will be constant. */
   #define orxCONST              const
@@ -101,38 +150,29 @@
   /* Linux / Mac */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
-    #ifdef __orxGP2X__
+    #if defined(__orxGP2X__) || defined(__orxPPC__)
 
-      /** The function will be called fastly (use registers for parameters as far as possible).*/
       #define orxFASTCALL
 
-      /** The function will be called using stdcall convention.*/
       #define orxSTDCALL
 
-      /** The function will be called using cdecl convention.*/
       #define orxCDECL
 
-    #else /* __orxGP2X__ */
+    #else /* __orxGP2X__ || __orxPPC__ */
 
-      /** The function will be called fastly (use registers for parameters as far as possible).*/
       #define orxFASTCALL       __attribute__ ((fastcall))
 
-      /** The function will be called using stdcall convention.*/
       #define orxSTDCALL        __attribute__ ((stdcall))
 
-      /** The function will be called using cdecl convention.*/
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxGP2X__ */
+    #endif /* __orxGP2X__ || __orxPPC__ */
 
     /** The function will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
 
     /** The function will be imported (exe compilation) */
     #define orxDLLIMPORT
-
-    /** The function will not be exported nor imported */
-    #define orxDLLLOCAL         __attribute__ ((visibility("hidden")))
 
     /** The function or the object will be constant. */
     #define orxCONST            const
@@ -150,22 +190,31 @@
 
 #endif /* __orxWINDOWS__ */
 
-/* DLL? */
-#ifdef __orxDLL__          /* orx compiled as a dynamic library */
-  #ifdef __orxDLLEXPORT__  /* export functions (orx.dll compilation) */
-    #define orxDLLAPI orxDLLEXPORT
-  #else                    /* no __orxDLLEXPORT__ */
-    #define orxDLLAPI orxDLLIMPORT
-  #endif                   /* end orxDLLEXPORT */
-#else                      /* no __orxDLL__ (it should be __orxLIB__) */
-  #define orxDLLAPI
-#endif                     /* end __orxDLL__ */
 
-#ifdef __orxDLLEXPORT__     /* export functions (orx.dll compilation) */
-  #define orxSDKAPI orxDLLEXPORT
-#else                       /* no __orxDLLEXPORT__ */
-  #define orxSDKAPI orxDLLIMPORT
-#endif                      /* end orxDLLEXPORT */
+/* Plugin include? */
+#if defined(__orxPLUGIN__)
+
+    #define orxDLLAPI orxDLLIMPORT /* Compiling plug-in => API needs to be imported */
+
+/* External include? */
+#elif defined(__orxEXTERN__)
+
+  #ifdef __orxDLL__
+
+    #define orxDLLAPI orxDLLIMPORT /* Linking executable against orx dynamic library */
+
+  #else /* __orxDLL__ */
+
+    #define orxDLLAPI /* Linking executable against orx static library */
+
+  #endif /* __orxDLL__ */
+
+/* Internal (library) include */
+#else
+
+  #define orxDLLAPI orxDLLEXPORT /* Compiling orx library => API needs to be exported */
+
+#endif
 
 
 /** Memory alignment macros */
@@ -181,11 +230,11 @@
 
   #ifdef orxPADDING_SIZE                /* Padding size defined */
 
-    #define orxPAD(SIZE)                /* No padding applied */
+    #define orxPAD(SIZE)                orxU8 au8Pad[_orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];
 
   #else /* orxPADDING_SIZE */           /* Padding size not defined */
 
-    #define orxPAD(SIZE)                orxU8 au8Pad[_orxALIGN(SIZE, orxPADDING_SIZE) - SIZE];
+    #define orxPAD(SIZE)                /* No padding applied */
 
     #warning orxPADDING_SIZE is undefined : its value should be a power of 2!
     #undef __orxPADDING__

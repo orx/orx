@@ -20,46 +20,31 @@
  */
 
 /**
- * @file orxPlugin_CoreID.h
- * @date 02/05/2005
+ * @file orxPluginAPI.h
+ * @date 21/01/2009
  * @author iarwain@orx-project.org
  *
  * @todo
  */
 
 /**
- * @addtogroup orxPlugin
+ * @addtogroup Orx
  * 
- * Header that defines all the plugin IDs
+ * Plugin include file
  *
  * @{
  */
 
 
-#ifndef _orxPLUGIN_COREID_H_
-#define _orxPLUGIN_COREID_H_
+#ifndef _orxPLUGINAPI_H_
+#define _orxPLUGINAPI_H_
 
 
-/* *** Core plugin id enum *** */
-typedef enum __orxPLUGIN_CORE_ID_t
-{
-  orxPLUGIN_CORE_ID_DISPLAY = 0,
-  orxPLUGIN_CORE_ID_JOYSTICK,
-  orxPLUGIN_CORE_ID_KEYBOARD,
-  orxPLUGIN_CORE_ID_MOUSE,
-  orxPLUGIN_CORE_ID_PACKAGE,
-  orxPLUGIN_CORE_ID_PHYSICS,
-  orxPLUGIN_CORE_ID_RENDER,
-  orxPLUGIN_CORE_ID_SCRIPT,
-  orxPLUGIN_CORE_ID_SOUNDSYSTEM,
-  orxPLUGIN_CORE_ID_SYSTEM,
+#define __orxPLUGIN__
 
-  orxPLUGIN_CORE_ID_NUMBER,
+#include "orx.h"
 
-  orxPLUGIN_CORE_ID_NONE = orxENUM_NONE
-    
-} orxPLUGIN_CORE_ID;
 
-#endif /* _orxPLUGIN_COREID_H_ */
+#endif /* _orxPLUGINAPI_H_ */
 
 /** @} */

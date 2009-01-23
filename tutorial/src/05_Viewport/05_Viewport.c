@@ -28,7 +28,7 @@
  */
 
 
-#include "orx.h"
+#include "orxPluginAPI.h"
 
 
 /* This is a basic C tutorial creating viewports and cameras.

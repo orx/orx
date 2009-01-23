@@ -41,31 +41,26 @@
 #define _orxFILE_H_
  
 #include "orxInclude.h"
-#include "plugin/orxPluginCore.h"
+
 
 #define orxFILE_KU32_FLAG_OPEN_READ   0x00000001 /**< opened for read */
 #define orxFILE_KU32_FLAG_OPEN_WRITE  0x00000002 /**< opened for write */
 #define orxFILE_KU32_FLAG_OPEN_APPEND 0x00000004 /**< descriptor positioned at the end of file */
 
+
+/** Internal File structure
+ */
 typedef struct __orxFILE_t orxFILE;
 
-/***************************************************************************
- * Functions directly implemented by orx core
- ***************************************************************************/
 
 /** File module setup */
 extern orxDLLAPI orxVOID                orxFile_Setup();
 
-
-/***************************************************************************
- * Functions extended by plugins
- ***************************************************************************/
-
-/** Initialize the File Module
+/** Inits the File Module
  */
 extern orxDLLAPI orxSTATUS              orxFile_Init();
 
-/** Uninitialize the File Module
+/** Exits from the File Module
  */
 extern orxDLLAPI orxVOID                orxFile_Exit();
 

@@ -120,10 +120,10 @@
 
 
 // Include orx.h
-// As we're compiling from C++, we need to use extern "C" for "orx.h" include
+// As we're compiling from C++, we need to use extern "C" for "orxPluginAPI.h" include
 extern "C"
 {
-#include "orx.h"
+#include "orxPluginAPI.h"
 }
 
 

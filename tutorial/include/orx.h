@@ -43,6 +43,9 @@
 #define _orx_H_
 
 
+#define __orxEXTERN__ /* Not compiling orx library */
+
+
 #include "orxInclude.h"
 
 #include "orxKernel.h"
