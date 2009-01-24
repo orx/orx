@@ -83,6 +83,10 @@
 			<Add option="-fPIC" />
 			<Add directory="..\..\..\..\extern\SFML_1.4\lib\mingw" />
 		</Linker>
+		<ExtraCommands>
+			<Add after="cmd /c copy /Y ..\..\..\..\extern\SFML_1.4\extlibs\bin\*.dll ..\..\..\bin\" />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="..\..\..\plugins\Sound\SFML\orxSoundSystem.cpp" />
 		<Extensions>
 			<code_completion />
