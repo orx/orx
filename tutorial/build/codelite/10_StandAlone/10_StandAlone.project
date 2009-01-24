@@ -12,20 +12,25 @@
       <General OutputFile="../../../bin/linux/10_StandAlone" IntermediateDirectory="$(ConfigurationName)" Command="10_StandAlone" CommandArguments="" WorkingDirectory="../../../bin/linux" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -s">
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,-rpath ./">
         <LibraryPath Value="../../../lib/linux"/>
         <Library Value="orx"/>
         <Library Value="dl"/>
         <Library Value="m"/>
       </Linker>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands></PostConnectCommands>
+        <StartupCommands></StartupCommands>
+      </Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
+        <PreprocessFileCommand></PreprocessFileCommand>
         <SingleFileCommand></SingleFileCommand>
         <MakefileGenerationCommand></MakefileGenerationCommand>
         <ThirdPartyToolName>None</ThirdPartyToolName>
@@ -42,18 +47,23 @@
       <General OutputFile="../../../bin/mingw/10_StandAlone.exe" IntermediateDirectory="$(ConfigurationName)" Command="10_StandAlone.exe" CommandArguments="" WorkingDirectory="../../../bin/mingw" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
+        <Preprocessor Value="__orxDLL__"/>
       </Compiler>
-      <Linker Required="yes" Options="-fPIC -s">
+      <Linker Required="yes" Options="-s -Wl,--export-dynamic -Wl,--export-all-symbols">
         <LibraryPath Value="../../../lib/mingw"/>
         <Library Value="orx"/>
       </Linker>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort=""></Debugger>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <PostConnectCommands></PostConnectCommands>
+        <StartupCommands></StartupCommands>
+      </Debugger>
       <ResourceCompiler Required="no" Options=""/>
       <PreBuild/>
       <PostBuild/>
       <CustomBuild Enabled="no">
         <CleanCommand></CleanCommand>
         <BuildCommand></BuildCommand>
+        <PreprocessFileCommand></PreprocessFileCommand>
         <SingleFileCommand></SingleFileCommand>
         <MakefileGenerationCommand></MakefileGenerationCommand>
         <ThirdPartyToolName>None</ThirdPartyToolName>
