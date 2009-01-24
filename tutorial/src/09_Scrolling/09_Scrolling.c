@@ -93,9 +93,12 @@ orxCAMERA *pstCamera;
  */
 orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
-  orxVECTOR vMove, vMouseMove, vPosition, vScrollSpeed;
+  orxVECTOR vMove, vPosition, vScrollSpeed;
 
   /* *** SCROLLING UPDATE *** */
+
+  /* Clears move vector */
+  orxVector_Copy(&vMove, &orxVECTOR_0);
 
   /* Selects tutorial config section */
   orxConfig_SelectSection("Tutorial");
@@ -106,23 +109,42 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Updates scroll speed with our current DT */
   orxVector_Mulf(&vScrollSpeed, &vScrollSpeed, _pstClockInfo->fDT);
 
-  /* Updates global move */
-  orxVector_Mul(&vMove, &vMouseMove, &vScrollSpeed);
-
-  /* Gets mouse move */
-  if(orxMouse_GetMoveDelta(&vMouseMove))
+  /* Is right arrow pressed? */
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT))
   {
-    /* Updates global move */
-    orxVector_Mul(&vMove, &vMouseMove, &vScrollSpeed);
+    /* Updates move vector */
+    vMove.fX += vScrollSpeed.fX;
   }
-  else
+  /* Is left arrow pressed? */
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT))
   {
-    /* Clears global move */
-    orxVector_Copy(&vMove, &orxVECTOR_0);
+    /* Updates move vector */
+    vMove.fX -= vScrollSpeed.fX;
   }
-
-  /* Updates depth move with mouse wheel delta value */
-  vMove.fZ = vScrollSpeed.fZ * orxMouse_GetWheelDelta();
+  /* Is down arrow pressed? */
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DOWN))
+  {
+    /* Updates move vector */
+    vMove.fY += vScrollSpeed.fY;
+  }
+  /* Is up arrow pressed? */
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_UP))
+  {
+    /* Updates move vector */
+    vMove.fY -= vScrollSpeed.fY;
+  }
+  /* Is '+' pressed? */
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ADD))
+  {
+    /* Updates move vector */
+    vMove.fZ += vScrollSpeed.fZ;
+  }
+  /* Is '-' pressed? */
+  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
+  {
+    /* Updates move vector */
+    vMove.fZ -= vScrollSpeed.fZ;
+  }
 
   /* Updates camera position */
   orxCamera_SetPosition(pstCamera, orxVector_Add(&(vPosition), orxCamera_GetPosition(pstCamera, &vPosition), &vMove));
@@ -152,11 +174,12 @@ orxSTATUS Init()
 {
   orxVIEWPORT  *pstViewport;
   orxCLOCK     *pstClock;
+  orxOBJECT    *pstSky;
   orxU32        i;
 
   /* Displays a small hint in console */
-  orxLOG("\n- Mouse will move the camera"
-         "\n- Mouse wheel will zoom in/out"
+  orxLOG("\n- Arrow keys will move the camera"
+         "\n- '+' & '-' will zoom in/out"
          "\n- 'S' will activate smoothing in display and 'N' will deactivate it"
          "\n* The scrolling and auto-scaling of objects is data-driven, no code required"
          "\n* The sky background will follow the camera (parent/child frame relation)");
@@ -178,7 +201,7 @@ orxSTATUS Init()
   orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
   /* Creates sky */
-  orxObject_CreateFromConfig("Sky");
+  pstSky = orxObject_CreateFromConfig("Sky");
 
   /* For all requested clouds */
   for(i = 0; i < orxConfig_GetU32("CloudNumber"); i++)
@@ -186,9 +209,6 @@ orxSTATUS Init()
     /* Creates it */
     orxObject_CreateFromConfig("Cloud");
   }
-
-  /* Resets mouse position */
-  orxMouse_SetPosition(&orxVECTOR_0);
 
   /* Done! */
   return orxSTATUS_SUCCESS;
