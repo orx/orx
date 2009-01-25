@@ -1,0 +1,1208 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		E059AC040F22FEE800900DF0 /* All */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = E059AC070F22FF0600900DF0 /* Build configuration list for PBXAggregateTarget "All" */;
+			buildPhases = (
+			);
+			dependencies = (
+				E0FF28EF0F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF28ED0F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF28EB0F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF28E90F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF28E70F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF28E50F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF28E30F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF28E10F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF28DF0F2BF0F8003D47DF /* PBXTargetDependency */,
+				E0FF29020F2BF328003D47DF /* PBXTargetDependency */,
+			);
+			name = All;
+			productName = All;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		E0FF28500F2BED77003D47DF /* 01_Object.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF283D0F2BED63003D47DF /* 01_Object.c */; };
+		E0FF28520F2BED97003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28930F2BF053003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28970F2BF06C003D47DF /* 02_Clock.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF283F0F2BED63003D47DF /* 02_Clock.c */; };
+		E0FF28A20F2BF08F003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28AA0F2BF093003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28B20F2BF096003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28BA0F2BF099003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28C20F2BF09C003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28CA0F2BF09F003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28D20F2BF0A2003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+		E0FF28F00F2BF128003D47DF /* 03_Frame.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28410F2BED63003D47DF /* 03_Frame.c */; };
+		E0FF28F10F2BF12F003D47DF /* 04_Anim.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28430F2BED63003D47DF /* 04_Anim.c */; };
+		E0FF28F20F2BF136003D47DF /* 05_Viewport.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28450F2BED63003D47DF /* 05_Viewport.c */; };
+		E0FF28F30F2BF13C003D47DF /* 06_Sound.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28470F2BED63003D47DF /* 06_Sound.c */; };
+		E0FF28F40F2BF143003D47DF /* 07_FX.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF28490F2BED63003D47DF /* 07_FX.c */; };
+		E0FF28F50F2BF14A003D47DF /* 08_Physics.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF284B0F2BED63003D47DF /* 08_Physics.c */; };
+		E0FF28F60F2BF151003D47DF /* 09_Scrolling.c in Sources */ = {isa = PBXBuildFile; fileRef = E0FF284D0F2BED63003D47DF /* 09_Scrolling.c */; };
+		E0FF28F70F2BF15B003D47DF /* 10_StandAlone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E0FF284F0F2BED63003D47DF /* 10_StandAlone.cpp */; };
+		E0FF29040F2BF347003D47DF /* liborx.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E0FF28510F2BED8B003D47DF /* liborx.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E0FF28DE0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0FF28CE0F2BF0A2003D47DF /* 09_Scrolling */;
+			remoteInfo = 09_Scrolling;
+		};
+		E0FF28E00F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0FF28C60F2BF09F003D47DF /* 08_Physics */;
+			remoteInfo = 08_Physics;
+		};
+		E0FF28E20F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0FF28BE0F2BF09C003D47DF /* 07_Fx */;
+			remoteInfo = 07_Fx;
+		};
+		E0FF28E40F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0FF28B60F2BF099003D47DF /* 06_Sound */;
+			remoteInfo = 06_Sound;
+		};
+		E0FF28E60F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0FF28AE0F2BF096003D47DF /* 05_Viewport */;
+			remoteInfo = 05_Viewport;
+		};
+		E0FF28E80F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0FF28A60F2BF093003D47DF /* 04_Anim */;
+			remoteInfo = 04_Anim;
+		};
+		E0FF28EA0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0FF289E0F2BF08F003D47DF /* 03_Frame */;
+			remoteInfo = 03_Frame;
+		};
+		E0FF28EC0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0FF288F0F2BF053003D47DF /* 02_Clock */;
+			remoteInfo = 02_Clock;
+		};
+		E0FF28EE0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E059AC3A0F2300F600900DF0 /* 01_Object */;
+			remoteInfo = 01_Object;
+		};
+		E0FF29010F2BF328003D47DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E059AAE20F22ECCA00900DF0 /* 10_StandAlone */;
+			remoteInfo = 10_StandAlone;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		E059AAE30F22ECCA00900DF0 /* 10_StandAlone */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 10_StandAlone; sourceTree = BUILT_PRODUCTS_DIR; };
+		E059AC460F2300F600900DF0 /* 01_Object.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 01_Object.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0FF283D0F2BED63003D47DF /* 01_Object.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 01_Object.c; sourceTree = "<group>"; };
+		E0FF283F0F2BED63003D47DF /* 02_Clock.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 02_Clock.c; sourceTree = "<group>"; };
+		E0FF28410F2BED63003D47DF /* 03_Frame.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 03_Frame.c; sourceTree = "<group>"; };
+		E0FF28430F2BED63003D47DF /* 04_Anim.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 04_Anim.c; sourceTree = "<group>"; };
+		E0FF28450F2BED63003D47DF /* 05_Viewport.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 05_Viewport.c; sourceTree = "<group>"; };
+		E0FF28470F2BED63003D47DF /* 06_Sound.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 06_Sound.c; sourceTree = "<group>"; };
+		E0FF28490F2BED63003D47DF /* 07_FX.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 07_FX.c; sourceTree = "<group>"; };
+		E0FF284B0F2BED63003D47DF /* 08_Physics.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 08_Physics.c; sourceTree = "<group>"; };
+		E0FF284D0F2BED63003D47DF /* 09_Scrolling.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = 09_Scrolling.c; sourceTree = "<group>"; };
+		E0FF284F0F2BED63003D47DF /* 10_StandAlone.cpp */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.cpp.cpp; path = 10_StandAlone.cpp; sourceTree = "<group>"; };
+		E0FF28510F2BED8B003D47DF /* liborx.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liborx.dylib; path = ../../../lib/mac/liborx.dylib; sourceTree = SOURCE_ROOT; };
+		E0FF28960F2BF053003D47DF /* 02_Clock.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 02_Clock.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0FF28A50F2BF08F003D47DF /* 03_Frame.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 03_Frame.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0FF28AD0F2BF093003D47DF /* 04_Anim.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 04_Anim.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0FF28B50F2BF096003D47DF /* 05_Viewport.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 05_Viewport.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0FF28BD0F2BF099003D47DF /* 06_Sound.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 06_Sound.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0FF28C50F2BF09C003D47DF /* 07_Fx.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 07_Fx.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0FF28CD0F2BF09F003D47DF /* 08_Physics.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 08_Physics.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0FF28D50F2BF0A2003D47DF /* 09_Scrolling.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = 09_Scrolling.so; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E059AAE10F22ECCA00900DF0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF29040F2BF347003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E059AC410F2300F600900DF0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28520F2BED97003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28920F2BF053003D47DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28930F2BF053003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28A10F2BF08F003D47DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28A20F2BF08F003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28A90F2BF093003D47DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28AA0F2BF093003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28B10F2BF096003D47DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28B20F2BF096003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28B90F2BF099003D47DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28BA0F2BF099003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28C10F2BF09C003D47DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28C20F2BF09C003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28C90F2BF09F003D47DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28CA0F2BF09F003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28D10F2BF0A2003D47DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28D20F2BF0A2003D47DF /* liborx.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DDFF38A45A11DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E059AC460F2300F600900DF0 /* 01_Object.so */,
+				E0FF28960F2BF053003D47DF /* 02_Clock.so */,
+				E0FF28A50F2BF08F003D47DF /* 03_Frame.so */,
+				E0FF28AD0F2BF093003D47DF /* 04_Anim.so */,
+				E0FF28B50F2BF096003D47DF /* 05_Viewport.so */,
+				E0FF28BD0F2BF099003D47DF /* 06_Sound.so */,
+				E0FF28C50F2BF09C003D47DF /* 07_Fx.so */,
+				E0FF28CD0F2BF09F003D47DF /* 08_Physics.so */,
+				E0FF28D50F2BF0A2003D47DF /* 09_Scrolling.so */,
+				E059AAE30F22ECCA00900DF0 /* 10_StandAlone */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* orx */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77ACFE841707C02AAC07 /* Source */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DDFF38A45A11DB9C8B /* Products */,
+			);
+			name = orx;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF28510F2BED8B003D47DF /* liborx.dylib */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		08FB77ACFE841707C02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF283C0F2BED63003D47DF /* 01_Object */,
+				E0FF283E0F2BED63003D47DF /* 02_Clock */,
+				E0FF28400F2BED63003D47DF /* 03_Frame */,
+				E0FF28420F2BED63003D47DF /* 04_Anim */,
+				E0FF28440F2BED63003D47DF /* 05_Viewport */,
+				E0FF28460F2BED63003D47DF /* 06_Sound */,
+				E0FF28480F2BED63003D47DF /* 07_FX */,
+				E0FF284A0F2BED63003D47DF /* 08_Physics */,
+				E0FF284C0F2BED63003D47DF /* 09_Scrolling */,
+				E0FF284E0F2BED63003D47DF /* 10_StandAlone */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		E0FF283C0F2BED63003D47DF /* 01_Object */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF283D0F2BED63003D47DF /* 01_Object.c */,
+			);
+			name = 01_Object;
+			path = ../../../src/01_Object;
+			sourceTree = "<group>";
+		};
+		E0FF283E0F2BED63003D47DF /* 02_Clock */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF283F0F2BED63003D47DF /* 02_Clock.c */,
+			);
+			name = 02_Clock;
+			path = ../../../src/02_Clock;
+			sourceTree = "<group>";
+		};
+		E0FF28400F2BED63003D47DF /* 03_Frame */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF28410F2BED63003D47DF /* 03_Frame.c */,
+			);
+			name = 03_Frame;
+			path = ../../../src/03_Frame;
+			sourceTree = "<group>";
+		};
+		E0FF28420F2BED63003D47DF /* 04_Anim */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF28430F2BED63003D47DF /* 04_Anim.c */,
+			);
+			name = 04_Anim;
+			path = ../../../src/04_Anim;
+			sourceTree = "<group>";
+		};
+		E0FF28440F2BED63003D47DF /* 05_Viewport */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF28450F2BED63003D47DF /* 05_Viewport.c */,
+			);
+			name = 05_Viewport;
+			path = ../../../src/05_Viewport;
+			sourceTree = "<group>";
+		};
+		E0FF28460F2BED63003D47DF /* 06_Sound */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF28470F2BED63003D47DF /* 06_Sound.c */,
+			);
+			name = 06_Sound;
+			path = ../../../src/06_Sound;
+			sourceTree = "<group>";
+		};
+		E0FF28480F2BED63003D47DF /* 07_FX */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF28490F2BED63003D47DF /* 07_FX.c */,
+			);
+			name = 07_FX;
+			path = ../../../src/07_FX;
+			sourceTree = "<group>";
+		};
+		E0FF284A0F2BED63003D47DF /* 08_Physics */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF284B0F2BED63003D47DF /* 08_Physics.c */,
+			);
+			name = 08_Physics;
+			path = ../../../src/08_Physics;
+			sourceTree = "<group>";
+		};
+		E0FF284C0F2BED63003D47DF /* 09_Scrolling */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF284D0F2BED63003D47DF /* 09_Scrolling.c */,
+			);
+			name = 09_Scrolling;
+			path = ../../../src/09_Scrolling;
+			sourceTree = "<group>";
+		};
+		E0FF284E0F2BED63003D47DF /* 10_StandAlone */ = {
+			isa = PBXGroup;
+			children = (
+				E0FF284F0F2BED63003D47DF /* 10_StandAlone.cpp */,
+			);
+			name = 10_StandAlone;
+			path = ../../../src/10_StandAlone;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E059AAE20F22ECCA00900DF0 /* 10_StandAlone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "10_StandAlone" */;
+			buildPhases = (
+				E059AAE00F22ECCA00900DF0 /* Sources */,
+				E059AAE10F22ECCA00900DF0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 10_StandAlone;
+			productName = orx;
+			productReference = E059AAE30F22ECCA00900DF0 /* 10_StandAlone */;
+			productType = "com.apple.product-type.tool";
+		};
+		E059AC3A0F2300F600900DF0 /* 01_Object */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E059AC430F2300F600900DF0 /* Build configuration list for PBXNativeTarget "01_Object" */;
+			buildPhases = (
+				E059AC3F0F2300F600900DF0 /* Sources */,
+				E059AC410F2300F600900DF0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 01_Object;
+			productName = orxRender_Home;
+			productReference = E059AC460F2300F600900DF0 /* 01_Object.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E0FF288F0F2BF053003D47DF /* 02_Clock */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0FF28940F2BF053003D47DF /* Build configuration list for PBXNativeTarget "02_Clock" */;
+			buildPhases = (
+				E0FF28900F2BF053003D47DF /* Sources */,
+				E0FF28920F2BF053003D47DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 02_Clock;
+			productName = orxRender_Home;
+			productReference = E0FF28960F2BF053003D47DF /* 02_Clock.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E0FF289E0F2BF08F003D47DF /* 03_Frame */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0FF28A30F2BF08F003D47DF /* Build configuration list for PBXNativeTarget "03_Frame" */;
+			buildPhases = (
+				E0FF289F0F2BF08F003D47DF /* Sources */,
+				E0FF28A10F2BF08F003D47DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 03_Frame;
+			productName = orxRender_Home;
+			productReference = E0FF28A50F2BF08F003D47DF /* 03_Frame.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E0FF28A60F2BF093003D47DF /* 04_Anim */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0FF28AB0F2BF093003D47DF /* Build configuration list for PBXNativeTarget "04_Anim" */;
+			buildPhases = (
+				E0FF28A70F2BF093003D47DF /* Sources */,
+				E0FF28A90F2BF093003D47DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 04_Anim;
+			productName = orxRender_Home;
+			productReference = E0FF28AD0F2BF093003D47DF /* 04_Anim.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E0FF28AE0F2BF096003D47DF /* 05_Viewport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0FF28B30F2BF096003D47DF /* Build configuration list for PBXNativeTarget "05_Viewport" */;
+			buildPhases = (
+				E0FF28AF0F2BF096003D47DF /* Sources */,
+				E0FF28B10F2BF096003D47DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 05_Viewport;
+			productName = orxRender_Home;
+			productReference = E0FF28B50F2BF096003D47DF /* 05_Viewport.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E0FF28B60F2BF099003D47DF /* 06_Sound */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0FF28BB0F2BF099003D47DF /* Build configuration list for PBXNativeTarget "06_Sound" */;
+			buildPhases = (
+				E0FF28B70F2BF099003D47DF /* Sources */,
+				E0FF28B90F2BF099003D47DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 06_Sound;
+			productName = orxRender_Home;
+			productReference = E0FF28BD0F2BF099003D47DF /* 06_Sound.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E0FF28BE0F2BF09C003D47DF /* 07_Fx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0FF28C30F2BF09C003D47DF /* Build configuration list for PBXNativeTarget "07_Fx" */;
+			buildPhases = (
+				E0FF28BF0F2BF09C003D47DF /* Sources */,
+				E0FF28C10F2BF09C003D47DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 07_Fx;
+			productName = orxRender_Home;
+			productReference = E0FF28C50F2BF09C003D47DF /* 07_Fx.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E0FF28C60F2BF09F003D47DF /* 08_Physics */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0FF28CB0F2BF09F003D47DF /* Build configuration list for PBXNativeTarget "08_Physics" */;
+			buildPhases = (
+				E0FF28C70F2BF09F003D47DF /* Sources */,
+				E0FF28C90F2BF09F003D47DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 08_Physics;
+			productName = orxRender_Home;
+			productReference = E0FF28CD0F2BF09F003D47DF /* 08_Physics.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		E0FF28CE0F2BF0A2003D47DF /* 09_Scrolling */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0FF28D30F2BF0A2003D47DF /* Build configuration list for PBXNativeTarget "09_Scrolling" */;
+			buildPhases = (
+				E0FF28CF0F2BF0A2003D47DF /* Sources */,
+				E0FF28D10F2BF0A2003D47DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = 09_Scrolling;
+			productName = orxRender_Home;
+			productReference = E0FF28D50F2BF0A2003D47DF /* 09_Scrolling.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "orx" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* orx */;
+			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E059AC040F22FEE800900DF0 /* All */,
+				E059AC3A0F2300F600900DF0 /* 01_Object */,
+				E0FF288F0F2BF053003D47DF /* 02_Clock */,
+				E0FF289E0F2BF08F003D47DF /* 03_Frame */,
+				E0FF28A60F2BF093003D47DF /* 04_Anim */,
+				E0FF28AE0F2BF096003D47DF /* 05_Viewport */,
+				E0FF28B60F2BF099003D47DF /* 06_Sound */,
+				E0FF28BE0F2BF09C003D47DF /* 07_Fx */,
+				E0FF28C60F2BF09F003D47DF /* 08_Physics */,
+				E0FF28CE0F2BF0A2003D47DF /* 09_Scrolling */,
+				E059AAE20F22ECCA00900DF0 /* 10_StandAlone */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E059AAE00F22ECCA00900DF0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28F70F2BF15B003D47DF /* 10_StandAlone.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E059AC3F0F2300F600900DF0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28500F2BED77003D47DF /* 01_Object.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28900F2BF053003D47DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28970F2BF06C003D47DF /* 02_Clock.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF289F0F2BF08F003D47DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28F00F2BF128003D47DF /* 03_Frame.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28A70F2BF093003D47DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28F10F2BF12F003D47DF /* 04_Anim.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28AF0F2BF096003D47DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28F20F2BF136003D47DF /* 05_Viewport.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28B70F2BF099003D47DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28F30F2BF13C003D47DF /* 06_Sound.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28BF0F2BF09C003D47DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28F40F2BF143003D47DF /* 07_FX.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28C70F2BF09F003D47DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28F50F2BF14A003D47DF /* 08_Physics.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0FF28CF0F2BF0A2003D47DF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0FF28F60F2BF151003D47DF /* 09_Scrolling.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E0FF28DF0F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0FF28CE0F2BF0A2003D47DF /* 09_Scrolling */;
+			targetProxy = E0FF28DE0F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF28E10F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0FF28C60F2BF09F003D47DF /* 08_Physics */;
+			targetProxy = E0FF28E00F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF28E30F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0FF28BE0F2BF09C003D47DF /* 07_Fx */;
+			targetProxy = E0FF28E20F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF28E50F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0FF28B60F2BF099003D47DF /* 06_Sound */;
+			targetProxy = E0FF28E40F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF28E70F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0FF28AE0F2BF096003D47DF /* 05_Viewport */;
+			targetProxy = E0FF28E60F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF28E90F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0FF28A60F2BF093003D47DF /* 04_Anim */;
+			targetProxy = E0FF28E80F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF28EB0F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0FF289E0F2BF08F003D47DF /* 03_Frame */;
+			targetProxy = E0FF28EA0F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF28ED0F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0FF288F0F2BF053003D47DF /* 02_Clock */;
+			targetProxy = E0FF28EC0F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF28EF0F2BF0F8003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E059AC3A0F2300F600900DF0 /* 01_Object */;
+			targetProxy = E0FF28EE0F2BF0F8003D47DF /* PBXContainerItemProxy */;
+		};
+		E0FF29020F2BF328003D47DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E059AAE20F22ECCA00900DF0 /* 10_StandAlone */;
+			targetProxy = E0FF29010F2BF328003D47DF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB916608733D950010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ONLY_ACTIVE_ARCH_PRE_XCODE_3_1)";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
+				DEAD_CODE_STRIPPING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_ENABLE_PASCAL_STRINGS = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = NO;
+				GCC_FAST_OBJC_DISPATCH = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_VERSION = "";
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_EXPAND_BUILD_SETTINGS = NO;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				MACH_O_TYPE = mh_bundle;
+				OBJROOT = build;
+				ONLY_ACTIVE_ARCH_PRE_XCODE_3_1 = "$(NATIVE_ARCH)";
+				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SKIP_INSTALL = YES;
+				SYMROOT = ../../../bin/mac;
+				USER_HEADER_SEARCH_PATHS = ../../../include;
+				VALID_ARCHS = "i386 ppc";
+			};
+			name = Release;
+		};
+		E059AAE60F22ECCB00900DF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __orxDLL__;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../lib/mac\"";
+				MACH_O_TYPE = mh_execute;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 10_StandAlone;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E059AC060F22FEE800900DF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = All;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E059AC450F2300F600900DF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 01_Object;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0FF28950F2BF053003D47DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 02_Clock;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0FF28A40F2BF08F003D47DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 03_Frame;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0FF28AC0F2BF093003D47DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 04_Anim;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0FF28B40F2BF096003D47DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 05_Viewport;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0FF28BC0F2BF099003D47DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 06_Sound;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0FF28C40F2BF09C003D47DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 07_Fx;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0FF28CC0F2BF09F003D47DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 08_Physics;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		E0FF28D40F2BF0A2003D47DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				INSTALL_PATH = "@executable_path";
+				LD_DYLIB_INSTALL_NAME = "";
+				LIBRARY_SEARCH_PATHS = ../../../lib/mac;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = 09_Scrolling;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = all;
+				SYMROOT = ../../../bin/mac;
+				VALID_ARCHS = "i386 ppc";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB916408733D950010E9CD /* Build configuration list for PBXProject "orx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB916608733D950010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E059AAEC0F22ED3700900DF0 /* Build configuration list for PBXNativeTarget "10_StandAlone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E059AAE60F22ECCB00900DF0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E059AC070F22FF0600900DF0 /* Build configuration list for PBXAggregateTarget "All" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E059AC060F22FEE800900DF0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E059AC430F2300F600900DF0 /* Build configuration list for PBXNativeTarget "01_Object" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E059AC450F2300F600900DF0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0FF28940F2BF053003D47DF /* Build configuration list for PBXNativeTarget "02_Clock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FF28950F2BF053003D47DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0FF28A30F2BF08F003D47DF /* Build configuration list for PBXNativeTarget "03_Frame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FF28A40F2BF08F003D47DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0FF28AB0F2BF093003D47DF /* Build configuration list for PBXNativeTarget "04_Anim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FF28AC0F2BF093003D47DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0FF28B30F2BF096003D47DF /* Build configuration list for PBXNativeTarget "05_Viewport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FF28B40F2BF096003D47DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0FF28BB0F2BF099003D47DF /* Build configuration list for PBXNativeTarget "06_Sound" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FF28BC0F2BF099003D47DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0FF28C30F2BF09C003D47DF /* Build configuration list for PBXNativeTarget "07_Fx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FF28C40F2BF09C003D47DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0FF28CB0F2BF09F003D47DF /* Build configuration list for PBXNativeTarget "08_Physics" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FF28CC0F2BF09F003D47DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0FF28D30F2BF0A2003D47DF /* Build configuration list for PBXNativeTarget "09_Scrolling" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FF28D40F2BF0A2003D47DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}
