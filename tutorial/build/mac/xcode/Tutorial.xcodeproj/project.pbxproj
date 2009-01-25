@@ -57,70 +57,70 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28CE0F2BF0A2003D47DF /* 09_Scrolling */;
+			remoteGlobalIDString = E0FF28CE0F2BF0A2003D47DF;
 			remoteInfo = 09_Scrolling;
 		};
 		E0FF28E00F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28C60F2BF09F003D47DF /* 08_Physics */;
+			remoteGlobalIDString = E0FF28C60F2BF09F003D47DF;
 			remoteInfo = 08_Physics;
 		};
 		E0FF28E20F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28BE0F2BF09C003D47DF /* 07_Fx */;
+			remoteGlobalIDString = E0FF28BE0F2BF09C003D47DF;
 			remoteInfo = 07_Fx;
 		};
 		E0FF28E40F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28B60F2BF099003D47DF /* 06_Sound */;
+			remoteGlobalIDString = E0FF28B60F2BF099003D47DF;
 			remoteInfo = 06_Sound;
 		};
 		E0FF28E60F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28AE0F2BF096003D47DF /* 05_Viewport */;
+			remoteGlobalIDString = E0FF28AE0F2BF096003D47DF;
 			remoteInfo = 05_Viewport;
 		};
 		E0FF28E80F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF28A60F2BF093003D47DF /* 04_Anim */;
+			remoteGlobalIDString = E0FF28A60F2BF093003D47DF;
 			remoteInfo = 04_Anim;
 		};
 		E0FF28EA0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF289E0F2BF08F003D47DF /* 03_Frame */;
+			remoteGlobalIDString = E0FF289E0F2BF08F003D47DF;
 			remoteInfo = 03_Frame;
 		};
 		E0FF28EC0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E0FF288F0F2BF053003D47DF /* 02_Clock */;
+			remoteGlobalIDString = E0FF288F0F2BF053003D47DF;
 			remoteInfo = 02_Clock;
 		};
 		E0FF28EE0F2BF0F8003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E059AC3A0F2300F600900DF0 /* 01_Object */;
+			remoteGlobalIDString = E059AC3A0F2300F600900DF0;
 			remoteInfo = 01_Object;
 		};
 		E0FF29010F2BF328003D47DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E059AAE20F22ECCA00900DF0 /* 10_StandAlone */;
+			remoteGlobalIDString = E059AAE20F22ECCA00900DF0;
 			remoteInfo = 10_StandAlone;
 		};
 /* End PBXContainerItemProxy section */
@@ -543,7 +543,7 @@
 /* Begin PBXProject section */
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "orx" */;
+			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "Tutorial" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* orx */;
@@ -1106,7 +1106,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB916408733D950010E9CD /* Build configuration list for PBXProject "orx" */ = {
+		1DEB916408733D950010E9CD /* Build configuration list for PBXProject "Tutorial" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB916608733D950010E9CD /* Release */,
