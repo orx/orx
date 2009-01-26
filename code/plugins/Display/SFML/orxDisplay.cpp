@@ -263,6 +263,24 @@ orxVOID orxFASTCALL orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstCloc
         break;
       }
 
+      /* Mouse in? */
+      case sf::Event::MouseEntered:
+      {
+        /* Sends system mouse in event */
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_MOUSE_IN);
+        
+        break;
+      }
+
+      /* Mouse out? */
+      case sf::Event::MouseLeft:
+      {
+        /* Sends system mouse out event */
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_MOUSE_OUT);
+        
+        break;
+      }
+
       case sf::Event::MouseMoved:
       case sf::Event::MouseWheelMoved:
       {
