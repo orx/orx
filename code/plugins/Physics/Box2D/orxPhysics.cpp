@@ -955,7 +955,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       if(sstPhysics.pstClock != orxNULL)
       {
         /* Registers rendering function */
-        eResult = orxClock_Register(sstPhysics.pstClock, orxPhysics_Update, (orxVOID *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
+        eResult = orxClock_Register(sstPhysics.pstClock, orxPhysics_Update, (orxVOID *)sstPhysics.u32Iterations, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWEST);
 
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)

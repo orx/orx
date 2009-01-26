@@ -87,7 +87,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Load(orxCONST orxSTRING _zFile
 /** Reloads config files from history
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ReloadHistory();
+extern orxDLLAPI orxSTATUS              orxConfig_ReloadHistory();
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
@@ -95,12 +95,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ReloadHistory();
  * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
 
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select
  */
-extern orxDLLAPI orxSTATUS              orxConfig_SelectSection(orxCONST orxSTRING _zSectionName);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SelectSection(orxCONST orxSTRING _zSectionName);
 
 /** Gets current working section
  * @return Current selected section
@@ -116,7 +116,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(orxCONST orxSTRING 
 /** Clears section
  * @param[in] _zSectionName     Section name to clear
  */
-extern orxDLLAPI orxSTATUS              orxConfig_ClearSection(orxCONST orxSTRING _zSectionName);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ClearSection(orxCONST orxSTRING _zSectionName);
 
 /** Clears a value from current selected section
  * @param[in] _zKey             Key name

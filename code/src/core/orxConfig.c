@@ -158,7 +158,7 @@ typedef struct __orxCONFIG_VALUE_t
 
 } orxCONFIG_VALUE;
 
-/** Config node structure
+/** Config entry structure
  */
 typedef struct __orxCONFIG_ENTRY_t
 {
@@ -178,7 +178,7 @@ typedef struct __orxCONFIG_SECTION_t
   orxBANK    *pstBank;                      /**< Bank of entries : 4 */
   orxSTRING   zName;                        /**< Section name : 8 */
   orxU32      u32ID;                        /**< Section CRC : 12 */
-  orxU32      u32ParentID;                  /**< Parent ID (RCR) : 16 */
+  orxU32      u32ParentID;                  /**< Parent ID (CRC) : 16 */
 
   orxPAD(16)
 
@@ -1547,7 +1547,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(orxCONST orxSTRING _zBaseName)
  * @param[in] _zSectionName     Section name to select
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
+orxSTATUS orxFASTCALL orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2076,7 +2076,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
 /** Reloads config files from history
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
+orxSTATUS orxConfig_ReloadHistory()
 {
   orxSTRING  *pzHistoryEntry;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -2133,7 +2133,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
  * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
+orxSTATUS orxFASTCALL orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
   FILE     *pstFile;
   orxSTRING zFileName;
@@ -2358,7 +2358,7 @@ orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
 /** Clears section
  * @param[in] _zSectionName     Section name to clear
  */
-orxSTATUS orxConfig_ClearSection(orxCONST orxSTRING _zSectionName)
+orxSTATUS orxFASTCALL orxConfig_ClearSection(orxCONST orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
   orxU32              u32ID;

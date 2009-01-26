@@ -1178,7 +1178,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
             if(pstClock != orxNULL)
             {
               /* Registers event update function */
-              eResult = orxClock_Register(pstClock, orxDisplay_SFML_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGH);
+              eResult = orxClock_Register(pstClock, orxDisplay_SFML_EventUpdate, orxNULL, orxMODULE_ID_DISPLAY, orxCLOCK_PRIORITY_HIGHEST);
             }
 
             /* Has VSync value? */

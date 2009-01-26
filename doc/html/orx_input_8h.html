@@ -18,9 +18,23 @@
 </div>
 <div class="contents">
 <h1>include/io/orxInput.h File Reference</h1><code>#include &quot;<a class="el" href="orx_include_8h.html">orxInclude.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="orx_joystick_8h.html">io/orxJoystick.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="orx_keyboard_8h.html">io/orxKeyboard.h</a>&quot;</code><br>
+<code>#include &quot;<a class="el" href="orx_mouse_8h.html">io/orxMouse.h</a>&quot;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> { <br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659072036cd0b2a36605c5f13226387e36a">orxINPUT_TYPE_KEYBOARD_KEY</a> =  0, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659da3ebdb12e608125c350130f26b9de52">orxINPUT_TYPE_MOUSE_BUTTON</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659784e3e3275dda69a74fd8ccc73c6d704">orxINPUT_TYPE_JOYSTICK_BUTTON</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c185305366589916286595f3a771fd34c09bf6a0a8d0d5294bbd8">orxINPUT_TYPE_JOYSTICK_AXIS</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659dea8549dfda454ad486d3697c2c4672b">orxINPUT_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_input.html#gg13d8a7334d0c18530536658991628659b866e5f4e6df8eb07878919669d8a3d8">orxINPUT_TYPE_NONE</a> =  orxENUM_NONE
+<br>
+ }</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gad778a6cb60c4e8b47e35f8a9216f108">orxINPUT_EVENT</a> { <a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1088cb7b8201dda5e9ca9835777d4cf2809">orxINPUT_EVENT_ON</a> =  0, 
 <a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f10870508c91cba710144ab50155162a2a00">orxINPUT_EVENT_OFF</a>, 
 <a class="el" href="group__orx_input.html#ggad778a6cb60c4e8b47e35f8a9216f1089d294be8d355490533764b4579b8c13c">orxINPUT_EVENT_NUMBER</a>, 
@@ -33,6 +47,22 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga891b85bb34ba7a4e534a9576215519d">orxInput_Init</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g131960d4d9f0de6e0f45b5ed90e62f0d">orxInput_Exit</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gf974ba35ee4a43db4c339e8172edcf29">orxInput_Load</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g0f07a73142d64cfaea51b0ef2338824d">orxInput_Save</a> (orxCONST orxSTRING _zFileName)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ge5a0a7b9de63816c21209a918f071180">orxInput_SelectSet</a> (orxCONST orxSTRING _zSetName)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gb0071dd7a9e2eba0ef0d319319d042d4">orxInput_GetCurrentSet</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gd6f49a2d9e4d8f6c63bdc2293ecfb240">orxInput_IsActive</a> (orxCONST orxSTRING _zInputName)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gd5bf2e597b4753b303b6b287d82566b2">orxInput_GetValue</a> (orxCONST orxSTRING _zInputName)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g6916bdf3d91cf9fe9e1c73b8bfa4f07e">orxInput_Bind</a> (orxCONST orxSTRING _zName, <a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g41dac9027f2f429d21026c0a2994e7ae">orxInput_Unbind</a> (<a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
