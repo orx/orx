@@ -33,6 +33,11 @@
 #include "debug/orxDebug.h"
 
 
+/** Misc defines
+ */
+#define orxMOUSE_KZ_LITERAL_PREFIX            "MOUSE_"
+
+
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
@@ -63,7 +68,7 @@ orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
 {
   orxSTRING zResult;
 
-#define orxMOUSE_DECLARE_BUTTON_NAME(BUTTON)   case orxMOUSE_##BUTTON: zResult = #BUTTON; break
+#define orxMOUSE_DECLARE_BUTTON_NAME(BUTTON)   case orxMOUSE_BUTTON_##BUTTON: zResult = orxMOUSE_KZ_LITERAL_PREFIX#BUTTON; break
 
   /* Checks */
   orxASSERT(_eButton < orxMOUSE_BUTTON_NUMBER);
@@ -71,9 +76,11 @@ orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
   /* Depending on button */
   switch(_eButton)
   {
-    orxMOUSE_DECLARE_BUTTON_NAME(BUTTON_LEFT);
-    orxMOUSE_DECLARE_BUTTON_NAME(BUTTON_RIGHT);
-    orxMOUSE_DECLARE_BUTTON_NAME(BUTTON_MIDDLE);
+    orxMOUSE_DECLARE_BUTTON_NAME(LEFT);
+    orxMOUSE_DECLARE_BUTTON_NAME(RIGHT);
+    orxMOUSE_DECLARE_BUTTON_NAME(MIDDLE);
+    orxMOUSE_DECLARE_BUTTON_NAME(EXTRA_1);
+    orxMOUSE_DECLARE_BUTTON_NAME(EXTRA_2);
 
     default:
     {

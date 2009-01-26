@@ -128,10 +128,7 @@ extern "C" orxSTATUS orxMouse_SFML_ShowCursor(orxBOOL _bShow)
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
   /* Inits event */
-  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-  stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed);
-  stEvent.eID         = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed);
-  stEvent.pstPayload  = (orxVOID *)&_bShow;
+  orxEVENT_INIT(stEvent, orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed, orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed, orxNULL, orxNULL, &_bShow);
 
   /* Sends system close event */
   eResult = orxEvent_Send(&stEvent);
@@ -222,10 +219,7 @@ extern "C" orxSTATUS orxMouse_SFML_SetPosition(orxCONST orxVECTOR *_pvPosition)
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
 
   /* Inits event */
-  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-  stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved);
-  stEvent.eID         = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved);
-  stEvent.pstPayload  = (orxVOID *)_pvPosition;
+  orxEVENT_INIT(stEvent, orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved, orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseMoved, orxNULL, orxNULL, _pvPosition);
 
   /* Sends system close event */
   eResult = orxEvent_Send(&stEvent);

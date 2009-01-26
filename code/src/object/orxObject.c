@@ -442,16 +442,8 @@ orxOBJECT *orxObject_Create()
     /* Not creating it internally? */
     if(!orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_INTERNAL))
     {
-      orxEVENT stEvent;
-
-      /* Inits event */
-      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-      stEvent.eType   = orxEVENT_TYPE_OBJECT;
-      stEvent.eID     = orxOBJECT_EVENT_CREATE;
-      stEvent.hSender = pstObject;
-
-      /* Sends it */
-      orxEvent_Send(&stEvent);
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstObject, orxNULL, orxNULL);
     }
   }
   else
@@ -478,17 +470,10 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstObject) == 0)
   {
-    orxEVENT  stEvent;
-    orxU32    i;
+    orxU32 i;
 
-    /* Inits event */
-    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-    stEvent.eType   = orxEVENT_TYPE_OBJECT;
-    stEvent.eID     = orxOBJECT_EVENT_DELETE;
-    stEvent.hSender = _pstObject;
-
-    /* Sends it */
-    orxEvent_Send(&stEvent);
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DELETE, _pstObject, orxNULL, orxNULL);
 
     /* Unlink all structures */
     for(i = 0; i < orxSTRUCTURE_ID_LINKABLE_NUMBER; i++)
@@ -552,7 +537,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       orxU32    u32FrameFlags, u32Flags;
       orxVECTOR vValue, vParentSize;
       orxBOOL   bHasParent = orxFALSE;
-      orxEVENT  stEvent;
 
       /* Defaults to 2D flags */
       u32Flags = orxOBJECT_KU32_FLAG_2D;
@@ -931,14 +915,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
       /* Updates flags */
       orxStructure_SetFlags(pstResult, u32Flags, orxOBJECT_KU32_FLAG_NONE);
 
-      /* Inits event */
-      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-      stEvent.eType   = orxEVENT_TYPE_OBJECT;
-      stEvent.eID     = orxOBJECT_EVENT_CREATE;
-      stEvent.hSender = pstResult;
-
-      /* Sends it */
-      orxEvent_Send(&stEvent);
+      /* Sends event */
+      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstResult, orxNULL, orxNULL);
     }
 
     /* Restores previous section */

@@ -102,7 +102,7 @@ orxVOID orxFASTCALL orxDisplay_SDL_EventUpdate(orxCONST orxCLOCK_INFO *_pstClock
       case SDL_QUIT:
       {
         /* Sends system close event */
-        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
 
         break;
       }
@@ -111,7 +111,7 @@ orxVOID orxFASTCALL orxDisplay_SDL_EventUpdate(orxCONST orxCLOCK_INFO *_pstClock
       case SDL_ACTIVEEVENT:
       {
         /* Sends system focus gained event */
-        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, (stSDLEvent.active.gain) ? orxSYSTEM_EVENT_FOCUS_GAINED : orxSYSTEM_EVENT_FOCUS_LOST);
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, (stSDLEvent.active.gain) ? orxSYSTEM_EVENT_FOCUS_GAINED : orxSYSTEM_EVENT_FOCUS_LOST);
 
         break;
       }
@@ -128,16 +128,8 @@ orxVOID orxFASTCALL orxDisplay_SDL_EventUpdate(orxCONST orxCLOCK_INFO *_pstClock
       }
       case SDL_MOUSEMOTION:
       {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + stSDLEvent.type);
-        stEvent.eID         = stSDLEvent.type;
-        stEvent.pstPayload  = &stSDLEvent;
-
         /* Sends reserved event */
-        orxEvent_Send(&stEvent);
+        orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + stSDLEvent.type, stSDLEvent.type, orxNULL, orxNULL, &stSDLEvent);
 
         break;
       }

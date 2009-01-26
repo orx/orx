@@ -311,7 +311,7 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxCONST orxEVENT *_pstEvent)
  * @param _eEventID             Event ID
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxEvent_SendSimple(orxEVENT_TYPE _eEventType, orxENUM _eEventID)
+orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID)
 {
   orxEVENT stEvent;
   orxBANK  *pstBank;

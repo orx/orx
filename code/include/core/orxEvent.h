@@ -42,6 +42,27 @@
 #include "orxInclude.h"
 
 
+/** Helper defines
+ */
+#define orxEVENT_INIT(EVENT, TYPE, ID, SENDER, RECIPIENT, PAYLOAD)  \
+do                                                                  \
+{                                                                   \
+  EVENT.eType       = (orxEVENT_TYPE)(TYPE);                        \
+  EVENT.eID         = (orxENUM)(ID);                                \
+  EVENT.hSender     = (orxHANDLE)(SENDER);                          \
+  EVENT.hRecipient  = (orxHANDLE)(RECIPIENT);                       \
+  EVENT.pstPayload  = (orxVOID *)(PAYLOAD);                         \
+} while(orxFALSE)
+
+#define orxEVENT_SEND(TYPE, ID, SENDER, RECIPIENT, PAYLOAD)         \
+do                                                                  \
+{                                                                   \
+  orxEVENT stEvent;                                                 \
+  orxEVENT_INIT(stEvent, TYPE, ID, SENDER, RECIPIENT, PAYLOAD);     \
+  orxEvent_Send(&stEvent);                                          \
+} while(orxFALSE)
+
+
 /** Event type enum
  */
 typedef enum __orxEVENT_TYPE_t
@@ -50,6 +71,7 @@ typedef enum __orxEVENT_TYPE_t
   orxEVENT_TYPE_ANIM,
   orxEVENT_TYPE_CLOCK,
   orxEVENT_TYPE_FX,
+  orxEVENT_TYPE_INPUT,
   orxEVENT_TYPE_OBJECT,
   orxEVENT_TYPE_RENDER,
   orxEVENT_TYPE_PHYSICS,
@@ -125,7 +147,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(orxCONST orxEVENT *_pstEve
  * @param _eEventID             Event ID
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_SendSimple(orxEVENT_TYPE _eEventType, orxENUM _eEventID);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID);
 
 
 #endif /*_orxEVENT_H_*/

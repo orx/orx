@@ -44,6 +44,20 @@
 #include "orxInclude.h"
 
 
+/** Event enum
+ */
+typedef enum __orxINPUT_EVENT_t
+{
+  orxINPUT_EVENT_ON = 0,
+  orxINPUT_EVENT_OFF,
+
+  orxINPUT_EVENT_NUMBER,
+
+  orxINPUT_EVENT_NONE = orxENUM_NONE
+
+} orxINPUT_EVENT;
+
+
 /** Input module setup
  */
 extern orxDLLAPI orxVOID                orxInput_Setup();

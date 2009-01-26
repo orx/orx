@@ -176,24 +176,18 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
       /* Change happened? */
       if(hNewAnim != _pstAnimPointer->hCurrentAnim)
       {
-        orxEVENT              stEvent;
         orxANIM_EVENT_PAYLOAD stPayload;
 
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+        /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
-        stEvent.eType       = orxEVENT_TYPE_ANIM;
-        stEvent.eID         = (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_STOP;
-        stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(_pstAnimPointer->pstOwner);
-        stEvent.pstPayload  = &stPayload;
         stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
         stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
         /* Updates current anim handle */
         _pstAnimPointer->hCurrentAnim = hNewAnim;
 
-        /* Sends it */
-        orxEvent_Send(&stEvent);
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_ANIM, (bCut != orxFALSE) ? orxANIM_EVENT_CUT : orxANIM_EVENT_STOP, _pstAnimPointer->pstOwner, orxNULL, &stPayload);
 
         /* No next anim? */
         if(hNewAnim == orxHANDLE_UNDEFINED)
@@ -206,13 +200,12 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         }
         else
         {
-          /* Inits event */
-          stEvent.eID         = orxANIM_EVENT_START;
+          /* Inits event payload */
           stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
           stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
-          /* Sends it */
-          orxEvent_Send(&stEvent);
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, _pstAnimPointer->pstOwner, orxNULL, &stPayload);
         }
       }
       else
@@ -220,21 +213,15 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
         /* Looped? */
         if(_pstAnimPointer->fCurrentAnimTime < fTimeBackup)
         {
-          orxEVENT              stEvent;
           orxANIM_EVENT_PAYLOAD stPayload;
 
-          /* Inits event */
-          orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+          /* Inits event payload */
           orxMemory_Zero(&stPayload, sizeof(orxANIM_EVENT_PAYLOAD));
-          stEvent.eType       = orxEVENT_TYPE_ANIM;
-          stEvent.eID         = orxANIM_EVENT_LOOP;
-          stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(_pstAnimPointer->pstOwner);
-          stEvent.pstPayload  = &stPayload;
           stPayload.pstAnim   = orxAnimSet_GetAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim);
           stPayload.zAnimName = orxAnim_GetName(stPayload.pstAnim);
 
           /* Sends it */
-          orxEvent_Send(&stEvent);
+          orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_LOOP, _pstAnimPointer->pstOwner, orxNULL, &stPayload);
         }
       }
 

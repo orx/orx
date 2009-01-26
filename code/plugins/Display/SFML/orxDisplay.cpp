@@ -240,7 +240,7 @@ orxVOID orxFASTCALL orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstCloc
       case sf::Event::Closed:
       {
         /* Sends system close event */
-        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
 
         break;
       }
@@ -249,7 +249,7 @@ orxVOID orxFASTCALL orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstCloc
       case sf::Event::GainedFocus:
       {
         /* Sends system focus gained event */
-        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
 
         break;
       }
@@ -258,7 +258,7 @@ orxVOID orxFASTCALL orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstCloc
       case sf::Event::LostFocus:
       {
         /* Sends system focus lost event */
-        orxEvent_SendSimple(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
 
         break;
       }
@@ -266,16 +266,8 @@ orxVOID orxFASTCALL orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstCloc
       case sf::Event::MouseMoved:
       case sf::Event::MouseWheelMoved:
       {
-        orxEVENT stEvent;
-
-        /* Inits event */
-        orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-        stEvent.eType       = (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + oEvent.Type);
-        stEvent.eID         = oEvent.Type;
-        stEvent.pstPayload  = &oEvent;
-
         /* Sends reserved event */
-        orxEvent_Send(&stEvent);
+        orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + oEvent.Type, oEvent.Type, orxNULL, orxNULL, &oEvent);
       }
 
       default:

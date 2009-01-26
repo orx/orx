@@ -329,7 +329,6 @@ void orxPhysicsBoundaryListener::Violation(b2Body *_poBody)
 orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-  orxEVENT                  stEvent;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -337,10 +336,6 @@ orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
 
   /* Updates world simulation */
   sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pstContext);
-
-  /* Clears and inits event */
-  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-  stEvent.eType = orxEVENT_TYPE_PHYSICS;
 
   /* For all stored events */
   for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL);
@@ -352,13 +347,13 @@ orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
     {
       case orxPHYSICS_EVENT_OUT_OF_WORLD:
       {
-        /* Inits event */
-        stEvent.eID         = orxPHYSICS_EVENT_OUT_OF_WORLD;
-        stEvent.hRecipient  = stEvent.hSender = (orxHANDLE)orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData()));
-        stEvent.pstPayload  = orxNULL;
+        orxSTRUCTURE *pstOwner;
 
-        /* Sends it */
-        orxEvent_Send(&stEvent);
+        /* Gets owner */
+        pstOwner = orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData()));
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_OUT_OF_WORLD, pstOwner, pstOwner, orxNULL);
 
         break;
       }
@@ -367,14 +362,8 @@ orxVOID orxFASTCALL orxPhysics_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orx
       case orxPHYSICS_EVENT_CONTACT_PERSIST:
       case orxPHYSICS_EVENT_CONTACT_REMOVE:
       {
-        /* Inits event */
-        stEvent.eID         = pstEventStorage->eID;
-        stEvent.hSender     = (orxHANDLE)orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData()));
-        stEvent.hRecipient  = (orxHANDLE)orxBody_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData()));
-        stEvent.pstPayload  = &(pstEventStorage->stPayload);
-
-        /* Sends it */
-        orxEvent_Send(&stEvent);
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxBody_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxBody_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
 
         break;
       }

@@ -531,16 +531,8 @@ orxSTATUS orxFASTCALL orxClock_Resync(orxCLOCK *_pstClock)
   /* Not locked? */
   if(!orxFLAG_TEST(sstClock.u32Flags, orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
   {
-    orxEVENT stEvent;
-
-    /* Inits event */
-    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-    stEvent.eType       = orxEVENT_TYPE_CLOCK;
-    stEvent.eID         = orxCLOCK_EVENT_RESYNC;
-    stEvent.hSender     = (orxHANDLE)(_pstClock);
-
-    /* Sends it */
-    orxEvent_Send(&stEvent);
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_RESYNC, _pstClock, orxNULL, orxNULL);
 
     /* Resyncs clock */
     _pstClock->fPartialDT = orxFLOAT_0;
@@ -604,16 +596,8 @@ orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
   /* Not locked? */
   if(!orxFLAG_TEST(sstClock.u32Flags, orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
   {
-    orxEVENT stEvent;
-
-    /* Inits event */
-    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-    stEvent.eType       = orxEVENT_TYPE_CLOCK;
-    stEvent.eID         = orxCLOCK_EVENT_RESTART;
-    stEvent.hSender     = (orxHANDLE)(_pstClock);
-
-    /* Sends it */
-    orxEvent_Send(&stEvent);
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_RESTART, _pstClock, orxNULL, orxNULL);
 
     /* Restarts clock */
     _pstClock->stClockInfo.fTime = _pstClock->stClockInfo.fDT = _pstClock->fPartialDT = orxFLOAT_0;
@@ -639,20 +623,12 @@ orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
  */
 orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
 {
-  orxEVENT stEvent;
-
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
-  /* Inits event */
-  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-  stEvent.eType       = orxEVENT_TYPE_CLOCK;
-  stEvent.eID         = orxCLOCK_EVENT_PAUSE;
-  stEvent.hSender     = (orxHANDLE)(_pstClock);
-
-  /* Sends it */
-  orxEvent_Send(&stEvent);
+  /* Sends event */
+  orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_PAUSE, _pstClock, orxNULL, orxNULL);
 
   /* Updates clock flags */
   _pstClock->u32Flags |= orxCLOCK_KU32_CLOCK_FLAG_PAUSED;
@@ -665,20 +641,12 @@ orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
  */
 orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
 {
-  orxEVENT stEvent;
-
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
 
-  /* Inits event */
-  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-  stEvent.eType       = orxEVENT_TYPE_CLOCK;
-  stEvent.eID         = orxCLOCK_EVENT_UNPAUSE;
-  stEvent.hSender     = (orxHANDLE)(_pstClock);
-
-  /* Sends it */
-  orxEvent_Send(&stEvent);
+  /* Sends event */
+  orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_UNPAUSE, _pstClock, orxNULL, orxNULL);
 
   /* Updates clock flags */
   _pstClock->u32Flags &= ~orxCLOCK_KU32_CLOCK_FLAG_PAUSED;

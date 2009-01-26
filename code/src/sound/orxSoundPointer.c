@@ -182,21 +182,15 @@ orxSTATIC orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructu
         /* Is sound stopped? */
         if(orxSound_GetStatus(pstSound) == orxSOUND_STATUS_STOP)
         {
-          orxEVENT                stEvent;
-          orxSOUND_EVENT_PAYLOAD  stPayload;
+          orxSOUND_EVENT_PAYLOAD stPayload;
 
-          /* Inits event */
-          orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+          /* Inits event payload */
           orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-          stEvent.eType       = orxEVENT_TYPE_SOUND;
-          stEvent.eID         = orxSOUND_EVENT_STOP;
-          stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(pstSoundPointer->pstOwner);
-          stEvent.pstPayload  = &stPayload;
-          stPayload.pstSound  = pstSound;
-          stPayload.zSoundName= orxSound_GetName(pstSound);
+          stPayload.pstSound    = pstSound;
+          stPayload.zSoundName  = orxSound_GetName(pstSound);
 
           /* Sends event */
-          orxEvent_Send(&stEvent);
+          orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_STOP, pstSoundPointer->pstOwner, pstSoundPointer->pstOwner, &stPayload);
 
           /* Removes it */
           orxSoundPointer_RemoveSound(pstSoundPointer, pstSound);
@@ -467,8 +461,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
   /* Found? */
   if(u32Index < orxSOUNDPOINTER_KU32_SOUND_NUMBER)
   {
-    orxEVENT                stEvent;
-    orxSOUND_EVENT_PAYLOAD  stPayload;
+    orxSOUND_EVENT_PAYLOAD stPayload;
 
     /* Increases its reference counter */
     orxStructure_IncreaseCounter(_pstSound);
@@ -482,18 +475,13 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
     /* Stores it as last added sound */
     _pstSoundPointer->u32LastAddedIndex = u32Index;
 
-    /* Inits event */
-    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+    /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-    stEvent.eType       = orxEVENT_TYPE_SOUND;
-    stEvent.eID         = orxSOUND_EVENT_START;
-    stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(_pstSoundPointer->pstOwner);
-    stEvent.pstPayload  = &stPayload;
-    stPayload.pstSound  = _pstSound;
-    stPayload.zSoundName= orxSound_GetName(_pstSound);
+    stPayload.pstSound    = _pstSound;
+    stPayload.zSoundName  = orxSound_GetName(_pstSound);
 
     /* Sends event */
-    orxEvent_Send(&stEvent);
+    orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, _pstSoundPointer->pstOwner, _pstSoundPointer->pstOwner, &stPayload);
 
     /* Plays it */
     eResult = orxSound_Play(_pstSound);
@@ -645,8 +633,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
     /* Valid? */
     if(pstSound != orxNULL)
     {
-      orxEVENT                stEvent;
-      orxSOUND_EVENT_PAYLOAD  stPayload;
+      orxSOUND_EVENT_PAYLOAD stPayload;
 
       /* Increases its reference counter */
       orxStructure_IncreaseCounter(pstSound);
@@ -660,18 +647,13 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
       /* Stores it as last added sound */
       _pstSoundPointer->u32LastAddedIndex = u32Index;
 
-      /* Inits event */
-      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
+      /* Inits event payload */
       orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
-      stEvent.eType       = orxEVENT_TYPE_SOUND;
-      stEvent.eID         = orxSOUND_EVENT_START;
-      stEvent.hSender     = stEvent.hRecipient = (orxHANDLE)(_pstSoundPointer->pstOwner);
-      stEvent.pstPayload  = &stPayload;
-      stPayload.pstSound  = pstSound;
-      stPayload.zSoundName= orxSound_GetName(pstSound);
+      stPayload.pstSound    = pstSound;
+      stPayload.zSoundName  = orxSound_GetName(pstSound);
 
       /* Sends event */
-      orxEvent_Send(&stEvent);
+      orxEVENT_SEND(orxEVENT_TYPE_SOUND, orxSOUND_EVENT_START, _pstSoundPointer->pstOwner, _pstSoundPointer->pstOwner, &stPayload);
 
       /* Plays it */
       eResult = orxSound_Play(pstSound);

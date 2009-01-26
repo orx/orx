@@ -318,16 +318,8 @@ orxSTATIC orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, o
     /* Should spawn a new wave? */
     if(_pstClockInfo->fTime >= pstSpawner->fWaveTimeStamp)
     {
-      orxEVENT stEvent;
-
-      /* Inits event */
-      orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-      stEvent.eType   = orxEVENT_TYPE_SPAWNER;
-      stEvent.eID     = orxSPAWNER_EVENT_WAVE_START;
-      stEvent.hSender = pstSpawner;
-
       /* Sends wave start event */
-      orxEvent_Send(&stEvent);
+      orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
 
       /* Stores wave parent */
       sstSpawner.pstWaveParent = pstObject;
@@ -348,8 +340,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, o
       pstSpawner->fWaveTimeStamp = _pstClockInfo->fTime + pstSpawner->fWaveDelay;
 
       /* Sends wave stop event */
-      stEvent.eID = orxSPAWNER_EVENT_WAVE_STOP;
-      orxEvent_Send(&stEvent);
+      orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_STOP, pstSpawner, orxNULL, orxNULL);
     }
   }
 
@@ -700,17 +691,10 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstSpawner) == 0)
   {
-    orxOBJECT  *pstObject;
-    orxEVENT    stEvent;
+    orxOBJECT *pstObject;
 
-    /* Inits event */
-    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-    stEvent.eType   = orxEVENT_TYPE_SPAWNER;
-    stEvent.eID     = orxSPAWNER_EVENT_DELETE;
-    stEvent.hSender = _pstSpawner;
-
-    /* Sends it */
-    orxEvent_Send(&stEvent);
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_DELETE, _pstSpawner, orxNULL, orxNULL);
 
     /* For all objects */
     for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT));
@@ -791,8 +775,7 @@ orxBOOL orxFASTCALL orxSpawner_IsEnabled(orxCONST orxSPAWNER *_pstSpawner)
  */
 orxVOID orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
 {
-  orxOBJECT  *pstObject;
-  orxEVENT    stEvent;
+  orxOBJECT *pstObject;
   
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
@@ -801,14 +784,8 @@ orxVOID orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
   /* Updates status */
   orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED, orxSPAWNER_KU32_FLAG_NONE);
 
-  /* Inits event */
-  orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-  stEvent.eType   = orxEVENT_TYPE_SPAWNER;
-  stEvent.eID     = orxSPAWNER_EVENT_RESET;
-  stEvent.hSender = _pstSpawner;
-
-  /* Sends it */
-  orxEvent_Send(&stEvent);
+  /* Sends event */
+  orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_RESET, _pstSpawner, orxNULL, orxNULL);
 
   /* Resets counters */
   _pstSpawner->u16ActiveObjectCounter = 0;
@@ -951,15 +928,8 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
   /* Enabled? */
   if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_ENABLED))
   {
-    orxEVENT  stEvent;
     orxU32    u32SpawnNumber, i;
-    orxSTRING   zPreviousSection;
-
-    /* Inits event */
-    orxMemory_Zero(&stEvent, sizeof(orxEVENT));
-    stEvent.eType   = orxEVENT_TYPE_SPAWNER;
-    stEvent.eID     = orxSPAWNER_EVENT_SPAWN;
-    stEvent.hSender = _pstSpawner;
+    orxSTRING zPreviousSection;
 
     /* Has a total limit? */
     if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_TOTAL_LIMIT))
@@ -1063,11 +1033,8 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
         /* Updates result */
         u32Result++;
 
-        /* Updates event */
-        stEvent.hRecipient = pstObject;
-
-        /* Sends it */
-        orxEvent_Send(&stEvent);
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_SPAWN, _pstSpawner, pstObject, orxNULL);
       }
     }
 
@@ -1080,12 +1047,8 @@ orxU32 orxFASTCALL orxSpawner_Spawn(orxSPAWNER *_pstSpawner, orxU32 _u32Number)
       /* No available object left? */
       if((orxU32)_pstSpawner->u16TotalObjectLimit - (orxU32)_pstSpawner->u16TotalObjectCounter == 0)
       {
-        /* Updates event */
-        stEvent.eID         = orxSPAWNER_EVENT_EMPTY;
-        stEvent.hRecipient  = orxNULL;
-
-        /* Sends it */
-        orxEvent_Send(&stEvent);
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_EMPTY, _pstSpawner, orxNULL, orxNULL);
 
         /* Auto delete? */
         if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_DELETE))
