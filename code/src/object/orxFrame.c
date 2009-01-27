@@ -149,7 +149,7 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST 
     {
       /* Wrong space */
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%d).", _eSpace);
 
       break;
     }
@@ -189,7 +189,7 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT 
     {
       /* Wrong coord type */
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%d).", _eSpace);
 
       break;
     }
@@ -230,7 +230,7 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxCONST orx
 
       /* Wrong coord type */
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%d).", _eSpace);
 
       break;
   }
@@ -273,7 +273,7 @@ orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME 
     {
       /* Wrong coord type */
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%d).", _eSpace);
 
       break;
     }
@@ -316,7 +316,7 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetRotation(orxCONST orxFRAME *_pstFrame,
     {
       /* Wrong coord type */
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%d).", _eSpace);
 
       break;
     }
@@ -372,7 +372,7 @@ orxSTATIC orxINLINE orxVECTOR *_orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, 
     {
       /* Wrong coord type */
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%i).", _eSpace);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Incorrect space (%d).", _eSpace);
 
       /* Clears scale */
       orxVector_Copy(_pvScale, &orxVECTOR_0);

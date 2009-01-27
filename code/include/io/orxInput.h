@@ -76,6 +76,16 @@ typedef enum __orxINPUT_EVENT_t
 
 } orxINPUT_EVENT;
 
+/** Input event payload
+ */
+typedef struct __orxINPUT_EVENT_PAYLOAD_t
+{
+  orxSTRING     zSetName;               /**< Set name : 4 */
+  orxSTRING     zInputName;             /**< Input name : 8 */
+  orxFLOAT      fValue;                 /**< Input value : 12 */
+
+} orxINPUT_EVENT_PAYLOAD;
+
 
 /** Input module setup
  */

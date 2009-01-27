@@ -65,11 +65,6 @@
 #define orxSOUNDPOINTER_HOLDER_KU32_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
 
-/** Misc defines
- */
-#define orxSOUNDPOINTER_KU32_SOUND_NUMBER           4
-
-
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/

@@ -64,7 +64,7 @@ orxSTATIC orxCONST orxU32   su32MessageBankSize     = 64;
  */
 typedef struct __orxPHYSICS_EVENT_STORAGE_t
 {
-  orxPHYSICS_CONTACT_EVENT_PAYLOAD  stPayload;        /**< Event payload */
+  orxPHYSICS_EVENT_PAYLOAD  stPayload;        /**< Event payload */
   orxPHYSICS_EVENT                  eID;              /**< Event ID */
   b2Body                           *poSource;         /**< Event source */
   b2Body                           *poDestination;    /**< Event destination */

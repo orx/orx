@@ -264,7 +264,7 @@ orxBOOL orxKeyboard_SDL_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   else
   {
     /* Logs message */
-    orxLOG("Key <%ld> is not handled by this plugin.");
+    orxLOG("Key <%s> is not handled by this plugin.", orxKeyboard_GetKeyName(_eKey));
 
     /* Updates result */
     bResult = orxFALSE;

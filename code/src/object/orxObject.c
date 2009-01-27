@@ -969,7 +969,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure id(%i).", eStructureID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid structure id(%d).", eStructureID);
 
     /* Wrong structure ID */
     eResult = orxSTATUS_FAILURE;

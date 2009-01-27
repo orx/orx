@@ -44,23 +44,37 @@ orxSTATIC orxSTATUS orxFASTCALL orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT));
 
-  /* Going out of world? */
-  if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
+  /* Input? */
+  if(_pstEvent->eType == orxEVENT_TYPE_INPUT)
   {
-    /* Deletes corresponding object */
-    orxObject_Delete(orxOBJECT(_pstEvent->hSender));
+    orxINPUT_EVENT_PAYLOAD *pstPayload;
 
-    /* Updates ball counter */
-    su32BallCounter--;
+    /* Gets event payload */
+    pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Logs info */
+    orxLOG("Input <%s::%s> is now <%s>, value = %g.", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON" : "OFF", pstPayload->fValue);
   }
-  /* Colliding? */
-  else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+  else
   {
-    /* Adds bump FX on both objects */
-    orxObject_AddFX(orxOBJECT(_pstEvent->hSender), "Bump");
-    orxObject_AddFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+    /* Going out of world? */
+    if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
+    {
+      /* Deletes corresponding object */
+      orxObject_Delete(orxOBJECT(_pstEvent->hSender));
+
+      /* Updates ball counter */
+      su32BallCounter--;
+    }
+    /* Colliding? */
+    else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+    {
+      /* Adds bump FX on both objects */
+      orxObject_AddFX(orxOBJECT(_pstEvent->hSender), "Bump");
+      orxObject_AddFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+    }
   }
 
   /* Done! */
@@ -96,36 +110,36 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
     /* Updates position */
     vMousePos.fZ += orxFLOAT_1;
 
-    /* Clicking? */
-    if((orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT)) || (orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT)))
+    /* Spawning? */
+    if(orxInput_IsActive("Spawn"))
     {
       orxOBJECT *pstObject;
 
-      /* Left clicking */
-      if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT))
+      /* Under limit? */
+      if(su32BallCounter < orxConfig_GetU32("BallLimit"))
       {
-        /* Under limit? */
-        if(su32BallCounter < orxConfig_GetU32("BallLimit"))
-        {
-          /* Spawns a ball under the cursor */
-          pstObject = orxObject_CreateFromConfig("Ball");
-          orxObject_SetPosition(pstObject, &vMousePos);
+        /* Spawns a ball under the cursor */
+        pstObject = orxObject_CreateFromConfig("Ball");
+        orxObject_SetPosition(pstObject, &vMousePos);
 
-          /* Update counter */
-          su32BallCounter++;
-        }
+        /* Update counter */
+        su32BallCounter++;
       }
-      else
-      {
-        /* Picks object under mouse */
-        pstObject = orxObject_Pick(&vMousePos);
+    }
 
-        /* Found and is a ball? */
-        if((pstObject) && (!orxString_Compare(orxObject_GetName(pstObject), "Ball")))
-        {
-          /* Adds FX */
-          orxObject_AddFX(pstObject, "Pick");
-        }
+    /* Picking? */
+    else if(orxInput_IsActive("Pick"))
+    {
+      orxOBJECT *pstObject;
+
+      /* Picks object under mouse */
+      pstObject = orxObject_Pick(&vMousePos);
+
+      /* Found and is a ball? */
+      if((pstObject) && (!orxString_Compare(orxObject_GetName(pstObject), "Ball")))
+      {
+        /* Adds FX */
+        orxObject_AddFX(pstObject, "Pick");
       }
     }
   }
@@ -168,6 +182,12 @@ orxSTATIC orxSTATUS orxBounce_Init()
 
   /* Registers event handler */
   eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler);
+
+  //! Temp: While inputs can't be loaded from config file
+  orxInput_SelectSet("MainInput");
+  orxInput_Bind("Spawn", orxINPUT_TYPE_MOUSE_BUTTON, orxMOUSE_BUTTON_LEFT);
+  orxInput_Bind("Pick", orxINPUT_TYPE_MOUSE_BUTTON, orxMOUSE_BUTTON_RIGHT);
 
   /* Done! */
   return eResult;

@@ -126,15 +126,15 @@ typedef enum __orxPHYSICS_EVENT_t
 
 /** Contact event payload
  */
-typedef struct __orxPHYSICS_CONTACT_EVENT_PAYLOAD_t
+typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
 {
-  orxVECTOR vPosition;                    /**< Contact position: 12 */
-  orxVECTOR vNormal;                      /**< Contact normal: 24 */
-  orxFLOAT  fPenetration;                 /**< Penetration: 28 */
-  orxU32    u32SourcePartIndex;           /**< Source shape index: 32 */
-  orxU32    u32DestinationPartIndex;      /**< Destination shape index: 36 */
+  orxVECTOR vPosition;                    /**< Contact position : 12 */
+  orxVECTOR vNormal;                      /**< Contact normal : 24 */
+  orxFLOAT  fPenetration;                 /**< Penetration : 28 */
+  orxU32    u32SourcePartIndex;           /**< Source shape index : 32 */
+  orxU32    u32DestinationPartIndex;      /**< Destination shape index : 36 */
 
-} orxPHYSICS_CONTACT_EVENT_PAYLOAD;
+} orxPHYSICS_EVENT_PAYLOAD;
 
 /** Internal physics body structure
  */

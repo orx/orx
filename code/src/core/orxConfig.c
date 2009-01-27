@@ -1623,7 +1623,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config section with parameters (%s, %i, %i).", _zSectionName, u32SectionID, u32ParentID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to create config section with parameters (%s, %d, %d).", _zSectionName, u32SectionID, u32ParentID);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -2939,7 +2939,7 @@ orxS32 orxFASTCALL orxConfig_GetListS32(orxCONST orxSTRING _zKey, orxS32 _s32Lis
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 list item value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get S32 list item value <%s.%s>, index invalid: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
     }
   }
 
@@ -2978,7 +2978,7 @@ orxU32 orxFASTCALL orxConfig_GetListU32(orxCONST orxSTRING _zKey, orxS32 _s32Lis
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, index invalid: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
     }
   }
 
@@ -3017,7 +3017,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(orxCONST orxSTRING _zKey, orxS32 _s3
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get FLOAT list item config value <%s.%s>, index invalid: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
     }
   }
 
@@ -3056,7 +3056,7 @@ orxSTRING orxFASTCALL orxConfig_GetListString(orxCONST orxSTRING _zKey, orxS32 _
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get STRING list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get STRING list item config value <%s.%s>, index invalid: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
     }
   }
 
@@ -3095,7 +3095,7 @@ orxBOOL orxFASTCALL orxConfig_GetListBool(orxCONST orxSTRING _zKey, orxS32 _s32L
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get BOOL list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get BOOL list item config value <%s.%s>, index invalid: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
     }
   }
 
@@ -3135,7 +3135,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, index invalid: %ld out of %ld item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Failed to get U32 list item config value <%s.%s>, index invalid: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u8ListCounter);
     }
   }
 

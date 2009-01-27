@@ -294,7 +294,7 @@ orxBOOL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
     case orxMOUSE_BUTTON_EXTRA_2:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "The button <%ld> can not be monitored by this plugin.", _eButton);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "The button <%s> can not be monitored by this plugin.", orxMouse_GetButtonName(_eButton));
 
       /* Updates result */
       bResult = orxFALSE;
