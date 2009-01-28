@@ -230,6 +230,12 @@ orxVOID orxFASTCALL orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstCloc
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
+  /* Clears event */
+  orxMemory_Zero(&oEvent, sizeof(sf::Event));
+
+  /* Clears wheel event */
+  orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseWheelMoved, sf::Event::MouseWheelMoved, orxNULL, orxNULL, &oEvent);
+
   /* Handles all pending events */
   while(sstDisplay.poRenderWindow->GetEvent(oEvent))
   {

@@ -57,6 +57,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gd6f49a2d9e4d8f6c63bdc2293ecfb240">orxInput_IsActive</a> (orxCONST orxSTRING _zInputName)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g77607f2584db7bb82bfaad53c68c3949">orxInput_HasNewStatus</a> (orxCONST orxSTRING _zInputName)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gd5bf2e597b4753b303b6b287d82566b2">orxInput_GetValue</a> (orxCONST orxSTRING _zInputName)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g6916bdf3d91cf9fe9e1c73b8bfa4f07e">orxInput_Bind</a> (orxCONST orxSTRING _zName, <a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID)</td></tr>
@@ -268,6 +270,32 @@ Gets input value <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxFLOAT </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g77607f2584db7bb82bfaad53c68c3949"></a><!-- doxytag: member="orxInput.h::orxInput_HasNewStatus" ref="g77607f2584db7bb82bfaad53c68c3949" args="(orxCONST orxSTRING _zInputName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxInput_HasNewStatus           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zInputName</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Has a new active status since this frame? <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zInputName</em>&nbsp;</td><td>Concerned input name </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if active status is new, orxFALSE otherwise </dd></dl>
 
 </div>
 </div><p>

@@ -132,6 +132,12 @@ extern orxDLLAPI orxSTRING              orxInput_GetCurrentSet();
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxInput_IsActive(orxCONST orxSTRING _zInputName);
 
+/** Has a new active status since this frame?
+ * @param[in] _zInputName       Concerned input name
+ * @return orxTRUE if active status is new, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL    orxInput_HasNewStatus(orxCONST orxSTRING _zInputName);
+
 /** Gets input value
  * @param[in] _zInputName       Concerned input name
  * @return orxFLOAT

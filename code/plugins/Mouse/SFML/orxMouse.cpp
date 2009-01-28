@@ -55,6 +55,7 @@ typedef struct __orxMOUSE_STATIC_t
   orxU32      u32Flags;
   orxVECTOR   vMouseMove, vMouseBackup;
   orxFLOAT    fWheelMove;
+  orxBOOL     bClearWheel;
   sf::Input  *poInput;
 
 } orxMOUSE_STATIC;
@@ -107,6 +108,14 @@ orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 
     /* Gets SFML event */
     poEvent = (sf::Event *)(_pstEvent->pstPayload);
+
+    /* Should clear wheel? */
+    if(sstMouse.bClearWheel != orxFALSE)
+    {
+      /* Clears it */
+      sstMouse.fWheelMove   = orxFLOAT_0;
+      sstMouse.bClearWheel  = orxFALSE;
+    }
 
     /* Updates wheel move */
     sstMouse.fWheelMove += orxS2F(poEvent->MouseWheel.Delta);
@@ -291,6 +300,12 @@ extern "C" orxBOOL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eButton)
       break;
     }
 
+    case orxMOUSE_BUTTON_WHEEL_UP:
+    case orxMOUSE_BUTTON_WHEEL_DOWN:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "The wheel button <%d> can't be queried directly with this SFML plugin.", _eButton);
+    }
     default:
     {
       /* Updates result */
@@ -331,8 +346,8 @@ extern "C" orxFLOAT orxMouse_SFML_GetWheelDelta()
   /* Updates result */
   fResult = sstMouse.fWheelMove;
 
-  /* Clears wheel move */
-  sstMouse.fWheelMove = orxFLOAT_0;
+  /* Clears wheel move on next update */
+  sstMouse.bClearWheel = orxTRUE;
 
   /* Done! */
   return fResult;

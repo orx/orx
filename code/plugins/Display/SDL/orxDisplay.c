@@ -92,6 +92,12 @@ orxVOID orxFASTCALL orxDisplay_SDL_EventUpdate(orxCONST orxCLOCK_INFO *_pstClock
 {
   SDL_Event stSDLEvent;
 
+  /* Clears event */
+  orxMemory_Zero(&stSDLEvent, sizeof(SDL_Event));
+
+  /* Clears wheel event */
+  orxEVENT_SEND(orxEVENT_TYPE_FIRST_RESERVED + SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONDOWN, orxNULL, orxNULL, &stSDLEvent);
+
   /* Handles all pending events */
   while(SDL_PollEvent(&stSDLEvent))
   {

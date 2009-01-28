@@ -62,8 +62,9 @@
 
 #define orxINPUT_KU32_ENTRY_FLAG_NONE                 0x00000000  /**< No flags */
 
-#define orxINPUT_KU32_ENTRY_FLAG_ACTIVE               0x10000000  /**< Active flags */
-#define orxINPUT_KU32_ENTRY_FLAG_BOUND                0x20000000  /**< Bound flags */
+#define orxINPUT_KU32_ENTRY_FLAG_BOUND                0x10000000  /**< Bound flags */
+#define orxINPUT_KU32_ENTRY_FLAG_ACTIVE               0x20000000  /**< Active flags */
+#define orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS           0x40000000  /**< New status flags */
 
 #define orxINPUT_KU32_ENTRY_MASK_OLDEST_BINDING       0x0000000F  /**< Oldest binding mask */
 #define orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING  0x000000F0  /**< Last active binding mask */
@@ -160,8 +161,32 @@ orxSTATIC orxINLINE orxVOID orxInput_UpdateBinding(orxINPUT_BINDING *_pstBinding
 
     case orxINPUT_TYPE_MOUSE_BUTTON:
     {
-      /* Updates it */
-      _pstBinding->fValue = (orxMouse_IsButtonPressed((orxMOUSE_BUTTON)_pstBinding->eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+      /* Wheel? */
+      switch(_pstBinding->eID)
+      {
+        case orxMOUSE_BUTTON_WHEEL_UP:
+        {
+          /* Updates it */
+          _pstBinding->fValue = orxMouse_GetWheelDelta();
+          _pstBinding->fValue = orxMAX(_pstBinding->fValue, orxFLOAT_0);
+          break;
+        }
+
+        case orxMOUSE_BUTTON_WHEEL_DOWN:
+        {
+          /* Updates it */
+          _pstBinding->fValue = orxMouse_GetWheelDelta();
+          _pstBinding->fValue = orxMIN(_pstBinding->fValue, orxFLOAT_0);
+          break;
+        }
+
+        default:
+        {
+          /* Updates it */
+          _pstBinding->fValue = (orxMouse_IsButtonPressed((orxMOUSE_BUTTON)_pstBinding->eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+          break;
+        }
+      }
 
       break;
     }
@@ -320,7 +345,7 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           orxInput_UpdateBinding(&(pstEntry->astBindingList[i]));
 
           /* Active? */
-         if(pstEntry->astBindingList[i].fValue > pstEntry->astBindingList[i].fThreshold)
+          if(orxMath_Abs(pstEntry->astBindingList[i].fValue) > pstEntry->astBindingList[i].fThreshold)
           {
             /* First one? */
             if(bActive == orxFALSE)
@@ -352,10 +377,15 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           stPayload.fValue      = pstEntry->astBindingList[u32ActiveIndex].fValue;
 
           /* Updates status */
-          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE | (u32ActiveIndex << orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING), orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING);
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS | orxINPUT_KU32_ENTRY_FLAG_ACTIVE | (u32ActiveIndex << orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING), orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING);
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_INPUT, orxINPUT_EVENT_ON, orxNULL, orxNULL, &stPayload);
+        }
+        else
+        {
+          /* Updates status */
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NONE, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS);
         }
       }
       else
@@ -378,10 +408,15 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           stPayload.fValue      = pstEntry->astBindingList[u32LastActiveIndex].fValue;
 
           /* Updates status */
-          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NONE, orxINPUT_KU32_ENTRY_FLAG_ACTIVE);
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS, orxINPUT_KU32_ENTRY_FLAG_ACTIVE);
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_INPUT, orxINPUT_EVENT_OFF, orxNULL, orxNULL, &stPayload);
+        }
+        else
+        {
+          /* Updates status */
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NONE, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS);
         }
       }
     }
@@ -857,6 +892,47 @@ orxBOOL orxFASTCALL orxInput_IsActive(orxCONST orxSTRING _zInputName)
       {
         /* Updates result */
         bResult = (orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE)) ? orxTRUE : orxFALSE;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Has a new active status since this frame?
+ * @param[in] _zInputName       Concerned input name
+ * @return orxTRUE if active status is new, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxInput_HasNewStatus(orxCONST orxSTRING _zInputName)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zInputName != orxNULL);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zInputName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets its ID */
+    u32EntryID = orxString_ToCRC(_zInputName);
+
+    /* For all entries */
+    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+        pstEntry != orxNULL;
+        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Updates result */
+        bResult = (orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS)) ? orxTRUE : orxFALSE;
 
         break;
       }

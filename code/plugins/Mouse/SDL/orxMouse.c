@@ -55,6 +55,7 @@ typedef struct __orxMOUSE_STATIC_t
   orxU32      u32Flags;
   orxVECTOR   vMouseMove, vMouseBackup;
   orxFLOAT    fWheelMove;
+  orxBOOL     bClearWheel;
 
 } orxMOUSE_STATIC;
 
@@ -107,6 +108,14 @@ orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 
     /* Gets SDL event */
     pstEvent = (SDL_Event *)(_pstEvent->pstPayload);
+
+    /* Should clear? */
+    if(sstMouse.bClearWheel != orxFALSE)
+    {
+      /* Clears it */
+      sstMouse.fWheelMove = orxFLOAT_0;
+      sstMouse.bClearWheel = orxFALSE;
+    }
 
     /* Updates wheel move */
     sstMouse.fWheelMove += (pstEvent->button.button == SDL_BUTTON_WHEELDOWN) ? 1 : -1;
@@ -291,13 +300,30 @@ orxBOOL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
     }
 
     case orxMOUSE_BUTTON_EXTRA_1:
+    {
+      /* Updates result */
+      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_X1)) ? orxTRUE : orxFALSE;
+      break;
+    }
+
     case orxMOUSE_BUTTON_EXTRA_2:
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "The button <%s> can not be monitored by this plugin.", orxMouse_GetButtonName(_eButton));
-
       /* Updates result */
-      bResult = orxFALSE;
+      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_X2)) ? orxTRUE : orxFALSE;
+      break;
+    }
+
+    case orxMOUSE_BUTTON_WHEEL_UP:
+    {
+      /* Updates result */
+      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_WHEELUP)) ? orxTRUE : orxFALSE;
+      break;
+    }
+
+    case orxMOUSE_BUTTON_WHEEL_DOWN:
+    {
+      /* Updates result */
+      bResult = (u8State & SDL_BUTTON(SDL_BUTTON_WHEELDOWN)) ? orxTRUE : orxFALSE;
       break;
     }
 
@@ -341,8 +367,8 @@ orxFLOAT orxMouse_SDL_GetWheelDelta()
   /* Updates result */
   fResult = sstMouse.fWheelMove;
 
-  /* Clears wheel move */
-  sstMouse.fWheelMove = orxFLOAT_0;
+  /* Clears wheel move on next update */
+  sstMouse.bClearWheel = orxTRUE;
 
   /* Done! */
   return fResult;
