@@ -55,7 +55,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
     pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Logs info */
-    orxLOG("Input <%s::%s> is now <%s>, value = %g.", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON" : "OFF", pstPayload->fValue);
+    orxLOG("Input [%s::%s] is now %s (value = %g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", pstPayload->fValue);
   }
   else
   {

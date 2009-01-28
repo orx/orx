@@ -51,6 +51,7 @@
  */
 #define orxINPUT_KZ_CONFIG_SECTION                "Input"     /**< Input set name */
 #define orxINPUT_KZ_CONFIG_SET_LIST               "SetList"   /**< Input set list */
+#define orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD     "JoystickThreshold" /**< Input joystick threshold */
 
 
 #define orxINPUT_KU32_MAX_BINDING_NUMBER          2
@@ -115,6 +116,7 @@ typedef struct __orxINPUT_STATIC_t
 {
   orxBANK      *pstSetBank;                                     /**< Bank of sets */
   orxINPUT_SET *pstCurrentSet;                                  /**< Current set */
+  orxFLOAT      fJoystickAxisThreshold;                         /**< Joystick axis threshold */
   orxU32        u32Flags;                                       /**< Control flags */
 
 } orxINPUT_STATIC;
@@ -902,7 +904,7 @@ orxSTATUS orxFASTCALL orxInput_Bind(orxCONST orxSTRING _zName, orxINPUT_TYPE _eT
         if((pstEntry->astBindingList[i].eID == _eID) && (pstEntry->astBindingList[i].eType == _eType))
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't bind <%s> to input <%s> as it's already bound to input <%s>.", orxInput_GetBindingName(_eType, _eID), _zName, pstEntry->zName);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s::%s]: can't bind <%s> as it's already bound to input [%s::%s].", sstInput.pstCurrentSet->zName, _zName, orxInput_GetBindingName(_eType, _eID), sstInput.pstCurrentSet->zName, pstEntry->zName);
 
           /* Updates status */
           bAlreadyBound = orxTRUE;
@@ -940,10 +942,17 @@ orxSTATUS orxFASTCALL orxInput_Bind(orxCONST orxSTRING _zName, orxINPUT_TYPE _eT
         /* Checks */
         orxASSERT(u32OldestIndex < orxINPUT_KU32_MAX_BINDING_NUMBER);
 
+        /* Had a previous binding? */
+        if(pstSelectedEntry->astBindingList[u32OldestIndex].eType != orxINPUT_TYPE_NONE)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input [%s::%s]: replacing <%s> with <%s>", sstInput.pstCurrentSet->zName, pstSelectedEntry->zName, orxInput_GetBindingName(pstSelectedEntry->astBindingList[u32OldestIndex].eType, pstSelectedEntry->astBindingList[u32OldestIndex].eID), orxInput_GetBindingName(_eType, _eID));
+        }
+
         /* Updates binding */
         pstSelectedEntry->astBindingList[u32OldestIndex].eType      = _eType;
         pstSelectedEntry->astBindingList[u32OldestIndex].eID        = _eID;
-        pstSelectedEntry->astBindingList[u32OldestIndex].fThreshold = orxFLOAT_0;
+        pstSelectedEntry->astBindingList[u32OldestIndex].fThreshold = (_eType == orxINPUT_TYPE_JOYSTICK_AXIS) ? sstInput.fJoystickAxisThreshold : orxFLOAT_0;
         pstSelectedEntry->astBindingList[u32OldestIndex].fValue     = orxFLOAT_0;
 
         /* Gets new oldest index */
@@ -958,7 +967,7 @@ orxSTATUS orxFASTCALL orxInput_Bind(orxCONST orxSTRING _zName, orxINPUT_TYPE _eT
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't create an input <%s> for the set <%s>.", _zName, sstInput.pstCurrentSet->zName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Can't create an input [%s::%s].", sstInput.pstCurrentSet->zName, _zName);
       }
     }
   }
