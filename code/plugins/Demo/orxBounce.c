@@ -55,7 +55,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
     pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Logs info */
-    orxLOG("Input [%s::%s] is now %s (value = %g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", pstPayload->fValue);
+    orxLOG("[%s::%s] is now %s (%s/v=%g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->eType, pstPayload->eID), pstPayload->fValue);
   }
   else
   {
@@ -156,6 +156,9 @@ orxSTATIC orxSTATUS orxBounce_Init()
   orxConfig_Load("Bounce.ini");
   orxConfig_SelectSection("Bounce");
 
+  /* Loads input */
+  orxInput_Load();
+
   /* Should hide cursor */
   if(orxConfig_GetBool("ShowCursor") == orxFALSE)
   {
@@ -182,12 +185,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
 
   /* Registers event handler */
   eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-  orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler);
-
-  //! Temp: While inputs can't be loaded from config file
-  orxInput_SelectSet("MainInput");
-  orxInput_Bind("Spawn", orxINPUT_TYPE_MOUSE_BUTTON, orxMOUSE_BUTTON_LEFT);
-  orxInput_Bind("Pick", orxINPUT_TYPE_MOUSE_BUTTON, orxMOUSE_BUTTON_RIGHT);
+  eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   /* Done! */
   return eResult;
