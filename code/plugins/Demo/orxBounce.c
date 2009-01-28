@@ -157,7 +157,7 @@ orxSTATIC orxSTATUS orxBounce_Init()
   orxConfig_SelectSection("Bounce");
 
   /* Loads input */
-  orxInput_Load();
+  orxInput_Load(orxNULL);
 
   /* Should hide cursor */
   if(orxConfig_GetBool("ShowCursor") == orxFALSE)

@@ -222,6 +222,10 @@ orxSTATIC orxINLINE orxVOID orxInput_UpdateBinding(orxINPUT_BINDING *_pstBinding
 orxSTATIC orxINLINE orxINPUT_SET *orxInput_LoadSet(orxCONST orxSTRING _zSetName)
 {
   orxINPUT_SET *pstResult = orxNULL;
+  orxSTRING     zPreviousSection;
+
+  /* Stores previous section */
+  zPreviousSection = orxConfig_GetCurrentSection();
 
   /* Valid? */
   if((_zSetName != orxSTRING_EMPTY)
@@ -276,6 +280,9 @@ orxSTATIC orxINLINE orxINPUT_SET *orxInput_LoadSet(orxCONST orxSTRING _zSetName)
       /* Restores previous set */
       sstInput.pstCurrentSet = pstPreviousSet;
     }
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
   }
 
   /* Done! */
@@ -632,7 +639,7 @@ orxSTATUS orxInput_Init()
           orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY, orxINPUT_KU32_STATIC_FLAG_NONE);
 
           /* Loads from input */
-          orxInput_Load();
+          orxInput_Load(orxSTRING_EMPTY);
         }
         else
         {
@@ -689,16 +696,24 @@ orxVOID orxInput_Exit()
   return;
 }
 
-/** Loads inputs from config
+/** Loads inputs from config file
+ * @param[in] _zFileName        File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxInput_Load()
+orxSTATUS orxInput_Load(orxCONST orxSTRING _zFileName)
 {
   orxSTRING zPreviousSection;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+
+  /* Valid name? */
+  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY))
+  {
+    /* Loads it */
+    orxConfig_Load(_zFileName);
+  }
 
   /* Gets previous config section */
   zPreviousSection = orxConfig_GetCurrentSection();
@@ -749,10 +764,85 @@ orxSTATUS orxFASTCALL  orxInput_Save(orxCONST orxSTRING _zFileName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  //! TODO
-
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zFileName != orxNULL);
+
+  /* Valid? */
+  if(_zFileName != orxSTRING_EMPTY)
+  {
+    /* Clears input section */
+    orxConfig_ClearSection(orxINPUT_KZ_CONFIG_SECTION);
+
+    /* Selects it */
+    if(orxConfig_SelectSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE)
+    {
+      orxU32        u32Index, u32Counter;
+      orxINPUT_SET *pstSet;
+      orxSTRING    *azSetNameList;
+
+      /* Gets set counter */
+      u32Counter = orxBank_GetCounter(sstInput.pstSetBank);
+
+      /* Allocates set name list */
+      azSetNameList = (orxSTRING *)orxMemory_Allocate(u32Counter * sizeof(orxSTRING), orxMEMORY_TYPE_TEMP);
+
+      /* For all sets */
+      for(pstSet = orxBank_GetNext(sstInput.pstSetBank, orxNULL), u32Index = 0;
+          pstSet != orxNULL;
+          pstSet = orxBank_GetNext(sstInput.pstSetBank, pstSet), u32Index++)
+      {
+        /* Checks */
+        orxASSERT(u32Index < u32Counter);
+
+        /* Adds name to list */
+        *(azSetNameList + u32Index) = pstSet->zName;
+      }
+
+      /* Adds set list to config */
+      orxConfig_SetStringList(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Counter);        
+
+      /* Frees set name list memory */
+      orxMemory_Free(azSetNameList);
+
+      /* Adds joystick threshold */
+      orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD, sstInput.fJoystickAxisThreshold);
+
+      /* For all sets */
+      for(pstSet = orxBank_GetNext(sstInput.pstSetBank, orxNULL);
+          pstSet != orxNULL;
+          pstSet = orxBank_GetNext(sstInput.pstSetBank, pstSet))
+      {
+        orxINPUT_ENTRY *pstEntry;
+
+        /* Clears and selects its section */
+        orxConfig_ClearSection(pstSet->zName);
+        orxConfig_SelectSection(pstSet->zName);
+
+        /* For all its entries */
+        for(pstEntry = orxBank_GetNext(pstSet->pstBank, orxNULL);
+            pstEntry != orxNULL;
+            pstEntry = orxBank_GetNext(pstSet->pstBank, pstEntry))
+        {
+          orxU32 i;
+
+          /* For all bindings */
+          for(i = 0; i < orxINPUT_KU32_MAX_BINDING_NUMBER; i++)
+          {
+            /* Valid? */
+            if(pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
+            {
+              /* Adds it to config */
+              orxConfig_SetString(orxInput_GetBindingName(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID), pstEntry->zName);
+            }
+          }
+        }
+      }
+    }
+
+    /* Saves it */
+    eResult = orxConfig_Save(_zFileName, orxFALSE, orxInput_SaveCallback);
+  }
 
   /* Done! */
   return eResult;

@@ -104,9 +104,10 @@ extern orxDLLAPI orxVOID                orxInput_Exit();
 
 
 /** Loads inputs from config
+ * @param[in] _zFileName        File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxInput_Load();
+extern orxDLLAPI orxSTATUS              orxInput_Load(orxCONST orxSTRING _zFileName);
 
 /** Saves inputs to config
  * @param[in] _zFileName        File name

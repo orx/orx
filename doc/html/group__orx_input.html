@@ -47,7 +47,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g131960d4d9f0de6e0f45b5ed90e62f0d">orxInput_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gf974ba35ee4a43db4c339e8172edcf29">orxInput_Load</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g19726a9ff95483aa6d9c67516776af99">orxInput_Load</a> (orxCONST orxSTRING _zFileName)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g0f07a73142d64cfaea51b0ef2338824d">orxInput_Save</a> (orxCONST orxSTRING _zFileName)</td></tr>
 
@@ -345,14 +345,15 @@ Is input active? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gf974ba35ee4a43db4c339e8172edcf29"></a><!-- doxytag: member="orxInput.h::orxInput_Load" ref="gf974ba35ee4a43db4c339e8172edcf29" args="()" -->
+<a class="anchor" name="g19726a9ff95483aa6d9c67516776af99"></a><!-- doxytag: member="orxInput.h::orxInput_Load" ref="g19726a9ff95483aa6d9c67516776af99" args="(orxCONST orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxInput_Load           </td>
           <td>(</td>
-          <td class="paramname">          </td>
+          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zFileName</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
@@ -361,7 +362,12 @@ Is input active? <dl compact><dt><b>Parameters:</b></dt><dd>
 <div class="memdoc">
 
 <p>
-Loads inputs from config <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+Loads inputs from config <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
