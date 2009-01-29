@@ -140,21 +140,20 @@ orxSTATIC orxINPUT_STATIC sstInput;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Updates a binding values
- * @param[in]   _pstBinding     Concerned binding
- */
-orxSTATIC orxINLINE orxVOID orxInput_UpdateBinding(orxINPUT_BINDING *_pstBinding)
+orxSTATIC orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM _eID)
 {
+  orxFLOAT fResult = orxFLOAT_0;
+
   /* Checks */
-  orxASSERT(_pstBinding != orxNULL);
+  orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
 
   /* Depending on type */
-  switch(_pstBinding->eType)
+  switch(_eType)
   {
     case orxINPUT_TYPE_KEYBOARD_KEY:
     {
-      /* Updates it */
-      _pstBinding->fValue = (orxKeyboard_IsKeyPressed((orxKEYBOARD_KEY)_pstBinding->eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+      /* Updates result */
+      fResult = (orxKeyboard_IsKeyPressed((orxKEYBOARD_KEY)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
 
       break;
     }
@@ -162,28 +161,28 @@ orxSTATIC orxINLINE orxVOID orxInput_UpdateBinding(orxINPUT_BINDING *_pstBinding
     case orxINPUT_TYPE_MOUSE_BUTTON:
     {
       /* Wheel? */
-      switch(_pstBinding->eID)
+      switch(_eID)
       {
         case orxMOUSE_BUTTON_WHEEL_UP:
         {
-          /* Updates it */
-          _pstBinding->fValue = orxMouse_GetWheelDelta();
-          _pstBinding->fValue = orxMAX(_pstBinding->fValue, orxFLOAT_0);
+          /* Updates result */
+          fResult = orxMouse_GetWheelDelta();
+          fResult = orxMAX(fResult, orxFLOAT_0);
           break;
         }
 
         case orxMOUSE_BUTTON_WHEEL_DOWN:
         {
-          /* Updates it */
-          _pstBinding->fValue = orxMouse_GetWheelDelta();
-          _pstBinding->fValue = orxMIN(_pstBinding->fValue, orxFLOAT_0);
+          /* Updates result */
+          fResult = orxMouse_GetWheelDelta();
+          fResult = orxMIN(fResult, orxFLOAT_0);
           break;
         }
 
         default:
         {
-          /* Updates it */
-          _pstBinding->fValue = (orxMouse_IsButtonPressed((orxMOUSE_BUTTON)_pstBinding->eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+          /* Updates result */
+          fResult = (orxMouse_IsButtonPressed((orxMOUSE_BUTTON)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
           break;
         }
       }
@@ -193,16 +192,16 @@ orxSTATIC orxINLINE orxVOID orxInput_UpdateBinding(orxINPUT_BINDING *_pstBinding
 
     case orxINPUT_TYPE_JOYSTICK_BUTTON:
     {
-      /* Updates it */
-      _pstBinding->fValue = (orxJoystick_IsButtonPressed(0, (orxJOYSTICK_BUTTON)_pstBinding->eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
+      /* Updates result */
+      fResult = (orxJoystick_IsButtonPressed(0, (orxJOYSTICK_BUTTON)_eID) != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
 
       break;
     }
 
     case orxINPUT_TYPE_JOYSTICK_AXIS:
     {
-      /* Updates it */
-      _pstBinding->fValue = orxJoystick_GetAxisValue(0, (orxJOYSTICK_AXIS)_pstBinding->eID);
+      /* Updates result */
+      fResult = orxJoystick_GetAxisValue(0, (orxJOYSTICK_AXIS)_eID);
 
       break;
     }
@@ -210,13 +209,14 @@ orxSTATIC orxINLINE orxVOID orxInput_UpdateBinding(orxINPUT_BINDING *_pstBinding
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _pstBinding->eType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
 
       break;
     }
   }
 
-  return;
+  /* Done! */
+  return fResult;
 }
 
 orxSTATIC orxINLINE orxINPUT_SET *orxInput_LoadSet(orxCONST orxSTRING _zSetName)
@@ -349,7 +349,7 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
         if(pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
         {
           /* Updates it */
-          orxInput_UpdateBinding(&(pstEntry->astBindingList[i]));
+          pstEntry->astBindingList[i].fValue = orxInput_GetBindingValue(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
 
           /* Active? */
           if(orxMath_Abs(pstEntry->astBindingList[i].fValue) > pstEntry->astBindingList[i].fThreshold)
@@ -1346,4 +1346,66 @@ orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID
 
   /* Done! */
   return zResult;
+}
+
+/** Gets active binding (current pressed key/button/...) so as to allow on-the-fly user rebinding
+ * @param[out]  _peType         Active binding type (mouse/joystick button, keyboard key or joystick axis)
+ * @param[out]  _peID           Active binding ID (ID of button/key/axis to bind)
+ * @return orxSTATUS_SUCCESS if one active binding is found, orxSTATUS_FAILURE otherwise
+ */
+orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID)
+{
+  orxINPUT_TYPE eType;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_peType != orxNULL);
+  orxASSERT(_peID != orxNULL);
+
+  /* For all input types */
+  for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
+  {
+    orxENUM   eID;
+    orxSTRING zBinding = orxNULL;
+
+    /* For all bindings */
+    for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
+    {
+      /* Gets binding name */
+      zBinding = orxInput_GetBindingName(eType, eID);
+
+      /* Valid? */
+      if(zBinding != orxSTRING_EMPTY)
+      {
+        orxBOOL bActive;
+
+        /* Joystick axis? */
+        if(eType == orxINPUT_TYPE_JOYSTICK_AXIS)
+        {
+          /* Updates active status */
+          bActive = (orxMath_Abs(orxInput_GetBindingValue(eType, eID)) > sstInput.fJoystickAxisThreshold) ? orxTRUE : orxFALSE;
+        }
+        else
+        {
+          /* Updates active status */
+          bActive = (orxMath_Abs(orxInput_GetBindingValue(eType, eID)) > orxFLOAT_0) ? orxTRUE : orxFALSE;
+        }
+
+        /* Active? */
+        if(bActive != orxFALSE)
+        {
+          /* Updates result */
+          *_peType  = eType;
+          *_peID    = eID;
+          eResult   = orxSTATUS_SUCCESS;
+
+          break;
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }

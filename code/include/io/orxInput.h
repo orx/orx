@@ -167,7 +167,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_Unbind(orxINPUT_TYPE _eType, or
  * @param[in]   _eID            Binding ID (ID of button/key/axis to bind)
  * @return orxSTRING (binding's name) if success, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID);
+extern orxDLLAPI orxSTRING orxFASTCALL  orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID);
+
+/** Gets active binding (current pressed key/button/...) so as to allow on-the-fly user rebinding
+ * @param[out]  _peType         Active binding type (mouse/joystick button, keyboard key or joystick axis)
+ * @param[out]  _peID           Active binding ID (ID of button/key/axis to bind)
+ * @return orxSTATUS_SUCCESS if one active binding is found, orxSTATUS_FAILURE otherwise
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID);
 
 #endif /*_orxINPUT_H_*/
 
