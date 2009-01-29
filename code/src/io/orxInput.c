@@ -208,7 +208,7 @@ orxSTATIC orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxE
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%ld> is not recognized!", _eType);
 
       break;
     }
@@ -907,7 +907,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(orxCONST orxSTRING _zSetName)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Failed to create input set with parameters (%s, %d).", _zSetName, u32SetID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Failed to create input set with parameters (%s, %ld).", _zSetName, u32SetID);
       }
     }
 
@@ -1506,7 +1506,7 @@ orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%d> is not recognized!", _eType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input type <%ld> is not recognized!", _eType);
 
       break;
     }

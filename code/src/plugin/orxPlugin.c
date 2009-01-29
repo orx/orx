@@ -876,7 +876,7 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
                    |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                    |orxDEBUG_KU32_STATIC_FLAG_TYPE,
                     orxDEBUG_KU32_STATIC_MASK_USER_ALL);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() - %s:%d> has been called before being loaded!\nPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() - %s:%ld> has been called before being loaded!\nPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line);
   orxDEBUG_FLAG_RESTORE();
 
   return orxNULL;

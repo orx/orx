@@ -346,7 +346,7 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTab
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table not linked at index %d.", _u32LinkIndex);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Link table not linked at index %ld.", _u32LinkIndex);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -420,7 +420,7 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
       default :
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid property while looking in link table element %d.", _u32LinkIndex);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid property while looking in link table element %ld.", _u32LinkIndex);
 
         /* Undefined result */
         u32Value = orxU32_UNDEFINED;
@@ -432,7 +432,7 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid link index %d.", _u32LinkIndex);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid link index %ld.", _u32LinkIndex);
 
     /* Undefined result */
     u32Value = orxU32_UNDEFINED;
@@ -1445,9 +1445,9 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
       orxMemory_Zero(acID, 16 * sizeof(orxCHAR));
 
       /* For all animations */
-      for(u32AnimCounter = 1, orxString_Print(acID, "%s%d", orxANIMSET_KZ_CONFIG_ANIM, u32AnimCounter);
+      for(u32AnimCounter = 1, orxString_Print(acID, "%s%ld", orxANIMSET_KZ_CONFIG_ANIM, u32AnimCounter);
           orxConfig_HasValue(acID) != orxFALSE;
-          u32AnimCounter++, orxString_Print(acID, "%s%d", orxANIMSET_KZ_CONFIG_ANIM, u32AnimCounter));
+          u32AnimCounter++, orxString_Print(acID, "%s%ld", orxANIMSET_KZ_CONFIG_ANIM, u32AnimCounter));
 
       /* Creates animation set */
       pstResult = orxAnimSet_Create(--u32AnimCounter);
@@ -1471,7 +1471,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
           orxSTRING zAnimName;
 
           /* Gets its ID */
-          orxString_Print(acID, "%s%d", orxANIMSET_KZ_CONFIG_ANIM, i + 1);
+          orxString_Print(acID, "%s%ld", orxANIMSET_KZ_CONFIG_ANIM, i + 1);
 
           /* Gets its name */
           zAnimName = orxConfig_GetString(acID);
@@ -1502,9 +1502,9 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
         orxMemory_Zero(acPropertyID, 32 * sizeof(orxCHAR));
 
         /* For all links */
-        for(i = 1, orxString_Print(acID, "%s%d", orxANIMSET_KZ_CONFIG_LINK, i);
+        for(i = 1, orxString_Print(acID, "%s%ld", orxANIMSET_KZ_CONFIG_LINK, i);
             orxConfig_HasValue(acID) != orxFALSE;
-            i++, orxString_Print(acID, "%s%d", orxANIMSET_KZ_CONFIG_LINK, i))
+            i++, orxString_Print(acID, "%s%ld", orxANIMSET_KZ_CONFIG_LINK, i))
         {
           orxSTRING zLinkValue, zSeparator;
 
@@ -1536,7 +1536,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
               if(hLink != orxHANDLE_UNDEFINED)
               {
                 /* Gets its property ID */
-                orxString_Print(acPropertyID, "%s%d", orxANIMSET_KZ_CONFIG_LINK_PROPERTY, i);
+                orxString_Print(acPropertyID, "%s%ld", orxANIMSET_KZ_CONFIG_LINK_PROPERTY, i);
 
                 /* Immediate link? */
                 if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(acPropertyID)), orxANIMSET_KZ_IMMEDIATE) == 0)
@@ -1546,7 +1546,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigI
                 }
 
                 /* Gets its priority ID */
-                orxString_Print(acPriorityID, "%s%d", orxANIMSET_KZ_CONFIG_LINK_PRIORITY, i);
+                orxString_Print(acPriorityID, "%s%ld", orxANIMSET_KZ_CONFIG_LINK_PRIORITY, i);
 
                 /* Has priority? */
                 if(orxConfig_HasValue(acPriorityID) != orxFALSE)
@@ -1851,7 +1851,7 @@ orxSTATUS orxFASTCALL orxAnimSet_RemoveAnim(orxANIMSET *_pstAnimSet, orxHANDLE _
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid index(%d) given.", u32AnimIndex);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Invalid index(%ld) given.", u32AnimIndex);
 
       /* Failed */
       eResult = orxSTATUS_FAILURE;

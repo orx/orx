@@ -457,7 +457,7 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, 
         orxSTRING zPartName;
 
         /* Gets part name */
-        orxString_Print(acPartID, "%s%d", orxBODY_KZ_CONFIG_PART, i);
+        orxString_Print(acPartID, "%s%ld", orxBODY_KZ_CONFIG_PART, i);
 
         /* Has part? */
         if(orxConfig_HasValue(acPartID) != orxFALSE)

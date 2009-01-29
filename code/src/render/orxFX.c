@@ -672,7 +672,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
             orxSTRING zSlotName;
 
             /* Gets its ID */
-            orxString_Print(acSlotID, "%s%d", orxFX_KZ_CONFIG_SLOT, i + 1);
+            orxString_Print(acSlotID, "%s%ld", orxFX_KZ_CONFIG_SLOT, i + 1);
 
             /* Gets its name */
             zSlotName = orxConfig_GetString(acSlotID);

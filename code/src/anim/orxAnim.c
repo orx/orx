@@ -446,9 +446,9 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
     orxMemory_Zero(acID, 32 * sizeof(orxCHAR));
 
     /* For all keys */
-    for(u32KeyCounter = 1, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter);
+    for(u32KeyCounter = 1, orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter);
         orxConfig_HasValue(acID) != orxFALSE;
-        u32KeyCounter++, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter));
+        u32KeyCounter++, orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCounter));
 
     /* Creates 2D animation */
     pstResult = orxAnim_Create(orxANIM_KU32_FLAG_2D, --u32KeyCounter);
@@ -473,7 +473,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
         orxSTRING zDataName;
 
         /* Gets data ID */
-        orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, i + 1);
+        orxString_Print(acID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DATA, i + 1);
 
         /* Gets its name */
         zDataName = orxConfig_GetString(acID);
@@ -490,7 +490,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
           if(pstGraphic != orxNULL)
           {
             /* Gets duration ID */
-            orxString_Print(acDurationID, "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
+            orxString_Print(acDurationID, "%s%ld", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
 
             /* Updates its timestamp */
             fTimeStamp += orxConfig_HasValue(acDurationID) ? orxConfig_GetFloat(acDurationID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);

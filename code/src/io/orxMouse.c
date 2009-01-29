@@ -87,7 +87,7 @@ orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
     default:
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "No name defined for button #%d.", _eButton);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "No name defined for button #%ld.", _eButton);
 
       /* Updates result */
       zResult = orxSTRING_EMPTY;

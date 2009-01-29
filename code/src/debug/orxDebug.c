@@ -163,7 +163,7 @@ orxSTATUS _orxDebug_Init()
   if(orxDEBUG_LEVEL_NUMBER > orxDEBUG_LEVEL_MAX_NUMBER)
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Internal error. DEBUG_LEVEL_NUMBER(%d) > DEBUG_LEVEL_MAX_NUMBER(%d).", orxDEBUG_LEVEL_NUMBER, orxDEBUG_LEVEL_MAX_NUMBER);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Internal error. DEBUG_LEVEL_NUMBER(%ld) > DEBUG_LEVEL_MAX_NUMBER(%ld).", orxDEBUG_LEVEL_NUMBER, orxDEBUG_LEVEL_MAX_NUMBER);
 
     eResult = orxSTATUS_FAILURE;
   }
@@ -342,7 +342,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
         pc++);
 
     /* Writes info */
-    sprintf(zBuffer, "%s (%s() - %s:%d)", zBuffer, _zFunction, pc, _u32Line);
+    sprintf(zBuffer, "%s (%s() - %s:%ld)", zBuffer, _zFunction, pc, _u32Line);
   }
 
   /* Debug Log */

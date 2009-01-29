@@ -34,7 +34,16 @@
 #include "orxPluginAPI.h"
 
 #include <time.h>
-#include <SDL.h>
+
+#ifdef __orxGP2X__
+
+  #include <SDL/SDL.h>
+
+#else /* __orxGP2X__ */
+
+  #include <SDL.h>
+
+#endif /* __orxGP2X__ */
 
 
 /** Module flags

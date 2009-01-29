@@ -33,8 +33,17 @@
 
 #include "orxPluginAPI.h"
 
-#include <SDL.h>
-#include <SDL_image.h>
+#ifdef __orxGP2X__
+
+  #include <SDL/SDL.h>
+  #include <SDL/SDL_image.h>
+
+#else /* __orxGP2X__ */
+
+  #include <SDL.h>
+  #include <SDL_image.h>
+
+#endif /* __orxGP2X__ */
 
 
 /** Module flags

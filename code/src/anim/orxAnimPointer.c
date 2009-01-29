@@ -822,7 +822,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%d is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
@@ -878,7 +878,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%d is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
 
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
