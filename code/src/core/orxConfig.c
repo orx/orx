@@ -1832,8 +1832,20 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
           /* Resets block mode */
           bBlockMode = orxFALSE;
 
-          /* Updates line start pointer */
-          pcLineStart = pc + 1;
+          /* Valid? */
+          if(pc < acBuffer + u32Size)
+          {
+            /* Updates line start pointer */
+            pcLineStart = pc + 1;
+          }
+          else
+          {
+            /* Updates line start pointer */
+            pcLineStart = pc - 1;
+
+            /* Makes sure we don't mistake remaining partial comment for a new key */
+            *pcLineStart = orxCONFIG_KC_COMMENT;
+          }
         }
         /* Beginning of line? */
         else if(pc == pcLineStart)
@@ -1899,8 +1911,20 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
                 pc++;
               }
 
-              /* Updates line start pointer */
-              pcLineStart = pc + 1;
+              /* Valid? */
+              if(pc < acBuffer + u32Size)
+              {
+                /* Updates line start pointer */
+                pcLineStart = pc + 1;
+              }
+              else
+              {
+                /* Updates line start pointer */
+                pcLineStart = pc - 1;
+
+                /* Makes sure we don't mistake remaining partial comment for a new key */
+                *pcLineStart = orxCONFIG_KC_COMMENT;
+              }
             }
           }
           /* Section start? */
@@ -1941,8 +1965,20 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
                 pc++;
               }
 
-              /* Updates line start pointer */
-              pcLineStart = pc + 1;
+              /* Valid? */
+              if(pc < acBuffer + u32Size)
+              {
+                /* Updates line start pointer */
+                pcLineStart = pc + 1;
+              }
+              else
+              {
+                /* Updates line start pointer */
+                pcLineStart = pc - 1;
+
+                /* Makes sure we don't mistake remaining partial comment for a new key */
+                *pcLineStart = orxCONFIG_KC_COMMENT;
+              }
             }
           }
           /* Comment character? */
@@ -1954,8 +1990,20 @@ orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
               pc++;
             }
 
-            /* Updates line start pointer */
-            pcLineStart = pc + 1;
+            /* Valid? */
+            if(pc < acBuffer + u32Size)
+            {
+              /* Updates line start pointer */
+              pcLineStart = pc + 1;
+            }
+            else
+            {
+              /* Updates line start pointer */
+              pcLineStart = pc - 1;
+
+              /* Makes sure we don't mistake remaining partial comment for a new key */
+              *pcLineStart = orxCONFIG_KC_COMMENT;
+            }
           }
           else
           {
