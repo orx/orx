@@ -81,27 +81,27 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     orxObject_SetRotation(pstObjectList[i], orxMATH_KF_PI * _pstClockInfo->fTime);
   }
 
-  /* Is left button pressed? */
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT))
+  /* Is rotate left input active ? */
+  if(orxInput_IsActive("RotateLeft"))
   {
     /* Rotates Parent object CCW */
     orxObject_SetRotation(pstParentObject, orxObject_GetRotation(pstParentObject) + orx2F(-4.0f) * _pstClockInfo->fDT);
   }    
-  /* Is right button pressed? */
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT))
+  /* Is rotate right input active? */
+  if(orxInput_IsActive("RotateRight"))
   {
     /* Rotates Parent object CW */
     orxObject_SetRotation(pstParentObject, orxObject_GetRotation(pstParentObject) + orx2F(4.0f) * _pstClockInfo->fDT);
   }    
 
-  /* Is '+' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ADD))
+  /* Is scale up input active? */
+  if(orxInput_IsActive("ScaleUp"))
   {
     /* Scales up the Parent object */
     orxObject_SetScale(pstParentObject, orxVector_Mulf(&vScale, orxObject_GetScale(pstParentObject, &vScale), orx2F(1.02f)));
   }
   /* Is '-' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
+  if(orxInput_IsActive("ScaleDown"))
   {
     /* Scales down the Parent object */
     orxObject_SetScale(pstParentObject, orxVector_Mulf(&vScale, orxObject_GetScale(pstParentObject, &vScale), orx2F(0.98f)));
@@ -128,13 +128,29 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
  */
 orxSTATUS Init()
 {
-  orxCLOCK *pstClock;
-
-  /* Displays a small hint in console */
-  orxLOG("\n- The parent object will follow the mouse\n- Left & right buttons will rotate it\n- '+' & '-' will scale it");
+  orxCLOCK       *pstClock;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  orxSTRING       zInputRotateLeft, zInputRotateRight, zInputScaleUp, zInputScaleDown;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../03_Frame.ini");
+
+  /* Gets input binding names */
+  orxInput_GetBinding("RotateLeft", 0, &eType, &eID);
+  zInputRotateLeft  = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("RotateRight", 0, &eType, &eID);
+  zInputRotateRight = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ScaleUp", 0, &eType, &eID);
+  zInputScaleUp     = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ScaleDown", 0, &eType, &eID);
+  zInputScaleDown   = orxInput_GetBindingName(eType, eID);
+
+  /* Displays a small hint in console */
+  orxLOG("\n- The parent object will follow the mouse\n- '%s' & '%s' will rotate it\n- '%s' & '%s' will scale it", zInputRotateLeft, zInputRotateRight, zInputScaleUp, zInputScaleDown);
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");

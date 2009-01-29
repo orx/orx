@@ -46,6 +46,11 @@
 #include "object/orxStructure.h"
 
 
+/** Misc defines
+ */
+#define orxFXPOINTER_KU32_FX_NUMBER             4
+
+
 /** Internal FXPointer structure */
 typedef struct __orxFXPOINTER_t                 orxFXPOINTER;
 

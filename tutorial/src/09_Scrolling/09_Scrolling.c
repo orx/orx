@@ -109,38 +109,38 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Updates scroll speed with our current DT */
   orxVector_Mulf(&vScrollSpeed, &vScrollSpeed, _pstClockInfo->fDT);
 
-  /* Is right arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT))
+  /* Going right? */
+  if(orxInput_IsActive("CameraRight"))
   {
     /* Updates move vector */
     vMove.fX += vScrollSpeed.fX;
   }
-  /* Is left arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT))
+  /* Going left? */
+  if(orxInput_IsActive("CameraLeft"))
   {
     /* Updates move vector */
     vMove.fX -= vScrollSpeed.fX;
   }
-  /* Is down arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DOWN))
+  /* Going down? */
+  if(orxInput_IsActive("CameraDown"))
   {
     /* Updates move vector */
     vMove.fY += vScrollSpeed.fY;
   }
-  /* Is up arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_UP))
+  /* Going up? */
+  if(orxInput_IsActive("CameraUp"))
   {
     /* Updates move vector */
     vMove.fY -= vScrollSpeed.fY;
   }
-  /* Is '+' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ADD))
+  /* Zoom in? */
+  if(orxInput_IsActive("CameraZoomIn"))
   {
     /* Updates move vector */
     vMove.fZ += vScrollSpeed.fZ;
   }
-  /* Is '-' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
+  /* Zoom out? */
+  if(orxInput_IsActive("CameraZoomOut"))
   {
     /* Updates move vector */
     vMove.fZ -= vScrollSpeed.fZ;
@@ -151,19 +151,12 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
 
   /* *** DISPLAY UPDATE *** */
 
-  /* Is 's' key pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_S))
+  /* Toggle smoothing? */
+  if(orxInput_IsActive("Smooth") && orxInput_HasNewStatus("Smooth"))
   {
     /* Updates config with smoothing */
     orxConfig_SelectSection("Display");
-    orxConfig_SetBool("Smoothing", orxTRUE);
-  }
-  /* Is 'n' key pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_N))
-  {
-    /* Updates config with no smoothing */
-    orxConfig_SelectSection("Display");
-    orxConfig_SetBool("Smoothing", orxFALSE);
+    orxConfig_SetBool("Smoothing", !orxConfig_GetBool("Smoothing"));
   }
 }
 
@@ -176,17 +169,46 @@ orxSTATUS Init()
   orxCLOCK     *pstClock;
   orxOBJECT    *pstSky;
   orxU32        i;
-
-  /* Displays a small hint in console */
-  orxLOG("\n- Arrow keys will move the camera"
-         "\n- '+' & '-' will zoom in/out"
-         "\n- 'S' will activate smoothing in display and 'N' will deactivate it"
-         "\n* The scrolling and auto-scaling of objects is data-driven, no code required"
-         "\n* The sky background will follow the camera (parent/child frame relation)");
+  orxINPUT_TYPE eType;
+  orxENUM       eID;
+  orxSTRING     zInputCameraLeft, zInputCameraRight, zInputCameraUp, zInputCameraDown;
+  orxSTRING     zInputCameraZoomIn, zInputCameraZoomOut, zInputSmooth;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../09_Scrolling.ini");
   orxConfig_SelectSection("Tutorial");
+
+  /* Gets input binding names */
+  orxInput_GetBinding("CameraLeft", 0, &eType, &eID);
+  zInputCameraLeft = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraRight", 0, &eType, &eID);
+  zInputCameraRight = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraUp", 0, &eType, &eID);
+  zInputCameraUp = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraDown", 0, &eType, &eID);
+  zInputCameraDown = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraZoomIn", 0, &eType, &eID);
+  zInputCameraZoomIn = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraZoomOut", 0, &eType, &eID);
+  zInputCameraZoomOut = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("Smooth", 0, &eType, &eID);
+  zInputSmooth = orxInput_GetBindingName(eType, eID);
+
+  /* Displays a small hint in console */
+  orxLOG("\n- '%s', '%s', '%s' & '%s' will move the camera"
+         "\n- '%s' & '%s' will zoom in/out"
+         "\n- '%s' will toggle smoothing for display"
+         "\n* The scrolling and auto-scaling of objects is data-driven, no code required"
+         "\n* The sky background will follow the camera (parent/child frame relation)",
+         zInputCameraUp, zInputCameraLeft, zInputCameraDown, zInputCameraRight,
+         zInputCameraZoomIn, zInputCameraZoomOut,
+         zInputSmooth);
 
   /* Creates viewport */
   pstViewport = orxViewport_CreateFromConfig("Viewport");

@@ -114,27 +114,27 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Gets first viewport camera */
   pstCamera = orxViewport_GetCamera(pstViewport);
 
-  /* Is left button pressed? */
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT))
+  /* Camera rotate left? */
+  if(orxInput_IsActive("CameraRotateLeft"))
   {
     /* Rotates camera CCW */
     orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + orx2F(-4.0f) * _pstClockInfo->fDT);
   }
-  /* Is right button pressed? */
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT))
+  /* Camera rotate right? */
+  if(orxInput_IsActive("CameraRotateRight"))
   {
     /* Rotates camera CW */
     orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + orx2F(4.0f) * _pstClockInfo->fDT);
   }
 
-  /* Is '+' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ADD))
+  /* Camera zoom in? */
+  if(orxInput_IsActive("CameraZoomIn"))
   {
     /* Camera zoom in */
     orxCamera_SetZoom(pstCamera, orxCamera_GetZoom(pstCamera) * orx2F(1.02f));
   }
-  /* Is '-' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
+  /* Camera zoom out? */
+  if(orxInput_IsActive("CameraZoomOut"))
   {
     /* Camera zoom out */
     orxCamera_SetZoom(pstCamera, orxCamera_GetZoom(pstCamera) * orx2F(0.98f));
@@ -143,26 +143,26 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Gets camera position */
   orxCamera_GetPosition(pstCamera, &vPos);
 
-  /* Is right arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT))
+  /* Camera right? */
+  if(orxInput_IsActive("CameraRight"))
   {
     /* Updates position */
     vPos.fX += orx2F(500) * _pstClockInfo->fDT;
   }
-  /* Is left arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT))
+  /* Camera left? */
+  if(orxInput_IsActive("CameraLeft"))
   {
     /* Updates position */
     vPos.fX -= orx2F(500) * _pstClockInfo->fDT;
   }
-  /* Is down arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DOWN))
+  /* Camera down? */
+  if(orxInput_IsActive("CameraDown"))
   {
     /* Updates position */
     vPos.fY += orx2F(500) * _pstClockInfo->fDT;
   }
-  /* Is up arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_UP))
+  /* Camera up? */
+  if(orxInput_IsActive("CameraUp"))
   {
     /* Updates position */
     vPos.fY -= orx2F(500) * _pstClockInfo->fDT;
@@ -177,15 +177,15 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Gets viewport size */
   orxViewport_GetRelativeSize(pstViewport, &fWidth, &fHeight);
 
-  /* Is 'e' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_E))
+  /* Viewport scale up? */
+  if(orxInput_IsActive("ViewportScaleUp"))
   {
     /* Scales viewport up */
     fWidth *= orx2F(1.02f);
     fHeight*= orx2F(1.02f);
   }
-  /* Is 'q' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_Q))
+  /* Viewport scale down? */
+  if(orxInput_IsActive("ViewportScaleDown"))
   {
     /* Scales viewport down */
     fWidth *= orx2F(0.98f);
@@ -198,26 +198,26 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Gets viewport position */
   orxViewport_GetPosition(pstViewport, &fX, &fY);
 
-  /* Is 'd' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_D))
+  /* Viewport right? */
+  if(orxInput_IsActive("ViewportRight"))
   {
     /* Updates position */
     fX += orx2F(500) * _pstClockInfo->fDT;
   }
-  /* Is 'a' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_A))
+  /* Viewport left? */
+  if(orxInput_IsActive("ViewportLeft"))
   {
     /* Updates position */
     fX -= orx2F(500) * _pstClockInfo->fDT;
   }
-  /* Is 's' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_S))
+  /* Viewport down? */
+  if(orxInput_IsActive("ViewportDown"))
   {
     /* Updates position */
     fY += orx2F(500) * _pstClockInfo->fDT;
   }
-  /* Is 'w' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_W))
+  /* Viewport up? */
+  if(orxInput_IsActive("ViewportUp"))
   {
     /* Updates position */
     fY -= orx2F(500) * _pstClockInfo->fDT;
@@ -232,18 +232,75 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
  */
 orxSTATUS Init()
 {
-  orxCLOCK *pstClock;
+  orxCLOCK       *pstClock;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  orxSTRING       zInputCameraLeft, zInputCameraRight, zInputCameraUp, zInputCameraDown;
+  orxSTRING       zInputCameraRotateLeft, zInputCameraRotateRight, zInputCameraZoomIn, zInputCameraZoomOut;
+  orxSTRING       zInputViewportLeft, zInputViewportRight, zInputViewportUp, zInputViewportDown;
+  orxSTRING       zInputViewportScaleUp, zInputViewportScaleDown;
+
+  /* Loads config file and selects main section */
+  orxConfig_Load("../05_Viewport.ini");
+
+  /* Gets input binding names */
+  orxInput_GetBinding("CameraLeft", 0, &eType, &eID);
+  zInputCameraLeft = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraRight", 0, &eType, &eID);
+  zInputCameraRight = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraUp", 0, &eType, &eID);
+  zInputCameraUp = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraDown", 0, &eType, &eID);
+  zInputCameraDown = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraRotateLeft", 0, &eType, &eID);
+  zInputCameraRotateLeft = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraRotateRight", 0, &eType, &eID);
+  zInputCameraRotateRight = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraZoomIn", 0, &eType, &eID);
+  zInputCameraZoomIn = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("CameraZoomOut", 0, &eType, &eID);
+  zInputCameraZoomOut = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ViewportLeft", 0, &eType, &eID);
+  zInputViewportLeft = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ViewportRight", 0, &eType, &eID);
+  zInputViewportRight = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ViewportUp", 0, &eType, &eID);
+  zInputViewportUp = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ViewportDown", 0, &eType, &eID);
+  zInputViewportDown = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ViewportScaleUp", 0, &eType, &eID);
+  zInputViewportScaleUp = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ViewportScaleDown", 0, &eType, &eID);
+  zInputViewportScaleDown = orxInput_GetBindingName(eType, eID);
 
   /* Displays a small hint in console */
   orxLOG("\n* Worskpaces 1 & 3 display camera 1 content"
          "\n* Workspace 2 displays camera 2 (by default it's twice as close as the other cameras)"
          "\n* Workspace 3 displays camera 3"
          "\n- Soldier will be positioned (in the world) so as to be always displayed under the mouse"
-         "\n- Arrow keys control camera 1 positioning, left & right buttons its rotation and '+' & '-' its zoom"
-         "\n- WASD keys control viewport 1 positioning, A & E keys its size");
-
-  /* Loads config file and selects main section */
-  orxConfig_Load("../05_Viewport.ini");
+         "\n- '%s', '%s', '%s' & '%s' control camera 1 positioning"
+         "\n- '%s' & '%s' control camera 1 rotation"
+         "\n- '%s' & '%s' control camera 1 zoom"
+         "\n- '%s', '%s', '%s' & '%s' control viewport 1 positioning"
+         "\n- '%s' & '%s' control viewport 1 size",
+         zInputCameraUp, zInputCameraLeft, zInputCameraDown, zInputCameraRight,
+         zInputCameraRotateLeft, zInputCameraRotateRight,
+         zInputCameraZoomIn, zInputCameraZoomOut,
+         zInputViewportUp, zInputViewportLeft, zInputViewportDown, zInputViewportRight,
+         zInputViewportScaleUp, zInputViewportScaleDown);
 
   /* Creates all viewports */
   pstViewport = orxViewport_CreateFromConfig("Viewport1");

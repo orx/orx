@@ -83,19 +83,12 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     orxLOG("CLOCK<%p> : Time = %.3f / DT = %.3f", _pstClockInfo, _pstClockInfo->fTime, _pstClockInfo->fDT);
   }
 
-  /* Is 'L' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_L))
+  /* Is log input newly active? */
+  if(orxInput_IsActive("Log") && orxInput_HasNewStatus("Log"))
   {
-    /* Activates logging */
-    orxConfig_SetBool("DisplayLog", orxTRUE);
+    /* Toggles logging */
+    orxConfig_SetBool("DisplayLog", !orxConfig_GetBool("DisplayLog"));
   }
-  /* Is 'S' pressed? */
-  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_S))
-  {
-    /* Deactivates logging */
-    orxConfig_SetBool("DisplayLog", orxFALSE);
-  }
-
 
   /* *** OBJECT UPDATE SECTION *** */
 
@@ -111,23 +104,24 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
 
   /* *** CLOCK TIME STRETCHING SECTION *** */
 
-  /* Finds first user created clock (clock1) */
+  /* Finds first user created clock (clock1).
+   * We could have stored the clock at creation, of course, but this is done here for didactic purpose. */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_USER);
 
-  /* Is '+' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ADD))
+  /* Is faster input active? */
+  if(orxInput_IsActive("Faster"))
   {
     /* Makes this clock go four time faster */
     orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_MULTIPLY, orx2F(4.0f));
   }
-  /* Is '-' pressed? */
-  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
+  /* Is slower input active? */
+  else if(orxInput_IsActive("Slower"))
   {
     /* Makes this clock go four time slower */
     orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_MULTIPLY, orx2F(0.25f));
   }
-  /* Is '*' pressed? */
-  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_MULTIPLY))
+  /* Is normal input active? */
+  else if(orxInput_IsActive("Normal"))
   {
     /* Removes modifier from this clock */
     orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_NONE, orxFLOAT_0);
@@ -139,18 +133,34 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
  */
 orxSTATUS Init()
 {
-  orxCLOCK  *pstClock1, *pstClock2;
-  orxOBJECT *pstObject1, *pstObject2;
-
-  /* Displays a small hint in console */
-  orxLOG("\n- Press 'L' to activate log and 'S' to stop it"
-         "\n- To stretch time for the first clock (updating the box):"
-         "\n . Press numpad '+' to set it 4 times faster"
-         "\n . Press numpad '-' to set it 4 times slower"
-         "\n . Press numpad '*' to set it back to normal");
+  orxCLOCK       *pstClock1, *pstClock2;
+  orxOBJECT      *pstObject1, *pstObject2;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  orxSTRING       zInputLog, zInputFaster, zInputSlower, zInputNormal;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../02_Clock.ini");
+
+  /* Gets input binding names */
+  orxInput_GetBinding("Log", 0, &eType, &eID);
+  zInputLog     = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("Faster", 0, &eType, &eID);
+  zInputFaster  = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("Slower", 0, &eType, &eID);
+  zInputSlower  = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("Normal", 0, &eType, &eID);
+  zInputNormal  = orxInput_GetBindingName(eType, eID);
+
+  /* Displays a small hint in console */
+  orxLOG("\n- Press '%s' to toggle log display"
+         "\n- To stretch time for the first clock (updating the box):"
+         "\n . Press numpad '%s' to set it 4 times faster"
+         "\n . Press numpad '%s' to set it 4 times slower"
+         "\n . Press numpad '%s' to set it back to normal", zInputLog,  zInputFaster, zInputSlower, zInputNormal);
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");

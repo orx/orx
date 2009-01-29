@@ -227,8 +227,16 @@ orxSTATUS orxFASTCALL StandAlone::EventHandler(orxCONST orxEVENT *_pstEvent)
     // Close event?
     case orxSYSTEM_EVENT_CLOSE:
     {
+      orxINPUT_TYPE eType;
+      orxENUM       eID;
+      orxSTRING     zInputQuit;
+
+      /* Gets input binding name */
+      orxInput_GetBinding("Quit", 0, &eType, &eID);
+      zInputQuit = orxInput_GetBindingName(eType, eID);
+
       // Logs
-      orxLOG("Default close/exit is inhibited.\nPlease press backspace to exit!");
+      orxLOG("Default close/exit is inhibited.\nPlease press '%s' to exit!", zInputQuit);
 
       // Changes logo color
       soMyStandAloneGame.m_poLogo->SetConfigColor();
@@ -254,12 +262,19 @@ orxSTATUS orxFASTCALL StandAlone::EventHandler(orxCONST orxEVENT *_pstEvent)
 // Init function
 orxSTATUS StandAlone::Init()
 {
-  orxSTATUS eResult;
+  orxSTATUS     eResult;
+  orxINPUT_TYPE eType;
+  orxENUM       eID;
+  orxSTRING     zInputQuit;
+
+  /* Gets input binding names */
+  orxInput_GetBinding("Quit", 0, &eType, &eID);
+  zInputQuit = orxInput_GetBindingName(eType, eID);
 
   // Logs
-  orxLOG("\n- Backspace will exit from this tutorial"
+  orxLOG("\n- '%s' will exit from this tutorial"
          "\n* Alt-F4 and window closing button won't exit"
-         "\n* If you try them, a message will be displayed and the logo color will change");
+         "\n* If you try them, a message will be displayed and the logo color will change", zInputQuit);
 
   orxLOG("10_StandAlone Init() called!");
 
@@ -285,18 +300,14 @@ orxSTATUS StandAlone::Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  // Is keyboard module?
-  if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD))
+  /* Is quit action active? */
+  if(orxInput_IsActive("Quit"))
   {
-    /* Is backspace pressed? */
-    if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACK))
-    {
-      // Logs
-      orxLOG("Backspace key pressed, exiting!");
+    // Logs
+    orxLOG("Quit action triggered, exiting!");
 
-      // Sets return value to failure, meaning we want to exit
-      eResult = orxSTATUS_FAILURE;
-    }
+    // Sets return value to failure, meaning we want to exit
+    eResult = orxSTATUS_FAILURE;
   }
 
   // Done!

@@ -79,7 +79,7 @@ orxSTATIC SDLKey orxFASTCALL orxKeyboard_SDL_GetSDLKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_ESCAPE:        {eResult = SDLK_ESCAPE; break;}
     case orxKEYBOARD_KEY_SPACE:         {eResult = SDLK_SPACE; break;}
     case orxKEYBOARD_KEY_RETURN:        {eResult = SDLK_RETURN; break;}
-    case orxKEYBOARD_KEY_BACK:          {eResult = SDLK_BACKSPACE; break;}
+    case orxKEYBOARD_KEY_BACKSPACE:     {eResult = SDLK_BACKSPACE; break;}
     case orxKEYBOARD_KEY_TAB:           {eResult = SDLK_TAB; break;}
     case orxKEYBOARD_KEY_PAGEUP:        {eResult = SDLK_PAGEUP; break;}
     case orxKEYBOARD_KEY_PAGEDOWN:      {eResult = SDLK_PAGEDOWN; break;}
@@ -127,10 +127,10 @@ orxSTATIC SDLKey orxFASTCALL orxKeyboard_SDL_GetSDLKey(orxKEYBOARD_KEY _eKey)
     case orxKEYBOARD_KEY_F13:           {eResult = SDLK_F13; break;}
     case orxKEYBOARD_KEY_F14:           {eResult = SDLK_F14; break;}
     case orxKEYBOARD_KEY_F15:           {eResult = SDLK_F15; break;}
-    case orxKEYBOARD_KEY_LEFT:          {eResult = SDLK_LEFT; break;}
-    case orxKEYBOARD_KEY_RIGHT:         {eResult = SDLK_RIGHT; break;}
     case orxKEYBOARD_KEY_UP:            {eResult = SDLK_UP; break;}
+    case orxKEYBOARD_KEY_RIGHT:         {eResult = SDLK_RIGHT; break;}
     case orxKEYBOARD_KEY_DOWN:          {eResult = SDLK_DOWN; break;}
+    case orxKEYBOARD_KEY_LEFT:          {eResult = SDLK_LEFT; break;}
     case orxKEYBOARD_KEY_NUMPAD0:       {eResult = SDLK_KP0; break;}
     case orxKEYBOARD_KEY_NUMPAD1:       {eResult = SDLK_KP1; break;}
     case orxKEYBOARD_KEY_NUMPAD2:       {eResult = SDLK_KP2; break;}

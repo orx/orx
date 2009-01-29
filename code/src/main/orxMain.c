@@ -153,6 +153,9 @@ orxSTATUS orxMain_Init()
       /* Successful? */
       if(eResult != orxSTATUS_FAILURE)
       {
+        /* Reloads input */
+        orxInput_Load(orxSTRING_EMPTY);
+
         /* Updates status */
         orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
       }
@@ -205,7 +208,7 @@ orxSTATUS orxMain_Run()
     if(sbBackSpacePressed != orxFALSE)
     {
       /* No longer pressed? */
-      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACK) == orxFALSE)
+      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACKSPACE) == orxFALSE)
       {
         /* Updates key status */
         sbBackSpacePressed = orxFALSE;
@@ -214,7 +217,7 @@ orxSTATUS orxMain_Run()
     else
     {
       /* Is backspace pressed? */
-      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACK) != orxFALSE)
+      if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_BACKSPACE) != orxFALSE)
       {
         /* Reloads config history */
         orxConfig_ReloadHistory();

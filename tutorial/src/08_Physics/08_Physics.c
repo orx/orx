@@ -126,29 +126,26 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
 {
   orxFLOAT fDeltaRotation = orxFLOAT_0;
 
-  /* Is left button pressed? */
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT))
-  {
-    /* Computes rotation delta */
-    fDeltaRotation = orx2F(-4.0f) * _pstClockInfo->fDT;
-
-    /* Rotates camera CCW */
-    orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + fDeltaRotation);
-  }    
-  /* Is right button pressed? */
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT))
+  /* Rotating left? */
+  if(orxInput_IsActive("RotateLeft"))
   {
     /* Computes rotation delta */
     fDeltaRotation = orx2F(4.0f) * _pstClockInfo->fDT;
-
-    /* Rotates camera CW */
-    orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + fDeltaRotation);
+  }    
+  /* Rotating right? */
+  if(orxInput_IsActive("RotateRight"))
+  {
+    /* Computes rotation delta */
+    fDeltaRotation = orx2F(-4.0f) * _pstClockInfo->fDT;
   }
 
   /* Turned? */
   if(fDeltaRotation != orxFLOAT_0)
   {
     orxVECTOR vGravity;
+
+    /* Rotates camera */
+    orxCamera_SetRotation(pstCamera, orxCamera_GetRotation(pstCamera) + fDeltaRotation);
 
     /* Gets gravity */
     if(orxPhysics_GetGravity(&vGravity))
@@ -170,15 +167,25 @@ orxSTATUS Init()
   orxCLOCK     *pstClock;
   orxVIEWPORT  *pstViewport;
   orxU32        i;
-
-  /* Displays a small hint in console */
-  orxLOG("\n- Left & right mouse buttons will rotate the camera"
-         "\n* Gravity will follow the camera"
-         "\n* a bump visual FX is played on objects that collide");
+  orxINPUT_TYPE eType;
+  orxENUM       eID;
+  orxSTRING     zInputRotateLeft, zInputRotateRight;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../08_Physics.ini");
   orxConfig_SelectSection("Tutorial");
+
+  /* Gets input binding names */
+  orxInput_GetBinding("RotateLeft", 0, &eType, &eID);
+  zInputRotateLeft = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("RotateRight", 0, &eType, &eID);
+  zInputRotateRight = orxInput_GetBindingName(eType, eID);
+
+  /* Displays a small hint in console */
+  orxLOG("\n- '%s' & '%s' will rotate the camera"
+         "\n* Gravity will follow the camera"
+         "\n* a bump visual FX is played on objects that collide", zInputRotateLeft, zInputRotateRight);
 
   /* Creates viewport */
   pstViewport = orxViewport_CreateFromConfig("Viewport");

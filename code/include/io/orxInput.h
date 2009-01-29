@@ -48,6 +48,11 @@
 #include "io/orxMouse.h"
 
 
+/** Misc defines
+ */
+#define orxINPUT_KU32_BINDING_NUMBER    2
+
+
 /** Input type enum
  */
 typedef enum __orxINPUT_TYPE_t
@@ -160,6 +165,30 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_Bind(orxCONST orxSTRING _zName,
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID);
+
+/** Gets the input name to which a mouse/joystick button, keyboard key or joystick axis is bound
+ * @param[in] _eType            Type of peripheral to test
+ * @param[in] _eID              ID of button/key/axis to test
+ * @return orxSTRING input name if bound / orxSTRING_EMPY otherwise
+ */
+extern orxDLLAPI orxSTRING orxFASTCALL  orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID);
+
+/** Gets an input binding (mouse/joystick button, keyboard key or joystick axis) at a given index
+ * @param[in]   _zName           Concerned input name
+ * @param[in]   _u32BindingIndex Index of the desired binding
+ * @param[out]  _peType          List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
+ * @param[out]  _peID            List of binding IDs (button/key/axis)
+ * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_GetBinding(orxCONST orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID);
+
+/** Gets an input binding (mouse/joystick button, keyboard key or joystick axis) list
+ * @param[in] _zName            Concerned input name
+ * @param[out] _aeTypeList      List of binding types (if a slot is not bound, its value is orxINPUT_TYPE_NONE)
+ * @param[out] _aeIDList        List of binding IDs (button/key/axis)
+ * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_GetBindingList(orxCONST orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER]);
 
 
 /** Gets a binding name

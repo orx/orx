@@ -80,7 +80,7 @@ orxSTATIC sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY 
     case orxKEYBOARD_KEY_ESCAPE:        {eResult = sf::Key::Escape; break;}
     case orxKEYBOARD_KEY_SPACE:         {eResult = sf::Key::Space; break;}
     case orxKEYBOARD_KEY_RETURN:        {eResult = sf::Key::Return; break;}
-    case orxKEYBOARD_KEY_BACK:          {eResult = sf::Key::Back; break;}
+    case orxKEYBOARD_KEY_BACKSPACE:     {eResult = sf::Key::Back; break;}
     case orxKEYBOARD_KEY_TAB:           {eResult = sf::Key::Tab; break;}
     case orxKEYBOARD_KEY_PAGEUP:        {eResult = sf::Key::PageUp; break;}
     case orxKEYBOARD_KEY_PAGEDOWN:      {eResult = sf::Key::PageDown; break;}
@@ -128,10 +128,10 @@ orxSTATIC sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY 
     case orxKEYBOARD_KEY_F13:           {eResult = sf::Key::F13; break;}
     case orxKEYBOARD_KEY_F14:           {eResult = sf::Key::F14; break;}
     case orxKEYBOARD_KEY_F15:           {eResult = sf::Key::F15; break;}
-    case orxKEYBOARD_KEY_LEFT:          {eResult = sf::Key::Left; break;}
-    case orxKEYBOARD_KEY_RIGHT:         {eResult = sf::Key::Right; break;}
     case orxKEYBOARD_KEY_UP:            {eResult = sf::Key::Up; break;}
+    case orxKEYBOARD_KEY_RIGHT:         {eResult = sf::Key::Right; break;}
     case orxKEYBOARD_KEY_DOWN:          {eResult = sf::Key::Down; break;}
+    case orxKEYBOARD_KEY_LEFT:          {eResult = sf::Key::Left; break;}
     case orxKEYBOARD_KEY_NUMPAD0:       {eResult = sf::Key::Numpad0; break;}
     case orxKEYBOARD_KEY_NUMPAD1:       {eResult = sf::Key::Numpad1; break;}
     case orxKEYBOARD_KEY_NUMPAD2:       {eResult = sf::Key::Numpad2; break;}

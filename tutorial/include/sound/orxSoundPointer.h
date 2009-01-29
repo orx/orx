@@ -46,6 +46,11 @@
 #include "object/orxStructure.h"
 
 
+/** Misc defines
+ */
+#define orxSOUNDPOINTER_KU32_SOUND_NUMBER       4
+
+
 /** Internal SoundPointer structure */
 typedef struct __orxSOUNDPOINTER_t              orxSOUNDPOINTER;
 

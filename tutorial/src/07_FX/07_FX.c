@@ -51,7 +51,7 @@
  * This tutorial shows what FXs are and how to create them.
  *
  * FXs are based on a combination of curves based on sine, saw or linear shape, applied on different parameters
- * suchs as scale, rotation, alpha, color and position.
+ * suchs as scale, rotation, alpha, flash and position.
  *
  * FXs are set through config file requiring only one line of code to apply them on an object.
  * There can be up to 5 curves of any type combined to form an FX. Up to 4 FXs can be applied
@@ -70,7 +70,7 @@
  * the tutorial run, at their next application.
  *
  * As always, random parameters can be used from config allowing some variety for a single FX.
- * For example, the wobble scale, the flash color and the "attack" of the move FX are using limited random values.
+ * For example, the wobble scale, the flash flash and the "attack" of the move FX are using limited random values.
  *
  * We also register to the FX events to display when FXs are played and stopped.
  * As the FX played on the box object is tagget as looping, it'll never stop and thus
@@ -102,46 +102,64 @@ orxSTRING zSelectedFX = "WobbleFX";
  */
 orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 {
-  orxFX_EVENT_PAYLOAD *pstPayload;
-  orxOBJECT           *pstObject;
-
-  /* Gets event payload */
-  pstPayload = _pstEvent->pstPayload;
-
-  /* Gets event recipient */
-  pstObject = orxOBJECT(_pstEvent->hRecipient);
-
-  /* Depending on event type */
-  switch(_pstEvent->eID)
+  /* Input event? */
+  if(_pstEvent->eType == orxEVENT_TYPE_INPUT)
   {
-    case orxFX_EVENT_START:
+    /* Activated? */
+    if(_pstEvent->eID == orxINPUT_EVENT_ON)
     {
+      orxINPUT_EVENT_PAYLOAD *pstPayload;
+
+      /* Gets event payload */
+      pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
       /* Logs info */
-      orxLOG("FX <%s>@<%s> has started!", pstPayload->zFXName, orxObject_GetName(pstObject));
-
-      /* On soldier? */
-      if(pstObject == pstSoldier)
-      {
-        /* Locks it */
-        ((MyObject *)orxObject_GetUserData(pstObject))->bLock = orxTRUE;
-      }
-
-      break;
+      orxLOG("[%s] triggered by '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->eType, pstPayload->eID));
     }
+  }
+  else
+  {
+    orxFX_EVENT_PAYLOAD *pstPayload;
+    orxOBJECT           *pstObject;
 
-    case orxSOUND_EVENT_STOP:
+    /* Gets event payload */
+    pstPayload = _pstEvent->pstPayload;
+
+    /* Gets event recipient */
+    pstObject = orxOBJECT(_pstEvent->hRecipient);
+
+    /* Depending on event type */
+    switch(_pstEvent->eID)
     {
-      /* Logs info */
-      orxLOG("FX <%s>@<%s> has stoped!", pstPayload->zFXName, orxObject_GetName(pstObject));
-
-      /* On soldier? */
-      if(pstObject == pstSoldier)
+      case orxFX_EVENT_START:
       {
-        /* Unlocks it */
-        ((MyObject *)orxObject_GetUserData(pstObject))->bLock = orxFALSE;
+        /* Logs info */
+        orxLOG("FX <%s>@<%s> has started!", pstPayload->zFXName, orxObject_GetName(pstObject));
+
+        /* On soldier? */
+        if(pstObject == pstSoldier)
+        {
+          /* Locks it */
+          ((MyObject *)orxObject_GetUserData(pstObject))->bLock = orxTRUE;
+        }
+
+        break;
       }
 
-      break;
+      case orxSOUND_EVENT_STOP:
+      {
+        /* Logs info */
+        orxLOG("FX <%s>@<%s> has stoped!", pstPayload->zFXName, orxObject_GetName(pstObject));
+
+        /* On soldier? */
+        if(pstObject == pstSoldier)
+        {
+          /* Unlocks it */
+          ((MyObject *)orxObject_GetUserData(pstObject))->bLock = orxFALSE;
+        }
+
+        break;
+      }
     }
   }
 
@@ -156,44 +174,44 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
 {
   /* *** FX CONTROLS *** */
 
-  /* Is numpad 0 pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_NUMPAD0))
+  /* Select multiFX? */
+  if(orxInput_IsActive("SelectMultiFX"))
   {
     /* Selects wobble FX */
     zSelectedFX = "MultiFX";
   }
-  /* Is numpad 1 pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_NUMPAD1))
+  /* Select wobble? */
+  if(orxInput_IsActive("SelectWobble"))
   {
     /* Selects wobble FX */
     zSelectedFX = "WobbleFX";
   }
-  /* Is numpad 2 pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_NUMPAD2))
+  /* Select circle? */
+  if(orxInput_IsActive("SelectCircle"))
   {
     /* Selects circle FX */
     zSelectedFX = "CircleFX";
   }
-  /* Is numpad 3 pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_NUMPAD3))
+  /* Select fade? */
+  if(orxInput_IsActive("SelectFade"))
   {
     /* Selects fade FX */
     zSelectedFX = "FadeFX";
   }
-  /* Is numpad 4 pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_NUMPAD4))
+  /* Select flash? */
+  if(orxInput_IsActive("SelectFlash"))
   {
     /* Selects flash FX */
     zSelectedFX = "FlashFX";
   }
-  /* Is numpad 5 pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_NUMPAD5))
+  /* Select move? */
+  if(orxInput_IsActive("SelectMove"))
   {
     /* Selects move FX */
     zSelectedFX = "MoveFX";
   }
-  /* Is numpad 6 pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_NUMPAD6))
+  /* Select flip? */
+  if(orxInput_IsActive("SelectFlip"))
   {
     /* Selects flip FX */
     zSelectedFX = "FlipFX";
@@ -202,8 +220,8 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Soldier not locked? */
   if(!((MyObject *)orxObject_GetUserData(pstSoldier))->bLock)
   {
-    /* Is space pressed? */
-    if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SPACE))
+    /* Apply FX? */
+    if(orxInput_IsActive("ApplyFX") && orxInput_HasNewStatus("ApplyFX"))
     {
       /* Plays FX on soldier */
       orxObject_AddFX(pstSoldier, zSelectedFX);
@@ -216,19 +234,55 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
  */
 orxSTATUS Init()
 {
-  orxCLOCK *pstClock;
-  MyObject *pstMyObject;
-
-  /* Displays a small hint in console */
-  orxLOG("\n- Numpad 1-6 selects an FX to apply (Wobble, Circle, Fade, Color, Move & Flip)"
-         "\n- Numpad 0 will apply the MultiFX containing the slots of 4 of the above FXs"
-         "\n- Space will apply the current selected FX on soldier"
-         "\n* Only once FX will be applied at a time in this tutorial"
-         "\n* However an object can support up to 4 FXs at the same time"
-         "\n* Box has a looping rotating FX applied directly from config, requiring no code");
+  orxCLOCK       *pstClock;
+  MyObject       *pstMyObject;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  orxSTRING       zInputSelectWobble, zInputSelectCircle, zInputSelectFade, zInputSelectFlash, zInputSelectMove, zInputSelectFlip;
+  orxSTRING       zInputSelectMultiFX, zInputApplyFX;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../07_FX.ini");
+
+  /* Gets input binding names */
+  orxInput_GetBinding("SelectWobble", 0, &eType, &eID);
+  zInputSelectWobble  = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("SelectCircle", 0, &eType, &eID);
+  zInputSelectCircle  = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("SelectFade", 0, &eType, &eID);
+  zInputSelectFade    = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("SelectFlash", 0, &eType, &eID);
+  zInputSelectFlash   = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("SelectMove", 0, &eType, &eID);
+  zInputSelectMove    = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("SelectFlip", 0, &eType, &eID);
+  zInputSelectFlip    = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("SelectMultiFX", 0, &eType, &eID);
+  zInputSelectMultiFX = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ApplyFX", 0, &eType, &eID);
+  zInputApplyFX       = orxInput_GetBindingName(eType, eID);
+
+  /* Displays a small hint in console */
+  orxLOG("\n- To select the FX to apply:"
+         "\n . '%s' => Wobble"
+         "\n . '%s' => Circle"
+         "\n . '%s' => Fade"
+         "\n . '%s' => Flash"
+         "\n . '%s' => Move"
+         "\n . '%s' => Flip"
+         "\n . '%s' => MultiFX that contains the slots of 4 of the above FXs"
+         "\n- '%s' will apply the current selected FX on soldier"
+         "\n* Only once FX will be applied at a time in this tutorial"
+         "\n* However an object can support up to 4 FXs at the same time"
+         "\n* Box has a looping rotating FX applied directly from config, requiring no code",
+         zInputSelectWobble, zInputSelectCircle, zInputSelectFade, zInputSelectFlash, zInputSelectMove, zInputSelectFlip, zInputSelectMultiFX, zInputApplyFX);
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
@@ -241,6 +295,7 @@ orxSTATUS Init()
 
   /* Registers event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_FX, EventHandler);
+  orxEvent_AddHandler(orxEVENT_TYPE_INPUT, EventHandler);
 
   /* Creates objects */
   pstSoldier  = orxObject_CreateFromConfig("Soldier");

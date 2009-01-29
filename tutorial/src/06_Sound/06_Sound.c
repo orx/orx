@@ -137,8 +137,8 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
   /* Selects config tutorial section */
   orxConfig_SelectSection("Tutorial");
 
-  /* Is space pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SPACE))
+  /* Random SFX? */
+  if(orxInput_IsActive("RandomSFX"))
   {
     /* No sound FX playing or multiple sound FXs allowed? */
     if(orxConfig_GetBool("AllowMultipleSoundFX") || !orxObject_GetLastAddedSound(pstSoldier))
@@ -150,8 +150,8 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
       orxObject_SetColor(pstSoldier, orxColor_Set(&stColor, orxConfig_GetVector("RandomColor", &v), orxFLOAT_1));
     }
   }
-  /* Is enter pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RETURN))
+  /* Default SFX? */
+  if(orxInput_IsActive("DefaultSFX"))
   {
     /* No sound FX playing or multiple sound FXs allowed? */
     if(orxConfig_GetBool("AllowMultipleSoundFX") || !orxObject_GetLastAddedSound(pstSoldier))
@@ -166,8 +166,8 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
 
   /* *** MUSIC CONTROLS *** */
 
-  /* Is left mouse button pressed? */
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT))
+  /* Toggle music? */
+  if(orxInput_IsActive("ToggleMusic") && orxInput_HasNewStatus("ToggleMusic"))
   {
     /* Not playing? */
     if(orxSound_GetStatus(pstMusic) != orxSOUND_STATUS_PLAY)
@@ -178,19 +178,18 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
       /* Activates soldier */
       orxObject_Enable(pstSoldier, orxTRUE);
     }
-  }
-  /* Is right mouse button pressed? */
-  if(orxMouse_IsButtonPressed(orxMOUSE_BUTTON_RIGHT))
-  {
-    /* Pauses music */
-    orxSound_Pause(pstMusic);
+    else
+    {
+      /* Pauses music */
+      orxSound_Pause(pstMusic);
 
-    /* Deactivates soldier */
-    orxObject_Enable(pstSoldier, orxFALSE);
+      /* Deactivates soldier */
+      orxObject_Enable(pstSoldier, orxFALSE);
+    }
   }
 
-  /* Is right arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT))
+  /* Pitch up? */
+  if(orxInput_IsActive("PitchUp"))
   {
     /* Speeds the music up */
     orxSound_SetPitch(pstMusic, orxSound_GetPitch(pstMusic) + orx2F(0.01f));
@@ -198,8 +197,8 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     /* Rotates soldier CW */
     orxObject_SetRotation(pstSoldier, orxObject_GetRotation(pstSoldier) + orx2F(4.0f) * _pstClockInfo->fDT);
   }
-  /* Is left arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT))
+  /* Pitch down? */
+  if(orxInput_IsActive("PitchDown"))
   {
     /* Slows the music down */
     orxSound_SetPitch(pstMusic, orxSound_GetPitch(pstMusic) - orx2F(0.01f));
@@ -207,8 +206,8 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     /* Rotates soldier CCW */
     orxObject_SetRotation(pstSoldier, orxObject_GetRotation(pstSoldier) - orx2F(4.0f) * _pstClockInfo->fDT);
   }
-  /* Is down arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_DOWN))
+  /* Volume down? */
+  if(orxInput_IsActive("VolumeDown"))
   {
     /* Turns down music's volume */
     orxSound_SetVolume(pstMusic, orxSound_GetVolume(pstMusic) - orx2F(0.05f));
@@ -216,8 +215,8 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
     /* Scales down the soldier */
     orxObject_SetScale(pstSoldier, orxVector_Mulf(&v, orxObject_GetScale(pstSoldier, &v), orx2F(0.98f)));
   }
-  /* Is up arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_UP))
+  /* Volume up? */
+  if(orxInput_IsActive("VolumeUp"))
   {
     /* Turns up music's volume */
     orxSound_SetVolume(pstMusic, orxSound_GetVolume(pstMusic) + orx2F(0.05f));
@@ -232,19 +231,45 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
  */
 orxSTATUS Init()
 {
-  orxCLOCK *pstClock;
-
-  /* Displays a small hint in console */
-  orxLOG("\n- Up/down arrow keys to change the music volume (and the soldier size)"
-         "\n- Left/right arrow keys to change the music pitch (and the soldier rotation)"
-         "\n- Left mouse button will play music if paused and activate the soldier"
-         "\n- Right mouse button will pause the music and deactivate the soldier"
-         "\n- Space will play a random sound effect on the soldier (and change its color)"
-         "\n- Enter will a default sound effect on the soldier (and restore its color)"
-         "\n! The sound effect will be played only if the soldier is active");
+  orxCLOCK       *pstClock;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  orxSTRING       zInputVolumeUp, zInputVolumeDown, zInputPitchUp, zInputPitchDown;
+  orxSTRING       zInputToggleMusic, zInputRandomSFX, zInputDefaultSFX;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../06_Sound.ini");
+
+  /* Gets input binding names */
+  orxInput_GetBinding("VolumeUp", 0, &eType, &eID);
+  zInputVolumeUp = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("VolumeDown", 0, &eType, &eID);
+  zInputVolumeDown = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("PitchUp", 0, &eType, &eID);
+  zInputPitchUp = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("PitchDown", 0, &eType, &eID);
+  zInputPitchDown = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ToggleMusic", 0, &eType, &eID);
+  zInputToggleMusic = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("RandomSFX", 0, &eType, &eID);
+  zInputRandomSFX = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("DefaultSFX", 0, &eType, &eID);
+  zInputDefaultSFX = orxInput_GetBindingName(eType, eID);
+
+  /* Displays a small hint in console */
+  orxLOG("\n- '%s' & '%s' will change the music volume (+ soldier size)"
+         "\n- '%s' & '%s' will change the music pitch (+ soldier rotation)"
+         "\n- '%s' will toggle music (+ soldier display)"
+         "\n- '%s' will play a random SFX on the soldier (+ change its color)"
+         "\n- '%s' will the default SFX on the soldier (+ restore its color)"
+         "\n! The sound effect will be played only if the soldier is active",
+         zInputVolumeUp, zInputVolumeDown, zInputPitchUp, zInputPitchDown, zInputToggleMusic, zInputRandomSFX, zInputDefaultSFX);
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");

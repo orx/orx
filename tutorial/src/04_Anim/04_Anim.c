@@ -125,33 +125,33 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
 {
   orxVECTOR vScale;
 
-  /* Is right arrow pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_RIGHT))
+  /* Is walk right active? */
+  if(orxInput_IsActive("WalkRight"))
   {
     /* Sets walk right as target anim */
     orxObject_SetTargetAnim(pstSoldier, "WalkRight");
   }
-  /* Is left arrow pressed? */
-  else if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_LEFT))
+  /* Is walk left active? */
+  else if(orxInput_IsActive("WalkLeft"))
   {
     /* Sets walk left as target anim */
     orxObject_SetTargetAnim(pstSoldier, "WalkLeft");
   }
-  /* No key pressed */
+  /* No walk active */
   else
   {
     /* Removes target anim */
     orxObject_SetTargetAnim(pstSoldier, orxNULL);
   }
 
-  /* Is '+' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ADD))
+  /* Is scale up active ? */
+  if(orxInput_IsActive("ScaleUp"))
   {
     /* Scales up the soldier */
     orxObject_SetScale(pstSoldier, orxVector_Mulf(&vScale, orxObject_GetScale(pstSoldier, &vScale), orx2F(1.02f)));
   }
-  /* Is '-' pressed? */
-  if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_SUBTRACT))
+  /* Is scale down active? */
+  if(orxInput_IsActive("ScaleDown"))
   {
     /* Scales down the soldier */
     orxObject_SetScale(pstSoldier, orxVector_Mulf(&vScale, orxObject_GetScale(pstSoldier, &vScale), orx2F(0.98f)));
@@ -163,13 +163,29 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
  */
 orxSTATUS Init()
 {
-  orxCLOCK *pstClock;
-
-  /* Displays a small hint in console */
-  orxLOG("\n- Arrow keys will change the soldier's animations\n- '+' & '-' will scale the soldier");
+  orxCLOCK       *pstClock;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  orxSTRING       zInputWalkLeft, zInputWalkRight, zInputScaleUp, zInputScaleDown;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../04_Anim.ini");
+
+  /* Gets input binding names */
+  orxInput_GetBinding("WalkLeft", 0, &eType, &eID);
+  zInputWalkLeft  = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("WalkRight", 0, &eType, &eID);
+  zInputWalkRight = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ScaleUp", 0, &eType, &eID);
+  zInputScaleUp   = orxInput_GetBindingName(eType, eID);
+
+  orxInput_GetBinding("ScaleDown", 0, &eType, &eID);
+  zInputScaleDown = orxInput_GetBindingName(eType, eID);
+
+  /* Displays a small hint in console */
+  orxLOG("\n- '%s' & '%s' will change the soldier's animations\n- '%s' & '%s' will scale the soldier", zInputWalkLeft, zInputWalkRight, zInputScaleUp, zInputScaleDown);
 
   /* Creates viewport */
   orxViewport_CreateFromConfig("Viewport");
