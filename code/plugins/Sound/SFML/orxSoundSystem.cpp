@@ -68,6 +68,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
 {
   orxFLOAT          fDimensionRatio;    /**< Dimension ratio */
   orxFLOAT          fRecDimensionRatio; /**< Reciprocal dimension ratio */
+  sf::SoundBuffer  *poDummyBuffer;      /**< Dummy sound buffer to prevent SFML from crashing on MacOS X 10.4 */
   orxU32            u32Flags;
 
 } orxSOUNDSYSTEM_STATIC;
@@ -97,6 +98,9 @@ extern "C" orxSTATUS orxSoundSystem_SFML_Init()
 
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
+
+    /* Creates dummy buffer to prevents SFML from crashing on MacOS X 10.4 */
+    sstSoundSystem.poDummyBuffer = new sf::SoundBuffer();
 
     /* Sets 2D listener target */
     sf::Listener::SetTarget(0.0f, 0.0f, 1.0f);
@@ -136,6 +140,9 @@ extern "C" orxVOID orxSoundSystem_SFML_Exit()
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
+    /* Deletes dummy buffer */
+    delete sstSoundSystem.poDummyBuffer;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstSoundSystem, sizeof(orxSOUNDSYSTEM_STATIC));
   }
