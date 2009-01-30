@@ -42,7 +42,7 @@
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\..\..\include"
-				PreprocessorDefinitions=""
+				PreprocessorDefinitions="__orxDLL__"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="false"
 				WarningLevel="3"
