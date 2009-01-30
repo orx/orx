@@ -388,14 +388,7 @@ orxSTATIC orxINLINE orxVECTOR *_orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, 
   return pvResult;
 }
 
-/***************************************************************************
- orxFrame_UpdateData
- Updates frame global data using parent's global and frame local ones.
- Result can be stored in a third party frame.
-
- returns: orxVOID
- ***************************************************************************/
-/** Gets a frame position
+/** Updates frame global data using parent's global and frame local ones
  * @param[out]  _pstDstFrame    Destination frame, will contain up-to-date frame
  * @param[in]   _pstSrcFrame    Source frame, which needs update
  */
