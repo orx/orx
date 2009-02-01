@@ -1068,7 +1068,7 @@ orxFLOAT orxFASTCALL orxInput_GetValue(orxCONST orxSTRING _zInputName)
         {
           /* Valid & active? */
           if((pstEntry->astBindingList[i].eID != orxINPUT_TYPE_NONE)
-          && (pstEntry->astBindingList[i].fValue > pstEntry->astBindingList[i].fThreshold))
+          && (orxMath_Abs(pstEntry->astBindingList[i].fValue) > pstEntry->astBindingList[i].fThreshold))
           {
             /* Updates result */
             fResult = pstEntry->astBindingList[i].fValue;
