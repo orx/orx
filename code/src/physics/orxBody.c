@@ -82,10 +82,12 @@
 #define orxBODY_KZ_CONFIG_BOTTOM_RIGHT        "BottomRight"
 #define orxBODY_KZ_CONFIG_CENTER              "Center"
 #define orxBODY_KZ_CONFIG_RADIUS              "Radius"
+#define orxBODY_KZ_CONFIG_VERTEX_LIST         "VertexList"
 
 #define orxBODY_KZ_FULL                       "full"
 #define orxBODY_KZ_TYPE_SPHERE                "sphere"
 #define orxBODY_KZ_TYPE_BOX                   "box"
+#define orxBODY_KZ_TYPE_MESH                  "mesh"
 
 
 /***************************************************************************
@@ -619,11 +621,23 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
           orxVector_Copy(&(stMergedPartDef.stSphere.vCenter), (orxVector_IsNull(&(_pstBodyPartDef->stSphere.vCenter)) == orxFALSE) ? &(_pstBodyPartDef->stSphere.vCenter) : &(sstBody.stBodyPartTemplate.stSphere.vCenter));
           stMergedPartDef.stSphere.fRadius = (_pstBodyPartDef->stSphere.fRadius > 0.0f) ? _pstBodyPartDef->stSphere.fRadius : sstBody.stBodyPartTemplate.stSphere.fRadius;
         }
-        /* Box ? */
+        /* Box? */
         else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX))
         {
           orxVector_Copy(&(stMergedPartDef.stAABox.stBox.vTL), (orxVector_IsNull(&(_pstBodyPartDef->stAABox.stBox.vTL)) == orxFALSE) ? &(_pstBodyPartDef->stAABox.stBox.vTL) : &(sstBody.stBodyPartTemplate.stAABox.stBox.vTL));
           orxVector_Copy(&(stMergedPartDef.stAABox.stBox.vBR), (orxVector_IsNull(&(_pstBodyPartDef->stAABox.stBox.vBR)) == orxFALSE) ? &(_pstBodyPartDef->stAABox.stBox.vBR) : &(sstBody.stBodyPartTemplate.stAABox.stBox.vBR));
+        }
+        /* Mesh? */
+        else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_MESH))
+        {
+          orxU32 i;
+
+          /* For all vertices */
+          for(i = 0; i < _pstBodyPartDef->stMesh.u32VertexCounter; i++)
+          {
+            /* Copies it */
+            orxVector_Copy(&(stMergedPartDef.stMesh.avVertices[i]), (orxVector_IsNull(&(_pstBodyPartDef->stAABox.stBox.vTL)) == orxFALSE) ? &(_pstBodyPartDef->stAABox.stBox.vTL) : &(sstBody.stBodyPartTemplate.stAABox.stBox.vTL));
+          }
         }
 
         /* Selects it */
@@ -679,7 +693,7 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCO
 orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, orxCONST orxSTRING _zConfigID)
 {
   orxSTRING zPreviousSection;
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
@@ -693,10 +707,14 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
   /* Selects section */
   if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
   {
-    orxBODY_PART_DEF stBodyPartDef;
+    orxSTRING         zBodyPartType;
+    orxBODY_PART_DEF  stBodyPartDef;
 
     /* Clears body part definition */
     orxMemory_Zero(&stBodyPartDef, sizeof(orxBODY_PART_DEF));
+
+    /* Gets body part type */
+    zBodyPartType = orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE));
 
     /* Inits it */
     stBodyPartDef.fFriction     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FRICTION);
@@ -709,7 +727,8 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
     {
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SOLID;
     }
-    if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxBODY_KZ_CONFIG_TYPE)), orxBODY_KZ_TYPE_SPHERE) == 0)
+    /* Sphere? */
+    if(orxString_Compare(zBodyPartType, orxBODY_KZ_TYPE_SPHERE) == 0)
     {
       /* Updates sphere specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SPHERE;
@@ -738,7 +757,8 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
         stBodyPartDef.stSphere.fRadius = orxConfig_GetFloat(orxBODY_KZ_CONFIG_RADIUS);
       }
     }
-    else
+    /* Box? */
+    else if(orxString_Compare(zBodyPartType, orxBODY_KZ_TYPE_BOX) == 0)
     {
       /* Updates box specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_BOX;
@@ -763,9 +783,58 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
         orxConfig_GetVector(orxBODY_KZ_CONFIG_BOTTOM_RIGHT, &(stBodyPartDef.stAABox.stBox.vBR));
       }
     }
+    /* Mesh */
+    else if(orxString_Compare(zBodyPartType, orxBODY_KZ_TYPE_MESH) == 0)
+    {
+      /* Updates mesh specific info */
+      stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_MESH;
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_LIST) != orxFALSE)
+      && ((stBodyPartDef.stMesh.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
+      {
+        orxU32 i;
 
-    /* Adds body part */
-    eResult = orxBody_AddPart(_pstBody, _u32Index, &stBodyPartDef);
+        /* Too many defined vertices? */
+        if(stBodyPartDef.stMesh.u32VertexCounter > orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Too many vertices in the list: %ld. The maximum allowed is: %ld.", stBodyPartDef.stMesh.u32VertexCounter, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER);
+
+          /* Updates vertices number */
+          stBodyPartDef.stMesh.u32VertexCounter = orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER;
+        }
+
+        /* For all defined vertices */
+        for(i = 0; i < stBodyPartDef.stMesh.u32VertexCounter; i++)
+        {
+          /* Gets its vector */
+          orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stMesh.avVertices[i]));
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating mesh body <%s> is invalid (missing or only one vertex).", _zConfigID);
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+    /* Unknown */
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "<%s> isn't a valid type for a body part.", zBodyPartType);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+
+    /* Valid? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Adds body part */
+      eResult = orxBody_AddPart(_pstBody, _u32Index, &stBodyPartDef);
+    }
 
     /* Restores previous section */
     orxConfig_SelectSection(zPreviousSection);

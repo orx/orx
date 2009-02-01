@@ -41,13 +41,17 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g0f32d74e8881ce5048c01fb38b5a9c86">orxBODY_PART_DEF_KU32_FLAG_NONE</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ge0b3bb70bd51b17e317ed207c97b3fd5">orxBODY_PART_DEF_KU32_FLAG_BOX</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gdcd7a3a7310b14ef8e3e695f2f5e547e">orxBODY_PART_DEF_KU32_FLAG_SPHERE</a>&nbsp;&nbsp;&nbsp;0x00000001</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gdcd7a3a7310b14ef8e3e695f2f5e547e">orxBODY_PART_DEF_KU32_FLAG_SPHERE</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ge0b3bb70bd51b17e317ed207c97b3fd5">orxBODY_PART_DEF_KU32_FLAG_BOX</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gfb8e21452ef1ce7bb2a789154f296ac1">orxBODY_PART_DEF_KU32_FLAG_MESH</a>&nbsp;&nbsp;&nbsp;0x00000004</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#ge0fef0071722effaae7df57b1dc98b6f">orxBODY_PART_DEF_KU32_FLAG_SOLID</a>&nbsp;&nbsp;&nbsp;0x00000010</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#gbebb7ab1d353627fd016914456185556">orxBODY_PART_DEF_KU32_MASK_ALL</a>&nbsp;&nbsp;&nbsp;0xFFFFFFFF</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g1fe0927f5638cc9841754941e82a8521">orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER</a>&nbsp;&nbsp;&nbsp;8</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_physics.html#g719bed4c6c8c040776938aaf7ac02025">orxPHYSICS_KZ_CONFIG_SECTION</a>&nbsp;&nbsp;&nbsp;&quot;Physics&quot;</td></tr>
 
@@ -226,7 +230,7 @@ Body def all mask
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxBODY_PART_DEF_KU32_FLAG_BOX&nbsp;&nbsp;&nbsp;0x00000001          </td>
+          <td class="memname">#define orxBODY_PART_DEF_KU32_FLAG_BOX&nbsp;&nbsp;&nbsp;0x00000002          </td>
         </tr>
       </table>
 </div>
@@ -234,6 +238,21 @@ Body def all mask
 
 <p>
 Box body part def flag 
+</div>
+</div><p>
+<a class="anchor" name="gfb8e21452ef1ce7bb2a789154f296ac1"></a><!-- doxytag: member="orxPhysics.h::orxBODY_PART_DEF_KU32_FLAG_MESH" ref="gfb8e21452ef1ce7bb2a789154f296ac1" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxBODY_PART_DEF_KU32_FLAG_MESH&nbsp;&nbsp;&nbsp;0x00000004          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Mesh body part def flag 
 </div>
 </div><p>
 <a class="anchor" name="g0f32d74e8881ce5048c01fb38b5a9c86"></a><!-- doxytag: member="orxPhysics.h::orxBODY_PART_DEF_KU32_FLAG_NONE" ref="g0f32d74e8881ce5048c01fb38b5a9c86" args="" -->
@@ -271,7 +290,7 @@ Solid body part def flag
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxBODY_PART_DEF_KU32_FLAG_SPHERE&nbsp;&nbsp;&nbsp;0x00000002          </td>
+          <td class="memname">#define orxBODY_PART_DEF_KU32_FLAG_SPHERE&nbsp;&nbsp;&nbsp;0x00000001          </td>
         </tr>
       </table>
 </div>
@@ -294,6 +313,21 @@ Sphere body part def flag
 
 <p>
 Body part def all mask 
+</div>
+</div><p>
+<a class="anchor" name="g1fe0927f5638cc9841754941e82a8521"></a><!-- doxytag: member="orxPhysics.h::orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER" ref="g1fe0927f5638cc9841754941e82a8521" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER&nbsp;&nbsp;&nbsp;8          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Misc defines 
 </div>
 </div><p>
 <a class="anchor" name="gd1e001b92fcbc967b723f38522755a2c"></a><!-- doxytag: member="orxPhysics.h::orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP" ref="gd1e001b92fcbc967b723f38522755a2c" args="" -->
