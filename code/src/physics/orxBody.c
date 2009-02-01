@@ -789,7 +789,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       /* Updates mesh specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_MESH;
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_LIST) != orxFALSE)
-      && ((stBodyPartDef.stMesh.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
+      && ((stBodyPartDef.stMesh.u32VertexCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 3))
       {
         orxU32 i;
 
@@ -797,7 +797,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
         if(stBodyPartDef.stMesh.u32VertexCounter > orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Too many vertices in the list: %ld. The maximum allowed is: %ld.", stBodyPartDef.stMesh.u32VertexCounter, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Too many vertices in the list: %ld. The maximum allowed is: %ld. Using the first %ld ones for the shape <%s>", stBodyPartDef.stMesh.u32VertexCounter, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, _zConfigID);
 
           /* Updates vertices number */
           stBodyPartDef.stMesh.u32VertexCounter = orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER;
@@ -813,7 +813,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating mesh body <%s> is invalid (missing or only one vertex).", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating mesh body <%s> is invalid (missing or less than 3 vertices).", _zConfigID);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;

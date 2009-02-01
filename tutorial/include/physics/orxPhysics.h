@@ -61,11 +61,18 @@
  */
 #define orxBODY_PART_DEF_KU32_FLAG_NONE     0x00000000  /**< No flags */
 
-#define orxBODY_PART_DEF_KU32_FLAG_BOX      0x00000001  /**< Box body part def flag */
-#define orxBODY_PART_DEF_KU32_FLAG_SPHERE   0x00000002  /**< Sphere body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_SPHERE   0x00000001  /**< Sphere body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_BOX      0x00000002  /**< Box body part def flag */
+#define orxBODY_PART_DEF_KU32_FLAG_MESH     0x00000004  /**< Mesh body part def flag */
 #define orxBODY_PART_DEF_KU32_FLAG_SOLID    0x00000010  /**< Solid body part def flag */
 
 #define orxBODY_PART_DEF_KU32_MASK_ALL      0xFFFFFFFF  /**< Body part def all mask */
+
+
+/** Misc defines
+ */
+#define orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER 8
+
 
 /** Body definition
  */
@@ -105,7 +112,15 @@ typedef struct __orxBODY_PART_DEF_t
     {
       orxAABOX  stBox;                      /**< Axis aligned Box : 56 */
     } stAABox;                              /**< Box : 56 */
-  };                                        /**< Shape : 56 */
+
+    struct
+    {
+      orxU32    u32VertexCounter;           /**< Mesh vertex counter : 36 */
+      orxVECTOR avVertices[orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER]; /**< Mesh vertices : 132 */
+
+    } stMesh;
+
+  };                                        /**< Shape : 132 */
 
 } orxBODY_PART_DEF;
 

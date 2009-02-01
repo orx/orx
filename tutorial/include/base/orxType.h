@@ -70,7 +70,7 @@
   typedef orxU32                orxRGBA;
   typedef orxU32                orxENUM;
 
-  #define orx2F(V)              (orxFLOAT)(V)
+  #define orx2F(V)              ((orxFLOAT)(V))
 
   #define orx2RGBA(R, G, B, A)  ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
   #define orxRGBA_R(RGBA)       (orxU8)(((RGBA) >> 24) & 0xFF)
@@ -126,7 +126,7 @@
     typedef orxU32              orxRGBA;
     typedef orxU32              orxENUM;
 
-    #define orx2F(V)            (orxFLOAT)(V)
+    #define orx2F(V)            ((orxFLOAT)(V))
 
     #define orx2RGBA(R, G, B, A) ((((R) & 0xFF) << 24) | (((G) & 0xFF) << 16) | (((B) & 0xFF) << 8) | ((A) & 0xFF))
     #define orxRGBA_R(RGBA)     (orxU8)(((RGBA) >> 24) & 0xFF)
