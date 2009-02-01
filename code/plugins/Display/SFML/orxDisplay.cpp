@@ -1176,6 +1176,10 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
               sstDisplay.poRenderWindow   = new sf::RenderWindow(sf::VideoMode(su32ScreenWidth, su32ScreenHeight, su32ScreenDepth), orxConfig_GetString(orxDISPLAY_KZ_CONFIG_TITLE), ulStyle);
             }
 
+            /* Clears rendering window */
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
             /* Stores values */
             sstDisplay.u32ScreenWidth   = sstDisplay.poRenderWindow->GetWidth();
             sstDisplay.u32ScreenHeight  = sstDisplay.poRenderWindow->GetHeight();
