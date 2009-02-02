@@ -770,6 +770,11 @@ orxSTATUS orxFASTCALL  orxInput_Save(orxCONST orxSTRING _zFileName)
   /* Valid? */
   if(_zFileName != orxSTRING_EMPTY)
   {
+    orxSTRING zPreviousSection;
+
+    /* Stores previous section */
+    zPreviousSection = orxConfig_GetCurrentSection();
+
     /* Clears input section */
     orxConfig_ClearSection(orxINPUT_KZ_CONFIG_SECTION);
 
@@ -838,6 +843,9 @@ orxSTATUS orxFASTCALL  orxInput_Save(orxCONST orxSTRING _zFileName)
         }
       }
     }
+
+    /* Restores previous section */
+    orxConfig_SelectSection(zPreviousSection);
 
     /* Saves it */
     eResult = orxConfig_Save(_zFileName, orxFALSE, orxInput_SaveCallback);

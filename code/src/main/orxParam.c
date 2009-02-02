@@ -249,7 +249,10 @@ orxSTATIC orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
       /* Not found? */
       if(azParamList == orxNULL)
       {
-        orxSTRING zParamValue;
+        orxSTRING zParamValue, zPreviousSection;
+
+        /* Stores previous section */
+        zPreviousSection = orxConfig_GetCurrentSection();
 
         /* Selects config section */
         orxConfig_SelectSection(orxPARAM_KZ_CONFIG_SECTION);
@@ -319,6 +322,9 @@ orxSTATIC orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
             bUseConfig = orxTRUE;
           }
         }
+
+        /* Restores previous section */
+        orxConfig_SelectSection(zPreviousSection);
       }
 
       /* Found? */

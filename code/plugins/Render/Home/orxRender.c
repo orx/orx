@@ -882,7 +882,8 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
  */
 orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
 {
-  orxVIEWPORT *pstViewport;
+  orxVIEWPORT  *pstViewport;
+  orxSTRING     zPreviousSection;
 
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
@@ -899,6 +900,9 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 
   /* Increases FPS counter */
   orxFPS_IncreaseFrameCounter();
+
+  /* Stores previous section */
+  zPreviousSection = orxConfig_GetCurrentSection();
 
   /* Selects render config section */
   orxConfig_SelectSection(orxRENDER_KZ_CONFIG_SECTION);
@@ -922,6 +926,9 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
     /* Display FPS */
     orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
   }
+
+  /* Restores previous section */
+  orxConfig_SelectSection(zPreviousSection);
 
   /* Swap buffers */
   orxDisplay_Swap();

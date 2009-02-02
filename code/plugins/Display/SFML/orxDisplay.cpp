@@ -74,6 +74,7 @@ typedef struct __orxDISPLAY_STATIC_t
 {
   orxU32            u32Flags;
   orxU32            u32ScreenWidth, u32ScreenHeight;
+  orxBOOL           bDefaultSmooth;
   sf::RenderWindow *poRenderWindow;
   sf::Font         *poDefaultFont;
   orxSTRING         zDefaultFont;
@@ -870,11 +871,8 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
     default:
     case orxDISPLAY_SMOOTHING_DEFAULT:
     {
-      /* Selects display section */
-      orxConfig_SelectSection(orxDISPLAY_KZ_CONFIG_SECTION);
-
       /* Applies default smoothing */
-      bSmooth = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH) ? true : false;
+      bSmooth = (sstDisplay.bDefaultSmooth != orxFALSE) ? true : false;
 
       break;
     }
@@ -1149,6 +1147,9 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
             u32ConfigWidth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH);
             u32ConfigHeight = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT);
             u32ConfigDepth  = orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH);
+
+            /* Gets default smoothing */
+            sstDisplay.bDefaultSmooth = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
 
             /* Full screen? */
             if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN) != orxFALSE)
