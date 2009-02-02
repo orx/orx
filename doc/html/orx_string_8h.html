@@ -29,15 +29,15 @@
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g642c9bffe67569c7fb80665b6f42c499">orxSTRING_KC_VECTOR_START</a>&nbsp;&nbsp;&nbsp;'{'</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g642c9bffe67569c7fb80665b6f42c499">orxSTRING_KC_VECTOR_START</a>&nbsp;&nbsp;&nbsp;'('</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga8986a6ede4e3a578f54f816488ce1b6">orxSTRING_KC_VECTOR_START_ALT</a>&nbsp;&nbsp;&nbsp;'('</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga8986a6ede4e3a578f54f816488ce1b6">orxSTRING_KC_VECTOR_START_ALT</a>&nbsp;&nbsp;&nbsp;'{'</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g6a4ae16da84e7126d749fed80356a617">orxSTRING_KC_VECTOR_SEPARATOR</a>&nbsp;&nbsp;&nbsp;','</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gc8646f825bc6df7e387d877970d56e91">orxSTRING_KC_VECTOR_END</a>&nbsp;&nbsp;&nbsp;'}'</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gc8646f825bc6df7e387d877970d56e91">orxSTRING_KC_VECTOR_END</a>&nbsp;&nbsp;&nbsp;')'</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga2a656e10d7ec4fe736684cc5e4828ae">orxSTRING_KC_VECTOR_END_ALT</a>&nbsp;&nbsp;&nbsp;')'</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga2a656e10d7ec4fe736684cc5e4828ae">orxSTRING_KC_VECTOR_END_ALT</a>&nbsp;&nbsp;&nbsp;'}'</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ge73a67e545c8825143c64d0ba8eed957">orxString_ContinueCRC</a> (orxCONST orxSTRING _zString, orxU32 _u32CRC)</td></tr>
@@ -58,7 +58,7 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxS32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ge0029b755cc9a464cf28c18a0aa5c6eb">orxString_Compare</a> (orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxS32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g1598022635b68c527f2b3197163d495e">orxString_NCompare</a> (orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2, orxU32 _u32NbChar)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxS32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gebb8d5bf97bb17e9e51de7bfb9e051a9">orxString_NCompare</a> (orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2, orxU32 _u32CharNumber)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#gdf4c64841d36d1d5df1a23b8e6e59f40">orxString_ToS32Base</a> (orxCONST orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, orxSTRING *_pzRemaining)</td></tr>
 
@@ -89,6 +89,8 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxS32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g925422b1b239d2a505f0c4cdac5465f2">orxString_SearchCharIndex</a> (orxCONST orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga8fae0445ea8725dadc8fa196266c811">orxString_Print</a> (orxSTRING _zDstString, orxSTRING _zSrcString,...)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxS32 orxCDECL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#g4bacc552f4e602e5273b716db8542169">orxString_NPrint</a> (orxSTRING _zDstString, orxU32 _u32CharNumber, orxSTRING _zSrcString,...)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>

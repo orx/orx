@@ -61,11 +61,11 @@
 #include "debug/orxDebug.h"
 
 
-#define orxSTRING_KC_VECTOR_START       '{'
-#define orxSTRING_KC_VECTOR_START_ALT   '('
+#define orxSTRING_KC_VECTOR_START       '('
+#define orxSTRING_KC_VECTOR_START_ALT   '{'
 #define orxSTRING_KC_VECTOR_SEPARATOR   ','
-#define orxSTRING_KC_VECTOR_END         '}'
-#define orxSTRING_KC_VECTOR_END_ALT     ')'
+#define orxSTRING_KC_VECTOR_END         ')'
+#define orxSTRING_KC_VECTOR_END_ALT     '}'
 
 
 /** Continues a CRC with a string one
@@ -212,19 +212,19 @@ orxSTATIC orxINLINE orxS32              orxString_Compare(orxCONST orxSTRING _zS
 /** Compare N first character from two strings. If the first one is smaller
  * than the second, it returns -1, If the second one is bigger than the first,
  * and 0 if they are equals.
- * @param _zString1   (IN) First String to compare
- * @param _zString2   (IN) Second string to compare
- * @param _u32NbChar  (IN) Number of character to compare
+ * @param _zString1      (IN) First String to compare
+ * @param _zString2      (IN) Second string to compare
+ * @param _u32CharNumber (IN) Number of character to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
-orxSTATIC orxINLINE orxS32              orxString_NCompare(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2, orxU32 _u32NbChar)
+orxSTATIC orxINLINE orxS32              orxString_NCompare(orxCONST orxSTRING _zString1, orxCONST orxSTRING _zString2, orxU32 _u32CharNumber)
 {
   /* Checks */
   orxASSERT(_zString1 != orxNULL);
   orxASSERT(_zString2 != orxNULL);
 
   /* Done! */
-  return strncmp(_zString1, _zString2, _u32NbChar);
+  return strncmp(_zString1, _zString2, _u32CharNumber);
 }
 
 /** Converts a String to a signed int value using the given base
@@ -790,6 +790,30 @@ orxSTATIC orxINLINE orxS32 orxCDECL orxString_Print(orxSTRING _zDstString, orxST
   /* Gets variable arguments & print the string */
   va_start(stArgs, _zSrcString);
   s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
+  va_end(stArgs);
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Prints a formated string to a memory buffer using a max size
+ * @param[out] _zDstString    Destination string
+ * @param[in]  _zSrcString    Source formated string
+ * @param[in]  _u32CharNumber Max number of character to print
+ * @return The number of written characters
+ */
+orxSTATIC orxINLINE orxS32 orxCDECL orxString_NPrint(orxSTRING _zDstString, orxU32 _u32CharNumber, orxSTRING _zSrcString, ...)
+{
+  va_list stArgs;
+  orxS32  s32Result;
+
+  /* Checks */
+  orxASSERT(_zDstString != orxNULL);
+  orxASSERT(_zSrcString != orxNULL);
+
+  /* Gets variable arguments & print the string */
+  va_start(stArgs, _zSrcString);
+  s32Result = vsnprintf(_zDstString, _u32CharNumber, _zSrcString, stArgs);
   va_end(stArgs);
 
   /* Done! */

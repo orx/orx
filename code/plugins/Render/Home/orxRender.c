@@ -921,7 +921,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
     stTextTransform.fDstX = stTextTransform.fDstY = orx2F(10.0f);
 
     /* Writes text */
-    orxString_Print(acText, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
+    orxString_NPrint(acText, 16, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
 
     /* Display FPS */
     orxDisplay_PrintString(orxDisplay_GetScreenBitmap(), acText, &stTextTransform, orxRENDER_KST_DEFAULT_COLOR);
