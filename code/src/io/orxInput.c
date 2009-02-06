@@ -403,29 +403,15 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           /* Is a combination? */
           if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION))
           {
-            orxU32 i, j;
+            orxU32 i;
 
             /* For all bindings */
-            for(i = 0, j = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
+            for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
             {
-              /* Active? */
-              if(orxMath_Abs(pstEntry->astBindingList[i].fValue) > pstEntry->astBindingList[i].fThreshold)
-              {
-                /* Updates payload */
-                stPayload.aeType[j]   = pstEntry->astBindingList[i].eType;
-                stPayload.aeID[j]     = pstEntry->astBindingList[i].eID;
-                stPayload.afValue[j]  = pstEntry->astBindingList[i].fValue;
-
-                /* Updates payload index */
-                j++;
-              }
-            }
-
-            /* For all unused bindings */
-            for(; j < orxINPUT_KU32_BINDING_NUMBER; j++)
-            {
-              /* Cleans it */
-              stPayload.aeType[j] = orxINPUT_TYPE_NONE;
+              /* Updates payload */
+              stPayload.aeType[i]   = pstEntry->astBindingList[i].eType;
+              stPayload.aeID[i]     = pstEntry->astBindingList[i].eID;
+              stPayload.afValue[i]  = pstEntry->astBindingList[i].fValue;
             }
 
             /* Updates status */
@@ -475,29 +461,15 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           /* Is a combination? */
           if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION))
           {
-            orxU32 i, j;
+            orxU32 i;
 
             /* For all bindings */
-            for(i = 0, j = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
+            for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
             {
-              /* Inactive? */
-              if(orxMath_Abs(pstEntry->astBindingList[i].fValue) <= pstEntry->astBindingList[i].fThreshold)
-              {
-                /* Updates payload */
-                stPayload.aeType[j]   = pstEntry->astBindingList[i].eType;
-                stPayload.aeID[j]     = pstEntry->astBindingList[i].eID;
-                stPayload.afValue[j]  = pstEntry->astBindingList[i].fValue;
-
-                /* Updates payload index */
-                j++;
-              }
-            }
-
-            /* For all unused bindings */
-            for(; j < orxINPUT_KU32_BINDING_NUMBER; j++)
-            {
-              /* Cleans it */
-              stPayload.aeType[j] = orxINPUT_TYPE_NONE;
+              /* Updates payload */
+              stPayload.aeType[i]   = pstEntry->astBindingList[i].eType;
+              stPayload.aeID[i]     = pstEntry->astBindingList[i].eID;
+              stPayload.afValue[i]  = pstEntry->astBindingList[i].fValue;
             }
           }
           else
