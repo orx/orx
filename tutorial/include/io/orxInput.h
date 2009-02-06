@@ -85,11 +85,11 @@ typedef enum __orxINPUT_EVENT_t
  */
 typedef struct __orxINPUT_EVENT_PAYLOAD_t
 {
-  orxSTRING     zSetName;               /**< Set name : 4 */
-  orxSTRING     zInputName;             /**< Input name : 8 */
-  orxINPUT_TYPE eType;                  /**< Input binding type : 12 */
-  orxENUM       eID;                    /**< Input binding ID : 16 */
-  orxFLOAT      fValue;                 /**< Input binding value : 20 */
+  orxSTRING     zSetName;                               /**< Set name : 4 */
+  orxSTRING     zInputName;                             /**< Input name : 8 */
+  orxINPUT_TYPE aeType[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding type : 16 */
+  orxENUM       aeID[orxINPUT_KU32_BINDING_NUMBER];     /**< Input binding ID : 24 */
+  orxFLOAT      afValue[orxINPUT_KU32_BINDING_NUMBER];  /**< Input binding value : 32 */
 
 } orxINPUT_EVENT_PAYLOAD;
 
@@ -149,6 +149,20 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxInput_HasNewStatus(orxCONST orxSTRING
  * @return orxFLOAT
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL   orxInput_GetValue(orxCONST orxSTRING _zInputName);
+
+
+/** Sets an input combination mode
+ * @param[in] _zName            Concerned input name
+ * @param[in] _bCombination     If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_SetCombination(orxCONST orxSTRING _zName, orxBOOL _bCombination);
+
+/** Is an input a combination?
+ * @param[in] _zName            Concerned input name
+ * @return orxTRUE if the input is a combination, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL    orxInput_IsCombination(orxCONST orxSTRING _zName);
 
 
 /** Binds an input to a mouse/joystick button, keyboard key or joystick axis

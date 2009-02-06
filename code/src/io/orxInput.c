@@ -54,6 +54,8 @@
 #define orxINPUT_KZ_CONFIG_SET_LIST                   "SetList"   /**< Input set list */
 #define orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD         "JoystickThreshold" /**< Input joystick threshold */
 
+#define orxINPUT_KZ_COMBINATION                       "combination"
+
 
 #define orxINPUT_KU32_SET_BANK_SIZE                   4
 #define orxINPUT_KU32_ENTRY_BANK_SIZE                 8
@@ -64,6 +66,7 @@
 #define orxINPUT_KU32_ENTRY_FLAG_BOUND                0x10000000  /**< Bound flags */
 #define orxINPUT_KU32_ENTRY_FLAG_ACTIVE               0x20000000  /**< Active flags */
 #define orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS           0x40000000  /**< New status flags */
+#define orxINPUT_KU32_ENTRY_FLAG_COMBINATION          0x80000000  /**< Combination status flags */
 
 #define orxINPUT_KU32_ENTRY_MASK_OLDEST_BINDING       0x0000000F  /**< Oldest binding mask */
 #define orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING  0x000000F0  /**< Last active binding mask */
@@ -271,6 +274,9 @@ orxSTATIC orxINLINE orxINPUT_SET *orxInput_LoadSet(orxCONST orxSTRING _zSetName)
 
               /* Rebinds it */
               orxInput_Bind(zInput, eType, eID);
+
+              /* Updates its combination status */
+              orxInput_SetCombination(zInput, (orxString_Compare(orxString_LowerCase(orxConfig_GetString(zInput)), orxINPUT_KZ_COMBINATION) == 0) ? orxTRUE : orxFALSE);
             }
           }
         }
@@ -339,7 +345,7 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
         pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
     {
       orxU32        i, u32ActiveIndex;
-      orxBOOL       bActive = orxFALSE;
+      orxBOOL       bActive = orxFALSE, bStatusSet = orxFALSE;
 
       /* For all bindings */
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
@@ -354,13 +360,28 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           if(orxMath_Abs(pstEntry->astBindingList[i].fValue) > pstEntry->astBindingList[i].fThreshold)
           {
             /* First one? */
-            if(bActive == orxFALSE)
+            if(bStatusSet == orxFALSE)
             {
               /* Stores active index value */
               u32ActiveIndex = i;
 
               /* Updates status */
               bActive = orxTRUE;
+
+              /* Updates set status */
+              bStatusSet = orxTRUE;
+            }
+          }
+          else
+          {
+            /* Is a combination? */
+            if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION))
+            {
+              /* Updates status */
+              bActive = orxFALSE;
+
+              /* Updates set status */
+              bStatusSet = orxTRUE;
             }
           }
         }
@@ -378,12 +399,57 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           orxMemory_Zero(&stPayload, sizeof(orxINPUT_EVENT_PAYLOAD));
           stPayload.zSetName    = sstInput.pstCurrentSet->zName;
           stPayload.zInputName  = pstEntry->zName;
-          stPayload.eType       = pstEntry->astBindingList[u32ActiveIndex].eType;
-          stPayload.eID         = pstEntry->astBindingList[u32ActiveIndex].eID;
-          stPayload.fValue      = pstEntry->astBindingList[u32ActiveIndex].fValue;
 
-          /* Updates status */
-          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS | orxINPUT_KU32_ENTRY_FLAG_ACTIVE | (u32ActiveIndex << orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING), orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING);
+          /* Is a combination? */
+          if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION))
+          {
+            orxU32 i, j;
+
+            /* For all bindings */
+            for(i = 0, j = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
+            {
+              /* Active? */
+              if(orxMath_Abs(pstEntry->astBindingList[i].fValue) > pstEntry->astBindingList[i].fThreshold)
+              {
+                /* Updates payload */
+                stPayload.aeType[j]   = pstEntry->astBindingList[i].eType;
+                stPayload.aeID[j]     = pstEntry->astBindingList[i].eID;
+                stPayload.afValue[j]  = pstEntry->astBindingList[i].fValue;
+
+                /* Updates payload index */
+                j++;
+              }
+            }
+
+            /* For all unused bindings */
+            for(; j < orxINPUT_KU32_BINDING_NUMBER; j++)
+            {
+              /* Cleans it */
+              stPayload.aeType[j] = orxINPUT_TYPE_NONE;
+            }
+
+            /* Updates status */
+            orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS | orxINPUT_KU32_ENTRY_FLAG_ACTIVE | orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING, orxINPUT_KU32_ENTRY_FLAG_NONE);
+          }
+          else
+          {
+            orxU32 i;
+
+            /* Updates active binding values */
+            stPayload.aeType[0]   = pstEntry->astBindingList[u32ActiveIndex].eType;
+            stPayload.aeID[0]     = pstEntry->astBindingList[u32ActiveIndex].eID;
+            stPayload.afValue[0]  = pstEntry->astBindingList[u32ActiveIndex].fValue;
+
+            /* For all unused bindings */
+            for(i = 1; i < orxINPUT_KU32_BINDING_NUMBER; i++)
+            {
+              /* Cleans it */
+              stPayload.aeType[i] = orxINPUT_TYPE_NONE;
+            }
+
+            /* Updates status */
+            orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS | orxINPUT_KU32_ENTRY_FLAG_ACTIVE | (u32ActiveIndex << orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING), orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING);
+          }
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_INPUT, orxINPUT_EVENT_ON, orxNULL, orxNULL, &stPayload);
@@ -399,19 +465,63 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
         /* Was active? */
         if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE))
         {
-          orxU32                  u32LastActiveIndex;
-          orxINPUT_EVENT_PAYLOAD  stPayload;
-
-          /* Gets last active index */
-          u32LastActiveIndex = (pstEntry->u32Status & orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING) >> orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING;
+          orxINPUT_EVENT_PAYLOAD stPayload;
 
           /* Inits event payload */
           orxMemory_Zero(&stPayload, sizeof(orxINPUT_EVENT_PAYLOAD));
           stPayload.zSetName    = sstInput.pstCurrentSet->zName;
           stPayload.zInputName  = pstEntry->zName;
-          stPayload.eType       = pstEntry->astBindingList[u32LastActiveIndex].eType;
-          stPayload.eID         = pstEntry->astBindingList[u32LastActiveIndex].eID;
-          stPayload.fValue      = pstEntry->astBindingList[u32LastActiveIndex].fValue;
+
+          /* Is a combination? */
+          if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION))
+          {
+            orxU32 i, j;
+
+            /* For all bindings */
+            for(i = 0, j = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
+            {
+              /* Inactive? */
+              if(orxMath_Abs(pstEntry->astBindingList[i].fValue) <= pstEntry->astBindingList[i].fThreshold)
+              {
+                /* Updates payload */
+                stPayload.aeType[j]   = pstEntry->astBindingList[i].eType;
+                stPayload.aeID[j]     = pstEntry->astBindingList[i].eID;
+                stPayload.afValue[j]  = pstEntry->astBindingList[i].fValue;
+
+                /* Updates payload index */
+                j++;
+              }
+            }
+
+            /* For all unused bindings */
+            for(; j < orxINPUT_KU32_BINDING_NUMBER; j++)
+            {
+              /* Cleans it */
+              stPayload.aeType[j] = orxINPUT_TYPE_NONE;
+            }
+          }
+          else
+          {
+            orxU32 u32LastActiveIndex, i;
+
+            /* Gets last active index */
+            u32LastActiveIndex = (pstEntry->u32Status & orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING) >> orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING;
+
+            /* Checks */
+            orxASSERT(u32LastActiveIndex < orxINPUT_KU32_BINDING_NUMBER);
+
+            /* Updates active binding values */
+            stPayload.aeType[0]   = pstEntry->astBindingList[u32LastActiveIndex].eType;
+            stPayload.aeID[0]     = pstEntry->astBindingList[u32LastActiveIndex].eID;
+            stPayload.afValue[0]  = pstEntry->astBindingList[u32LastActiveIndex].fValue;
+
+            /* For all unused bindings */
+            for(i = 1; i < orxINPUT_KU32_BINDING_NUMBER; i++)
+            {
+              /* Cleans it */
+              stPayload.aeType[i] = orxINPUT_TYPE_NONE;
+            }
+          }
 
           /* Updates status */
           orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS, orxINPUT_KU32_ENTRY_FLAG_ACTIVE);
@@ -1091,6 +1201,101 @@ orxFLOAT orxFASTCALL orxInput_GetValue(orxCONST orxSTRING _zInputName)
 
   /* Done! */
   return fResult;
+}
+
+/** Sets an input combination mode
+ * @param[in] _zName            Concerned input name
+ * @param[in] _bCombination     If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxInput_SetCombination(orxCONST orxSTRING _zName, orxBOOL _bCombination)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zName != orxNULL);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets entry ID */
+    u32EntryID = orxString_ToCRC(_zName);
+
+    /* For all entries */
+    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+        pstEntry != orxNULL;
+        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Is a combination? */
+        if(_bCombination != orxFALSE)
+        {
+          /* Updates its status */
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION, orxINPUT_KU32_ENTRY_FLAG_NONE);
+        }
+        else
+        {
+          /* Updates its status */
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NONE, orxINPUT_KU32_ENTRY_FLAG_COMBINATION);
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Is an input a combination?
+ * @param[in] _zName            Concerned input name
+ * @return orxTRUE if the input is a combination, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxInput_IsCombination(orxCONST orxSTRING _zName)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zName != orxNULL);
+
+  /* Valid? */
+  if((sstInput.pstCurrentSet != orxNULL) && (_zName != orxSTRING_EMPTY))
+  {
+    orxINPUT_ENTRY *pstEntry;
+    orxU32          u32EntryID;
+
+    /* Gets entry ID */
+    u32EntryID = orxString_ToCRC(_zName);
+
+    /* For all entries */
+    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+        pstEntry != orxNULL;
+        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+    {
+      /* Found? */
+      if(pstEntry->u32ID == u32EntryID)
+      {
+        /* Updates result */
+        bResult = orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION) ? orxTRUE : orxFALSE;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return bResult;
 }
 
 /** Binds an input to a mouse/joystick button, keyboard key or joystick axis

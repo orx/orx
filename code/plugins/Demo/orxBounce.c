@@ -54,8 +54,17 @@ orxSTATIC orxSTATUS orxFASTCALL orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
     /* Gets event payload */
     pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    /* Logs info */
-    orxLOG("[%s::%s] is now %s (%s/v=%g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->eType, pstPayload->eID), pstPayload->fValue);
+    /* Has a multi-input info? */
+    if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
+    {
+      /* Logs info */
+      orxLOG("[%s::%s] is now %s (%s/v=%g + %s/v=%g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0], orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1]), pstPayload->afValue[1]);
+    }
+    else
+    {
+      /* Logs info */
+      orxLOG("[%s::%s] is now %s (%s/v=%g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0]);
+    }
   }
   else
   {

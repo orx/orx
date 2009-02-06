@@ -64,6 +64,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gd5bf2e597b4753b303b6b287d82566b2">orxInput_GetValue</a> (orxCONST orxSTRING _zInputName)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g990c9851a504b69302c03d7a41c6c60b">orxInput_SetCombination</a> (orxCONST orxSTRING _zName, orxBOOL _bCombination)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gb8fa3eb8e7b800bf4f3bff9e87e228fa">orxInput_IsCombination</a> (orxCONST orxSTRING _zName)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g6916bdf3d91cf9fe9e1c73b8bfa4f07e">orxInput_Bind</a> (orxCONST orxSTRING _zName, <a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#g41dac9027f2f429d21026c0a2994e7ae">orxInput_Unbind</a> (<a class="el" href="group__orx_input.html#g13d8a7334d0c18530536658991628659">orxINPUT_TYPE</a> _eType, orxENUM _eID)</td></tr>
@@ -537,6 +541,32 @@ Is input active? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="gb8fa3eb8e7b800bf4f3bff9e87e228fa"></a><!-- doxytag: member="orxInput.h::orxInput_IsCombination" ref="gb8fa3eb8e7b800bf4f3bff9e87e228fa" args="(orxCONST orxSTRING _zName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxInput_IsCombination           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zName</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Is an input a combination? <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zName</em>&nbsp;</td><td>Concerned input name </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if the input is a combination, orxFALSE otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g19726a9ff95483aa6d9c67516776af99"></a><!-- doxytag: member="orxInput.h::orxInput_Load" ref="g19726a9ff95483aa6d9c67516776af99" args="(orxCONST orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
@@ -611,6 +641,42 @@ Selects current working set <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSetName</em>&nbsp;</td><td>Set name to select </td></tr>
   </table>
 </dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g990c9851a504b69302c03d7a41c6c60b"></a><!-- doxytag: member="orxInput.h::orxInput_SetCombination" ref="g990c9851a504b69302c03d7a41c6c60b" args="(orxCONST orxSTRING _zName, orxBOOL _bCombination)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxInput_SetCombination           </td>
+          <td>(</td>
+          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bCombination</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets an input combination mode <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zName</em>&nbsp;</td><td>Concerned input name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bCombination</em>&nbsp;</td><td>If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
