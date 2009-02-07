@@ -54,7 +54,7 @@
 #define orxINPUT_KZ_CONFIG_SET_LIST                   "SetList"   /**< Input set list */
 #define orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD         "JoystickThreshold" /**< Input joystick threshold */
 
-#define orxINPUT_KZ_COMBINATION                       "combination"
+#define orxINPUT_KZ_COMBINE                           "combine"
 
 
 #define orxINPUT_KU32_SET_BANK_SIZE                   4
@@ -66,7 +66,7 @@
 #define orxINPUT_KU32_ENTRY_FLAG_BOUND                0x10000000  /**< Bound flags */
 #define orxINPUT_KU32_ENTRY_FLAG_ACTIVE               0x20000000  /**< Active flags */
 #define orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS           0x40000000  /**< New status flags */
-#define orxINPUT_KU32_ENTRY_FLAG_COMBINATION          0x80000000  /**< Combination status flags */
+#define orxINPUT_KU32_ENTRY_FLAG_COMBINE              0x80000000  /**< Combine status flags */
 
 #define orxINPUT_KU32_ENTRY_MASK_OLDEST_BINDING       0x0000000F  /**< Oldest binding mask */
 #define orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING  0x000000F0  /**< Last active binding mask */
@@ -275,8 +275,8 @@ orxSTATIC orxINLINE orxINPUT_SET *orxInput_LoadSet(orxCONST orxSTRING _zSetName)
               /* Rebinds it */
               orxInput_Bind(zInput, eType, eID);
 
-              /* Updates its combination status */
-              orxInput_SetCombination(zInput, (orxString_Compare(orxString_LowerCase(orxConfig_GetString(zInput)), orxINPUT_KZ_COMBINATION) == 0) ? orxTRUE : orxFALSE);
+              /* Updates its combine status */
+              orxInput_SetCombineMode(zInput, (orxString_SearchString(orxString_LowerCase(orxConfig_GetString(zInput)), orxINPUT_KZ_COMBINE) != orxNULL) ? orxTRUE : orxFALSE);
             }
           }
         }
@@ -374,8 +374,8 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           }
           else
           {
-            /* Is a combination? */
-            if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION))
+            /* Is in combine mode? */
+            if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINE))
             {
               /* Updates status */
               bActive = orxFALSE;
@@ -400,8 +400,8 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           stPayload.zSetName    = sstInput.pstCurrentSet->zName;
           stPayload.zInputName  = pstEntry->zName;
 
-          /* Is a combination? */
-          if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION))
+          /* Is in combine mode? */
+          if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINE))
           {
             orxU32 i;
 
@@ -458,8 +458,8 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
           stPayload.zSetName    = sstInput.pstCurrentSet->zName;
           stPayload.zInputName  = pstEntry->zName;
 
-          /* Is a combination? */
-          if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION))
+          /* Is in combine mode? */
+          if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINE))
           {
             orxU32 i;
 
@@ -1175,12 +1175,12 @@ orxFLOAT orxFASTCALL orxInput_GetValue(orxCONST orxSTRING _zInputName)
   return fResult;
 }
 
-/** Sets an input combination mode
+/** Sets an input combine mode
  * @param[in] _zName            Concerned input name
- * @param[in] _bCombination     If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is
+ * @param[in] _bCombine         If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxInput_SetCombination(orxCONST orxSTRING _zName, orxBOOL _bCombination)
+orxSTATUS orxFASTCALL orxInput_SetCombineMode(orxCONST orxSTRING _zName, orxBOOL _bCombine)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1205,16 +1205,16 @@ orxSTATUS orxFASTCALL orxInput_SetCombination(orxCONST orxSTRING _zName, orxBOOL
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
       {
-        /* Is a combination? */
-        if(_bCombination != orxFALSE)
+        /* Is in combine mode? */
+        if(_bCombine != orxFALSE)
         {
           /* Updates its status */
-          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION, orxINPUT_KU32_ENTRY_FLAG_NONE);
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINE, orxINPUT_KU32_ENTRY_FLAG_NONE);
         }
         else
         {
           /* Updates its status */
-          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NONE, orxINPUT_KU32_ENTRY_FLAG_COMBINATION);
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NONE, orxINPUT_KU32_ENTRY_FLAG_COMBINE);
         }
 
         /* Updates result */
@@ -1229,11 +1229,11 @@ orxSTATUS orxFASTCALL orxInput_SetCombination(orxCONST orxSTRING _zName, orxBOOL
   return eResult;
 }
 
-/** Is an input a combination?
+/** Is an input in combine mode?
  * @param[in] _zName            Concerned input name
- * @return orxTRUE if the input is a combination, orxFALSE otherwise
+ * @return orxTRUE if the input is in combine mode, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxInput_IsCombination(orxCONST orxSTRING _zName)
+orxBOOL orxFASTCALL orxInput_IsInCombineMode(orxCONST orxSTRING _zName)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -1259,7 +1259,7 @@ orxBOOL orxFASTCALL orxInput_IsCombination(orxCONST orxSTRING _zName)
       if(pstEntry->u32ID == u32EntryID)
       {
         /* Updates result */
-        bResult = orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINATION) ? orxTRUE : orxFALSE;
+        bResult = orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINE) ? orxTRUE : orxFALSE;
 
         break;
       }

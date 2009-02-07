@@ -151,18 +151,18 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxInput_HasNewStatus(orxCONST orxSTRING
 extern orxDLLAPI orxFLOAT orxFASTCALL   orxInput_GetValue(orxCONST orxSTRING _zInputName);
 
 
-/** Sets an input combination mode
+/** Sets an input combine mode
  * @param[in] _zName            Concerned input name
- * @param[in] _bCombination     If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is
+ * @param[in] _bCombine         If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_SetCombination(orxCONST orxSTRING _zName, orxBOOL _bCombination);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_SetCombineMode(orxCONST orxSTRING _zName, orxBOOL _bCombine);
 
-/** Is an input a combination?
+/** Is an input in combine mode?
  * @param[in] _zName            Concerned input name
- * @return orxTRUE if the input is a combination, orxFALSE otherwise
+ * @return orxTRUE if the input is in combine mode, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL    orxInput_IsCombination(orxCONST orxSTRING _zName);
+extern orxDLLAPI orxBOOL orxFASTCALL    orxInput_IsInCombineMode(orxCONST orxSTRING _zName);
 
 
 /** Binds an input to a mouse/joystick button, keyboard key or joystick axis
