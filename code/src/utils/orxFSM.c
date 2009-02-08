@@ -150,7 +150,7 @@ typedef struct __orxFSM_STATIC_t
  * Module global variable                                                  *
  ***************************************************************************/
 
-orxSTATIC orxFSM_STATIC sstFSM;
+static orxFSM_STATIC sstFSM;
 
 
 /***************************************************************************
@@ -163,7 +163,7 @@ orxSTATIC orxFSM_STATIC sstFSM;
 
  returns: nothing
  ***************************************************************************/
-orxVOID orxFSM_Setup()
+void orxFSM_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FSM, orxMODULE_ID_MEMORY);
@@ -212,7 +212,7 @@ orxSTATUS orxFSM_Init()
 
 /** Exit state machine module.
  */
-orxVOID orxFSM_Exit()
+void orxFSM_Exit()
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -345,7 +345,7 @@ orxFSM *orxFASTCALL orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU3
  * @param[in] _pstStateMachine      The state machine to remove.
  * @return Returns the status of the operation.
  */
-orxVOID orxFASTCALL orxFSM_Delete(orxFSM *_pstStateMachine)
+void orxFASTCALL    orxFSM_Delete(orxFSM *_pstStateMachine)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -369,7 +369,7 @@ orxVOID orxFASTCALL orxFSM_Delete(orxFSM *_pstStateMachine)
 /** Clear a state machine
  * @param[in] _pstStateMachine      The state machine to clear.
  */
-orxVOID orxFASTCALL orxFSM_Clear(orxFSM *_pstStateMachine)
+void orxFASTCALL    orxFSM_Clear(orxFSM *_pstStateMachine)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -396,7 +396,7 @@ orxVOID orxFASTCALL orxFSM_Clear(orxFSM *_pstStateMachine)
  * @param[in] _pfnExit               Exit callback.
  * @return Returns the new state.
  */
-orxFSM_STATE *orxFASTCALL orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16Id, orxCONST orxFSM_ACTION_FUNCTION _pfnInit, orxCONST orxFSM_ACTION_FUNCTION _pfnExecute, orxCONST orxFSM_ACTION_FUNCTION _pfnExit)
+orxFSM_STATE *orxFASTCALL orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16Id, const orxFSM_ACTION_FUNCTION _pfnInit, const orxFSM_ACTION_FUNCTION _pfnExecute, const orxFSM_ACTION_FUNCTION _pfnExit)
 {
   orxFSM_STATE *pstState;          /* New state to add. */
   orxBOOL bFirst;                   /* First state to be added? */
@@ -491,7 +491,7 @@ orxSTATUS orxFASTCALL orxFSM_SetInitState(orxFSM *_pstStateMachine, orxFSM_STATE
  * @param[in] _u16Id                The identifier of the state.
  * @return Returns the state.
  */
-orxFSM_STATE *orxFASTCALL orxFSM_GetState(orxCONST orxFSM *_pstStateMachine, orxU16 _u16Id)
+orxFSM_STATE *orxFASTCALL orxFSM_GetState(const orxFSM *_pstStateMachine, orxU16 _u16Id)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -507,7 +507,7 @@ orxFSM_STATE *orxFASTCALL orxFSM_GetState(orxCONST orxFSM *_pstStateMachine, orx
  * @param[in] _pstState             The state.
  * @return Returns the Id of the state.
  */
-orxU16 orxFASTCALL orxFSM_GetStateID(orxCONST orxFSM *_pstStateMachine, orxCONST orxFSM_STATE *_pstState)
+orxU16 orxFASTCALL orxFSM_GetStateID(const orxFSM *_pstStateMachine, const orxFSM_STATE *_pstState)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -594,7 +594,7 @@ orxSTATUS orxFASTCALL orxFSM_RemoveState(orxFSM *_pstStateMachine, orxFSM_STATE 
  * @param[in] _pfnCondition          Condition callback.
  * @return Returns the new link.
  */
-orxFSM_LINK *orxFASTCALL orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, orxCONST orxFSM_CONDITION_FUNCTION _pfnCondition)
+orxFSM_LINK *orxFASTCALL orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, const orxFSM_CONDITION_FUNCTION _pfnCondition)
 {
   orxFSM_LINK *pstLink;     /* New link to add. */
 
@@ -639,7 +639,7 @@ orxFSM_LINK *orxFASTCALL orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *
  * @param[in] _pstEndingState       The state marking the ending of the link.
  * @return Returns the corresponding link.
  */
-orxFSM_LINK *orxFASTCALL orxFSM_GetLink(orxCONST orxFSM *_pstStateMachine, orxCONST orxFSM_STATE *_pstBeginningState, orxCONST orxFSM_STATE *_pstEndingState)
+orxFSM_LINK *orxFASTCALL orxFSM_GetLink(const orxFSM *_pstStateMachine, const orxFSM_STATE *_pstBeginningState, const orxFSM_STATE *_pstEndingState)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -683,7 +683,7 @@ orxSTATUS orxFASTCALL orxFSM_RemoveLink(orxFSM *_pstStateMachine, orxFSM_LINK *_
 /** Clear all links.
  * @param[in] _pstStateMachine      The state machine.
  */
-orxVOID orxFASTCALL orxFSM_ClearLink(orxFSM *_pstStateMachine)
+void orxFASTCALL    orxFSM_ClearLink(orxFSM *_pstStateMachine)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -752,7 +752,7 @@ orxSTATUS orxFASTCALL orxFSM_DeleteInstance(orxFSM_INSTANCE *_pstInstance)
  * @param[in] _pstInstance          The instance.
  * @return Returns the state machine.
  */
-orxFSM *orxFASTCALL orxFSM_GetFSM(orxCONST orxFSM_INSTANCE *_pstInstance)
+orxFSM *orxFASTCALL orxFSM_GetFSM(const orxFSM_INSTANCE *_pstInstance)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -767,7 +767,7 @@ orxFSM *orxFASTCALL orxFSM_GetFSM(orxCONST orxFSM_INSTANCE *_pstInstance)
  * @param[in] _pstInstance          The instance.
  * @return Returns the current state.
  */
-orxFSM_STATE *orxFASTCALL orxFSM_GetInstanceState(orxCONST orxFSM_INSTANCE *_pstInstance)
+orxFSM_STATE *orxFASTCALL orxFSM_GetInstanceState(const orxFSM_INSTANCE *_pstInstance)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);

@@ -69,7 +69,7 @@ typedef struct __orxTREE_t
 
 /** Tree module setup
  */
-extern orxDLLAPI orxVOID                        orxTree_Setup();
+extern orxDLLAPI void                           orxTree_Setup();
 
 /** Inits the tree module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -78,7 +78,7 @@ extern orxDLLAPI orxSTATUS                      orxTree_Init();
 
 /** Exits from the tree module
  */
-extern orxDLLAPI orxVOID                        orxTree_Exit();
+extern orxDLLAPI void                           orxTree_Exit();
 
 /** Cleans a tree
  * @param[in]   _pstTree                        Concerned tree
@@ -128,7 +128,7 @@ extern orxDLLAPI orxSTATUS                      orxTree_Remove(orxTREE_NODE *_ps
  * @param[in]   _pstNode                        Concerned node
  * @return orxTREE / orxNULL
  */
-orxSTATIC orxINLINE orxTREE *                   orxTree_GetTree(orxCONST orxTREE_NODE *_pstNode)
+static orxINLINE orxTREE *                      orxTree_GetTree(const orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -141,7 +141,7 @@ orxSTATIC orxINLINE orxTREE *                   orxTree_GetTree(orxCONST orxTREE
  * @param[in]   _pstNode                        Concerned node
  * @return orxTREE_NODE / orxNULL
  */
-orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetParent(orxCONST orxTREE_NODE *_pstNode)
+static orxINLINE orxTREE_NODE *                 orxTree_GetParent(const orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -154,7 +154,7 @@ orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetParent(orxCONST orxTR
  * @param[in]   _pstNode                        Concerned node
  * @return orxTREE_NODE / orxNULL
  */
-orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetChild(orxCONST orxTREE_NODE *_pstNode)
+static orxINLINE orxTREE_NODE *                 orxTree_GetChild(const orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -167,7 +167,7 @@ orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetChild(orxCONST orxTRE
  * @param[in]   _pstNode                        Concerned node
  * @return orxTREE_NODE / orxNULL
  */
-orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetSibling(orxCONST orxTREE_NODE *_pstNode)
+static orxINLINE orxTREE_NODE *                 orxTree_GetSibling(const orxTREE_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -181,7 +181,7 @@ orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetSibling(orxCONST orxT
  * @param[in]   _pstTree                        Concerned tree
  * @return orxTREE_NODE / orxNULL
  */
-orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetRoot(orxCONST orxTREE *_pstTree)
+static orxINLINE orxTREE_NODE *                 orxTree_GetRoot(const orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);
@@ -194,7 +194,7 @@ orxSTATIC orxINLINE orxTREE_NODE *              orxTree_GetRoot(orxCONST orxTREE
  * @param[in]   _pstTree                        Concerned tree
  * @return Number of nodes in tree
  */
-orxSTATIC orxINLINE orxU32                      orxTree_GetCounter(orxCONST orxTREE *_pstTree)
+static orxINLINE orxU32                         orxTree_GetCounter(const orxTREE *_pstTree)
 {
   /* Checks */
   orxASSERT(_pstTree != orxNULL);

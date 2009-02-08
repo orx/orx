@@ -67,7 +67,7 @@ typedef struct __orxMOUSE_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxMOUSE_STATIC sstMouse;
+static orxMOUSE_STATIC sstMouse;
 
 
 /***************************************************************************
@@ -76,7 +76,7 @@ orxSTATIC orxMOUSE_STATIC sstMouse;
 
 /** Event handler
  */
-orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -203,7 +203,7 @@ extern "C" orxSTATUS orxMouse_SFML_Init()
   return eResult;
 }
 
-extern "C" orxVOID orxMouse_SFML_Exit()
+extern "C" void orxMouse_SFML_Exit()
 {
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
@@ -219,7 +219,7 @@ extern "C" orxVOID orxMouse_SFML_Exit()
   return;
 }
 
-extern "C" orxSTATUS orxMouse_SFML_SetPosition(orxCONST orxVECTOR *_pvPosition)
+extern "C" orxSTATUS orxMouse_SFML_SetPosition(const orxVECTOR *_pvPosition)
 {
   orxEVENT  stEvent;
   orxSTATUS eResult;

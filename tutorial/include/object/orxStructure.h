@@ -154,7 +154,7 @@ typedef struct __orxSTRUCTURE_t
 
 /** Structure update callback function type
  */
-typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
+typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo);
 
 
 /** Gets structure pointer / debug mode
@@ -162,7 +162,7 @@ typedef orxSTATUS (orxFASTCALL *orxSTRUCTURE_UPDATE_FUNCTION)(orxSTRUCTURE *_pst
  * @param[in]   _eStructureID   ID to test the structure against
  * @return      Valid orxSTRUCTURE, orxNULL otherwise
  */
-orxSTATIC orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(orxCONST orxVOID *_pStructure, orxSTRUCTURE_ID _eStructureID)
+static orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(const void *_pStructure, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstResult;
 
@@ -176,7 +176,7 @@ orxSTATIC orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(orxCONST orxVOID *_pS
 
 /** Structure module setup
  */
-extern orxDLLAPI orxVOID                                orxStructure_Setup();
+extern orxDLLAPI void                                   orxStructure_Setup();
 
 /** Initializess the structure module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -185,7 +185,7 @@ extern orxDLLAPI orxSTATUS                              orxStructure_Init();
 
 /** Exits from the structure module
  */
-extern orxDLLAPI orxVOID                                orxStructure_Exit();
+extern orxDLLAPI void                                   orxStructure_Exit();
 
 
 /** Registers a given ID
@@ -196,12 +196,12 @@ extern orxDLLAPI orxVOID                                orxStructure_Exit();
  * @param[in]   _pfnUpdate      Structure update function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxCONST orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate);
+extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, const orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate);
 
 /** Unregisters a given ID
  * @param[in]   _eStructureID   Concerned structure ID
  */
-extern orxDLLAPI orxVOID    orxFASTCALL                 orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
+extern orxDLLAPI void       orxFASTCALL                 orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID);
 
 
 /** Creates a clean structure for given type
@@ -213,7 +213,7 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_Create(orxS
 /** Deletes a structure (needs to be cleaned beforehand)
  * @param[in]   _pStructure    Concerned structure
  */
-extern orxDLLAPI orxVOID    orxFASTCALL                 orxStructure_Delete(orxVOID *_pStructure);
+extern orxDLLAPI void       orxFASTCALL                 orxStructure_Delete(void *_pStructure);
 
 
 /** Gets structure storage type
@@ -234,7 +234,7 @@ extern orxDLLAPI orxU32     orxFASTCALL                 orxStructure_GetNumber(o
  * @param[in]   _pstClockInfo   Update associated clock info
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Update(orxVOID *_pStructure, orxCONST orxVOID *_phCaller, orxCONST orxCLOCK_INFO *_pstClockInfo);
+extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_Update(void *_pStructure, const void *_phCaller, const orxCLOCK_INFO *_pstClockInfo);
 
 
 /** *** Structure storage accessors *** */
@@ -256,38 +256,38 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetLast(orx
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetParent(orxCONST orxVOID *_pStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetParent(const void *_pStructure);
 
 /** Gets structure tree child
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetChild(orxCONST orxVOID *_pStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetChild(const void *_pStructure);
 
 /** Gets structure tree sibling
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetSibling(orxCONST orxVOID *_pStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetSibling(const void *_pStructure);
 
 /** Gets structure list previous
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetPrevious(orxCONST orxVOID *_pStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetPrevious(const void *_pStructure);
 
 /** Gets structure list next
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetNext(orxCONST orxVOID *_pStructure);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL              orxStructure_GetNext(const void *_pStructure);
 
 /** Sets structure tree parent
  * @param[in]   _pStructure    Concerned structure
  * @param[in]   _phParent       Structure to set as parent
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_SetParent(orxVOID *_pStructure, orxVOID *_phParent);
+extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_SetParent(void *_pStructure, void *_phParent);
 
 
 /** *** Inlined structure accessors *** */
@@ -296,7 +296,7 @@ extern orxDLLAPI orxSTATUS  orxFASTCALL                 orxStructure_SetParent(o
 /** Increases structure reference counter
  * @param[in]   _pStructure    Concerned structure
  */
-orxSTATIC orxINLINE orxVOID                             orxStructure_IncreaseCounter(orxVOID *_pStructure)
+static orxINLINE void                                   orxStructure_IncreaseCounter(void *_pStructure)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
@@ -310,7 +310,7 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_IncreaseCou
 /** Decreases structure reference counter
  * @param[in]   _pStructure    Concerned structure
  */
-orxSTATIC orxINLINE orxVOID                             orxStructure_DecreaseCounter(orxVOID *_pStructure)
+static orxINLINE void                                   orxStructure_DecreaseCounter(void *_pStructure)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
@@ -326,7 +326,7 @@ orxSTATIC orxINLINE orxVOID                             orxStructure_DecreaseCou
  * @param[in]   _pStructure    Concerned structure
  * @return      orxU32
  */
-orxSTATIC orxINLINE orxU32                              orxStructure_GetRefCounter(orxCONST orxVOID *_pStructure)
+static orxINLINE orxU32                                 orxStructure_GetRefCounter(const void *_pStructure)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
@@ -339,7 +339,7 @@ orxSTATIC orxINLINE orxU32                              orxStructure_GetRefCount
  * @param[in]   _pStructure    Concerned structure
  * @return      orxSTRUCTURE_ID
  */
-orxSTATIC orxINLINE orxSTRUCTURE_ID                     orxStructure_GetID(orxCONST orxVOID *_pStructure)
+static orxINLINE orxSTRUCTURE_ID                        orxStructure_GetID(const void *_pStructure)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
@@ -353,7 +353,7 @@ orxSTATIC orxINLINE orxSTRUCTURE_ID                     orxStructure_GetID(orxCO
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
  */
-orxSTATIC orxINLINE orxBOOL                             orxStructure_TestFlags(orxCONST orxVOID *_pStructure, orxU32 _u32Flags)
+static orxINLINE orxBOOL                                orxStructure_TestFlags(const void *_pStructure, orxU32 _u32Flags)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
@@ -367,7 +367,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestFlags(o
  * @param[in]   _u32Flags       Flags to test
  * @return      orxTRUE / orxFALSE
  */
-orxSTATIC orxINLINE orxBOOL                             orxStructure_TestAllFlags(orxCONST orxVOID *_pStructure, orxU32 _u32Flags)
+static orxINLINE orxBOOL                                orxStructure_TestAllFlags(const void *_pStructure, orxU32 _u32Flags)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
@@ -381,7 +381,7 @@ orxSTATIC orxINLINE orxBOOL                             orxStructure_TestAllFlag
  * @param[in]   _u32Mask       Mask to use for getting flags
  * @return      orxU32
  */
-orxSTATIC orxINLINE orxU32                              orxStructure_GetFlags(orxCONST orxVOID *_pStructure, orxU32 _u32Mask)
+static orxINLINE orxU32                                 orxStructure_GetFlags(const void *_pStructure, orxU32 _u32Mask)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);
@@ -395,7 +395,7 @@ orxSTATIC orxINLINE orxU32                              orxStructure_GetFlags(or
  * @param[in]   _u32AddFlags    Flags to add
  * @param[in]   _u32RemoveFlags Flags to remove
  */
-orxSTATIC orxINLINE orxVOID                             orxStructure_SetFlags(orxVOID *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
+static orxINLINE void                                   orxStructure_SetFlags(void *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pStructure);

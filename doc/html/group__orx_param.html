@@ -30,16 +30,16 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g9f2d4b204125f34b722e5fe692b66011">orxPARAM_KU32_FLAG_STOP_ON_ERROR</a>&nbsp;&nbsp;&nbsp;0x00000002</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g491e73473ba9e5ffe93a383a08d9f88b">orxPARAM_INIT_FUNCTION</a> )(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[])</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g5bedbdb7348a739e128c5b88c0365b8a">orxPARAM_INIT_FUNCTION</a> )(orxU32 _u32NbParam, const orxSTRING _azParams[])</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g3c2dcd24fa153502a5b5cdfe1da60733">orxParam_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#gaf2e87be57aa3d16550f8a9be283cbb3">orxParam_Setup</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g8360ee1877f3fa757ad538f9b8a40b95">orxParam_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g26ade9de937fdfd49a5a4c8389106c07">orxParam_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g228d29986483b5e6bab362973f5a8e90">orxParam_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#gc67d4032f59c33492600d5221ba1b2ee">orxParam_Register</a> (orxCONST <a class="el" href="structorx_p_a_r_a_m.html">orxPARAM</a> *_pstParam)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g9b528d0337b96983d2c4d06ac25462f7">orxParam_Register</a> (const <a class="el" href="structorx_p_a_r_a_m.html">orxPARAM</a> *_pstParam)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_param.html#g2d78f6565168199a9b04fb370296204d">orxParam_DisplayHelp</a> ()</td></tr>
 
@@ -94,12 +94,12 @@ If the param extra flag parsing fails, stop the engine
 </div>
 </div><p>
 <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="g491e73473ba9e5ffe93a383a08d9f88b"></a><!-- doxytag: member="orxParam.h::orxPARAM_INIT_FUNCTION" ref="g491e73473ba9e5ffe93a383a08d9f88b" args=")(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[])" -->
+<a class="anchor" name="g5bedbdb7348a739e128c5b88c0365b8a"></a><!-- doxytag: member="orxParam.h::orxPARAM_INIT_FUNCTION" ref="g5bedbdb7348a739e128c5b88c0365b8a" args=")(orxU32 _u32NbParam, const orxSTRING _azParams[])" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_param.html#g491e73473ba9e5ffe93a383a08d9f88b">orxPARAM_INIT_FUNCTION</a>)(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[])          </td>
+          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_param.html#g5bedbdb7348a739e128c5b88c0365b8a">orxPARAM_INIT_FUNCTION</a>)(orxU32 _u32NbParam, const orxSTRING _azParams[])          </td>
         </tr>
       </table>
 </div>
@@ -137,12 +137,12 @@ Displays help if requested <dl class="return" compact><dt><b>Returns:</b></dt><d
 
 </div>
 </div><p>
-<a class="anchor" name="g26ade9de937fdfd49a5a4c8389106c07"></a><!-- doxytag: member="orxParam.h::orxParam_Exit" ref="g26ade9de937fdfd49a5a4c8389106c07" args="()" -->
+<a class="anchor" name="g228d29986483b5e6bab362973f5a8e90"></a><!-- doxytag: member="orxParam.h::orxParam_Exit" ref="g228d29986483b5e6bab362973f5a8e90" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxParam_Exit           </td>
+          <td class="memname">orxDLLAPI void orxParam_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -176,14 +176,14 @@ Inits the param Module <dl class="return" compact><dt><b>Returns:</b></dt><dd>or
 
 </div>
 </div><p>
-<a class="anchor" name="gc67d4032f59c33492600d5221ba1b2ee"></a><!-- doxytag: member="orxParam.h::orxParam_Register" ref="gc67d4032f59c33492600d5221ba1b2ee" args="(orxCONST orxPARAM *_pstParam)" -->
+<a class="anchor" name="g9b528d0337b96983d2c4d06ac25462f7"></a><!-- doxytag: member="orxParam.h::orxParam_Register" ref="g9b528d0337b96983d2c4d06ac25462f7" args="(const orxPARAM *_pstParam)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxParam_Register           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="structorx_p_a_r_a_m.html">orxPARAM</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="structorx_p_a_r_a_m.html">orxPARAM</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstParam</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -238,12 +238,12 @@ Sets the command line arguments <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g3c2dcd24fa153502a5b5cdfe1da60733"></a><!-- doxytag: member="orxParam.h::orxParam_Setup" ref="g3c2dcd24fa153502a5b5cdfe1da60733" args="()" -->
+<a class="anchor" name="gaf2e87be57aa3d16550f8a9be283cbb3"></a><!-- doxytag: member="orxParam.h::orxParam_Setup" ref="gaf2e87be57aa3d16550f8a9be283cbb3" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxParam_Setup           </td>
+          <td class="memname">orxDLLAPI void orxParam_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

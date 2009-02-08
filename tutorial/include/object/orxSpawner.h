@@ -72,7 +72,7 @@ typedef struct __orxSPAWNER_t               orxSPAWNER;
 
 /** Spawner module setup
  */
-extern orxDLLAPI orxVOID                    orxSpawner_Setup();
+extern orxDLLAPI void                       orxSpawner_Setup();
 
 /** Inits the spawner module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -81,7 +81,7 @@ extern orxDLLAPI orxSTATUS                  orxSpawner_Init();
 
 /** Exits from the spawner module
  */
-extern orxDLLAPI orxVOID                    orxSpawner_Exit();
+extern orxDLLAPI void                       orxSpawner_Exit();
 
 /** Creates an empty spawner
  * @return orxSPAWNER / orxNULL
@@ -92,7 +92,7 @@ extern orxDLLAPI orxSPAWNER *               orxSpawner_Create();
  * @param[in]   _zConfigID    Config ID
  * @ return orxSPAWNER / orxNULL
  */
-extern orxDLLAPI orxSPAWNER *orxFASTCALL    orxSpawner_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxSPAWNER *orxFASTCALL    orxSpawner_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes a spawner
  * @param[in] _pstSpawner       Concerned spawner
@@ -104,19 +104,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_Delete(orxSPAWNER *_pstSp
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[in]   _bEnable      Enable / disable
  */
-extern orxDLLAPI orxVOID orxFASTCALL        orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable);
+extern orxDLLAPI void orxFASTCALL           orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable);
 
 /** Is spawner enabled?
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL        orxSpawner_IsEnabled(orxCONST orxSPAWNER *_pstSpawner);
+extern orxDLLAPI orxBOOL orxFASTCALL        orxSpawner_IsEnabled(const orxSPAWNER *_pstSpawner);
 
 
 /** Resets (and re-enables) a spawner
  * @param[in]   _pstSpawner     Concerned spawner
  */
-extern orxDLLAPI orxVOID orxFASTCALL        orxSpawner_Reset(orxSPAWNER *_pstSpawner);
+extern orxDLLAPI void orxFASTCALL           orxSpawner_Reset(orxSPAWNER *_pstSpawner);
 
 /** Sets spawner total object limit
  * @param[in]   _pstSpawner     Concerned spawner
@@ -136,13 +136,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetActiveObjectLimit(orxS
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      Total object limit, 0 for unlimited
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetTotalObjectLimit(orxCONST orxSPAWNER *_pstSpawner);
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetTotalObjectLimit(const orxSPAWNER *_pstSpawner);
 
 /** Gets spawner active object limit
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      Active object limit, 0 for unlimited
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetActiveObjectLimit(orxCONST orxSPAWNER *_pstSpawner);
+extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_GetActiveObjectLimit(const orxSPAWNER *_pstSpawner);
 
 
 /** Spawns items
@@ -157,7 +157,7 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxSpawner_Spawn(orxSPAWNER *_pstSpa
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      orxFRAME
  */
-extern orxDLLAPI orxFRAME *orxFASTCALL      orxSpawner_GetFrame(orxCONST orxSPAWNER *_pstSpawner);
+extern orxDLLAPI orxFRAME *orxFASTCALL      orxSpawner_GetFrame(const orxSPAWNER *_pstSpawner);
 
 
 /** Sets spawner position
@@ -165,7 +165,7 @@ extern orxDLLAPI orxFRAME *orxFASTCALL      orxSpawner_GetFrame(orxCONST orxSPAW
  * @param[in]   _pvPosition     Spawner position
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetPosition(orxSPAWNER *_pstSpawner, orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetPosition(orxSPAWNER *_pstSpawner, const orxVECTOR *_pvPosition);
 
 /** Sets spawner rotation
  * @param[in]   _pstSpawner     Concerned spawner
@@ -179,47 +179,47 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetRotation(orxSPAWNER *_
  * @param[in]   _pvScale        Spawner scale vector
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetScale(orxSPAWNER *_pstSpawner, orxCONST orxVECTOR *_pvScale);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetScale(orxSPAWNER *_pstSpawner, const orxVECTOR *_pvScale);
 
 /** Get spawner position
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[out]  _pvPosition     Spawner position
  * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetPosition(orxCONST orxSPAWNER *_pstSpawner, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetPosition(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvPosition);
 
 /** Get spawner world position
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[out]  _pvPosition     Spawner world position
  * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetWorldPosition(orxCONST orxSPAWNER *_pstSpawner, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetWorldPosition(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvPosition);
 
 /** Get spawner rotation
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetRotation(orxCONST orxSPAWNER *_pstSpawner);
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetRotation(const orxSPAWNER *_pstSpawner);
 
 /** Get spawner world rotation
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetWorldRotation(orxCONST orxSPAWNER *_pstSpawner);
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxSpawner_GetWorldRotation(const orxSPAWNER *_pstSpawner);
 
 /** Get spawner scale
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[out]  _pvScale        Spawner scale vector
  * @return      Scale vector
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetScale(orxCONST orxSPAWNER *_pstSpawner, orxVECTOR *_pvScale);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetScale(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvScale);
 
 /** Gets spawner world scale
  * @param[in]   _pstSpawner     Concerned spawner
  * @param[out]  _pvScale        Spawner world scale
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetWorldScale(orxCONST orxSPAWNER *_pstSpawner, orxVECTOR *_pvScale);
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetWorldScale(const orxSPAWNER *_pstSpawner, orxVECTOR *_pvScale);
 
 
 /** Sets an spawner parent
@@ -227,14 +227,14 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxSpawner_GetWorldScale(orxCONST or
  * @param[in]   _pParent        Parent structure to set (spawner, spawner, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetParent(orxSPAWNER *_pstSpawner, orxVOID *_pParent);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_SetParent(orxSPAWNER *_pstSpawner, void *_pParent);
 
 
 /** Gets spawner name
  * @param[in]   _pstSpawner     Concerned spawner
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxSTRING orxFASTCALL      orxSpawner_GetName(orxCONST orxSPAWNER *_pstSpawner);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxSpawner_GetName(const orxSPAWNER *_pstSpawner);
 
 #endif /* _orxSPAWNER_H_ */
 

@@ -48,9 +48,7 @@
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  typedef void                  orxVOID;
-
-  typedef orxVOID *             orxHANDLE;
+  typedef void *                orxHANDLE;
 
   typedef unsigned  long        orxU32;
   typedef unsigned  short       orxU16;
@@ -84,14 +82,14 @@
   /* Platform specific */
   #ifdef __orxGCC__
 
-    typedef unsigned  long long   orxU64;
-    typedef signed    long long   orxS64;
+    typedef unsigned  long long orxU64;
+    typedef signed    long long orxS64;
 
   #endif /* __orxGCC__ */
   #ifdef __orxMSVC__
 
-    typedef unsigned  __int64     orxU64;
-    typedef signed    __int64     orxS64;
+    typedef unsigned  __int64   orxU64;
+    typedef signed    __int64   orxS64;
 
   #endif /* __orxMSVC__ */
 
@@ -102,9 +100,7 @@
   /* Linux / Mac */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
-    typedef void                orxVOID;
-
-    typedef orxVOID *           orxHANDLE;
+    typedef void *              orxHANDLE;
 
     typedef unsigned  long long orxU64;
     typedef unsigned  long      orxU32;
@@ -144,41 +140,41 @@
 /* *** Misc constants *** */
 
 /* *** Boolean constants *** */
-extern orxDLLAPI orxCONST orxBOOL     orxFALSE;
-extern orxDLLAPI orxCONST orxBOOL     orxTRUE;
+extern orxDLLAPI const orxBOOL     orxFALSE;
+extern orxDLLAPI const orxBOOL     orxTRUE;
 
 /* *** Undefined constants *** */
-extern orxDLLAPI orxCONST orxU64      orxU64_UNDEFINED;
-extern orxDLLAPI orxCONST orxU32      orxU32_UNDEFINED;
-extern orxDLLAPI orxCONST orxU16      orxU16_UNDEFINED;
-extern orxDLLAPI orxCONST orxU8       orxU8_UNDEFINED;
-extern orxDLLAPI orxCONST orxHANDLE   orxHANDLE_UNDEFINED;
+extern orxDLLAPI const orxU64      orxU64_UNDEFINED;
+extern orxDLLAPI const orxU32      orxU32_UNDEFINED;
+extern orxDLLAPI const orxU16      orxU16_UNDEFINED;
+extern orxDLLAPI const orxU8       orxU8_UNDEFINED;
+extern orxDLLAPI const orxHANDLE   orxHANDLE_UNDEFINED;
 
-extern orxDLLAPI orxCONST orxSTRING   orxSTRING_EMPTY;
-extern orxDLLAPI orxCONST orxSTRING   orxSTRING_TRUE;
-extern orxDLLAPI orxCONST orxSTRING   orxSTRING_FALSE;
-extern orxDLLAPI orxCONST orxCHAR     orxCHAR_NULL;
-extern orxDLLAPI orxCONST orxCHAR     orxCHAR_CR;
-extern orxDLLAPI orxCONST orxCHAR     orxCHAR_LF;
+extern orxDLLAPI const orxSTRING   orxSTRING_EMPTY;
+extern orxDLLAPI const orxSTRING   orxSTRING_TRUE;
+extern orxDLLAPI const orxSTRING   orxSTRING_FALSE;
+extern orxDLLAPI const orxCHAR     orxCHAR_NULL;
+extern orxDLLAPI const orxCHAR     orxCHAR_CR;
+extern orxDLLAPI const orxCHAR     orxCHAR_LF;
 
-extern orxDLLAPI orxCONST orxCHAR     orxCHAR_EOL;
-extern orxDLLAPI orxCONST orxSTRING   orxSTRING_EOL;
+extern orxDLLAPI const orxCHAR     orxCHAR_EOL;
+extern orxDLLAPI const orxSTRING   orxSTRING_EOL;
 
 
 /* *** Directory separators *** */
 
-extern orxDLLAPI orxCONST orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_WINDOWS;
-extern orxDLLAPI orxCONST orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_LINUX;
-extern orxDLLAPI orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_WINDOWS;
-extern orxDLLAPI orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX;
+extern orxDLLAPI const orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_WINDOWS;
+extern orxDLLAPI const orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_LINUX;
+extern orxDLLAPI const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_WINDOWS;
+extern orxDLLAPI const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX;
 
-extern orxDLLAPI orxCONST orxCHAR     orxCHAR_DIRECTORY_SEPARATOR;
-extern orxDLLAPI orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR;
+extern orxDLLAPI const orxCHAR     orxCHAR_DIRECTORY_SEPARATOR;
+extern orxDLLAPI const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR;
 
 
 /* *** Float constants *** */
-extern orxDLLAPI orxCONST orxFLOAT    orxFLOAT_0;
-extern orxDLLAPI orxCONST orxFLOAT    orxFLOAT_1;
+extern orxDLLAPI const orxFLOAT    orxFLOAT_0;
+extern orxDLLAPI const orxFLOAT    orxFLOAT_1;
 
 
 /* *** Status defines *** */

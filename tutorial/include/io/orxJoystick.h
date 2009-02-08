@@ -134,7 +134,7 @@ typedef enum __orxJOYSTICK_AXIS_t
 
 /** Mouse module setup
  */
-extern orxDLLAPI orxVOID                orxJoystick_Setup();
+extern orxDLLAPI void                   orxJoystick_Setup();
 
 
 /***************************************************************************
@@ -148,7 +148,7 @@ extern orxDLLAPI orxSTATUS              orxJoystick_Init();
 
 /** Exits from the joystick module
  */
-extern orxDLLAPI orxVOID                orxJoystick_Exit();
+extern orxDLLAPI void                   orxJoystick_Exit();
 
 /** Gets mouse on screen position
  * @param _u32ID        ID of the joystick to test
@@ -168,13 +168,13 @@ extern orxDLLAPI orxBOOL                orxJoystick_IsButtonPressed(orxU32 _u32I
  * @param _eAxis        Concerned axis
  * @return Axis's name
  */
-extern orxDLLAPI orxSTRING orxFASTCALL  orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis);
 
 /** Gets button literal name
  * @param _eButton      Concerned button
  * @return Button's name
  */
-extern orxDLLAPI orxSTRING orxFASTCALL  orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton);
 
 #endif /* _orxJOYSTICK_H_ */
 

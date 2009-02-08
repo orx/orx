@@ -69,7 +69,7 @@ orxOBJECT *pstParentObject;
 
 /** Update callback
  */
-orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vScale, vPosition;
   orxU32    i;

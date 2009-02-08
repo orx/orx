@@ -88,7 +88,7 @@ typedef struct __orxDEBUG_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxDEBUG_STATIC sstDebug;
+static orxDEBUG_STATIC sstDebug;
 
 
 /***************************************************************************
@@ -99,7 +99,7 @@ orxSTATIC orxDEBUG_STATIC sstDebug;
  * @param[in]   _eLevel                       Concerned debug level
   *@return      Corresponding literal string
  */
-orxSTATIC orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
+static orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 {
   orxSTRING zResult;
 
@@ -202,7 +202,7 @@ orxSTATUS _orxDebug_Init()
 }
 
 /** Exits from the debug module */
-orxVOID _orxDebug_Exit()
+void _orxDebug_Exit()
 {
   /* Initialized? */
   if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
@@ -220,7 +220,7 @@ orxVOID _orxDebug_Exit()
 }
 
 /** Software break function */
-orxVOID _orxDebug_Break()
+void _orxDebug_Break()
 {
   /* Windows / Linux */
 #if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
@@ -259,7 +259,7 @@ orxVOID _orxDebug_Break()
 }
 
 /** Backups current debug flags */
-orxVOID _orxDebug_BackupFlags()
+void _orxDebug_BackupFlags()
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
@@ -271,7 +271,7 @@ orxVOID _orxDebug_BackupFlags()
 }
 
 /** Restores last backuped flags */
-orxVOID _orxDebug_RestoreFlags()
+void _orxDebug_RestoreFlags()
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
@@ -283,7 +283,7 @@ orxVOID _orxDebug_RestoreFlags()
 }
 
 /** Sets current debug flags */
-orxVOID orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
+void orxFASTCALL    _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
@@ -302,7 +302,7 @@ orxVOID orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
  * @param[in]   _u32Line                      Calling file line
  * @param[in]   _zFormat                      Printf formatted text
  */
-orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...)
+void orxFASTCALL    _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
 {
   va_list stArgs;
   FILE   *pstFile = orxNULL;
@@ -334,7 +334,7 @@ orxVOID orxFASTCALL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zF
   /* Log FUNCTION, FILE & LINE? */
   if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TAGGED)
   {
-    orxCONST orxCHAR *pc;
+    const orxCHAR *pc;
 
     /* Trims relative path */
     for(pc = _zFile;

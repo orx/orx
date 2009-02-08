@@ -110,7 +110,7 @@ typedef struct __orxFRAME_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxFRAME_STATIC sstFrame;
+static orxFRAME_STATIC sstFrame;
 
 
 /***************************************************************************
@@ -122,7 +122,7 @@ orxSTATIC orxFRAME_STATIC sstFrame;
  * @param[int]  _pvPos          Position to set
  * @param[in]   _eSpace         Coordinate space system to use
  */
-orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos, orxFRAME_SPACE _eSpace)
+static orxINLINE void _orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR *_pvPos, orxFRAME_SPACE _eSpace)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFrame);
@@ -163,7 +163,7 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST 
  * @param[int]  _fAngle         Rotation angle to set
  * @param[in]   _eSpace         Coordinate space system to use
  */
-orxSTATIC orxINLINE orxVOID _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxFRAME_SPACE _eSpace)
+static orxINLINE void _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxFRAME_SPACE _eSpace)
 {
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -203,7 +203,7 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT 
  * @param[in]   _pvScale        Scale to set
  * @param[in]   _eSpace         Coordinate space system to use
  */
-orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvScale, orxFRAME_SPACE _eSpace)
+static orxINLINE void _orxFrame_SetScale(orxFRAME *_pstFrame, const orxVECTOR *_pvScale, orxFRAME_SPACE _eSpace)
 {
   /* Checks */
   orxASSERT(_pstFrame != orxNULL);
@@ -243,9 +243,9 @@ orxSTATIC orxINLINE orxVOID _orxFrame_SetScale(orxFRAME *_pstFrame, orxCONST orx
  * @param[in]   _eSpace         Coordinate space system to use
  * @return orxVECTOR / orxNULL
  */
-orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
+static orxINLINE const orxVECTOR *_orxFrame_GetPosition(const orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
-  orxCONST orxVECTOR *pvResult = orxNULL;
+  const orxVECTOR *pvResult = orxNULL;
 
   /* Checks */
   orxASSERT((_pstFrame != orxNULL));
@@ -288,7 +288,7 @@ orxSTATIC orxINLINE orxCONST orxVECTOR *_orxFrame_GetPosition(orxCONST orxFRAME 
  * @param[in]   _eSpace         Coordinate space system to use
  * @return orxFLOAT / orxNULL
  */
-orxSTATIC orxINLINE orxFLOAT _orxFrame_GetRotation(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
+static orxINLINE orxFLOAT _orxFrame_GetRotation(const orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace)
 {
   orxFLOAT fAngle = orxFLOAT_0;
 
@@ -332,7 +332,7 @@ orxSTATIC orxINLINE orxFLOAT _orxFrame_GetRotation(orxCONST orxFRAME *_pstFrame,
  * @param[out]  _pvScale        Scale
  * @return      orxVECTOR / orxNULL
  */
-orxSTATIC orxINLINE orxVECTOR *_orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvScale)
+static orxINLINE orxVECTOR *_orxFrame_GetScale(const orxFRAME *_pstFrame, orxFRAME_SPACE _eSpace, orxVECTOR *_pvScale)
 {
   orxVECTOR *pvResult;
 
@@ -392,7 +392,7 @@ orxSTATIC orxINLINE orxVECTOR *_orxFrame_GetScale(orxCONST orxFRAME *_pstFrame, 
  * @param[out]  _pstDstFrame    Destination frame, will contain up-to-date frame
  * @param[in]   _pstSrcFrame    Source frame, which needs update
  */
-orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCONST orxFRAME *_pstSrcFrame)
+static void orxFASTCALL    orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRAME *_pstSrcFrame)
 {
   /* Checks */
   orxASSERT((_pstDstFrame != orxNULL));
@@ -402,7 +402,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
   if(orxStructure_TestFlags(_pstSrcFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
     orxVECTOR           vTempPos, vScale, vParentScale, vLocalScale;
-    orxCONST orxVECTOR *pvParentPos, *pvPos;
+    const orxVECTOR *pvParentPos, *pvPos;
     orxFLOAT            fParentAngle, fAngle;
     orxFLOAT            fX, fY, fLocalX, fLocalY, fCos, fSin, fCoef;
     orxFRAME            *pstParentFrame;
@@ -470,7 +470,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, orxCON
 /** Processes frame dirty state
  * @param[in]   _pstFrame       Concerned frame
  */
-orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
+static orxINLINE void orxFrame_ProcessDirty(orxFRAME *_pstFrame)
 {
   orxFRAME *pstParentFrame;
 
@@ -503,7 +503,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_ProcessDirty(orxFRAME *_pstFrame)
  * @param[in]   _u32RemoveFlags Flags to remove
  * @param[in]   _bRecursed      Recursive?
  */
-orxSTATIC orxVOID orxFASTCALL orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags, orxBOOL _bRecursed)
+static void orxFASTCALL    orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags, orxBOOL _bRecursed)
 {
   /* Non null? */
   if(_pstFrame != orxNULL)
@@ -528,7 +528,7 @@ orxSTATIC orxVOID orxFASTCALL orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, o
 /** Tags a frame as dirty
  * @param[in]   _pstFrame       Concerned frame
  */
-orxSTATIC orxINLINE orxVOID orxFrame_SetDirty(orxFRAME *_pstFrame)
+static orxINLINE void orxFrame_SetDirty(orxFRAME *_pstFrame)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFrame);
@@ -541,9 +541,9 @@ orxSTATIC orxINLINE orxVOID orxFrame_SetDirty(orxFRAME *_pstFrame)
 
 /** Deletes all frames
  */
-orxSTATIC orxINLINE orxVOID orxFrame_DeleteAll()
+static orxINLINE void orxFrame_DeleteAll()
 {
-  orxREGISTER orxFRAME *pstFrame;
+  register orxFRAME *pstFrame;
 
   /* Gets first frame */
   pstFrame = orxFRAME(orxStructure_GetChild(sstFrame.pstRoot));
@@ -572,7 +572,7 @@ orxSTATIC orxINLINE orxVOID orxFrame_DeleteAll()
 
 /** Animation module setup
  */
-orxVOID orxFrame_Setup()
+void orxFrame_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_MEMORY);
@@ -640,7 +640,7 @@ orxSTATUS orxFrame_Init()
 
 /** Exits from the Frame module
  */
-orxVOID orxFrame_Exit()
+void orxFrame_Exit()
 {
   /* Initialized? */
   if(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY)
@@ -752,7 +752,7 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
 
 /** Cleans all frames render status
  */
-orxVOID orxFrame_CleanAllRenderStatus()
+void orxFrame_CleanAllRenderStatus()
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -767,7 +767,7 @@ orxVOID orxFrame_CleanAllRenderStatus()
  * @param[in]   _pstFrame       Frame to test
  * @return      orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
+orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(const orxFRAME *_pstFrame)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -781,7 +781,7 @@ orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(orxCONST orxFRAME *_pstFrame)
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pstParent      Parent frame to set
  */
-orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
+void orxFASTCALL    orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -809,7 +809,7 @@ orxVOID orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent
  * @param[in]   _pstFrame       Concerned frame
  * @return orxTRUE if its parent is root, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxFrame_IsRootChild(orxCONST orxFRAME *_pstFrame)
+orxBOOL orxFASTCALL orxFrame_IsRootChild(const orxFRAME *_pstFrame)
 {
   orxBOOL bResult;
 
@@ -828,7 +828,7 @@ orxBOOL orxFASTCALL orxFrame_IsRootChild(orxCONST orxFRAME *_pstFrame)
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pvPos          Position to set
  */
-orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvPos)
+void orxFASTCALL    orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR *_pvPos)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -848,7 +848,7 @@ orxVOID orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, orxCONST orxVECTOR
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _fAngle         Angle to set
  */
-orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
+void orxFASTCALL    orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -867,7 +867,7 @@ orxVOID orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pvScale        Scale to set
  */
-orxVOID orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, orxCONST orxVECTOR *_pvScale)
+void orxFASTCALL    orxFrame_SetScale(orxFRAME *_pstFrame, const orxVECTOR *_pvScale)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -905,7 +905,7 @@ orxVECTOR *orxFASTCALL orxFrame_GetPosition(orxFRAME *_pstFrame, orxFRAME_SPACE 
   /* Is a 2D Frame? */
   if(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DATA_2D) != orxFALSE)
   {
-    orxCONST orxVECTOR *pvIntern = orxNULL;
+    const orxVECTOR *pvIntern = orxNULL;
 
     /* Depending on space */
     switch(_eSpace)

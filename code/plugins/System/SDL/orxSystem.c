@@ -74,7 +74,7 @@ typedef struct __orxSYSTEM_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxSYSTEM_STATIC sstSystem;
+static orxSYSTEM_STATIC sstSystem;
 
 
 /***************************************************************************
@@ -120,7 +120,7 @@ orxSTATUS orxSystemSDL_Init()
 
 /** Exit the system module
  */
-orxVOID orxSystemSDL_Exit()
+void orxSystemSDL_Exit()
 {
   /* Was initialized ? */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
@@ -175,7 +175,7 @@ orxS32 orxSystemSDL_GetRealTime()
 /** Delays the program for given number of seconds.
  * @param[in] _fSystem Number of seconds to wait.
  */
-orxVOID orxSystemSDL_Delay(orxFLOAT _fSeconds)
+void orxSystemSDL_Delay(orxFLOAT _fSeconds)
 {
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);

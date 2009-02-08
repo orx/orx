@@ -90,7 +90,7 @@ typedef struct __orxSOUND_EVENT_PAYLOAD_t
 
 /** Sound module setup
  */
-extern orxDLLAPI orxVOID                      orxSound_Setup();
+extern orxDLLAPI void                         orxSound_Setup();
 
 /** Initializes the sound module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -99,14 +99,14 @@ extern orxDLLAPI orxSTATUS                    orxSound_Init();
 
 /** Exits from the sound module
  */
-extern orxDLLAPI orxVOID                      orxSound_Exit();
+extern orxDLLAPI void                         orxSound_Exit();
 
 
 /** Creates sound from config
  * @param[in]   _zConfigID    Config ID
  * @ return orxSOUND / orxNULL
  */
-extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxSOUND *orxFASTCALL        orxSound_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes sound
  * @param[in] _pstSound       Concerned Sound
@@ -153,7 +153,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPitch(orxSOUND *_pstSo
  * @param[in] _pvPosition     Desired position
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPosition(orxSOUND *_pstSound, orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_SetPosition(orxSOUND *_pstSound, const orxVECTOR *_pvPosition);
 
 /** Sets sound attenuation
  * @param[in] _pstSound       Concerned Sound
@@ -181,57 +181,57 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Loop(orxSOUND *_pstSound,
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetVolume(orxCONST orxSOUND *_pstSound);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetVolume(const orxSOUND *_pstSound);
 
 /** Gets sound pitch
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetPitch(orxCONST orxSOUND *_pstSound);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetPitch(const orxSOUND *_pstSound);
 
 /** Gets sound position
  * @param[in]  _pstSound      Concerned Sound
  * @param[out] _pvPosition    Sound's position
  * @return orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxSound_GetPosition(orxCONST orxSOUND *_pstSound, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxSound_GetPosition(const orxSOUND *_pstSound, orxVECTOR *_pvPosition);
 
 /** Gets sound attenuation
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetAttenuation(orxCONST orxSOUND *_pstSound);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetAttenuation(const orxSOUND *_pstSound);
 
 /** Gets sound reference distance
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetReferenceDistance(orxCONST orxSOUND *_pstSound);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetReferenceDistance(const orxSOUND *_pstSound);
 
 /** Is sound looping?
  * @param[in] _pstSound       Concerned Sound
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxSound_IsLooping(orxCONST orxSOUND *_pstSound);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxSound_IsLooping(const orxSOUND *_pstSound);
 
 
 /** Gets sound duration
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetDuration(orxCONST orxSOUND *_pstSound);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxSound_GetDuration(const orxSOUND *_pstSound);
 
 /** Gets sound status
  * @param[in] _pstSound       Concerned Sound
  * @return orxSOUND_STATUS
  */
-extern orxDLLAPI orxSOUND_STATUS orxFASTCALL  orxSound_GetStatus(orxCONST orxSOUND *_pstSound);
+extern orxDLLAPI orxSOUND_STATUS orxFASTCALL  orxSound_GetStatus(const orxSOUND *_pstSound);
 
 /** Gets sound config name
  * @param[in]   _pstSound     Concerned sound
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxSTRING orxFASTCALL        orxSound_GetName(orxCONST orxSOUND *_pstSound);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxSound_GetName(const orxSOUND *_pstSound);
 
 #endif /*_orxSOUND_H_*/
 

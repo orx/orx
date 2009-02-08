@@ -30,17 +30,17 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxFILE_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gf63f38dd4f0278fe74d6997b1a825f3f">orxFile_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g57b4eb24d8baae78047234e83b9f15f3">orxFile_Setup</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gc9f77f2136a37e5841f6c9c31062486d">orxFile_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gfcabf5c5f4ec5668dc13b7f503064ae9">orxFile_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g58fb1d45aa1ded2d7d224f97a37ebcfa">orxFile_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gfcde58177149dab2dc2de949d8975ec3">orxFile_Open</a> (orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g5cb4bf85eb6cb7e6885e63ccd02d82cb">orxFile_Open</a> (const orxSTRING _zPath, orxU32 _u32OpenFlags)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#ga27395e7be65d6a7c9122d02f45530f1">orxFile_Read</a> (orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g4bb520c4cd6e88dbd36f42cfb3db8aae">orxFile_Read</a> (void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g538aa3e864b86aaad2564907fc9bf3fd">orxFile_Write</a> (orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#g5ea3608f0dad5d0bf0f8f29b44c2cebc">orxFile_Write</a> (void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_file.html#gabd19661b23e8d5ee29b6fc7bd9e2a4f">orxFile_ReadLine</a> (orxSTRING _zBuffer, orxU32 _u32Size, <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a> *_pstFile)</td></tr>
 
@@ -137,12 +137,12 @@ Closes an oppened file <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gfcabf5c5f4ec5668dc13b7f503064ae9"></a><!-- doxytag: member="orxFile.h::orxFile_Exit" ref="gfcabf5c5f4ec5668dc13b7f503064ae9" args="()" -->
+<a class="anchor" name="g58fb1d45aa1ded2d7d224f97a37ebcfa"></a><!-- doxytag: member="orxFile.h::orxFile_Exit" ref="g58fb1d45aa1ded2d7d224f97a37ebcfa" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFile_Exit           </td>
+          <td class="memname">orxDLLAPI void orxFile_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -175,14 +175,14 @@ Exits from the File Module
 Inits the File Module 
 </div>
 </div><p>
-<a class="anchor" name="gfcde58177149dab2dc2de949d8975ec3"></a><!-- doxytag: member="orxFile.h::orxFile_Open" ref="gfcde58177149dab2dc2de949d8975ec3" args="(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags)" -->
+<a class="anchor" name="g5cb4bf85eb6cb7e6885e63ccd02d82cb"></a><!-- doxytag: member="orxFile.h::orxFile_Open" ref="g5cb4bf85eb6cb7e6885e63ccd02d82cb" args="(const orxSTRING _zPath, orxU32 _u32OpenFlags)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_file.html#g5805808ea6ca32b9b4f559ca6ad96c82">orxFILE</a>* orxFile_Open           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxSTRING&nbsp;</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
           <td class="paramname"> <em>_zPath</em>, </td>
         </tr>
         <tr>
@@ -211,14 +211,14 @@ Opens a file for later read or write operation <dl compact><dt><b>Parameters:</b
 
 </div>
 </div><p>
-<a class="anchor" name="ga27395e7be65d6a7c9122d02f45530f1"></a><!-- doxytag: member="orxFile.h::orxFile_Read" ref="ga27395e7be65d6a7c9122d02f45530f1" args="(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)" -->
+<a class="anchor" name="g4bb520c4cd6e88dbd36f42cfb3db8aae"></a><!-- doxytag: member="orxFile.h::orxFile_Read" ref="g4bb520c4cd6e88dbd36f42cfb3db8aae" args="(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI orxU32 orxFile_Read           </td>
           <td>(</td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pReadData</em>, </td>
         </tr>
         <tr>
@@ -304,12 +304,12 @@ Gets text line from a file <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gf63f38dd4f0278fe74d6997b1a825f3f"></a><!-- doxytag: member="orxFile.h::orxFile_Setup" ref="gf63f38dd4f0278fe74d6997b1a825f3f" args="()" -->
+<a class="anchor" name="g57b4eb24d8baae78047234e83b9f15f3"></a><!-- doxytag: member="orxFile.h::orxFile_Setup" ref="g57b4eb24d8baae78047234e83b9f15f3" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFile_Setup           </td>
+          <td class="memname">orxDLLAPI void orxFile_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -323,14 +323,14 @@ Gets text line from a file <dl compact><dt><b>Parameters:</b></dt><dd>
 File module setup 
 </div>
 </div><p>
-<a class="anchor" name="g538aa3e864b86aaad2564907fc9bf3fd"></a><!-- doxytag: member="orxFile.h::orxFile_Write" ref="g538aa3e864b86aaad2564907fc9bf3fd" args="(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)" -->
+<a class="anchor" name="g5ea3608f0dad5d0bf0f8f29b44c2cebc"></a><!-- doxytag: member="orxFile.h::orxFile_Write" ref="g5ea3608f0dad5d0bf0f8f29b44c2cebc" args="(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI orxU32 orxFile_Write           </td>
           <td>(</td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pDataToWrite</em>, </td>
         </tr>
         <tr>

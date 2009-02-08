@@ -101,7 +101,7 @@ typedef struct __orxCAMERA_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxCAMERA_STATIC sstCamera;
+static orxCAMERA_STATIC sstCamera;
 
 
 /***************************************************************************
@@ -110,7 +110,7 @@ orxSTATIC orxCAMERA_STATIC sstCamera;
 
 /** Deletes all cameras
  */
-orxSTATIC orxVOID orxCamera_DeleteAll()
+static void orxCamera_DeleteAll()
 {
   orxCAMERA *pstCamera;
 
@@ -137,7 +137,7 @@ orxSTATIC orxVOID orxCamera_DeleteAll()
 
 /** Camera module setup
  */
-orxVOID orxCamera_Setup()
+void orxCamera_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_MEMORY);
@@ -199,7 +199,7 @@ orxSTATUS orxCamera_Init()
 
 /** Exits from Camera module
  */
-orxVOID orxCamera_Exit()
+void orxCamera_Exit()
 {
   /* Initialized? */
   if(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY)
@@ -301,7 +301,7 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
  * @param[in]   _zConfigID    Config ID
  * @ return orxCAMERA / orxNULL
  */
-orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxCAMERA  *pstResult;
 
@@ -467,7 +467,7 @@ orxSTATUS orxFASTCALL orxCamera_SetFrustum(orxCAMERA *_pstCamera, orxFLOAT _fWid
  * @param[in]   _pvPosition     Camera position
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxCamera_SetPosition(orxCAMERA *_pstCamera, orxCONST orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxCamera_SetPosition(orxCAMERA *_pstCamera, const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -532,7 +532,7 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
  * @param[in]   _pstCamera      Concerned camera
  * @param[out]  _pstFrustum    Frustum box
  */
-orxVOID orxFASTCALL orxCamera_GetFrustum(orxCONST orxCAMERA *_pstCamera, orxAABOX *_pstFrustum)
+void orxFASTCALL    orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum)
 {
   orxVECTOR vPosition;
 
@@ -556,7 +556,7 @@ orxVOID orxFASTCALL orxCamera_GetFrustum(orxCONST orxCAMERA *_pstCamera, orxAABO
  * @param[out]  _pvPosition     Camera position
  * @return      orxVECTOR
  */
-orxVECTOR *orxFASTCALL orxCamera_GetPosition(orxCONST orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxCamera_GetPosition(const orxCAMERA *_pstCamera, orxVECTOR *_pvPosition)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
@@ -571,7 +571,7 @@ orxVECTOR *orxFASTCALL orxCamera_GetPosition(orxCONST orxCAMERA *_pstCamera, orx
  * @param[in]   _pstCamera      Concerned camera
  * @return      Rotation value
  */
-orxFLOAT orxFASTCALL orxCamera_GetRotation(orxCONST orxCAMERA *_pstCamera)
+orxFLOAT orxFASTCALL orxCamera_GetRotation(const orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
@@ -585,7 +585,7 @@ orxFLOAT orxFASTCALL orxCamera_GetRotation(orxCONST orxCAMERA *_pstCamera)
  * @param[in]   _pstCamera      Concerned camera
  * @return      Zoom value
  */
-orxFLOAT orxFASTCALL orxCamera_GetZoom(orxCONST orxCAMERA *_pstCamera)
+orxFLOAT orxFASTCALL orxCamera_GetZoom(const orxCAMERA *_pstCamera)
 {
   orxVECTOR vScale;
 
@@ -604,7 +604,7 @@ orxFLOAT orxFASTCALL orxCamera_GetZoom(orxCONST orxCAMERA *_pstCamera)
  * @param[in]   _pstCamera      Concerned camera
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-orxSTRING orxFASTCALL orxCamera_GetName(orxCONST orxCAMERA *_pstCamera)
+const orxSTRING orxFASTCALL orxCamera_GetName(const orxCAMERA *_pstCamera)
 {
   orxSTRING zResult;
 
@@ -623,7 +623,7 @@ orxSTRING orxFASTCALL orxCamera_GetName(orxCONST orxCAMERA *_pstCamera)
  * @param[in]   _zName          Camera name
  * @return      orxCAMERA / orxNULL
  */
-orxCAMERA *orxFASTCALL orxCamera_Get(orxCONST orxSTRING _zName)
+orxCAMERA *orxFASTCALL orxCamera_Get(const orxSTRING _zName)
 {
   orxCAMERA *pstResult;
 
@@ -642,7 +642,7 @@ orxCAMERA *orxFASTCALL orxCamera_Get(orxCONST orxSTRING _zName)
  * @param[in]   _pstCamera      Concerned camera
  * @return      orxFRAME
  */
-orxFRAME *orxFASTCALL orxCamera_GetFrame(orxCONST orxCAMERA *_pstCamera)
+orxFRAME *orxFASTCALL orxCamera_GetFrame(const orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
@@ -657,7 +657,7 @@ orxFRAME *orxFASTCALL orxCamera_GetFrame(orxCONST orxCAMERA *_pstCamera)
  * @param[in]   _pParent        Parent structure to set (object, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, orxVOID *_pParent)
+orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent)
 {
   orxFRAME   *pstFrame;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;

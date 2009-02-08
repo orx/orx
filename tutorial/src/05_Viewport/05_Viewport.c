@@ -86,7 +86,7 @@ orxVIEWPORT *pstViewport;
 
 /** Update callback
  */
-orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vPos;
   orxCAMERA *pstCamera;

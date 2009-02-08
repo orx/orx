@@ -49,7 +49,7 @@
 
 /** Joystick module setup
  */
-orxVOID orxJoystick_Setup()
+void orxJoystick_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_PLUGIN);
@@ -62,7 +62,7 @@ orxVOID orxJoystick_Setup()
  * @param _eAxis        Concerned axis
  * @return Axis's name
  */
-orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
+const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
 {
   orxSTRING zResult;
 
@@ -100,7 +100,7 @@ orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
  * @param _eButton      Concerned button
  * @return Button's name
  */
-orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton)
+const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton)
 {
   orxSTRING zResult;
 
@@ -150,8 +150,8 @@ orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, orxVOID, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Init, orxSTATUS, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_Exit, void, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_GetAxisValue, orxFLOAT, orxU32, orxJOYSTICK_AXIS);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxJoystick_IsButtonPressed, orxBOOL, orxU32, orxJOYSTICK_BUTTON);
 
@@ -180,7 +180,7 @@ orxSTATUS orxJoystick_Init()
 
 /** Exits from the joystick module
  */
-orxVOID orxJoystick_Exit()
+void orxJoystick_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Exit)();
 }

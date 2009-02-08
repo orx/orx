@@ -57,7 +57,7 @@ typedef struct __orxANIMPOINTER_t             orxANIMPOINTER;
 
 /** AnimPointer module setup
  */
-extern orxDLLAPI orxVOID                      orxAnimPointer_Setup();
+extern orxDLLAPI void                         orxAnimPointer_Setup();
 
 /** Inits the AnimPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -66,7 +66,7 @@ extern orxDLLAPI orxSTATUS                    orxAnimPointer_Init();
 
 /** Exits from the AnimPointer module
  */
-extern orxDLLAPI orxVOID                      orxAnimPointer_Exit();
+extern orxDLLAPI void                         orxAnimPointer_Exit();
 
 
 /** Creates an empty AnimPointer
@@ -74,14 +74,14 @@ extern orxDLLAPI orxVOID                      orxAnimPointer_Exit();
  * @param[in]   _pstAnimSet                   AnimSet reference
  * @return      orxANIMPOINTER / orxNULL
  */
-extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_Create(orxCONST orxSTRUCTURE *_pstOwner, orxANIMSET *_pstAnimSet);
+extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner, orxANIMSET *_pstAnimSet);
 
 /** Creates an animation pointer from config
  * @param[in]   _pstOwner                     AnimPointer's owner used for event callbacks (usually an orxOBJECT)
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMPOINTER / orxNULL
  */
-extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxANIMPOINTER *orxFASTCALL  orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *_pstOwner, const orxSTRING _zConfigID);
 
 /** Deletes an AnimPointer
  * @param[in]   _pstAnimPointer               AnimPointer to delete
@@ -93,56 +93,56 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_Delete(orxANIMPOINT
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      orxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnimPointer_GetOwner(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnimPointer_GetOwner(const orxANIMPOINTER *_pstAnimPointer);
 
 /** Gets the referenced AnimSet
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Referenced orxANIMSET
  */
-extern orxDLLAPI orxANIMSET *orxFASTCALL      orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxANIMSET *orxFASTCALL      orxAnimPointer_GetAnimSet(const orxANIMPOINTER *_pstAnimPointer);
 
 
 /** AnimPointer current Animation get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation handle
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetCurrentAnimHandle(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetCurrentAnimHandle(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer target Animation get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation handle
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetTargetAnimHandle(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxHANDLE orxFASTCALL        orxAnimPointer_GetTargetAnimHandle(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer current Animation ID get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer target Animation ID get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetTargetAnim(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer current anim data get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current anim data / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnimPointer_GetCurrentAnimData(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnimPointer_GetCurrentAnimData(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer current Time get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current time
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnimPointer_GetCurrentTime(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnimPointer_GetCurrentTime(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer Frequency get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      AnimPointer frequency
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnimPointer_GetFrequency(orxCONST orxANIMPOINTER *_pstAnimPointer);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnimPointer_GetFrequency(const orxANIMPOINTER *_pstAnimPointer);
 
 /** AnimPointer current Animation set accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer

@@ -65,7 +65,7 @@ typedef struct __orxBODY_PART_t               orxBODY_PART;
 
 /** Body module setup
  */
-extern orxDLLAPI orxVOID                      orxBody_Setup();
+extern orxDLLAPI void                         orxBody_Setup();
 
 /** Inits the Body module
  */
@@ -73,7 +73,7 @@ extern orxDLLAPI orxSTATUS                    orxBody_Init();
 
 /** Exits from the Body module
  */
-extern orxDLLAPI orxVOID                      orxBody_Exit();
+extern orxDLLAPI void                         orxBody_Exit();
 
 
 /** Creates an empty body
@@ -81,14 +81,14 @@ extern orxDLLAPI orxVOID                      orxBody_Exit();
  * @param[in]   _pstBodyDef                   Body definition
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxBODY_DEF *_pstBodyDef);
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY_DEF *_pstBodyDef);
 
 /** Creates a body from config
  * @param[in]   _pstOwner                     Body's owner used for collision callbacks (usually an orxOBJECT)
  * @param[in]   _zConfigID                    Body config ID
  * @return      Created orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, const orxSTRING _zConfigID);
 
 /** Deletes a body
  * @param[in]   _pstBody        Concerned body
@@ -100,7 +100,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
  * @param[in]   _pstBody        Concerned body
  * @return      orxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetOwner(orxCONST orxBODY *_pstBody);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetOwner(const orxBODY *_pstBody);
 
 /** Adds a part to body
  * @param[in]   _pstBody        Concerned body
@@ -108,7 +108,7 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetOwner(orxCONST orxBODY 
  * @param[in]   _pstBodyPartDef Body part definition
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, orxCONST orxBODY_PART_DEF *_pstBodyPartDef);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, const orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Adds a part to body from config
  * @param[in]   _pstBody        Concerned body
@@ -116,14 +116,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPart(orxBODY *_pstBody,
  * @param[in]   _zConfigID      Body part config ID
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32Index, const orxSTRING _zConfigID);
 
 /** Gets a body part
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Body part index (should be less than orxBODY_KU32_DATA_MAX_NUMBER)
  * @return      orxPHYSICS_BODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART * orxFASTCALL orxBody_GetPart(orxCONST orxBODY *_pstBody, orxU32 _u32Index);
+extern orxDLLAPI orxPHYSICS_BODY_PART * orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU32 _u32Index);
 
 /** Removes a body part
  * @param[in]   _pstBody        Concerned body
@@ -137,13 +137,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_RemovePart(orxBODY *_pstBo
  * @param[in]   _pstBodyTemplate  Body template to set / orxNULL to remove it
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetTemplate(orxCONST orxBODY_DEF *_pstBodyTemplate);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetTemplate(const orxBODY_DEF *_pstBodyTemplate);
 
 /** Sets a body part template
  * @param[in]   _pstBodyPartTemplate  Body part template to set / orxNULL to remove it
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartTemplate(orxCONST orxBODY_PART_DEF *_pstBodyPartTemplate);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartTemplate(const orxBODY_PART_DEF *_pstBodyPartTemplate);
 
 /** Gets the body template
  * @param[out]  _pstBodyTemplate  Body template to get
@@ -162,7 +162,7 @@ extern orxDLLAPI orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartTemplate(orxBODY_P
  * @param[in]   _pvPosition     Position to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPosition(orxBODY *_pstBody, orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPosition(orxBODY *_pstBody, const orxVECTOR *_pvPosition);
 
 /** Sets a body rotation
  * @param[in]   _pstBody        Concerned body
@@ -176,14 +176,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetRotation(orxBODY *_pstB
  * @param[in]   _pvScale        Scale to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetScale(orxBODY *_pstBody, orxCONST orxVECTOR *_pvScale);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvScale);
 
 /** Sets a body speed
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _pvSpeed        Speed to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetSpeed(orxBODY *_pstBody, orxCONST orxVECTOR *_pvSpeed);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetSpeed(orxBODY *_pstBody, const orxVECTOR *_pvSpeed);
 
 /** Sets a body angular velocity
  * @param[in]   _pstBody        Concerned body
@@ -239,7 +239,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyTorque(orxBODY *_pstB
  * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBody, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint);
 
 /** Applies an impulse
  * @param[in]   _pstBody        Concerned body
@@ -247,7 +247,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyForce(orxBODY *_pstBo
  * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
 
 #endif /* _orxBODY_H_ */
 

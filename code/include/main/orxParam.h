@@ -56,7 +56,7 @@
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-typedef orxSTATUS (orxFASTCALL *orxPARAM_INIT_FUNCTION)(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[]);
+typedef orxSTATUS (orxFASTCALL *orxPARAM_INIT_FUNCTION)(orxU32 _u32NbParam, const orxSTRING _azParams[]);
 
 /* Parameter's infos */
 typedef struct __orxPARAM_t
@@ -85,7 +85,7 @@ typedef struct __orxPARAM_t
 
 /** Setups param module
  */
-extern orxDLLAPI orxVOID                orxParam_Setup();
+extern orxDLLAPI void                   orxParam_Setup();
 
 /** Inits the param Module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -94,14 +94,14 @@ extern orxDLLAPI orxSTATUS              orxParam_Init();
 
 /** Exits from the param module
  */
-extern orxDLLAPI orxVOID                orxParam_Exit();
+extern orxDLLAPI void                   orxParam_Exit();
 
 
 /** Registers a new parameter
  * @param[in] _pstParam Informations about the option to register
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Register(orxCONST orxPARAM *_pstParam);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Register(const orxPARAM *_pstParam);
 
 /** Displays help if requested
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

@@ -78,12 +78,12 @@ typedef struct __orxPLUGIN_CORE_FUNCTION_t
  * @param[in] _u32CoreFunctionNumber  Number of functions in the array
  * @return nothing.
  */
-extern orxDLLAPI orxVOID orxFASTCALL  orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
+extern orxDLLAPI void orxFASTCALL     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
 
 /** Default core plugin function.
  * Needs to be referenced by all core functions at module init.
  */
-extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line);
+extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, const orxSTRING _zFileName, orxU32 _u32Line);
 
 
 /***************************************************************************
@@ -100,7 +100,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 
 /* *** Default core function declaration *** */
 #define orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)                     \
-  extern orxDLLAPI orxVOID *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)() \
+  extern orxDLLAPI void *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)() \
   {                                                                               \
     return(orxPlugin_DefaultCoreFunction(#FUNCTION_NAME, __FILE__, __LINE__));    \
   }
@@ -131,7 +131,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
  
 /* *** Core info array begin macro *** */
 #define orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX)                      \
-  orxSTATIC orxCONST orxPLUGIN_CORE_FUNCTION sastPluginFunctionInfo_##PLUGIN_SUFFIX[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER] = \
+  static const orxPLUGIN_CORE_FUNCTION sastPluginFunctionInfo_##PLUGIN_SUFFIX[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER] = \
   {
 
 /* *** Core info array add macro *** */
@@ -141,7 +141,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orx
 /* *** Core info array end macro *** */
 #define orxPLUGIN_END_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX)                        \
   };                                                                            \
-  extern orxDLLAPI orxVOID orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX)()                \
+  extern orxDLLAPI void orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX)()                \
   {                                                                             \
     orxPLUGIN_REGISTER_CORE_INFO(PLUGIN_SUFFIX);                                \
     return;                                                                     \

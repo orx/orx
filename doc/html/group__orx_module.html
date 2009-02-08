@@ -22,11 +22,11 @@
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g460732d2989b3d8b91f03f1350d38fd5">orxMODULE_INIT_FUNCTION</a> )()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxVOID(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g03471277f6cf82d59af2cfa426e812db">orxMODULE_EXIT_FUNCTION</a> )()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef void(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g9fc5060b1f1c138259c311e1a765d508">orxMODULE_EXIT_FUNCTION</a> )()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#gf5084efa5285edca99bf85fceac3a91e">orxMODULE_RUN_FUNCTION</a> )()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef orxVOID(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g368f612e1712fd0a53481fdef5f80cea">orxMODULE_SETUP_FUNCTION</a> )()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef void(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#gb186f19e0acd17dca5741cf060785d2e">orxMODULE_SETUP_FUNCTION</a> )()</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> { <br>
@@ -92,39 +92,39 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g8064c329a11c7b582632ee372992c06c">orxModule_Register</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID, orxCONST <a class="el" href="group__orx_module.html#g368f612e1712fd0a53481fdef5f80cea">orxMODULE_SETUP_FUNCTION</a> _pfnSetup, orxCONST <a class="el" href="group__orx_module.html#g460732d2989b3d8b91f03f1350d38fd5">orxMODULE_INIT_FUNCTION</a> _pfnInit, orxCONST <a class="el" href="group__orx_module.html#g03471277f6cf82d59af2cfa426e812db">orxMODULE_EXIT_FUNCTION</a> _pfnExit)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g236c2233cd358ff40c2af94d7ef4b640">orxModule_Register</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID, const <a class="el" href="group__orx_module.html#gb186f19e0acd17dca5741cf060785d2e">orxMODULE_SETUP_FUNCTION</a> _pfnSetup, const <a class="el" href="group__orx_module.html#g460732d2989b3d8b91f03f1350d38fd5">orxMODULE_INIT_FUNCTION</a> _pfnInit, const <a class="el" href="group__orx_module.html#g9fc5060b1f1c138259c311e1a765d508">orxMODULE_EXIT_FUNCTION</a> _pfnExit)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g7d2d18752f4f435ac0fa755f4dc5fb6d">orxModule_RegisterAll</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g39059bd68d178aa51668d830a8255653">orxModule_RegisterAll</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g654cc197b10a70474edd0a4a61f6533a">orxModule_AddDependency</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID, <a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eDependID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g3f7ed5e5d444f7ee30407ad190d44b3f">orxModule_AddDependency</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID, <a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eDependID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g6154e87625fb43de0fc92a6081871172">orxModule_AddOptionalDependency</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID, <a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eDependID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g6e4ea7c93ab0e7f7488b459dba3ac9e7">orxModule_AddOptionalDependency</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID, <a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eDependID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g05d2ff726f50ac9613cf99fefd988a89">orxModule_UpdateDependencies</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g3f1beba6d147251def93ee8a51e9f1ec">orxModule_UpdateDependencies</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#gdc303db972dbe46ff40cf26d7b7b52b4">orxModule_Setup</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g91a59b4a84dcf9c880bbca8056828b99">orxModule_Setup</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g52cd1c7c080c32c9922522681c5c6460">orxModule_SetupAll</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g2c87c873bb70bd3261cc7e4f194818f6">orxModule_SetupAll</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#ge6568b5f2c3ed7f4eb64ee81f76f9350">orxModule_Init</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g7204ce210ccc2c078dd9d7c7c38139cc">orxModule_InitAll</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g2f1bb6325e1fe48f9297362c9cc7c7e3">orxModule_Exit</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g6a492298081fa56cf9c382491c456998">orxModule_Exit</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#g1f06014f952ddd0cbd287df593434ff8">orxModule_ExitAll</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#gb12f9eea53aacc55d1cfc2b536126c5c">orxModule_ExitAll</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_module.html#gdf41899d90b19ef9fc33dd7bc0c85296">orxModule_IsInitialized</a> (<a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a> _eModuleID)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Module file Code that handles modules and their dependencies <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="g03471277f6cf82d59af2cfa426e812db"></a><!-- doxytag: member="orxModule.h::orxMODULE_EXIT_FUNCTION" ref="g03471277f6cf82d59af2cfa426e812db" args=")()" -->
+<a class="anchor" name="g9fc5060b1f1c138259c311e1a765d508"></a><!-- doxytag: member="orxModule.h::orxMODULE_EXIT_FUNCTION" ref="g9fc5060b1f1c138259c311e1a765d508" args=")()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef orxVOID(* <a class="el" href="group__orx_module.html#g03471277f6cf82d59af2cfa426e812db">orxMODULE_EXIT_FUNCTION</a>)()          </td>
+          <td class="memname">typedef void(* <a class="el" href="group__orx_module.html#g9fc5060b1f1c138259c311e1a765d508">orxMODULE_EXIT_FUNCTION</a>)()          </td>
         </tr>
       </table>
 </div>
@@ -164,12 +164,12 @@ Module file Code that handles modules and their dependencies <hr><h2>Typedef Doc
 
 </div>
 </div><p>
-<a class="anchor" name="g368f612e1712fd0a53481fdef5f80cea"></a><!-- doxytag: member="orxModule.h::orxMODULE_SETUP_FUNCTION" ref="g368f612e1712fd0a53481fdef5f80cea" args=")()" -->
+<a class="anchor" name="gb186f19e0acd17dca5741cf060785d2e"></a><!-- doxytag: member="orxModule.h::orxMODULE_SETUP_FUNCTION" ref="gb186f19e0acd17dca5741cf060785d2e" args=")()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef orxVOID(* <a class="el" href="group__orx_module.html#g368f612e1712fd0a53481fdef5f80cea">orxMODULE_SETUP_FUNCTION</a>)()          </td>
+          <td class="memname">typedef void(* <a class="el" href="group__orx_module.html#gb186f19e0acd17dca5741cf060785d2e">orxMODULE_SETUP_FUNCTION</a>)()          </td>
         </tr>
       </table>
 </div>
@@ -294,12 +294,12 @@ Module enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g654cc197b10a70474edd0a4a61f6533a"></a><!-- doxytag: member="orxModule.h::orxModule_AddDependency" ref="g654cc197b10a70474edd0a4a61f6533a" args="(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)" -->
+<a class="anchor" name="g3f7ed5e5d444f7ee30407ad190d44b3f"></a><!-- doxytag: member="orxModule.h::orxModule_AddDependency" ref="g3f7ed5e5d444f7ee30407ad190d44b3f" args="(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxModule_AddDependency           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxModule_AddDependency           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eModuleID</em>, </td>
@@ -329,12 +329,12 @@ Adds dependencies between 2 modules <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g6154e87625fb43de0fc92a6081871172"></a><!-- doxytag: member="orxModule.h::orxModule_AddOptionalDependency" ref="g6154e87625fb43de0fc92a6081871172" args="(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)" -->
+<a class="anchor" name="g6e4ea7c93ab0e7f7488b459dba3ac9e7"></a><!-- doxytag: member="orxModule.h::orxModule_AddOptionalDependency" ref="g6e4ea7c93ab0e7f7488b459dba3ac9e7" args="(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxModule_AddOptionalDependency           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxModule_AddOptionalDependency           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eModuleID</em>, </td>
@@ -364,12 +364,12 @@ Adds optional dependencies between 2 modules <dl compact><dt><b>Parameters:</b><
 
 </div>
 </div><p>
-<a class="anchor" name="g2f1bb6325e1fe48f9297362c9cc7c7e3"></a><!-- doxytag: member="orxModule.h::orxModule_Exit" ref="g2f1bb6325e1fe48f9297362c9cc7c7e3" args="(orxMODULE_ID _eModuleID)" -->
+<a class="anchor" name="g6a492298081fa56cf9c382491c456998"></a><!-- doxytag: member="orxModule.h::orxModule_Exit" ref="g6a492298081fa56cf9c382491c456998" args="(orxMODULE_ID _eModuleID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxModule_Exit           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxModule_Exit           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eModuleID</em>          </td>
@@ -389,12 +389,12 @@ Exits from a module <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g1f06014f952ddd0cbd287df593434ff8"></a><!-- doxytag: member="orxModule.h::orxModule_ExitAll" ref="g1f06014f952ddd0cbd287df593434ff8" args="()" -->
+<a class="anchor" name="gb12f9eea53aacc55d1cfc2b536126c5c"></a><!-- doxytag: member="orxModule.h::orxModule_ExitAll" ref="gb12f9eea53aacc55d1cfc2b536126c5c" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxModule_ExitAll           </td>
+          <td class="memname">orxDLLAPI void orxModule_ExitAll           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -480,12 +480,12 @@ Is module initialized? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g8064c329a11c7b582632ee372992c06c"></a><!-- doxytag: member="orxModule.h::orxModule_Register" ref="g8064c329a11c7b582632ee372992c06c" args="(orxMODULE_ID _eModuleID, orxCONST orxMODULE_SETUP_FUNCTION _pfnSetup, orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit)" -->
+<a class="anchor" name="g236c2233cd358ff40c2af94d7ef4b640"></a><!-- doxytag: member="orxModule.h::orxModule_Register" ref="g236c2233cd358ff40c2af94d7ef4b640" args="(orxMODULE_ID _eModuleID, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxModule_Register           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxModule_Register           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eModuleID</em>, </td>
@@ -493,19 +493,19 @@ Is module initialized? <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_module.html#g368f612e1712fd0a53481fdef5f80cea">orxMODULE_SETUP_FUNCTION</a>&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_module.html#gb186f19e0acd17dca5741cf060785d2e">orxMODULE_SETUP_FUNCTION</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnSetup</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_module.html#g460732d2989b3d8b91f03f1350d38fd5">orxMODULE_INIT_FUNCTION</a>&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_module.html#g460732d2989b3d8b91f03f1350d38fd5">orxMODULE_INIT_FUNCTION</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnInit</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_module.html#g03471277f6cf82d59af2cfa426e812db">orxMODULE_EXIT_FUNCTION</a>&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_module.html#g9fc5060b1f1c138259c311e1a765d508">orxMODULE_EXIT_FUNCTION</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnExit</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -530,12 +530,12 @@ Registers a module <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g7d2d18752f4f435ac0fa755f4dc5fb6d"></a><!-- doxytag: member="orxModule.h::orxModule_RegisterAll" ref="g7d2d18752f4f435ac0fa755f4dc5fb6d" args="()" -->
+<a class="anchor" name="g39059bd68d178aa51668d830a8255653"></a><!-- doxytag: member="orxModule.h::orxModule_RegisterAll" ref="g39059bd68d178aa51668d830a8255653" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxModule_RegisterAll           </td>
+          <td class="memname">orxDLLAPI void orxModule_RegisterAll           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -549,12 +549,12 @@ Registers a module <dl compact><dt><b>Parameters:</b></dt><dd>
 Registers all modules. ! Needs to be updated for all new modules ! 
 </div>
 </div><p>
-<a class="anchor" name="gdc303db972dbe46ff40cf26d7b7b52b4"></a><!-- doxytag: member="orxModule.h::orxModule_Setup" ref="gdc303db972dbe46ff40cf26d7b7b52b4" args="(orxMODULE_ID _eModuleID)" -->
+<a class="anchor" name="g91a59b4a84dcf9c880bbca8056828b99"></a><!-- doxytag: member="orxModule.h::orxModule_Setup" ref="g91a59b4a84dcf9c880bbca8056828b99" args="(orxMODULE_ID _eModuleID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxModule_Setup           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxModule_Setup           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_module.html#gda33eee351097708b92f32d0c5972708">orxMODULE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eModuleID</em>          </td>
@@ -574,12 +574,12 @@ Calls a module setup callback <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g52cd1c7c080c32c9922522681c5c6460"></a><!-- doxytag: member="orxModule.h::orxModule_SetupAll" ref="g52cd1c7c080c32c9922522681c5c6460" args="()" -->
+<a class="anchor" name="g2c87c873bb70bd3261cc7e4f194818f6"></a><!-- doxytag: member="orxModule.h::orxModule_SetupAll" ref="g2c87c873bb70bd3261cc7e4f194818f6" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxModule_SetupAll           </td>
+          <td class="memname">orxDLLAPI void orxModule_SetupAll           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -593,12 +593,12 @@ Calls a module setup callback <dl compact><dt><b>Parameters:</b></dt><dd>
 Calls all module setups 
 </div>
 </div><p>
-<a class="anchor" name="g05d2ff726f50ac9613cf99fefd988a89"></a><!-- doxytag: member="orxModule.h::orxModule_UpdateDependencies" ref="g05d2ff726f50ac9613cf99fefd988a89" args="()" -->
+<a class="anchor" name="g3f1beba6d147251def93ee8a51e9f1ec"></a><!-- doxytag: member="orxModule.h::orxModule_UpdateDependencies" ref="g3f1beba6d147251def93ee8a51e9f1ec" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxModule_UpdateDependencies           </td>
+          <td class="memname">orxDLLAPI void orxModule_UpdateDependencies           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

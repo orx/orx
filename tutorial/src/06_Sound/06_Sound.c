@@ -93,7 +93,7 @@ orxSOUND  *pstMusic;
 
 /** Event handler
  */
-orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSOUND_EVENT_PAYLOAD *pstPayload;
 
@@ -127,7 +127,7 @@ orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 
 /** Update callback
  */
-orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR v;
   orxCOLOR  stColor;

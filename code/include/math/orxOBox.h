@@ -69,7 +69,7 @@ typedef struct __orxOBOX_t
  * @param[in]   _fAngle                       Z-axis angle
  * @return      orxOBOX / orxNULL
  */
-orxSTATIC orxINLINE orxOBOX *                 orxOBox_2DSet(orxOBOX *_pstRes, orxCONST orxVECTOR *_pvWorldPosition, orxCONST orxVECTOR *_pvPivot, orxCONST orxVECTOR *_pvSize, orxFLOAT _fAngle)
+static orxINLINE orxOBOX *                    orxOBox_2DSet(orxOBOX *_pstRes, const orxVECTOR *_pvWorldPosition, const orxVECTOR *_pvPivot, const orxVECTOR *_pvSize, orxFLOAT _fAngle)
 {
   orxFLOAT fCos, fSin;
 
@@ -102,7 +102,7 @@ orxSTATIC orxINLINE orxOBOX *                 orxOBox_2DSet(orxOBOX *_pstRes, or
  * @param[in]   _pstSrc                       OBox to copy from (destination)
  * @return      Destination OBox
  */
-orxSTATIC orxINLINE orxOBOX *                 orxOBox_Copy(orxOBOX *_pstDst, orxCONST orxOBOX *_pstSrc)
+static orxINLINE orxOBOX *                    orxOBox_Copy(orxOBOX *_pstDst, const orxOBOX *_pstSrc)
 {
   /* Checks */
   orxASSERT(_pstDst != orxNULL);
@@ -120,7 +120,7 @@ orxSTATIC orxINLINE orxOBOX *                 orxOBox_Copy(orxOBOX *_pstDst, orx
  * @param[out]  _pvRes                        Center position
  * @return      Center position vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxOBox_GetCenter(orxCONST orxOBOX *_pstOp, orxVECTOR *_pvRes)
+static orxINLINE orxVECTOR *                  orxOBox_GetCenter(const orxOBOX *_pstOp, orxVECTOR *_pvRes)
 {
   /* Checks */
   orxASSERT(_pstOp != orxNULL);
@@ -141,7 +141,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxOBox_GetCenter(orxCONST orxOBOX
  * @param[in]   _pvMove                       Move vector
  * @return      Moved OBox
  */
-orxSTATIC orxINLINE orxOBOX *                 orxOBox_Move(orxOBOX *_pstRes, orxCONST orxOBOX *_pstOp, orxCONST orxVECTOR *_pvMove)
+static orxINLINE orxOBOX *                    orxOBox_Move(orxOBOX *_pstRes, const orxOBOX *_pstOp, const orxVECTOR *_pvMove)
 {
   /* Checks */
   orxASSERT(_pstRes != orxNULL);
@@ -161,9 +161,9 @@ orxSTATIC orxINLINE orxOBOX *                 orxOBox_Move(orxOBOX *_pstRes, orx
  * @param[in]   _fAngle                       Z-axis rotation angle
  * @return      Rotated OBox
  */
-orxSTATIC orxINLINE orxOBOX *                 orxOBox_2DRotate(orxOBOX *_pstRes, orxCONST orxOBOX *_pstOp, orxFLOAT _fAngle)
+static orxINLINE orxOBOX *                    orxOBox_2DRotate(orxOBOX *_pstRes, const orxOBOX *_pstOp, orxFLOAT _fAngle)
 {
-  orxREGISTER orxFLOAT fSin, fCos;
+  register orxFLOAT fSin, fCos;
 
   /* Checks */
   orxASSERT(_pstRes != orxNULL);
@@ -189,9 +189,9 @@ orxSTATIC orxINLINE orxOBOX *                 orxOBox_2DRotate(orxOBOX *_pstRes,
  * @param[in]   _pvPosition                   Position to test against the box
  * @return      orxTRUE if position is inside the box, orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL                   orxOBox_IsInside(orxCONST orxOBOX *_pstBox, orxCONST orxVECTOR *_pvPosition)
+static orxINLINE orxBOOL                      orxOBox_IsInside(const orxOBOX *_pstBox, const orxVECTOR *_pvPosition)
 {
-  orxREGISTER orxBOOL bResult = orxFALSE;
+  register orxBOOL bResult = orxFALSE;
   orxFLOAT            fProj;
   orxVECTOR           vToPos;
 
@@ -229,9 +229,9 @@ orxSTATIC orxINLINE orxBOOL                   orxOBox_IsInside(orxCONST orxOBOX 
  * @param[in]   _pvPosition                   Position to test against the box (no Z-test)
  * @return      orxTRUE if position is inside the box, orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL                   orxOBox_2DIsInside(orxCONST orxOBOX *_pstBox, orxCONST orxVECTOR *_pvPosition)
+static orxINLINE orxBOOL                      orxOBox_2DIsInside(const orxOBOX *_pstBox, const orxVECTOR *_pvPosition)
 {
-  orxREGISTER orxBOOL bResult = orxFALSE;
+  register orxBOOL bResult = orxFALSE;
   orxFLOAT            fProj;
   orxVECTOR           vToPos;
 
@@ -264,9 +264,9 @@ orxSTATIC orxINLINE orxBOOL                   orxOBox_2DIsInside(orxCONST orxOBO
  * @param[in]   _pstBox2                      Second box operand
  * @return      orxTRUE if boxes intersect, orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL                   orxOBox_2DTestIntersection(orxCONST orxOBOX *_pstBox1, orxCONST orxOBOX *_pstBox2)
+static orxINLINE orxBOOL                      orxOBox_2DTestIntersection(const orxOBOX *_pstBox1, const orxOBOX *_pstBox2)
 {
-  orxREGISTER orxBOOL bResult;
+  register orxBOOL bResult;
 
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);
@@ -281,7 +281,7 @@ orxSTATIC orxINLINE orxBOOL                   orxOBox_2DTestIntersection(orxCONS
   {
     orxU32            i;
     orxVECTOR         vOrigin1, vOrigin2, *pvOrigin1 = &vOrigin1, *pvOrigin2 = &vOrigin2, *pvTemp;
-    orxCONST orxOBOX *pstBox1 = _pstBox1, *pstBox2 = _pstBox2, *pstTemp;
+    const orxOBOX *pstBox1 = _pstBox1, *pstBox2 = _pstBox2, *pstTemp;
 
     /* Computes boxes origins */
     vOrigin1.fX = _pstBox1->vPosition.fX - pstBox1->vPivot.fX;
@@ -295,7 +295,7 @@ orxSTATIC orxINLINE orxBOOL                   orxOBox_2DTestIntersection(orxCONS
         i--, pstTemp = pstBox1, pstBox1 = pstBox2, pstBox2 = pstTemp, pvTemp = pvOrigin1, pvOrigin1 = pvOrigin2, pvOrigin2 = pvTemp)
     {
       orxVECTOR           vToCorner[4];
-      orxCONST orxVECTOR *pvAxis;
+      const orxVECTOR *pvAxis;
       orxU32              j;
 
       /* Gets to-corner vectors */

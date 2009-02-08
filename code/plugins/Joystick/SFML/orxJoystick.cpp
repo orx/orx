@@ -64,7 +64,7 @@ typedef struct __orxJOYSTICK_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxJOYSTICK_STATIC sstJoystick;
+static orxJOYSTICK_STATIC sstJoystick;
 
 
 /***************************************************************************
@@ -99,7 +99,7 @@ extern "C" orxSTATUS orxJoystick_SFML_Init()
   return eResult;
 }
 
-extern "C" orxVOID orxJoystick_SFML_Exit()
+extern "C" void orxJoystick_SFML_Exit()
 {
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)

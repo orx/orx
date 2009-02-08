@@ -60,7 +60,7 @@ typedef struct __orxLINKLIST_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxLINKLIST_STATIC sstLinkList;
+static orxLINKLIST_STATIC sstLinkList;
 
 
 /***************************************************************************
@@ -74,7 +74,7 @@ orxSTATIC orxLINKLIST_STATIC sstLinkList;
 
 /** Linklist module setup
  */
-orxVOID orxLinkList_Setup()
+void orxLinkList_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_LINKLIST, orxMODULE_ID_MEMORY);
@@ -116,7 +116,7 @@ orxSTATUS orxLinkList_Init()
 
 /** Exits from the linklist module
  */
-orxVOID orxLinkList_Exit()
+void orxLinkList_Exit()
 {
   /* Initialized? */
   if(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY)
@@ -146,7 +146,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
   /* Non empty? */
   if(_pstList->u32Counter != 0)
   {
-    orxREGISTER orxLINKLIST_NODE *pstNode, *pstNext;
+    register orxLINKLIST_NODE *pstNode, *pstNext;
 
     /* Gets first node */
     pstNode = _pstList->pstFirst;
@@ -179,7 +179,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
  */
 orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
@@ -231,7 +231,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NO
  */
 orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
@@ -284,8 +284,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE
  */
 orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxREGISTER orxLINKLIST *pstList;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxLINKLIST *pstList;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
@@ -357,8 +357,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
  */
 orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxREGISTER orxLINKLIST *pstList;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxLINKLIST *pstList;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);
@@ -428,9 +428,9 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
  */
 orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
 {
-  orxREGISTER orxLINKLIST *pstList;
-  orxREGISTER orxLINKLIST_NODE *pstPrevious, *pstNext;
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxLINKLIST *pstList;
+  register orxLINKLIST_NODE *pstPrevious, *pstNext;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstLinkList.u32Flags & orxLINKLIST_KU32_STATIC_FLAG_READY);

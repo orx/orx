@@ -208,7 +208,7 @@ typedef struct __orxFX_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxFX_STATIC sstFX;
+static orxFX_STATIC sstFX;
 
 
 /***************************************************************************
@@ -219,7 +219,7 @@ orxSTATIC orxFX_STATIC sstFX;
  * @param[in] _pstFXSlot        Concerned FX slot
  * @return orxFX_TYPE
  */
-orxSTATIC orxINLINE orxFX_TYPE orxFX_GetSlotType(orxCONST orxFX_SLOT *_pstFXSlot)
+static orxINLINE orxFX_TYPE orxFX_GetSlotType(const orxFX_SLOT *_pstFXSlot)
 {
   orxFX_TYPE eResult;
 
@@ -237,7 +237,7 @@ orxSTATIC orxINLINE orxFX_TYPE orxFX_GetSlotType(orxCONST orxFX_SLOT *_pstFXSlot
  * @param[in] _pstFX            Concerned FX
  * @return orxU32 / orxU32_UNDEFINED
  */
-orxSTATIC orxINLINE orxU32 orxFX_FindEmptySlotIndex(orxCONST orxFX *_pstFX)
+static orxINLINE orxU32 orxFX_FindEmptySlotIndex(const orxFX *_pstFX)
 {
   orxU32 i, u32Result = orxU32_UNDEFINED;
 
@@ -260,7 +260,7 @@ orxSTATIC orxINLINE orxU32 orxFX_FindEmptySlotIndex(orxCONST orxFX *_pstFX)
   return u32Result;
 }
 
-orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST orxSTRING _zSlotID)
+static orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zSlotID)
 {
   orxSTRING zPreviousSection;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -471,7 +471,7 @@ orxSTATIC orxINLINE orxSTATUS orxFX_AddSlotFromConfig(orxFX *_pstFX, orxCONST or
 
 /** Deletes all the FXs
  */
-orxSTATIC orxINLINE orxVOID orxFX_DeleteAll()
+static orxINLINE void orxFX_DeleteAll()
 {
   orxFX *pstFX;
 
@@ -498,7 +498,7 @@ orxSTATIC orxINLINE orxVOID orxFX_DeleteAll()
 
 /** FX module setup
  */
-orxVOID orxFX_Setup()
+void orxFX_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FX, orxMODULE_ID_MEMORY);
@@ -562,7 +562,7 @@ orxSTATUS orxFX_Init()
 
 /** Exits from the FX module
  */
-orxVOID orxFX_Exit()
+void orxFX_Exit()
 {
   /* Initialized? */
   if(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY)
@@ -621,7 +621,7 @@ orxFX *orxFX_Create()
  * @param[in]   _zConfigID            Config ID
  * @ return orxFX / orxNULL
  */
-orxFX *orxFASTCALL orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxU32  u32ID;
   orxFX  *pstResult;
@@ -799,7 +799,7 @@ orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
  * @param[in] _fEndTime         FX local application end time
  * @return    orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
+orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
 {
   orxU32    i;
   orxCOLOR  stColor;
@@ -838,7 +838,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
     /* For all slots */
     for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)
     {
-      orxCONST orxFX_SLOT *pstFXSlot;
+      const orxFX_SLOT *pstFXSlot;
 
       /* Gets the slot */
       pstFXSlot = &(_pstFX->astFXSlotList[i]);
@@ -1456,7 +1456,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject,
  * @param[in]   _pstFX        Concerned FX
  * @param[in]   _bEnable      enable / disable
  */
-orxVOID orxFASTCALL orxFX_Enable(orxFX *_pstFX, orxBOOL _bEnable)
+void orxFASTCALL    orxFX_Enable(orxFX *_pstFX, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
@@ -1481,7 +1481,7 @@ orxVOID orxFASTCALL orxFX_Enable(orxFX *_pstFX, orxBOOL _bEnable)
  * @param[in]   _pstFX        Concerned FX
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxFX_IsEnabled(orxCONST orxFX *_pstFX)
+orxBOOL orxFASTCALL orxFX_IsEnabled(const orxFX *_pstFX)
 {
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
@@ -1690,7 +1690,7 @@ orxSTATUS orxFASTCALL orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orx
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxCONST orxVECTOR *_pvStartScale, orxCONST orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const orxVECTOR *_pvStartScale, const orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1753,7 +1753,7 @@ orxSTATUS orxFASTCALL orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLO
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxCONST orxVECTOR *_pvStartPosition, orxCONST orxVECTOR *_pvEndPosition, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
+orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const orxVECTOR *_pvStartPosition, const orxVECTOR *_pvEndPosition, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)
 {
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1806,7 +1806,7 @@ orxSTATUS orxFASTCALL orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, 
  * @param[in]   _pstFX          Concerned FX
  * @return      orxFLOAT
  */
-orxFLOAT orxFASTCALL orxFX_GetDuration(orxCONST orxFX *_pstFX)
+orxFLOAT orxFASTCALL orxFX_GetDuration(const orxFX *_pstFX)
 {
   orxFLOAT fResult;
 
@@ -1825,7 +1825,7 @@ orxFLOAT orxFASTCALL orxFX_GetDuration(orxCONST orxFX *_pstFX)
  * @param[in]   _pstFX          Concerned FX
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-orxSTRING orxFASTCALL orxFX_GetName(orxCONST orxFX *_pstFX)
+const orxSTRING orxFASTCALL orxFX_GetName(const orxFX *_pstFX)
 {
   orxSTRING zResult;
 
@@ -1882,7 +1882,7 @@ orxSTATUS orxFASTCALL orxFX_Loop(orxFX *_pstFX, orxBOOL _bLoop)
  * @param[in]   _pstFX          Concerned FX
  * @return      orxTRUE if looping, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxFX_IsLooping(orxCONST orxFX *_pstFX)
+orxBOOL orxFASTCALL orxFX_IsLooping(const orxFX *_pstFX)
 {
   orxBOOL bResult;
 

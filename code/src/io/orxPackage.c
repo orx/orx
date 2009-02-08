@@ -39,7 +39,7 @@
 
  returns: nothing
  ***************************************************************************/
-orxVOID orxPackage_Setup()
+void orxPackage_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PACKAGE, orxMODULE_ID_PLUGIN);
@@ -58,18 +58,18 @@ orxVOID orxPackage_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Init,      orxSTATUS,    orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Exit,      orxVOID,      orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Init,      orxSTATUS,    void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Exit,      void,      void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Close,     orxSTATUS,    orxPACKAGE *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindNext,  orxBOOL,      orxPACKAGE_INFOS *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindClose, orxVOID,      orxPACKAGE_INFOS *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindClose, void,      orxPACKAGE_INFOS *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_TestFlags, orxBOOL,      orxPACKAGE *,       orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Commit,    orxSTATUS,    orxPACKAGE *,       orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Extract,   orxSTATUS,    orxPACKAGE *,       orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Open,      orxPACKAGE *, orxCONST orxSTRING, orxCONST orxSTRING,   orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_SetFlags,  orxVOID,      orxPACKAGE *,       orxU32,               orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindFirst, orxBOOL,      orxPACKAGE *,       orxCONST orxSTRING,   orxPACKAGE_INFOS *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Read,      orxU32,       orxVOID *,          orxU32,               orxPACKAGE *,      orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Commit,    orxSTATUS,    orxPACKAGE *,       const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Extract,   orxSTATUS,    orxPACKAGE *,       const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Open,      orxPACKAGE *, const orxSTRING, const orxSTRING,   orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_SetFlags,  void,      orxPACKAGE *,       orxU32,               orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_FindFirst, orxBOOL,      orxPACKAGE *,       const orxSTRING,   orxPACKAGE_INFOS *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPackage_Read,      orxU32,       void *,          orxU32,               orxPACKAGE *,      const orxSTRING);
 
 
 /* *** Core function info array *** */
@@ -104,7 +104,7 @@ orxSTATUS orxPackage_Init()
 
 /** Uninitializes the Package Module
  */
-orxVOID orxPackage_Exit()
+void orxPackage_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Exit)();
 }
@@ -115,7 +115,7 @@ orxVOID orxPackage_Exit()
  * @param _u32OpenFlags     (IN)     Open flags (read/write, intern/extern, ...). The package will be created if it doesn't exists and is in write mode
  * @return a Pointer on a package, or orxNULL if an error has occured.
  */
-orxPACKAGE *orxPackage_Open(orxCONST orxSTRING _zDirPath, orxCONST orxSTRING _zPackageName, orxU32 _u32OpenFlags)
+orxPACKAGE *orxPackage_Open(const orxSTRING _zDirPath, const orxSTRING _zPackageName, orxU32 _u32OpenFlags)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Open)(_zDirPath, _zPackageName, _u32OpenFlags);
 }
@@ -123,7 +123,7 @@ orxPACKAGE *orxPackage_Open(orxCONST orxSTRING _zDirPath, orxCONST orxSTRING _zP
 /** Closes a package
  * @param _zPackage         (IN)     Package to close
  */
-orxVOID orxPackage_Close(orxPACKAGE *_pstPackage)
+void orxPackage_Close(orxPACKAGE *_pstPackage)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Close)(_pstPackage);
 }
@@ -133,7 +133,7 @@ orxVOID orxPackage_Close(orxPACKAGE *_pstPackage)
  * @param _u32FlagsToRemove (IN)     List of flags to remove
  * @param _u32FlagsToAdd    (IN)     List of flags to add
  */
-orxVOID orxPackage_SetFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
+void orxPackage_SetFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_SetFlags)(_pstPackage, _u32FlagsToRemove, _u32FlagsToAdd);
 }
@@ -153,7 +153,7 @@ orxBOOL orxPackage_TestFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToTest)
  * @param _zFileName        (IN)     File to commit (a pattern can be used (e.g : *.txt))
  * @return the status of the operation
  */
-orxSTATUS orxPackage_Commit(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+orxSTATUS orxPackage_Commit(orxPACKAGE *_pstPackage, const orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Commit)(_pstPackage, _zFileName);
 }
@@ -163,7 +163,7 @@ orxSTATUS orxPackage_Commit(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileNa
  * @param _zFileName        (IN)     File to extract (a pattern can be used (e.g : *.png))
  * @return the status of the operation
  */
-orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPackage, const orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Extract)(_pstPackage, _zFileName);
 }
@@ -174,7 +174,7 @@ orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileN
  * @param _pstFileInfos     (OUT)    Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
-orxBOOL orxPackage_FindFirst(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos)
+orxBOOL orxPackage_FindFirst(orxPACKAGE *_pstPackage, const orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_FindFirst)(_pstPackage, _zSearchPattern, _pstFileInfos);
 }
@@ -191,7 +191,7 @@ orxBOOL orxPackage_FindNext(orxPACKAGE_INFOS *_pstFileInfos)
 /** Closes a search (free the memory allocated for this search)
  * @param _pstFileInfos     (IN)     Informations returned during search
  */
-orxVOID orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos)
+void orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_FindClose)(_pstFileInfos);
 }
@@ -203,7 +203,7 @@ orxVOID orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos)
  * @param _zFileName        (IN)     File to read
  * @return Returns the number of written bytes
  */
-orxU32 orxPackage_Read(orxVOID *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName)
+orxU32 orxPackage_Read(void *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, const orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPackage_Read)(_pDataToWrite, _u32FileSize, _pstPackage, _zFileName);
 }

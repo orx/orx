@@ -162,7 +162,7 @@ typedef enum __orxKEYBOARD_KEY_t
 
 /** Keyboard module setup
  */
-extern orxDLLAPI orxVOID                orxKeyboard_Setup();
+extern orxDLLAPI void                   orxKeyboard_Setup();
 
 
 /***************************************************************************
@@ -175,7 +175,7 @@ extern orxDLLAPI orxSTATUS              orxKeyboard_Init();
 
 /** Exits from the keyboard module
  */
-extern orxDLLAPI orxVOID                orxKeyboard_Exit();
+extern orxDLLAPI void                   orxKeyboard_Exit();
 
 /** Is key pressed?
  * @param _eKey       Key to check
@@ -195,13 +195,13 @@ extern orxDLLAPI orxKEYBOARD_KEY        orxKeyboard_Read();
 
 /** Empties the keyboard buffer.
  */
-extern orxDLLAPI orxVOID                orxKeyboard_ClearBuffer();
+extern orxDLLAPI void                   orxKeyboard_ClearBuffer();
 
 /** Gets key literal name
  * @param _eKey       Concerned key
  * @return Key's name
  */
-extern orxDLLAPI orxSTRING orxFASTCALL  orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey);
 
 
 #endif /* _orxKEYBOARD_H_ */

@@ -186,10 +186,10 @@ void Logo::SetConfigColor()
 class StandAlone
 {
 public:
-  static orxSTATUS orxFASTCALL  EventHandler(orxCONST orxEVENT *_pstEvent);
-  static orxVOID                Setup();
+  static orxSTATUS orxFASTCALL  EventHandler(const orxEVENT *_pstEvent);
+  static void                Setup();
   static orxSTATUS              Init();
-  static orxVOID                Exit();
+  static void                Exit();
   static orxSTATUS              Run();
 
 private:
@@ -217,7 +217,7 @@ orxSTATUS StandAlone::InitGame()
 }
 
 // Event handler
-orxSTATUS orxFASTCALL StandAlone::EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL StandAlone::EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult;
 
@@ -286,7 +286,7 @@ orxSTATUS StandAlone::Init()
 }
 
 // Exit function
-orxVOID StandAlone::Exit()
+void StandAlone::Exit()
 {
   // Deletes our logo
   delete soMyStandAloneGame.m_poLogo;

@@ -136,12 +136,12 @@ typedef enum __orxCLOCK_EVENT_t
 typedef struct __orxCLOCK_t                           orxCLOCK;
 
 /** Clock callback function type to use with clock bindings */
-typedef orxVOID (orxFASTCALL *orxCLOCK_FUNCTION)(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext);
+typedef void (orxFASTCALL *orxCLOCK_FUNCTION)(const orxCLOCK_INFO *_pstClockInfo, void *_pContext);
 
 
 /** Clock module setup
  */
-extern orxDLLAPI orxVOID                              orxClock_Setup();
+extern orxDLLAPI void                                 orxClock_Setup();
 
 /** Inits the clock module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -150,7 +150,7 @@ extern orxDLLAPI orxSTATUS                            orxClock_Init();
 
 /** Exits from the clock module
  */
-extern orxDLLAPI orxVOID                              orxClock_Exit();
+extern orxDLLAPI void                                 orxClock_Exit();
 
 
 /** Updates the clock system
@@ -168,7 +168,7 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _
 /** Deletes a clock
  * @param[in]   _pstClock                             Concerned clock
  */
-extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Delete(orxCLOCK *_pstClock);
+extern orxDLLAPI void orxFASTCALL                     orxClock_Delete(orxCLOCK *_pstClock);
 
 /** Resyncs a clock (accumulated DT => 0)
  * @param[in]   _pstClock                             Concerned clock
@@ -190,25 +190,25 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Restart(orxCLOCK 
  * @param[in]   _pstClock                             Concerned clock
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Pause(orxCLOCK *_pstClock);
+extern orxDLLAPI void orxFASTCALL                     orxClock_Pause(orxCLOCK *_pstClock);
 
 /** Unpauses a clock
  * @param[in]   _pstClock                             Concerned clock
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxVOID orxFASTCALL                  orxClock_Unpause(orxCLOCK *_pstClock);
+extern orxDLLAPI void orxFASTCALL                     orxClock_Unpause(orxCLOCK *_pstClock);
 
 /** Is a clock paused?
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxTRUE if paused, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(orxCONST orxCLOCK *_pstClock);
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxClock_IsPaused(const orxCLOCK *_pstClock);
 
 /** Gets clock info
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxCLOCK_INFO / orxNULL
  */
-extern orxDLLAPI orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock);
+extern orxDLLAPI const orxCLOCK_INFO *orxFASTCALL     orxClock_GetInfo(const orxCLOCK *_pstClock);
 
 
 /** Sets a clock modifier
@@ -235,21 +235,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetTickSize(orxCL
  * @param[in]   _ePriority                            Priority for the function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_PRIORITY _ePriority);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_PRIORITY _ePriority);
 
 /** Unregisters a callback function from a clock
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Callback to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback);
 
 /** Gets a callback function context
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Concerned callback
  * @return      Registered context
  */
-extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback);
+extern orxDLLAPI void *orxFASTCALL                    orxClock_GetContext(const orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback);
 
 /** Sets a callback function context
  * @param[in]   _pstClock                             Concerned clock
@@ -257,7 +257,7 @@ extern orxDLLAPI orxVOID  *orxFASTCALL                orxClock_GetContext(orxCON
  * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pstContext);
 
 
 /** Finds a clock given its tick size and its type
@@ -271,13 +271,13 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOA
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxCLOCK / orxNULL
  */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(orxCONST orxCLOCK *_pstClock);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(const orxCLOCK *_pstClock);
 
 /** Gets next existing clock in list (can be used to parse all existing clocks)
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxCLOCK / orxNULL
  */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(orxCONST orxCLOCK *_pstClock);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(const orxCLOCK *_pstClock);
 
 
 #endif /* _orxCLOCK_H_ */

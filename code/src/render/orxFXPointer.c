@@ -87,7 +87,7 @@ struct __orxFXPOINTER_t
   orxSTRUCTURE            stStructure;                      /**< Public structure, first structure member : 16 */
   orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER];/**< FX list : 64 */
   orxFLOAT                fTime;                            /**< Time stamp : 68 */
-  orxCONST orxSTRUCTURE  *pstOwner;                         /**< Owner structure : 72 */
+  const orxSTRUCTURE  *pstOwner;                         /**< Owner structure : 72 */
 
   /* Padding */
   orxPAD(72)
@@ -108,7 +108,7 @@ typedef struct __orxFXPOINTER_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxFXPOINTER_STATIC sstFXPointer;
+static orxFXPOINTER_STATIC sstFXPointer;
 
 
 /***************************************************************************
@@ -117,7 +117,7 @@ orxSTATIC orxFXPOINTER_STATIC sstFXPointer;
 
 /** Deletes all the FXPointers
  */
-orxSTATIC orxINLINE orxVOID orxFXPointer_DeleteAll()
+static orxINLINE void orxFXPointer_DeleteAll()
 {
   orxFXPOINTER *pstFXPointer;
 
@@ -143,7 +143,7 @@ orxSTATIC orxINLINE orxVOID orxFXPointer_DeleteAll()
  * @param[in]   _pstClockInfo                 Clock info used for time updates
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
+static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
   orxFXPOINTER *pstFXPointer;
   orxOBJECT    *pstObject;
@@ -258,7 +258,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure,
 
 /** FXPointer module setup
  */
-orxVOID orxFXPointer_Setup()
+void orxFXPointer_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FXPOINTER, orxMODULE_ID_MEMORY);
@@ -313,7 +313,7 @@ orxSTATUS orxFXPointer_Init()
 
 /** Exits from the FXPointer module
  */
-orxVOID orxFXPointer_Exit()
+void orxFXPointer_Exit()
 {
   /* Initialized? */
   if(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY)
@@ -339,7 +339,7 @@ orxVOID orxFXPointer_Exit()
 /** Creates an empty FXPointer
  * @return      Created orxFXPOINTER / orxNULL
  */
-orxFXPOINTER *orxFXPointer_Create(orxCONST orxSTRUCTURE *_pstOwner)
+orxFXPOINTER *orxFXPointer_Create(const orxSTRUCTURE *_pstOwner)
 {
   orxFXPOINTER *pstResult;
 
@@ -423,7 +423,7 @@ orxSTATUS orxFASTCALL orxFXPointer_Delete(orxFXPOINTER *_pstFXPointer)
  * @param[in]   _pstFXPointer   Concerned FXPointer
  * @return      orxSTRUCTURE / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxFXPointer_GetOwner(orxCONST orxFXPOINTER *_pstFXPointer)
+orxSTRUCTURE *orxFASTCALL orxFXPointer_GetOwner(const orxFXPOINTER *_pstFXPointer)
 {
   orxSTRUCTURE *pstResult;
 
@@ -442,7 +442,7 @@ orxSTRUCTURE *orxFASTCALL orxFXPointer_GetOwner(orxCONST orxFXPOINTER *_pstFXPoi
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _bEnable      enable / disable
  */
-orxVOID orxFASTCALL orxFXPointer_Enable(orxFXPOINTER *_pstFXPointer, orxBOOL _bEnable)
+void orxFASTCALL    orxFXPointer_Enable(orxFXPOINTER *_pstFXPointer, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
@@ -467,7 +467,7 @@ orxVOID orxFASTCALL orxFXPointer_Enable(orxFXPOINTER *_pstFXPointer, orxBOOL _bE
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxFXPointer_IsEnabled(orxCONST orxFXPOINTER *_pstFXPointer)
+orxBOOL orxFASTCALL orxFXPointer_IsEnabled(const orxFXPOINTER *_pstFXPointer)
 {
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
@@ -628,7 +628,7 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *
  * @param[in]   _zFXConfigID  Config ID of the FX to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID)
+orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID)
 {
   orxSTATUS eResult;
 
@@ -650,7 +650,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, 
  * @param[in]   _fDelay       Delay time
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
 {
   orxU32    u32Index;
   orxSTATUS eResult;
@@ -727,7 +727,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
  * @param[in]   _zFXConfigID  Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID)
+orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID)
 {
   orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;

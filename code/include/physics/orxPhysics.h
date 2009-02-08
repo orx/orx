@@ -179,7 +179,7 @@ typedef struct __orxPHYSICS_BODY_PART_t   orxPHYSICS_BODY_PART;
 
 /** Physics module setup
  */
-extern orxDLLAPI orxVOID                              orxPhysics_Setup();
+extern orxDLLAPI void                                 orxPhysics_Setup();
 
 
 /***************************************************************************
@@ -193,14 +193,14 @@ extern orxDLLAPI orxSTATUS                            orxPhysics_Init();
 
 /** Exits from the physics module
  */
-extern orxDLLAPI orxVOID                              orxPhysics_Exit();
+extern orxDLLAPI void                                 orxPhysics_Exit();
 
 
 /** Sets physics gravity
  * @param[in]   _pvGravity                            Gravity to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxPhysics_SetGravity(orxCONST orxVECTOR *_pvGravity);
+extern orxDLLAPI orxSTATUS                            orxPhysics_SetGravity(const orxVECTOR *_pvGravity);
 
 /** Gets physics gravity
  * @param[in]   _pvGravity                            Gravity to get
@@ -214,24 +214,24 @@ extern orxDLLAPI orxVECTOR *                          orxPhysics_GetGravity(orxV
  * @param[in]   _pstBodyDef                           Physical body definition
  * @return orxPHYSICS_BODY / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY *                    orxPhysics_CreateBody(orxCONST orxHANDLE _hUserData, orxCONST orxBODY_DEF *_pstBodyDef);
+extern orxDLLAPI orxPHYSICS_BODY *                    orxPhysics_CreateBody(const orxHANDLE _hUserData, const orxBODY_DEF *_pstBodyDef);
 
 /** Deletes a physical body
  * @param[in]   _pstBody                              Concerned physical body
  */
-extern orxDLLAPI orxVOID                              orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody);
+extern orxDLLAPI void                                 orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody);
 
 /** Creates a part for a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[in]   _pstBodyPartDef                       Physical body part definition
  * @return orxPHYSICS_BODY_PART / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY_PART *               orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, orxCONST orxBODY_PART_DEF *_pstBodyPartDef);
+extern orxDLLAPI orxPHYSICS_BODY_PART *               orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef);
 
 /** Deletes a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  */
-extern orxDLLAPI orxVOID                              orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart);
+extern orxDLLAPI void                                 orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart);
 
 
 /** Sets the position of a physical body
@@ -239,7 +239,7 @@ extern orxDLLAPI orxVOID                              orxPhysics_DeleteBodyPart(
  * @param[in]   _pvPosition                           Position to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS                            orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition);
 
 /** Sets the rotation of a physical body
  * @param[in]   _pstBody                              Concerned physical body
@@ -253,7 +253,7 @@ extern orxDLLAPI orxSTATUS                            orxPhysics_SetRotation(orx
  * @param[in]   _pvSpeed                              Speed to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxPhysics_SetSpeed(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvSpeed);
+extern orxDLLAPI orxSTATUS                            orxPhysics_SetSpeed(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvSpeed);
 
 /** Sets the angular velocity of a physical body
  * @param[in]   _pstBody                              Concerned physical body
@@ -309,7 +309,7 @@ extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyTorque(orx
  * @param[in]   _pvPoint                              Point of application (if null, center of mass will be used)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint);
+extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint);
 
 /** Applies an impulse to a physical body
  * @param[in]   _pstBody                              Concerned physical body
@@ -317,7 +317,7 @@ extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyForce(orxP
  * @param[in]   _pvPoint                              Point of application (if null, center of mass will be used)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint);
+extern orxDLLAPI orxSTATUS                            orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint);
 
 #endif /* _orxPHYSICS_H_ */
 

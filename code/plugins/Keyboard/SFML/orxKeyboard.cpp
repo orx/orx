@@ -63,14 +63,14 @@ typedef struct __orxKEYBOARD_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxKEYBOARD_STATIC sstKeyboard;
+static orxKEYBOARD_STATIC sstKeyboard;
 
 
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATIC sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eKey)
+static sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eKey)
 {
   sf::Key::Code eResult;
 
@@ -213,7 +213,7 @@ extern "C" orxSTATUS orxKeyboard_SFML_Init()
   return eResult;
 }
 
-extern "C" orxVOID orxKeyboard_SFML_Exit()
+extern "C" void orxKeyboard_SFML_Exit()
 {
   /* Was initialized? */
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
@@ -295,7 +295,7 @@ extern "C" orxBOOL orxKeyboard_SFML_Hit()
   return bResult;
 }
 
-extern "C" orxVOID orxKeyboard_SFML_ClearBuffer()
+extern "C" void orxKeyboard_SFML_ClearBuffer()
 {
   /* Checks */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);

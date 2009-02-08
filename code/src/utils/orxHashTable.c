@@ -48,7 +48,7 @@
 typedef struct __orxHASHTABLE_CELL_t
 {
   orxU32                        u32Key;                       /**< Key element of a hash table : 4 */
-  orxVOID                      *pData;                        /**< Address of data : 8 */
+  void                      *pData;                        /**< Address of data : 8 */
   struct __orxHASHTABLE_CELL_t *pstNext;                      /**< Next cell with the same index : 12 */
 
   orxPAD(12)
@@ -72,7 +72,7 @@ typedef struct __orxHASHTABLE_STATIC_t
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
-orxSTATIC orxHASHTABLE_STATIC sstHashTable;
+static orxHASHTABLE_STATIC sstHashTable;
 
 /***************************************************************************
  * Private functions                                                       *
@@ -83,7 +83,7 @@ orxSTATIC orxHASHTABLE_STATIC sstHashTable;
  * @param _u32Key Key to find.
  * @return index associated to the given key.
  */
-orxSTATIC orxINLINE orxU32 orxHashTable_FindIndex(orxCONST orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
+static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
 {
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
@@ -105,7 +105,7 @@ orxSTATIC orxINLINE orxU32 orxHashTable_FindIndex(orxCONST orxHASHTABLE *_pstHas
 
  returns: nothing
  ***************************************************************************/
-orxVOID orxHashTable_Setup()
+void orxHashTable_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_HASHTABLE, orxMODULE_ID_MEMORY);
@@ -153,7 +153,7 @@ orxSTATUS orxHashTable_Init()
 
 /** Exit HashTable module
  */
-orxVOID orxHashTable_Exit()
+void orxHashTable_Exit()
 {
   /* Module initialized ? */
   if((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY)
@@ -229,7 +229,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
 /** Delete a hash table.
  * @param _pstHashTable (IN) Hash table to delete.
  */
-orxVOID orxFASTCALL orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
+void orxFASTCALL    orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 {
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
@@ -252,7 +252,7 @@ orxVOID orxFASTCALL orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 /** Clear a hash table.
  * @param _pstHashTable (IN) Hash table to clear.
  */
-orxVOID orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
+void orxFASTCALL    orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
 {
   /* Module initialized ? */
   orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
@@ -293,7 +293,7 @@ orxU32 orxFASTCALL orxHashTable_GetCounter(orxHASHTABLE *_pstHashTable)
  * @param _u32Key     (IN) Key to find.
  * @return The Element associated to the key or orxNULL if not found.
  */
-orxVOID *orxFASTCALL orxHashTable_Get(orxCONST orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
+void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
 {
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
@@ -333,7 +333,7 @@ orxVOID *orxFASTCALL orxHashTable_Get(orxCONST orxHASHTABLE *_pstHashTable, orxU
  * @param _u32Key     (IN) Key to assign.
  * @param _pData      (IN) Data to assign.
  */
-orxVOID orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData)
+void orxFASTCALL    orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
 {
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
@@ -387,7 +387,7 @@ orxVOID orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key
  * @param _pData      (IN) Data to assign.
  * @return Returns the status of the operation. (fails if key already used)
  */
-orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData)
+orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
 {
   orxU32 u32Index;                      /* Hash index */
   orxHASHTABLE_CELL *pstCell;             /* New cell to add */
@@ -508,7 +508,7 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
  ******************************************************************************/
 
 // Find a the first item of the hashtable and return the iterator corresponding to the search.
-orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, orxVOID **_ppData)
+orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
   orxU16 u16Cell;
@@ -542,7 +542,7 @@ orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32
 }
 
 // Find a the next item of the hashtable and return the iterator corresponding to the search.
-orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, orxVOID **_ppData)
+orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData)
 {
 	orxHASHTABLE_CELL *pIter = (orxHASHTABLE_CELL*)_hIterator;
 	orxU16             u16Cell;
@@ -600,7 +600,7 @@ orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHAND
 /** Print the content of a Hash table
  * @param _pstHashTable (IN) Hash table to display
  */
-orxVOID orxFASTCALL orxHashTable_DebugPrint(orxCONST orxHASHTABLE *_pstHashTable)
+void orxFASTCALL    orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable)
 {
   orxHASHTABLE_CELL *pstCell = orxNULL;
   orxU32 u32Index;

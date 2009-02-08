@@ -71,7 +71,7 @@ typedef enum __orxMEMORY_TYPE_t
 
 /** Setups the memory module
  */
-extern orxDLLAPI orxVOID                orxMemory_Setup();
+extern orxDLLAPI void                   orxMemory_Setup();
 
 /** Inits the memory module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -80,7 +80,7 @@ extern orxDLLAPI orxSTATUS              orxMemory_Init();
 
 /** Exits from the memory module
  */
-extern orxDLLAPI orxVOID                orxMemory_Exit();
+extern orxDLLAPI void                   orxMemory_Exit();
 
 /** Allocates a portion of memory in the system and returns a pointer on it
  * @param[in]  _u32Size  Size of the memory to allocate
@@ -88,13 +88,13 @@ extern orxDLLAPI orxVOID                orxMemory_Exit();
  * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
  * @todo Use the memory managed by orxMemory (initialized with orxMemory_Init())
  */
-extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
+extern orxDLLAPI void *orxFASTCALL      orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType);
 
 /** Frees a portion of memory allocated with orxMemory_Allocate
  * @param[in]  _pMem     Pointer on the memory allocated by orx
  * @todo Use the memory managed by orxMemory (not OS)
  */
-extern orxDLLAPI orxVOID orxFASTCALL    orxMemory_Free(orxVOID *_pMem);
+extern orxDLLAPI void orxFASTCALL       orxMemory_Free(void *_pMem);
 
 /** Gets the an aligned data size
  * @param[in]  _u32OriginalValue Original value (ex: 70)
@@ -110,7 +110,7 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_GetAlign(orxU32 _u32OriginalVa
  * @return returns a pointer on _pDest
  * @note if _pSrc and _pDest overlap, use orxMemory_Move instead
  */
-extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size);
+extern orxDLLAPI void *orxFASTCALL      orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Size);
 
 /** Copies a portion of memory into another one
  * @param[out] _pDest   Destination pointer
@@ -118,7 +118,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Copy(orxVOID *_pDest, orxCONST
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
-extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size);
+extern orxDLLAPI void *orxFASTCALL      orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size);
 
 /** Compares two portion of memory
  * @param[in]  _pMem1   First potion to test
@@ -126,7 +126,7 @@ extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Move(orxVOID *_pDest, orxVOID 
  * @param[in]  _u32Size Size of data to test
  * @return returns a velue less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
  */
-extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size);
+extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(const void *_pMem1, const void *_pMem2, orxU32 _u32Size);
 
 /** Fills a portion of memory with _u32Data
  * @param[out] _pDest   Destination pointer
@@ -134,21 +134,21 @@ extern orxDLLAPI orxU32 orxFASTCALL     orxMemory_Compare(orxCONST orxVOID *_pMe
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
-extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size);
+extern orxDLLAPI void *orxFASTCALL      orxMemory_Set(void *_pDest, orxU8 _u8Data, orxU32 _u32Size);
 
 /** Fills a portion of memory with zeroes
  * @param[out] _pDest   Destination pointer
  * @param[in]  _u32Size Size of data
  * @return returns a pointer on _pDest
  */
-extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Zero(orxVOID *_pDest, orxU32 _u32Size);
+extern orxDLLAPI void *orxFASTCALL      orxMemory_Zero(void *_pDest, orxU32 _u32Size);
 
 /** Reallocs a portion of memory if the already allocated memory is not suffisant.
  * @param[in] _pMem	   Memory to reallocate.
  * @param[in] _u32Size Wanted size.
  * @return The pointer reallocated.
  */
-extern orxDLLAPI orxVOID *orxFASTCALL   orxMemory_Reallocate(orxVOID *_pMem, orxU32 _u32Size);
+extern orxDLLAPI void *orxFASTCALL      orxMemory_Reallocate(void *_pMem, orxU32 _u32Size);
 
 #endif /* _orxMEMORY_H_ */
 

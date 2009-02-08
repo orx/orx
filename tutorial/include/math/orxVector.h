@@ -87,7 +87,7 @@ typedef struct __orxVECTOR_t
  * @param[in]   _fZ                           Third coordinate value
  * @return      Vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Set(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
+static orxINLINE orxVECTOR *                  orxVector_Set(orxVECTOR *_pvVec, orxFLOAT _fX, orxFLOAT _fY, orxFLOAT _fZ)
 {
   /* Checks */
   orxASSERT(_pvVec != orxNULL);
@@ -106,7 +106,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Set(orxVECTOR *_pvVec, o
  * @param[in]   _fValue                       Value to set
  * @return      Vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_SetAll(orxVECTOR *_pvVec, orxFLOAT _fValue)
+static orxINLINE orxVECTOR *                  orxVector_SetAll(orxVECTOR *_pvVec, orxFLOAT _fValue)
 {
   /* Done ! */
   return(orxVector_Set(_pvVec, _fValue, _fValue, _fValue));
@@ -117,7 +117,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_SetAll(orxVECTOR *_pvVec
  * @param[in]   _pvSrc                        Vector to copy from (source)
  * @return      Destination vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Copy(orxVECTOR *_pvDst, orxCONST orxVECTOR *_pvSrc)
+static orxINLINE orxVECTOR *                  orxVector_Copy(orxVECTOR *_pvDst, const orxVECTOR *_pvSrc)
 {
   /* Checks */
   orxASSERT(_pvDst != orxNULL);
@@ -136,7 +136,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Copy(orxVECTOR *_pvDst, 
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector (Op1 + Op2)
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Add(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxVECTOR *                  orxVector_Add(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -158,7 +158,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Add(orxVECTOR *_pvRes, o
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector (Op1 - Op2)
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Sub(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxVECTOR *                  orxVector_Sub(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -180,7 +180,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Sub(orxVECTOR *_pvRes, o
  * @param[in]   _fOp2                         Second operand
  * @return      Resulting vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Mulf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
+static orxINLINE orxVECTOR *                  orxVector_Mulf(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -201,7 +201,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Mulf(orxVECTOR *_pvRes, 
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector (Op1 * Op2)
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Mul(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxVECTOR *                  orxVector_Mul(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -223,9 +223,9 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Mul(orxVECTOR *_pvRes, o
  * @param[in]   _fOp2                         Second operand
  * @return      Resulting vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Divf(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxFLOAT _fOp2)
+static orxINLINE orxVECTOR *                  orxVector_Divf(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, orxFLOAT _fOp2)
 {
-  orxREGISTER orxFLOAT fRecCoef;
+  register orxFLOAT fRecCoef;
 
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -250,7 +250,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Divf(orxVECTOR *_pvRes, 
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector (Op1 / Op2)
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Div(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxVECTOR *                  orxVector_Div(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -276,7 +276,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Div(orxVECTOR *_pvRes, o
  * @param[in]   _fOp                          Lerp coefficien parameter
  * @return      Resulting vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Lerp(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2, orxFLOAT _fOp)
+static orxINLINE orxVECTOR *                  orxVector_Lerp(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2, orxFLOAT _fOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -299,7 +299,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Lerp(orxVECTOR *_pvRes, 
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector MIN(Op1, Op2)
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Min(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxVECTOR *                  orxVector_Min(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -321,7 +321,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Min(orxVECTOR *_pvRes, o
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector MAX(Op1, Op2)
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Max(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxVECTOR *                  orxVector_Max(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -344,7 +344,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Max(orxVECTOR *_pvRes, o
  * @param[in]   _pvMax                        Maximum boundary
  * @return      Resulting vector CLAMP(Op, MIN, MAX)
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Clamp(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxCONST orxVECTOR *_pvMin, orxCONST orxVECTOR *_pvMax)
+static orxINLINE orxVECTOR *                  orxVector_Clamp(orxVECTOR *_pvRes, const orxVECTOR *_pvOp, const orxVECTOR *_pvMin, const orxVECTOR *_pvMax)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -366,7 +366,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Clamp(orxVECTOR *_pvRes,
  * @param[in]   _pvOp                         Vector to negates
  * @return      Resulting vector (-Op)
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Neg(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+static orxINLINE orxVECTOR *                  orxVector_Neg(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -387,7 +387,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Neg(orxVECTOR *_pvRes, o
  * @return      Resulting vector (1 / Op)
  */
 
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Rec(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+static orxINLINE orxVECTOR *                  orxVector_Rec(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -406,9 +406,9 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Rec(orxVECTOR *_pvRes, o
  * @param[in]   _pvOp                         Input vector
  * @return      Vector's squared size
  */
-orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareSize(orxCONST orxVECTOR *_pvOp)
+static orxINLINE orxFLOAT                     orxVector_GetSquareSize(const orxVECTOR *_pvOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Checks */
   orxASSERT(_pvOp  != orxNULL);
@@ -424,9 +424,9 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareSize(orxCONST o
  * @param[in]   _pvOp                         Input vector
  * @return      Vector's size
  */
-orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSize(orxCONST orxVECTOR *_pvOp)
+static orxINLINE orxFLOAT                     orxVector_GetSize(const orxVECTOR *_pvOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Checks */
   orxASSERT(_pvOp  != orxNULL);
@@ -443,10 +443,10 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSize(orxCONST orxVECT
  * @param[in]   _pvOp2                        Second position
  * @return      Squared distance
  */
-orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxFLOAT                     orxVector_GetSquareDistance(const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   orxVECTOR   vTemp;
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Checks */
   orxASSERT(_pvOp1 != orxNULL);
@@ -467,10 +467,10 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetSquareDistance(orxCON
  * @param[in]   _pvOp2                        Second position
  * @return      Distance
  */
-orxSTATIC orxINLINE orxFLOAT                  orxVector_GetDistance(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxFLOAT                     orxVector_GetDistance(const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   orxVECTOR   vTemp;
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Checks */
   orxASSERT(_pvOp1 != orxNULL);
@@ -491,9 +491,9 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_GetDistance(orxCONST orx
  * @param[in]   _pvOp                         Vector to normalize
  * @return      Normalized vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+static orxINLINE orxVECTOR *                  orxVector_Normalize(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
-  orxREGISTER orxFLOAT fOp;
+  register orxFLOAT fOp;
 
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -529,9 +529,9 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Normalize(orxVECTOR *_pv
  * @param[in]   _fAngle                       Angle of rotation (radians)
  * @return      Rotated vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_2DRotate(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp, orxFLOAT _fAngle)
+static orxINLINE orxVECTOR *                  orxVector_2DRotate(orxVECTOR *_pvRes, const orxVECTOR *_pvOp, orxFLOAT _fAngle)
 {
-  orxREGISTER orxFLOAT fSin, fCos;
+  register orxFLOAT fSin, fCos;
 
   /* Checks */
   orxASSERT(_pvRes  != orxNULL);
@@ -552,7 +552,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_2DRotate(orxVECTOR *_pvR
  * @param[in]   _pvOp                         Vector to test
  * @return      orxTRUE if vector's null, orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL                   orxVector_IsNull(orxCONST orxVECTOR *_pvOp)
+static orxINLINE orxBOOL                      orxVector_IsNull(const orxVECTOR *_pvOp)
 {
   orxBOOL bResult;
 
@@ -571,7 +571,7 @@ orxSTATIC orxINLINE orxBOOL                   orxVector_IsNull(orxCONST orxVECTO
  * @param[in]   _pvOp2                        Second vector to compare
  * @return      orxTRUE if both vectors are equal, orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL                   orxVector_AreEqual(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxBOOL                      orxVector_AreEqual(const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   orxBOOL bResult;
 
@@ -591,7 +591,7 @@ orxSTATIC orxINLINE orxBOOL                   orxVector_AreEqual(orxCONST orxVEC
  * @param[in]   _pvOp                         Vector to transform
  * @return      Transformed vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
   /* Checks */
   orxASSERT(_pvRes != orxNULL);
@@ -643,7 +643,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical
         if(*(orxU32 *)&(_pvOp->fZ) & (orxU32)0x80000000)
         {
           orxU32              u32Temp;
-          orxREGISTER orxU32 *pu32Temp;
+          register orxU32 *pu32Temp;
 
           /* Gets absolute value */
           u32Temp = *(orxU32 *)&(_pvOp->fZ) & (orxU32)0x7FFFFFFF;
@@ -692,7 +692,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_FromCartesianToSpherical
  * @param[in]   _pvOp                         Vector to transform
  * @return      Transformed vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_FromSphericalToCartesian(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp)
+static orxINLINE orxVECTOR *                  orxVector_FromSphericalToCartesian(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
 {
   orxFLOAT fSinPhi, fCosPhi, fSinTheta, fCosTheta;
 
@@ -720,7 +720,7 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_FromSphericalToCartesian
  * @param[in]   _pvOp2                      Second operand
  * @return      Dot product
  */
-orxSTATIC orxINLINE orxFLOAT                  orxVector_Dot(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxFLOAT                   orxVector_Dot(const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   orxFLOAT fResult;
 
@@ -740,7 +740,7 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_Dot(orxCONST orxVECTOR *
  * @param[in]   _pvOp2                      Second operand
  * @return      2D dot product
  */
-orxSTATIC orxINLINE orxFLOAT                  orxVector_2DDot(orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxFLOAT                   orxVector_2DDot(const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   orxFLOAT fResult;
 
@@ -761,7 +761,7 @@ orxSTATIC orxINLINE orxFLOAT                  orxVector_2DDot(orxCONST orxVECTOR
  * @param[in]   _pvOp2                      Second operand
  * @return      Cross product orxVECTOR / orxNULL
  */
-orxSTATIC orxINLINE orxVECTOR *               orxVector_Cross(orxVECTOR *_pvRes, orxCONST orxVECTOR *_pvOp1, orxCONST orxVECTOR *_pvOp2)
+static orxINLINE orxVECTOR *                orxVector_Cross(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
 {
   orxFLOAT fTemp1, fTemp2;
 
@@ -785,17 +785,17 @@ orxSTATIC orxINLINE orxVECTOR *               orxVector_Cross(orxVECTOR *_pvRes,
 /* *** Vector constants *** */
 
 
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_X;      /**< X-Axis unit vector */
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Y;      /**< Y-Axis unit vector */
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_Z;      /**< Z-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_X;      /**< X-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_Y;      /**< Y-Axis unit vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_Z;      /**< Z-Axis unit vector */
 
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_0;      /**< Null vector */
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_1;      /**< Vector filled with 1s */
+extern orxDLLAPI const orxVECTOR orxVECTOR_0;      /**< Null vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_1;      /**< Vector filled with 1s */
 
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_RED;    /**< Red color vector */
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_GREEN;  /**< Green color vector */
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_BLUE;   /**< Blue color vector */
-extern orxDLLAPI orxCONST orxVECTOR orxVECTOR_WHITE;  /**< White color vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_RED;    /**< Red color vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_GREEN;  /**< Green color vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_BLUE;   /**< Blue color vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_WHITE;  /**< White color vector */
 
 #endif /* _orxVECTOR_H_ */
 

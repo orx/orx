@@ -57,7 +57,7 @@ typedef struct __orxFXPOINTER_t                 orxFXPOINTER;
 
 /** FXPointer module setup
  */
-extern orxDLLAPI orxVOID                        orxFXPointer_Setup();
+extern orxDLLAPI void                           orxFXPointer_Setup();
 
 /** Inits the FXPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -66,14 +66,14 @@ extern orxDLLAPI orxSTATUS                      orxFXPointer_Init();
 
 /** Exits from the FXPointer module
  */
-extern orxDLLAPI orxVOID                        orxFXPointer_Exit();
+extern orxDLLAPI void                           orxFXPointer_Exit();
 
 
 /** Creates an empty FXPointer
  * @param[in]   _pstOwner       FX's owner used for event callbacks (usually an orxOBJECT)
  * @return orxFXPOINTER / orxNULL
  */
-extern orxDLLAPI orxFXPOINTER *                 orxFXPointer_Create(orxCONST orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxFXPOINTER *                 orxFXPointer_Create(const orxSTRUCTURE *_pstOwner);
 
 /** Deletes an FXPointer
  * @param[in] _pstFXPointer     Concerned FXPointer
@@ -85,19 +85,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_Delete(orxFXPOINTER
  * @param[in]   _pstFXPointer   Concerned FXPointer
  * @return      orxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxFXPointer_GetOwner(orxCONST orxFXPOINTER *_pstFXPointer);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxFXPointer_GetOwner(const orxFXPOINTER *_pstFXPointer);
 
 /** Enables/disables an FXPointer
  * @param[in]   _pstFXPointer   Concerned FXPointer
  * @param[in]   _bEnable        Enable / disable
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxFXPointer_Enable(orxFXPOINTER *_pstFXPointer, orxBOOL _bEnable);
+extern orxDLLAPI void orxFASTCALL               orxFXPointer_Enable(orxFXPOINTER *_pstFXPointer, orxBOOL _bEnable);
 
 /** Is FXPointer enabled?
  * @param[in]   _pstFXPointer   Concerned FXPointer
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL            orxFXPointer_IsEnabled(orxCONST orxFXPOINTER *_pstFXPointer);
+extern orxDLLAPI orxBOOL orxFASTCALL            orxFXPointer_IsEnabled(const orxFXPOINTER *_pstFXPointer);
 
 
 /** Adds an FX
@@ -127,7 +127,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFX(orxFXPOINT
  * @param[in]   _zFXConfigID  Config ID of the FX to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID);
 
 /** Adds a delayed FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
@@ -135,14 +135,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFXFromConfig(orx
  * @param[in]   _fDelay       Delay time
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID, orxFLOAT _fDelay);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
 /** Removes an FX using using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, orxCONST orxSTRING _zFXConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID);
 
 #endif /* _orxFXPointer_H_ */
 

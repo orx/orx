@@ -90,7 +90,7 @@ struct __orxANIMPOINTER_t
   orxFLOAT                fTime;                      /**< Current Time (Absolute) : 40 */
   orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
   orxU32                  u32CurrentKey;              /**< Current animation key : 48 */
-  orxCONST orxSTRUCTURE  *pstOwner;                   /**< Owner structure : 52 */
+  const orxSTRUCTURE  *pstOwner;                   /**< Owner structure : 52 */
 
   orxPAD(52)
 };
@@ -111,7 +111,7 @@ typedef struct __orxANIMPOINTER_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxANIMPOINTER_STATIC sstAnimPointer;
+static orxANIMPOINTER_STATIC sstAnimPointer;
 
 
 /***************************************************************************
@@ -120,9 +120,9 @@ orxSTATIC orxANIMPOINTER_STATIC sstAnimPointer;
 
 /** Deletes all AnimPointers
  */
-orxSTATIC orxVOID orxAnimPointer_DeleteAll()
+static void orxAnimPointer_DeleteAll()
 {
-  orxREGISTER orxANIMPOINTER *pstAnimPointer;
+  register orxANIMPOINTER *pstAnimPointer;
 
   /* Gets first anim pointer */
   pstAnimPointer = orxANIMPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMPOINTER));
@@ -145,7 +145,7 @@ orxSTATIC orxVOID orxAnimPointer_DeleteAll()
  * @param[in]   _fDT                          Delta time
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fDT)
+static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointer, orxFLOAT _fDT)
 {
   orxHANDLE hNewAnim;
   orxFLOAT  fTimeBackup;
@@ -252,9 +252,9 @@ orxSTATIC orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPoi
  * @param[in]   _pstClockInfo                 Clock info used for time updates
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
+static orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
-  orxREGISTER orxANIMPOINTER *pstAnimPointer;
+  register orxANIMPOINTER *pstAnimPointer;
 
   /* Gets pointer */
   pstAnimPointer = orxANIMPOINTER(_pstStructure);
@@ -273,7 +273,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructur
 
 /** AnimPointer module setup
  */
-orxVOID orxAnimPointer_Setup()
+void orxAnimPointer_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_MEMORY);
@@ -329,7 +329,7 @@ orxSTATUS orxAnimPointer_Init()
 
 /** Exits from the AnimPointer module
  */
-orxVOID orxAnimPointer_Exit()
+void orxAnimPointer_Exit()
 {
   /* Initialized? */
   if(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY)
@@ -353,7 +353,7 @@ orxVOID orxAnimPointer_Exit()
  * @param[in]   _pstAnimSet                   AnimationSet reference
  * @return      Created orxANIMPOINTER / orxNULL
  */
-orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxCONST orxSTRUCTURE *_pstOwner, orxANIMSET *_pstAnimSet)
+orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(const orxSTRUCTURE *_pstOwner, orxANIMSET *_pstAnimSet)
 {
   orxANIMPOINTER *pstAnimPointer = orxNULL;
 
@@ -415,7 +415,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_Create(orxCONST orxSTRUCTURE *_pstOwn
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMPOINTER / orxNULL
  */
-orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRUCTURE *_pstOwner, orxCONST orxSTRING _zConfigID)
+orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *_pstOwner, const orxSTRING _zConfigID)
 {
   orxSTRING       zPreviousSection;
   orxANIMPOINTER *pstResult = orxNULL;
@@ -483,7 +483,7 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(orxCONST orxSTRUCTUR
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      orxSTRUCTURE / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetOwner(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetOwner(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxSTRUCTURE *pstResult;
 
@@ -554,7 +554,7 @@ orxSTATUS orxFASTCALL orxAnimPointer_Delete(orxANIMPOINTER *_pstAnimPointer)
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Referenced orxANIMSET
  */
-orxANIMSET *orxFASTCALL orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxANIMSET *orxFASTCALL orxAnimPointer_GetAnimSet(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxANIMSET *pstAnimSet = orxNULL;
 
@@ -581,7 +581,7 @@ orxANIMSET *orxFASTCALL orxAnimPointer_GetAnimSet(orxCONST orxANIMPOINTER *_pstA
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation handle
  */
-orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnimHandle(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnimHandle(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxHANDLE hAnimHandle = orxHANDLE_UNDEFINED;
 
@@ -610,7 +610,7 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetCurrentAnimHandle(orxCONST orxANIMPOINTE
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation handle
  */
-orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnimHandle(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnimHandle(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxHANDLE hAnimHandle = orxHANDLE_UNDEFINED;
 
@@ -638,7 +638,7 @@ orxHANDLE orxFASTCALL orxAnimPointer_GetTargetAnimHandle(orxCONST orxANIMPOINTER
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current Animation ID
  */
-orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxU32 u32AnimID = orxU32_UNDEFINED;
 
@@ -676,7 +676,7 @@ orxU32 orxFASTCALL orxAnimPointer_GetCurrentAnim(orxCONST orxANIMPOINTER *_pstAn
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Target Animation ID
  */
-orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxU32 u32AnimID = orxU32_UNDEFINED;
 
@@ -714,7 +714,7 @@ orxU32 orxFASTCALL orxAnimPointer_GetTargetAnim(orxCONST orxANIMPOINTER *_pstAni
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current anim data / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(const orxANIMPOINTER *_pstAnimPointer)
 {
   orxHANDLE     hAnimHandle;
   orxSTRUCTURE *pstResult = orxNULL;
@@ -750,9 +750,9 @@ orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(orxCONST orxANIMPOIN
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current time
  */
-orxFLOAT orxFASTCALL orxAnimPointer_GetCurrentTime(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxFLOAT orxFASTCALL orxAnimPointer_GetCurrentTime(const orxANIMPOINTER *_pstAnimPointer)
 {
-  orxREGISTER orxFLOAT fResult = orxFLOAT_0;
+  register orxFLOAT fResult = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
@@ -778,7 +778,7 @@ orxFLOAT orxFASTCALL orxAnimPointer_GetCurrentTime(orxCONST orxANIMPOINTER *_pst
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      AnimPointer frequency
  */
-orxFLOAT orxFASTCALL orxAnimPointer_GetFrequency(orxCONST orxANIMPOINTER *_pstAnimPointer)
+orxFLOAT orxFASTCALL orxAnimPointer_GetFrequency(const orxANIMPOINTER *_pstAnimPointer)
 {
   /* Checks */
   orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);

@@ -81,7 +81,7 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
 
 /** Sound system module setup
  */
-extern orxDLLAPI orxVOID                              orxSoundSystem_Setup();
+extern orxDLLAPI void                                 orxSoundSystem_Setup();
 
 
 /***************************************************************************
@@ -95,35 +95,35 @@ extern orxDLLAPI orxSTATUS                            orxSoundSystem_Init();
 
 /** Exits from the sound system module
  */
-extern orxDLLAPI orxVOID                              orxSoundSystem_Exit();
+extern orxDLLAPI void                                 orxSoundSystem_Exit();
 
 /** Loads a sound sample from file (cannot be played directly)
  * @param[in]   _zFilename                            Name of the file to load as a sample (completely loaded in memory, useful for sound effects)
  * @return orxSOUNDSYSTEM_SAMPLE / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *              orxSoundSystem_LoadSample(orxCONST orxSTRING _zFilename);
+extern orxDLLAPI orxSOUNDSYSTEM_SAMPLE *              orxSoundSystem_LoadSample(const orxSTRING _zFilename);
 
 /** Unloads a sound sample
  * @param[in]   _pstSample                            Concerned sample
  */
-extern orxDLLAPI orxVOID                              orxSoundSystem_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample);
+extern orxDLLAPI void                                 orxSoundSystem_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
 /** Creates a sound from preloaded sample (can be played directly)
  * @param[in]   _pstSample                            Concerned sample
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *               orxSoundSystem_CreateFromSample(orxCONST orxSOUNDSYSTEM_SAMPLE *_pstSample);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *               orxSoundSystem_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
 /** Creates a streamed sound from file (can be played directly)
  * @param[in]   _zFilename                            Name of the file to load as a stream (won't be completely loaded in memory, useful for musics)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *               orxSoundSystem_CreateStreamFromFile(orxCONST orxSTRING _zFilename);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *               orxSoundSystem_CreateStreamFromFile(const orxSTRING _zFilename);
 
 /** Deletes a sound
  * @param[in]   _pstSound                             Concerned sound
  */
-extern orxDLLAPI orxVOID                              orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI void                                 orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Plays a sound
  * @param[in]   _pstSound                             Concerned sound
@@ -162,7 +162,7 @@ extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetPitch(or
  * @param[in]   _pvPosition                           Position to set
  * @return orxSTATUS_SUCCESS / orxSTATSUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition);
 
 /** Sets a sound attenuation
  * @param[in] _pstSound                               Concerned Sound
@@ -189,50 +189,50 @@ extern orxDLLAPI orxSTATUS                            orxSoundSystem_Loop(orxSOU
  * @param[in]   _pstSound                             Concerned sound
  * @return Sound's volume
  */
-extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetVolume(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Gets a sound pitch
  * @param[in]   _pstSound                             Concerned sound
  * @return Sound's pitch
  */
-extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetPitch(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Gets a sound position
  * @param[in]   _pstSound                             Concerned sound
  * @param[out]  _pvPosition                           Position to get
  * @return Sound's position
  */
-extern orxDLLAPI orxVECTOR *                          orxSoundSystem_GetPosition(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *                          orxSoundSystem_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition);
 
 /** Gets a sound attenuation
  * @param[in] _pstSound                               Concerned Sound
  * @return Sound's attenuation
  */
-extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetAttenuation(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Gets a sound reference distance
  * @param[in] _pstSound                               Concerned Sound
  * @return Sound's reference distance
  */
-extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetReferenceDistance(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Is sound looping?
  * @param[in]   _pstSound                             Concerned sound
  * @return orxTRUE if looping, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL                              orxSoundSystem_IsLooping(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxBOOL                              orxSoundSystem_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Gets a sound duration
  * @param[in]   _pstSound                             Concerned sound
  * @return Sound's duration (seconds)
  */
-extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetDuration(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Gets a sound status (play/pause/stop)
  * @param[in]   _pstSound                             Concerned sound
  * @return orxSOUNDSYSTEM_STATUS
  */
-extern orxDLLAPI orxSOUNDSYSTEM_STATUS                orxSoundSystem_GetStatus(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound);
+extern orxDLLAPI orxSOUNDSYSTEM_STATUS                orxSoundSystem_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound);
 
 /** Sets global volume
  * @param[in] _fGlobalVolume                          Global volume to set
@@ -249,7 +249,7 @@ extern orxDLLAPI orxFLOAT                             orxSoundSystem_GetGlobalVo
  * @param[in] _pvPosition                             Desired position
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetListenerPosition(orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS                            orxSoundSystem_SetListenerPosition(const orxVECTOR *_pvPosition);
 
 /** Gets listener position
  * @param[out] _pvPosition                            Listener's position

@@ -109,7 +109,7 @@ typedef struct __orxLINKLIST_t
 
 /** Linklist module setup
  */
-extern orxDLLAPI orxVOID                        orxLinkList_Setup();
+extern orxDLLAPI void                           orxLinkList_Setup();
 
 /** Inits the linklist module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -118,7 +118,7 @@ extern orxDLLAPI orxSTATUS                      orxLinkList_Init();
 
 /** Exits from the linklist module
  */
-extern orxDLLAPI orxVOID                        orxLinkList_Exit();
+extern orxDLLAPI void                           orxLinkList_Exit();
 
 
 /** Cleans a linklist
@@ -170,7 +170,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxLinkList_Remove(orxLINKLIST_N
  * @param[in]   _pstNode                        Concerned node
  * @return orxLINKLIST / orxNULL
  */
-orxSTATIC orxINLINE orxLINKLIST *               orxLinkList_GetList(orxCONST orxLINKLIST_NODE *_pstNode)
+static orxINLINE orxLINKLIST *                  orxLinkList_GetList(const orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -183,7 +183,7 @@ orxSTATIC orxINLINE orxLINKLIST *               orxLinkList_GetList(orxCONST orx
  * @param[in]   _pstNode                        Concerned node
  * @return orxLINKLIST_NODE / orxNULL
  */
-orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetPrevious(orxCONST orxLINKLIST_NODE *_pstNode)
+static orxINLINE orxLINKLIST_NODE *             orxLinkList_GetPrevious(const orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -196,7 +196,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetPrevious(orxCONST
  * @param[in]   _pstNode                        Concerned node
  * @return orxLINKLIST_NODE / orxNULL
  */
-orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetNext(orxCONST orxLINKLIST_NODE *_pstNode)
+static orxINLINE orxLINKLIST_NODE *             orxLinkList_GetNext(const orxLINKLIST_NODE *_pstNode)
 {
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -210,7 +210,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetNext(orxCONST orx
  * @param[in]   _pstList                        Concerned list
  * @return orxLINKLIST_NODE / orxNULL
  */
-orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetFirst(orxCONST orxLINKLIST *_pstList)
+static orxINLINE orxLINKLIST_NODE *             orxLinkList_GetFirst(const orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -223,7 +223,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetFirst(orxCONST or
  * @param[in]   _pstList                        Concerned list
  * @return orxLINKLIST_NODE / orxNULL
  */
-orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetLast(orxCONST orxLINKLIST *_pstList)
+static orxINLINE orxLINKLIST_NODE *             orxLinkList_GetLast(const orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -236,7 +236,7 @@ orxSTATIC orxINLINE orxLINKLIST_NODE *          orxLinkList_GetLast(orxCONST orx
  * @param[in]   _pstList                        Concerned list
  * @return Number of nodes in list
  */
-orxSTATIC orxINLINE orxU32                      orxLinkList_GetCounter(orxCONST orxLINKLIST *_pstList)
+static orxINLINE orxU32                         orxLinkList_GetCounter(const orxLINKLIST *_pstList)
 {
   /* Checks */
   orxASSERT(_pstList != orxNULL);

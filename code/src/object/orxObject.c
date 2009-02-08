@@ -146,7 +146,7 @@ struct __orxOBJECT_t
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 72 */
   orxCOLOR          stColor;                    /**< Object color : 88 */
   orxVECTOR         vSpeed;                     /**< Object speed : 100 */
-  orxVOID          *pUserData;                  /**< User data : 104 */
+  void          *pUserData;                  /**< User data : 104 */
   orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 108 */
   orxFLOAT          fAngularVelocity;           /**< Angular velocity : 112 */
   orxFLOAT          fLifeTime;                  /**< Life time : 116 */
@@ -172,7 +172,7 @@ typedef struct __orxOBJECT_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxOBJECT_STATIC sstObject;
+static orxOBJECT_STATIC sstObject;
 
 
 /***************************************************************************
@@ -181,7 +181,7 @@ orxSTATIC orxOBJECT_STATIC sstObject;
 
 /** Deletes all the objects
  */
-orxSTATIC orxINLINE orxVOID orxObject_DeleteAll()
+static orxINLINE void orxObject_DeleteAll()
 {
   orxOBJECT *pstObject;
 
@@ -205,7 +205,7 @@ orxSTATIC orxINLINE orxVOID orxObject_DeleteAll()
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  * @param[in] _pstContext         User defined context
  */
-orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL    orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxOBJECT *pstObject;
 
@@ -304,7 +304,7 @@ orxVOID orxFASTCALL orxObject_UpdateAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
 
 /** Object module setup
  */
-orxVOID orxObject_Setup()
+void orxObject_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_MEMORY);
@@ -381,7 +381,7 @@ orxSTATUS orxObject_Init()
 
 /** Exits from the object module
  */
-orxVOID orxObject_Exit()
+void orxObject_Exit()
 {
   /* Initialized? */
   if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY)
@@ -504,7 +504,7 @@ orxSTATUS orxFASTCALL orxObject_Delete(orxOBJECT *_pstObject)
  * @param[in]   _zConfigID            Config ID
  * @ return orxOBJECT / orxNULL
  */
-orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxOBJECT  *pstResult;
   orxSTRING   zPreviousSection;
@@ -983,7 +983,7 @@ orxSTATUS orxFASTCALL orxObject_LinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _eStructureID   ID of structure to unlink
  */
-orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
+void orxFASTCALL    orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1076,7 +1076,7 @@ orxVOID orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
  * @param[in]   _eStructureID   ID of the structure to get
  * @return orxSTRUCTURE / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(orxCONST orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
+orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(const orxOBJECT *_pstObject, orxSTRUCTURE_ID _eStructureID)
 {
   orxSTRUCTURE *pstStructure = orxNULL;
 
@@ -1099,7 +1099,7 @@ orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(orxCONST orxOBJECT *_pstObject
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bEnable      enable / disable
  */
-orxVOID orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
+void orxFASTCALL    orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1124,7 +1124,7 @@ orxVOID orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
  * @param[in]   _pstObject    Concerned object
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject)
+orxBOOL orxFASTCALL orxObject_IsEnabled(const orxOBJECT *_pstObject)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1138,7 +1138,7 @@ orxBOOL orxFASTCALL orxObject_IsEnabled(orxCONST orxOBJECT *_pstObject)
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bRendered    Rendered or not this frame
  */
-orxVOID orxFASTCALL orxObject_SetRendered(orxOBJECT *_pstObject, orxBOOL _bRendered)
+void orxFASTCALL    orxObject_SetRendered(orxOBJECT *_pstObject, orxBOOL _bRendered)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1163,7 +1163,7 @@ orxVOID orxFASTCALL orxObject_SetRendered(orxOBJECT *_pstObject, orxBOOL _bRende
  * @param[in]   _pstObject    Concerned object
  * @return      orxTRUE if rendered, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxObject_IsRendered(orxCONST orxOBJECT *_pstObject)
+orxBOOL orxFASTCALL orxObject_IsRendered(const orxOBJECT *_pstObject)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1177,7 +1177,7 @@ orxBOOL orxFASTCALL orxObject_IsRendered(orxCONST orxOBJECT *_pstObject)
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pUserData    User data to store / orxNULL
  */
-orxVOID orxFASTCALL orxObject_SetUserData(orxOBJECT *_pstObject, orxVOID *_pUserData)
+void orxFASTCALL    orxObject_SetUserData(orxOBJECT *_pstObject, void *_pUserData)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1193,9 +1193,9 @@ orxVOID orxFASTCALL orxObject_SetUserData(orxOBJECT *_pstObject, orxVOID *_pUser
  * @param[in]   _pstObject    Concerned object
  * @return      Storeduser data / orxNULL
  */
-orxVOID *orxFASTCALL orxObject_GetUserData(orxCONST orxOBJECT *_pstObject)
+void *orxFASTCALL orxObject_GetUserData(const orxOBJECT *_pstObject)
 {
-  orxVOID *pResult;
+  void *pResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1212,7 +1212,7 @@ orxVOID *orxFASTCALL orxObject_GetUserData(orxCONST orxOBJECT *_pstObject)
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pOwner       Owner to set / orxNULL
  */
-orxVOID orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, orxVOID *_pOwner)
+void orxFASTCALL    orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1229,9 +1229,9 @@ orxVOID orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, orxVOID *_pOwner)
  * @param[in]   _pstObject    Concerned object
  * @return      Owner / orxNULL
  */
-orxVOID *orxFASTCALL orxObject_GetOwner(orxOBJECT *_pstObject)
+void *orxFASTCALL orxObject_GetOwner(orxOBJECT *_pstObject)
 {
-  orxVOID *pResult;
+  void *pResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -1292,7 +1292,7 @@ orxSTATUS orxFASTCALL orxObject_Flip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orx
  * @param[in]   _pvPivot        Object pivot
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPivot)
+orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR *_pvPivot)
 {
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -1329,7 +1329,7 @@ orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, orxCONST orxVECT
  * @param[in]   _pvPosition     Object position
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxObject_SetPosition(orxOBJECT *_pstObject, const orxVECTOR *_pvPosition)
 {
   orxFRAME *pstFrame;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1426,7 +1426,7 @@ orxSTATUS orxFASTCALL orxObject_SetRotation(orxOBJECT *_pstObject, orxFLOAT _fRo
  * @param[in]   _pvScale        Object scale vector
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvScale)
+orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, const orxVECTOR *_pvScale)
 {
   orxFRAME *pstFrame;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1475,7 +1475,7 @@ orxSTATUS orxFASTCALL orxObject_SetScale(orxOBJECT *_pstObject, orxCONST orxVECT
  * @param[out]  _pvPivot        Object pivot
  * @return      orxVECTOR / orxNULL
  */
-orxVECTOR *orxFASTCALL orxObject_GetPivot(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPivot)
+orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR *_pvPivot)
 {
   orxGRAPHIC  *pstGraphic;
   orxVECTOR   *pvResult;
@@ -1512,7 +1512,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(orxCONST orxOBJECT *_pstObject, orxVEC
  * @param[out]  _pvPosition     Object position
  * @return      orxVECTOR / orxNULL
  */
-orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxObject_GetPosition(const orxOBJECT *_pstObject, orxVECTOR *_pvPosition)
 {
   orxFRAME  *pstFrame;
   orxVECTOR *pvResult;
@@ -1549,7 +1549,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPosition(orxCONST orxOBJECT *_pstObject, orx
  * @param[out]  _pvPosition     Object world position
  * @return      orxVECTOR / orxNULL
  */
-orxVECTOR *orxFASTCALL orxObject_GetWorldPosition(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxObject_GetWorldPosition(const orxOBJECT *_pstObject, orxVECTOR *_pvPosition)
 {
   orxFRAME  *pstFrame;
   orxVECTOR *pvResult;
@@ -1585,7 +1585,7 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldPosition(orxCONST orxOBJECT *_pstObject
  * @param[in]   _pstObject      Concerned object
  * @return      orxFLOAT
  */
-orxFLOAT orxFASTCALL orxObject_GetRotation(orxCONST orxOBJECT *_pstObject)
+orxFLOAT orxFASTCALL orxObject_GetRotation(const orxOBJECT *_pstObject)
 {
   orxFRAME *pstFrame;
   orxFLOAT fResult;
@@ -1620,7 +1620,7 @@ orxFLOAT orxFASTCALL orxObject_GetRotation(orxCONST orxOBJECT *_pstObject)
  * @param[in]   _pstObject      Concerned object
  * @return      orxFLOAT
  */
-orxFLOAT orxFASTCALL orxObject_GetWorldRotation(orxCONST orxOBJECT *_pstObject)
+orxFLOAT orxFASTCALL orxObject_GetWorldRotation(const orxOBJECT *_pstObject)
 {
   orxFRAME *pstFrame;
   orxFLOAT fResult;
@@ -1656,7 +1656,7 @@ orxFLOAT orxFASTCALL orxObject_GetWorldRotation(orxCONST orxOBJECT *_pstObject)
  * @param[out]  _pvScale        Object scale vector
  * @return      Scale vector
  */
-orxVECTOR *orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvScale)
+orxVECTOR *orxFASTCALL orxObject_GetScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale)
 {
   orxFRAME *pstFrame;
   orxVECTOR *pvResult;
@@ -1703,7 +1703,7 @@ orxVECTOR *orxFASTCALL orxObject_GetScale(orxCONST orxOBJECT *_pstObject, orxVEC
  * @param[out]  _pvScale        Object world scale
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxVECTOR *orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvScale)
+orxVECTOR *orxFASTCALL orxObject_GetWorldScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale)
 {
   orxFRAME  *pstFrame;
   orxVECTOR *pvResult;
@@ -1743,7 +1743,7 @@ orxVECTOR *orxFASTCALL orxObject_GetWorldScale(orxCONST orxOBJECT *_pstObject, o
  * @param[in]   _pParent        Parent structure to set (object, spawner, camera or frame) / orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pParent)
+orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent)
 {
   orxFRAME   *pstFrame;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -1821,7 +1821,7 @@ orxSTATUS orxFASTCALL orxObject_SetParent(orxOBJECT *_pstObject, orxVOID *_pPare
  * @param[out]  _pvSize         Object's size
  * @return      orxVECTOR / orxNULL
  */
-orxVECTOR *orxFASTCALL orxObject_GetSize(orxCONST orxOBJECT *_pstObject, orxVECTOR *_pvSize)
+orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR *_pvSize)
 {
   orxGRAPHIC *pstGraphic;
   orxVECTOR  *pvResult;
@@ -1936,7 +1936,7 @@ orxSTATUS orxFASTCALL orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-orxSTATUS orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, orxCONST orxSTRING _zAnimName)
+orxSTATUS orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxBOOL         bResult;
@@ -1970,7 +1970,7 @@ orxSTATUS orxFASTCALL orxObject_IsCurrentAnim(orxOBJECT *_pstObject, orxCONST or
  * @param[in]   _zAnimName      Animation name (config's one) to test
  * @return      orxTRUE / orxFALSE
  */
-orxSTATUS orxFASTCALL orxObject_IsTargetAnim(orxOBJECT *_pstObject, orxCONST orxSTRING _zAnimName)
+orxSTATUS orxFASTCALL orxObject_IsTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxBOOL         bResult;
@@ -2004,7 +2004,7 @@ orxSTATUS orxFASTCALL orxObject_IsTargetAnim(orxOBJECT *_pstObject, orxCONST orx
  * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxCONST orxSTRING _zAnimName)
+orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxSTATUS       eResult;
@@ -2046,7 +2046,7 @@ orxSTATUS orxFASTCALL orxObject_SetCurrentAnim(orxOBJECT *_pstObject, orxCONST o
  * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxCONST orxSTRING _zAnimName)
+orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName)
 {
   orxANIMPOINTER *pstAnimPointer;
   orxSTATUS       eResult;
@@ -2088,7 +2088,7 @@ orxSTATUS orxFASTCALL orxObject_SetTargetAnim(orxOBJECT *_pstObject, orxCONST or
  * @param[in]   _pvSpeed        Speed to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvSpeed)
+orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, const orxVECTOR *_pvSpeed)
 {
   orxBODY  *pstBody;
   orxSTATUS eResult;
@@ -2125,7 +2125,7 @@ orxSTATUS orxFASTCALL orxObject_SetSpeed(orxOBJECT *_pstObject, orxCONST orxVECT
  * @param[in]   _pvSpeed        Relative speed to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetRelativeSpeed(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvRelativeSpeed)
+orxSTATUS orxFASTCALL orxObject_SetRelativeSpeed(orxOBJECT *_pstObject, const orxVECTOR *_pvRelativeSpeed)
 {
   orxVECTOR vSpeed, vObjectScale;
   orxSTATUS eResult;
@@ -2320,7 +2320,7 @@ orxVECTOR *orxFASTCALL orxObject_GetMassCenter(orxOBJECT *_pstObject, orxVECTOR 
  * @param[in]   _zString        String to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetTextString(orxOBJECT *_pstObject, orxCONST orxSTRING _zString)
+orxSTATUS orxFASTCALL orxObject_SetTextString(orxOBJECT *_pstObject, const orxSTRING _zString)
 {
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_FAILURE;
@@ -2401,7 +2401,7 @@ orxSTATUS orxFASTCALL orxObject_ApplyTorque(orxOBJECT *_pstObject, orxFLOAT _fTo
  * @param[in]   _pvPoint        Point (world coordinates) where the force will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvForce, orxCONST orxVECTOR *_pvPoint)
+orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
 {
   orxBODY  *pstBody;
   orxSTATUS eResult;
@@ -2439,7 +2439,7 @@ orxSTATUS orxFASTCALL orxObject_ApplyForce(orxOBJECT *_pstObject, orxCONST orxVE
  * @param[in]   _pvPoint        Point (world coordinates) where the impulse will be applied, if orxNULL, center of mass will be used
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, orxCONST orxVECTOR *_pvImpulse, orxCONST orxVECTOR *_pvPoint)
+orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
 {
   orxBODY  *pstBody;
   orxSTATUS eResult;
@@ -2476,7 +2476,7 @@ orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, orxCONST orx
  * @param[in]   _pstBoundingBox Bounding box result
  * @return      Bounding box / orxNULL
  */
-orxOBOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox)
+orxOBOX *orxFASTCALL orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOBOX *_pstBoundingBox)
 {
   orxVECTOR   vSize;
   orxGRAPHIC *pstGraphic;
@@ -2529,7 +2529,7 @@ orxOBOX *orxFASTCALL orxObject_GetBoundingBox(orxCONST orxOBJECT *_pstObject, or
  * @param[in]   _pstColor       Color to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, orxCONST orxCOLOR *_pstColor)
+orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2574,7 +2574,7 @@ orxSTATUS orxFASTCALL orxObject_ClearColor(orxOBJECT *_pstObject)
  * @param[in]   _pstObject      Concerned object
  * @return      orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxObject_HasColor(orxCONST orxOBJECT *_pstObject)
+orxBOOL orxFASTCALL orxObject_HasColor(const orxOBJECT *_pstObject)
 {
   orxBOOL bResult;
 
@@ -2594,7 +2594,7 @@ orxBOOL orxFASTCALL orxObject_HasColor(orxCONST orxOBJECT *_pstObject)
  * @param[out]  _pstColor       Object's color
  * @return      orxCOLOR / orxNULL
  */
-orxCOLOR *orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject, orxCOLOR *_pstColor)
+orxCOLOR *orxFASTCALL orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *_pstColor)
 {
   orxCOLOR *pstResult;
 
@@ -2630,7 +2630,7 @@ orxCOLOR *orxFASTCALL orxObject_GetColor(orxCONST orxOBJECT *_pstObject, orxCOLO
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID)
+orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -2656,7 +2656,7 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, orxCONST orxSTRING 
  * @param[in]   _fDelay         Delay time
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
 {
   orxFXPOINTER *pstFXPointer;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
@@ -2712,7 +2712,7 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, orxCONST orx
  * @param[in]   _zFXConfigID    Config ID of the FX to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, orxCONST orxSTRING _zFXConfigID)
+orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID)
 {
   orxFXPOINTER *pstFXPointer;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
@@ -2740,7 +2740,7 @@ orxSTATUS orxFASTCALL orxObject_RemoveFX(orxOBJECT *_pstObject, orxCONST orxSTRI
  * @param[in]   _zSoundConfigID Config ID of the sound to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, orxCONST orxSTRING _zSoundConfigID)
+orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING _zSoundConfigID)
 {
   orxSOUNDPOINTER  *pstSoundPointer;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
@@ -2795,7 +2795,7 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, orxCONST orxSTRI
  * @param[in]   _zSoundConfigID Config ID of the sound to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_RemoveSound(orxOBJECT *_pstObject, orxCONST orxSTRING _zSoundConfigID)
+orxSTATUS orxFASTCALL orxObject_RemoveSound(orxOBJECT *_pstObject, const orxSTRING _zSoundConfigID)
 {
   orxSOUNDPOINTER  *pstSoundPointer;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
@@ -2822,7 +2822,7 @@ orxSTATUS orxFASTCALL orxObject_RemoveSound(orxOBJECT *_pstObject, orxCONST orxS
  * @param[in]   _pstObject      Concerned object
  * @return      orxSOUND / orxNULL
  */
-orxSOUND *orxFASTCALL orxObject_GetLastAddedSound(orxCONST orxOBJECT *_pstObject)
+orxSOUND *orxFASTCALL orxObject_GetLastAddedSound(const orxOBJECT *_pstObject)
 {
   orxSOUNDPOINTER  *pstSoundPointer;
   orxSOUND         *pstResult = orxNULL;
@@ -2849,7 +2849,7 @@ orxSOUND *orxFASTCALL orxObject_GetLastAddedSound(orxCONST orxOBJECT *_pstObject
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-orxSTRING orxFASTCALL orxObject_GetName(orxCONST orxOBJECT *_pstObject)
+const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject)
 {
   orxSTRING zResult;
 
@@ -2868,7 +2868,7 @@ orxSTRING orxFASTCALL orxObject_GetName(orxCONST orxOBJECT *_pstObject)
  * @param[in]   _pstCheckBox    Box to check intersection with
  * @return      orxBANK / orxNULL
  */
-orxBANK *orxFASTCALL orxObject_CreateNeighborList(orxCONST orxOBOX *_pstCheckBox)
+orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox)
 {
   orxOBOX    stObjectBox;
   orxOBJECT  *pstObject;
@@ -2926,7 +2926,7 @@ orxBANK *orxFASTCALL orxObject_CreateNeighborList(orxCONST orxOBOX *_pstCheckBox
 /** Deletes an object list created with orxObject_CreateNeigborList
  * @param[in]   _astObjectList  Concerned object list
  */
-orxVOID orxFASTCALL orxObject_DeleteNeighborList(orxBANK *_pstObjectList)
+void orxFASTCALL    orxObject_DeleteNeighborList(orxBANK *_pstObjectList)
 {
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -2993,7 +2993,7 @@ orxSTATUS orxFASTCALL orxObject_SetSmoothing(orxOBJECT *_pstObject, orxDISPLAY_S
  * @param[in]   _pstObject     Concerned object
  * @return Smoothing type (enabled, default or none)
  */
-orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(orxCONST orxOBJECT *_pstObject)
+orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObject)
 {
   orxDISPLAY_SMOOTHING eResult;
 
@@ -3072,7 +3072,7 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
  * @param[in]   _pstObject     Concerned object
  * @return Blend mode (alpha, multiply, add or none)
  */
-orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(orxCONST orxOBJECT *_pstObject)
+orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const orxOBJECT *_pstObject)
 {
   orxDISPLAY_BLEND_MODE eResult;
 
@@ -3156,7 +3156,7 @@ orxSTATUS orxFASTCALL orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLi
  * @param[in]   _pstObject      Concerned object
  * @return      Lifetime / negative value if none
  */
-orxFLOAT orxFASTCALL orxObject_GetLifeTime(orxCONST orxOBJECT *_pstObject)
+orxFLOAT orxFASTCALL orxObject_GetLifeTime(const orxOBJECT *_pstObject)
 {
   orxFLOAT fResult;
 
@@ -3175,7 +3175,7 @@ orxFLOAT orxFASTCALL orxObject_GetLifeTime(orxCONST orxOBJECT *_pstObject)
  * @param[in]   _pvPosition     Position to pick from
  * @return      orxOBJECT / orxNULL
  */
-orxOBJECT *orxFASTCALL orxObject_Pick(orxCONST orxVECTOR *_pvPosition)
+orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition)
 {
   orxFLOAT    fSelectedZ;
   orxOBJECT  *pstResult = orxNULL, *pstObject;

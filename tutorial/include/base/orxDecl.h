@@ -125,15 +125,8 @@
   /** The function will be imported (exe compilation) */
   #define orxDLLIMPORT          __declspec(dllimport)
 
-  /** The function or the object will be constant. */
-  #define orxCONST              const
-  /** The function or the object will be static. */
-  #define orxSTATIC             static
-  /** The function or the object will use registers as far as possible. */
-  #define orxREGISTER           register
-
   /** The null adress. */
-  #define orxNULL               (0)
+  #define orxNULL               ((void *)0)
 
   /* *** Compiler specific *** */
   /** The function intend to be inlined. */
@@ -174,14 +167,8 @@
     /** The function will be imported (exe compilation) */
     #define orxDLLIMPORT
 
-    /** The function or the object will be constant. */
-    #define orxCONST            const
-    /** The function or the object will be static. */
-    #define orxSTATIC           static
     /** The function intend to be inlined. */
     #define orxINLINE           inline
-    /** The function or the object will use registers as far as possible. */
-    #define orxREGISTER         register
 
     /** The null adress. */
     #define orxNULL             ((void *)0)

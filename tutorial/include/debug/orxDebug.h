@@ -84,7 +84,7 @@
                       |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                       \
                       |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                 \
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
-    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
     _orxDebug_RestoreFlags();                                                                               \
   } while(orxFALSE)
 
@@ -100,7 +100,7 @@
                        |orxDEBUG_KU32_STATIC_FLAG_TYPE                                                      \
                        |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP,                                                \
                         orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
+      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
       _orxDebug_RestoreFlags();                                                                             \
     } while(orxFALSE)
 
@@ -114,10 +114,10 @@
 
   /* Debug print, compiler specific */
   #ifdef __orxGCC__
-    #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
+    #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__)
   #else /* __orxGCC__ */
     #ifdef __orxMSVC__
-      #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
+      #define orxDEBUG_PRINT(LEVEL, STRING, ...)  _orxDebug_Log(LEVEL, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__)
     #endif /* __orxMSVC__ */
   #endif /* __orcGCC__ */
 
@@ -218,7 +218,7 @@ typedef enum __orxDEBUG_LEVEL_t
 extern orxDLLAPI orxSTATUS                    _orxDebug_Init();
 
 /** Exits from the debug module */
-extern orxDLLAPI orxVOID                      _orxDebug_Exit();
+extern orxDLLAPI void                         _orxDebug_Exit();
 
 /** Logs given debug text
  * @param[in]   _eLevel                       Debug level associated with this output
@@ -227,19 +227,19 @@ extern orxDLLAPI orxVOID                      _orxDebug_Exit();
  * @param[in]   _u32Line                      Calling file line
  * @param[in]   _zFormat                      Printf formatted text
  */
-extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_Log(orxDEBUG_LEVEL _eLevel, orxCONST orxSTRING _zFunction, orxCONST orxSTRING _zFile, orxU32 _u32Line, orxCONST orxSTRING _zFormat, ...);
+extern orxDLLAPI void orxFASTCALL             _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...);
 
 /** Backups current debug flags */
-extern orxDLLAPI orxVOID                      _orxDebug_BackupFlags();
+extern orxDLLAPI void                         _orxDebug_BackupFlags();
 
 /** Restores last backuped flags */
-extern orxDLLAPI orxVOID                      _orxDebug_RestoreFlags();
+extern orxDLLAPI void                         _orxDebug_RestoreFlags();
 
 /** Sets current debug flags */
-extern orxDLLAPI orxVOID orxFASTCALL          _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove);
+extern orxDLLAPI void orxFASTCALL             _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove);
 
 /** Software break function */
-extern orxDLLAPI orxVOID                      _orxDebug_Break();
+extern orxDLLAPI void                         _orxDebug_Break();
 
 #endif /* __orxDEBUG__ */
 

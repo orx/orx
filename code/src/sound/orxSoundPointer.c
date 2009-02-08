@@ -85,7 +85,7 @@ struct __orxSOUNDPOINTER_t
   orxSTRUCTURE            stStructure;                                      /**< Public structure, first structure member : 16 */
   orxSOUNDPOINTER_HOLDER  astSoundList[orxSOUNDPOINTER_KU32_SOUND_NUMBER];  /**< Sound list : 48 */
   orxU32                  u32LastAddedIndex;                                /**< Last added sound index : 52 */
-  orxCONST orxSTRUCTURE  *pstOwner;                                         /**< Owner structure : 56 */
+  const orxSTRUCTURE  *pstOwner;                                         /**< Owner structure : 56 */
 
   /* Padding */
   orxPAD(56)
@@ -106,7 +106,7 @@ typedef struct __orxSOUNDPOINTER_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxSOUNDPOINTER_STATIC sstSoundPointer;
+static orxSOUNDPOINTER_STATIC sstSoundPointer;
 
 
 /***************************************************************************
@@ -115,7 +115,7 @@ orxSTATIC orxSOUNDPOINTER_STATIC sstSoundPointer;
 
 /** Deletes all the SoundPointers
  */
-orxSTATIC orxINLINE orxVOID orxSoundPointer_DeleteAll()
+static orxINLINE void orxSoundPointer_DeleteAll()
 {
   orxSOUNDPOINTER *pstSoundPointer;
 
@@ -141,7 +141,7 @@ orxSTATIC orxINLINE orxVOID orxSoundPointer_DeleteAll()
  * @param[in]   _pstClockInfo                 Clock info used for time updates
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)
+static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
 {
   orxSOUNDPOINTER *pstSoundPointer;
   orxOBJECT    *pstObject;
@@ -211,7 +211,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructu
 
 /** SoundPointer module setup
  */
-orxVOID orxSoundPointer_Setup()
+void orxSoundPointer_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_MEMORY);
@@ -266,7 +266,7 @@ orxSTATUS orxSoundPointer_Init()
 
 /** Exits from the SoundPointer module
  */
-orxVOID orxSoundPointer_Exit()
+void orxSoundPointer_Exit()
 {
   /* Initialized? */
   if(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY)
@@ -293,7 +293,7 @@ orxVOID orxSoundPointer_Exit()
  * @param[in]   _pstOwner           Sound's owner used for event callbacks (usually an orxOBJECT)
  * @return      Created orxSOUNDPOINTER / orxNULL
  */
-orxSOUNDPOINTER *orxSoundPointer_Create(orxCONST orxSTRUCTURE *_pstOwner)
+orxSOUNDPOINTER *orxSoundPointer_Create(const orxSTRUCTURE *_pstOwner)
 {
   orxSOUNDPOINTER *pstResult;
 
@@ -381,7 +381,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_Delete(orxSOUNDPOINTER *_pstSoundPointer)
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @return      orxSTRUCTURE / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxSoundPointer_GetOwner(orxCONST orxSOUNDPOINTER *_pstSoundPointer)
+orxSTRUCTURE *orxFASTCALL orxSoundPointer_GetOwner(const orxSOUNDPOINTER *_pstSoundPointer)
 {
   orxSTRUCTURE *pstResult;
 
@@ -400,7 +400,7 @@ orxSTRUCTURE *orxFASTCALL orxSoundPointer_GetOwner(orxCONST orxSOUNDPOINTER *_ps
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @param[in]   _bEnable        Enable / disable
  */
-orxVOID orxFASTCALL orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBOOL _bEnable)
+void orxFASTCALL    orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
@@ -425,7 +425,7 @@ orxVOID orxFASTCALL orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, or
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxSoundPointer_IsEnabled(orxCONST orxSOUNDPOINTER *_pstSoundPointer)
+orxBOOL orxFASTCALL orxSoundPointer_IsEnabled(const orxSOUNDPOINTER *_pstSoundPointer)
 {
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
@@ -563,7 +563,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSound(orxSOUNDPOINTER *_pstSoundPoin
  * @param[in]   _zSoundConfigID     Config ID of the sound to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, orxCONST orxSTRING _zSoundConfigID)
+orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zSoundConfigID)
 {
   orxU32    u32Index;
   orxSTATUS eResult;
@@ -683,7 +683,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
  * @param[in]   _zSoundConfigID     Config ID of the sound to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, orxCONST orxSTRING _zSoundConfigID)
+orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zSoundConfigID)
 {
   orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -742,7 +742,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @return      orxSOUND / orxNULL
  */
-orxSOUND *orxFASTCALL orxSoundPointer_GetLastAddedSound(orxCONST orxSOUNDPOINTER *_pstSoundPointer)
+orxSOUND *orxFASTCALL orxSoundPointer_GetLastAddedSound(const orxSOUNDPOINTER *_pstSoundPointer)
 {
   orxSOUND *pstResult;
 

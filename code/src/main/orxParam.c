@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -60,7 +60,7 @@
     _orxDebug_BackupFlags();                                                                                \
     _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                   \
                        orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                                 \
-    _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
+    _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__); \
     _orxDebug_RestoreFlags();                                                                               \
   } while(orxFALSE)
 
@@ -73,7 +73,7 @@
       _orxDebug_BackupFlags();                                                                              \
       _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                 \
                          orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                               \
-      _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (orxCONST orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
+      _orxDebug_Log(orxDEBUG_LEVEL_PARAM, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__); \
       _orxDebug_RestoreFlags();                                                                             \
     } while(orxFALSE)
 
@@ -84,7 +84,7 @@
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
- 
+
 typedef struct __orxPARAM_INFO_t
 {
   orxPARAM  stParam;              /* Param values */
@@ -108,7 +108,7 @@ typedef struct __orxPARAM_STATIC_t
  * Module global variable                                                  *
  ***************************************************************************/
 
-orxSTATIC orxPARAM_STATIC sstParam;
+static orxPARAM_STATIC sstParam;
 
 /***************************************************************************
  * Private functions                                                       *
@@ -137,7 +137,7 @@ orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azParams[])
+orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _azParams[])
 {
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
@@ -177,7 +177,7 @@ orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azPa
       orxPARAM_INFO *pstParamInfo;  /* Stored parameter value */
 
       /* Create the full CRC Value */
-      u32Name = orxString_ContinueCRC((orxCONST orxSTRING)_azParams[u32Index], u32LongPrefixCRC);
+      u32Name = orxString_ContinueCRC((const orxSTRING)_azParams[u32Index], u32LongPrefixCRC);
 
       /* Get the parameter info */
       pstParamInfo = (orxPARAM_INFO *)orxParam_Get(u32Name);
@@ -207,9 +207,9 @@ orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, orxCONST orxSTRING _azPa
 /** Process registered params
  * @return Returns the process status
  */
-orxSTATIC orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
+static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
 {
-  orxU32      i, u32RemainingNumber;
+  orxU32      i, u32RemainingNumber = 0;
   orxBOOL     bUseConfig = orxFALSE;
   orxSTRING  *azParamList = orxNULL;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -375,7 +375,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
  * @param[in] _azParams       Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxParam_ProcessConfigParams(orxU32 _u32ParamCount, orxCONST orxSTRING _azParams[])
+orxSTATUS orxFASTCALL orxParam_ProcessConfigParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxU32    i;
@@ -402,7 +402,7 @@ orxSTATUS orxFASTCALL orxParam_ProcessConfigParams(orxU32 _u32ParamCount, orxCON
 
  returns: nothing
  ***************************************************************************/
-orxVOID orxParam_Setup()
+void orxParam_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_MEMORY);
@@ -496,7 +496,7 @@ orxSTATUS orxParam_Init()
 
 /** Exit Param module
  */
-orxVOID orxParam_Exit()
+void orxParam_Exit()
 {
   /* Module initialized ? */
   if((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY)
@@ -512,7 +512,7 @@ orxVOID orxParam_Exit()
  * @param[in] _pstParam Informations about the option to register
  * @return Returns the status of the registration
  */
-orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
+orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
 {
   orxPARAM_INFO *pstParamInfo;       /* Parameter stored in the bank */
   orxSTATUS eResult = orxSTATUS_FAILURE; /* Result of the operation */
@@ -532,7 +532,7 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
 
     /* Creates CRC for the Short Name */
     u32ShortName = orxString_ToCRC(orxPARAM_KZ_MODULE_SHORT_PREFIX);
-    u32ShortName = orxString_ContinueCRC((orxCONST orxSTRING)_pstParam->zShortName, u32ShortName);
+    u32ShortName = orxString_ContinueCRC((const orxSTRING)_pstParam->zShortName, u32ShortName);
 
     /* Check if options with the same name don't have already been registered */
     if(orxParam_Get(u32ShortName) == orxNULL)
@@ -548,7 +548,7 @@ orxSTATUS orxFASTCALL orxParam_Register(orxCONST orxPARAM *_pstParam)
 
         /* Create CRC For the long name */
         u32LongName = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
-        u32LongName = orxString_ContinueCRC((orxCONST orxSTRING)_pstParam->zLongName, u32LongName);
+        u32LongName = orxString_ContinueCRC((const orxSTRING)_pstParam->zLongName, u32LongName);
 
         /* Found ? */
         if(orxParam_Get(u32LongName) == orxNULL)

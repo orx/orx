@@ -68,7 +68,7 @@ typedef struct __orxMAIN_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxMAIN_STATIC sstMain;
+static orxMAIN_STATIC sstMain;
 
 
 /***************************************************************************
@@ -79,7 +79,7 @@ orxSTATIC orxMAIN_STATIC sstMain;
  * @param[in]   _pstEvent                     Sent event
  * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
  */
-orxSTATIC orxSTATUS orxFASTCALL orxMain_EventHandler(orxCONST orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxMain_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -173,7 +173,7 @@ orxSTATUS orxMain_Init()
 
 /** Exits from main module
  */
-orxVOID orxMain_Exit()
+void orxMain_Exit()
 {
   /* Module initialized ? */
   if(orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
@@ -195,7 +195,7 @@ orxSTATUS orxMain_Run()
   /* Is keyboard module initialized? */
   if(orxModule_IsInitialized(orxMODULE_ID_KEYBOARD) != orxFALSE)
   {
-    orxSTATIC orxBOOL sbBackSpacePressed = 0, sbF11Pressed;
+    static orxBOOL sbBackSpacePressed = 0, sbF11Pressed;
 
     /* Is escape pressed? */
     if(orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY_ESCAPE) != orxFALSE)

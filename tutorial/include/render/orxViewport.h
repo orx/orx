@@ -62,7 +62,7 @@ typedef struct __orxVIEWPORT_t                orxVIEWPORT;
 
 /** Viewport module setup
  */
-extern orxDLLAPI orxVOID                      orxViewport_Setup();
+extern orxDLLAPI void                         orxViewport_Setup();
 
 /** Inits the viewport module
  */
@@ -70,7 +70,7 @@ extern orxDLLAPI orxSTATUS                    orxViewport_Init();
 
 /** Exits from the viewport module
  */
-extern orxDLLAPI orxVOID                      orxViewport_Exit();
+extern orxDLLAPI void                         orxViewport_Exit();
 
 
 /** Creates a viewport
@@ -82,7 +82,7 @@ extern orxDLLAPI orxVIEWPORT *                orxViewport_Create();
  * @param[in]   _zConfigID    Config ID
  * @ return orxVIEWPORT / orxNULL
  */
-extern orxDLLAPI orxVIEWPORT *orxFASTCALL     orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxVIEWPORT *orxFASTCALL     orxViewport_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes a viewport
  * @param[in]   _pstViewport    Viewport to delete
@@ -95,72 +95,72 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_Delete(orxVIEWPORT *_p
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _u32AlignFlags  Alignment flags (must be OR'ed)
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags);
+extern orxDLLAPI void orxFASTCALL             orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags);
 
 
 /** Sets a viewport texture
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _pstTexture     Texture to associate with the viewport
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstTexture);
+extern orxDLLAPI void orxFASTCALL             orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstTexture);
 
 /** Gets a viewport texture
  * @param[in]   _pstViewport    Concerned viewport
  * @return      Associated orxTEXTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxViewport_GetTexture(orxCONST orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxTEXTURE *orxFASTCALL      orxViewport_GetTexture(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport background color
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _stColor        Color to use for background
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, orxRGBA _stColor);
+extern orxDLLAPI void orxFASTCALL             orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, orxRGBA _stColor);
 
 /** Gets a viewport texture
  * @param[in]   _pstViewport    Concerned viewport
  * @return      Current background color
  */
-extern orxDLLAPI orxRGBA orxFASTCALL          orxViewport_GetBackgroundColor(orxCONST orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxRGBA orxFASTCALL          orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstViewport);
 
 
 /** Enables / disables a viewport
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _bEnable        Enable / disable
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
+extern orxDLLAPI void orxFASTCALL             orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
 
 /** Is a viewport enabled?
  * @param[in]   _pstViewport    Concerned viewport
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsEnabled(const orxVIEWPORT *_pstViewport);
 
 
 /** Enables / disables background clearing for a viewport
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _bEnable        Enable / disable
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
+extern orxDLLAPI void orxFASTCALL             orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
 
 /** Has a viewport background clearing enabled?
  * @param[in]   _pstViewport    Concerned viewport
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsBackgroundClearingEnabled(orxCONST orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsBackgroundClearingEnabled(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport camera
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _pstCamera      Associated camera
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera);
+extern orxDLLAPI void orxFASTCALL             orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera);
 
 /** Gets a viewport camera
  * @param[in]   _pstViewport    Concerned viewport
  * @return      Associated camera / orxNULL
  */
-extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport position
@@ -168,7 +168,7 @@ extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(orxCONST orx
  * @param[in]   _fX             X axis position (top left corner)
  * @param[in]   _fY             Y axis position (top left corner)
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT _fX, orxFLOAT _fY);
+extern orxDLLAPI void orxFASTCALL             orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT _fX, orxFLOAT _fY);
 
 /** Sets a viewport relative position
  * @param[in]   _pstViewport    Concerned viewport
@@ -182,7 +182,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetRelativePosition(or
  * @param[out]  _pfX            X axis position (top left corner)
  * @param[out]  _pfY            Y axis position (top left corner)
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfX, orxFLOAT *_pfY);
+extern orxDLLAPI void orxFASTCALL             orxViewport_GetPosition(const orxVIEWPORT *_pstViewport, orxFLOAT *_pfX, orxFLOAT *_pfY);
 
 
 /** Sets a viewport size
@@ -190,7 +190,7 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetPosition(orxCONST o
  * @param[in]   _fWidth         Width
  * @param[in]   _fHeight        Height
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fWidth, orxFLOAT _fHeight);
+extern orxDLLAPI void orxFASTCALL             orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fWidth, orxFLOAT _fHeight);
 
 /** Sets a viewport relative size
  * @param[in]   _pstViewport    Concerned viewport
@@ -205,14 +205,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetRelativeSize(orxVIE
  * @param[out]  _pfWidth        Width
  * @param[out]  _pfHeight       Height
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI void orxFASTCALL             orxViewport_GetSize(const orxVIEWPORT *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets a viewport relative size
  * @param[in]   _pstViewport    Concerned viewport
  * @param[out]  _pfWidth        Relative width
  * @param[out]  _pfHeight       Relative height
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI void orxFASTCALL             orxViewport_GetRelativeSize(const orxVIEWPORT *_pstViewport, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets a viewport clipping
  * @param[in]   _pstViewport    Concerned viewport
@@ -221,20 +221,20 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetRelativeSize(orxCON
  * @param[out]  _pu32BRX        X coordinate of bottom right corner
  * @param[out]  _pu32BRY        Y coordinate of bottom right corner
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxViewport_GetClipping(orxCONST orxVIEWPORT *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY);
+extern orxDLLAPI void orxFASTCALL             orxViewport_GetClipping(const orxVIEWPORT *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY);
 
 /** Gets an axis aligned box of viewport
  * @param[in]   _pstViewport    Concerned viewport
  * @param[out]  _pstBox         Output box
  * @return orxAABOX / orxNULL
  */
-extern orxDLLAPI orxAABOX *orxFASTCALL        orxViewport_GetBox(orxCONST orxVIEWPORT *_pstViewport, orxAABOX *_pstBox);
+extern orxDLLAPI orxAABOX *orxFASTCALL        orxViewport_GetBox(const orxVIEWPORT *_pstViewport, orxAABOX *_pstBox);
 
 /** Get viewport correction ratio
  * @param[in]   _pstViewport  Concerned viewport
  * @return      Correction ratio value
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxViewport_GetCorrectionRatio(orxCONST orxVIEWPORT *_pstViewport);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewport);
 
 #endif /* _orxVIEWPORT_H_ */
 

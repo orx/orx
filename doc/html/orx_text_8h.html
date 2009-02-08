@@ -25,32 +25,35 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxTEXT_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g6e33d1f37a4b63e927c1d95e73279b91">orxText_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g1b417625f387fbb2faf7d8d87a1b9ca9">orxText_Setup</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gddde5c4c4db2176b9fa2ab95f4f1d7a2">orxText_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gc73f7a3531b142c065b553ee96a90b7b">orxText_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gb4f4fe3552a5d61cc305055930d11c4e">orxText_Exit</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g2f30279a5f831190b316114ae6dd4a28">orxText_Create</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g55c46ab9ce115e60cc796e6012a1319d">orxText_CreateFromConfig</a> (orxCONST orxSTRING _zConfigID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gf62ab8f65f6396ac5bfabe84dc2f0f0b">orxText_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gf95fd8ed766cf9cd9ae3ba3f87881259">orxText_Delete</a> (<a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g4fa855b4033ef1de613dc3d75bf52b18">orxText_GetSize</a> (orxCONST <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g790a85f0fda7a8a57c9b19fb37b8e44b">orxText_GetSize</a> (const <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g158c769a9ffef03315345b78433533b7">orxText_GetName</a> (orxCONST <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g29d5de5b4a21a24bd3bfbad5cf57b799">orxText_GetName</a> (const <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g64fae6a4b94c33a31b7f81553fd2dace">orxText_GetString</a> (orxCONST <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g48540a8acf5c3b2914e4139d0471f0b5">orxText_GetString</a> (const <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxSTRING orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gb1f1c40cfdc029a94562b13a93860225">orxText_GetFont</a> (orxCONST <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g9ec3dc0fca55a23960976d7bd9600e65">orxText_GetFont</a> (const <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#g220520dd4fed2744399381dac421233e">orxDISPLAY_TEXT</a> <br>
-*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g41c3703167a89c4580f65842a71cd1cd">orxText_GetData</a> (orxCONST <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
+*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g9be5073fae6aea0861911bc05150c1c8">orxText_GetData</a> (const <a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#gc4ba2c95156894f07450d2a38fe0ccc2">orxText_SetString</a> (<a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, orxCONST orxSTRING _zString)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g1d65bbeba32adec6b694e8deffade036">orxText_SetString</a> (<a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, const orxSTRING _zString)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g8b2bd0a3492ab03f0ba02988a9cec8ff">orxText_SetFont</a> (<a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, orxCONST orxSTRING _zFont)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_text.html#g8fbc79b2b6028b12b18a8598966ebc26">orxText_SetFont</a> (<a class="el" href="group__orx_text.html#ge37a27ec04754279ebab92e7a0875c7d">orxTEXT</a> *_pstText, const orxSTRING _zFont)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>

@@ -66,7 +66,7 @@ typedef struct __orxPACKAGE_t orxPACKAGE;
  ***************************************************************************/
 
 /** Package module setup */
-extern orxDLLAPI orxVOID                              orxPackage_Setup();
+extern orxDLLAPI void                              orxPackage_Setup();
 
 
 /***************************************************************************
@@ -80,7 +80,7 @@ extern orxDLLAPI orxSTATUS orxPackage_Init();
 
 /** Uninitializes the Package Module
  */
-extern orxDLLAPI orxVOID orxPackage_Exit();
+extern orxDLLAPI void orxPackage_Exit();
 
 /** Opens a Package
  * @param _zDirPath         (IN)     Directory path where is stored the package to open
@@ -88,19 +88,19 @@ extern orxDLLAPI orxVOID orxPackage_Exit();
  * @param _u32OpenFlags     (IN)     Open flags (read/write, intern/extern, ...). The package will be created if it doesn't exists and is in write mode
  * @return a Pointer on a package, or orxNULL if an error has occured.
  */
-extern orxDLLAPI orxPACKAGE *orxPackage_Open(orxCONST orxSTRING _zDirPath, orxCONST orxSTRING _zPackageName, orxU32 _u32OpenFlags);
+extern orxDLLAPI orxPACKAGE *orxPackage_Open(const orxSTRING _zDirPath, const orxSTRING _zPackageName, orxU32 _u32OpenFlags);
 
 /** Closes a package
  * @param _pstPackage       (IN)     Package to close
  */
-extern orxDLLAPI orxVOID orxPackage_Close(orxPACKAGE *_pstPackage);
+extern orxDLLAPI void orxPackage_Close(orxPACKAGE *_pstPackage);
 
 /** Sets package flags
  * @param _pstPackage       (IN)     Package to use
  * @param _u32FlagsToRemove (IN)     List of flags to remove
  * @param _u32FlagsToAdd    (IN)     List of flags to add
  */
-extern orxDLLAPI orxVOID orxPackage_SetFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd);
+extern orxDLLAPI void orxPackage_SetFlags(orxPACKAGE *_pstPackage, orxU32 _u32FlagsToRemove, orxU32 _u32FlagsToAdd);
 
 /** Tests package flags
  * @param _pstPackage       (IN)     Package to use
@@ -114,14 +114,14 @@ extern orxDLLAPI orxBOOL orxPackage_TestFlags(orxPACKAGE *_pstPackage, orxU32 _u
  * @param _zFileName        (IN)     File to commit (a pattern can be used (e.g : *.txt))
  * @return the status of the operation
  */
-extern orxDLLAPI orxSTATUS orxPackage_Commit(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName);
+extern orxDLLAPI orxSTATUS orxPackage_Commit(orxPACKAGE *_pstPackage, const orxSTRING _zFileName);
 
 /** Extracts a file from a package
  * @param _pstPackage       (IN)     Package to use
  * @param _zFileName        (IN)     File to extract (a pattern can be used (e.g : *.png))
  * @return the status of the operation
  */
-extern orxDLLAPI orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName);
+extern orxDLLAPI orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPackage, const orxSTRING _zFileName);
 
 /** Starts a new search. Find the first file that will match to the given pattern in the package
  * @param _pstPackage       (IN)     Package to use. Can be orxNULL (will search in all opened package)
@@ -129,7 +129,7 @@ extern orxDLLAPI orxSTATUS orxPackage_Extract(orxPACKAGE *_pstPackage, orxCONST 
  * @param _pstFileInfos     (OUT)    Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
-extern orxDLLAPI orxBOOL orxPackage_FindFirst(orxPACKAGE *_pstPackage, orxCONST orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos);
+extern orxDLLAPI orxBOOL orxPackage_FindFirst(orxPACKAGE *_pstPackage, const orxSTRING _zSearchPattern, orxPACKAGE_INFOS *_pstFileInfos);
 
 /** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFile_FindFirst
  * @param _pstFileInfos     (IN/OUT) Informations about the found file
@@ -140,7 +140,7 @@ extern orxDLLAPI orxBOOL orxPackage_FindNext(orxPACKAGE_INFOS *_pstFileInfos);
 /** Closes a search (free the memory allocated for this search)
  * @param _pstFileInfos     (IN)     Informations returned during search
  */
-extern orxDLLAPI orxVOID orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos);
+extern orxDLLAPI void orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos);
 
 /** Reads data from a package and store it in memory
  * @param _pDataToWrite     (OUT)    Pointer where will be stored datas
@@ -149,7 +149,7 @@ extern orxDLLAPI orxVOID orxPackage_FindClose(orxPACKAGE_INFOS *_pstFileInfos);
  * @param _zFileName        (IN)     File to read
  * @return Returns the number of written bytes
  */
-extern orxDLLAPI orxU32 orxPackage_Read(orxVOID *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, orxCONST orxSTRING _zFileName);
+extern orxDLLAPI orxU32 orxPackage_Read(void *_pDataToWrite, orxU32 _u32FileSize, orxPACKAGE *_pstPackage, const orxSTRING _zFileName);
 
 #endif /* _orxPACKAGE_H_ */
 

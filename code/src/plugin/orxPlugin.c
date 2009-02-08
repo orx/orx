@@ -72,12 +72,12 @@
   #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    GetProcAddress(PLUGIN, SYMBOL)
   #define orxPLUGIN_CLOSE(PLUGIN)                         FreeLibrary(PLUGIN)
 
-  orxSTATIC orxCONST orxSTRING                            szPluginLibraryExt = "dll";
+  static const orxSTRING                            szPluginLibraryExt = "dll";
 
 /* OTHERS */
 #else /* __orxWINDOWS__ */
 
-  typedef orxVOID *                                       orxSYSPLUGIN;
+  typedef void *                                       orxSYSPLUGIN;
 
   #define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
   #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
@@ -85,11 +85,11 @@
 
 #ifdef __orxMAC__
 
-  orxSTATIC orxCONST orxSTRING                            szPluginLibraryExt = "so";
+  static const orxSTRING                            szPluginLibraryExt = "so";
 
 #else /* __orxMAC__ */
 
-  orxSTATIC orxCONST orxSTRING                            szPluginLibraryExt = "so";
+  static const orxSTRING                            szPluginLibraryExt = "so";
 
 #endif /* __orxMAC__ */
 
@@ -180,7 +180,7 @@ typedef struct __orxPLUGIN_INFO_t
 typedef struct __orxPLUGIN_CORE_INFO_t
 {
   /* Core functions : 4 */
-  orxPLUGIN_CORE_FUNCTION orxCONST *pstCoreFunctionTable;
+  orxPLUGIN_CORE_FUNCTION const *pstCoreFunctionTable;
 
   /* Core functions counter : 8 */
   orxU32                            u32CoreFunctionCounter;
@@ -219,7 +219,7 @@ typedef struct __orxPLUGIN_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxPLUGIN_STATIC sstPlugin;
+static orxPLUGIN_STATIC sstPlugin;
 
 
 /***************************************************************************
@@ -228,7 +228,7 @@ orxSTATIC orxPLUGIN_STATIC sstPlugin;
 
 /** Updates all modules
  */
-orxSTATIC orxINLINE orxVOID orxPlugin_UpdateAllModule()
+static orxINLINE void orxPlugin_UpdateAllModule()
 {
   orxU32 i;
 
@@ -322,7 +322,7 @@ orxPLUGIN_FUNCTION_INFO *orxFASTCALL orxPlugin_CreateFunctionInfo(orxPLUGIN_INFO
  * @param[in] _pstPluginInfo          Concerned plugin info
  * @param[in] _pstFunctionInfo        Concerned function info
  */
-orxVOID orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo, orxPLUGIN_FUNCTION_INFO *_pstFunctionInfo)
+void orxFASTCALL    orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo, orxPLUGIN_FUNCTION_INFO *_pstFunctionInfo)
 {
   /* Checks */
   orxASSERT(_pstPluginInfo != orxNULL);
@@ -339,9 +339,9 @@ orxVOID orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo,
  * @param[in] _pfnFunctionInfo        Concerned function info
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
+static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(const orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
-  orxCONST orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
+  const orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
   orxU32                            u32PluginIndex, u32FunctionIndex;
   orxSTATUS                         eResult = orxSTATUS_FAILURE;
 
@@ -398,9 +398,9 @@ orxSTATIC orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxCONST orxPLUGIN_
 /** Unregisters a core function
  * @param[in] _pfnFunctionInfo        Concerned function info
  */
-orxSTATIC orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
+static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
-  orxCONST orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
+  const orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
   orxU32 u32PluginIndex, u32FunctionIndex;
 
   /* Checks */
@@ -444,7 +444,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_UnregisterCoreFunction(orxCONST orxPLUGIN_
 /** Creates a plugin info
  * @return orxPLUGIN_INFO / orxNULL
  */
-orxSTATIC orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
+static orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
 {
   orxPLUGIN_INFO *pstPluginInfo;
 
@@ -503,7 +503,7 @@ orxSTATIC orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
 /** Deletes a plugin info
  * @param[in] _pstPluginInfo          Concerned plugin info
  */
-orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
+void orxFASTCALL    orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
 {
   orxPLUGIN_FUNCTION_INFO *pstFunctionInfo;
 
@@ -554,7 +554,7 @@ orxVOID orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
  * @param[in] _hPluginHandle          Concerned plugin handle
  * @return orxPLUGIN_INFO / orxNULL
  */
-orxSTATIC orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHandle)
+static orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHandle)
 {
   orxPLUGIN_INFO *pstPluginInfo = orxNULL;
 
@@ -576,7 +576,7 @@ orxSTATIC orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHa
  * @param[in] _zFunctionName          Name of the function to get
  * @return orxPLUGIN_FUNCTION / orxNULL
  */
-orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSysPlugin, orxCONST orxSTRING _zFunctionName)
+orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSysPlugin, const orxSTRING _zFunctionName)
 {
   orxPLUGIN_FUNCTION pfnFunction = orxNULL;
 
@@ -603,7 +603,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
  * @param[in] _pstPluginInfo          Info of the plugin to register
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_pstPluginInfo)
+static orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_pstPluginInfo)
 {
   orxPLUGIN_FUNCTION pfnInit;
   orxU32 u32UserFunctionNumber;
@@ -681,7 +681,7 @@ orxSTATIC orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUG
  * @param[in] _astCoreFunction        Array containing the core functions
  * @param[in] _u32CoreFunctionNumber  Number of core function in the array
  */
-orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, orxCONST orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
+void orxFASTCALL    orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
 {
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
@@ -701,7 +701,7 @@ orxVOID orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxM
 
 /** Deletes all the plugins
  */
-orxSTATIC orxINLINE orxVOID orxPlugin_DeleteAll()
+static orxINLINE void orxPlugin_DeleteAll()
 {
   orxPLUGIN_INFO *pstPluginInfo;
 
@@ -726,7 +726,7 @@ orxSTATIC orxINLINE orxVOID orxPlugin_DeleteAll()
  * @param[in] _azParams       Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, orxCONST orxSTRING _azParams[])
+orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxU32    i;
@@ -760,7 +760,7 @@ orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, orxCONST or
 
 /** Plugin module setup
  */
-orxVOID orxPlugin_Setup()
+void orxPlugin_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_MEMORY);
@@ -838,7 +838,7 @@ orxSTATUS orxPlugin_Init()
 
 /** Exits from the plugin module
  */
-orxVOID orxPlugin_Exit()
+void orxPlugin_Exit()
 {
   /* Initialized? */
   if(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY)
@@ -868,7 +868,7 @@ orxVOID orxPlugin_Exit()
  * @param[in] _u32Line        Line number of the called function
  * @return orxNULL
  */
-orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunctionName, orxCONST orxSTRING _zFileName, orxU32 _u32Line)
+void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, const orxSTRING _zFileName, orxU32 _u32Line)
 {
   orxDEBUG_FLAG_BACKUP();
   orxDEBUG_FLAG_SET(orxDEBUG_KU32_STATIC_FLAG_CONSOLE
@@ -887,7 +887,7 @@ orxVOID *orxFASTCALL orxPlugin_DefaultCoreFunction(orxCONST orxSTRING _zFunction
  * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
  * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
  */
-orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName)
+orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
 {
   orxSYSPLUGIN pstSysPlugin;
   orxPLUGIN_INFO *pstPluginInfo;
@@ -966,7 +966,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(orxCONST orxSTRING _zPluginFileName, orxCON
  * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
  * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
  */
-orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(orxCONST orxSTRING _zPluginFileName, orxCONST orxSTRING _zPluginName)
+orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
 {
   orxCHAR   zFileName[256];
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
@@ -1065,7 +1065,7 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
  * @param[in] _zFunctionName The name of the function to find
  * @return orxPLUGIN_FUNCTION / orxNULL
  */
-orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, orxCONST orxSTRING _zFunctionName)
+orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, const orxSTRING _zFunctionName)
 {
   orxPLUGIN_INFO *pstPluginInfo;
   orxPLUGIN_FUNCTION pfnFunction = orxNULL;
@@ -1105,7 +1105,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, o
  * @param[in] _zPluginName The plugin name
  * @return Its orxHANDLE / orxHANDLE_UNDEFINED
  */
-orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
+orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
 {
   orxPLUGIN_INFO *pstPluginInfo;
   orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
@@ -1136,7 +1136,7 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(orxCONST orxSTRING _zPluginName)
  * @param[in] _hPluginHandle The plugin handle
  * @return The plugin name / orxSTRING_EMPTY
  */
-orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
+const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
 {
   orxPLUGIN_INFO *pstPluginInfo;
   orxSTRING zPluginName = orxSTRING_EMPTY;

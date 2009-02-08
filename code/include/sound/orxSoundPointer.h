@@ -57,7 +57,7 @@ typedef struct __orxSOUNDPOINTER_t              orxSOUNDPOINTER;
 
 /** SoundPointer module setup
  */
-extern orxDLLAPI orxVOID                        orxSoundPointer_Setup();
+extern orxDLLAPI void                           orxSoundPointer_Setup();
 
 /** Inits the SoundPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -66,14 +66,14 @@ extern orxDLLAPI orxSTATUS                      orxSoundPointer_Init();
 
 /** Exits from the SoundPointer module
  */
-extern orxDLLAPI orxVOID                        orxSoundPointer_Exit();
+extern orxDLLAPI void                           orxSoundPointer_Exit();
 
 
 /** Creates an empty SoundPointer
  * @param[in]   _pstOwner           Sound's owner used for event callbacks (usually an orxOBJECT)
  * @return orxSOUNDPOINTER / orxNULL
  */
-extern orxDLLAPI orxSOUNDPOINTER *              orxSoundPointer_Create(orxCONST orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxSOUNDPOINTER *              orxSoundPointer_Create(const orxSTRUCTURE *_pstOwner);
 
 /** Deletes a SoundPointer
  * @param[in] _pstSoundPointer      Concerned SoundPointer
@@ -85,19 +85,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_Delete(orxSOUNDP
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @return      orxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxSoundPointer_GetOwner(orxCONST orxSOUNDPOINTER *_pstSoundPointer);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL      orxSoundPointer_GetOwner(const orxSOUNDPOINTER *_pstSoundPointer);
 
 /** Enables/disables a SoundPointer
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @param[in]   _bEnable        Enable / disable
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBOOL _bEnable);
+extern orxDLLAPI void orxFASTCALL               orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBOOL _bEnable);
 
 /** Is SoundPointer enabled?
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL            orxSoundPointer_IsEnabled(orxCONST orxSOUNDPOINTER *_pstSoundPointer);
+extern orxDLLAPI orxBOOL orxFASTCALL            orxSoundPointer_IsEnabled(const orxSOUNDPOINTER *_pstSoundPointer);
 
 
 /** Adds a sound
@@ -119,20 +119,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveSound(orxS
  * @param[in]   _zSoundConfigID     Config ID of the sound to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, orxCONST orxSTRING _zSoundConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zSoundConfigID);
 
 /** Removes a sound using using its config ID
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @param[in]   _zSoundConfigID     Config ID of the sound to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, orxCONST orxSTRING _zSoundConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zSoundConfigID);
 
 /** Gets last added sound (Do *NOT* destroy it directly before removing it!!!)
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @return      orxSOUND / orxNULL
  */
-extern orxDLLAPI orxSOUND *orxFASTCALL          orxSoundPointer_GetLastAddedSound(orxCONST orxSOUNDPOINTER *_pstSoundPointer);
+extern orxDLLAPI orxSOUND *orxFASTCALL          orxSoundPointer_GetLastAddedSound(const orxSOUNDPOINTER *_pstSoundPointer);
 
 #endif /* _orxSOUNDPOINTER_H_ */
 

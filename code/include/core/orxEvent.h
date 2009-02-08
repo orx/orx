@@ -51,7 +51,7 @@ do                                                                  \
   EVENT.eID         = (orxENUM)(ID);                                \
   EVENT.hSender     = (orxHANDLE)(SENDER);                          \
   EVENT.hRecipient  = (orxHANDLE)(RECIPIENT);                       \
-  EVENT.pstPayload  = (orxVOID *)(PAYLOAD);                         \
+  EVENT.pstPayload  = (void *)(PAYLOAD);                            \
 } while(orxFALSE)
 
 #define orxEVENT_SEND(TYPE, ID, SENDER, RECIPIENT, PAYLOAD)         \
@@ -98,7 +98,7 @@ typedef struct __orxEVENT_t
   orxENUM           eID;                              /**< Event ID : 8 */
   orxHANDLE         hSender;                          /**< Sender handle : 12 */
   orxHANDLE         hRecipient;                       /**< Recipient handle : 16 */
-  orxVOID          *pstPayload;                       /**> Event payload : 20 */
+  void             *pstPayload;                       /**> Event payload : 20 */
 
 } orxEVENT;
 
@@ -106,12 +106,12 @@ typedef struct __orxEVENT_t
 /**
  * Event handler type / return orxSTATUS_FAILURE if events processing should be stopped for the current event, orxSTATUS_FAILURE otherwise
  */
-typedef orxSTATUS (orxFASTCALL *orxEVENT_HANDLER)(orxCONST orxEVENT *_pstEvent);
+typedef orxSTATUS (orxFASTCALL *orxEVENT_HANDLER)(const orxEVENT *_pstEvent);
 
 
 /** Event module setup
  */
-extern orxDLLAPI orxVOID                orxEvent_Setup();
+extern orxDLLAPI void                   orxEvent_Setup();
 
 /** Initializes the event Module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -120,7 +120,7 @@ extern orxDLLAPI orxSTATUS              orxEvent_Init();
 
 /** Exits from the event Module
  */
-extern orxDLLAPI orxVOID                orxEvent_Exit();
+extern orxDLLAPI void                   orxEvent_Exit();
 
 /** Adds an event handler
  * @param _eEventType           Concerned type of event
@@ -140,7 +140,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_RemoveHandler(orxEVENT_TYPE _eE
  * @param _pstEvent             Event to send
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(orxCONST orxEVENT *_pstEvent);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(const orxEVENT *_pstEvent);
 
 /** Sends a simple event
  * @param _eEventType           Event type

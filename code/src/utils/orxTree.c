@@ -60,7 +60,7 @@ typedef struct __orxTREE_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxTREE_STATIC sstTree;
+static orxTREE_STATIC sstTree;
 
 
 /***************************************************************************
@@ -74,8 +74,8 @@ orxSTATIC orxTREE_STATIC sstTree;
  */
 orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBranchRemove)
 {
-  orxREGISTER orxTREE *pstTree;
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxTREE *pstTree;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstNode != orxNULL);
@@ -97,7 +97,7 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBr
       }
       else
       {
-        orxREGISTER orxTREE_NODE *pstChild;
+        register orxTREE_NODE *pstChild;
 
         /* Finds left sibling */
         for(pstChild = _pstNode->pstParent->pstChild;
@@ -150,12 +150,12 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBr
     }
     else
     {
-      orxREGISTER orxTREE_NODE *pstNewChild;
+      register orxTREE_NODE *pstNewChild;
 
       /* Had child? */
       if(_pstNode->pstChild != orxNULL)
       {
-        orxREGISTER orxTREE_NODE *pstChild;
+        register orxTREE_NODE *pstChild;
 
         /* Updates all children but last */
         for(pstChild = _pstNode->pstChild;
@@ -189,7 +189,7 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBr
       /* Not first child */
       else
       {
-        orxREGISTER orxTREE_NODE *pstChild;
+        register orxTREE_NODE *pstChild;
 
         /* Find left sibling */
         for(pstChild = _pstNode->pstParent->pstChild;
@@ -219,7 +219,7 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBr
 
 /** Tree module setup
  */
-orxVOID orxTree_Setup()
+void orxTree_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TREE, orxMODULE_ID_MEMORY);
@@ -263,7 +263,7 @@ orxSTATUS orxTree_Init()
 
 /** Exits from the linklist module
  */
-orxVOID orxTree_Exit()
+void orxTree_Exit()
 {
   /* Initialized? */
   if(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY)
@@ -317,7 +317,7 @@ orxSTATUS orxTree_Clean(orxTREE *_pstTree)
  */
 orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
 {
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
@@ -371,8 +371,8 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
  */
 orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxREGISTER orxTREE *pstTree;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxTREE *pstTree;
 
   /* Checks */
   orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
@@ -405,7 +405,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
         }
         else
         {
-          orxREGISTER orxTREE_NODE *pstChild;
+          register orxTREE_NODE *pstChild;
 
           /* Finds left sibling */
           for(pstChild = _pstRefNode->pstParent->pstChild;
@@ -461,8 +461,8 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  */
 orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxREGISTER orxTREE *pstTree;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxTREE *pstTree;
 
   /* Checks */
   orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
@@ -519,8 +519,8 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  */
 orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxREGISTER orxTREE *pstTree;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxTREE *pstTree;
 
   /* Checks */
   orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
@@ -533,7 +533,7 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   /* Is already in the tree? */
   if(_pstNode->pstTree == pstTree)
   {
-    orxREGISTER orxTREE_NODE *pstTest;
+    register orxTREE_NODE *pstTest;
 
     /* Checks for preventing tree from turning into graph */
     for(pstTest = _pstRefNode;
@@ -590,8 +590,8 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  */
 orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
 {
-  orxREGISTER orxTREE *pstTree;
-  orxREGISTER orxSTATUS eResult = orxSTATUS_SUCCESS;
+  register orxTREE *pstTree;
+  register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);

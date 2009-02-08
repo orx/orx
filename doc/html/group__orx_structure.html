@@ -68,7 +68,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gb94740c722d3469c182b3c2806a574f9">orxSTRUCTURE_MAGIC_TAG_DELETED</a>&nbsp;&nbsp;&nbsp;0xDEADC0DE</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a> )(<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstStructure, orxCONST <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstCaller, orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a> )(<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstStructure, const <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstCaller, const <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> { <br>
@@ -105,21 +105,21 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gdee1542274822e8b80eb32b55fa69121">_orxStructure_GetPointer</a> (orxCONST orxVOID *_pStructure, <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6166c07b080e5a284480ac699a1459bb">_orxStructure_GetPointer</a> (const void *_pStructure, <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6b0f7d1976f2695393fdb55ce8d4137d">orxStructure_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga696854bb6a087262c3b0327261b43c8">orxStructure_Setup</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd6b31f9352f2a6068198878128e9f369">orxStructure_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g0c3bdb1388ef1b8d0398139c6cebdda6">orxStructure_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g5d3d7bf053f1b6f9c924d33c3d97a3b3">orxStructure_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g908664072559b29d53ca30addf65b552">orxStructure_Register</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID, <a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> _eStorageType, <a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemoryType, orxU32 _u32Size, orxCONST <a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a> _pfnUpdate)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga56cb39392bd2ec50767317b4f7603fa">orxStructure_Register</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID, <a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> _eStorageType, <a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemoryType, orxU32 _u32Size, const <a class="el" href="group__orx_structure.html#g2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a> _pfnUpdate)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g9fd41dbe4be7db4c9e0a96a8509a1f00">orxStructure_Unregister</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g202c17dde5b31a755496ead570e7fb9a">orxStructure_Unregister</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g16515a89c0ccb908f64a37b76e1fa2d3">orxStructure_Create</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gf4b768001a19cc31f80ce48f47d5196d">orxStructure_Delete</a> (orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gfcc91a1e3b656e0820291439d9ea694d">orxStructure_Delete</a> (void *_pStructure)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <br>
 <a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> <br>
@@ -127,39 +127,39 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6eeb884934388de29b421ab8d8b05b2e">orxStructure_GetNumber</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g928c78d2484536aedc3649cb8068e156">orxStructure_Update</a> (orxVOID *_pStructure, orxCONST orxVOID *_phCaller, orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g240a05b714cde3269191aaafcb5c56e7">orxStructure_Update</a> (void *_pStructure, const void *_phCaller, const <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g19ed685999b2338e949f1332fc27ff2f">orxStructure_GetFirst</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gc368eeddaae9c34df6c1a56f950e528b">orxStructure_GetLast</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gbb511c55ab951f2685a16919c43989e6">orxStructure_GetParent</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g862d22374bae77072677d56b7f74d80d">orxStructure_GetParent</a> (const void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g57ef737c65f197ebeba5e3547413207f">orxStructure_GetChild</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ge595f4aeb26996db954c589d4582dbd0">orxStructure_GetChild</a> (const void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g7990165df5695f7aee5ba50cf8820308">orxStructure_GetSibling</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6b3a6ce62693fdf1f1b230a1677cc487">orxStructure_GetSibling</a> (const void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g524f1e6f40576ed98d5e1ea0542775a0">orxStructure_GetPrevious</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g878386b7ca9d5180181fb0806d56abb6">orxStructure_GetPrevious</a> (const void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga9be8826813ce61d50a1ea1dbb0f6660">orxStructure_GetNext</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gdc054536d88700f7e8b10489e94609cf">orxStructure_GetNext</a> (const void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g56c0868cc10d0a868b1c18102a185ad3">orxStructure_SetParent</a> (orxVOID *_pStructure, orxVOID *_phParent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g0bf3ea9346ad84fbca753c8fa3e79572">orxStructure_SetParent</a> (void *_pStructure, void *_phParent)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gf75400c7748770b8df4b9cb8669227aa">orxStructure_IncreaseCounter</a> (orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gb6ddc1c02cd3dc49b22091e5fd995a36">orxStructure_IncreaseCounter</a> (void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g14b2d2b6996c1ec7b414a1cfad0277bf">orxStructure_DecreaseCounter</a> (orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g9fce7a3107130b4cf7f14352513b9306">orxStructure_DecreaseCounter</a> (void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gec9b00f49070ef40ae48965549da4284">orxStructure_GetRefCounter</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g75c64fc468f26c889ee428608903b01c">orxStructure_GetRefCounter</a> (const void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g1613c5d44dff8b0e67f2f42e57d0438b">orxStructure_GetID</a> (orxCONST orxVOID *_pStructure)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gf3c56df6bbb64e8fde476fbe2a0d784c">orxStructure_GetID</a> (const void *_pStructure)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd3f6ed27a7702b1f422489aeace5fd0a">orxStructure_TestFlags</a> (orxCONST orxVOID *_pStructure, orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g95e20943a23b25cc1a634de7f35b21f4">orxStructure_TestFlags</a> (const void *_pStructure, orxU32 _u32Flags)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g78698f7ce95ae2cf8058f8f2ea2c726f">orxStructure_TestAllFlags</a> (orxCONST orxVOID *_pStructure, orxU32 _u32Flags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxBOOL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gcdcd1868be2f1b62e444c81dfccb1c27">orxStructure_TestAllFlags</a> (const void *_pStructure, orxU32 _u32Flags)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g7ab020fb97b3e81023a5a4640e8223ae">orxStructure_GetFlags</a> (orxCONST orxVOID *_pStructure, orxU32 _u32Mask)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxU32&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g4d2aea4e735ff7571e9609b9973013c5">orxStructure_GetFlags</a> (const void *_pStructure, orxU32 _u32Mask)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxSTATIC orxINLINE orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6889909153aad48d6e7acd879d2bdc2d">orxStructure_SetFlags</a> (orxVOID *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g95058db32c35e47042cf42e560bda596">orxStructure_SetFlags</a> (void *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -609,12 +609,12 @@ Structure register macro
 </div>
 </div><p>
 <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="ga6face7cd767465b2eb13e8c95134bc1"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_UPDATE_FUNCTION" ref="ga6face7cd767465b2eb13e8c95134bc1" args=")(orxSTRUCTURE *_pstStructure, orxCONST orxSTRUCTURE *_pstCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)" -->
+<a class="anchor" name="g2a40e7c406b268ad4478963ddf00032e"></a><!-- doxytag: member="orxStructure.h::orxSTRUCTURE_UPDATE_FUNCTION" ref="g2a40e7c406b268ad4478963ddf00032e" args=")(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a>)(<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstStructure, orxCONST <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstCaller, orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)          </td>
+          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_structure.html#g2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a>)(<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstStructure, const <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstCaller, const <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *_pstClockInfo)          </td>
         </tr>
       </table>
 </div>
@@ -710,14 +710,14 @@ Structure storage types <dl compact><dt><b>Enumerator: </b></dt><dd>
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="gdee1542274822e8b80eb32b55fa69121"></a><!-- doxytag: member="orxStructure.h::_orxStructure_GetPointer" ref="gdee1542274822e8b80eb32b55fa69121" args="(orxCONST orxVOID *_pStructure, orxSTRUCTURE_ID _eStructureID)" -->
+<a class="anchor" name="g6166c07b080e5a284480ac699a1459bb"></a><!-- doxytag: member="orxStructure.h::_orxStructure_GetPointer" ref="g6166c07b080e5a284480ac699a1459bb" args="(const void *_pStructure, orxSTRUCTURE_ID _eStructureID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* _orxStructure_GetPointer           </td>
+          <td class="memname">static orxINLINE <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* _orxStructure_GetPointer           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
         </tr>
         <tr>
@@ -729,7 +729,7 @@ Structure storage types <dl compact><dt><b>Enumerator: </b></dt><dd>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td><td></td>
+          <td></td><td></td><td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -772,17 +772,17 @@ Creates a clean structure for given type <dl compact><dt><b>Parameters:</b></dt>
 
 </div>
 </div><p>
-<a class="anchor" name="g14b2d2b6996c1ec7b414a1cfad0277bf"></a><!-- doxytag: member="orxStructure.h::orxStructure_DecreaseCounter" ref="g14b2d2b6996c1ec7b414a1cfad0277bf" args="(orxVOID *_pStructure)" -->
+<a class="anchor" name="g9fce7a3107130b4cf7f14352513b9306"></a><!-- doxytag: member="orxStructure.h::orxStructure_DecreaseCounter" ref="g9fce7a3107130b4cf7f14352513b9306" args="(void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE orxVOID orxStructure_DecreaseCounter           </td>
+          <td class="memname">static orxINLINE void orxStructure_DecreaseCounter           </td>
           <td>(</td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td></td>
+          <td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -797,14 +797,14 @@ Decreases structure reference counter <dl compact><dt><b>Parameters:</b></dt><dd
 
 </div>
 </div><p>
-<a class="anchor" name="gf4b768001a19cc31f80ce48f47d5196d"></a><!-- doxytag: member="orxStructure.h::orxStructure_Delete" ref="gf4b768001a19cc31f80ce48f47d5196d" args="(orxVOID *_pStructure)" -->
+<a class="anchor" name="gfcc91a1e3b656e0820291439d9ea694d"></a><!-- doxytag: member="orxStructure.h::orxStructure_Delete" ref="gfcc91a1e3b656e0820291439d9ea694d" args="(void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxStructure_Delete           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxStructure_Delete           </td>
           <td>(</td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -822,12 +822,12 @@ Deletes a structure (needs to be cleaned beforehand) <dl compact><dt><b>Paramete
 
 </div>
 </div><p>
-<a class="anchor" name="g0c3bdb1388ef1b8d0398139c6cebdda6"></a><!-- doxytag: member="orxStructure.h::orxStructure_Exit" ref="g0c3bdb1388ef1b8d0398139c6cebdda6" args="()" -->
+<a class="anchor" name="g5d3d7bf053f1b6f9c924d33c3d97a3b3"></a><!-- doxytag: member="orxStructure.h::orxStructure_Exit" ref="g5d3d7bf053f1b6f9c924d33c3d97a3b3" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxStructure_Exit           </td>
+          <td class="memname">orxDLLAPI void orxStructure_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -841,14 +841,14 @@ Deletes a structure (needs to be cleaned beforehand) <dl compact><dt><b>Paramete
 Exits from the structure module 
 </div>
 </div><p>
-<a class="anchor" name="g57ef737c65f197ebeba5e3547413207f"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetChild" ref="g57ef737c65f197ebeba5e3547413207f" args="(orxCONST orxVOID *_pStructure)" -->
+<a class="anchor" name="ge595f4aeb26996db954c589d4582dbd0"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetChild" ref="ge595f4aeb26996db954c589d4582dbd0" args="(const void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetChild           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -893,14 +893,14 @@ Gets structure tree child <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g7ab020fb97b3e81023a5a4640e8223ae"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetFlags" ref="g7ab020fb97b3e81023a5a4640e8223ae" args="(orxCONST orxVOID *_pStructure, orxU32 _u32Mask)" -->
+<a class="anchor" name="g4d2aea4e735ff7571e9609b9973013c5"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetFlags" ref="g4d2aea4e735ff7571e9609b9973013c5" args="(const void *_pStructure, orxU32 _u32Mask)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE orxU32 orxStructure_GetFlags           </td>
+          <td class="memname">static orxINLINE orxU32 orxStructure_GetFlags           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
         </tr>
         <tr>
@@ -912,7 +912,7 @@ Gets structure tree child <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td><td></td>
+          <td></td><td></td><td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -929,17 +929,17 @@ Gets structure flags <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g1613c5d44dff8b0e67f2f42e57d0438b"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetID" ref="g1613c5d44dff8b0e67f2f42e57d0438b" args="(orxCONST orxVOID *_pStructure)" -->
+<a class="anchor" name="gf3c56df6bbb64e8fde476fbe2a0d784c"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetID" ref="gf3c56df6bbb64e8fde476fbe2a0d784c" args="(const void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> orxStructure_GetID           </td>
+          <td class="memname">static orxINLINE <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> orxStructure_GetID           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td></td>
+          <td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -981,14 +981,14 @@ Gets last stored structure (last list cell or tree root depending on storage typ
 
 </div>
 </div><p>
-<a class="anchor" name="ga9be8826813ce61d50a1ea1dbb0f6660"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetNext" ref="ga9be8826813ce61d50a1ea1dbb0f6660" args="(orxCONST orxVOID *_pStructure)" -->
+<a class="anchor" name="gdc054536d88700f7e8b10489e94609cf"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetNext" ref="gdc054536d88700f7e8b10489e94609cf" args="(const void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetNext           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1033,14 +1033,14 @@ Gets given type structure number <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gbb511c55ab951f2685a16919c43989e6"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetParent" ref="gbb511c55ab951f2685a16919c43989e6" args="(orxCONST orxVOID *_pStructure)" -->
+<a class="anchor" name="g862d22374bae77072677d56b7f74d80d"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetParent" ref="g862d22374bae77072677d56b7f74d80d" args="(const void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetParent           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1059,14 +1059,14 @@ Gets structure tree parent <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g524f1e6f40576ed98d5e1ea0542775a0"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetPrevious" ref="g524f1e6f40576ed98d5e1ea0542775a0" args="(orxCONST orxVOID *_pStructure)" -->
+<a class="anchor" name="g878386b7ca9d5180181fb0806d56abb6"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetPrevious" ref="g878386b7ca9d5180181fb0806d56abb6" args="(const void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetPrevious           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1085,17 +1085,17 @@ Gets structure list previous <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gec9b00f49070ef40ae48965549da4284"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetRefCounter" ref="gec9b00f49070ef40ae48965549da4284" args="(orxCONST orxVOID *_pStructure)" -->
+<a class="anchor" name="g75c64fc468f26c889ee428608903b01c"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetRefCounter" ref="g75c64fc468f26c889ee428608903b01c" args="(const void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE orxU32 orxStructure_GetRefCounter           </td>
+          <td class="memname">static orxINLINE orxU32 orxStructure_GetRefCounter           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td></td>
+          <td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -1111,14 +1111,14 @@ Gets structure reference counter <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g7990165df5695f7aee5ba50cf8820308"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetSibling" ref="g7990165df5695f7aee5ba50cf8820308" args="(orxCONST orxVOID *_pStructure)" -->
+<a class="anchor" name="g6b3a6ce62693fdf1f1b230a1677cc487"></a><!-- doxytag: member="orxStructure.h::orxStructure_GetSibling" ref="g6b3a6ce62693fdf1f1b230a1677cc487" args="(const void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>* orxFASTCALL orxStructure_GetSibling           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -1163,17 +1163,17 @@ Gets structure storage type <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gf75400c7748770b8df4b9cb8669227aa"></a><!-- doxytag: member="orxStructure.h::orxStructure_IncreaseCounter" ref="gf75400c7748770b8df4b9cb8669227aa" args="(orxVOID *_pStructure)" -->
+<a class="anchor" name="gb6ddc1c02cd3dc49b22091e5fd995a36"></a><!-- doxytag: member="orxStructure.h::orxStructure_IncreaseCounter" ref="gb6ddc1c02cd3dc49b22091e5fd995a36" args="(void *_pStructure)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE orxVOID orxStructure_IncreaseCounter           </td>
+          <td class="memname">static orxINLINE void orxStructure_IncreaseCounter           </td>
           <td>(</td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>          </td>
           <td>&nbsp;)&nbsp;</td>
-          <td></td>
+          <td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -1208,7 +1208,7 @@ Initializess the structure module <dl class="return" compact><dt><b>Returns:</b>
 
 </div>
 </div><p>
-<a class="anchor" name="g908664072559b29d53ca30addf65b552"></a><!-- doxytag: member="orxStructure.h::orxStructure_Register" ref="g908664072559b29d53ca30addf65b552" args="(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, orxCONST orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate)" -->
+<a class="anchor" name="ga56cb39392bd2ec50767317b4f7603fa"></a><!-- doxytag: member="orxStructure.h::orxStructure_Register" ref="ga56cb39392bd2ec50767317b4f7603fa" args="(orxSTRUCTURE_ID _eStructureID, orxSTRUCTURE_STORAGE_TYPE _eStorageType, orxMEMORY_TYPE _eMemoryType, orxU32 _u32Size, const orxSTRUCTURE_UPDATE_FUNCTION _pfnUpdate)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1239,7 +1239,7 @@ Initializess the structure module <dl class="return" compact><dt><b>Returns:</b>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_structure.html#ga6face7cd767465b2eb13e8c95134bc1">orxSTRUCTURE_UPDATE_FUNCTION</a>&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_structure.html#g2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnUpdate</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -1265,14 +1265,14 @@ Registers a given ID <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g6889909153aad48d6e7acd879d2bdc2d"></a><!-- doxytag: member="orxStructure.h::orxStructure_SetFlags" ref="g6889909153aad48d6e7acd879d2bdc2d" args="(orxVOID *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)" -->
+<a class="anchor" name="g95058db32c35e47042cf42e560bda596"></a><!-- doxytag: member="orxStructure.h::orxStructure_SetFlags" ref="g95058db32c35e47042cf42e560bda596" args="(void *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE orxVOID orxStructure_SetFlags           </td>
+          <td class="memname">static orxINLINE void orxStructure_SetFlags           </td>
           <td>(</td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
         </tr>
         <tr>
@@ -1290,7 +1290,7 @@ Registers a given ID <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td><td></td>
+          <td></td><td></td><td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -1307,20 +1307,20 @@ Sets structure flags <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g56c0868cc10d0a868b1c18102a185ad3"></a><!-- doxytag: member="orxStructure.h::orxStructure_SetParent" ref="g56c0868cc10d0a868b1c18102a185ad3" args="(orxVOID *_pStructure, orxVOID *_phParent)" -->
+<a class="anchor" name="g0bf3ea9346ad84fbca753c8fa3e79572"></a><!-- doxytag: member="orxStructure.h::orxStructure_SetParent" ref="g0bf3ea9346ad84fbca753c8fa3e79572" args="(void *_pStructure, void *_phParent)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxStructure_SetParent           </td>
           <td>(</td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_phParent</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -1343,12 +1343,12 @@ Sets structure tree parent <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g6b0f7d1976f2695393fdb55ce8d4137d"></a><!-- doxytag: member="orxStructure.h::orxStructure_Setup" ref="g6b0f7d1976f2695393fdb55ce8d4137d" args="()" -->
+<a class="anchor" name="ga696854bb6a087262c3b0327261b43c8"></a><!-- doxytag: member="orxStructure.h::orxStructure_Setup" ref="ga696854bb6a087262c3b0327261b43c8" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxStructure_Setup           </td>
+          <td class="memname">orxDLLAPI void orxStructure_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -1362,14 +1362,14 @@ Sets structure tree parent <dl compact><dt><b>Parameters:</b></dt><dd>
 Structure module setup 
 </div>
 </div><p>
-<a class="anchor" name="g78698f7ce95ae2cf8058f8f2ea2c726f"></a><!-- doxytag: member="orxStructure.h::orxStructure_TestAllFlags" ref="g78698f7ce95ae2cf8058f8f2ea2c726f" args="(orxCONST orxVOID *_pStructure, orxU32 _u32Flags)" -->
+<a class="anchor" name="gcdcd1868be2f1b62e444c81dfccb1c27"></a><!-- doxytag: member="orxStructure.h::orxStructure_TestAllFlags" ref="gcdcd1868be2f1b62e444c81dfccb1c27" args="(const void *_pStructure, orxU32 _u32Flags)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE orxBOOL orxStructure_TestAllFlags           </td>
+          <td class="memname">static orxINLINE orxBOOL orxStructure_TestAllFlags           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
         </tr>
         <tr>
@@ -1381,7 +1381,7 @@ Structure module setup
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td><td></td>
+          <td></td><td></td><td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -1398,14 +1398,14 @@ Tests all flags against structure ones <dl compact><dt><b>Parameters:</b></dt><d
 
 </div>
 </div><p>
-<a class="anchor" name="gd3f6ed27a7702b1f422489aeace5fd0a"></a><!-- doxytag: member="orxStructure.h::orxStructure_TestFlags" ref="gd3f6ed27a7702b1f422489aeace5fd0a" args="(orxCONST orxVOID *_pStructure, orxU32 _u32Flags)" -->
+<a class="anchor" name="g95e20943a23b25cc1a634de7f35b21f4"></a><!-- doxytag: member="orxStructure.h::orxStructure_TestFlags" ref="g95e20943a23b25cc1a634de7f35b21f4" args="(const void *_pStructure, orxU32 _u32Flags)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxSTATIC orxINLINE orxBOOL orxStructure_TestFlags           </td>
+          <td class="memname">static orxINLINE orxBOOL orxStructure_TestFlags           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
         </tr>
         <tr>
@@ -1417,7 +1417,7 @@ Tests all flags against structure ones <dl compact><dt><b>Parameters:</b></dt><d
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td><td></td>
+          <td></td><td></td><td><code> [static]</code></td>
         </tr>
       </table>
 </div>
@@ -1434,12 +1434,12 @@ Tests flags against structure ones <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g9fd41dbe4be7db4c9e0a96a8509a1f00"></a><!-- doxytag: member="orxStructure.h::orxStructure_Unregister" ref="g9fd41dbe4be7db4c9e0a96a8509a1f00" args="(orxSTRUCTURE_ID _eStructureID)" -->
+<a class="anchor" name="g202c17dde5b31a755496ead570e7fb9a"></a><!-- doxytag: member="orxStructure.h::orxStructure_Unregister" ref="g202c17dde5b31a755496ead570e7fb9a" args="(orxSTRUCTURE_ID _eStructureID)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxStructure_Unregister           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxStructure_Unregister           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a>&nbsp;</td>
           <td class="paramname"> <em>_eStructureID</em>          </td>
@@ -1459,26 +1459,26 @@ Unregisters a given ID <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g928c78d2484536aedc3649cb8068e156"></a><!-- doxytag: member="orxStructure.h::orxStructure_Update" ref="g928c78d2484536aedc3649cb8068e156" args="(orxVOID *_pStructure, orxCONST orxVOID *_phCaller, orxCONST orxCLOCK_INFO *_pstClockInfo)" -->
+<a class="anchor" name="g240a05b714cde3269191aaafcb5c56e7"></a><!-- doxytag: member="orxStructure.h::orxStructure_Update" ref="g240a05b714cde3269191aaafcb5c56e7" args="(void *_pStructure, const void *_phCaller, const orxCLOCK_INFO *_pstClockInfo)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxStructure_Update           </td>
           <td>(</td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pStructure</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST orxVOID *&nbsp;</td>
+          <td class="paramtype">const void *&nbsp;</td>
           <td class="paramname"> <em>_phCaller</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxCONST <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="structorx_c_l_o_c_k___i_n_f_o.html">orxCLOCK_INFO</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstClockInfo</em></td><td>&nbsp;</td>
         </tr>
         <tr>

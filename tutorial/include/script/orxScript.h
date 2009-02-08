@@ -68,7 +68,7 @@ typedef enum __orxSCRIPT_TYPE_t
 typedef union __orxSCRIPT_PARAM_t
 {
   orxSCRIPT_TYPE eType;   /**< Parameter type */
-  orxVOID   *pValue;
+  void   *pValue;
   
 } orxSCRIPT_PARAM;
 
@@ -97,7 +97,7 @@ typedef struct __orxSCRIPT_FUNCTION_t
  ***************************************************************************/
 
 /** Script module setup. */
-extern orxDLLAPI orxVOID orxScript_Setup();
+extern orxDLLAPI void orxScript_Setup();
 
 /** Initialize the Script Module
  * @return Returns the status of the operation
@@ -106,7 +106,7 @@ extern orxDLLAPI orxSTATUS orxScript_Init();
 
 /** Uninitialize the Script Module
  */
-extern orxDLLAPI orxVOID orxScript_Exit();
+extern orxDLLAPI void orxScript_Exit();
 
 /** Function to register a new function in the system. 
  * This function sotre the parameters in the global list, gets the new entry index and call the plugin register function
@@ -114,7 +114,7 @@ extern orxDLLAPI orxVOID orxScript_Exit();
  * @param _pfnFunction    (IN)  Function pointer
  * @param _zParamTypes    (IN)  List of type for the function (the first parameter is the return type)
  */
-extern orxDLLAPI orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, orxSCRIPT_FUNCTION_PTR _pfnFunction, orxCONST orxSTRING _zParamTypes);
+extern orxDLLAPI orxSTATUS orxScript_RegisterFunctionGlobal(const orxSTRING _zFunctionName, orxSCRIPT_FUNCTION_PTR _pfnFunction, const orxSTRING _zParamTypes);
 
 /** Executes a callback with input parameters, returns the result of the called function in the output
  * @param _pstFunctionInfo   (IN)  Function info
@@ -122,7 +122,7 @@ extern orxDLLAPI orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _
  * @param _pstOutputValue    (OUT) Returned value from the function
  * @return Return orxSTATUS_SUCCESS if the function has been correctly executed, else orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCONST orxSCRIPT_PARAM *_pstInputValues, orxSCRIPT_PARAM *_pstOutputValue);
+extern orxDLLAPI orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, const orxSCRIPT_PARAM *_pstInputValues, orxSCRIPT_PARAM *_pstOutputValue);
 
 /** Returns function info from an index or orxNULL if not found
  * @param _s32Index (IN)  parameter index
@@ -144,67 +144,67 @@ extern orxDLLAPI orxSTATUS orxScript_PluginInit();
 
 /** Uninitializes the Script Module
  */
-extern orxDLLAPI orxVOID orxScript_PluginExit();
+extern orxDLLAPI void orxScript_PluginExit();
 
 /** Parses and runs a script file
  * @param _zFileName  (IN)  File name
  * @return Returns Success if valid parsing/execution, else returns orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_RunFile(orxCONST orxSTRING _zFileName);
+extern orxDLLAPI orxSTATUS orxScript_RunFile(const orxSTRING _zFileName);
 
 /** Parses and runs a script string
  * @param _zScript    (IN)  script to parse
  * @return Returns Success if valid parsing/execution, else returns orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_RunString(orxCONST orxSTRING _zScript);
+extern orxDLLAPI orxSTATUS orxScript_RunString(const orxSTRING _zScript);
 
 /** Gets a global variable type
  * @param _zVar       (IN) Variable name
  * @return Returns the type of the given variable. Returns orxSCRIPT_TYPE_NONE if variable not found.
  */
-extern orxDLLAPI orxSCRIPT_TYPE orxScript_GetType(orxCONST orxSTRING _zVar);
+extern orxDLLAPI orxSCRIPT_TYPE orxScript_GetType(const orxSTRING _zVar);
 
 /** Gets a global script variable value
  * @param _zVar       (IN)  Variable name
  * @param _s32OutValue (OUT) Signed 32 bits returns value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_GetS32Value(orxCONST orxSTRING _zVar, orxS32 *_s32OutValue);
+extern orxDLLAPI orxSTATUS orxScript_GetS32Value(const orxSTRING _zVar, orxS32 *_s32OutValue);
 
 /** Gets a global script variable value
  * @param _zVar       (IN)  Variable name
  * @param _fOutValue  (OUT) Float returns value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_GetFloatValue(orxCONST orxSTRING _zVar, orxFLOAT *_fOutValue);
+extern orxDLLAPI orxSTATUS orxScript_GetFloatValue(const orxSTRING _zVar, orxFLOAT *_fOutValue);
 
 /** Gets a global script variable value
  * @param _zVar       (IN)  Variable name
  * @param _zOutValue  (OUT) String returns value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_GetStringValue(orxCONST orxSTRING _zVar, orxSTRING *_zOutValue);
+extern orxDLLAPI orxSTATUS orxScript_GetStringValue(const orxSTRING _zVar, orxSTRING *_zOutValue);
 
 /** Sets a global script variable value
  * @param _zVar       (IN) Variable name
  * @param _s32Value   (IN) Signed 32 bits value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_SetS32Value(orxCONST orxSTRING _zVar, orxS32 _s32Value);
+extern orxDLLAPI orxSTATUS orxScript_SetS32Value(const orxSTRING _zVar, orxS32 _s32Value);
 
 /** Sets a global script variable value
  * @param _zVar       (IN) Variable name
  * @param _fValue     (IN) Float value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_SetFloatValue(orxCONST orxSTRING _zVar, orxFLOAT _fValue);
+extern orxDLLAPI orxSTATUS orxScript_SetFloatValue(const orxSTRING _zVar, orxFLOAT _fValue);
 
 /** Sets a global script variable value
  * @param _zVar       (IN) Variable name
  * @param _zValue     (IN) String value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxScript_SetStringValue(orxCONST orxSTRING _zVar, orxSTRING _zValue);
+extern orxDLLAPI orxSTATUS orxScript_SetStringValue(const orxSTRING _zVar, orxSTRING _zValue);
 
 /** Sets a global script variable value
  * @param _s32Index   (IN) Index of the function data from the global list

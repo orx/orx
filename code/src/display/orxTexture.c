@@ -94,7 +94,7 @@ typedef struct __orxTEXTURE_STATIC_t
  * Module global variable                                                  *
  ***************************************************************************/
 
-orxSTATIC orxTEXTURE_STATIC sstTexture;
+static orxTEXTURE_STATIC sstTexture;
 
 
 /***************************************************************************
@@ -103,7 +103,7 @@ orxSTATIC orxTEXTURE_STATIC sstTexture;
 
 /** Deletes all textures
  */
-orxSTATIC orxINLINE orxVOID orxTexture_DeleteAll()
+static orxINLINE void orxTexture_DeleteAll()
 {
   orxTEXTURE *pstTexture;
 
@@ -127,9 +127,9 @@ orxSTATIC orxINLINE orxVOID orxTexture_DeleteAll()
  * @param[in]   _wDataName    Name of the texture to find
  * @return      orxTEXTURE / orxNULL
  */
-orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByName(orxCONST orxSTRING _zDataName)
+static orxINLINE orxTEXTURE *orxTexture_FindByName(const orxSTRING _zDataName)
 {
-  orxREGISTER orxTEXTURE *pstTexture;
+  register orxTEXTURE *pstTexture;
 
   /* Gets texture from hash table */
   pstTexture = orxHashTable_Get(sstTexture.pstTable, orxString_ToCRC(_zDataName));
@@ -145,7 +145,7 @@ orxSTATIC orxINLINE orxTEXTURE *orxTexture_FindByName(orxCONST orxSTRING _zDataN
 
 /** Setups the texture module
  */
-orxVOID orxTexture_Setup()
+void orxTexture_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
@@ -244,7 +244,7 @@ orxSTATUS orxTexture_Init()
 
 /** Exits from the texture module
  */
-orxVOID orxTexture_Exit()
+void orxTexture_Exit()
 {
   /* Initialized? */
   if(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY)
@@ -308,7 +308,7 @@ orxTEXTURE *orxTexture_Create()
  * @param[in]   _zBitmapFileName  Name of the bitmap
  * @return      orxTEXTURE / orxNULL
  */
-orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFileName)
+orxTEXTURE *orxFASTCALL orxTexture_CreateFromFile(const orxSTRING _zBitmapFileName)
 {
   orxTEXTURE *pstTexture;
 
@@ -415,7 +415,7 @@ orxSTATUS orxFASTCALL orxTexture_Delete(orxTEXTURE *_pstTexture)
  * @param[in]   _zDataName      Name associated with the bitmap (usually filename)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zDataName)
+orxSTATUS orxFASTCALL orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBITMAP *_pstBitmap, const orxSTRING _zDataName)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -541,9 +541,9 @@ orxSTATUS orxFASTCALL orxTexture_UnlinkBitmap(orxTEXTURE *_pstTexture)
  * @param[in]   _pstTexture     Concerned texture
  * @return      orxBITMAP / orxNULL
  */
-orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
+orxBITMAP *orxFASTCALL orxTexture_GetBitmap(const orxTEXTURE *_pstTexture)
 {
-  orxREGISTER orxBITMAP *pstBitmap = orxNULL;
+  register orxBITMAP *pstBitmap = orxNULL;
 
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);
@@ -574,7 +574,7 @@ orxBITMAP *orxFASTCALL orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture)
  * @param[out]  _pfHeight       Texture's height
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxFLOAT orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxFLOAT orxFASTCALL orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult;
 
@@ -614,7 +614,7 @@ orxFLOAT orxFASTCALL orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLO
  * @param[in]   _pstTexture   Concerned texture
  * @return      Texture name / orxNULL
  */
-orxSTRING orxFASTCALL orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture)
+const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture)
 {
   orxSTRING zResult = orxNULL;
 

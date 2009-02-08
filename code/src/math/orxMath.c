@@ -31,7 +31,7 @@
 #include "math/orxMath.h"
 
 
-orxVOID orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
+void orxFASTCALL    orxMath_InitRandom(orxU32 _u32Seed)
 {
   /* Inits random seed */
   srand(_u32Seed);

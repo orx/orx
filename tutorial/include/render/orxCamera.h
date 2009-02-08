@@ -65,7 +65,7 @@ typedef struct __orxCAMERA_t            orxCAMERA;
 
 /** Camera module setup
  */
-extern orxDLLAPI orxVOID                orxCamera_Setup();
+extern orxDLLAPI void                   orxCamera_Setup();
 
 /** Inits the Camera module
  */
@@ -73,7 +73,7 @@ extern orxDLLAPI orxSTATUS              orxCamera_Init();
 
 /** Exits from the Camera module
  */
-extern orxDLLAPI orxVOID                orxCamera_Exit();
+extern orxDLLAPI void                   orxCamera_Exit();
 
 
 /** Creates a camera
@@ -86,7 +86,7 @@ extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags);
  * @param[in]   _zConfigID    Config ID
  * @ return orxCAMERA / orxNULL
  */
-extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes a camera
  * @param[in]   _pstCamera      Camera to delete
@@ -110,7 +110,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetFrustum(orxCAMERA *_pstCame
  * @param[in]   _pvPosition     Camera position
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetPosition(orxCAMERA *_pstCamera, orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetPosition(orxCAMERA *_pstCamera, const orxVECTOR *_pvPosition);
 
 /** Sets camera rotation
  * @param[in]   _pstCamera      Concerned camera
@@ -130,52 +130,52 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetZoom(orxCAMERA *_pstCamera,
  * @param[in]   _pstCamera      Concerned camera
  * @param[out]  _pstFrustum    Frustum box
  */
-extern orxDLLAPI orxVOID orxFASTCALL    orxCamera_GetFrustum(orxCONST orxCAMERA *_pstCamera, orxAABOX *_pstFrustum);
+extern orxDLLAPI void orxFASTCALL       orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum);
 
 /** Get camera position
  * @param[in]   _pstCamera      Concerned camera
  * @param[out]  _pvPosition     Camera position
  * @return      orxVECTOR
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL orxCamera_GetPosition(orxCONST orxCAMERA *_pstCamera, orxVECTOR *_pvPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL orxCamera_GetPosition(const orxCAMERA *_pstCamera, orxVECTOR *_pvPosition);
 
 /** Get camera rotation
  * @param[in]   _pstCamera      Concerned camera
  * @return      Rotation value
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL   orxCamera_GetRotation(orxCONST orxCAMERA *_pstCamera);
+extern orxDLLAPI orxFLOAT orxFASTCALL   orxCamera_GetRotation(const orxCAMERA *_pstCamera);
 
 /** Get camera zoom
  * @param[in]   _pstCamera      Concerned camera
  * @return      Zoom value
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL   orxCamera_GetZoom(orxCONST orxCAMERA *_pstCamera);
+extern orxDLLAPI orxFLOAT orxFASTCALL   orxCamera_GetZoom(const orxCAMERA *_pstCamera);
 
 /** Gets camera config name
  * @param[in]   _pstCamera      Concerned camera
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxSTRING orxFASTCALL  orxCamera_GetName(orxCONST orxCAMERA *_pstCamera);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxCamera_GetName(const orxCAMERA *_pstCamera);
 
 /** Gets camera given its name
  * @param[in]   _zName          Camera name
  * @return      orxCAMERA / orxNULL
  */
-extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_Get(orxCONST orxSTRING _zName);
+extern orxDLLAPI orxCAMERA *orxFASTCALL orxCamera_Get(const orxSTRING _zName);
 
 
 /** Gets camera frame
  * @param[in]   _pstCamera      Concerned camera
  * @return      orxFRAME
  */
-extern orxDLLAPI orxFRAME *orxFASTCALL  orxCamera_GetFrame(orxCONST orxCAMERA *_pstCamera);
+extern orxDLLAPI orxFRAME *orxFASTCALL  orxCamera_GetFrame(const orxCAMERA *_pstCamera);
 
 /** Sets camera parent
  * @param[in]   _pstCamera      Concerned camera
  * @param[in]   _pParent        Parent structure to set (object, spawner, camera or frame) / orxNULL
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetParent(orxCAMERA *_pstCamera, orxVOID *_pParent);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent);
 
 #endif /* _orxCAMERA_H_ */
 

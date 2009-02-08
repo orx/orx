@@ -51,7 +51,7 @@ typedef struct __orxMEMORY_STATIC_t
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
-orxSTATIC orxMEMORY_STATIC sstMemory;
+static orxMEMORY_STATIC sstMemory;
 
 /***************************************************************************
  * Private functions                                                       *
@@ -67,7 +67,7 @@ orxSTATIC orxMEMORY_STATIC sstMemory;
 
  returns: nothing
  ***************************************************************************/
-orxVOID orxMemory_Setup()
+void orxMemory_Setup()
 {
   /* Adds module dependencies */
 
@@ -111,7 +111,7 @@ orxSTATUS orxMemory_Init()
 
 /** Uninitialize memory allocation module
  */
-orxVOID orxMemory_Exit()
+void orxMemory_Exit()
 {
   /* Module initialized ? */
   if((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY)
@@ -143,7 +143,7 @@ orxU32 orxFASTCALL orxMemory_GetAlign(orxU32 _u32OriginalValue, orxU32 _u32Align
  * @return  returns a pointer on the memory allocated, or orxNULL if an error has occured
  * @todo Use the memory managed by orxMemory (initialized with orxMemory_Init())
  */
-orxVOID *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
+void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
   /* Module initialized ? */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
@@ -152,14 +152,14 @@ orxVOID *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemTyp
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
 
   /* Returns system allocation function */
-  return((orxVOID *)malloc(_u32Size));
+  return((void *)malloc(_u32Size));
 }
 
 /** Free a portion of memory allocated with orxMemory_Allocateate
  * @param _pMem     (IN)  Pointer on the memory allocated by orx
  * @todo Use the memory managed by orxMemory (not OS)
  */
-orxVOID orxFASTCALL orxMemory_Free(orxVOID *_pMem)
+void orxFASTCALL    orxMemory_Free(void *_pMem)
 {
   /* Module initialized ? */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
@@ -180,9 +180,9 @@ orxVOID orxFASTCALL orxMemory_Free(orxVOID *_pMem)
  * @return returns a pointer on _pDest
  * @note if _pSrc and _pDest overlap, use orxMemory_Move instead
  */
-orxVOID *orxFASTCALL orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, orxU32 _u32Size)
+void *orxFASTCALL orxMemory_Copy(void *_pDest, const void *_pSrc, orxU32 _u32Size)
 {
-  return((orxVOID *)memcpy(_pDest, _pSrc, _u32Size));
+  return((void *)memcpy(_pDest, _pSrc, _u32Size));
 }
 
 /** Copy a portion of memory into another one
@@ -191,9 +191,9 @@ orxVOID *orxFASTCALL orxMemory_Copy(orxVOID *_pDest, orxCONST orxVOID *_pSrc, or
  * @param _u32Size  (IN)  Size of data
  * @return returns a pointer on _pDest
  */
-orxVOID *orxFASTCALL orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32Size)
+void *orxFASTCALL orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size)
 {
-  return((orxVOID *)memmove(_pDest, _pSrc, _u32Size));
+  return((void *)memmove(_pDest, _pSrc, _u32Size));
 }
 
 /** Compare two portion of memory
@@ -202,7 +202,7 @@ orxVOID *orxFASTCALL orxMemory_Move(orxVOID *_pDest, orxVOID *_pSrc, orxU32 _u32
  * @param _u32Size  (IN)  Size of data to test
  * @return returns a velue less, equals or greater that 0 if _pMem1 is respectively smaller, equal or greater than _pMem2
  */
-orxU32 orxFASTCALL orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID *_pMem2, orxU32 _u32Size)
+orxU32 orxFASTCALL orxMemory_Compare(const void *_pMem1, const void *_pMem2, orxU32 _u32Size)
 {
   return((orxU32)memcmp(_pMem1, _pMem2, _u32Size));
 }
@@ -213,9 +213,9 @@ orxU32 orxFASTCALL orxMemory_Compare(orxCONST orxVOID *_pMem1, orxCONST orxVOID 
  * @param _u32Size  (IN)  Size of data
  * @return returns a pointer on _pDest
  */
-orxVOID *orxFASTCALL orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Size)
+void *orxFASTCALL orxMemory_Set(void *_pDest, orxU8 _u8Data, orxU32 _u32Size)
 {
-  return((orxVOID *)memset(_pDest, _u8Data, _u32Size));
+  return((void *)memset(_pDest, _u8Data, _u32Size));
 }
 
 /** Fill a portion of memory with zeroes
@@ -223,9 +223,9 @@ orxVOID *orxFASTCALL orxMemory_Set(orxVOID *_pDest, orxU8 _u8Data, orxU32 _u32Si
  * @param _u32Size  (IN)  Size of data
  * @return returns a pointer on _pDest
  */
-orxVOID *orxFASTCALL orxMemory_Zero(orxVOID *_pDest, orxU32 _u32Size)
+void *orxFASTCALL orxMemory_Zero(void *_pDest, orxU32 _u32Size)
 {
-  return((orxVOID *)memset(_pDest, 0, _u32Size));
+  return((void *)memset(_pDest, 0, _u32Size));
 }
 
 /** Realloc a portion of memory if the already allocated memory is not suffisant.
@@ -233,7 +233,7 @@ orxVOID *orxFASTCALL orxMemory_Zero(orxVOID *_pDest, orxU32 _u32Size)
  * @param[in] _u32Size Wanted size.
  * @return The pointer reallocated.
  */
-orxDLLAPI orxVOID *orxFASTCALL orxMemory_Reallocate(orxVOID *_pMem, orxU32 _u32Size)
+orxDLLAPI void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
 {
-  return((orxVOID *)realloc(_pMem, _u32Size));
+  return((void *)realloc(_pMem, _u32Size));
 }

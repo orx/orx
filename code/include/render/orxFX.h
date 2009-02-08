@@ -102,7 +102,7 @@ typedef struct __orxFX_EVENT_PAYLOAD_t
 
 /** FX module setup
  */
-extern orxDLLAPI orxVOID                        orxFX_Setup();
+extern orxDLLAPI void                           orxFX_Setup();
 
 /** Inits the FX module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -111,7 +111,7 @@ extern orxDLLAPI orxSTATUS                      orxFX_Init();
 
 /** Exits from the FX module
  */
-extern orxDLLAPI orxVOID                        orxFX_Exit();
+extern orxDLLAPI void                           orxFX_Exit();
 
 /** Creates an empty FX
  * @return orxFX / orxNULL
@@ -122,7 +122,7 @@ extern orxDLLAPI orxFX *                        orxFX_Create();
  * @param[in]   _zConfigID    Config ID
  * @ return orxFX / orxNULL
  */
-extern orxDLLAPI orxFX *orxFASTCALL             orxFX_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxFX *orxFASTCALL             orxFX_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes an FX
  * @param[in] _pstFX            Concerned FX
@@ -137,19 +137,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Delete(orxFX *_pstFX);
  * @param[in] _fEndTime         FX local application end time
  * @return    orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Apply(orxCONST orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime);
 
 /** Enables/disables an FX
  * @param[in]   _pstFX          Concerned FX
  * @param[in]   _bEnable        Enable / disable
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxFX_Enable(orxFX *_pstFX, orxBOOL _bEnable);
+extern orxDLLAPI void orxFASTCALL               orxFX_Enable(orxFX *_pstFX, orxBOOL _bEnable);
 
 /** Is FX enabled?
  * @param[in]   _pstFX          Concerned FX
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsEnabled(orxCONST orxFX *_pstFX);
+extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsEnabled(const orxFX *_pstFX);
 
 /** Adds alpha fade to an FX
  * @param[in]   _pstFX          Concerned FX
@@ -213,7 +213,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddRotation(orxFX *_pstFX,
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxCONST orxVECTOR *_pvStartScale, orxCONST orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const orxVECTOR *_pvStartScale, const orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Adds translation to an FX
  * @param[in]   _pstFX          Concerned FX
@@ -229,19 +229,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, or
  * @param[in]   _u32Flags       Param flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxCONST orxVECTOR *_pvStartTranslation, orxCONST orxVECTOR *_pvEndTranslation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddTranslation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const orxVECTOR *_pvStartTranslation, const orxVECTOR *_pvEndTranslation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
 
 /** Gets FX duration
  * @param[in]   _pstFX          Concerned FX
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetDuration(orxCONST orxFX *_pstFX);
+extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetDuration(const orxFX *_pstFX);
 
 /** Gets FX name
  * @param[in]   _pstFX          Concerned FX
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxSTRING orxFASTCALL          orxFX_GetName(orxCONST orxFX *_pstFX);
+extern orxDLLAPI const orxSTRING orxFASTCALL    orxFX_GetName(const orxFX *_pstFX);
 
 /** Set FX loop property
  * @param[in]   _pstFX          Concerned FX
@@ -254,7 +254,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Loop(orxFX *_pstFX, orxBOO
  * @param[in]   _pstFX          Concerned FX
  * @return      orxTRUE if looping, orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsLooping(orxCONST orxFX *_pstFX);
+extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsLooping(const orxFX *_pstFX);
 
 #endif /* _orxFX_H_ */
 

@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -135,14 +135,14 @@ typedef struct __orxINPUT_STATIC_t
 
 /** static data
  */
-orxSTATIC orxINPUT_STATIC sstInput;
+static orxINPUT_STATIC sstInput;
 
 
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATIC orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM _eID)
+static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM _eID)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -221,7 +221,7 @@ orxSTATIC orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxE
   return fResult;
 }
 
-orxSTATIC orxINLINE orxINPUT_SET *orxInput_LoadSet(orxCONST orxSTRING _zSetName)
+static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
 {
   orxINPUT_SET *pstResult = orxNULL;
   orxSTRING     zPreviousSection;
@@ -265,7 +265,7 @@ orxSTATIC orxINLINE orxINPUT_SET *orxInput_LoadSet(orxCONST orxSTRING _zSetName)
 
             /* Gets bound input */
             zInput = orxConfig_GetString(zBinding);
-            
+
             /* Valid? */
             if(zInput != orxSTRING_EMPTY)
             {
@@ -295,7 +295,7 @@ orxSTATIC orxINLINE orxINPUT_SET *orxInput_LoadSet(orxCONST orxSTRING _zSetName)
 }
 
 /* Save filter callback */
-orxBOOL orxFASTCALL orxInput_SaveCallback(orxCONST orxSTRING _zSetName, orxCONST orxSTRING _zKeyName, orxBOOL _bUseEncryption)
+orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -332,7 +332,7 @@ orxBOOL orxFASTCALL orxInput_SaveCallback(orxCONST orxSTRING _zSetName, orxCONST
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pstContext     Context sent when registering callback to the clock
  */
-orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL    orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   /* Has current set? */
   if(sstInput.pstCurrentSet != orxNULL)
@@ -344,7 +344,7 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
         pstEntry != orxNULL;
         pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
     {
-      orxU32        i, u32ActiveIndex;
+      orxU32        i, u32ActiveIndex = 0;
       orxBOOL       bActive = orxFALSE, bStatusSet = orxFALSE;
 
       /* For all bindings */
@@ -517,7 +517,7 @@ orxVOID orxFASTCALL orxInput_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVO
  * @param[in] _zEntryName       Entry name to create
  * @return orxINPUT_ENTRY
  */
-orxINPUT_ENTRY *orxFASTCALL orxInput_CreateEntry(orxCONST orxSTRING _zEntryName)
+orxINPUT_ENTRY *orxFASTCALL orxInput_CreateEntry(const orxSTRING _zEntryName)
 {
   orxINPUT_ENTRY *pstResult = orxNULL;
 
@@ -555,7 +555,7 @@ orxINPUT_ENTRY *orxFASTCALL orxInput_CreateEntry(orxCONST orxSTRING _zEntryName)
  * @param[in] _pstSet           Concerned set
  * @param[in] _pstEntry         Entry to delete
  */
-orxVOID orxFASTCALL orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY *_pstEntry)
+void orxFASTCALL    orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY *_pstEntry)
 {
   /* Checks */
   orxASSERT(_pstSet != orxNULL);
@@ -574,7 +574,7 @@ orxVOID orxFASTCALL orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY *
  * @param[in] _zSetName         Name of the set to create
  * @param[in] _u32SetID         ID of the set to create
  */
-orxSTATIC orxINLINE orxINPUT_SET *orxInput_CreateSet(orxCONST orxSTRING _zSetName, orxU32 _u32SetID)
+static orxINLINE orxINPUT_SET *orxInput_CreateSet(const orxSTRING _zSetName, orxU32 _u32SetID)
 {
   orxINPUT_SET *pstResult;
 
@@ -638,7 +638,7 @@ orxSTATIC orxINLINE orxINPUT_SET *orxInput_CreateSet(orxCONST orxSTRING _zSetNam
 /** Deletes a set
  * @param[in] _pstSet       Set to delete
  */
-orxSTATIC orxINLINE orxVOID orxInput_DeleteSet(orxINPUT_SET *_pstSet)
+static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
 {
   orxINPUT_ENTRY *pstEntry;
 
@@ -672,7 +672,7 @@ orxSTATIC orxINLINE orxVOID orxInput_DeleteSet(orxINPUT_SET *_pstSet)
 
 /** Input module setup
  */
-orxVOID orxInput_Setup()
+void orxInput_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_BANK);
@@ -753,7 +753,7 @@ orxSTATUS orxInput_Init()
 
 /** Exits from the input module
  */
-orxVOID orxInput_Exit()
+void orxInput_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY))
@@ -781,7 +781,7 @@ orxVOID orxInput_Exit()
  * @param[in] _zFileName        File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxInput_Load(orxCONST orxSTRING _zFileName)
+orxSTATUS orxInput_Load(const orxSTRING _zFileName)
 {
   orxSTRING zPreviousSection;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -841,7 +841,7 @@ orxSTATUS orxInput_Load(orxCONST orxSTRING _zFileName)
  * @param[in] _zFileName        File name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL  orxInput_Save(orxCONST orxSTRING _zFileName)
+orxSTATUS orxFASTCALL  orxInput_Save(const orxSTRING _zFileName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -886,7 +886,7 @@ orxSTATUS orxFASTCALL  orxInput_Save(orxCONST orxSTRING _zFileName)
       }
 
       /* Adds set list to config */
-      orxConfig_SetStringList(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Counter);        
+      orxConfig_SetStringList(orxINPUT_KZ_CONFIG_SET_LIST, azSetNameList, u32Counter);
 
       /* Frees set name list memory */
       orxMemory_Free(azSetNameList);
@@ -940,7 +940,7 @@ orxSTATUS orxFASTCALL  orxInput_Save(orxCONST orxSTRING _zFileName)
 /** Selects current working set
  * @param[in] _zSetnName        Set name to select
  */
-orxSTATUS orxFASTCALL orxInput_SelectSet(orxCONST orxSTRING _zSetName)
+orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1017,7 +1017,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(orxCONST orxSTRING _zSetName)
 /** Gets current working set
  * @return Current selected set
  */
-orxSTRING orxInput_GetCurrentSet()
+const orxSTRING orxInput_GetCurrentSet()
 {
   orxSTRING zResult = orxSTRING_EMPTY;
 
@@ -1044,7 +1044,7 @@ orxSTRING orxInput_GetCurrentSet()
  * @param[in] _zInputName       Concerned input name
  * @return orxTRUE if active, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxInput_IsActive(orxCONST orxSTRING _zInputName)
+orxBOOL orxFASTCALL orxInput_IsActive(const orxSTRING _zInputName)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -1085,7 +1085,7 @@ orxBOOL orxFASTCALL orxInput_IsActive(orxCONST orxSTRING _zInputName)
  * @param[in] _zInputName       Concerned input name
  * @return orxTRUE if active status is new, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxInput_HasNewStatus(orxCONST orxSTRING _zInputName)
+orxBOOL orxFASTCALL orxInput_HasNewStatus(const orxSTRING _zInputName)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -1126,7 +1126,7 @@ orxBOOL orxFASTCALL orxInput_HasNewStatus(orxCONST orxSTRING _zInputName)
  * @param[in] _zInputName       Concerned input name
  * @return orxFLOAT
  */
-orxFLOAT orxFASTCALL orxInput_GetValue(orxCONST orxSTRING _zInputName)
+orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -1180,7 +1180,7 @@ orxFLOAT orxFASTCALL orxInput_GetValue(orxCONST orxSTRING _zInputName)
  * @param[in] _bCombine         If orxTRUE, all assigned bindings need to be active in order to activate input, otherwise input will be considered active if any of its binding is
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxInput_SetCombineMode(orxCONST orxSTRING _zName, orxBOOL _bCombine)
+orxSTATUS orxFASTCALL orxInput_SetCombineMode(const orxSTRING _zName, orxBOOL _bCombine)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1233,7 +1233,7 @@ orxSTATUS orxFASTCALL orxInput_SetCombineMode(orxCONST orxSTRING _zName, orxBOOL
  * @param[in] _zName            Concerned input name
  * @return orxTRUE if the input is in combine mode, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxInput_IsInCombineMode(orxCONST orxSTRING _zName)
+orxBOOL orxFASTCALL orxInput_IsInCombineMode(const orxSTRING _zName)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -1276,7 +1276,7 @@ orxBOOL orxFASTCALL orxInput_IsInCombineMode(orxCONST orxSTRING _zName)
  * @param[in] _eID              ID of button/key/axis to bind
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxInput_Bind(orxCONST orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID)
+orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType, orxENUM _eID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1460,7 +1460,7 @@ orxSTATUS orxFASTCALL orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID)
  * @param[in] _eID              ID of button/key/axis to test
  * @return orxSTRING input name if bound / orxSTRING_EMPY otherwise
  */
-orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID)
+const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID)
 {
   orxSTRING zResult = orxSTRING_EMPTY;
 
@@ -1506,7 +1506,7 @@ orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM _eID)
  * @param[out]  _peID            List of binding IDs (button/key/axis)
  * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
  */
-orxSTATUS orxFASTCALL orxInput_GetBinding(orxCONST orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID)
+orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32BindingIndex, orxINPUT_TYPE *_peType, orxENUM *_peID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1562,7 +1562,7 @@ orxSTATUS orxFASTCALL orxInput_GetBinding(orxCONST orxSTRING _zName, orxU32 _u32
  * @param[out] _aeIDList        List of binding IDs (button/key/axis)
  * @return orxSTATUS_SUCCESS if input exists, orxSTATUS_FAILURE otherwise
  */
-orxSTATUS orxFASTCALL orxInput_GetBindingList(orxCONST orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER])
+orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_TYPE _aeTypeList[orxINPUT_KU32_BINDING_NUMBER], orxENUM _aeIDList[orxINPUT_KU32_BINDING_NUMBER])
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1630,7 +1630,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingList(orxCONST orxSTRING _zName, orxINPU
  * @param[in]   _eID            Binding ID (ID of button/key/axis to bind)
  * @return orxSTRING (binding's name) if success, orxSTRING_EMPTY otherwise
  */
-orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID)
+const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENUM _eID)
 {
   orxSTRING zResult = orxSTRING_EMPTY;
 

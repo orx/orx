@@ -38,7 +38,7 @@
 
  returns: nothing
  ***************************************************************************/
-orxVOID orxDisplay_Setup()
+void orxDisplay_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_DISPLAY, orxMODULE_ID_PLUGIN);
@@ -60,47 +60,47 @@ orxVOID orxDisplay_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Init, orxSTATUS, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Exit, orxVOID, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Init, orxSTATUS, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Exit, void, void);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Swap, orxSTATUS, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_Swap, orxSTATUS, void);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateText, orxDISPLAY_TEXT *, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteText, orxVOID, orxDISPLAY_TEXT *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformText, orxSTATUS, orxBITMAP *, orxCONST orxDISPLAY_TEXT *, orxCONST orxDISPLAY_TRANSFORM *, orxRGBA, orxDISPLAY_BLEND_MODE);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetTextString, orxSTATUS, orxDISPLAY_TEXT *, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetTextFont, orxSTATUS, orxDISPLAY_TEXT *, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetTextString, orxSTRING, orxCONST orxDISPLAY_TEXT *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetTextFont, orxSTRING, orxCONST orxDISPLAY_TEXT *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetTextSize, orxSTATUS, orxCONST orxDISPLAY_TEXT *, orxFLOAT *, orxFLOAT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateText, orxDISPLAY_TEXT *, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteText, void, orxDISPLAY_TEXT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformText, orxSTATUS, orxBITMAP *, const orxDISPLAY_TEXT *, const orxDISPLAY_TRANSFORM *, orxRGBA, orxDISPLAY_BLEND_MODE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetTextString, orxSTATUS, orxDISPLAY_TEXT *, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetTextFont, orxSTATUS, orxDISPLAY_TEXT *, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetTextString, orxSTRING, const orxDISPLAY_TEXT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetTextFont, orxSTRING, const orxDISPLAY_TEXT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetTextSize, orxSTATUS, const orxDISPLAY_TEXT *, orxFLOAT *, orxFLOAT *);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_PrintString, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxSTRING, orxCONST orxDISPLAY_TRANSFORM *, orxRGBA);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_PrintString, orxSTATUS, const orxBITMAP *, const orxSTRING, const orxDISPLAY_TRANSFORM *, orxRGBA);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateBitmap, orxBITMAP *, orxU32, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteBitmap, orxVOID, orxBITMAP *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteBitmap, void, orxBITMAP *);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetScreenBitmap, orxBITMAP *, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetScreenBitmap, orxBITMAP *, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetScreenSize, orxSTATUS, orxFLOAT *, orxFLOAT *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_ClearBitmap, orxSTATUS, orxBITMAP *, orxRGBA);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxCONST orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_TransformBitmap, orxSTATUS, orxBITMAP *, const orxBITMAP *, const orxDISPLAY_TRANSFORM *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColorKey, orxSTATUS, orxBITMAP *, orxRGBA, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapColor, orxSTATUS, orxBITMAP *, orxRGBA);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetBitmapClipping, orxSTATUS, orxBITMAP *, orxU32, orxU32, orxU32, orxU32);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_BlitBitmap, orxSTATUS, orxBITMAP *, orxCONST orxBITMAP *, orxFLOAT, orxFLOAT, orxDISPLAY_BLEND_MODE);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_BlitBitmap, orxSTATUS, orxBITMAP *, const orxBITMAP *, orxFLOAT, orxFLOAT, orxDISPLAY_BLEND_MODE);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, orxCONST orxBITMAP *, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, orxCONST orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, const orxBITMAP *, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, const orxSTRING);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, orxCONST orxBITMAP *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, orxCONST orxBITMAP *, orxFLOAT *, orxFLOAT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapColor, orxRGBA, const orxBITMAP *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetBitmapSize, orxSTATUS, const orxBITMAP *, orxFLOAT *, orxFLOAT *);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetApplicationInput, orxHANDLE, void);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_EnableVSync, orxSTATUS, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_IsVSyncEnabled, orxBOOL, void);
 
 
 /* *** Core function info array *** */
@@ -158,7 +158,7 @@ orxSTATUS orxDisplay_Init()
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_Init)();
 }
 
-orxVOID orxDisplay_Exit()
+void orxDisplay_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_Exit)();
 }
@@ -173,42 +173,42 @@ orxDISPLAY_TEXT *orxDisplay_CreateText()
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateText)();
 }
 
-orxVOID orxDisplay_DeleteText(orxDISPLAY_TEXT *_pstText)
+void orxDisplay_DeleteText(orxDISPLAY_TEXT *_pstText)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DeleteText)(_pstText);
 }
 
-orxSTATUS orxDisplay_TransformText(orxBITMAP *_pstDst, orxCONST orxDISPLAY_TEXT *_pstText, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxDisplay_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_TransformText)(_pstDst, _pstText, _pstTransform, _stColor, _eBlendMode);
 }
 
-orxSTATUS orxDisplay_SetTextString(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zString)
+orxSTATUS orxDisplay_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetTextString)(_pstText, _zString);
 }
 
-orxSTATUS orxDisplay_SetTextFont(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zFont)
+orxSTATUS orxDisplay_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetTextFont)(_pstText, _zFont);
 }
 
-orxSTRING orxDisplay_GetTextString(orxCONST orxDISPLAY_TEXT *_pstText)
+const orxSTRING orxDisplay_GetTextString(const orxDISPLAY_TEXT *_pstText)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetTextString)(_pstText);
 }
 
-orxSTRING orxDisplay_GetTextFont(orxCONST orxDISPLAY_TEXT *_pstText)
+const orxSTRING orxDisplay_GetTextFont(const orxDISPLAY_TEXT *_pstText)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetTextFont)(_pstText);
 }
 
-orxSTATUS orxDisplay_GetTextSize(orxCONST orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxSTATUS orxDisplay_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetTextSize)(_pstText, _pfWidth, _pfHeight);
 }
 
-orxSTATUS orxDisplay_PrintString(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
+orxSTATUS orxDisplay_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_PrintString)(_pstBitmap, _zString, _pstTransform, _stColor);
 }
@@ -218,7 +218,7 @@ orxBITMAP *orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateBitmap)(_u32Width, _u32Height);
 }
 
-orxVOID orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap)
+void orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_DeleteBitmap)(_pstBitmap);
 }
@@ -238,7 +238,7 @@ orxSTATUS orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_ClearBitmap)(_pstBitmap, _stColor);
 }
 
-orxSTATUS orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxDisplay_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_TransformBitmap)(_pstDst, _pstSrc, _pstTransform, _eSmoothing, _eBlendMode);
 }
@@ -258,27 +258,27 @@ orxSTATUS orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, or
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SetBitmapClipping)(_pstBitmap, _u32TLX, _u32TLY, _u32BRX, _u32BRY);
 }
 
-orxSTATUS orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxDisplay_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_BlitBitmap)(_pstDst, _pstSrc, _fPosX, _fPosY, _eBlendMode);
 }
 
-orxSTATUS orxDisplay_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFileName)
+orxSTATUS orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SaveBitmap)(_pstBitmap, _zFileName);
 }
 
-orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileName)
+orxBITMAP *orxDisplay_LoadBitmap(const orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_LoadBitmap)(_zFileName);
 }
 
-orxSTATUS orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxSTATUS orxDisplay_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapSize)(_pstBitmap, _pfWidth, _pfHeight);
 }
 
-orxRGBA orxDisplay_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)
+orxRGBA orxDisplay_GetBitmapColor(const orxBITMAP *_pstBitmap)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_GetBitmapColor)(_pstBitmap);
 }

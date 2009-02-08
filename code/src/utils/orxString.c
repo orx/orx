@@ -35,7 +35,7 @@
 /***************************************************************************
  * CRC Table                                                               *
  ***************************************************************************/
-orxSTATIC orxCONST orxU32 sau32CRCTable[256] =
+static const orxU32 sau32CRCTable[256] =
 {
   0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
   0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
@@ -85,10 +85,10 @@ orxSTATIC orxCONST orxU32 sau32CRCTable[256] =
  * @param[in] _u32CRC         Base CRC.
  * @return The resulting CRC.
  */
-orxU32 orxFASTCALL orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC)
+orxU32 orxFASTCALL orxString_ContinueCRC(const orxSTRING _zString, orxU32 _u32CRC)
 {
-  orxREGISTER orxU32    u32CRC;
-  orxREGISTER orxCHAR  *pc;
+  register orxU32    u32CRC;
+  register orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
@@ -113,11 +113,11 @@ orxU32 orxFASTCALL orxString_ContinueCRC(orxCONST orxSTRING _zString, orxU32 _u3
  * @param[in] _u32CharNumber  Number of character to process
  * @return The resulting CRC.
  */
-orxU32 orxFASTCALL orxString_NContinueCRC(orxCONST orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
+orxU32 orxFASTCALL orxString_NContinueCRC(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
 {
-  orxREGISTER orxU32    u32CRC;
-  orxREGISTER orxU32    u32Counter;
-  orxREGISTER orxCHAR  *pc;
+  register orxU32    u32CRC;
+  register orxU32    u32Counter;
+  register orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);

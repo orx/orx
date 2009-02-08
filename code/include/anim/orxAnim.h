@@ -95,7 +95,7 @@ typedef struct __orxANIM_EVENT_PAYLOAD_t
 
 /** Anim module setup
  */
-extern orxDLLAPI orxVOID                      orxAnim_Setup();
+extern orxDLLAPI void                         orxAnim_Setup();
 
 /** Inits the Anim module
  */
@@ -103,7 +103,7 @@ extern orxDLLAPI orxSTATUS                    orxAnim_Init();
 
 /** Exits from the Anim module
  */
-extern orxDLLAPI orxVOID                      orxAnim_Exit();
+extern orxDLLAPI void                         orxAnim_Exit();
 
 
 /** Creates an empty animation
@@ -117,7 +117,7 @@ extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_Create(orxU32 _u32Flags, o
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMSET / orxNULL
  */
-extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxANIM *orxFASTCALL         orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes an animation
  * @param[in]   _pstAnim        Anim to delete
@@ -143,7 +143,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastKey(orxANIM *_ps
 /** Removes all keys from an animation
  * @param[in]   _pstAnim        Concerned animation
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxAnim_RemoveAllKeys(orxANIM *_pstAnim);
+extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllKeys(orxANIM *_pstAnim);
 
 
 /** Updates anim given a timestamp
@@ -159,39 +159,39 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Update(orxANIM *_pstAnim, 
  * @param[in]   _u32Index       Index of desired key data
  * @return      Desired orxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnim_GetKeyData(orxCONST orxANIM *_pstAnim, orxU32 _u32Index);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnim_GetKeyData(const orxANIM *_pstAnim, orxU32 _u32Index);
 
 
 /** Anim key storage size accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim key storage size
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyStorageSize(orxCONST orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyStorageSize(const orxANIM *_pstAnim);
 
 /** Anim key counter accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim key counter
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(orxCONST orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKeyCounter(const orxANIM *_pstAnim);
 
 
 /** Anim time length accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim time length
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnim_GetLength(orxCONST orxANIM *_pstAnim);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnim_GetLength(const orxANIM *_pstAnim);
 
 /** Anim ID get accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim ID / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetID(orxCONST orxANIM *_pstAnim);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetID(const orxANIM *_pstAnim);
 
 /** Anim name get accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxSTRING orxFASTCALL        orxAnim_GetName(orxCONST orxANIM *_pstAnim);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxAnim_GetName(const orxANIM *_pstAnim);
 
 
 #endif /* _orxANIM_H_ */

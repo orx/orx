@@ -73,7 +73,7 @@ typedef enum __orxMOUSE_BUTTON_t
 
 /** Mouse module setup
  */
-extern orxDLLAPI orxVOID                orxMouse_Setup();
+extern orxDLLAPI void                   orxMouse_Setup();
 
 
 /***************************************************************************
@@ -87,13 +87,13 @@ extern orxDLLAPI orxSTATUS              orxMouse_Init();
 
 /** Exits from the mouse module
  */
-extern orxDLLAPI orxVOID                orxMouse_Exit();
+extern orxDLLAPI void                   orxMouse_Exit();
 
 /** Sets mouse position
 * @param[in] _pvPosition  Mouse position
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-extern orxDLLAPI orxSTATUS              orxMouse_SetPosition(orxCONST orxVECTOR *_pvPosition);
+extern orxDLLAPI orxSTATUS              orxMouse_SetPosition(const orxVECTOR *_pvPosition);
 
 /** Gets mouse position
  * @param[out] _pvPosition  Mouse position
@@ -127,7 +127,7 @@ extern orxDLLAPI orxSTATUS              orxMouse_ShowCursor(orxBOOL _bShow);
  * @param _eButton          Concerned button
  * @return Button's name
  */
-extern orxDLLAPI orxSTRING orxFASTCALL  orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton);
 
 #endif /* _orxMOUSE_H_ */
 

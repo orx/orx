@@ -44,14 +44,14 @@
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL               0xFFFFFFFF /**< All mask */
 
-orxSTATIC orxCONST orxU32     su32ScreenWidth         = 1024;
-orxSTATIC orxCONST orxU32     su32ScreenHeight        = 768;
-orxSTATIC orxCONST orxU32     su32ScreenDepth         = 32;
-orxSTATIC orxCONST orxBITMAP *spoScreen               = (orxCONST orxBITMAP *)-1;
-orxSTATIC orxCONST orxU32     su32TextBankSize        = 32;
-orxSTATIC orxCONST orxU32     su32InstantTextBankSize = 4;
-orxSTATIC orxCONST orxU32     su32FontTableSize       = 4;
-orxSTATIC orxCONST orxSTRING  szPlaceHolderString     = " "; /* Prevents a weird bug when creating a sf::String with SFML 1.4 on mac OS X */
+static const orxU32     su32ScreenWidth         = 1024;
+static const orxU32     su32ScreenHeight        = 768;
+static const orxU32     su32ScreenDepth         = 32;
+static const orxBITMAP *spoScreen               = (const orxBITMAP *)-1;
+static const orxU32     su32TextBankSize        = 32;
+static const orxU32     su32InstantTextBankSize = 4;
+static const orxU32     su32FontTableSize       = 4;
+static const orxSTRING  szPlaceHolderString     = " "; /* Prevents a weird bug when creating a sf::String with SFML 1.4 on mac OS X */
 
 
 /***************************************************************************
@@ -92,7 +92,7 @@ typedef struct __orxDISPLAY_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxDISPLAY_STATIC sstDisplay;
+static orxDISPLAY_STATIC sstDisplay;
 
 
 /***************************************************************************
@@ -101,7 +101,7 @@ orxSTATIC orxDISPLAY_STATIC sstDisplay;
 
 /** Loads a font
  */
-orxSTATIC orxINLINE sf::Font *orxDisplay_SFML_LoadFont(orxCONST orxSTRING _zFontName)
+static orxINLINE sf::Font *orxDisplay_SFML_LoadFont(const orxSTRING _zFontName)
 {
   orxU32    u32Key;
   sf::Font *poResult = (sf::Font *)orxNULL;
@@ -139,7 +139,7 @@ orxSTATIC orxINLINE sf::Font *orxDisplay_SFML_LoadFont(orxCONST orxSTRING _zFont
 
 /** Get SFML blend mode
  */
-orxSTATIC orxINLINE sf::Blend::Mode orxDisplay_SFML_GetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
+static orxINLINE sf::Blend::Mode orxDisplay_SFML_GetBlendMode(orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Blend::Mode eResult;
 
@@ -185,7 +185,7 @@ orxSTATIC orxINLINE sf::Blend::Mode orxDisplay_SFML_GetBlendMode(orxDISPLAY_BLEN
 
 /** Event handler
  */
-orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -224,7 +224,7 @@ orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
   return eResult;
 }
 
-orxVOID orxFASTCALL orxDisplay_SFML_EventUpdate(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext)
+void orxFASTCALL    orxDisplay_SFML_EventUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   sf::Event oEvent;
 
@@ -346,7 +346,7 @@ extern "C" orxDISPLAY_TEXT *orxDisplay_SFML_CreateText()
   return pstResult;
 }
 
-extern "C" orxVOID orxDisplay_SFML_DeleteText(orxDISPLAY_TEXT *_pstText)
+extern "C" void orxDisplay_SFML_DeleteText(orxDISPLAY_TEXT *_pstText)
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -359,7 +359,7 @@ extern "C" orxVOID orxDisplay_SFML_DeleteText(orxDISPLAY_TEXT *_pstText)
   orxBank_Free(sstDisplay.pstTextBank, _pstText);
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_TransformText(orxBITMAP *_pstDst, orxCONST orxDISPLAY_TEXT *_pstText, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxDisplay_SFML_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -414,7 +414,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformText(orxBITMAP *_pstDst, orxCONST 
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetTextString(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zString)
+extern "C" orxSTATUS orxDisplay_SFML_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -432,7 +432,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetTextString(orxDISPLAY_TEXT *_pstText, or
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetTextFont(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zFont)
+extern "C" orxSTATUS orxDisplay_SFML_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont)
 {
   sf::Font *poFont;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -458,7 +458,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetTextFont(orxDISPLAY_TEXT *_pstText, orxC
   return eResult;
 }
 
-extern "C" orxSTRING orxDisplay_SFML_GetTextString(orxCONST orxDISPLAY_TEXT *_pstText)
+extern "C" orxSTRING orxDisplay_SFML_GetTextString(const orxDISPLAY_TEXT *_pstText)
 {
   orxSTRING zResult;
 
@@ -473,7 +473,7 @@ extern "C" orxSTRING orxDisplay_SFML_GetTextString(orxCONST orxDISPLAY_TEXT *_ps
   return zResult;
 }
 
-extern "C" orxSTRING orxDisplay_SFML_GetTextFont(orxCONST orxDISPLAY_TEXT *_pstText)
+extern "C" orxSTRING orxDisplay_SFML_GetTextFont(const orxDISPLAY_TEXT *_pstText)
 {
   orxSTRING zResult;
 
@@ -488,7 +488,7 @@ extern "C" orxSTRING orxDisplay_SFML_GetTextFont(orxCONST orxDISPLAY_TEXT *_pstT
   return zResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_GetTextSize(orxCONST orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+extern "C" orxSTATUS orxDisplay_SFML_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
   sf::FloatRect stRect;
@@ -510,7 +510,7 @@ extern "C" orxSTATUS orxDisplay_SFML_GetTextSize(orxCONST orxDISPLAY_TEXT *_pstT
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_PrintString(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
+extern "C" orxSTATUS orxDisplay_SFML_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -579,10 +579,10 @@ extern "C" orxSTATUS orxDisplay_SFML_PrintString(orxCONST orxBITMAP *_pstBitmap,
   return eResult;
 }
 
-extern "C" orxVOID orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
+extern "C" void orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
   sf::Sprite         *poSprite;
-  orxCONST sf::Image *poImage;
+  const sf::Image *poImage;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -763,7 +763,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstBitmap, orxRG
   return eResult;
 }
 
-extern "C" orxRGBA orxDisplay_SFML_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)
+extern "C" orxRGBA orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_pstBitmap)
 {
   sf::Sprite *poSprite;
   sf::Color   oColor;
@@ -786,7 +786,7 @@ extern "C" orxRGBA orxDisplay_SFML_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap
   return stResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite   *poSprite;
   sf::Vector2f  vPosition;
@@ -815,7 +815,7 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, orxCONST orx
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite *poSprite;
   bool        bSmooth;
@@ -905,7 +905,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, orxCONS
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFilename)
+extern "C" orxSTATUS orxDisplay_SFML_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
   orxSTATUS eResult;
 
@@ -935,7 +935,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, 
   return eResult;
 }
 
-extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
+extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(const orxSTRING _zFilename)
 {
   orxBITMAP *pstResult;
   sf::Image *poImage;
@@ -984,7 +984,7 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(orxCONST orxSTRING _zFilename)
   return pstResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1250,7 +1250,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
   return eResult;
 }
 
-extern "C" orxVOID orxDisplay_SFML_Exit()
+extern "C" void orxDisplay_SFML_Exit()
 {
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
@@ -1263,7 +1263,7 @@ extern "C" orxVOID orxDisplay_SFML_Exit()
     orxEvent_RemoveHandler((orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + sf::Event::MouseButtonPressed), EventHandler);
 
     /* For all fonts */
-    while(orxHashTable_FindFirst(sstDisplay.pstFontTable, &u32Key, (orxVOID **)&poFont) != orxHANDLE_UNDEFINED)
+    while(orxHashTable_FindFirst(sstDisplay.pstFontTable, &u32Key, (void **)&poFont) != orxHANDLE_UNDEFINED)
     {
       /* Removes it */
       orxHashTable_Remove(sstDisplay.pstFontTable, u32Key);

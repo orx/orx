@@ -28,7 +28,7 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g2f729cf409fa798b17fd3a26df94c345">orxEVENT_SEND</a>(TYPE, ID, SENDER, RECIPIENT, PAYLOAD)</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> )(orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g30a8b5c0b1b466b6db9da6d6e17497b9">orxEVENT_HANDLER</a> )(const <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)</td></tr>
 
 <tr><td colspan="2"><br><h2>Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> { <br>
@@ -54,17 +54,17 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g783cd657426253992d6717fc99765145">orxEvent_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gb373605311481b2665660cfab21a8066">orxEvent_Setup</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g1a42913c0db622813c78a7b0e7fbc344">orxEvent_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g87566e6845a543353606a607e782d4c4">orxEvent_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gd3653f62476212639c89755441d135aa">orxEvent_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gfa506b8e928baf9e46a4ff20ccaa23c0">orxEvent_AddHandler</a> (<a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gfa506b8e928baf9e46a4ff20ccaa23c0">orxEvent_AddHandler</a> (<a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#g30a8b5c0b1b466b6db9da6d6e17497b9">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a> (<a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g1276f3b9f69a7f1f82a841bafc2ab532">orxEvent_RemoveHandler</a> (<a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, <a class="el" href="group__orx_event.html#g30a8b5c0b1b466b6db9da6d6e17497b9">orxEVENT_HANDLER</a> _pfnEventHandler)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#gab3c585610e6fb7c4bc78b472d10b4f4">orxEvent_Send</a> (orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g3435f918d28e1f6f606b6c76f46cdedb">orxEvent_Send</a> (const <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_event.html#g2305585afe32179ee80f9277892d555d">orxEvent_SendShort</a> (<a class="el" href="group__orx_event.html#g4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a> _eEventType, orxENUM _eEventID)</td></tr>
 
@@ -109,8 +109,8 @@ Event module Module that handles internal events <hr><h2>Define Documentation</h
   EVENT.eID         = (orxENUM)(ID);                                \
   EVENT.hSender     = (orxHANDLE)(SENDER);                          \
   EVENT.hRecipient  = (orxHANDLE)(RECIPIENT);                       \
-  EVENT.pstPayload  = (orxVOID *)(PAYLOAD);                         \
-} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#gb532bf5879a57bc8bb007db388b2f2c7">orxFALSE</a>)
+  EVENT.pstPayload  = (<span class="keywordtype">void</span> *)(PAYLOAD);                            \
+} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#gb65587decc68920707d5876b2775e1a3">orxFALSE</a>)
 </pre></div>Helper defines 
 </div>
 </div><p>
@@ -147,18 +147,18 @@ Event module Module that handles internal events <hr><h2>Define Documentation</h
 {                                                                   \
   <a class="code" href="structorx_e_v_e_n_t.html">orxEVENT</a> stEvent;                                                 \
   <a class="code" href="group__orx_event.html#g5a878336878f2e429bc83fda86366fdf">orxEVENT_INIT</a>(stEvent, TYPE, ID, SENDER, RECIPIENT, PAYLOAD);     \
-  <a class="code" href="group__orx_event.html#gab3c585610e6fb7c4bc78b472d10b4f4">orxEvent_Send</a>(&amp;stEvent);                                          \
-} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#gb532bf5879a57bc8bb007db388b2f2c7">orxFALSE</a>)
+  <a class="code" href="group__orx_event.html#g3435f918d28e1f6f606b6c76f46cdedb">orxEvent_Send</a>(&amp;stEvent);                                          \
+} <span class="keywordflow">while</span>(<a class="code" href="group__orx_type.html#gb65587decc68920707d5876b2775e1a3">orxFALSE</a>)
 </pre></div>
 </div>
 </div><p>
 <hr><h2>Typedef Documentation</h2>
-<a class="anchor" name="gd39dc2513040e3783f7e3be6c30c2747"></a><!-- doxytag: member="orxEvent.h::orxEVENT_HANDLER" ref="gd39dc2513040e3783f7e3be6c30c2747" args=")(orxCONST orxEVENT *_pstEvent)" -->
+<a class="anchor" name="g30a8b5c0b1b466b6db9da6d6e17497b9"></a><!-- doxytag: member="orxEvent.h::orxEVENT_HANDLER" ref="g30a8b5c0b1b466b6db9da6d6e17497b9" args=")(const orxEVENT *_pstEvent)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a>)(orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)          </td>
+          <td class="memname">typedef <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>(orxFASTCALL * <a class="el" href="group__orx_event.html#g30a8b5c0b1b466b6db9da6d6e17497b9">orxEVENT_HANDLER</a>)(const <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *_pstEvent)          </td>
         </tr>
       </table>
 </div>
@@ -232,7 +232,7 @@ Event type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_event.html#g30a8b5c0b1b466b6db9da6d6e17497b9">orxEVENT_HANDLER</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnEventHandler</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -255,12 +255,12 @@ Adds an event handler <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g87566e6845a543353606a607e782d4c4"></a><!-- doxytag: member="orxEvent.h::orxEvent_Exit" ref="g87566e6845a543353606a607e782d4c4" args="()" -->
+<a class="anchor" name="gd3653f62476212639c89755441d135aa"></a><!-- doxytag: member="orxEvent.h::orxEvent_Exit" ref="gd3653f62476212639c89755441d135aa" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxEvent_Exit           </td>
+          <td class="memname">orxDLLAPI void orxEvent_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -307,7 +307,7 @@ Initializes the event Module <dl class="return" compact><dt><b>Returns:</b></dt>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_event.html#gd39dc2513040e3783f7e3be6c30c2747">orxEVENT_HANDLER</a>&nbsp;</td>
+          <td class="paramtype"><a class="el" href="group__orx_event.html#g30a8b5c0b1b466b6db9da6d6e17497b9">orxEVENT_HANDLER</a>&nbsp;</td>
           <td class="paramname"> <em>_pfnEventHandler</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -329,14 +329,14 @@ Removes an event handler <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gab3c585610e6fb7c4bc78b472d10b4f4"></a><!-- doxytag: member="orxEvent.h::orxEvent_Send" ref="gab3c585610e6fb7c4bc78b472d10b4f4" args="(orxCONST orxEVENT *_pstEvent)" -->
+<a class="anchor" name="g3435f918d28e1f6f606b6c76f46cdedb"></a><!-- doxytag: member="orxEvent.h::orxEvent_Send" ref="g3435f918d28e1f6f606b6c76f46cdedb" args="(const orxEVENT *_pstEvent)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxEvent_Send           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="structorx_e_v_e_n_t.html">orxEVENT</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstEvent</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -391,12 +391,12 @@ Sends a simple event <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g783cd657426253992d6717fc99765145"></a><!-- doxytag: member="orxEvent.h::orxEvent_Setup" ref="g783cd657426253992d6717fc99765145" args="()" -->
+<a class="anchor" name="gb373605311481b2665660cfab21a8066"></a><!-- doxytag: member="orxEvent.h::orxEvent_Setup" ref="gb373605311481b2665660cfab21a8066" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxEvent_Setup           </td>
+          <td class="memname">orxDLLAPI void orxEvent_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

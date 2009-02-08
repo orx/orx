@@ -90,14 +90,14 @@ typedef struct __orxDISPLAY_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxDISPLAY_STATIC sstDisplay;
+static orxDISPLAY_STATIC sstDisplay;
 
 
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
 
-orxVOID orxFASTCALL orxDisplay_SDL_EventUpdate(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pContext)
+void orxFASTCALL    orxDisplay_SDL_EventUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   SDL_Event stSDLEvent;
 
@@ -182,7 +182,7 @@ orxDISPLAY_TEXT *orxDisplay_SDL_CreateText()
   return pstResult;
 }
 
-orxVOID orxDisplay_SDL_DeleteText(orxDISPLAY_TEXT *_pstText)
+void orxDisplay_SDL_DeleteText(orxDISPLAY_TEXT *_pstText)
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -192,7 +192,7 @@ orxVOID orxDisplay_SDL_DeleteText(orxDISPLAY_TEXT *_pstText)
   orxLOG("Not yet implemented!");
 }
 
-orxSTATUS orxDisplay_SDL_TransformText(orxBITMAP *_pstDst, orxCONST orxDISPLAY_TEXT *_pstText, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxDisplay_SDL_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -209,7 +209,7 @@ orxSTATUS orxDisplay_SDL_TransformText(orxBITMAP *_pstDst, orxCONST orxDISPLAY_T
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_SetTextString(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zString)
+orxSTATUS orxDisplay_SDL_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -224,7 +224,7 @@ orxSTATUS orxDisplay_SDL_SetTextString(orxDISPLAY_TEXT *_pstText, orxCONST orxST
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_SetTextFont(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zFont)
+orxSTATUS orxDisplay_SDL_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -239,7 +239,7 @@ orxSTATUS orxDisplay_SDL_SetTextFont(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRI
   return eResult;
 }
 
-orxSTRING orxDisplay_SDL_GetTextString(orxCONST orxDISPLAY_TEXT *_pstText)
+orxSTRING orxDisplay_SDL_GetTextString(const orxDISPLAY_TEXT *_pstText)
 {
   orxSTRING zResult = orxNULL;
 
@@ -254,7 +254,7 @@ orxSTRING orxDisplay_SDL_GetTextString(orxCONST orxDISPLAY_TEXT *_pstText)
   return zResult;
 }
 
-orxSTRING orxDisplay_SDL_GetTextFont(orxCONST orxDISPLAY_TEXT *_pstText)
+orxSTRING orxDisplay_SDL_GetTextFont(const orxDISPLAY_TEXT *_pstText)
 {
   orxSTRING zResult = orxNULL;
 
@@ -269,7 +269,7 @@ orxSTRING orxDisplay_SDL_GetTextFont(orxCONST orxDISPLAY_TEXT *_pstText)
   return zResult;
 }
 
-orxSTATUS orxDisplay_SDL_GetTextSize(orxCONST orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxSTATUS orxDisplay_SDL_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -286,7 +286,7 @@ orxSTATUS orxDisplay_SDL_GetTextSize(orxCONST orxDISPLAY_TEXT *_pstText, orxFLOA
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_PrintString(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
+orxSTATUS orxDisplay_SDL_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -306,7 +306,7 @@ orxSTATUS orxDisplay_SDL_PrintString(orxCONST orxBITMAP *_pstBitmap, orxCONST or
   return eResult;
 }
 
-orxVOID orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
+void orxDisplay_SDL_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -416,7 +416,7 @@ orxSTATUS orxDisplay_SDL_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
   return eResult;
 }
 
-orxRGBA orxDisplay_SDL_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)
+orxRGBA orxDisplay_SDL_GetBitmapColor(const orxBITMAP *_pstBitmap)
 {
   orxRGBA stResult = 0;
 
@@ -431,7 +431,7 @@ orxRGBA orxDisplay_SDL_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap)
   return stResult;
 }
 
-orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   SDL_Rect  stSrcRect, stDstRect;
   orxSTATUS eResult;
@@ -460,7 +460,7 @@ orxSTATUS orxDisplay_SDL_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pst
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   SDL_Surface  *pstSurface;
   orxSTATUS     eResult;
@@ -507,7 +507,7 @@ orxSTATUS orxDisplay_SDL_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP 
   return eResult;
 }
 
-orxSTATUS orxDisplay_SDL_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFilename)
+orxSTATUS orxDisplay_SDL_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
   orxSTATUS eResult;
 
@@ -523,7 +523,7 @@ orxSTATUS orxDisplay_SDL_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orx
   return eResult;
 }
 
-orxBITMAP *orxDisplay_SDL_LoadBitmap(orxCONST orxSTRING _zFilename)
+orxBITMAP *orxDisplay_SDL_LoadBitmap(const orxSTRING _zFilename)
 {
   orxBITMAP *pstResult = orxNULL;
 
@@ -537,7 +537,7 @@ orxBITMAP *orxDisplay_SDL_LoadBitmap(orxCONST orxSTRING _zFilename)
   return pstResult;
 }
 
-orxSTATUS orxDisplay_SDL_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxSTATUS orxDisplay_SDL_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -751,7 +751,7 @@ orxSTATUS orxDisplay_SDL_Init()
   return eResult;
 }
 
-orxVOID orxDisplay_SDL_Exit()
+void orxDisplay_SDL_Exit()
 {
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)

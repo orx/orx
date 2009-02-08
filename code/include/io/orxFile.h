@@ -54,7 +54,7 @@ typedef struct __orxFILE_t orxFILE;
 
 
 /** File module setup */
-extern orxDLLAPI orxVOID                orxFile_Setup();
+extern orxDLLAPI void                   orxFile_Setup();
 
 /** Inits the File Module
  */
@@ -62,14 +62,14 @@ extern orxDLLAPI orxSTATUS              orxFile_Init();
 
 /** Exits from the File Module
  */
-extern orxDLLAPI orxVOID                orxFile_Exit();
+extern orxDLLAPI void                   orxFile_Exit();
 
 /** Opens a file for later read or write operation
  * @param _zPath         (IN)      Full file's path to open
  * @param _u32OpenFlags  (IN)      List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
-extern orxDLLAPI orxFILE*               orxFile_Open(orxCONST orxSTRING _zPath, orxU32 _u32OpenFlags);
+extern orxDLLAPI orxFILE*               orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags);
 
 /** Reads data from a file
  * @param _pReadData     (OUT)     Pointer where will be stored datas
@@ -78,7 +78,7 @@ extern orxDLLAPI orxFILE*               orxFile_Open(orxCONST orxSTRING _zPath, 
  * @param _pstFile       (IN)      Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-extern orxDLLAPI orxU32                 orxFile_Read(orxVOID *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32                 orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** writes data to a file
  * @param _pDataToWrite  (IN)      Pointer where will be stored datas
@@ -87,7 +87,7 @@ extern orxDLLAPI orxU32                 orxFile_Read(orxVOID *_pReadData, orxU32
  * @param _pstFile       (IN)      Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-extern orxDLLAPI orxU32                 orxFile_Write(orxVOID *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32                 orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** Gets text line from a file
  * @param _zBuffer  (OUT)     Pointer where will be stored datas

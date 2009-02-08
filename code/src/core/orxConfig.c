@@ -207,7 +207,7 @@ typedef struct __orxCONFIG_STATIC_t
 
 /** static data
  */
-orxSTATIC orxCONFIG_STATIC sstConfig;
+static orxCONFIG_STATIC sstConfig;
 
 
 /***************************************************************************
@@ -217,7 +217,7 @@ orxSTATIC orxCONFIG_STATIC sstConfig;
 /** Computes a working config value (process random, inheritance and list attributes)
  * @param[in] _pstValue         Concerned config value
  */
-orxSTATIC orxINLINE orxVOID orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstValue)
+static orxINLINE void orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstValue)
 {
   orxCHAR  *pc;
   orxU8     u8Counter;
@@ -280,7 +280,7 @@ orxSTATIC orxINLINE orxVOID orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstV
 /** Restores a processed config value to its literal (for printing/saving/deleting purposes)
  * @param[in] _pstValue         Concerned config value
  */
-orxSTATIC orxINLINE orxVOID orxConfig_RestoreLiteralValue(orxCONFIG_VALUE *_pstValue)
+static orxINLINE void orxConfig_RestoreLiteralValue(orxCONFIG_VALUE *_pstValue)
 {
   orxCHAR  *pc;
   orxU8     u8Counter;
@@ -312,7 +312,7 @@ orxSTATIC orxINLINE orxVOID orxConfig_RestoreLiteralValue(orxCONFIG_VALUE *_pstV
  * @param[in] _pstValue         Concerned config value
  * @param[in] _s32Index         Index of the desired value
  */
-orxSTATIC orxINLINE orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32Index)
+static orxINLINE orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32Index)
 {
   orxSTRING zResult;
   orxS32    s32Counter;
@@ -340,7 +340,7 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetListValue(orxCONFIG_VALUE *_pstValue,
  * @param[in] _acBuffer         Buffer to en/de-crypt
  * @param[in] _u32BufferSize    Buffer size
  */
-orxSTATIC orxINLINE orxVOID orxConfig_CryptBuffer(orxCHAR *_acBuffer, orxU32 _u32BufferSize)
+static orxINLINE void orxConfig_CryptBuffer(orxCHAR *_acBuffer, orxU32 _u32BufferSize)
 {
   orxCHAR *pc, *pcKey, *pcEndKey, *pcStartKey;
 
@@ -371,7 +371,7 @@ orxSTATIC orxINLINE orxVOID orxConfig_CryptBuffer(orxCHAR *_acBuffer, orxU32 _u3
  * @param[in] _u32KeyID         Entry key ID
  * @return                      orxCONFIG_ENTRY / orxNULL
  */
-orxSTATIC orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
+static orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
 {
   orxCONFIG_ENTRY *pstResult = orxNULL, *pstEntry;
 
@@ -401,7 +401,7 @@ orxSTATIC orxINLINE orxCONFIG_ENTRY *orxConfig_GetEntry(orxU32 _u32KeyID)
  * @param[in] _u32KeyID         Entry key ID
  * @return                      orxCONFIG_VALUE / orxNULL
  */
-orxSTATIC orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
+static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCONFIG_VALUE  *pstResult = orxNULL;
@@ -505,7 +505,7 @@ orxSTATIC orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(orxU32 _u32KeyID)
  * @param[in] _bBlockMode       Block mode (ie. ignore special characters)?
  * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue, orxBOOL _bBlockMode)
+static orxINLINE orxSTATUS orxConfig_AddEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxSTATUS         eResult = orxSTATUS_FAILURE;
@@ -586,7 +586,7 @@ orxSTATIC orxINLINE orxSTATUS orxConfig_AddEntry(orxCONST orxSTRING _zKey, orxCO
  * @param[in] _pstSection       Concerned section
  * @param[in] _pstEntry         Entry to delete
  */
-orxSTATIC orxINLINE orxVOID orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection, orxCONFIG_ENTRY *_pstEntry)
+static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection, orxCONFIG_ENTRY *_pstEntry)
 {
   /* Checks */
   orxASSERT(_pstEntry != orxNULL);
@@ -609,7 +609,7 @@ orxSTATIC orxINLINE orxVOID orxConfig_DeleteEntry(orxCONFIG_SECTION *_pstSection
  * @param[in] _u32SectionID     ID of the section to create
  * @param[in] _u32ParentID      ID of the parent of the section to create
  */
-orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRING _zSectionName, orxU32 _u32SectionID, orxU32 _u32ParentID)
+static orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(const orxSTRING _zSectionName, orxU32 _u32SectionID, orxU32 _u32ParentID)
 {
   orxCONFIG_SECTION *pstSection;
 
@@ -676,7 +676,7 @@ orxSTATIC orxINLINE orxCONFIG_SECTION *orxConfig_CreateSection(orxCONST orxSTRIN
 /** Deletes a section
  * @param[in] _pstSection       Section to delete
  */
-orxSTATIC orxINLINE orxVOID orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
+static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
 {
   orxCONFIG_ENTRY *pstEntry;
 
@@ -705,7 +705,7 @@ orxSTATIC orxINLINE orxVOID orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSecti
 
 /** Clears all config data
  */
-orxSTATIC orxINLINE orxVOID orxConfig_Clear()
+static orxINLINE void orxConfig_Clear()
 {
   orxCONFIG_SECTION *pstSection;
 
@@ -724,7 +724,7 @@ orxSTATIC orxINLINE orxVOID orxConfig_Clear()
  * @param[in]   _s32ListIndex      List index
  * @return The value
  */
-orxSTATIC orxINLINE orxS32 orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
+static orxINLINE orxS32 orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
 {
   orxS32 s32Result = 0;
 
@@ -842,7 +842,7 @@ orxSTATIC orxINLINE orxS32 orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
  * @param[in]   _s32ListIndex      List index
  * @return The value
  */
-orxSTATIC orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
+static orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
 {
   orxU32 u32Result = 0;
 
@@ -960,7 +960,7 @@ orxSTATIC orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
  * @param[in]   _s32ListIndex      List index
  * @return The value
  */
-orxSTATIC orxINLINE orxFLOAT orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
+static orxINLINE orxFLOAT orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -1078,7 +1078,7 @@ orxSTATIC orxINLINE orxFLOAT orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstVa
  * @param[in]   _s32ListIndex      List index
  * @return The value
  */
-orxSTATIC orxINLINE orxSTRING orxConfig_GetStringFromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
+static orxINLINE orxSTRING orxConfig_GetStringFromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
 {
   orxSTRING zResult;
 
@@ -1123,7 +1123,7 @@ orxSTATIC orxINLINE orxSTRING orxConfig_GetStringFromValue(orxCONFIG_VALUE *_pst
  * @param[in]   _s32ListIndex      List index
  * @return The value
  */
-orxSTATIC orxINLINE orxBOOL orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
+static orxINLINE orxBOOL orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -1184,7 +1184,7 @@ orxSTATIC orxINLINE orxBOOL orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValu
  * @param[out]  _pvVector         Storage for vector value
  * @return The value
  */
-orxSTATIC orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex, orxVECTOR *_pvVector)
+static orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstValue, orxS32 _s32ListIndex, orxVECTOR *_pvVector)
 {
   orxVECTOR *pvResult = orxNULL;
 
@@ -1308,7 +1308,7 @@ orxSTATIC orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_ps
 
 /** Config module setup
  */
-orxVOID orxConfig_Setup()
+void orxConfig_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_MEMORY);
@@ -1427,7 +1427,7 @@ orxSTATUS orxConfig_Init()
 
 /** Exits from the config module
  */
-orxVOID orxConfig_Exit()
+void orxConfig_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
@@ -1458,7 +1458,7 @@ orxVOID orxConfig_Exit()
  * @param[in] _zEncryption key  Encryption key to use, orxNULL to clear
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(orxCONST orxSTRING _zEncryptionKey)
+orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1493,7 +1493,7 @@ orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(orxCONST orxSTRING _zEncryption
  * @param[in] _zBaseName        Base name used for default config file
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetBaseName(orxCONST orxSTRING _zBaseName)
+orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1547,7 +1547,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(orxCONST orxSTRING _zBaseName)
  * @param[in] _zSectionName     Section name to select
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
+orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1663,7 +1663,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(orxCONST orxSTRING _zSectionName)
 /** Gets current working section
  * @return Current selected section
  */
-orxSTRING orxConfig_GetCurrentSection()
+const orxSTRING orxConfig_GetCurrentSection()
 {
   orxSTRING zResult;
 
@@ -1690,7 +1690,7 @@ orxSTRING orxConfig_GetCurrentSection()
  * @param[in] _zFileName        File name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_Load(orxCONST orxSTRING _zFileName)
+orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 {
   FILE     *pstFile;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -2181,7 +2181,7 @@ orxSTATUS orxConfig_ReloadHistory()
  * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUseEncryption, orxCONST orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
+orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback)
 {
   FILE     *pstFile;
   orxSTRING zFileName;
@@ -2350,7 +2350,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(orxCONST orxSTRING _zFileName, orxBOOL _bUs
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxConfig_HasValue(orxCONST orxSTRING _zKey)
+orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
 {
   orxBOOL bResult;
 
@@ -2370,7 +2370,7 @@ orxBOOL orxFASTCALL orxConfig_HasValue(orxCONST orxSTRING _zKey)
  * @param[in] _zSectionName     Section name
  * @return orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
+orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
   orxU32              u32ID;
@@ -2406,7 +2406,7 @@ orxBOOL orxFASTCALL orxConfig_HasSection(orxCONST orxSTRING _zSectionName)
 /** Clears section
  * @param[in] _zSectionName     Section name to clear
  */
-orxSTATUS orxFASTCALL orxConfig_ClearSection(orxCONST orxSTRING _zSectionName)
+orxSTATUS orxFASTCALL orxConfig_ClearSection(const orxSTRING _zSectionName)
 {
   orxCONFIG_SECTION  *pstSection;
   orxU32              u32ID;
@@ -2446,7 +2446,7 @@ orxSTATUS orxFASTCALL orxConfig_ClearSection(orxCONST orxSTRING _zSectionName)
  * @param[in] _zKey             Key name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_ClearValue(orxCONST orxSTRING _zKey)
+orxSTATUS orxFASTCALL orxConfig_ClearValue(const orxSTRING _zKey)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxSTATUS         eResult;
@@ -2482,7 +2482,7 @@ orxSTATUS orxFASTCALL orxConfig_ClearValue(orxCONST orxSTRING _zKey)
  * @param[in] _zKey             Key name
  * @return The value
  */
-orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
+orxS32 orxFASTCALL orxConfig_GetS32(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
   orxS32            s32Result;
@@ -2515,7 +2515,7 @@ orxS32 orxFASTCALL orxConfig_GetS32(orxCONST orxSTRING _zKey)
  * @param[in] _zKey             Key name
  * @return The value
  */
-orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
+orxU32 orxFASTCALL orxConfig_GetU32(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
   orxU32            u32Result;
@@ -2548,7 +2548,7 @@ orxU32 orxFASTCALL orxConfig_GetU32(orxCONST orxSTRING _zKey)
  * @param[in] _zKey             Key name
  * @return The value
  */
-orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
+orxFLOAT orxFASTCALL orxConfig_GetFloat(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
   orxFLOAT          fResult;
@@ -2581,7 +2581,7 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(orxCONST orxSTRING _zKey)
  * @param[in] _zKey             Key name
  * @return The value
  */
-orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
+const orxSTRING orxFASTCALL orxConfig_GetString(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
   orxSTRING         zResult;
@@ -2614,7 +2614,7 @@ orxSTRING orxFASTCALL orxConfig_GetString(orxCONST orxSTRING _zKey)
  * @param[in] _zKey             Key name
  * @return The value
  */
-orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
+orxBOOL orxFASTCALL orxConfig_GetBool(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
   orxBOOL           bResult;
@@ -2648,7 +2648,7 @@ orxBOOL orxFASTCALL orxConfig_GetBool(orxCONST orxSTRING _zKey)
  * @param[out]  _pvVector         Storage for vector value
  * @return The value
  */
-orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *_pvVector)
+orxVECTOR *orxFASTCALL orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pvVector)
 {
   orxCONFIG_VALUE  *pstValue;
   orxVECTOR        *pvResult;
@@ -2683,7 +2683,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(orxCONST orxSTRING _zKey, orxVECTOR *
  * @param[in] _s32Value         Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Value)
+orxSTATUS orxFASTCALL orxConfig_SetS32(const orxSTRING _zKey, orxS32 _s32Value)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCHAR           zValue[16];
@@ -2722,7 +2722,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(orxCONST orxSTRING _zKey, orxS32 _s32Valu
  * @param[in] _u32Value         Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetU32(orxCONST orxSTRING _zKey, orxU32 _u32Value)
+orxSTATUS orxFASTCALL orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCHAR           zValue[16];
@@ -2761,7 +2761,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU32(orxCONST orxSTRING _zKey, orxU32 _u32Valu
  * @param[in] _fValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fValue)
+orxSTATUS orxFASTCALL orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCHAR           zValue[16];
@@ -2800,7 +2800,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(orxCONST orxSTRING _zKey, orxFLOAT _fVa
  * @param[in] _fValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetString(orxCONST orxSTRING _zKey, orxCONST orxSTRING _zValue)
+orxSTATUS orxFASTCALL orxConfig_SetString(const orxSTRING _zKey, const orxSTRING _zValue)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxSTATUS         eResult;
@@ -2833,7 +2833,7 @@ orxSTATUS orxFASTCALL orxConfig_SetString(orxCONST orxSTRING _zKey, orxCONST orx
  * @param[in] _fValue           Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValue)
+orxSTATUS orxFASTCALL orxConfig_SetBool(const orxSTRING _zKey, orxBOOL _bValue)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxSTATUS         eResult;
@@ -2865,7 +2865,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(orxCONST orxSTRING _zKey, orxBOOL _bValu
  * @param[in] _pvValue         Value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orxVECTOR *_pvValue)
+orxSTATUS orxFASTCALL orxConfig_SetVector(const orxSTRING _zKey, const orxVECTOR *_pvValue)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCHAR           zValue[64];
@@ -2904,7 +2904,7 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(orxCONST orxSTRING _zKey, orxCONST orx
  * @param[in] _zKey             Key name
  * @return orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxConfig_IsList(orxCONST orxSTRING _zKey)
+orxBOOL orxFASTCALL orxConfig_IsList(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
   orxBOOL           bResult = orxFALSE;
@@ -2932,7 +2932,7 @@ orxBOOL orxFASTCALL orxConfig_IsList(orxCONST orxSTRING _zKey)
  * @param[in] _zKey             Key name
  * @return List counter if it's a valid list, 0 otherwise
  */
-orxS32 orxFASTCALL orxConfig_GetListCounter(orxCONST orxSTRING _zKey)
+orxS32 orxFASTCALL orxConfig_GetListCounter(const orxSTRING _zKey)
 {
   orxCONFIG_VALUE  *pstValue;
   orxS32            s32Result = 0;
@@ -2961,7 +2961,7 @@ orxS32 orxFASTCALL orxConfig_GetListCounter(orxCONST orxSTRING _zKey)
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-orxS32 orxFASTCALL orxConfig_GetListS32(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+orxS32 orxFASTCALL orxConfig_GetListS32(const orxSTRING _zKey, orxS32 _s32ListIndex)
 {
   orxCONFIG_VALUE  *pstValue;
   orxS32            s32Result = 0;
@@ -3000,7 +3000,7 @@ orxS32 orxFASTCALL orxConfig_GetListS32(orxCONST orxSTRING _zKey, orxS32 _s32Lis
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-orxU32 orxFASTCALL orxConfig_GetListU32(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+orxU32 orxFASTCALL orxConfig_GetListU32(const orxSTRING _zKey, orxS32 _s32ListIndex)
 {
   orxCONFIG_VALUE  *pstValue;
   orxU32            u32Result = 0;
@@ -3039,7 +3039,7 @@ orxU32 orxFASTCALL orxConfig_GetListU32(orxCONST orxSTRING _zKey, orxS32 _s32Lis
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-orxFLOAT orxFASTCALL orxConfig_GetListFloat(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+orxFLOAT orxFASTCALL orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32ListIndex)
 {
   orxCONFIG_VALUE  *pstValue;
   orxFLOAT          fResult = orxFLOAT_0;
@@ -3078,7 +3078,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(orxCONST orxSTRING _zKey, orxS32 _s3
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-orxSTRING orxFASTCALL orxConfig_GetListString(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+const orxSTRING orxFASTCALL orxConfig_GetListString(const orxSTRING _zKey, orxS32 _s32ListIndex)
 {
   orxCONFIG_VALUE  *pstValue;
   orxSTRING         zResult = orxSTRING_EMPTY;
@@ -3117,7 +3117,7 @@ orxSTRING orxFASTCALL orxConfig_GetListString(orxCONST orxSTRING _zKey, orxS32 _
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
  */
-orxBOOL orxFASTCALL orxConfig_GetListBool(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex)
+orxBOOL orxFASTCALL orxConfig_GetListBool(const orxSTRING _zKey, orxS32 _s32ListIndex)
 {
   orxCONFIG_VALUE  *pstValue;
   orxBOOL           bResult = orxFALSE;
@@ -3157,7 +3157,7 @@ orxBOOL orxFASTCALL orxConfig_GetListBool(orxCONST orxSTRING _zKey, orxS32 _s32L
  * @param[out]  _pvVector         Storage for vector value
  * @return The value
  */
-orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector)
+orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector)
 {
   orxCONFIG_VALUE  *pstValue;
   orxVECTOR        *pvResult = orxNULL;
@@ -3197,7 +3197,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(orxCONST orxSTRING _zKey, orxS32 
  * @param[in] _u32Number        Number of values
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxConfig_SetStringList(orxCONST orxSTRING _zKey, orxCONST orxSTRING _azValue[], orxU32 _u32Number)
+orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)
 {
   orxCONFIG_ENTRY  *pstEntry;
   orxCHAR           acBuffer[orxCONFIG_KU32_BUFFER_SIZE];

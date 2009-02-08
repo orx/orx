@@ -80,7 +80,7 @@ typedef struct __orxRENDER_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxRENDER_STATIC sstRender;
+static orxRENDER_STATIC sstRender;
 
 
 /***************************************************************************
@@ -93,7 +93,7 @@ orxSTATIC orxRENDER_STATIC sstRender;
  * @param[in]   _pstFrame         Rendering frame
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstObject, orxBITMAP *_pstRenderBitmap, orxFRAME *_pstRenderFrame)
+static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject, orxBITMAP *_pstRenderBitmap, orxFRAME *_pstRenderFrame)
 {
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_FAILURE;
@@ -445,7 +445,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxRender_RenderObject(orxCONST orxOBJECT *_pstO
 /** Renders a viewport
  * @param[in]   _pstViewport    Viewport to render
  */
-orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstViewport)
+static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
@@ -730,7 +730,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
                 /* Uses differential scrolling? */
                 if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
                 {
-                  orxREGISTER orxFLOAT fScroll;
+                  register orxFLOAT fScroll;
 
                   /* Gets scroll coefficient */
                   fScroll = (stFrustum.vBR.fZ - stFrustum.vTL.fZ) / (vObjectPos.fZ - stFrustum.vTL.fZ);
@@ -880,7 +880,7 @@ orxSTATIC orxINLINE orxVOID orxRender_RenderViewport(orxCONST orxVIEWPORT *_pstV
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pstContext     Context sent when registering callback to the clock
  */
-orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL    orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVIEWPORT  *pstViewport;
   orxSTRING     zPreviousSection;
@@ -946,7 +946,7 @@ orxVOID orxFASTCALL orxRender_RenderAll(orxCONST orxCLOCK_INFO *_pstClockInfo, o
  * @param[out] _pvWorldPosition         Corresponding world position
  * @return orxVECTOR / orxNULL
  */
-orxVECTOR *orxRender_Home_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxVECTOR *orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   orxVIEWPORT  *pstViewport;
   orxVECTOR    *pvResult = orxNULL;
@@ -1132,7 +1132,7 @@ orxSTATUS orxRender_Home_Init()
 
 /** Exits from the Render module
  */
-orxVOID orxRender_Home_Exit()
+void orxRender_Home_Exit()
 {
   /* Initialized? */
   if(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY)

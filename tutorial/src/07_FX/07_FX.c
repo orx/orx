@@ -100,7 +100,7 @@ orxSTRING zSelectedFX = "WobbleFX";
 
 /** Event handler
  */
-orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   /* Input event? */
   if(_pstEvent->eType == orxEVENT_TYPE_INPUT)
@@ -113,8 +113,17 @@ orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
       /* Gets event payload */
       pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Logs info */
-      orxLOG("[%s] triggered by '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->eType, pstPayload->eID));
+      /* Has a multi-input info? */
+      if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
+      {
+        /* Logs info */
+        orxLOG("[%s] triggered by '%s' + '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1]));
+      }
+      else
+      {
+        /* Logs info */
+        orxLOG("[%s] triggered by '%s'.", pstPayload->zInputName, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]));
+      }
     }
   }
   else
@@ -170,7 +179,7 @@ orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 
 /** Update callback
  */
-orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   /* *** FX CONTROLS *** */
 

@@ -65,7 +65,7 @@ typedef struct __orxJOYSTICK_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxJOYSTICK_STATIC sstJoystick;
+static orxJOYSTICK_STATIC sstJoystick;
 
 
 /***************************************************************************
@@ -154,7 +154,7 @@ orxSTATUS orxJoystick_SDL_Init()
   return eResult;
 }
 
-orxVOID orxJoystick_SDL_Exit()
+void orxJoystick_SDL_Exit()
 {
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)

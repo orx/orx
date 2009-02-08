@@ -49,7 +49,7 @@
 
 /** Mouse module setup
  */
-orxVOID orxMouse_Setup()
+void orxMouse_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_PLUGIN);
@@ -64,7 +64,7 @@ orxVOID orxMouse_Setup()
  * @param _eButton          Concerned button
  * @return Button's name
  */
-orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
+const orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
 {
   orxSTRING zResult;
 
@@ -105,13 +105,13 @@ orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Init, orxSTATUS, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, orxVOID, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_SetPosition, orxSTATUS, orxCONST orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Init, orxSTATUS, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_Exit, void, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_SetPosition, orxSTATUS, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetPosition, orxVECTOR *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_IsButtonPressed, orxBOOL, orxMOUSE_BUTTON);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetMoveDelta, orxVECTOR *, orxVECTOR *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetWheelDelta, orxFLOAT, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_GetWheelDelta, orxFLOAT, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxMouse_ShowCursor, orxSTATUS, orxBOOL);
 
 
@@ -143,7 +143,7 @@ orxSTATUS orxMouse_Init()
 
 /** Exits from the mouse module
  */
-orxVOID orxMouse_Exit()
+void orxMouse_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Exit)();
 }
@@ -152,7 +152,7 @@ orxVOID orxMouse_Exit()
 * @param[in] _pvPosition  Mouse position
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-orxSTATUS orxMouse_SetPosition(orxCONST orxVECTOR *_pvPosition)
+orxSTATUS orxMouse_SetPosition(const orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_SetPosition)(_pvPosition);
 }

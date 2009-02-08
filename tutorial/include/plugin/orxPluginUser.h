@@ -68,7 +68,7 @@
 #endif /* __cplusplus */
 
 /* Defines a user plugin entry function (that takes no arguments and return an orxSTATUS value) */
-#define orxPLUGIN_DECLARE_ENTRY_POINT(ENTRY_FUNCTION) \
+#define orxPLUGIN_DECLARE_ENTRY_POINT(ENTRY_FUNCTION)   \
 extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
 {                                                       \
   orxSTATUS eResult;                                    \
@@ -127,7 +127,7 @@ extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME
 }
 
 #define orxPLUGIN_USER_CORE_FUNCTION_START(PLUGIN_SUFFIX) \
-  orxSTATIC orxPLUGIN_USER_FUNCTION_INFO sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
+  static orxPLUGIN_USER_FUNCTION_INFO sau32##PLUGIN_SUFFIX##_Function[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER]; \
   extern orxPLUGIN_KZ_IMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
   { \
     orxSTATUS eResult = orxSTATUS_SUCCESS; \

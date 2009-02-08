@@ -54,7 +54,7 @@ typedef struct __orxSCRIPT_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxSCRIPT_STATIC sstScript;
+static orxSCRIPT_STATIC sstScript;
 
 /***************************************************************************
  * Plugin related                                                          *
@@ -66,7 +66,7 @@ orxSTATIC orxSCRIPT_STATIC sstScript;
 
  returns: nothing
  ***************************************************************************/
-orxVOID orxScript_Setup()
+void orxScript_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SCRIPT, orxMODULE_ID_PLUGIN);
@@ -79,13 +79,13 @@ orxVOID orxScript_Setup()
  * @param _zValue (IN) String value
  * @return Returns the type associated to the string
  */
-orxSCRIPT_TYPE orxScript_GetTypeValue(orxCONST orxSTRING _zValue)
+orxSCRIPT_TYPE orxScript_GetTypeValue(const orxSTRING _zValue)
 {
   /* Default return value */
   orxSCRIPT_TYPE eRet = orxSCRIPT_TYPE_NONE;
 
-  /* orxVOID ? */
-  if(orxString_Compare(_zValue, "orxVOID") == 0)
+  /* void ? */
+  if(orxString_Compare(_zValue, "void") == 0)
   {
     eRet = orxSCRIPT_TYPE_VOID;
   }
@@ -127,7 +127,7 @@ orxSTATUS orxScript_Init()
 
 /** Uninitialize the Script Module
  */
-orxVOID orxScript_Exit()
+void orxScript_Exit()
 {
   /** Calls plugin exit */
   orxScript_PluginExit();
@@ -142,7 +142,7 @@ orxVOID orxScript_Exit()
  * @param _pfnFunction    (IN)  Function pointer
  * @param _zParamTypes    (IN)  List of type for the function (the first parameter is the return type)
  */
-orxSTATUS orxScript_RegisterFunctionGlobal(orxCONST orxSTRING _zFunctionName, orxSCRIPT_FUNCTION_PTR _pfnFunction, orxCONST orxSTRING _zParamTypes)
+orxSTATUS orxScript_RegisterFunctionGlobal(const orxSTRING _zFunctionName, orxSCRIPT_FUNCTION_PTR _pfnFunction, const orxSTRING _zParamTypes)
 {
   orxS32  s32Count, s32Index, s32Previous;
   orxBOOL bEnd;
@@ -238,7 +238,7 @@ void orxScript_Test(float j)
  * @param _pstOutputValue    (OUT) Returned value from the function
  * @return Return orxSTATUS_SUCCESS if the function has been correctly executed, else orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCONST orxSCRIPT_PARAM *_pstInputValues, orxSCRIPT_PARAM *_pstOutputValue)
+orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, const orxSCRIPT_PARAM *_pstInputValues, orxSCRIPT_PARAM *_pstOutputValue)
 {
   orxS32 s32Index, s32StackPointer;
 
@@ -361,8 +361,8 @@ orxSTATUS orxScript_ExecuteFunction(orxSCRIPT_FUNCTION *_pstFunctionInfo, orxCON
       _pstOutputValue[0].eType = _pstFunctionInfo->aeParamsType[0];
 
       /* Gets the result pointer */
-      //orxVOID *pValue;
-      //pValue = (orxVOID *)_pstOutputValue[0].ps32Value;
+      //void *pValue;
+      //pValue = (void *)_pstOutputValue[0].ps32Value;
 
 #if defined(__orxGCC__) && !defined(__orxGP2X__) && !defined(__orxPPC__)
     /* GCC Use old AT&T convention to write ASM :( */
@@ -409,17 +409,17 @@ orxSCRIPT_FUNCTION *orxScript_GetFunctionInfo(orxS32 _s32Index)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginInit, orxSTATUS, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginExit, orxVOID, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunFile, orxSTATUS, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunString, orxSTATUS, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetType, orxSCRIPT_TYPE, orxCONST orxSTRING);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetS32Value, orxSTATUS, orxCONST orxSTRING, orxS32*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetFloatValue, orxSTATUS, orxCONST orxSTRING, orxFLOAT*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetStringValue, orxSTATUS, orxCONST orxSTRING, orxSTRING*);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetS32Value, orxSTATUS, orxCONST orxSTRING, orxS32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetFloatValue, orxSTATUS, orxCONST orxSTRING, orxFLOAT);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetStringValue, orxSTATUS, orxCONST orxSTRING, orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginInit, orxSTATUS, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_PluginExit, void, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunFile, orxSTATUS, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RunString, orxSTATUS, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetType, orxSCRIPT_TYPE, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetS32Value, orxSTATUS, const orxSTRING, orxS32*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetFloatValue, orxSTATUS, const orxSTRING, orxFLOAT*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_GetStringValue, orxSTATUS, const orxSTRING, orxSTRING*);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetS32Value, orxSTATUS, const orxSTRING, orxS32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetFloatValue, orxSTATUS, const orxSTRING, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_SetStringValue, orxSTATUS, const orxSTRING, orxSTRING);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxScript_RegisterFunction, orxSTATUS, orxS32);
 
 
@@ -453,7 +453,7 @@ orxSTATUS orxScript_PluginInit()
 
 /** Uninitializes the Script Module
  */
-orxVOID orxScript_PluginExit()
+void orxScript_PluginExit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_PluginExit)();
 }
@@ -462,7 +462,7 @@ orxVOID orxScript_PluginExit()
  * @param _zFileName  (IN)  File name
  * @return Returns Success if valid parsing/execution, else returns orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_RunFile(orxCONST orxSTRING _zFileName)
+orxSTATUS orxScript_RunFile(const orxSTRING _zFileName)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_RunFile)(_zFileName);
 }
@@ -471,7 +471,7 @@ orxSTATUS orxScript_RunFile(orxCONST orxSTRING _zFileName)
  * @param _zScript    (IN)  script to parse
  * @return Returns Success if valid parsing/execution, else returns orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_RunString(orxCONST orxSTRING _zScript)
+orxSTATUS orxScript_RunString(const orxSTRING _zScript)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_RunString)(_zScript);
 }
@@ -481,7 +481,7 @@ orxSTATUS orxScript_RunString(orxCONST orxSTRING _zScript)
  * @param _zVar       (IN) Variable name
  * @return Returns the type of the given variable. Returns orxSCRIPT_TYPE_NONE if variable not found.
  */
-orxSCRIPT_TYPE orxScript_GetType(orxCONST orxSTRING _zVar)
+orxSCRIPT_TYPE orxScript_GetType(const orxSTRING _zVar)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_GetType)(_zVar);
 }
@@ -491,7 +491,7 @@ orxSCRIPT_TYPE orxScript_GetType(orxCONST orxSTRING _zVar)
  * @param _bOutValue  (OUT) Signed 32 bits returns value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_GetS32Value(orxCONST orxSTRING _zVar, orxS32 *_s32OutValue)
+orxSTATUS orxScript_GetS32Value(const orxSTRING _zVar, orxS32 *_s32OutValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_GetS32Value)(_zVar, _s32OutValue);
 }
@@ -501,7 +501,7 @@ orxSTATUS orxScript_GetS32Value(orxCONST orxSTRING _zVar, orxS32 *_s32OutValue)
  * @param _fOutValue  (OUT) Float returns value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_GetFloatValue(orxCONST orxSTRING _zVar, orxFLOAT *_fOutValue)
+orxSTATUS orxScript_GetFloatValue(const orxSTRING _zVar, orxFLOAT *_fOutValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_GetFloatValue)(_zVar, _fOutValue);
 }
@@ -511,7 +511,7 @@ orxSTATUS orxScript_GetFloatValue(orxCONST orxSTRING _zVar, orxFLOAT *_fOutValue
  * @param _zOutValue  (OUT) String returns value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_GetStringValue(orxCONST orxSTRING _zVar, orxSTRING *_zOutValue)
+orxSTATUS orxScript_GetStringValue(const orxSTRING _zVar, orxSTRING *_zOutValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_GetStringValue)(_zVar, _zOutValue);
 }
@@ -521,7 +521,7 @@ orxSTATUS orxScript_GetStringValue(orxCONST orxSTRING _zVar, orxSTRING *_zOutVal
  * @param _s32Value   (IN) Signed 32 bits value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_SetS32Value(orxCONST orxSTRING _zVar, orxS32 _s32Value)
+orxSTATUS orxScript_SetS32Value(const orxSTRING _zVar, orxS32 _s32Value)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_SetS32Value)(_zVar, _s32Value);
 }
@@ -531,7 +531,7 @@ orxSTATUS orxScript_SetS32Value(orxCONST orxSTRING _zVar, orxS32 _s32Value)
  * @param _fValue     (IN) Float value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_SetFloatValue(orxCONST orxSTRING _zVar, orxFLOAT _fValue)
+orxSTATUS orxScript_SetFloatValue(const orxSTRING _zVar, orxFLOAT _fValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_SetFloatValue)(_zVar, _fValue);
 }
@@ -541,7 +541,7 @@ orxSTATUS orxScript_SetFloatValue(orxCONST orxSTRING _zVar, orxFLOAT _fValue)
  * @param _zValue     (IN) String value
  * @return Returns orxSTATUS_SUCCESS is variable exists and is of the right type, else returns orxSTATUS_FAILURE
  */
-orxSTATUS orxScript_SetStringValue(orxCONST orxSTRING _zVar, orxSTRING _zValue)
+orxSTATUS orxScript_SetStringValue(const orxSTRING _zVar, orxSTRING _zValue)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxScript_SetStringValue)(_zVar, _zValue);
 }

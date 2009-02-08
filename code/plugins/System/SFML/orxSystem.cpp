@@ -62,7 +62,7 @@ typedef struct __orxSYSTEM_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxSYSTEM_STATIC sstSystem;
+static orxSYSTEM_STATIC sstSystem;
 
 
 /***************************************************************************
@@ -103,7 +103,7 @@ extern "C" orxSTATUS orxSystem_SFML_Init()
 
 /** Exit the system module
  */
-extern "C" orxVOID orxSystem_SFML_Exit()
+extern "C" void orxSystem_SFML_Exit()
 {
   /* Module initialized ? */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
@@ -150,7 +150,7 @@ extern "C" orxS32 orxSystem_SFML_GetRealTime()
 /** Delays the program for given number of seconds.
  * @param[in] _fSeconds Number of seconds to wait.
  */
-extern "C" orxVOID orxSystem_SFML_Delay(orxFLOAT _fSeconds)
+extern "C" void orxSystem_SFML_Delay(orxFLOAT _fSeconds)
 {
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);

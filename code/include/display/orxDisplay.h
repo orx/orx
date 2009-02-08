@@ -117,14 +117,14 @@ typedef struct __orxCOLOR_t
 
 /** Display module setup
  */
-extern orxDLLAPI orxVOID            orxDisplay_Setup();
+extern orxDLLAPI void            orxDisplay_Setup();
 
 /** Sets all components from an orxRGBA
  * @param[in]   _pstColor       Concerned color
  * @param[in]   _stRGBA         RGBA values to set
  * @return      orxCOLOR
  */
-orxSTATIC orxINLINE orxCOLOR *      orxColor_SetRGBA(orxCOLOR *_pstColor, orxRGBA _stRGBA)
+static orxINLINE orxCOLOR *      orxColor_SetRGBA(orxCOLOR *_pstColor, orxRGBA _stRGBA)
 {
   orxCOLOR *pstResult = _pstColor;
 
@@ -147,7 +147,7 @@ orxSTATIC orxINLINE orxCOLOR *      orxColor_SetRGBA(orxCOLOR *_pstColor, orxRGB
  * @param[in]   _fAlpha         Normalized alpha component
  * @return      orxCOLOR
  */
-orxSTATIC orxINLINE orxCOLOR *      orxColor_Set(orxCOLOR *_pstColor, orxCONST orxVECTOR *_pvRGB, orxFLOAT _fAlpha)
+static orxINLINE orxCOLOR *      orxColor_Set(orxCOLOR *_pstColor, const orxVECTOR *_pvRGB, orxFLOAT _fAlpha)
 {
   orxCOLOR *pstResult = _pstColor;
 
@@ -169,7 +169,7 @@ orxSTATIC orxINLINE orxCOLOR *      orxColor_Set(orxCOLOR *_pstColor, orxCONST o
  * @param[in]   _pvRGB          RGB components
  * @return      orxCOLOR
  */
-orxSTATIC orxINLINE orxCOLOR *      orxColor_SetRGB(orxCOLOR *_pstColor, orxCONST orxVECTOR *_pvRGB)
+static orxINLINE orxCOLOR *      orxColor_SetRGB(orxCOLOR *_pstColor, const orxVECTOR *_pvRGB)
 {
   orxCOLOR *pstResult = _pstColor;
 
@@ -189,7 +189,7 @@ orxSTATIC orxINLINE orxCOLOR *      orxColor_SetRGB(orxCOLOR *_pstColor, orxCONS
  * @param[in]   _fAlpha         Normalized alpha component
  * @return      orxCOLOR / orxNULL
  */
-orxSTATIC orxINLINE orxCOLOR *      orxColor_SetAlpha(orxCOLOR *_pstColor, orxFLOAT _fAlpha)
+static orxINLINE orxCOLOR *      orxColor_SetAlpha(orxCOLOR *_pstColor, orxFLOAT _fAlpha)
 {
   orxCOLOR *pstResult = _pstColor;
 
@@ -207,7 +207,7 @@ orxSTATIC orxINLINE orxCOLOR *      orxColor_SetAlpha(orxCOLOR *_pstColor, orxFL
  * @param[in]   _pstColor       Concerned color
  * @return      orxRGBA
  */
-orxSTATIC orxINLINE orxRGBA orxColor_ToRGBA(orxCONST orxCOLOR *_pstColor)
+static orxINLINE orxRGBA        orxColor_ToRGBA(const orxCOLOR *_pstColor)
 {
   orxRGBA   stResult;
   orxVECTOR vColor;
@@ -234,7 +234,7 @@ orxSTATIC orxINLINE orxRGBA orxColor_ToRGBA(orxCONST orxCOLOR *_pstColor)
  * @param[in]   _pstSrc         Source color
  * @return      orxCOLOR
  */
-orxSTATIC orxINLINE orxCOLOR * orxColor_Copy(orxCOLOR *_pstDst, orxCONST orxCOLOR *_pstSrc)
+static orxINLINE orxCOLOR *     orxColor_Copy(orxCOLOR *_pstDst, const orxCOLOR *_pstSrc)
 {
   /* Checks */
   orxASSERT(_pstDst != orxNULL);
@@ -259,7 +259,7 @@ extern orxDLLAPI orxSTATUS  orxDisplay_Init();
 
 /** Exits from the display module
  */
-extern orxDLLAPI orxVOID    orxDisplay_Exit();
+extern orxDLLAPI void       orxDisplay_Exit();
 
 
 /** Swaps/flips bufers (display on screen the current frame)
@@ -276,7 +276,7 @@ extern orxDLLAPI orxDISPLAY_TEXT *orxDisplay_CreateText();
 /** Deletes a text
  * @param[in]   _pstText                              Concerned text
  */
-extern orxDLLAPI orxVOID    orxDisplay_DeleteText(orxDISPLAY_TEXT *_pstText);
+extern orxDLLAPI void       orxDisplay_DeleteText(orxDISPLAY_TEXT *_pstText);
 
 /** Transforms a text (on a bitmap)
  * @param[in]   _pstDst                               Destination bitmap
@@ -286,33 +286,33 @@ extern orxDLLAPI orxVOID    orxDisplay_DeleteText(orxDISPLAY_TEXT *_pstText);
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_TransformText(orxBITMAP *_pstDst, orxCONST orxDISPLAY_TEXT *_pstText, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS  orxDisplay_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 /** Sets a text string
  * @param[in]   _pstText                              Concerned text
  * @param[in]   _zString                              String to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_SetTextString(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zString);
+extern orxDLLAPI orxSTATUS  orxDisplay_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString);
 
 /** Sets a text font
  * @param[in]   _pstText                              Concerned text
  * @param[in]   _zFont                                Font to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_SetTextFont(orxDISPLAY_TEXT *_pstText, orxCONST orxSTRING _zFont);
+extern orxDLLAPI orxSTATUS  orxDisplay_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont);
 
 /** Gets a text string
  * @param[in]   _pstText                              Concerned text
  * @return orxSTRING / orxNULL
  */
-extern orxDLLAPI orxSTRING  orxDisplay_GetTextString(orxCONST orxDISPLAY_TEXT *_pstText);
+extern orxDLLAPI const orxSTRING orxDisplay_GetTextString(const orxDISPLAY_TEXT *_pstText);
 
 /** Gets a text font
  * @param[in]   _pstText                              Concerned text
  * @return orxSTRING / orxNULL
  */
-extern orxDLLAPI orxSTRING  orxDisplay_GetTextFont(orxCONST orxDISPLAY_TEXT *_pstText);
+extern orxDLLAPI const orxSTRING orxDisplay_GetTextFont(const orxDISPLAY_TEXT *_pstText);
 
 /** Gets a text size
  * @param[in]   _pstText                              Concerned text
@@ -320,7 +320,7 @@ extern orxDLLAPI orxSTRING  orxDisplay_GetTextFont(orxCONST orxDISPLAY_TEXT *_ps
  * @param[out]  _pfHeight                             Text's height
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_GetTextSize(orxCONST orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxSTATUS  orxDisplay_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 
 /** Prints a string
@@ -330,7 +330,7 @@ extern orxDLLAPI orxSTATUS  orxDisplay_GetTextSize(orxCONST orxDISPLAY_TEXT *_ps
  * @param[in]   _stColor                              Color to use for the text
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_PrintString(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zString, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor);
+extern orxDLLAPI orxSTATUS  orxDisplay_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor);
 
 
 /** Creates a bitmap
@@ -343,7 +343,7 @@ extern orxDLLAPI orxBITMAP *orxDisplay_CreateBitmap(orxU32 _u32Width, orxU32 _u3
 /** Deletes a bitmap
  * @param[in]   _pstBitmap                            Concerned bitmap
  */
-extern orxDLLAPI orxVOID    orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap);
+extern orxDLLAPI void       orxDisplay_DeleteBitmap(orxBITMAP *_pstBitmap);
 
 
 /** Gets screen bitmap
@@ -374,7 +374,7 @@ extern orxDLLAPI orxSTATUS  orxDisplay_ClearBitmap(orxBITMAP *_pstBitmap, orxRGB
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxCONST orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS  orxDisplay_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Sets a bitmap color key (used with non alpha transparency)
@@ -411,7 +411,7 @@ extern orxDLLAPI orxSTATUS  orxDisplay_SetBitmapClipping(orxBITMAP *_pstBitmap, 
  * @param[in]   _eBlendMode                           Blend mode
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode);
+extern orxDLLAPI orxSTATUS  orxDisplay_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode);
 
 
 /** Saves a bitmap to file
@@ -419,13 +419,13 @@ extern orxDLLAPI orxSTATUS  orxDisplay_BlitBitmap(orxBITMAP *_pstDst, orxCONST o
  * @param[in]   _zFileName                            Name of the file where to store the bitmap
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_SaveBitmap(orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zFileName);
+extern orxDLLAPI orxSTATUS  orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName);
 
 /** Loads a bitmap from file
  * @param[in]   _zFileName                            Name of the file to load
  * @return orxBITMAP * / orxNULL
  */
-extern orxDLLAPI orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileName);
+extern orxDLLAPI orxBITMAP *orxDisplay_LoadBitmap(const orxSTRING _zFileName);
 
 
 /** Gets a bitmap size
@@ -434,13 +434,13 @@ extern orxDLLAPI orxBITMAP *orxDisplay_LoadBitmap(orxCONST orxSTRING _zFileName)
  * @param[out]   _pfHeight                            Bitmap height
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxDisplay_GetBitmapSize(orxCONST orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxSTATUS  orxDisplay_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets bitmap color (lighting/hue)
  * @param[in]   _pstBitmap                            Concerned bitmap
  * @return orxRGBA
  */
-extern orxDLLAPI orxRGBA    orxDisplay_GetBitmapColor(orxCONST orxBITMAP *_pstBitmap);
+extern orxDLLAPI orxRGBA    orxDisplay_GetBitmapColor(const orxBITMAP *_pstBitmap);
 
 /** Gets application input manager (if embedded with display)
  * @return orxHANDLE / orxHANDLE_UNDEFINED

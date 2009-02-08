@@ -103,9 +103,9 @@ typedef enum __orxMODULE_ID_t
 
 /* *** setup/init/exit/run function prototypes *** */
 typedef orxSTATUS                         (*orxMODULE_INIT_FUNCTION)  ();
-typedef orxVOID                           (*orxMODULE_EXIT_FUNCTION)  ();
+typedef void                              (*orxMODULE_EXIT_FUNCTION)  ();
 typedef orxSTATUS                         (*orxMODULE_RUN_FUNCTION)   ();
-typedef orxVOID                           (*orxMODULE_SETUP_FUNCTION) ();
+typedef void                              (*orxMODULE_SETUP_FUNCTION) ();
 
 
 /** Registers a module
@@ -115,33 +115,33 @@ typedef orxVOID                           (*orxMODULE_SETUP_FUNCTION) ();
  * @param[in]   _pfnExit                  Module exit callback
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Register(orxMODULE_ID _eModuleID, orxCONST orxMODULE_SETUP_FUNCTION _pfnSetup, orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit);
+extern orxDLLAPI void orxFASTCALL         orxModule_Register(orxMODULE_ID _eModuleID, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit);
 
 /** Registers all modules. ! Needs to be updated for all new modules ! */
-extern orxDLLAPI orxVOID                  orxModule_RegisterAll();
+extern orxDLLAPI void                     orxModule_RegisterAll();
 
 /** Adds dependencies between 2 modules
  * @param[in]   _eModuleID                Concerned module ID
  * @param[in]   _eDependID                Module ID of the needed module
  */
-extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
+extern orxDLLAPI void orxFASTCALL         orxModule_AddDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
 
 /** Adds optional dependencies between 2 modules
  * @param[in]   _eModuleID                Concerned module ID
  * @param[in]   _eDependID                Module ID of the optionally needed module
  */
-extern orxDLLAPI orxVOID orxFASTCALL      orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
+extern orxDLLAPI void orxFASTCALL         orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID);
 
 /** Updates dependencies for all modules */
-extern orxDLLAPI orxVOID                  orxModule_UpdateDependencies();
+extern orxDLLAPI void                     orxModule_UpdateDependencies();
 
 /** Calls a module setup callback
  * @param[in]   _eModuleID                Concerned module ID
  */
-extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Setup(orxMODULE_ID _eModuleID);
+extern orxDLLAPI void orxFASTCALL         orxModule_Setup(orxMODULE_ID _eModuleID);
 
 /** Calls all module setups */
-extern orxDLLAPI orxVOID                  orxModule_SetupAll();
+extern orxDLLAPI void                     orxModule_SetupAll();
 
 /** Inits a module
  * @param[in]   _eModuleID                Concerned module ID
@@ -157,10 +157,10 @@ extern orxDLLAPI orxSTATUS                orxModule_InitAll();
 /** Exits from a module
  * @param[in]   _eModuleID                Concerned module ID
  */
-extern orxDLLAPI orxVOID orxFASTCALL      orxModule_Exit(orxMODULE_ID _eModuleID);
+extern orxDLLAPI void orxFASTCALL         orxModule_Exit(orxMODULE_ID _eModuleID);
 
 /** Exits from all modules.*/
-extern orxDLLAPI orxVOID                  orxModule_ExitAll();
+extern orxDLLAPI void                     orxModule_ExitAll();
 
 /** Is module initialized?
  * @param[in]   _eModuleID                Concerned module ID

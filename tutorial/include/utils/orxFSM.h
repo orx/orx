@@ -67,7 +67,7 @@ typedef struct __orxFSM_INSTANCE_t            orxFSM_INSTANCE;
 
 /** Clock module setup.
  */
-extern orxDLLAPI orxVOID                      orxFSM_Setup();
+extern orxDLLAPI void                         orxFSM_Setup();
 /**Initialize StateMachine Module.
  * @return Returns the initialization status.
  */
@@ -75,7 +75,7 @@ extern orxDLLAPI orxSTATUS                    orxFSM_Init();
 
 /**Exit StateMachine module.
  */
-extern orxDLLAPI orxVOID                      orxFSM_Exit();
+extern orxDLLAPI void                         orxFSM_Exit();
 /** @} */
 
 
@@ -84,7 +84,7 @@ extern orxDLLAPI orxVOID                      orxFSM_Exit();
  ***************************************************************************/
 
 /**Action pointer for state machines. */
-typedef orxVOID (*orxFSM_ACTION_FUNCTION)();
+typedef void (*orxFSM_ACTION_FUNCTION)();
 
 /**condition pointer for state machines. */
 typedef orxBOOL (*orxFSM_CONDITION_FUNCTION)();
@@ -107,12 +107,12 @@ extern orxDLLAPI orxFSM *orxFASTCALL          orxFSM_Create(orxU16 _u16NbStates,
 /**Delete a state machine.
  * @param[in] _pstStateMachine      The state machine to remove.
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxFSM_Delete(orxFSM *_pstStateMachine);
+extern orxDLLAPI void orxFASTCALL             orxFSM_Delete(orxFSM *_pstStateMachine);
 
 /**Clear a state machine
  * @param[in] _pstStateMachine      The state machine to clear.
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxFSM_Clear(orxFSM *_pstStateMachine);
+extern orxDLLAPI void orxFASTCALL             orxFSM_Clear(orxFSM *_pstStateMachine);
 
 /**Add a state, setting it as the initial state if it is the first one.
  * @param[in] _pstStateMachine      The state machine.
@@ -122,7 +122,7 @@ extern orxDLLAPI orxVOID orxFASTCALL          orxFSM_Clear(orxFSM *_pstStateMach
  * @param[in] _pfnExit               Exit callback.
  * @return Returns the new state.
  */
-extern orxDLLAPI orxFSM_STATE *orxFASTCALL    orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16Id, orxCONST orxFSM_ACTION_FUNCTION _pfnInit, orxCONST orxFSM_ACTION_FUNCTION _pfnExecute, orxCONST orxFSM_ACTION_FUNCTION _pfnExit);
+extern orxDLLAPI orxFSM_STATE *orxFASTCALL    orxFSM_AddState(orxFSM *_pstStateMachine, orxU16 _u16Id, const orxFSM_ACTION_FUNCTION _pfnInit, const orxFSM_ACTION_FUNCTION _pfnExecute, const orxFSM_ACTION_FUNCTION _pfnExit);
 
 /**Set an initial state.
  * @param[in] _pstStateMachine      The state machine.
@@ -136,14 +136,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_SetInitState(orxFSM *_pstSt
  * @param[in] _u16Id                The identifier of the state.
  * @return Returns the state.
  */
-extern orxDLLAPI orxFSM_STATE *orxFASTCALL    orxFSM_GetState(orxCONST orxFSM *_pstStateMachine, orxU16 _u16Id);
+extern orxDLLAPI orxFSM_STATE *orxFASTCALL    orxFSM_GetState(const orxFSM *_pstStateMachine, orxU16 _u16Id);
 
 /**Get a state Id.
  * @param[in] _pstStateMachine      The state machine.
  * @param[in] _pstState             The state.
  * @return Returns the Id of the state.
  */
-extern orxDLLAPI orxU16 orxFASTCALL           orxFSM_GetStateID(orxCONST orxFSM *_pstStateMachine, orxCONST orxFSM_STATE *_pstState);
+extern orxDLLAPI orxU16 orxFASTCALL           orxFSM_GetStateID(const orxFSM *_pstStateMachine, const orxFSM_STATE *_pstState);
 
 /**Remove a state.
  * @param[in] _pstStateMachine      The state machine.
@@ -160,7 +160,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_RemoveState(orxFSM *_pstSta
  * @param[in] _pfnCondition         Condition callback.
  * @return Returns the new link.
  */
-extern orxDLLAPI orxFSM_LINK *orxFASTCALL     orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, orxCONST orxFSM_CONDITION_FUNCTION _pfnCondition);
+extern orxDLLAPI orxFSM_LINK *orxFASTCALL     orxFSM_AddLink(orxFSM *_pstStateMachine, orxFSM_STATE *_pstBeginningState, orxFSM_STATE *_pstEndingState, const orxFSM_CONDITION_FUNCTION _pfnCondition);
 
 /**Find a link.
  * @param[in] _pstStateMachine      The state machine.
@@ -168,7 +168,7 @@ extern orxDLLAPI orxFSM_LINK *orxFASTCALL     orxFSM_AddLink(orxFSM *_pstStateMa
  * @param[in] _pstEndingState       The state marking the ending of the link.
  * @return Returns the corresponding link.
  */
-extern orxDLLAPI orxFSM_LINK *orxFASTCALL     orxFSM_GetLink(orxCONST orxFSM *_pstStateMachine, orxCONST orxFSM_STATE *_pstBeginningState, orxCONST orxFSM_STATE *_pstEndingState);
+extern orxDLLAPI orxFSM_LINK *orxFASTCALL     orxFSM_GetLink(const orxFSM *_pstStateMachine, const orxFSM_STATE *_pstBeginningState, const orxFSM_STATE *_pstEndingState);
 
 /**Remove a link.
  * @param[in] _pstStateMachine      The state machine.
@@ -180,7 +180,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_RemoveLink(orxFSM *_pstStat
 /**Clear all links.
  * @param[in] _pstStateMachine      The state machine.
  */
-extern orxDLLAPI orxVOID orxFASTCALL          orxFSM_ClearLink(orxFSM *_pstStateMachine);
+extern orxDLLAPI void orxFASTCALL             orxFSM_ClearLink(orxFSM *_pstStateMachine);
 
 /**Create an instance of a state machine.
  * @param[in] _pstStateMachine      The state machine.
@@ -198,13 +198,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_DeleteInstance(orxFSM_INSTA
  * @param[in] _pstInstance          The instance.
  * @return Returns the state machine.
  */
-extern orxDLLAPI orxFSM *orxFASTCALL          orxFSM_GetFSM(orxCONST orxFSM_INSTANCE *_pstInstance);
+extern orxDLLAPI orxFSM *orxFASTCALL          orxFSM_GetFSM(const orxFSM_INSTANCE *_pstInstance);
 
 /**Get the current state of an instance.
  * @param[in] _pstInstance          The instance.
  * @return Returns the current state.
  */
-extern orxDLLAPI orxFSM_STATE *orxFASTCALL    orxFSM_GetInstanceState(orxCONST orxFSM_INSTANCE *_pstInstance);
+extern orxDLLAPI orxFSM_STATE *orxFASTCALL    orxFSM_GetInstanceState(const orxFSM_INSTANCE *_pstInstance);
 
 /**Update an instance of a state machine. If current state is orxNULL, it enters the initial state. 
  * @param[in] _pstInstance          The instance.

@@ -56,14 +56,14 @@ typedef struct __orxHASHTABLE_t orxHASHTABLE;
 
 /** HashTable module setup.
  */
-extern orxDLLAPI orxVOID                        orxHashTable_Setup();
+extern orxDLLAPI void                           orxHashTable_Setup();
 /** Initialize HashTable Module
  * @return Returns the initialization status.
  */
 extern orxDLLAPI orxSTATUS                      orxHashTable_Init();
 /** Exit HashTable module
  */
-extern orxDLLAPI orxVOID                        orxHashTable_Exit();
+extern orxDLLAPI void                           orxHashTable_Exit();
 /** @} */
 
 /** @name HashTable creation/destruction.
@@ -79,12 +79,12 @@ extern orxDLLAPI orxHASHTABLE *orxFASTCALL      orxHashTable_Create(orxU32 _u32N
 /** Delete a hash table.
  * @param _pstHashTable (IN) Hash table to delete.
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_Delete(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI void orxFASTCALL               orxHashTable_Delete(orxHASHTABLE *_pstHashTable);
 
 /** Clear a hash table.
  * @param _pstHashTable (IN) Hash table to clear.
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI void orxFASTCALL               orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
 /** @} */
 
 /** Gets a hash table item counter
@@ -100,14 +100,14 @@ extern orxDLLAPI orxU32 orxFASTCALL             orxHashTable_GetCounter(orxHASHT
  * @param _u32Key     (IN) Key to find.
  * @return The Element associated to the key or orxNULL if not found.
  */
-extern orxDLLAPI orxVOID *orxFASTCALL           orxHashTable_Get(orxCONST orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
+extern orxDLLAPI void *orxFASTCALL              orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
 
 /** Set an item value.
  * @param _pstHashTable The hash table where set.
  * @param _u32Key     (IN) Key to assign.
  * @param _pData      (IN) Data to assign.
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData);
+extern orxDLLAPI void orxFASTCALL               orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData);
 
 
 /** Add an item value.
@@ -116,7 +116,7 @@ extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_Set(orxHASHTABLE *_
  * @param _pData      (IN) Data to assign.
  * @return Returns the status of the operation. (fails if key already used)
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData);
 
 /** Remove an item.
  * @param _pstHashTable (IN) The hash table where remove.
@@ -136,7 +136,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE
  * @param _ppData Address where store the data, NULL to not store it.
  * @return iterator of HashTable traversing. NULL if no element.
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL			     orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, orxVOID **_ppData);
+extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData);
 
 /** Find a the next item of the hashtable and return the iterator corresponding to the search.
  * @param _pstHashTable Adress of the HashTable.
@@ -145,7 +145,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL			     orxHashTable_FindFirst(orxHASHTABL
  * @param _hIterator Iterator to continue the search.
  * @return iterator of HashTable traversing. NULL if no element.
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL			     orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, orxVOID **_ppData);
+extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData);
 /** @} */
 
 /*******************************************************************************
@@ -155,7 +155,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL			     orxHashTable_FindNext(orxHASHTABLE
 /** Print the content of a Hash table
  * @param _pstHashTable (IN) Hash table to display
  */
-extern orxDLLAPI orxVOID orxFASTCALL            orxHashTable_DebugPrint(orxCONST orxHASHTABLE *_pstHashTable);
+extern orxDLLAPI void orxFASTCALL               orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable);
 
 #endif /* _orxHASHTABLE_H_ */
 

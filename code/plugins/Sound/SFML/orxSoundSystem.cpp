@@ -43,7 +43,7 @@
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL       0xFFFFFFFF /**< All mask */
 
 
-orxSTATIC orxCONST orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
+static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
 
 
 /***************************************************************************
@@ -80,7 +80,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxSOUNDSYSTEM_STATIC sstSoundSystem;
+static orxSOUNDSYSTEM_STATIC sstSoundSystem;
 
 
 /***************************************************************************
@@ -135,7 +135,7 @@ extern "C" orxSTATUS orxSoundSystem_SFML_Init()
   return eResult;
 }
 
-extern "C" orxVOID orxSoundSystem_SFML_Exit()
+extern "C" void orxSoundSystem_SFML_Exit()
 {
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
@@ -150,7 +150,7 @@ extern "C" orxVOID orxSoundSystem_SFML_Exit()
   return;
 }
 
-extern "C" orxSOUNDSYSTEM_SAMPLE *orxSoundSystem_SFML_LoadSample(orxCONST orxSTRING _zFilename)
+extern "C" orxSOUNDSYSTEM_SAMPLE *orxSoundSystem_SFML_LoadSample(const orxSTRING _zFilename)
 {
   orxSOUNDSYSTEM_SAMPLE *pstResult;
   sf::SoundBuffer       *poBuffer;
@@ -181,7 +181,7 @@ extern "C" orxSOUNDSYSTEM_SAMPLE *orxSoundSystem_SFML_LoadSample(orxCONST orxSTR
   return pstResult;
 }
 
-extern "C" orxVOID orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+extern "C" void orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   sf::SoundBuffer *poBuffer;
 
@@ -198,7 +198,7 @@ extern "C" orxVOID orxSoundSystem_SFML_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstS
   return;
 }
 
-extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_CreateFromSample(orxCONST orxSOUNDSYSTEM_SAMPLE *_pstSample)
+extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   orxSOUNDSYSTEM_SOUND *pstResult;
   sf::SoundBuffer      *poBuffer;
@@ -223,7 +223,7 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_CreateFromSample(orxCONST o
   return pstResult;
 }
 
-extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_CreateStreamFromFile(orxCONST orxSTRING _zFilename)
+extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_CreateStreamFromFile(const orxSTRING _zFilename)
 {
   orxSOUNDSYSTEM_SOUND *pstResult;
   sf::Music            *poMusic;
@@ -260,7 +260,7 @@ extern "C" orxSOUNDSYSTEM_SOUND *orxSoundSystem_SFML_CreateStreamFromFile(orxCON
   return pstResult;
 }
 
-extern "C" orxVOID orxSoundSystem_SFML_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" void orxSoundSystem_SFML_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -404,7 +404,7 @@ extern "C" orxSTATUS orxSoundSystem_SFML_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSoun
   return eResult;
 }
 
-extern "C" orxSTATUS orxSoundSystem_SFML_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, orxCONST orxVECTOR *_pvPosition)
+extern "C" orxSTATUS orxSoundSystem_SFML_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -501,7 +501,7 @@ extern "C" orxSTATUS orxSoundSystem_SFML_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, o
   return eResult;
 }
 
-extern "C" orxFLOAT orxSoundSystem_SFML_GetVolume(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxFLOAT orxSoundSystem_SFML_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -525,7 +525,7 @@ extern "C" orxFLOAT orxSoundSystem_SFML_GetVolume(orxCONST orxSOUNDSYSTEM_SOUND 
   return fResult;
 }
 
-extern "C" orxFLOAT orxSoundSystem_SFML_GetPitch(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxFLOAT orxSoundSystem_SFML_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -549,7 +549,7 @@ extern "C" orxFLOAT orxSoundSystem_SFML_GetPitch(orxCONST orxSOUNDSYSTEM_SOUND *
   return fResult;
 }
 
-extern "C" orxVECTOR *orxSoundSystem_SFML_GetPosition(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
+extern "C" orxVECTOR *orxSoundSystem_SFML_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
 {
   sf::Vector3f  vPosition;
   orxVECTOR    *pvResult = _pvPosition;
@@ -578,7 +578,7 @@ extern "C" orxVECTOR *orxSoundSystem_SFML_GetPosition(orxCONST orxSOUNDSYSTEM_SO
   return pvResult;
 }
 
-extern "C" orxFLOAT orxSoundSystem_SFML_GetAttenuation(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxFLOAT orxSoundSystem_SFML_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -602,7 +602,7 @@ extern "C" orxFLOAT orxSoundSystem_SFML_GetAttenuation(orxCONST orxSOUNDSYSTEM_S
   return fResult;
 }
 
-extern "C" orxFLOAT orxSoundSystem_SFML_GetReferenceDistance(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxFLOAT orxSoundSystem_SFML_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -626,7 +626,7 @@ extern "C" orxFLOAT orxSoundSystem_SFML_GetReferenceDistance(orxCONST orxSOUNDSY
   return fResult;
 }
 
-extern "C" orxBOOL orxSoundSystem_SFML_IsLooping(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxBOOL orxSoundSystem_SFML_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxBOOL bResult;
 
@@ -650,7 +650,7 @@ extern "C" orxBOOL orxSoundSystem_SFML_IsLooping(orxCONST orxSOUNDSYSTEM_SOUND *
   return bResult;
 }
 
-extern "C" orxFLOAT orxSoundSystem_SFML_GetDuration(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxFLOAT orxSoundSystem_SFML_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -674,7 +674,7 @@ extern "C" orxFLOAT orxSoundSystem_SFML_GetDuration(orxCONST orxSOUNDSYSTEM_SOUN
   return fResult;
 }
 
-extern "C" orxSOUNDSYSTEM_STATUS orxSoundSystem_SFML_GetStatus(orxCONST orxSOUNDSYSTEM_SOUND *_pstSound)
+extern "C" orxSOUNDSYSTEM_STATUS orxSoundSystem_SFML_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSOUNDSYSTEM_STATUS eResult;
 
@@ -778,7 +778,7 @@ extern "C" orxFLOAT orxSoundSystem_SFML_GetGlobalVolume()
   return fResult;
 }
 
-extern "C" orxSTATUS orxSoundSystem_SFML_SetListenerPosition(orxCONST orxVECTOR *_pvPosition)
+extern "C" orxSTATUS orxSoundSystem_SFML_SetListenerPosition(const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 

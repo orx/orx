@@ -72,7 +72,7 @@ typedef struct __orxSCREENSHOT_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxSCREENSHOT_STATIC sstScreenshot;
+static orxSCREENSHOT_STATIC sstScreenshot;
 
 
 /***************************************************************************
@@ -86,7 +86,7 @@ orxSTATIC orxSCREENSHOT_STATIC sstScreenshot;
 
 /** Screenshot module setup
  */
-orxVOID orxScreenshot_Setup()
+void orxScreenshot_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_MEMORY);
@@ -162,7 +162,7 @@ orxSTATUS orxScreenshot_Init()
 
 /** Exits from the screenshot module
  */
-orxVOID orxScreenshot_Exit()
+void orxScreenshot_Exit()
 {
   /* Initialized? */
   if(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
@@ -181,7 +181,7 @@ orxVOID orxScreenshot_Exit()
 
 /** Captures a screenshot
  */
-orxVOID orxScreenshot_Capture()
+void orxScreenshot_Capture()
 {
   orxCHAR zName[256];
 

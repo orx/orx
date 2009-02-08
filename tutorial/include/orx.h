@@ -59,7 +59,7 @@
 
 /** Should stop execution by default event handling?
  */
-orxSTATIC orxBOOL sbStopByEvent = 0;
+static orxBOOL sbStopByEvent = 0;
 
 
 /***************************************************************************
@@ -70,7 +70,7 @@ orxSTATIC orxBOOL sbStopByEvent = 0;
  * @param[in]   _pstEvent                     Sent event
  * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
  */
-orxSTATIC orxSTATUS orxFASTCALL orx_DefaultEventHandler(orxCONST orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -104,7 +104,7 @@ orxSTATIC orxSTATUS orxFASTCALL orx_DefaultEventHandler(orxCONST orxEVENT *_pstE
 
 /** Default main setup (module dependencies)
 */
-orxSTATIC orxVOID orx_MainSetup()
+static void orx_MainSetup()
 {
     /* Adds module dependencies */
     orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
@@ -125,7 +125,7 @@ orxSTATIC orxVOID orx_MainSetup()
  * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
  * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
  */
-orxSTATIC orxINLINE orxVOID orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_RUN_FUNCTION _pfnRun, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit)
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
   /* Inits the Debug System */
   orxDEBUG_INIT();

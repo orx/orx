@@ -62,7 +62,7 @@ typedef struct __orxAABOX_t
  * @param[in]   _pstBox                       Box to reorder
  * @return      Reordered AABox
  */
-orxSTATIC orxINLINE orxAABOX *                orxAABox_Reorder(orxAABOX *_pstBox)
+static orxINLINE orxAABOX *                   orxAABox_Reorder(orxAABOX *_pstBox)
 {
   /* Checks */
   orxASSERT(_pstBox != orxNULL);
@@ -100,7 +100,7 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Reorder(orxAABOX *_pstBox
  * @param[in]   _pvBR                         Bottom right corner
  * @return      orxAABOX / orxNULL
  */
-orxSTATIC orxINLINE orxAABOX *                orxAABox_Set(orxAABOX *_pstRes, orxCONST orxVECTOR *_pvTL, orxCONST orxVECTOR *_pvBR)
+static orxINLINE orxAABOX *                   orxAABox_Set(orxAABOX *_pstRes, const orxVECTOR *_pvTL, const orxVECTOR *_pvBR)
 {
   /* Checks */
   orxASSERT(_pstRes != orxNULL);
@@ -123,9 +123,9 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Set(orxAABOX *_pstRes, or
  * @param[in]   _pvPosition                   Position to test against the box
  * @return      orxTRUE if position is inside the box, orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL                   orxAABox_IsInside(orxCONST orxAABOX *_pstBox, orxCONST orxVECTOR *_pvPosition)
+static orxINLINE orxBOOL                      orxAABox_IsInside(const orxAABOX *_pstBox, const orxVECTOR *_pvPosition)
 {
-  orxREGISTER orxBOOL bResult = orxFALSE;
+  register orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstBox != orxNULL);
@@ -158,9 +158,9 @@ orxSTATIC orxINLINE orxBOOL                   orxAABox_IsInside(orxCONST orxAABO
  * @param[in]   _pstBox2                      Second box operand
  * @return      orxTRUE if boxes intersect, orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
+static orxINLINE orxBOOL                      orxAABox_TestIntersection(const orxAABOX *_pstBox1, const orxAABOX *_pstBox2)
 {
-  orxREGISTER orxBOOL bResult = orxFALSE;
+  register orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);
@@ -193,9 +193,9 @@ orxSTATIC orxINLINE orxBOOL                   orxAABox_TestIntersection(orxCONST
  * @param[in]   _pstBox2                      Second box operand
  * @return      orxTRUE if boxes intersect in 2D, orxFALSE otherwise
  */
-orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCONST orxAABOX *_pstBox1, orxCONST orxAABOX *_pstBox2)
+static orxINLINE orxBOOL                      orxAABox_Test2DIntersection(const orxAABOX *_pstBox1, const orxAABOX *_pstBox2)
 {
-  orxREGISTER orxBOOL bResult = orxFALSE;
+  register orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(_pstBox1 != orxNULL);
@@ -223,7 +223,7 @@ orxSTATIC orxINLINE orxBOOL                   orxAABox_Test2DIntersection(orxCON
  * @param[in]   _pstSrc                       AABox to copy from (destination)
  * @return      Destination AABox
  */
-orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, orxCONST orxAABOX *_pstSrc)
+static orxINLINE orxAABOX *                   orxAABox_Copy(orxAABOX *_pstDst, const orxAABOX *_pstSrc)
 {
   /* Checks */
   orxASSERT(_pstDst != orxNULL);
@@ -242,7 +242,7 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Copy(orxAABOX *_pstDst, o
  * @param[in]   _pvMove                       Move vector
  * @return      Moved AABox
  */
-orxSTATIC orxINLINE orxAABOX *                orxAABox_Move(orxAABOX *_pstRes, orxCONST orxAABOX *_pstOp, orxCONST orxVECTOR *_pvMove)
+static orxINLINE orxAABOX *                   orxAABox_Move(orxAABOX *_pstRes, const orxAABOX *_pstOp, const orxVECTOR *_pvMove)
 {
   /* Checks */
   orxASSERT(_pstRes != orxNULL);
@@ -262,7 +262,7 @@ orxSTATIC orxINLINE orxAABOX *                orxAABox_Move(orxAABOX *_pstRes, o
  * @param[out]  _pvRes                        Center position
  * @return      Center position vector
  */
-orxSTATIC orxINLINE orxVECTOR *               orxAABox_GetCenter(orxCONST orxAABOX *_pstOp, orxVECTOR *_pvRes)
+static orxINLINE orxVECTOR *                  orxAABox_GetCenter(const orxAABOX *_pstOp, orxVECTOR *_pvRes)
 {
   /* Checks */
   orxASSERT(_pstOp != orxNULL);

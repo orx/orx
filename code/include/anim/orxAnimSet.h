@@ -83,7 +83,7 @@ typedef struct __orxANIMSET_LINK_TABLE_t            orxANIMSET_LINK_TABLE;
 
 /** AnimSet module setup
  */
-extern orxDLLAPI orxVOID                            orxAnimSet_Setup();
+extern orxDLLAPI void                               orxAnimSet_Setup();
 
 /** Inits the AnimSet module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -92,7 +92,7 @@ extern orxDLLAPI orxSTATUS                          orxAnimSet_Init();
 
 /** Exits from the AnimSet module
  */
-extern orxDLLAPI orxVOID                            orxAnimSet_Exit();
+extern orxDLLAPI void                               orxAnimSet_Exit();
 
 
 /** Creates an empty AnimSet
@@ -105,7 +105,7 @@ extern orxDLLAPI orxANIMSET *orxFASTCALL            orxAnimSet_Create(orxU32 _u3
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMSET / orxNULL
  */
-extern orxDLLAPI orxANIMSET *orxFASTCALL            orxAnimSet_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxANIMSET *orxFASTCALL            orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes an AnimSet
  * @param[in]		_pstAnimSet													AnimSet to delete
@@ -115,23 +115,23 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_Delete(orxANIMSET
 /** Adds a reference to an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  */
-extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_AddReference(orxANIMSET *_pstAnimSet);
+extern orxDLLAPI void orxFASTCALL                   orxAnimSet_AddReference(orxANIMSET *_pstAnimSet);
 
 /** Removes a reference from an AnimSet
  * @param[in]		_pstAnimSet													Concerned AnimSet
  */
-extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet);
+extern orxDLLAPI void orxFASTCALL                   orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet);
 
 /** Clones an AnimSet Link Table
  * @param[in]		_pstAnimSet													AnimSet to clone
  * @return An internally allocated clone of the AnimSet
  */
-extern orxDLLAPI orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(orxCONST orxANIMSET *_pstAnimSet);
+extern orxDLLAPI orxANIMSET_LINK_TABLE *orxFASTCALL orxAnimSet_CloneLinkTable(const orxANIMSET *_pstAnimSet);
 
 /** Deletes a Link table
  * @param[in]		_pstLinkTable											  Link table to delete (should have been created using the clone function)
  */
-extern orxDLLAPI orxVOID orxFASTCALL                orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable);
+extern orxDLLAPI void orxFASTCALL                   orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable);
 
 
 /** Adds an Anim to an AnimSet
@@ -176,7 +176,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_RemoveLink(orxANI
  * @param[in]		_hDstAnim														Handle of the destination Anim
  * @return			Handle of the direct link, orxHANDLE_UNDEFINED if none
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
+extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetLink(const orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim);
 
 /** Sets a link property
  * @param[in]		_pstAnimSet													Concerned AnimSet
@@ -193,7 +193,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL              orxAnimSet_SetLinkProperty(o
  * @param[in]		_u32Property												ID of the property to get
  * @return			Property value / orx32_Undefined
  */
-extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property);
 
 /** Computes active Anim given current and destination Anim handles & a relative timestamp
  * @param[in]   _pstAnimSet                         Concerned AnimSet
@@ -211,26 +211,26 @@ extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_ComputeAnim(orxAN
  * @param[in]		_hAnimHandle												Anim handle
  * @return Anim pointer / orxNULL
  */
-extern orxDLLAPI orxANIM *orxFASTCALL               orxAnimSet_GetAnim(orxCONST orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle);
+extern orxDLLAPI orxANIM *orxFASTCALL               orxAnimSet_GetAnim(const orxANIMSET *_pstAnimSet, orxHANDLE _hAnimHandle);
 
 /** AnimSet Anim storage size get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @return			AnimSet Storage size / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimStorageSize(orxCONST orxANIMSET *_pstAnimSet);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimStorageSize(const orxANIMSET *_pstAnimSet);
 
 /** AnimSet Anim counter get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet
  * @return			Anim counter / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(orxCONST orxANIMSET *_pstAnimSet);
+extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCounter(const orxANIMSET *_pstAnimSet);
 
 /** Gets animation handle from ID
  * @param[in]   _pstAnimSet                         Concerned AnimSet
  * @param[in]   _u32AnimID                          Animation ID (config's animation name CRC)
  * @return Anim handle / orxHANDLE_UNDEFINED
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetAnimHandleFromID(orxCONST orxANIMSET *_pstAnimSet, orxU32 _u32AnimID);
+extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_GetAnimHandleFromID(const orxANIMSET *_pstAnimSet, orxU32 _u32AnimID);
 
 #endif /* _orxANIMSET_H_ */
 

@@ -69,7 +69,7 @@ typedef struct __orxEVENT_STATIC_t
  * Module global variable                                                  *
  ***************************************************************************/
 
-orxSTATIC orxEVENT_STATIC sstEvent;
+static orxEVENT_STATIC sstEvent;
 
 
 /***************************************************************************
@@ -83,7 +83,7 @@ orxSTATIC orxEVENT_STATIC sstEvent;
 
 /** Event module setup
  */
-orxVOID orxEvent_Setup()
+void orxEvent_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_MEMORY);
@@ -142,7 +142,7 @@ orxSTATUS orxEvent_Init()
 
 /** Exits from the event module
  */
-orxVOID orxEvent_Exit()
+void orxEvent_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY))
@@ -269,7 +269,7 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
 /** Sends an event
  * @param _pstEvent             Event to send
  */
-orxSTATUS orxFASTCALL orxEvent_Send(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
 {
   orxBANK  *pstBank;
   orxSTATUS eResult = orxSTATUS_FAILURE;

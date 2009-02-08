@@ -51,7 +51,7 @@ typedef struct __orxTEXT_t                orxTEXT;
 
 /** Setups the text module
  */
-extern orxDLLAPI orxVOID                  orxText_Setup();
+extern orxDLLAPI void                     orxText_Setup();
 
 /** Inits the text module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -60,7 +60,7 @@ extern orxDLLAPI orxSTATUS                orxText_Init();
 
 /** Exits from the text module
  */
-extern orxDLLAPI orxVOID                  orxText_Exit();
+extern orxDLLAPI void                     orxText_Exit();
 
 
 /** Creates an empty text
@@ -72,7 +72,7 @@ extern orxDLLAPI orxTEXT *                orxText_Create();
  * @param[in]   _zConfigID    Config ID
  * @return      orxTEXT / orxNULL
  */
-extern orxDLLAPI orxTEXT *orxFASTCALL     orxText_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxTEXT *orxFASTCALL     orxText_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes a text
  * @param[in]   _pstText      Concerned text
@@ -87,46 +87,46 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_Delete(orxTEXT *_pstText);
  * @param[out]  _pfHeight     Text's height
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetSize(orxCONST orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets text name
  * @param[in]   _pstText      Concerned text
  * @return      Text name / orxNULL
  */
-extern orxDLLAPI orxSTRING orxFASTCALL    orxText_GetName(orxCONST orxTEXT *_pstText);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText);
 
 
 /** Gets text string 
  * @param[in]   _pstText      Concerned text
  * @return      Text string / orxSTRING_EMPTY
  */
-extern orxDLLAPI orxSTRING orxFASTCALL    orxText_GetString(orxCONST orxTEXT *_pstText);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetString(const orxTEXT *_pstText);
 
 /** Gets text font
  * @param[in]   _pstText      Concerned text
  * @return      Text font / orxNULL
  */
-extern orxDLLAPI orxSTRING orxFASTCALL    orxText_GetFont(orxCONST orxTEXT *_pstText);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxText_GetFont(const orxTEXT *_pstText);
 
 /** Gets text data
  * @param[in]   _pstText      Concerned text
  * @return      orxDISPLAY_TEXT / orxNULL
  */
-extern orxDLLAPI orxDISPLAY_TEXT *orxFASTCALL orxText_GetData(orxCONST orxTEXT *_pstText);
+extern orxDLLAPI orxDISPLAY_TEXT *orxFASTCALL orxText_GetData(const orxTEXT *_pstText);
 
 /** Sets text string 
  * @param[in]   _pstText      Concerned text
  * @param[in]   _zString      String to contain
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetString(orxTEXT *_pstText, orxCONST orxSTRING _zString);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetString(orxTEXT *_pstText, const orxSTRING _zString);
 
 /** Sets text font
  * @param[in]   _pstText      Concerned text
  * @param[in]   _zFont        Font name / orxNULL to use default
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetFont(orxTEXT *_pstText, orxCONST orxSTRING _zFont);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetFont(orxTEXT *_pstText, const orxSTRING _zFont);
 
 
 #endif /* _orxTEXT_H_ */

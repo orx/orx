@@ -87,7 +87,7 @@ typedef struct __orxTEXT_STATIC_t
  * Module global variable                                                  *
  ***************************************************************************/
 
-orxSTATIC orxTEXT_STATIC sstText;
+static orxTEXT_STATIC sstText;
 
 
 /***************************************************************************
@@ -96,7 +96,7 @@ orxSTATIC orxTEXT_STATIC sstText;
 
 /** Deletes all texts
  */
-orxSTATIC orxINLINE orxVOID orxText_DeleteAll()
+static orxINLINE void orxText_DeleteAll()
 {
   orxTEXT *pstText;
 
@@ -123,7 +123,7 @@ orxSTATIC orxINLINE orxVOID orxText_DeleteAll()
 
 /** Setups the text module
  */
-orxVOID orxText_Setup()
+void orxText_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_MEMORY);
@@ -183,7 +183,7 @@ orxSTATUS orxText_Init()
 
 /** Exits from the text module
  */
-orxVOID orxText_Exit()
+void orxText_Exit()
 {
   /* Initialized? */
   if(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY)
@@ -254,7 +254,7 @@ orxTEXT *orxText_Create()
  * @param[in]   _zConfigID    Config ID
  * @return      orxTEXT / orxNULL
  */
-orxTEXT *orxFASTCALL orxText_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxTEXT    *pstResult;
   orxSTRING   zPreviousSection;
@@ -350,7 +350,7 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
  * @param[out]  _pfHeight     Text's height
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxText_GetSize(orxCONST orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+orxSTATUS orxFASTCALL orxText_GetSize(const orxTEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxFLOAT eResult = orxSTATUS_SUCCESS;
 
@@ -371,7 +371,7 @@ orxSTATUS orxFASTCALL orxText_GetSize(orxCONST orxTEXT *_pstText, orxFLOAT *_pfW
  * @param[in]   _pstText      Concerned text
  * @return      Text name / orxNULL
  */
-orxSTRING orxFASTCALL orxText_GetName(orxCONST orxTEXT *_pstText)
+const orxSTRING orxFASTCALL orxText_GetName(const orxTEXT *_pstText)
 {
   orxSTRING zResult = orxNULL;
 
@@ -390,7 +390,7 @@ orxSTRING orxFASTCALL orxText_GetName(orxCONST orxTEXT *_pstText)
  * @param[in]   _pstText      Concerned text
  * @return      Text string / orxSTRING_EMPTY
  */
-orxSTRING orxFASTCALL orxText_GetString(orxCONST orxTEXT *_pstText)
+const orxSTRING orxFASTCALL orxText_GetString(const orxTEXT *_pstText)
 {
   orxSTRING zResult;
 
@@ -413,7 +413,7 @@ orxSTRING orxFASTCALL orxText_GetString(orxCONST orxTEXT *_pstText)
  * @param[in]   _pstText      Concerned text
  * @return      Text font / orxNULL
  */
-orxSTRING orxFASTCALL orxText_GetFont(orxCONST orxTEXT *_pstText)
+const orxSTRING orxFASTCALL orxText_GetFont(const orxTEXT *_pstText)
 {
   orxSTRING zResult;
 
@@ -432,7 +432,7 @@ orxSTRING orxFASTCALL orxText_GetFont(orxCONST orxTEXT *_pstText)
  * @param[in]   _pstText      Concerned text
  * @return      orxDISPLAY_TEXT / orxNULL
  */
-orxDISPLAY_TEXT *orxFASTCALL orxText_GetData(orxCONST orxTEXT *_pstText)
+orxDISPLAY_TEXT *orxFASTCALL orxText_GetData(const orxTEXT *_pstText)
 {
   orxDISPLAY_TEXT *pstResult;
 
@@ -452,7 +452,7 @@ orxDISPLAY_TEXT *orxFASTCALL orxText_GetData(orxCONST orxTEXT *_pstText)
  * @param[in]   _zString      String to contain
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, orxCONST orxSTRING _zString)
+orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, const orxSTRING _zString)
 {
   orxSTRING zString;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -492,7 +492,7 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, orxCONST orxSTRING _z
  * @param[in]   _zFont        Font name / orxNULL to use default
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxCONST orxSTRING _zFont)
+orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, const orxSTRING _zFont)
 {
   orxSTRING zFont;
   orxSTATUS eResult = orxSTATUS_SUCCESS;

@@ -39,7 +39,7 @@
 
 /** Resource names
  */
-orxSTATIC orxSTRING sazResourceNames[orxSCROLL_RESOURCE_NUMBER] =
+static orxSTRING sazResourceNames[orxSCROLL_RESOURCE_NUMBER] =
 {
  "Fuji",
  "Boat1",
@@ -51,20 +51,20 @@ orxSTATIC orxSTRING sazResourceNames[orxSCROLL_RESOURCE_NUMBER] =
 
 /** Camera
  */
-orxSTATIC orxCAMERA *spstCamera;
+static orxCAMERA *spstCamera;
 
 /** Overlay (for fade in / fade out)
  */
-orxSTATIC orxOBJECT *spstOverlay;
+static orxOBJECT *spstOverlay;
 
 /** Root
  */
-orxSTATIC orxOBJECT *spstRoot;
+static orxOBJECT *spstRoot;
 
 
 /** Update callback used to update the scrolling. N.B.: it could also have been done through FXs, doing the synchro in the .ini, and no clock would have been needed.
  */
-orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL    orxScroll_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vPos;
   orxFLOAT  fMove;
@@ -98,7 +98,7 @@ orxVOID orxFASTCALL orxScroll_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
 
 /** Inits the scroll demo
  */
-orxSTATIC orxSTATUS orxScroll_Init()
+static orxSTATUS orxScroll_Init()
 {
   orxS32      i, s32WaveGroupNumber;
   orxOBJECT  *apstWaveGroupList[32];

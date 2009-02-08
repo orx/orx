@@ -49,7 +49,7 @@
 
 /** Keyboard module setup
  */
-orxVOID orxKeyboard_Setup()
+void orxKeyboard_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_KEYBOARD, orxMODULE_ID_PLUGIN);
@@ -65,7 +65,7 @@ orxVOID orxKeyboard_Setup()
  * @param _eKey       Concerned key
  * @return Key's name
  */
-orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
+const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
 {
   orxSTRING zResult;
 
@@ -200,12 +200,12 @@ orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, orxVOID, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Init, orxSTATUS, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Exit, void, void);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_IsKeyPressed, orxBOOL, orxKEYBOARD_KEY);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Read, orxKEYBOARD_KEY, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, orxVOID, orxVOID);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Hit, orxBOOL, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_Read, orxKEYBOARD_KEY, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxKeyboard_ClearBuffer, void, void);
 
 
 /* *** Core function info array *** */
@@ -233,7 +233,7 @@ orxSTATUS orxKeyboard_Init()
 
 /** Exits from the keyboard module
  */
-orxVOID orxKeyboard_Exit()
+void orxKeyboard_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Exit)();
 }
@@ -268,7 +268,7 @@ orxKEYBOARD_KEY orxKeyboard_Read()
 
 /**  Empties the keyboard buffer.
  */
-orxVOID orxKeyboard_ClearBuffer()
+void orxKeyboard_ClearBuffer()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ClearBuffer)();
 }

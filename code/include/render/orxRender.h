@@ -60,7 +60,7 @@
 
 /** Render module setup
  */
-extern orxDLLAPI orxVOID                orxRender_Setup();
+extern orxDLLAPI void                     orxRender_Setup();
 
 
 /***************************************************************************
@@ -74,14 +74,14 @@ extern orxDLLAPI orxSTATUS  orxRender_Init();
 
 /** Exits from the render module
  */
-extern orxDLLAPI orxVOID    orxRender_Exit();
+extern orxDLLAPI void       orxRender_Exit();
 
 /** Get a world position given a screen one (absolute picking)
  * @param[in]   _pvScreenPosition                     Concerned screen position
  * @param[out]  _pvWorldPosition                      Concerned callback
  * @return      orxVECTOR if found, orxNULL otherwise
  */
-extern orxDLLAPI orxVECTOR *orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
+extern orxDLLAPI orxVECTOR *orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
 
 #endif /* _orxRENDER_H_ */
 

@@ -115,7 +115,7 @@ typedef struct __orxVIEWPORT_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxVIEWPORT_STATIC sstViewport;
+static orxVIEWPORT_STATIC sstViewport;
 
 
 /***************************************************************************
@@ -124,7 +124,7 @@ orxSTATIC orxVIEWPORT_STATIC sstViewport;
 
 /** Deletes all viewports
  */
-orxSTATIC orxINLINE orxVOID orxViewport_DeleteAll()
+static orxINLINE void orxViewport_DeleteAll()
 {
   orxVIEWPORT *pstViewport;
 
@@ -151,7 +151,7 @@ orxSTATIC orxINLINE orxVOID orxViewport_DeleteAll()
 
 /** Viewport module setup
  */
-orxVOID orxViewport_Setup()
+void orxViewport_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_MEMORY);
@@ -206,7 +206,7 @@ orxSTATUS orxViewport_Init()
 
 /** Exits from the Viewport module
  */
-orxVOID orxViewport_Exit()
+void orxViewport_Exit()
 {
   /* Initialized? */
   if(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY)
@@ -271,7 +271,7 @@ orxVIEWPORT *orxViewport_Create()
  * @param[in]   _zConfigID    Config ID
  * @ return orxVIEWPORT / orxNULL
  */
-orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxVIEWPORT *pstResult;
   orxSTRING   zPreviousSection;
@@ -514,7 +514,7 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _u32AlignFlags  Alignment flags (must be OR'ed)
  */
-orxVOID orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)
+void orxFASTCALL    orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -531,7 +531,7 @@ orxVOID orxFASTCALL orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _pstTexture     Texture to associate with the viewport
  */
-orxVOID orxFASTCALL orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstTexture)
+void orxFASTCALL    orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE *_pstTexture)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -576,7 +576,7 @@ orxVOID orxFASTCALL orxViewport_SetTexture(orxVIEWPORT *_pstViewport, orxTEXTURE
  * @param[in]   _pstViewport    Concerned viewport
  * @return      Associated orxTEXTURE / orxNULL
  */
-orxTEXTURE *orxFASTCALL orxViewport_GetTexture(orxCONST orxVIEWPORT *_pstViewport)
+orxTEXTURE *orxFASTCALL orxViewport_GetTexture(const orxVIEWPORT *_pstViewport)
 {
   orxTEXTURE *pstResult = orxNULL;
 
@@ -604,7 +604,7 @@ orxTEXTURE *orxFASTCALL orxViewport_GetTexture(orxCONST orxVIEWPORT *_pstViewpor
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _stColor        Color to use for background
  */
-orxVOID orxFASTCALL orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, orxRGBA _stColor)
+void orxFASTCALL    orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, orxRGBA _stColor)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -620,7 +620,7 @@ orxVOID orxFASTCALL orxViewport_SetBackgroundColor(orxVIEWPORT *_pstViewport, or
  * @param[in]   _pstViewport    Concerned viewport
  * @return      Current background color
  */
-orxRGBA orxFASTCALL orxViewport_GetBackgroundColor(orxCONST orxVIEWPORT *_pstViewport)
+orxRGBA orxFASTCALL orxViewport_GetBackgroundColor(const orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -634,7 +634,7 @@ orxRGBA orxFASTCALL orxViewport_GetBackgroundColor(orxCONST orxVIEWPORT *_pstVie
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _bEnable        Enable / disable
  */
-orxVOID orxFASTCALL orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
+void orxFASTCALL    orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -659,7 +659,7 @@ orxVOID orxFASTCALL orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnab
  * @param[in]   _pstViewport    Concerned viewport
  * @return      orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
+orxBOOL orxFASTCALL orxViewport_IsEnabled(const orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -673,7 +673,7 @@ orxBOOL orxFASTCALL orxViewport_IsEnabled(orxCONST orxVIEWPORT *_pstViewport)
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _bEnable        Enable / disable
  */
-orxVOID orxFASTCALL orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
+void orxFASTCALL    orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -698,7 +698,7 @@ orxVOID orxFASTCALL orxViewport_EnableBackgroundClearing(orxVIEWPORT *_pstViewpo
  * @param[in]   _pstViewport    Concerned viewport
  * @return      orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxViewport_IsBackgroundClearingEnabled(orxCONST orxVIEWPORT *_pstViewport)
+orxBOOL orxFASTCALL orxViewport_IsBackgroundClearingEnabled(const orxVIEWPORT *_pstViewport)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -712,7 +712,7 @@ orxBOOL orxFASTCALL orxViewport_IsBackgroundClearingEnabled(orxCONST orxVIEWPORT
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _pstCamera      Associated camera
  */
-orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera)
+void orxFASTCALL    orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_pstCamera)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -748,7 +748,7 @@ orxVOID orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *
  * @param[in]   _pstViewport    Concerned viewport
  * @return      Associated camera / orxNULL
  */
-orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
+orxCAMERA *orxFASTCALL orxViewport_GetCamera(const orxVIEWPORT *_pstViewport)
 {
   orxCAMERA *pstResult = orxNULL;
 
@@ -772,7 +772,7 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(orxCONST orxVIEWPORT *_pstViewport)
  * @param[in]   _fX             X axis position (top left corner)
  * @param[in]   _fY             Y axis position (top left corner)
  */
-orxVOID orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT _fX, orxFLOAT _fY)
+void orxFASTCALL    orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT _fX, orxFLOAT _fY)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -872,7 +872,7 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativePosition(orxVIEWPORT *_pstViewport,
  * @param[out]  _pfX            X axis position (top left corner)
  * @param[out]  _pfY            Y axis position (top left corner)
  */
-orxVOID orxFASTCALL orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfX, orxFLOAT *_pfY)
+void orxFASTCALL    orxViewport_GetPosition(const orxVIEWPORT *_pstViewport, orxFLOAT *_pfX, orxFLOAT *_pfY)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -892,7 +892,7 @@ orxVOID orxFASTCALL orxViewport_GetPosition(orxCONST orxVIEWPORT *_pstViewport, 
  * @param[in]   _fW             Width
  * @param[in]   _fH             Height
  */
-orxVOID orxFASTCALL orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW, orxFLOAT _fH)
+void orxFASTCALL    orxViewport_SetSize(orxVIEWPORT *_pstViewport, orxFLOAT _fW, orxFLOAT _fH)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -954,7 +954,7 @@ orxSTATUS orxFASTCALL orxViewport_SetRelativeSize(orxVIEWPORT *_pstViewport, orx
  * @param[out]  _pfW            Width
  * @param[out]  _pfH            Height
  */
-orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH)
+void orxFASTCALL    orxViewport_GetSize(const orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -974,7 +974,7 @@ orxVOID orxFASTCALL orxViewport_GetSize(orxCONST orxVIEWPORT *_pstViewport, orxF
  * @param[out]  _f32W           Relative width
  * @param[out]  _f32H           Relative height
  */
-orxVOID orxFASTCALL orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH)
+void orxFASTCALL    orxViewport_GetRelativeSize(const orxVIEWPORT *_pstViewport, orxFLOAT *_pfW, orxFLOAT *_pfH)
 {
   orxTEXTURE *pstTexture;
 
@@ -1016,7 +1016,7 @@ orxVOID orxFASTCALL orxViewport_GetRelativeSize(orxCONST orxVIEWPORT *_pstViewpo
  * @param[out]  _pu32BRX        X coordinate of bottom right corner
  * @param[out]  _pu32BRY        Y coordinate of bottom right corner
  */
-orxVOID orxFASTCALL orxViewport_GetClipping(orxCONST orxVIEWPORT *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY)
+void orxFASTCALL    orxViewport_GetClipping(const orxVIEWPORT *_pstViewport, orxU32 *_pu32TLX, orxU32 *_pu32TLY, orxU32 *_pu32BRX, orxU32 *_pu32BRY)
 {
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -1040,7 +1040,7 @@ orxVOID orxFASTCALL orxViewport_GetClipping(orxCONST orxVIEWPORT *_pstViewport, 
  * @param[out]  _pstBox         Output box
  * @return orxAABOX / orxNULL
  */
-orxAABOX *orxFASTCALL orxViewport_GetBox(orxCONST orxVIEWPORT *_pstViewport, orxAABOX *_pstBox)
+orxAABOX *orxFASTCALL orxViewport_GetBox(const orxVIEWPORT *_pstViewport, orxAABOX *_pstBox)
 {
   orxAABOX *pstResult = orxNULL;
 
@@ -1066,7 +1066,7 @@ orxAABOX *orxFASTCALL orxViewport_GetBox(orxCONST orxVIEWPORT *_pstViewport, orx
  * @param[in]   _pstViewport  Concerned viewport
  * @return      Correction ratio value
  */
-orxFLOAT orxFASTCALL orxViewport_GetCorrectionRatio(orxCONST orxVIEWPORT *_pstViewport)
+orxFLOAT orxFASTCALL orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewport)
 {
   orxCAMERA  *pstCamera;
   orxFLOAT    fResult = orxFLOAT_1;

@@ -117,7 +117,7 @@ typedef struct __orxSOUND_STATIC_t
 
 /** static data
  */
-orxSTATIC orxSOUND_STATIC sstSound;
+static orxSOUND_STATIC sstSound;
 
 
 /***************************************************************************
@@ -127,7 +127,7 @@ orxSTATIC orxSOUND_STATIC sstSound;
 /** Loads a sound sample
  * @return orxSOUND_SAMPLE / orxNULL
  */
-orxSTATIC orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(orxCONST orxSTRING _zFileName)
+static orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(const orxSTRING _zFileName)
 {
   orxSOUND_SAMPLE  *pstResult;
   orxU32            u32ID;
@@ -188,7 +188,7 @@ orxSTATIC orxINLINE orxSOUND_SAMPLE *orxSound_LoadSample(orxCONST orxSTRING _zFi
 
 /** Unloads a sound sample
  */
-orxSTATIC orxINLINE orxVOID orxSound_UnloadSample(orxSOUND_SAMPLE *_pstSample)
+static orxINLINE void orxSound_UnloadSample(orxSOUND_SAMPLE *_pstSample)
 {
   /* Checks */
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
@@ -217,7 +217,7 @@ orxSTATIC orxINLINE orxVOID orxSound_UnloadSample(orxSOUND_SAMPLE *_pstSample)
 
 /** Unloads all the sound samples
  */
-orxSTATIC orxINLINE orxVOID orxSound_UnloadAllSample()
+static orxINLINE void orxSound_UnloadAllSample()
 {
   orxSOUND_SAMPLE *pstSample;
 
@@ -239,7 +239,7 @@ orxSTATIC orxINLINE orxVOID orxSound_UnloadAllSample()
 
 /** Deletes all the sounds
  */
-orxSTATIC orxINLINE orxVOID orxSound_DeleteAll()
+static orxINLINE void orxSound_DeleteAll()
 {
   orxSOUND *pstSound;
 
@@ -266,7 +266,7 @@ orxSTATIC orxINLINE orxVOID orxSound_DeleteAll()
 
 /** Sound module setup
  */
-orxVOID orxSound_Setup()
+void orxSound_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_MEMORY);
@@ -344,7 +344,7 @@ orxSTATUS orxSound_Init()
 
 /** Exits from the sound module
  */
-orxVOID orxSound_Exit()
+void orxSound_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY))
@@ -380,7 +380,7 @@ orxVOID orxSound_Exit()
  * @param[in]   _zConfigID    Config ID
  * @ return orxSOUND / orxNULL
  */
-orxSOUND *orxFASTCALL orxSound_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxSTRING zPreviousSection;
   orxSOUND *pstResult;
@@ -736,7 +736,7 @@ orxSTATUS orxFASTCALL orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch)
  * @param[in] _pvPosition     Desired position
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxSound_SetPosition(orxSOUND *_pstSound, orxCONST orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxSound_SetPosition(orxSOUND *_pstSound, const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult;
 
@@ -816,7 +816,7 @@ orxSTATUS orxFASTCALL orxSound_Loop(orxSOUND *_pstSound, orxBOOL _bLoop)
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-orxFLOAT orxFASTCALL orxSound_GetVolume(orxCONST orxSOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSound_GetVolume(const orxSOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -835,7 +835,7 @@ orxFLOAT orxFASTCALL orxSound_GetVolume(orxCONST orxSOUND *_pstSound)
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-orxFLOAT orxFASTCALL orxSound_GetPitch(orxCONST orxSOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSound_GetPitch(const orxSOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -855,7 +855,7 @@ orxFLOAT orxFASTCALL orxSound_GetPitch(orxCONST orxSOUND *_pstSound)
  * @param[out]  _pvPosition   Sound's position
  * @return orxVECTOR / orxNULL
  */
-orxVECTOR *orxFASTCALL orxSound_GetPosition(orxCONST orxSOUND *_pstSound, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxSound_GetPosition(const orxSOUND *_pstSound, orxVECTOR *_pvPosition)
 {
   orxVECTOR *pvResult;
 
@@ -875,7 +875,7 @@ orxVECTOR *orxFASTCALL orxSound_GetPosition(orxCONST orxSOUND *_pstSound, orxVEC
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-orxFLOAT orxFASTCALL orxSound_GetAttenuation(orxCONST orxSOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSound_GetAttenuation(const orxSOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -894,7 +894,7 @@ orxFLOAT orxFASTCALL orxSound_GetAttenuation(orxCONST orxSOUND *_pstSound)
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-orxFLOAT orxFASTCALL orxSound_GetReferenceDistance(orxCONST orxSOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSound_GetReferenceDistance(const orxSOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -913,7 +913,7 @@ orxFLOAT orxFASTCALL orxSound_GetReferenceDistance(orxCONST orxSOUND *_pstSound)
  * @param[in] _pstSound       Concerned Sound
  * @return orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxSound_IsLooping(orxCONST orxSOUND *_pstSound)
+orxBOOL orxFASTCALL orxSound_IsLooping(const orxSOUND *_pstSound)
 {
   orxBOOL bResult;
 
@@ -932,7 +932,7 @@ orxBOOL orxFASTCALL orxSound_IsLooping(orxCONST orxSOUND *_pstSound)
  * @param[in] _pstSound       Concerned Sound
  * @return orxFLOAT
  */
-orxFLOAT orxFASTCALL orxSound_GetDuration(orxCONST orxSOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSound_GetDuration(const orxSOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -951,7 +951,7 @@ orxFLOAT orxFASTCALL orxSound_GetDuration(orxCONST orxSOUND *_pstSound)
  * @param[in] _pstSound       Concerned Sound
  * @return orxSOUND_STATUS
  */
-orxSOUND_STATUS orxFASTCALL orxSound_GetStatus(orxCONST orxSOUND *_pstSound)
+orxSOUND_STATUS orxFASTCALL orxSound_GetStatus(const orxSOUND *_pstSound)
 {
   orxSOUND_STATUS eResult;
 
@@ -996,7 +996,7 @@ orxSOUND_STATUS orxFASTCALL orxSound_GetStatus(orxCONST orxSOUND *_pstSound)
  * @param[in]   _pstSound     Concerned sound
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-orxSTRING orxFASTCALL orxSound_GetName(orxCONST orxSOUND *_pstSound)
+const orxSTRING orxFASTCALL orxSound_GetName(const orxSOUND *_pstSound)
 {
   orxSTRING zResult;
 

@@ -99,7 +99,7 @@ orxCAMERA *pstCamera;
 
 /** Event handler
  */
-orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
+orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   /* Is a new contact? */
   if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
@@ -122,7 +122,7 @@ orxSTATUS orxFASTCALL EventHandler(orxCONST orxEVENT *_pstEvent)
 
 /** Update callback
  */
-orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxFLOAT fDeltaRotation = orxFLOAT_0;
 

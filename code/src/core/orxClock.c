@@ -78,7 +78,7 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 {
   orxLINKLIST_NODE            stNode;           /**< Linklist node : 12 */
   orxCLOCK_FUNCTION           pfnCallback;      /**< Clock function pointer : 16 */
-  orxVOID                    *pstContext;       /**< Clock function context : 20 */
+  void                    *pstContext;       /**< Clock function context : 20 */
   orxMODULE_ID                eModuleID;        /**< Clock function module ID : 24 */
   orxCLOCK_PRIORITY  ePriority;        /**< Clock function priority : 28 */
 
@@ -119,7 +119,7 @@ typedef struct __orxCLOCK_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxCLOCK_STATIC sstClock;
+static orxCLOCK_STATIC sstClock;
 
 
 /***************************************************************************
@@ -131,7 +131,7 @@ orxSTATIC orxCLOCK_STATIC sstClock;
  * @param[in]   _pfnCallback                          Concerned callback
  * @return      orxCLOCK_FUNCTION_STORAGE / orxNULL
  */
-orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
+static orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(const orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
 
@@ -163,7 +163,7 @@ orxSTATIC orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(orxC
  * @param[in]   _pstStartClock                        Clock used as a starting point in the list
  * @return      orxCLOCK / orxNULL
  */
-orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType, orxCONST orxCLOCK *_pstStartClock)
+static orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType, const orxCLOCK *_pstStartClock)
 {
   orxCLOCK *pstClock;
 
@@ -195,11 +195,11 @@ orxSTATIC orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_T
  * @param[in]   _pstClockInfo                         Concerned clock info
  * @return      Modified DT
  */
-orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_pstClockInfo)
+static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_pstClockInfo)
 {
-  orxREGISTER orxCLOCK_MOD_TYPE  *peModType;
-  orxREGISTER orxFLOAT           *pfModValue;
-  orxREGISTER orxFLOAT            fNewDT = _fDT;
+  register orxCLOCK_MOD_TYPE  *peModType;
+  register orxFLOAT           *pfModValue;
+  register orxFLOAT            fNewDT = _fDT;
 
   /* Using global one? */
   if(_pstClockInfo == orxNULL)
@@ -262,7 +262,7 @@ orxSTATIC orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_p
 
 /** Clock module setup
  */
-orxVOID orxClock_Setup()
+void orxClock_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_MEMORY);
@@ -331,7 +331,7 @@ orxSTATUS orxClock_Init()
 
 /** Exits from clock module
  */
-orxVOID orxClock_Exit()
+void orxClock_Exit()
 {
   /* Initialized? */
   if(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY)
@@ -497,7 +497,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 /** Deletes a clock
  * @param[in]   _pstClock                             Concerned clock
  */
-orxVOID orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
+void orxFASTCALL    orxClock_Delete(orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -621,7 +621,7 @@ orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
 /** Pauses a clock
  * @param[in]   _pstClock                             Concerned clock
  */
-orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
+void orxFASTCALL    orxClock_Pause(orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -639,7 +639,7 @@ orxVOID orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
 /** Unpauses a clock
  * @param[in]   _pstClock                             Concerned clock
  */
-orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
+void orxFASTCALL    orxClock_Unpause(orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -658,7 +658,7 @@ orxVOID orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxTRUE if paused, orxFALSE otherwise
  */
-orxBOOL orxFASTCALL orxClock_IsPaused(orxCONST orxCLOCK *_pstClock)
+orxBOOL orxFASTCALL orxClock_IsPaused(const orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -672,9 +672,9 @@ orxBOOL orxFASTCALL orxClock_IsPaused(orxCONST orxCLOCK *_pstClock)
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxCLOCK_INFO / orxNULL
  */
-orxCONST orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(orxCONST orxCLOCK *_pstClock)
+const orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(const orxCLOCK *_pstClock)
 {
-  orxCONST orxCLOCK_INFO *pstClockInfo = orxNULL;
+  const orxCLOCK_INFO *pstClockInfo = orxNULL;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -768,7 +768,7 @@ orxSTATUS orxFASTCALL orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickS
  * @param[in]   _ePriority                            Priority for the function
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_PRIORITY _ePriority)
+orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pstContext, orxMODULE_ID _eModuleID, orxCLOCK_PRIORITY _ePriority)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -837,7 +837,7 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, orxCONST orxCLOCK_F
  * @param[in]   _fnCallback                           Callback to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
+orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -877,10 +877,10 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, orxCONST orxCLOCK
  * @param[in]   _pfnCallback                          Concerned callback
  * @return      Registered context
  */
-orxVOID *orxFASTCALL orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback)
+void *orxFASTCALL orxClock_GetContext(const orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-  orxVOID *pstContext = orxNULL;
+  void *pstContext = orxNULL;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -912,7 +912,7 @@ orxVOID *orxFASTCALL orxClock_GetContext(orxCONST orxCLOCK *_pstClock, orxCONST 
  * @param[in]   _pstContext                           Context that will be transmitted to the callback when called
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, orxCONST orxCLOCK_FUNCTION _pfnCallback, orxVOID *_pstContext)
+orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pstContext)
 {
   orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -968,7 +968,7 @@ orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eTy
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxCLOCK / orxNULL
  */
-orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
+orxCLOCK *orxFASTCALL orxClock_FindNext(const orxCLOCK *_pstClock)
 {
   orxCLOCK *pstClock;
 
@@ -987,7 +987,7 @@ orxCLOCK *orxFASTCALL orxClock_FindNext(orxCONST orxCLOCK *_pstClock)
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxCLOCK / orxNULL
  */
-orxCLOCK *orxFASTCALL orxClock_GetNext(orxCONST orxCLOCK *_pstClock)
+orxCLOCK *orxFASTCALL orxClock_GetNext(const orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);

@@ -151,7 +151,7 @@ do                                              \
 /** Inits the random seed with an orxFLOAT
  * @param[in]   _u32Seed                        Value to use as seed for random number generation
  */
-extern orxDLLAPI orxVOID orxFASTCALL  orxMath_InitRandom(orxU32 _u32Seed);
+extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxU32 _u32Seed);
 
 /** Gets a random orxFLOAT value
  * @param[in]   _fMin                           Minimum boundary
@@ -181,7 +181,7 @@ extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS3
  * @param[in]   _u32Value                       Value to process
  * @return      Number of bits that are set in the value
  */
-orxSTATIC orxINLINE orxU32 orxMath_GetBitCount(orxREGISTER orxU32 _u32Value)
+static orxINLINE orxU32 orxMath_GetBitCount(register orxU32 _u32Value)
 {
   _u32Value -= ((_u32Value >> 1) & 0x55555555);
   _u32Value = (((_u32Value >> 2) & 0x33333333) + (_u32Value & 0x33333333));
@@ -209,9 +209,9 @@ orxSTATIC orxINLINE orxU32 orxMath_GetBitCount(orxREGISTER orxU32 _u32Value)
  * @param[in]   _fOp                            Input radian angle value
  * @return      Cosine of the given angle
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Cos(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_Cos(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
   
@@ -233,9 +233,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Cos(orxFLOAT _fOp)
  * @param[in]   _fOp                            Input radian angle value
  * @return      Sine of the given angle
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Sin(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_Sin(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
   
@@ -257,9 +257,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Sin(orxFLOAT _fOp)
  * @param[in]   _fOp                            Input radian angle value
  * @return      Tangent of the given angle
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Tan(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_Tan(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
   
@@ -281,9 +281,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Tan(orxFLOAT _fOp)
  * @param[in]   _fOp                            Input radian angle value
  * @return      Arccosine of the given angle
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_ACos(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_ACos(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
   
@@ -305,9 +305,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_ACos(orxFLOAT _fOp)
  * @param[in]   _fOp                            Input radian angle value
  * @return      Arcsine of the given angle
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_ASin(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_ASin(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
   
@@ -330,9 +330,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_ASin(orxFLOAT _fOp)
  * @param[in]   _fOp2                           Second operand
  * @return      Arctangent of the given angle
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
+static orxINLINE orxFLOAT    orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
   
@@ -357,9 +357,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_ATan(orxFLOAT _fOp1, orxFLOAT _fOp2)
  * @param[in]   _fOp                            Input value
  * @return      Square root of the given value
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Sqrt(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_Sqrt(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Updates result */
   fResult = sqrtf(_fOp);
@@ -372,9 +372,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Sqrt(orxFLOAT _fOp)
  * @param[in]   _fOp                            Input value
  * @return      Floored value
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Floor(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_Floor(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Updates result */
   fResult = floorf(_fOp);
@@ -387,9 +387,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Floor(orxFLOAT _fOp)
  * @param[in]   _fOp                            Input value
  * @return      Ceiled value
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Ceil(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_Ceil(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Updates result */
   fResult = ceilf(_fOp);
@@ -402,9 +402,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Ceil(orxFLOAT _fOp)
  * @param[in]   _fOp                            Input value
  * @return      Rounded value
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_Round(orxFLOAT _fOp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
 #ifdef __orxMSVC__
   
@@ -427,9 +427,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Round(orxFLOAT _fOp)
  * @param[in]   _fOp2                           Modulo value
  * @return      Modulo value
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
+static orxINLINE orxFLOAT    orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Updates result */
   fResult = fmodf(_fOp1, _fOp2);
@@ -443,9 +443,9 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Mod(orxFLOAT _fOp1, orxFLOAT _fOp2)
  * @param[in]   _fExp                           Exponent value
  * @return      Powed value
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)
+static orxINLINE orxFLOAT    orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)
 {
-  orxREGISTER orxFLOAT fResult;
+  register orxFLOAT fResult;
 
   /* Updates result */
   fResult = powf(_fOp, _fExp);
@@ -458,7 +458,7 @@ orxSTATIC orxINLINE orxFLOAT orxMath_Pow(orxFLOAT _fOp, orxFLOAT _fExp)
  * @param[in]   _fOp                            Input value
  * @return      Absolute value
  */
-orxSTATIC orxINLINE orxFLOAT orxMath_Abs(orxFLOAT _fOp)
+static orxINLINE orxFLOAT    orxMath_Abs(orxFLOAT _fOp)
 {
   /* Done! */
   return fabsf(_fOp);

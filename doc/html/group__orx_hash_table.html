@@ -20,33 +20,33 @@
 <h1>OrxHashTable</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Module management.</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g1f1eaba26b37cbb4239fc0e791da632f">orxHashTable_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gf283a22179cfb1c9c15d3edcce70823a">orxHashTable_Setup</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g5e2d51acf82a8caffffdc0262a52e948">orxHashTable_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g1a88edc752d1827696efcbf8dfc7c62c">orxHashTable_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g675caf2e4fecce76eb5d8e5d5df2ec5b">orxHashTable_Exit</a> ()</td></tr>
 
 <tr><td colspan="2"><br><h2>HashTable creation/destruction.</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gf066ca473c2b4640b2c389f00bee7a54">orxHashTable_Create</a> (orxU32 _u32NbKey, orxU32 _u32Flags, <a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemType)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gf216a729c545afc912346bc156c27ad5">orxHashTable_Delete</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gadfd063fca055d74c23a10e1dda0f175">orxHashTable_Delete</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gf3ccaaffbd01ff64de4eb6080a948ddb">orxHashTable_Clear</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gb1d21642004362aff3750a93a22b438c">orxHashTable_Clear</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable)</td></tr>
 
 <tr><td colspan="2"><br><h2>HashTable key manipulation.</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g2f00baa7e1620459d9aa614acf4b8965">orxHashTable_Get</a> (orxCONST <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g571fd07a3d33dc289777ba8ce34b1e3b">orxHashTable_Get</a> (const <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g7921c19635d9ebe061dc360fc7b7636e">orxHashTable_Set</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key, orxVOID *_pData)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gd8f289440c1057a26ee3e4157104d8b1">orxHashTable_Set</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key, void *_pData)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g4a9190d701f1189ba5af45e3d2d8889b">orxHashTable_Add</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key, orxVOID *_pData)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g9d540c1f5bc92a3b850df09dd1ea4a59">orxHashTable_Add</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key, void *_pData)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gc1f16963dd17dae7ba05c603f5f931df">orxHashTable_Remove</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 _u32Key)</td></tr>
 
 <tr><td colspan="2"><br><h2>HashTable iteration.</h2></td></tr>
 <tr><td colspan="2">Used to pass over all elements of the hashtable. <br><br></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g70a0d50ed884375ff179041d1c5f7557">orxHashTable_FindFirst</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 *_pu32Key, orxVOID **_ppData)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g125074b981e66465224f074a2ef034bd">orxHashTable_FindFirst</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxU32 *_pu32Key, void **_ppData)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g1f3fd4f85ad81433937fa2c9800205ca">orxHashTable_FindNext</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, orxVOID **_ppData)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g4ea5f78c0ce764331d1c029e438dc4ce">orxHashTable_FindNext</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData)</td></tr>
 
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g8875698747d693bdb63a315f7280ad5d">orxHASHTABLE_KU32_FLAG_NONE</a>&nbsp;&nbsp;&nbsp;0x00000000</td></tr>
@@ -59,7 +59,7 @@
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g1a50c687acf8e8992ac839811dd64693">orxHashTable_GetCounter</a> (<a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxVOID orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#ga7a8327dabc67b0718cc0a2be040a694">orxHashTable_DebugPrint</a> (orxCONST <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gc44cc57a2f5204610660a39d6b47bdc3">orxHashTable_DebugPrint</a> (const <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *_pstHashTable)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -111,7 +111,7 @@ The Hash table will not be expandable
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g4a9190d701f1189ba5af45e3d2d8889b"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Add" ref="g4a9190d701f1189ba5af45e3d2d8889b" args="(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData)" -->
+<a class="anchor" name="g9d540c1f5bc92a3b850df09dd1ea4a59"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Add" ref="g9d540c1f5bc92a3b850df09dd1ea4a59" args="(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -130,7 +130,7 @@ The Hash table will not be expandable
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pData</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -154,12 +154,12 @@ Add an item value. <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gf3ccaaffbd01ff64de4eb6080a948ddb"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Clear" ref="gf3ccaaffbd01ff64de4eb6080a948ddb" args="(orxHASHTABLE *_pstHashTable)" -->
+<a class="anchor" name="gb1d21642004362aff3750a93a22b438c"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Clear" ref="gb1d21642004362aff3750a93a22b438c" args="(orxHASHTABLE *_pstHashTable)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxHashTable_Clear           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxHashTable_Clear           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstHashTable</em>          </td>
@@ -222,14 +222,14 @@ Create a new hash table and return it. <dl compact><dt><b>Parameters:</b></dt><d
 
 </div>
 </div><p>
-<a class="anchor" name="ga7a8327dabc67b0718cc0a2be040a694"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_DebugPrint" ref="ga7a8327dabc67b0718cc0a2be040a694" args="(orxCONST orxHASHTABLE *_pstHashTable)" -->
+<a class="anchor" name="gc44cc57a2f5204610660a39d6b47bdc3"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_DebugPrint" ref="gc44cc57a2f5204610660a39d6b47bdc3" args="(const orxHASHTABLE *_pstHashTable)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxHashTable_DebugPrint           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxHashTable_DebugPrint           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstHashTable</em>          </td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
@@ -247,12 +247,12 @@ Print the content of a Hash table <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gf216a729c545afc912346bc156c27ad5"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Delete" ref="gf216a729c545afc912346bc156c27ad5" args="(orxHASHTABLE *_pstHashTable)" -->
+<a class="anchor" name="gadfd063fca055d74c23a10e1dda0f175"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Delete" ref="gadfd063fca055d74c23a10e1dda0f175" args="(orxHASHTABLE *_pstHashTable)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxHashTable_Delete           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxHashTable_Delete           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstHashTable</em>          </td>
@@ -272,12 +272,12 @@ Delete a hash table. <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g1a88edc752d1827696efcbf8dfc7c62c"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Exit" ref="g1a88edc752d1827696efcbf8dfc7c62c" args="()" -->
+<a class="anchor" name="g675caf2e4fecce76eb5d8e5d5df2ec5b"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Exit" ref="g675caf2e4fecce76eb5d8e5d5df2ec5b" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxHashTable_Exit           </td>
+          <td class="memname">orxDLLAPI void orxHashTable_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -291,7 +291,7 @@ Delete a hash table. <dl compact><dt><b>Parameters:</b></dt><dd>
 Exit HashTable module 
 </div>
 </div><p>
-<a class="anchor" name="g70a0d50ed884375ff179041d1c5f7557"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_FindFirst" ref="g70a0d50ed884375ff179041d1c5f7557" args="(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, orxVOID **_ppData)" -->
+<a class="anchor" name="g125074b981e66465224f074a2ef034bd"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_FindFirst" ref="g125074b981e66465224f074a2ef034bd" args="(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -310,7 +310,7 @@ Exit HashTable module
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxVOID **&nbsp;</td>
+          <td class="paramtype">void **&nbsp;</td>
           <td class="paramname"> <em>_ppData</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -334,7 +334,7 @@ Find a the first item of the hashtable and return the iterator corresponding to 
 
 </div>
 </div><p>
-<a class="anchor" name="g1f3fd4f85ad81433937fa2c9800205ca"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_FindNext" ref="g1f3fd4f85ad81433937fa2c9800205ca" args="(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, orxVOID **_ppData)" -->
+<a class="anchor" name="g4ea5f78c0ce764331d1c029e438dc4ce"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_FindNext" ref="g4ea5f78c0ce764331d1c029e438dc4ce" args="(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -359,7 +359,7 @@ Find a the first item of the hashtable and return the iterator corresponding to 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxVOID **&nbsp;</td>
+          <td class="paramtype">void **&nbsp;</td>
           <td class="paramname"> <em>_ppData</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -384,14 +384,14 @@ Find a the next item of the hashtable and return the iterator corresponding to t
 
 </div>
 </div><p>
-<a class="anchor" name="g2f00baa7e1620459d9aa614acf4b8965"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Get" ref="g2f00baa7e1620459d9aa614acf4b8965" args="(orxCONST orxHASHTABLE *_pstHashTable, orxU32 _u32Key)" -->
+<a class="anchor" name="g571fd07a3d33dc289777ba8ce34b1e3b"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Get" ref="g571fd07a3d33dc289777ba8ce34b1e3b" args="(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID* orxFASTCALL orxHashTable_Get           </td>
+          <td class="memname">orxDLLAPI void* orxFASTCALL orxHashTable_Get           </td>
           <td>(</td>
-          <td class="paramtype">orxCONST <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *&nbsp;</td>
+          <td class="paramtype">const <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstHashTable</em>, </td>
         </tr>
         <tr>
@@ -502,12 +502,12 @@ Remove an item. <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g7921c19635d9ebe061dc360fc7b7636e"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Set" ref="g7921c19635d9ebe061dc360fc7b7636e" args="(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, orxVOID *_pData)" -->
+<a class="anchor" name="gd8f289440c1057a26ee3e4157104d8b1"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Set" ref="gd8f289440c1057a26ee3e4157104d8b1" args="(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxFASTCALL orxHashTable_Set           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxHashTable_Set           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstHashTable</em>, </td>
@@ -521,7 +521,7 @@ Remove an item. <dl compact><dt><b>Parameters:</b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxVOID *&nbsp;</td>
+          <td class="paramtype">void *&nbsp;</td>
           <td class="paramname"> <em>_pData</em></td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -544,12 +544,12 @@ Set an item value. <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g1f1eaba26b37cbb4239fc0e791da632f"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Setup" ref="g1f1eaba26b37cbb4239fc0e791da632f" args="()" -->
+<a class="anchor" name="gf283a22179cfb1c9c15d3edcce70823a"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Setup" ref="gf283a22179cfb1c9c15d3edcce70823a" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI orxVOID orxHashTable_Setup           </td>
+          <td class="memname">orxDLLAPI void orxHashTable_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

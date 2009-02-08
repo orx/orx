@@ -33,61 +33,61 @@
 
 
 /* *** Undefined constants *** */
-orxCONST orxU64       orxU64_UNDEFINED    = (orxU64)(-1);
-orxCONST orxU32       orxU32_UNDEFINED    = (orxU32)(-1);
-orxCONST orxU16       orxU16_UNDEFINED    = (orxU16)(-1);
-orxCONST orxU8        orxU8_UNDEFINED     = (orxU8)(-1);
-orxCONST orxHANDLE    orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
+const orxU64       orxU64_UNDEFINED    = (orxU64)(-1);
+const orxU32       orxU32_UNDEFINED    = (orxU32)(-1);
+const orxU16       orxU16_UNDEFINED    = (orxU16)(-1);
+const orxU8        orxU8_UNDEFINED     = (orxU8)(-1);
+const orxHANDLE    orxHANDLE_UNDEFINED = (orxHANDLE)(-1);
 
 
 /* *** Misc constants *** */
-orxCONST orxBOOL      orxFALSE            = (orxBOOL)(1 != 1);
-orxCONST orxBOOL      orxTRUE             = (orxBOOL)(1 == 1);
+const orxBOOL      orxFALSE            = (orxBOOL)(1 != 1);
+const orxBOOL      orxTRUE             = (orxBOOL)(1 == 1);
 
-orxCONST orxSTRING    orxSTRING_EMPTY     = "";
-orxCONST orxSTRING    orxSTRING_TRUE      = "true";
-orxCONST orxSTRING    orxSTRING_FALSE     = "false";
-orxCONST orxCHAR      orxCHAR_NULL        = '\0';
-orxCONST orxCHAR      orxCHAR_CR          = '\r';
-orxCONST orxCHAR      orxCHAR_LF          = '\n';
+const orxSTRING    orxSTRING_EMPTY     = "";
+const orxSTRING    orxSTRING_TRUE      = "true";
+const orxSTRING    orxSTRING_FALSE     = "false";
+const orxCHAR      orxCHAR_NULL        = '\0';
+const orxCHAR      orxCHAR_CR          = '\r';
+const orxCHAR      orxCHAR_LF          = '\n';
 
 #ifdef __orxWINDOWS__
 
-  orxCONST orxCHAR    orxCHAR_EOL         = '\n';
-  orxCONST orxSTRING  orxSTRING_EOL       = "\r\n";
+  const orxCHAR    orxCHAR_EOL         = '\n';
+  const orxSTRING  orxSTRING_EOL       = "\r\n";
 
 #elif defined(__orxLINUX__) || defined (__orxGP2X__)
 
-  orxCONST orxCHAR    orxCHAR_EOL         = '\n';
-  orxCONST orxSTRING  orxSTRING_EOL       = "\n";
+  const orxCHAR    orxCHAR_EOL         = '\n';
+  const orxSTRING  orxSTRING_EOL       = "\n";
 
 #elif defined(__orxMAC__)
 
-  orxCONST orxCHAR    orxCHAR_EOL         = '\r';
-  orxCONST orxSTRING  orxSTRING_EOL       = "\r";
+  const orxCHAR    orxCHAR_EOL         = '\r';
+  const orxSTRING  orxSTRING_EOL       = "\r";
 
 #endif
 
 
 /* *** Directory separators *** */
 
-orxCONST orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_WINDOWS    = '\\';
-orxCONST orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_LINUX      = '/';
-orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_WINDOWS  = "\\";
-orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX    = "/";
+const orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_WINDOWS    = '\\';
+const orxCHAR     orxCHAR_DIRECTORY_SEPARATOR_LINUX      = '/';
+const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_WINDOWS  = "\\";
+const orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX    = "/";
 
 #ifdef __orxWINDOWS__
 
-  orxCONST orxCHAR      orxCHAR_DIRECTORY_SEPARATOR         = '\\';
-  orxCONST orxSTRING    orxSTRING_DIRECTORY_SEPARATOR       = "\\";
+  const orxCHAR      orxCHAR_DIRECTORY_SEPARATOR         = '\\';
+  const orxSTRING    orxSTRING_DIRECTORY_SEPARATOR       = "\\";
 
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / GP2X */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
 
-    orxCONST orxCHAR    orxCHAR_DIRECTORY_SEPARATOR         = '/';
-    orxCONST orxSTRING  orxSTRING_DIRECTORY_SEPARATOR       = "/";
+    const orxCHAR    orxCHAR_DIRECTORY_SEPARATOR         = '/';
+    const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR       = "/";
 
   #endif /* __orxLINUX__ || __orxMAC__ || __orxGP2X__ */
 
@@ -96,5 +96,5 @@ orxCONST orxSTRING   orxSTRING_DIRECTORY_SEPARATOR_LINUX    = "/";
 
 /* *** Float constants *** */
 
-orxCONST orxFLOAT orxFLOAT_0 = orx2F(0.0f);
-orxCONST orxFLOAT orxFLOAT_1 = orx2F(1.0f);
+const orxFLOAT orxFLOAT_0 = orx2F(0.0f);
+const orxFLOAT orxFLOAT_1 = orx2F(1.0f);

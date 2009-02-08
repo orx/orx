@@ -39,7 +39,7 @@
 
 /** Render module setup
  */
-orxVOID orxRender_Setup()
+void orxRender_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_PLUGIN);
@@ -61,9 +61,9 @@ orxVOID orxRender_Setup()
 
 /* *** Core function definitions *** */
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, orxVOID, orxVOID);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, orxCONST orxVECTOR *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Init, orxSTATUS, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_Exit, void, void);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxRender_GetWorldPosition, orxVECTOR *, const orxVECTOR *, orxVECTOR *);
 
 
 /* *** Core function info array *** */
@@ -84,12 +84,12 @@ orxSTATUS orxRender_Init()
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Init)();
 }
 
-orxVOID orxRender_Exit()
+void orxRender_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Exit)();
 }
 
-orxVECTOR *orxRender_GetWorldPosition(orxCONST orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxVECTOR *orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pvWorldPosition);
 }

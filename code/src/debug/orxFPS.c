@@ -78,7 +78,7 @@ typedef struct __orxFPS_STATIC_t
 
 /** Static data
  */
-orxSTATIC volatile orxFPS_STATIC sstFPS;
+static volatile orxFPS_STATIC sstFPS;
 
 
 /***************************************************************************
@@ -89,7 +89,7 @@ orxSTATIC volatile orxFPS_STATIC sstFPS;
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  * @param[in] _pstContext         User defined context
  */
-orxSTATIC orxVOID orxFASTCALL orxFPS_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+static void orxFASTCALL    orxFPS_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
@@ -109,7 +109,7 @@ orxSTATIC orxVOID orxFASTCALL orxFPS_Update(orxCONST orxCLOCK_INFO *_pstClockInf
  ***************************************************************************/
 
 /** Setups FPS module */
-orxVOID orxFPS_Setup()
+void orxFPS_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FPS, orxMODULE_ID_MEMORY);
@@ -178,7 +178,7 @@ orxSTATUS orxFPS_Init()
 }
 
 /** Exits from the FPS module */
-orxVOID orxFPS_Exit()
+void orxFPS_Exit()
 {
   /* Initialized? */
   if(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY)
@@ -202,7 +202,7 @@ orxVOID orxFPS_Exit()
 }
 
 /** Increases internal frame counter */
-orxVOID orxFPS_IncreaseFrameCounter()
+void orxFPS_IncreaseFrameCounter()
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);

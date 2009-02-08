@@ -106,7 +106,7 @@ typedef struct __orxANIM_STATIC_t
 
 /** Static data
  */
-orxSTATIC orxANIM_STATIC sstAnim;
+static orxANIM_STATIC sstAnim;
 
 
 /***************************************************************************
@@ -118,7 +118,7 @@ orxSTATIC orxANIM_STATIC sstAnim;
  * @param[in]   _fTimeStamp     Desired timestamp
  * @return      Key index / orxU32_UNDEFINED
  */
-orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
+static orxU32 orxFASTCALL orxAnim_FindKeyIndex(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 {
   orxU32 u32Counter, u32MaxIndex, u32MinIndex, u32Index;
 
@@ -175,7 +175,7 @@ orxSTATIC orxU32 orxFASTCALL orxAnim_FindKeyIndex(orxCONST orxANIM *_pstAnim, or
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32Size        Desired size
  */
-orxSTATIC orxINLINE orxVOID orxAnim_SetStorageSize(orxANIM *_pstAnim, orxU32 _u32Size)
+static orxINLINE void orxAnim_SetStorageSize(orxANIM *_pstAnim, orxU32 _u32Size)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -191,7 +191,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_SetStorageSize(orxANIM *_pstAnim, orxU32 _u3
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _u32KeyCounter  Desired key counter
  */
-orxSTATIC orxINLINE orxVOID orxAnim_SetKeyCounter(orxANIM *_pstAnim, orxU32 _u32KeyCounter)
+static orxINLINE void orxAnim_SetKeyCounter(orxANIM *_pstAnim, orxU32 _u32KeyCounter)
 {
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -206,9 +206,9 @@ orxSTATIC orxINLINE orxVOID orxAnim_SetKeyCounter(orxANIM *_pstAnim, orxU32 _u32
 /** Increases an animation internal key counter
  * @param[in]   _pstAnim        Concerned animation
  */
-orxSTATIC orxINLINE orxVOID orxAnim_IncreaseKeyCounter(orxANIM *_pstAnim)
+static orxINLINE void orxAnim_IncreaseKeyCounter(orxANIM *_pstAnim)
 {
-  orxREGISTER orxU32 u32KeyCounter;
+  register orxU32 u32KeyCounter;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -225,9 +225,9 @@ orxSTATIC orxINLINE orxVOID orxAnim_IncreaseKeyCounter(orxANIM *_pstAnim)
 /** Increases an animation internal key counter
  * @param[in]   _pstAnim        Concerned animation
  */
-orxSTATIC orxINLINE orxVOID orxAnim_DecreaseKeyCounter(orxANIM *_pstAnim)
+static orxINLINE void orxAnim_DecreaseKeyCounter(orxANIM *_pstAnim)
 {
-  orxREGISTER orxU32 u32KeyCounter;
+  register orxU32 u32KeyCounter;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstAnim);
@@ -243,9 +243,9 @@ orxSTATIC orxINLINE orxVOID orxAnim_DecreaseKeyCounter(orxANIM *_pstAnim)
 
 /** Deletes all animations
  */
-orxSTATIC orxINLINE orxVOID orxAnim_DeleteAll()
+static orxINLINE void orxAnim_DeleteAll()
 {
-  orxREGISTER orxANIM *pstAnim;
+  register orxANIM *pstAnim;
 
   /* Gets first anim */
   pstAnim = orxANIM (orxStructure_GetFirst(orxSTRUCTURE_ID_ANIM));
@@ -270,7 +270,7 @@ orxSTATIC orxINLINE orxVOID orxAnim_DeleteAll()
 
 /** Animation module setup
  */
-orxVOID orxAnim_Setup()
+void orxAnim_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_MEMORY);
@@ -326,7 +326,7 @@ orxSTATUS orxAnim_Init()
 
 /** Exits from the Animation module
  */
-orxVOID orxAnim_Exit()
+void orxAnim_Exit()
 {
   /* Initialized? */
   if(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY)
@@ -425,7 +425,7 @@ orxANIM *orxFASTCALL orxAnim_Create(orxU32 _u32Flags, orxU32 _u32Size)
  * @param[in]   _zConfigID                    Config ID
  * @return      orxANIMSET / orxNULL
  */
-orxANIM *orxFASTCALL orxAnim_CreateFromConfig(orxCONST orxSTRING _zConfigID)
+orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxSTRING zPreviousSection;
   orxANIM  *pstResult = orxNULL;
@@ -697,7 +697,7 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
 /** Removes all keys from an animation
  * @param[in]   _pstAnim        Concerned animation
  */
-orxVOID orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
+void orxFASTCALL    orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
@@ -761,7 +761,7 @@ orxSTATUS orxFASTCALL orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, or
  * @param[in]   _u32Index       Index of desired key
  * @return      Desired orxSTRUCTURE / orxNULL
  */
-orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(orxCONST orxANIM *_pstAnim, orxU32 _u32Index)
+orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(const orxANIM *_pstAnim, orxU32 _u32Index)
 {
   orxU32        u32Counter;
   orxSTRUCTURE *pstResult;
@@ -797,7 +797,7 @@ orxSTRUCTURE *orxFASTCALL orxAnim_GetKeyData(orxCONST orxANIM *_pstAnim, orxU32 
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation key storage size
  */
-orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(orxCONST orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(const orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
@@ -812,7 +812,7 @@ orxU32 orxFASTCALL orxAnim_GetKeyStorageSize(orxCONST orxANIM *_pstAnim)
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation key counter
  */
-orxU32 orxFASTCALL orxAnim_GetKeyCounter(orxCONST orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetKeyCounter(const orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
@@ -827,7 +827,7 @@ orxU32 orxFASTCALL orxAnim_GetKeyCounter(orxCONST orxANIM *_pstAnim)
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation time length
  */
-orxFLOAT orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
+orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
 {
   orxU32    u32Counter;
   orxFLOAT  fLength = orxFLOAT_0;
@@ -866,7 +866,7 @@ orxFLOAT orxFASTCALL orxAnim_GetLength(orxCONST orxANIM *_pstAnim)
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim ID / orxU32_UNDEFINED
  */
-orxU32 orxFASTCALL orxAnim_GetID(orxCONST orxANIM *_pstAnim)
+orxU32 orxFASTCALL orxAnim_GetID(const orxANIM *_pstAnim)
 {
   orxU32 u32Result;
 
@@ -885,7 +885,7 @@ orxU32 orxFASTCALL orxAnim_GetID(orxCONST orxANIM *_pstAnim)
  * @param[in]   _pstAnim        Concerned animation
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-orxSTRING orxFASTCALL orxAnim_GetName(orxCONST orxANIM *_pstAnim)
+const orxSTRING orxFASTCALL orxAnim_GetName(const orxANIM *_pstAnim)
 {
   orxSTRING zResult;
 

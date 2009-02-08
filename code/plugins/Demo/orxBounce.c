@@ -32,14 +32,14 @@
 
 #include "orxPluginAPI.h"
 
-orxSTATIC orxU32      su32BallCounter = 0;
-orxSTATIC orxOBJECT  *spoParticleSpawner;
+static orxU32      su32BallCounter = 0;
+static orxOBJECT  *spoParticleSpawner;
 
 /** Bounce event handler
  * @param[in]   _pstEvent                     Sent event
  * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
  */
-orxSTATIC orxSTATUS orxFASTCALL orxBounce_EventHandler(orxCONST orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -92,7 +92,7 @@ orxSTATIC orxSTATUS orxFASTCALL orxBounce_EventHandler(orxCONST orxEVENT *_pstEv
 
 /** Update callback
  */
-orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL    orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vMousePos;
   orxBOOL   bInViewport;
@@ -156,7 +156,7 @@ orxVOID orxFASTCALL orxBounce_Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxV
 
 /** Inits the bounce demo
  */
-orxSTATIC orxSTATUS orxBounce_Init()
+static orxSTATUS orxBounce_Init()
 {
   orxCLOCK *pstClock;
   orxSTATUS eResult;

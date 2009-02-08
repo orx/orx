@@ -42,9 +42,9 @@
 /*
  * Macros for core plugin register function declaration
  */
-#define orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX) _orxRegisterFunction_##PLUGIN_SUFFIX
+#define orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX) _registerFunction_##PLUGIN_SUFFIX
 
-#define orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(PLUGIN_SUFFIX) extern orxDLLAPI orxVOID orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX)()
+#define orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(PLUGIN_SUFFIX) extern orxDLLAPI void orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(PLUGIN_SUFFIX)()
 
 
 /*
@@ -79,7 +79,7 @@ orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION(SYSTEM);
 /*
  * Inline core plugin registration function
  */
-orxSTATIC orxINLINE orxVOID orxPlugin_RegisterCorePlugins()
+static orxINLINE void orxPlugin_RegisterCorePlugins()
 {
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(DISPLAY)();
   orxPLUGIN_CORE_REGISTER_FUNCTION_NAME(JOYSTICK)();

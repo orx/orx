@@ -52,7 +52,7 @@ typedef struct __orxTEXTURE_t             orxTEXTURE;
 
 /** Setups the texture module
  */
-extern orxDLLAPI orxVOID                  orxTexture_Setup();
+extern orxDLLAPI void                     orxTexture_Setup();
 
 /** Inits the texture module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -61,7 +61,7 @@ extern orxDLLAPI orxSTATUS                orxTexture_Init();
 
 /** Exits from the texture module
  */
-extern orxDLLAPI orxVOID                  orxTexture_Exit();
+extern orxDLLAPI void                     orxTexture_Exit();
 
 
 /** Creates an empty texture
@@ -73,7 +73,7 @@ extern orxDLLAPI orxTEXTURE *             orxTexture_Create();
  * @param[in]   _zBitmapFileName  Name of the bitmap
  * @return      orxTEXTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(orxCONST orxSTRING _zBitmapFileName);
+extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(const orxSTRING _zBitmapFileName);
 
 /** Deletes a texture (and its referenced bitmap)
  * @param[in]   _pstTexture     Concerned texture
@@ -87,7 +87,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_Delete(orxTEXTURE *_pstText
  * @param[in]   _zDataName      Name associated with the bitmap (usually filename)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, orxCONST orxBITMAP *_pstBitmap, orxCONST orxSTRING _zDataName);
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_LinkBitmap(orxTEXTURE *_pstTexture, const orxBITMAP *_pstBitmap, const orxSTRING _zDataName);
 
 /** Unlinks (and deletes if not used anymore) a bitmap
  * @param[in]   _pstTexture     Concerned texture
@@ -100,7 +100,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_UnlinkBitmap(orxTEXTURE *_p
  * @param[in]   _pstTexture     Concerned texture
  * @return      orxBITMAP / orxNULL
  */
-extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(orxCONST orxTEXTURE *_pstTexture);
+extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(const orxTEXTURE *_pstTexture);
 
 /** Gets texture size
  * @param[in]   _pstTexture     Concerned texture
@@ -108,13 +108,13 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(orxCONST orxTEXTU
  * @param[out]  _pfHeight       Texture's height
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetSize(orxCONST orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
+extern orxDLLAPI orxFLOAT orxFASTCALL     orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
 /** Gets texture name
  * @param[in]   _pstTexture   Concerned texture
  * @return      Texture name / orxNULL
  */
-extern orxDLLAPI orxSTRING orxFASTCALL    orxTexture_GetName(orxCONST orxTEXTURE *_pstTexture);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture);
 
 /** Sets texture color
  * @param[in]   _pstTexture     Concerned texture

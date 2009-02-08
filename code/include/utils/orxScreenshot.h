@@ -60,7 +60,7 @@
 
 /** Screenshot module setup
  */
-extern orxDLLAPI orxVOID                orxScreenshot_Setup();
+extern orxDLLAPI void                   orxScreenshot_Setup();
 
 /** Inits the screenshot module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -69,11 +69,11 @@ extern orxDLLAPI orxSTATUS              orxScreenshot_Init();
 
 /** Exits from the screenshot module
  */
-extern orxDLLAPI orxVOID                orxScreenshot_Exit();
+extern orxDLLAPI void                   orxScreenshot_Exit();
 
 /** Captures a screenshot
  */
-extern orxDLLAPI orxVOID                orxScreenshot_Capture();
+extern orxDLLAPI void                   orxScreenshot_Capture();
 
 #endif /* _orxSCREENSHOT_H_ */
 

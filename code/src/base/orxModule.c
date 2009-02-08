@@ -40,7 +40,7 @@
 
 /** Registers all engine modules
  */
-orxVOID orxModule_RegisterAll()
+void orxModule_RegisterAll()
 {
   /* *** All modules registration *** */
   orxMODULE_REGISTER(orxMODULE_ID_ANIM, orxAnim);
@@ -155,7 +155,7 @@ typedef struct __orxMODULE_STATIC_t
 
 /** static data
  */
-orxSTATIC orxMODULE_STATIC sstModule;
+static orxMODULE_STATIC sstModule;
 
 
 /***************************************************************************
@@ -169,7 +169,7 @@ orxSTATIC orxMODULE_STATIC sstModule;
 
 /** Registers a module
  */
-orxVOID orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, orxCONST orxMODULE_SETUP_FUNCTION _pfnSetup, orxCONST orxMODULE_INIT_FUNCTION _pfnInit, orxCONST orxMODULE_EXIT_FUNCTION _pfnExit)
+void orxFASTCALL    orxModule_Register(orxMODULE_ID _eModuleID, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
@@ -189,7 +189,7 @@ orxVOID orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, orxCONST orxMODU
 
 /** Adds dependencies between 2 modules
  */
-orxVOID orxFASTCALL orxModule_AddDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)
+void orxFASTCALL    orxModule_AddDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)
 {
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
@@ -204,7 +204,7 @@ orxVOID orxFASTCALL orxModule_AddDependency(orxMODULE_ID _eModuleID, orxMODULE_I
 
 /** Adds optional dependencies between 2 modules
  */
-orxVOID orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)
+void orxFASTCALL    orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMODULE_ID _eDependID)
 {
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
@@ -219,7 +219,7 @@ orxVOID orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orx
 
 /** Updates dependencies for all modules
  */
-orxVOID orxModule_UpdateDependencies()
+void orxModule_UpdateDependencies()
 {
   /* !!! TODO !!! */
 
@@ -228,7 +228,7 @@ orxVOID orxModule_UpdateDependencies()
 
 /** Calls a module setup
  */
-orxVOID orxFASTCALL orxModule_Setup(orxMODULE_ID _eModuleID)
+void orxFASTCALL    orxModule_Setup(orxMODULE_ID _eModuleID)
 {
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_NUMBER);
@@ -250,7 +250,7 @@ orxVOID orxFASTCALL orxModule_Setup(orxMODULE_ID _eModuleID)
 
 /** Calls all module setups
  */
-orxVOID orxModule_SetupAll()
+void orxModule_SetupAll()
 {
   orxMODULE_ID eID;
 
@@ -443,7 +443,7 @@ orxSTATUS orxModule_InitAll()
 
 /** Exits from a module recursively
  */
-orxVOID orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
+void orxFASTCALL    orxModule_Exit(orxMODULE_ID _eModuleID)
 {
   orxU64 u64Depend;
   orxU32 u32Index;
@@ -491,7 +491,7 @@ orxVOID orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
 
 /** Exits from all modules
  */
-orxVOID orxModule_ExitAll()
+void orxModule_ExitAll()
 {
   orxMODULE_ID  eID;
 

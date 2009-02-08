@@ -71,8 +71,6 @@
  * Your code merely needs to move your camera in your scenery, without having to bother about scrolling effect.
  * This gives you a full control about how many scrolling planes you want, and which objects should be affected by it.
  *
- * There are also 4 lines of code to activate/deactivate display smoothing (when using SFML display plugin,
- * it uses linear filtering).
  * Thus, by pressing 'S' and 'N' keys, we update the corresponding config value directly in memory.
  * The same effect could be achieved by modifying the config file and asking for a reload by pressing backspace.
  *
@@ -91,7 +89,7 @@ orxCAMERA *pstCamera;
 
 /** Update callback
  */
-orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstContext)
+void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vMove, vPosition, vScrollSpeed;
 
@@ -148,16 +146,6 @@ orxVOID orxFASTCALL Update(orxCONST orxCLOCK_INFO *_pstClockInfo, orxVOID *_pstC
 
   /* Updates camera position */
   orxCamera_SetPosition(pstCamera, orxVector_Add(&(vPosition), orxCamera_GetPosition(pstCamera, &vPosition), &vMove));
-
-  /* *** DISPLAY UPDATE *** */
-
-  /* Toggle smoothing? */
-  if(orxInput_IsActive("Smooth") && orxInput_HasNewStatus("Smooth"))
-  {
-    /* Updates config with smoothing */
-    orxConfig_SelectSection("Display");
-    orxConfig_SetBool("Smoothing", !orxConfig_GetBool("Smoothing"));
-  }
 }
 
 
@@ -172,7 +160,7 @@ orxSTATUS Init()
   orxINPUT_TYPE eType;
   orxENUM       eID;
   orxSTRING     zInputCameraLeft, zInputCameraRight, zInputCameraUp, zInputCameraDown;
-  orxSTRING     zInputCameraZoomIn, zInputCameraZoomOut, zInputSmooth;
+  orxSTRING     zInputCameraZoomIn, zInputCameraZoomOut;
 
   /* Loads config file and selects main section */
   orxConfig_Load("../09_Scrolling.ini");
@@ -197,18 +185,13 @@ orxSTATUS Init()
   orxInput_GetBinding("CameraZoomOut", 0, &eType, &eID);
   zInputCameraZoomOut = orxInput_GetBindingName(eType, eID);
 
-  orxInput_GetBinding("Smooth", 0, &eType, &eID);
-  zInputSmooth = orxInput_GetBindingName(eType, eID);
-
   /* Displays a small hint in console */
   orxLOG("\n- '%s', '%s', '%s' & '%s' will move the camera"
          "\n- '%s' & '%s' will zoom in/out"
-         "\n- '%s' will toggle smoothing for display"
          "\n* The scrolling and auto-scaling of objects is data-driven, no code required"
          "\n* The sky background will follow the camera (parent/child frame relation)",
          zInputCameraUp, zInputCameraLeft, zInputCameraDown, zInputCameraRight,
-         zInputCameraZoomIn, zInputCameraZoomOut,
-         zInputSmooth);
+         zInputCameraZoomIn, zInputCameraZoomOut);
 
   /* Creates viewport */
   pstViewport = orxViewport_CreateFromConfig("Viewport");

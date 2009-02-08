@@ -81,7 +81,7 @@ typedef struct __orxGRAPHIC_t                 orxGRAPHIC;
 
 /** Graphic module setup
  */
-extern orxDLLAPI orxVOID                      orxGraphic_Setup();
+extern orxDLLAPI void                         orxGraphic_Setup();
 
 /** Inits the Graphic module
  */
@@ -89,7 +89,7 @@ extern orxDLLAPI orxSTATUS                    orxGraphic_Init();
 
 /** Exits from the Graphic module
  */
-extern orxDLLAPI orxVOID                      orxGraphic_Exit();
+extern orxDLLAPI void                         orxGraphic_Exit();
 
 
 /** Creates an empty graphic
@@ -101,7 +101,7 @@ extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Create();
  * @param[in]   _zConfigID            Config ID
  * @ return orxGRAPHIC / orxNULL
  */
-extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_CreateFromConfig(orxCONST orxSTRING _zConfigID);
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes a graphic
  * @param[in]   _pstGraphic       Graphic to delete
@@ -121,14 +121,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetData(orxGRAPHIC *_ps
  * @param[in]   _pstGraphic     Concerned graphic
  * @return      OrxSTRUCTURE / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxGraphic_GetData(orxCONST orxGRAPHIC *_pstGraphic);
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxGraphic_GetData(const orxGRAPHIC *_pstGraphic);
 
 /** Sets graphic pivot
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[in]   _pvPivot        Pivot to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, orxCONST orxVECTOR *_pvPivot);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, const orxVECTOR *_pvPivot);
 
 /** Sets relative graphic pivot
  * @param[in]   _pstGraphic     Concerned graphic
@@ -142,7 +142,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetRelativePivot(orxGRA
  * @param[out]  _pvPivot        Graphic pivot
  * @return      orxPIVOT / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetPivot(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvPivot);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetPivot(const orxGRAPHIC *_pstGraphic, orxVECTOR *_pvPivot);
 
 
 /** Gets graphic size
@@ -150,14 +150,14 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetPivot(orxCONST orxGR
  * @param[out]  _pvSize         Object's size
  * @return      orxVECTOR / orxNULL
  */
-extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetSize(orxCONST orxGRAPHIC *_pstGraphic, orxVECTOR *_pvSize);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_GetSize(const orxGRAPHIC *_pstGraphic, orxVECTOR *_pvSize);
 
 /** Sets graphic color
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[in]   _pstColor       Color to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, orxCONST orxCOLOR *_pstColor);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetColor(orxGRAPHIC *_pstGraphic, const orxCOLOR *_pstColor);
 
 /** Sets graphic repeat (wrap) value
  * @param[in]   _pstGraphic     Concerned graphic
@@ -177,14 +177,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_ClearColor(orxGRAPHIC *
  * @param[in]   _pstGraphic     Concerned graphic
  * @return      orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasColor(orxCONST orxGRAPHIC *_pstGraphic);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasColor(const orxGRAPHIC *_pstGraphic);
 
 /** Gets graphic color
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[out]  _pstColor       Object's color
  * @return      orxCOLOR / orxNULL
  */
-extern orxDLLAPI orxCOLOR *orxFASTCALL        orxGraphic_GetColor(orxCONST orxGRAPHIC *_pstGraphic, orxCOLOR *_pstColor);
+extern orxDLLAPI orxCOLOR *orxFASTCALL        orxGraphic_GetColor(const orxGRAPHIC *_pstGraphic, orxCOLOR *_pstColor);
 
 /** Gets graphic repeat (wrap) values
  * @param[in]   _pstGraphic     Concerned graphic
@@ -192,19 +192,19 @@ extern orxDLLAPI orxCOLOR *orxFASTCALL        orxGraphic_GetColor(orxCONST orxGR
  * @param[out]  _pfRepeatY      Y-axis repeat value
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetRepeat(orxCONST orxGRAPHIC *_pstGraphic, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetRepeat(const orxGRAPHIC *_pstGraphic, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY);
 
 /** Gets graphic top
  * @param[in]   _pstGraphic     Concerned graphic
  * @return      Top coordinate
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetTop(orxCONST orxGRAPHIC *_pstGraphic);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetTop(const orxGRAPHIC *_pstGraphic);
 
 /** Gets graphic left
  * @param[in]   _pstGraphic     Concerned graphic
  * @return      Left coordinate
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetLeft(orxCONST orxGRAPHIC *_pstGraphic);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxGraphic_GetLeft(const orxGRAPHIC *_pstGraphic);
 
 /** Updates graphic size (recompute)
  * @param[in]   _pstGraphic     Concerned graphic
@@ -223,7 +223,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetSmoothing(orxGRAPHIC
  * @param[in]   _pstGraphic     Concerned graphic
  * @return Smoothing type (enabled, default or none)
  */
-extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxGraphic_GetSmoothing(orxCONST orxGRAPHIC *_pstGraphic);
+extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxGraphic_GetSmoothing(const orxGRAPHIC *_pstGraphic);
 
 
 /** Sets object blend mode
@@ -237,7 +237,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetBlendMode(orxGRAPHIC
  * @param[in]   _pstGraphic     Concerned graphic
  * @return Blend mode (alpha, multiply, add or none)
  */
-extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(orxCONST orxGRAPHIC *_pstGraphic);
+extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pstGraphic);
 
 
 #endif /* _orxGRAPHIC_H_ */
