@@ -50,6 +50,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#ge92928b41b4fe70c1447be8e62db496f">orxBREAK</a>()</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g90a2d4e5b531f4d44e0faebd2ecccb8e">orxDEBUG_SETDEBUGFILE</a>(FILE)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#gef231c6d9b73ff9c36a0941e334c0d32">orxDEBUG_SETLOGFILE</a>(FILE)&nbsp;&nbsp;&nbsp;_orxDebug_SetLogFile(FILE)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g43a57c2b488159e444cf486af7ded87a">orxASSERT</a>(TEST)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g8fd3a46de28279ac7194929be595f2fc">orxDEBUG_FLAG_SET</a>(SET, UNSET)</td></tr>
@@ -116,6 +120,10 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g2a07443eda6e7bb62cdd4b446c843766">_orxDebug_SetFlags</a> (orxU32 _u32Add, orxU32 _u32Remove)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g0d6077bdc4b0871c8713aff2c2684936">_orxDebug_Break</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g4185e57bfe9a71085ccbeadc034b0d5d">_orxDebug_SetDebugFile</a> (const orxSTRING _zFileName)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_debug.html#g624ce02bb92e42e3f9e61e86b46cc172">_orxDebug_SetLogFile</a> (const orxSTRING _zFileName)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -499,6 +507,46 @@ Debug module Module used to output debug info and assert code <hr><h2>Define Doc
 
 </div>
 </div><p>
+<a class="anchor" name="g90a2d4e5b531f4d44e0faebd2ecccb8e"></a><!-- doxytag: member="orxDebug.h::orxDEBUG_SETDEBUGFILE" ref="g90a2d4e5b531f4d44e0faebd2ecccb8e" args="(FILE)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDEBUG_SETDEBUGFILE          </td>
+          <td>(</td>
+          <td class="paramtype">FILE&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
+<a class="anchor" name="gef231c6d9b73ff9c36a0941e334c0d32"></a><!-- doxytag: member="orxDebug.h::orxDEBUG_SETLOGFILE" ref="gef231c6d9b73ff9c36a0941e334c0d32" args="(FILE)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxDEBUG_SETLOGFILE          </td>
+          <td>(</td>
+          <td class="paramtype">FILE&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td>&nbsp;&nbsp;&nbsp;_orxDebug_SetLogFile(FILE)</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+
+</div>
+</div><p>
 <hr><h2>Enumeration Type Documentation</h2>
 <a class="anchor" name="geb4ae42be59a5cb6239cee52d62e28bb"></a><!-- doxytag: member="orxDebug.h::orxDEBUG_LEVEL" ref="geb4ae42be59a5cb6239cee52d62e28bb" args="" -->
 <div class="memitem">
@@ -732,6 +780,31 @@ Logs given debug text <dl compact><dt><b>Parameters:</b></dt><dd>
 Restores last backuped flags 
 </div>
 </div><p>
+<a class="anchor" name="g4185e57bfe9a71085ccbeadc034b0d5d"></a><!-- doxytag: member="orxDebug.h::_orxDebug_SetDebugFile" ref="g4185e57bfe9a71085ccbeadc034b0d5d" args="(const orxSTRING _zFileName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL _orxDebug_SetDebugFile           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zFileName</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets debug file name <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Debug file name </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g2a07443eda6e7bb62cdd4b446c843766"></a><!-- doxytag: member="orxDebug.h::_orxDebug_SetFlags" ref="g2a07443eda6e7bb62cdd4b446c843766" args="(orxU32 _u32Add, orxU32 _u32Remove)" -->
 <div class="memitem">
 <div class="memproto">
@@ -758,7 +831,38 @@ Restores last backuped flags
 <div class="memdoc">
 
 <p>
-Sets current debug flags 
+Sets current debug flags <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Add</em>&nbsp;</td><td>Flags to add </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Remove</em>&nbsp;</td><td>Flags to remove </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g624ce02bb92e42e3f9e61e86b46cc172"></a><!-- doxytag: member="orxDebug.h::_orxDebug_SetLogFile" ref="g624ce02bb92e42e3f9e61e86b46cc172" args="(const orxSTRING _zFileName)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL _orxDebug_SetLogFile           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zFileName</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets log file name <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Log file name </td></tr>
+  </table>
+</dl>
+
 </div>
 </div><p>
 </div>

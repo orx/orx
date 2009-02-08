@@ -34,6 +34,9 @@
 
 #include "debug/orxDebug.h"
 
+#include <stdlib.h>
+
+
 #ifdef __orxMSVC__
 
   #pragma warning(disable : 4996)
@@ -391,6 +394,78 @@ void orxFASTCALL    _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunc
 
   /* Done */
   return;
+}
+
+/** Sets debug file name
+ * @param[in]   _zFileName                    Debug file name
+ */
+void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
+{
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
+
+  /* Had a previous external name? */
+  if((sstDebug.zDebugFile != orxNULL) && (sstDebug.zDebugFile != orxDEBUG_KZ_DEFAULT_DEBUG_FILE))
+  {
+    /* Deletes it */
+    free(sstDebug.zDebugFile);
+  }
+
+  /* Valid? */
+  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY))
+  {
+    orxU32 u32Size;
+
+    /* Gets string size in bytes */
+    u32Size = (strlen(_zFileName) + 1) * sizeof(orxCHAR);
+
+    /* Allocates it */
+    sstDebug.zDebugFile = (orxSTRING)malloc(u32Size);
+
+    /* Stores new name */
+    memcpy(sstDebug.zDebugFile, _zFileName, u32Size);
+  }
+  else
+  {
+    /* Uses default file */
+    sstDebug.zDebugFile = orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
+  }
+}
+
+/** Sets log file name
+ * @param[in]   _zFileName                    Log file name
+ */
+void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
+{
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
+
+  /* Had a previous external name? */
+  if((sstDebug.zLogFile != orxNULL) && (sstDebug.zLogFile != orxDEBUG_KZ_DEFAULT_LOG_FILE))
+  {
+    /* Deletes it */
+    free(sstDebug.zLogFile);
+  }
+
+  /* Valid? */
+  if((_zFileName != orxNULL) && (_zFileName != orxSTRING_EMPTY))
+  {
+    orxU32 u32Size;
+
+    /* Gets string size in bytes */
+    u32Size = (strlen(_zFileName) + 1) * sizeof(orxCHAR);
+
+    /* Allocates it */
+    sstDebug.zLogFile = (orxSTRING)malloc(u32Size);
+
+    /* Stores new name */
+    memcpy(sstDebug.zLogFile, _zFileName, u32Size);
+  }
+  else
+  {
+    /* Uses default file */
+    sstDebug.zLogFile = orxDEBUG_KZ_DEFAULT_LOG_FILE;
+  }
 }
 
 #ifdef __orxMSVC__

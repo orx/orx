@@ -130,6 +130,10 @@
   /* Break */
   #define orxBREAK()                          _orxDebug_Break()
 
+  /* Files */
+  #define orxDEBUG_SETDEBUGFILE(FILE)         _orxDebug_SetDebugFile(FILE)
+  #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
+
   /* Assert */
   #define orxASSERT(TEST)                     \
   if(!(TEST))                                 \
@@ -140,10 +144,12 @@
 
 #else /* __orxDEBUG__ */
 
-  /* Log message */
   #define orxDEBUG_PRINT(LEVEL, STRING, ...)
 
   #define orxBREAK()
+
+  #define orxDEBUG_SETDEBUGFILE(FILE)
+  #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
 
   #define orxASSERT(TEST)
 
@@ -235,11 +241,24 @@ extern orxDLLAPI void                         _orxDebug_BackupFlags();
 /** Restores last backuped flags */
 extern orxDLLAPI void                         _orxDebug_RestoreFlags();
 
-/** Sets current debug flags */
+/** Sets current debug flags
+ * @param[in]   _u32Add                       Flags to add
+ * @param[in]   _u32Remove                    Flags to remove
+ */
 extern orxDLLAPI void orxFASTCALL             _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove);
 
 /** Software break function */
 extern orxDLLAPI void                         _orxDebug_Break();
+
+/** Sets debug file name
+ * @param[in]   _zFileName                    Debug file name
+ */
+extern orxDLLAPI void orxFASTCALL             _orxDebug_SetDebugFile(const orxSTRING _zFileName);
+
+/** Sets log file name
+ * @param[in]   _zFileName                    Log file name
+ */
+extern orxDLLAPI void orxFASTCALL             _orxDebug_SetLogFile(const orxSTRING _zFileName);
 
 #endif /* __orxDEBUG__ */
 

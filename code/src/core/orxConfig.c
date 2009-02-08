@@ -2289,7 +2289,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
 
               /* Writes it */
-              u32BufferSize = sprintf(acBuffer, "%s%c%s%c%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxCONFIG_KC_COMMENT, orxSTRING_EOL);
+              u32BufferSize = sprintf(acBuffer, "%s%c%s%s", pstEntry->zKey, orxCONFIG_KC_ASSIGN, pstEntry->stValue.zValue, orxSTRING_EOL);
 
               /* Computes working value */
               orxConfig_ComputeWorkingValue(&(pstEntry->stValue));
