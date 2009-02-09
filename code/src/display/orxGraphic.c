@@ -955,7 +955,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetRepeat(orxGRAPHIC *_pstGraphic, orxFLOAT _fR
   }
   else
   {
-    /* !!! MSG ***/
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid repeat values %f & %f.", _fRepeatX, _fRepeatY);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

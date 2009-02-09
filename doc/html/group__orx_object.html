@@ -163,6 +163,10 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_display.html#g06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> <br>
 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gb08d846f3d0dfad0ff5ec1dddfc45e98">orxObject_GetSmoothing</a> (const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gd7e69150f8ba78a9e52309ca2f6d9a74">orxObject_SetRepeat</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gd99b0892c7f5eb9847b906d24c8aae5d">orxObject_GetRepeat</a> (const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#g10d807123d929e60b41c2bfd06bab1d8">orxObject_SetBlendMode</a> (<a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_display.html#gd54faad16cd6fe98b24adbdde00137fc">orxDISPLAY_BLEND_MODE</a> _eBlendMode)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <br>
@@ -1133,6 +1137,49 @@ Gets an object relative speed <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Object relative speed / orxNULL </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gd99b0892c7f5eb9847b906d24c8aae5d"></a><!-- doxytag: member="orxObject.h::orxObject_GetRepeat" ref="gd99b0892c7f5eb9847b906d24c8aae5d" args="(const orxOBJECT *_pstObject, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_GetRepeat           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT *&nbsp;</td>
+          <td class="paramname"> <em>_pfRepeatX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT *&nbsp;</td>
+          <td class="paramname"> <em>_pfRepeatY</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets object repeat (wrap) values <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pfRepeatX</em>&nbsp;</td><td>X-axis repeat value </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pfRepeatY</em>&nbsp;</td><td>Y-axis repeat value </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>
@@ -2187,6 +2234,49 @@ Sets render status of an object <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bRendered</em>&nbsp;</td><td>Rendered or not this frame </td></tr>
   </table>
 </dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gd7e69150f8ba78a9e52309ca2f6d9a74"></a><!-- doxytag: member="orxObject.h::orxObject_SetRepeat" ref="gd7e69150f8ba78a9e52309ca2f6d9a74" args="(orxOBJECT *_pstObject, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_SetRepeat           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fRepeatX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fRepeatY</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets object repeat (wrap) values <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstObject</em>&nbsp;</td><td>Concerned object </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fRepeatX</em>&nbsp;</td><td>X-axis repeat value </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fRepeatY</em>&nbsp;</td><td>Y-axis repeat value </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div><p>

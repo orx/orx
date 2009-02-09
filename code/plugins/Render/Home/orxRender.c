@@ -209,8 +209,25 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         orxDisplay_SetBitmapColor(pstBitmap, orxColor_ToRGBA(orxGraphic_GetColor(pstGraphic, &stColor)));
       }
 
-      /* Gets repeat values */
-      orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
+      /* Gets object repeat values */
+      orxObject_GetRepeat(_pstObject, &fRepeatX, &fRepeatY);
+
+      /* Updates if invalid */
+      if(fRepeatX == orxFLOAT_0)
+      {
+        fRepeatX = orx2F(0.01f);
+      }
+      if(fRepeatY == orxFLOAT_0)
+      {
+        fRepeatY = orx2F(0.01f);
+      }
+
+      /* Default? */
+      if((fRepeatX == orxFLOAT_1) && (fRepeatY == orxFLOAT_1))
+      {
+        /* Gets repeat values */
+        orxGraphic_GetRepeat(pstGraphic, &fRepeatX, &fRepeatY);
+      }
 
       /* Gets graphic blend mode */
       eBlendMode = orxGraphic_GetBlendMode(pstGraphic);
@@ -266,7 +283,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           }
           else
           {
-            orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fEndX, fEndY, fRemainderX, fRemainderY, fRelativePivotX, fRelativePivotY;
+            orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fRemainderX, fRemainderY, fRelativePivotX, fRelativePivotY;
 
             /* Gets cosine and sine of the object angle */
             fCos = orxMath_Cos(-fRotation);
@@ -284,39 +301,35 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             fRelativePivotY = vPivot.fY / vSize.fY;
 
             /* For all lines */
-            for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fEndY = (orxFLOAT_1 - fRelativePivotY) * fIncY * fRepeatY, fRemainderY = fRepeatY;
-                fY <= fEndY;
+            for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fRemainderY = fRepeatY;
+                fRemainderY > orxFLOAT_0;
                 fY += fIncY, fRemainderY -= orxFLOAT_1)
             {
               /* For all columns */
-              for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fEndX = (orxFLOAT_1 - fRelativePivotX) * fIncX * fRepeatX, fRemainderX = fRepeatX;
-                  fX <= fEndX;
+              for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fRemainderX = fRepeatX;
+                  fRemainderX > orxFLOAT_0;
                   fX += fIncX, fRemainderX -= orxFLOAT_1)
               {
-                /* Valid? */
-                if(fRemainderX > orxFLOAT_0)
-                {
-                  orxFLOAT fOffsetX, fOffsetY;
+                orxFLOAT fOffsetX, fOffsetY;
 
-                  /* Updates clipping */
-                  orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(orxFLOAT_1, fRemainderX) * vSize.fX), orxF2U(fClipTop + orxMIN(orxFLOAT_1, fRemainderY) * vSize.fY));
+                /* Updates clipping */
+                orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(orxFLOAT_1, fRemainderX) * vSize.fX), orxF2U(fClipTop + orxMIN(orxFLOAT_1, fRemainderY) * vSize.fY));
 
-                  /* Computes offsets */
-                  fOffsetX = fCos * fX + fSin * fY;
-                  fOffsetY = -fSin * fX + fCos * fY;
+                /* Computes offsets */
+                fOffsetX = fCos * fX + fSin * fY;
+                fOffsetY = -fSin * fX + fCos * fY;
 
-                  /* Sets transformation values */
-                  stTransform.fSrcX     = vPivot.fX;
-                  stTransform.fSrcY     = vPivot.fY;
-                  stTransform.fDstX     = vPosition.fX + fOffsetX;
-                  stTransform.fDstY     = vPosition.fY + fOffsetY;
-                  stTransform.fScaleX   = vScale.fX;
-                  stTransform.fScaleY   = vScale.fY;
-                  stTransform.fRotation = fRotation;
+                /* Sets transformation values */
+                stTransform.fSrcX     = vPivot.fX;
+                stTransform.fSrcY     = vPivot.fY;
+                stTransform.fDstX     = vPosition.fX + fOffsetX;
+                stTransform.fDstY     = vPosition.fY + fOffsetY;
+                stTransform.fScaleX   = vScale.fX;
+                stTransform.fScaleY   = vScale.fY;
+                stTransform.fRotation = fRotation;
 
-                  /* Blits bitmap */
-                  eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing, eBlendMode);
-                }
+                /* Blits bitmap */
+                eResult = orxDisplay_TransformBitmap(_pstRenderBitmap, pstBitmap, &stTransform, eSmoothing, eBlendMode);
               }
             }
           }

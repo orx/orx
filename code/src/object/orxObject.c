@@ -111,6 +111,7 @@
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
+#define orxOBJECT_KZ_CONFIG_REPEAT              "Repeat"
 #define orxOBJECT_KZ_CONFIG_LIFETIME            "LifeTime"
 #define orxOBJECT_KZ_CONFIG_PARENT_CAMERA       "ParentCamera"
 #define orxOBJECT_KZ_CONFIG_USE_RELATIVE_SPEED  "UseRelativeSpeed"
@@ -146,14 +147,16 @@ struct __orxOBJECT_t
   orxOBJECT_STORAGE astStructure[orxSTRUCTURE_ID_LINKABLE_NUMBER]; /**< Stored structures : 72 */
   orxCOLOR          stColor;                    /**< Object color : 88 */
   orxVECTOR         vSpeed;                     /**< Object speed : 100 */
-  void          *pUserData;                  /**< User data : 104 */
-  orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 108 */
-  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 112 */
-  orxFLOAT          fLifeTime;                  /**< Life time : 116 */
-  orxSTRING         zReference;                 /**< Config reference : 120 */
+  orxFLOAT          fRepeatX;                   /**< Object repeat X : 104 */
+  orxFLOAT          fRepeatY;                   /**< Object repeat Y : 108 */
+  void             *pUserData;                  /**< User data : 112 */
+  orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 116 */
+  orxFLOAT          fAngularVelocity;           /**< Angular velocity : 120 */
+  orxFLOAT          fLifeTime;                  /**< Life time : 124 */
+  orxSTRING         zReference;                 /**< Config reference : 128 */
 
   /* Padding */
-  orxPAD(120)
+  orxPAD(128)
 };
 
 /** Static structure
@@ -435,6 +438,9 @@ orxOBJECT *orxObject_Create()
   {
     /* Clears its color */
     orxObject_ClearColor(pstObject);
+
+    /* Inits repeat */
+    orxObject_SetRepeat(pstObject, orxFLOAT_1, orxFLOAT_1);
 
     /* Inits flags */
     orxStructure_SetFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_MASK_ALL);
@@ -903,6 +909,18 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       {
         /* Defaults to alpha */
         u32Flags |= orxOBJECT_KU32_FLAG_BLEND_MODE_ALPHA;
+      }
+
+      /* Should repeat? */
+      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_REPEAT) != orxFALSE)
+      {
+        orxVECTOR vRepeat;
+
+        /* Gets its value */
+        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_REPEAT, &vRepeat);
+
+        /* Stores it */
+        orxObject_SetRepeat(pstResult, vRepeat.fX, vRepeat.fY);
       }
 
       /* Has life time? */
@@ -3018,6 +3036,67 @@ orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObj
             : orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_SMOOTHING_OFF)
               ? orxDISPLAY_SMOOTHING_OFF
               : orxDISPLAY_SMOOTHING_DEFAULT;
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets object repeat (wrap) values
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fRepeatX       X-axis repeat value
+ * @param[in]   _fRepeatY       Y-axis repeat value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetRepeat(orxOBJECT *_pstObject, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Valid? */
+  if((_fRepeatX > orxFLOAT_0) && (_fRepeatY > orxFLOAT_0))
+  {
+    /* Stores values */
+    _pstObject->fRepeatX = _fRepeatX;
+    _pstObject->fRepeatY = _fRepeatY;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid repeat values %f & %f.", _fRepeatX, _fRepeatY);
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets object repeat (wrap) values
+ * @param[in]   _pstObject     Concerned object
+ * @param[out]  _pfRepeatX      X-axis repeat value
+ * @param[out]  _pfRepeatY      Y-axis repeat value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_GetRepeat(const orxOBJECT *_pstObject, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pfRepeatX != orxNULL);
+  orxASSERT(_pfRepeatY != orxNULL);
+
+  /* Stores values */
+  *_pfRepeatX = _pstObject->fRepeatX;
+  *_pfRepeatY = _pstObject->fRepeatY;
 
   /* Done! */
   return eResult;

@@ -516,6 +516,23 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_p
 extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const orxOBJECT *_pstObject);
 
 
+/** Sets object repeat (wrap) values
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fRepeatX       X-axis repeat value
+ * @param[in]   _fRepeatY       Y-axis repeat value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRepeat(orxOBJECT *_pstObject, orxFLOAT _fRepeatX, orxFLOAT _fRepeatY);
+
+/** Gets object repeat (wrap) values
+ * @param[in]   _pstObject     Concerned object
+ * @param[out]  _pfRepeatX      X-axis repeat value
+ * @param[out]  _pfRepeatY      Y-axis repeat value
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetRepeat(const orxOBJECT *_pstObject, orxFLOAT *_pfRepeatX, orxFLOAT *_pfRepeatY);
+
+
 /** Sets object blend mode
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
