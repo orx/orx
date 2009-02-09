@@ -3296,7 +3296,7 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition)
         if(vObjectPos.fZ >= _pvPosition->fZ)
         {
           /* No selection or above it? */
-          if((pstResult == orxNULL) || (vObjectPos.fZ < fSelectedZ))
+          if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
           {
             orxOBOX stObjectBox;
 
