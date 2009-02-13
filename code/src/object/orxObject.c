@@ -2544,7 +2544,7 @@ orxOBOX *orxFASTCALL orxObject_GetBoundingBox(const orxOBJECT *_pstObject, orxOB
 
 /** Sets object color
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstColor       Color to set
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor)
@@ -2570,7 +2570,10 @@ orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *
   else
   {
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    eResult = orxSTATUS_SUCCESS;
+
+    /* Updates its flag */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_HAS_COLOR);
   }
 
   /* Done! */

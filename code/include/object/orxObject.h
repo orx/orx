@@ -415,7 +415,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_p
 
 /** Sets object color
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _pstColor       Color to set
+ * @param[in]   _pstColor       Color to set, orxNULL to remove any specifig color
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor);
