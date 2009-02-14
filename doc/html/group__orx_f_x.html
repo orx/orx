@@ -85,6 +85,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g46586ea781a4d542939a54c3e60abd78">orxFX_AddTranslation</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartTranslation, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndTranslation, <a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#g071522680e5f5ae2c1345d4827d01563">orxFX_AddSpeed</a> (<a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartSpeed, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndSpeed, <a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxFLOAT orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gb8c45b4c3ebd69db45c3edf7fd12e6f9">orxFX_GetDuration</a> (const <a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
@@ -611,6 +613,105 @@ Adds scale to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fAmplification</em>&nbsp;</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvStartScale</em>&nbsp;</td><td>Starting scale value </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvEndScale</em>&nbsp;</td><td>Ending scale value </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eCurve</em>&nbsp;</td><td>Blending curve type </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fPow</em>&nbsp;</td><td>Blending curve exponent </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Flags</em>&nbsp;</td><td>Param flags </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g071522680e5f5ae2c1345d4827d01563"></a><!-- doxytag: member="orxFX.h::orxFX_AddSpeed" ref="g071522680e5f5ae2c1345d4827d01563" args="(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, const orxVECTOR *_pvStartSpeed, const orxVECTOR *_pvEndSpeed, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddSpeed           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gb26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstFX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fStartTime</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fEndTime</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fCyclePeriod</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fCyclePhase</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fAmplification</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvStartSpeed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvEndSpeed</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_f_x.html#ge8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&nbsp;</td>
+          <td class="paramname"> <em>_eCurve</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fPow</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&nbsp;</td>
+          <td class="paramname"> <em>_u32Flags</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Adds speed to an FX <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFX</em>&nbsp;</td><td>Concerned FX </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fStartTime</em>&nbsp;</td><td>Time start </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fEndTime</em>&nbsp;</td><td>Time end </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fCyclePeriod</em>&nbsp;</td><td>Cycle period </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fCyclePhase</em>&nbsp;</td><td>Cycle phase (at start) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fAmplification</em>&nbsp;</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvStartSpeed</em>&nbsp;</td><td>Starting speed value </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvEndSpeed</em>&nbsp;</td><td>Ending speed value </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eCurve</em>&nbsp;</td><td>Blending curve type </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fPow</em>&nbsp;</td><td>Blending curve exponent </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Flags</em>&nbsp;</td><td>Param flags </td></tr>
