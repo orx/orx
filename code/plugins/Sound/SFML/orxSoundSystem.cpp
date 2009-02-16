@@ -103,7 +103,7 @@ extern "C" orxSTATUS orxSoundSystem_SFML_Init()
     sstSoundSystem.poDummyBuffer = new sf::SoundBuffer();
 
     /* Sets 2D listener target */
-    sf::Listener::SetTarget(0.0f, 0.0f, 1.0f);
+    sf::Listener::SetTarget(0.0f, 0.0f, -1.0f);
 
     /* Gets dimension ratio */
     orxConfig_SelectSection(orxSOUNDSYSTEM_KZ_CONFIG_SECTION);
