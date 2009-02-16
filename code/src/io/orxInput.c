@@ -176,8 +176,8 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
         case orxMOUSE_BUTTON_WHEEL_DOWN:
         {
           /* Updates result */
-          fResult = orxMouse_GetWheelDelta();
-          fResult = orxMIN(fResult, orxFLOAT_0);
+          fResult = -orxMouse_GetWheelDelta();
+          fResult = orxMAX(fResult, orxFLOAT_0);
           break;
         }
 
