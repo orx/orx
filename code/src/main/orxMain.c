@@ -153,9 +153,6 @@ orxSTATUS orxMain_Init()
       /* Successful? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Reloads input */
-        orxInput_Load(orxSTRING_EMPTY);
-
         /* Updates status */
         orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
       }
