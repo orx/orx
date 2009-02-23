@@ -51,7 +51,7 @@
  */
 #define orxRENDER_KZ_CONFIG_SECTION       "Render"
 #define orxRENDER_KZ_CONFIG_SHOW_FPS      "ShowFPS"
-#define orxRENDER_KZ_CONFIG_MAX_TICK_SIZE "MaxTickSize"
+#define orxRENDER_KZ_CONFIG_MIN_FREQUENCY "MinFrequency"
 
 
 /***************************************************************************
