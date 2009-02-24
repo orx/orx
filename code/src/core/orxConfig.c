@@ -3258,6 +3258,67 @@ orxSTATUS orxFASTCALL orxConfig_SetStringList(const orxSTRING _zKey, const orxST
   return eResult;
 }
 
+/** Gets key counter for the current section
+ * @return Key counter the current section is valid, 0 otherwise
+ */
+orxS32 orxFASTCALL orxConfig_GetKeyCounter()
+{
+  orxS32 s32Result;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Has current section? */
+  if(sstConfig.pstCurrentSection != orxNULL)
+  {
+    /* Updates result */
+    s32Result = orxBank_GetCounter(sstConfig.pstCurrentSection->pstBank);
+  }
+  else
+  {
+    /* Updates result */
+    s32Result = 0;
+  }
+
+  /* Done! */
+  return s32Result;
+}
+
+/** Gets key for the current section at the given index
+ * @param[in] _s32KeyIndex      Index of the desired key
+ * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
+ */
+const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex)
+{
+  orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Valid? */
+  if(_s32KeyIndex < orxConfig_GetKeyCounter())
+  {
+    orxCONFIG_ENTRY  *pstEntry;
+    orxS32            i;
+
+    /* Finds correct entry */
+    for(i = _s32KeyIndex, pstEntry = orxBank_GetNext(sstConfig.pstCurrentSection->pstBank, orxNULL);
+        i > 0;
+        i--, pstEntry = orxBank_GetNext(sstConfig.pstCurrentSection->pstBank, pstEntry));
+
+    /* Updates result */
+    zResult = pstEntry->zKey;
+  }
+  else
+  {
+    /* Updates result */
+    zResult = orxSTRING_EMPTY;
+  }
+  
+  /* Done! */
+  return zResult;
+}
+
 #ifdef __orxMSVC__
 
   #pragma warning(default : 4996)

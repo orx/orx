@@ -275,6 +275,17 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetStringList(const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number);
 
+/** Gets key counter for the current section
+ * @return Key counter the current section is valid, 0 otherwise
+ */
+extern orxDLLAPI orxS32 orxFASTCALL     orxConfig_GetKeyCounter();
+
+/** Gets key for the current section at the given index
+ * @param[in] _s32KeyIndex      Index of the desired key
+ * @return orxSTRING if exist, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetKey(orxS32 _s32KeyIndex);
+
 #endif /*_orxCONFIG_H_*/
 
 /** @} */

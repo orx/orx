@@ -95,6 +95,11 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g592af716e5449f4de3553a0b5992b42f">orxConfig_SetStringList</a> (const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxS32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#g0830333bca9f0d0cc7bce107d47e2ee0">orxConfig_GetKeyCounter</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const orxSTRING <br>
+orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gc20175fac9546218198afac0145d438c">orxConfig_GetKey</a> (orxS32 _s32KeyIndex)</td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Config module Module that handles configuration files <hr><h2>Typedef Documentation</h2>
@@ -253,6 +258,52 @@ Reads a float value from config (will take a random value if a list is provided 
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The value </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gc20175fac9546218198afac0145d438c"></a><!-- doxytag: member="orxConfig.h::orxConfig_GetKey" ref="gc20175fac9546218198afac0145d438c" args="(orxS32 _s32KeyIndex)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetKey           </td>
+          <td>(</td>
+          <td class="paramtype">orxS32&nbsp;</td>
+          <td class="paramname"> <em>_s32KeyIndex</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets key for the current section at the given index <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_s32KeyIndex</em>&nbsp;</td><td>Index of the desired key </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTRING if exist, orxNULL otherwise </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g0830333bca9f0d0cc7bce107d47e2ee0"></a><!-- doxytag: member="orxConfig.h::orxConfig_GetKeyCounter" ref="g0830333bca9f0d0cc7bce107d47e2ee0" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxS32 orxFASTCALL orxConfig_GetKeyCounter           </td>
+          <td>(</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets key counter for the current section <dl class="return" compact><dt><b>Returns:</b></dt><dd>Key counter the current section is valid, 0 otherwise </dd></dl>
 
 </div>
 </div><p>
