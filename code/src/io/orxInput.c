@@ -99,9 +99,9 @@ typedef struct __orxINPUT_ENTRY_t
   orxU32            u32ID;                                      /**< Name ID (CRC) : 8 */
   orxU32            u32Status;                                  /**< Entry status : 12 */
 
-  orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 40 */
+  orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 76 */
 
-  orxPAD(44)
+  orxPAD(76)
 
 } orxINPUT_ENTRY;
 
