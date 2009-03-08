@@ -744,7 +744,7 @@ static orxINLINE orxS32 orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue, or
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter);
+      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter - 1);
     }
   }
 
@@ -862,7 +862,7 @@ static orxINLINE orxU32 orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue, or
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxS32)_pstValue->u8ListCounter);
+      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxS32)_pstValue->u8ListCounter - 1);
     }
   }
 
@@ -980,7 +980,7 @@ static orxINLINE orxFLOAT orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValue
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter);
+      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter - 1);
     }
   }
 
@@ -1098,7 +1098,7 @@ static orxINLINE orxSTRING orxConfig_GetStringFromValue(orxCONFIG_VALUE *_pstVal
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter);
+      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter - 1);
     }
   }
 
@@ -1143,7 +1143,7 @@ static orxINLINE orxBOOL orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue, 
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter);
+      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter - 1);
     }
   }
 
@@ -1205,7 +1205,7 @@ static orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVa
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter);
+      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u8ListCounter - 1);
     }
   }
 
