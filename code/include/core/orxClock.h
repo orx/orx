@@ -190,13 +190,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Restart(orxCLOCK 
  * @param[in]   _pstClock                             Concerned clock
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL                     orxClock_Pause(orxCLOCK *_pstClock);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Pause(orxCLOCK *_pstClock);
 
 /** Unpauses a clock
  * @param[in]   _pstClock                             Concerned clock
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL                     orxClock_Unpause(orxCLOCK *_pstClock);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unpause(orxCLOCK *_pstClock);
 
 /** Is a clock paused?
  * @param[in]   _pstClock                             Concerned clock

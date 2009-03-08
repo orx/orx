@@ -620,9 +620,12 @@ orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
 
 /** Pauses a clock
  * @param[in]   _pstClock                             Concerned clock
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL    orxClock_Pause(orxCLOCK *_pstClock)
+orxSTATUS orxFASTCALL    orxClock_Pause(orxCLOCK *_pstClock)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
@@ -633,14 +636,18 @@ void orxFASTCALL    orxClock_Pause(orxCLOCK *_pstClock)
   /* Updates clock flags */
   _pstClock->u32Flags |= orxCLOCK_KU32_CLOCK_FLAG_PAUSED;
 
-  return;
+  // Done!
+  return eResult;
 }
 
 /** Unpauses a clock
  * @param[in]   _pstClock                             Concerned clock
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL    orxClock_Unpause(orxCLOCK *_pstClock)
+orxSTATUS orxFASTCALL    orxClock_Unpause(orxCLOCK *_pstClock)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClock != orxNULL);
@@ -651,7 +658,8 @@ void orxFASTCALL    orxClock_Unpause(orxCLOCK *_pstClock)
   /* Updates clock flags */
   _pstClock->u32Flags &= ~orxCLOCK_KU32_CLOCK_FLAG_PAUSED;
 
-  return;
+  // Done!
+  return eResult;
 }
 
 /** Is a clock paused?
