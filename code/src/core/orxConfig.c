@@ -1894,13 +1894,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
               *pc = orxCHAR_NULL;
 
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Begins processing included file %c%s%c.", orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Begins the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
               /* Loads file */
               orxConfig_Load(pcLineStart + 1);
 
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Ends processing included file %c%s%c.", orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "[%s]: Ends the processing of included file %c%s%c.", _zFileName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
               /* Restores current section */
               sstConfig.pstCurrentSection = pstCurrentSection;

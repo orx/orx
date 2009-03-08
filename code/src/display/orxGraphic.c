@@ -350,7 +350,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture data to graphic.");
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture (%s) data to graphic (%s).", zName, _zConfigID);
 
             /* Deletes structures */
             orxTexture_Delete(pstTexture);
@@ -387,7 +387,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link text data to graphic.");
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link text (%s) data to graphic (%s).", zName, _zConfigID);
 
               /* Deletes structures */
               orxText_Delete(pstText);
@@ -552,7 +552,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't get text or texture for graphic.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't get text or texture for graphic (%s).", _zConfigID);
 
         /* Deletes structures */
         orxGraphic_Delete(pstResult);
