@@ -718,7 +718,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
               {
                 orxFRAME *pstFrame;
                 orxVECTOR vObjectPos, vRenderPos, vObjectScale;
-                orxFLOAT  fObjectRotation;
+                orxFLOAT  fObjectRotation, fObjectScaleX, fObjectScaleY;
 
                 /* Gets object */
                 pstObject = pstRenderNode->pstObject;
@@ -735,10 +735,14 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                 /* Gets object's rotation */
                 fObjectRotation = orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL);
 
+                /* Gets object scale */
+                fObjectScaleX = fRenderScaleX;
+                fObjectScaleY = fRenderScaleY;
+
                 /* Gets position in camera space */
                 orxVector_Sub(&vRenderPos, &vObjectPos, &(vCameraCenter));
-                vRenderPos.fX  *= fRenderScaleX;
-                vRenderPos.fY  *= fRenderScaleY;
+                vRenderPos.fX  *= fObjectScaleX;
+                vRenderPos.fY  *= fObjectScaleY;
 
                 /* Uses differential scrolling? */
                 if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_MASK_SCROLL_BOTH) != orxFALSE)
@@ -770,14 +774,14 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                   if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_X) != orxFALSE)
                   {
                     /* Updates render scale */
-                    fRenderScaleX = -fRenderScaleX;
+                    fObjectScaleX = -fObjectScaleX;
                   }
 
                   /* Y-axis flip? */
                   if(orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_Y) != orxFALSE)
                   {
                     /* Updates render scale */
-                    fRenderScaleY = -fRenderScaleY;
+                    fObjectScaleY = -fObjectScaleY;
                   }
                 }
 
@@ -824,8 +828,8 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                 /* Updates render frame */
                 orxFrame_SetPosition(pstRenderFrame, &vRenderPos);
                 orxFrame_SetRotation(pstRenderFrame, fObjectRotation - fRenderRotation);
-                vObjectScale.fX *= fRenderScaleX;
-                vObjectScale.fY *= fRenderScaleY;
+                vObjectScale.fX *= fObjectScaleX;
+                vObjectScale.fY *= fObjectScaleY;
                 orxFrame_SetScale(pstRenderFrame, &vObjectScale);
 
                 /* Renders it */
