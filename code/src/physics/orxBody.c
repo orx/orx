@@ -70,7 +70,7 @@
 #define orxBODY_KZ_CONFIG_FIXED_ROTATION      "FixedRotation"
 #define orxBODY_KZ_CONFIG_HIGH_SPEED          "HighSpeed"
 #define orxBODY_KZ_CONFIG_DYNAMIC             "Dynamic"
-#define orxBODY_KZ_CONFIG_PART                "Part"
+#define orxBODY_KZ_CONFIG_PART_LIST           "PartList"
 #define orxBODY_KZ_CONFIG_FRICTION            "Friction"
 #define orxBODY_KZ_CONFIG_RESTITUTION         "Restitution"
 #define orxBODY_KZ_CONFIG_DENSITY             "Density"
@@ -447,28 +447,38 @@ orxBODY *orxFASTCALL orxBody_CreateFromConfig(const orxSTRUCTURE *_pstOwner, con
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxCHAR acPartID[16];
-      orxU32  i;
+      orxU32 i, u32SlotCounter;
 
-      /* Clears buffer */
-      orxMemory_Zero(acPartID, 16 * sizeof(orxCHAR));
+      /* Gets number of declared slots */
+      u32SlotCounter = orxConfig_GetListCounter(orxBODY_KZ_CONFIG_PART_LIST);
+
+      /* Too many slots? */
+      if(u32SlotCounter > orxBODY_KU32_PART_MAX_NUMBER)
+      {
+        /* For all exceeding slots */
+        for(i = orxBODY_KU32_PART_MAX_NUMBER; i < u32SlotCounter; i++)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "[%s]: Too many parts for this body, can't add part <%s>.", _zConfigID, orxConfig_GetListString(orxBODY_KZ_CONFIG_PART_LIST, i));
+        }
+
+        /* Updates slot counter */
+        u32SlotCounter = orxBODY_KU32_PART_MAX_NUMBER;
+      }
 
       /* For all parts */
-      for(i = 1; i <= orxBODY_KU32_PART_MAX_NUMBER; i++)
+      for(i = 0; i < u32SlotCounter; i++)
       {
         orxSTRING zPartName;
 
-        /* Gets part name */
-        orxString_Print(acPartID, "%s%ld", orxBODY_KZ_CONFIG_PART, i);
+        /* Gets its name */
+        zPartName = orxConfig_GetListString(orxBODY_KZ_CONFIG_PART_LIST, i);
 
-        /* Has part? */
-        if(orxConfig_HasValue(acPartID) != orxFALSE)
+        /* Valid? */
+        if((zPartName != orxNULL) && (zPartName != orxSTRING_EMPTY))
         {
-          /* Gets part name */
-          zPartName = orxConfig_GetString(acPartID);
-
           /* Adds part */
-          orxBody_AddPartFromConfig(pstResult, i - 1, zPartName);
+          orxBody_AddPartFromConfig(pstResult, i, zPartName);
         }
         else
         {

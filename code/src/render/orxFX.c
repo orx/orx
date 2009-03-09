@@ -81,7 +81,7 @@
 
 #define orxFX_KU32_SLOT_NUMBER                  5
 
-#define orxFX_KZ_CONFIG_SLOT                    "Slot"
+#define orxFX_KZ_CONFIG_SLOT_LIST               "SlotList"
 #define orxFX_KZ_CONFIG_TYPE                    "Type"
 #define orxFX_KZ_CONFIG_CURVE                   "Curve"
 #define orxFX_KZ_CONFIG_POW                     "Pow"
@@ -694,11 +694,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
       /* Valid? */
       if(pstResult != orxNULL)
       {
-        orxCHAR acSlotID[16];
-        orxU32  i;
-
-        /* Clears buffer */
-        orxMemory_Zero(acSlotID, 16 * sizeof(orxCHAR));
+        orxU32 i;
 
         /* Stores its reference */
         pstResult->zReference = orxConfig_GetCurrentSection();
@@ -706,16 +702,32 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
         /* Adds it to reference table */
         if(orxHashTable_Add(sstFX.pstReferenceTable, u32ID, pstResult) != orxSTATUS_FAILURE)
         {
+          orxU32 u32SlotCounter;
+
+          /* Gets number of declared slots */
+          u32SlotCounter = orxConfig_GetListCounter(orxFX_KZ_CONFIG_SLOT_LIST);
+
+          /* Too many slots? */
+          if(u32SlotCounter > orxFX_KU32_SLOT_NUMBER)
+          {
+            /* For all exceeding slots */
+            for(i = orxFX_KU32_SLOT_NUMBER; i < u32SlotCounter; i++)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[%s]: Too many slots for this FX, can't add slot <%s>.", _zConfigID, orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i));
+            }
+
+            /* Updates slot counter */
+            u32SlotCounter = orxFX_KU32_SLOT_NUMBER;
+          }
+
           /* For all slots */
-          for(i = 0; i < orxFX_KU32_SLOT_NUMBER; i++)
+          for(i = 0; i < u32SlotCounter; i++)
           {
             orxSTRING zSlotName;
 
-            /* Gets its ID */
-            orxString_Print(acSlotID, "%s%ld", orxFX_KZ_CONFIG_SLOT, i + 1);
-
             /* Gets its name */
-            zSlotName = orxConfig_GetString(acSlotID);
+            zSlotName = orxConfig_GetListString(orxFX_KZ_CONFIG_SLOT_LIST, i);
 
             /* Valid? */
             if((zSlotName != orxNULL) && (zSlotName != orxSTRING_EMPTY))

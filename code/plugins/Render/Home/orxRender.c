@@ -285,39 +285,99 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
           {
             orxFLOAT fIncX, fIncY, fCos, fSin, fX, fY, fRemainderX, fRemainderY, fRelativePivotX, fRelativePivotY;
 
-            /* Gets cosine and sine of the object angle */
-            fCos = orxMath_Cos(-fRotation);
-            fSin = orxMath_Sin(-fRotation);
+            /* Has no rotation */
+            if(fRotation == orxFLOAT_0)
+            {
+              /* Gets cosine and sine of the object angle */
+              fCos = orxFLOAT_1;
+              fSin = orxFLOAT_0;
+            }
+            /* 90°? */
+            else if(fRotation == orxMATH_KF_PI_BY_2)
+            {
+              /* Gets cosine and sine of the object angle */
+              fCos = orxFLOAT_0;
+              fSin = orxFLOAT_1;
+            }
+            /* 180°? */
+            else if(fRotation == orxMATH_KF_PI)
+            {
+              /* Gets cosine and sine of the object angle */
+              fCos = -orxFLOAT_1;
+              fSin = orxFLOAT_0;
+            }
+            /* 180°? */
+            else if(fRotation == -orxMATH_KF_PI_BY_2)
+            {
+              /* Gets cosine and sine of the object angle */
+              fCos = orxFLOAT_0;
+              fSin = -orxFLOAT_1;
+            }
+            else
+            {
+              /* Gets cosine and sine of the object angle */
+              fCos = orxMath_Cos(-fRotation);
+              fSin = orxMath_Sin(-fRotation);
+            }
 
-            /* Updates scales */
-            vScale.fX /= fRepeatX;
-            vScale.fY /= fRepeatY;
+            /* Tiling on X? */
+            if(fRepeatX == vScale.fX)
+            {
+              /* Updates scale */
+              vScale.fX = orxFLOAT_1;
 
-            /* Updates increments */
-            fIncX = vSize.fX * vScale.fX;
-            fIncY = vSize.fY * vScale.fY;
+              /* Updates increment */
+              fIncX = vSize.fX;
+            }
+            else
+            {
+              /* Updates scale */
+              vScale.fX /= fRepeatX;
 
+              /* Updates increment */
+              fIncX = vSize.fX * vScale.fX;
+            }
+
+            /* Tiling on Y? */
+            if(fRepeatY == vScale.fY)
+            {
+              /* Updates scale */
+              vScale.fY = orxFLOAT_1;
+
+              /* Updates increment */
+              fIncY = vSize.fY;
+            }
+            else
+            {
+              /* Updates scale */
+              vScale.fY /= fRepeatY;
+
+              /* Updates increment */
+              fIncY = vSize.fY * vScale.fY;
+            }
+
+            /* Gets relative pivot */
             fRelativePivotX = vPivot.fX / vSize.fX;
             fRelativePivotY = vPivot.fY / vSize.fY;
 
             /* For all lines */
-            for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fRemainderY = fRepeatY;
+            for(fY = -fRelativePivotY * fIncY * (fRepeatY - orxFLOAT_1), fRemainderY = fRepeatY * vSize.fY;
                 fRemainderY > orxFLOAT_0;
-                fY += fIncY, fRemainderY -= orxFLOAT_1)
+                fY += fIncY, fRemainderY -= vSize.fY)
             {
               /* For all columns */
-              for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fRemainderX = fRepeatX;
+              for(fX = -fRelativePivotX * fIncX * (fRepeatX - orxFLOAT_1), fRemainderX = fRepeatX * vSize.fX;
                   fRemainderX > orxFLOAT_0;
-                  fX += fIncX, fRemainderX -= orxFLOAT_1)
+                  fX += fIncX, fRemainderX -= vSize.fX)
               {
                 orxFLOAT fOffsetX, fOffsetY;
 
                 /* Updates clipping */
-                orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(orxFLOAT_1, fRemainderX) * vSize.fX), orxF2U(fClipTop + orxMIN(orxFLOAT_1, fRemainderY) * vSize.fY));
+                orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(fClipLeft), orxF2U(fClipTop), orxF2U(fClipLeft + orxMIN(vSize.fX, fRemainderX)), orxF2U(fClipTop + orxMIN(vSize.fY, fRemainderY)));
 
                 /* Computes offsets */
-                fOffsetX = fCos * fX + fSin * fY;
-                fOffsetY = -fSin * fX + fCos * fY;
+                fOffsetX = (fCos * fX) + (fSin * fY);
+                fOffsetY = (-fSin * fX) + (fCos * fY);
 
                 /* Sets transformation values */
                 stTransform.fSrcX     = vPivot.fX;
