@@ -42,9 +42,9 @@
 
 /** Module flags
  */
-#define orxGRAPHIC_KU32_STATIC_FLAG_NONE      0x00000000  /**< No flags  */
+#define orxGRAPHIC_KU32_STATIC_FLAG_NONE          0x00000000  /**< No flags  */
 
-#define orxGRAPHIC_KU32_STATIC_FLAG_READY     0x00000001  /**< Ready flag  */
+#define orxGRAPHIC_KU32_STATIC_FLAG_READY         0x00000001  /**< Ready flag  */
 
 
 /** Graphic flags
@@ -71,17 +71,17 @@
 
 /** Misc defines
  */
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME     "Texture"
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER   "TextureCorner"
-#define orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE     "TextureSize"
-#define orxGRAPHIC_KZ_CONFIG_TEXT_NAME        "Text"
-#define orxGRAPHIC_KZ_CONFIG_PIVOT            "Pivot"
-#define orxGRAPHIC_KZ_CONFIG_COLOR            "Color"
-#define orxGRAPHIC_KZ_CONFIG_ALPHA            "Alpha"
-#define orxGRAPHIC_KZ_CONFIG_FLIP             "Flip"
-#define orxGRAPHIC_KZ_CONFIG_REPEAT           "Repeat"
-#define orxGRAPHIC_KZ_CONFIG_SMOOTHING        "Smoothing"
-#define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME         "Texture"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER       "TextureCorner"
+#define orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE         "TextureSize"
+#define orxGRAPHIC_KZ_CONFIG_TEXT_NAME            "Text"
+#define orxGRAPHIC_KZ_CONFIG_PIVOT                "Pivot"
+#define orxGRAPHIC_KZ_CONFIG_COLOR                "Color"
+#define orxGRAPHIC_KZ_CONFIG_ALPHA                "Alpha"
+#define orxGRAPHIC_KZ_CONFIG_FLIP                 "Flip"
+#define orxGRAPHIC_KZ_CONFIG_REPEAT               "Repeat"
+#define orxGRAPHIC_KZ_CONFIG_SMOOTHING            "Smoothing"
+#define orxGRAPHIC_KZ_CONFIG_BLEND_MODE           "BlendMode"
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT          "center"
 #define orxGRAPHIC_KZ_TOP_PIVOT               "top"
@@ -765,8 +765,8 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT((_u32AlignFlags & orxGRAPHIC_KU32_MASK_ALIGN) == _u32AlignFlags);
-  orxASSERT(_pstGraphic->fWidth > orxFLOAT_0);
-  orxASSERT(_pstGraphic->fHeight > orxFLOAT_0);
+  orxASSERT(_pstGraphic->fWidth >= orxFLOAT_0);
+  orxASSERT(_pstGraphic->fHeight >= orxFLOAT_0);
 
   /* Valid? */
   if(orxGraphic_GetSize(_pstGraphic, &vSize) != orxNULL)
@@ -816,7 +816,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
     }
 
     /* Updates status */
-    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_FLAG_NONE);
+    orxStructure_SetFlags(_pstGraphic, _u32AlignFlags | orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_MASK_ALIGN);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -1111,20 +1111,11 @@ orxFLOAT orxFASTCALL orxGraphic_GetLeft(const orxGRAPHIC *_pstGraphic)
  */
 orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
 {
-  orxFLOAT  fPreviousWidth = orxFLOAT_0, fPreviousHeight = orxFLOAT_0;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
-
-  /* Has relative pivot? */
-  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT))
-  {
-    /* Stores current size */
-    fPreviousWidth  = _pstGraphic->fWidth;
-    fPreviousHeight = _pstGraphic->fHeight;
-  }
 
   /* Is data a texture? */
   if(orxTEXTURE(_pstGraphic->pstData) != orxNULL)
@@ -1146,13 +1137,10 @@ orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
 
   /* Valid and has a relative pivot? */
   if((eResult == orxSTATUS_SUCCESS)
-  && (orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT))
-  && (fPreviousWidth != orxFLOAT_0)
-  && (fPreviousHeight != orxFLOAT_0))
+  && (orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT)))
   {
-    /* Updates pivot */
-    _pstGraphic->vPivot.fX *= _pstGraphic->fWidth / fPreviousWidth;
-    _pstGraphic->vPivot.fY *= _pstGraphic->fHeight / fPreviousHeight;
+    /* Updates relative pivot */
+    orxGraphic_SetRelativePivot(_pstGraphic, orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_ALIGN));
   }
 
   /* Done! */
