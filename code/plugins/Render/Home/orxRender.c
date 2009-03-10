@@ -297,7 +297,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             {
               /* Gets cosine and sine of the object angle */
               fCos = orxFLOAT_0;
-              fSin = orxFLOAT_1;
+              fSin = -orxFLOAT_1;
             }
             /* 180°? */
             else if(fRotation == orxMATH_KF_PI)
@@ -311,7 +311,7 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
             {
               /* Gets cosine and sine of the object angle */
               fCos = orxFLOAT_0;
-              fSin = -orxFLOAT_1;
+              fSin = orxFLOAT_1;
             }
             else
             {
