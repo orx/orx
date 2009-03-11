@@ -64,7 +64,8 @@ static const orxU32   su32MessageBankSize     = 64;
  */
 typedef struct __orxPHYSICS_EVENT_STORAGE_t
 {
-  orxPHYSICS_EVENT_PAYLOAD  stPayload;        /**< Event payload */
+  orxLINKLIST_NODE                  stNode;           /**< Link list node */
+  orxPHYSICS_EVENT_PAYLOAD          stPayload;        /**< Event payload */
   orxPHYSICS_EVENT                  eID;              /**< Event ID */
   b2Body                           *poSource;         /**< Event source */
   b2Body                           *poDestination;    /**< Event destination */
@@ -100,6 +101,7 @@ typedef struct __orxPHYSICS_STATIC_t
   orxU32                      u32Iterations;      /**< Simulation iterations per step */
   orxFLOAT                    fDimensionRatio;    /**< Dimension ratio */
   orxFLOAT                    fRecDimensionRatio; /**< Reciprocal dimension ratio */
+  orxLINKLIST                 stEventList;        /**< Event link list */
   orxCLOCK                   *pstClock;           /**< Simulation clock */
   orxBANK                    *pstEventBank;       /**< Event bank */
   b2World                    *poWorld;            /**< World */
@@ -176,9 +178,9 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
   orxBOOL                   bSendEvent = orxTRUE;
 
   /* For all pending events */
-  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL);
+  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
       pstEventStorage != orxNULL;
-      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, pstEventStorage))
+      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
   {
     /* Same pair? */
     if((pstEventStorage->poSource == _poPoint->shape1->GetBody()) && (pstEventStorage->poDestination == _poPoint->shape2->GetBody()))
@@ -197,6 +199,7 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
           else
           {
             /* Removes it */
+            orxLinkList_Remove(&(pstEventStorage->stNode));
             orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
 
             /* Removing it? */
@@ -221,6 +224,7 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
           else
           {
             /* Removes it */
+            orxLinkList_Remove(&(pstEventStorage->stNode));
             orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
           }
 
@@ -230,6 +234,7 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
         case orxPHYSICS_EVENT_CONTACT_REMOVE:
         {
           /* Removes it */
+          orxLinkList_Remove(&(pstEventStorage->stNode));
           orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
 
           /* Is new one a add? */
@@ -263,6 +268,9 @@ void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSIC
     /* Valid? */
     if(pstEventStorage != orxNULL)
     {
+      /* Adds it to list */
+      orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
+
       /* Inits it */
       pstEventStorage->eID                                = _eEventID;
       pstEventStorage->u32Key                             = _poPoint->id.key;
@@ -313,6 +321,9 @@ void orxPhysicsBoundaryListener::Violation(b2Body *_poBody)
   /* Valid? */
   if(pstEventStorage != orxNULL)
   {
+    /* Adds it to list */
+    orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
+
     /* Inits it */
     pstEventStorage->eID      = orxPHYSICS_EVENT_OUT_OF_WORLD;
     pstEventStorage->poSource = _poBody;
@@ -338,9 +349,9 @@ void orxFASTCALL    orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *
   sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pstContext);
 
   /* For all stored events */
-  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL);
+  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
       pstEventStorage != orxNULL;
-      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, pstEventStorage))
+      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
   {
     /* Depending on type */
     switch(pstEventStorage->eID)
@@ -376,6 +387,7 @@ void orxFASTCALL    orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *
   }
 
   /* Clears stored events */
+  orxLinkList_Clean(&(sstPhysics.stEventList));
   orxBank_Clear(sstPhysics.pstEventBank);
 
   return;
@@ -430,25 +442,31 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(const orxHANDLE _hUserDa
 
 extern "C" void orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
 {
-  orxPHYSICS_EVENT_STORAGE *pstEventStorage, *pstPreviousEventStorage;
+  orxPHYSICS_EVENT_STORAGE *pstEventStorage;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
 
   /* For all stored events */
-  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, orxNULL), pstPreviousEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxNULL;
+  for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
       pstEventStorage != orxNULL;
-      pstPreviousEventStorage = pstEventStorage, pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_GetNext(sstPhysics.pstEventBank, pstEventStorage))
+      pstEventStorage = (pstEventStorage == orxNULL) ? (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList)) : (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
   {
     /* Is part of the event? */
     if(((b2Body *)_pstBody == pstEventStorage->poDestination) || ((b2Body *)_pstBody == pstEventStorage->poSource))
     {
-      /* Removes event */
-      orxBank_Free(sstPhysics.pstEventBank, pstEventStorage);
+      orxPHYSICS_EVENT_STORAGE *pstCurrentEventStorage;
 
-      /* Reverts to previous */
-      pstEventStorage = pstPreviousEventStorage;
+      /* Gets current event */
+      pstCurrentEventStorage = pstEventStorage;
+
+      /* Goes back to previous */
+      pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetPrevious(&(pstEventStorage->stNode));
+
+      /* Removes event */
+      orxLinkList_Remove(&(pstCurrentEventStorage->stNode));
+      orxBank_Free(sstPhysics.pstEventBank, pstCurrentEventStorage);
     }
   }
 
@@ -981,7 +999,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          /* Creates contact bank */
+          /* Creates event bank */
           sstPhysics.pstEventBank = orxBank_Create(su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
           /* Updates status */

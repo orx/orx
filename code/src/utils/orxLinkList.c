@@ -146,7 +146,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
   /* Non empty? */
   if(_pstList->u32Counter != 0)
   {
-    register orxLINKLIST_NODE *pstNode, *pstNext;
+    register orxLINKLIST_NODE *pstNode, *pstCurrent;
 
     /* Gets first node */
     pstNode = _pstList->pstFirst;
@@ -154,14 +154,14 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
     /* Clean all nodes */
     while(pstNode != orxNULL)
     {
-      /* Backups next node */
-      pstNext = pstNode->pstNext;
-
-      /* Cleans current node */
-      orxMemory_Zero(pstNode, sizeof(orxLINKLIST_NODE));
+      /* Backups current node */
+      pstCurrent = pstNode;
 
       /* Go to next node */
-      pstNode = pstNext;
+      pstNode = pstNode->pstNext;
+
+      /* Cleans current node */
+      orxMemory_Zero(pstCurrent, sizeof(orxLINKLIST_NODE));
     }
   }
 
