@@ -130,7 +130,6 @@ void orxText_Setup()
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_DISPLAY);
-  orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_HASHTABLE);
 
   return;
 }

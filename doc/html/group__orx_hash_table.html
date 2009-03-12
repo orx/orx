@@ -19,13 +19,6 @@
 <div class="contents">
 <h1>OrxHashTable</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
-<tr><td colspan="2"><br><h2>Module management.</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gf283a22179cfb1c9c15d3edcce70823a">orxHashTable_Setup</a> ()</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g5e2d51acf82a8caffffdc0262a52e948">orxHashTable_Init</a> ()</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#g675caf2e4fecce76eb5d8e5d5df2ec5b">orxHashTable_Exit</a> ()</td></tr>
-
 <tr><td colspan="2"><br><h2>HashTable creation/destruction.</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_hash_table.html#g983bdcad3c74528ce4fcfa1bed18ea5a">orxHASHTABLE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_hash_table.html#gf066ca473c2b4640b2c389f00bee7a54">orxHashTable_Create</a> (orxU32 _u32NbKey, orxU32 _u32Flags, <a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemType)</td></tr>
 
@@ -272,25 +265,6 @@ Delete a hash table. <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g675caf2e4fecce76eb5d8e5d5df2ec5b"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Exit" ref="g675caf2e4fecce76eb5d8e5d5df2ec5b" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI void orxHashTable_Exit           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Exit HashTable module 
-</div>
-</div><p>
 <a class="anchor" name="g125074b981e66465224f074a2ef034bd"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_FindFirst" ref="g125074b981e66465224f074a2ef034bd" args="(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData)" -->
 <div class="memitem">
 <div class="memproto">
@@ -446,26 +420,6 @@ Gets a hash table item counter <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g5e2d51acf82a8caffffdc0262a52e948"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Init" ref="g5e2d51acf82a8caffffdc0262a52e948" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxHashTable_Init           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Initialize HashTable Module <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the initialization status. </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="gc1f16963dd17dae7ba05c603f5f931df"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Remove" ref="gc1f16963dd17dae7ba05c603f5f931df" args="(orxHASHTABLE *_pstHashTable, orxU32 _u32Key)" -->
 <div class="memitem">
 <div class="memproto">
@@ -542,25 +496,6 @@ Set an item value. <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 
-</div>
-</div><p>
-<a class="anchor" name="gf283a22179cfb1c9c15d3edcce70823a"></a><!-- doxytag: member="orxHashTable.h::orxHashTable_Setup" ref="gf283a22179cfb1c9c15d3edcce70823a" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI void orxHashTable_Setup           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-HashTable module setup. 
 </div>
 </div><p>
 </div>

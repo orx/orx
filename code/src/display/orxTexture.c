@@ -150,7 +150,6 @@ void orxTexture_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRUCTURE);
-  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_HASHTABLE);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_DISPLAY);
 
   return;

@@ -44,8 +44,6 @@ void orxSystem_Setup()
   orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_LINKLIST);
-  orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_TREE);
 
   return;
 }

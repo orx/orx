@@ -34,10 +34,9 @@
 #include "utils/orxString.h"
 
 
-#define orxHASHTABLE_KU32_STATIC_FLAG_NONE  0x00000000  /**< No flags have been set */
-#define orxHASHTABLE_KU32_STATIC_FLAG_READY 0x00000001  /**< The module has been initialized */
-
-#define orxHASHTABLE_KU32_INDEX_SIZE        256
+/** Misc defines
+ */
+#define orxHASHTABLE_KU32_INDEX_SIZE                          256
 
 
 /***************************************************************************
@@ -48,7 +47,7 @@
 typedef struct __orxHASHTABLE_CELL_t
 {
   orxU32                        u32Key;                       /**< Key element of a hash table : 4 */
-  void                      *pData;                        /**< Address of data : 8 */
+  void                         *pData;                        /**< Address of data : 8 */
   struct __orxHASHTABLE_CELL_t *pstNext;                      /**< Next cell with the same index : 12 */
 
   orxPAD(12)
@@ -63,16 +62,10 @@ struct __orxHASHTABLE_t
 
 };
 
-/** Module static structure */
-typedef struct __orxHASHTABLE_STATIC_t
-{
-  orxU32 u32Flags;      /**< Module flags */
-} orxHASHTABLE_STATIC;
 
 /***************************************************************************
  * Module global variable                                                  *
  ***************************************************************************/
-static orxHASHTABLE_STATIC sstHashTable;
 
 /***************************************************************************
  * Private functions                                                       *
@@ -85,90 +78,16 @@ static orxHASHTABLE_STATIC sstHashTable;
  */
 static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
 {
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
-  /* Compute the hash index */
+  /* Computes the hash index */
   return(_u32Key & (orxHASHTABLE_KU32_INDEX_SIZE - 1));
 }
 
 /***************************************************************************
  * Public functions                                                        *
  ***************************************************************************/
-
-/***************************************************************************
- orxHashTable_Setup
- HashTable module setup.
-
- returns: nothing
- ***************************************************************************/
-void orxHashTable_Setup()
-{
-  /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_HASHTABLE, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_HASHTABLE, orxMODULE_ID_BANK);
-
-  return;
-}
-
-/** @name Module management.
- * @{ */
-/** Initialize HashTable Module
- * @return Returns the initialization status.
- */
-orxSTATUS orxHashTable_Init()
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Not already Initialized? */
-  if(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY))
-  {
-    /* Module not already initialized ? */
-    orxASSERT(!(sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY));
-
-    /* Cleans static controller */
-    orxMemory_Zero(&sstHashTable, sizeof(orxHASHTABLE_STATIC));
-
-    /* Set module as ready */
-    sstHashTable.u32Flags = orxHASHTABLE_KU32_STATIC_FLAG_READY;
-
-    /* Success */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize HashTable module when it was already initialized.");
-
-    /* Already initialized */
-    eResult = orxSTATUS_SUCCESS;
-  }
-
-  /* Successfull initialization */
-  return eResult;
-}
-
-/** Exit HashTable module
- */
-void orxHashTable_Exit()
-{
-  /* Module initialized ? */
-  if((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY)
-  {
-    /* Module not ready now */
-    sstHashTable.u32Flags = orxHASHTABLE_KU32_STATIC_FLAG_NONE;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit HashTable module when it wasn't initialized.");
-  }
-
-  return;
-}
 
 /** @name HashTable creation/destruction.
  * @{ */
@@ -183,13 +102,8 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
   orxHASHTABLE *pstHashTable = orxNULL; /* New created hash table */
   orxU32 u32Flags;                  /* Flags used for bank creation */
 
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
-
-  /* (hash can hold at least one key) */
   orxASSERT(_u32NbKey > 0);
 
   /* Allocate memory for a hash table */
@@ -231,10 +145,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
  */
 void orxFASTCALL    orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 {
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Clear hash table (unallocate cells) */
@@ -254,10 +165,7 @@ void orxFASTCALL    orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
  */
 void orxFASTCALL    orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
 {
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Clear the memory bank */
@@ -276,7 +184,6 @@ orxU32 orxFASTCALL orxHashTable_GetCounter(orxHASHTABLE *_pstHashTable)
   orxU32 u32Result = orxU32_UNDEFINED;
 
   /* Checks */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Updates result */
@@ -298,10 +205,7 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
 
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Get the index from the key */
@@ -338,10 +242,7 @@ void orxFASTCALL    orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
 
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Get the index from the key */
@@ -393,10 +294,7 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
   orxHASHTABLE_CELL *pstCell;             /* New cell to add */
   orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
 
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Can't add a NULL pointer, else Get will returns orxNULL and it won't be possible to detect errors
@@ -445,10 +343,7 @@ orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u
   orxHASHTABLE_CELL *pstRemoveCell = orxNULL; /* Cell to remove */
   orxSTATUS eStatus = orxSTATUS_FAILURE; /* Status to return */
 
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
   /* Get the index from the key */
@@ -513,9 +408,7 @@ orxHANDLE orxFASTCALL orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
   orxU16 u16Cell;
 
-	/* Module initialized ? */
-	orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-	/* Correct parameters ? */
+	/* Checks */
 	orxASSERT(_pstHashTable != orxNULL);
 
 	for(u16Cell=0; u16Cell<orxHASHTABLE_KU32_INDEX_SIZE; u16Cell++)
@@ -548,9 +441,7 @@ orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHAND
 	orxU16             u16Cell;
 	orxHANDLE          hResult = orxHANDLE_UNDEFINED;
 
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL && _hIterator != orxHANDLE_UNDEFINED);
 
   if(pIter->pstNext != orxNULL)
@@ -605,10 +496,7 @@ void orxFASTCALL    orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable)
   orxHASHTABLE_CELL *pstCell = orxNULL;
   orxU32 u32Index;
 
-  /* Module initialized ? */
-  orxASSERT((sstHashTable.u32Flags & orxHASHTABLE_KU32_STATIC_FLAG_READY) == orxHASHTABLE_KU32_STATIC_FLAG_READY);
-
-  /* Correct parameters ? */
+  /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
 
   orxLOG("\n\n\n********* HashTable (%x) *********", _pstHashTable);

@@ -107,20 +107,6 @@ typedef struct __orxLINKLIST_t
 } orxLINKLIST;
 
 
-/** Linklist module setup
- */
-extern orxDLLAPI void                           orxLinkList_Setup();
-
-/** Inits the linklist module
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS                      orxLinkList_Init();
-
-/** Exits from the linklist module
- */
-extern orxDLLAPI void                           orxLinkList_Exit();
-
-
 /** Cleans a linklist
  * @param[in]   _pstList                        Concerned list
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

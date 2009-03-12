@@ -78,9 +78,9 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 {
   orxLINKLIST_NODE            stNode;           /**< Linklist node : 12 */
   orxCLOCK_FUNCTION           pfnCallback;      /**< Clock function pointer : 16 */
-  void                    *pstContext;       /**< Clock function context : 20 */
+  void                       *pstContext;       /**< Clock function context : 20 */
   orxMODULE_ID                eModuleID;        /**< Clock function module ID : 24 */
-  orxCLOCK_PRIORITY  ePriority;        /**< Clock function priority : 28 */
+  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 28 */
 
   orxPAD(28)
 
@@ -90,13 +90,14 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
  */
 struct __orxCLOCK_t
 {
-  orxCLOCK_INFO stClockInfo;                    /**< Clock Info Structure : 24 */
-  orxFLOAT      fPartialDT;                     /**< Clock partial DT : 28 */
-  orxBANK      *pstFunctionBank;                /**< Function bank : 32 */
-  orxLINKLIST   stFunctionList;                 /**< Function list : 44 */
-  orxU32        u32Flags;                       /**< Clock flags : 48 */
+  orxLINKLIST_NODE  stNode;                         /**< Clock list node : 12 */
+  orxCLOCK_INFO     stClockInfo;                    /**< Clock Info Structure : 36 */
+  orxFLOAT          fPartialDT;                     /**< Clock partial DT : 40 */
+  orxBANK          *pstFunctionBank;                /**< Function bank : 44 */
+  orxLINKLIST       stFunctionList;                 /**< Function list : 48 */
+  orxU32            u32Flags;                       /**< Clock flags : 60 */
 
-  orxPAD(48)
+  orxPAD(60)
 };
 
 
@@ -109,6 +110,7 @@ typedef struct __orxCLOCK_STATIC_t
   orxFLOAT          fModValue;                  /**< Clock mod value : 12 */
   orxFLOAT          fTime;                      /**< Current time : 16 */
   orxU32            u32Flags;                   /**< Control flags : 20 */
+  orxLINKLIST       stClockList;                /**< Clock list : 32 */
 
 } orxCLOCK_STATIC;
 
@@ -172,9 +174,9 @@ static orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE
   orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
 
   /* Finds matching clock */
-  for(pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, _pstStartClock);
+  for(pstClock = (_pstStartClock != orxNULL) ? (orxCLOCK *)orxLinkList_GetNext(&(_pstStartClock->stNode)) : (orxCLOCK *)orxLinkList_GetFirst(&(sstClock.stClockList));
       pstClock != orxNULL;
-      pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
+      pstClock = (orxCLOCK *)orxLinkList_GetNext(&(pstClock->stNode)))
   {
     /* Match? */
     if((pstClock->stClockInfo.eType == _eType)
@@ -268,7 +270,6 @@ void orxClock_Setup()
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_SYSTEM);
-  orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_LINKLIST);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_CONFIG);
 
@@ -339,9 +340,7 @@ void orxClock_Exit()
     orxCLOCK *pstClock;
 
     /* For all clocks */
-    for(pstClock = orxBank_GetNext(sstClock.pstClockBank, orxNULL);
-        pstClock != orxNULL;
-        pstClock = orxBank_GetNext(sstClock.pstClockBank, pstClock))
+    while((pstClock = (orxCLOCK *)orxLinkList_GetFirst(&(sstClock.stClockList))) != orxNULL)
     {
       /* Deletes it */
       orxClock_Delete(pstClock);
@@ -389,9 +388,9 @@ orxSTATUS orxClock_Update()
     sstClock.fTime = fNewTime;
 
     /* For all clocks */
-    for(pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, orxNULL);
+    for(pstClock = (orxCLOCK *)orxLinkList_GetFirst(&(sstClock.stClockList));
         pstClock != orxNULL;
-        pstClock = (orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, pstClock))
+        pstClock = (orxCLOCK *)orxLinkList_GetNext(&(pstClock->stNode)))
     {
       orxFLOAT fClockDT;
 
@@ -466,6 +465,10 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
     /* Valid? */
     if(pstClock->pstFunctionBank != orxNULL)
     {
+      /* Adds it to list */
+      orxMemory_Zero(&(pstClock->stNode), sizeof(orxLINKLIST_NODE));
+      orxLinkList_AddEnd(&(sstClock.stClockList), &(pstClock->stNode));
+
       /* Inits clock */
       pstClock->stClockInfo.fTickSize   = _fTickSize;
       pstClock->stClockInfo.eType       = _eType;
@@ -508,6 +511,9 @@ void orxFASTCALL    orxClock_Delete(orxCLOCK *_pstClock)
   {
 	  /* Deletes function bank */
 	  orxBank_Delete(_pstClock->pstFunctionBank);
+
+    /* Removes it from list */
+    orxLinkList_Remove(&(_pstClock->stNode));
 
 	  /* Frees clock memory */
 	  orxBank_Free(sstClock.pstClockBank, _pstClock);
@@ -565,9 +571,9 @@ orxSTATUS orxClock_ResyncAll()
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
 
   /* For all clocks */
-  for(pstClock = orxBank_GetNext(sstClock.pstClockBank, orxNULL);
+  for(pstClock = (orxCLOCK *)orxLinkList_GetFirst(&(sstClock.stClockList));
       pstClock != orxNULL;
-      pstClock = orxBank_GetNext(sstClock.pstClockBank, pstClock))
+      pstClock = (orxCLOCK *)orxLinkList_GetNext(&(pstClock->stNode)))
   {
     /* Not already failed? */
     if(eResult != orxSTATUS_FAILURE)
@@ -1001,5 +1007,5 @@ orxCLOCK *orxFASTCALL orxClock_GetNext(const orxCLOCK *_pstClock)
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
 
   /* Returns next stored clock */
-  return((orxCLOCK *)orxBank_GetNext(sstClock.pstClockBank, _pstClock));
+  return((orxCLOCK *)orxLinkList_GetNext(&(_pstClock->stNode)));
 }

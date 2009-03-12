@@ -25,12 +25,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_link_list.html#g05cd215c1e0c52bd17716e063e984d6e">orxLinkList_Setup</a> ()</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_link_list.html#g488a55fa8738afc467d1103e63f969d2">orxLinkList_Init</a> ()</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_link_list.html#gc4263acfbd439625e5f31e806d5fa2c6">orxLinkList_Exit</a> ()</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_link_list.html#gbf278bde167b76f0d47939f208d64189">orxLinkList_Clean</a> (<a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstList)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_link_list.html#g9970a442859d407c0118766e25a2ad41">orxLinkList_AddStart</a> (<a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstList, <a class="el" href="structorx_l_i_n_k_l_i_s_t___n_o_d_e.html">orxLINKLIST_NODE</a> *_pstNode)</td></tr>
@@ -253,25 +247,6 @@ Cleans a linklist <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gc4263acfbd439625e5f31e806d5fa2c6"></a><!-- doxytag: member="orxLinkList.h::orxLinkList_Exit" ref="gc4263acfbd439625e5f31e806d5fa2c6" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI void orxLinkList_Exit           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Exits from the linklist module 
-</div>
-</div><p>
 <a class="anchor" name="g97cc73d7244bf0e28c0ba464243de611"></a><!-- doxytag: member="orxLinkList.h::orxLinkList_GetCounter" ref="g97cc73d7244bf0e28c0ba464243de611" args="(const orxLINKLIST *_pstList)" -->
 <div class="memitem">
 <div class="memproto">
@@ -428,26 +403,6 @@ Gets previous node in list <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g488a55fa8738afc467d1103e63f969d2"></a><!-- doxytag: member="orxLinkList.h::orxLinkList_Init" ref="g488a55fa8738afc467d1103e63f969d2" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxLinkList_Init           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Inits the linklist module <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="ga9d83b02c4b42e9fcdfdf1875603bd00"></a><!-- doxytag: member="orxLinkList.h::orxLinkList_Remove" ref="ga9d83b02c4b42e9fcdfdf1875603bd00" args="(orxLINKLIST_NODE *_pstNode)" -->
 <div class="memitem">
 <div class="memproto">
@@ -472,25 +427,6 @@ Removes a node from its list <dl compact><dt><b>Parameters:</b></dt><dd>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-</div>
-</div><p>
-<a class="anchor" name="g05cd215c1e0c52bd17716e063e984d6e"></a><!-- doxytag: member="orxLinkList.h::orxLinkList_Setup" ref="g05cd215c1e0c52bd17716e063e984d6e" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI void orxLinkList_Setup           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Linklist module setup 
 </div>
 </div><p>
 </div>

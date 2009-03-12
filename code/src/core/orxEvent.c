@@ -88,7 +88,6 @@ void orxEvent_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_HASHTABLE);
 
   return;
 }

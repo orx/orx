@@ -61,11 +61,9 @@ void orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_FX, orxFX);
   orxMODULE_REGISTER(orxMODULE_ID_FXPOINTER, orxFXPointer);
   orxMODULE_REGISTER(orxMODULE_ID_GRAPHIC, orxGraphic);
-  orxMODULE_REGISTER(orxMODULE_ID_HASHTABLE, orxHashTable);
   orxMODULE_REGISTER(orxMODULE_ID_INPUT, orxInput);
   orxMODULE_REGISTER(orxMODULE_ID_JOYSTICK, orxJoystick);
   orxMODULE_REGISTER(orxMODULE_ID_KEYBOARD, orxKeyboard);
-  orxMODULE_REGISTER(orxMODULE_ID_LINKLIST, orxLinkList);
   orxMODULE_REGISTER(orxMODULE_ID_MEMORY, orxMemory);
   orxMODULE_REGISTER(orxMODULE_ID_MOUSE, orxMouse);
   orxMODULE_REGISTER(orxMODULE_ID_OBJECT, orxObject);
@@ -84,7 +82,6 @@ void orxModule_RegisterAll()
   orxMODULE_REGISTER(orxMODULE_ID_SYSTEM, orxSystem);
   orxMODULE_REGISTER(orxMODULE_ID_TEXT, orxText);
   orxMODULE_REGISTER(orxMODULE_ID_TEXTURE, orxTexture);
-  orxMODULE_REGISTER(orxMODULE_ID_TREE, orxTree);
   orxMODULE_REGISTER(orxMODULE_ID_VIEWPORT, orxViewport);
 
   /* Computes all dependencies */

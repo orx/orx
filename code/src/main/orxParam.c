@@ -407,7 +407,6 @@ void orxParam_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_HASHTABLE);
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_EVENT);
 

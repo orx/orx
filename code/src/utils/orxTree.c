@@ -32,36 +32,13 @@
 #include "memory/orxMemory.h"
 
 
-/** Module flags
- */
-#define orxTREE_KU32_STATIC_FLAG_NONE             0x00000000  /**< No flags */
-
-#define orxTREE_KU32_STATIC_FLAG_READY            0x00000001  /**< Ready flags */
-
-#define orxTREE_KU32_STATIC_MASK_ALL              0xFFFFFFFF  /**< All mask */
-
-
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
 
-/** Static structure
- */
-typedef struct __orxTREE_STATIC_t
-{
-  orxU32 u32Flags;                                            /**< Control flags */
-
-} orxTREE_STATIC;
-
-
 /***************************************************************************
  * Static variables                                                        *
  ***************************************************************************/
-
-/** Static data
- */
-static orxTREE_STATIC sstTree;
-
 
 /***************************************************************************
  * Private functions                                                       *
@@ -217,69 +194,6 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBr
  * Public functions                                                        *
  ***************************************************************************/
 
-/** Tree module setup
- */
-void orxTree_Setup()
-{
-  /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_TREE, orxMODULE_ID_MEMORY);
-
-  return;
-}
-
-/** Inits the tree module
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxTree_Init()
-{
-  orxSTATUS eResult;
-
-  eResult = orxSTATUS_FAILURE;
-
-  /* Already Initialized? */
-  if(!(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY))
-  {
-    /* Cleans static controller */
-    orxMemory_Zero(&sstTree, sizeof(orxTREE_STATIC));
-
-    /* Inits flags */
-    sstTree.u32Flags = orxTREE_KU32_STATIC_FLAG_READY;
-
-    /* Success */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to initialize Tree module when it was already loaded.");
-
-    /* Already initialized */
-    eResult = orxSTATUS_SUCCESS;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Exits from the linklist module
- */
-void orxTree_Exit()
-{
-  /* Initialized? */
-  if(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY)
-  {
-    /* Updates flags */
-    sstTree.u32Flags &= ~orxTREE_KU32_STATIC_FLAG_READY;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit from Tree module when it wasn't loaded.");
-  }
-
-  return;
-}
-
 /** Cleans a tree
  * @param[in]   _pstTree                        Concerned tree
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -289,7 +203,6 @@ orxSTATUS orxTree_Clean(orxTREE *_pstTree)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTree != orxNULL);
 
   /* Non empty? */
@@ -320,7 +233,6 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
   register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstTree != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -375,7 +287,6 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   register orxTREE *pstTree;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -465,7 +376,6 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   register orxTREE *pstTree;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -523,7 +433,6 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
   register orxTREE *pstTree;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstRefNode != orxNULL);
   orxASSERT(_pstNode != orxNULL);
 
@@ -594,7 +503,6 @@ orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
   register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstTree.u32Flags & orxTREE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstNode != orxNULL);
 
   /* Gets tree */

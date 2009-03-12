@@ -544,7 +544,6 @@ void orxFX_Setup()
   orxModule_AddDependency(orxMODULE_ID_FX, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_FX, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_FX, orxMODULE_ID_CONFIG);
-  orxModule_AddDependency(orxMODULE_ID_FX, orxMODULE_ID_HASHTABLE);
 
   return;
 }

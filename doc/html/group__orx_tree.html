@@ -25,12 +25,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_t_r_e_e.html">orxTREE</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_tree.html#g720344086b8a70e711935352437c4fd1">orxTree_Setup</a> ()</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_tree.html#g773da9a46b88dbdd9f8f56f90d062b42">orxTree_Init</a> ()</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_tree.html#gff30e1f65ff4bd6e6c9fa4f0eb3dcc15">orxTree_Exit</a> ()</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_tree.html#g6d7e25531eadecaea043b4f0143d7cdb">orxTree_Clean</a> (<a class="el" href="structorx_t_r_e_e.html">orxTREE</a> *_pstTree)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_tree.html#g15f23434425cf8024ab3f142b3b456cb">orxTree_AddRoot</a> (<a class="el" href="structorx_t_r_e_e.html">orxTREE</a> *_pstTree, <a class="el" href="structorx_t_r_e_e___n_o_d_e.html">orxTREE_NODE</a> *_pstNode)</td></tr>
@@ -192,25 +186,6 @@ Cleans a tree <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gff30e1f65ff4bd6e6c9fa4f0eb3dcc15"></a><!-- doxytag: member="orxTree.h::orxTree_Exit" ref="gff30e1f65ff4bd6e6c9fa4f0eb3dcc15" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI void orxTree_Exit           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Exits from the tree module 
-</div>
-</div><p>
 <a class="anchor" name="geba32cfd9a5a4930b721aeb0829384ba"></a><!-- doxytag: member="orxTree.h::orxTree_GetChild" ref="geba32cfd9a5a4930b721aeb0829384ba" args="(const orxTREE_NODE *_pstNode)" -->
 <div class="memitem">
 <div class="memproto">
@@ -367,26 +342,6 @@ Gets a node tree <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g773da9a46b88dbdd9f8f56f90d062b42"></a><!-- doxytag: member="orxTree.h::orxTree_Init" ref="g773da9a46b88dbdd9f8f56f90d062b42" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxTree_Init           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Inits the tree module <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="ge70574f56861e3178cb53fb079440fc5"></a><!-- doxytag: member="orxTree.h::orxTree_MoveAsChild" ref="ge70574f56861e3178cb53fb079440fc5" args="(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)" -->
 <div class="memitem">
 <div class="memproto">
@@ -447,25 +402,6 @@ Removes a node from its tree <dl compact><dt><b>Parameters:</b></dt><dd>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-</div>
-</div><p>
-<a class="anchor" name="g720344086b8a70e711935352437c4fd1"></a><!-- doxytag: member="orxTree.h::orxTree_Setup" ref="g720344086b8a70e711935352437c4fd1" args="()" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI void orxTree_Setup           </td>
-          <td>(</td>
-          <td class="paramname">          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Tree module setup 
 </div>
 </div><p>
 </div>

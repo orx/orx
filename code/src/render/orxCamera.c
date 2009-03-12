@@ -144,7 +144,6 @@ void orxCamera_Setup()
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_FRAME);
-  orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_HASHTABLE);
 
   return;
 }

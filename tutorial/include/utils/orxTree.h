@@ -67,19 +67,6 @@ typedef struct __orxTREE_t
 } orxTREE;
 
 
-/** Tree module setup
- */
-extern orxDLLAPI void                           orxTree_Setup();
-
-/** Inits the tree module
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS                      orxTree_Init();
-
-/** Exits from the tree module
- */
-extern orxDLLAPI void                           orxTree_Exit();
-
 /** Cleans a tree
  * @param[in]   _pstTree                        Concerned tree
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

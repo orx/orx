@@ -51,21 +51,6 @@ typedef struct __orxHASHTABLE_t orxHASHTABLE;
 #define orxHASHTABLE_KU32_FLAG_NOT_EXPANDABLE   0x00000001  /**< The Hash table will not be expandable */
 
 
-/** @name Module management.
- * @{ */
-
-/** HashTable module setup.
- */
-extern orxDLLAPI void                           orxHashTable_Setup();
-/** Initialize HashTable Module
- * @return Returns the initialization status.
- */
-extern orxDLLAPI orxSTATUS                      orxHashTable_Init();
-/** Exit HashTable module
- */
-extern orxDLLAPI void                           orxHashTable_Exit();
-/** @} */
-
 /** @name HashTable creation/destruction.
  * @{ */
 /** Create a new hash table and return it.

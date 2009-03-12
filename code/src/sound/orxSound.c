@@ -274,7 +274,6 @@ void orxSound_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_SOUNDSYSTEM);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_CONFIG);
-  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_HASHTABLE);
 
   return;
 }

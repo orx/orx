@@ -36,6 +36,7 @@
 #include "core/orxEvent.h"
 #include "debug/orxDebug.h"
 #include "memory/orxBank.h"
+#include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
 
@@ -95,13 +96,14 @@ typedef struct __orxINPUT_BINDING_t
  */
 typedef struct __orxINPUT_ENTRY_t
 {
-  orxSTRING         zName;                                      /**< Entry name : 4 */
-  orxU32            u32ID;                                      /**< Name ID (CRC) : 8 */
-  orxU32            u32Status;                                  /**< Entry status : 12 */
+  orxLINKLIST_NODE  stNode;                                     /**< List node : 12 */
+  orxSTRING         zName;                                      /**< Entry name : 16 */
+  orxU32            u32ID;                                      /**< Name ID (CRC) : 20 */
+  orxU32            u32Status;                                  /**< Entry status : 24 */
 
-  orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 76 */
+  orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 88 */
 
-  orxPAD(76)
+  orxPAD(88)
 
 } orxINPUT_ENTRY;
 
@@ -109,9 +111,11 @@ typedef struct __orxINPUT_ENTRY_t
  */
 typedef struct __orxINPUT_SET_t
 {
-  orxBANK    *pstBank;                                          /**< Bank of entries : 4 */
-  orxSTRING   zName;                                            /**< Set name : 8 */
-  orxU32      u32ID;                                            /**< Set CRC : 12 */
+  orxLINKLIST_NODE  stNode;                                     /**< List node : 12 */
+  orxBANK          *pstEntryBank;                               /**< Entry bank : 16 */
+  orxSTRING         zName;                                      /**< Set name : 20 */
+  orxU32            u32ID;                                      /**< Set CRC : 24 */
+  orxLINKLIST       stEntryList;                                /**< Entry list : 36 */
 
 } orxINPUT_SET;
 
@@ -119,10 +123,11 @@ typedef struct __orxINPUT_SET_t
  */
 typedef struct __orxINPUT_STATIC_t
 {
-  orxBANK      *pstSetBank;                                     /**< Bank of sets */
+  orxBANK      *pstSetBank;                                     /**< Set bank */
   orxINPUT_SET *pstCurrentSet;                                  /**< Current set */
   orxFLOAT      fJoystickAxisThreshold;                         /**< Joystick axis threshold */
   orxU32        u32Flags;                                       /**< Control flags */
+  orxLINKLIST   stSetList;                                      /**< Set list */
 
 } orxINPUT_STATIC;
 
@@ -314,9 +319,9 @@ orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, const orxST
     orxINPUT_SET *pstSet;
 
     /* For all sets */
-    for(pstSet = orxBank_GetNext(sstInput.pstSetBank, orxNULL);
+    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
         pstSet != orxNULL;
-        pstSet = orxBank_GetNext(sstInput.pstSetBank, pstSet))
+        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
     {
       /* Found? */
       if(orxString_Compare(_zSetName, pstSet->zName) == 0)
@@ -344,12 +349,12 @@ void orxFASTCALL    orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_p
     orxINPUT_ENTRY *pstEntry;
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
-      orxU32        i, u32ActiveIndex = 0;
-      orxBOOL       bActive = orxFALSE, bStatusSet = orxFALSE;
+      orxU32  i, u32ActiveIndex = 0;
+      orxBOOL bActive = orxFALSE, bStatusSet = orxFALSE;
 
       /* For all bindings */
       for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
@@ -533,12 +538,16 @@ orxINPUT_ENTRY *orxFASTCALL orxInput_CreateEntry(const orxSTRING _zEntryName)
   if(_zEntryName != orxSTRING_EMPTY)
   {
     /* Allocates entry */
-    pstResult = (orxINPUT_ENTRY *)orxBank_Allocate(sstInput.pstCurrentSet->pstBank);
+    pstResult = (orxINPUT_ENTRY *)orxBank_Allocate(sstInput.pstCurrentSet->pstEntryBank);
 
     /* Valid? */
     if(pstResult != orxNULL)
     {
       orxU32 i;
+
+      /* Adds it to list */
+      orxMemory_Zero(&(pstResult->stNode), sizeof(orxLINKLIST_NODE));
+      orxLinkList_AddEnd(&(sstInput.pstCurrentSet->stEntryList), &(pstResult->stNode));
 
       /* Inits it */
       pstResult->zName      = orxString_Duplicate(_zEntryName);
@@ -568,8 +577,11 @@ void orxFASTCALL    orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY *
   /* Deletes its name */
   orxString_Delete(_pstEntry->zName);
 
+  /* Removes it from list */
+  orxLinkList_Remove(&(_pstEntry->stNode));
+
   /* Deletes it */
-  orxBank_Free(_pstSet->pstBank, _pstEntry);
+  orxBank_Free(_pstSet->pstEntryBank, _pstEntry);
 
   return;
 }
@@ -593,10 +605,10 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(const orxSTRING _zSetName, orx
   if(pstResult != orxNULL)
   {
     /* Creates its bank */
-    pstResult->pstBank = orxBank_Create(orxINPUT_KU32_ENTRY_BANK_SIZE, sizeof(orxINPUT_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    pstResult->pstEntryBank = orxBank_Create(orxINPUT_KU32_ENTRY_BANK_SIZE, sizeof(orxINPUT_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Valid? */
-    if(pstResult->pstBank != orxNULL)
+    if(pstResult->pstEntryBank != orxNULL)
     {
       /* Duplicates its name */
       pstResult->zName = orxString_Duplicate(_zSetName);
@@ -604,6 +616,13 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(const orxSTRING _zSetName, orx
       /* Valid? */
       if(pstResult->zName != orxNULL)
       {
+        /* Clears its entry list */
+        orxMemory_Zero(&(pstResult->stEntryList), sizeof(orxLINKLIST));
+
+        /* Adds it to list */
+        orxMemory_Zero(&(pstResult->stNode), sizeof(orxLINKLIST_NODE));
+        orxLinkList_AddEnd(&(sstInput.stSetList), &(pstResult->stNode));
+
         /* Sets its ID */
         pstResult->u32ID = _u32SetID;
       }
@@ -613,7 +632,7 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(const orxSTRING _zSetName, orx
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Duplicating set name failed.");
 
         /* Deletes its bank */
-        orxBank_Delete(pstResult->pstBank);
+        orxBank_Delete(pstResult->pstEntryBank);
 
         /* Deletes it */
         orxBank_Free(sstInput.pstSetBank, pstResult);
@@ -649,8 +668,11 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
   /* Checks */
   orxASSERT(_pstSet != orxNULL);
 
+  /* Removes it from list */
+  orxLinkList_Remove(&(_pstSet->stNode));
+
   /* While there is still an entry */
-  while((pstEntry = orxBank_GetNext(_pstSet->pstBank, orxNULL)) != orxNULL)
+  while((pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(_pstSet->stEntryList))) != orxNULL)
   {
     /* Deletes entry */
     orxInput_DeleteEntry(_pstSet, pstEntry);
@@ -700,6 +722,9 @@ orxSTATUS orxInput_Init()
   /* Not already Initialized? */
   if(!orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY))
   {
+    /* Cleans control structure */
+    orxMemory_Zero(&sstInput, sizeof(orxINPUT_STATIC));
+
     /* Creates set banks */
     sstInput.pstSetBank = orxBank_Create(orxINPUT_KU32_SET_BANK_SIZE, sizeof(orxINPUT_SET), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
@@ -762,17 +787,29 @@ void orxInput_Exit()
   /* Initialized? */
   if(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY))
   {
+    orxCLOCK     *pstClock;
     orxINPUT_SET *pstSet;
 
     /* While there's still a set */
-    while((pstSet = orxBank_GetNext(sstInput.pstSetBank, orxNULL)) != orxNULL)
+    while((pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList))) != orxNULL)
     {
       /* Deletes it */
       orxInput_DeleteSet(pstSet);
     }
 
     /* Clears sets bank */
+    orxBank_Delete(sstInput.pstSetBank);
     sstInput.pstSetBank = orxNULL;
+
+    /* Gets core clock */
+    pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
+    {
+      /* Unregisters from core clock */
+      orxClock_Unregister(pstClock, orxInput_Update);
+    }
 
     /* Updates flags */
     orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_NONE, orxINPUT_KU32_STATIC_MASK_ALL);
@@ -872,15 +909,15 @@ orxSTATUS orxFASTCALL  orxInput_Save(const orxSTRING _zFileName)
       orxSTRING    *azSetNameList;
 
       /* Gets set counter */
-      u32Counter = orxBank_GetCounter(sstInput.pstSetBank);
+      u32Counter = orxLinkList_GetCounter(&(sstInput.stSetList));
 
       /* Allocates set name list */
       azSetNameList = (orxSTRING *)orxMemory_Allocate(u32Counter * sizeof(orxSTRING), orxMEMORY_TYPE_TEMP);
 
       /* For all sets */
-      for(pstSet = orxBank_GetNext(sstInput.pstSetBank, orxNULL), u32Index = 0;
+      for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList)), u32Index = 0;
           pstSet != orxNULL;
-          pstSet = orxBank_GetNext(sstInput.pstSetBank, pstSet), u32Index++)
+          pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)), u32Index++)
       {
         /* Checks */
         orxASSERT(u32Index < u32Counter);
@@ -899,9 +936,9 @@ orxSTATUS orxFASTCALL  orxInput_Save(const orxSTRING _zFileName)
       orxConfig_SetFloat(orxINPUT_KZ_CONFIG_JOYSTICK_THRESHOLD, sstInput.fJoystickAxisThreshold);
 
       /* For all sets */
-      for(pstSet = orxBank_GetNext(sstInput.pstSetBank, orxNULL);
+      for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
           pstSet != orxNULL;
-          pstSet = orxBank_GetNext(sstInput.pstSetBank, pstSet))
+          pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
       {
         orxINPUT_ENTRY *pstEntry;
 
@@ -910,9 +947,9 @@ orxSTATUS orxFASTCALL  orxInput_Save(const orxSTRING _zFileName)
         orxConfig_SelectSection(pstSet->zName);
 
         /* For all its entries */
-        for(pstEntry = orxBank_GetNext(pstSet->pstBank, orxNULL);
+        for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(pstSet->stEntryList));
             pstEntry != orxNULL;
-            pstEntry = orxBank_GetNext(pstSet->pstBank, pstEntry))
+            pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
         {
           orxU32 i;
 
@@ -966,9 +1003,9 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
     || (sstInput.pstCurrentSet->u32ID != u32SetID))
     {
       /* For all the sets */
-      for(pstSet = orxBank_GetNext(sstInput.pstSetBank, orxNULL);
+      for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
           pstSet != orxNULL;
-          pstSet = orxBank_GetNext(sstInput.pstSetBank, pstSet))
+          pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
       {
         /* Found? */
         if(pstSet->u32ID == u32SetID)
@@ -1066,9 +1103,9 @@ orxBOOL orxFASTCALL orxInput_IsActive(const orxSTRING _zInputName)
     u32EntryID = orxString_ToCRC(_zInputName);
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
@@ -1107,9 +1144,9 @@ orxBOOL orxFASTCALL orxInput_HasNewStatus(const orxSTRING _zInputName)
     u32EntryID = orxString_ToCRC(_zInputName);
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
@@ -1148,9 +1185,9 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
     u32EntryID = orxString_ToCRC(_zInputName);
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
@@ -1202,9 +1239,9 @@ orxSTATUS orxFASTCALL orxInput_SetCombineMode(const orxSTRING _zName, orxBOOL _b
     u32EntryID = orxString_ToCRC(_zName);
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
@@ -1255,9 +1292,9 @@ orxBOOL orxFASTCALL orxInput_IsInCombineMode(const orxSTRING _zName)
     u32EntryID = orxString_ToCRC(_zName);
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
@@ -1299,9 +1336,9 @@ orxSTATUS orxFASTCALL orxInput_Bind(const orxSTRING _zName, orxINPUT_TYPE _eType
     u32EntryID = orxString_ToCRC(_zName);
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       orxU32 i;
 
@@ -1394,9 +1431,9 @@ orxSTATUS orxFASTCALL orxInput_Unbind(orxINPUT_TYPE _eType, orxENUM _eID)
     orxINPUT_ENTRY *pstEntry;
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         (eResult == orxSTATUS_FAILURE) && (pstEntry != orxNULL);
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       orxU32 i;
 
@@ -1468,9 +1505,9 @@ orxU32 orxFASTCALL orxInput_GetBoundInputNumber(orxINPUT_TYPE _eType, orxENUM _e
     orxINPUT_ENTRY *pstEntry;
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       orxU32 i;
 
@@ -1512,9 +1549,9 @@ const orxSTRING orxFASTCALL orxInput_GetBoundInput(orxINPUT_TYPE _eType, orxENUM
     orxU32          u32CurrentIndex;
 
     /* For all entries */
-    for(u32CurrentIndex = 0, pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(u32CurrentIndex = 0, pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         (zResult == orxSTRING_EMPTY) && (pstEntry != orxNULL);
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       orxU32 i;
 
@@ -1574,9 +1611,9 @@ orxSTATUS orxFASTCALL orxInput_GetBinding(const orxSTRING _zName, orxU32 _u32Bin
     u32EntryID = orxString_ToCRC(_zName);
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
@@ -1629,9 +1666,9 @@ orxSTATUS orxFASTCALL orxInput_GetBindingList(const orxSTRING _zName, orxINPUT_T
     u32EntryID = orxString_ToCRC(_zName);
 
     /* For all entries */
-    for(pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, orxNULL);
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
         pstEntry != orxNULL;
-        pstEntry = orxBank_GetNext(sstInput.pstCurrentSet->pstBank, pstEntry))
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
     {
       /* Found? */
       if(pstEntry->u32ID == u32EntryID)
