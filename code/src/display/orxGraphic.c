@@ -62,7 +62,7 @@
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00200000  /**< Blend mode multiply flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD       0x00400000  /**< Blend mode add flag */
 
-#define orxGRAPHIC_KU32_MASK_ALIGN                0x000000F0  /**< Alignment mask */
+#define orxGRAPHIC_KU32_MASK_ALIGN                0x000003F0  /**< Alignment mask */
 
 #define orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL       0x00F00000  /**< Blend mode mask */
 
@@ -83,17 +83,19 @@
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING            "Smoothing"
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE           "BlendMode"
 
-#define orxGRAPHIC_KZ_CENTERED_PIVOT          "center"
-#define orxGRAPHIC_KZ_TOP_PIVOT               "top"
-#define orxGRAPHIC_KZ_LEFT_PIVOT              "left"
-#define orxGRAPHIC_KZ_BOTTOM_PIVOT            "bottom"
-#define orxGRAPHIC_KZ_RIGHT_PIVOT             "right"
-#define orxGRAPHIC_KZ_X                       "x"
-#define orxGRAPHIC_KZ_Y                       "y"
-#define orxGRAPHIC_KZ_BOTH                    "both"
-#define orxGRAPHIC_KZ_ALPHA                   "alpha"
-#define orxGRAPHIC_KZ_MULTIPLY                "multiply"
-#define orxGRAPHIC_KZ_ADD                     "add"
+#define orxGRAPHIC_KZ_CENTERED_PIVOT              "center"
+#define orxGRAPHIC_KZ_TRUNCATE_PIVOT              "truncate"
+#define orxGRAPHIC_KZ_ROUND_PIVOT                 "round"
+#define orxGRAPHIC_KZ_TOP_PIVOT                   "top"
+#define orxGRAPHIC_KZ_LEFT_PIVOT                  "left"
+#define orxGRAPHIC_KZ_BOTTOM_PIVOT                "bottom"
+#define orxGRAPHIC_KZ_RIGHT_PIVOT                 "right"
+#define orxGRAPHIC_KZ_X                           "x"
+#define orxGRAPHIC_KZ_Y                           "y"
+#define orxGRAPHIC_KZ_BOTH                        "both"
+#define orxGRAPHIC_KZ_ALPHA                       "alpha"
+#define orxGRAPHIC_KZ_MULTIPLY                    "multiply"
+#define orxGRAPHIC_KZ_ADD                         "add"
 
 
 /***************************************************************************
@@ -443,6 +445,19 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM;
           }
 
+          /* Truncate? */
+          if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_TRUNCATE_PIVOT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE;
+          }
+          /* Round? */
+          else if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_ROUND_PIVOT) != orxNULL)
+          {
+            /* Updates alignment flags */
+            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_ROUND;
+          }
+
           /* Valid? */
           if((u32AlignmentFlags != orxGRAPHIC_KU32_FLAG_ALIGN_CENTER)
           || (orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_CENTERED_PIVOT) != orxNULL))
@@ -778,13 +793,13 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
     fHeight = vSize.fY;
 
     /* Pivot left? */
-    if(_u32AlignFlags & orxGRAPHIC_KU32_FLAG_ALIGN_LEFT)
+    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
     {
       /* Updates x position */
       _pstGraphic->vPivot.fX = orxFLOAT_0;
     }
     /* Align right? */
-    else if(_u32AlignFlags & orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT)
+    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
     {
       /* Updates x position */
       _pstGraphic->vPivot.fX = fWidth;
@@ -797,13 +812,13 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
     }
 
     /* Align top? */
-    if(_u32AlignFlags & orxGRAPHIC_KU32_FLAG_ALIGN_TOP)
+    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
     {
       /* Updates y position */
       _pstGraphic->vPivot.fY = orxFLOAT_0;
     }
     /* Align bottom? */
-    else if(_u32AlignFlags & orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM)
+    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
     {
       /* Updates y position */
       _pstGraphic->vPivot.fY = fHeight;
@@ -813,6 +828,19 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
     {
       /* Updates y position */
       _pstGraphic->vPivot.fY = orx2F(0.5f) * fHeight;
+    }
+
+    /* Truncate? */
+    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
+    {
+      /* Updates position */
+      orxVector_Floor(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
+    }
+    /* Round? */
+    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
+    {
+      /* Updates position */
+      orxVector_Round(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
     }
 
     /* Updates status */

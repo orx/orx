@@ -53,6 +53,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g9412b01bd07f9397b8239c477848e606">orxVector_Rec</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g06cc707be585adbedb4ab48ebab9b8fe">orxVector_Floor</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g38098d5ee02edc7e19fc1140f31dbfa6">orxVector_Round</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g6fd68e62785c54d132aa70aa84b06433">orxVector_GetSquareSize</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE orxFLOAT&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#g8b7585ad45338d8594c88885a14e57fa">orxVector_GetSize</a> (const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp)</td></tr>
@@ -507,6 +511,42 @@ Gets dot product of two vectors <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Dot product </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g06cc707be585adbedb4ab48ebab9b8fe"></a><!-- doxytag: member="orxVector.h::orxVector_Floor" ref="g06cc707be585adbedb4ab48ebab9b8fe" args="(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxVector_Floor           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvRes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvOp</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets floored vector and stores the result in another one <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pvRes</em>&nbsp;</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvOp</em>&nbsp;</td><td>Input value </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Resulting vector Floor(Op) </dd></dl>
 
 </div>
 </div><p>
@@ -1059,6 +1099,42 @@ Gets reciprocal (1.0 /) vector and stores the result in another one <dl compact>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Resulting vector (1 / Op) </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g38098d5ee02edc7e19fc1140f31dbfa6"></a><!-- doxytag: member="orxVector.h::orxVector_Round" ref="g38098d5ee02edc7e19fc1140f31dbfa6" args="(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxVector_Round           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvRes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvOp</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Gets rounded vector and stores the result in another one <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pvRes</em>&nbsp;</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvOp</em>&nbsp;</td><td>Input value </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>Resulting vector Round(Op) </dd></dl>
 
 </div>
 </div><p>

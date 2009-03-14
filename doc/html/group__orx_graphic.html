@@ -44,7 +44,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g7d07c15fae0da64fa3039e4bb22a0c5b">orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM</a>&nbsp;&nbsp;&nbsp;0x00000080</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gf2ee05ab7323f433c9a195c382532d49">orxGRAPHIC_KU32_MASK_USER_ALL</a>&nbsp;&nbsp;&nbsp;0x000000FF</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gcc58fa8471bb4e17849d37298d4c7856">orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE</a>&nbsp;&nbsp;&nbsp;0x00000100</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#g3fe97eb6e0aa45885bc958e40d2c3711">orxGRAPHIC_KU32_FLAG_ALIGN_ROUND</a>&nbsp;&nbsp;&nbsp;0x00000200</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gf2ee05ab7323f433c9a195c382532d49">orxGRAPHIC_KU32_MASK_USER_ALL</a>&nbsp;&nbsp;&nbsp;0x00000FFF</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxGRAPHIC_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_graphic.html#gf93b9ab6d42751f73e78536cc47fb4ae">orxGRAPHIC</a></td></tr>
@@ -181,6 +185,21 @@ Left horizontal alignment
 Right horizontal alignment 
 </div>
 </div><p>
+<a class="anchor" name="g3fe97eb6e0aa45885bc958e40d2c3711"></a><!-- doxytag: member="orxGraphic.h::orxGRAPHIC_KU32_FLAG_ALIGN_ROUND" ref="g3fe97eb6e0aa45885bc958e40d2c3711" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxGRAPHIC_KU32_FLAG_ALIGN_ROUND&nbsp;&nbsp;&nbsp;0x00000200          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Round alignment value 
+</div>
+</div><p>
 <a class="anchor" name="gecdca5276af484721b0c426ffb3dbda4"></a><!-- doxytag: member="orxGraphic.h::orxGRAPHIC_KU32_FLAG_ALIGN_TOP" ref="gecdca5276af484721b0c426ffb3dbda4" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -194,6 +213,21 @@ Right horizontal alignment
 
 <p>
 Top vertical alignment 
+</div>
+</div><p>
+<a class="anchor" name="gcc58fa8471bb4e17849d37298d4c7856"></a><!-- doxytag: member="orxGraphic.h::orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE" ref="gcc58fa8471bb4e17849d37298d4c7856" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE&nbsp;&nbsp;&nbsp;0x00000100          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Truncate alignment value 
 </div>
 </div><p>
 <a class="anchor" name="g8859736ea173e43e859dd14aa18206ba"></a><!-- doxytag: member="orxGraphic.h::orxGRAPHIC_KU32_FLAG_FLIP_X" ref="g8859736ea173e43e859dd14aa18206ba" args="" -->
@@ -291,7 +325,7 @@ Type mask
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxGRAPHIC_KU32_MASK_USER_ALL&nbsp;&nbsp;&nbsp;0x000000FF          </td>
+          <td class="memname">#define orxGRAPHIC_KU32_MASK_USER_ALL&nbsp;&nbsp;&nbsp;0x00000FFF          </td>
         </tr>
       </table>
 </div>
