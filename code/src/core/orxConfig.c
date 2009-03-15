@@ -1789,6 +1789,13 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
         orxConfig_CryptBuffer(acBuffer + u32Offset, u32Size - u32Offset);
       }
 
+      /* End of file reached? */
+      if(u32Size < orxCONFIG_KU32_BUFFER_SIZE)
+      {
+        /* Adds an extra EOL */
+        acBuffer[u32Size++] = orxCHAR_LF;
+      }
+
       /* For all buffered characters */
       for(pc = pcLineStart, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE;
           pc < acBuffer + u32Size;
