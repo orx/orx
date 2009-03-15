@@ -612,7 +612,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
             }
 
             /* Sets bitmap clipping */
-            orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
+            //orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(stViewportBox.vTL.fX), orxF2U(stViewportBox.vTL.fY), orxF2U(stViewportBox.vBR.fX), orxF2U(stViewportBox.vBR.fY));
             
             /* Should clear bitmap? */
             if(orxViewport_IsBackgroundClearingEnabled(_pstViewport) != orxFALSE)
@@ -628,7 +628,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
               orxOBJECT      *pstObject;
               orxRENDER_NODE *pstRenderNode;
               orxVECTOR       vCameraCenter, vCameraPosition;
-              orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraSqrBoundingRadius;
+              orxFLOAT        fRenderScaleX, fRenderScaleY, fZoom, fRenderRotation, fCameraBoundingRadius;
 
               /* Gets camera zoom */
               fZoom = orxCamera_GetZoom(pstCamera);
@@ -641,7 +641,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
               orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
 
               /* Gets camera square bounding radius */
-              fCameraSqrBoundingRadius = orx2F(0.5f) * ((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight));
+              fCameraBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((fCameraWidth * fCameraWidth) + (fCameraHeight * fCameraHeight)) / fZoom;
 
               /* Gets rendering scales */
               fRenderScaleX = fZoom * (stViewportBox.vBR.fX - stViewportBox.vTL.fX) / fCameraWidth;
@@ -692,7 +692,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                       /* Is object in Z frustum? */
                       if((vObjectPos.fZ > vCameraPosition.fZ) && (vObjectPos.fZ >= stFrustum.vTL.fZ) && (vObjectPos.fZ <= stFrustum.vBR.fZ))
                       {
-                        orxFLOAT  fObjectSqrBoundingRadius, fSqrDist;
+                        orxFLOAT  fObjectBoundingRadius, fSqrDist;
                         orxVECTOR vSize, vObjectScale, vDist;
 
                         /* Gets its size */
@@ -706,7 +706,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                         vSize.fY *= vObjectScale.fY;
 
                         /* Gets object square bounding radius */
-                        fObjectSqrBoundingRadius = orx2F(1.5f) * ((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
+                        fObjectBoundingRadius = orx2F(0.5f) * orxMath_Sqrt((vSize.fX * vSize.fX) + (vSize.fY * vSize.fY));
 
                         /* Gets 2D distance vector */
                         orxVector_Sub(&vDist, &vObjectPos, &vCameraCenter);
@@ -716,7 +716,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                         fSqrDist = orxVector_GetSquareSize(&vDist);
 
                         /* Circle test between object & camera */
-                        if(fSqrDist * (fZoom * fZoom) <= (fCameraSqrBoundingRadius + fObjectSqrBoundingRadius))
+                        if(fSqrDist <= (fCameraBoundingRadius + fObjectBoundingRadius) * (fCameraBoundingRadius + fObjectBoundingRadius))
                         {
                           orxLINKLIST_NODE *pstNode;
 
