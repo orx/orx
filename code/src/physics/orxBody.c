@@ -110,10 +110,11 @@ struct __orxBODY_t
 {
   orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
   orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 20 */
-  const orxSTRUCTURE  *pstOwner;                                   /**< Owner structure : 24 */
-  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 264 */
+  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 24 */
+  orxBODY_DEF             stDef;                                      /**< Definition : 60 */
+  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 300 */
 
-  orxPAD(264)
+  orxPAD(300)
 };
 
 /** Static structure
@@ -376,6 +377,9 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
       /* Stores owner */
       pstBody->pstOwner = _pstOwner;
 
+      /* Stores its definition */
+      orxMemory_Copy(&(pstBody->stDef), pstSelectedDef, sizeof(orxBODY_DEF));
+
       /* Updates flags */
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
     }
@@ -563,6 +567,25 @@ orxSTRUCTURE *orxFASTCALL orxBody_GetOwner(const orxBODY *_pstBody)
 
   /* Updates result */
   pstResult = orxSTRUCTURE(_pstBody->pstOwner);
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets a body definition
+ * @param[in]   _pstBody        Concerned body
+ * @return      orxBODY_DEF / orxNULL
+ */
+const orxBODY_DEF *orxFASTCALL orxBody_GetDefinition(const orxBODY *_pstBody)
+{
+  const orxBODY_DEF *pstResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  pstResult = &(_pstBody->stDef);
 
   /* Done! */
   return pstResult;
@@ -878,6 +901,25 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU3
 
   /* Updates result */
   pstResult = _pstBody->astPartList[_u32Index].pstData;
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets a body part definition
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxBODY_PART_DEF / orxNULL
+ */
+const orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartDefinition(const orxBODY_PART *_pstBodyPart)
+{
+  const orxBODY_PART_DEF *pstResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  pstResult = &(_pstBodyPart->stDef);
 
   /* Done! */
   return pstResult;
