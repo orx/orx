@@ -18,7 +18,7 @@
   </Dependencies>
   <Settings Type="Dynamic Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/gp2x/plugins/core/display/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/gp2x/plugins/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -51,7 +51,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="GP2X Release" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/gp2x/plugins/core/display/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/gp2x/plugins/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="_REENTRANT"/>
@@ -83,7 +83,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/plugins/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -115,7 +115,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/plugins/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>
@@ -144,7 +144,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/plugins/orxDisplay_SDLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -173,7 +173,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/plugins/orxDisplay_SDL.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>
@@ -201,7 +201,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SDLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/plugins/orxDisplay_SDLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -231,7 +231,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SDL.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/plugins/orxDisplay_SDL.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>
@@ -260,7 +260,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SDLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/plugins/orxDisplay_SDLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -289,7 +289,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/display/orxDisplay_SDL.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
+      <General OutputFile="../../../bin/plugins/orxDisplay_SDL.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="yes"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
       </Compiler>

@@ -10,7 +10,7 @@
   </Dependencies>
   <Settings Type="Dynamic Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/gp2x/plugins/core/physics/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/gp2x/plugins/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -41,7 +41,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="GP2X Release" CompilerType="gp2x g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/gp2x/plugins/core/physics/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/gp2x/plugins/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Release" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2 -Wno-strict-aliasing">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -71,7 +71,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -101,7 +101,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -130,7 +130,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/orxPhysics_Box2Dd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -160,7 +160,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Linux Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/orxPhysics_Box2D.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -189,7 +189,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/orxPhysics_Box2Dd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -219,7 +219,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Dynamic Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/orxPhysics_Box2D.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -248,7 +248,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2Dd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/orxPhysics_Box2Dd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-g -Wall">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
@@ -278,7 +278,7 @@
       </AdditionalRules>
     </Configuration>
     <Configuration Name="Win32 Static Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
-      <General OutputFile="../../../bin/plugins/core/physics/orxPhysics_Box2D.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
+      <General OutputFile="../../../bin/plugins/orxPhysics_Box2D.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
       <Compiler Required="yes" Options="-O2">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/Box2D_2.0.1/Orx/include/"/>
