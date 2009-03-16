@@ -417,7 +417,7 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
     orxU32 u32Size;
 
     /* Gets string size in bytes */
-    u32Size = (strlen(_zFileName) + 1) * sizeof(orxCHAR);
+    u32Size = ((orxU32)strlen(_zFileName) + 1) * sizeof(orxCHAR);
 
     /* Allocates it */
     sstDebug.zDebugFile = (orxSTRING)malloc(u32Size);
@@ -453,7 +453,7 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
     orxU32 u32Size;
 
     /* Gets string size in bytes */
-    u32Size = (strlen(_zFileName) + 1) * sizeof(orxCHAR);
+    u32Size = ((orxU32)strlen(_zFileName) + 1) * sizeof(orxCHAR);
 
     /* Allocates it */
     sstDebug.zLogFile = (orxSTRING)malloc(u32Size);

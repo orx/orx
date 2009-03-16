@@ -412,7 +412,8 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(const orxHANDLE _hUserDa
     stBodyDef.linearDamping   = _pstBodyDef->fLinearDamping;
     stBodyDef.angularDamping  = _pstBodyDef->fAngularDamping;
     stBodyDef.isBullet        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
-    stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
+    //! This feature is currently broken in Box2D, faking it directly in orx
+    // stBodyDef.fixedRotation   = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
     stBodyDef.position.Set(sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fX, sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fY);
 
     /* Is dynamic? */

@@ -205,16 +205,29 @@ static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const o
       /* Backups its Z */
       fZBackup = vPosition.fZ;
 
-      /* Gets body up-to-date position & rotation */
+      /* Gets body up-to-date position */
       orxPhysics_GetPosition(pstBody->pstData, &vPosition);
-      fRotation = orxPhysics_GetRotation(pstBody->pstData);
 
       /* Restores Z */
       vPosition.fZ = fZBackup;
 
-      /* Updates position & rotation */
+      /* Updates position */
       orxFrame_SetPosition(pstFrame, &vPosition);
-      orxFrame_SetRotation(pstFrame, fRotation);
+
+      /* Fixed rotation? */
+      if(orxFLAG_TEST(pstBody->stDef.u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION))
+      {
+        /* Enforces rotation */
+        orxPhysics_SetRotation(pstBody->pstData, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL));
+      }
+      else
+      {
+        /* Gets body up-to-date rotation */
+        fRotation = orxPhysics_GetRotation(pstBody->pstData);
+
+        /* Updates rotation */
+        orxFrame_SetRotation(pstFrame, fRotation);
+      }
 
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
