@@ -217,8 +217,9 @@ static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const o
       /* Fixed rotation? */
       if(orxFLAG_TEST(pstBody->stDef.u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION))
       {
-        /* Enforces rotation */
+        /* Enforces rotation & angular velocity */
         orxPhysics_SetRotation(pstBody->pstData, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL));
+        orxPhysics_SetAngularVelocity(pstBody->pstData, orxFLOAT_0);
       }
       else
       {

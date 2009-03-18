@@ -603,6 +603,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, con
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
+  /* Wakes up */
+  poBody->WakeUp();
+
   /* Sets position vector */
   vPosition.Set(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY);
 
@@ -624,6 +627,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orx
 
   /* Gets body */
   poBody = (b2Body *)_pstBody;
+
+  /* Wakes up */
+  poBody->WakeUp();
 
   /* Updates its rotation */
   eResult = (poBody->SetXForm(poBody->GetPosition(), _fRotation) != false) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
@@ -649,6 +655,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pstBody, const 
   /* Sets speed vector */
   vSpeed.Set(sstPhysics.fDimensionRatio * _pvSpeed->fX, sstPhysics.fDimensionRatio * _pvSpeed->fY);
 
+  /* Wakes up */
+  poBody->WakeUp();
+
   /* Updates its speed */
   poBody->SetLinearVelocity(vSpeed);
 
@@ -667,6 +676,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstBo
 
   /* Gets body */
   poBody = (b2Body *)_pstBody;
+
+  /* Wakes up */
+  poBody->WakeUp();
 
   /* Updates its angular velocity */
   poBody->SetAngularVelocity(_fVelocity);
@@ -806,6 +818,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orx
   /* Gets body */
   poBody = (b2Body *)_pstBody;
 
+  /* Wakes up */
+  poBody->WakeUp();
+
   /* Applies torque */
   poBody->ApplyTorque(_fTorque);
 
@@ -827,6 +842,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, cons
 
   /* Gets body */
   poBody = (b2Body *)_pstBody;
+
+  /* Wakes up */
+  poBody->WakeUp();
 
   /* Sets force */
   vForce.Set(_pvForce->fX, _pvForce->fY);
@@ -855,6 +873,9 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, co
 
   /* Gets body */
   poBody = (b2Body *)_pstBody;
+
+  /* Wakes up */
+  poBody->WakeUp();
 
   /* Sets impulse */
   vImpulse.Set(_pvImpulse->fX, _pvImpulse->fY);
