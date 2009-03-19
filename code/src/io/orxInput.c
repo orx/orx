@@ -234,6 +234,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
 
   /* Valid? */
   if((_zSetName != orxSTRING_EMPTY)
+  && (orxConfig_HasSection(_zSetName) != orxFALSE)
   && (orxConfig_SelectSection(_zSetName) != orxSTATUS_FAILURE))
   {
     orxINPUT_SET *pstPreviousSet;
@@ -902,7 +903,8 @@ orxSTATUS orxFASTCALL  orxInput_Save(const orxSTRING _zFileName)
     orxConfig_ClearSection(orxINPUT_KZ_CONFIG_SECTION);
 
     /* Selects it */
-    if(orxConfig_SelectSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE)
+    if((orxConfig_HasSection(orxINPUT_KZ_CONFIG_SECTION) != orxFALSE)
+    && (orxConfig_SelectSection(orxINPUT_KZ_CONFIG_SECTION) != orxSTATUS_FAILURE))
     {
       orxU32        u32Index, u32Counter;
       orxINPUT_SET *pstSet;

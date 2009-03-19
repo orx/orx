@@ -284,7 +284,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
   zPreviousSection = orxConfig_GetCurrentSection();
 
   /* Selects section */
-  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     /* Creates viewport */
     pstResult = orxViewport_Create();

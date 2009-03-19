@@ -427,7 +427,8 @@ orxANIMPOINTER *orxFASTCALL orxAnimPointer_CreateFromConfig(const orxSTRUCTURE *
   zPreviousSection = orxConfig_GetCurrentSection();
 
   /* Selects section */
-  if(orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE)
+  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+  && (orxConfig_SelectSection(_zConfigID) != orxSTATUS_FAILURE))
   {
     orxANIMSET *pstAnimSet;
 
