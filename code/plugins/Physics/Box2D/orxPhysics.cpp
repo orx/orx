@@ -753,6 +753,7 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVE
   pvResult      = _pvSpeed;
   pvResult->fX  = sstPhysics.fRecDimensionRatio * vSpeed.x;
   pvResult->fY  = sstPhysics.fRecDimensionRatio * vSpeed.y;
+  pvResult->fZ  = orxFLOAT_0;
 
   /* Done! */
   return pvResult;
