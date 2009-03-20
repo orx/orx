@@ -98,7 +98,7 @@ typedef struct __orxEVENT_t
   orxENUM           eID;                              /**< Event ID : 8 */
   orxHANDLE         hSender;                          /**< Sender handle : 12 */
   orxHANDLE         hRecipient;                       /**< Recipient handle : 16 */
-  void             *pstPayload;                       /**> Event payload : 20 */
+  void             *pstPayload;                       /**< Event payload : 20 */
 
 } orxEVENT;
 
