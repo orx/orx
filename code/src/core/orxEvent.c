@@ -157,8 +157,8 @@ void orxEvent_Exit()
 }
 
 /** Adds an event handler
- * @param _eEventType           Concerned type of event
- * @param _pfnHandler           Event handler to add
+ * @param[in] _eEventType           Concerned type of event
+ * @param[in] _pfnHandler           Event handler to add
  * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler)
@@ -216,8 +216,8 @@ orxSTATUS orxFASTCALL orxEvent_AddHandler(orxEVENT_TYPE _eEventType, orxEVENT_HA
 }
 
 /** Removes an event handler
- * @param _eEventType           Concerned type of event
- * @param _pfnHandler           Event handler to remove
+ * @param[in] _eEventType           Concerned type of event
+ * @param[in] _pfnHandler           Event handler to remove
  * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler)
@@ -266,7 +266,7 @@ orxSTATUS orxFASTCALL orxEvent_RemoveHandler(orxEVENT_TYPE _eEventType, orxEVENT
 }
 
 /** Sends an event
- * @param _pstEvent             Event to send
+ * @param[in] _pstEvent             Event to send
  */
 orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
 {
@@ -306,8 +306,8 @@ orxSTATUS orxFASTCALL orxEvent_Send(const orxEVENT *_pstEvent)
 }
 
 /** Sends a simple event
- * @param _eEventType           Event type
- * @param _eEventID             Event ID
+ * @param[in] _eEventType           Event type
+ * @param[in] _eEventID             Event ID
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID)

@@ -247,8 +247,8 @@ Event type enum <dl compact><dt><b>Enumerator: </b></dt><dd>
 <p>
 Adds an event handler <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_eEventType</em>&nbsp;</td><td>Concerned type of event </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pfnEventHandler</em>&nbsp;</td><td>Event handler to add </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eEventType</em>&nbsp;</td><td>Concerned type of event </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnEventHandler</em>&nbsp;</td><td>Event handler to add </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
@@ -322,8 +322,8 @@ Initializes the event Module <dl class="return" compact><dt><b>Returns:</b></dt>
 <p>
 Removes an event handler <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_eEventType</em>&nbsp;</td><td>Concerned type of event </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pfnEventHandler</em>&nbsp;</td><td>Event handler to remove return orxSTATUS_SUCCESS / orxSTATUS_FAILURE </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eEventType</em>&nbsp;</td><td>Concerned type of event </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pfnEventHandler</em>&nbsp;</td><td>Event handler to remove return orxSTATUS_SUCCESS / orxSTATUS_FAILURE </td></tr>
   </table>
 </dl>
 
@@ -348,7 +348,7 @@ Removes an event handler <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Sends an event <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstEvent</em>&nbsp;</td><td>Event to send </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstEvent</em>&nbsp;</td><td>Event to send </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
@@ -383,8 +383,8 @@ Sends an event <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Sends a simple event <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_eEventType</em>&nbsp;</td><td>Event type </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_eEventID</em>&nbsp;</td><td>Event ID </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eEventType</em>&nbsp;</td><td>Event type </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eEventID</em>&nbsp;</td><td>Event ID </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

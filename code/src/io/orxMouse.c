@@ -61,7 +61,7 @@ void orxMouse_Setup()
 }
 
 /** Gets button literal name
- * @param _eButton          Concerned button
+ * @param[in] _eButton          Concerned button
  * @return Button's name
  */
 const orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
@@ -167,7 +167,7 @@ orxVECTOR *orxMouse_GetPosition(orxVECTOR *_pvPosition)
 }
 
 /** Is mouse button pressed?
- * @param _eButton          Mouse button to check
+ * @param[in] _eButton          Mouse button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
 orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)

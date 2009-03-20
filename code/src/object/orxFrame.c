@@ -119,7 +119,7 @@ static orxFRAME_STATIC sstFrame;
 
 /** Sets a frame position
  * @param[in]   _pstFrame       Concerned frame
- * @param[int]  _pvPos          Position to set
+ * @param[in]   _pvPos          Position to set
  * @param[in]   _eSpace         Coordinate space system to use
  */
 static orxINLINE void _orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR *_pvPos, orxFRAME_SPACE _eSpace)
@@ -160,7 +160,7 @@ static orxINLINE void _orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR
 
 /** Sets a frame rotation
  * @param[in]   _pstFrame       Concerned frame
- * @param[int]  _fAngle         Rotation angle to set
+ * @param[in]   _fAngle         Rotation angle to set
  * @param[in]   _eSpace         Coordinate space system to use
  */
 static orxINLINE void _orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle, orxFRAME_SPACE _eSpace)

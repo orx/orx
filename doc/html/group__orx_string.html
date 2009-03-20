@@ -190,8 +190,8 @@ String module Module that handles strings <hr><h2>Define Documentation</h2>
 <p>
 Compare two strings. If the first one is smaller than the second, it returns -1, If the second one is bigger than the first, and 0 if they are equals <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zString1</em>&nbsp;</td><td>(IN) First String to compare </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_zString2</em>&nbsp;</td><td>(IN) Second string to compare </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString1</em>&nbsp;</td><td>First String to compare </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString2</em>&nbsp;</td><td>Second string to compare </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
@@ -262,8 +262,8 @@ Continues a CRC with a string one <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Copies a string. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zDstString</em>&nbsp;</td><td>(IN) Destination string </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_zSrcString</em>&nbsp;</td><td>(IN) Source string </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDstString</em>&nbsp;</td><td>Destination string </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSrcString</em>&nbsp;</td><td>Source string </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Copied string. </dd></dl>
@@ -314,7 +314,7 @@ Deletes a string <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Duplicate a string. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zSrcString</em>&nbsp;</td><td>(IN) String to duplicate. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSrcString</em>&nbsp;</td><td>String to duplicate. </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Duplicated string. </dd></dl>
@@ -340,7 +340,7 @@ Duplicate a string. <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Returns the number of character in the string <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zString</em>&nbsp;</td><td>(IN) String used for length computation </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>String used for length computation </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Length of the string (doesn't count final orxCHAR_NULL) </dd></dl>
@@ -366,7 +366,7 @@ Returns the number of character in the string <dl compact><dt><b>Parameters:</b>
 <p>
 Lowercase a string <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zString</em>&nbsp;</td><td>(IN) String To convert </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>String To convert </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The converted string. </dd></dl>
@@ -407,9 +407,9 @@ Lowercase a string <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Compare N first character from two strings. If the first one is smaller than the second, it returns -1, If the second one is bigger than the first, and 0 if they are equals. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zString1</em>&nbsp;</td><td>(IN) First String to compare </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_zString2</em>&nbsp;</td><td>(IN) Second string to compare </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32CharNumber</em>&nbsp;</td><td>(IN) Number of character to compare </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString1</em>&nbsp;</td><td>First String to compare </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString2</em>&nbsp;</td><td>Second string to compare </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32CharNumber</em>&nbsp;</td><td>Number of character to compare </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
@@ -832,7 +832,7 @@ Convert a string to a boolean <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Converts a string to a CRC <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zString</em>&nbsp;</td><td>(IN) String To convert </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>String To convert </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The resulting CRC. </dd></dl>
@@ -1130,7 +1130,7 @@ Convert a string to a vector <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Uppercase a string <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zString</em>&nbsp;</td><td>(IN) String To convert </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zString</em>&nbsp;</td><td>String To convert </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The converted string. </dd></dl>

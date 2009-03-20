@@ -60,7 +60,7 @@ void orxKeyboard_Setup()
 }
 
 /** Gets key literal name
- * @param _eKey       Concerned key
+ * @param[in] _eKey       Concerned key
  * @return Key's name
  */
 const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
@@ -237,7 +237,7 @@ void orxKeyboard_Exit()
 }
 
 /** Is key pressed?
- * @param _eKey       Key to check
+ * @param[in] _eKey       Key to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
 orxBOOL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)

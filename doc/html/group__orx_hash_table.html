@@ -138,9 +138,9 @@ The Hash table will not be expandable
 <p>
 Add an item value. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>The hash table where set. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32Key</em>&nbsp;</td><td>(IN) Key to assign. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pData</em>&nbsp;</td><td>(IN) Data to assign. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>The hash table where set. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Key</em>&nbsp;</td><td>Key to assign. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pData</em>&nbsp;</td><td>Data to assign. </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the status of the operation. (fails if key already used) </dd></dl>
@@ -166,7 +166,7 @@ Add an item value. <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Clear a hash table. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>(IN) Hash table to clear. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>Hash table to clear. </td></tr>
   </table>
 </dl>
 
@@ -206,9 +206,9 @@ Clear a hash table. <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Create a new hash table and return it. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_u32NbKey</em>&nbsp;</td><td>(IN) Number of keys that will be inserted. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32Flags</em>&nbsp;</td><td>(IN) Flags used by the hash table </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_eMemType</em>&nbsp;</td><td>(IN) Memory type to use </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32NbKey</em>&nbsp;</td><td>Number of keys that will be inserted. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Flags</em>&nbsp;</td><td>Flags used by the hash table </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eMemType</em>&nbsp;</td><td>Memory type to use </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the hashtable pointer or orxNULL if failed. </dd></dl>
@@ -234,7 +234,7 @@ Create a new hash table and return it. <dl compact><dt><b>Parameters:</b></dt><d
 <p>
 Print the content of a Hash table <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>(IN) Hash table to display </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>Hash table to display </td></tr>
   </table>
 </dl>
 
@@ -259,7 +259,7 @@ Print the content of a Hash table <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Delete a hash table. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>(IN) Hash table to delete. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>Hash table to delete. </td></tr>
   </table>
 </dl>
 
@@ -299,9 +299,9 @@ Delete a hash table. <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Find a the first item of the hashtable and return the iterator corresponding to the search. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>Adress of the HashTable. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pu32Key</em>&nbsp;</td><td>Address where store the key, NULL to not store it. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_ppData</em>&nbsp;</td><td>Address where store the data, NULL to not store it. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>Adress of the HashTable. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pu32Key</em>&nbsp;</td><td>Address where store the key, NULL to not store it. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_ppData</em>&nbsp;</td><td>Address where store the data, NULL to not store it. </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>iterator of HashTable traversing. NULL if no element. </dd></dl>
@@ -348,10 +348,10 @@ Find a the first item of the hashtable and return the iterator corresponding to 
 <p>
 Find a the next item of the hashtable and return the iterator corresponding to the search. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>Adress of the HashTable. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pu32Key</em>&nbsp;</td><td>Address where store the key, NULL to not store it. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_ppData</em>&nbsp;</td><td>Address where store the data, NULL to not store it. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_hIterator</em>&nbsp;</td><td>Iterator to continue the search. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>Adress of the HashTable. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pu32Key</em>&nbsp;</td><td>Address where store the key, NULL to not store it. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_ppData</em>&nbsp;</td><td>Address where store the data, NULL to not store it. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hIterator</em>&nbsp;</td><td>Iterator to continue the search. </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>iterator of HashTable traversing. NULL if no element. </dd></dl>
@@ -386,8 +386,8 @@ Find a the next item of the hashtable and return the iterator corresponding to t
 <p>
 Find an item in a hash table. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>(IN) The hash table where search. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32Key</em>&nbsp;</td><td>(IN) Key to find. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>The hash table where search. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Key</em>&nbsp;</td><td>Key to find. </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The Element associated to the key or orxNULL if not found. </dd></dl>
@@ -448,8 +448,8 @@ Gets a hash table item counter <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Remove an item. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>(IN) The hash table where remove. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32Key</em>&nbsp;</td><td>(IN) Key to remove. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>The hash table where remove. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Key</em>&nbsp;</td><td>Key to remove. </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the status of the operation. </dd></dl>
@@ -490,9 +490,9 @@ Remove an item. <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Set an item value. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>The hash table where set. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32Key</em>&nbsp;</td><td>(IN) Key to assign. </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pData</em>&nbsp;</td><td>(IN) Data to assign. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstHashTable</em>&nbsp;</td><td>The hash table where set. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Key</em>&nbsp;</td><td>Key to assign. </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pData</em>&nbsp;</td><td>Data to assign. </td></tr>
   </table>
 </dl>
 

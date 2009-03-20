@@ -54,20 +54,20 @@ typedef struct __orxHASHTABLE_t orxHASHTABLE;
 /** @name HashTable creation/destruction.
  * @{ */
 /** Create a new hash table and return it.
- * @param _u32NbKey   (IN) Number of keys that will be inserted.
- * @param _u32Flags   (IN) Flags used by the hash table
- * @param _eMemType   (IN) Memory type to use
+ * @param[in] _u32NbKey    Number of keys that will be inserted.
+ * @param[in] _u32Flags    Flags used by the hash table
+ * @param[in] _eMemType    Memory type to use
  * @return Returns the hashtable pointer or orxNULL if failed.
  */
 extern orxDLLAPI orxHASHTABLE *orxFASTCALL      orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType);
 
 /** Delete a hash table.
- * @param _pstHashTable (IN) Hash table to delete.
+ * @param[in] _pstHashTable  Hash table to delete.
  */
 extern orxDLLAPI void orxFASTCALL               orxHashTable_Delete(orxHASHTABLE *_pstHashTable);
 
 /** Clear a hash table.
- * @param _pstHashTable (IN) Hash table to clear.
+ * @param[in] _pstHashTable  Hash table to clear.
  */
 extern orxDLLAPI void orxFASTCALL               orxHashTable_Clear(orxHASHTABLE *_pstHashTable);
 /** @} */
@@ -81,31 +81,31 @@ extern orxDLLAPI orxU32 orxFASTCALL             orxHashTable_GetCounter(orxHASHT
 /** @name HashTable key manipulation.
  * @{ */
 /** Find an item in a hash table.
- * @param _pstHashTable (IN) The hash table where search.
- * @param _u32Key     (IN) Key to find.
+ * @param[in] _pstHashTable  The hash table where search.
+ * @param[in] _u32Key      Key to find.
  * @return The Element associated to the key or orxNULL if not found.
  */
 extern orxDLLAPI void *orxFASTCALL              orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
 
 /** Set an item value.
- * @param _pstHashTable The hash table where set.
- * @param _u32Key     (IN) Key to assign.
- * @param _pData      (IN) Data to assign.
+ * @param[in] _pstHashTable The hash table where set.
+ * @param[in] _u32Key      Key to assign.
+ * @param[in] _pData       Data to assign.
  */
 extern orxDLLAPI void orxFASTCALL               orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData);
 
 
 /** Add an item value.
- * @param _pstHashTable The hash table where set.
- * @param _u32Key     (IN) Key to assign.
- * @param _pData      (IN) Data to assign.
+ * @param[in] _pstHashTable The hash table where set.
+ * @param[in] _u32Key      Key to assign.
+ * @param[in] _pData       Data to assign.
  * @return Returns the status of the operation. (fails if key already used)
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData);
 
 /** Remove an item.
- * @param _pstHashTable (IN) The hash table where remove.
- * @param _u32Key     (IN) Key to remove.
+ * @param[in] _pstHashTable  The hash table where remove.
+ * @param[in] _u32Key      Key to remove.
  * @return Returns the status of the operation.
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u32Key);
@@ -116,18 +116,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxHashTable_Remove(orxHASHTABLE
  * Used to pass over all elements of the hashtable.
  * @{ */
 /** Find a the first item of the hashtable and return the iterator corresponding to the search.
- * @param _pstHashTable Adress of the HashTable.
- * @param _pu32Key Address where store the key, NULL to not store it.
- * @param _ppData Address where store the data, NULL to not store it.
+ * @param[in] _pstHashTable Adress of the HashTable.
+ * @param[in] _pu32Key Address where store the key, NULL to not store it.
+ * @param[in] _ppData Address where store the data, NULL to not store it.
  * @return iterator of HashTable traversing. NULL if no element.
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindFirst(orxHASHTABLE *_pstHashTable, orxU32 *_pu32Key, void **_ppData);
 
 /** Find a the next item of the hashtable and return the iterator corresponding to the search.
- * @param _pstHashTable Adress of the HashTable.
- * @param _pu32Key Address where store the key, NULL to not store it.
- * @param _ppData Address where store the data, NULL to not store it.
- * @param _hIterator Iterator to continue the search.
+ * @param[in] _pstHashTable Adress of the HashTable.
+ * @param[in] _pu32Key Address where store the key, NULL to not store it.
+ * @param[in] _ppData Address where store the data, NULL to not store it.
+ * @param[in] _hIterator Iterator to continue the search.
  * @return iterator of HashTable traversing. NULL if no element.
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHANDLE _hIterator, orxU32 *_pu32Key, void **_ppData);
@@ -138,7 +138,7 @@ extern orxDLLAPI orxHANDLE orxFASTCALL			    orxHashTable_FindNext(orxHASHTABLE 
  ******************************************************************************/
 
 /** Print the content of a Hash table
- * @param _pstHashTable (IN) Hash table to display
+ * @param[in] _pstHashTable  Hash table to display
  */
 extern orxDLLAPI void orxFASTCALL               orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable);
 

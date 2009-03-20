@@ -102,7 +102,7 @@ extern orxDLLAPI orxSTATUS              orxMouse_SetPosition(const orxVECTOR *_p
 extern orxDLLAPI orxVECTOR *            orxMouse_GetPosition(orxVECTOR *_pvPosition);
 
 /** Is mouse button pressed?
- * @param _eButton          Mouse button to check
+ * @param[in] _eButton          Mouse button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL                orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton);
@@ -124,7 +124,7 @@ extern orxDLLAPI orxFLOAT               orxMouse_GetWheelDelta();
 extern orxDLLAPI orxSTATUS              orxMouse_ShowCursor(orxBOOL _bShow);
 
 /** Gets button literal name
- * @param _eButton          Concerned button
+ * @param[in] _eButton          Concerned button
  * @return Button's name
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton);

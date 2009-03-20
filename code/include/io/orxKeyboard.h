@@ -178,7 +178,7 @@ extern orxDLLAPI orxSTATUS              orxKeyboard_Init();
 extern orxDLLAPI void                   orxKeyboard_Exit();
 
 /** Is key pressed?
- * @param _eKey       Key to check
+ * @param[in] _eKey       Key to check
  * @return orxTRUE if pressed / orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL                orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey);
@@ -198,7 +198,7 @@ extern orxDLLAPI orxKEYBOARD_KEY        orxKeyboard_Read();
 extern orxDLLAPI void                   orxKeyboard_ClearBuffer();
 
 /** Gets key literal name
- * @param _eKey       Concerned key
+ * @param[in] _eKey       Concerned key
  * @return Key's name
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey);

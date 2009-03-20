@@ -130,7 +130,7 @@ Internal File structure
 <p>
 Closes an oppened file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>(IN) File's pointer to close </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>File's pointer to close </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the status of the operation </dd></dl>
@@ -203,8 +203,8 @@ Inits the File Module
 <p>
 Opens a file for later read or write operation <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zPath</em>&nbsp;</td><td>(IN) Full file's path to open </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32OpenFlags</em>&nbsp;</td><td>(IN) List of used flags when opened </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zPath</em>&nbsp;</td><td>Full file's path to open </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32OpenFlags</em>&nbsp;</td><td>List of used flags when opened </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>a File pointer (or orxNULL if an error has occured) </dd></dl>
@@ -251,10 +251,10 @@ Opens a file for later read or write operation <dl compact><dt><b>Parameters:</b
 <p>
 Reads data from a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pReadData</em>&nbsp;</td><td>(OUT) Pointer where will be stored datas </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32ElemSize</em>&nbsp;</td><td>(IN) Size of 1 element </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32NbElem</em>&nbsp;</td><td>(IN) Number of elements </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>(IN) Pointer on the file descriptor </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pReadData</em>&nbsp;</td><td>Pointer where will be stored datas </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32ElemSize</em>&nbsp;</td><td>Size of 1 element </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32NbElem</em>&nbsp;</td><td>Number of elements </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>Pointer on the file descriptor </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the number of read elements (not bytes) </dd></dl>
@@ -295,9 +295,9 @@ Reads data from a file <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Gets text line from a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zBuffer</em>&nbsp;</td><td>(OUT) Pointer where will be stored datas </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32Size</em>&nbsp;</td><td>(IN) Size of buffer </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>(IN) Pointer on the file descriptor </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_zBuffer</em>&nbsp;</td><td>Pointer where will be stored datas </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32Size</em>&nbsp;</td><td>Size of buffer </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>Pointer on the file descriptor </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns orxTRUE if a line has been read, else returns orxFALSE. </dd></dl>
@@ -363,10 +363,10 @@ File module setup
 <p>
 writes data to a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pDataToWrite</em>&nbsp;</td><td>(IN) Pointer where will be stored datas </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32ElemSize</em>&nbsp;</td><td>(IN) Size of 1 element </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_u32NbElem</em>&nbsp;</td><td>(IN) Number of elements </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>(IN) Pointer on the file descriptor </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pDataToWrite</em>&nbsp;</td><td>Pointer where will be stored datas </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32ElemSize</em>&nbsp;</td><td>Size of 1 element </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_u32NbElem</em>&nbsp;</td><td>Number of elements </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFile</em>&nbsp;</td><td>Pointer on the file descriptor </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the number of written elements (not bytes) </dd></dl>

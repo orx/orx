@@ -84,64 +84,64 @@ extern orxDLLAPI orxSTATUS              orxFileSystem_Init();
 extern orxDLLAPI void                   orxFileSystem_Exit();
 
 /** Returns orxTRUE if a file exists, else orxFALSE.
- * @param _zFileName     (IN)      Full File's name to test
+ * @param[in] _zFileName           Full File's name to test
  * @return orxFALSE if _zFileName doesn't exist, else orxTRUE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxFileSystem_Exists(const orxSTRING _zFileName);
 
 /** Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*)
- * @param _zSearchPattern (IN)     Pattern to find
- * @param _pstFileInfo    (OUT)    Informations about the first file found
+ * @param[in] _zSearchPattern      Pattern to find
+ * @param[out] _pstFileInfo        Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
 extern orxDLLAPI orxBOOL                orxFileSystem_FindFirst(const orxSTRING _zSearchPattern, orxFILESYSTEM_INFO *_pstFileInfo);
 
 /** Continues a search. Find the next occurence of a pattern. The search has to be started with orxFileSystem_FindFirst
- * @param _pstFileInfo    (IN/OUT) Informations about the found file
+ * @param[in,out] _pstFileInfo    (IN/OUT) Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
 extern orxDLLAPI orxBOOL                orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo);
 
 /** Closes a search (free the memory allocated for this search).
- * @param _pstFileInfo    (IN)     Informations returned during search
+ * @param[in] _pstFileInfo         Informations returned during search
  */
 extern orxDLLAPI void                   orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo);
 
 /** Retrieves informations about a file
- * @param _zFileName      (IN)      Files used to get informations
- * @param _pstFileInfo    (OUT)     Returned file's informations
+ * @param[in] _zFileName            Files used to get informations
+ * @param[out] _pstFileInfo         Returned file's informations
  * @return Returns the status of the operation
  */
 extern orxDLLAPI orxSTATUS              orxFileSystem_Info(const orxSTRING _zFileName, orxFILESYSTEM_INFO *_pstFileInfo);
 
 /** Copies a file
- * @param _zSource        (IN)     Source file's name
- * @param _zDest          (IN)     Destination file's name
+ * @param[in] _zSource             Source file's name
+ * @param[in] _zDest               Destination file's name
  * @return The status of the operation
  */
 extern orxDLLAPI orxSTATUS              orxFileSystem_Copy(const orxSTRING _zSource, const orxSTRING _zDest);
 
 /** Renames a file
- * @param _zSource        (IN)     Source file's name
- * @param _zDest          (IN)     Destination file's name
+ * @param[in] _zSource             Source file's name
+ * @param[in] _zDest               Destination file's name
  * @return The status of the operation
  */
 extern orxDLLAPI orxSTATUS              orxFileSystem_Rename(const orxSTRING _zSource, const orxSTRING _zDest);
 
 /** Deletes a file
- * @param _zFileName      (IN)     File's name to delete
+ * @param[in] _zFileName           File's name to delete
  * @return The status of the operation
  */
 extern orxDLLAPI orxSTATUS              orxFileSystem_Delete(const orxSTRING _zFileName);
 
 /** Creates a directory
- * @param _zDirName       (IN)     New directory's name
+ * @param[in] _zDirName            New directory's name
  * @return The status of the operation
  */
 extern orxDLLAPI orxSTATUS              orxFileSystem_CreateDir(const orxSTRING _zDirName);
 
 /** Removes an empty directory
- * @param _zDirName       (IN)     Directory's name to delete
+ * @param[in] _zDirName            Directory's name to delete
  * @return The status of the operation
  */
 extern orxDLLAPI orxSTATUS              orxFileSystem_DeleteDir(const orxSTRING _zDirName);

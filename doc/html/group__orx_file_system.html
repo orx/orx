@@ -220,8 +220,8 @@ Internal FileSystem structure
 <p>
 Copies a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zSource</em>&nbsp;</td><td>(IN) Source file's name </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_zDest</em>&nbsp;</td><td>(IN) Destination file's name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSource</em>&nbsp;</td><td>Source file's name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDest</em>&nbsp;</td><td>Destination file's name </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
@@ -247,7 +247,7 @@ Copies a file <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Creates a directory <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zDirName</em>&nbsp;</td><td>(IN) New directory's name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDirName</em>&nbsp;</td><td>New directory's name </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
@@ -273,7 +273,7 @@ Creates a directory <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Deletes a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>(IN) File's name to delete </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>File's name to delete </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
@@ -299,7 +299,7 @@ Deletes a file <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Removes an empty directory <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zDirName</em>&nbsp;</td><td>(IN) Directory's name to delete </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDirName</em>&nbsp;</td><td>Directory's name to delete </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>
@@ -325,7 +325,7 @@ Removes an empty directory <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Returns orxTRUE if a file exists, else orxFALSE. <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>(IN) Full File's name to test </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Full File's name to test </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxFALSE if _zFileName doesn't exist, else orxTRUE </dd></dl>
@@ -370,7 +370,7 @@ Exits from the FileSystem Module
 <p>
 Closes a search (free the memory allocated for this search). <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(IN) Informations returned during search </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>Informations returned during search </td></tr>
   </table>
 </dl>
 
@@ -404,8 +404,8 @@ Closes a search (free the memory allocated for this search). <dl compact><dt><b>
 <p>
 Starts a new search. Find the first file that will match to the given pattern (e.g : /bin/toto* or c:\*.*) <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zSearchPattern</em>&nbsp;</td><td>(IN) Pattern to find </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(OUT) Informations about the first file found </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSearchPattern</em>&nbsp;</td><td>Pattern to find </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>Informations about the first file found </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if a file has been found, else orxFALSE </dd></dl>
@@ -431,7 +431,7 @@ Starts a new search. Find the first file that will match to the given pattern (e
 <p>
 Continues a search. Find the next occurence of a pattern. The search has to be started with orxFileSystem_FindFirst <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(IN/OUT) Informations about the found file </td></tr>
+    <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(IN/OUT) Informations about the found file </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE, if the next file has been found, else returns orxFALSE </dd></dl>
@@ -466,8 +466,8 @@ Continues a search. Find the next occurence of a pattern. The search has to be s
 <p>
 Retrieves informations about a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>(IN) Files used to get informations </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>(OUT) Returned file's informations </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zFileName</em>&nbsp;</td><td>Files used to get informations </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pstFileInfo</em>&nbsp;</td><td>Returned file's informations </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Returns the status of the operation </dd></dl>
@@ -521,8 +521,8 @@ Inits the FileSystem Module
 <p>
 Renames a file <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>_zSource</em>&nbsp;</td><td>(IN) Source file's name </td></tr>
-    <tr><td valign="top"></td><td valign="top"><em>_zDest</em>&nbsp;</td><td>(IN) Destination file's name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zSource</em>&nbsp;</td><td>Source file's name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zDest</em>&nbsp;</td><td>Destination file's name </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>The status of the operation </dd></dl>

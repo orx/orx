@@ -59,7 +59,7 @@ void orxJoystick_Setup()
 }
 
 /** Gets axis literal name
- * @param _eAxis        Concerned axis
+ * @param[in] _eAxis        Concerned axis
  * @return Axis's name
  */
 const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
@@ -97,7 +97,7 @@ const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis)
 }
 
 /** Gets button literal name
- * @param _eButton      Concerned button
+ * @param[in] _eButton      Concerned button
  * @return Button's name
  */
 const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton)
@@ -186,8 +186,8 @@ void orxJoystick_Exit()
 }
 
 /** Gets mouse on screen position
- * @param _u32ID        ID of the joystick to test
- * @param _eAxis        Joystick axis to check
+ * @param[in] _u32ID        ID of the joystick to test
+ * @param[in] _eAxis        Joystick axis to check
  * @return Value of the axis
  */
 orxFLOAT orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
@@ -196,8 +196,8 @@ orxFLOAT orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
 }
 
 /** Is joystick button pressed?
- * @param _u32ID        ID of the joystick to test
- * @param _eButton      Joystick button to check
+ * @param[in] _u32ID        ID of the joystick to test
+ * @param[in] _eButton      Joystick button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
 orxBOOL orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)

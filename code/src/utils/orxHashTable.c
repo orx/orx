@@ -72,8 +72,8 @@ struct __orxHASHTABLE_t
  ***************************************************************************/
 
 /** Find a row in a hash table.
- * @param _pstHashTable The hash table where search.
- * @param _u32Key Key to find.
+ * @param[in] _pstHashTable The hash table where search.
+ * @param[in] _u32Key Key to find.
  * @return index associated to the given key.
  */
 static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
@@ -92,9 +92,9 @@ static orxINLINE orxU32 orxHashTable_FindIndex(const orxHASHTABLE *_pstHashTable
 /** @name HashTable creation/destruction.
  * @{ */
 /** Create a new hash table and return it.
- * @param _u32NbKey   (IN) Number of keys that will be inserted.
- * @param _u32Flags   (IN) Flags used by the hash table
- * @param _eMemType   (IN) Memory type to use
+ * @param[in] _u32NbKey    Number of keys that will be inserted.
+ * @param[in] _u32Flags    Flags used by the hash table
+ * @param[in] _eMemType    Memory type to use
  * @return Returns the hashtable pointer or orxNULL if failed.
  */
 orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags, orxMEMORY_TYPE _eMemType)
@@ -141,7 +141,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
 }
 
 /** Delete a hash table.
- * @param _pstHashTable (IN) Hash table to delete.
+ * @param[in] _pstHashTable  Hash table to delete.
  */
 void orxFASTCALL    orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 {
@@ -161,7 +161,7 @@ void orxFASTCALL    orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 }
 
 /** Clear a hash table.
- * @param _pstHashTable (IN) Hash table to clear.
+ * @param[in] _pstHashTable  Hash table to clear.
  */
 void orxFASTCALL    orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
 {
@@ -196,8 +196,8 @@ orxU32 orxFASTCALL orxHashTable_GetCounter(orxHASHTABLE *_pstHashTable)
 /** @name HashTable key manipulation.
  * @{ */
 /** Find an item in a hash table.
- * @param _pstHashTable (IN) The hash table where search.
- * @param _u32Key     (IN) Key to find.
+ * @param[in] _pstHashTable  The hash table where search.
+ * @param[in] _u32Key      Key to find.
  * @return The Element associated to the key or orxNULL if not found.
  */
 void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
@@ -233,9 +233,9 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
 }
 
 /** Set an item value.
- * @param _pstHashTable The hash table where set.
- * @param _u32Key     (IN) Key to assign.
- * @param _pData      (IN) Data to assign.
+ * @param[in] _pstHashTable The hash table where set.
+ * @param[in] _u32Key      Key to assign.
+ * @param[in] _pData       Data to assign.
  */
 void orxFASTCALL    orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
 {
@@ -283,9 +283,9 @@ void orxFASTCALL    orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key
 
 
 /** Add an item value.
- * @param _pstHashTable The hash table where set.
- * @param _u32Key     (IN) Key to assign.
- * @param _pData      (IN) Data to assign.
+ * @param[in] _pstHashTable The hash table where set.
+ * @param[in] _u32Key      Key to assign.
+ * @param[in] _pData       Data to assign.
  * @return Returns the status of the operation. (fails if key already used)
  */
 orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
@@ -332,8 +332,8 @@ orxSTATUS orxFASTCALL orxHashTable_Add(orxHASHTABLE *_pstHashTable, orxU32 _u32K
 }
 
 /** Remove an item.
- * @param _pstHashTable (IN) The hash table where remove.
- * @param _u32Key     (IN) Key to remove.
+ * @param[in] _pstHashTable  The hash table where remove.
+ * @param[in] _u32Key      Key to remove.
  * @return Returns the status of the operation.
  */
 orxSTATUS orxFASTCALL orxHashTable_Remove(orxHASHTABLE *_pstHashTable, orxU32 _u32Key)
@@ -489,7 +489,7 @@ orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHAND
  ******************************************************************************/
 
 /** Print the content of a Hash table
- * @param _pstHashTable (IN) Hash table to display
+ * @param[in] _pstHashTable  Hash table to display
  */
 void orxFASTCALL    orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable)
 {

@@ -119,8 +119,8 @@ void orxFile_Exit()
 }
 
 /** Opens a file for later read or write operation
- * @param _zPath         (IN)      Full file's path to open
- * @param _u32OpenFlags  (IN)      List of used flags when opened
+ * @param[in] _zPath               Full file's path to open
+ * @param[in] _u32OpenFlags        List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
 orxFILE *orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
@@ -198,10 +198,10 @@ orxFILE *orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
 }
 
 /** Reads data from a file
- * @param _pReadData     (OUT)     Pointer where will be stored datas
- * @param _u32ElemSize   (IN)      Size of 1 element
- * @param _u32NbElem     (IN)      Number of elements
- * @param _pstFile       (IN)      Pointer on the file descriptor
+ * @param[out] _pReadData          Pointer where will be stored datas
+ * @param[in] _u32ElemSize         Size of 1 element
+ * @param[in] _u32NbElem           Number of elements
+ * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
 orxU32 orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
@@ -223,10 +223,10 @@ orxU32 orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, or
 }
 
 /** writes data to a file
- * @param _pDataToWrite  (IN)      Pointer where will be stored datas
- * @param _u32ElemSize   (IN)      Size of 1 element
- * @param _u32NbElem     (IN)      Number of elements
- * @param _pstFile       (IN)      Pointer on the file descriptor
+ * @param[in] _pDataToWrite        Pointer where will be stored datas
+ * @param[in] _u32ElemSize         Size of 1 element
+ * @param[in] _u32NbElem           Number of elements
+ * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
 orxU32 orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
@@ -251,9 +251,9 @@ orxU32 orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem
 }
 
 /** Gets text line from a file
- * @param _zBuffer  (OUT)     Pointer where will be stored datas
- * @param _u32Size  (IN)      Size of buffer
- * @param _pstFile  (IN)      Pointer on the file descriptor
+ * @param[out] _zBuffer       Pointer where will be stored datas
+ * @param[in] _u32Size        Size of buffer
+ * @param[in] _pstFile        Pointer on the file descriptor
  * @return Returns orxTRUE if a line has been read, else returns orxFALSE.
  */
 orxBOOL orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
@@ -286,7 +286,7 @@ orxBOOL orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
 }
 
 /** Closes an oppened file
- * @param _pstFile       (IN)      File's pointer to close
+ * @param[in] _pstFile             File's pointer to close
  * @return Returns the status of the operation
  */
 orxSTATUS orxFile_Close(orxFILE *_pstFile)

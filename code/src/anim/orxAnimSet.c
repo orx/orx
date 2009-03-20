@@ -1038,7 +1038,7 @@ static void orxAnimSet_DeleteAll()
  * @param[in]   _pstLinkTable									Concerned LinkTable
  * @param[in]   _u32SrcAnim										Source Anim index
  * @param[in]   _u32DstAnim										Destination Anim index / orxU32_UNDEFINED
- * @param[in[   _bSimulate                    Simulation mode, no update will be made on the link table
+ * @param[in]   _bSimulate                    Simulation mode, no update will be made on the link table
  * @return 			Next Anim index / orxU32_UNDEFINED
  */
 static orxU32 orxAnimSet_ComputeNextAnim(orxANIMSET_LINK_TABLE *_pstLinkTable, orxU32 _u32SrcAnim, orxU32 _u32DstAnim, orxBOOL _bSimulate)
@@ -2137,7 +2137,7 @@ orxU32 orxFASTCALL orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orx
  * @param[in]   _hSrcAnim                           Source (current) Anim handle
  * @param[in]   _hDstAnim                           Destination Anim handle, if none (auto mode) set it to orxHANDLE_UNDEFINED
  * @param[in,out] _pfTime                           Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
- * @param[in, out] _pstLinkTable                    Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
+ * @param[in,out] _pstLinkTable                     Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
  * @param[out] _pbCut                               Animation has been cut
  * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */

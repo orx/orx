@@ -106,7 +106,7 @@ static orxINLINE orxSTRING              orxString_SkipWhiteSpaces(const orxSTRIN
 }
 
 /** Returns the number of character in the string
- * @param _zString (IN) String used for length computation
+ * @param[in] _zString  String used for length computation
  * @return Length of the string (doesn't count final orxCHAR_NULL)
  */
 static orxINLINE orxU32                 orxString_GetLength(orxSTRING _zString)
@@ -135,8 +135,8 @@ static orxINLINE orxSTRING              orxString_NCopy(orxSTRING _zDstString, c
 }
 
 /** Copies a string.
- * @param _zDstString     (IN) Destination string
- * @param _zSrcString     (IN) Source string
+ * @param[in] _zDstString      Destination string
+ * @param[in] _zSrcString      Source string
  * @return Copied string.
  */
 static orxINLINE orxSTRING              orxString_Copy(orxSTRING _zDstString, const orxSTRING _zSrcString)
@@ -150,7 +150,7 @@ static orxINLINE orxSTRING              orxString_Copy(orxSTRING _zDstString, co
 }
 
 /** Duplicate a string.
- * @param _zSrcString (IN) String to duplicate.
+ * @param[in] _zSrcString  String to duplicate.
  * @return Duplicated string.
  */
 static orxINLINE orxSTRING              orxString_Duplicate(const orxSTRING _zSrcString)
@@ -195,8 +195,8 @@ static orxINLINE void                   orxString_Delete(orxSTRING _zString)
 
 /** Compare two strings. If the first one is smaller than the second, it returns -1,
  * If the second one is bigger than the first, and 0 if they are equals
- * @param _zString1   (IN) First String to compare
- * @param _zString2   (IN) Second string to compare
+ * @param[in] _zString1    First String to compare
+ * @param[in] _zString2    Second string to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
 static orxINLINE orxS32                 orxString_Compare(const orxSTRING _zString1, const orxSTRING _zString2)
@@ -212,9 +212,9 @@ static orxINLINE orxS32                 orxString_Compare(const orxSTRING _zStri
 /** Compare N first character from two strings. If the first one is smaller
  * than the second, it returns -1, If the second one is bigger than the first,
  * and 0 if they are equals.
- * @param _zString1      (IN) First String to compare
- * @param _zString2      (IN) Second string to compare
- * @param _u32CharNumber (IN) Number of character to compare
+ * @param[in] _zString1       First String to compare
+ * @param[in] _zString2       Second string to compare
+ * @param[in] _u32CharNumber  Number of character to compare
  * @return -1, 0 or 1 as indicated in the description.
  */
 static orxINLINE orxS32                 orxString_NCompare(const orxSTRING _zString1, const orxSTRING _zString2, orxU32 _u32CharNumber)
@@ -635,7 +635,7 @@ static orxINLINE orxSTATUS              orxString_ToBool(const orxSTRING _zStrin
 }
 
 /** Lowercase a string
- * @param _zString        (IN)  String To convert
+ * @param[in] _zString          String To convert
  * @return The converted string.
  */
 static orxINLINE orxSTRING              orxString_LowerCase(orxSTRING _zString)
@@ -660,7 +660,7 @@ static orxINLINE orxSTRING              orxString_LowerCase(orxSTRING _zString)
 }
 
 /** Uppercase a string
- * @param _zString        (IN)  String To convert
+ * @param[in] _zString          String To convert
  * @return The converted string.
  */
 static orxINLINE orxSTRING              orxString_UpperCase(orxSTRING _zString)
@@ -685,7 +685,7 @@ static orxINLINE orxSTRING              orxString_UpperCase(orxSTRING _zString)
 }
 
 /** Converts a string to a CRC
- * @param _zString        (IN)  String To convert
+ * @param[in] _zString          String To convert
  * @return The resulting CRC.
  */
 static orxINLINE orxU32                 orxString_ToCRC(const orxSTRING _zString)
