@@ -66,7 +66,6 @@
 #include "io/orxJoystick.h"
 #include "io/orxKeyboard.h"
 #include "io/orxMouse.h"
-#include "io/orxPackage.h"
 
 #include "main/orxParam.h"
 
@@ -95,8 +94,6 @@
 #include "render/orxFXPointer.h"
 #include "render/orxRender.h"
 #include "render/orxViewport.h"
-
-#include "script/orxScript.h"
 
 #include "sound/orxSound.h"
 #include "sound/orxSoundPointer.h"

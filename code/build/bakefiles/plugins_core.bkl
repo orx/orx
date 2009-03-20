@@ -199,8 +199,6 @@
 	    <sources>plugins/Joystick/SFML/orxJoystick.cpp</sources>
 	  </orx-plugin>
 
-	<!-- PACKAGE -->
-
 	<!-- PHYSICS -->
 
 	<!-- Depends on Box2D -->

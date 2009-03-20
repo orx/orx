@@ -104,7 +104,6 @@
 		<Unit filename="..\..\..\include\io\orxJoystick.h" />
 		<Unit filename="..\..\..\include\io\orxKeyboard.h" />
 		<Unit filename="..\..\..\include\io\orxMouse.h" />
-		<Unit filename="..\..\..\include\io\orxPackage.h" />
 		<Unit filename="..\..\..\include\main\orxParam.h" />
 		<Unit filename="..\..\..\include\math\orxAABox.h" />
 		<Unit filename="..\..\..\include\math\orxMath.h" />
@@ -131,10 +130,8 @@
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Joystick.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Keyboard.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Mouse.h" />
-		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Package.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Physics.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Render.h" />
-		<Unit filename="..\..\..\include\plugin\define\orxPlugin_Script.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_SoundSystem.h" />
 		<Unit filename="..\..\..\include\plugin\define\orxPlugin_System.h" />
 		<Unit filename="..\..\..\include\plugin\orxPlugin.h" />
@@ -146,7 +143,6 @@
 		<Unit filename="..\..\..\include\render\orxFXPointer.h" />
 		<Unit filename="..\..\..\include\render\orxRender.h" />
 		<Unit filename="..\..\..\include\render\orxViewport.h" />
-		<Unit filename="..\..\..\include\script\orxScript.h" />
 		<Unit filename="..\..\..\include\sound\orxSound.h" />
 		<Unit filename="..\..\..\include\sound\orxSoundPointer.h" />
 		<Unit filename="..\..\..\include\sound\orxSoundSystem.h" />
@@ -219,9 +215,6 @@
 		<Unit filename="..\..\..\src\io\orxMouse.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="..\..\..\src\io\orxPackage.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="..\..\..\src\main\orxParam.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -271,9 +264,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\render\orxViewport.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="..\..\..\src\script\orxScript.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\sound\orxSound.c">

@@ -139,7 +139,7 @@ static orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
     orxDEBUG_DECLARE_LEVEL_ENTRY(ASSERT);
     orxDEBUG_DECLARE_LEVEL_ENTRY(CRITICAL_ASSERT);
     
-    default:                                zResult = "INVALID DEBUG!"; break;
+    default: zResult = "INVALID DEBUG!"; break;
   }
 
   /* Done! */

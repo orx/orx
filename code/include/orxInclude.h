@@ -33,12 +33,9 @@
  * - Update camera to use matrix + vector
  * - Update camera to use 3D-like computation
  * - Adds rendering context to camera
- * - Adds interactors
- * C Adds scripting integration
- * C Write plugins implementation for file and package management
+ * C Add scripting integration
  * - Add network :)
  * - Add waypoint/way system
- * - Add menu/ui plugin/support (???)
  */
 
 /**

@@ -34,7 +34,6 @@
       <File Name="../../../src/io/orxJoystick.c"/>
       <File Name="../../../src/io/orxKeyboard.c"/>
       <File Name="../../../src/io/orxMouse.c"/>
-      <File Name="../../../src/io/orxPackage.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="main">
       <File Name="../../../src/main/orxParam.c"/>
@@ -66,9 +65,6 @@
       <File Name="../../../src/render/orxViewport.c"/>
       <File Name="../../../src/render/orxFX.c"/>
       <File Name="../../../src/render/orxFXPointer.c"/>
-    </VirtualDirectory>
-    <VirtualDirectory Name="script">
-      <File Name="../../../src/script/orxScript.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="sound">
       <File Name="../../../src/sound/orxSound.c"/>
@@ -123,7 +119,6 @@
       <File Name="../../../include/io/orxJoystick.h"/>
       <File Name="../../../include/io/orxKeyboard.h"/>
       <File Name="../../../include/io/orxMouse.h"/>
-      <File Name="../../../include/io/orxPackage.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="main">
       <File Name="../../../include/main/orxParam.h"/>
@@ -162,10 +157,8 @@
         <File Name="../../../include/plugin/define/orxPlugin_Joystick.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_Keyboard.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_Mouse.h"/>
-        <File Name="../../../include/plugin/define/orxPlugin_Package.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_Physics.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_Render.h"/>
-        <File Name="../../../include/plugin/define/orxPlugin_Script.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_SoundSystem.h"/>
         <File Name="../../../include/plugin/define/orxPlugin_System.h"/>
       </VirtualDirectory>
@@ -176,9 +169,6 @@
       <File Name="../../../include/render/orxViewport.h"/>
       <File Name="../../../include/render/orxFX.h"/>
       <File Name="../../../include/render/orxFXPointer.h"/>
-    </VirtualDirectory>
-    <VirtualDirectory Name="script">
-      <File Name="../../../include/script/orxScript.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="sound">
       <File Name="../../../include/sound/orxSound.h"/>

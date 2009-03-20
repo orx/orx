@@ -101,7 +101,6 @@
             include/io/orxJoystick.h
             include/io/orxKeyboard.h
             include/io/orxMouse.h
-            include/io/orxPackage.h
         </headers>
         <sources>
             src/io/orxFile.c
@@ -110,7 +109,6 @@
             src/io/orxJoystick.c
             src/io/orxKeyboard.c
             src/io/orxMouse.c
-            src/io/orxPackage.c
         </sources>
 
         <headers>
@@ -177,22 +175,13 @@
             include/plugin/define/orxPlugin_Joystick.h
             include/plugin/define/orxPlugin_Keyboard.h
             include/plugin/define/orxPlugin_Mouse.h
-            include/plugin/define/orxPlugin_Package.h
             include/plugin/define/orxPlugin_Physics.h
             include/plugin/define/orxPlugin_Render.h
-            include/plugin/define/orxPlugin_Script.h
             include/plugin/define/orxPlugin_SoundSystem.h
             include/plugin/define/orxPlugin_System.h
         </headers>
         <sources>
             src/plugin/orxPlugin.c
-        </sources>
-
-        <headers>
-            include/script/orxScript.h
-        </headers>
-        <sources>
-            src/script/orxScript.c
         </sources>
 
         <headers>
