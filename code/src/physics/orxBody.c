@@ -196,42 +196,56 @@ static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const o
     /* Is a root's children frame? */
     if(orxFrame_IsRootChild(pstFrame) != orxFALSE)
     {
-      orxVECTOR vPosition;
-      orxFLOAT  fZBackup, fRotation;
-
-      /* Gets current position */
-      orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
-
-      /* Backups its Z */
-      fZBackup = vPosition.fZ;
-
-      /* Gets body up-to-date position */
-      orxPhysics_GetPosition(pstBody->pstData, &vPosition);
-
-      /* Restores Z */
-      vPosition.fZ = fZBackup;
-
-      /* Updates position */
-      orxFrame_SetPosition(pstFrame, &vPosition);
-
-      /* Fixed rotation? */
-      if(orxFLAG_TEST(pstBody->stDef.u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION))
+      /* Enabled? */
+      if(orxObject_IsEnabled(pstObject) != orxFALSE)
       {
-        /* Enforces rotation & angular velocity */
-        orxPhysics_SetRotation(pstBody->pstData, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL));
-        orxPhysics_SetAngularVelocity(pstBody->pstData, orxFLOAT_0);
+        orxVECTOR vPosition;
+        orxFLOAT  fZBackup, fRotation;
+
+        /* Gets current position */
+        orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+
+        /* Backups its Z */
+        fZBackup = vPosition.fZ;
+
+        /* Gets body up-to-date position */
+        orxPhysics_GetPosition(pstBody->pstData, &vPosition);
+
+        /* Restores Z */
+        vPosition.fZ = fZBackup;
+
+        /* Updates position */
+        orxFrame_SetPosition(pstFrame, &vPosition);
+
+        /* Fixed rotation? */
+        if(orxFLAG_TEST(pstBody->stDef.u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION))
+        {
+          /* Enforces rotation & angular velocity */
+          orxPhysics_SetRotation(pstBody->pstData, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL));
+          orxPhysics_SetAngularVelocity(pstBody->pstData, orxFLOAT_0);
+        }
+        else
+        {
+          /* Gets body up-to-date rotation */
+          fRotation = orxPhysics_GetRotation(pstBody->pstData);
+
+          /* Updates rotation */
+          orxFrame_SetRotation(pstFrame, fRotation);
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
       }
       else
       {
-        /* Gets body up-to-date rotation */
-        fRotation = orxPhysics_GetRotation(pstBody->pstData);
+        orxVECTOR vPosition;
 
-        /* Updates rotation */
-        orxFrame_SetRotation(pstFrame, fRotation);
+        /* Enforces its body properties */
+        orxPhysics_SetRotation(pstBody->pstData, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL));
+        orxPhysics_SetAngularVelocity(pstBody->pstData, orxFLOAT_0);
+        orxPhysics_SetPosition(pstBody->pstData, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition));
+        orxPhysics_SetSpeed(pstBody->pstData, &orxVECTOR_0);
       }
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
     }
   }
 
