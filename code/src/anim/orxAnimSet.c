@@ -1537,7 +1537,7 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Can't add link <%s-%s>, please check the declarations of animations.", zSrcAnim, zDstAnim);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s]: Couldn't add link <[%s] -> [%s]>, please check the declarations of animations.", orxConfig_GetCurrentSection(), zSrcAnim, zDstAnim);
             }
           }
         }
@@ -1947,7 +1947,7 @@ orxHANDLE orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSr
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Already linked, can't add another.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Anims [%s] & [%s] are already linked, couldn't add another link.", orxAnim_GetName(orxAnimSet_GetAnim(_pstAnimSet, _hSrcAnim)), orxAnim_GetName(orxAnimSet_GetAnim(_pstAnimSet, _hDstAnim)));
 
       /* Link not added */
       hResult = orxHANDLE_UNDEFINED;
@@ -1956,7 +1956,7 @@ orxHANDLE orxFASTCALL orxAnimSet_AddLink(orxANIMSET *_pstAnimSet, orxHANDLE _hSr
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset is locked, can't add link.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "Animset [%s] is locked, couldn't add link.", _pstAnimSet->zReference);
 
     /* Link not added */
     hResult = orxHANDLE_UNDEFINED;
@@ -2225,7 +2225,9 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
         *_pfTime -= fLength;
 
         /* Has next animation? */
-        if(u32Anim != orxU32_UNDEFINED)
+        if((u32Anim != orxU32_UNDEFINED)
+        && ((fLength > orxFLOAT_0)
+        ||  ((orxHANDLE)u32Anim != _hSrcAnim)))
         {
           /* Gets new duration */
           fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
