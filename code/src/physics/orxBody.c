@@ -98,10 +98,10 @@
  */
 struct __orxBODY_PART_t
 {
-  orxPHYSICS_BODY_PART *pstData;                                /**< Data structure : 4 */
-  orxBODY_PART_DEF      stDef;                                  /**< Definition : 60 */
+  orxPHYSICS_BODY_PART *pstData;                                      /**< Data structure : 4 */
+  orxSTRING             zReference;                                   /**< Part reference name : 8 */
 
-  orxPAD(60)
+  orxPAD(8)
 };
 
 /** Body structure
@@ -109,12 +109,13 @@ struct __orxBODY_PART_t
 struct __orxBODY_t
 {
   orxSTRUCTURE            stStructure;                                /**< Public structure, first structure member : 16 */
-  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 20 */
-  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 24 */
-  orxBODY_DEF             stDef;                                      /**< Definition : 60 */
-  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 300 */
+  orxVECTOR               vScale;                                     /**< Scale : 28 */
+  orxPHYSICS_BODY        *pstData;                                    /**< Physics body data : 32 */
+  const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 36 */
+  orxU32                  u32DefFlags;                                /**< Definition flags : 40 */
+  orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 104 */
 
-  orxPAD(300)
+  orxPAD(104)
 };
 
 /** Static structure
@@ -218,7 +219,7 @@ static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const o
         orxFrame_SetPosition(pstFrame, &vPosition);
 
         /* Fixed rotation? */
-        if(orxFLAG_TEST(pstBody->stDef.u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION))
+        if(orxFLAG_TEST(pstBody->u32DefFlags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION))
         {
           /* Enforces rotation & angular velocity */
           orxPhysics_SetRotation(pstBody->pstData, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL));
@@ -405,8 +406,11 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
       /* Stores owner */
       pstBody->pstOwner = _pstOwner;
 
-      /* Stores its definition */
-      orxMemory_Copy(&(pstBody->stDef), pstSelectedDef, sizeof(orxBODY_DEF));
+      /* Stores its scale */
+      orxObject_GetScale(orxOBJECT(_pstOwner), &(pstBody->vScale));
+
+      /* Stores its definition flags */
+      pstBody->u32DefFlags = pstSelectedDef->u32Flags;
 
       /* Updates flags */
       orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
@@ -601,25 +605,6 @@ orxSTRUCTURE *orxFASTCALL orxBody_GetOwner(const orxBODY *_pstBody)
   return pstResult;
 }
 
-/** Gets a body definition
- * @param[in]   _pstBody        Concerned body
- * @return      orxBODY_DEF / orxNULL
- */
-const orxBODY_DEF *orxFASTCALL orxBody_GetDefinition(const orxBODY *_pstBody)
-{
-  const orxBODY_DEF *pstResult;
-
-  /* Checks */
-  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstBody);
-
-  /* Updates result */
-  pstResult = &(_pstBody->stDef);
-
-  /* Done! */
-  return pstResult;
-}
-
 /** Adds a body part
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
@@ -725,9 +710,6 @@ orxSTATUS orxFASTCALL orxBody_AddPart(orxBODY *_pstBody, orxU32 _u32Index, const
     {
       /* Stores it */
       _pstBody->astPartList[_u32Index].pstData = pstBodyPart;
-
-      /* Stores its definition */
-      orxMemory_Copy(&(_pstBody->astPartList[_u32Index].stDef), pstSelectedPartDef, sizeof(orxBODY_PART_DEF));
     }
     else
     {
@@ -785,7 +767,7 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
     stBodyPartDef.fDensity      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DENSITY);
     stBodyPartDef.u16SelfFlags  = (orxU16)orxConfig_GetU32(orxBODY_KZ_CONFIG_SELF_FLAGS);
     stBodyPartDef.u16CheckMask  = (orxU16)orxConfig_GetU32(orxBODY_KZ_CONFIG_CHECK_MASK);
-    orxObject_GetScale(orxOBJECT(_pstBody->pstOwner), &(stBodyPartDef.vScale));
+    orxVector_Copy(&(stBodyPartDef.vScale), &(_pstBody->vScale));
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_SOLID) != orxFALSE)
     {
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_SOLID;
@@ -897,6 +879,13 @@ orxSTATUS orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, orxU32 _u32In
     {
       /* Adds body part */
       eResult = orxBody_AddPart(_pstBody, _u32Index, &stBodyPartDef);
+
+      /* Valid? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Stores its reference */
+        _pstBody->astPartList[_u32Index].zReference = _zConfigID;
+      }
     }
 
     /* Restores previous section */
@@ -931,25 +920,6 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU3
 
   /* Updates result */
   pstResult = _pstBody->astPartList[_u32Index].pstData;
-
-  /* Done! */
-  return pstResult;
-}
-
-/** Gets a body part definition
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      orxBODY_PART_DEF / orxNULL
- */
-const orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartDefinition(const orxBODY_PART *_pstBodyPart)
-{
-  const orxBODY_PART_DEF *pstResult;
-
-  /* Checks */
-  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBodyPart != orxNULL);
-
-  /* Updates result */
-  pstResult = &(_pstBodyPart->stDef);
 
   /* Done! */
   return pstResult;
@@ -1201,33 +1171,37 @@ orxSTATUS orxFASTCALL orxBody_SetScale(orxBODY *_pstBody, const orxVECTOR *_pvSc
   {
     orxU32 i;
 
-    /* for all parts */
-    for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
+    /* Is new scale different? */
+    if(orxVector_AreEqual(_pvScale, &(_pstBody->vScale)) == orxFALSE)
     {
-      /* Has part? */
-      if(_pstBody->astPartList[i].pstData != orxNULL)
+      /* Stores it */
+      orxVector_Copy(&(_pstBody->vScale), _pvScale);
+
+      /* For all parts */
+      for(i = 0; i < orxBODY_KU32_PART_MAX_NUMBER; i++)
       {
-        orxVECTOR vDiff;
-
-        /* Gets diff vector */
-        orxVector_Sub(&vDiff, &(_pstBody->astPartList[i].stDef.vScale), _pvScale);
-
-        /* Is new scale different? */
-        if(orxVector_IsNull(&vDiff) == orxFALSE)
+        /* Has part? */
+        if(_pstBody->astPartList[i].pstData != orxNULL)
         {
-          /* Removes parts */
-          orxBody_RemovePart(_pstBody, i);
+          /* Has reference? */
+          if(_pstBody->astPartList[i].zReference != orxNULL)
+          {
+            /* Removes parts */
+            orxBody_RemovePart(_pstBody, i);
 
-          /* Updates its scale */
-          orxVector_Copy(&(_pstBody->astPartList[i].stDef.vScale), _pvScale);
-
-          /* Creates new part */
-          _pstBody->astPartList[i].pstData = orxPhysics_CreateBodyPart(_pstBody->pstData, &(_pstBody->astPartList[i].stDef));
+            /* Creates new part */
+            orxBody_AddPartFromConfig(_pstBody, i, _pstBody->astPartList[i].zReference);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "[%s]: Scaling of body part with no config reference is unsupported. Please scale only bodies that contain parts created from config.", (_pstBody->pstOwner != orxNULL) ? orxObject_GetName(orxOBJECT(_pstBody->pstOwner)) : "UNDEFINED");
+          }
         }
-      }
-      else
-      {
-        break;
+        else
+        {
+          break;
+        }
       }
     }
 

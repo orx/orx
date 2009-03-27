@@ -51,7 +51,7 @@
 
 /** Misc defines
  */
-#define orxBODY_KU32_PART_MAX_NUMBER          4
+#define orxBODY_KU32_PART_MAX_NUMBER          8
 
 
 /** Internal Body structure
@@ -102,12 +102,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Delete(orxBODY *_pstBody);
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxBody_GetOwner(const orxBODY *_pstBody);
 
-/** Gets a body definition
- * @param[in]   _pstBody        Concerned body
- * @return      orxBODY_DEF / orxNULL
- */
-extern orxDLLAPI const orxBODY_DEF *orxFASTCALL orxBody_GetDefinition(const orxBODY *_pstBody);
-
 /** Adds a part to body
  * @param[in]   _pstBody        Concerned body
  * @param[in]   _u32Index       Part index (should be less than orxBODY_KU32_PART_MAX_NUMBER)
@@ -130,12 +124,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_AddPartFromConfig(orxBODY 
  * @return      orxPHYSICS_BODY_PART / orxNULL
  */
 extern orxDLLAPI orxPHYSICS_BODY_PART * orxFASTCALL orxBody_GetPart(const orxBODY *_pstBody, orxU32 _u32Index);
-
-/** Gets a body part definition
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      orxBODY_PART_DEF / orxNULL
- */
-extern orxDLLAPI const orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartDefinition(const orxBODY_PART *_pstBodyPart);
 
 /** Removes a body part
  * @param[in]   _pstBody        Concerned body

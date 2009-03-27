@@ -20,7 +20,7 @@
 <h1>OrxBody</h1><table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
 <tr><td colspan="2"><br><h2>Defines</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gf6fc294a47979bde29c61104efaa5e4d">orxBODY_KU32_PART_MAX_NUMBER</a>&nbsp;&nbsp;&nbsp;4</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gf6fc294a47979bde29c61104efaa5e4d">orxBODY_KU32_PART_MAX_NUMBER</a>&nbsp;&nbsp;&nbsp;8</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxBODY_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a></td></tr>
@@ -42,18 +42,12 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g1a492f7be69dba98bb266af4209f0fc1">orxBody_GetOwner</a> (const <a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const <a class="el" href="structorx_b_o_d_y___d_e_f.html">orxBODY_DEF</a> <br>
-*orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gbcaa8774d6f63dab3ed86830083390d2">orxBody_GetDefinition</a> (const <a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody)</td></tr>
-
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g0c44f7644e95fcb2895f12e61a1ff47e">orxBody_AddPart</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxU32 _u32Index, const <a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a> *_pstBodyPartDef)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#ge28d46c5341cb2e0b9a11d2b90a1379f">orxBody_AddPartFromConfig</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxU32 _u32Index, const orxSTRING _zConfigID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_physics.html#gd6ca00ed200d20d87023b977ea980526">orxPHYSICS_BODY_PART</a> <br>
 *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g3ea144b674df198712083f8da2873656">orxBody_GetPart</a> (const <a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxU32 _u32Index)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI const <br>
-<a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g71dc855626e3906f09affcfabf18168a">orxBody_GetPartDefinition</a> (const <a class="el" href="group__orx_body.html#g1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *_pstBodyPart)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g5334410028c4ea9da0ae8df63d95bf00">orxBody_RemovePart</a> (<a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *_pstBody, orxU32 _u32Index)</td></tr>
 
@@ -100,7 +94,7 @@ Body Module Allows to creates and handle physical bodies They are used as contai
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxBODY_KU32_PART_MAX_NUMBER&nbsp;&nbsp;&nbsp;4          </td>
+          <td class="memname">#define orxBODY_KU32_PART_MAX_NUMBER&nbsp;&nbsp;&nbsp;8          </td>
         </tr>
       </table>
 </div>
@@ -493,32 +487,6 @@ Gets a body angular velocity <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gbcaa8774d6f63dab3ed86830083390d2"></a><!-- doxytag: member="orxBody.h::orxBody_GetDefinition" ref="gbcaa8774d6f63dab3ed86830083390d2" args="(const orxBODY *_pstBody)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI const <a class="el" href="structorx_b_o_d_y___d_e_f.html">orxBODY_DEF</a>* orxFASTCALL orxBody_GetDefinition           </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstBody</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets a body definition <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBody</em>&nbsp;</td><td>Concerned body </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_b_o_d_y___d_e_f.html">orxBODY_DEF</a> / orxNULL </dd></dl>
-
-</div>
-</div><p>
 <a class="anchor" name="g6589149bf773148551cc6e2782768b83"></a><!-- doxytag: member="orxBody.h::orxBody_GetMassCenter" ref="g6589149bf773148551cc6e2782768b83" args="(orxBODY *_pstBody, orxVECTOR *_pvMassCenter)" -->
 <div class="memitem">
 <div class="memproto">
@@ -614,32 +582,6 @@ Gets a body part <dl compact><dt><b>Parameters:</b></dt><dd>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxPHYSICS_BODY_PART / orxNULL </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="g71dc855626e3906f09affcfabf18168a"></a><!-- doxytag: member="orxBody.h::orxBody_GetPartDefinition" ref="g71dc855626e3906f09affcfabf18168a" args="(const orxBODY_PART *_pstBodyPart)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI const <a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a>* orxFASTCALL orxBody_GetPartDefinition           </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="group__orx_body.html#g1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstBodyPart</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Gets a body part definition <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBodyPart</em>&nbsp;</td><td>Concerned body part </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd><a class="el" href="structorx_b_o_d_y___p_a_r_t___d_e_f.html">orxBODY_PART_DEF</a> / orxNULL </dd></dl>
 
 </div>
 </div><p>
