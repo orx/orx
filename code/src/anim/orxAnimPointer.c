@@ -817,8 +817,8 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetCurrentAnimHandle(orxANIMPOINTER *_pstAn
       /* Updates flags */
       orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM, orxANIMPOINTER_KU32_FLAG_NONE);
 
-      /* Computes animpointer */
-      eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
+      /* Computes animpointer from start */
+      eResult = orxAnimPointer_SetTime(_pstAnimPointer, orxFLOAT_0);
     }
     else
     {

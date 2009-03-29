@@ -39,6 +39,13 @@
 #include "debug/orxDebug.h"
 
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+#endif /* __orxMSVC__ */
+
+
 #define orxPARAM_KU32_MODULE_FLAG_NONE    0x00000000  /**< No flags have been set */
 #define orxPARAM_KU32_MODULE_FLAG_READY   0x00000001  /**< The module has been initialized */
 
@@ -690,3 +697,9 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   /* Done! */
   return eResult;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4996)
+
+#endif /* __orxMSVC__ */

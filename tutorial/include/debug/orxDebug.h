@@ -138,7 +138,6 @@
   #define orxDEBUG_SETBASEFILENAME(FILE)                      \
     do                                                        \
     {                                                         \
-      orxSTRING zName;                                        \
       orxCHAR   zBuffer[256];                                 \
       strncpy(zBuffer, FILE, 256);                            \
       strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 256);\
@@ -178,7 +177,6 @@
   #define orxDEBUG_SETBASEFILENAME(FILE)                      \
     do                                                        \
     {                                                         \
-      orxSTRING zName;                                        \
       orxCHAR   zBuffer[256];                                 \
       strncpy(zBuffer, FILE, 256);                            \
       strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 256);  \
