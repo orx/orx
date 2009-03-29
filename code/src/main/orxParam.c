@@ -647,11 +647,17 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
 
       /* Stores base name for config */
       orxConfig_SetBaseName(zLocalName);
+
+      /* Stores base names for debug */
+      orxDEBUG_SETBASEFILENAME(zLocalName);
     }
     else
     {
       /* Stores base name for config */
       orxConfig_SetBaseName(sstParam.azParams[0]);
+
+      /* Stores base names for debug */
+      orxDEBUG_SETBASEFILENAME(sstParam.azParams[0]);
     }
   }
 

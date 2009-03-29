@@ -66,8 +66,10 @@
 
 /* *** Misc *** */
 
-#define orxDEBUG_KZ_DEFAULT_DEBUG_FILE                "OrxDebug.txt"
-#define orxDEBUG_KZ_DEFAULT_LOG_FILE                  "OrxLog.txt"
+#define orxDEBUG_KZ_DEFAULT_DEBUG_FILE                "orx-debug.log"
+#define orxDEBUG_KZ_DEFAULT_LOG_FILE                  "orx.log"
+#define orxDEBUG_KZ_DEFAULT_LOG_SUFFIX                ".log"
+#define orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX              "-debug.log"
 
 
 /* *** Debug Macros *** */
@@ -133,14 +135,37 @@
   /* Files */
   #define orxDEBUG_SETDEBUGFILE(FILE)         _orxDebug_SetDebugFile(FILE)
   #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
+  #define orxDEBUG_SETBASEFILENAME(FILE)                      \
+    do                                                        \
+    {                                                         \
+      orxSTRING zName;                                        \
+      orxCHAR   zBuffer[256];                                 \
+      strncpy(zBuffer, FILE, 256);                            \
+      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 256);\
+      _orxDebug_SetDebugFile(zBuffer);                        \
+      strncpy(zBuffer, FILE, 256);                            \
+      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 256);  \
+      _orxDebug_SetLogFile(zBuffer);                          \
+    } while(orxFALSE)
 
   /* Assert */
-  #define orxASSERT(TEST)                     \
-  if(!(TEST))                                 \
-  {                                           \
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : <" #TEST ">"); \
-    orxBREAK();                               \
-  }
+  #ifdef __orxGCC__
+    #define orxASSERT(TEST, ...)                                                                  \
+      if(!(TEST))                                                                                 \
+      {                                                                                           \
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : <" #TEST ">", ##__VA_ARGS__); \
+        orxBREAK();                                                                               \
+      }
+  #else /* __orxGCC__ */
+    #ifdef __orxMSVC__
+      #define orxASSERT(TEST, ...)                                                                \
+        if(!(TEST))                                                                               \
+        {                                                                                         \
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, "[Assertion failed] : <" #TEST ">", __VA_ARGS__); \
+          orxBREAK();                                                                             \
+        }
+    #endif /* __orxMSVC__ */
+  #endif /* __orcGCC__ */
 
 #else /* __orxDEBUG__ */
 
@@ -150,6 +175,15 @@
 
   #define orxDEBUG_SETDEBUGFILE(FILE)
   #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
+  #define orxDEBUG_SETBASEFILENAME(FILE)                      \
+    do                                                        \
+    {                                                         \
+      orxSTRING zName;                                        \
+      orxCHAR   zBuffer[256];                                 \
+      strncpy(zBuffer, FILE, 256);                            \
+      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 256);  \
+      _orxDebug_SetLogFile(zBuffer);                          \
+    } while(orxFALSE)
 
   #define orxASSERT(TEST)
 
