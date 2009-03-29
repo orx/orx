@@ -34,6 +34,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_set.html#g3697f4c6a4d6ba8499a0ff2300efaa45">orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT</a>&nbsp;&nbsp;&nbsp;0x40000000</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_set.html#g956fe40b028fc972b957007e12a6a202">orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET</a>&nbsp;&nbsp;&nbsp;0x80000000</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_set.html#gcdf6b4ae3c86e1c071d615ef3337530b">orxANIMSET_KU32_MAX_ANIM_NUMBER</a>&nbsp;&nbsp;&nbsp;128</td></tr>
 
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
@@ -81,7 +83,7 @@ __orxANIMSET_LINK_TABLE_t&nbsp;</td><td class="memItemRight" valign="bottom"><a 
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_set.html#g3123383867ce87a81793886b094708ce">orxAnimSet_GetLinkProperty</a> (const <a class="el" href="group__orx_anim_set.html#g1fcef34d290ca0c5de656a7a655e1deb">orxANIMSET</a> *_pstAnimSet, orxHANDLE _hLinkHandle, orxU32 _u32Property)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_set.html#g4f18487a47ac84c96e205361b2c135aa">orxAnimSet_ComputeAnim</a> (<a class="el" href="group__orx_anim_set.html#g1fcef34d290ca0c5de656a7a655e1deb">orxANIMSET</a> *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, <a class="el" href="group__orx_anim_set.html#g35a24613268bb65b8017532770c8fc23">orxANIMSET_LINK_TABLE</a> *_pstLinkTable, orxBOOL *_pbCut)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_set.html#g969d285a047d2436106f4449b549ce3c">orxAnimSet_ComputeAnim</a> (<a class="el" href="group__orx_anim_set.html#g1fcef34d290ca0c5de656a7a655e1deb">orxANIMSET</a> *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, <a class="el" href="group__orx_anim_set.html#g35a24613268bb65b8017532770c8fc23">orxANIMSET_LINK_TABLE</a> *_pstLinkTable, orxBOOL *_pbCut, orxBOOL *_pbClearTarget)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_anim.html#g4d651010d0c8cff85aa5c641a16f0097">orxANIM</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_set.html#g648e9c65ff7cd50aca156e8addd13444">orxAnimSet_GetAnim</a> (const <a class="el" href="group__orx_anim_set.html#g1fcef34d290ca0c5de656a7a655e1deb">orxANIMSET</a> *_pstAnimSet, orxHANDLE _hAnimHandle)</td></tr>
 
@@ -137,6 +139,21 @@ AnimSet flags No flags.
 
 <p>
 If there's already a reference on it, the AnimSet is locked for changes. 
+</div>
+</div><p>
+<a class="anchor" name="g956fe40b028fc972b957007e12a6a202"></a><!-- doxytag: member="orxAnimSet.h::orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET" ref="g956fe40b028fc972b957007e12a6a202" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET&nbsp;&nbsp;&nbsp;0x80000000          </td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Anim link should clear target when used 
 </div>
 </div><p>
 <a class="anchor" name="g3697f4c6a4d6ba8499a0ff2300efaa45"></a><!-- doxytag: member="orxAnimSet.h::orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT" ref="g3697f4c6a4d6ba8499a0ff2300efaa45" args="" -->
@@ -376,7 +393,7 @@ Clones an AnimSet Link Table <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g4f18487a47ac84c96e205361b2c135aa"></a><!-- doxytag: member="orxAnimSet.h::orxAnimSet_ComputeAnim" ref="g4f18487a47ac84c96e205361b2c135aa" args="(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut)" -->
+<a class="anchor" name="g969d285a047d2436106f4449b549ce3c"></a><!-- doxytag: member="orxAnimSet.h::orxAnimSet_ComputeAnim" ref="g969d285a047d2436106f4449b549ce3c" args="(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut, orxBOOL *_pbClearTarget)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -414,7 +431,13 @@ Clones an AnimSet Link Table <dl compact><dt><b>Parameters:</b></dt><dd>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxBOOL *&nbsp;</td>
-          <td class="paramname"> <em>_pbCut</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>_pbCut</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL *&nbsp;</td>
+          <td class="paramname"> <em>_pbClearTarget</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -434,6 +457,7 @@ Computes active Anim given current and destination Anim handles &amp; a relative
     <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>_pfTime</em>&nbsp;</td><td>Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim) </td></tr>
     <tr><td valign="top"><tt>[in,out]</tt>&nbsp;</td><td valign="top"><em>_pstLinkTable</em>&nbsp;</td><td>Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example) </td></tr>
     <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pbCut</em>&nbsp;</td><td>Animation has been cut </td></tr>
+    <tr><td valign="top"><tt>[out]</tt>&nbsp;</td><td valign="top"><em>_pbClearTarget</em>&nbsp;</td><td>Animation has requested a target clearing </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim </dd></dl>

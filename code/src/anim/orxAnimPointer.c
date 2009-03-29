@@ -161,7 +161,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
     /* Has current animation */
     if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
     {
-      orxBOOL bCut;
+      orxBOOL bCut, bClearTarget;
 
       /* Updates Times */
       _pstAnimPointer->fTime += _fDT * _pstAnimPointer->fFrequency;
@@ -171,7 +171,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       fTimeBackup = _pstAnimPointer->fCurrentAnimTime;
 
       /* Computes & updates anim*/
-      hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hTargetAnim, &(_pstAnimPointer->fCurrentAnimTime), _pstAnimPointer->pstLinkTable, &bCut);
+      hNewAnim = orxAnimSet_ComputeAnim(_pstAnimPointer->pstAnimSet, _pstAnimPointer->hCurrentAnim, _pstAnimPointer->hTargetAnim, &(_pstAnimPointer->fCurrentAnimTime), _pstAnimPointer->pstLinkTable, &bCut, &bClearTarget);
 
       /* Change happened? */
       if(hNewAnim != _pstAnimPointer->hCurrentAnim)
@@ -206,6 +206,13 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
 
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_ANIM, orxANIM_EVENT_START, _pstAnimPointer->pstOwner, _pstAnimPointer->pstOwner, &stPayload);
+        }
+
+        /* Should clear target? */
+        if(bClearTarget != orxFALSE)
+        {
+          /* Removes it */
+          _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
         }
       }
       else
@@ -858,31 +865,35 @@ orxSTATUS orxFASTCALL orxAnimPointer_SetTargetAnimHandle(orxANIMPOINTER *_pstAni
   /* Has Animset? */
   if(orxStructure_TestAllFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_ANIMSET | orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
   {
-    /* Removes target anim? */
-    if(_hAnimHandle == orxHANDLE_UNDEFINED)
+    /* New value? */
+    if(_pstAnimPointer->hTargetAnim != _hAnimHandle)
     {
-      /* Removes ID */
-      _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
+      /* Removes target anim? */
+      if(_hAnimHandle == orxHANDLE_UNDEFINED)
+      {
+        /* Removes it */
+        _pstAnimPointer->hTargetAnim = orxHANDLE_UNDEFINED;
 
-      /* Computes animpointer */
-      eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
-    }
-    /* In range? */
-    else if((orxU32)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
-    {
-      /* Stores ID */
-      _pstAnimPointer->hTargetAnim = _hAnimHandle;
+        /* Computes animpointer */
+        eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
+      }
+      /* In range? */
+      else if((orxU32)_hAnimHandle < orxAnimSet_GetAnimCounter(_pstAnimPointer->pstAnimSet))
+      {
+        /* Stores ID */
+        _pstAnimPointer->hTargetAnim = _hAnimHandle;
 
-      /* Computes animpointer */
-      eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
+        /* Computes animpointer */
+        eResult = orxAnimPointer_Compute(_pstAnimPointer, orxFLOAT_0);
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "%ld is not a valid handle for the anim pointer.", (orxU32)(_hAnimHandle));
 
-      /* Can't process */
-      eResult = orxSTATUS_FAILURE;
+        /* Can't process */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
   }
   else

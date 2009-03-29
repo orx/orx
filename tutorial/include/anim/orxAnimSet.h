@@ -66,6 +66,7 @@
 #define orxANIMSET_KU32_LINK_FLAG_LOOP_COUNTER      0x10000000  /**< Anim link uses a counter */
 #define orxANIMSET_KU32_LINK_FLAG_PRIORITY          0x20000000  /**< Anim link has priority */
 #define orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT     0x40000000  /**< Anim link should update with an immediate cut */
+#define orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET      0x80000000  /**< Anim link should clear target when used */
 
 /** AnimSet defines
  */
@@ -202,9 +203,10 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetLinkProperty(c
  * @param[in,out] _pfTime                           Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
  * @param[in,out] _pstLinkTable                     Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
  * @param[out] _pbCut                               Animation has been cut
+ * @param[out] _pbClearTarget                       Animation has requested a target clearing
  * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
-extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut);
+extern orxDLLAPI orxHANDLE orxFASTCALL              orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut, orxBOOL *_pbClearTarget);
 
 /** AnimSet Anim get accessor
  * @param[in]		_pstAnimSet													Concerned AnimSet

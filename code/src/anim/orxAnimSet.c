@@ -112,6 +112,7 @@
 #define orxANIMSET_KZ_CONFIG_LINK_PRIORITY            "Priority"
 
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
+#define orxANIMSET_KZ_CLEAR_TARGET                    "cleartarget"
 
 #define orxANIMSET_KU32_ID_TABLE_SIZE                 32          /**< ID table size */
 #define orxANIMSET_KU32_REFERENCE_TABLE_SIZE          32          /**< Reference table size */
@@ -307,17 +308,19 @@ orxSTATUS orxAnimSet_SetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTab
         break;
       }
 
-      /* Immediate cut */
+      /* Common flags */
       case orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT:
+      case orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET:
       {
-        /* Updates priority */
+        /* Enable? */
         if((orxBOOL)_u32Value != orxFALSE)
         {
-          _pstLinkTable->au32LinkArray[_u32LinkIndex] |= orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT;
+          _pstLinkTable->au32LinkArray[_u32LinkIndex] |= _u32Property & orxANIMSET_KU32_LINK_MASK_FLAGS;
         }
+        /* Disable */
         else
         {
-          _pstLinkTable->au32LinkArray[_u32LinkIndex] &= ~orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT;
+          _pstLinkTable->au32LinkArray[_u32LinkIndex] &= ~(_u32Property & orxANIMSET_KU32_LINK_MASK_FLAGS);
         }
 
         break;
@@ -408,10 +411,12 @@ orxU32 orxAnimSet_GetLinkTableLinkProperty(orxANIMSET_LINK_TABLE *_pstLinkTable,
         break;
       }
 
+      /* Common flags */
       case orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT:
+      case orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET:
       {
         /* Updates result */
-        u32Value = (orxU32)((_pstLinkTable->au32LinkArray[_u32LinkIndex] & orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT) ? orxTRUE : orxFALSE);
+        u32Value = (orxU32)((_pstLinkTable->au32LinkArray[_u32LinkIndex] & (_u32Property & orxANIMSET_KU32_LINK_MASK_FLAGS)) ? orxTRUE : orxFALSE);
 
         break;
       }
@@ -1519,11 +1524,22 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
               /* Valid? */
               if(hLink != orxHANDLE_UNDEFINED)
               {
+                orxSTRING zProperty;
+
+                /* Gets lower case property */
+                zProperty = orxString_LowerCase(orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY));
+
                 /* Immediate link? */
-                if(orxString_Compare(orxString_LowerCase(orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_PROPERTY)), orxANIMSET_KZ_IMMEDIATE) == 0)
+                if(orxString_SearchString(zProperty, orxANIMSET_KZ_IMMEDIATE) != orxNULL)
                 {
                   /* Updates link property */
                   orxAnimSet_SetLinkProperty(pstResult, hLink, orxANIMSET_KU32_LINK_FLAG_IMMEDIATE_CUT, orxTRUE);
+                }
+                /* Auto reset? */
+                if(orxString_SearchString(zProperty, orxANIMSET_KZ_CLEAR_TARGET) != orxNULL)
+                {
+                  /* Updates link property */
+                  orxAnimSet_SetLinkProperty(pstResult, hLink, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET, orxTRUE);
                 }
 
                 /* Has priority? */
@@ -2139,9 +2155,10 @@ orxU32 orxFASTCALL orxAnimSet_GetLinkProperty(const orxANIMSET *_pstAnimSet, orx
  * @param[in,out] _pfTime                           Pointer to the current timestamp relative to the source Anim (time elapsed since the beginning of this anim)
  * @param[in,out] _pstLinkTable                     Anim Pointer link table (updated if AnimSet link table isn't static, when using loop counters for example)
  * @param[out] _pbCut                               Animation has been cut
+ * @param[out] _pbClearTarget                       Animation has requested a target clearing
  * @return Current Anim handle. If it's not the source one, _pu32Time will contain the new timestamp, relative to the new Anim
 */
-orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut)
+orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE _hSrcAnim, orxHANDLE _hDstAnim, orxFLOAT *_pfTime, orxANIMSET_LINK_TABLE *_pstLinkTable, orxBOOL *_pbCut, orxBOOL *_pbClearTarget)
 {
   orxANIMSET_LINK_TABLE  *pstWorkTable;
   orxHANDLE               hResult = _hSrcAnim;
@@ -2151,6 +2168,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
   orxSTRUCTURE_ASSERT(_pstAnimSet);
   orxASSERT(_pfTime != orxNULL);
   orxASSERT(_pbCut != orxNULL);
+  orxASSERT(_pbClearTarget != orxNULL);
   orxASSERT((orxU32)_hSrcAnim < orxAnimSet_GetAnimCounter(_pstAnimSet));
   orxASSERT(((orxU32)_hDstAnim < orxAnimSet_GetAnimCounter(_pstAnimSet)) || (_hDstAnim == orxHANDLE_UNDEFINED));
 
@@ -2172,7 +2190,7 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
   /* Computes link table if needed */
   if(orxAnimSet_ComputeLinkTable(pstWorkTable) == orxSTATUS_SUCCESS)
   {
-    orxU32  u32Anim, u32LinkIndex, u32LinkProperty, u32RoutingAnim;
+    orxU32  u32Anim, u32LinkIndex, u32LinkProperty, u32RoutingAnim, u32TargetAnim;
 
     /* Defaults to not cut */
     *_pbCut = orxFALSE;
@@ -2200,17 +2218,29 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
     if(*_pbCut != orxFALSE)
     {
       /* Get next animation according to destination aim */
-      u32Anim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_hDstAnim != orxHANDLE_UNDEFINED) ? (orxU32)_hDstAnim : orxU32_UNDEFINED, orxFALSE);
+      u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_hDstAnim != orxHANDLE_UNDEFINED) ? (orxU32)_hDstAnim : orxU32_UNDEFINED, orxFALSE);
 
       /* Resets time stamp */
       *_pfTime = orxFLOAT_0;
 
+      /* Gets link index */
+      u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + u32TargetAnim;
+
+      /* Gets clear target property */
+      u32LinkProperty = orxAnimSet_GetLinkTableLinkProperty(pstWorkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET);
+
+      /* Updates target clearing status */
+      *_pbClearTarget = (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
+
       /* Updates result */
-      hResult = (orxHANDLE)u32Anim;
+      hResult = (orxHANDLE)u32TargetAnim;
     }
     else
     {
       orxFLOAT fLength;
+
+      /* Defaults to no target clearing */
+      *_pbClearTarget = orxFALSE;
 
       /* Gets current animation duration */
       fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
@@ -2219,16 +2249,28 @@ orxHANDLE orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxHANDLE 
       while(*_pfTime > fLength)
       {
         /* Get next animation */
-        u32Anim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_hDstAnim != orxHANDLE_UNDEFINED) ? (orxU32)_hDstAnim : orxU32_UNDEFINED, orxFALSE);
+        u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, (_hDstAnim != orxHANDLE_UNDEFINED) ? (orxU32)_hDstAnim : orxU32_UNDEFINED, orxFALSE);
 
         /* Updates timestamp */
         *_pfTime -= fLength;
 
         /* Has next animation? */
-        if((u32Anim != orxU32_UNDEFINED)
+        if((u32TargetAnim != orxU32_UNDEFINED)
         && ((fLength > orxFLOAT_0)
-        ||  ((orxHANDLE)u32Anim != _hSrcAnim)))
+        ||  ((orxHANDLE)u32TargetAnim != _hSrcAnim)))
         {
+          /* Gets link index */
+          u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + u32TargetAnim;
+
+          /* Gets clear target property */
+          u32LinkProperty = orxAnimSet_GetLinkTableLinkProperty(pstWorkTable, u32LinkIndex, orxANIMSET_KU32_LINK_FLAG_CLEAR_TARGET);
+
+          /* Updates target clearing status */
+          *_pbClearTarget |= (u32LinkProperty != orxU32_UNDEFINED) ? (orxBOOL)u32LinkProperty : orxFALSE;
+
+          /* Updates current animation */
+          u32Anim = u32TargetAnim;
+
           /* Gets new duration */
           fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
 
