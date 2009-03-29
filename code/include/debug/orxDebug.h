@@ -185,7 +185,7 @@
       _orxDebug_SetLogFile(zBuffer);                          \
     } while(orxFALSE)
 
-  #define orxASSERT(TEST)
+  #define orxASSERT(TEST, ...)
 
   #define orxDEBUG_FLAG_SET(SET, UNSET)
   #define orxDEBUG_FLAG_BACKUP()
