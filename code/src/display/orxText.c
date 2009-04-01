@@ -324,6 +324,9 @@ orxSTATUS orxFASTCALL orxText_Delete(orxTEXT *_pstText)
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstText) == 0)
   {
+    /* Removes string */
+    orxText_SetString(_pstText, orxNULL);
+
     /* Deletes internal data */
     orxDisplay_DeleteText(_pstText->hData);
 
