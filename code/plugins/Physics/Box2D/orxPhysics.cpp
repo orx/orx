@@ -551,7 +551,7 @@ extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY
   pstShapeDef->density              = (poBody->GetInertia() != 0.0f) ? _pstBodyPartDef->fDensity : 0.0f;
   pstShapeDef->filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
   pstShapeDef->filter.maskBits      = _pstBodyPartDef->u16CheckMask;
-  pstShapeDef->filter.groupIndex    = (orxU16)(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fZ);
+  pstShapeDef->filter.groupIndex    = 0;
   pstShapeDef->isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
 
   /* Creates it */
