@@ -125,14 +125,8 @@ orxSTATUS orxMain_Init()
     /* Sets module as initialized */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
 
-    /* Inits random generator based on current time */
-    orxMath_InitRandom(orxSystem_GetRealTime());
-
     /* Registers custom system event handler */
-    orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
-
-    /* Displays help */
-    eResult = orxParam_DisplayHelp();
+    eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
 
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)

@@ -725,22 +725,6 @@ static orxINLINE void orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSection)
   return;
 }
 
-/** Clears all config data
- */
-static orxINLINE void orxConfig_Clear()
-{
-  orxCONFIG_SECTION *pstSection;
-
-  /* While there's still a section */
-  while((pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList))) != orxNULL)
-  {
-    /* Deletes it */
-    orxConfig_DeleteSection(pstSection);
-  }
-
-  return;
-}
-
 /** Reads a signed integer value from config value
  * @param[in]   _pstValue         Concerned config value
  * @param[in]   _s32ListIndex      List index
@@ -2433,6 +2417,25 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
 
   /* Done! */
   return bResult;
+}
+
+/** Clears all config data
+ */
+void orxConfig_Clear()
+{
+  orxCONFIG_SECTION *pstSection;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* While there's still a section */
+  while((pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList))) != orxNULL)
+  {
+    /* Deletes it */
+    orxConfig_DeleteSection(pstSection);
+  }
+
+  return;
 }
 
 /** Clears section

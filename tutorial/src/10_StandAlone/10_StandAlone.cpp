@@ -39,12 +39,9 @@
  * - Backspace won't reload configuration files
  * - the [Main] section in the config file won't be used to load a plugin ("GameFile" key)
  *
- * Our program will also *NOT* exit if it receives the orxSYSTEM_EVENT_CLOSE event.
+ * Our program, by default, will also *NOT* exit if it receives the orxSYSTEM_EVENT_CLOSE event.
  * To do so, we will either have to use the helper orx_Execute() function (see below)
  * or handle it ourselves.
- *
- * Not using the default executable will also remove the automated help display (-h parameter)
- * and the default random seed setup.
  *
  * See previous tutorials for more info about the basic object creation, clock, animation,
  * viewport, sound, FX, physics/collision and differentiel scrolling handling.
@@ -187,9 +184,9 @@ class StandAlone
 {
 public:
   static orxSTATUS orxFASTCALL  EventHandler(const orxEVENT *_pstEvent);
-  static void                Setup();
+  static void                   Setup();
   static orxSTATUS              Init();
-  static void                Exit();
+  static void                   Exit();
   static orxSTATUS              Run();
 
 private:

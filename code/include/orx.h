@@ -155,8 +155,14 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
       orxSTATUS eClockStatus, eMainStatus;
       orxBOOL   bStop;
 
+      /* Inits random generator based on current time */
+      orxMath_InitRandom(orxSystem_GetRealTime());
+
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Displays help */
+      eMainStatus = orxParam_DisplayHelp();
 
       /* Main loop */
       for(bStop = orxFALSE;

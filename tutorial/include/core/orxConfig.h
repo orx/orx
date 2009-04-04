@@ -113,6 +113,10 @@ extern orxDLLAPI const orxSTRING        orxConfig_GetCurrentSection();
  */
 extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(const orxSTRING _zSectionName);
 
+/** Clears all config info
+ */
+extern orxDLLAPI void                   orxConfig_Clear();
+
 /** Clears section
  * @param[in] _zSectionName     Section name to clear
  */
