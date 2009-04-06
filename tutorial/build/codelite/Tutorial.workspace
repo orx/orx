@@ -10,7 +10,7 @@
   <Project Name="08_Physics" Path="08_Physics/08_Physics.project" Active="No"/>
   <Project Name="09_Scrolling" Path="09_Scrolling/09_Scrolling.project" Active="No"/>
   <Project Name="10_StandAlone" Path="10_StandAlone/10_StandAlone.project" Active="No"/>
-  <Project Name="11_Spawner" Path="11_Spawner\11_Spawner.project" Active="No"/>
+  <Project Name="11_Spawner" Path="11_Spawner/11_Spawner.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Linux Dynamic Release" Selected="no">
       <Project Name="01_Object" ConfigName="Linux Dynamic Release"/>
