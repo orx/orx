@@ -162,18 +162,19 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
 
       /* Displays help */
-      eMainStatus = orxParam_DisplayHelp();
-
-      /* Main loop */
-      for(bStop = orxFALSE;
-          bStop == orxFALSE;
-          bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+      if(orxParam_DisplayHelp() != orxSTATUS_FAILURE)
       {
-        /* Runs the engine */
-        eMainStatus = _pfnRun();
+        /* Main loop */
+        for(bStop = orxFALSE;
+            bStop == orxFALSE;
+            bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
+        {
+          /* Runs the engine */
+          eMainStatus = _pfnRun();
 
-        /* Updates clock system */
-        eClockStatus = orxClock_Update();
+          /* Updates clock system */
+          eClockStatus = orxClock_Update();
+        }
       }
 
       /* Exits from engine */

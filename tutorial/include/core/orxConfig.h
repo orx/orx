@@ -77,6 +77,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetEncryptionKey(const orxSTRI
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBaseName(const orxSTRING _zBaseName);
 
+/** Gets config main file name
+ * @return Config main file name / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING        orxConfig_GetMainFileName();
+
 
 /** Loads config file from source
  * @param[in] _zFileName        File name

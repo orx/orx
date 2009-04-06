@@ -92,7 +92,7 @@ static orxINLINE orxSTATUS LoadConfig()
   orxConfig_Clear();
 
   /* Loads main config and selects tutorial section */
-  orxConfig_Load("11_Spawner.ini");
+  orxConfig_Load(orxConfig_GetMainFileName());
   orxConfig_SelectSection("Tutorial");
 
   /* Is current ID valid? */

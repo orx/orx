@@ -1552,6 +1552,18 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
   return eResult;
 }
 
+/** Gets config main file name
+ * @return Config main file name / orxSTRING_EMPTY
+ */
+const orxSTRING orxConfig_GetMainFileName()
+{
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Done! */
+  return sstConfig.zBaseFile;
+}
+
 /** Selects current working section
  * @param[in] _zSectionName     Section name to select
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
