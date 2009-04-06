@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="11_Spawner"
+	ProjectGUID="{EACB00ED-5694-4189-ABF9-3E24FAF2241E}"
 	RootNamespace="My11_Spawner"
 	>
 	<Platforms>
@@ -66,15 +67,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="orx.lib"
-				OutputFile="..\..\..\bin\msvs2008\$(ProjectName).exe"
+				OutputFile="..\..\..\bin\msvs2005\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\lib\msvs2008"
+				AdditionalLibraryDirectories="..\..\..\lib\msvs2005"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
 				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="1"
 			/>
@@ -96,6 +96,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
