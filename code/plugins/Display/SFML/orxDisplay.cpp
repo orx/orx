@@ -422,8 +422,12 @@ extern "C" orxSTATUS orxDisplay_SFML_SetTextString(orxDISPLAY_TEXT *_pstText, co
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstText != orxNULL);
 
-  /* Updates string */
-  _pstText->poString->SetText(_zString);
+  /* Valid? */
+  if((_zString != orxNULL) && (_zString != orxSTRING_EMPTY))
+  {
+    /* Updates string */
+    _pstText->poString->SetText(_zString);
+  }
 
   /* Stores it */
   _pstText->zString = _zString;

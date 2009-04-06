@@ -75,14 +75,14 @@ static orxINLINE orxSTATUS LoadConfig()
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
   /* For all objects */
-  while(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)))
+  while((pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT))))
   {
     /* Deletes it */
     orxObject_Delete(pstObject);
   }
 
   /* For all viewports */
-  while(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT)))
+  while((pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT))))
   {
     /* Deletes it */
     orxViewport_Delete(pstViewport);

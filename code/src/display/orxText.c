@@ -467,14 +467,14 @@ orxSTATUS orxFASTCALL orxText_SetString(orxTEXT *_pstText, const orxSTRING _zStr
   zString = orxDisplay_GetTextString(_pstText->hData);
 
   /* Valid? */
-  if(zString != orxNULL)
+  if((zString != orxNULL) && (zString != orxSTRING_EMPTY))
   {
     /* Deletes it */
     orxString_Delete(zString);
   }
 
   /* Has new string? */
-  if(_zString != orxNULL)
+  if((_zString != orxNULL) && (_zString != orxSTRING_EMPTY))
   {
     /* Stores a duplicate */
     orxDisplay_SetTextString(_pstText->hData, orxString_Duplicate(_zString));
