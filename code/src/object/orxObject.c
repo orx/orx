@@ -747,8 +747,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Gets its value */
         orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor);
 
-        /* Applies it */
-        orxColor_SetRGB(&(pstResult->stColor), &vColor);
+        /* Normalizes and applies it */
+        orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxRGBA_NORMALIZER);
 
         /* Updates status flags */
         u32Flags |= orxOBJECT_KU32_FLAG_HAS_COLOR;

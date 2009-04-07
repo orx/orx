@@ -339,11 +339,22 @@ void orxPhysicsBoundaryListener::Violation(b2Body *_poBody)
  */
 void orxFASTCALL    orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
+  const orxCLOCK_INFO      *pstClockInfo;
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
+
+  /* Gets core clock info */
+  pstClockInfo = orxClock_GetInfo(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE));
+
+  /* Valid? */
+  if(pstClockInfo != orxNULL)
+  {
+    /* Updates our clock modifier using core info */
+    orxClock_SetModifier(sstPhysics.pstClock, pstClockInfo->eModType, pstClockInfo->fModValue);
+  }
 
   /* Updates world simulation */
   sstPhysics.poWorld->Step(_pstClockInfo->fDT, (orxU32)_pstContext);
@@ -1008,7 +1019,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
       }
 
       /* Creates physics clock */
-      sstPhysics.pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      sstPhysics.pstClock = orxClock_Create(orxClock_GetInfo(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE))->fTickSize, orxCLOCK_TYPE_PHYSICS);
 
       /* Resyncs clocks */
       orxClock_ResyncAll();

@@ -111,9 +111,20 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
   if((pstGraphic != orxNULL)
   && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D | orxGRAPHIC_KU32_FLAG_TEXT)))
   {
-    orxDISPLAY_BLEND_MODE eBlendMode;
-    orxVECTOR             vPivot, vPosition, vScale;
-    orxFLOAT              fRotation;
+    orxDISPLAY_BLEND_MODE           eBlendMode;
+    orxVECTOR                       vPivot, vPosition, vScale;
+    orxFLOAT                        fRotation;
+    orxRENDER_EVENT_OBJECT_PAYLOAD  stPayload;
+
+    /* Cleans event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxRENDER_EVENT_OBJECT_PAYLOAD));
+
+    /* Inits it */
+    stPayload.pstRenderBitmap = _pstRenderBitmap;
+    stPayload.pstRenderFrame  = _pstRenderFrame;
+
+    /* Sends start event */
+    orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
 
     /* 2D? */
     if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
@@ -504,6 +515,9 @@ static orxSTATUS orxFASTCALL orxRender_RenderObject(const orxOBJECT *_pstObject,
         eResult = orxSTATUS_SUCCESS;
       }
     }
+
+    /* Sends stop event */
+    orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_STOP, (orxHANDLE)_pstObject, (orxHANDLE)_pstObject, &stPayload);
   }
   else
   {
@@ -559,6 +573,9 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
       && (orxStructure_TestFlags(pstCamera, orxCAMERA_KU32_FLAG_2D) != orxFALSE))
       {
         orxFRAME *pstRenderFrame;
+
+        /* Sends start event */
+        orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_START, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
 
         /* Creates rendering frame */
         pstRenderFrame = orxFrame_Create(orxFRAME_KU32_FLAG_NONE);
@@ -901,7 +918,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
                 else
                 {
                   /* Prints error message */
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p -> orxBITMAP %p] couldn't be rendered.", pstObject, pstBitmap);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "[orxOBJECT %p/%s -> orxBITMAP %p] couldn't be rendered.", pstObject, orxObject_GetName(pstObject), pstBitmap);
                 }
               }
 
@@ -931,6 +948,9 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
           /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Could not create rendering frame.");
         }
+
+        /* Sends stop event */
+        orxEVENT_SEND(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_VIEWPORT_STOP, (orxHANDLE)_pstViewport, (orxHANDLE)_pstViewport, orxNULL);
       }
       else
       {
@@ -966,6 +986,9 @@ void orxFASTCALL    orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void
   orxASSERT(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstClockInfo != orxNULL);
 
+  /* Sends render start event */
+  orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_START);
+
   /* For all viewports */
   for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
       pstViewport != orxNULL;
@@ -974,6 +997,9 @@ void orxFASTCALL    orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void
     /* Renders it */
     orxRender_RenderViewport(pstViewport);
   }
+
+  /* Sends render stop event */
+  orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_STOP);
 
   /* Increases FPS counter */
   orxFPS_IncreaseFrameCounter();

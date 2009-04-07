@@ -453,7 +453,7 @@ void orxFASTCALL    orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_p
         else
         {
           /* Updates status */
-          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NONE, orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS);
+          orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_ACTIVE | (u32ActiveIndex << orxINPUT_KU32_ENTRY_SHIFT_LAST_ACTIVE_BINDING), orxINPUT_KU32_ENTRY_MASK_LAST_ACTIVE_BINDING | orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS);
         }
       }
       else

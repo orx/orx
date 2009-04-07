@@ -76,6 +76,7 @@
   #define orxRGBA_B(RGBA)       (orxU8)(((RGBA) >> 8) & 0xFF)
   #define orxRGBA_A(RGBA)       (orxU8)((RGBA) & 0xFF)
   #define orxRGBA_NORMALIZER    (orx2F(1.0f / 255.0f))
+  #define orxRGBA_DENORMALIZER  (orx2F(255.0f))
 
   #define orxENUM_NONE          0xFFFFFFFFL
 

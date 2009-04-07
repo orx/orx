@@ -834,6 +834,7 @@ extern orxDLLAPI const orxVECTOR orxVECTOR_1;      /**< Vector filled with 1s */
 extern orxDLLAPI const orxVECTOR orxVECTOR_RED;    /**< Red color vector */
 extern orxDLLAPI const orxVECTOR orxVECTOR_GREEN;  /**< Green color vector */
 extern orxDLLAPI const orxVECTOR orxVECTOR_BLUE;   /**< Blue color vector */
+extern orxDLLAPI const orxVECTOR orxVECTOR_BLACK;  /**< Black color vector */
 extern orxDLLAPI const orxVECTOR orxVECTOR_WHITE;  /**< White color vector */
 
 #endif /* _orxVECTOR_H_ */

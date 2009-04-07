@@ -44,6 +44,7 @@
 #include "orxInclude.h"
 #include "plugin/orxPluginCore.h"
 
+#include "object/orxFrame.h"
 #include "object/orxObject.h"
 
 
@@ -52,6 +53,33 @@
 #define orxRENDER_KZ_CONFIG_SECTION       "Render"
 #define orxRENDER_KZ_CONFIG_SHOW_FPS      "ShowFPS"
 #define orxRENDER_KZ_CONFIG_MIN_FREQUENCY "MinFrequency"
+
+
+/** Event enum
+ */
+typedef enum __orxRENDER_EVENT_t
+{
+  orxRENDER_EVENT_START = 0,              /**< Event sent when rendering starts */
+  orxRENDER_EVENT_STOP,                   /**< Event sent when rendering stops */
+  orxRENDER_EVENT_VIEWPORT_START,         /**< Event sent when a viewport rendering starts */
+  orxRENDER_EVENT_VIEWPORT_STOP,          /**< Event sent when a viewport rendering stops */
+  orxRENDER_EVENT_OBJECT_START,           /**< Event sent when an object rendering starts */
+  orxRENDER_EVENT_OBJECT_STOP,            /**< Event sent when an object rendering stops */
+
+  orxRENDER_EVENT_NUMBER,
+
+  orxRENDER_EVENT_NONE = orxENUM_NONE
+
+} orxRENDER_EVENT;
+
+/** Event payload
+ */
+typedef struct __orxRENDER_EVENT_OBJECT_PAYLOAD_t
+{
+  orxBITMAP *pstRenderBitmap;             /**< Bitmap where object is rendered : 4 */
+  orxFRAME  *pstRenderFrame;              /**< Frame position where object is rendered : 8 */
+
+} orxRENDER_EVENT_OBJECT_PAYLOAD;
 
 
 /***************************************************************************

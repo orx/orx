@@ -168,6 +168,7 @@ void Logo::SetConfigColor()
   // Updates our color with config values
   m_stMyColor.fAlpha = orxConfig_GetFloat("LogoAlpha");
   orxConfig_GetVector("LogoColor", &(m_stMyColor.vRGB));
+  orxVector_Mulf(&(m_stMyColor.vRGB), &(m_stMyColor.vRGB), orxRGBA_NORMALIZER);
 
   // Applies it
   orxObject_SetColor(m_pstObject, &m_stMyColor);

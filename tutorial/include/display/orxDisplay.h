@@ -132,10 +132,10 @@ static orxINLINE orxCOLOR *      orxColor_SetRGBA(orxCOLOR *_pstColor, orxRGBA _
   orxASSERT(_pstColor != orxNULL);
 
   /* Stores RGB */
-  orxVector_Set(&(_pstColor->vRGB), orxRGBA_R(_stRGBA), orxRGBA_G(_stRGBA), orxRGBA_B(_stRGBA));
+  orxVector_Set(&(_pstColor->vRGB), orxRGBA_NORMALIZER * orxU2F(orxRGBA_R(_stRGBA)), orxRGBA_NORMALIZER * orxU2F(orxRGBA_G(_stRGBA)), orxRGBA_NORMALIZER * orxU2F(orxRGBA_B(_stRGBA)));
 
   /* Stores alpha */
-  _pstColor->fAlpha = orxRGBA_A(_stRGBA) * orxRGBA_NORMALIZER;
+  _pstColor->fAlpha = orxRGBA_NORMALIZER * orxRGBA_A(_stRGBA);
 
   /* Done! */
   return pstResult;
@@ -219,11 +219,14 @@ static orxINLINE orxRGBA        orxColor_ToRGBA(const orxCOLOR *_pstColor)
   /* Clamps RGB components */
   orxVector_Clamp(&vColor, &(_pstColor->vRGB), &orxVECTOR_0, &orxVECTOR_WHITE);
 
+  /* De-normalizes vector */
+  orxVector_Mulf(&vColor, &vColor, orxRGBA_DENORMALIZER);
+
   /* Clamps alpha */
   fAlpha = orxCLAMP(_pstColor->fAlpha, orxFLOAT_0, orxFLOAT_1);
 
   /* Updates result */
-  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(255.0f * fAlpha));
+  stResult = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxF2U(orxRGBA_DENORMALIZER * fAlpha));
 
   /* Done! */
   return stResult;
