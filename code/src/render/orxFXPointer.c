@@ -84,10 +84,10 @@ typedef struct __orxFXPOINTER_HOLDER_t
  */
 struct __orxFXPOINTER_t
 {
-  orxSTRUCTURE            stStructure;                      /**< Public structure, first structure member : 16 */
-  orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER];/**< FX list : 64 */
-  orxFLOAT                fTime;                            /**< Time stamp : 68 */
-  const orxSTRUCTURE  *pstOwner;                         /**< Owner structure : 72 */
+  orxSTRUCTURE            stStructure;                            /**< Public structure, first structure member : 16 */
+  orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER]; /**< FX list : 64 */
+  orxFLOAT                fTime;                                  /**< Time stamp : 68 */
+  const orxSTRUCTURE     *pstOwner;                               /**< Owner structure : 72 */
 
   /* Padding */
   orxPAD(72)
@@ -337,6 +337,7 @@ void orxFXPointer_Exit()
 }
 
 /** Creates an empty FXPointer
+ * @param[in]   _pstOwner       FXPointer's owner used for event callbacks (usually an orxOBJECT)
  * @return      Created orxFXPOINTER / orxNULL
  */
 orxFXPOINTER *orxFXPointer_Create(const orxSTRUCTURE *_pstOwner)
@@ -644,6 +645,27 @@ orxSTATUS orxFASTCALL orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, 
   return eResult;
 }
 
+/** Adds a unique FX using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_AddUniqueFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+
+  /* Adds FX */
+  eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(_pstFXPointer, _zFXConfigID, orxFLOAT_0);
+
+  /* Done! */
+  return eResult;
+}
+
 /** Adds a delayed FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to add
@@ -722,20 +744,25 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
   return eResult;
 }
 
-/** Removes an FX using using its config ID
+/** Adds a unique delayed FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
- * @param[in]   _zFXConfigID  Config ID of the FX to remove
+ * @param[in]   _zFXConfigID  Config ID of the FX to add
+ * @param[in]   _fDelay       Delay time
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID)
+orxSTATUS orxFASTCALL orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
 {
-  orxU32    i;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxU32    i, u32ID;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFXPointer);
   orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+  orxASSERT(_fDelay >= orxFLOAT_0);
+
+  /* Gets ID */
+  u32ID = orxString_ToCRC(_zFXConfigID); 
 
   /* For all slots */
   for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
@@ -749,7 +776,58 @@ orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointe
     if(pstFX != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(_zFXConfigID) == orxString_ToCRC(orxFX_GetName(pstFX)))
+      if(orxString_ToCRC(orxFX_GetName(pstFX)) == u32ID)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+
+        break;
+      }
+    }
+  }
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Adds delayed FX */
+    eResult = orxFXPointer_AddDelayedFXFromConfig(_pstFXPointer, _zFXConfigID, _fDelay);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes an FX using using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFXPointer_RemoveFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID)
+{
+  orxU32    i, u32ID;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFXPointer);
+  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+
+  /* Gets ID */
+  u32ID = orxString_ToCRC(_zFXConfigID); 
+
+  /* For all slots */
+  for(i = 0; i < orxFXPOINTER_KU32_FX_NUMBER; i++)
+  {
+    orxFX *pstFX;
+
+    /* Gets FX */
+    pstFX = _pstFXPointer->astFXList[i].pstFX;
+
+    /* Valid? */
+    if(pstFX != orxNULL)
+    {
+      /* Found? */
+      if(orxString_ToCRC(orxFX_GetName(pstFX)) == u32ID)
       {
         orxFX_EVENT_PAYLOAD stPayload;
 

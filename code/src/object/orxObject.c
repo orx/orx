@@ -43,6 +43,7 @@
 #include "object/orxSpawner.h"
 #include "render/orxCamera.h"
 #include "render/orxFXPointer.h"
+#include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
 
 
@@ -2664,19 +2665,36 @@ orxCOLOR *orxFASTCALL orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *
  */
 orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
 
-  /* Is object active? */
-  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
-  {
-    /* Adds FX */
-    eResult = orxObject_AddDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
-  }
+  /* Adds FX */
+  eResult = orxObject_AddDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a unique FX using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_AddUniqueFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+
+  /* Adds FX */
+  eResult = orxObject_AddUniqueDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
 
   /* Done! */
   return eResult;
@@ -2732,6 +2750,63 @@ orxSTATUS orxFASTCALL orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTR
     {
       /* Adds FX from config */
       eResult = orxFXPointer_AddDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a unique delayed FX using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay)
+{
+  orxFXPOINTER *pstFXPointer;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zFXConfigID != orxNULL) && (_zFXConfigID != orxSTRING_EMPTY));
+  orxASSERT(_fDelay >= orxFLOAT_0);
+
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    /* Gets its FXPointer */
+    pstFXPointer = orxOBJECT_GET_STRUCTURE(_pstObject, FXPOINTER);
+
+    /* Doesn't exist? */
+    if(pstFXPointer == orxNULL)
+    {
+      /* Creates one */
+      pstFXPointer = orxFXPointer_Create(orxSTRUCTURE(_pstObject));
+
+      /* Valid? */
+      if(pstFXPointer != orxNULL)
+      {
+        /* Links it */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstFXPointer));
+
+        /* Valid? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates flags */
+          orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_FXPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Adds FX from config */
+          eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
+        }
+      }
+    }
+    else
+    {
+      /* Adds FX from config */
+      eResult = orxFXPointer_AddUniqueDelayedFXFromConfig(pstFXPointer, _zFXConfigID, _fDelay);
     }
   }
 

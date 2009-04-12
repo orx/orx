@@ -81,8 +81,8 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
     else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
     {
       /* Adds bump FX on both objects */
-      orxObject_AddFX(orxOBJECT(_pstEvent->hSender), "Bump");
-      orxObject_AddFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+      orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
+      orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
     }
   }
 
@@ -148,7 +148,7 @@ void orxFASTCALL    orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, void *_
       if((pstObject) && (!orxString_Compare(orxObject_GetName(pstObject), "Ball")))
       {
         /* Adds FX */
-        orxObject_AddFX(pstObject, "Pick");
+        orxObject_AddUniqueFX(pstObject, "Pick");
       }
     }
   }
