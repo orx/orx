@@ -49,6 +49,8 @@
             include/render/orxFX.h
             include/render/orxFXPointer.h
             include/render/orxRender.h
+            include/render/orxShader.h
+            include/render/orxShaderPointer.h
             include/render/orxViewport.h
         </headers>
         <sources>
@@ -56,6 +58,8 @@
             src/render/orxFX.c
             src/render/orxFXPointer.c
             src/render/orxRender.c
+            src/render/orxShader.c
+            src/render/orxShaderPointer.c
             src/render/orxViewport.c
         </sources>
 

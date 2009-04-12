@@ -61,10 +61,12 @@
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <File Name="../../../src/render/orxCamera.c"/>
-      <File Name="../../../src/render/orxRender.c"/>
-      <File Name="../../../src/render/orxViewport.c"/>
       <File Name="../../../src/render/orxFX.c"/>
       <File Name="../../../src/render/orxFXPointer.c"/>
+      <File Name="../../../src/render/orxRender.c"/>
+      <File Name="../../../src/render/orxShader.c"/>
+      <File Name="../../../src/render/orxShaderPointer.c"/>
+      <File Name="../../../src/render/orxViewport.c"/>
     </VirtualDirectory>
     <VirtualDirectory Name="sound">
       <File Name="../../../src/sound/orxSound.c"/>
@@ -165,10 +167,12 @@
     </VirtualDirectory>
     <VirtualDirectory Name="render">
       <File Name="../../../include/render/orxCamera.h"/>
-      <File Name="../../../include/render/orxRender.h"/>
-      <File Name="../../../include/render/orxViewport.h"/>
       <File Name="../../../include/render/orxFX.h"/>
       <File Name="../../../include/render/orxFXPointer.h"/>
+      <File Name="../../../include/render/orxRender.h"/>
+      <File Name="../../../include/render/orxShader.h"/>
+      <File Name="../../../include/render/orxShaderPointer.h"/>
+      <File Name="../../../include/render/orxViewport.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="sound">
       <File Name="../../../include/sound/orxSound.h"/>

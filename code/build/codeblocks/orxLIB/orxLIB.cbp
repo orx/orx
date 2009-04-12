@@ -142,6 +142,8 @@
 		<Unit filename="..\..\..\include\render\orxFX.h" />
 		<Unit filename="..\..\..\include\render\orxFXPointer.h" />
 		<Unit filename="..\..\..\include\render\orxRender.h" />
+		<Unit filename="..\..\..\include\render\orxShader.h" />
+		<Unit filename="..\..\..\include\render\orxShaderPointer.h" />
 		<Unit filename="..\..\..\include\render\orxViewport.h" />
 		<Unit filename="..\..\..\include\sound\orxSound.h" />
 		<Unit filename="..\..\..\include\sound\orxSoundPointer.h" />
@@ -261,6 +263,12 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\render\orxRender.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\render\orxShader.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="..\..\..\src\render\orxShaderPointer.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="..\..\..\src\render\orxViewport.c">
