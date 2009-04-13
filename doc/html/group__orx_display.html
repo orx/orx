@@ -138,6 +138,18 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxRGBA&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g9e09aae2b13a215ddb8268106f6164c6">orxDisplay_GetBitmapColor</a> (const <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g10eba98454ce17c0d3593e5216b9d54b">orxDisplay_CreateShader</a> (const orxSTRING _zCode, const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *_pstParamList)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gf779917d7497dbcee88a023d93fa5f3b">orxDisplay_DeleteShader</a> (orxHANDLE _hShader)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gc9911ce2a842f62956affcc0d9699049">orxDisplay_RenderShader</a> (const orxHANDLE _hShader)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g55b3e8bea6f983e014d1aff77da387fe">orxDisplay_SetShaderBitmap</a> (orxHANDLE _hShader, const orxSTRING _zParam, <a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstValue)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gab5545fad00618208ddd8fedc308d901">orxDisplay_SetShaderFloat</a> (orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gfeffdfec9aecfec6dfd29c41d4e6e977">orxDisplay_SetShaderVector</a> (orxHANDLE _hShader, const orxSTRING _zParam, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvValue)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxHANDLE&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gcc540159318cedab7ba86d8d14ea5307">orxDisplay_GetApplicationInput</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#g4b3bb77b30baed2b49fdcff79f7cfaaa">orxDisplay_EnableVSync</a> (orxBOOL _bEnable)</td></tr>
@@ -730,6 +742,42 @@ Creates a bitmap <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g10eba98454ce17c0d3593e5216b9d54b"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_CreateShader" ref="g10eba98454ce17c0d3593e5216b9d54b" args="(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxHANDLE orxDisplay_CreateShader           </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zCode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_l_i_n_k_l_i_s_t.html">orxLINKLIST</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstParamList</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Creates (compiles) a shader <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zCode</em>&nbsp;</td><td>Shader code to compile </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstParamList</em>&nbsp;</td><td>Shader parameters (should be a link list of <a class="el" href="structorx_s_h_a_d_e_r___p_a_r_a_m.html">orxSHADER_PARAM</a>) </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxHANDLE of the compiled shader is successful, orxHANDLE_UNDEFINED otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g0c297bdbf33fe39dc7c53fdab278c2b2"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_CreateText" ref="g0c297bdbf33fe39dc7c53fdab278c2b2" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -770,6 +818,31 @@ Creates an empty text <dl class="return" compact><dt><b>Returns:</b></dt><dd>orx
 Deletes a bitmap <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBitmap</em>&nbsp;</td><td>Concerned bitmap </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gf779917d7497dbcee88a023d93fa5f3b"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_DeleteShader" ref="gf779917d7497dbcee88a023d93fa5f3b" args="(orxHANDLE _hShader)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxDisplay_DeleteShader           </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&nbsp;</td>
+          <td class="paramname"> <em>_hShader</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Deletes a compiled shader <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hShader</em>&nbsp;</td><td>Shader to delete </td></tr>
   </table>
 </dl>
 
@@ -1201,6 +1274,32 @@ Prints a string <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="gc9911ce2a842f62956affcc0d9699049"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_RenderShader" ref="gc9911ce2a842f62956affcc0d9699049" args="(const orxHANDLE _hShader)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_RenderShader           </td>
+          <td>(</td>
+          <td class="paramtype">const orxHANDLE&nbsp;</td>
+          <td class="paramname"> <em>_hShader</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Renders a shader <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hShader</em>&nbsp;</td><td>Shader to render </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g4d1a7ff9353a90615d065333763d1ada"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SaveBitmap" ref="g4d1a7ff9353a90615d065333763d1ada" args="(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1367,6 +1466,135 @@ Sets a bitmap color key (used with non alpha transparency) <dl compact><dt><b>Pa
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBitmap</em>&nbsp;</td><td>Concerned bitmap </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_stColor</em>&nbsp;</td><td>Color to use as transparent one </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bEnable</em>&nbsp;</td><td>Enable / disable transparence for this color </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g55b3e8bea6f983e014d1aff77da387fe"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetShaderBitmap" ref="g55b3e8bea6f983e014d1aff77da387fe" args="(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_SetShaderBitmap           </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&nbsp;</td>
+          <td class="paramname"> <em>_hShader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zParam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_display.html#g9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets a shader parameter (orxBITMAP) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hShader</em>&nbsp;</td><td>Concerned shader </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zParam</em>&nbsp;</td><td>Parameter to set </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstValue</em>&nbsp;</td><td>Value (orxBITMAP) for this parameter </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gab5545fad00618208ddd8fedc308d901"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetShaderFloat" ref="gab5545fad00618208ddd8fedc308d901" args="(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_SetShaderFloat           </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&nbsp;</td>
+          <td class="paramname"> <em>_hShader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zParam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets a shader parameter (orxFLOAT) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hShader</em>&nbsp;</td><td>Concerned shader </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zParam</em>&nbsp;</td><td>Parameter to set </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fValue</em>&nbsp;</td><td>Value (orxFLOAT) for this parameter </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gfeffdfec9aecfec6dfd29c41d4e6e977"></a><!-- doxytag: member="orxDisplay.h::orxDisplay_SetShaderVector" ref="gfeffdfec9aecfec6dfd29c41d4e6e977" args="(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxDisplay_SetShaderVector           </td>
+          <td>(</td>
+          <td class="paramtype">orxHANDLE&nbsp;</td>
+          <td class="paramname"> <em>_hShader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zParam</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Sets a shader parameter (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_hShader</em>&nbsp;</td><td>Concerned shader </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zParam</em>&nbsp;</td><td>Parameter to set </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvValue</em>&nbsp;</td><td>Value (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>) for this parameter </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

@@ -83,10 +83,10 @@
  */
 typedef struct __orxINPUT_BINDING_t
 {
-  orxINPUT_TYPE   eType;                                        /**< Input type : 4 */
-  orxENUM         eID;                                          /**< Input ID : 8 */
-  orxFLOAT        fThreshold;                                   /**< Threshold : 12 */
-  orxFLOAT        fValue;                                       /**< Value : 16 */
+  orxINPUT_TYPE   eType;                                          /**< Input type : 4 */
+  orxENUM         eID;                                            /**< Input ID : 8 */
+  orxFLOAT        fThreshold;                                     /**< Threshold : 12 */
+  orxFLOAT        fValue;                                         /**< Value : 16 */
 
   orxPAD(16)
 
@@ -96,10 +96,10 @@ typedef struct __orxINPUT_BINDING_t
  */
 typedef struct __orxINPUT_ENTRY_t
 {
-  orxLINKLIST_NODE  stNode;                                     /**< List node : 12 */
-  orxSTRING         zName;                                      /**< Entry name : 16 */
-  orxU32            u32ID;                                      /**< Name ID (CRC) : 20 */
-  orxU32            u32Status;                                  /**< Entry status : 24 */
+  orxLINKLIST_NODE  stNode;                                       /**< List node : 12 */
+  orxSTRING         zName;                                        /**< Entry name : 16 */
+  orxU32            u32ID;                                        /**< Name ID (CRC) : 20 */
+  orxU32            u32Status;                                    /**< Entry status : 24 */
 
   orxINPUT_BINDING  astBindingList[orxINPUT_KU32_BINDING_NUMBER]; /**< Entry binding list : 88 */
 
@@ -111,11 +111,11 @@ typedef struct __orxINPUT_ENTRY_t
  */
 typedef struct __orxINPUT_SET_t
 {
-  orxLINKLIST_NODE  stNode;                                     /**< List node : 12 */
-  orxBANK          *pstEntryBank;                               /**< Entry bank : 16 */
-  orxSTRING         zName;                                      /**< Set name : 20 */
-  orxU32            u32ID;                                      /**< Set CRC : 24 */
-  orxLINKLIST       stEntryList;                                /**< Entry list : 36 */
+  orxLINKLIST_NODE  stNode;                                       /**< List node : 12 */
+  orxBANK          *pstEntryBank;                                 /**< Entry bank : 16 */
+  orxSTRING         zName;                                        /**< Set name : 20 */
+  orxU32            u32ID;                                        /**< Set CRC : 24 */
+  orxLINKLIST       stEntryList;                                  /**< Entry list : 36 */
 
 } orxINPUT_SET;
 
@@ -123,11 +123,11 @@ typedef struct __orxINPUT_SET_t
  */
 typedef struct __orxINPUT_STATIC_t
 {
-  orxBANK      *pstSetBank;                                     /**< Set bank */
-  orxINPUT_SET *pstCurrentSet;                                  /**< Current set */
-  orxFLOAT      fJoystickAxisThreshold;                         /**< Joystick axis threshold */
-  orxU32        u32Flags;                                       /**< Control flags */
-  orxLINKLIST   stSetList;                                      /**< Set list */
+  orxBANK      *pstSetBank;                                       /**< Set bank */
+  orxINPUT_SET *pstCurrentSet;                                    /**< Current set */
+  orxFLOAT      fJoystickAxisThreshold;                           /**< Joystick axis threshold */
+  orxU32        u32Flags;                                         /**< Control flags */
+  orxLINKLIST   stSetList;                                        /**< Set list */
 
 } orxINPUT_STATIC;
 

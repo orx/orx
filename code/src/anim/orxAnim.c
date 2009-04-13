@@ -86,8 +86,6 @@ struct __orxANIM_t
   orxSTRUCTURE  stStructure;                /**< Public structure, first structure member : 16 */
   orxSTRING     zName;                      /**< Anim name : 20 */
   orxANIM_KEY  *astKeyList;                 /**< Key array : 24 */
-
-  orxPAD(24)
 };
 
 

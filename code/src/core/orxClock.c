@@ -90,12 +90,12 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
  */
 struct __orxCLOCK_t
 {
-  orxLINKLIST_NODE  stNode;                         /**< Clock list node : 12 */
-  orxCLOCK_INFO     stClockInfo;                    /**< Clock Info Structure : 36 */
-  orxFLOAT          fPartialDT;                     /**< Clock partial DT : 40 */
-  orxBANK          *pstFunctionBank;                /**< Function bank : 44 */
-  orxLINKLIST       stFunctionList;                 /**< Function list : 48 */
-  orxU32            u32Flags;                       /**< Clock flags : 60 */
+  orxLINKLIST_NODE  stNode;                     /**< Clock list node : 12 */
+  orxCLOCK_INFO     stClockInfo;                /**< Clock Info Structure : 36 */
+  orxFLOAT          fPartialDT;                 /**< Clock partial DT : 40 */
+  orxBANK          *pstFunctionBank;            /**< Function bank : 44 */
+  orxLINKLIST       stFunctionList;             /**< Function list : 48 */
+  orxU32            u32Flags;                   /**< Clock flags : 60 */
 
   orxPAD(60)
 };

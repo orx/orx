@@ -104,9 +104,6 @@ struct __orxSPAWNER_t
   orxFLOAT            fWaveTimeStamp;             /**< Wave time stamp : 48 */
   orxFLOAT            fWaveDelay;                 /**< Active objects counter : 52 */
   orxU32              u32WaveNumber;              /**< Total spawned objects counter : 56 */
-
-  /* Padding */
-  orxPAD(56)
 };
 
 /** Static structure

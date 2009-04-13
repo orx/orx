@@ -88,16 +88,13 @@ struct __orxFXPOINTER_t
   orxFXPOINTER_HOLDER     astFXList[orxFXPOINTER_KU32_FX_NUMBER]; /**< FX list : 64 */
   orxFLOAT                fTime;                                  /**< Time stamp : 68 */
   const orxSTRUCTURE     *pstOwner;                               /**< Owner structure : 72 */
-
-  /* Padding */
-  orxPAD(72)
 };
 
 /** Static structure
  */
 typedef struct __orxFXPOINTER_STATIC_t
 {
-  orxU32 u32Flags;                                            /**< Control flags */
+  orxU32 u32Flags;                                          /**< Control flags */
 
 } orxFXPOINTER_STATIC;
 

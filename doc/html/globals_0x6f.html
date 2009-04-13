@@ -763,10 +763,14 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#g17ee1f1e8a3813e2dce41dc470f7a8e8">orxDisplay.h</a>
 <li>orxDisplay_CreateBitmap()
 : <a class="el" href="group__orx_display.html#g10d02ff995e6b3e30ef4b1d1051620bb">orxDisplay.h</a>
+<li>orxDisplay_CreateShader()
+: <a class="el" href="group__orx_display.html#g10eba98454ce17c0d3593e5216b9d54b">orxDisplay.h</a>
 <li>orxDisplay_CreateText()
 : <a class="el" href="group__orx_display.html#g0c297bdbf33fe39dc7c53fdab278c2b2">orxDisplay.h</a>
 <li>orxDisplay_DeleteBitmap()
 : <a class="el" href="group__orx_display.html#gd417eb42b3d35ce30d3e0410d1aee95a">orxDisplay.h</a>
+<li>orxDisplay_DeleteShader()
+: <a class="el" href="group__orx_display.html#gf779917d7497dbcee88a023d93fa5f3b">orxDisplay.h</a>
 <li>orxDisplay_DeleteText()
 : <a class="el" href="group__orx_display.html#g5b1e7f3bcd2be42763f71ea02e8cc11c">orxDisplay.h</a>
 <li>orxDisplay_EnableVSync()
@@ -817,6 +821,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#gafb18249a00c43339178e8c0b60213a0">orxDisplay.h</a>
 <li>orxDisplay_PrintString()
 : <a class="el" href="group__orx_display.html#g6285c63b11fd725b2050cef02a60aaad">orxDisplay.h</a>
+<li>orxDisplay_RenderShader()
+: <a class="el" href="group__orx_display.html#gc9911ce2a842f62956affcc0d9699049">orxDisplay.h</a>
 <li>orxDisplay_SaveBitmap()
 : <a class="el" href="group__orx_display.html#g4d1a7ff9353a90615d065333763d1ada">orxDisplay.h</a>
 <li>orxDisplay_SetBitmapClipping()
@@ -825,6 +831,12 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_display.html#g02e148e1092a50096206d85ac1530156">orxDisplay.h</a>
 <li>orxDisplay_SetBitmapColorKey()
 : <a class="el" href="group__orx_display.html#g5c5d0a39d6ef154625c071269e1c203a">orxDisplay.h</a>
+<li>orxDisplay_SetShaderBitmap()
+: <a class="el" href="group__orx_display.html#g55b3e8bea6f983e014d1aff77da387fe">orxDisplay.h</a>
+<li>orxDisplay_SetShaderFloat()
+: <a class="el" href="group__orx_display.html#gab5545fad00618208ddd8fedc308d901">orxDisplay.h</a>
+<li>orxDisplay_SetShaderVector()
+: <a class="el" href="group__orx_display.html#gfeffdfec9aecfec6dfd29c41d4e6e977">orxDisplay.h</a>
 <li>orxDisplay_SetTextFont()
 : <a class="el" href="group__orx_display.html#g4dc4c50b9aa81742e82535c954134d1a">orxDisplay.h</a>
 <li>orxDisplay_SetTextString()
@@ -859,16 +871,16 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_event.html#gd3653f62476212639c89755441d135aa">orxEvent.h</a>
 <li>orxEVENT_HANDLER
 : <a class="el" href="group__orx_event.html#g30a8b5c0b1b466b6db9da6d6e17497b9">orxEvent.h</a>
-<li>orxEVENT_INIT
-: <a class="el" href="group__orx_event.html#g5a878336878f2e429bc83fda86366fdf">orxEvent.h</a>
 <li>orxEvent_Init()
 : <a class="el" href="group__orx_event.html#g1a42913c0db622813c78a7b0e7fbc344">orxEvent.h</a>
+<li>orxEVENT_INIT
+: <a class="el" href="group__orx_event.html#g5a878336878f2e429bc83fda86366fdf">orxEvent.h</a>
 <li>orxEvent_RemoveHandler()
 : <a class="el" href="group__orx_event.html#g1276f3b9f69a7f1f82a841bafc2ab532">orxEvent.h</a>
-<li>orxEVENT_SEND
-: <a class="el" href="group__orx_event.html#g2f729cf409fa798b17fd3a26df94c345">orxEvent.h</a>
 <li>orxEvent_Send()
 : <a class="el" href="group__orx_event.html#g3435f918d28e1f6f606b6c76f46cdedb">orxEvent.h</a>
+<li>orxEVENT_SEND
+: <a class="el" href="group__orx_event.html#g2f729cf409fa798b17fd3a26df94c345">orxEvent.h</a>
 <li>orxEvent_SendShort()
 : <a class="el" href="group__orx_event.html#g2305585afe32179ee80f9277892d555d">orxEvent.h</a>
 <li>orxEvent_Setup()
@@ -895,6 +907,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8707ba32273ced7fa1dba95fcb8836d4b">orxEvent.h</a>
 <li>orxEVENT_TYPE_RENDER
 : <a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8b79eabe1d47047e4698b31e03b05f91c">orxEvent.h</a>
+<li>orxEVENT_TYPE_SHADER
+: <a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd87e85f40a47f2a73c1ab09b1f0241cab2">orxEvent.h</a>
 <li>orxEVENT_TYPE_SOUND
 : <a class="el" href="group__orx_event.html#gg4576598772ee9b827a80ca5b6c9a6cd8871a91df2463417ce5acc81bb4a20448">orxEvent.h</a>
 <li>orxEVENT_TYPE_SPAWNER
@@ -2000,8 +2014,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxMouse_ShowCursor()
 : <a class="el" href="group__orx_mouse.html#g4cf4855cb6197a1938c6fdc07801a38c">orxMouse.h</a>
 <li>orxOBJECT
-: <a class="el" href="group__orx_structure.html#g197e66bf3102a9e7550514f287738bae">orxStructure.h</a>
-, <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxObject.h</a>
+: <a class="el" href="group__orx_object.html#g780c6211b200bb2a9f0ca89eba707457">orxObject.h</a>
+, <a class="el" href="group__orx_structure.html#g197e66bf3102a9e7550514f287738bae">orxStructure.h</a>
 <li>orxObject_AddDelayedFX()
 : <a class="el" href="group__orx_object.html#g2147a7d2e2a692f7b63059292a9c04ee">orxObject.h</a>
 <li>orxObject_AddFX()
@@ -2144,6 +2158,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_object.html#gbdcaee14a478db176742221062c1f495">orxObject.h</a>
 <li>orxObject_SetScale()
 : <a class="el" href="group__orx_object.html#ga544cfd6d9db515d6ef46429b101bc4c">orxObject.h</a>
+<li>orxObject_SetShader()
+: <a class="el" href="group__orx_object.html#ge3ec238f8f272853e91cc0c890b22277">orxObject.h</a>
 <li>orxObject_SetSmoothing()
 : <a class="el" href="group__orx_object.html#g3b0b13fce2f6979246d9fd16074e8390">orxObject.h</a>
 <li>orxObject_SetSpeed()
@@ -2318,6 +2334,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#g9533c138e64ba45a78b4f50fb819a919">orxPluginCore.h</a>
 <li>orxPLUGIN_DEFINE_CORE_FUNCTION
 : <a class="el" href="group__orx_plugin.html#gd253c9a502d7eeec40aed6efeab4b4b7">orxPluginCore.h</a>
+<li>orxPLUGIN_DEFINE_CORE_FUNCTION_FASTCALL
+: <a class="el" href="group__orx_plugin.html#g81e7359c8bda878d06a62f210ec5d4fe">orxPluginCore.h</a>
 <li>orxPLUGIN_END_CORE_FUNCTION_ARRAY
 : <a class="el" href="group__orx_plugin.html#g7416306ffde890b27a29471229a906d9">orxPluginCore.h</a>
 <li>orxPlugin_Exit()
@@ -2332,10 +2350,14 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7b8020743b02b1a0db3be93591df9a603">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_BITMAP
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb72729ce2f543450a0550fd5a49da17997">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_SHADER
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7f74c29dfefba0f52d16dc8b768f23141">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_TEXT
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7581dd07e5e6fae5dfb3885df61974326">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_BITMAP
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb785a788b532e49c22ddd53cf3b7f023be">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_SHADER
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7df5ca207356971bf20fa8b9a3fdd19c4">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_TEXT
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7f754831795f90be6bb25c1998aa39cf9">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_ENABLE_VSYNC
@@ -2370,6 +2392,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb75ab7a1fd2bc1006f19375ae004c10992">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_PRINT_STRING
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb79041d0affd57e935b25fa225de3307f8">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_RENDER_SHADER
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb77f5b32db85b18b8bfb12f1d9dd14dcef">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SAVE_BITMAP
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb79e032ed77785bf4e0ea6f6d09d33fadb">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_BITMAP_CLIPPING
@@ -2378,6 +2402,12 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7b22f7dfca21b165612ce5baa68e10a1a">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_BITMAP_COLOR_KEY
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb75d886cbe14f03e0da1872b0b3d697b08">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7618d76e814a5b5e7aa3bbb3d33b63855">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7a692fa753cd4b971738b434058bade1f">orxPlugin_Display.h</a>
+<li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_VECTOR
+: <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7a35d79123513b6e51b89287f7b514395">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_TEXT_FONT
 : <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb724cbb8d9198373acfe91dcb84726570f">orxPlugin_Display.h</a>
 <li>orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_TEXT_STRING
@@ -2729,8 +2759,12 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxScreenshot_Setup()
 : <a class="el" href="group__orx_screenshot.html#g18662a7c1cd3ba462c5a613eaf066e79">orxScreenshot.h</a>
 <li>orxSHADER
-: <a class="el" href="group__orx_structure.html#g4bfcd9340edee123c745f73a86fc1394">orxStructure.h</a>
-, <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+: <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+, <a class="el" href="group__orx_structure.html#g4bfcd9340edee123c745f73a86fc1394">orxStructure.h</a>
+<li>orxShader_AddParam()
+: <a class="el" href="group__orx_shader.html#gb0d489135c17f37d32154e35509ac247">orxShader.h</a>
+<li>orxShader_CompileCode()
+: <a class="el" href="group__orx_shader.html#g80c39a9086eab3bd3e1b143c27cfb87e">orxShader.h</a>
 <li>orxShader_Create()
 : <a class="el" href="group__orx_shader.html#gd79c7d6678ab502298b822686722eadf">orxShader.h</a>
 <li>orxShader_CreateFromConfig()
@@ -2739,19 +2773,43 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_shader.html#g87e4282c60db4362287cc0c2e8e40c72">orxShader.h</a>
 <li>orxShader_Enable()
 : <a class="el" href="group__orx_shader.html#gc27e790b7913206f56fd598822ee9f47">orxShader.h</a>
+<li>orxSHADER_EVENT
+: <a class="el" href="group__orx_shader.html#g90de18f99b8a163957f646599ffeeaca">orxShader.h</a>
+<li>orxSHADER_EVENT_NONE
+: <a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacac416b96da88670103344193de66a0bdb">orxShader.h</a>
+<li>orxSHADER_EVENT_NUMBER
+: <a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeaca8560e39f9fc07b9674f9a0107a09443e">orxShader.h</a>
+<li>orxSHADER_EVENT_SET_PARAM
+: <a class="el" href="group__orx_shader.html#gg90de18f99b8a163957f646599ffeeacad7c6f6302130a3c9f77213e94b7d042c">orxShader.h</a>
 <li>orxShader_Exit()
 : <a class="el" href="group__orx_shader.html#gaa8a1d9229988b3a8f0b90ca2ca117fb">orxShader.h</a>
 <li>orxShader_GetName()
 : <a class="el" href="group__orx_shader.html#gfb33ac8cb6d593ce19a1c84a5b8f59b3">orxShader.h</a>
+<li>orxShader_GetParamList()
+: <a class="el" href="group__orx_shader.html#g107c0364f5c749d496cfc11cf3b9f37d">orxShader.h</a>
 <li>orxShader_Init()
 : <a class="el" href="group__orx_shader.html#g5a1dbfa4a946823ba23df5b7c83cef60">orxShader.h</a>
 <li>orxShader_IsEnabled()
 : <a class="el" href="group__orx_shader.html#g90b62cdab01eb571ac8fb4d1c1620a84">orxShader.h</a>
+<li>orxSHADER_PARAM_TYPE
+: <a class="el" href="group__orx_shader.html#g94512a95acea8de509b7346199eab3a1">orxShader.h</a>
+<li>orxSHADER_PARAM_TYPE_FLOAT
+: <a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a116c0efd019bd520dfef7cc1a19efc26a">orxShader.h</a>
+<li>orxSHADER_PARAM_TYPE_NONE
+: <a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1e8c16c8688ffafb0fe266979acbdb235">orxShader.h</a>
+<li>orxSHADER_PARAM_TYPE_NUMBER
+: <a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a179b1160d3951ebf59306904384103932">orxShader.h</a>
+<li>orxSHADER_PARAM_TYPE_TEXTURE
+: <a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a1ca1cd5084b7446611bf9da4f12825ab6">orxShader.h</a>
+<li>orxSHADER_PARAM_TYPE_VECTOR
+: <a class="el" href="group__orx_shader.html#gg94512a95acea8de509b7346199eab3a136cbd46542870010116d81e44c5e1e44">orxShader.h</a>
+<li>orxShader_Render()
+: <a class="el" href="group__orx_shader.html#g9ed83d2b44f95515488e46e7d2dd2866">orxShader.h</a>
 <li>orxShader_Setup()
 : <a class="el" href="group__orx_shader.html#gad6d7a56c41ac44cf1598f98c8aa8fdd">orxShader.h</a>
 <li>orxSHADERPOINTER
-: <a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxShaderPointer.h</a>
-, <a class="el" href="group__orx_structure.html#g0945ea6370b07ffaffd1de03801b188b">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#g0945ea6370b07ffaffd1de03801b188b">orxStructure.h</a>
+, <a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxShaderPointer.h</a>
 <li>orxShaderPointer_Create()
 : <a class="el" href="group__orx_shader_pointer.html#g59b33e4070d77440a32acae16b3760df">orxShaderPointer.h</a>
 <li>orxShaderPointer_Delete()
@@ -2767,7 +2825,7 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxShaderPointer_IsEnabled()
 : <a class="el" href="group__orx_shader_pointer.html#gdea9d751461d3985b3bf9d8ec0327be5">orxShaderPointer.h</a>
 <li>orxShaderPointer_Render()
-: <a class="el" href="group__orx_shader_pointer.html#gcd718d10db3b64de73b1cbb264cfb72b">orxShaderPointer.h</a>
+: <a class="el" href="group__orx_shader_pointer.html#gc801582e1f5b0ff5cc6fdf0cf8cc2ebd">orxShaderPointer.h</a>
 <li>orxShaderPointer_SetShader()
 : <a class="el" href="group__orx_shader_pointer.html#ge7e48f5909a2dff79320825097629d59">orxShaderPointer.h</a>
 <li>orxShaderPointer_SetShaderFromConfig()
@@ -2775,8 +2833,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxShaderPointer_Setup()
 : <a class="el" href="group__orx_shader_pointer.html#g34a81fd88e21aa22d79e1bb96987ac48">orxShaderPointer.h</a>
 <li>orxSOUND
-: <a class="el" href="group__orx_structure.html#g2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
-, <a class="el" href="group__orx_sound.html#g58e0a61f287672d13130384705fe6c87">orxSound.h</a>
+: <a class="el" href="group__orx_sound.html#g58e0a61f287672d13130384705fe6c87">orxSound.h</a>
+, <a class="el" href="group__orx_structure.html#g2f6c8e595aae619574bfd9e00b40c994">orxStructure.h</a>
 <li>orxSound_CreateFromConfig()
 : <a class="el" href="group__orx_sound.html#g5cef112990ff5264c67eea94a66c7afe">orxSound.h</a>
 <li>orxSound_Delete()
@@ -2846,8 +2904,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSound_Stop()
 : <a class="el" href="group__orx_sound.html#g0390001e26b32b18253b9bcd3ac15e49">orxSound.h</a>
 <li>orxSOUNDPOINTER
-: <a class="el" href="group__orx_structure.html#gc20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
-, <a class="el" href="group__orx_sound_pointer.html#g9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
+: <a class="el" href="group__orx_sound_pointer.html#g9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
+, <a class="el" href="group__orx_structure.html#gc20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
 <li>orxSoundPointer_AddSound()
 : <a class="el" href="group__orx_sound_pointer.html#g0188b5336738367bfb210e8907bdfcbb">orxSoundPointer.h</a>
 <li>orxSoundPointer_AddSoundFromConfig()
@@ -2955,8 +3013,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 <li>orxSoundSystem_UnloadSample()
 : <a class="el" href="group__orx_sound_system.html#g67e59068102678b638f61e662d888847">orxSoundSystem.h</a>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_structure.html#gae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
-, <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+: <a class="el" href="group__orx_spawner.html#g92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
+, <a class="el" href="group__orx_structure.html#gae994bc4ff855d207bac0f7b8bc2cf99">orxStructure.h</a>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#g3bd0e8e0fc47acfdf8bec9c2c197b8bf">orxSpawner.h</a>
 <li>orxSpawner_CreateFromConfig()
@@ -3498,6 +3556,8 @@ Here is a list of all functions, variables, defines, enums, and typedefs with li
 : <a class="el" href="group__orx_viewport.html#g24b66707b17087ccdac32062abdfdc96">orxViewport.h</a>
 <li>orxViewport_SetRelativeSize()
 : <a class="el" href="group__orx_viewport.html#gab5478e8f7a7fbcd581b45e06733e591">orxViewport.h</a>
+<li>orxViewport_SetShader()
+: <a class="el" href="group__orx_viewport.html#gfd144a56ceffe96901a40d1e6750eab3">orxViewport.h</a>
 <li>orxViewport_SetSize()
 : <a class="el" href="group__orx_viewport.html#g2a0c78b744ddad425c221c87e7caa9d1">orxViewport.h</a>
 <li>orxViewport_SetTexture()

@@ -195,9 +195,6 @@ struct __orxFX_t
   orxSTRING     zReference;                             /**< FX reference : 20 */
   orxFLOAT      fDuration;                              /**< FX duration : 24 */
   orxFX_SLOT    astFXSlotList[orxFX_KU32_SLOT_NUMBER];  /**< FX slot list : 440 */
-
-  /* Padding */
-  orxPAD(440)
 };
 
 /** Static structure

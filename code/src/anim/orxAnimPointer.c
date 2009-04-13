@@ -90,9 +90,7 @@ struct __orxANIMPOINTER_t
   orxFLOAT                fTime;                      /**< Current Time (Absolute) : 40 */
   orxFLOAT                fFrequency;                 /**< Current animation frequency : 44 */
   orxU32                  u32CurrentKey;              /**< Current animation key : 48 */
-  const orxSTRUCTURE  *pstOwner;                   /**< Owner structure : 52 */
-
-  orxPAD(52)
+  const orxSTRUCTURE     *pstOwner;                   /**< Owner structure : 52 */
 };
 
 

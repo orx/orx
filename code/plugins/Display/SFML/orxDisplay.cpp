@@ -33,6 +33,7 @@
 #include "orxPluginAPI.h"
 
 #include <SFML/Graphics.hpp>
+#include "render/orxShader.h"
 
 
 /** Module flags
@@ -585,8 +586,8 @@ extern "C" orxSTATUS orxDisplay_SFML_PrintString(const orxBITMAP *_pstBitmap, co
 
 extern "C" void orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
-  sf::Sprite         *poSprite;
-  const sf::Image *poImage;
+  sf::Sprite       *poSprite;
+  const sf::Image  *poImage;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -1290,6 +1291,222 @@ extern "C" void orxDisplay_SFML_Exit()
   return;
 }
 
+extern "C" orxHANDLE orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+{
+  orxHANDLE hResult = orxHANDLE_UNDEFINED;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Supports post FX? */
+  if(sf::PostFX::CanUsePostFX() != false)
+  {
+    /* Valid? */
+    if((_zCode != orxNULL) && (_zCode != orxSTRING_EMPTY))
+    {
+      sf::PostFX *poFX;
+
+      /* Creates new post FX */
+      poFX = new sf::PostFX();
+
+      /* Valid? */
+      if(poFX)
+      {
+        orxSHADER_PARAM  *pstParam;
+        orxCHAR           acBuffer[32768], *pc;
+        orxS32            s32Free;
+
+        /* Inits buffer */
+        acBuffer[0] = acBuffer[32767] = orxCHAR_NULL;
+        pc          = acBuffer;
+        s32Free     = 32767;
+
+        /* For all parameters */
+        for(pstParam = (orxSHADER_PARAM *)orxLinkList_GetFirst(_pstParamList);
+            pstParam != orxNULL;
+            pstParam = (orxSHADER_PARAM *)orxLinkList_GetNext(&(pstParam->stNode)))
+        {
+          /* Depending on type */
+          switch(pstParam->eType)
+          {
+            case orxSHADER_PARAM_TYPE_FLOAT:
+            {
+              orxS32 s32Offset;
+
+              /* Adds its literal value */
+              s32Offset = orxString_NPrint(pc, s32Free, "float %s\n", pstParam->zName);
+              pc       += s32Offset;
+              s32Free  -= s32Offset;
+
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_TEXTURE:
+            {
+              orxS32 s32Offset;
+
+              /* Adds its literal value */
+              s32Offset = orxString_NPrint(pc, s32Free, "texture %s\n", pstParam->zName);
+              pc       += s32Offset;
+              s32Free  -= s32Offset;
+
+              break;
+            }
+
+            case orxSHADER_PARAM_TYPE_VECTOR:
+            {
+              orxS32 s32Offset;
+
+              /* Adds its literal value */
+              s32Offset = orxString_NPrint(pc, s32Free, "vec3 %s\n", pstParam->zName);
+              pc       += s32Offset;
+              s32Free  -= s32Offset;
+
+              break;
+            }
+
+            default:
+            {
+              break;
+            }
+          }
+        }
+
+        /* Adds code */
+        orxString_NPrint(pc, s32Free, "effect\n{\n%s\n}\n", _zCode);
+
+        /* Compiles code */
+        if(poFX->LoadFromMemory(acBuffer) != false)
+        {
+          /* Updates result */
+          hResult = (orxHANDLE)poFX;
+        }
+        else
+        {
+          /* Deletes post FX */
+          delete poFX;
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+extern "C" void orxDisplay_SFML_DeleteShader(orxHANDLE _hShader)
+{
+  sf::PostFX *poFX;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Gets post FX */
+  poFX = (sf::PostFX *)_hShader;
+
+  /* Deletes it */
+  delete poFX;
+}
+
+extern "C" orxSTATUS orxDisplay_SFML_RenderShader(orxHANDLE _hShader)
+{
+  const sf::PostFX *poFX;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+
+  /* Gets post FX */
+  poFX = (const sf::PostFX *)_hShader;
+
+  /* Renders it */
+  sstDisplay.poRenderWindow->Draw(*poFX);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
+{
+  sf::PostFX *poFX;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxNULL) && (_hShader != orxHANDLE_UNDEFINED));
+
+  /* Gets post FX */
+  poFX = (sf::PostFX *)_hShader;
+
+  /* Screen? */
+  if((_pstValue == orxNULL) || (_pstValue == spoScreen))
+  {
+    /* Sets texture */
+    poFX->SetTexture(_zParam, NULL);
+  }
+  else
+  {
+    sf::Sprite *poSprite;
+    sf::Image  *poImage;
+
+    /* Gets sprite */
+    poSprite = (sf::Sprite *)_pstValue;
+
+    /* Has image? */
+    if((poImage = const_cast<sf::Image *>(poSprite->GetImage())) != orxNULL)
+    {
+      /* Sets texture */
+      poFX->SetTexture(_zParam, poImage);
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxDisplay_SFML_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
+{
+  sf::PostFX *poFX;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxNULL) && (_hShader != orxHANDLE_UNDEFINED));
+
+  /* Gets post FX */
+  poFX = (sf::PostFX *)_hShader;
+
+  /* Sets parameter */
+  poFX->SetParameter(_zParam, _fValue);
+
+  /* Done! */
+  return eResult;
+}
+
+extern "C" orxSTATUS orxDisplay_SFML_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
+{
+  sf::PostFX *poFX;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT((_hShader != orxNULL) && (_hShader != orxHANDLE_UNDEFINED));
+
+  /* Gets post FX */
+  poFX = (sf::PostFX *)_hShader;
+
+  /* Sets parameter */
+  poFX->SetParameter(_zParam, _pvValue->fX, _pvValue->fY, _pvValue->fZ);
+
+  /* Done! */
+  return eResult;
+}
+
 extern "C" orxHANDLE orxDisplay_SFML_GetApplicationInput()
 {
   /* Checks */
@@ -1330,6 +1547,12 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetTextString, DISPLAY, GET_TEX
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetTextFont, DISPLAY, GET_TEXT_FONT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetTextSize, DISPLAY, GET_TEXT_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_PrintString, DISPLAY, PRINT_STRING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_CreateShader, DISPLAY, CREATE_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_DeleteShader, DISPLAY, DELETE_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_RenderShader, DISPLAY, RENDER_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SFML_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);

@@ -43,12 +43,72 @@
 
 #include "orxInclude.h"
 #include "math/orxVector.h"
+#include "display/orxTexture.h"
 #include "object/orxObject.h"
+#include "utils/orxLinkList.h"
+
+
+/** Shader parameter type
+ */
+typedef enum __orxSHADER_PARAM_TYPE_t
+{
+  orxSHADER_PARAM_TYPE_FLOAT = 0,
+  orxSHADER_PARAM_TYPE_TEXTURE,
+  orxSHADER_PARAM_TYPE_VECTOR,
+
+  orxSHADER_PARAM_TYPE_NUMBER,
+
+  orxSHADER_PARAM_TYPE_NONE = orxENUM_NONE
+
+} orxSHADER_PARAM_TYPE;
+
+
+/** Shader parameter structure
+ */
+typedef struct __orxSHADER_PARAM_t
+{
+  orxLINKLIST_NODE      stNode;                 /**< Linklist node : 12 */
+  orxSHADER_PARAM_TYPE  eType;                  /**< Parameter type : 16 */
+  orxSTRING             zName;                  /**< Parameter literal name : 20 */
+
+} orxSHADER_PARAM;
 
 
 /** Internal shader structure
  */
 typedef struct __orxSHADER_t                    orxSHADER;
+
+
+/** Event enum
+ */
+typedef enum __orxSHADER_EVENT_t
+{
+  orxSHADER_EVENT_SET_PARAM = 0,                /**< Event sent when setting a parameter */
+
+  orxSHADER_EVENT_NUMBER,
+
+  orxSHADER_EVENT_NONE = orxENUM_NONE
+
+} orxSHADER_EVENT;
+
+/** Shader event payload
+ */
+typedef struct __orxSHADER_EVENT_PARAM_PAYLOAD_t
+{
+  const orxSHADER      *pstShader;              /**< Shader reference : 4 */
+  orxSTRING             zShaderName;            /**< Shader name : 8 */
+
+  orxSHADER_PARAM_TYPE  eParamType;             /**< Parameter type : 12 */
+  orxSTRING             zParamName;             /**< Parameter name : 16 */
+
+  union
+  {
+    orxFLOAT    fValue;                         /**< Float value : 20 */
+    orxTEXTURE *pstValue;                       /**< Texture value : 20 */
+    orxVECTOR   vValue;                         /**< Vector value : 20 */
+  };                                            /**< Union value : 28 */
+
+} orxSHADER_EVENT_PARAM_PAYLOAD;
 
 
 /** Shader module setup
@@ -80,6 +140,35 @@ extern orxDLLAPI orxSHADER *orxFASTCALL         orxShader_CreateFromConfig(const
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Delete(orxSHADER *_pstShader);
+
+/** Renders a shader
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT / orxNULL)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Render(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner);
+
+
+/** Adds a parameter definition to a shader (parameters need to be set before compiling the shader code)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zName                  Parameter's literal name
+ * @param[in] _eType                  Parameter's type
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddParam(orxSHADER *_pstShader, const orxSTRING _zName, orxSHADER_PARAM_TYPE _eType);
+
+/** Sets shader code & compiles it (parameters need to be set before compiling the shader code)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zCode                  Shader's code to compile (parameters need to be set beforehand)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRING _zCode);
+
+/** Gets shader parameter list
+ * @param[in] _pstShader              Concerned Shader
+ * @return orxLINKLIST / orxNULL
+ */
+extern orxDLLAPI const orxLINKLIST *orxFASTCALL orxShader_GetParamList(const orxSHADER *_pstShader);
 
 /** Enables/disables a shader
  * @param[in]   _pstShader            Concerned Shader

@@ -154,8 +154,6 @@ struct __orxANIMSET_t
   orxANIMSET_LINK_TABLE  *pstLinkTable;               /**< Link table pointer : 24 */
   orxHASHTABLE           *pstIDTable;                 /**< ID hash table : 28 */
   orxSTRING               zReference;                 /**< Reference : 32 */
-
-  orxPAD(32)
 };
 
 

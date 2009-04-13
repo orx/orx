@@ -85,10 +85,7 @@ struct __orxSOUNDPOINTER_t
   orxSTRUCTURE            stStructure;                                      /**< Public structure, first structure member : 16 */
   orxSOUNDPOINTER_HOLDER  astSoundList[orxSOUNDPOINTER_KU32_SOUND_NUMBER];  /**< Sound list : 48 */
   orxU32                  u32LastAddedIndex;                                /**< Last added sound index : 52 */
-  const orxSTRUCTURE  *pstOwner;                                         /**< Owner structure : 56 */
-
-  /* Padding */
-  orxPAD(56)
+  const orxSTRUCTURE     *pstOwner;                                         /**< Owner structure : 56 */
 };
 
 /** Static structure

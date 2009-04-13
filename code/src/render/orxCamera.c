@@ -80,8 +80,6 @@ struct __orxCAMERA_t
   orxFRAME     *pstFrame;                     /**< Frame : 20 */
   orxAABOX      stFrustum;                    /**< Frustum : 44 */
   orxSTRING     zReference;                   /**< Reference : 48 */
-
-  orxPAD(48)
 };
 
 

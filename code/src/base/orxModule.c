@@ -112,26 +112,12 @@ void orxModule_RegisterAll()
  */
 typedef struct __orxMODULE_INFO_t
 {
-  /* Dependency flags : 8 */
-  orxU64                    u64DependFlags;
-
-  /* Optional dependency flags : 16 */
-  orxU64                    u64OptionalDependFlags;
-
-  /* Setup function : 20 */
-  orxMODULE_SETUP_FUNCTION  pfnSetup;
-
-  /* Init function : 24 */
-  orxMODULE_INIT_FUNCTION   pfnInit;
-
-  /* Exit function : 28 */
-  orxMODULE_EXIT_FUNCTION   pfnExit;
-
-  /* Status flags : 32 */
-  orxU32                    u32StatusFlags;
-
-  /* Padding */
-  orxPAD(32)
+  orxU64                    u64DependFlags;                 /**< Dependency flags : 8 */
+  orxU64                    u64OptionalDependFlags;         /**< Optional dependency flags : 16 */
+  orxMODULE_SETUP_FUNCTION  pfnSetup;                       /**< Setup function : 20 */
+  orxMODULE_INIT_FUNCTION   pfnInit;                        /**< Init function : 24 */
+  orxMODULE_EXIT_FUNCTION   pfnExit;                        /**< Exit function : 28 */
+  orxU32                    u32StatusFlags;                 /**< Status flags : 32 */
 
 } orxMODULE_INFO;
 

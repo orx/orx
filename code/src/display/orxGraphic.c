@@ -116,8 +116,6 @@ struct __orxGRAPHIC_t
   orxFLOAT      fHeight;                    /**< Height : 64 */
   orxFLOAT      fRepeatX;                   /**< X-axis repeat counter : 68 */
   orxFLOAT      fRepeatY;                   /**< Y-axis repeat counter : 72 */
-
-  orxPAD(72)
 };
 
 /** Static structure

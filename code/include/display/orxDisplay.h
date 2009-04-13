@@ -45,6 +45,7 @@
 
 #include "math/orxVector.h"
 #include "utils/orxString.h"
+#include "utils/orxLinkList.h"
 
 
 typedef struct __orxBITMAP_t            orxBITMAP;
@@ -444,6 +445,50 @@ extern orxDLLAPI orxSTATUS  orxDisplay_GetBitmapSize(const orxBITMAP *_pstBitmap
  * @return orxRGBA
  */
 extern orxDLLAPI orxRGBA    orxDisplay_GetBitmapColor(const orxBITMAP *_pstBitmap);
+
+
+/** Creates (compiles) a shader
+ * @param[in]   _zCode                                Shader code to compile
+ * @param[in]   _pstParamList                         Shader parameters (should be a link list of orxSHADER_PARAM)
+ * @return orxHANDLE of the compiled shader is successful, orxHANDLE_UNDEFINED otherwise
+ */
+extern orxDLLAPI orxHANDLE  orxDisplay_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList);
+
+/** Deletes a compiled shader
+ * @param[in]   _hShader                              Shader to delete
+ */
+extern orxDLLAPI void       orxDisplay_DeleteShader(orxHANDLE _hShader);
+
+/** Renders a shader
+ * @param[in]   _hShader                              Shader to render
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_RenderShader(const orxHANDLE _hShader);
+
+/** Sets a shader parameter (orxBITMAP)
+ * @param[in]   _hShader                              Concerned shader
+ * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _pstValue                             Value (orxBITMAP) for this parameter
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue);
+
+/** Sets a shader parameter (orxFLOAT)
+ * @param[in]   _hShader                              Concerned shader
+ * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _fValue                               Value (orxFLOAT) for this parameter
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue);
+
+/** Sets a shader parameter (orxVECTOR)
+ * @param[in]   _hShader                              Concerned shader
+ * @param[in]   _zParam                               Parameter to set
+ * @param[in]   _pvValue                              Value (orxVECTOR) for this parameter
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS  orxDisplay_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue);
+
 
 /** Gets application input manager (if embedded with display)
  * @return orxHANDLE / orxHANDLE_UNDEFINED

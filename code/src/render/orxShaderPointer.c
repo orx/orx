@@ -31,9 +31,14 @@
 #include "render/orxShaderPointer.h"
 
 #include "debug/orxDebug.h"
+#include "core/orxEvent.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
 #include "object/orxObject.h"
+#include "display/orxGraphic.h"
+#include "display/orxTexture.h"
+#include "render/orxRender.h"
+#include "render/orxViewport.h"
 
 
 /** Module flags
@@ -51,6 +56,8 @@
 
 #define orxSHADERPOINTER_KU32_FLAG_ENABLED          0x10000000  /**< Enabled flag */
 #define orxSHADERPOINTER_KU32_FLAG_INTERNAL         0x20000000  /**< Internal flag */
+#define orxSHADERPOINTER_KU32_FLAG_OBJECT_OWNER     0x40000000  /**< Object owner flag */
+#define orxSHADERPOINTER_KU32_FLAG_VIEWPORT_OWNER   0x80000000  /**< Viewport owner flag */
 
 #define orxSHADERPOINTER_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
@@ -63,19 +70,16 @@
  */
 struct __orxSHADERPOINTER_t
 {
-  orxSTRUCTURE          stStructure;                        /**< Public structure, first structure member : 16 */
-  orxSHADER            *pstShader;                          /**< Associated shader : 20 */
-  const orxSTRUCTURE   *pstOwner;                           /**< Owner structure : 24 */
-
-  /* Padding */
-  orxPAD(24)
+  orxSTRUCTURE          stStructure;                            /**< Public structure, first structure member : 16 */
+  orxSHADER            *pstShader;                              /**< Associated shader : 20 */
+  const orxSTRUCTURE   *pstOwner;                               /**< Owner structure : 24 */
 };
 
 /** Static structure
  */
 typedef struct __orxSHADERPOINTER_STATIC_t
 {
-  orxU32 u32Flags;                                            /**< Control flags */
+  orxU32 u32Flags;                                              /**< Control flags */
 
 } orxSHADERPOINTER_STATIC;
 
@@ -92,6 +96,71 @@ static orxSHADERPOINTER_STATIC sstShaderPointer;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
+ */
+static orxSTATUS orxFASTCALL orxShaderPointer_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RENDER);
+
+  /* Depending on event ID */
+  switch(_pstEvent->eID)
+  {
+    case orxRENDER_EVENT_OBJECT_STOP:
+    case orxRENDER_EVENT_VIEWPORT_STOP:
+    {
+      orxSHADERPOINTER *pstShaderPointer;
+
+      /* For all shader pointers */
+      for(pstShaderPointer = orxSHADERPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADERPOINTER));
+          pstShaderPointer != orxNULL;
+          pstShaderPointer = orxSHADERPOINTER(orxStructure_GetNext(pstShaderPointer)))
+      {
+        /* Corresponding owner? */
+        if(pstShaderPointer->pstOwner == orxSTRUCTURE(_pstEvent->hSender))
+        {
+          /* Renders it */
+          orxShaderPointer_Render(pstShaderPointer);
+        }
+      }
+
+      break;
+    }
+
+    case orxRENDER_EVENT_STOP:
+    {
+      orxSHADERPOINTER *pstShaderPointer;
+
+      /* For all shader pointers */
+      for(pstShaderPointer = orxSHADERPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADERPOINTER));
+          pstShaderPointer != orxNULL;
+          pstShaderPointer = orxSHADERPOINTER(orxStructure_GetNext(pstShaderPointer)))
+      {
+        /* No owner? */
+        if(pstShaderPointer->pstOwner == orxNULL)
+        {
+          /* Renders it */
+          orxShaderPointer_Render(pstShaderPointer);
+        }
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
 
 /** Deletes all the ShaderPointers
  */
@@ -126,7 +195,9 @@ void orxShaderPointer_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_SHADER);
+  orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_TEXTURE);
 
   return;
 }
@@ -144,19 +215,34 @@ orxSTATUS orxShaderPointer_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstShaderPointer, sizeof(orxSHADERPOINTER_STATIC));
 
-    /* Registers structure type */
-    eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+    /* Adds event handler */
+    eResult = orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxShaderPointer_EventHandler);
 
-    /* Initialized? */
-    if(eResult == orxSTATUS_SUCCESS)
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
     {
-      /* Inits Flags */
-      sstShaderPointer.u32Flags = orxSHADERPOINTER_KU32_STATIC_FLAG_READY;
+      /* Registers structure type */
+      eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxNULL);
+
+      /* Initialized? */
+      if(eResult == orxSTATUS_SUCCESS)
+      {
+        /* Inits Flags */
+        sstShaderPointer.u32Flags = orxSHADERPOINTER_KU32_STATIC_FLAG_READY;
+      }
+      else
+      {
+        /* Removes event handler */
+        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxShaderPointer_EventHandler);
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register linked list structure.");
+      }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register linked list structure.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register event handler.");
     }
   }
   else
@@ -214,8 +300,37 @@ orxSHADERPOINTER *orxShaderPointer_Create(const orxSTRUCTURE *_pstOwner)
   /* Created? */
   if(pstResult != orxNULL)
   {
-    /* Stores owner */
-    pstResult->pstOwner = _pstOwner;
+    /* Has owner? */
+    if(_pstOwner != orxNULL)
+    {
+      /* Stores it */
+      pstResult->pstOwner = _pstOwner;
+
+      /* Depending on owner ID */
+      switch(orxStructure_GetID(_pstOwner))
+      {
+        case orxSTRUCTURE_ID_OBJECT:
+        {
+          /* Updates flags */
+          orxStructure_SetFlags(pstResult, orxSHADERPOINTER_KU32_FLAG_OBJECT_OWNER, orxSHADERPOINTER_KU32_MASK_ALL);
+
+          break;
+        }
+
+        case orxSTRUCTURE_ID_VIEWPORT:
+        {
+          /* Updates flags */
+          orxStructure_SetFlags(pstResult, orxSHADERPOINTER_KU32_FLAG_VIEWPORT_OWNER, orxSHADERPOINTER_KU32_MASK_ALL);
+
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
+    }
 
     /* Inits flags */
     orxStructure_SetFlags(pstResult, orxSHADERPOINTER_KU32_FLAG_ENABLED, orxSHADERPOINTER_KU32_MASK_ALL);
@@ -270,6 +385,26 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
     /* Referenced by others */
     eResult = orxSTATUS_FAILURE;
   }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Renders a ShaderPointer
+ * @param[in] _pstShaderPointer     Concerned ShaderPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShaderPointer_Render(const orxSHADERPOINTER *_pstShaderPointer)
+{
+  orxTEXTURE *pstParentTexture = orxNULL;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShaderPointer);
+
+  /* Renders it */
+  eResult = orxShader_Render(_pstShaderPointer->pstShader, orxSTRUCTURE(_pstShaderPointer->pstOwner));
 
   /* Done! */
   return eResult;
@@ -350,6 +485,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_SetShader(orxSHADERPOINTER *_pstShaderPoi
   /* Had previous? */
   if(_pstShaderPointer->pstShader != orxNULL)
   {
+    /* Decreases its counter */
+    orxStructure_DecreaseCounter(_pstShaderPointer->pstShader);
+
     /* Is internal? */
     if(orxStructure_TestFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_INTERNAL))
     {
@@ -387,44 +525,32 @@ orxSTATUS orxFASTCALL orxShaderPointer_SetShader(orxSHADERPOINTER *_pstShaderPoi
  */
 orxSTATUS orxFASTCALL orxShaderPointer_SetShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSHADER  *pstShader;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShaderPointer);
   orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
 
-  /* Removes previous shader */
-  orxShaderPointer_SetShader(_pstShaderPointer, orxNULL);
+  /* Creates shader */
+  pstShader = orxShader_CreateFromConfig(_zShaderConfigID);
 
-  /* Sets Shader */
-  _pstShaderPointer->pstShader = orxShader_CreateFromConfig(_zShaderConfigID);
+  /* Sets it */
+  orxShaderPointer_SetShader(_pstShaderPointer, pstShader);
 
   /* Valid ? */
-  if(_pstShaderPointer->pstShader != orxNULL)
+  if(pstShader != orxNULL)
   {
+    /* Updates its counter */
+    orxStructure_IncreaseCounter(_pstShaderPointer->pstShader);
+
     /* Updates status */
     orxStructure_SetFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_INTERNAL, orxSHADERPOINTER_KU32_FLAG_NONE);
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
   }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Renders the ShaderPointer
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxShaderPointer_Render()
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
-
-  //! TODO
 
   /* Done! */
   return eResult;

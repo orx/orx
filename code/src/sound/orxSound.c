@@ -70,7 +70,7 @@
 #define orxSOUND_KZ_CONFIG_VOLUME                       "Volume"
 #define orxSOUND_KZ_CONFIG_REFERENCE_DISTANCE           "RefDistance"
 #define orxSOUND_KZ_CONFIG_ATTENUATION                  "Attenuation"
-#define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepDataInCache"
+#define orxSOUND_KZ_CONFIG_KEEP_IN_CACHE                "KeepInCache"
 
 
 /***************************************************************************
@@ -95,9 +95,6 @@ struct __orxSOUND_t
   orxSTRING             zReference;                     /**< Sound reference : 20 */
   orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 24 */
   orxSOUND_SAMPLE      *pstSample;                      /**< Sound sample : 28 */
-
-  /* Padding */
-  orxPAD(28)
 };
 
 /** Static structure
@@ -105,7 +102,7 @@ struct __orxSOUND_t
 typedef struct __orxSOUND_STATIC_t
 {
   orxHASHTABLE *pstReferenceTable;                      /**< Reference hash table */
-  orxBANK      *pstSampleBank;
+  orxBANK      *pstSampleBank;                          /**< Sample bank */
   orxU32        u32Flags;                               /**< Control flags */
 
 } orxSOUND_STATIC;

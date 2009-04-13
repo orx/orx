@@ -109,6 +109,7 @@
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
 #define orxOBJECT_KZ_CONFIG_FX                  "FX"
 #define orxOBJECT_KZ_CONFIG_SOUND               "Sound"
+#define orxOBJECT_KZ_CONFIG_SHADER              "Shader"
 #define orxOBJECT_KZ_CONFIG_FREQUENCY           "AnimationFrequency"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
 #define orxOBJECT_KZ_CONFIG_BLEND_MODE          "BlendMode"
@@ -155,9 +156,6 @@ struct __orxOBJECT_t
   orxFLOAT          fAngularVelocity;           /**< Angular velocity : 120 */
   orxFLOAT          fLifeTime;                  /**< Life time : 124 */
   orxSTRING         zReference;                 /**< Config reference : 128 */
-
-  /* Padding */
-  orxPAD(128)
 };
 
 /** Static structure
@@ -322,6 +320,7 @@ void orxObject_Setup()
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FXPOINTER);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SHADERPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SPAWNER);
 
@@ -539,10 +538,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyName, zSpawnerName, zCameraName;
+      orxSTRING zGraphicFileName, zAnimPointerName, zAutoScrolling, zFlipping, zBodyName, zSpawnerName, zCameraName, zValue;
       orxFRAME *pstFrame;
       orxU32    u32FrameFlags, u32Flags;
-      orxVECTOR vValue, vParentSize;
+      orxVECTOR vValue, vParentSize, vColor;
       orxBOOL   bHasParent = orxFALSE;
 
       /* Defaults to 2D flags */
@@ -741,13 +740,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       }
 
       /* Has color? */
-      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_COLOR) != orxFALSE)
+      if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor) != orxNULL)
       {
-        orxVECTOR vColor;
-
-        /* Gets its value */
-        orxConfig_GetVector(orxOBJECT_KZ_CONFIG_COLOR, &vColor);
-
         /* Normalizes and applies it */
         orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxRGBA_NORMALIZER);
 
@@ -859,17 +853,24 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       orxObject_SetAngularVelocity(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY));
 
       /* Has FX? */
-      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_FX) != orxFALSE)
+      if((zValue = orxConfig_GetString(orxOBJECT_KZ_CONFIG_FX)) != orxSTRING_EMPTY)
       {
         /* Adds it */
-        orxObject_AddFX(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_FX));
+        orxObject_AddFX(pstResult, zValue);
       }
 
       /* Has sound? */
-      if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_SOUND) != orxFALSE)
+      if((zValue = orxConfig_GetString(orxOBJECT_KZ_CONFIG_SOUND)) != orxSTRING_EMPTY)
       {
         /* Adds it */
-        orxObject_AddSound(pstResult, orxConfig_GetString(orxOBJECT_KZ_CONFIG_SOUND));
+        orxObject_AddSound(pstResult, zValue);
+      }
+
+      /* Has shader? */
+      if((zValue = orxConfig_GetString(orxOBJECT_KZ_CONFIG_SHADER)) != orxSTRING_EMPTY)
+      {
+        /* Sets it */
+        orxObject_SetShader(pstResult, zValue);
       }
 
       /* Has smoothing value? */
@@ -1053,6 +1054,12 @@ void orxFASTCALL    orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTUR
         case orxSTRUCTURE_ID_FXPOINTER:
         {
           orxFXPointer_Delete(orxFXPOINTER(pstStructure));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_SHADERPOINTER:
+        {
+          orxShaderPointer_Delete(orxSHADERPOINTER(pstStructure));
           break;
         }
 
@@ -2950,6 +2957,61 @@ orxSOUND *orxFASTCALL orxObject_GetLastAddedSound(const orxOBJECT *_pstObject)
 
   /* Done! */
   return pstResult;
+}
+
+/** Sets an object's shader using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID)
+{
+  orxSHADERPOINTER *pstShaderPointer;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
+
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    /* Gets its ShaderPointer */
+    pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+
+    /* Doesn't exist? */
+    if(pstShaderPointer == orxNULL)
+    {
+      /* Creates one */
+      pstShaderPointer = orxShaderPointer_Create(orxSTRUCTURE(_pstObject));
+
+      /* Valid? */
+      if(pstShaderPointer != orxNULL)
+      {
+        /* Links it */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstShaderPointer));
+
+        /* Valid? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates flags */
+          orxFLAG_SET(_pstObject->astStructure[orxSTRUCTURE_ID_SHADERPOINTER].u32Flags, orxOBJECT_KU32_STORAGE_FLAG_INTERNAL, orxOBJECT_KU32_STORAGE_MASK_ALL);
+
+          /* Sets shader from config */
+          eResult = orxShaderPointer_SetShaderFromConfig(pstShaderPointer, _zShaderConfigID);
+        }
+      }
+    }
+    else
+    {
+      /* Sets shader from config */
+      eResult = orxShaderPointer_SetShaderFromConfig(pstShaderPointer, _zShaderConfigID);
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets object config name

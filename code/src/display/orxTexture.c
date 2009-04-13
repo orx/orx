@@ -74,9 +74,6 @@ struct __orxTEXTURE_t
   orxFLOAT      fWidth;                         /**< Width : 28 */
   orxFLOAT      fHeight;                        /**< Height : 32 */
   orxHANDLE     hData;                          /**< Data : 36 */
-
-  /* Padding */
-  orxPAD(36)
 };
 
 /** Static structure

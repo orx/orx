@@ -35,48 +35,51 @@
 #include "math/orxMath.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
+#include "render/orxShaderPointer.h"
 
 
 /** Module flags
  */
-#define orxVIEWPORT_KU32_STATIC_FLAG_NONE     0x00000000  /**< No flags */
+#define orxVIEWPORT_KU32_STATIC_FLAG_NONE       0x00000000  /**< No flags */
 
-#define orxVIEWPORT_KU32_STATIC_FLAG_READY    0x00000001  /**< Ready flag */
+#define orxVIEWPORT_KU32_STATIC_FLAG_READY      0x00000001  /**< Ready flag */
 
-#define orxVIEWPORT_KU32_STATIC_MASK_ALL      0xFFFFFFFF  /**< All mask */
+#define orxVIEWPORT_KU32_STATIC_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
 /** orxVIEWPORT flags / masks
  */
-#define orxVIEWPORT_KU32_FLAG_NONE            0x00000000  /**< No flags */
+#define orxVIEWPORT_KU32_FLAG_NONE              0x00000000  /**< No flags */
 
-#define orxVIEWPORT_KU32_FLAG_ENABLED         0x00000001  /**< Enabled flag */
-#define orxVIEWPORT_KU32_FLAG_CAMERA          0x00000002  /**< Has camera flag */
-#define orxVIEWPORT_KU32_FLAG_TEXTURE         0x00000004  /**< Has texture flag */
-#define orxVIEWPORT_KU32_FLAG_CLEAR           0x00000008  /**< Clear background before render flag */
-#define orxVIEWPORT_KU32_FLAG_INTERNAL        0x10000000  /**< Internal structure handling flag  */
+#define orxVIEWPORT_KU32_FLAG_ENABLED           0x00000001  /**< Enabled flag */
+#define orxVIEWPORT_KU32_FLAG_CAMERA            0x00000002  /**< Has camera flag */
+#define orxVIEWPORT_KU32_FLAG_TEXTURE           0x00000004  /**< Has texture flag */
+#define orxVIEWPORT_KU32_FLAG_CLEAR             0x00000008  /**< Clear background before render flag */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE  0x10000000  /**< Internal texture handling flag  */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x20000000  /**< Internal shader pointer handling flag  */
 
-#define orxVIEWPORT_KU32_FLAG_DEFAULT         0x00000009  /**< Default flags */
+#define orxVIEWPORT_KU32_FLAG_DEFAULT           0x00000009  /**< Default flags */
 
-#define orxVIEWPORT_KU32_MASK_ALIGN           0xF0000000  /**< Alignment mask */
+#define orxVIEWPORT_KU32_MASK_ALIGN             0xF0000000  /**< Alignment mask */
 
-#define orxVIEWPORT_KU32_MASK_ALL             0xFFFFFFFF  /** All mask */
+#define orxVIEWPORT_KU32_MASK_ALL               0xFFFFFFFF  /** All mask */
 
 
 /** Misc defines
  */
-#define orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME    "Texture"
-#define orxVIEWPORT_KZ_CONFIG_POSITION        "Position"
+#define orxVIEWPORT_KZ_CONFIG_TEXTURE_NAME      "Texture"
+#define orxVIEWPORT_KZ_CONFIG_POSITION          "Position"
 #define orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION "RelativePosition"
-#define orxVIEWPORT_KZ_CONFIG_SIZE            "Size"
-#define orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE   "RelativeSize"
-#define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR "BackgroundColor"
-#define orxVIEWPORT_KZ_CONFIG_CAMERA          "Camera"
-#define orxVIEWPORT_KZ_CONFIG_BACKGROUND_CLEAR "BackgroundClear"
+#define orxVIEWPORT_KZ_CONFIG_SIZE              "Size"
+#define orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE     "RelativeSize"
+#define orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR  "BackgroundColor"
+#define orxVIEWPORT_KZ_CONFIG_CAMERA            "Camera"
+#define orxVIEWPORT_KZ_CONFIG_BACKGROUND_CLEAR  "BackgroundClear"
+#define orxVIEWPORT_KZ_CONFIG_SHADER            "Shader"
 
-#define orxVIEWPORT_KZ_LEFT                   "left"
-#define orxVIEWPORT_KZ_RIGHT                  "right"
-#define orxVIEWPORT_KZ_TOP                    "top"
-#define orxVIEWPORT_KZ_BOTTOM                 "bottom"
+#define orxVIEWPORT_KZ_LEFT                     "left"
+#define orxVIEWPORT_KZ_RIGHT                    "right"
+#define orxVIEWPORT_KZ_TOP                      "top"
+#define orxVIEWPORT_KZ_BOTTOM                   "bottom"
 
 
 /***************************************************************************
@@ -87,16 +90,15 @@
  */
 struct __orxVIEWPORT_t
 {
-  orxSTRUCTURE  stStructure;                  /**< Public structure, first structure member : 16 */
-  orxFLOAT      fX;                           /**< X position (top left corner) : 20 */
-  orxFLOAT      fY;                           /**< Y position (top left corner) : 24 */
-  orxFLOAT      fWidth;                       /**< Width : 28 */
-  orxFLOAT      fHeight;                      /**< Height : 32 */
-  orxCAMERA    *pstCamera;                    /**< Associated camera : 36 */
-  orxTEXTURE   *pstTexture;                   /**< Associated texture : 40 */
-  orxRGBA       stBackgroundColor;            /**< Background color : 48 */
-
-  orxPAD(48)
+  orxSTRUCTURE      stStructure;              /**< Public structure, first structure member : 16 */
+  orxFLOAT          fX;                       /**< X position (top left corner) : 20 */
+  orxFLOAT          fY;                       /**< Y position (top left corner) : 24 */
+  orxFLOAT          fWidth;                   /**< Width : 28 */
+  orxFLOAT          fHeight;                  /**< Height : 32 */
+  orxCAMERA        *pstCamera;                /**< Associated camera : 36 */
+  orxTEXTURE       *pstTexture;               /**< Associated texture : 40 */
+  orxRGBA           stBackgroundColor;        /**< Background color : 48 */
+  orxSHADERPOINTER *pstShaderPointer;         /**< Shader pointer : 52 */
 };
 
 
@@ -159,6 +161,7 @@ void orxViewport_Setup()
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_TEXTURE);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_CAMERA);
+  orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_SHADERPOINTER);
 
   return;
 }
@@ -293,7 +296,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zTextureName, zCameraName;
+      orxSTRING zTextureName, zCameraName, zShaderName;
 
       /* *** Texture *** */
 
@@ -315,8 +318,18 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           orxViewport_SetTexture(pstResult, pstTexture);
 
           /* Updates status flags */
-          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL, orxVIEWPORT_KU32_FLAG_NONE);
+          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE, orxVIEWPORT_KU32_FLAG_NONE);
         }
+      }
+
+      /* *** Shader *** */
+      zShaderName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_SHADER);
+
+      /* Valid? */
+      if((zShaderName != orxNULL) && (zShaderName != orxSTRING_EMPTY))
+      {
+        /* Sets it */
+        orxViewport_SetShader(pstResult, zShaderName);
       }
 
       /* *** Camera *** */
@@ -488,10 +501,24 @@ orxSTATUS orxFASTCALL orxViewport_Delete(orxVIEWPORT *_pstViewport)
       orxStructure_DecreaseCounter((_pstViewport->pstTexture));
 
       /* Was internally allocated? */
-      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL) != orxFALSE)
+      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURE) != orxFALSE)
       {
-        /* Deletes texture */
+        /* Deletes it */
         orxTexture_Delete(_pstViewport->pstTexture);
+      }
+    }
+
+    /* Had a shader pointer? */
+    if(_pstViewport->pstShaderPointer != orxNULL)
+    {
+      /* Updates its counter */
+      orxStructure_DecreaseCounter(_pstViewport->pstShaderPointer);
+
+      /* Was internally allocated? */
+      if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER) != orxFALSE)
+      {
+        /* Deletes it */
+        orxShaderPointer_Delete(_pstViewport->pstShaderPointer);
       }
     }
 
@@ -766,6 +793,53 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(const orxVIEWPORT *_pstViewport)
 
   /* Done! */
   return pstResult;
+}
+
+/** Sets a viewport's shader using its config ID
+ * @param[in]   _pstViewport      Concerned Viewport
+ * @param[in]   _zShaderConfigID  Config ID of the shader to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+  orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
+
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_ENABLED))
+  {
+    /* No shader pointer? */
+    if(_pstViewport->pstShaderPointer == orxNULL)
+    {
+      /* Creates one */
+      _pstViewport->pstShaderPointer = orxShaderPointer_Create(orxSTRUCTURE(_pstViewport));
+
+      /* Valid? */
+      if(_pstViewport->pstShaderPointer != orxNULL)
+      {
+        /* Updates its counter */
+        orxStructure_IncreaseCounter(_pstViewport->pstShaderPointer);
+
+        /* Updates flags */
+        orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER, orxVIEWPORT_KU32_FLAG_NONE);
+
+        /* Sets shader from config */
+        eResult = orxShaderPointer_SetShaderFromConfig(_pstViewport->pstShaderPointer, _zShaderConfigID);
+      }
+    }
+    else
+    {
+      /* Sets shader from config */
+      eResult = orxShaderPointer_SetShaderFromConfig(_pstViewport->pstShaderPointer, _zShaderConfigID);
+    }
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Sets a viewport position

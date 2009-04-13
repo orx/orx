@@ -114,8 +114,6 @@ struct __orxBODY_t
   const orxSTRUCTURE     *pstOwner;                                   /**< Owner structure : 36 */
   orxU32                  u32DefFlags;                                /**< Definition flags : 40 */
   orxBODY_PART            astPartList[orxBODY_KU32_PART_MAX_NUMBER];  /**< Body part structure list : 104 */
-
-  orxPAD(104)
 };
 
 /** Static structure

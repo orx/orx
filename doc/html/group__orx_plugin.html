@@ -37,6 +37,8 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gd253c9a502d7eeec40aed6efeab4b4b7">orxPLUGIN_DEFINE_CORE_FUNCTION</a>(FUNCTION_NAME, RETURN,...)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g81e7359c8bda878d06a62f210ec5d4fe">orxPLUGIN_DEFINE_CORE_FUNCTION_FASTCALL</a>(FUNCTION_NAME, RETURN,...)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#gb567f0e3fc2242ba86b99585b8952d30">orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY</a>(PLUGIN_SUFFIX)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_plugin.html#g644b1bd6e2a5987438ebef28848dd097">orxPLUGIN_ADD_CORE_FUNCTION_ARRAY</a>(PLUGIN_SUFFIX, FUNCTION_SUFFIX, FUNCTION_NAME)&nbsp;&nbsp;&nbsp;{orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_##FUNCTION_SUFFIX, (<a class="el" href="group__orx_plugin.html#g16ad50808930e3d8f0a982309cf8ec31">orxPLUGIN_FUNCTION</a> *)&amp;orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME), (<a class="el" href="group__orx_plugin.html#g16ad50808930e3d8f0a982309cf8ec31">orxPLUGIN_FUNCTION</a>)&amp;orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)},</td></tr>
@@ -121,23 +123,31 @@
 <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7f34e0db760299e95399f049d7a12c764">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SCREEN_BITMAP</a>, 
 <br>
 &nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7343274621988bc9b61e11da02a339e6b">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SCREEN_SIZE</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7f74c29dfefba0f52d16dc8b768f23141">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_SHADER</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7df5ca207356971bf20fa8b9a3fdd19c4">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_SHADER</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb77f5b32db85b18b8bfb12f1d9dd14dcef">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_RENDER_SHADER</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7618d76e814a5b5e7aa3bbb3d33b63855">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7a692fa753cd4b971738b434058bade1f">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7a35d79123513b6e51b89287f7b514395">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_VECTOR</a>, 
 <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7581dd07e5e6fae5dfb3885df61974326">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_TEXT</a>, 
-<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7f754831795f90be6bb25c1998aa39cf9">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_TEXT</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7f754831795f90be6bb25c1998aa39cf9">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_TEXT</a>, 
 <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb754c5160bfb1b69af7f974cd27541842e">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_TRANSFORM_TEXT</a>, 
-<br>
-&nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb710bc7e15889e54a6e10864fe580eb12d">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_TEXT_STRING</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb710bc7e15889e54a6e10864fe580eb12d">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_TEXT_STRING</a>, 
 <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb724cbb8d9198373acfe91dcb84726570f">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_TEXT_FONT</a>, 
-<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb70ad5e71e11506a4c93e12b5af286fcd8">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_TEXT_STRING</a>, 
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb70ad5e71e11506a4c93e12b5af286fcd8">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_TEXT_STRING</a>, 
 <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb797026238a2224633c15d63a8b8376d7a">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_TEXT_FONT</a>, 
-<br>
-&nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb720445b35a96a34c691cf50f0f3638fc5">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_TEXT_SIZE</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb720445b35a96a34c691cf50f0f3638fc5">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_TEXT_SIZE</a>, 
 <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb79041d0affd57e935b25fa225de3307f8">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_PRINT_STRING</a>, 
-<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7dbd459f0088215413a1723498f64f17d">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_APPLICATION_INPUT</a>, 
-<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb76757daa70c97abd8291373ff1cd2d392">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_ENABLE_VSYNC</a>, 
 <br>
-&nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb792bed8869928b756ca47acc76f3489ef">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VSYNC_ENABLED</a>, 
+&nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb7dbd459f0088215413a1723498f64f17d">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_APPLICATION_INPUT</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb76757daa70c97abd8291373ff1cd2d392">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_ENABLE_VSYNC</a>, 
+<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb792bed8869928b756ca47acc76f3489ef">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_IS_VSYNC_ENABLED</a>, 
 <a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb75ab7a1fd2bc1006f19375ae004c10992">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_NUMBER</a>, 
-<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb74ea3ac690e0c605a16068b749ffce8d2">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_NONE</a> =  orxENUM_NONE
+<br>
+&nbsp;&nbsp;<a class="el" href="group__orx_plugin.html#ggb155bd6d5a09b625a08a9fc69c35bcb74ea3ac690e0c605a16068b749ffce8d2">orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_NONE</a> =  orxENUM_NONE
 <br>
  }</td></tr>
 
@@ -575,7 +585,7 @@ Plugin user header This header is used to define structures &amp; functions for 
 <div class="memdoc">
 
 <p>
-<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#ge6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *<a class="code" href="group__orx_plugin.html#gdfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a>(FUNCTION_NAME)() \
+<b>Value:</b><div class="fragment"><pre class="fragment"><span class="keyword">extern</span> <a class="code" href="group__orx_decl.html#ge6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <span class="keywordtype">void</span> *orxFASTCALL <a class="code" href="group__orx_plugin.html#gdfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a>(FUNCTION_NAME)() \
   {                                                                               \
     <span class="keywordflow">return</span>(<a class="code" href="group__orx_plugin.html#g9533c138e64ba45a78b4f50fb819a919">orxPlugin_DefaultCoreFunction</a>(#FUNCTION_NAME, __FILE__, __LINE__));    \
   }
@@ -628,6 +638,35 @@ Plugin user header This header is used to define structures &amp; functions for 
 <b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="group__orx_plugin.html#g1ba1f1f5ec84611af700f6d5ce421331">orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE</a>(FUNCTION_NAME)             \
                                                                     \
   RETURN (*<a class="code" href="group__orx_plugin.html#g0ff3c377c1f92fb4bb44c32de9a59705">orxPLUGIN_CORE_FUNCTION_POINTER_NAME</a>(FUNCTION_NAME))(__VA_ARGS__) = (RETURN(*)(__VA_ARGS__)) (&amp;<a class="code" href="group__orx_plugin.html#gdfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a>(FUNCTION_NAME))
+</pre></div>
+</div>
+</div><p>
+<a class="anchor" name="g81e7359c8bda878d06a62f210ec5d4fe"></a><!-- doxytag: member="orxPluginCore.h::orxPLUGIN_DEFINE_CORE_FUNCTION_FASTCALL" ref="g81e7359c8bda878d06a62f210ec5d4fe" args="(FUNCTION_NAME, RETURN,...)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxPLUGIN_DEFINE_CORE_FUNCTION_FASTCALL          </td>
+          <td>(</td>
+          <td class="paramtype">FUNCTION_NAME,         <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">RETURN,         <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"> <em>...</em>&nbsp;</td>
+          <td class="paramname">          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+<b>Value:</b><div class="fragment"><pre class="fragment"><a class="code" href="group__orx_plugin.html#g1ba1f1f5ec84611af700f6d5ce421331">orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE</a>(FUNCTION_NAME)                     \
+                                                                            \
+  RETURN (orxFASTCALL *<a class="code" href="group__orx_plugin.html#g0ff3c377c1f92fb4bb44c32de9a59705">orxPLUGIN_CORE_FUNCTION_POINTER_NAME</a>(FUNCTION_NAME))(__VA_ARGS__) = (RETURN(orxFASTCALL *)(__VA_ARGS__)) (&amp;<a class="code" href="group__orx_plugin.html#gdfac864e70947e7dc252dd75fcce8cf9">orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME</a>(FUNCTION_NAME))
 </pre></div>
 </div>
 </div><p>
@@ -1096,6 +1135,18 @@ Plugin ID bits shift
 <tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb7f34e0db760299e95399f049d7a12c764"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SCREEN_BITMAP" ref="ggb155bd6d5a09b625a08a9fc69c35bcb7f34e0db760299e95399f049d7a12c764" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SCREEN_BITMAP</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb7343274621988bc9b61e11da02a339e6b"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SCREEN_SIZE" ref="ggb155bd6d5a09b625a08a9fc69c35bcb7343274621988bc9b61e11da02a339e6b" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_GET_SCREEN_SIZE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb7f74c29dfefba0f52d16dc8b768f23141"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_SHADER" ref="ggb155bd6d5a09b625a08a9fc69c35bcb7f74c29dfefba0f52d16dc8b768f23141" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_SHADER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb7df5ca207356971bf20fa8b9a3fdd19c4"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_SHADER" ref="ggb155bd6d5a09b625a08a9fc69c35bcb7df5ca207356971bf20fa8b9a3fdd19c4" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_DELETE_SHADER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb77f5b32db85b18b8bfb12f1d9dd14dcef"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_RENDER_SHADER" ref="ggb155bd6d5a09b625a08a9fc69c35bcb77f5b32db85b18b8bfb12f1d9dd14dcef" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_RENDER_SHADER</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb7618d76e814a5b5e7aa3bbb3d33b63855"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP" ref="ggb155bd6d5a09b625a08a9fc69c35bcb7618d76e814a5b5e7aa3bbb3d33b63855" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_BITMAP</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb7a692fa753cd4b971738b434058bade1f"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT" ref="ggb155bd6d5a09b625a08a9fc69c35bcb7a692fa753cd4b971738b434058bade1f" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_FLOAT</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb7a35d79123513b6e51b89287f7b514395"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_VECTOR" ref="ggb155bd6d5a09b625a08a9fc69c35bcb7a35d79123513b6e51b89287f7b514395" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_SET_SHADER_VECTOR</em>&nbsp;</td><td>
 </td></tr>
 <tr><td valign="top"><em><a class="anchor" name="ggb155bd6d5a09b625a08a9fc69c35bcb7581dd07e5e6fae5dfb3885df61974326"></a><!-- doxytag: member="orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_TEXT" ref="ggb155bd6d5a09b625a08a9fc69c35bcb7581dd07e5e6fae5dfb3885df61974326" args="" -->orxPLUGIN_FUNCTION_BASE_ID_DISPLAY_CREATE_TEXT</em>&nbsp;</td><td>
 </td></tr>

@@ -69,9 +69,6 @@ struct __orxTEXT_t
   orxSTRUCTURE  stStructure;                    /**< Public structure, first structure member : 16 */
   orxHANDLE     hData;                          /**< Data : 20 */
   orxSTRING     zReference;                     /**< Config reference : 24 */
-
-  /* Padding */
-  orxPAD(24)
 };
 
 /** Static structure
