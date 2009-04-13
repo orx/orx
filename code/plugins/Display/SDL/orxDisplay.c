@@ -775,6 +775,67 @@ void orxDisplay_SDL_Exit()
   return;
 }
 
+orxHANDLE orxDisplay_SDL_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+{
+  orxHANDLE hResult = orxHANDLE_UNDEFINED;
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return hResult;
+}
+
+void orxDisplay_SDL_DeleteShader(orxHANDLE _hShader)
+{
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+}
+
+orxSTATUS orxDisplay_SDL_RenderShader(orxHANDLE _hShader)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxDisplay_SDL_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxDisplay_SDL_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxDisplay_SDL_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not yet implemented */
+  orxLOG("Not implemented yet!");
+
+  /* Done! */
+  return eResult;
+}
+
 orxHANDLE orxDisplay_SDL_GetApplicationInput()
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
@@ -818,6 +879,12 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextString, DISPLAY, GET_TEXT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextFont, DISPLAY, GET_TEXT_FONT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetTextSize, DISPLAY, GET_TEXT_SIZE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_PrintString, DISPLAY, PRINT_STRING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_CreateShader, DISPLAY, CREATE_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_DeleteShader, DISPLAY, DELETE_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_RenderShader, DISPLAY, RENDER_SHADER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderBitmap, DISPLAY, SET_SHADER_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderFloat, DISPLAY, SET_SHADER_FLOAT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_SetShaderVector, DISPLAY, SET_SHADER_VECTOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_GetApplicationInput, DISPLAY, GET_APPLICATION_INPUT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_EnableVSync, DISPLAY, ENABLE_VSYNC);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_SDL_IsVSyncEnabled, DISPLAY, IS_VSYNC_ENABLED);
