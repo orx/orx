@@ -164,11 +164,23 @@ extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(const orxVIE
 
 
 /** Sets a viewport's shader using its config ID
- * @param[in]   _pstViewport      Concerned Viewport
+ * @param[in]   _pstViewport      Concerned viewport
  * @param[in]   _zShaderConfigID  Config ID of the shader to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID);
+
+/** Enables a viewport's shader
+ * @param[in]   _pstViewport      Concerned viewport
+ * @param[in]   _bEnable          Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL             orxViewport_EnableShader(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
+
+/** Is a viewport's shader enabled?
+ * @param[in]   _pstViewport      Concerned viewport
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsShaderEnabled(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport position

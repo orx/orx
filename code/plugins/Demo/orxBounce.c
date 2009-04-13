@@ -32,8 +32,9 @@
 
 #include "orxPluginAPI.h"
 
-static orxU32      su32BallCounter = 0;
-static orxOBJECT  *spoParticleSpawner;
+static orxU32       su32BallCounter = 0;
+static orxOBJECT   *spoParticleSpawner;
+static orxVIEWPORT *spstViewport;
 
 /** Bounce event handler
  * @param[in]   _pstEvent                     Sent event
@@ -152,14 +153,21 @@ void orxFASTCALL    orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, void *_
       }
     }
   }
+
+  /* Toggle shader? */
+  if(orxInput_IsActive("ToggleShader") && (orxInput_HasNewStatus("ToggleShader")))
+  {
+    /* Toggles shader */
+    orxViewport_EnableShader(spstViewport, !orxViewport_IsShaderEnabled(spstViewport));
+  }
 }
 
 /** Inits the bounce demo
  */
 static orxSTATUS orxBounce_Init()
 {
-  orxCLOCK *pstClock;
-  orxSTATUS eResult;
+  orxCLOCK   *pstClock;
+  orxSTATUS   eResult;
 
   /* Loads config file and selects its section */
   orxConfig_Load("Bounce.ini");
@@ -184,7 +192,8 @@ static orxSTATUS orxBounce_Init()
   spoParticleSpawner = orxObject_CreateFromConfig("ParticleSpawner");
 
   /* Creates viewport on screen */
-  orxViewport_CreateFromConfig("BounceViewport");
+  spstViewport = orxViewport_CreateFromConfig("BounceViewport");
+  orxViewport_EnableShader(spstViewport, orxFALSE);
 
   /* Gets rendering clock */
   pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);

@@ -34,43 +34,41 @@
 #include "memory/orxMemory.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
+#include "display/orxGraphic.h"
 #include "object/orxStructure.h"
+#include "render/orxViewport.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
 
 /** Module flags
  */
-#define orxSHADER_KU32_STATIC_FLAG_NONE     0x00000000
+#define orxSHADER_KU32_STATIC_FLAG_NONE       0x00000000
 
-#define orxSHADER_KU32_STATIC_FLAG_READY    0x00000001
+#define orxSHADER_KU32_STATIC_FLAG_READY      0x00000001
 
-#define orxSHADER_KU32_STATIC_MASK_ALL      0xFFFFFFFF
+#define orxSHADER_KU32_STATIC_MASK_ALL        0xFFFFFFFF
 
 
 /** Flags
  */
-#define orxSHADER_KU32_FLAG_NONE            0x00000000  /**< No flags */
+#define orxSHADER_KU32_FLAG_NONE              0x00000000  /**< No flags */
 
-#define orxSHADER_KU32_FLAG_ENABLED         0x10000000  /**< Enabled flag */
-#define orxSHADER_KU32_FLAG_COMPILED        0x20000000  /**< Compiled flag */
-#define orxSHADER_KU32_FLAG_NO_CUSTOM_PARAM 0x40000000  /**< No custom param flag */
+#define orxSHADER_KU32_FLAG_ENABLED           0x10000000  /**< Enabled flag */
+#define orxSHADER_KU32_FLAG_COMPILED          0x20000000  /**< Compiled flag */
+#define orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM  0x40000000  /**< No custom param flag */
 
-#define orxSHADER_KU32_MASK_ALL             0xFFFFFFFF  /**< All mask */
+#define orxSHADER_KU32_MASK_ALL               0xFFFFFFFF  /**< All mask */
 
 /** Misc defines
  */
-#define orxSHADER_KU32_REFERENCE_TABLE_SIZE 16
-#define orxSHADER_KU32_PARAM_BANK_SIZE      4
+#define orxSHADER_KU32_REFERENCE_TABLE_SIZE   16
+#define orxSHADER_KU32_PARAM_BANK_SIZE        4
 
-#define orxSHADER_KZ_CONFIG_CODE            "Code"
-#define orxSHADER_KZ_CONFIG_PARAM_LIST      "ParamList"
-#define orxSHADER_KZ_CONFIG_NO_CUSTOM_PARAM "NoCustomParam"
-#define orxSHADER_KZ_CONFIG_KEEP_IN_CACHE   "KeepInCache"
-
-#define orxSHADER_KZ_TEXTURE                "texture"
-#define orxSHADER_KZ_VECTOR                 "vector"
-#define orxSHADER_KZ_FLOAT                  "float"
+#define orxSHADER_KZ_CONFIG_CODE              "Code"
+#define orxSHADER_KZ_CONFIG_PARAM_LIST        "ParamList"
+#define orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM  "UseCustomParam"
+#define orxSHADER_KZ_CONFIG_KEEP_IN_CACHE     "KeepInCache"
 
 
 /***************************************************************************
@@ -81,14 +79,14 @@
  */
 typedef struct __orxSHADER_PARAM_VALUE_t
 {
-  orxSHADER_PARAM stParam;                              /**< Param definition : 20 */
+  orxSHADER_PARAM stParam;                                /**< Param definition : 20 */
   
   union
   {
-    orxFLOAT    fValue;                                 /**< Float value : 24 */
-    orxTEXTURE *pstValue;                               /**< Texture value : 24 */
-    orxVECTOR   vValue;                                 /**< Vector value : 24 */
-  };                                                    /**< Union value : 32 */
+    orxFLOAT    fValue;                                   /**< Float value : 24 */
+    orxTEXTURE *pstValue;                                 /**< Texture value : 24 */
+    orxVECTOR   vValue;                                   /**< Vector value : 24 */
+  };                                                      /**< Union value : 32 */
 
 } orxSHADER_PARAM_VALUE;
 
@@ -96,19 +94,19 @@ typedef struct __orxSHADER_PARAM_VALUE_t
  */
 struct __orxSHADER_t
 {
-  orxSTRUCTURE  stStructure;                            /**< Public structure, first structure member : 16 */
-  orxLINKLIST   stParamList;                            /**< Parameter list : 28 */
-  orxSTRING     zReference;                             /**< Shader reference : 32 */
-  orxHANDLE     hData;                                  /**< Compiled shader data : 36 */
-  orxBANK      *pstParamBank;                           /**< Parameter bank : 40 */
+  orxSTRUCTURE  stStructure;                              /**< Public structure, first structure member : 16 */
+  orxLINKLIST   stParamList;                              /**< Parameter list : 28 */
+  orxSTRING     zReference;                               /**< Shader reference : 32 */
+  orxHANDLE     hData;                                    /**< Compiled shader data : 36 */
+  orxBANK      *pstParamBank;                             /**< Parameter bank : 40 */
 };
 
 /** Static structure
  */
 typedef struct __orxSHADER_STATIC_t
 {
-  orxU32        u32Flags;                               /**< Control flags */
-  orxHASHTABLE *pstReferenceTable;                      /**< Reference hash table */
+  orxU32        u32Flags;                                 /**< Control flags */
+  orxHASHTABLE *pstReferenceTable;                        /**< Reference hash table */
 
 } orxSHADER_STATIC;
 
@@ -163,6 +161,7 @@ void orxShader_Setup()
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_DISPLAY);
+  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_GRAPHIC);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_TEXTURE);
 
   return;
@@ -351,33 +350,51 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
             /* Valid? */
             if(zParamName != orxSTRING_EMPTY)
             {
-              orxSTRING zValue;
+              orxVECTOR vValue;
 
-              /* Gets its literal value */
-              zValue = orxString_LowerCase(orxConfig_GetString(zParamName));
-
-              /* Texture? */
-              if(orxString_Compare(zValue, orxSHADER_KZ_TEXTURE) == 0)
-              {
-                /* Adds texture param */
-                orxShader_AddParam(pstResult, zParamName, orxSHADER_PARAM_TYPE_TEXTURE);
-              }
-              /* Vector */
-              else if(orxString_Compare(zValue, orxSHADER_KZ_VECTOR) == 0)
+              /* Is a vector? */
+              if(orxConfig_GetVector(zParamName, &vValue) != orxNULL)
               {
                 /* Adds vector param */
                 orxShader_AddParam(pstResult, zParamName, orxSHADER_PARAM_TYPE_VECTOR);
-              }
-              /* Float */
-              else if(orxString_Compare(zValue, orxSHADER_KZ_FLOAT) == 0)
-              {
-                /* Adds float param */
-                orxShader_AddParam(pstResult, zParamName, orxSHADER_PARAM_TYPE_FLOAT);
+
+                /* Updates its value */
+                orxVector_Copy(&((orxSHADER_PARAM_VALUE *)orxLinkList_GetLast(&(pstResult->stParamList)))->vValue, &vValue);
               }
               else
               {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s]: Parameter [%s] has an invalid type (%s).", _zConfigID, zParamName, zValue);
+                orxSTRING zValue;
+                orxFLOAT  fValue;
+
+                /* Gets its literal value */
+                zValue = orxString_LowerCase(orxConfig_GetString(zParamName));
+
+                /* Is a float? */
+                if(orxString_ToFloat(zValue, &fValue, orxNULL) != orxSTATUS_FAILURE)
+                {
+                  /* Adds float param */
+                  orxShader_AddParam(pstResult, zParamName, orxSHADER_PARAM_TYPE_FLOAT);
+
+                  /* Updates its value */
+                  ((orxSHADER_PARAM_VALUE *)orxLinkList_GetLast(&(pstResult->stParamList)))->fValue = fValue;
+                }
+                else
+                {
+                  orxTEXTURE *pstTexture;
+
+                  /* Adds texture param */
+                  orxShader_AddParam(pstResult, zParamName, orxSHADER_PARAM_TYPE_TEXTURE);
+
+                  /* Creates texture */
+                  pstTexture = orxTexture_CreateFromFile(zValue);
+
+                  /* Valid? */
+                  if(pstTexture != orxNULL)
+                  {
+                    /* Updates its value */
+                    ((orxSHADER_PARAM_VALUE *)orxLinkList_GetLast(&(pstResult->stParamList)))->pstValue = pstTexture;
+                  }
+                }
               }
             }
           }
@@ -399,11 +416,11 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
             orxStructure_IncreaseCounter(pstResult);
           }
 
-          /* No custom param? */
-          if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_NO_CUSTOM_PARAM) != orxFALSE)
+          /* Use custom param? */
+          if(orxConfig_GetBool(orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM) != orxFALSE)
           {
             /* Updates status */
-            orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_NO_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
+            orxStructure_SetFlags(pstResult, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
           }
         }
         else
@@ -479,6 +496,17 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
       {
         /* Deletes its name */
         orxString_Delete(pstParam->stParam.zName);
+
+        /* Is a texture? */
+        if(pstParam->stParam.eType == orxSHADER_PARAM_TYPE_TEXTURE)
+        {
+          /* Is valid? */
+          if(pstParam->pstValue != orxNULL)
+          {
+            /* Deletes it */
+            orxTexture_Delete(pstParam->pstValue);
+          }
+        }
       }
 
       /* Deletes param bank */
@@ -535,7 +563,46 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
   /* Enabled? */
   if(orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED))
   {
+    orxTEXTURE            *pstOwnerTexture = orxNULL;
     orxSHADER_PARAM_VALUE *pstParam;
+
+    /* Has owner? */
+    if(_pstOwner != orxNULL)
+    {
+      /* Depending on its type */
+      switch(orxStructure_GetID(_pstOwner))
+      {
+        case orxSTRUCTURE_ID_OBJECT:
+        {
+          orxGRAPHIC *pstGraphic;
+
+          /* Gets its graphic */
+          pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstOwner), GRAPHIC);
+
+          /* Valid? */
+          if(pstGraphic != orxNULL)
+          {
+            /* Updates owner texture */
+            pstOwnerTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+          }
+
+          break;
+        }
+
+        case orxSTRUCTURE_ID_VIEWPORT:
+        {
+          /* Updates owner texture */
+          pstOwnerTexture = orxViewport_GetTexture(orxVIEWPORT(_pstOwner));
+
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
+      }
+    }
 
     /* For all parameters */
     for(pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetFirst(&(_pstShader->stParamList));
@@ -543,7 +610,7 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
         pstParam = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParam->stParam.stNode)))
     {
       /* No custom param? */
-      if(orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_NO_CUSTOM_PARAM))
+      if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
       {
         /* Depending on parameter type */
         switch(pstParam->stParam.eType)
@@ -558,8 +625,28 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
 
           case orxSHADER_PARAM_TYPE_TEXTURE:
           {
+            orxBITMAP *pstBitmap;
+
+            /* Has default texture? */
+            if(pstParam->pstValue != orxNULL)
+            {
+              /* Gets its bitmap */
+              pstBitmap = orxTexture_GetBitmap(pstParam->pstValue);
+            }
+            /* Has an owner texture? */
+            else if(pstOwnerTexture != orxNULL)
+            {
+              /* Gets its bitmap */
+              pstBitmap = orxTexture_GetBitmap(pstOwnerTexture);
+            }
+            else
+            {
+              /* No bitmap specified */
+              pstBitmap = orxNULL;
+            }
+
             /* Sets it */
-            orxDisplay_SetShaderBitmap(_pstShader->hData, pstParam->stParam.zName, (pstParam->pstValue != orxNULL) ? orxTexture_GetBitmap(pstParam->pstValue) : orxNULL);
+            orxDisplay_SetShaderBitmap(_pstShader->hData, pstParam->stParam.zName, pstBitmap);
 
             break;
           }
@@ -597,7 +684,7 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
           case orxSHADER_PARAM_TYPE_TEXTURE:
           {
             /* Updates value */
-            stPayload.pstValue = pstParam->pstValue;
+            stPayload.pstValue = (pstParam->pstValue != orxNULL) ? pstParam->pstValue : pstOwnerTexture;
 
             break;
           }

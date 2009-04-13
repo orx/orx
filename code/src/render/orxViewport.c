@@ -842,6 +842,55 @@ orxSTATUS orxFASTCALL orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orx
   return eResult;
 }
 
+/** Enables a viewport's shader
+ * @param[in]   _pstViewport      Concerned viewport
+ * @param[in]   _bEnable          Enable / disable
+ */
+void orxFASTCALL orxViewport_EnableShader(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Has a shader pointer? */
+  if(_pstViewport->pstShaderPointer != orxNULL)
+  {
+    /* Enables it */
+    orxShaderPointer_Enable(_pstViewport->pstShaderPointer, _bEnable);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Is a viewport's shader enabled?
+ * @param[in]   _pstViewport      Concerned viewport
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxViewport_IsShaderEnabled(const orxVIEWPORT *_pstViewport)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Has a shader pointer? */
+  if(_pstViewport->pstShaderPointer != orxNULL)
+  {
+    /* Updates result */
+    bResult = orxShaderPointer_IsEnabled(_pstViewport->pstShaderPointer);
+  }
+  else
+  {
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Sets a viewport position
  * @param[in]   _pstViewport    Concerned viewport
  * @param[in]   _fX             X axis position (top left corner)

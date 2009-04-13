@@ -70,6 +70,10 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gfd144a56ceffe96901a40d1e6750eab3">orxViewport_SetShader</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, const orxSTRING _zShaderConfigID)</td></tr>
 
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g48756d31aa83aa6bf136f6ccc970559d">orxViewport_EnableShader</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxBOOL _bEnable)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g3bc8d8736d0e0e062fcbbbe8abdc086c">orxViewport_IsShaderEnabled</a> (const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport)</td></tr>
+
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g5512ae8be546ba73aa39b4031a9d1601">orxViewport_SetPosition</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxFLOAT _fX, orxFLOAT _fY)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g24b66707b17087ccdac32062abdfdc96">orxViewport_SetRelativePosition</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxU32 _u32AlignFlags)</td></tr>
@@ -318,6 +322,41 @@ Enables / disables a viewport <dl compact><dt><b>Parameters:</b></dt><dd>
 
 <p>
 Enables / disables background clearing for a viewport <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bEnable</em>&nbsp;</td><td>Enable / disable </td></tr>
+  </table>
+</dl>
+
+</div>
+</div><p>
+<a class="anchor" name="g48756d31aa83aa6bf136f6ccc970559d"></a><!-- doxytag: member="orxViewport.h::orxViewport_EnableShader" ref="g48756d31aa83aa6bf136f6ccc970559d" args="(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxViewport_EnableShader           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstViewport</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&nbsp;</td>
+          <td class="paramname"> <em>_bEnable</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Enables a viewport's shader <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_bEnable</em>&nbsp;</td><td>Enable / disable </td></tr>
@@ -738,6 +777,32 @@ Is a viewport enabled? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g3bc8d8736d0e0e062fcbbbe8abdc086c"></a><!-- doxytag: member="orxViewport.h::orxViewport_IsShaderEnabled" ref="g3bc8d8736d0e0e062fcbbbe8abdc086c" args="(const orxVIEWPORT *_pstViewport)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI orxBOOL orxFASTCALL orxViewport_IsShaderEnabled           </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstViewport</em>          </td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Is a viewport's shader enabled? <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxTRUE if enabled, orxFALSE otherwise </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g7ec65338b0da8509da145945ca3c5fc3"></a><!-- doxytag: member="orxViewport.h::orxViewport_SetAlignment" ref="g7ec65338b0da8509da145945ca3c5fc3" args="(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)" -->
 <div class="memitem">
 <div class="memproto">
@@ -992,7 +1057,7 @@ Sets a viewport relative size <dl compact><dt><b>Parameters:</b></dt><dd>
 <p>
 Sets a viewport's shader using its config ID <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned Viewport </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zShaderConfigID</em>&nbsp;</td><td>Config ID of the shader to set </td></tr>
   </table>
 </dl>

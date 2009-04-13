@@ -506,6 +506,18 @@ extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(const or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
+/** Enables an object's shader
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _bEnable          Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_EnableShader(orxOBJECT *_pstObject, orxBOOL _bEnable);
+
+/** Is an object's shader enabled?
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsShaderEnabled(const orxOBJECT *_pstObject);
+
 
 /** Gets object config name
  * @param[in]   _pstObject      Concerned object

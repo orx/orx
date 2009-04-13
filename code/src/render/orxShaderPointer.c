@@ -403,8 +403,17 @@ orxSTATUS orxFASTCALL orxShaderPointer_Render(const orxSHADERPOINTER *_pstShader
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShaderPointer);
 
-  /* Renders it */
-  eResult = orxShader_Render(_pstShaderPointer->pstShader, orxSTRUCTURE(_pstShaderPointer->pstOwner));
+  /* Enabled? */
+  if(orxStructure_TestFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_ENABLED))
+  {
+    /* Renders it */
+    eResult = orxShader_Render(_pstShaderPointer->pstShader, orxSTRUCTURE(_pstShaderPointer->pstOwner));
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
 
   /* Done! */
   return eResult;

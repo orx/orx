@@ -3014,6 +3014,64 @@ orxSTATUS orxFASTCALL orxObject_SetShader(orxOBJECT *_pstObject, const orxSTRING
   return eResult;
 }
 
+/** Enables an object's shader
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _bEnable          Enable / disable
+ */
+void orxFASTCALL orxObject_EnableShader(orxOBJECT *_pstObject, orxBOOL _bEnable)
+{
+  orxSHADERPOINTER *pstShaderPointer;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its ShaderPointer */
+  pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+
+  /* Valid? */
+  if(pstShaderPointer != orxNULL)
+  {
+    /* Enables it */
+    orxShaderPointer_Enable(pstShaderPointer, _bEnable);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Is an object's shader enabled?
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+orxBOOL orxFASTCALL orxObject_IsShaderEnabled(const orxOBJECT *_pstObject)
+{
+  orxSHADERPOINTER *pstShaderPointer;
+  orxBOOL           bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its ShaderPointer */
+  pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+
+  /* Valid? */
+  if(pstShaderPointer != orxNULL)
+  {
+    /* Updates result */
+    bResult = orxShaderPointer_IsEnabled(pstShaderPointer);
+  }
+  else
+  {
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Gets object config name
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTRING / orxSTRING_EMPTY
