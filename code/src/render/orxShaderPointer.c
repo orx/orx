@@ -551,9 +551,6 @@ orxSTATUS orxFASTCALL orxShaderPointer_SetShaderFromConfig(orxSHADERPOINTER *_ps
   /* Valid ? */
   if(pstShader != orxNULL)
   {
-    /* Updates its counter */
-    orxStructure_IncreaseCounter(_pstShaderPointer->pstShader);
-
     /* Updates status */
     orxStructure_SetFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_INTERNAL, orxSHADERPOINTER_KU32_FLAG_NONE);
 
