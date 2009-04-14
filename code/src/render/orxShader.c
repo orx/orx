@@ -569,8 +569,8 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
     orxSTRUCTURE_ASSERT(_pstOwner);
   }
 
-  /* Enabled? */
-  if(orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED))
+  /* Valid & enabled? */
+  if((_pstShader->hData != orxHANDLE_UNDEFINED) && (orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED)))
   {
     orxTEXTURE            *pstOwnerTexture = orxNULL;
     orxSHADER_PARAM_VALUE *pstParam;
