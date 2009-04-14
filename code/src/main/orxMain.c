@@ -113,7 +113,7 @@ static orxSTATUS orxFASTCALL orxMain_EventHandler(const orxEVENT *_pstEvent)
 
 /** Inits the main module
  */
-orxSTATUS orxMain_Init()
+orxSTATUS orxFASTCALL orxMain_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -164,7 +164,7 @@ orxSTATUS orxMain_Init()
 
 /** Exits from main module
  */
-void orxMain_Exit()
+void orxFASTCALL orxMain_Exit()
 {
   /* Module initialized ? */
   if(orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
@@ -179,7 +179,7 @@ void orxMain_Exit()
 
 /** Runs the main engine
  */
-orxSTATUS orxMain_Run()
+orxSTATUS orxFASTCALL orxMain_Run()
 {
   orxSTATUS eResult;
 

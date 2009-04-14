@@ -157,13 +157,9 @@ static orxFSM_STATIC sstFSM;
  * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxFSM_Setup
- FSM module setup.
-
- returns: nothing
- ***************************************************************************/
-void orxFSM_Setup()
+/** StateMachine module setup.
+ */
+void orxFASTCALL orxFSM_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FSM, orxMODULE_ID_MEMORY);
@@ -174,7 +170,7 @@ void orxFSM_Setup()
 
 /** Initialize state machine module.
  */
-orxSTATUS orxFSM_Init()
+orxSTATUS orxFASTCALL orxFSM_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -211,7 +207,7 @@ orxSTATUS orxFSM_Init()
 
 /** Exit state machine module.
  */
-void orxFSM_Exit()
+void orxFASTCALL orxFSM_Exit()
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -344,7 +340,7 @@ orxFSM *orxFASTCALL orxFSM_Create(orxU16 _u16NbStates, orxU32 _u32NbLinks, orxU3
  * @param[in] _pstStateMachine      The state machine to remove.
  * @return Returns the status of the operation.
  */
-void orxFASTCALL    orxFSM_Delete(orxFSM *_pstStateMachine)
+void orxFASTCALL orxFSM_Delete(orxFSM *_pstStateMachine)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -368,7 +364,7 @@ void orxFASTCALL    orxFSM_Delete(orxFSM *_pstStateMachine)
 /** Clear a state machine
  * @param[in] _pstStateMachine      The state machine to clear.
  */
-void orxFASTCALL    orxFSM_Clear(orxFSM *_pstStateMachine)
+void orxFASTCALL orxFSM_Clear(orxFSM *_pstStateMachine)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);
@@ -682,7 +678,7 @@ orxSTATUS orxFASTCALL orxFSM_RemoveLink(orxFSM *_pstStateMachine, orxFSM_LINK *_
 /** Clear all links.
  * @param[in] _pstStateMachine      The state machine.
  */
-void orxFASTCALL    orxFSM_ClearLink(orxFSM *_pstStateMachine)
+void orxFASTCALL orxFSM_ClearLink(orxFSM *_pstStateMachine)
 {
   /* Module initialized? */
   orxASSERT((sstFSM.u32Flags & orxFSM_KU32_STATIC_FLAG_READY) == orxFSM_KU32_STATIC_FLAG_READY);

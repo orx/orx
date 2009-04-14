@@ -83,7 +83,7 @@ static orxEVENT_STATIC sstEvent;
 
 /** Event module setup
  */
-void orxEvent_Setup()
+void orxFASTCALL orxEvent_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_EVENT, orxMODULE_ID_MEMORY);
@@ -95,7 +95,7 @@ void orxEvent_Setup()
 /** Inits the event module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxEvent_Init()
+orxSTATUS orxFASTCALL orxEvent_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -141,7 +141,7 @@ orxSTATUS orxEvent_Init()
 
 /** Exits from the event module
  */
-void orxEvent_Exit()
+void orxFASTCALL orxEvent_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstEvent.u32Flags, orxEVENT_KU32_STATIC_FLAG_READY))

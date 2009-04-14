@@ -62,21 +62,21 @@ typedef struct __orxVIEWPORT_t                orxVIEWPORT;
 
 /** Viewport module setup
  */
-extern orxDLLAPI void                         orxViewport_Setup();
+extern orxDLLAPI void orxFASTCALL             orxViewport_Setup();
 
 /** Inits the viewport module
  */
-extern orxDLLAPI orxSTATUS                    orxViewport_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_Init();
 
 /** Exits from the viewport module
  */
-extern orxDLLAPI void                         orxViewport_Exit();
+extern orxDLLAPI void orxFASTCALL             orxViewport_Exit();
 
 
 /** Creates a viewport
  * @return      Created orxVIEWPORT / orxNULL
  */
-extern orxDLLAPI orxVIEWPORT *                orxViewport_Create();
+extern orxDLLAPI orxVIEWPORT *orxFASTCALL     orxViewport_Create();
 
 /** Creates a viewport from config
  * @param[in]   _zConfigID    Config ID

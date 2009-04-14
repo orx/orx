@@ -52,23 +52,23 @@ typedef struct __orxSHADERPOINTER_t             orxSHADERPOINTER;
 
 /** ShaderPointer module setup
  */
-extern orxDLLAPI void                           orxShaderPointer_Setup();
+extern orxDLLAPI void orxFASTCALL               orxShaderPointer_Setup();
 
 /** Inits the ShaderPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxShaderPointer_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_Init();
 
 /** Exits from the ShaderPointer module
  */
-extern orxDLLAPI void                           orxShaderPointer_Exit();
+extern orxDLLAPI void orxFASTCALL               orxShaderPointer_Exit();
 
 
 /** Creates an empty ShaderPointer
  * @param[in]   _pstOwner       ShaderPointer's owner used for rendering (usually an orxOBJECT)
  * @return orxSHADERPOINTER / orxNULL
  */
-extern orxDLLAPI orxSHADERPOINTER *             orxShaderPointer_Create(const orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxSHADERPOINTER *orxFASTCALL  orxShaderPointer_Create(const orxSTRUCTURE *_pstOwner);
 
 /** Deletes an ShaderPointer
  * @param[in] _pstShaderPointer     Concerned ShaderPointer

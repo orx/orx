@@ -185,7 +185,7 @@ static sf::Key::Code orxFASTCALL orxKeyboard_SFML_GetSFMLKey(orxKEYBOARD_KEY _eK
   return eResult;
 }
 
-extern "C" orxSTATUS orxKeyboard_SFML_Init()
+extern "C" orxSTATUS orxFASTCALL orxKeyboard_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -213,7 +213,7 @@ extern "C" orxSTATUS orxKeyboard_SFML_Init()
   return eResult;
 }
 
-extern "C" void orxKeyboard_SFML_Exit()
+extern "C" void orxFASTCALL orxKeyboard_SFML_Exit()
 {
   /* Was initialized? */
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
@@ -225,7 +225,7 @@ extern "C" void orxKeyboard_SFML_Exit()
   return;
 }
 
-extern "C" orxBOOL orxKeyboard_SFML_IsKeyPressed(orxKEYBOARD_KEY _eKey)
+extern "C" orxBOOL orxFASTCALL orxKeyboard_SFML_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 {
   orxBOOL       bResult;
   sf::Key::Code eSFMLKey;
@@ -256,7 +256,7 @@ extern "C" orxBOOL orxKeyboard_SFML_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   return bResult;
 }
 
-extern "C" orxKEYBOARD_KEY orxKeyboard_SFML_Read()
+extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SFML_Read()
 {
   orxU32          i;
   orxKEYBOARD_KEY eResult = orxKEYBOARD_KEY_NONE;
@@ -281,7 +281,7 @@ extern "C" orxKEYBOARD_KEY orxKeyboard_SFML_Read()
   return eResult;
 }
 
-extern "C" orxBOOL orxKeyboard_SFML_Hit()
+extern "C" orxBOOL orxFASTCALL orxKeyboard_SFML_Hit()
 {
   orxBOOL bResult;
 
@@ -295,7 +295,7 @@ extern "C" orxBOOL orxKeyboard_SFML_Hit()
   return bResult;
 }
 
-extern "C" void orxKeyboard_SFML_ClearBuffer()
+extern "C" void orxFASTCALL orxKeyboard_SFML_ClearBuffer()
 {
   /* Checks */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);

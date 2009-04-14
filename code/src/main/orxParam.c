@@ -125,7 +125,7 @@ static orxPARAM_STATIC sstParam;
  * @param[in] _zParamName Name of the parameter (with short or long prefix inside)
  * @return Returns the pointer on the param info if found, else returns orxNULL
  */
-orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
+static orxINLINE orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
 {
   orxPARAM_INFO *pstParamInfo; /* Parameters info extracted from the Hash Table */
 
@@ -144,7 +144,7 @@ orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
  * @param[in] _azParams   Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _azParams[])
+static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _azParams[])
 {
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
@@ -382,7 +382,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
  * @param[in] _azParams       Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxParam_ProcessConfigParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+static orxSTATUS orxFASTCALL orxParam_ProcessConfigParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxU32    i;
@@ -409,7 +409,7 @@ orxSTATUS orxFASTCALL orxParam_ProcessConfigParams(orxU32 _u32ParamCount, const 
 
  returns: nothing
  ***************************************************************************/
-void orxParam_Setup()
+void orxFASTCALL orxParam_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_MEMORY);
@@ -423,7 +423,7 @@ void orxParam_Setup()
 
 /** Initialize Param Module
  */
-orxSTATUS orxParam_Init()
+orxSTATUS orxFASTCALL orxParam_Init()
 {
   /* Declare variables */
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -502,7 +502,7 @@ orxSTATUS orxParam_Init()
 
 /** Exit Param module
  */
-void orxParam_Exit()
+void orxFASTCALL orxParam_Exit()
 {
   /* Module initialized ? */
   if((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY)

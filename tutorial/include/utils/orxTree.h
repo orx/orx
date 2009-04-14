@@ -71,41 +71,41 @@ typedef struct __orxTREE_t
  * @param[in]   _pstTree                        Concerned tree
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxTree_Clean(orxTREE *_pstTree);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_Clean(orxTREE *_pstTree);
 
 /** Adds a node at the root of a tree
  * @param[in]   _pstTree                        Concerned tree
  * @param[in]   _pstNode                        Node to add
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode);
 
 /** Adds a node as a parent of another one
  * @param[in]   _pstRefNode                     Reference node (add as a parent of this one)
  * @param[in]   _pstNode                        Node to add
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
 
 /** Adds a node as a child of another one
  * @param[in]   _pstRefNode                     Reference node (add as a child of this one)
  * @param[in]   _pstNode                        Node to add
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
 
 /** Moves a node as a child of another one of the same tree
  * @param[in]   _pstRefNode                     Reference node (move as a child of this one)
  * @param[in]   _pstNode                        Node to move
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode);
 
 /** Removes a node from its tree
  * @param[in]   _pstNode                        Concerned node
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxTree_Remove(orxTREE_NODE *_pstNode);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTree_Remove(orxTREE_NODE *_pstNode);
 
 
 /* *** Tree inlined accessors *** */

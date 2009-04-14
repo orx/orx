@@ -71,16 +71,16 @@ typedef enum __orxMEMORY_TYPE_t
 
 /** Setups the memory module
  */
-extern orxDLLAPI void                   orxMemory_Setup();
+extern orxDLLAPI void orxFASTCALL       orxMemory_Setup();
 
 /** Inits the memory module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxMemory_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxMemory_Init();
 
 /** Exits from the memory module
  */
-extern orxDLLAPI void                   orxMemory_Exit();
+extern orxDLLAPI void orxFASTCALL       orxMemory_Exit();
 
 /** Allocates a portion of memory in the system and returns a pointer on it
  * @param[in]  _u32Size  Size of the memory to allocate

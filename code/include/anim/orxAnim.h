@@ -95,15 +95,15 @@ typedef struct __orxANIM_EVENT_PAYLOAD_t
 
 /** Anim module setup
  */
-extern orxDLLAPI void                         orxAnim_Setup();
+extern orxDLLAPI void orxFASTCALL             orxAnim_Setup();
 
 /** Inits the Anim module
  */
-extern orxDLLAPI orxSTATUS                    orxAnim_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Init();
 
 /** Exits from the Anim module
  */
-extern orxDLLAPI void                         orxAnim_Exit();
+extern orxDLLAPI void orxFASTCALL             orxAnim_Exit();
 
 
 /** Creates an empty animation
@@ -193,8 +193,6 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetID(const orxANIM *_pstA
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxAnim_GetName(const orxANIM *_pstAnim);
 
-
 #endif /* _orxANIM_H_ */
-
 
 /** @} */

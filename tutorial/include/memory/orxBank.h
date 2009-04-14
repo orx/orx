@@ -59,16 +59,16 @@ typedef struct __orxBANK_t orxBANK;
 
 /** Setups the bank module
  */
-extern orxDLLAPI void                       orxBank_Setup();
+extern orxDLLAPI void orxFASTCALL           orxBank_Setup();
 
 /** Inits the bank Module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                  orxBank_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxBank_Init();
 
 /** Exits from the bank module
  */
-extern orxDLLAPI void                       orxBank_Exit();
+extern orxDLLAPI void orxFASTCALL           orxBank_Exit();
 
 /** Creates a new bank in memory and returns a pointer on it
  * @param[in] _u16NbElem  Number of elements per segments
@@ -119,10 +119,14 @@ extern orxDLLAPI orxU32 orxFASTCALL         orxBank_GetCounter(const orxBANK *_p
  * DEBUG FUNCTION
  ******************************************************************************/
 
+#ifdef __orxDEBUG__
+
 /** Prints the content of a chunk bank
  * @param[in] _pstBank    Bank's pointer
  */
 extern orxDLLAPI void orxFASTCALL           orxBank_DebugPrint(const orxBANK *_pstBank);
+
+#endif /* __orxDEBUG__ */
 
 #endif /* _orxBANK_H_ */
 

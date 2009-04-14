@@ -23,13 +23,13 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxTEXTURE_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gfce2412631bb66653752fb3204ffdaea">orxTexture_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g63e6164791a9156560a7880ee2fc4941">orxTexture_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g50e9c3c94f4588125b68a23d4e4e6e39">orxTexture_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gf2c3fbc73fb52abcf479cb8b76cc4299">orxTexture_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g564a6f7d03e0076ef14d9b5affa52775">orxTexture_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g6693d5ec14b90cb8246d965a050d3688">orxTexture_Exit</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g79ceba5c9f3cb778844e91e51d525398">orxTexture_Create</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g0234c4923d3a53bd299c36bc9a96c60b">orxTexture_Create</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g63311d2cc114a72436a2fbc6d3e15b0b">orxTexture_CreateFromFile</a> (const orxSTRING _zBitmapFileName)</td></tr>
 
@@ -48,7 +48,7 @@ orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gafde75fe10eeb1903076336d1dbd1234">orxTexture_SetColor</a> (<a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstTexture, orxRGBA _stColor)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#gee2d40f2e58123ed40f66b08a09cb71c">orxTexture_GetScreenTexture</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_texture.html#g825ee63bf968b878456de7471d09e267">orxTexture_GetScreenTexture</a> ()</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -69,12 +69,12 @@ Internal texture structure
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="g79ceba5c9f3cb778844e91e51d525398"></a><!-- doxytag: member="orxTexture.h::orxTexture_Create" ref="g79ceba5c9f3cb778844e91e51d525398" args="()" -->
+<a class="anchor" name="g0234c4923d3a53bd299c36bc9a96c60b"></a><!-- doxytag: member="orxTexture.h::orxTexture_Create" ref="g0234c4923d3a53bd299c36bc9a96c60b" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a>* orxTexture_Create           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a>* orxFASTCALL orxTexture_Create           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -141,12 +141,12 @@ Deletes a texture (and its referenced bitmap) <dl compact><dt><b>Parameters:</b>
 
 </div>
 </div><p>
-<a class="anchor" name="g564a6f7d03e0076ef14d9b5affa52775"></a><!-- doxytag: member="orxTexture.h::orxTexture_Exit" ref="g564a6f7d03e0076ef14d9b5affa52775" args="()" -->
+<a class="anchor" name="g6693d5ec14b90cb8246d965a050d3688"></a><!-- doxytag: member="orxTexture.h::orxTexture_Exit" ref="g6693d5ec14b90cb8246d965a050d3688" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxTexture_Exit           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxTexture_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -212,12 +212,12 @@ Gets texture name <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gee2d40f2e58123ed40f66b08a09cb71c"></a><!-- doxytag: member="orxTexture.h::orxTexture_GetScreenTexture" ref="gee2d40f2e58123ed40f66b08a09cb71c" args="()" -->
+<a class="anchor" name="g825ee63bf968b878456de7471d09e267"></a><!-- doxytag: member="orxTexture.h::orxTexture_GetScreenTexture" ref="g825ee63bf968b878456de7471d09e267" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a>* orxTexture_GetScreenTexture           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a>* orxFASTCALL orxTexture_GetScreenTexture           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -275,12 +275,12 @@ Gets texture size <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g50e9c3c94f4588125b68a23d4e4e6e39"></a><!-- doxytag: member="orxTexture.h::orxTexture_Init" ref="g50e9c3c94f4588125b68a23d4e4e6e39" args="()" -->
+<a class="anchor" name="gf2c3fbc73fb52abcf479cb8b76cc4299"></a><!-- doxytag: member="orxTexture.h::orxTexture_Init" ref="gf2c3fbc73fb52abcf479cb8b76cc4299" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxTexture_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxTexture_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -374,12 +374,12 @@ Sets texture color <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gfce2412631bb66653752fb3204ffdaea"></a><!-- doxytag: member="orxTexture.h::orxTexture_Setup" ref="gfce2412631bb66653752fb3204ffdaea" args="()" -->
+<a class="anchor" name="g63e6164791a9156560a7880ee2fc4941"></a><!-- doxytag: member="orxTexture.h::orxTexture_Setup" ref="g63e6164791a9156560a7880ee2fc4941" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxTexture_Setup           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxTexture_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

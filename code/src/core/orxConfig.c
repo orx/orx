@@ -1314,7 +1314,7 @@ static orxINLINE orxVECTOR *orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVa
 
 /** Config module setup
  */
-void orxConfig_Setup()
+void orxFASTCALL orxConfig_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CONFIG, orxMODULE_ID_MEMORY);
@@ -1326,7 +1326,7 @@ void orxConfig_Setup()
 /** Inits the config module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxConfig_Init()
+orxSTATUS orxFASTCALL orxConfig_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1433,7 +1433,7 @@ orxSTATUS orxConfig_Init()
 
 /** Exits from the config module
  */
-void orxConfig_Exit()
+void orxFASTCALL orxConfig_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY))
@@ -1555,7 +1555,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
 /** Gets config main file name
  * @return Config main file name / orxSTRING_EMPTY
  */
-const orxSTRING orxConfig_GetMainFileName()
+const orxSTRING orxFASTCALL orxConfig_GetMainFileName()
 {
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -1684,7 +1684,7 @@ orxSTATUS orxFASTCALL orxConfig_SelectSection(const orxSTRING _zSectionName)
 /** Gets current working section
  * @return Current selected section
  */
-const orxSTRING orxConfig_GetCurrentSection()
+const orxSTRING orxFASTCALL orxConfig_GetCurrentSection()
 {
   orxSTRING zResult;
 
@@ -2152,7 +2152,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
 /** Reloads config files from history
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxConfig_ReloadHistory()
+orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
 {
   orxSTRING  *pzHistoryEntry;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -2433,7 +2433,7 @@ orxBOOL orxFASTCALL orxConfig_HasSection(const orxSTRING _zSectionName)
 
 /** Clears all config data
  */
-void orxConfig_Clear()
+void orxFASTCALL orxConfig_Clear()
 {
   orxCONFIG_SECTION *pstSection;
 

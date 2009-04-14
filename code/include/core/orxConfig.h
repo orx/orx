@@ -53,16 +53,16 @@ typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSection
 
 /** Config module setup
  */
-extern orxDLLAPI void                   orxConfig_Setup();
+extern orxDLLAPI void orxFASTCALL       orxConfig_Setup();
 
 /** Initializes the Config Module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxConfig_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Init();
 
 /** Exits from the Config Module
  */
-extern orxDLLAPI void                   orxConfig_Exit();
+extern orxDLLAPI void orxFASTCALL       orxConfig_Exit();
 
 
 /** Sets encryption key
@@ -80,7 +80,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SetBaseName(const orxSTRING _z
 /** Gets config main file name
  * @return Config main file name / orxSTRING_EMPTY
  */
-extern orxDLLAPI const orxSTRING        orxConfig_GetMainFileName();
+extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetMainFileName();
 
 
 /** Loads config file from source
@@ -92,7 +92,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_Load(const orxSTRING _zFileNam
 /** Reloads config files from history
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxConfig_ReloadHistory();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_ReloadHistory();
 
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
@@ -110,7 +110,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxConfig_SelectSection(const orxSTRING 
 /** Gets current working section
  * @return Current selected section
  */
-extern orxDLLAPI const orxSTRING        orxConfig_GetCurrentSection();
+extern orxDLLAPI const orxSTRING orxFASTCALL orxConfig_GetCurrentSection();
 
 /** Has section for the given section name?
  * @param[in] _zSectionName     Section name
@@ -120,7 +120,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL    orxConfig_HasSection(const orxSTRING _zS
 
 /** Clears all config info
  */
-extern orxDLLAPI void                   orxConfig_Clear();
+extern orxDLLAPI void orxFASTCALL       orxConfig_Clear();
 
 /** Clears section
  * @param[in] _zSectionName     Section name to clear

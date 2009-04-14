@@ -49,7 +49,7 @@
 
 /** Keyboard module setup
  */
-void orxKeyboard_Setup()
+void orxFASTCALL orxKeyboard_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_KEYBOARD, orxMODULE_ID_PLUGIN);
@@ -224,14 +224,14 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(KEYBOARD)
 
 /** Inits the keyboard module
  */
-orxSTATUS orxKeyboard_Init()
+orxSTATUS orxFASTCALL orxKeyboard_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Init)();
 }
 
 /** Exits from the keyboard module
  */
-void orxKeyboard_Exit()
+void orxFASTCALL orxKeyboard_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Exit)();
 }
@@ -240,7 +240,7 @@ void orxKeyboard_Exit()
  * @param[in] _eKey       Key to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-orxBOOL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)
+orxBOOL orxFASTCALL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_IsKeyPressed)(_eKey);
 }
@@ -248,7 +248,7 @@ orxBOOL orxKeyboard_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 /** Returns orxTRUE if there are keypresses waiting in the input buffer.
  * @return orxTRUE if keys have been pressed, else orxFALSE
  */
-orxBOOL orxKeyboard_Hit()
+orxBOOL orxFASTCALL orxKeyboard_Hit()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Hit)();
 }
@@ -259,14 +259,14 @@ orxBOOL orxKeyboard_Hit()
  * and the high byte the scancode.
  * @return Ascii and scancode value
  */
-orxKEYBOARD_KEY orxKeyboard_Read()
+orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Read()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_Read)();
 }
 
 /**  Empties the keyboard buffer.
  */
-void orxKeyboard_ClearBuffer()
+void orxFASTCALL orxKeyboard_ClearBuffer()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxKeyboard_ClearBuffer)();
 }

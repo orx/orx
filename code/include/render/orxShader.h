@@ -113,21 +113,21 @@ typedef struct __orxSHADER_EVENT_PARAM_PAYLOAD_t
 
 /** Shader module setup
  */
-extern orxDLLAPI void                           orxShader_Setup();
+extern orxDLLAPI void orxFASTCALL               orxShader_Setup();
 
 /** Inits the shader module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxShader_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Init();
 
 /** Exits from the shader module
  */
-extern orxDLLAPI void                           orxShader_Exit();
+extern orxDLLAPI void orxFASTCALL               orxShader_Exit();
 
 /** Creates an empty shader
  * @return orxSHADER / orxNULL
  */
-extern orxDLLAPI orxSHADER *                    orxShader_Create();
+extern orxDLLAPI orxSHADER *orxFASTCALL         orxShader_Create();
 
 /** Creates a shader from config
  * @param[in]   _zConfigID            Config ID

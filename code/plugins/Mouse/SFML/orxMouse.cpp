@@ -76,7 +76,7 @@ static orxMOUSE_STATIC sstMouse;
 
 /** Event handler
  */
-orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -128,7 +128,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
-extern "C" orxSTATUS orxMouse_SFML_ShowCursor(orxBOOL _bShow)
+extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_ShowCursor(orxBOOL _bShow)
 {
   orxEVENT  stEvent;
   orxSTATUS eResult;
@@ -146,7 +146,7 @@ extern "C" orxSTATUS orxMouse_SFML_ShowCursor(orxBOOL _bShow)
   return eResult;
 }
 
-extern "C" orxSTATUS orxMouse_SFML_Init()
+extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -203,7 +203,7 @@ extern "C" orxSTATUS orxMouse_SFML_Init()
   return eResult;
 }
 
-extern "C" void orxMouse_SFML_Exit()
+extern "C" void orxFASTCALL orxMouse_SFML_Exit()
 {
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
@@ -219,7 +219,7 @@ extern "C" void orxMouse_SFML_Exit()
   return;
 }
 
-extern "C" orxSTATUS orxMouse_SFML_SetPosition(const orxVECTOR *_pvPosition)
+extern "C" orxSTATUS orxFASTCALL orxMouse_SFML_SetPosition(const orxVECTOR *_pvPosition)
 {
   orxEVENT  stEvent;
   orxSTATUS eResult;
@@ -237,7 +237,7 @@ extern "C" orxSTATUS orxMouse_SFML_SetPosition(const orxVECTOR *_pvPosition)
   return eResult;
 }
 
-extern "C" orxVECTOR *orxMouse_SFML_GetPosition(orxVECTOR *_pvPosition)
+extern "C" orxVECTOR *orxFASTCALL orxMouse_SFML_GetPosition(orxVECTOR *_pvPosition)
 {
   orxVECTOR *pvResult = _pvPosition;
 
@@ -254,7 +254,7 @@ extern "C" orxVECTOR *orxMouse_SFML_GetPosition(orxVECTOR *_pvPosition)
   return pvResult;
 }
 
-extern "C" orxBOOL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eButton)
+extern "C" orxBOOL orxFASTCALL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eButton)
 {
   orxBOOL bResult;
 
@@ -318,7 +318,7 @@ extern "C" orxBOOL orxMouse_SFML_IsButtonPressed(orxMOUSE_BUTTON _eButton)
   return bResult;
 }
 
-extern "C" orxVECTOR *orxMouse_SFML_GetMoveDelta(orxVECTOR *_pvMoveDelta)
+extern "C" orxVECTOR *orxFASTCALL orxMouse_SFML_GetMoveDelta(orxVECTOR *_pvMoveDelta)
 {
   orxVECTOR *pvResult = _pvMoveDelta;
 
@@ -336,7 +336,7 @@ extern "C" orxVECTOR *orxMouse_SFML_GetMoveDelta(orxVECTOR *_pvMoveDelta)
   return pvResult;
 }
 
-extern "C" orxFLOAT orxMouse_SFML_GetWheelDelta()
+extern "C" orxFLOAT orxFASTCALL orxMouse_SFML_GetWheelDelta()
 {
   orxFLOAT fResult;
 

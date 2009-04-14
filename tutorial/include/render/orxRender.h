@@ -88,7 +88,7 @@ typedef struct __orxRENDER_EVENT_OBJECT_PAYLOAD_t
 
 /** Render module setup
  */
-extern orxDLLAPI void                     orxRender_Setup();
+extern orxDLLAPI void orxFASTCALL             orxRender_Setup();
 
 
 /***************************************************************************
@@ -98,18 +98,18 @@ extern orxDLLAPI void                     orxRender_Setup();
 /** Inits the render module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS  orxRender_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxRender_Init();
 
 /** Exits from the render module
  */
-extern orxDLLAPI void       orxRender_Exit();
+extern orxDLLAPI void orxFASTCALL             orxRender_Exit();
 
 /** Get a world position given a screen one (absolute picking)
  * @param[in]   _pvScreenPosition                     Concerned screen position
  * @param[out]  _pvWorldPosition                      Concerned callback
  * @return      orxVECTOR if found, orxNULL otherwise
  */
-extern orxDLLAPI orxVECTOR *orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition);
 
 #endif /* _orxRENDER_H_ */
 

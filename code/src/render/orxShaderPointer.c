@@ -190,7 +190,7 @@ static orxINLINE void orxShaderPointer_DeleteAll()
 
 /** ShaderPointer module setup
  */
-void orxShaderPointer_Setup()
+void orxFASTCALL orxShaderPointer_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_MEMORY);
@@ -205,7 +205,7 @@ void orxShaderPointer_Setup()
 /** Inits the ShaderPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxShaderPointer_Init()
+orxSTATUS orxFASTCALL orxShaderPointer_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -260,7 +260,7 @@ orxSTATUS orxShaderPointer_Init()
 
 /** Exits from the ShaderPointer module
  */
-void orxShaderPointer_Exit()
+void orxFASTCALL orxShaderPointer_Exit()
 {
   /* Initialized? */
   if(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY)
@@ -287,7 +287,7 @@ void orxShaderPointer_Exit()
  * @param[in]   _pstOwner       ShaderPointer's owner used for rendering (usually an orxOBJECT)
  * @return      Created orxSHADERPOINTER / orxNULL
  */
-orxSHADERPOINTER *orxShaderPointer_Create(const orxSTRUCTURE *_pstOwner)
+orxSHADERPOINTER *orxFASTCALL orxShaderPointer_Create(const orxSTRUCTURE *_pstOwner)
 {
   orxSHADERPOINTER *pstResult;
 

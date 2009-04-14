@@ -153,7 +153,7 @@ static orxINLINE void orxShader_DeleteAll()
 
 /** Shader module setup
  */
-void orxShader_Setup()
+void orxFASTCALL orxShader_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_MEMORY);
@@ -170,7 +170,7 @@ void orxShader_Setup()
 /** Inits the shader module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxShader_Init()
+orxSTATUS orxFASTCALL orxShader_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -217,7 +217,7 @@ orxSTATUS orxShader_Init()
 
 /** Exits from the shader module
  */
-void orxShader_Exit()
+void orxFASTCALL orxShader_Exit()
 {
   /* Initialized? */
   if(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY)
@@ -246,7 +246,7 @@ void orxShader_Exit()
 /** Creates an empty shader
  * @return orxSHADER / orxNULL
  */
-orxSHADER *orxShader_Create()
+orxSHADER *orxFASTCALL orxShader_Create()
 {
   orxSHADER *pstResult;
 
@@ -385,14 +385,23 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
                   /* Adds texture param */
                   orxShader_AddParam(pstResult, zParamName, orxSHADER_PARAM_TYPE_TEXTURE);
 
-                  /* Creates texture */
-                  pstTexture = orxTexture_CreateFromFile(zValue);
-
                   /* Valid? */
-                  if(pstTexture != orxNULL)
+                  if(zValue != orxSTRING_EMPTY)
                   {
-                    /* Updates its value */
-                    ((orxSHADER_PARAM_VALUE *)orxLinkList_GetLast(&(pstResult->stParamList)))->pstValue = pstTexture;
+                    /* Creates texture */
+                    pstTexture = orxTexture_CreateFromFile(zValue);
+
+                    /* Valid? */
+                    if(pstTexture != orxNULL)
+                    {
+                      /* Updates its value */
+                      ((orxSHADER_PARAM_VALUE *)orxLinkList_GetLast(&(pstResult->stParamList)))->pstValue = pstTexture;
+                    }
+                  }
+                  else
+                  {
+                    /* No texture */
+                    pstTexture = orxNULL;
                   }
                 }
               }

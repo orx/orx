@@ -171,7 +171,7 @@ static orxINLINE void orxFileSystem_GetInfoFromData(const struct dirent *_pstDat
  ***************************************************************************/
 
 /** FileSystem module setup */
-void orxFileSystem_Setup()
+void orxFASTCALL orxFileSystem_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FILESYSTEM, orxMODULE_ID_MEMORY);
@@ -181,7 +181,7 @@ void orxFileSystem_Setup()
 
 /** Inits the FileSystem Module
  */
-orxSTATUS orxFileSystem_Init()
+orxSTATUS orxFASTCALL orxFileSystem_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -201,7 +201,7 @@ orxSTATUS orxFileSystem_Init()
 
 /** Exits from the FileSystem Module
  */
-void orxFileSystem_Exit()
+void orxFASTCALL orxFileSystem_Exit()
 {
   /* Was initialized? */
   if(sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY)
@@ -217,7 +217,7 @@ void orxFileSystem_Exit()
  * @param[in] _zFileName           Full File's name to test
  * @return orxFALSE if _zFileName doesn't exist, else orxTRUE
  */
-orxBOOL orxFASTCALL orxFileSystem_Exists(const orxSTRING _zFileName)
+orxBOOL orxFASTCALL orxFASTCALL orxFileSystem_Exists(const orxSTRING _zFileName)
 {
 	orxFILESYSTEM_INFO stInfos;
 	return(orxFileSystem_Info(_zFileName, &stInfos) == orxSTATUS_SUCCESS);
@@ -228,7 +228,7 @@ orxBOOL orxFASTCALL orxFileSystem_Exists(const orxSTRING _zFileName)
  * @param[out] _pstFileInfos       Informations about the first file found
  * @return orxTRUE if a file has been found, else orxFALSE
  */
-orxBOOL orxFileSystem_FindFirst(const orxSTRING _zSearchPattern, orxFILESYSTEM_INFO *_pstFileInfo)
+orxBOOL orxFASTCALL orxFileSystem_FindFirst(const orxSTRING _zSearchPattern, orxFILESYSTEM_INFO *_pstFileInfo)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -330,7 +330,7 @@ orxBOOL orxFileSystem_FindFirst(const orxSTRING _zSearchPattern, orxFILESYSTEM_I
  * @param[in,out] _pstFileInfos    Informations about the found file
  * @return orxTRUE, if the next file has been found, else returns orxFALSE
  */
-orxBOOL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
+orxBOOL orxFASTCALL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -392,7 +392,7 @@ orxBOOL orxFileSystem_FindNext(orxFILESYSTEM_INFO *_pstFileInfo)
 /** Closes a search (free the memory allocated for this search)
  * @param[in] _pstFileInfos        Informations returned during search
  */
-void orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo)
+void orxFASTCALL orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo)
 {
   /* Checks */
   orxASSERT((sstFileSystem.u32Flags & orxFILESYSTEM_KU32_STATIC_FLAG_READY) == orxFILESYSTEM_KU32_STATIC_FLAG_READY);
@@ -421,7 +421,7 @@ void orxFileSystem_FindClose(orxFILESYSTEM_INFO *_pstFileInfo)
  * @param[out] _pstFileInfos        Returned file's informations
  * @return Returns the status of the operation
  */
-orxSTATUS orxFileSystem_Info(const orxSTRING _zFileName, orxFILESYSTEM_INFO *_pstFileInfo)
+orxSTATUS orxFASTCALL orxFileSystem_Info(const orxSTRING _zFileName, orxFILESYSTEM_INFO *_pstFileInfo)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -448,7 +448,7 @@ orxSTATUS orxFileSystem_Info(const orxSTRING _zFileName, orxFILESYSTEM_INFO *_ps
  * @param[in] _zDest               Destination file's name
  * @return The status of the operation
  */
-orxSTATUS orxFileSystem_Copy(const orxSTRING _zSource, const orxSTRING _zDest)
+orxSTATUS orxFASTCALL orxFileSystem_Copy(const orxSTRING _zSource, const orxSTRING _zDest)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -467,7 +467,7 @@ orxSTATUS orxFileSystem_Copy(const orxSTRING _zSource, const orxSTRING _zDest)
  * @param[in] _zDest               Destination file's name
  * @return The status of the operation
  */
-orxSTATUS orxFileSystem_Rename(const orxSTRING _zSource, const orxSTRING _zDest)
+orxSTATUS orxFASTCALL orxFileSystem_Rename(const orxSTRING _zSource, const orxSTRING _zDest)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -485,7 +485,7 @@ orxSTATUS orxFileSystem_Rename(const orxSTRING _zSource, const orxSTRING _zDest)
  * @param[in] _zFileName           File's name to delete
  * @return The status of the operation
  */
-orxSTATUS orxFileSystem_Delete(const orxSTRING _zFileName)
+orxSTATUS orxFASTCALL orxFileSystem_Delete(const orxSTRING _zFileName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -503,7 +503,7 @@ orxSTATUS orxFileSystem_Delete(const orxSTRING _zFileName)
  * @param[in] _zDirName            New directory's name
  * @return The status of the operation
  */
-orxSTATUS orxFileSystem_CreateDir(const orxSTRING _zDirName)
+orxSTATUS orxFASTCALL orxFileSystem_CreateDir(const orxSTRING _zDirName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -521,7 +521,7 @@ orxSTATUS orxFileSystem_CreateDir(const orxSTRING _zDirName)
  * @param[in] _zDirName            Directory's name to delete
  * @return The status of the operation
  */
-orxSTATUS orxFileSystem_DeleteDir(const orxSTRING _zDirName)
+orxSTATUS orxFASTCALL orxFileSystem_DeleteDir(const orxSTRING _zDirName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 

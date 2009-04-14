@@ -96,7 +96,6 @@
 #endif /* __orxWINDOWS__ */
 
 
-
 /** Module flags
  */
 
@@ -128,6 +127,12 @@
 
 #endif /* __orxDEBUG__ */
 
+
+/** Plugin main function prototype
+ */
+typedef orxSTATUS (*orxPLUGIN_MAIN_FUNCTION)();
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -149,7 +154,6 @@ typedef struct __orxPLUGIN_FUNCTION_INFO_t
   orxSTRING             zFunctionArgs;                      /**< Function Argument Types : 16 */
 
 } orxPLUGIN_FUNCTION_INFO;
-
 
 /** Information structure on a plugin
  */
@@ -195,7 +199,6 @@ typedef struct __orxPLUGIN_CORE_INFO_t
   orxPAD(16)
 
 } orxPLUGIN_CORE_INFO;
-
 
 /** Static structure
  */
@@ -292,7 +295,7 @@ static orxINLINE void orxPlugin_UpdateAllModule()
  * @param[in] _pstPluginInfo          Concerned plugin info
  * @return orxPLUGIN_FUNCTION_INFO / orxNULL
  */
-orxPLUGIN_FUNCTION_INFO *orxFASTCALL orxPlugin_CreateFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo)
+static orxPLUGIN_FUNCTION_INFO *orxFASTCALL orxPlugin_CreateFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo)
 {
   orxPLUGIN_FUNCTION_INFO *pstFunctionInfo;
 
@@ -322,7 +325,7 @@ orxPLUGIN_FUNCTION_INFO *orxFASTCALL orxPlugin_CreateFunctionInfo(orxPLUGIN_INFO
  * @param[in] _pstPluginInfo          Concerned plugin info
  * @param[in] _pstFunctionInfo        Concerned function info
  */
-void orxFASTCALL    orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo, orxPLUGIN_FUNCTION_INFO *_pstFunctionInfo)
+static void orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginInfo, orxPLUGIN_FUNCTION_INFO *_pstFunctionInfo)
 {
   /* Checks */
   orxASSERT(_pstPluginInfo != orxNULL);
@@ -444,7 +447,7 @@ static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_
 /** Creates a plugin info
  * @return orxPLUGIN_INFO / orxNULL
  */
-static orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
+static orxPLUGIN_INFO *orxFASTCALL orxPlugin_CreatePluginInfo()
 {
   orxPLUGIN_INFO *pstPluginInfo;
 
@@ -503,7 +506,7 @@ static orxPLUGIN_INFO *orxPlugin_CreatePluginInfo()
 /** Deletes a plugin info
  * @param[in] _pstPluginInfo          Concerned plugin info
  */
-void orxFASTCALL    orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
+static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
 {
   orxPLUGIN_FUNCTION_INFO *pstFunctionInfo;
 
@@ -576,7 +579,7 @@ static orxINLINE orxPLUGIN_INFO *orxPlugin_GetPluginInfo(orxHANDLE _hPluginHandl
  * @param[in] _zFunctionName          Name of the function to get
  * @return orxPLUGIN_FUNCTION / orxNULL
  */
-orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSysPlugin, const orxSTRING _zFunctionName)
+static orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSysPlugin, const orxSTRING _zFunctionName)
 {
   orxPLUGIN_FUNCTION pfnFunction = orxNULL;
 
@@ -605,7 +608,7 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN _pstSys
  */
 static orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_INFO *_pstPluginInfo)
 {
-  orxPLUGIN_FUNCTION pfnInit;
+  orxPLUGIN_MAIN_FUNCTION pfnInit;
   orxU32 u32UserFunctionNumber;
   orxPLUGIN_USER_FUNCTION_INFO *astUserFunctionInfo;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -615,7 +618,7 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_
   orxASSERT(_pstPluginInfo != orxNULL);
 
   /* Gets init function */
-  pfnInit = orxPlugin_GetFunctionAddress(_pstSysPlugin, orxPLUGIN_KZ_INIT_FUNCTION_NAME);
+  pfnInit = (orxPLUGIN_MAIN_FUNCTION)orxPlugin_GetFunctionAddress(_pstSysPlugin, orxPLUGIN_KZ_INIT_FUNCTION_NAME);
 
   /* Valid? */
   if(pfnInit != orxNULL)
@@ -681,7 +684,7 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxSYSPLUGIN _pstSysPlugin, orxPLUGIN_
  * @param[in] _astCoreFunction        Array containing the core functions
  * @param[in] _u32CoreFunctionNumber  Number of core function in the array
  */
-void orxFASTCALL    orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
+void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
 {
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
@@ -726,7 +729,7 @@ static orxINLINE void orxPlugin_DeleteAll()
  * @param[in] _azParams       Array of extra parameters (the first one is always the option name)
  * @return Returns orxSTATUS_SUCCESS if informations read are correct, orxSTATUS_FAILURE if a problem has occured
  */
-orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
   orxU32    i;
@@ -760,7 +763,7 @@ orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, const orxST
 
 /** Plugin module setup
  */
-void orxPlugin_Setup()
+void orxFASTCALL orxPlugin_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_MEMORY);
@@ -774,7 +777,7 @@ void orxPlugin_Setup()
 /** Inits the plugin module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxPlugin_Init()
+orxSTATUS orxFASTCALL orxPlugin_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -837,7 +840,7 @@ orxSTATUS orxPlugin_Init()
 
 /** Exits from the plugin module
  */
-void orxPlugin_Exit()
+void orxFASTCALL orxPlugin_Exit()
 {
   /* Initialized? */
   if(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY)

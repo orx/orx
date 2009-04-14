@@ -100,7 +100,7 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
 
 /* *** Default core function declaration *** */
 #define orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)                     \
-  extern orxDLLAPI void *orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)() \
+  extern orxDLLAPI void *orxFASTCALL orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME)() \
   {                                                                               \
     return(orxPlugin_DefaultCoreFunction(#FUNCTION_NAME, __FILE__, __LINE__));    \
   }
@@ -117,10 +117,10 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
 #pragma warning(disable : 4113)
 #endif /* __orxMSVC__ */
 
-#define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)  \
-  orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)             \
-                                                                    \
-  RETURN (*orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(__VA_ARGS__) = (RETURN(*)(__VA_ARGS__)) (&orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME))
+#define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...) \
+  orxPLUGIN_DEFAULT_CORE_FUNCTION_DEFINE(FUNCTION_NAME)                     \
+                                                                            \
+  RETURN (orxFASTCALL *orxPLUGIN_CORE_FUNCTION_POINTER_NAME(FUNCTION_NAME))(__VA_ARGS__) = (RETURN(orxFASTCALL *)(__VA_ARGS__)) (&orxPLUGIN_DEFAULT_CORE_FUNCTION_NAME(FUNCTION_NAME))
 
 
 /***************************************************************************

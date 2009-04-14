@@ -263,7 +263,7 @@ static orxINLINE void orxSound_DeleteAll()
 
 /** Sound module setup
  */
-void orxSound_Setup()
+void orxFASTCALL orxSound_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_MEMORY);
@@ -278,7 +278,7 @@ void orxSound_Setup()
 /** Inits the sound module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxSound_Init()
+orxSTATUS orxFASTCALL orxSound_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -340,7 +340,7 @@ orxSTATUS orxSound_Init()
 
 /** Exits from the sound module
  */
-void orxSound_Exit()
+void orxFASTCALL orxSound_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstSound.u32Flags, orxSOUND_KU32_STATIC_FLAG_READY))

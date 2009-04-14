@@ -57,23 +57,23 @@ typedef struct __orxSOUNDPOINTER_t              orxSOUNDPOINTER;
 
 /** SoundPointer module setup
  */
-extern orxDLLAPI void                           orxSoundPointer_Setup();
+extern orxDLLAPI void orxFASTCALL               orxSoundPointer_Setup();
 
 /** Inits the SoundPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxSoundPointer_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxSoundPointer_Init();
 
 /** Exits from the SoundPointer module
  */
-extern orxDLLAPI void                           orxSoundPointer_Exit();
+extern orxDLLAPI void orxFASTCALL               orxSoundPointer_Exit();
 
 
 /** Creates an empty SoundPointer
  * @param[in]   _pstOwner           Sound's owner used for event callbacks (usually an orxOBJECT)
  * @return orxSOUNDPOINTER / orxNULL
  */
-extern orxDLLAPI orxSOUNDPOINTER *              orxSoundPointer_Create(const orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxSOUNDPOINTER *orxFASTCALL   orxSoundPointer_Create(const orxSTRUCTURE *_pstOwner);
 
 /** Deletes a SoundPointer
  * @param[in] _pstSoundPointer      Concerned SoundPointer

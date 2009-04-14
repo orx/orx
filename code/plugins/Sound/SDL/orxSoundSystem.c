@@ -106,7 +106,7 @@ static orxSOUNDSYSTEM_STATIC sstSoundSystem;
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATUS orxSoundSystem_SDL_Init()
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -185,7 +185,7 @@ orxSTATUS orxSoundSystem_SDL_Init()
   return eResult;
 }
 
-void orxSoundSystem_SDL_Exit()
+void orxFASTCALL orxSoundSystem_SDL_Exit()
 {
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
@@ -215,7 +215,7 @@ void orxSoundSystem_SDL_Exit()
   return;
 }
 
-orxSOUNDSYSTEM_SAMPLE *orxSoundSystem_SDL_LoadSample(const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_SDL_LoadSample(const orxSTRING _zFilename)
 {
   orxSOUNDSYSTEM_SAMPLE *pstResult;
   Mix_Chunk             *pstSample;
@@ -240,7 +240,7 @@ orxSOUNDSYSTEM_SAMPLE *orxSoundSystem_SDL_LoadSample(const orxSTRING _zFilename)
   return pstResult;
 }
 
-void orxSoundSystem_SDL_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+void orxFASTCALL orxSoundSystem_SDL_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   Mix_Chunk *pstSample;
 
@@ -257,7 +257,7 @@ void orxSoundSystem_SDL_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
   return;
 }
 
-orxSOUNDSYSTEM_SOUND *orxSoundSystem_SDL_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SDL_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   orxSOUNDSYSTEM_SOUND *pstResult = 0;
 
@@ -281,7 +281,7 @@ orxSOUNDSYSTEM_SOUND *orxSoundSystem_SDL_CreateFromSample(const orxSOUNDSYSTEM_S
   return pstResult;
 }
 
-orxSOUNDSYSTEM_SOUND *orxSoundSystem_SDL_CreateStreamFromFile(const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_SDL_CreateStreamFromFile(const orxSTRING _zFilename)
 {
   orxSOUNDSYSTEM_SOUND *pstResult;
   Mix_Music            *pstMusic;
@@ -315,7 +315,7 @@ orxSOUNDSYSTEM_SOUND *orxSoundSystem_SDL_CreateStreamFromFile(const orxSTRING _z
   return pstResult;
 }
 
-void orxSoundSystem_SDL_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
+void orxFASTCALL orxSoundSystem_SDL_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -327,7 +327,7 @@ void orxSoundSystem_SDL_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
   return;
 }
 
-orxSTATUS orxSoundSystem_SDL_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSTATUS eResult;
 
@@ -375,7 +375,7 @@ orxSTATUS orxSoundSystem_SDL_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -399,7 +399,7 @@ orxSTATUS orxSoundSystem_SDL_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -426,7 +426,7 @@ orxSTATUS orxSoundSystem_SDL_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -441,7 +441,7 @@ orxSTATUS orxSoundSystem_SDL_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -456,7 +456,7 @@ orxSTATUS orxSoundSystem_SDL_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT 
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
 {
   orxVECTOR vRelativePosition;
   orxFLOAT  fRelativeDistance, fRelativeAngle;
@@ -495,7 +495,7 @@ orxSTATUS orxSoundSystem_SDL_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const 
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -510,7 +510,7 @@ orxSTATUS orxSoundSystem_SDL_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orx
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -525,7 +525,7 @@ orxSTATUS orxSoundSystem_SDL_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSoun
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -540,7 +540,7 @@ orxSTATUS orxSoundSystem_SDL_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoo
   return eResult;
 }
 
-orxFLOAT orxSoundSystem_SDL_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_SDL_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -555,7 +555,7 @@ orxFLOAT orxSoundSystem_SDL_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
   return fResult;
 }
 
-orxFLOAT orxSoundSystem_SDL_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_SDL_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -570,7 +570,7 @@ orxFLOAT orxSoundSystem_SDL_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
   return fResult;
 }
 
-orxVECTOR *orxSoundSystem_SDL_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxSoundSystem_SDL_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
 {
   orxVECTOR *pvResult = orxNULL;
 
@@ -586,7 +586,7 @@ orxVECTOR *orxSoundSystem_SDL_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound,
   return pvResult;
 }
 
-orxFLOAT orxSoundSystem_SDL_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_SDL_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -601,7 +601,7 @@ orxFLOAT orxSoundSystem_SDL_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound
   return fResult;
 }
 
-orxFLOAT orxSoundSystem_SDL_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_SDL_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult;
 
@@ -616,7 +616,7 @@ orxFLOAT orxSoundSystem_SDL_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_ps
   return fResult;
 }
 
-orxBOOL orxSoundSystem_SDL_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxBOOL orxFASTCALL orxSoundSystem_SDL_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxBOOL bResult;
 
@@ -631,7 +631,7 @@ orxBOOL orxSoundSystem_SDL_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
   return bResult;
 }
 
-orxFLOAT orxSoundSystem_SDL_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_SDL_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -646,7 +646,7 @@ orxFLOAT orxSoundSystem_SDL_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
   return fResult;
 }
 
-orxSOUNDSYSTEM_STATUS orxSoundSystem_SDL_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_SDL_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxSOUNDSYSTEM_STATUS eResult;
 
@@ -700,7 +700,7 @@ orxSOUNDSYSTEM_STATUS orxSoundSystem_SDL_GetStatus(const orxSOUNDSYSTEM_SOUND *_
   return eResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_SetGlobalVolume(orxFLOAT _fVolume)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetGlobalVolume(orxFLOAT _fVolume)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -714,7 +714,7 @@ orxSTATUS orxSoundSystem_SDL_SetGlobalVolume(orxFLOAT _fVolume)
   return eResult;
 }
 
-orxFLOAT orxSoundSystem_SDL_GetGlobalVolume()
+orxFLOAT orxFASTCALL orxSoundSystem_SDL_GetGlobalVolume()
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -728,7 +728,7 @@ orxFLOAT orxSoundSystem_SDL_GetGlobalVolume()
   return fResult;
 }
 
-orxSTATUS orxSoundSystem_SDL_SetListenerPosition(const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxSoundSystem_SDL_SetListenerPosition(const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -743,7 +743,7 @@ orxSTATUS orxSoundSystem_SDL_SetListenerPosition(const orxVECTOR *_pvPosition)
   return eResult;
 }
 
-orxVECTOR *orxSoundSystem_SDL_GetListenerPosition(orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxSoundSystem_SDL_GetListenerPosition(orxVECTOR *_pvPosition)
 {
   orxVECTOR *pvResult;
 

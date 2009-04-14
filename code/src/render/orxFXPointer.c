@@ -255,7 +255,7 @@ static orxSTATUS orxFASTCALL orxFXPointer_Update(orxSTRUCTURE *_pstStructure, co
 
 /** FXPointer module setup
  */
-void orxFXPointer_Setup()
+void orxFASTCALL orxFXPointer_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FXPOINTER, orxMODULE_ID_MEMORY);
@@ -270,7 +270,7 @@ void orxFXPointer_Setup()
 /** Inits the FXPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFXPointer_Init()
+orxSTATUS orxFASTCALL orxFXPointer_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -310,7 +310,7 @@ orxSTATUS orxFXPointer_Init()
 
 /** Exits from the FXPointer module
  */
-void orxFXPointer_Exit()
+void orxFASTCALL orxFXPointer_Exit()
 {
   /* Initialized? */
   if(sstFXPointer.u32Flags & orxFXPOINTER_KU32_STATIC_FLAG_READY)
@@ -337,7 +337,7 @@ void orxFXPointer_Exit()
  * @param[in]   _pstOwner       FXPointer's owner used for event callbacks (usually an orxOBJECT)
  * @return      Created orxFXPOINTER / orxNULL
  */
-orxFXPOINTER *orxFXPointer_Create(const orxSTRUCTURE *_pstOwner)
+orxFXPOINTER *orxFASTCALL orxFXPointer_Create(const orxSTRUCTURE *_pstOwner)
 {
   orxFXPOINTER *pstResult;
 

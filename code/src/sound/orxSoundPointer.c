@@ -208,7 +208,7 @@ static orxSTATUS orxFASTCALL orxSoundPointer_Update(orxSTRUCTURE *_pstStructure,
 
 /** SoundPointer module setup
  */
-void orxSoundPointer_Setup()
+void orxFASTCALL orxSoundPointer_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SOUNDPOINTER, orxMODULE_ID_MEMORY);
@@ -223,7 +223,7 @@ void orxSoundPointer_Setup()
 /** Inits the SoundPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxSoundPointer_Init()
+orxSTATUS orxFASTCALL orxSoundPointer_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -263,7 +263,7 @@ orxSTATUS orxSoundPointer_Init()
 
 /** Exits from the SoundPointer module
  */
-void orxSoundPointer_Exit()
+void orxFASTCALL orxSoundPointer_Exit()
 {
   /* Initialized? */
   if(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY)
@@ -290,7 +290,7 @@ void orxSoundPointer_Exit()
  * @param[in]   _pstOwner           Sound's owner used for event callbacks (usually an orxOBJECT)
  * @return      Created orxSOUNDPOINTER / orxNULL
  */
-orxSOUNDPOINTER *orxSoundPointer_Create(const orxSTRUCTURE *_pstOwner)
+orxSOUNDPOINTER *orxFASTCALL orxSoundPointer_Create(const orxSTRUCTURE *_pstOwner)
 {
   orxSOUNDPOINTER *pstResult;
 
@@ -397,7 +397,7 @@ orxSTRUCTURE *orxFASTCALL orxSoundPointer_GetOwner(const orxSOUNDPOINTER *_pstSo
  * @param[in]   _pstSoundPointer    Concerned SoundPointer
  * @param[in]   _bEnable        Enable / disable
  */
-void orxFASTCALL    orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBOOL _bEnable)
+void orxFASTCALL orxSoundPointer_Enable(orxSOUNDPOINTER *_pstSoundPointer, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);

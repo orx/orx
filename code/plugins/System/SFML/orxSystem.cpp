@@ -77,7 +77,7 @@ static orxSYSTEM_STATIC sstSystem;
 /** Init the system module
  * @return Returns the status of the operation
  */
-extern "C" orxSTATUS orxSystem_SFML_Init()
+extern "C" orxSTATUS orxFASTCALL orxSystem_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -103,7 +103,7 @@ extern "C" orxSTATUS orxSystem_SFML_Init()
 
 /** Exit the system module
  */
-extern "C" void orxSystem_SFML_Exit()
+extern "C" void orxFASTCALL orxSystem_SFML_Exit()
 {
   /* Module initialized ? */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
@@ -121,7 +121,7 @@ extern "C" void orxSystem_SFML_Exit()
 /** Gets App Elapsed time.
  * @return Returns the amount of seconds elapsed from the application start.
  */
-extern "C" orxFLOAT orxSystem_SFML_GetTime()
+extern "C" orxFLOAT orxFASTCALL orxSystem_SFML_GetTime()
 {
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
@@ -132,7 +132,7 @@ extern "C" orxFLOAT orxSystem_SFML_GetTime()
 /** Gets real time
  * @return Returns the amount of seconds elapsed since reference time
  */
-extern "C" orxS32 orxSystem_SFML_GetRealTime()
+extern "C" orxS32 orxFASTCALL orxSystem_SFML_GetRealTime()
 {
   time_t  stTime;
   orxS32  s32Result;
@@ -150,7 +150,7 @@ extern "C" orxS32 orxSystem_SFML_GetRealTime()
 /** Delays the program for given number of seconds.
  * @param[in] _fSeconds Number of seconds to wait.
  */
-extern "C" void orxSystem_SFML_Delay(orxFLOAT _fSeconds)
+extern "C" void orxFASTCALL orxSystem_SFML_Delay(orxFLOAT _fSeconds)
 {
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
@@ -164,7 +164,7 @@ extern "C" void orxSystem_SFML_Delay(orxFLOAT _fSeconds)
  * Plugin related                                                          *
  ***************************************************************************/
 
-orxPLUGIN_USER_CORE_FUNCTION_START(DISPLAY);
+orxPLUGIN_USER_CORE_FUNCTION_START(SYSTEM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_Init, SYSTEM, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_Exit, SYSTEM, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSystem_SFML_GetTime, SYSTEM, GET_TIME);

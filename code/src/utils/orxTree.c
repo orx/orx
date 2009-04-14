@@ -49,7 +49,7 @@
  * @param[in]   _bBranchRemove                  Remove the whole branch or only the single node
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBranchRemove)
+static orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBranchRemove)
 {
   register orxTREE *pstTree;
   register orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -198,7 +198,7 @@ orxSTATUS orxFASTCALL orxTree_PrivateRemove(orxTREE_NODE *_pstNode, orxBOOL _bBr
  * @param[in]   _pstTree                        Concerned tree
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxTree_Clean(orxTREE *_pstTree)
+orxSTATUS orxFASTCALL orxTree_Clean(orxTREE *_pstTree)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -228,7 +228,7 @@ orxSTATUS orxTree_Clean(orxTREE *_pstTree)
  * @param[in]   _pstNode                        Node to add
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
 {
   register orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -281,7 +281,7 @@ orxSTATUS orxTree_AddRoot(orxTREE *_pstTree, orxTREE_NODE *_pstNode)
  * @param[in]   _pstNode                        Node to add
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
   register orxSTATUS eResult = orxSTATUS_SUCCESS;
   register orxTREE *pstTree;
@@ -370,7 +370,7 @@ orxSTATUS orxTree_AddParent(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  * @param[in]   _pstNode                        Node to add
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
   register orxSTATUS eResult = orxSTATUS_SUCCESS;
   register orxTREE *pstTree;
@@ -427,7 +427,7 @@ orxSTATUS orxTree_AddChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  * @param[in]   _pstNode                        Node to move
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
 {
   register orxSTATUS eResult = orxSTATUS_SUCCESS;
   register orxTREE *pstTree;
@@ -497,7 +497,7 @@ orxSTATUS orxTree_MoveAsChild(orxTREE_NODE *_pstRefNode, orxTREE_NODE *_pstNode)
  * @param[in]   _pstNode                        Concerned node
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxTree_Remove(orxTREE_NODE *_pstNode)
+orxSTATUS orxFASTCALL orxTree_Remove(orxTREE_NODE *_pstNode)
 {
   register orxTREE *pstTree;
   register orxSTATUS eResult = orxSTATUS_SUCCESS;

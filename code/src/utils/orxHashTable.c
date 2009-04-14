@@ -143,7 +143,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
 /** Delete a hash table.
  * @param[in] _pstHashTable  Hash table to delete.
  */
-void orxFASTCALL    orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
+void orxFASTCALL orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 {
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
@@ -163,7 +163,7 @@ void orxFASTCALL    orxHashTable_Delete(orxHASHTABLE *_pstHashTable)
 /** Clear a hash table.
  * @param[in] _pstHashTable  Hash table to clear.
  */
-void orxFASTCALL    orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
+void orxFASTCALL orxHashTable_Clear(orxHASHTABLE *_pstHashTable)
 {
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
@@ -237,7 +237,7 @@ void *orxFASTCALL orxHashTable_Get(const orxHASHTABLE *_pstHashTable, orxU32 _u3
  * @param[in] _u32Key      Key to assign.
  * @param[in] _pData       Data to assign.
  */
-void orxFASTCALL    orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
+void orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU32 _u32Key, void *_pData)
 {
   orxU32 u32Index;                    /* Hash table index */
   orxHASHTABLE_CELL *pstCell = orxNULL; /* Cell used to traverse */
@@ -488,10 +488,12 @@ orxHANDLE orxFASTCALL orxHashTable_FindNext(orxHASHTABLE *_pstHashTable, orxHAND
  * DEBUG FUNCTION
  ******************************************************************************/
 
+#ifdef __orxDEBUG__
+
 /** Print the content of a Hash table
  * @param[in] _pstHashTable  Hash table to display
  */
-void orxFASTCALL    orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable)
+void orxFASTCALL orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable)
 {
   orxHASHTABLE_CELL *pstCell = orxNULL;
   orxU32 u32Index;
@@ -519,3 +521,5 @@ void orxFASTCALL    orxHashTable_DebugPrint(const orxHASHTABLE *_pstHashTable)
     orxLOG("%sNULL", zBuffer);
   }
 }
+
+#endif /* __orxDEBUG__ */

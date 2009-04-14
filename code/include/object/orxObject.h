@@ -76,21 +76,21 @@ typedef struct __orxOBJECT_t                orxOBJECT;
 
 /** Object module setup
  */
-extern orxDLLAPI void                       orxObject_Setup();
+extern orxDLLAPI void orxFASTCALL           orxObject_Setup();
 
 /** Inits the object module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                  orxObject_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Init();
 
 /** Exits from the object module
  */
-extern orxDLLAPI void                       orxObject_Exit();
+extern orxDLLAPI void orxFASTCALL           orxObject_Exit();
 
 /** Creates an empty object
  * @return orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *                orxObject_Create();
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create();
 
 /** Creates an object from config
  * @param[in]   _zConfigID    Config ID

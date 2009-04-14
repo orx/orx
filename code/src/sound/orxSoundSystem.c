@@ -33,7 +33,7 @@
 
 /** Sound system module setup
  */
-void orxSoundSystem_Setup()
+void orxFASTCALL orxSoundSystem_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SOUNDSYSTEM, orxMODULE_ID_PLUGIN);
@@ -118,142 +118,142 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(SOUNDSYSTEM)
 
 /* *** Core function implementations *** */
 
-orxSTATUS orxSoundSystem_Init()
+orxSTATUS orxFASTCALL orxSoundSystem_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Init)();
 }
 
-void orxSoundSystem_Exit()
+void orxFASTCALL orxSoundSystem_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Exit)();
 }
 
-orxSOUNDSYSTEM_SAMPLE *orxSoundSystem_LoadSample(const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_LoadSample(const orxSTRING _zFilename)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_LoadSample)(_zFilename);
 }
 
-void orxSoundSystem_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
+void orxFASTCALL orxSoundSystem_UnloadSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_UnloadSample)(_pstSample);
 }
 
-orxSOUNDSYSTEM_SOUND *orxSoundSystem_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_CreateFromSample(const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_CreateFromSample)(_pstSample);
 }
 
-orxSOUNDSYSTEM_SOUND *orxSoundSystem_CreateStreamFromFile(const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_CreateStreamFromFile(const orxSTRING _zFilename)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_CreateStreamFromFile)(_zFilename);
 }
 
-void orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
+void orxFASTCALL orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Delete)(_pstSound);
 }
 
-orxSTATUS orxSoundSystem_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Play(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Play)(_pstSound);
 }
 
-orxSTATUS orxSoundSystem_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Pause(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Pause)(_pstSound);
 }
 
-orxSTATUS orxSoundSystem_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSTATUS orxFASTCALL orxSoundSystem_Stop(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Stop)(_pstSound);
 }
 
-orxSTATUS orxSoundSystem_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
+orxSTATUS orxFASTCALL orxSoundSystem_SetVolume(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fVolume)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetVolume)(_pstSound, _fVolume);
 }
 
-orxSTATUS orxSoundSystem_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
+orxSTATUS orxFASTCALL orxSoundSystem_SetPitch(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fPitch)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetPitch)(_pstSound, _fPitch);
 }
 
-orxSTATUS orxSoundSystem_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxSoundSystem_SetPosition(orxSOUNDSYSTEM_SOUND *_pstSound, const orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetPosition)(_pstSound, _pvPosition);
 }
 
-orxSTATUS orxSoundSystem_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
+orxSTATUS orxFASTCALL orxSoundSystem_SetAttenuation(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fAttenuation)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetAttenuation)(_pstSound, _fAttenuation);
 }
 
-orxSTATUS orxSoundSystem_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
+orxSTATUS orxFASTCALL orxSoundSystem_SetReferenceDistance(orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT _fDistance)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetReferenceDistance)(_pstSound, _fDistance);
 }
 
-orxSTATUS orxSoundSystem_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
+orxSTATUS orxFASTCALL orxSoundSystem_Loop(orxSOUNDSYSTEM_SOUND *_pstSound, orxBOOL _bLoop)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_Loop)(_pstSound, _bLoop);
 }
 
-orxFLOAT orxSoundSystem_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_GetVolume(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetVolume)(_pstSound);
 }
 
-orxFLOAT orxSoundSystem_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_GetPitch(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetPitch)(_pstSound);
 }
 
-orxVECTOR *orxSoundSystem_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxSoundSystem_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetPosition)(_pstSound, _pvPosition);
 }
 
-orxFLOAT orxSoundSystem_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_GetAttenuation(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetAttenuation)(_pstSound);
 }
 
-orxFLOAT orxSoundSystem_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_GetReferenceDistance(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetReferenceDistance)(_pstSound);
 }
 
-orxBOOL orxSoundSystem_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxBOOL orxFASTCALL orxSoundSystem_IsLooping(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_IsLooping)(_pstSound);
 }
 
-orxFLOAT orxSoundSystem_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxFLOAT orxFASTCALL orxSoundSystem_GetDuration(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetDuration)(_pstSound);
 }
 
-orxSOUNDSYSTEM_STATUS orxSoundSystem_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound)
+orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_GetStatus(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetStatus)(_pstSound);
 }
 
-orxSTATUS orxSoundSystem_SetGlobalVolume(orxFLOAT _fVolume)
+orxSTATUS orxFASTCALL orxSoundSystem_SetGlobalVolume(orxFLOAT _fVolume)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetGlobalVolume)(_fVolume);
 }
 
-orxFLOAT orxSoundSystem_GetGlobalVolume()
+orxFLOAT orxFASTCALL orxSoundSystem_GetGlobalVolume()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetGlobalVolume)();
 }
 
-orxSTATUS orxSoundSystem_SetListenerPosition(const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxSoundSystem_SetListenerPosition(const orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_SetListenerPosition)(_pvPosition);
 }
 
-orxVECTOR *orxSoundSystem_GetListenerPosition(orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxSoundSystem_GetListenerPosition(orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_GetListenerPosition)(_pvPosition);
 }

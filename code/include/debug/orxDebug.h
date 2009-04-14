@@ -253,10 +253,10 @@ typedef enum __orxDEBUG_LEVEL_t
 /** Inits the debug module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                    _orxDebug_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        _orxDebug_Init();
 
 /** Exits from the debug module */
-extern orxDLLAPI void                         _orxDebug_Exit();
+extern orxDLLAPI void orxFASTCALL             _orxDebug_Exit();
 
 /** Logs given debug text
  * @param[in]   _eLevel                       Debug level associated with this output
@@ -265,13 +265,13 @@ extern orxDLLAPI void                         _orxDebug_Exit();
  * @param[in]   _u32Line                      Calling file line
  * @param[in]   _zFormat                      Printf formatted text
  */
-extern orxDLLAPI void orxFASTCALL             _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...);
+extern orxDLLAPI void orxCDECL                _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...);
 
 /** Backups current debug flags */
-extern orxDLLAPI void                         _orxDebug_BackupFlags();
+extern orxDLLAPI void orxFASTCALL             _orxDebug_BackupFlags();
 
 /** Restores last backuped flags */
-extern orxDLLAPI void                         _orxDebug_RestoreFlags();
+extern orxDLLAPI void orxFASTCALL             _orxDebug_RestoreFlags();
 
 /** Sets current debug flags
  * @param[in]   _u32Add                       Flags to add
@@ -280,7 +280,7 @@ extern orxDLLAPI void                         _orxDebug_RestoreFlags();
 extern orxDLLAPI void orxFASTCALL             _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove);
 
 /** Software break function */
-extern orxDLLAPI void                         _orxDebug_Break();
+extern orxDLLAPI void orxFASTCALL             _orxDebug_Break();
 
 /** Sets debug file name
  * @param[in]   _zFileName                    Debug file name

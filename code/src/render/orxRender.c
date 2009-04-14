@@ -39,7 +39,7 @@
 
 /** Render module setup
  */
-void orxRender_Setup()
+void orxFASTCALL orxRender_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_PLUGIN);
@@ -80,17 +80,17 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(RENDER)
 
 /* *** Core function implementations *** */
 
-orxSTATUS orxRender_Init()
+orxSTATUS orxFASTCALL orxRender_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Init)();
 }
 
-void orxRender_Exit()
+void orxFASTCALL orxRender_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_Exit)();
 }
 
-orxVECTOR *orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxVECTOR *orxFASTCALL orxRender_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxRender_GetWorldPosition)(_pvScreenPosition, _pvWorldPosition);
 }

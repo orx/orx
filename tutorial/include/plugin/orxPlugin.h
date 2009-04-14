@@ -57,16 +57,16 @@
 
 /** Plugin module setup
  */
-extern orxDLLAPI void                           orxPlugin_Setup();
+extern orxDLLAPI void orxFASTCALL               orxPlugin_Setup();
 
 /** Inits the plugin module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxPlugin_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxPlugin_Init();
 
 /** Exits from the plugin module
  */
-extern orxDLLAPI void                           orxPlugin_Exit();
+extern orxDLLAPI void orxFASTCALL               orxPlugin_Exit();
 
 
 /** Loads a plugin (using its exact complete)
@@ -107,7 +107,6 @@ extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_GetHandle(const orxSTR
  * @return The plugin name / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL    orxPlugin_GetName(orxHANDLE _hPluginHandle);
-
 
 #endif /* _orxPLUGIN_H_ */
 

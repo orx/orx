@@ -259,7 +259,7 @@ static orxSTATUS orxFASTCALL orxBody_Update(orxSTRUCTURE *_pstStructure, const o
 
 /** Body module setup
  */
-void orxBody_Setup()
+void orxFASTCALL orxBody_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_MEMORY);
@@ -273,7 +273,7 @@ void orxBody_Setup()
 
 /** Inits the Body module
  */
-orxSTATUS orxBody_Init()
+orxSTATUS orxFASTCALL orxBody_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -313,7 +313,7 @@ orxSTATUS orxBody_Init()
 
 /** Exits from the Body module
  */
-void orxBody_Exit()
+void orxFASTCALL orxBody_Exit()
 {
   /* Initialized? */
   if(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY)

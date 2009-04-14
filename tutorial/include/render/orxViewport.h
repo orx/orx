@@ -62,21 +62,21 @@ typedef struct __orxVIEWPORT_t                orxVIEWPORT;
 
 /** Viewport module setup
  */
-extern orxDLLAPI void                         orxViewport_Setup();
+extern orxDLLAPI void orxFASTCALL             orxViewport_Setup();
 
 /** Inits the viewport module
  */
-extern orxDLLAPI orxSTATUS                    orxViewport_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_Init();
 
 /** Exits from the viewport module
  */
-extern orxDLLAPI void                         orxViewport_Exit();
+extern orxDLLAPI void orxFASTCALL             orxViewport_Exit();
 
 
 /** Creates a viewport
  * @return      Created orxVIEWPORT / orxNULL
  */
-extern orxDLLAPI orxVIEWPORT *                orxViewport_Create();
+extern orxDLLAPI orxVIEWPORT *orxFASTCALL     orxViewport_Create();
 
 /** Creates a viewport from config
  * @param[in]   _zConfigID    Config ID
@@ -161,6 +161,26 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_SetCamera(orxVIEWPORT 
  * @return      Associated camera / orxNULL
  */
 extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(const orxVIEWPORT *_pstViewport);
+
+
+/** Sets a viewport's shader using its config ID
+ * @param[in]   _pstViewport      Concerned viewport
+ * @param[in]   _zShaderConfigID  Config ID of the shader to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID);
+
+/** Enables a viewport's shader
+ * @param[in]   _pstViewport      Concerned viewport
+ * @param[in]   _bEnable          Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL             orxViewport_EnableShader(orxVIEWPORT *_pstViewport, orxBOOL _bEnable);
+
+/** Is a viewport's shader enabled?
+ * @param[in]   _pstViewport      Concerned viewport
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsShaderEnabled(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport position

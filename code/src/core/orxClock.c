@@ -264,7 +264,7 @@ static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK_INFO *_pstC
 
 /** Clock module setup
  */
-void orxClock_Setup()
+void orxFASTCALL orxClock_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_MEMORY);
@@ -279,7 +279,7 @@ void orxClock_Setup()
 /** Inits clock module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxClock_Init()
+orxSTATUS orxFASTCALL orxClock_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -332,7 +332,7 @@ orxSTATUS orxClock_Init()
 
 /** Exits from clock module
  */
-void orxClock_Exit()
+void orxFASTCALL orxClock_Exit()
 {
   /* Initialized? */
   if(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY)
@@ -360,7 +360,7 @@ void orxClock_Exit()
 /** Updates the clock system
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxClock_Update()
+orxSTATUS orxFASTCALL orxClock_Update()
 {
   orxFLOAT  fNewTime, fDT;
   orxCLOCK *pstClock;
@@ -500,7 +500,7 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
 /** Deletes a clock
  * @param[in]   _pstClock                             Concerned clock
  */
-void orxFASTCALL    orxClock_Delete(orxCLOCK *_pstClock)
+void orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
 {
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
@@ -562,7 +562,7 @@ orxSTATUS orxFASTCALL orxClock_Resync(orxCLOCK *_pstClock)
 /** Resyncs all clocks (accumulated DT => 0)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxClock_ResyncAll()
+orxSTATUS orxFASTCALL orxClock_ResyncAll()
 {
   orxCLOCK *pstClock;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -628,7 +628,7 @@ orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
  * @param[in]   _pstClock                             Concerned clock
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL    orxClock_Pause(orxCLOCK *_pstClock)
+orxSTATUS orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -650,7 +650,7 @@ orxSTATUS orxFASTCALL    orxClock_Pause(orxCLOCK *_pstClock)
  * @param[in]   _pstClock                             Concerned clock
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL    orxClock_Unpause(orxCLOCK *_pstClock)
+orxSTATUS orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 

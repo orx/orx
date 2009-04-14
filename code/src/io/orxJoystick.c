@@ -49,7 +49,7 @@
 
 /** Joystick module setup
  */
-void orxJoystick_Setup()
+void orxFASTCALL orxJoystick_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_JOYSTICK, orxMODULE_ID_PLUGIN);
@@ -173,14 +173,14 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(JOYSTICK)
 /** Inits the joystick module
  * @return Returns the status of the operation
  */
-orxSTATUS orxJoystick_Init()
+orxSTATUS orxFASTCALL orxJoystick_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Init)();
 }
 
 /** Exits from the joystick module
  */
-void orxJoystick_Exit()
+void orxFASTCALL orxJoystick_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_Exit)();
 }
@@ -190,7 +190,7 @@ void orxJoystick_Exit()
  * @param[in] _eAxis        Joystick axis to check
  * @return Value of the axis
  */
-orxFLOAT orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
+orxFLOAT orxFASTCALL orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_GetAxisValue)(_u32ID, _eAxis);
 }
@@ -200,7 +200,7 @@ orxFLOAT orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
  * @param[in] _eButton      Joystick button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-orxBOOL orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
+orxBOOL orxFASTCALL orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxJoystick_IsButtonPressed)(_u32ID, _eButton);
 }

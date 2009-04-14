@@ -180,16 +180,16 @@ static orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(const void *_pStructure,
 
 /** Structure module setup
  */
-extern orxDLLAPI void                                   orxStructure_Setup();
+extern orxDLLAPI void orxFASTCALL                       orxStructure_Setup();
 
 /** Initializess the structure module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                              orxStructure_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_Init();
 
 /** Exits from the structure module
  */
-extern orxDLLAPI void                                   orxStructure_Exit();
+extern orxDLLAPI void orxFASTCALL                       orxStructure_Exit();
 
 
 /** Registers a given ID

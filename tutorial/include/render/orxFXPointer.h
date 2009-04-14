@@ -57,23 +57,23 @@ typedef struct __orxFXPOINTER_t                 orxFXPOINTER;
 
 /** FXPointer module setup
  */
-extern orxDLLAPI void                           orxFXPointer_Setup();
+extern orxDLLAPI void orxFASTCALL               orxFXPointer_Setup();
 
 /** Inits the FXPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxFXPointer_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_Init();
 
 /** Exits from the FXPointer module
  */
-extern orxDLLAPI void                           orxFXPointer_Exit();
+extern orxDLLAPI void orxFASTCALL               orxFXPointer_Exit();
 
 
 /** Creates an empty FXPointer
- * @param[in]   _pstOwner       FX's owner used for event callbacks (usually an orxOBJECT)
+ * @param[in]   _pstOwner       FXPointer's owner used for event callbacks (usually an orxOBJECT)
  * @return orxFXPOINTER / orxNULL
  */
-extern orxDLLAPI orxFXPOINTER *                 orxFXPointer_Create(const orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxFXPOINTER *orxFASTCALL      orxFXPointer_Create(const orxSTRUCTURE *_pstOwner);
 
 /** Deletes an FXPointer
  * @param[in] _pstFXPointer     Concerned FXPointer
@@ -129,6 +129,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFX(orxFXPOINT
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID);
 
+/** Adds a unique FX using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddUniqueFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID);
+
 /** Adds a delayed FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to add
@@ -136,6 +143,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFXFromConfig(orx
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
+
+/** Adds a unique delayed FX using its config ID
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _zFXConfigID  Config ID of the FX to add
+ * @param[in]   _fDelay       Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
 /** Removes an FX using using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer

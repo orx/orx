@@ -134,7 +134,7 @@ typedef enum __orxJOYSTICK_AXIS_t
 
 /** Mouse module setup
  */
-extern orxDLLAPI void                   orxJoystick_Setup();
+extern orxDLLAPI void orxFASTCALL             orxJoystick_Setup();
 
 
 /***************************************************************************
@@ -144,37 +144,37 @@ extern orxDLLAPI void                   orxJoystick_Setup();
 /** Inits the joystick module
  * @return Returns the status of the operation
  */
-extern orxDLLAPI orxSTATUS              orxJoystick_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxJoystick_Init();
 
 /** Exits from the joystick module
  */
-extern orxDLLAPI void                   orxJoystick_Exit();
+extern orxDLLAPI void orxFASTCALL             orxJoystick_Exit();
 
 /** Gets mouse on screen position
  * @param[in] _u32ID        ID of the joystick to test
  * @param[in] _eAxis        Joystick axis to check
  * @return Value of the axis
  */
-extern orxDLLAPI orxFLOAT               orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxJoystick_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis);
 
 /** Is joystick button pressed?
  * @param[in] _u32ID        ID of the joystick to test
  * @param[in] _eButton      Joystick button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-extern orxDLLAPI orxBOOL                orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton);
+extern orxDLLAPI orxBOOL orxFASTCALL          orxJoystick_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton);
 
 /** Gets axis literal name
  * @param[in] _eAxis        Concerned axis
  * @return Axis's name
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetAxisName(orxJOYSTICK_AXIS _eAxis);
 
 /** Gets button literal name
  * @param[in] _eButton      Concerned button
  * @return Button's name
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton);
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButton);
 
 #endif /* _orxJOYSTICK_H_ */
 

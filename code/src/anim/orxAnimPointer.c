@@ -118,7 +118,7 @@ static orxANIMPOINTER_STATIC sstAnimPointer;
 
 /** Deletes all AnimPointers
  */
-static void orxAnimPointer_DeleteAll()
+static orxINLINE void orxAnimPointer_DeleteAll()
 {
   register orxANIMPOINTER *pstAnimPointer;
 
@@ -278,7 +278,7 @@ static orxSTATUS orxFASTCALL orxAnimPointer_Update(orxSTRUCTURE *_pstStructure, 
 
 /** AnimPointer module setup
  */
-void orxAnimPointer_Setup()
+void orxFASTCALL orxAnimPointer_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_MEMORY);
@@ -294,7 +294,7 @@ void orxAnimPointer_Setup()
 /** Inits the AnimPointer module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxAnimPointer_Init()
+orxSTATUS orxFASTCALL orxAnimPointer_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -334,7 +334,7 @@ orxSTATUS orxAnimPointer_Init()
 
 /** Exits from the AnimPointer module
  */
-void orxAnimPointer_Exit()
+void orxFASTCALL orxAnimPointer_Exit()
 {
   /* Initialized? */
   if(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY)

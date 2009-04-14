@@ -65,17 +65,17 @@ typedef struct __orxFSM_INSTANCE_t            orxFSM_INSTANCE;
 /** @name Module management.
  * @{ */
 
-/** Clock module setup.
+/** StateMachine module setup.
  */
-extern orxDLLAPI void                         orxFSM_Setup();
+extern orxDLLAPI void orxFASTCALL             orxFSM_Setup();
 /**Initialize StateMachine Module.
  * @return Returns the initialization status.
  */
-extern orxDLLAPI orxSTATUS                    orxFSM_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxFSM_Init();
 
 /**Exit StateMachine module.
  */
-extern orxDLLAPI void                         orxFSM_Exit();
+extern orxDLLAPI void orxFASTCALL             orxFSM_Exit();
 /** @} */
 
 
@@ -84,10 +84,10 @@ extern orxDLLAPI void                         orxFSM_Exit();
  ***************************************************************************/
 
 /**Action pointer for state machines. */
-typedef void (*orxFSM_ACTION_FUNCTION)();
+typedef void (orxFASTCALL *orxFSM_ACTION_FUNCTION)();
 
 /**condition pointer for state machines. */
-typedef orxBOOL (*orxFSM_CONDITION_FUNCTION)();
+typedef orxBOOL (orxFASTCALL *orxFSM_CONDITION_FUNCTION)();
 
 
 /***************************************************************************

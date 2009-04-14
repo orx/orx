@@ -278,8 +278,6 @@ do                            \
   (X) |= (A);                 \
 } while(orxFALSE)
 
-
 #endif /*_orxDECL_H_*/
-
 
 /** @} */

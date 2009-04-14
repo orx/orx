@@ -112,16 +112,16 @@ typedef orxSTATUS (orxFASTCALL *orxEVENT_HANDLER)(const orxEVENT *_pstEvent);
 
 /** Event module setup
  */
-extern orxDLLAPI void                   orxEvent_Setup();
+extern orxDLLAPI void orxFASTCALL       orxEvent_Setup();
 
 /** Initializes the event Module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxEvent_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Init();
 
 /** Exits from the event Module
  */
-extern orxDLLAPI void                   orxEvent_Exit();
+extern orxDLLAPI void orxFASTCALL       orxEvent_Exit();
 
 /** Adds an event handler
  * @param[in] _eEventType           Concerned type of event
@@ -149,7 +149,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_Send(const orxEVENT *_pstEvent)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_SendShort(orxEVENT_TYPE _eEventType, orxENUM _eEventID);
-
 
 #endif /*_orxEVENT_H_*/
 

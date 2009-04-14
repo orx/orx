@@ -49,7 +49,7 @@
 
 /** Mouse module setup
  */
-void orxMouse_Setup()
+void orxFASTCALL orxMouse_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_MOUSE, orxMODULE_ID_PLUGIN);
@@ -136,14 +136,14 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(MOUSE)
 /** Inits the mouse module
  * @return Returns the status of the operation
  */
-orxSTATUS orxMouse_Init()
+orxSTATUS orxFASTCALL orxMouse_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Init)();
 }
 
 /** Exits from the mouse module
  */
-void orxMouse_Exit()
+void orxFASTCALL orxMouse_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_Exit)();
 }
@@ -152,7 +152,7 @@ void orxMouse_Exit()
 * @param[in] _pvPosition  Mouse position
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-orxSTATUS orxMouse_SetPosition(const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxMouse_SetPosition(const orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_SetPosition)(_pvPosition);
 }
@@ -161,7 +161,7 @@ orxSTATUS orxMouse_SetPosition(const orxVECTOR *_pvPosition)
  * @param[out] _pvPosition  Mouse position
  * @return orxVECTOR / orxNULL
  */
-orxVECTOR *orxMouse_GetPosition(orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxMouse_GetPosition(orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetPosition)(_pvPosition);
 }
@@ -170,7 +170,7 @@ orxVECTOR *orxMouse_GetPosition(orxVECTOR *_pvPosition)
  * @param[in] _eButton          Mouse button to check
  * @return orxTRUE if presse / orxFALSE otherwise
  */
-orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)
+orxBOOL orxFASTCALL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_IsButtonPressed)(_eButton);
 }
@@ -179,7 +179,7 @@ orxBOOL orxMouse_IsButtonPressed(orxMOUSE_BUTTON _eButton)
  * @param[out] _pvMoveDelta Mouse move delta
  * @return orxVECTOR / orxNULL
  */
-orxVECTOR *orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta)
+orxVECTOR *orxFASTCALL orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetMoveDelta)(_pvMoveDelta);
 }
@@ -187,7 +187,7 @@ orxVECTOR *orxMouse_GetMoveDelta(orxVECTOR *_pvMoveDelta)
 /** Gets mouse wheel delta (since last call)
  * @return Mouse wheel delta
  */
-orxFLOAT orxMouse_GetWheelDelta()
+orxFLOAT orxFASTCALL orxMouse_GetWheelDelta()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_GetWheelDelta)();
 }
@@ -195,7 +195,7 @@ orxFLOAT orxMouse_GetWheelDelta()
 /** Shows mouse cursor
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
 */
-orxSTATUS orxMouse_ShowCursor(orxBOOL _bShow)
+orxSTATUS orxFASTCALL orxMouse_ShowCursor(orxBOOL _bShow)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxMouse_ShowCursor)(_bShow);
 }

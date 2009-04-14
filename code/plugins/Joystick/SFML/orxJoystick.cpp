@@ -71,7 +71,7 @@ static orxJOYSTICK_STATIC sstJoystick;
  * Private functions                                                       *
  ***************************************************************************/
 
-extern "C" orxSTATUS orxJoystick_SFML_Init()
+extern "C" orxSTATUS orxFASTCALL orxJoystick_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -99,7 +99,7 @@ extern "C" orxSTATUS orxJoystick_SFML_Init()
   return eResult;
 }
 
-extern "C" void orxJoystick_SFML_Exit()
+extern "C" void orxFASTCALL orxJoystick_SFML_Exit()
 {
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
@@ -111,7 +111,7 @@ extern "C" void orxJoystick_SFML_Exit()
   return;
 }
 
-extern "C" orxFLOAT orxJoystick_SFML_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
+extern "C" orxFLOAT orxFASTCALL orxJoystick_SFML_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
 {
   sf::Joy::Axis eSFMLAxis;
   orxFLOAT      fResult;
@@ -196,7 +196,7 @@ extern "C" orxFLOAT orxJoystick_SFML_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXI
   return fResult;
 }
 
-extern "C" orxBOOL orxJoystick_SFML_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
+extern "C" orxBOOL orxFASTCALL orxJoystick_SFML_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
 {
   orxBOOL bResult;
 

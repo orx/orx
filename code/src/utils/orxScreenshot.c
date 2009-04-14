@@ -86,7 +86,7 @@ static orxSCREENSHOT_STATIC sstScreenshot;
 
 /** Screenshot module setup
  */
-void orxScreenshot_Setup()
+void orxFASTCALL orxScreenshot_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_MEMORY);
@@ -99,7 +99,7 @@ void orxScreenshot_Setup()
 /** Inits the screenshot module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxScreenshot_Init()
+orxSTATUS orxFASTCALL orxScreenshot_Init()
 {
   orxCHAR zFileName[256];
   orxFILESYSTEM_INFO stFileInfos;
@@ -162,7 +162,7 @@ orxSTATUS orxScreenshot_Init()
 
 /** Exits from the screenshot module
  */
-void orxScreenshot_Exit()
+void orxFASTCALL orxScreenshot_Exit()
 {
   /* Initialized? */
   if(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
@@ -181,7 +181,7 @@ void orxScreenshot_Exit()
 
 /** Captures a screenshot
  */
-void orxScreenshot_Capture()
+void orxFASTCALL orxScreenshot_Capture()
 {
   orxCHAR zName[256];
 

@@ -57,23 +57,23 @@ typedef struct __orxFXPOINTER_t                 orxFXPOINTER;
 
 /** FXPointer module setup
  */
-extern orxDLLAPI void                           orxFXPointer_Setup();
+extern orxDLLAPI void orxFASTCALL               orxFXPointer_Setup();
 
 /** Inits the FXPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxFXPointer_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_Init();
 
 /** Exits from the FXPointer module
  */
-extern orxDLLAPI void                           orxFXPointer_Exit();
+extern orxDLLAPI void orxFASTCALL               orxFXPointer_Exit();
 
 
 /** Creates an empty FXPointer
  * @param[in]   _pstOwner       FXPointer's owner used for event callbacks (usually an orxOBJECT)
  * @return orxFXPOINTER / orxNULL
  */
-extern orxDLLAPI orxFXPOINTER *                 orxFXPointer_Create(const orxSTRUCTURE *_pstOwner);
+extern orxDLLAPI orxFXPOINTER *orxFASTCALL      orxFXPointer_Create(const orxSTRUCTURE *_pstOwner);
 
 /** Deletes an FXPointer
  * @param[in] _pstFXPointer     Concerned FXPointer

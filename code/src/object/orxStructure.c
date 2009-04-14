@@ -128,7 +128,7 @@ static orxSTRUCTURE_STATIC sstStructure;
 
 /** Structure module setup
  */
-void orxStructure_Setup()
+void orxFASTCALL orxStructure_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_STRUCTURE, orxMODULE_ID_MEMORY);
@@ -140,7 +140,7 @@ void orxStructure_Setup()
 /** Initializess the structure module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxStructure_Init()
+orxSTATUS orxFASTCALL orxStructure_Init()
 {
   orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -200,7 +200,7 @@ orxSTATUS orxStructure_Init()
 
 /** Exits from the structure module
  */
-void orxStructure_Exit()
+void orxFASTCALL orxStructure_Exit()
 {
   /* Initialized? */
   if(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY)
@@ -316,7 +316,7 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
 /** Unregisters a given ID
  * @param[in]   _eStructureID   Concerned structure ID
  */
-void orxFASTCALL    orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
+void orxFASTCALL orxStructure_Unregister(orxSTRUCTURE_ID _eStructureID)
 {
   /* Checks */
   orxASSERT(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY);
@@ -472,7 +472,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 /** Deletes a structure (needs to be cleaned beforehand)
  * @param[in]   _pStructure    Concerned structure
  */
-void orxFASTCALL    orxStructure_Delete(void *_pStructure)
+void orxFASTCALL orxStructure_Delete(void *_pStructure)
 {
   register orxSTRUCTURE_STORAGE_NODE *pstNode;
 

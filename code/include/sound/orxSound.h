@@ -90,16 +90,16 @@ typedef struct __orxSOUND_EVENT_PAYLOAD_t
 
 /** Sound module setup
  */
-extern orxDLLAPI void                         orxSound_Setup();
+extern orxDLLAPI void orxFASTCALL             orxSound_Setup();
 
 /** Initializes the sound module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                    orxSound_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSound_Init();
 
 /** Exits from the sound module
  */
-extern orxDLLAPI void                         orxSound_Exit();
+extern orxDLLAPI void orxFASTCALL             orxSound_Exit();
 
 
 /** Creates sound from config

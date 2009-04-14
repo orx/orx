@@ -28,11 +28,11 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxBANK_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gdbceabafbb22ae4a5153487275a46f6a">orxBank_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gc76bf2303e6d91acd1ac7b1087bab788">orxBank_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g120aa1145508e2c70cd0585e7b73d7ed">orxBank_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g9a13587274e0732ae0d76780911820c4">orxBank_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g4a78de12041647eadf83026e19cc677f">orxBank_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gac6b0ec7f48717e7b49c3fc0f70b1563">orxBank_Exit</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#ge36fba068abfd2a73a22e6f15f3f8e04">orxBank_Create</a> (orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _u32Flags, <a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemType)</td></tr>
 
@@ -47,8 +47,6 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#gc989e67080308981d31e5e055f854f61">orxBank_GetNext</a> (const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank, const void *_pCell)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxU32 orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g2d51c38d4cd273bcb7308180afc6a3ce">orxBank_GetCounter</a> (const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
-
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_bank.html#g128961bdca1e76d97614183ecfa1f740">orxBank_DebugPrint</a> (const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstBank)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -201,31 +199,6 @@ Creates a new bank in memory and returns a pointer on it <dl compact><dt><b>Para
 
 </div>
 </div><p>
-<a class="anchor" name="g128961bdca1e76d97614183ecfa1f740"></a><!-- doxytag: member="orxBank.h::orxBank_DebugPrint" ref="g128961bdca1e76d97614183ecfa1f740" args="(const orxBANK *_pstBank)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI void orxFASTCALL orxBank_DebugPrint           </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="group__orx_bank.html#g2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstBank</em>          </td>
-          <td>&nbsp;)&nbsp;</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Prints the content of a chunk bank <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstBank</em>&nbsp;</td><td>Bank's pointer </td></tr>
-  </table>
-</dl>
-
-</div>
-</div><p>
 <a class="anchor" name="g29e3b050cad7b27cc78efd243500a550"></a><!-- doxytag: member="orxBank.h::orxBank_Delete" ref="g29e3b050cad7b27cc78efd243500a550" args="(orxBANK *_pstBank)" -->
 <div class="memitem">
 <div class="memproto">
@@ -251,12 +224,12 @@ Frees a portion of memory allocated with orxMemory_Allocate <dl compact><dt><b>P
 
 </div>
 </div><p>
-<a class="anchor" name="g4a78de12041647eadf83026e19cc677f"></a><!-- doxytag: member="orxBank.h::orxBank_Exit" ref="g4a78de12041647eadf83026e19cc677f" args="()" -->
+<a class="anchor" name="gac6b0ec7f48717e7b49c3fc0f70b1563"></a><!-- doxytag: member="orxBank.h::orxBank_Exit" ref="gac6b0ec7f48717e7b49c3fc0f70b1563" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxBank_Exit           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxBank_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -368,12 +341,12 @@ Gets the next cell <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g120aa1145508e2c70cd0585e7b73d7ed"></a><!-- doxytag: member="orxBank.h::orxBank_Init" ref="g120aa1145508e2c70cd0585e7b73d7ed" args="()" -->
+<a class="anchor" name="g9a13587274e0732ae0d76780911820c4"></a><!-- doxytag: member="orxBank.h::orxBank_Init" ref="g9a13587274e0732ae0d76780911820c4" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxBank_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxBank_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -388,12 +361,12 @@ Inits the bank Module <dl class="return" compact><dt><b>Returns:</b></dt><dd>orx
 
 </div>
 </div><p>
-<a class="anchor" name="gdbceabafbb22ae4a5153487275a46f6a"></a><!-- doxytag: member="orxBank.h::orxBank_Setup" ref="gdbceabafbb22ae4a5153487275a46f6a" args="()" -->
+<a class="anchor" name="gc76bf2303e6d91acd1ac7b1087bab788"></a><!-- doxytag: member="orxBank.h::orxBank_Setup" ref="gc76bf2303e6d91acd1ac7b1087bab788" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxBank_Setup           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxBank_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

@@ -108,7 +108,7 @@ static orxCAMERA_STATIC sstCamera;
 
 /** Deletes all cameras
  */
-static void orxCamera_DeleteAll()
+static orxINLINE void orxCamera_DeleteAll()
 {
   orxCAMERA *pstCamera;
 
@@ -135,7 +135,7 @@ static void orxCamera_DeleteAll()
 
 /** Camera module setup
  */
-void orxCamera_Setup()
+void orxFASTCALL orxCamera_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_CAMERA, orxMODULE_ID_MEMORY);
@@ -149,7 +149,7 @@ void orxCamera_Setup()
 /** Inits Camera module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxCamera_Init()
+orxSTATUS orxFASTCALL orxCamera_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -196,7 +196,7 @@ orxSTATUS orxCamera_Init()
 
 /** Exits from Camera module
  */
-void orxCamera_Exit()
+void orxFASTCALL orxCamera_Exit()
 {
   /* Initialized? */
   if(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY)
@@ -530,7 +530,7 @@ orxSTATUS orxFASTCALL orxCamera_SetZoom(orxCAMERA *_pstCamera, orxFLOAT _fZoom)
  * @param[in]   _pstCamera      Concerned camera
  * @param[out]  _pstFrustum    Frustum box
  */
-void orxFASTCALL    orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum)
+void orxFASTCALL orxCamera_GetFrustum(const orxCAMERA *_pstCamera, orxAABOX *_pstFrustum)
 {
   orxVECTOR vPosition;
 

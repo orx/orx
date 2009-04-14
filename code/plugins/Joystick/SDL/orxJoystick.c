@@ -72,7 +72,7 @@ static orxJOYSTICK_STATIC sstJoystick;
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATUS orxJoystick_SDL_Init()
+orxSTATUS orxFASTCALL orxJoystick_SDL_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -154,7 +154,7 @@ orxSTATUS orxJoystick_SDL_Init()
   return eResult;
 }
 
-void orxJoystick_SDL_Exit()
+void orxFASTCALL orxJoystick_SDL_Exit()
 {
   /* Was initialized? */
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
@@ -193,7 +193,7 @@ void orxJoystick_SDL_Exit()
   return;
 }
 
-orxFLOAT orxJoystick_SDL_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
+orxFLOAT orxFASTCALL orxJoystick_SDL_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
 {
   orxFLOAT fResult;
 
@@ -232,7 +232,7 @@ orxFLOAT orxJoystick_SDL_GetAxisValue(orxU32 _u32ID, orxJOYSTICK_AXIS _eAxis)
   return fResult;
 }
 
-orxBOOL orxJoystick_SDL_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
+orxBOOL orxFASTCALL orxJoystick_SDL_IsButtonPressed(orxU32 _u32ID, orxJOYSTICK_BUTTON _eButton)
 {
   orxBOOL bResult;
 

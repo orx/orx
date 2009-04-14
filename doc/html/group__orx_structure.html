@@ -114,11 +114,11 @@
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">static orxINLINE <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g6166c07b080e5a284480ac699a1459bb">_orxStructure_GetPointer</a> (const void *_pStructure, <a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga696854bb6a087262c3b0327261b43c8">orxStructure_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g32f6863a9c76944bc7856b77e590bf65">orxStructure_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gd6b31f9352f2a6068198878128e9f369">orxStructure_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g82035ca088171d0ae9999da3f05b5d4c">orxStructure_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g5d3d7bf053f1b6f9c924d33c3d97a3b3">orxStructure_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#g2b40aa65539bbb29538314b3db3fdfbb">orxStructure_Exit</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga56cb39392bd2ec50767317b4f7603fa">orxStructure_Register</a> (<a class="el" href="group__orx_structure.html#g559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID, <a class="el" href="group__orx_structure.html#g04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> _eStorageType, <a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemoryType, orxU32 _u32Size, const <a class="el" href="group__orx_structure.html#g2a40e7c406b268ad4478963ddf00032e">orxSTRUCTURE_UPDATE_FUNCTION</a> _pfnUpdate)</td></tr>
 
@@ -873,12 +873,12 @@ Deletes a structure (needs to be cleaned beforehand) <dl compact><dt><b>Paramete
 
 </div>
 </div><p>
-<a class="anchor" name="g5d3d7bf053f1b6f9c924d33c3d97a3b3"></a><!-- doxytag: member="orxStructure.h::orxStructure_Exit" ref="g5d3d7bf053f1b6f9c924d33c3d97a3b3" args="()" -->
+<a class="anchor" name="g2b40aa65539bbb29538314b3db3fdfbb"></a><!-- doxytag: member="orxStructure.h::orxStructure_Exit" ref="g2b40aa65539bbb29538314b3db3fdfbb" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxStructure_Exit           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxStructure_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -1239,12 +1239,12 @@ Gets structure storage type <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gd6b31f9352f2a6068198878128e9f369"></a><!-- doxytag: member="orxStructure.h::orxStructure_Init" ref="gd6b31f9352f2a6068198878128e9f369" args="()" -->
+<a class="anchor" name="g82035ca088171d0ae9999da3f05b5d4c"></a><!-- doxytag: member="orxStructure.h::orxStructure_Init" ref="g82035ca088171d0ae9999da3f05b5d4c" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxStructure_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxStructure_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -1394,12 +1394,12 @@ Sets structure tree parent <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="ga696854bb6a087262c3b0327261b43c8"></a><!-- doxytag: member="orxStructure.h::orxStructure_Setup" ref="ga696854bb6a087262c3b0327261b43c8" args="()" -->
+<a class="anchor" name="g32f6863a9c76944bc7856b77e590bf65"></a><!-- doxytag: member="orxStructure.h::orxStructure_Setup" ref="g32f6863a9c76944bc7856b77e590bf65" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxStructure_Setup           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxStructure_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

@@ -65,15 +65,15 @@ typedef struct __orxBODY_PART_t               orxBODY_PART;
 
 /** Body module setup
  */
-extern orxDLLAPI void                         orxBody_Setup();
+extern orxDLLAPI void orxFASTCALL             orxBody_Setup();
 
 /** Inits the Body module
  */
-extern orxDLLAPI orxSTATUS                    orxBody_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_Init();
 
 /** Exits from the Body module
  */
-extern orxDLLAPI void                         orxBody_Exit();
+extern orxDLLAPI void orxFASTCALL             orxBody_Exit();
 
 
 /** Creates an empty body

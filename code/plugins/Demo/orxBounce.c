@@ -5,7 +5,7 @@
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
+ * modify it under the terms of the GNU Lesser General Publi
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
 
@@ -93,7 +93,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
 
 /** Update callback
  */
-void orxFASTCALL    orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vMousePos;
   orxBOOL   bInViewport;

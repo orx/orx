@@ -39,7 +39,7 @@
 
 /** Render module setup
  */
-void orxPhysics_Setup()
+void orxFASTCALL orxPhysics_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_MEMORY);
@@ -110,102 +110,102 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(PHYSICS)
 
 /* *** Core function implementations *** */
 
-orxSTATUS orxPhysics_Init()
+orxSTATUS orxFASTCALL orxPhysics_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Init)();
 }
 
-void orxPhysics_Exit()
+void orxFASTCALL orxPhysics_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Exit)();
 }
 
-orxSTATUS orxPhysics_SetGravity(const orxVECTOR *_pvGravity)
+orxSTATUS orxFASTCALL orxPhysics_SetGravity(const orxVECTOR *_pvGravity)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetGravity)(_pvGravity);
 }
 
-orxVECTOR *orxPhysics_GetGravity(orxVECTOR *_pvGravity)
+orxVECTOR *orxFASTCALL orxPhysics_GetGravity(orxVECTOR *_pvGravity)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetGravity)(_pvGravity);
 }
 
-orxPHYSICS_BODY *orxPhysics_CreateBody(const orxHANDLE _hUserData, const orxBODY_DEF *_pstBodyDef)
+orxPHYSICS_BODY *orxFASTCALL orxPhysics_CreateBody(const orxHANDLE _hUserData, const orxBODY_DEF *_pstBodyDef)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateBody)(_hUserData, _pstBodyDef);
 }
 
-void orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody)
+void orxFASTCALL orxPhysics_DeleteBody(orxPHYSICS_BODY *_pstBody)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBody)(_pstBody);
 }
 
-orxPHYSICS_BODY_PART *orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef)
+orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_CreateBodyPart)(_pstBody, _pstBodyPartDef);
 }
 
-void orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
+void orxFASTCALL orxPhysics_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_DeleteBodyPart)(_pstBodyPart);
 }
 
-orxSTATUS orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxPhysics_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPosition)(_pstBody, _pvPosition);
 }
 
-orxSTATUS orxPhysics_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
+orxSTATUS orxFASTCALL orxPhysics_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetRotation)(_pstBody, _fRotation);
 }
 
-orxSTATUS orxPhysics_SetSpeed(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvSpeed)
+orxSTATUS orxFASTCALL orxPhysics_SetSpeed(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvSpeed)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetSpeed)(_pstBody, _pvSpeed);
 }
 
-orxSTATUS orxPhysics_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
+orxSTATUS orxFASTCALL orxPhysics_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetAngularVelocity)(_pstBody, _fVelocity);
 }
 
-orxVECTOR *orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxPhysics_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPosition)(_pstBody, _pvPosition);
 }
 
-orxFLOAT orxPhysics_GetRotation(orxPHYSICS_BODY *_pstBody)
+orxFLOAT orxFASTCALL orxPhysics_GetRotation(orxPHYSICS_BODY *_pstBody)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetRotation)(_pstBody);
 }
 
-orxVECTOR *orxPhysics_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
+orxVECTOR *orxFASTCALL orxPhysics_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetSpeed)(_pstBody, _pvSpeed);
 }
 
-orxFLOAT orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pstBody)
+orxFLOAT orxFASTCALL orxPhysics_GetAngularVelocity(orxPHYSICS_BODY *_pstBody)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetAngularVelocity)(_pstBody);
 }
 
-orxVECTOR *orxPhysics_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
+orxVECTOR *orxFASTCALL orxPhysics_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetMassCenter)(_pstBody, _pvMassCenter);
 }
 
-orxSTATUS orxPhysics_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
+orxSTATUS orxFASTCALL orxPhysics_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_ApplyTorque)(_pstBody, _fTorque);
 }
 
-orxSTATUS orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
+orxSTATUS orxFASTCALL orxPhysics_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_ApplyForce)(_pstBody, _pvForce, _pvPoint);
 }
 
-orxSTATUS orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
+orxSTATUS orxFASTCALL orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_ApplyImpulse)(_pstBody, _pvImpulse, _pvPoint);
 }

@@ -120,7 +120,7 @@ static orxINLINE void orxText_DeleteAll()
 
 /** Setups the text module
  */
-void orxText_Setup()
+void orxFASTCALL orxText_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_MEMORY);
@@ -134,7 +134,7 @@ void orxText_Setup()
 /** Inits the text module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxText_Init()
+orxSTATUS orxFASTCALL orxText_Init()
 {
   orxSTATUS eResult;
 
@@ -179,7 +179,7 @@ orxSTATUS orxText_Init()
 
 /** Exits from the text module
  */
-void orxText_Exit()
+void orxFASTCALL orxText_Exit()
 {
   /* Initialized? */
   if(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY)
@@ -205,7 +205,7 @@ void orxText_Exit()
 /** Creates an empty text
  * @return      orxTEXT / orxNULL
  */
-orxTEXT *orxText_Create()
+orxTEXT *orxFASTCALL orxText_Create()
 {
   orxTEXT *pstResult;
 

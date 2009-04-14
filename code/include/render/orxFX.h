@@ -102,21 +102,21 @@ typedef struct __orxFX_EVENT_PAYLOAD_t
 
 /** FX module setup
  */
-extern orxDLLAPI void                           orxFX_Setup();
+extern orxDLLAPI void orxFASTCALL               orxFX_Setup();
 
 /** Inits the FX module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                      orxFX_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Init();
 
 /** Exits from the FX module
  */
-extern orxDLLAPI void                           orxFX_Exit();
+extern orxDLLAPI void orxFASTCALL               orxFX_Exit();
 
 /** Creates an empty FX
  * @return orxFX / orxNULL
  */
-extern orxDLLAPI orxFX *                        orxFX_Create();
+extern orxDLLAPI orxFX *orxFASTCALL             orxFX_Create();
 
 /** Creates an FX from config
  * @param[in]   _zConfigID    Config ID

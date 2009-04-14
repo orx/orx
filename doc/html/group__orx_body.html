@@ -28,11 +28,11 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxBODY_PART_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g1ade50c7e477e547e835574aa123ee39">orxBODY_PART</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gafc0bb9b4cb0a7df606cbb51486793a5">orxBody_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g5e091b8090693202ee27651be96a6eeb">orxBody_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g8a65eb8bd2e91e812db53ab6c8cd4dc5">orxBody_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g027908adf63c94d330b53155432ffb14">orxBody_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#gbe77880dc9006369935731a0458e60e0">orxBody_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g08eda6fd0f18d970c3c038f08bd465c4">orxBody_Exit</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_body.html#gb6996c99e713c65c10268dbcbdacbc4a">orxBODY</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_body.html#g9feaac31cf40a5c99969365cc5961b9a">orxBody_Create</a> (const <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstOwner, const <a class="el" href="structorx_b_o_d_y___d_e_f.html">orxBODY_DEF</a> *_pstBodyDef)</td></tr>
 
@@ -442,12 +442,12 @@ Deletes a body <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gbe77880dc9006369935731a0458e60e0"></a><!-- doxytag: member="orxBody.h::orxBody_Exit" ref="gbe77880dc9006369935731a0458e60e0" args="()" -->
+<a class="anchor" name="g08eda6fd0f18d970c3c038f08bd465c4"></a><!-- doxytag: member="orxBody.h::orxBody_Exit" ref="g08eda6fd0f18d970c3c038f08bd465c4" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxBody_Exit           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxBody_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -735,12 +735,12 @@ Gets the body template <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g8a65eb8bd2e91e812db53ab6c8cd4dc5"></a><!-- doxytag: member="orxBody.h::orxBody_Init" ref="g8a65eb8bd2e91e812db53ab6c8cd4dc5" args="()" -->
+<a class="anchor" name="g027908adf63c94d330b53155432ffb14"></a><!-- doxytag: member="orxBody.h::orxBody_Init" ref="g027908adf63c94d330b53155432ffb14" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxBody_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxBody_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -1022,12 +1022,12 @@ Sets a body template <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gafc0bb9b4cb0a7df606cbb51486793a5"></a><!-- doxytag: member="orxBody.h::orxBody_Setup" ref="gafc0bb9b4cb0a7df606cbb51486793a5" args="()" -->
+<a class="anchor" name="g5e091b8090693202ee27651be96a6eeb"></a><!-- doxytag: member="orxBody.h::orxBody_Setup" ref="g5e091b8090693202ee27651be96a6eeb" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxBody_Setup           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxBody_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

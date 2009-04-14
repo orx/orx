@@ -72,21 +72,21 @@ typedef struct __orxSPAWNER_t               orxSPAWNER;
 
 /** Spawner module setup
  */
-extern orxDLLAPI void                       orxSpawner_Setup();
+extern orxDLLAPI void orxFASTCALL           orxSpawner_Setup();
 
 /** Inits the spawner module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                  orxSpawner_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxSpawner_Init();
 
 /** Exits from the spawner module
  */
-extern orxDLLAPI void                       orxSpawner_Exit();
+extern orxDLLAPI void orxFASTCALL           orxSpawner_Exit();
 
 /** Creates an empty spawner
  * @return orxSPAWNER / orxNULL
  */
-extern orxDLLAPI orxSPAWNER *               orxSpawner_Create();
+extern orxDLLAPI orxSPAWNER *orxFASTCALL    orxSpawner_Create();
 
 /** Creates a spawner from config
  * @param[in]   _zConfigID    Config ID

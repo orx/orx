@@ -988,7 +988,7 @@ static orxINLINE void orxRender_RenderViewport(const orxVIEWPORT *_pstViewport)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pstContext     Context sent when registering callback to the clock
  */
-void orxFASTCALL    orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVIEWPORT  *pstViewport;
   orxSTRING     zPreviousSection;
@@ -1061,7 +1061,7 @@ void orxFASTCALL    orxRender_RenderAll(const orxCLOCK_INFO *_pstClockInfo, void
  * @param[out] _pvWorldPosition         Corresponding world position
  * @return orxVECTOR / orxNULL
  */
-orxVECTOR *orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
+orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, orxVECTOR *_pvWorldPosition)
 {
   orxVIEWPORT  *pstViewport;
   orxVECTOR    *pvResult = orxNULL;
@@ -1179,7 +1179,7 @@ orxVECTOR *orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScreenPosition, o
 /** Inits the Render module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxRender_Home_Init()
+orxSTATUS orxFASTCALL orxRender_Home_Init()
 {
   orxSTATUS eResult;
 
@@ -1247,7 +1247,7 @@ orxSTATUS orxRender_Home_Init()
 
 /** Exits from the Render module
  */
-void orxRender_Home_Exit()
+void orxFASTCALL orxRender_Home_Exit()
 {
   /* Initialized? */
   if(sstRender.u32Flags & orxRENDER_KU32_STATIC_FLAG_READY)

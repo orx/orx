@@ -66,6 +66,8 @@
 #define orxOBJECT(STRUCTURE)        orxSTRUCTURE_GET_POINTER(STRUCTURE, OBJECT)
 #define orxSOUND(STRUCTURE)         orxSTRUCTURE_GET_POINTER(STRUCTURE, SOUND)
 #define orxSOUNDPOINTER(STRUCTURE)  orxSTRUCTURE_GET_POINTER(STRUCTURE, SOUNDPOINTER)
+#define orxSHADER(STRUCTURE)        orxSTRUCTURE_GET_POINTER(STRUCTURE, SHADER)
+#define orxSHADERPOINTER(STRUCTURE) orxSTRUCTURE_GET_POINTER(STRUCTURE, SHADERPOINTER)
 #define orxSPAWNER(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, SPAWNER)
 #define orxTEXT(STRUCTURE)          orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXT)
 #define orxTEXTURE(STRUCTURE)       orxSTRUCTURE_GET_POINTER(STRUCTURE, TEXTURE)
@@ -104,6 +106,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_FRAME,
   orxSTRUCTURE_ID_FXPOINTER,
   orxSTRUCTURE_ID_GRAPHIC,
+  orxSTRUCTURE_ID_SHADERPOINTER,
   orxSTRUCTURE_ID_SOUNDPOINTER,
   orxSTRUCTURE_ID_SPAWNER,
 
@@ -116,6 +119,7 @@ typedef enum __orxSTRUCTURE_ID_t
   orxSTRUCTURE_ID_CAMERA,
   orxSTRUCTURE_ID_FX,
   orxSTRUCTURE_ID_OBJECT,
+  orxSTRUCTURE_ID_SHADER,
   orxSTRUCTURE_ID_SOUND,
   orxSTRUCTURE_ID_TEXT,
   orxSTRUCTURE_ID_TEXTURE,
@@ -176,16 +180,16 @@ static orxINLINE orxSTRUCTURE *_orxStructure_GetPointer(const void *_pStructure,
 
 /** Structure module setup
  */
-extern orxDLLAPI void                                   orxStructure_Setup();
+extern orxDLLAPI void orxFASTCALL                       orxStructure_Setup();
 
 /** Initializess the structure module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                              orxStructure_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxStructure_Init();
 
 /** Exits from the structure module
  */
-extern orxDLLAPI void                                   orxStructure_Exit();
+extern orxDLLAPI void orxFASTCALL                       orxStructure_Exit();
 
 
 /** Registers a given ID

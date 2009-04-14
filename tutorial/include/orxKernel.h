@@ -93,6 +93,8 @@
 #include "render/orxFX.h"
 #include "render/orxFXPointer.h"
 #include "render/orxRender.h"
+#include "render/orxShader.h"
+#include "render/orxShaderPointer.h"
 #include "render/orxViewport.h"
 
 #include "sound/orxSound.h"

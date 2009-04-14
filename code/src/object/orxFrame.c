@@ -56,9 +56,7 @@
 #define orxFRAME_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
 #define orxFRAME_KU32_FLAG_DATA_2D          0x10000000  /**< 2D ID flag */
-#define orxFRAME_KU32_FLAG_VALUE_DIRTY      0x01000000  /**< Value dirty ID flag */
-#define orxFRAME_KU32_FLAG_RENDER_DIRTY     0x02000000  /**< Render dirty ID flag */
-#define orxFRAME_KU32_FLAG_DIRTY            0x03000000  /**< Dirty ID flag */
+#define orxFRAME_KU32_FLAG_DIRTY            0x01000000  /**< Dirty ID flag */
 
 #define orxFRAME_KU32_MASK_ALL              0xFFFFFFFF  /**< Dirty ID flag */
 
@@ -390,7 +388,7 @@ static orxINLINE orxVECTOR *_orxFrame_GetScale(const orxFRAME *_pstFrame, orxFRA
  * @param[out]  _pstDstFrame    Destination frame, will contain up-to-date frame
  * @param[in]   _pstSrcFrame    Source frame, which needs update
  */
-static void orxFASTCALL    orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRAME *_pstSrcFrame)
+static void orxFASTCALL orxFrame_UpdateData(orxFRAME *_pstDstFrame, const orxFRAME *_pstSrcFrame)
 {
   /* Checks */
   orxASSERT((_pstDstFrame != orxNULL));
@@ -479,7 +477,7 @@ static orxINLINE void orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   pstParentFrame = orxFRAME(orxStructure_GetParent(_pstFrame));
 
   /* Is cell dirty & has parent? */
-  if((orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_VALUE_DIRTY) != orxFALSE)
+  if((orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_DIRTY) != orxFALSE)
   && (pstParentFrame != orxNULL))
   {
     /* Updates parent status */
@@ -490,7 +488,7 @@ static orxINLINE void orxFrame_ProcessDirty(orxFRAME *_pstFrame)
   }
 
   /* Updates dirty status */
-  orxStructure_SetFlags(_pstFrame, orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_VALUE_DIRTY);
+  orxStructure_SetFlags(_pstFrame, orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_DIRTY);
 
   return;
 }
@@ -501,7 +499,7 @@ static orxINLINE void orxFrame_ProcessDirty(orxFRAME *_pstFrame)
  * @param[in]   _u32RemoveFlags Flags to remove
  * @param[in]   _bRecursed      Recursive?
  */
-static void orxFASTCALL    orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags, orxBOOL _bRecursed)
+static void orxFASTCALL orxFrame_SetFlagRecursively(orxFRAME *_pstFrame, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags, orxBOOL _bRecursed)
 {
   /* Non null? */
   if(_pstFrame != orxNULL)
@@ -570,7 +568,7 @@ static orxINLINE void orxFrame_DeleteAll()
 
 /** Animation module setup
  */
-void orxFrame_Setup()
+void orxFASTCALL orxFrame_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FRAME, orxMODULE_ID_MEMORY);
@@ -582,7 +580,7 @@ void orxFrame_Setup()
 /** Inits the Frame module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFrame_Init()
+orxSTATUS orxFASTCALL orxFrame_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -638,7 +636,7 @@ orxSTATUS orxFrame_Init()
 
 /** Exits from the Frame module
  */
-void orxFrame_Exit()
+void orxFASTCALL orxFrame_Exit()
 {
   /* Initialized? */
   if(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY)
@@ -665,7 +663,7 @@ void orxFrame_Exit()
  * @param[in]   _u32Flags     flags for created animation
  * @return      Created orxFRAME / orxNULL
  */
-orxFRAME *orxFrame_Create(orxU32 _u32Flags)
+orxFRAME *orxFASTCALL orxFrame_Create(orxU32 _u32Flags)
 {
   orxFRAME *pstFrame;
 
@@ -748,38 +746,11 @@ orxSTATUS orxFASTCALL orxFrame_Delete(orxFRAME *_pstFrame)
   return eResult;
 }
 
-/** Cleans all frames render status
- */
-void orxFrame_CleanAllRenderStatus()
-{
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-
-  /* Removes render dirty flag from all frames */
-  orxFrame_SetFlagRecursively(sstFrame.pstRoot, orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_RENDER_DIRTY, orxFALSE);
-
-  return;
-}
-
-/** Test frame render status
- * @param[in]   _pstFrame       Frame to test
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxFrame_IsRenderStatusClean(const orxFRAME *_pstFrame)
-{
-  /* Checks */
-  orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstFrame);
-
-  /* Test render dirty flag */
-  return(orxStructure_TestFlags(_pstFrame, orxFRAME_KU32_FLAG_RENDER_DIRTY));
-}
-
 /** Sets a frame parent
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pstParent      Parent frame to set
  */
-void orxFASTCALL    orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
+void orxFASTCALL orxFrame_SetParent(orxFRAME *_pstFrame, orxFRAME *_pstParent)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -826,7 +797,7 @@ orxBOOL orxFASTCALL orxFrame_IsRootChild(const orxFRAME *_pstFrame)
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pvPos          Position to set
  */
-void orxFASTCALL    orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR *_pvPos)
+void orxFASTCALL orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR *_pvPos)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -846,7 +817,7 @@ void orxFASTCALL    orxFrame_SetPosition(orxFRAME *_pstFrame, const orxVECTOR *_
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _fAngle         Angle to set
  */
-void orxFASTCALL    orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
+void orxFASTCALL orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);
@@ -865,7 +836,7 @@ void orxFASTCALL    orxFrame_SetRotation(orxFRAME *_pstFrame, orxFLOAT _fAngle)
  * @param[in]   _pstFrame       Concerned frame
  * @param[in]   _pvScale        Scale to set
  */
-void orxFASTCALL    orxFrame_SetScale(orxFRAME *_pstFrame, const orxVECTOR *_pvScale)
+void orxFASTCALL orxFrame_SetScale(orxFRAME *_pstFrame, const orxVECTOR *_pvScale)
 {
   /* Checks */
   orxASSERT(sstFrame.u32Flags & orxFRAME_KU32_STATIC_FLAG_READY);

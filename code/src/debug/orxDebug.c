@@ -154,7 +154,7 @@ static orxINLINE orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 /** Inits the debug module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS _orxDebug_Init()
+orxSTATUS orxFASTCALL _orxDebug_Init()
 {
   orxU32 i;
   orxU8 *pu8;
@@ -205,7 +205,7 @@ orxSTATUS _orxDebug_Init()
 }
 
 /** Exits from the debug module */
-void _orxDebug_Exit()
+void orxFASTCALL _orxDebug_Exit()
 {
   /* Initialized? */
   if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
@@ -223,7 +223,7 @@ void _orxDebug_Exit()
 }
 
 /** Software break function */
-void _orxDebug_Break()
+void orxFASTCALL _orxDebug_Break()
 {
   /* Windows / Linux */
 #if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxGP2X__)
@@ -262,7 +262,7 @@ void _orxDebug_Break()
 }
 
 /** Backups current debug flags */
-void _orxDebug_BackupFlags()
+void orxFASTCALL _orxDebug_BackupFlags()
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
@@ -274,7 +274,7 @@ void _orxDebug_BackupFlags()
 }
 
 /** Restores last backuped flags */
-void _orxDebug_RestoreFlags()
+void orxFASTCALL _orxDebug_RestoreFlags()
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
@@ -286,7 +286,7 @@ void _orxDebug_RestoreFlags()
 }
 
 /** Sets current debug flags */
-void orxFASTCALL    _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
+void orxFASTCALL _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
 {
   /* Checks */
   orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
@@ -305,7 +305,7 @@ void orxFASTCALL    _orxDebug_SetFlags(orxU32 _u32Add, orxU32 _u32Remove)
  * @param[in]   _u32Line                      Calling file line
  * @param[in]   _zFormat                      Printf formatted text
  */
-void orxFASTCALL    _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
+void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
 {
   va_list stArgs;
   FILE   *pstFile = orxNULL;

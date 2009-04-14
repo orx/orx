@@ -85,16 +85,16 @@ typedef struct __orxPARAM_t
 
 /** Setups param module
  */
-extern orxDLLAPI void                   orxParam_Setup();
+extern orxDLLAPI void orxFASTCALL       orxParam_Setup();
 
 /** Inits the param Module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxParam_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxParam_Init();
 
 /** Exits from the param module
  */
-extern orxDLLAPI void                   orxParam_Exit();
+extern orxDLLAPI void orxFASTCALL       orxParam_Exit();
 
 
 /** Registers a new parameter

@@ -186,7 +186,7 @@ static orxINLINE sf::Blend::Mode orxDisplay_SFML_GetBlendMode(orxDISPLAY_BLEND_M
 
 /** Event handler
  */
-orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -225,7 +225,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
-void orxFASTCALL    orxDisplay_SFML_EventUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+static void orxFASTCALL orxDisplay_SFML_EventUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   sf::Event oEvent;
 
@@ -308,12 +308,12 @@ void orxFASTCALL    orxDisplay_SFML_EventUpdate(const orxCLOCK_INFO *_pstClockIn
   }
 }
 
-extern "C" orxBITMAP *orxDisplay_SFML_GetScreen()
+extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_GetScreen()
 {
   return const_cast<orxBITMAP *>(spoScreen);
 }
 
-extern "C" orxDISPLAY_TEXT *orxDisplay_SFML_CreateText()
+extern "C" orxDISPLAY_TEXT *orxFASTCALL orxDisplay_SFML_CreateText()
 {
   orxDISPLAY_TEXT *pstResult;
 
@@ -347,7 +347,7 @@ extern "C" orxDISPLAY_TEXT *orxDisplay_SFML_CreateText()
   return pstResult;
 }
 
-extern "C" void orxDisplay_SFML_DeleteText(orxDISPLAY_TEXT *_pstText)
+extern "C" void orxFASTCALL orxDisplay_SFML_DeleteText(orxDISPLAY_TEXT *_pstText)
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
@@ -360,7 +360,7 @@ extern "C" void orxDisplay_SFML_DeleteText(orxDISPLAY_TEXT *_pstText)
   orxBank_Free(sstDisplay.pstTextBank, _pstText);
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformText(orxBITMAP *_pstDst, const orxDISPLAY_TEXT *_pstText, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -415,7 +415,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformText(orxBITMAP *_pstDst, const orx
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetTextString(orxDISPLAY_TEXT *_pstText, const orxSTRING _zString)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -437,7 +437,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetTextString(orxDISPLAY_TEXT *_pstText, co
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetTextFont(orxDISPLAY_TEXT *_pstText, const orxSTRING _zFont)
 {
   sf::Font *poFont;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -463,7 +463,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetTextFont(orxDISPLAY_TEXT *_pstText, cons
   return eResult;
 }
 
-extern "C" orxSTRING orxDisplay_SFML_GetTextString(const orxDISPLAY_TEXT *_pstText)
+extern "C" orxSTRING orxFASTCALL orxDisplay_SFML_GetTextString(const orxDISPLAY_TEXT *_pstText)
 {
   orxSTRING zResult;
 
@@ -478,7 +478,7 @@ extern "C" orxSTRING orxDisplay_SFML_GetTextString(const orxDISPLAY_TEXT *_pstTe
   return zResult;
 }
 
-extern "C" orxSTRING orxDisplay_SFML_GetTextFont(const orxDISPLAY_TEXT *_pstText)
+extern "C" orxSTRING orxFASTCALL orxDisplay_SFML_GetTextFont(const orxDISPLAY_TEXT *_pstText)
 {
   orxSTRING zResult;
 
@@ -493,7 +493,7 @@ extern "C" orxSTRING orxDisplay_SFML_GetTextFont(const orxDISPLAY_TEXT *_pstText
   return zResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetTextSize(const orxDISPLAY_TEXT *_pstText, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
   sf::FloatRect stRect;
@@ -515,7 +515,7 @@ extern "C" orxSTATUS orxDisplay_SFML_GetTextSize(const orxDISPLAY_TEXT *_pstText
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_PrintString(const orxBITMAP *_pstBitmap, const orxSTRING _zString, const orxDISPLAY_TRANSFORM *_pstTransform, orxRGBA _stColor)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -584,7 +584,7 @@ extern "C" orxSTATUS orxDisplay_SFML_PrintString(const orxBITMAP *_pstBitmap, co
   return eResult;
 }
 
-extern "C" void orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
+extern "C" void orxFASTCALL orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
 {
   sf::Sprite       *poSprite;
   const sf::Image  *poImage;
@@ -613,7 +613,7 @@ extern "C" void orxDisplay_SFML_DeleteBitmap(orxBITMAP *_pstBitmap)
   return;
 }
 
-extern "C" orxBITMAP *orxDisplay_SFML_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
+extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_CreateBitmap(orxU32 _u32Width, orxU32 _u32Height)
 {
   sf::Image  *poImage;
   sf::Sprite *poSprite;
@@ -644,7 +644,7 @@ extern "C" orxBITMAP *orxDisplay_SFML_CreateBitmap(orxU32 _u32Width, orxU32 _u32
   return (orxBITMAP *)poSprite;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   sf::Color oColor;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -687,7 +687,7 @@ extern "C" orxSTATUS orxDisplay_SFML_ClearBitmap(orxBITMAP *_pstBitmap, orxRGBA 
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_Swap()
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Swap()
 {
   orxDISPLAY_TEXT  *pstText;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
@@ -720,7 +720,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Swap()
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, orxRGBA _stColor, orxBOOL _bEnable)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -749,7 +749,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColorKey(orxBITMAP *_pstBitmap, or
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstBitmap, orxRGBA _stColor)
 {
   sf::Sprite *poSprite;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -768,7 +768,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapColor(orxBITMAP *_pstBitmap, orxRG
   return eResult;
 }
 
-extern "C" orxRGBA orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_pstBitmap)
+extern "C" orxRGBA orxFASTCALL orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_pstBitmap)
 {
   sf::Sprite *poSprite;
   sf::Color   oColor;
@@ -791,7 +791,7 @@ extern "C" orxRGBA orxDisplay_SFML_GetBitmapColor(const orxBITMAP *_pstBitmap)
   return stResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxFLOAT _fPosX, orxFLOAT _fPosY, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite   *poSprite;
   sf::Vector2f  vPosition;
@@ -820,7 +820,7 @@ extern "C" orxSTATUS orxDisplay_SFML_BlitBitmap(orxBITMAP *_pstDst, const orxBIT
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, const orxBITMAP *_pstSrc, const orxDISPLAY_TRANSFORM *_pstTransform, orxDISPLAY_SMOOTHING _eSmoothing, orxDISPLAY_BLEND_MODE _eBlendMode)
 {
   sf::Sprite *poSprite;
   bool        bSmooth;
@@ -910,7 +910,7 @@ extern "C" orxSTATUS orxDisplay_SFML_TransformBitmap(orxBITMAP *_pstDst, const o
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFilename)
 {
   orxSTATUS eResult;
 
@@ -940,7 +940,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SaveBitmap(const orxBITMAP *_pstBitmap, con
   return eResult;
 }
 
-extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(const orxSTRING _zFilename)
+extern "C" orxBITMAP *orxFASTCALL orxDisplay_SFML_LoadBitmap(const orxSTRING _zFilename)
 {
   orxBITMAP *pstResult;
   sf::Image *poImage;
@@ -989,7 +989,7 @@ extern "C" orxBITMAP *orxDisplay_SFML_LoadBitmap(const orxSTRING _zFilename)
   return pstResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1022,7 +1022,7 @@ extern "C" orxSTATUS orxDisplay_SFML_GetBitmapSize(const orxBITMAP *_pstBitmap, 
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxU32    u32Width, u32Height;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -1044,7 +1044,7 @@ extern "C" orxSTATUS orxDisplay_SFML_GetScreenSize(orxFLOAT *_pfWidth, orxFLOAT 
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1071,7 +1071,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetBitmapClipping(orxBITMAP *_pstBitmap, or
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_EnableVSync(orxBOOL _bEnable)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_EnableVSync(orxBOOL _bEnable)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1100,7 +1100,7 @@ extern "C" orxSTATUS orxDisplay_SFML_EnableVSync(orxBOOL _bEnable)
   return eResult;
 }
 
-extern "C" orxBOOL orxDisplay_SFML_IsVSyncEnabled()
+extern "C" orxBOOL orxFASTCALL orxDisplay_SFML_IsVSyncEnabled()
 {
   orxBOOL bResult;
 
@@ -1114,7 +1114,7 @@ extern "C" orxBOOL orxDisplay_SFML_IsVSyncEnabled()
   return bResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_Init()
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1255,7 +1255,7 @@ extern "C" orxSTATUS orxDisplay_SFML_Init()
   return eResult;
 }
 
-extern "C" void orxDisplay_SFML_Exit()
+extern "C" void orxFASTCALL orxDisplay_SFML_Exit()
 {
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
@@ -1291,7 +1291,7 @@ extern "C" void orxDisplay_SFML_Exit()
   return;
 }
 
-extern "C" orxHANDLE orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
+extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const orxLINKLIST *_pstParamList)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -1394,7 +1394,7 @@ extern "C" orxHANDLE orxDisplay_SFML_CreateShader(const orxSTRING _zCode, const 
   return hResult;
 }
 
-extern "C" void orxDisplay_SFML_DeleteShader(orxHANDLE _hShader)
+extern "C" void orxFASTCALL orxDisplay_SFML_DeleteShader(orxHANDLE _hShader)
 {
   sf::PostFX *poFX;
 
@@ -1408,7 +1408,7 @@ extern "C" void orxDisplay_SFML_DeleteShader(orxHANDLE _hShader)
   delete poFX;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_RenderShader(orxHANDLE _hShader)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_RenderShader(orxHANDLE _hShader)
 {
   const sf::PostFX *poFX;
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
@@ -1426,7 +1426,7 @@ extern "C" orxSTATUS orxDisplay_SFML_RenderShader(orxHANDLE _hShader)
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hShader, const orxSTRING _zParam, orxBITMAP *_pstValue)
 {
   sf::PostFX *poFX;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -1469,7 +1469,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetShaderBitmap(orxHANDLE _hShader, const o
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderFloat(orxHANDLE _hShader, const orxSTRING _zParam, orxFLOAT _fValue)
 {
   sf::PostFX *poFX;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -1488,7 +1488,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetShaderFloat(orxHANDLE _hShader, const or
   return eResult;
 }
 
-extern "C" orxSTATUS orxDisplay_SFML_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
+extern "C" orxSTATUS orxFASTCALL orxDisplay_SFML_SetShaderVector(orxHANDLE _hShader, const orxSTRING _zParam, const orxVECTOR *_pvValue)
 {
   sf::PostFX *poFX;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
@@ -1507,7 +1507,7 @@ extern "C" orxSTATUS orxDisplay_SFML_SetShaderVector(orxHANDLE _hShader, const o
   return eResult;
 }
 
-extern "C" orxHANDLE orxDisplay_SFML_GetApplicationInput()
+extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_GetApplicationInput()
 {
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);

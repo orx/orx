@@ -305,7 +305,7 @@ static orxINLINE orxINPUT_SET *orxInput_LoadSet(const orxSTRING _zSetName)
 }
 
 /* Save filter callback */
-orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption)
+static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, const orxSTRING _zKeyName, orxBOOL _bUseEncryption)
 {
   orxBOOL bResult = orxFALSE;
 
@@ -342,7 +342,7 @@ orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, const orxST
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pstContext     Context sent when registering callback to the clock
  */
-void orxFASTCALL    orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   /* Has current set? */
   if(sstInput.pstCurrentSet != orxNULL)
@@ -527,7 +527,7 @@ void orxFASTCALL    orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void *_p
  * @param[in] _zEntryName       Entry name to create
  * @return orxINPUT_ENTRY
  */
-orxINPUT_ENTRY *orxFASTCALL orxInput_CreateEntry(const orxSTRING _zEntryName)
+static orxINLINE orxINPUT_ENTRY *orxInput_CreateEntry(const orxSTRING _zEntryName)
 {
   orxINPUT_ENTRY *pstResult = orxNULL;
 
@@ -569,7 +569,7 @@ orxINPUT_ENTRY *orxFASTCALL orxInput_CreateEntry(const orxSTRING _zEntryName)
  * @param[in] _pstSet           Concerned set
  * @param[in] _pstEntry         Entry to delete
  */
-void orxFASTCALL    orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY *_pstEntry)
+static orxINLINE void orxInput_DeleteEntry(orxINPUT_SET *_pstSet, orxINPUT_ENTRY *_pstEntry)
 {
   /* Checks */
   orxASSERT(_pstSet != orxNULL);
@@ -699,7 +699,7 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
 
 /** Input module setup
  */
-void orxInput_Setup()
+void orxFASTCALL orxInput_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_INPUT, orxMODULE_ID_BANK);
@@ -716,7 +716,7 @@ void orxInput_Setup()
 /** Inits the input module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxInput_Init()
+orxSTATUS orxFASTCALL orxInput_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -783,7 +783,7 @@ orxSTATUS orxInput_Init()
 
 /** Exits from the input module
  */
-void orxInput_Exit()
+void orxFASTCALL orxInput_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY))
@@ -823,7 +823,7 @@ void orxInput_Exit()
  * @param[in] _zFileName        File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxInput_Load(const orxSTRING _zFileName)
+orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
 {
   orxSTRING zPreviousSection;
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -883,7 +883,7 @@ orxSTATUS orxInput_Load(const orxSTRING _zFileName)
  * @param[in] _zFileName        File name
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL  orxInput_Save(const orxSTRING _zFileName)
+orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1060,7 +1060,7 @@ orxSTATUS orxFASTCALL orxInput_SelectSet(const orxSTRING _zSetName)
 /** Gets current working set
  * @return Current selected set
  */
-const orxSTRING orxInput_GetCurrentSet()
+const orxSTRING orxFASTCALL orxInput_GetCurrentSet()
 {
   orxSTRING zResult = orxSTRING_EMPTY;
 

@@ -141,22 +141,22 @@ typedef void (orxFASTCALL *orxCLOCK_FUNCTION)(const orxCLOCK_INFO *_pstClockInfo
 
 /** Clock module setup
  */
-extern orxDLLAPI void                                 orxClock_Setup();
+extern orxDLLAPI void orxFASTCALL                     orxClock_Setup();
 
 /** Inits the clock module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxClock_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Init();
 
 /** Exits from the clock module
  */
-extern orxDLLAPI void                                 orxClock_Exit();
+extern orxDLLAPI void orxFASTCALL                     orxClock_Exit();
 
 
 /** Updates the clock system
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxClock_Update();
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Update();
 
 /** Creates a clock
  * @param[in]   _fTickSize                            Tick size for the clock (in seconds)
@@ -178,7 +178,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Resync(orxCLOCK *
 /** Resyncs all clocks (accumulated DT => 0)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                            orxClock_ResyncAll();
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_ResyncAll();
 
 /** Restarts a clock
  * @param[in]   _pstClock                             Concerned clock
@@ -278,7 +278,6 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(const or
  * @return      orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(const orxCLOCK *_pstClock);
-
 
 #endif /* _orxCLOCK_H_ */
 

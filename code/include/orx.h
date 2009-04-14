@@ -104,7 +104,7 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 
 /** Default main setup (module dependencies)
 */
-static void orx_MainSetup()
+static void orxFASTCALL orx_MainSetup()
 {
     /* Adds module dependencies */
     orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);

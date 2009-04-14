@@ -96,23 +96,23 @@ typedef struct __orxINPUT_EVENT_PAYLOAD_t
 
 /** Input module setup
  */
-extern orxDLLAPI void                   orxInput_Setup();
+extern orxDLLAPI void orxFASTCALL       orxInput_Setup();
 
 /** Initializes Input module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxInput_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_Init();
 
 /** Exits from Input module
  */
-extern orxDLLAPI void                   orxInput_Exit();
+extern orxDLLAPI void orxFASTCALL       orxInput_Exit();
 
 
 /** Loads inputs from config
  * @param[in] _zFileName        File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxInput_Load(const orxSTRING _zFileName);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_Load(const orxSTRING _zFileName);
 
 /** Saves inputs to config
  * @param[in] _zFileName        File name
@@ -129,7 +129,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxInput_SelectSet(const orxSTRING _zSet
 /** Gets current working set
  * @return Current selected set
  */
-extern orxDLLAPI const orxSTRING        orxInput_GetCurrentSet();
+extern orxDLLAPI const orxSTRING orxFASTCALL orxInput_GetCurrentSet();
 
 
 /** Is input active?

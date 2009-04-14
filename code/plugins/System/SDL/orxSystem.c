@@ -84,7 +84,7 @@ static orxSYSTEM_STATIC sstSystem;
 /** Init the system module
  * @return Returns the status of the operation
  */
-orxSTATUS orxSystemSDL_Init()
+orxSTATUS orxFASTCALL orxSystemSDL_Init()
 {
   orxSTATUS eResult; /* Init result */
 
@@ -120,7 +120,7 @@ orxSTATUS orxSystemSDL_Init()
 
 /** Exit the system module
  */
-void orxSystemSDL_Exit()
+void orxFASTCALL orxSystemSDL_Exit()
 {
   /* Was initialized ? */
   if((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY)
@@ -145,7 +145,7 @@ void orxSystemSDL_Exit()
 /** Gets App Elapsed time.
  * @return Returns the amount of seconds elapsed from the application start.
  */
-orxFLOAT orxSystemSDL_GetTime()
+orxFLOAT orxFASTCALL orxSystemSDL_GetTime()
 {
   /* Checks */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
@@ -157,7 +157,7 @@ orxFLOAT orxSystemSDL_GetTime()
 /** Gets App Elapsed time.
  * @return Returns the amount of seconds elapsed since reference time
  */
-orxS32 orxSystemSDL_GetRealTime()
+orxS32 orxFASTCALL orxSystemSDL_GetRealTime()
 {
   time_t  stTime;
   orxS32  s32Result;
@@ -175,7 +175,7 @@ orxS32 orxSystemSDL_GetRealTime()
 /** Delays the program for given number of seconds.
  * @param[in] _fSystem Number of seconds to wait.
  */
-void orxSystemSDL_Delay(orxFLOAT _fSeconds)
+void orxFASTCALL orxSystemSDL_Delay(orxFLOAT _fSeconds)
 {
   /* Module initialized ? */
   orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);

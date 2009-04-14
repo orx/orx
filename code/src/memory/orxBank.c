@@ -176,13 +176,9 @@ static orxINLINE orxBANK_SEGMENT *orxBank_GetSegment(const orxBANK *_pstBank, co
  * Public functions                                                        *
  ***************************************************************************/
 
-/***************************************************************************
- orxBank_Setup
- Bank system setup.
-
- returns: nothing
- ***************************************************************************/
-void orxBank_Setup()
+/** Setups the bank module
+ */
+void orxFASTCALL orxBank_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_BANK, orxMODULE_ID_MEMORY);
@@ -192,7 +188,7 @@ void orxBank_Setup()
 
 /** Initialize Bank Module
  */
-orxSTATUS orxBank_Init()
+orxSTATUS orxFASTCALL orxBank_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -223,7 +219,7 @@ orxSTATUS orxBank_Init()
 
 /** Exit bank module
  */
-void orxBank_Exit()
+void orxFASTCALL orxBank_Exit()
 {
   /* Module initialized ? */
   if((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY)
@@ -289,7 +285,7 @@ orxBANK *orxFASTCALL orxBank_Create(orxU16 _u16NbElem, orxU32 _u32Size, orxU32 _
 /** Free a portion of memory allocated with orxMemory_Allocate
  * @param[in] _pstBank    Pointer on the memory bank allocated by orx
  */
-void orxFASTCALL    orxBank_Delete(orxBANK *_pstBank)
+void orxFASTCALL orxBank_Delete(orxBANK *_pstBank)
 {
   /* Module initialized ? */
   orxASSERT((sstBank.u32Flags & orxBANK_KU32_STATIC_FLAG_READY) == orxBANK_KU32_STATIC_FLAG_READY);
@@ -428,7 +424,7 @@ void *orxFASTCALL orxBank_Allocate(orxBANK *_pstBank)
  * @param[in] _pCell      Pointer on the cell to free
  * @return a new cell of memory (orxNULL if no allocation possible)
  */
-void orxFASTCALL    orxBank_Free(orxBANK *_pstBank, void *_pCell)
+void orxFASTCALL orxBank_Free(orxBANK *_pstBank, void *_pCell)
 {
   orxBANK_SEGMENT *pstSegment;  /* Segment associated to the cell */
   orxU32 u32Index32Bits;        /* Index of 32 the bits data */
@@ -467,7 +463,7 @@ void orxFASTCALL    orxBank_Free(orxBANK *_pstBank, void *_pCell)
 /** Free all allocated cell from a bank
  * @param[in] _pstBank    Bank of memory to clear
  */
-void orxFASTCALL    orxBank_Clear(orxBANK *_pstBank)
+void orxFASTCALL orxBank_Clear(orxBANK *_pstBank)
 {
   void *pstCell = orxNULL;
 
@@ -572,10 +568,12 @@ orxU32 orxFASTCALL orxBank_GetCounter(const orxBANK *_pstBank)
  * DEBUG FUNCTION
  ******************************************************************************/
 
+#ifdef __orxDEBUG__
+
 /** Print the content of a chunk bank
  * @param[in] _pstBank    Bank's pointer
  */
-void orxFASTCALL    orxBank_DebugPrint(const orxBANK *_pstBank)
+void orxFASTCALL orxBank_DebugPrint(const orxBANK *_pstBank)
 {
   orxBANK_SEGMENT *pstSegment;  /* Pointer on the current segment */
   orxU32 u32Index1, u32Index2, u32Index3;
@@ -641,3 +639,5 @@ void orxFASTCALL    orxBank_DebugPrint(const orxBANK *_pstBank)
     pstSegment = pstSegment->pstNext;
   }
 }
+
+#endif /* __orxDEBUG__ */

@@ -38,7 +38,7 @@
 
  returns: nothing
  ***************************************************************************/
-void orxSystem_Setup()
+void orxFASTCALL orxSystem_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SYSTEM, orxMODULE_ID_PLUGIN);
@@ -79,27 +79,27 @@ orxPLUGIN_END_CORE_FUNCTION_ARRAY(SYSTEM)
 
 /* *** Core function implementations *** */
 
-orxSTATUS orxSystem_Init()
+orxSTATUS orxFASTCALL orxSystem_Init()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Init)();
 }
 
-void orxSystem_Exit()
+void orxFASTCALL orxSystem_Exit()
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Exit)();
 }
 
-orxFLOAT orxSystem_GetTime()
+orxFLOAT orxFASTCALL orxSystem_GetTime()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetTime)();
 }
 
-orxS32 orxSystem_GetRealTime()
+orxS32 orxFASTCALL orxSystem_GetRealTime()
 {
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_GetRealTime)();
 }
 
-void orxSystem_Delay(orxFLOAT _fSeconds)
+void orxFASTCALL orxSystem_Delay(orxFLOAT _fSeconds)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSystem_Delay)(_fSeconds);
 }

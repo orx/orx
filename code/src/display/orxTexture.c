@@ -142,7 +142,7 @@ static orxINLINE orxTEXTURE *orxTexture_FindByName(const orxSTRING _zDataName)
 
 /** Setups the texture module
  */
-void orxTexture_Setup()
+void orxFASTCALL orxTexture_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
@@ -155,7 +155,7 @@ void orxTexture_Setup()
 /** Inits the texture module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxTexture_Init()
+orxSTATUS orxFASTCALL orxTexture_Init()
 {
   orxSTATUS eResult;
 
@@ -240,7 +240,7 @@ orxSTATUS orxTexture_Init()
 
 /** Exits from the texture module
  */
-void orxTexture_Exit()
+void orxFASTCALL orxTexture_Exit()
 {
   /* Initialized? */
   if(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY)
@@ -276,7 +276,7 @@ void orxTexture_Exit()
 /** Creates an empty texture
  * @return      orxTEXTURE / orxNULL
  */
-orxTEXTURE *orxTexture_Create()
+orxTEXTURE *orxFASTCALL orxTexture_Create()
 {
   orxTEXTURE *pstTexture;
 
@@ -664,7 +664,7 @@ orxSTATUS orxFASTCALL orxTexture_SetColor(orxTEXTURE *_pstTexture, orxRGBA _stCo
 /** Gets screen texture
  * @return      Screen texture / orxNULL
  */
-orxTEXTURE *orxTexture_GetScreenTexture()
+orxTEXTURE *orxFASTCALL orxTexture_GetScreenTexture()
 {
   /* Checks */
   orxASSERT(sstTexture.u32Flags & orxTEXTURE_KU32_STATIC_FLAG_READY);

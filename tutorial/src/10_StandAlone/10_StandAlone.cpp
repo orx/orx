@@ -82,19 +82,6 @@
  *
  * Some explanations about core elements you can find in this tutorial:
  *
- * - Setup function: usually used to define module dependencies.
- *   Here we add dependencies for the main module (our code).
- *   This specifies a hierarchical tree used for modules init, exit and pause.
- *   For our program to run, we require the param, clock, config, event and plugin modules
- *   to be loaded before us.
- *   They all have their internal dependencies that must be satisfied before they can be initialized.
- *   If a dependency can't be satisfied initialization will stop.
- *   For example, if the clock module can't initialize properly, as we depend on it,
- *   our Init() function will never be called.
- *   We can specify optional dependencies using the orxModule_AddOptionalDependency()
- *   This way, orx will try to init the concerned module but won't stop initialization if
- *   it fails.
- *
  * - Run function: Don't put *ANY* logic code here, it's only a backbone where you can handle default
  *   core behaviors (tracking exit, for example) or profile some stuff.
  *   As it's directly called from the main loop and not part of the clock system, time consistency can't be achieved.
@@ -108,7 +95,7 @@
  *   if other handlers are listening this event type.
  *
  * - orx_Execute():
- *   Inits and executes orx using our self-defined functions (Setup, Init, Run and Exit).
+ *   Inits and executes orx using our self-defined functions (Init, Run and Exit).
  *   We can of course not use this helper and handles everything manually if its
  *   behavior doesn't suit our needs.
  *   You can have a look at the content of orx_Execute() (which is implemented in orx.h) to have
@@ -185,10 +172,9 @@ class StandAlone
 {
 public:
   static orxSTATUS orxFASTCALL  EventHandler(const orxEVENT *_pstEvent);
-  static void                   Setup();
-  static orxSTATUS              Init();
-  static void                   Exit();
-  static orxSTATUS              Run();
+  static orxSTATUS orxFASTCALL  Init();
+  static void orxFASTCALL       Exit();
+  static orxSTATUS orxFASTCALL  Run();
 
 private:
   orxSTATUS                     InitGame();

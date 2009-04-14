@@ -37,11 +37,11 @@
  }</td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#g7214d3eab1074a8e70d14711deee008e">orxMemory_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gf91c778332c819f06bdde51acfda9fa0">orxMemory_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#ge829d5113c10e80b72879f3d38094560">orxMemory_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#g9f26236adad8a0a4d07aa6212280b379">orxMemory_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#g61d036b5ce2b0c014b6e0e4c2bf97cc4">orxMemory_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#g643c775ffcf970857a16d419bf298020">orxMemory_Exit</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#g74fb333b07c13bf3a668c5ee88204ea8">orxMemory_Allocate</a> (orxU32 _u32Size, <a class="el" href="group__orx_memory.html#gb389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemType)</td></tr>
 
@@ -137,7 +137,7 @@ Allocates a portion of memory in the system and returns a pointer on it <dl comp
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>returns a pointer on the memory allocated, or orxNULL if an error has occured </dd></dl>
-<dl compact><dt><b><a class="el" href="todo.html#_todo000030">Todo:</a></b></dt><dd>Use the memory managed by orxMemory (initialized with <a class="el" href="group__orx_memory.html#ge829d5113c10e80b72879f3d38094560">orxMemory_Init()</a>) </dd></dl>
+<dl compact><dt><b><a class="el" href="todo.html#_todo000030">Todo:</a></b></dt><dd>Use the memory managed by orxMemory (initialized with <a class="el" href="group__orx_memory.html#g9f26236adad8a0a4d07aa6212280b379">orxMemory_Init()</a>) </dd></dl>
 
 </div>
 </div><p>
@@ -228,12 +228,12 @@ Copies a portion of memory into another one <dl compact><dt><b>Parameters:</b></
 
 </div>
 </div><p>
-<a class="anchor" name="g61d036b5ce2b0c014b6e0e4c2bf97cc4"></a><!-- doxytag: member="orxMemory.h::orxMemory_Exit" ref="g61d036b5ce2b0c014b6e0e4c2bf97cc4" args="()" -->
+<a class="anchor" name="g643c775ffcf970857a16d419bf298020"></a><!-- doxytag: member="orxMemory.h::orxMemory_Exit" ref="g643c775ffcf970857a16d419bf298020" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxMemory_Exit           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxMemory_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -309,12 +309,12 @@ Gets the an aligned data size <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="ge829d5113c10e80b72879f3d38094560"></a><!-- doxytag: member="orxMemory.h::orxMemory_Init" ref="ge829d5113c10e80b72879f3d38094560" args="()" -->
+<a class="anchor" name="g9f26236adad8a0a4d07aa6212280b379"></a><!-- doxytag: member="orxMemory.h::orxMemory_Init" ref="g9f26236adad8a0a4d07aa6212280b379" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxMemory_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxMemory_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -451,12 +451,12 @@ Fills a portion of memory with _u32Data <dl compact><dt><b>Parameters:</b></dt><
 
 </div>
 </div><p>
-<a class="anchor" name="g7214d3eab1074a8e70d14711deee008e"></a><!-- doxytag: member="orxMemory.h::orxMemory_Setup" ref="g7214d3eab1074a8e70d14711deee008e" args="()" -->
+<a class="anchor" name="gf91c778332c819f06bdde51acfda9fa0"></a><!-- doxytag: member="orxMemory.h::orxMemory_Setup" ref="gf91c778332c819f06bdde51acfda9fa0" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxMemory_Setup           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxMemory_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

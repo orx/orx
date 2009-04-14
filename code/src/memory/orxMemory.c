@@ -67,7 +67,7 @@ static orxMEMORY_STATIC sstMemory;
 
  returns: nothing
  ***************************************************************************/
-void orxMemory_Setup()
+void orxFASTCALL orxMemory_Setup()
 {
   /* Adds module dependencies */
 
@@ -77,11 +77,9 @@ void orxMemory_Setup()
 /** Initialize memory allocation module
  * @todo Really initialize the memory to be managed by the module and not OS
  */
-orxSTATUS orxMemory_Init()
+orxSTATUS orxFASTCALL orxMemory_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* No dependencies for this module */
 
   /* Module not already initialized ? */
   /* Not already Initialized? */
@@ -111,7 +109,7 @@ orxSTATUS orxMemory_Init()
 
 /** Uninitialize memory allocation module
  */
-void orxMemory_Exit()
+void orxFASTCALL orxMemory_Exit()
 {
   /* Module initialized ? */
   if((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY)
@@ -159,7 +157,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
  * @param[in] _pMem       Pointer on the memory allocated by orx
  * @todo Use the memory managed by orxMemory (not OS)
  */
-void orxFASTCALL    orxMemory_Free(void *_pMem)
+void orxFASTCALL orxMemory_Free(void *_pMem)
 {
   /* Module initialized ? */
   orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);

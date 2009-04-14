@@ -207,7 +207,7 @@ static orxINLINE void orxObject_DeleteAll()
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  * @param[in] _pstContext         User defined context
  */
-void orxFASTCALL    orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxOBJECT *pstObject;
 
@@ -306,7 +306,7 @@ void orxFASTCALL    orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, void
 
 /** Object module setup
  */
-void orxObject_Setup()
+void orxFASTCALL orxObject_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_MEMORY);
@@ -330,7 +330,7 @@ void orxObject_Setup()
 /** Inits the object module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxObject_Init()
+orxSTATUS orxFASTCALL orxObject_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -384,7 +384,7 @@ orxSTATUS orxObject_Init()
 
 /** Exits from the object module
  */
-void orxObject_Exit()
+void orxFASTCALL orxObject_Exit()
 {
   /* Initialized? */
   if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY)
@@ -423,7 +423,7 @@ void orxObject_Exit()
 /** Creates an empty object
  * @return      Created orxOBJECT / orxNULL
  */
-orxOBJECT *orxObject_Create()
+orxOBJECT *orxFASTCALL orxObject_Create()
 {
   orxOBJECT *pstObject;
 

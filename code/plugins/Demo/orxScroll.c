@@ -64,7 +64,7 @@ static orxOBJECT *spstRoot;
 
 /** Update callback used to update the scrolling. N.B.: it could also have been done through FXs, doing the synchro in the .ini, and no clock would have been needed.
  */
-void orxFASTCALL    orxScroll_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxScroll_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vPos;
   orxFLOAT  fMove;

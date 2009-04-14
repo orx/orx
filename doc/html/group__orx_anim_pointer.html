@@ -23,11 +23,11 @@
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxANIMPOINTER_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_pointer.html#g5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a></td></tr>
 
 <tr><td colspan="2"><br><h2>Functions</h2></td></tr>
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_pointer.html#gb019d7754aaf2a15e9507616dc64596a">orxAnimPointer_Setup</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_pointer.html#gc5617f75f3775469c4334e1a75106115">orxAnimPointer_Setup</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_pointer.html#g9ab9688755f5e87ea9857fe15dca4d8f">orxAnimPointer_Init</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_pointer.html#g33b716910ae0b6ede4745038c64e35e1">orxAnimPointer_Init</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_pointer.html#g27a5e5727bb50cebede4eeb0743a1350">orxAnimPointer_Exit</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_pointer.html#gc065855483719cefe764c95013332d05">orxAnimPointer_Exit</a> ()</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_anim_pointer.html#g5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a> <br>
 *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_anim_pointer.html#g45e4c7555b915bca87eef72c0dababf9">orxAnimPointer_Create</a> (const <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstOwner, <a class="el" href="group__orx_anim_set.html#g1fcef34d290ca0c5de656a7a655e1deb">orxANIMSET</a> *_pstAnimSet)</td></tr>
@@ -186,12 +186,12 @@ Deletes an AnimPointer <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="g27a5e5727bb50cebede4eeb0743a1350"></a><!-- doxytag: member="orxAnimPointer.h::orxAnimPointer_Exit" ref="g27a5e5727bb50cebede4eeb0743a1350" args="()" -->
+<a class="anchor" name="gc065855483719cefe764c95013332d05"></a><!-- doxytag: member="orxAnimPointer.h::orxAnimPointer_Exit" ref="gc065855483719cefe764c95013332d05" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxAnimPointer_Exit           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxAnimPointer_Exit           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -439,12 +439,12 @@ AnimPointer target Animation get accessor <dl compact><dt><b>Parameters:</b></dt
 
 </div>
 </div><p>
-<a class="anchor" name="g9ab9688755f5e87ea9857fe15dca4d8f"></a><!-- doxytag: member="orxAnimPointer.h::orxAnimPointer_Init" ref="g9ab9688755f5e87ea9857fe15dca4d8f" args="()" -->
+<a class="anchor" name="g33b716910ae0b6ede4745038c64e35e1"></a><!-- doxytag: member="orxAnimPointer.h::orxAnimPointer_Init" ref="g33b716910ae0b6ede4745038c64e35e1" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxAnimPointer_Init           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxAnimPointer_Init           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>
@@ -711,12 +711,12 @@ AnimPointer current Time accessor <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
-<a class="anchor" name="gb019d7754aaf2a15e9507616dc64596a"></a><!-- doxytag: member="orxAnimPointer.h::orxAnimPointer_Setup" ref="gb019d7754aaf2a15e9507616dc64596a" args="()" -->
+<a class="anchor" name="gc5617f75f3775469c4334e1a75106115"></a><!-- doxytag: member="orxAnimPointer.h::orxAnimPointer_Setup" ref="gc5617f75f3775469c4334e1a75106115" args="()" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI void orxAnimPointer_Setup           </td>
+          <td class="memname">orxDLLAPI void orxFASTCALL orxAnimPointer_Setup           </td>
           <td>(</td>
           <td class="paramname">          </td>
           <td>&nbsp;)&nbsp;</td>

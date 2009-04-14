@@ -133,7 +133,7 @@ static orxINLINE orxSTATUS LoadConfig()
 
 /** Init function
  */
-orxSTATUS Init()
+orxSTATUS orxFASTCALL Init()
 {
   orxINPUT_TYPE   eType;
   orxENUM         eID;
@@ -159,7 +159,7 @@ orxSTATUS Init()
 
 /** Run function
  */
-orxSTATUS Run()
+orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -194,7 +194,7 @@ orxSTATUS Run()
 
 /** Exit function
  */
-void Exit()
+void orxFASTCALL Exit()
 {
 }
 

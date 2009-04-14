@@ -184,7 +184,7 @@ static SDLKey orxFASTCALL orxKeyboard_SDL_GetSDLKey(orxKEYBOARD_KEY _eKey)
   return eResult;
 }
 
-orxSTATUS orxKeyboard_SDL_Init()
+orxSTATUS orxFASTCALL orxKeyboard_SDL_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -227,7 +227,7 @@ orxSTATUS orxKeyboard_SDL_Init()
   return eResult;
 }
 
-void orxKeyboard_SDL_Exit()
+void orxFASTCALL orxKeyboard_SDL_Exit()
 {
   /* Was initialized? */
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
@@ -239,7 +239,7 @@ void orxKeyboard_SDL_Exit()
   return;
 }
 
-orxBOOL orxKeyboard_SDL_IsKeyPressed(orxKEYBOARD_KEY _eKey)
+orxBOOL orxFASTCALL orxKeyboard_SDL_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 {
   orxU8  *pu8KeyState;
   SDLKey  eSDLKey;
@@ -274,7 +274,7 @@ orxBOOL orxKeyboard_SDL_IsKeyPressed(orxKEYBOARD_KEY _eKey)
   return bResult;
 }
 
-orxKEYBOARD_KEY orxKeyboard_SDL_Read()
+orxKEYBOARD_KEY orxFASTCALL orxKeyboard_SDL_Read()
 {
   orxU8          *pu8KeyState;
   orxU32          i;
@@ -308,7 +308,7 @@ orxKEYBOARD_KEY orxKeyboard_SDL_Read()
   return eResult;
 }
 
-orxBOOL orxKeyboard_SDL_Hit()
+orxBOOL orxFASTCALL orxKeyboard_SDL_Hit()
 {
   orxBOOL bResult;
 
@@ -322,7 +322,7 @@ orxBOOL orxKeyboard_SDL_Hit()
   return bResult;
 }
 
-void orxKeyboard_SDL_ClearBuffer()
+void orxFASTCALL orxKeyboard_SDL_ClearBuffer()
 {
   /* Checks */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);

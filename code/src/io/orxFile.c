@@ -75,7 +75,7 @@ static orxFILE_STATIC sstFile;
  ***************************************************************************/
 
 /** File module setup */
-void orxFile_Setup()
+void orxFASTCALL orxFile_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_MEMORY);
@@ -85,7 +85,7 @@ void orxFile_Setup()
 
 /** Inits the File Module
  */
-orxSTATUS orxFile_Init()
+orxSTATUS orxFASTCALL orxFile_Init()
 {
   /* Module not already initialized ? */
   orxASSERT(!(sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY));
@@ -109,7 +109,7 @@ orxSTATUS orxFile_Init()
 
 /** Exits from the File Module
  */
-void orxFile_Exit()
+void orxFASTCALL orxFile_Exit()
 {
   /* Module initialized ? */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -123,7 +123,7 @@ void orxFile_Exit()
  * @param[in] _u32OpenFlags        List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
-orxFILE *orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
+orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
 {
   /* Convert the open flags into a string */
   orxCHAR zMode[3];
@@ -204,7 +204,7 @@ orxFILE *orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags)
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-orxU32 orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxU32 orxFASTCALL orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
   orxU32 u32Ret = 0;
@@ -229,7 +229,7 @@ orxU32 orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, or
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-orxU32 orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
+orxU32 orxFASTCALL orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
   orxU32 u32Ret = 0;
@@ -256,7 +256,7 @@ orxU32 orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem
  * @param[in] _pstFile        Pointer on the file descriptor
  * @return Returns orxTRUE if a line has been read, else returns orxFALSE.
  */
-orxBOOL orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
+orxBOOL orxFASTCALL orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
 {
   /* Default return value */
   orxBOOL bRet = orxFALSE;
@@ -289,7 +289,7 @@ orxBOOL orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile)
  * @param[in] _pstFile             File's pointer to close
  * @return Returns the status of the operation
  */
-orxSTATUS orxFile_Close(orxFILE *_pstFile)
+orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
 {
   /* Default return value */
   orxSTATUS eRet = orxSTATUS_FAILURE;

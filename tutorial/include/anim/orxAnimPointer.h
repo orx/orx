@@ -57,16 +57,16 @@ typedef struct __orxANIMPOINTER_t             orxANIMPOINTER;
 
 /** AnimPointer module setup
  */
-extern orxDLLAPI void                         orxAnimPointer_Setup();
+extern orxDLLAPI void orxFASTCALL             orxAnimPointer_Setup();
 
 /** Inits the AnimPointer module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                    orxAnimPointer_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_Init();
 
 /** Exits from the AnimPointer module
  */
-extern orxDLLAPI void                         orxAnimPointer_Exit();
+extern orxDLLAPI void orxFASTCALL             orxAnimPointer_Exit();
 
 
 /** Creates an empty AnimPointer
@@ -194,6 +194,5 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_SetFrequency(orxANI
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnimPointer_Pause(orxANIMPOINTER *_pstAnimPointer, orxBOOL _bPause);
 
 #endif /* _orxANIMPOINTER_H_ */
-
 
 /** @} */

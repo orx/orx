@@ -352,7 +352,7 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
 
 /** Spawner module setup
  */
-void orxSpawner_Setup()
+void orxFASTCALL orxSpawner_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_MEMORY);
@@ -368,7 +368,7 @@ void orxSpawner_Setup()
 /** Inits the spawner module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxSpawner_Init()
+orxSTATUS orxFASTCALL orxSpawner_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -420,7 +420,7 @@ orxSTATUS orxSpawner_Init()
 
 /** Exits from the spawner module
  */
-void orxSpawner_Exit()
+void orxFASTCALL orxSpawner_Exit()
 {
   /* Initialized? */
   if(orxFLAG_TEST(sstSpawner.u32Flags, orxSPAWNER_KU32_STATIC_FLAG_READY))
@@ -449,7 +449,7 @@ void orxSpawner_Exit()
 /** Creates an empty spawner
  * @return      Created orxSPAWNER / orxNULL
  */
-orxSPAWNER *orxSpawner_Create()
+orxSPAWNER *orxFASTCALL orxSpawner_Create()
 {
   orxSPAWNER *pstResult;
 

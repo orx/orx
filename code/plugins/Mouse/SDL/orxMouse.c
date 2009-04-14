@@ -75,7 +75,7 @@ static orxMOUSE_STATIC sstMouse;
 
 /** Event handler
  */
-orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -128,7 +128,7 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
-orxSTATUS orxMouse_SDL_ShowCursor(orxBOOL _bShow)
+orxSTATUS orxFASTCALL orxMouse_SDL_ShowCursor(orxBOOL _bShow)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -142,7 +142,7 @@ orxSTATUS orxMouse_SDL_ShowCursor(orxBOOL _bShow)
   return eResult;
 }
 
-orxSTATUS orxMouse_SDL_Init()
+orxSTATUS orxFASTCALL orxMouse_SDL_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -211,7 +211,7 @@ orxSTATUS orxMouse_SDL_Init()
   return eResult;
 }
 
-void orxMouse_SDL_Exit()
+void orxFASTCALL orxMouse_SDL_Exit()
 {
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
@@ -227,7 +227,7 @@ void orxMouse_SDL_Exit()
   return;
 }
 
-orxSTATUS orxMouse_SDL_SetPosition(const orxVECTOR *_pvPosition)
+orxSTATUS orxFASTCALL orxMouse_SDL_SetPosition(const orxVECTOR *_pvPosition)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -241,7 +241,7 @@ orxSTATUS orxMouse_SDL_SetPosition(const orxVECTOR *_pvPosition)
   return eResult;
 }
 
-orxVECTOR *orxMouse_SDL_GetPosition(orxVECTOR *_pvPosition)
+orxVECTOR *orxFASTCALL orxMouse_SDL_GetPosition(orxVECTOR *_pvPosition)
 {
   orxS32      s32X, s32Y;
   orxVECTOR  *pvResult = _pvPosition;
@@ -262,7 +262,7 @@ orxVECTOR *orxMouse_SDL_GetPosition(orxVECTOR *_pvPosition)
   return pvResult;
 }
 
-orxBOOL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
+orxBOOL orxFASTCALL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
 {
   orxU8   u8State;
   orxS32  s32X, s32Y;
@@ -339,7 +339,7 @@ orxBOOL orxMouse_SDL_IsButtonPressed(orxMOUSE_BUTTON _eButton)
   return bResult;
 }
 
-orxVECTOR *orxMouse_SDL_GetMoveDelta(orxVECTOR *_pvMoveDelta)
+orxVECTOR *orxFASTCALL orxMouse_SDL_GetMoveDelta(orxVECTOR *_pvMoveDelta)
 {
   orxVECTOR *pvResult = _pvMoveDelta;
 
@@ -357,7 +357,7 @@ orxVECTOR *orxMouse_SDL_GetMoveDelta(orxVECTOR *_pvMoveDelta)
   return pvResult;
 }
 
-orxFLOAT orxMouse_SDL_GetWheelDelta()
+orxFLOAT orxFASTCALL orxMouse_SDL_GetWheelDelta()
 {
   orxFLOAT fResult;
 

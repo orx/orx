@@ -116,7 +116,7 @@ static orxANIM_STATIC sstAnim;
  * @param[in]   _fTimeStamp     Desired timestamp
  * @return      Key index / orxU32_UNDEFINED
  */
-static orxU32 orxFASTCALL orxAnim_FindKeyIndex(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
+static orxINLINE orxU32 orxAnim_FindKeyIndex(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 {
   orxU32 u32Counter, u32MaxIndex, u32MinIndex, u32Index;
 
@@ -268,7 +268,7 @@ static orxINLINE void orxAnim_DeleteAll()
 
 /** Animation module setup
  */
-void orxAnim_Setup()
+void orxFASTCALL orxAnim_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_ANIM, orxMODULE_ID_MEMORY);
@@ -284,7 +284,7 @@ void orxAnim_Setup()
 /** Inits the Animation module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxAnim_Init()
+orxSTATUS orxFASTCALL orxAnim_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -324,7 +324,7 @@ orxSTATUS orxAnim_Init()
 
 /** Exits from the Animation module
  */
-void orxAnim_Exit()
+void orxFASTCALL orxAnim_Exit()
 {
   /* Initialized? */
   if(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY)
@@ -696,7 +696,7 @@ orxSTATUS orxFASTCALL orxAnim_RemoveLastKey(orxANIM *_pstAnim)
 /** Removes all keys from an animation
  * @param[in]   _pstAnim        Concerned animation
  */
-void orxFASTCALL    orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
+void orxFASTCALL orxAnim_RemoveAllKeys(orxANIM *_pstAnim)
 {
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);

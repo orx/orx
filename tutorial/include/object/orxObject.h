@@ -76,21 +76,21 @@ typedef struct __orxOBJECT_t                orxOBJECT;
 
 /** Object module setup
  */
-extern orxDLLAPI void                       orxObject_Setup();
+extern orxDLLAPI void orxFASTCALL           orxObject_Setup();
 
 /** Inits the object module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                  orxObject_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Init();
 
 /** Exits from the object module
  */
-extern orxDLLAPI void                       orxObject_Exit();
+extern orxDLLAPI void orxFASTCALL           orxObject_Exit();
 
 /** Creates an empty object
  * @return orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *                orxObject_Create();
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Create();
 
 /** Creates an object from config
  * @param[in]   _zConfigID    Config ID
@@ -447,6 +447,13 @@ extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(const orxOBJECT *
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
 
+/** Adds a unique FX using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
 /** Adds a delayed FX using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
@@ -454,6 +461,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObjec
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
+
+/** Adds a unique delayed FX using its config ID
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fDelay         Delay time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
 
 /** Removes an FX using using its config ID
  * @param[in]   _pstObject      Concerned object
@@ -482,6 +497,27 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveSound(orxOBJECT *_ps
  * @return      orxSOUND / orxNULL
  */
 extern orxDLLAPI orxSOUND *orxFASTCALL      orxObject_GetLastAddedSound(const orxOBJECT *_pstObject);
+
+
+/** Sets an object's shader using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+
+/** Enables an object's shader
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _bEnable          Enable / disable
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_EnableShader(orxOBJECT *_pstObject, orxBOOL _bEnable);
+
+/** Is an object's shader enabled?
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxTRUE if enabled, orxFALSE otherwise
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsShaderEnabled(const orxOBJECT *_pstObject);
+
 
 /** Gets object config name
  * @param[in]   _pstObject      Concerned object

@@ -52,22 +52,22 @@ typedef struct __orxTEXTURE_t             orxTEXTURE;
 
 /** Setups the texture module
  */
-extern orxDLLAPI void                     orxTexture_Setup();
+extern orxDLLAPI void orxFASTCALL         orxTexture_Setup();
 
 /** Inits the texture module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                orxTexture_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_Init();
 
 /** Exits from the texture module
  */
-extern orxDLLAPI void                     orxTexture_Exit();
+extern orxDLLAPI void orxFASTCALL         orxTexture_Exit();
 
 
 /** Creates an empty texture
  * @return      orxTEXTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *             orxTexture_Create();
+extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_Create();
 
 /** Creates a texture from a bitmap file
  * @param[in]   _zBitmapFileName  Name of the bitmap
@@ -126,7 +126,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetColor(orxTEXTURE *_pstTe
 /** Gets screen texture
  * @return      Screen texture / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *             orxTexture_GetScreenTexture();
+extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_GetScreenTexture();
 
 #endif /* _orxTEXTURE_H_ */
 

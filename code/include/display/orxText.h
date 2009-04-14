@@ -51,22 +51,22 @@ typedef struct __orxTEXT_t                orxTEXT;
 
 /** Setups the text module
  */
-extern orxDLLAPI void                     orxText_Setup();
+extern orxDLLAPI void orxFASTCALL         orxText_Setup();
 
 /** Inits the text module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                orxText_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_Init();
 
 /** Exits from the text module
  */
-extern orxDLLAPI void                     orxText_Exit();
+extern orxDLLAPI void orxFASTCALL         orxText_Exit();
 
 
 /** Creates an empty text
  * @return      orxTEXT / orxNULL
  */
-extern orxDLLAPI orxTEXT *                orxText_Create();
+extern orxDLLAPI orxTEXT *orxFASTCALL     orxText_Create();
 
 /** Creates a text from config
  * @param[in]   _zConfigID    Config ID
@@ -127,7 +127,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetString(orxTEXT *_pstText, c
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxText_SetFont(orxTEXT *_pstText, const orxSTRING _zFont);
-
 
 #endif /* _orxTEXT_H_ */
 

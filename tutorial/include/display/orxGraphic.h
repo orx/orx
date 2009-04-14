@@ -83,15 +83,15 @@ typedef struct __orxGRAPHIC_t                 orxGRAPHIC;
 
 /** Graphic module setup
  */
-extern orxDLLAPI void                         orxGraphic_Setup();
+extern orxDLLAPI void orxFASTCALL             orxGraphic_Setup();
 
 /** Inits the Graphic module
  */
-extern orxDLLAPI orxSTATUS                    orxGraphic_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_Init();
 
 /** Exits from the Graphic module
  */
-extern orxDLLAPI void                         orxGraphic_Exit();
+extern orxDLLAPI void orxFASTCALL             orxGraphic_Exit();
 
 
 /** Creates an empty graphic
@@ -241,8 +241,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetBlendMode(orxGRAPHIC
  */
 extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pstGraphic);
 
-
 #endif /* _orxGRAPHIC_H_ */
-
 
 /** @} */

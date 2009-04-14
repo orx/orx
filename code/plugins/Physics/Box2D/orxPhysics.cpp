@@ -124,7 +124,7 @@ static orxPHYSICS_STATIC sstPhysics;
  * Private functions                                                       *
  ***************************************************************************/
 
-orxU32 orxPhysics_Box2D_GetShapeIndex(const b2Body *_poBody, const b2Shape *_poShape)
+static orxINLINE orxU32 orxPhysics_Box2D_GetShapeIndex(const b2Body *_poBody, const b2Shape *_poShape)
 {
   orxBODY  *pstBody;
   orxU32    u32Result = orxU32_UNDEFINED;
@@ -172,7 +172,7 @@ orxU32 orxPhysics_Box2D_GetShapeIndex(const b2Body *_poBody, const b2Shape *_poS
   return u32Result;
 }
 
-void orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSICS_EVENT _eEventID)
+static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(const b2ContactPoint *_poPoint, orxPHYSICS_EVENT _eEventID)
 {
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
   orxBOOL                   bSendEvent = orxTRUE;
@@ -337,7 +337,7 @@ void orxPhysicsBoundaryListener::Violation(b2Body *_poBody)
  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
  * @param[in]   _pstContext     Context sent when registering callback to the clock
  */
-void orxFASTCALL    orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   const orxCLOCK_INFO      *pstClockInfo;
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
@@ -404,7 +404,7 @@ void orxFASTCALL    orxPhysics_Update(const orxCLOCK_INFO *_pstClockInfo, void *
   return;
 }
 
-extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(const orxHANDLE _hUserData, const orxBODY_DEF *_pstBodyDef)
+extern "C" orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHANDLE _hUserData, const orxBODY_DEF *_pstBodyDef)
 {
   b2Body     *poResult = 0;
   b2BodyDef   stBodyDef;
@@ -452,7 +452,7 @@ extern "C" orxPHYSICS_BODY *orxPhysics_Box2D_CreateBody(const orxHANDLE _hUserDa
   return (orxPHYSICS_BODY *)poResult;
 }
 
-extern "C" void orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
+extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
 {
   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
 
@@ -488,7 +488,7 @@ extern "C" void orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
   return;
 }
 
-extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef)
+extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY *_pstBody, const orxBODY_PART_DEF *_pstBodyPartDef)
 {
   b2Body       *poBody;
   b2Shape      *poResult = 0;
@@ -579,7 +579,7 @@ extern "C" orxPHYSICS_BODY_PART *orxPhysics_Box2D_CreateBodyPart(orxPHYSICS_BODY
   return (orxPHYSICS_BODY_PART *)poResult;
 }
 
-extern "C" void orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
+extern "C" void orxFASTCALL orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   b2Shape  *poShape;
   b2Body   *poBody;
@@ -600,7 +600,7 @@ extern "C" void orxPhysics_Box2D_DeleteBodyPart(orxPHYSICS_BODY_PART *_pstBodyPa
   return;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
 {
   b2Body   *poBody;
   b2Vec2    vPosition;
@@ -627,7 +627,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, con
   return eResult;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
 {
   b2Body   *poBody;
   orxSTATUS eResult;
@@ -649,7 +649,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orx
   return eResult;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvSpeed)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvSpeed)
 {
   b2Body   *poBody;
   b2Vec2    vSpeed;
@@ -676,7 +676,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pstBody, const 
   return eResult;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
 {
   b2Body   *poBody;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -698,7 +698,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstBo
   return eResult;
 }
 
-extern "C" orxVECTOR *orxPhysics_Box2D_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetPosition(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
 {
   b2Body   *poBody;
   b2Vec2    vPosition;
@@ -724,7 +724,7 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetPosition(orxPHYSICS_BODY *_pstBody, or
   return pvResult;
 }
 
-extern "C" orxFLOAT orxPhysics_Box2D_GetRotation(orxPHYSICS_BODY *_pstBody)
+extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetRotation(orxPHYSICS_BODY *_pstBody)
 {
   b2Body   *poBody;
   orxFLOAT fResult;
@@ -743,7 +743,7 @@ extern "C" orxFLOAT orxPhysics_Box2D_GetRotation(orxPHYSICS_BODY *_pstBody)
   return fResult;
 }
 
-extern "C" orxVECTOR *orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
 {
   b2Body   *poBody;
   b2Vec2    vSpeed;
@@ -770,7 +770,7 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetSpeed(orxPHYSICS_BODY *_pstBody, orxVE
   return pvResult;
 }
 
-extern "C" orxFLOAT orxPhysics_Box2D_GetAngularVelocity(orxPHYSICS_BODY *_pstBody)
+extern "C" orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularVelocity(orxPHYSICS_BODY *_pstBody)
 {
   b2Body   *poBody;
   orxFLOAT fResult;
@@ -789,7 +789,7 @@ extern "C" orxFLOAT orxPhysics_Box2D_GetAngularVelocity(orxPHYSICS_BODY *_pstBod
   return fResult;
 }
 
-extern "C" orxVECTOR *orxPhysics_Box2D_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetMassCenter(orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
 {
   b2Body     *poBody;
   b2Vec2      vMassCenter;
@@ -818,7 +818,7 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetMassCenter(orxPHYSICS_BODY *_pstBody, 
   return pvResult;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
 {
   b2Body   *poBody;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -840,7 +840,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orx
   return eResult;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
 {
   b2Body   *poBody;
   b2Vec2    vForce, vPoint;
@@ -871,7 +871,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, cons
   return eResult;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
 {
   b2Body   *poBody;
   b2Vec2    vImpulse, vPoint;
@@ -902,7 +902,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, co
   return eResult;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_SetGravity(const orxVECTOR *_pvGravity)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_SetGravity(const orxVECTOR *_pvGravity)
 {
   b2Vec2    vGravity;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -921,7 +921,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_SetGravity(const orxVECTOR *_pvGravity)
   return eResult;
 }
 
-extern "C" orxVECTOR *orxPhysics_Box2D_GetGravity(orxVECTOR *_pvGravity)
+extern "C" orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetGravity(orxVECTOR *_pvGravity)
 {
   b2Vec2    vGravity;
   orxVECTOR *pvResult = _pvGravity;
@@ -937,7 +937,7 @@ extern "C" orxVECTOR *orxPhysics_Box2D_GetGravity(orxVECTOR *_pvGravity)
   return pvResult;
 }
 
-extern "C" orxSTATUS orxPhysics_Box2D_Init()
+extern "C" orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -1076,7 +1076,7 @@ extern "C" orxSTATUS orxPhysics_Box2D_Init()
   return eResult;
 }
 
-extern "C" void orxPhysics_Box2D_Exit()
+extern "C" void orxFASTCALL orxPhysics_Box2D_Exit()
 {
   /* Was initialized? */
   if(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY)

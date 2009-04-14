@@ -539,7 +539,7 @@ static orxINLINE void orxFX_DeleteAll()
 
 /** FX module setup
  */
-void orxFX_Setup()
+void orxFASTCALL orxFX_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FX, orxMODULE_ID_MEMORY);
@@ -552,7 +552,7 @@ void orxFX_Setup()
 /** Inits the FX module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFX_Init()
+orxSTATUS orxFASTCALL orxFX_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -602,7 +602,7 @@ orxSTATUS orxFX_Init()
 
 /** Exits from the FX module
  */
-void orxFX_Exit()
+void orxFASTCALL orxFX_Exit()
 {
   /* Initialized? */
   if(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY)
@@ -631,7 +631,7 @@ void orxFX_Exit()
 /** Creates an empty FX
  * @return      Created orxFX / orxNULL
  */
-orxFX *orxFX_Create()
+orxFX *orxFASTCALL orxFX_Create()
 {
   orxFX *pstResult;
 
@@ -1600,7 +1600,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
  * @param[in]   _pstFX        Concerned FX
  * @param[in]   _bEnable      enable / disable
  */
-void orxFASTCALL    orxFX_Enable(orxFX *_pstFX, orxBOOL _bEnable)
+void orxFASTCALL orxFX_Enable(orxFX *_pstFX, orxBOOL _bEnable)
 {
   /* Checks */
   orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);

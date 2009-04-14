@@ -91,40 +91,29 @@ typedef struct __orxFRAME_t                   orxFRAME;
 
 /** Setups the frame module
  */
-extern orxDLLAPI void                         orxFrame_Setup();
+extern orxDLLAPI void orxFASTCALL             orxFrame_Setup();
 
 /** Inits the frame module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                    orxFrame_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxFrame_Init();
 
 /** Exits from the frame module
  */
-extern orxDLLAPI void                         orxFrame_Exit();
+extern orxDLLAPI void orxFASTCALL             orxFrame_Exit();
 
 
 /** Creates a frame
  * @param[in]   _u32Flags     flags for created animation
  * @return      Created orxFRAME / orxNULL
  */
-extern orxDLLAPI orxFRAME *                   orxFrame_Create(orxU32 _u32Flags);
+extern orxDLLAPI orxFRAME *orxFASTCALL        orxFrame_Create(orxU32 _u32Flags);
 
 /** Deletes a frame
  * @param[in]   _pstFrame       Frame to delete
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxFrame_Delete(orxFRAME *_pstFrame);
-
-
-/** Cleans all frames render status
- */
-extern orxDLLAPI void                         orxFrame_CleanAllRenderStatus();
-
-/** Test frame render status
- * @param[in]   _pstFrame       Frame to test
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxFrame_IsRenderStatusClean(const orxFRAME *_pstFrame);
 
 
 /** Sets a frame parent

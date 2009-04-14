@@ -54,22 +54,22 @@ typedef struct __orxFILE_t orxFILE;
 
 
 /** File module setup */
-extern orxDLLAPI void                   orxFile_Setup();
+extern orxDLLAPI void orxFASTCALL       orxFile_Setup();
 
 /** Inits the File Module
  */
-extern orxDLLAPI orxSTATUS              orxFile_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxFile_Init();
 
 /** Exits from the File Module
  */
-extern orxDLLAPI void                   orxFile_Exit();
+extern orxDLLAPI void orxFASTCALL       orxFile_Exit();
 
 /** Opens a file for later read or write operation
  * @param[in] _zPath               Full file's path to open
  * @param[in] _u32OpenFlags        List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occured)
  */
-extern orxDLLAPI orxFILE*               orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags);
+extern orxDLLAPI orxFILE *orxFASTCALL   orxFile_Open(const orxSTRING _zPath, orxU32 _u32OpenFlags);
 
 /** Reads data from a file
  * @param[out] _pReadData          Pointer where will be stored datas
@@ -78,7 +78,7 @@ extern orxDLLAPI orxFILE*               orxFile_Open(const orxSTRING _zPath, orx
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of read elements (not bytes)
  */
-extern orxDLLAPI orxU32                 orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Read(void *_pReadData, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** writes data to a file
  * @param[in] _pDataToWrite        Pointer where will be stored datas
@@ -87,7 +87,7 @@ extern orxDLLAPI orxU32                 orxFile_Read(void *_pReadData, orxU32 _u
  * @param[in] _pstFile             Pointer on the file descriptor
  * @return Returns the number of written elements (not bytes)
  */
-extern orxDLLAPI orxU32                 orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxU32 orxFASTCALL     orxFile_Write(void *_pDataToWrite, orxU32 _u32ElemSize, orxU32 _u32NbElem, orxFILE *_pstFile);
 
 /** Gets text line from a file
  * @param[out] _zBuffer             Pointer where will be stored datas
@@ -95,13 +95,13 @@ extern orxDLLAPI orxU32                 orxFile_Write(void *_pDataToWrite, orxU3
  * @param[in] _pstFile              Pointer on the file descriptor
  * @return Returns orxTRUE if a line has been read, else returns orxFALSE.
  */
-extern orxDLLAPI orxBOOL                orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile);
+extern orxDLLAPI orxBOOL orxFASTCALL    orxFile_ReadLine(orxSTRING _zBuffer, orxU32 _u32Size, orxFILE *_pstFile);
 
 /** Closes an oppened file
  * @param[in] _pstFile             File's pointer to close
  * @return Returns the status of the operation
  */
-extern orxDLLAPI orxSTATUS              orxFile_Close(orxFILE *_pstFile);
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxFile_Close(orxFILE *_pstFile);
 
 #endif /* _orxFILE_H_ */
 

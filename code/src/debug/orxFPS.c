@@ -89,7 +89,7 @@ static volatile orxFPS_STATIC sstFPS;
  * @param[in] _pstClockInfo       Clock information where this callback has been registered
  * @param[in] _pstContext         User defined context
  */
-static void orxFASTCALL    orxFPS_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+static void orxFASTCALL orxFPS_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
@@ -109,7 +109,7 @@ static void orxFASTCALL    orxFPS_Update(const orxCLOCK_INFO *_pstClockInfo, voi
  ***************************************************************************/
 
 /** Setups FPS module */
-void orxFPS_Setup()
+void orxFASTCALL orxFPS_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_FPS, orxMODULE_ID_MEMORY);
@@ -121,7 +121,7 @@ void orxFPS_Setup()
 /** Inits the FPS module 
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFPS_Init()
+orxSTATUS orxFASTCALL orxFPS_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -178,7 +178,7 @@ orxSTATUS orxFPS_Init()
 }
 
 /** Exits from the FPS module */
-void orxFPS_Exit()
+void orxFASTCALL orxFPS_Exit()
 {
   /* Initialized? */
   if(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY)
@@ -202,7 +202,7 @@ void orxFPS_Exit()
 }
 
 /** Increases internal frame counter */
-void orxFPS_IncreaseFrameCounter()
+void orxFASTCALL orxFPS_IncreaseFrameCounter()
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);
@@ -216,7 +216,7 @@ void orxFPS_IncreaseFrameCounter()
 /** Gets current FTP value
  * @return orxU32
  */
-orxU32 orxFPS_GetFPS()
+orxU32 orxFASTCALL orxFPS_GetFPS()
 {
   /* Checks */
   orxASSERT(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY);

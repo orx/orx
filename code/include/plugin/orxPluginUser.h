@@ -55,7 +55,7 @@
  *********************************************/
 
 /* Defines plugin registration main function */
-#define orxPLUGIN_K_INIT_FUNCTION_NAME          orxPlugin_MainInit  /**< Plugin init function name */
+#define orxPLUGIN_K_INIT_FUNCTION_NAME                  orxPlugin_MainInit  /**< Plugin init function name */
 
 #ifdef __cplusplus
 
@@ -154,7 +154,6 @@ typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
   orxSTRING zFunctionName;                                  /**< Function Name */
 
 } orxPLUGIN_USER_FUNCTION_INFO;
-
 
 #endif /* _orxPLUGIN_USER_H_ */
 

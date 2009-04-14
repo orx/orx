@@ -169,7 +169,7 @@ static orxINLINE void orxGraphic_DeleteAll()
 
 /** Graphic module setup
  */
-void orxGraphic_Setup()
+void orxFASTCALL orxGraphic_Setup()
 {
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_MEMORY);
@@ -183,7 +183,7 @@ void orxGraphic_Setup()
 
 /** Inits the Graphic module
  */
-orxSTATUS orxGraphic_Init()
+orxSTATUS orxFASTCALL orxGraphic_Init()
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -223,7 +223,7 @@ orxSTATUS orxGraphic_Init()
 
 /** Exits from the Graphic module
  */
-void orxGraphic_Exit()
+void orxFASTCALL orxGraphic_Exit()
 {
   /* Initialized? */
   if(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY)

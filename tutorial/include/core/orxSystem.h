@@ -69,7 +69,7 @@ typedef enum __orxSYSTEM_EVENT_t
  ***************************************************************************/
 
 /** Setups the system module */
-extern orxDLLAPI void               orxSystem_Setup();
+extern orxDLLAPI void orxFASTCALL       orxSystem_Setup();
 
 
 /***************************************************************************
@@ -79,26 +79,26 @@ extern orxDLLAPI void               orxSystem_Setup();
 /** Inits the system module
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS          orxSystem_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxSystem_Init();
 
 /** Exits from the system module
  */
-extern orxDLLAPI void               orxSystem_Exit();
+extern orxDLLAPI void orxFASTCALL       orxSystem_Exit();
 
 /** Gets current time (elapsed from the beginning of the application)
  * @return Current time
  */
-extern orxDLLAPI orxFLOAT           orxSystem_GetTime();
+extern orxDLLAPI orxFLOAT orxFASTCALL   orxSystem_GetTime();
 
 /** Gets current real time (in seconds)
  * @return Current real time
  */
-extern orxDLLAPI orxS32             orxSystem_GetRealTime();
+extern orxDLLAPI orxS32 orxFASTCALL     orxSystem_GetRealTime();
 
 /** Delay the program for given number of seconds
  * @param[in] _fSeconds             Number of seconds to wait
  */
-extern orxDLLAPI void               orxSystem_Delay(orxFLOAT _fSeconds);
+extern orxDLLAPI void orxFASTCALL       orxSystem_Delay(orxFLOAT _fSeconds);
 
 #endif /* _orxSYSTEM_H_ */
 

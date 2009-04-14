@@ -65,15 +65,15 @@ typedef struct __orxCAMERA_t            orxCAMERA;
 
 /** Camera module setup
  */
-extern orxDLLAPI void                   orxCamera_Setup();
+extern orxDLLAPI void orxFASTCALL       orxCamera_Setup();
 
 /** Inits the Camera module
  */
-extern orxDLLAPI orxSTATUS              orxCamera_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxCamera_Init();
 
 /** Exits from the Camera module
  */
-extern orxDLLAPI void                   orxCamera_Exit();
+extern orxDLLAPI void orxFASTCALL       orxCamera_Exit();
 
 
 /** Creates a camera

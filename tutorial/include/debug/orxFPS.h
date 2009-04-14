@@ -44,23 +44,23 @@
 
 
 /** Setups FPS module */
-extern orxDLLAPI void                             orxFPS_Setup();
+extern orxDLLAPI void orxFASTCALL                 orxFPS_Setup();
 
 /** Inits the FPS module 
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS                        orxFPS_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxFPS_Init();
 
 /** Exits from the FPS module */
-extern orxDLLAPI void                             orxFPS_Exit();
+extern orxDLLAPI void orxFASTCALL                 orxFPS_Exit();
 
 /** Increases internal frame counter */
-extern orxDLLAPI void                             orxFPS_IncreaseFrameCounter();
+extern orxDLLAPI void orxFASTCALL                 orxFPS_IncreaseFrameCounter();
 
 /** Gets current FTP value
  * @return orxU32
  */
-extern orxDLLAPI orxU32                           orxFPS_GetFPS();
+extern orxDLLAPI orxU32 orxFASTCALL               orxFPS_GetFPS();
 
 #endif /* _orxFPS_H_ */
 

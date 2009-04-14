@@ -60,20 +60,20 @@
 
 /** Screenshot module setup
  */
-extern orxDLLAPI void                   orxScreenshot_Setup();
+extern orxDLLAPI void orxFASTCALL       orxScreenshot_Setup();
 
 /** Inits the screenshot module
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS              orxScreenshot_Init();
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxScreenshot_Init();
 
 /** Exits from the screenshot module
  */
-extern orxDLLAPI void                   orxScreenshot_Exit();
+extern orxDLLAPI void orxFASTCALL       orxScreenshot_Exit();
 
 /** Captures a screenshot
  */
-extern orxDLLAPI void                   orxScreenshot_Capture();
+extern orxDLLAPI void orxFASTCALL       orxScreenshot_Capture();
 
 #endif /* _orxSCREENSHOT_H_ */
 
