@@ -58,7 +58,11 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g9ed83d2b44f95515488e46e7d2dd2866">orxShader_Render</a> (const <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *_pstOwner)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#gb0d489135c17f37d32154e35509ac247">orxShader_AddParam</a> (<a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, <a class="el" href="group__orx_shader.html#g94512a95acea8de509b7346199eab3a1">orxSHADER_PARAM_TYPE</a> _eType)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g93a5dd89f3185227563de422def889b6">orxShader_AddFloatParam</a> (<a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, orxFLOAT _fValue)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#gb3708aee10e0d490d8197a3d969010d7">orxShader_AddTextureParam</a> (<a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, <a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *_pstValue)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga963abb12984ba48bba0e6520d34301d">orxShader_AddVectorParam</a> (<a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvValue)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#g80c39a9086eab3bd3e1b143c27cfb87e">orxShader_CompileCode</a> (<a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zCode)</td></tr>
 
@@ -146,12 +150,12 @@ Shader parameter type <dl compact><dt><b>Enumerator: </b></dt><dd>
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
-<a class="anchor" name="gb0d489135c17f37d32154e35509ac247"></a><!-- doxytag: member="orxShader.h::orxShader_AddParam" ref="gb0d489135c17f37d32154e35509ac247" args="(orxSHADER *_pstShader, const orxSTRING _zName, orxSHADER_PARAM_TYPE _eType)" -->
+<a class="anchor" name="g93a5dd89f3185227563de422def889b6"></a><!-- doxytag: member="orxShader.h::orxShader_AddFloatParam" ref="g93a5dd89f3185227563de422def889b6" args="(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fValue)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxShader_AddParam           </td>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxShader_AddFloatParam           </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *&nbsp;</td>
           <td class="paramname"> <em>_pstShader</em>, </td>
@@ -165,8 +169,8 @@ Shader parameter type <dl compact><dt><b>Enumerator: </b></dt><dd>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_shader.html#g94512a95acea8de509b7346199eab3a1">orxSHADER_PARAM_TYPE</a>&nbsp;</td>
-          <td class="paramname"> <em>_eType</em></td><td>&nbsp;</td>
+          <td class="paramtype">orxFLOAT&nbsp;</td>
+          <td class="paramname"> <em>_fValue</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -178,11 +182,97 @@ Shader parameter type <dl compact><dt><b>Enumerator: </b></dt><dd>
 <div class="memdoc">
 
 <p>
-Adds a parameter definition to a shader (parameters need to be set before compiling the shader code) <dl compact><dt><b>Parameters:</b></dt><dd>
+Adds a float parameter definition to a shader (parameters need to be set before compiling the shader code) <dl compact><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstShader</em>&nbsp;</td><td>Concerned Shader </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zName</em>&nbsp;</td><td>Parameter's literal name </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_eType</em>&nbsp;</td><td>Parameter's type </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fValue</em>&nbsp;</td><td>Parameter's float value </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="gb3708aee10e0d490d8197a3d969010d7"></a><!-- doxytag: member="orxShader.h::orxShader_AddTextureParam" ref="gb3708aee10e0d490d8197a3d969010d7" args="(orxSHADER *_pstShader, const orxSTRING _zName, orxTEXTURE *_pstValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxShader_AddTextureParam           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstShader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_texture.html#gcdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Adds a texture parameter definition to a shader (parameters need to be set before compiling the shader code) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstShader</em>&nbsp;</td><td>Concerned Shader </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zName</em>&nbsp;</td><td>Parameter's literal name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstValue</em>&nbsp;</td><td>Parameter's texture value </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
+<a class="anchor" name="ga963abb12984ba48bba0e6520d34301d"></a><!-- doxytag: member="orxShader.h::orxShader_AddVectorParam" ref="ga963abb12984ba48bba0e6520d34301d" args="(orxSHADER *_pstShader, const orxSTRING _zName, const orxVECTOR *_pvValue)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxShader_AddVectorParam           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstShader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pvValue</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Adds a vector parameter definition to a shader (parameters need to be set before compiling the shader code) <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstShader</em>&nbsp;</td><td>Concerned Shader </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zName</em>&nbsp;</td><td>Parameter's literal name </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pvValue</em>&nbsp;</td><td>Parameter's vector value </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>

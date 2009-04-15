@@ -149,13 +149,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Delete(orxSHADER *_pst
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Render(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner);
 
 
-/** Adds a parameter definition to a shader (parameters need to be set before compiling the shader code)
+/** Adds a float parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
- * @param[in] _eType                  Parameter's type
+ * @param[in] _fValue                 Parameter's float value
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddParam(orxSHADER *_pstShader, const orxSTRING _zName, orxSHADER_PARAM_TYPE _eType);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddFloatParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fValue);
+
+/** Adds a texture parameter definition to a shader (parameters need to be set before compiling the shader code)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zName                  Parameter's literal name
+ * @param[in] _pstValue               Parameter's texture value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTextureParam(orxSHADER *_pstShader, const orxSTRING _zName, orxTEXTURE *_pstValue);
+
+/** Adds a vector parameter definition to a shader (parameters need to be set before compiling the shader code)
+ * @param[in] _pstShader              Concerned Shader
+ * @param[in] _zName                  Parameter's literal name
+ * @param[in] _pvValue                Parameter's vector value
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHADER *_pstShader, const orxSTRING _zName, const orxVECTOR *_pvValue);
 
 /** Sets shader code & compiles it (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader

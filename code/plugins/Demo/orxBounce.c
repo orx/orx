@@ -35,6 +35,9 @@
 static orxU32       su32BallCounter = 0;
 static orxOBJECT   *spoParticleSpawner;
 static orxVIEWPORT *spstViewport;
+static orxFLOAT     sfShaderPhase = orx2F(0.0f);
+static orxFLOAT     sfShaderAmplitude = orx2F(0.0f);
+static orxFLOAT     sfShaderFrequency = orx2F(1.0f);
 
 /** Bounce event handler
  * @param[in]   _pstEvent                     Sent event
@@ -45,45 +48,93 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
-  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT));
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS) || (_pstEvent->eType == orxEVENT_TYPE_INPUT) || (_pstEvent->eType == orxEVENT_TYPE_SHADER));
 
-  /* Input? */
-  if(_pstEvent->eType == orxEVENT_TYPE_INPUT)
+  /* Depending on event type */
+  switch(_pstEvent->eType)
   {
-    orxINPUT_EVENT_PAYLOAD *pstPayload;
+    /* Input */
+    case orxEVENT_TYPE_INPUT:
+    {
+      orxINPUT_EVENT_PAYLOAD *pstPayload;
 
-    /* Gets event payload */
-    pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+      /* Gets event payload */
+      pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    /* Has a multi-input info? */
-    if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
-    {
-      /* Logs info */
-      orxLOG("[%s::%s] is now %s (%s/v=%g + %s/v=%g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0], orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1]), pstPayload->afValue[1]);
-    }
-    else
-    {
-      /* Logs info */
-      orxLOG("[%s::%s] is now %s (%s/v=%g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0]);
-    }
-  }
-  else
-  {
-    /* Going out of world? */
-    if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
-    {
-      /* Deletes corresponding object */
-      orxObject_Delete(orxOBJECT(_pstEvent->hSender));
+      /* Has a multi-input info? */
+      if(pstPayload->aeType[1] != orxINPUT_TYPE_NONE)
+      {
+        /* Logs info */
+        orxLOG("[%s::%s] is now %s (%s/v=%g + %s/v=%g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0], orxInput_GetBindingName(pstPayload->aeType[1], pstPayload->aeID[1]), pstPayload->afValue[1]);
+      }
+      else
+      {
+        /* Logs info */
+        orxLOG("[%s::%s] is now %s (%s/v=%g).", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? "ON " : "OFF", orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0]), pstPayload->afValue[0]);
+      }
 
-      /* Updates ball counter */
-      su32BallCounter--;
+      break;
     }
-    /* Colliding? */
-    else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+
+    /* Physics */
+    case orxEVENT_TYPE_PHYSICS:
     {
-      /* Adds bump FX on both objects */
-      orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
-      orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+      /* Going out of world? */
+      if(_pstEvent->eID == orxPHYSICS_EVENT_OUT_OF_WORLD)
+      {
+        /* Deletes corresponding object */
+        orxObject_Delete(orxOBJECT(_pstEvent->hSender));
+
+        /* Updates ball counter */
+        su32BallCounter--;
+      }
+      /* Colliding? */
+      else if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+      {
+        /* Adds bump FX on both objects */
+        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
+        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
+      }
+
+      break;
+    }
+
+    /* Shader */
+    case orxEVENT_TYPE_SHADER:
+    {
+      orxSHADER_EVENT_PARAM_PAYLOAD *pstPayload;
+
+      /* Checks */
+      orxASSERT(_pstEvent->eID == orxSHADER_EVENT_SET_PARAM);
+
+      /* Gets its payload */
+      pstPayload = (orxSHADER_EVENT_PARAM_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Phase? */
+      if(!orxString_Compare(pstPayload->zParamName, "phase"))
+      {
+        /* Updates its value */
+        pstPayload->fValue = sfShaderPhase;
+      }
+      /* Frequency? */
+      else if(!orxString_Compare(pstPayload->zParamName, "frequency"))
+      {
+        /* Updates its value */
+        pstPayload->fValue = sfShaderFrequency;
+      }
+      /* Amplitude? */
+      else if(!orxString_Compare(pstPayload->zParamName, "amplitude"))
+      {
+        /* Updates its value */
+        pstPayload->fValue = sfShaderAmplitude;
+      }
+
+      break;
+    }
+
+    default:
+    {
+      break;
     }
   }
 
@@ -106,6 +157,11 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   {
     /* Selects config section */
     orxConfig_SelectSection("Bounce");
+
+    /* Updates shader values */
+    sfShaderPhase    += orxConfig_GetFloat("ShaderPhaseSpeed") * _pstClockInfo->fDT;
+    sfShaderFrequency = orxConfig_GetFloat("ShaderMaxFrequency") * orxMath_Sin(orxConfig_GetFloat("ShaderFrequencySpeed") * _pstClockInfo->fTime);
+    sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
 
     /* Has particle spawner? */
     if(spoParticleSpawner != orxNULL)
@@ -204,6 +260,7 @@ static orxSTATUS orxBounce_Init()
   /* Registers event handler */
   eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  eResult = ((eResult != orxSTATUS_FAILURE) && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   /* Done! */
   return eResult;
