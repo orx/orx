@@ -654,6 +654,11 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
 
             break;
           }
+
+          default:
+          {
+            break;
+          }
         }
       }
       else
@@ -692,6 +697,11 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
 
             break;
           }
+
+          default:
+          {
+            break;
+          }
         }
 
         /* Sends event */
@@ -721,6 +731,11 @@ orxSTATUS orxFASTCALL orxShader_Render(const orxSHADER *_pstShader, const orxSTR
             /* Sets it */
             orxDisplay_SetShaderVector(_pstShader->hData, stPayload.zParamName, &(stPayload.vValue));
 
+            break;
+          }
+
+          default:
+          {
             break;
           }
         }
