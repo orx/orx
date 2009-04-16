@@ -43,7 +43,7 @@
   <Settings Type="Dynamic Library">
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxSystem_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -118,7 +118,7 @@
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxSystem_SFMLd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.3/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -193,7 +193,7 @@
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxSystem_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -260,7 +260,7 @@
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../bin/plugins/orxSystem_SFMLd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="./Debug" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <IncludePath Value="../../../../extern/SFML_1.4/include/"/>
         <Preprocessor Value="__orxDEBUG__"/>

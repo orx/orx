@@ -10,7 +10,7 @@
   <Settings Type="Executable">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/gp2X/orxd.gpe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.gpe" CommandArguments="" WorkingDirectory="../../../bin/gp2x/" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
@@ -67,7 +67,7 @@
     </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxd" IntermediateDirectory="$(ConfigurationName)" Command="orxd" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -126,7 +126,7 @@
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxd" IntermediateDirectory="$(ConfigurationName)" Command="orxd" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -182,7 +182,7 @@
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDLL__"/>
         <Preprocessor Value="__orxDEBUG__"/>
@@ -235,7 +235,7 @@
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Executable">
       <General OutputFile="../../../bin/orxd.exe" IntermediateDirectory="$(ConfigurationName)" Command="orxd.exe" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="yes"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>

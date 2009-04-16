@@ -201,7 +201,7 @@
   <Settings Type="Static Library">
     <Configuration Name="GP2X Debug" CompilerType="gp2x gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
       <General OutputFile="../../../lib/static/gp2x/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin/gp2x" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
         <Preprocessor Value="_REENTRANT"/>
@@ -250,7 +250,7 @@
     </Configuration>
     <Configuration Name="Linux Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../lib/dynamic/liborxd.so" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -301,7 +301,7 @@
     </Configuration>
     <Configuration Name="Linux Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
       <General OutputFile="../../../lib/static/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -348,7 +348,7 @@
     </Configuration>
     <Configuration Name="Win32 Dynamic Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Dynamic Library">
       <General OutputFile="../../../lib/dynamic/orxd.dll" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>
@@ -399,7 +399,7 @@
     </Configuration>
     <Configuration Name="Win32 Static Debug" CompilerType="gnu gcc" DebuggerType="GNU gdb debugger" Type="Static Library">
       <General OutputFile="../../../lib/static/liborxd.a" IntermediateDirectory="$(ConfigurationName)" Command="" CommandArguments="" WorkingDirectory="../../../bin" PauseExecWhenProcTerminates="no"/>
-      <Compiler Required="yes" Options="-g -Wall">
+      <Compiler Required="yes" Options="-g -W">
         <IncludePath Value="../../../include"/>
         <Preprocessor Value="__orxDEBUG__"/>
       </Compiler>

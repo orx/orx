@@ -14,7 +14,7 @@
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 				<Compiler>
-					<Add option="-Wall" />
+					<Add option="-W" />
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
@@ -28,7 +28,7 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-Wall" />
+					<Add option="-W" />
 					<Add option="-Wno-strict-aliasing" />
 				</Compiler>
 				<Linker>
@@ -44,7 +44,7 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-Wall" />
+					<Add option="-W" />
 					<Add option="-g" />
 					<Add option="-D__orxDEBUG__" />
 				</Compiler>
@@ -66,7 +66,7 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-Wall" />
+					<Add option="-W" />
 					<Add option="-Wno-strict-aliasing" />
 				</Compiler>
 				<Linker>
