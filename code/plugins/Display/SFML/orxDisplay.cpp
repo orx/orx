@@ -1373,7 +1373,7 @@ extern "C" orxHANDLE orxFASTCALL orxDisplay_SFML_CreateShader(const orxSTRING _z
         }
 
         /* Adds code */
-        orxString_NPrint(pc, s32Free, "effect\n{\n%s\n}\n", _zCode);
+        orxString_NPrint(pc, s32Free, "effect\n%s\n", _zCode);
 
         /* Compiles code */
         if(poFX->LoadFromMemory(acBuffer) != false)

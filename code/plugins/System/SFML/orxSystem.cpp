@@ -95,6 +95,9 @@ extern "C" orxSTATUS orxFASTCALL orxSystem_SFML_Init()
 
     /* Updates status */
     sstSystem.u32Flags |= orxSYSTEM_KU32_STATIC_FLAG_READY;
+
+    /* Inits random generator based on current time */
+    orxMath_InitRandom(orx2F(1000.0f) * orxSystem_GetRealTime());
   }
 
   /* Done! */
