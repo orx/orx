@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -396,8 +396,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
  */
 orxSTATUS orxFASTCALL orxShaderPointer_Render(const orxSHADERPOINTER *_pstShaderPointer)
 {
-  orxTEXTURE *pstParentTexture = orxNULL;
-  orxSTATUS   eResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);

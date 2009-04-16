@@ -1,7 +1,7 @@
 /* Orx - Portable Game Engine
  *
  * Orx is the legal property of its developers, whose names
- * are listed in the COPYRIGHT file distributed 
+ * are listed in the COPYRIGHT file distributed
  * with this source distribution.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
  * @file orxSystem.cpp
  * @date 25/10/2007
  * @author iarwain@orx-project.org
- * 
+ *
  * SFML system plugin implemention
  *
  * @todo
@@ -97,7 +97,7 @@ extern "C" orxSTATUS orxFASTCALL orxSystem_SFML_Init()
     sstSystem.u32Flags |= orxSYSTEM_KU32_STATIC_FLAG_READY;
 
     /* Inits random generator based on current time */
-    orxMath_InitRandom(orx2F(1000.0f) * orxSystem_GetRealTime());
+    orxMath_InitRandom(1000 * orxSystem_GetRealTime());
   }
 
   /* Done! */
