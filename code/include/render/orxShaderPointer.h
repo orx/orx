@@ -46,6 +46,11 @@
 #include "object/orxStructure.h"
 
 
+/** Misc defines
+ */
+#define orxSHADERPOINTER_KU32_SHADER_NUMBER     4
+
+
 /** Internal ShaderPointer structure */
 typedef struct __orxSHADERPOINTER_t             orxSHADERPOINTER;
 
@@ -101,19 +106,33 @@ extern orxDLLAPI void orxFASTCALL               orxShaderPointer_Enable(orxSHADE
 extern orxDLLAPI orxBOOL orxFASTCALL            orxShaderPointer_IsEnabled(const orxSHADERPOINTER *_pstShaderPointer);
 
 
-/** Sets a shader
+/** Adds a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
- * @param[in]   _pstShader        Shader to set
+ * @param[in]   _pstShader        Shader to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_SetShader(orxSHADERPOINTER *_pstShaderPointer, orxSHADER *_pstShader);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_AddShader(orxSHADERPOINTER *_pstShaderPointer, orxSHADER *_pstShader);
 
-/** Sets a shader using its config ID
+/** Removes a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
- * @param[in]   _zShaderConfigID  Config ID of the shader to set
+ * @param[in]   _pstShader        Shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_SetShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShaderPointer, orxSHADER *_pstShader);
+
+/** Adds a shader using its config ID
+ * @param[in]   _pstShaderPointer Concerned ShaderPointer
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID);
+
+/** Removes a shader using using its config ID
+ * @param[in]   _pstShaderPointer Concerned ShaderPointer
+ * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID);
 
 #endif /* _orxSHADERPOINTER_H_ */
 

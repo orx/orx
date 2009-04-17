@@ -296,7 +296,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      orxSTRING zTextureName, zCameraName, zShaderName;
+      orxSTRING zTextureName, zCameraName;
+      orxS32    s32Number;
 
       /* *** Texture *** */
 
@@ -323,13 +324,18 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       }
 
       /* *** Shader *** */
-      zShaderName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_SHADER);
 
-      /* Valid? */
-      if((zShaderName != orxNULL) && (zShaderName != orxSTRING_EMPTY))
+      /* Has shader? */
+      if((s32Number = orxConfig_GetListCounter(orxVIEWPORT_KZ_CONFIG_SHADER)) > 0)
       {
-        /* Sets it */
-        orxViewport_SetShader(pstResult, zShaderName);
+        orxS32 i;
+
+        /* For all defined shaders */
+        for(i = 0; i < s32Number; i++)
+        {
+          /* Adds it */
+          orxViewport_AddShader(pstResult, orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_SHADER, i));
+        }
       }
 
       /* *** Camera *** */
@@ -795,12 +801,12 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(const orxVIEWPORT *_pstViewport)
   return pstResult;
 }
 
-/** Sets a viewport's shader using its config ID
+/** Adds a shader to a viewport using its config ID
  * @param[in]   _pstViewport      Concerned Viewport
- * @param[in]   _zShaderConfigID  Config ID of the shader to set
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID)
+orxSTATUS orxFASTCALL orxViewport_AddShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -827,15 +833,39 @@ orxSTATUS orxFASTCALL orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orx
         /* Updates flags */
         orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER, orxVIEWPORT_KU32_FLAG_NONE);
 
-        /* Sets shader from config */
-        eResult = orxShaderPointer_SetShaderFromConfig(_pstViewport->pstShaderPointer, _zShaderConfigID);
+        /* Adds shader from config */
+        eResult = orxShaderPointer_AddShaderFromConfig(_pstViewport->pstShaderPointer, _zShaderConfigID);
       }
     }
     else
     {
-      /* Sets shader from config */
-      eResult = orxShaderPointer_SetShaderFromConfig(_pstViewport->pstShaderPointer, _zShaderConfigID);
+      /* Adds shader from config */
+      eResult = orxShaderPointer_AddShaderFromConfig(_pstViewport->pstShaderPointer, _zShaderConfigID);
     }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a shader using using its config ID
+ * @param[in]   _pstViewport      Concerned viewport
+ * @param[in]   _zShaderConfigID Config ID of the shader to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxViewport_RemoveShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* Valid? */
+  if(_pstViewport->pstShaderPointer != orxNULL)
+  {
+    /* Removes shader from config */
+    eResult = orxShaderPointer_RemoveShaderFromConfig(_pstViewport->pstShaderPointer, _zShaderConfigID);
   }
 
   /* Done! */

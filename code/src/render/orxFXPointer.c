@@ -547,7 +547,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orx
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No available slots for delayed FX.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No available slots for FX.");
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -722,7 +722,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Loading delayed FX from config file (%s) failed.", _zFXConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Loading FX <%s> from config failed.", _zFXConfigID);
 
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
@@ -731,7 +731,7 @@ orxSTATUS orxFASTCALL orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPo
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No available slots for delayed FX.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to find an empty slot to put FX <%s> into.", _zFXConfigID);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;

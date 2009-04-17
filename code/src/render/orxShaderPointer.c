@@ -62,17 +62,35 @@
 #define orxSHADERPOINTER_KU32_MASK_ALL              0xFFFFFFFF  /**< All mask */
 
 
+/** Holder flags
+ */
+#define orxSHADERPOINTER_HOLDER_KU32_FLAG_NONE      0x00000000  /**< No flags */
+
+#define orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL  0x10000000  /**< Internal flag */
+
+#define orxSHADERPOINTER_HOLDER_KU32_MASK_ALL       0xFFFFFFFF  /**< All mask */
+
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** ShaderPointer holder structure
+ */
+typedef struct __orxSHADERPOINTER_HOLDER_t
+{
+  orxSHADER  *pstShader;                                        /**< Shader reference : 4 */
+  orxU32      u32Flags;                                         /**< Flags : 8 */
+
+} orxSOUNDPOINTER_HOLDER;
 
 /** ShaderPointer structure
  */
 struct __orxSHADERPOINTER_t
 {
-  orxSTRUCTURE          stStructure;                            /**< Public structure, first structure member : 16 */
-  orxSHADER            *pstShader;                              /**< Associated shader : 20 */
-  const orxSTRUCTURE   *pstOwner;                               /**< Owner structure : 24 */
+  orxSTRUCTURE            stStructure;                          /**< Public structure, first structure member : 16 */
+  orxSOUNDPOINTER_HOLDER  astShaderList[orxSHADERPOINTER_KU32_SHADER_NUMBER]; /**< Shader list : 48 */
+  const orxSTRUCTURE     *pstOwner;                             /**< Owner structure : 52 */
 };
 
 /** Static structure
@@ -360,17 +378,23 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
   /* Not referenced? */
   if(orxStructure_GetRefCounter(_pstShaderPointer) == 0)
   {
-    /* Has shader? */
-    if(_pstShaderPointer->pstShader != orxNULL)
-    {
-      /* Decreases its reference counter */
-      orxStructure_DecreaseCounter(_pstShaderPointer->pstShader);
+    orxU32 i;
 
-      /* Is internal? */
-      if(orxStructure_TestFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_INTERNAL))
+    /* For all shaders */
+    for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
+    {
+      /* Valid? */
+      if(_pstShaderPointer->astShaderList[i].pstShader != orxNULL)
       {
-        /* Deletes it */
-        orxShader_Delete(_pstShaderPointer->pstShader);
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(_pstShaderPointer->astShaderList[i].pstShader);
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstShaderPointer->astShaderList[i].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxShader_Delete(_pstShaderPointer->astShaderList[i].pstShader);
+        }
       }
     }
 
@@ -405,8 +429,18 @@ orxSTATUS orxFASTCALL orxShaderPointer_Render(const orxSHADERPOINTER *_pstShader
   /* Enabled? */
   if(orxStructure_TestFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_ENABLED))
   {
-    /* Renders it */
-    eResult = orxShader_Render(_pstShaderPointer->pstShader, orxSTRUCTURE(_pstShaderPointer->pstOwner));
+    orxU32 i;
+
+    /* For all shaders */
+    for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
+    {
+      /* Valid? */
+      if(_pstShaderPointer->astShaderList[i].pstShader != orxNULL)
+      {
+        /* Renders it */
+        eResult = orxShader_Render(_pstShaderPointer->astShaderList[i].pstShader, orxSTRUCTURE(_pstShaderPointer->pstOwner));
+      }
+    }
   }
   else
   {
@@ -476,85 +510,216 @@ orxBOOL orxFASTCALL orxShaderPointer_IsEnabled(const orxSHADERPOINTER *_pstShade
   return(orxStructure_TestFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_ENABLED));
 }
 
-/** Sets a shader
+/** Adds a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
- * @param[in]   _pstShader        Shader to set
+ * @param[in]   _pstShader        Shader to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShaderPointer_SetShader(orxSHADERPOINTER *_pstShaderPointer, orxSHADER *_pstShader)
+orxSTATUS orxFASTCALL orxShaderPointer_AddShader(orxSHADERPOINTER *_pstShaderPointer, orxSHADER *_pstShader)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxU32    u32Index;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShaderPointer);
   orxSTRUCTURE_ASSERT(_pstShader);
 
-  /* Had previous? */
-  if(_pstShaderPointer->pstShader != orxNULL)
-  {
-    /* Decreases its counter */
-    orxStructure_DecreaseCounter(_pstShaderPointer->pstShader);
+  /* Finds an empty slot */
+  for(u32Index = 0; (u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER) && (_pstShaderPointer->astShaderList[u32Index].pstShader != orxNULL); u32Index++);
 
-    /* Is internal? */
-    if(orxStructure_TestFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_INTERNAL))
-    {
-      /* Deletes it */
-      orxShader_Delete(_pstShaderPointer->pstShader);
-
-      /* Updates status */
-      orxStructure_SetFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_NONE, orxSHADERPOINTER_KU32_FLAG_INTERNAL);
-    }
-  }
-
-  /* Has valid shader? */
-  if(_pstShader != orxNULL)
+  /* Found? */
+  if(u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER)
   {
     /* Increases its reference counter */
     orxStructure_IncreaseCounter(_pstShader);
 
-    /* Stores it */
-    _pstShaderPointer->pstShader = _pstShader;
+    /* Adds it to holder */
+    _pstShaderPointer->astShaderList[u32Index].pstShader = _pstShader;
+
+    /* Updates its flags */
+    orxFLAG_SET(_pstShaderPointer->astShaderList[u32Index].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_NONE, orxSHADERPOINTER_HOLDER_KU32_MASK_ALL);
   }
   else
   {
-    /* Updates shader */
-    _pstShaderPointer->pstShader = orxNULL;
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No available slots for shader.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
   return eResult;
 }
 
-/** Sets a shader using its config ID
+/** Removes a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
- * @param[in]   _zShaderConfigID  Config ID of the shader to set
+ * @param[in]   _pstShader        Shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShaderPointer_SetShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID)
+orxSTATUS orxFASTCALL orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShaderPointer, orxSHADER *_pstShader)
 {
-  orxSHADER  *pstShader;
-  orxSTATUS   eResult = orxSTATUS_FAILURE;
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShaderPointer);
+  orxSTRUCTURE_ASSERT(_pstShader);
+
+  /* For all slots */
+  for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
+  {
+    orxSHADER *pstShader;
+
+    /* Gets Shader */
+    pstShader = _pstShaderPointer->astShaderList[i].pstShader;
+
+    /* Valid? */
+    if(pstShader != orxNULL)
+    {
+      /* Found? */
+      if(pstShader == _pstShader)
+      {
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(pstShader);
+
+        /* Removes its reference */
+        _pstShaderPointer->astShaderList[i].pstShader = orxNULL;
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstShaderPointer->astShaderList[i].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxShader_Delete(pstShader);
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a shader using its config ID
+ * @param[in]   _pstShaderPointer Concerned ShaderPointer
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID)
+{
+  orxU32    u32Index;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShaderPointer);
   orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
 
-  /* Creates shader */
-  pstShader = orxShader_CreateFromConfig(_zShaderConfigID);
+  /* Finds an empty slot */
+  for(u32Index = 0; (u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER) && (_pstShaderPointer->astShaderList[u32Index].pstShader != orxNULL); u32Index++);
 
-  /* Sets it */
-  orxShaderPointer_SetShader(_pstShaderPointer, pstShader);
-
-  /* Valid ? */
-  if(pstShader != orxNULL)
+  /* Found? */
+  if(u32Index < orxSHADERPOINTER_KU32_SHADER_NUMBER)
   {
-    /* Updates status */
-    orxStructure_SetFlags(_pstShaderPointer, orxSHADERPOINTER_KU32_FLAG_INTERNAL, orxSHADERPOINTER_KU32_FLAG_NONE);
+    orxSHADER *pstShader;
+
+    /* Creates Shader */
+    pstShader = orxShader_CreateFromConfig(_zShaderConfigID);
+
+    /* Valid? */
+    if(pstShader != orxNULL)
+    {
+      /* Increases its reference counter */
+      orxStructure_IncreaseCounter(pstShader);
+
+      /* Adds it to holder */
+      _pstShaderPointer->astShaderList[u32Index].pstShader = pstShader;
+
+      /* Updates its flags */
+      orxFLAG_SET(_pstShaderPointer->astShaderList[u32Index].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL, orxSHADERPOINTER_HOLDER_KU32_MASK_ALL);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Loading shader <%s> from config failed.", _zShaderConfigID);
+
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Failed to find an empty slot to put shader <%s> into.", _zShaderConfigID);
 
     /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a shader using using its config ID
+ * @param[in]   _pstShaderPointer Concerned ShaderPointer
+ * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID)
+{
+  orxU32    i, u32ID;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstShaderPointer);
+  orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
+
+  /* Gets ID */
+  u32ID = orxString_ToCRC(_zShaderConfigID); 
+
+  /* For all slots */
+  for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
+  {
+    orxSHADER *pstShader;
+
+    /* Gets Shader */
+    pstShader = _pstShaderPointer->astShaderList[i].pstShader;
+
+    /* Valid? */
+    if(pstShader != orxNULL)
+    {
+      /* Found? */
+      if(orxString_ToCRC(orxShader_GetName(pstShader)) == u32ID)
+      {
+        /* Decreases its reference counter */
+        orxStructure_DecreaseCounter(pstShader);
+
+        /* Removes its reference */
+        _pstShaderPointer->astShaderList[i].pstShader = orxNULL;
+
+        /* Is internal? */
+        if(orxFLAG_TEST(_pstShaderPointer->astShaderList[i].u32Flags, orxSHADERPOINTER_HOLDER_KU32_FLAG_INTERNAL))
+        {
+          /* Deletes it */
+          orxShader_Delete(pstShader);
+        }
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+        break;
+      }
+    }
   }
 
   /* Done! */

@@ -481,7 +481,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSound(orxSOUNDPOINTER *_pstSoundPointer
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Could not lookup sound from pointer. Invalid index.");
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "No available slots for sound.");
 
     /* Clears last added sound index */
     _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;

@@ -22,6 +22,9 @@
 <code>#include &quot;<a class="el" href="orx_structure_8h.html">object/orxStructure.h</a>&quot;</code><br>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Defines</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#g193bda8c8a2e3169dfd6e0da83f162ee">orxSHADERPOINTER_KU32_SHADER_NUMBER</a>&nbsp;&nbsp;&nbsp;4</td></tr>
+
 <tr><td colspan="2"><br><h2>Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align="right" valign="top">typedef struct __orxSHADERPOINTER_t&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a></td></tr>
 
@@ -45,9 +48,13 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI orxBOOL orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#gdea9d751461d3985b3bf9d8ec0327be5">orxShaderPointer_IsEnabled</a> (const <a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a> *_pstShaderPointer)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#ge7e48f5909a2dff79320825097629d59">orxShaderPointer_SetShader</a> (<a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a> *_pstShaderPointer, <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#g74ad326fadbef929e1ebf41429674782">orxShaderPointer_AddShader</a> (<a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a> *_pstShaderPointer, <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#gec7de86b4eabeab4a0611be1babf8b3e">orxShaderPointer_SetShaderFromConfig</a> (<a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a> *_pstShaderPointer, const orxSTRING _zShaderConfigID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#g6467e441b95b2d3c4fc6821199016e1b">orxShaderPointer_RemoveShader</a> (<a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a> *_pstShaderPointer, <a class="el" href="group__orx_shader.html#gfa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#gbbae1b5cc2d008fd4d1c9f4fc3a7e987">orxShaderPointer_AddShaderFromConfig</a> (<a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a> *_pstShaderPointer, const orxSTRING _zShaderConfigID)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader_pointer.html#g7f9ed712c9be7b7ae522f9de99de5218">orxShaderPointer_RemoveShaderFromConfig</a> (<a class="el" href="group__orx_shader_pointer.html#g6c38462d8ef60b304c0926770750c211">orxSHADERPOINTER</a> *_pstShaderPointer, const orxSTRING _zShaderConfigID)</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>

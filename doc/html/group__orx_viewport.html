@@ -68,7 +68,9 @@
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_camera.html#g86ce25a4467cf03af68c71db1bc514de">orxCAMERA</a> *orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g96733c87b7fd2b3302f2b03552531b28">orxViewport_GetCamera</a> (const <a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gfd144a56ceffe96901a40d1e6750eab3">orxViewport_SetShader</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, const orxSTRING _zShaderConfigID)</td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#gfae98230b6e33fb16c5827b48db78b4b">orxViewport_AddShader</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, const orxSTRING _zShaderConfigID)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g9e61501eb278160f42fbb84d71b13b4b">orxViewport_RemoveShader</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, const orxSTRING _zShaderConfigID)</td></tr>
 
 <tr><td class="memItemLeft" nowrap align="right" valign="top">orxDLLAPI void orxFASTCALL&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_viewport.html#g48756d31aa83aa6bf136f6ccc970559d">orxViewport_EnableShader</a> (<a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *_pstViewport, orxBOOL _bEnable)</td></tr>
 
@@ -189,6 +191,42 @@ Internal Viewport structure
 </div>
 </div><p>
 <hr><h2>Function Documentation</h2>
+<a class="anchor" name="gfae98230b6e33fb16c5827b48db78b4b"></a><!-- doxytag: member="orxViewport.h::orxViewport_AddShader" ref="gfae98230b6e33fb16c5827b48db78b4b" args="(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxViewport_AddShader           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstViewport</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zShaderConfigID</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Adds a shader to a viewport using its config ID <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zShaderConfigID</em>&nbsp;</td><td>Config ID of the shader to add </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g5e2bebce9f2662722c43b68914bb8c54"></a><!-- doxytag: member="orxViewport.h::orxViewport_Create" ref="g5e2bebce9f2662722c43b68914bb8c54" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -803,6 +841,42 @@ Is a viewport's shader enabled? <dl compact><dt><b>Parameters:</b></dt><dd>
 
 </div>
 </div><p>
+<a class="anchor" name="g9e61501eb278160f42fbb84d71b13b4b"></a><!-- doxytag: member="orxViewport.h::orxViewport_RemoveShader" ref="g9e61501eb278160f42fbb84d71b13b4b" args="(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxViewport_RemoveShader           </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *&nbsp;</td>
+          <td class="paramname"> <em>_pstViewport</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&nbsp;</td>
+          <td class="paramname"> <em>_zShaderConfigID</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>
+Removes a shader using using its config ID <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
+    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zShaderConfigID</em>&nbsp;</td><td>Config ID of the shader to remove </td></tr>
+  </table>
+</dl>
+<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div><p>
 <a class="anchor" name="g7ec65338b0da8509da145945ca3c5fc3"></a><!-- doxytag: member="orxViewport.h::orxViewport_SetAlignment" ref="g7ec65338b0da8509da145945ca3c5fc3" args="(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags)" -->
 <div class="memitem">
 <div class="memproto">
@@ -1023,42 +1097,6 @@ Sets a viewport relative size <dl compact><dt><b>Parameters:</b></dt><dd>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fWidth</em>&nbsp;</td><td>Relative width (0.0f - 1.0f) </td></tr>
     <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_fHeight</em>&nbsp;</td><td>Relative height (0.0f - 1.0f) </td></tr>
-  </table>
-</dl>
-<dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div><p>
-<a class="anchor" name="gfd144a56ceffe96901a40d1e6750eab3"></a><!-- doxytag: member="orxViewport.h::orxViewport_SetShader" ref="gfd144a56ceffe96901a40d1e6750eab3" args="(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">orxDLLAPI <a class="el" href="group__orx_type.html#g18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxViewport_SetShader           </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_viewport.html#g75b5cb6cbb6a2156cf382a50c65ee71a">orxVIEWPORT</a> *&nbsp;</td>
-          <td class="paramname"> <em>_pstViewport</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&nbsp;</td>
-          <td class="paramname"> <em>_zShaderConfigID</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>
-Sets a viewport's shader using its config ID <dl compact><dt><b>Parameters:</b></dt><dd>
-  <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_pstViewport</em>&nbsp;</td><td>Concerned viewport </td></tr>
-    <tr><td valign="top"><tt>[in]</tt>&nbsp;</td><td valign="top"><em>_zShaderConfigID</em>&nbsp;</td><td>Config ID of the shader to set </td></tr>
   </table>
 </dl>
 <dl class="return" compact><dt><b>Returns:</b></dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
